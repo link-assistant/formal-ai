@@ -26,9 +26,10 @@ use crate::seed::{
     ROLE_ENUMERATION_REQUEST_OPENER, ROLE_FOLLOWUP_INSTRUCTION_VERB,
     ROLE_RESEARCH_EVALUATION_DOMAIN, ROLE_RESEARCH_EVIDENCE_DOMAIN, ROLE_RESEARCH_QUESTION_OPENER,
     ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
-    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_QUERY_LEADING_NOISE,
-    ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
-    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
+    ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
+    ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
+    ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION,
+    ROLE_WEB_SEARCH_TOPIC_MARKER,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -37,6 +38,7 @@ use super::web_requests::normalize_url_candidate;
 pub(super) enum WebSearchQueryKind {
     ExplicitPrefix,
     SemanticAction,
+    LatestNews,
     ImplicitResearchQuestion,
     EnumerationResearchRequest,
 }
@@ -46,6 +48,7 @@ impl WebSearchQueryKind {
         match self {
             Self::ExplicitPrefix => "explicit_prefix",
             Self::SemanticAction => "semantic_action",
+            Self::LatestNews => "latest_news",
             Self::ImplicitResearchQuestion => "implicit_research_question",
             Self::EnumerationResearchRequest => "enumeration_research_request",
         }
@@ -98,6 +101,12 @@ pub(super) fn extract_web_search_request(
         return Some(WebSearchRequest {
             query,
             kind: WebSearchQueryKind::SemanticAction,
+        });
+    }
+    if let Some(query) = extract_latest_news_search_request(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::LatestNews,
         });
     }
     if let Some(query) = extract_enumeration_research_request(&normalized_words) {
@@ -175,6 +184,10 @@ struct WebSearchMarkers {
     trailing_noise: Vec<&'static str>,
     /// Bare source words that are not, on their own, a valid query.
     source_only: Vec<String>,
+    /// News/headline subject markers for bare latest-news requests.
+    news_subject_markers: Vec<&'static str>,
+    /// Freshness markers that pair with news/headline subjects.
+    news_recency_markers: Vec<&'static str>,
     /// Verbs that open a follow-up instruction clause ("compare", "summarize").
     followup_verbs: Vec<&'static str>,
     /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
@@ -207,6 +220,8 @@ fn markers() -> &'static WebSearchMarkers {
         leading_noise: prefix_literals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
         trailing_noise: suffix_literals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+        news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
+        news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
         followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
         continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
         research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
@@ -298,6 +313,16 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
     None
 }
 
+fn extract_latest_news_search_request(normalized: &str) -> Option<String> {
+    let markers = markers();
+    if !contains_any_search_marker(normalized, &markers.news_subject_markers)
+        || !contains_any_search_marker(normalized, &markers.news_recency_markers)
+    {
+        return None;
+    }
+    valid_news_search_query(normalized)
+}
+
 fn extract_implicit_research_question(normalized: &str) -> Option<String> {
     let markers = markers();
     if !starts_with_any(normalized, &markers.research_question_prefixes) {
@@ -377,6 +402,15 @@ fn contains_search_marker(normalized: &str, marker: &str) -> bool {
 
 fn valid_search_query(value: &str) -> Option<String> {
     let query = clean_semantic_search_query(value);
+    valid_clean_search_query(query)
+}
+
+fn valid_news_search_query(value: &str) -> Option<String> {
+    let query = clean_search_query(truncate_search_instruction_tail(value));
+    valid_clean_search_query(query)
+}
+
+fn valid_clean_search_query(query: String) -> Option<String> {
     let query_key = query.to_lowercase();
     if query.is_empty()
         || markers().source_only.iter().any(|word| word == &query_key)

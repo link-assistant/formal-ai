@@ -726,7 +726,8 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ("handler:arithmetic", looks_arithmetic(prompt, normalized)),
         (
             "handler:web_search",
-            has_any_token(normalized, &["search", "google", "find"]),
+            has_any_token(normalized, &["search", "google", "find"])
+                || looks_like_latest_news_search(normalized),
         ),
         (
             "handler:procedural_how_to",
@@ -778,6 +779,13 @@ fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
         && ["+", "-", "*", "/", "plus", "minus", "times", "divided"]
             .iter()
             .any(|operator| raw.contains(operator) || normalized.contains(operator))
+}
+
+fn looks_like_latest_news_search(normalized: &str) -> bool {
+    let padded = format!(" {normalized} ");
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_SUBJECT, &padded)
+        && lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_RECENCY, &padded)
 }
 
 fn looks_like_program_synthesis(normalized: &str) -> bool {

@@ -33,6 +33,48 @@ const WEB_SEARCH_ENUMERATION_RESEARCH_CASES: &[(&str, &str, &str)] = &[
 ];
 
 #[test]
+fn russian_latest_news_routes_to_wikinews_search() {
+    let response = FormalAiEngine.answer("последние новости");
+
+    assert_eq!(
+        response.intent, "web_search",
+        "reported Russian latest-news prompt should route to web_search, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:request:последние новости"),
+        "latest-news prompt should preserve the requested news query: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:query_kind:latest_news"),
+        "latest-news prompt should record the specialized query kind: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "web_search:provider:wikinews"),
+        "latest-news prompt should include Wikinews as a search provider: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response.answer.to_lowercase().contains("wikinews")
+            || response.answer.to_lowercase().contains("викиновости"),
+        "latest-news answer should direct the user to Wikinews, got: {}",
+        response.answer,
+    );
+    assert_ne!(response.intent, "unknown");
+}
+
+#[test]
 fn navigation_describes_frame_policy_check_before_iframe_preview() {
     // Regression test for issue #169: navigation must not use a host-specific
     // blocklist or blindly render an iframe that may show a blocked-frame page.
