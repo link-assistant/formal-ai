@@ -1,0 +1,141 @@
+Q30
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015 at-0016 at-0017)
+      at-0000
+        language string "en"
+        value string "the States"
+      at-0001
+        language string "en"
+        value string "the United States of America"
+      at-0002
+        language string "en"
+        value string "US of America"
+      at-0003
+        language string "en"
+        value string "the US"
+      at-0004
+        language string "en"
+        value string "the U.S."
+      at-0005
+        language string "en"
+        value string "the US of A"
+      at-0006
+        language string "en"
+        value string "U.S. of America"
+      at-0007
+        language string "en"
+        value string "the US of America"
+      at-0008
+        language string "en"
+        value string "the USA"
+      at-0009
+        language string "en"
+        value string "the U.S.A."
+      at-0010
+        language string "en"
+        value string "the U.S. of A"
+      at-0011
+        language string "en"
+        value string "US of A"
+      at-0012
+        language string "en"
+        value string "the U.S. of America"
+      at-0013
+        language string "en"
+        value string "the United States"
+      at-0014
+        language string "en"
+        value string "Merica"
+      at-0015
+        language string "en"
+        value string "Murica"
+      at-0016
+        language string "en"
+        value string "U. S."
+      at-0017
+        language string "en"
+        value string "U. S. A."
+    hi (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005)
+      at-0000
+        language string "hi"
+        value string "संयुक्त राज्य"
+      at-0001
+        language string "hi"
+        value string "यू एस"
+      at-0002
+        language string "hi"
+        value string "अमेरिका"
+      at-0003
+        language string "hi"
+        value string "यू० एस०"
+      at-0004
+        language string "hi"
+        value string "यू एस ए"
+      at-0005
+        language string "hi"
+        value string "यू० एस० ए०"
+    ru (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005)
+      at-0000
+        language string "ru"
+        value string "Соединённые Штаты Америки"
+      at-0001
+        language string "ru"
+        value string "Соединённые Штаты"
+      at-0002
+        language string "ru"
+        value string "Штаты"
+      at-0003
+        language string "ru"
+        value string "Соединённые Государства Америки"
+      at-0004
+        language string "ru"
+        value string "САСШ"
+      at-0005
+        language string "ru"
+        value string "Северо-Американские Соединённые Штаты"
+    zh (at-0000 at-0001 at-0002 at-0003)
+      at-0000
+        language string "zh"
+        value string "美利坚合众国"
+      at-0001
+        language string "zh"
+        value string "美利堅合眾國"
+      at-0002
+        language string "zh"
+        value string "花旗国"
+      at-0003
+        language string "zh"
+        value string "美国"
+  descriptions
+    en
+      language string "en"
+      value string "country located primarily in North America"
+    hi
+      language string "hi"
+      value string "उत्तरी अमेरिका में स्थित एक देश"
+    ru
+      language string "ru"
+      value string "федеративное государство в Северной Америке"
+    zh
+      language string "zh"
+      value string "北美洲國家"
+  id string "Q30"
+  labels
+    en
+      language string "en"
+      value string "United States"
+    hi
+      language string "hi"
+      value string "संयुक्त राज्य अमेरिका"
+    ru
+      language string "ru"
+      value string "США"
+    zh
+      language string "zh"
+      value string "美國"
+  lastrevid 2503083762
+  modified string "2026-06-07T16:37:27Z"
+  ns 0
+  pageid 126
+  title string "Q30"
+  type string "item"

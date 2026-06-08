@@ -4,143 +4,200 @@ meanings
     defined-by action # definition-link
     role investment_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 105 110 118 101 115 116 # unresolved-surface
-      surface unformalized-raw 105 110 118 101 115 116 109 101 110 116 # unresolved-surface
+      surface seed-surface-478b5e462020
+        codepoints 105 110 118 101 115 116
+      surface seed-surface-da3ab6f53a21
+        codepoints 105 110 118 101 115 116 109 101 110 116
     lexeme ru # language
-      surface unformalized-raw 1080 1085 1074 1077 1089 1090 1080 1088 # unresolved-surface
-      surface unformalized-raw 1080 1085 1074 1077 1089 1090 1080 1094 # unresolved-surface
+      surface seed-surface-6907b2a6f35d
+        codepoints 1080 1085 1074 1077 1089 1090 1080 1088
+      surface seed-surface-2321907dbe7d
+        codepoints 1080 1085 1074 1077 1089 1090 1080 1094
     lexeme hi # language
-      surface unformalized-raw 2344 2367 2357 2375 2358 # unresolved-surface
+      surface seed-surface-08d7a75b95d3
+        codepoints 2344 2367 2357 2375 2358
     lexeme zh # language
-      surface unformalized-raw 25237 36164 # unresolved-surface
+      surface seed-surface-f8a5bd88c67f
+        codepoints 25237 36164
   interest_finance: # concept interest_finance
     defined-by money # definition-link
     role interest_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 105 110 116 101 114 101 115 116 # unresolved-surface
+      surface seed-surface-605555a0b3d3
+        codepoints 105 110 116 101 114 101 115 116
     lexeme ru # language
-      surface unformalized-raw 1087 1088 1086 1094 1077 1085 1090 # unresolved-surface
+      surface seed-surface-8addd30accd3
+        codepoints 1087 1088 1086 1094 1077 1085 1090
     lexeme hi # language
-      surface unformalized-raw 2348 2381 2351 2366 2332 # unresolved-surface
+      surface seed-surface-c8291ed3ab6d
+        codepoints 2348 2381 2351 2366 2332
     lexeme zh # language
-      surface unformalized-raw 21033 24687 # unresolved-surface
+      surface seed-surface-2f1ed48c3897
+        codepoints 21033 24687
   compounding: # concept compounding
     defined-by action # definition-link
     defined-by money # definition-link
     role compounding_action_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 99 111 109 112 111 117 110 100 # unresolved-surface
+      surface seed-surface-1b2286cb7a70
+        codepoints 99 111 109 112 111 117 110 100
     lexeme ru # language
-      surface unformalized-raw 1089 1083 1086 1078 1085 1099 1081 32 1087 1088 1086 1094 1077 1085 1090 # unresolved-surface
-      surface unformalized-raw 1082 1072 1087 1080 1090 1072 1083 1080 1079 1072 1094 1080 # unresolved-surface
+      surface seed-surface-c3aa1e2b04b1
+        codepoints 1089 1083 1086 1078 1085 1099 1081 32 1087 1088 1086 1094 1077 1085 1090
+      surface seed-surface-1080ef3bd681
+        codepoints 1082 1072 1087 1080 1090 1072 1083 1080 1079 1072 1094 1080
     lexeme hi # language
-      surface unformalized-raw 2330 2325 2381 2352 2357 2371 2342 2381 2343 2367 # unresolved-surface
+      surface seed-surface-f81d3cbf0598
+        codepoints 2330 2325 2381 2352 2357 2371 2342 2381 2343 2367
     lexeme zh # language
-      surface unformalized-raw 22797 21033 # unresolved-surface
+      surface seed-surface-7487b525e39b
+        codepoints 22797 21033
   compounding_monthly: # concept compounding_monthly
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 109 111 110 116 104 108 121 # unresolved-surface
+      surface seed-surface-81e99cca269f
+        codepoints 109 111 110 116 104 108 121
     lexeme ru # language
-      surface unformalized-raw 1077 1078 1077 1084 1077 1089 1103 1095 1085 # unresolved-surface
+      surface seed-surface-c3bc7ae50527
+        codepoints 1077 1078 1077 1084 1077 1089 1103 1095 1085
     lexeme hi # language
-      surface unformalized-raw 2350 2366 2360 2367 2325 # unresolved-surface
+      surface seed-surface-aea74fad8a7a
+        codepoints 2350 2366 2360 2367 2325
     lexeme zh # language
-      surface unformalized-raw 27599 26376 # unresolved-surface
+      surface seed-surface-e886d8dc785e
+        codepoints 27599 26376
   compounding_quarterly: # concept compounding_quarterly
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 113 117 97 114 116 101 114 108 121 # unresolved-surface
+      surface seed-surface-2968c6edb37d
+        codepoints 113 117 97 114 116 101 114 108 121
     lexeme ru # language
-      surface unformalized-raw 1077 1078 1077 1082 1074 1072 1088 1090 1072 1083 1100 1085 # unresolved-surface
+      surface seed-surface-bbdfaf33d1a3
+        codepoints 1077 1078 1077 1082 1074 1072 1088 1090 1072 1083 1100 1085
     lexeme hi # language
-      surface unformalized-raw 2340 2381 2352 2376 2350 2366 2360 2367 2325 # unresolved-surface
+      surface seed-surface-a1377d3fd209
+        codepoints 2340 2381 2352 2376 2350 2366 2360 2367 2325
     lexeme zh # language
-      surface unformalized-raw 27599 23395 24230 # unresolved-surface
+      surface seed-surface-92505222b10d
+        codepoints 27599 23395 24230
   compounding_weekly: # concept compounding_weekly
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 119 101 101 107 108 121 # unresolved-surface
+      surface seed-surface-08cc790ba10d
+        codepoints 119 101 101 107 108 121
     lexeme ru # language
-      surface unformalized-raw 1077 1078 1077 1085 1077 1076 1077 1083 1100 1085 # unresolved-surface
+      surface seed-surface-dd3a3e5006b3
+        codepoints 1077 1078 1077 1085 1077 1076 1077 1083 1100 1085
     lexeme hi # language
-      surface unformalized-raw 2360 2366 2346 2381 2340 2366 2361 2367 2325 # unresolved-surface
+      surface seed-surface-721a8d4a5be9
+        codepoints 2360 2366 2346 2381 2340 2366 2361 2367 2325
     lexeme zh # language
-      surface unformalized-raw 27599 21608 # unresolved-surface
+      surface seed-surface-405b88e9f665
+        codepoints 27599 21608
   compounding_daily: # concept compounding_daily
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 100 97 105 108 121 # unresolved-surface
+      surface seed-surface-66a8706eb586
+        codepoints 100 97 105 108 121
     lexeme ru # language
-      surface unformalized-raw 1077 1078 1077 1076 1085 1077 1074 1085 # unresolved-surface
+      surface seed-surface-aa7d90c38ecb
+        codepoints 1077 1078 1077 1076 1085 1077 1074 1085
     lexeme hi # language
-      surface unformalized-raw 2342 2376 2344 2367 2325 # unresolved-surface
+      surface seed-surface-9580572a7b91
+        codepoints 2342 2376 2344 2367 2325
     lexeme zh # language
-      surface unformalized-raw 27599 26085 # unresolved-surface
+      surface seed-surface-ea097dbbe253
+        codepoints 27599 26085
   compounding_annual: # concept compounding_annual
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 97 110 110 117 97 108 108 121 # unresolved-surface
-      surface unformalized-raw 121 101 97 114 108 121 # unresolved-surface
+      surface seed-surface-352321c9203e
+        codepoints 97 110 110 117 97 108 108 121
+      surface seed-surface-95b2205ffbf0
+        codepoints 121 101 97 114 108 121
     lexeme ru # language
-      surface unformalized-raw 1077 1078 1077 1075 1086 1076 1085 # unresolved-surface
+      surface seed-surface-1006fbe3a3a4
+        codepoints 1077 1078 1077 1075 1086 1076 1085
     lexeme hi # language
-      surface unformalized-raw 2357 2366 2352 2381 2359 2367 2325 # unresolved-surface
+      surface seed-surface-8a47ec4b5527
+        codepoints 2357 2366 2352 2381 2359 2367 2325
     lexeme zh # language
-      surface unformalized-raw 27599 24180 # unresolved-surface
+      surface seed-surface-e2a1b888b63b
+        codepoints 27599 24180
   live_rate_freshness: # concept live_rate_freshness
     defined-by exchange_rate # definition-link
     defined-by concept # definition-link
     role live_rate_freshness_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 119 101 98 # unresolved-surface
-      surface unformalized-raw 99 117 114 114 101 110 116 32 101 120 99 104 97 110 103 101 # unresolved-surface
-      surface unformalized-raw 99 117 114 114 101 110 116 32 114 97 116 101 # unresolved-surface
-      surface unformalized-raw 101 120 99 104 97 110 103 101 32 114 97 116 101 # unresolved-surface
+      surface seed-surface-e23e50200569
+        codepoints 119 101 98
+      surface seed-surface-0c397eaa51aa
+        codepoints 99 117 114 114 101 110 116 32 101 120 99 104 97 110 103 101
+      surface seed-surface-8c2871cd755d
+        codepoints 99 117 114 114 101 110 116 32 114 97 116 101
+      surface seed-surface-c86ebabf2465
+        codepoints 101 120 99 104 97 110 103 101 32 114 97 116 101
     lexeme ru # language
-      surface unformalized-raw 1090 1077 1082 1091 1097 1080 1081 32 1082 1091 1088 1089 # unresolved-surface
-      surface unformalized-raw 1072 1082 1090 1091 1072 1083 1100 1085 1099 1081 32 1082 1091 1088 1089 # unresolved-surface
+      surface seed-surface-d16360ac33f4
+        codepoints 1090 1077 1082 1091 1097 1080 1081 32 1082 1091 1088 1089
+      surface seed-surface-c3c665f912e9
+        codepoints 1072 1082 1090 1091 1072 1083 1100 1085 1099 1081 32 1082 1091 1088 1089
     lexeme hi # language
-      surface unformalized-raw 2357 2352 2381 2340 2350 2366 2344 32 2342 2352 # unresolved-surface
+      surface seed-surface-17b8b4219d81
+        codepoints 2357 2352 2381 2340 2350 2366 2344 32 2342 2352
     lexeme zh # language
-      surface unformalized-raw 23454 26102 27719 29575 # unresolved-surface
+      surface seed-surface-3beb15b4dddd
+        codepoints 23454 26102 27719 29575
   year_period: # concept year_period
     defined-by concept # definition-link
     role year_unit_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 121 101 97 114 # unresolved-surface
+      surface seed-surface-b0db0d541702
+        codepoints 121 101 97 114
     lexeme ru # language
-      surface unformalized-raw 1075 1086 1076 # unresolved-surface
-      surface unformalized-raw 1083 1077 1090 # unresolved-surface
+      surface seed-surface-dda5b567575e
+        codepoints 1075 1086 1076
+      surface seed-surface-aa78051ffe64
+        codepoints 1083 1077 1090
     lexeme hi # language
-      surface unformalized-raw 2357 2352 2381 2359 # unresolved-surface
+      surface seed-surface-e0aeb0f1cba2
+        codepoints 2357 2352 2381 2359
     lexeme zh # language
-      surface unformalized-raw 24180 # unresolved-surface
+      surface seed-surface-0aa0bbce0f88
+        codepoints 24180
   conversion_action: # concept conversion_action
     defined-by action # definition-link
     defined-by money # definition-link
     role conversion_action_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 99 111 110 118 101 114 116 # unresolved-surface
+      surface seed-surface-eb0fa24893ef
+        codepoints 99 111 110 118 101 114 116
     lexeme ru # language
-      surface unformalized-raw 1082 1086 1085 1074 1077 1088 1090 1080 1088 # unresolved-surface
+      surface seed-surface-6504e6775cf7
+        codepoints 1082 1086 1085 1074 1077 1088 1090 1080 1088
     lexeme hi # language
-      surface unformalized-raw 2346 2352 2367 2357 2352 2381 2340 2367 2340 # unresolved-surface
+      surface seed-surface-746d2d2ee20b
+        codepoints 2346 2352 2367 2357 2352 2381 2340 2367 2340
     lexeme zh # language
-      surface unformalized-raw 36716 25442 # unresolved-surface
+      surface seed-surface-05f5b4ce237e
+        codepoints 36716 25442
   final_amount: # concept final_amount
     defined-by money # definition-link
     role final_amount_reference # semantic-role
     lexeme en # language
-      surface unformalized-raw 102 105 110 97 108 32 97 109 111 117 110 116 # unresolved-surface
+      surface seed-surface-4cb4101f3a11
+        codepoints 102 105 110 97 108 32 97 109 111 117 110 116
     lexeme ru # language
-      surface unformalized-raw 1080 1090 1086 1075 1086 1074 1072 1103 32 1089 1091 1084 1084 1072 # unresolved-surface
+      surface seed-surface-1f940e2cc833
+        codepoints 1080 1090 1086 1075 1086 1074 1072 1103 32 1089 1091 1084 1084 1072
     lexeme hi # language
-      surface unformalized-raw 2309 2306 2340 2367 2350 32 2352 2366 2358 2367 # unresolved-surface
+      surface seed-surface-6b1e192c6f2d
+        codepoints 2309 2306 2340 2367 2350 32 2352 2366 2358 2367
     lexeme zh # language
-      surface unformalized-raw 26368 32456 37329 39069 # unresolved-surface
+      surface seed-surface-c62ed9589c32
+        codepoints 26368 32456 37329 39069

@@ -1,58 +1,58 @@
-Q89 # cached json source
+Q89
   value
     entities
       Q89
         aliases
-          en: []
+          en (at-0000)
             at-0000
-              language: "en"
-              value: "apple fruit"
-          hi: []
+              language string "en"
+              value string "apple fruit"
+          hi (at-0000 at-0001)
             at-0000
-              language: "hi"
-              value: "सेवफलम्"
+              language string "hi"
+              value string "सेवफलम्"
             at-0001
-              language: "hi"
-              value: "एप्पल"
-          zh: []
+              language string "hi"
+              value string "एप्पल"
+          zh (at-0000 at-0001 at-0002 at-0003)
             at-0000
-              language: "zh"
-              value: "柰"
+              language string "zh"
+              value string "柰"
             at-0001
-              language: "zh"
-              value: "蘋果"
+              language string "zh"
+              value string "蘋果"
             at-0002
-              language: "zh"
-              value: "píngguǒ"
+              language string "zh"
+              value string "píngguǒ"
             at-0003
-              language: "zh"
-              value: "瓜果"
+              language string "zh"
+              value string "瓜果"
         descriptions
           en
-            language: "en"
-            value: "edible fruit of the apple tree"
+            language string "en"
+            value string "edible fruit of the apple tree"
           hi
-            language: "hi"
-            value: "सेब वृक्ष का फल"
+            language string "hi"
+            value string "सेब वृक्ष का फल"
           ru
-            language: "ru"
-            value: "плод яблони"
+            language string "ru"
+            value string "плод яблони"
           zh
-            language: "zh"
-            value: "植物，果实是一种水果"
-        id: "Q89"
+            language string "zh"
+            value string "植物，果实是一种水果"
+        id string "Q89"
         labels
           en
-            language: "en"
-            value: "apple"
+            language string "en"
+            value string "apple"
           hi
-            language: "hi"
-            value: "सेब"
+            language string "hi"
+            value string "सेब"
           ru
-            language: "ru"
-            value: "яблоко"
+            language string "ru"
+            value string "яблоко"
           zh
-            language: "zh"
-            value: "苹果"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "苹果"
+        type string "item"
+    success 1

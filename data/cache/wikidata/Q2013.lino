@@ -1,59 +1,59 @@
-Q2013 # cached json source
+Q2013
   value
     entities
       Q2013
         aliases
-          en: []
+          en (at-0000)
             at-0000
-              language: "en"
-              value: "Q2013"
-          hi: []
+              language string "en"
+              value string "Q2013"
+          hi (at-0000)
             at-0000
-              language: "hi"
-              value: "विकिडाटा"
-          ru: []
+              language string "hi"
+              value string "विकिडाटा"
+          ru (at-0000 at-0001)
             at-0000
-              language: "ru"
-              value: "Викидата"
+              language string "ru"
+              value string "Викидата"
             at-0001
-              language: "ru"
-              value: "ВД"
-          zh: []
+              language string "ru"
+              value string "ВД"
+          zh (at-0000 at-0001 at-0002)
             at-0000
-              language: "zh"
-              value: "維基資料"
+              language string "zh"
+              value string "維基資料"
             at-0001
-              language: "zh"
-              value: "維基數據"
+              language string "zh"
+              value string "維基數據"
             at-0002
-              language: "zh"
-              value: "维基资料"
+              language string "zh"
+              value string "维基资料"
         descriptions
           en
-            language: "en"
-            value: "free multilingual online knowledge graph"
+            language string "en"
+            value string "free multilingual online knowledge graph"
           hi
-            language: "hi"
-            value: "विकिमीडिया संस्थान द्वारा होस्ट किया जाने वाला मुक्त ज्ञान आधार"
+            language string "hi"
+            value string "विकिमीडिया संस्थान द्वारा होस्ट किया जाने वाला मुक्त ज्ञान आधार"
           ru
-            language: "ru"
-            value: "проект Фонда Викимедиа; свободная база знаний, которую может редактировать каждый"
+            language string "ru"
+            value string "проект Фонда Викимедиа; свободная база знаний, которую может редактировать каждый"
           zh
-            language: "zh"
-            value: "由維基媒體營運的人人可編輯的自由知識資料庫，並且由志工編輯維護"
-        id: "Q2013"
+            language string "zh"
+            value string "由維基媒體營運的人人可編輯的自由知識資料庫，並且由志工編輯維護"
+        id string "Q2013"
         labels
           en
-            language: "en"
-            value: "Wikidata"
+            language string "en"
+            value string "Wikidata"
           hi
-            language: "hi"
-            value: "विकिडेटा"
+            language string "hi"
+            value string "विकिडेटा"
           ru
-            language: "ru"
-            value: "Викиданные"
+            language string "ru"
+            value string "Викиданные"
           zh
-            language: "zh"
-            value: "维基数据"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "维基数据"
+        type string "item"
+    success 1

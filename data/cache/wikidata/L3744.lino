@@ -1,285 +1,305 @@
-L3744 # cached wikidata source
+L3744
   claims
-    P12573: []
-      L3744$5CACE6CF-E542-4C69-9E02-D92655F7D82E
+    P12573 (at-0000 at-0001)
+      at-0000
+        id string "L3744$5CACE6CF-E542-4C69-9E02-D92655F7D82E"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "11476"
-          hash: "c711ed0a3c3c3e454a1990af70a4163dbd85f5c2"
-          property: "P12573"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-      L3744$E9B363CB-2833-4234-9C04-995E2CC3FD57
+            type string "string"
+            value string "11476"
+          hash string "c711ed0a3c3c3e454a1990af70a4163dbd85f5c2"
+          property string "P12573"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "L3744$E9B363CB-2833-4234-9C04-995E2CC3FD57"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "26927"
-          hash: "dbf44fb868d1601cbcb4616100a9ef1babc92237"
-          property: "P12573"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12690: []
-      L3744$FDFE05D3-A9AA-43A5-BBB7-5E0F1E2DF5BF
+            type string "string"
+            value string "26927"
+          hash string "dbf44fb868d1601cbcb4616100a9ef1babc92237"
+          property string "P12573"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12690 (at-0000)
+      at-0000
+        id string "L3744$FDFE05D3-A9AA-43A5-BBB7-5E0F1E2DF5BF"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "1284064"
-          hash: "6d9d7bff42109584dfcc935f73c31b6b644381ff"
-          property: "P12690"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12718: []
-      L3744$B8D96595-6944-4BC1-8E19-EA700B5225B7
+            type string "string"
+            value string "1284064"
+          hash string "6d9d7bff42109584dfcc935f73c31b6b644381ff"
+          property string "P12690"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12718 (at-0000)
+      at-0000
+        id string "L3744$B8D96595-6944-4BC1-8E19-EA700B5225B7"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "0046243"
-          hash: "4838323362f45330b85c5bbf638e4e0b360ba607"
-          property: "P12718"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12724: []
-      L3744$9694AD2D-89F8-49E7-9EEF-7DFE86387681
+            type string "string"
+            value string "0046243"
+          hash string "4838323362f45330b85c5bbf638e4e0b360ba607"
+          property string "P12718"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12724 (at-0000)
+      at-0000
+        id string "L3744$9694AD2D-89F8-49E7-9EEF-7DFE86387681"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "0044926"
-          hash: "d2b27da70bc5d98adf6169e6e0d2180853c2cfb9"
-          property: "P12724"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12726: []
-      L3744$170E4651-EF61-4A67-B971-A4CB12B8628E
+            type string "string"
+            value string "0044926"
+          hash string "d2b27da70bc5d98adf6169e6e0d2180853c2cfb9"
+          property string "P12724"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12726 (at-0000)
+      at-0000
+        id string "L3744$170E4651-EF61-4A67-B971-A4CB12B8628E"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "0057983"
-          hash: "92a92bce14432dd21ba4f46bc55433cfa1863922"
-          property: "P12726"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12739: []
-      L3744$284610CE-82E6-4FE3-BED8-B92799D23197
+            type string "string"
+            value string "0057983"
+          hash string "92a92bce14432dd21ba4f46bc55433cfa1863922"
+          property string "P12726"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12739 (at-0000)
+      at-0000
+        id string "L3744$284610CE-82E6-4FE3-BED8-B92799D23197"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "0698950"
-          hash: "174e70428b1a6cfdce1f85f6e517164a268f0f43"
-          property: "P12739"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12868: []
-      L3744$D51C6906-F097-4367-BE3E-2A2B817B6E3D
+            type string "string"
+            value string "0698950"
+          hash string "174e70428b1a6cfdce1f85f6e517164a268f0f43"
+          property string "P12739"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12868 (at-0000)
+      at-0000
+        id string "L3744$D51C6906-F097-4367-BE3E-2A2B817B6E3D"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "31212_2"
-          hash: "504ae947ec35f70f7ca5e5574878d8d7dccc64bf"
-          property: "P12868"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P13258: []
-      L3744$A548A1F5-F64D-47E0-B28E-874E5CB3AB62
+            type string "string"
+            value string "31212_2"
+          hash string "504ae947ec35f70f7ca5e5574878d8d7dccc64bf"
+          property string "P12868"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P13258 (at-0000)
+      at-0000
+        id string "L3744$A548A1F5-F64D-47E0-B28E-874E5CB3AB62"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "8100858"
-          hash: "e2dc295f47ecc2fd0613831885718b8d263128d1"
-          property: "P13258"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P5238: []
-      L3744$5D0CC19F-E123-43C6-8864-354C4AF17FB7
+            type string "string"
+            value string "8100858"
+          hash string "e2dc295f47ecc2fd0613831885718b8d263128d1"
+          property string "P13258"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P5238 (at-0000 at-0001)
+      at-0000
+        id string "L3744$5D0CC19F-E123-43C6-8864-354C4AF17FB7"
         mainsnak
-          datatype: "wikibase-lexeme"
+          datatype string "wikibase-lexeme"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "lexeme"
-              id: "L3743"
-              numeric-id: 3743
-          hash: "78fe18f4564d9cf728ef557878ca0a1e4d1694d0"
-          property: "P5238"
-          snaktype: "value"
+              entity-type string "lexeme"
+              id string "L3743"
+              numeric-id 3743
+          hash string "78fe18f4564d9cf728ef557878ca0a1e4d1694d0"
+          property string "P5238"
+          snaktype string "value"
         qualifiers
-          P1545: []
+          P1545 (at-0000)
             at-0000
-              datatype: "string"
+              datatype string "string"
               datavalue
-                type: "string"
-                value: "1"
-              hash: "2a1ced1dca90648ea7e306acbadd74fc81a10722"
-              property: "P1545"
-              snaktype: "value"
-        qualifiers-order: ("P1545")
-        rank: "normal"
-        type: "statement"
-      L3744$49D69C8B-6CE6-4BD0-AC07-D232E0704B7D
+                type string "string"
+                value string "1"
+              hash string "2a1ced1dca90648ea7e306acbadd74fc81a10722"
+              property string "P1545"
+              snaktype string "value"
+        qualifiers-order ("P1545")
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "L3744$49D69C8B-6CE6-4BD0-AC07-D232E0704B7D"
         mainsnak
-          datatype: "wikibase-lexeme"
+          datatype string "wikibase-lexeme"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "lexeme"
-              id: "L348021"
-              numeric-id: 348021
-          hash: "33720bf56670fda2dd18b865b37ef8246a47b0df"
-          property: "P5238"
-          snaktype: "value"
+              entity-type string "lexeme"
+              id string "L348021"
+              numeric-id 348021
+          hash string "33720bf56670fda2dd18b865b37ef8246a47b0df"
+          property string "P5238"
+          snaktype string "value"
         qualifiers
-          P1545: []
+          P1545 (at-0000)
             at-0000
-              datatype: "string"
+              datatype string "string"
               datavalue
-                type: "string"
-                value: "2"
-              hash: "7241753c62a310cf84895620ea82250dcea65835"
-              property: "P1545"
-              snaktype: "value"
-        qualifiers-order: ("P1545")
-        rank: "normal"
-        type: "statement"
-    P5275: []
-      L3744$DC580586-215E-4ED3-94E6-4C7F85673E48
+                type string "string"
+                value string "2"
+              hash string "7241753c62a310cf84895620ea82250dcea65835"
+              property string "P1545"
+              snaktype string "value"
+        qualifiers-order ("P1545")
+        rank string "normal"
+        type string "statement"
+    P5275 (at-0000)
+      at-0000
+        id string "L3744$DC580586-215E-4ED3-94E6-4C7F85673E48"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "161816"
-          hash: "c0f665989eff2c9fe8344c9a93d2062aa3d9f34d"
-          property: "P5275"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-  forms: []
-    L3744-F1
+            type string "string"
+            value string "161816"
+          hash string "c0f665989eff2c9fe8344c9a93d2062aa3d9f34d"
+          property string "P5275"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+  forms (at-0000 at-0001)
+    at-0000
       claims
-        P443: []
-          L3744-F1$0DB92C42-3CD1-4BA9-9632-1E43AEBC9D51
+        P443 (at-0000)
+          at-0000
+            id string "L3744-F1$0DB92C42-3CD1-4BA9-9632-1E43AEBC9D51"
             mainsnak
-              datatype: "commonsMedia"
+              datatype string "commonsMedia"
               datavalue
-                type: "string"
-                value: "En-us-relationship.ogg"
-              hash: "e0c6971d390f3000cfed21d5a3f99028529cda20"
-              property: "P443"
-              snaktype: "value"
+                type string "string"
+                value string "En-us-relationship.ogg"
+              hash string "e0c6971d390f3000cfed21d5a3f99028529cda20"
+              property string "P443"
+              snaktype string "value"
             qualifiers
-              P5237: []
+              P5237 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q7976"
-                      numeric-id: 7976
-                  hash: "6c54ff643a290ae5f9b384b3d255bf3708481de3"
-                  property: "P5237"
-                  snaktype: "value"
-            qualifiers-order: ("P5237")
-            rank: "normal"
-            type: "statement"
-      grammaticalFeatures: ("Q110786")
+                      entity-type string "item"
+                      id string "Q7976"
+                      numeric-id 7976
+                  hash string "6c54ff643a290ae5f9b384b3d255bf3708481de3"
+                  property string "P5237"
+                  snaktype string "value"
+            qualifiers-order ("P5237")
+            rank string "normal"
+            type string "statement"
+      grammaticalFeatures ("Q110786")
+      id string "L3744-F1"
       representations
         en
-          language: "en"
-          value: "relationship"
-    L3744-F2
-      claims: {}
-      grammaticalFeatures: ("Q146786")
+          language string "en"
+          value string "relationship"
+    at-0001
+      claims
+      grammaticalFeatures ("Q146786")
+      id string "L3744-F2"
       representations
         en
-          language: "en"
-          value: "relationships"
-  id: "L3744"
-  language: "Q1860"
-  lastrevid: 2440198419
+          language string "en"
+          value string "relationships"
+  id string "L3744"
+  language string "Q1860"
+  lastrevid 2440198419
   lemmas
     en
-      language: "en"
-      value: "relationship"
-  lexicalCategory: "Q1084"
-  modified: "2025-12-09T19:19:11Z"
-  ns: 146
-  pageid: 55188383
-  senses: []
-    L3744-S1
+      language string "en"
+      value string "relationship"
+  lexicalCategory string "Q1084"
+  modified string "2025-12-09T19:19:11Z"
+  ns 146
+  pageid 55188383
+  senses (at-0000)
+    at-0000
       claims
-        P2888: []
-          L3744-S1$51B64DAA-93AB-4C2D-9DAD-8274497D6F58
+        P2888 (at-0000 at-0001)
+          at-0000
+            id string "L3744-S1$51B64DAA-93AB-4C2D-9DAD-8274497D6F58"
             mainsnak
-              datatype: "url"
+              datatype string "url"
               datavalue
-                type: "string"
-                value: "http://premon.fbk.eu/resource/pb31-relate.01"
-              hash: "591d2d1218d9276be662c4adbedcc4300281403e"
-              property: "P2888"
-              snaktype: "value"
-            rank: "normal"
-            type: "statement"
-          L3744-S1$AE321440-A230-47D8-A880-571586DD9378
+                type string "string"
+                value string "http://premon.fbk.eu/resource/pb31-relate.01"
+              hash string "591d2d1218d9276be662c4adbedcc4300281403e"
+              property string "P2888"
+              snaktype string "value"
+            rank string "normal"
+            type string "statement"
+          at-0001
+            id string "L3744-S1$AE321440-A230-47D8-A880-571586DD9378"
             mainsnak
-              datatype: "url"
+              datatype string "url"
               datavalue
-                type: "string"
-                value: "https://w3id.org/framester/data/propbank-3.4.0/RoleSet/relate-01"
-              hash: "001ef8413c608a0e11239674ec7df4cae8c4d0a7"
-              property: "P2888"
-              snaktype: "value"
-            rank: "normal"
-            type: "statement"
-        P5137: []
-          L3744-S1$4df1b240-468b-1f7e-2b64-2cb1e7cf23f6
+                type string "string"
+                value string "https://w3id.org/framester/data/propbank-3.4.0/RoleSet/relate-01"
+              hash string "001ef8413c608a0e11239674ec7df4cae8c4d0a7"
+              property string "P2888"
+              snaktype string "value"
+            rank string "normal"
+            type string "statement"
+        P5137 (at-0000 at-0001)
+          at-0000
+            id string "L3744-S1$4df1b240-468b-1f7e-2b64-2cb1e7cf23f6"
             mainsnak
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q230629"
-                  numeric-id: 230629
-              hash: "f73a68b52f8c2552eb6b109082133a0d08bf5c86"
-              property: "P5137"
-              snaktype: "value"
-            rank: "normal"
-            type: "statement"
-          L3744-S1$8718EE16-030E-4B63-A0BC-1F33756DE5B8
+                  entity-type string "item"
+                  id string "Q230629"
+                  numeric-id 230629
+              hash string "f73a68b52f8c2552eb6b109082133a0d08bf5c86"
+              property string "P5137"
+              snaktype string "value"
+            rank string "normal"
+            type string "statement"
+          at-0001
+            id string "L3744-S1$8718EE16-030E-4B63-A0BC-1F33756DE5B8"
             mainsnak
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q930933"
-                  numeric-id: 930933
-              hash: "bf85d990bf3cfdd2060bc76ee55102ab2e40faaf"
-              property: "P5137"
-              snaktype: "value"
-            rank: "normal"
-            type: "statement"
+                  entity-type string "item"
+                  id string "Q930933"
+                  numeric-id 930933
+              hash string "bf85d990bf3cfdd2060bc76ee55102ab2e40faaf"
+              property string "P5137"
+              snaktype string "value"
+            rank string "normal"
+            type string "statement"
       glosses
         en
-          language: "en"
-          value: "connection or association; condition of being related"
-  title: "Lexeme:L3744"
-  type: "lexeme"
+          language string "en"
+          value string "connection or association; condition of being related"
+      id string "L3744-S1"
+  title string "Lexeme:L3744"
+  type string "lexeme"

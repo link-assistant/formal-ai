@@ -1,19 +1,20 @@
 //! Lossless JSON-to-LiNo cache encoding.
 //!
 //! The cache format maps JSON object keys to native Links Notation ids and keeps
-//! raw source strings as quoted scalar values. Arrays and empty containers use
-//! compact punctuation markers only where the shape would otherwise be
-//! ambiguous.
+//! raw source strings as quoted scalar values. Arrays use parenthesized links:
+//! scalar arrays inline their values, while structured arrays list stable item
+//! ids with indented item bodies.
 
 use serde_json::{Map, Number, Value};
 
 use crate::seed::parser::{parse_lino, LinoNode};
 
-const ARRAY_MARKER: &str = "[]";
-const EMPTY_OBJECT_MARKER: &str = "{}";
+const LEGACY_ARRAY_MARKER: &str = "[]";
+const LEGACY_EMPTY_OBJECT_MARKER: &str = "{}";
 const LEGACY_ROOT_OBJECT: &str = "json-object";
 const LEGACY_ROOT_ARRAY: &str = "json-array";
 const ARRAY_ITEM_PREFIX: &str = "at-";
+const STRING_MARKER: &str = "string";
 
 #[must_use]
 pub fn json_to_lino(value: &Value) -> String {
@@ -31,7 +32,7 @@ pub fn json_cache_file(root_id: &str, value: &Value) -> String {
     if let Some(entity) = single_entity(value, root_id) {
         write_entity_cache_file(&mut out, root_id, entity);
     } else {
-        write_line(&mut out, 0, root_id, None, Some("cached json source"));
+        write_line(&mut out, 0, root_id, None, None);
         write_named_value(&mut out, 2, "value", value);
     }
     out
@@ -58,7 +59,7 @@ fn single_entity<'a>(value: &'a Value, root_id: &str) -> Option<&'a Map<String, 
 }
 
 fn write_entity_cache_file(out: &mut String, root_id: &str, entity: &Map<String, Value>) {
-    write_line(out, 0, root_id, None, Some("cached wikidata source"));
+    write_line(out, 0, root_id, None, None);
     write_object_entries(out, 2, entity, None);
 }
 
@@ -79,7 +80,7 @@ fn write_object_entries(
 fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value) {
     match value {
         Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
-            let token = scalar_token(value);
+            let token = scalar_value_token(value);
             write_line(out, indent, name, Some(&token), None);
         }
         Value::Array(values) if values.iter().all(is_scalar) => {
@@ -87,13 +88,14 @@ fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value)
             write_line(out, indent, name, Some(&token), None);
         }
         Value::Array(values) => {
-            write_line(out, indent, name, Some(ARRAY_MARKER), None);
+            let token = array_item_link_token(values.len());
+            write_line(out, indent, name, Some(&token), None);
             for (index, value) in values.iter().enumerate() {
                 write_array_item(out, indent + 2, index, value);
             }
         }
         Value::Object(object) if object.is_empty() => {
-            write_line(out, indent, name, Some(EMPTY_OBJECT_MARKER), None);
+            write_line(out, indent, name, None, None);
         }
         Value::Object(object) => {
             write_line(out, indent, name, None, None);
@@ -103,29 +105,17 @@ fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value)
 }
 
 fn write_array_item(out: &mut String, indent: usize, index: usize, value: &Value) {
+    let name = format!("{ARRAY_ITEM_PREFIX}{index:04}");
     if let Value::Object(object) = value {
-        let (name, skip_key) = array_object_name(index, object);
-        if object.is_empty() || object.len() == usize::from(skip_key.is_some()) {
-            write_line(out, indent, &name, Some(EMPTY_OBJECT_MARKER), None);
+        if object.is_empty() {
+            write_line(out, indent, &name, None, None);
         } else {
             write_line(out, indent, &name, None, None);
-            write_object_entries(out, indent + 2, object, skip_key);
+            write_object_entries(out, indent + 2, object, None);
         }
     } else {
-        let name = format!("{ARRAY_ITEM_PREFIX}{index:04}");
         write_named_value(out, indent, &name, value);
     }
-}
-
-fn array_object_name(index: usize, object: &Map<String, Value>) -> (String, Option<&'static str>) {
-    object
-        .get("id")
-        .and_then(Value::as_str)
-        .filter(|id| is_lino_reference(id))
-        .map_or_else(
-            || (format!("{ARRAY_ITEM_PREFIX}{index:04}"), None),
-            |id| (id.to_string(), Some("id")),
-        )
 }
 
 fn write_line(
@@ -138,7 +128,7 @@ fn write_line(
     out.extend(std::iter::repeat(' ').take(indent));
     out.push_str(name);
     if let Some(value) = value {
-        out.push_str(": ");
+        out.push(' ');
         out.push_str(value);
     }
     if let Some(comment) = comment {
@@ -155,7 +145,17 @@ const fn is_scalar(value: &Value) -> bool {
     )
 }
 
-fn scalar_token(value: &Value) -> String {
+fn scalar_value_token(value: &Value) -> String {
+    match value {
+        Value::Null => String::from("null"),
+        Value::Bool(value) => value.to_string(),
+        Value::Number(value) => value.to_string(),
+        Value::String(value) => format!("{STRING_MARKER} {}", quoted_string(value)),
+        Value::Array(_) | Value::Object(_) => String::new(),
+    }
+}
+
+fn scalar_array_item_token(value: &Value) -> String {
     match value {
         Value::Null => String::from("null"),
         Value::Bool(value) => value.to_string(),
@@ -171,7 +171,19 @@ fn scalar_array_token(values: &[Value]) -> String {
         if index > 0 {
             out.push(' ');
         }
-        out.push_str(&scalar_token(value));
+        out.push_str(&scalar_array_item_token(value));
+    }
+    out.push(')');
+    out
+}
+
+fn array_item_link_token(len: usize) -> String {
+    let mut out = String::from("(");
+    for index in 0..len {
+        if index > 0 {
+            out.push(' ');
+        }
+        out.push_str(&format!("{ARRAY_ITEM_PREFIX}{index:04}"));
     }
     out.push(')');
     out
@@ -290,8 +302,9 @@ fn is_entity_cache_root(node: &LinoNode) -> bool {
 
 fn parse_compact_value(node: &LinoNode) -> Result<Value, String> {
     match node.id.trim() {
-        EMPTY_OBJECT_MARKER if node.children.is_empty() => Ok(Value::Object(Map::new())),
-        ARRAY_MARKER => parse_compact_array(node),
+        LEGACY_EMPTY_OBJECT_MARKER if node.children.is_empty() => Ok(Value::Object(Map::new())),
+        LEGACY_ARRAY_MARKER => parse_compact_array(node),
+        id if is_array_item_link(id, &node.children) => parse_compact_array(node),
         id if is_parenthesized(id) => parse_scalar_array(id),
         "" if !node.children.is_empty() => {
             Ok(Value::Object(parse_object_children(&node.children)?))
@@ -392,6 +405,13 @@ fn split_scalar_tokens(raw: &str) -> Result<Vec<String>, String> {
 
 fn parse_scalar_token(raw: &str) -> Result<Value, String> {
     let raw = raw.trim();
+    if let Some(string) = raw.strip_prefix(STRING_MARKER) {
+        let string = string.trim_start();
+        return parse_scalar_token(string).and_then(|value| match value {
+            Value::String(_) => Ok(value),
+            other => Err(format!("invalid string scalar `{other:?}`")),
+        });
+    }
     if raw.starts_with('"') {
         let value: String = serde_json::from_str(raw)
             .map_err(|error| format!("invalid quoted string `{raw}`: {error}"))?;
@@ -448,11 +468,23 @@ fn is_parenthesized(raw: &str) -> bool {
     raw.starts_with('(') && raw.ends_with(')')
 }
 
-fn is_lino_reference(value: &str) -> bool {
-    !value.is_empty()
-        && value
-            .chars()
-            .all(|character| !character.is_whitespace() && !matches!(character, ':' | '"' | '#'))
+fn is_array_item_link(raw: &str, children: &[LinoNode]) -> bool {
+    let Some(body) = raw
+        .trim()
+        .strip_prefix('(')
+        .and_then(|value| value.strip_suffix(')'))
+    else {
+        return false;
+    };
+    if children.is_empty() {
+        return false;
+    }
+    let ids: Vec<&str> = body.split_whitespace().collect();
+    ids.len() == children.len()
+        && ids
+            .iter()
+            .zip(children)
+            .all(|(id, child)| child.name.starts_with(ARRAY_ITEM_PREFIX) && *id == child.name)
 }
 
 fn decode_text(value: &str) -> Result<String, String> {

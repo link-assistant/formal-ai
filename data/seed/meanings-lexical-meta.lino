@@ -12,7 +12,8 @@ meanings
     facet connotation # facet
       part_of_speech: # concept part_of_speech
     lexeme en # language
-      surface unformalized-raw 108 101 120 105 99 97 108 32 102 111 114 109 # unresolved-surface
+      surface seed-surface-d827c02ccc88
+        codepoints 108 101 120 105 99 97 108 32 102 111 114 109
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -20,7 +21,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme ru # language
-      surface unformalized-raw 1083 1077 1082 1089 1080 1095 1077 1089 1082 1072 1103 32 1092 1086 1088 1084 1072 # unresolved-surface
+      surface seed-surface-b6840fd4a372
+        codepoints 1083 1077 1082 1089 1080 1095 1077 1089 1082 1072 1103 32 1092 1086 1088 1084 1072
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -28,7 +30,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme hi # language
-      surface unformalized-raw 2358 2366 2348 2381 2342 2367 2325 32 2352 2370 2346 # unresolved-surface
+      surface seed-surface-aa35908bcfe0
+        codepoints 2358 2366 2348 2381 2342 2367 2325 32 2352 2370 2346
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -36,7 +39,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme zh # language
-      surface unformalized-raw 35789 24418 # unresolved-surface
+      surface seed-surface-dd3ee21f2dfd
+        codepoints 35789 24418
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -56,7 +60,8 @@ meanings
     facet connotation # facet
       lexical_sense: # concept lexical_sense
     lexeme en # language
-      surface unformalized-raw 119 111 114 100 32 115 117 114 102 97 99 101 # unresolved-surface
+      surface seed-surface-d135969c0f90
+        codepoints 119 111 114 100 32 115 117 114 102 97 99 101
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -64,7 +69,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme ru # language
-      surface unformalized-raw 1089 1083 1086 1074 1077 1089 1085 1072 1103 32 1092 1086 1088 1084 1072 # unresolved-surface
+      surface seed-surface-9edd525c19cf
+        codepoints 1089 1083 1086 1074 1077 1089 1085 1072 1103 32 1092 1086 1088 1084 1072
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -72,7 +78,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme hi # language
-      surface unformalized-raw 2358 2348 2381 2342 32 2360 2340 2361 # unresolved-surface
+      surface seed-surface-6bb273d81077
+        codepoints 2358 2348 2381 2342 32 2360 2340 2361
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -80,7 +87,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme zh # language
-      surface unformalized-raw 35789 38754 # unresolved-surface
+      surface seed-surface-beb73b25e558
+        codepoints 35789 38754
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -100,7 +108,8 @@ meanings
     facet connotation # facet
       lexical_form: # concept lexical_form
     lexeme en # language
-      surface unformalized-raw 108 101 120 105 99 97 108 32 115 101 110 115 101 # unresolved-surface
+      surface seed-surface-8f80a4c534ce
+        codepoints 108 101 120 105 99 97 108 32 115 101 110 115 101
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -108,7 +117,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme ru # language
-      surface unformalized-raw 1083 1077 1082 1089 1080 1095 1077 1089 1082 1086 1077 32 1079 1085 1072 1095 1077 1085 1080 1077 # unresolved-surface
+      surface seed-surface-098bf701cdbb
+        codepoints 1083 1077 1082 1089 1080 1095 1077 1089 1082 1086 1077 32 1079 1085 1072 1095 1077 1085 1080 1077
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -116,7 +126,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme hi # language
-      surface unformalized-raw 2358 2366 2348 2381 2342 2367 2325 32 2309 2352 2381 2341 # unresolved-surface
+      surface seed-surface-7e3f3481d27b
+        codepoints 2358 2366 2348 2381 2342 2367 2325 32 2309 2352 2381 2341
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -124,7 +135,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme zh # language
-      surface unformalized-raw 35789 20041 # unresolved-surface
+      surface seed-surface-e5379fe74b1e
+        codepoints 35789 20041
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -145,7 +157,8 @@ meanings
     facet connotation # facet
       lexical_form: # concept lexical_form
     lexeme en # language
-      surface unformalized-raw 112 97 114 116 32 111 102 32 115 112 101 101 99 104 # unresolved-surface
+      surface seed-surface-2db016e8121a
+        codepoints 112 97 114 116 32 111 102 32 115 112 101 101 99 104
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -153,7 +166,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme ru # language
-      surface unformalized-raw 1095 1072 1089 1090 1100 32 1088 1077 1095 1080 # unresolved-surface
+      surface seed-surface-9e7979a82cf2
+        codepoints 1095 1072 1089 1090 1100 32 1088 1077 1095 1080
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -161,7 +175,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme hi # language
-      surface unformalized-raw 2358 2348 2381 2342 32 2349 2375 2342 # unresolved-surface
+      surface seed-surface-9629c809cc79
+        codepoints 2358 2348 2381 2342 32 2349 2375 2342
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -169,7 +184,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme zh # language
-      surface unformalized-raw 35789 31867 # unresolved-surface
+      surface seed-surface-97ac68803f2b
+        codepoints 35789 31867
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -188,7 +204,8 @@ meanings
     facet connotation # facet
       lexical_form: # concept lexical_form
     lexeme en # language
-      surface unformalized-raw 110 111 117 110 # unresolved-surface
+      surface seed-surface-a17d8bac18ca
+        codepoints 110 111 117 110
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -196,7 +213,8 @@ meanings
         facet part_of_speech # facet
           noun: # concept noun
     lexeme ru # language
-      surface unformalized-raw 1089 1091 1097 1077 1089 1090 1074 1080 1090 1077 1083 1100 1085 1086 1077 # unresolved-surface
+      surface seed-surface-1b9b2dd57e58
+        codepoints 1089 1091 1097 1077 1089 1090 1074 1080 1090 1077 1083 1100 1085 1086 1077
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -204,7 +222,8 @@ meanings
         facet part_of_speech # facet
           noun: # concept noun
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2332 2381 2334 2366 # unresolved-surface
+      surface seed-surface-5efe47b4a2e5
+        codepoints 2360 2306 2332 2381 2334 2366
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -212,7 +231,8 @@ meanings
         facet part_of_speech # facet
           noun: # concept noun
     lexeme zh # language
-      surface unformalized-raw 21517 35789 # unresolved-surface
+      surface seed-surface-bfeb079707b8
+        codepoints 21517 35789
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -232,7 +252,8 @@ meanings
     facet connotation # facet
       noun: # concept noun
     lexeme en # language
-      surface unformalized-raw 110 111 117 110 32 112 104 114 97 115 101 # unresolved-surface
+      surface seed-surface-2892609ff7f7
+        codepoints 110 111 117 110 32 112 104 114 97 115 101
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -240,7 +261,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme ru # language
-      surface unformalized-raw 1080 1084 1077 1085 1085 1072 1103 32 1075 1088 1091 1087 1087 1072 # unresolved-surface
+      surface seed-surface-ae7e09d7a09d
+        codepoints 1080 1084 1077 1085 1085 1072 1103 32 1075 1088 1091 1087 1087 1072
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -248,7 +270,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme hi # language
-      surface unformalized-raw 2360 2306 2332 2381 2334 2366 32 2346 2342 # unresolved-surface
+      surface seed-surface-ae72c48720cd
+        codepoints 2360 2306 2332 2381 2334 2366 32 2346 2342
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet
@@ -256,7 +279,8 @@ meanings
         facet part_of_speech # facet
           noun_phrase: # concept noun_phrase
     lexeme zh # language
-      surface unformalized-raw 21517 35789 30701 35821 # unresolved-surface
+      surface seed-surface-38cf91f43c74
+        codepoints 21517 35789 30701 35821
         facet notation # facet
           word_surface: # concept word_surface
         facet denotation # facet

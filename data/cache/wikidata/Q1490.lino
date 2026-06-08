@@ -1,0 +1,107 @@
+Q1490
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014)
+      at-0000
+        language string "en"
+        value string "Tōkyō"
+      at-0001
+        language string "en"
+        value string "Tôkyô"
+      at-0002
+        language string "en"
+        value string "Tokyo-to"
+      at-0003
+        language string "en"
+        value string "Tokyo Metropolitan prefecture"
+      at-0004
+        language string "en"
+        value string "Tōkyō-to"
+      at-0005
+        language string "en"
+        value string "Tôkyô-to"
+      at-0006
+        language string "en"
+        value string "Tokyo Metropolis"
+      at-0007
+        language string "en"
+        value string "Tokio"
+      at-0008
+        language string "en"
+        value string "Tokyo Prefecture"
+      at-0009
+        language string "en"
+        value string "Tokyo, Japan"
+      at-0010
+        language string "en"
+        value string "Tokei"
+      at-0011
+        language string "en"
+        value string "Tokyo (Japan)"
+      at-0012
+        language string "en"
+        value string "Edo"
+      at-0013
+        language string "en"
+        value string "Jedo"
+      at-0014
+        language string "en"
+        value string "Yedo"
+    ru (at-0000 at-0001 at-0002)
+      at-0000
+        language string "ru"
+        value string "Токио-то"
+      at-0001
+        language string "ru"
+        value string "Токё"
+      at-0002
+        language string "ru"
+        value string "Токё-то"
+    zh (at-0000 at-0001 at-0002 at-0003 at-0004)
+      at-0000
+        language string "zh"
+        value string "东京都"
+      at-0001
+        language string "zh"
+        value string "东京"
+      at-0002
+        language string "zh"
+        value string "東京"
+      at-0003
+        language string "zh"
+        value string "日本东京"
+      at-0004
+        language string "zh"
+        value string "日本東京"
+  descriptions
+    en
+      language string "en"
+      value string "capital and largest city of Japan"
+    hi
+      language string "hi"
+      value string "जापान की राजधानी और सबसे बड़ा शहर"
+    ru
+      language string "ru"
+      value string "столица Японии, одна из 47 префектур Японии, самый населённый город в мире"
+    zh
+      language string "zh"
+      value string "日本一級行政區及中央政府所在地"
+  id string "Q1490"
+  labels
+    en
+      language string "en"
+      value string "Tokyo"
+    hi
+      language string "hi"
+      value string "टोक्यो"
+    ru
+      language string "ru"
+      value string "Токио"
+    zh
+      language string "zh"
+      value string "東京都"
+  lastrevid 2502399921
+  modified string "2026-06-06T01:35:24Z"
+  ns 0
+  pageid 1941
+  title string "Q1490"
+  type string "item"

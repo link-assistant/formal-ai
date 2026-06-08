@@ -1,54 +1,54 @@
-Q3314483 # cached json source
+Q3314483
   value
     entities
       Q3314483
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002)
             at-0000
-              language: "en"
-              value: "fruit group"
+              language string "en"
+              value string "fruit group"
             at-0001
-              language: "en"
-              value: "fruit food group"
+              language string "en"
+              value string "fruit food group"
             at-0002
-              language: "en"
-              value: "edible fruit"
-          ru: []
+              language string "en"
+              value string "edible fruit"
+          ru (at-0000 at-0001 at-0002)
             at-0000
-              language: "ru"
-              value: "фрукты"
+              language string "ru"
+              value string "фрукты"
             at-0001
-              language: "ru"
-              value: "в сыром виде"
+              language string "ru"
+              value string "в сыром виде"
             at-0002
-              language: "ru"
-              value: "группа фруктов"
+              language string "ru"
+              value string "группа фруктов"
         descriptions
           en
-            language: "en"
-            value: "typically sweet and/or sour, edible part/s of a plant that resembles seed-bearing fruit"
+            language string "en"
+            value string "typically sweet and/or sour, edible part/s of a plant that resembles seed-bearing fruit"
           hi
-            language: "hi"
-            value: "निषेचित, परिवर्तित एवं परिपक्व अंडाशय"
+            language string "hi"
+            value string "निषेचित, परिवर्तित एवं परिपक्व अंडाशय"
           ru
-            language: "ru"
-            value: "плод, съедобный в сыром виде, обычно сладкий или кислый"
+            language string "ru"
+            value string "плод, съедобный в сыром виде, обычно сладкий или кислый"
           zh
-            language: "zh"
-            value: "可生食的植物果實（生果）"
-        id: "Q3314483"
+            language string "zh"
+            value string "可生食的植物果實（生果）"
+        id string "Q3314483"
         labels
           en
-            language: "en"
-            value: "fruit"
+            language string "en"
+            value string "fruit"
           hi
-            language: "hi"
-            value: "फल"
+            language string "hi"
+            value string "फल"
           ru
-            language: "ru"
-            value: "фрукт"
+            language string "ru"
+            value string "фрукт"
           zh
-            language: "zh"
-            value: "水果"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "水果"
+        type string "item"
+    success 1

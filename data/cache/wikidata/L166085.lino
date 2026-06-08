@@ -1,765 +1,800 @@
-L166085 # cached wikidata source
+L166085
   claims
-    P1552: []
-      L166085$F3FC70DF-1255-420E-9C36-096FFED31F1F
+    P1552 (at-0000)
+      at-0000
+        id string "L166085$F3FC70DF-1255-420E-9C36-096FFED31F1F"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q51927539"
-              numeric-id: 51927539
-          hash: "4a8a9c18866f69b289d57a6e908b0e4ca7270049"
-          property: "P1552"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              entity-type string "item"
+              id string "Q51927539"
+              numeric-id 51927539
+          hash string "4a8a9c18866f69b289d57a6e908b0e4ca7270049"
+          property string "P1552"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+            hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q22116890"
-                      numeric-id: 22116890
-                  hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-    P5185: []
-      L166085$77C51EE7-96EB-4147-9251-AE9736B8D347
+                      entity-type string "item"
+                      id string "Q22116890"
+                      numeric-id 22116890
+                  hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+    P5185 (at-0000)
+      at-0000
+        id string "L166085$77C51EE7-96EB-4147-9251-AE9736B8D347"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q1775415"
-              numeric-id: 1775415
-          hash: "b3eeda16b64097ae6e838751995bf91451c1e5cc"
-          property: "P5185"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              entity-type string "item"
+              id string "Q1775415"
+              numeric-id 1775415
+          hash string "b3eeda16b64097ae6e838751995bf91451c1e5cc"
+          property string "P5185"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+            hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q22116890"
-                      numeric-id: 22116890
-                  hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-    P5187: []
-      L166085$1DD9E608-1107-4E92-8CC7-086A87122417
+                      entity-type string "item"
+                      id string "Q22116890"
+                      numeric-id 22116890
+                  hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+    P5187 (at-0000)
+      at-0000
+        id string "L166085$1DD9E608-1107-4E92-8CC7-086A87122417"
         mainsnak
-          datatype: "monolingualtext"
+          datatype string "monolingualtext"
           datavalue
-            type: "monolingualtext"
+            type string "monolingualtext"
             value
-              language: "ru"
-              text: "ссылк"
-          hash: "547873eb6459ab5eac635a02ea1c5279dd1620e0"
-          property: "P5187"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              language string "ru"
+              text string "ссылк"
+          hash string "547873eb6459ab5eac635a02ea1c5279dd1620e0"
+          property string "P5187"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+            hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q22116890"
-                      numeric-id: 22116890
-                  hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-    P5402: []
-      L166085$72C1A9E4-32DC-41B9-B79E-2A92F6D9F5C8
+                      entity-type string "item"
+                      id string "Q22116890"
+                      numeric-id 22116890
+                  hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+    P5402 (at-0000)
+      at-0000
+        id string "L166085$72C1A9E4-32DC-41B9-B79E-2A92F6D9F5C8"
         mainsnak
-          datatype: "wikibase-lexeme"
+          datatype string "wikibase-lexeme"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "lexeme"
-              id: "L166084"
-              numeric-id: 166084
-          hash: "e59871c77ba084924c60dcaa00e8ea26c8506910"
-          property: "P5402"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P5911: []
-      L166085$D9DFA2C9-A74C-48B8-9704-A51718119885
+              entity-type string "lexeme"
+              id string "L166084"
+              numeric-id 166084
+          hash string "e59871c77ba084924c60dcaa00e8ea26c8506910"
+          property string "P5402"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P5911 (at-0000 at-0001)
+      at-0000
+        id string "L166085$D9DFA2C9-A74C-48B8-9704-A51718119885"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q66327367"
-              numeric-id: 66327367
-          hash: "b67731e1f1a9bed2367552dbd355c27dbf36808d"
-          property: "P5911"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              entity-type string "item"
+              id string "Q66327367"
+              numeric-id 66327367
+          hash string "b67731e1f1a9bed2367552dbd355c27dbf36808d"
+          property string "P5911"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+            hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q22116890"
-                      numeric-id: 22116890
-                  hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-      L166085$220D88AC-7069-45F6-9042-5B0DF6A33342
+                      entity-type string "item"
+                      id string "Q22116890"
+                      numeric-id 22116890
+                  hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+      at-0001
+        id string "L166085$220D88AC-7069-45F6-9042-5B0DF6A33342"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q66716624"
-              numeric-id: 66716624
-          hash: "da9e1c32fa8bcf5fbb8e3b23620dc42c6112a813"
-          property: "P5911"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              entity-type string "item"
+              id string "Q66716624"
+              numeric-id 66716624
+          hash string "da9e1c32fa8bcf5fbb8e3b23620dc42c6112a813"
+          property string "P5911"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+            hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q22116890"
-                      numeric-id: 22116890
-                  hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-  forms: []
-    L166085-F1
+                      entity-type string "item"
+                      id string "Q22116890"
+                      numeric-id 22116890
+                  hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+  forms (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012)
+    at-0000
       claims
-        P5279: []
-          L166085-F1$27BF9DEA-CA9E-4BCE-9897-18501B46B86D
+        P5279 (at-0000)
+          at-0000
+            id string "L166085-F1$27BF9DEA-CA9E-4BCE-9897-18501B46B86D"
             mainsnak
-              datatype: "string"
+              datatype string "string"
               datavalue
-                type: "string"
-                value: "ссыл‧ка"
-              hash: "bb66b9a10ca5d2d73e2eb217ecfc7b31b764f2b9"
-              property: "P5279"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                type string "string"
+                value string "ссыл‧ка"
+              hash string "bb66b9a10ca5d2d73e2eb217ecfc7b31b764f2b9"
+              property string "P5279"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-        P7243: []
-          L166085-F1$4386B7AE-F24A-4C1C-B100-73CE94E8FAF3
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F1$4386B7AE-F24A-4C1C-B100-73CE94E8FAF3"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лка"
-              hash: "8acdcb58a142f427355a496c29e652eeb228d3eb"
-              property: "P7243"
-              snaktype: "value"
+                  language string "ru"
+                  text string "ссы́лка"
+              hash string "8acdcb58a142f427355a496c29e652eeb228d3eb"
+              property string "P7243"
+              snaktype string "value"
             qualifiers
-              P443: []
+              P443 (at-0000)
                 at-0000
-                  datatype: "commonsMedia"
+                  datatype string "commonsMedia"
                   datavalue
-                    type: "string"
-                    value: "Ru-ссылка.ogg"
-                  hash: "3e88e96c064483294e04a185246d7ca1cef370dd"
-                  property: "P443"
-                  snaktype: "value"
-              P898: []
+                    type string "string"
+                    value string "Ru-ссылка.ogg"
+                  hash string "3e88e96c064483294e04a185246d7ca1cef370dd"
+                  property string "P443"
+                  snaktype string "value"
+              P898 (at-0000)
                 at-0000
-                  datatype: "string"
+                  datatype string "string"
                   datavalue
-                    type: "string"
-                    value: "ˈsːɨɫkə"
-                  hash: "88a28b018a7dd6760d93b590e7939dea5f008e61"
-                  property: "P898"
-                  snaktype: "value"
-            qualifiers-order: ("P443" "P898")
-            rank: "normal"
-            references: []
+                    type string "string"
+                    value string "ˈsːɨɫkə"
+                  hash string "88a28b018a7dd6760d93b590e7939dea5f008e61"
+                  property string "P898"
+                  snaktype string "value"
+            qualifiers-order ("P443" "P898")
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q131105")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q131105")
+      id string "L166085-F1"
       representations
         ru
-          language: "ru"
-          value: "ссылка"
-    L166085-F2
+          language string "ru"
+          value string "ссылка"
+    at-0001
       claims
-        P7243: []
-          L166085-F2$D38AEDF0-CD38-428A-8DA2-21934DAB3DE8
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F2$D38AEDF0-CD38-428A-8DA2-21934DAB3DE8"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лки"
-              hash: "b6928ccec380912f41723bf6e2336fd8cae85865"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лки"
+              hash string "b6928ccec380912f41723bf6e2336fd8cae85865"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q146233")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q146233")
+      id string "L166085-F2"
       representations
         ru
-          language: "ru"
-          value: "ссылки"
-    L166085-F3
+          language string "ru"
+          value string "ссылки"
+    at-0002
       claims
-        P7243: []
-          L166085-F3$CD0D6C91-8305-4F56-960D-C55D89B2B6AE
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F3$CD0D6C91-8305-4F56-960D-C55D89B2B6AE"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лке"
-              hash: "488a6d02c5b0e8f5fa0c14e4401f32e4e06d0d4c"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лке"
+              hash string "488a6d02c5b0e8f5fa0c14e4401f32e4e06d0d4c"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q145599")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q145599")
+      id string "L166085-F3"
       representations
         ru
-          language: "ru"
-          value: "ссылке"
-    L166085-F4
+          language string "ru"
+          value string "ссылке"
+    at-0003
       claims
-        P7243: []
-          L166085-F4$B0753B0D-F3F4-48D3-BC55-0F30EFE93918
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F4$B0753B0D-F3F4-48D3-BC55-0F30EFE93918"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лку"
-              hash: "5ca031cd4d47a61373b2a63783f241fd777a6730"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лку"
+              hash string "5ca031cd4d47a61373b2a63783f241fd777a6730"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q146078")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q146078")
+      id string "L166085-F4"
       representations
         ru
-          language: "ru"
-          value: "ссылку"
-    L166085-F5
+          language string "ru"
+          value string "ссылку"
+    at-0004
       claims
-        P7243: []
-          L166085-F5$2D25355B-35B7-41C0-BC44-1CCC1D7E0B4B
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F5$2D25355B-35B7-41C0-BC44-1CCC1D7E0B4B"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лкой"
-              hash: "67f0be9499615638c3d2b3293b4bd5c5b3cc4a42"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лкой"
+              hash string "67f0be9499615638c3d2b3293b4bd5c5b3cc4a42"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q192997")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q192997")
+      id string "L166085-F5"
       representations
         ru
-          language: "ru"
-          value: "ссылкой"
-    L166085-F6
+          language string "ru"
+          value string "ссылкой"
+    at-0005
       claims
-        P7243: []
-          L166085-F6$4107445F-64DD-42E5-87B5-533AA1DEE83A
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F6$4107445F-64DD-42E5-87B5-533AA1DEE83A"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лкою"
-              hash: "08700630054937b9b9cf5be99b0ad1bbd42a17ee"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лкою"
+              hash string "08700630054937b9b9cf5be99b0ad1bbd42a17ee"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q192997")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q192997")
+      id string "L166085-F6"
       representations
         ru
-          language: "ru"
-          value: "ссылкою"
-    L166085-F7
+          language string "ru"
+          value string "ссылкою"
+    at-0006
       claims
-        P7243: []
-          L166085-F7$C7153CA4-4706-41F5-BC97-DF0337B6D902
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F7$C7153CA4-4706-41F5-BC97-DF0337B6D902"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лке"
-              hash: "488a6d02c5b0e8f5fa0c14e4401f32e4e06d0d4c"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лке"
+              hash string "488a6d02c5b0e8f5fa0c14e4401f32e4e06d0d4c"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q110786" "Q2114906")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q110786" "Q2114906")
+      id string "L166085-F7"
       representations
         ru
-          language: "ru"
-          value: "ссылке"
-    L166085-F8
+          language string "ru"
+          value string "ссылке"
+    at-0007
       claims
-        P7243: []
-          L166085-F8$2B198DFD-8F72-4F5C-B6C9-70270E195727
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F8$2B198DFD-8F72-4F5C-B6C9-70270E195727"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лки"
-              hash: "b6928ccec380912f41723bf6e2336fd8cae85865"
-              property: "P7243"
-              snaktype: "value"
+                  language string "ru"
+                  text string "ссы́лки"
+              hash string "b6928ccec380912f41723bf6e2336fd8cae85865"
+              property string "P7243"
+              snaktype string "value"
             qualifiers
-              P898: []
+              P898 (at-0000)
                 at-0000
-                  datatype: "string"
+                  datatype string "string"
                   datavalue
-                    type: "string"
-                    value: "ˈsːɨɫkʲɪ"
-                  hash: "52820b1c420b5ee5166939eff845848289fe9a9c"
-                  property: "P898"
-                  snaktype: "value"
-            qualifiers-order: ("P898")
-            rank: "normal"
-            references: []
+                    type string "string"
+                    value string "ˈsːɨɫkʲɪ"
+                  hash string "52820b1c420b5ee5166939eff845848289fe9a9c"
+                  property string "P898"
+                  snaktype string "value"
+            qualifiers-order ("P898")
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q131105" "Q146786")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q131105" "Q146786")
+      id string "L166085-F8"
       representations
         ru
-          language: "ru"
-          value: "ссылки"
-    L166085-F9
+          language string "ru"
+          value string "ссылки"
+    at-0008
       claims
-        P7243: []
-          L166085-F9$0F9E544C-C08F-4978-8B87-35A643779D71
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F9$0F9E544C-C08F-4978-8B87-35A643779D71"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лок"
-              hash: "1b1f0a91b388e8c935f88b00ae26784b48dcacd1"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лок"
+              hash string "1b1f0a91b388e8c935f88b00ae26784b48dcacd1"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q146233" "Q146786")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q146233" "Q146786")
+      id string "L166085-F9"
       representations
         ru
-          language: "ru"
-          value: "ссылок"
-    L166085-F10
+          language string "ru"
+          value string "ссылок"
+    at-0009
       claims
-        P7243: []
-          L166085-F10$49BC3598-54F7-4008-8230-F0DB9DBFD1E2
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F10$49BC3598-54F7-4008-8230-F0DB9DBFD1E2"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лкам"
-              hash: "9d1baadf1a2ba1bc3cbb01ae5040116766ced517"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лкам"
+              hash string "9d1baadf1a2ba1bc3cbb01ae5040116766ced517"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q145599" "Q146786")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q145599" "Q146786")
+      id string "L166085-F10"
       representations
         ru
-          language: "ru"
-          value: "ссылкам"
-    L166085-F11
+          language string "ru"
+          value string "ссылкам"
+    at-0010
       claims
-        P7243: []
-          L166085-F11$2369B834-DA73-4500-9891-919B8003447E
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F11$2369B834-DA73-4500-9891-919B8003447E"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лки"
-              hash: "b6928ccec380912f41723bf6e2336fd8cae85865"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лки"
+              hash string "b6928ccec380912f41723bf6e2336fd8cae85865"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q146078" "Q146786")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q146078" "Q146786")
+      id string "L166085-F11"
       representations
         ru
-          language: "ru"
-          value: "ссылки"
-    L166085-F12
+          language string "ru"
+          value string "ссылки"
+    at-0011
       claims
-        P7243: []
-          L166085-F12$CE5E21FD-C734-4729-84C4-759E568DB0BA
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F12$CE5E21FD-C734-4729-84C4-759E568DB0BA"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лками"
-              hash: "16b8fd1652ee80e9d8f87837aa1ec3b5dd85c94a"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лками"
+              hash string "16b8fd1652ee80e9d8f87837aa1ec3b5dd85c94a"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q146786" "Q192997")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q146786" "Q192997")
+      id string "L166085-F12"
       representations
         ru
-          language: "ru"
-          value: "ссылками"
-    L166085-F13
+          language string "ru"
+          value string "ссылками"
+    at-0012
       claims
-        P7243: []
-          L166085-F13$D58A733E-8B00-4A53-AB85-13E788422C05
+        P7243 (at-0000)
+          at-0000
+            id string "L166085-F13$D58A733E-8B00-4A53-AB85-13E788422C05"
             mainsnak
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "ru"
-                  text: "ссы́лках"
-              hash: "d0dd27e2332e20cd1d7a2576f49e4d9094f21354"
-              property: "P7243"
-              snaktype: "value"
-            rank: "normal"
-            references: []
+                  language string "ru"
+                  text string "ссы́лках"
+              hash string "d0dd27e2332e20cd1d7a2576f49e4d9094f21354"
+              property string "P7243"
+              snaktype string "value"
+            rank string "normal"
+            references (at-0000)
               at-0000
-                hash: "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
+                hash string "eec9dbd6f74260dc8f8c2ee1b0ecd8c64d973be5"
                 snaks
-                  P143: []
+                  P143 (at-0000)
                     at-0000
-                      datatype: "wikibase-item"
+                      datatype string "wikibase-item"
                       datavalue
-                        type: "wikibase-entityid"
+                        type string "wikibase-entityid"
                         value
-                          entity-type: "item"
-                          id: "Q22116890"
-                          numeric-id: 22116890
-                      hash: "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
-                      property: "P143"
-                      snaktype: "value"
-                snaks-order: ("P143")
-            type: "statement"
-      grammaticalFeatures: ("Q146786" "Q2114906")
+                          entity-type string "item"
+                          id string "Q22116890"
+                          numeric-id 22116890
+                      hash string "3229fb16bc3564064e40e98db7ff1d0bc7935f2f"
+                      property string "P143"
+                      snaktype string "value"
+                snaks-order ("P143")
+            type string "statement"
+      grammaticalFeatures ("Q146786" "Q2114906")
+      id string "L166085-F13"
       representations
         ru
-          language: "ru"
-          value: "ссылках"
-  id: "L166085"
-  language: "Q7737"
-  lastrevid: 1912069210
+          language string "ru"
+          value string "ссылках"
+  id string "L166085"
+  language string "Q7737"
+  lastrevid 1912069210
   lemmas
     ru
-      language: "ru"
-      value: "ссылка"
-  lexicalCategory: "Q1084"
-  modified: "2023-06-10T09:04:46Z"
-  ns: 146
-  pageid: 67274950
-  senses: []
-    L166085-S1
+      language string "ru"
+      value string "ссылка"
+  lexicalCategory string "Q1084"
+  modified string "2023-06-10T09:04:46Z"
+  ns 146
+  pageid 67274950
+  senses (at-0000)
+    at-0000
       claims
-        P5137: []
-          L166085-S1$7BCF15A8-8BC2-48EC-A1D4-4772B0DE6D44
+        P5137 (at-0000)
+          at-0000
+            id string "L166085-S1$7BCF15A8-8BC2-48EC-A1D4-4772B0DE6D44"
             mainsnak
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q1716571"
-                  numeric-id: 1716571
-              hash: "ddba66d4a513bc6ded316542b1a6083eb359eb2a"
-              property: "P5137"
-              snaktype: "value"
-            rank: "normal"
-            type: "statement"
+                  entity-type string "item"
+                  id string "Q1716571"
+                  numeric-id 1716571
+              hash string "ddba66d4a513bc6ded316542b1a6083eb359eb2a"
+              property string "P5137"
+              snaktype string "value"
+            rank string "normal"
+            type string "statement"
       glosses
         ru
-          language: "ru"
-          value: "вид уголовного наказания, состоящий в удалении осуждённого из места его постоянного или временного жительства с обязательным поселением в определённой местности"
-  title: "Lexeme:L166085"
-  type: "lexeme"
+          language string "ru"
+          value string "вид уголовного наказания, состоящий в удалении осуждённого из места его постоянного или временного жительства с обязательным поселением в определённой местности"
+      id string "L166085-S1"
+  title string "Lexeme:L166085"
+  type string "lexeme"

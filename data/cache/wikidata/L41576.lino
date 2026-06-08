@@ -1,97 +1,106 @@
-L41576 # cached wikidata source
+L41576
   claims
-    P12510: []
-      L41576$80F6630A-623A-4A21-953E-08014C5A88F8
+    P12510 (at-0000)
+      at-0000
+        id string "L41576$80F6630A-623A-4A21-953E-08014C5A88F8"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "4299660167"
-          hash: "1717c8c15d4bb1d81d28853e0137abb900900baa"
-          property: "P12510"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P5275: []
-      L41576$EA11B112-CEFE-417E-B393-588810917E84
+            type string "string"
+            value string "4299660167"
+          hash string "1717c8c15d4bb1d81d28853e0137abb900900baa"
+          property string "P12510"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P5275 (at-0000)
+      at-0000
+        id string "L41576$EA11B112-CEFE-417E-B393-588810917E84"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "160845"
-          hash: "90496d27eb3d0a2e1db950c4f8fb83b5154d9cd7"
-          property: "P5275"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P5402: []
-      L41576$F5C183B1-EE96-442D-8FD2-6EC87B182D40
+            type string "string"
+            value string "160845"
+          hash string "90496d27eb3d0a2e1db950c4f8fb83b5154d9cd7"
+          property string "P5275"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P5402 (at-0000)
+      at-0000
+        id string "L41576$F5C183B1-EE96-442D-8FD2-6EC87B182D40"
         mainsnak
-          datatype: "wikibase-lexeme"
+          datatype string "wikibase-lexeme"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "lexeme"
-              id: "L5785"
-              numeric-id: 5785
-          hash: "edcc7c409a32b84eaae4ce2821600047b5170df7"
-          property: "P5402"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-  forms: []
-    L41576-F1
-      claims: {}
-      grammaticalFeatures: ("Q3910936")
+              entity-type string "lexeme"
+              id string "L5785"
+              numeric-id 5785
+          hash string "edcc7c409a32b84eaae4ce2821600047b5170df7"
+          property string "P5402"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+  forms (at-0000 at-0001 at-0002 at-0003 at-0004)
+    at-0000
+      claims
+      grammaticalFeatures ("Q3910936")
+      id string "L41576-F1"
       representations
         en
-          language: "en"
-          value: "reference"
-    L41576-F2
-      claims: {}
-      grammaticalFeatures: ("Q110786" "Q3910936" "Q51929074")
+          language string "en"
+          value string "reference"
+    at-0001
+      claims
+      grammaticalFeatures ("Q110786" "Q3910936" "Q51929074")
+      id string "L41576-F2"
       representations
         en
-          language: "en"
-          value: "references"
-    L41576-F3
-      claims: {}
-      grammaticalFeatures: ("Q1392475")
+          language string "en"
+          value string "references"
+    at-0002
+      claims
+      grammaticalFeatures ("Q1392475")
+      id string "L41576-F3"
       representations
         en
-          language: "en"
-          value: "referenced"
-    L41576-F4
-      claims: {}
-      grammaticalFeatures: ("Q10345583")
+          language string "en"
+          value string "referenced"
+    at-0003
+      claims
+      grammaticalFeatures ("Q10345583")
+      id string "L41576-F4"
       representations
         en
-          language: "en"
-          value: "referencing"
-    L41576-F5
-      claims: {}
-      grammaticalFeatures: ("Q1230649")
+          language string "en"
+          value string "referencing"
+    at-0004
+      claims
+      grammaticalFeatures ("Q1230649")
+      id string "L41576-F5"
       representations
         en
-          language: "en"
-          value: "referenced"
-  id: "L41576"
-  language: "Q1860"
-  lastrevid: 2337052661
+          language string "en"
+          value string "referenced"
+  id string "L41576"
+  language string "Q1860"
+  lastrevid 2337052661
   lemmas
     en
-      language: "en"
-      value: "reference"
-  lexicalCategory: "Q24905"
-  modified: "2025-04-11T20:53:13Z"
-  ns: 146
-  pageid: 60534824
-  senses: []
-    L41576-S1
-      claims: {}
+      language string "en"
+      value string "reference"
+  lexicalCategory string "Q24905"
+  modified string "2025-04-11T20:53:13Z"
+  ns 146
+  pageid 60534824
+  senses (at-0000)
+    at-0000
+      claims
       glosses
         en
-          language: "en"
-          value: "refer to"
-  title: "Lexeme:L41576"
-  type: "lexeme"
+          language string "en"
+          value string "refer to"
+      id string "L41576-S1"
+  title string "Lexeme:L41576"
+  type string "lexeme"

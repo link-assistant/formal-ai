@@ -1,0 +1,64 @@
+Q131560
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009)
+      at-0000
+        language string "en"
+        value string "KISS principle"
+      at-0001
+        language string "en"
+        value string "keep it simple, stupid"
+      at-0002
+        language string "en"
+        value string "keep it simple stupid"
+      at-0003
+        language string "en"
+        value string "Keep it simple, silly"
+      at-0004
+        language string "en"
+        value string "keep it short and simple"
+      at-0005
+        language string "en"
+        value string "keep it simple and straightforward"
+      at-0006
+        language string "en"
+        value string "keep it small and simple"
+      at-0007
+        language string "en"
+        value string "keep it stupid simple"
+      at-0008
+        language string "en"
+        value string "Keep It Simple Sailor"
+      at-0009
+        language string "en"
+        value string "K.I.S.S."
+    ru (at-0000 at-0001)
+      at-0000
+        language string "ru"
+        value string "Принцип KISS"
+      at-0001
+        language string "ru"
+        value string "Keep It Simple, Stupid"
+  descriptions
+    en
+      language string "en"
+      value string 'acronym for "Keep it simple, stupid"; design principle'
+    ru
+      language string "ru"
+      value string "принцип проектирования, при котором простота является основной целью или ценностью"
+  id string "Q131560"
+  labels
+    en
+      language string "en"
+      value string "KISS"
+    ru
+      language string "ru"
+      value string "KISS"
+    zh
+      language string "zh"
+      value string "KISS原则"
+  lastrevid 2388601365
+  modified string "2025-08-06T11:53:28Z"
+  ns 0
+  pageid 133406
+  title string "Q131560"
+  type string "item"

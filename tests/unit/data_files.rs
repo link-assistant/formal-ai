@@ -2,7 +2,7 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::json_lino::{json_to_lino, lino_to_json};
-use lino_objects_codec::format::parse_indented;
+use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
 use walkdir::WalkDir;
 
@@ -40,21 +40,58 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
             path.display()
         );
 
-        let parseable_content = strip_lino_comments(&content);
-        for record in split_records(&parseable_content) {
-            parse_indented(record).unwrap_or_else(|error| {
-                panic!(
-                    "{} contains invalid Links Notation: {error}",
-                    path.display()
-                );
-            });
-        }
+        let parseable_content = canonical_lino_content(&content);
+        parse_canonical_lino(parseable_content.trim()).unwrap_or_else(|error| {
+            panic!(
+                "{} contains invalid canonical Links Notation: {error}",
+                path.display()
+            );
+        });
     }
 
     assert!(
         checked_files >= 3,
         "expected checked-in Links Notation seed data files"
     );
+}
+
+#[test]
+fn lino_data_files_avoid_jsonish_and_unresolved_tokens() {
+    let pipe_id_blob =
+        Regex::new(r"\b[QLP][0-9]+(?:\|[QLP][0-9]+)+\b").expect("pipe id regex should compile");
+    let jsonish_colon_value =
+        Regex::new(r"^\s*[A-Za-z0-9_.-]+:\s+\S").expect("jsonish colon regex should compile");
+
+    for path in data_lino_paths() {
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        assert!(
+            !content.contains("unformalized-raw"),
+            "{} still contains unresolved raw surface ids",
+            path.display()
+        );
+        assert!(
+            !content.contains("[]"),
+            "{} still contains invalid empty array syntax",
+            path.display()
+        );
+        for (index, line) in content.lines().enumerate() {
+            let stripped = strip_lino_comment(line);
+            assert!(
+                !pipe_id_blob.is_match(stripped),
+                "{}:{} still contains a pipe-separated id blob: {line}",
+                path.display(),
+                index + 1
+            );
+            if path_has_component(&path, "cache") {
+                assert!(
+                    !jsonish_colon_value.is_match(stripped),
+                    "{}:{} still uses JSON-style `key: value`: {line}",
+                    path.display(),
+                    index + 1
+                );
+            }
+        }
+    }
 }
 
 #[test]
@@ -152,9 +189,7 @@ fn meaning_seed_uses_id_fact_format() {
             }
             if let Some(id) = trimmed.strip_prefix("surface ") {
                 assert!(
-                    id.starts_with('L')
-                        || id.starts_with("seed-surface-")
-                        || id.starts_with("unformalized-raw "),
+                    id.starts_with('L') || id.starts_with("seed-surface-"),
                     "{}:{line_number} has bare-word surface `{id}`",
                     path.display()
                 );
@@ -204,14 +239,6 @@ fn wikidata_lino_cache_roundtrips_json_values() {
     }
 }
 
-fn split_records(content: &str) -> Vec<&str> {
-    content
-        .split("\n\n")
-        .map(str::trim)
-        .filter(|record| !record.is_empty())
-        .collect()
-}
-
 fn seed_lino_paths() -> Vec<std::path::PathBuf> {
     let seed_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/seed");
     WalkDir::new(seed_dir)
@@ -223,10 +250,24 @@ fn seed_lino_paths() -> Vec<std::path::PathBuf> {
         .collect()
 }
 
-fn strip_lino_comments(content: &str) -> String {
+fn data_lino_paths() -> Vec<std::path::PathBuf> {
+    let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
+    WalkDir::new(data_dir)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+        .map(walkdir::DirEntry::into_path)
+        .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
+        .collect()
+}
+
+fn canonical_lino_content(content: &str) -> String {
     let mut out = String::new();
-    for line in content.lines() {
-        out.push_str(strip_lino_comment(line));
+    for line in content.lines().map(strip_lino_comment) {
+        if line.trim().is_empty() {
+            continue;
+        }
+        out.push_str(line);
         out.push('\n');
     }
     out

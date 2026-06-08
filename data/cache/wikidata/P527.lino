@@ -1,201 +1,201 @@
-P527 # cached json source
+P527
   value
     entities
       P527
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015 at-0016 at-0017 at-0018 at-0019 at-0020 at-0021 at-0022 at-0023 at-0024 at-0025 at-0026 at-0027 at-0028 at-0029 at-0030 at-0031)
             at-0000
-              language: "en"
-              value: "formed from"
+              language string "en"
+              value string "formed from"
             at-0001
-              language: "en"
-              value: "formed out of"
+              language string "en"
+              value string "formed out of"
             at-0002
-              language: "en"
-              value: "assembled from"
+              language string "en"
+              value string "assembled from"
             at-0003
-              language: "en"
-              value: "assembled out of"
+              language string "en"
+              value string "assembled out of"
             at-0004
-              language: "en"
-              value: "created from"
+              language string "en"
+              value string "created from"
             at-0005
-              language: "en"
-              value: "created out of"
+              language string "en"
+              value string "created out of"
             at-0006
-              language: "en"
-              value: "amalgamation of"
+              language string "en"
+              value string "amalgamation of"
             at-0007
-              language: "en"
-              value: "set of"
+              language string "en"
+              value string "set of"
             at-0008
-              language: "en"
-              value: "consists of"
+              language string "en"
+              value string "consists of"
             at-0009
-              language: "en"
-              value: "holonym of"
+              language string "en"
+              value string "holonym of"
             at-0010
-              language: "en"
-              value: "parts"
+              language string "en"
+              value string "parts"
             at-0011
-              language: "en"
-              value: "comprised of"
+              language string "en"
+              value string "comprised of"
             at-0012
-              language: "en"
-              value: "includes part"
+              language string "en"
+              value string "includes part"
             at-0013
-              language: "en"
-              value: "has as part"
+              language string "en"
+              value string "has as part"
             at-0014
-              language: "en"
-              value: "has component"
+              language string "en"
+              value string "has component"
             at-0015
-              language: "en"
-              value: "have part"
+              language string "en"
+              value string "have part"
             at-0016
-              language: "en"
-              value: "composed of"
+              language string "en"
+              value string "composed of"
             at-0017
-              language: "en"
-              value: "has ingredient"
+              language string "en"
+              value string "has ingredient"
             at-0018
-              language: "en"
-              value: "has ingredients"
+              language string "en"
+              value string "has ingredients"
             at-0019
-              language: "en"
-              value: "ingredients"
+              language string "en"
+              value string "ingredients"
             at-0020
-              language: "en"
-              value: "contain"
+              language string "en"
+              value string "contain"
             at-0021
-              language: "en"
-              value: "contains"
+              language string "en"
+              value string "contains"
             at-0022
-              language: "en"
-              value: "has member"
+              language string "en"
+              value string "has member"
             at-0023
-              language: "en"
-              value: "has branch"
+              language string "en"
+              value string "has branch"
             at-0024
-              language: "en"
-              value: "divided by"
+              language string "en"
+              value string "divided by"
             at-0025
-              language: "en"
-              value: "incorporates"
+              language string "en"
+              value string "incorporates"
             at-0026
-              language: "en"
-              value: "had part"
+              language string "en"
+              value string "had part"
             at-0027
-              language: "en"
-              value: "has parts"
+              language string "en"
+              value string "has parts"
             at-0028
-              language: "en"
-              value: "has part"
+              language string "en"
+              value string "has part"
             at-0029
-              language: "en"
-              value: "has part or parts"
+              language string "en"
+              value string "has part or parts"
             at-0030
-              language: "en"
-              value: "made up of"
+              language string "en"
+              value string "made up of"
             at-0031
-              language: "en"
-              value: "includes"
-          hi: []
+              language string "en"
+              value string "includes"
+          hi (at-0000)
             at-0000
-              language: "hi"
-              value: "में भाग है"
-          ru: []
+              language string "hi"
+              value string "में भाग है"
+          ru (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013)
             at-0000
-              language: "ru"
-              value: "имеет частью"
+              language string "ru"
+              value string "имеет частью"
             at-0001
-              language: "ru"
-              value: "включает в себя"
+              language string "ru"
+              value string "включает в себя"
             at-0002
-              language: "ru"
-              value: "имеет дополнение"
+              language string "ru"
+              value string "имеет дополнение"
             at-0003
-              language: "ru"
-              value: "части"
+              language string "ru"
+              value string "части"
             at-0004
-              language: "ru"
-              value: "компоненты"
+              language string "ru"
+              value string "компоненты"
             at-0005
-              language: "ru"
-              value: "имеет части"
+              language string "ru"
+              value string "имеет части"
             at-0006
-              language: "ru"
-              value: "включает части"
+              language string "ru"
+              value string "включает части"
             at-0007
-              language: "ru"
-              value: "включает компоненты"
+              language string "ru"
+              value string "включает компоненты"
             at-0008
-              language: "ru"
-              value: "включает компонент"
+              language string "ru"
+              value string "включает компонент"
             at-0009
-              language: "ru"
-              value: "имеет компоненты"
+              language string "ru"
+              value string "имеет компоненты"
             at-0010
-              language: "ru"
-              value: "составляющие"
+              language string "ru"
+              value string "составляющие"
             at-0011
-              language: "ru"
-              value: "из"
+              language string "ru"
+              value string "из"
             at-0012
-              language: "ru"
-              value: "содержит в себе"
+              language string "ru"
+              value string "содержит в себе"
             at-0013
-              language: "ru"
-              value: "содержит внутри себя"
-          zh: []
+              language string "ru"
+              value string "содержит внутри себя"
+          zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007)
             at-0000
-              language: "zh"
-              value: "子类"
+              language string "zh"
+              value string "子类"
             at-0001
-              language: "zh"
-              value: "子類"
+              language string "zh"
+              value string "子類"
             at-0002
-              language: "zh"
-              value: "拥有部分"
+              language string "zh"
+              value string "拥有部分"
             at-0003
-              language: "zh"
-              value: "擁有部分"
+              language string "zh"
+              value string "擁有部分"
             at-0004
-              language: "zh"
-              value: "可分爲"
+              language string "zh"
+              value string "可分爲"
             at-0005
-              language: "zh"
-              value: "子实体"
+              language string "zh"
+              value string "子实体"
             at-0006
-              language: "zh"
-              value: "可分為"
+              language string "zh"
+              value string "可分為"
             at-0007
-              language: "zh"
-              value: "包含"
-        datatype: "wikibase-item"
+              language string "zh"
+              value string "包含"
+        datatype string "wikibase-item"
         descriptions
           en
-            language: "en"
-            value: 'part of this subject; inverse property of "part of" (P361). See also "has parts of the class" (P2670).'
+            language string "en"
+            value string 'part of this subject; inverse property of "part of" (P361). See also "has parts of the class" (P2670).'
           ru
-            language: "ru"
-            value: "объект, являющийся частью предмета описания"
+            language string "ru"
+            value string "объект, являющийся частью предмета описания"
           zh
-            language: "zh"
-            value: "此主體的一部分，是所屬實體（P361）的逆屬性，另見“拥有此类别的一部分”（P2670）"
-        id: "P527"
+            language string "zh"
+            value string "此主體的一部分，是所屬實體（P361）的逆屬性，另見“拥有此类别的一部分”（P2670）"
+        id string "P527"
         labels
           en
-            language: "en"
-            value: "has part(s)"
+            language string "en"
+            value string "has part(s)"
           hi
-            language: "hi"
-            value: "इसके हिस्से हैं"
+            language string "hi"
+            value string "इसके हिस्से हैं"
           ru
-            language: "ru"
-            value: "состоит из"
+            language string "ru"
+            value string "состоит из"
           zh
-            language: "zh"
-            value: "擁有的部分有"
-        type: "property"
-    success: 1
+            language string "zh"
+            value string "擁有的部分有"
+        type string "property"
+    success 1

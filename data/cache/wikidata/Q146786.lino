@@ -1,2215 +1,2258 @@
-Q146786 # cached wikidata source
+Q146786
   aliases
-    ar: []
+    ar (at-0000 at-0001)
       at-0000
-        language: "ar"
-        value: "ج."
+        language string "ar"
+        value string "ج."
       at-0001
-        language: "ar"
-        value: "الجمع"
-    ast: []
+        language string "ar"
+        value string "الجمع"
+    ast (at-0000)
       at-0000
-        language: "ast"
-        value: "númberu"
-    bg: []
+        language string "ast"
+        value string "númberu"
+    bg (at-0000)
       at-0000
-        language: "bg"
-        value: "мн. ч."
-    br: []
+        language string "bg"
+        value string "мн. ч."
+    br (at-0000)
       at-0000
-        language: "br"
-        value: "lies"
-    cs: []
+        language string "br"
+        value string "lies"
+    cs (at-0000 at-0001 at-0002 at-0003 at-0004)
       at-0000
-        language: "cs"
-        value: "Pl."
+        language string "cs"
+        value string "Pl."
       at-0001
-        language: "cs"
-        value: "Mn. č."
+        language string "cs"
+        value string "Mn. č."
       at-0002
-        language: "cs"
-        value: "číslo množné"
+        language string "cs"
+        value string "číslo množné"
       at-0003
-        language: "cs"
-        value: "plurál"
+        language string "cs"
+        value string "plurál"
       at-0004
-        language: "cs"
-        value: "pl."
-    da: []
+        language string "cs"
+        value string "pl."
+    da (at-0000)
       at-0000
-        language: "da"
-        value: "pluralis"
-    dag: []
+        language string "da"
+        value string "pluralis"
+    dag (at-0000)
       at-0000
-        language: "dag"
-        value: "pam"
-    de: []
+        language string "dag"
+        value string "pam"
+    de (at-0000 at-0001)
       at-0000
-        language: "de"
-        value: "Mehrzahl"
+        language string "de"
+        value string "Mehrzahl"
       at-0001
-        language: "de"
-        value: "Pl."
-    el: []
+        language string "de"
+        value string "Pl."
+    el (at-0000)
       at-0000
-        language: "el"
-        value: "πληθυντικός αριθμός"
-    en: []
+        language string "el"
+        value string "πληθυντικός αριθμός"
+    en (at-0000)
       at-0000
-        language: "en"
-        value: "pl"
-    eo: []
+        language string "en"
+        value string "pl"
+    eo (at-0000)
       at-0000
-        language: "eo"
-        value: "multenombro"
-    es: []
+        language string "eo"
+        value string "multenombro"
+    es (at-0000)
       at-0000
-        language: "es"
-        value: "pl"
-    et: []
+        language string "es"
+        value string "pl"
+    et (at-0000)
       at-0000
-        language: "et"
-        value: "pluural"
-    ext: []
+        language string "et"
+        value string "pluural"
+    ext (at-0000)
       at-0000
-        language: "ext"
-        value: "pl"
-    fa: []
+        language string "ext"
+        value string "pl"
+    fa (at-0000)
       at-0000
-        language: "fa"
-        value: "جمع (دستور زبان)"
-    fi: []
+        language string "fa"
+        value string "جمع (دستور زبان)"
+    fi (at-0000)
       at-0000
-        language: "fi"
-        value: "pluraali"
-    fr: []
+        language string "fi"
+        value string "pluraali"
+    fr (at-0000)
       at-0000
-        language: "fr"
-        value: "pl"
-    he: []
+        language string "fr"
+        value string "pl"
+    he (at-0000)
       at-0000
-        language: "he"
-        value: "ריבוי"
-    hr: []
+        language string "he"
+        value string "ריבוי"
+    hr (at-0000)
       at-0000
-        language: "hr"
-        value: "plural"
-    hsb: []
+        language string "hr"
+        value string "plural"
+    hsb (at-0000)
       at-0000
-        language: "hsb"
-        value: "mnohota"
-    id: []
+        language string "hsb"
+        value string "mnohota"
+    id (at-0000)
       at-0000
-        language: "id"
-        value: "plural"
-    is: []
+        language string "id"
+        value string "plural"
+    is (at-0000 at-0001)
       at-0000
-        language: "is"
-        value: "Ft."
+        language string "is"
+        value string "Ft."
       at-0001
-        language: "is"
-        value: "fleirtöluorð"
-    ja: []
+        language string "is"
+        value string "fleirtöluorð"
+    ja (at-0000)
       at-0000
-        language: "ja"
-        value: "複数形"
-    ka: []
+        language string "ja"
+        value string "複数形"
+    ka (at-0000)
       at-0000
-        language: "ka"
-        value: "პლურალი"
-    ko: []
+        language string "ka"
+        value string "პლურალი"
+    ko (at-0000)
       at-0000
-        language: "ko"
-        value: "복수형"
-    krj: []
+        language string "ko"
+        value string "복수형"
+    krj (at-0000)
       at-0000
-        language: "krj"
-        value: "sarakû"
-    lb: []
+        language string "krj"
+        value string "sarakû"
+    lb (at-0000 at-0001)
       at-0000
-        language: "lb"
-        value: "Plural"
+        language string "lb"
+        value string "Plural"
       at-0001
-        language: "lb"
-        value: "Pluriel"
-    ln: []
+        language string "lb"
+        value string "Pluriel"
+    ln (at-0000)
       at-0000
-        language: "ln"
-        value: "boyike"
-    lv: []
+        language string "ln"
+        value string "boyike"
+    lv (at-0000)
       at-0000
-        language: "lv"
-        value: "daudzsk."
-    mnw: []
+        language string "lv"
+        value string "daudzsk."
+    mnw (at-0000)
       at-0000
-        language: "mnw"
-        value: "လၟိဟ်ဗဟုဝစ်"
-    mul: []
+        language string "mnw"
+        value string "လၟိဟ်ဗဟုဝစ်"
+    mul (at-0000)
       at-0000
-        language: "mul"
-        value: "pl"
-    nb: []
+        language string "mul"
+        value string "pl"
+    nb (at-0000)
       at-0000
-        language: "nb"
-        value: "pluralis"
-    nl: []
+        language string "nb"
+        value string "pluralis"
+    nl (at-0000)
       at-0000
-        language: "nl"
-        value: "pluralis"
-    nn: []
+        language string "nl"
+        value string "pluralis"
+    nn (at-0000 at-0001 at-0002)
       at-0000
-        language: "nn"
-        value: "pluralis"
+        language string "nn"
+        value string "pluralis"
       at-0001
-        language: "nn"
-        value: "plural"
+        language string "nn"
+        value string "plural"
       at-0002
-        language: "nn"
-        value: "plur."
-    pa: []
+        language string "nn"
+        value string "plur."
+    pa (at-0000 at-0001 at-0002)
       at-0000
-        language: "pa"
-        value: "ਬਹੁ-ਵਚਨ"
+        language string "pa"
+        value string "ਬਹੁ-ਵਚਨ"
       at-0001
-        language: "pa"
-        value: "ਬਹੁਵਚਨ"
+        language string "pa"
+        value string "ਬਹੁਵਚਨ"
       at-0002
-        language: "pa"
-        value: "ਜਮ੍ਹਾਂ"
-    pl: []
+        language string "pa"
+        value string "ਜਮ੍ਹਾਂ"
+    pl (at-0000)
       at-0000
-        language: "pl"
-        value: "l.mn."
-    pnb: []
+        language string "pl"
+        value string "l.mn."
+    pnb (at-0000)
       at-0000
-        language: "pnb"
-        value: "بہو وچن"
-    qu: []
+        language string "pnb"
+        value string "بہو وچن"
+    qu (at-0000)
       at-0000
-        language: "qu"
-        value: "achka yupa"
-    ro: []
+        language string "qu"
+        value string "achka yupa"
+    ro (at-0000 at-0001)
       at-0000
-        language: "ro"
-        value: "pl."
+        language string "ro"
+        value string "pl."
       at-0001
-        language: "ro"
-        value: "pl"
-    ru: []
+        language string "ro"
+        value string "pl"
+    ru (at-0000 at-0001 at-0002 at-0003)
       at-0000
-        language: "ru"
-        value: "мн.ч."
+        language string "ru"
+        value string "мн.ч."
       at-0001
-        language: "ru"
-        value: "мн. ч."
+        language string "ru"
+        value string "мн. ч."
       at-0002
-        language: "ru"
-        value: "плюралис"
+        language string "ru"
+        value string "плюралис"
       at-0003
-        language: "ru"
-        value: "плурал"
-    se: []
+        language string "ru"
+        value string "плурал"
+    se (at-0000)
       at-0000
-        language: "se"
-        value: "plurála"
-    shi: []
+        language string "se"
+        value string "plurála"
+    shi (at-0000 at-0001)
       at-0000
-        language: "shi"
-        value: "asgt"
+        language string "shi"
+        value string "asgt"
       at-0001
-        language: "shi"
-        value: "asget"
-    sk: []
+        language string "shi"
+        value string "asget"
+    sk (at-0000)
       at-0000
-        language: "sk"
-        value: "plurál"
-    sr: []
+        language string "sk"
+        value string "plurál"
+    sr (at-0000)
       at-0000
-        language: "sr"
-        value: "мн."
-    sr-ec: []
+        language string "sr"
+        value string "мн."
+    sr-ec (at-0000)
       at-0000
-        language: "sr-ec"
-        value: "мн."
-    sv: []
+        language string "sr-ec"
+        value string "мн."
+    sv (at-0000 at-0001)
       at-0000
-        language: "sv"
-        value: "flertal"
+        language string "sv"
+        value string "flertal"
       at-0001
-        language: "sv"
-        value: "pluralis"
-    tg: []
+        language string "sv"
+        value string "pluralis"
+    tg (at-0000 at-0001)
       at-0000
-        language: "tg"
-        value: "ҷамъ"
+        language string "tg"
+        value string "ҷамъ"
       at-0001
-        language: "tg"
-        value: "плурал"
-    th: []
+        language string "tg"
+        value string "плурал"
+    th (at-0000)
       at-0000
-        language: "th"
-        value: "หลาย"
-    tr: []
+        language string "th"
+        value string "หลาย"
+    tr (at-0000 at-0001)
       at-0000
-        language: "tr"
-        value: "çokluk"
+        language string "tr"
+        value string "çokluk"
       at-0001
-        language: "tr"
-        value: "çoğul eki"
-    tt: []
+        language string "tr"
+        value string "çoğul eki"
+    tt (at-0000)
       at-0000
-        language: "tt"
-        value: "күплек сан"
-    tt-cyrl: []
+        language string "tt"
+        value string "күплек сан"
+    tt-cyrl (at-0000)
       at-0000
-        language: "tt-cyrl"
-        value: "күплек сан"
-    yi: []
+        language string "tt-cyrl"
+        value string "күплек сан"
+    yi (at-0000)
       at-0000
-        language: "yi"
-        value: "מערצאָל"
-    zh: []
+        language string "yi"
+        value string "מערצאָל"
+    zh (at-0000 at-0001 at-0002)
       at-0000
-        language: "zh"
-        value: "複數"
+        language string "zh"
+        value string "複數"
       at-0001
-        language: "zh"
-        value: "复数"
+        language string "zh"
+        value string "复数"
       at-0002
-        language: "zh"
-        value: "众数"
-    zh-hans: []
+        language string "zh"
+        value string "众数"
+    zh-hans (at-0000)
       at-0000
-        language: "zh-hans"
-        value: "复数"
+        language string "zh-hans"
+        value string "复数"
   claims
-    P10283: []
-      Q146786$1D11A058-4D7B-49E2-8BD6-7ED82F5CDFB6
+    P10283 (at-0000)
+      at-0000
+        id string "Q146786$1D11A058-4D7B-49E2-8BD6-7ED82F5CDFB6"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "C2779835924"
-          hash: "3cab79bfe285bfbf33256c6185aeecb2b4331fe1"
-          property: "P10283"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "C2779835924"
+          hash string "3cab79bfe285bfbf33256c6185aeecb2b4331fe1"
+          property string "P10283"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "c13ba4d7902ead2693f79396bc25bd35d4d14030"
+            hash string "c13ba4d7902ead2693f79396bc25bd35d4d14030"
             snaks
-              P248: []
+              P248 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q107507571"
-                      numeric-id: 107507571
-                  hash: "4a4f26a5361b5707266e48e425bf2be2f99fd2ab"
-                  property: "P248"
-                  snaktype: "value"
-              P813: []
+                      entity-type string "item"
+                      id string "Q107507571"
+                      numeric-id 107507571
+                  hash string "4a4f26a5361b5707266e48e425bf2be2f99fd2ab"
+                  property string "P248"
+                  snaktype string "value"
+              P813 (at-0000)
                 at-0000
-                  datatype: "time"
+                  datatype string "time"
                   datavalue
-                    type: "time"
+                    type string "time"
                     value
-                      after: 0
-                      before: 0
-                      calendarmodel: "http://www.wikidata.org/entity/Q1985727"
-                      precision: 11
-                      time: "+2022-01-26T00:00:00Z"
-                      timezone: 0
-                  hash: "435834d08182bb9f3dbe974ba9840af0f12899cc"
-                  property: "P813"
-                  snaktype: "value"
-              P854: []
+                      after 0
+                      before 0
+                      calendarmodel string "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time string "+2022-01-26T00:00:00Z"
+                      timezone 0
+                  hash string "435834d08182bb9f3dbe974ba9840af0f12899cc"
+                  property string "P813"
+                  snaktype string "value"
+              P854 (at-0000)
                 at-0000
-                  datatype: "url"
+                  datatype string "url"
                   datavalue
-                    type: "string"
-                    value: "https://docs.openalex.org/download-snapshot/snapshot-data-format"
-                  hash: "a4a4bf53f22268815c51ec10fed608da703c9c7f"
-                  property: "P854"
-                  snaktype: "value"
-            snaks-order: ("P248" "P813" "P854")
-        type: "statement"
-    P12385: []
-      Q146786$1933ccbb-5938-486c-a5c7-e11d28be44d2
+                    type string "string"
+                    value string "https://docs.openalex.org/download-snapshot/snapshot-data-format"
+                  hash string "a4a4bf53f22268815c51ec10fed608da703c9c7f"
+                  property string "P854"
+                  snaktype string "value"
+            snaks-order ("P248" "P813" "P854")
+        type string "statement"
+    P12385 (at-0000)
+      at-0000
+        id string "Q146786$1933ccbb-5938-486c-a5c7-e11d28be44d2"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "plural"
-          hash: "ebdcca0e8645bffdcd76a800eeea5b2c0cce480c"
-          property: "P12385"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P1245: []
-      Q146786$F814BB9A-6FA7-4878-ACF3-EF7835924431
+            type string "string"
+            value string "plural"
+          hash string "ebdcca0e8645bffdcd76a800eeea5b2c0cce480c"
+          property string "P12385"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P1245 (at-0000)
+      at-0000
+        id string "Q146786$F814BB9A-6FA7-4878-ACF3-EF7835924431"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "424737"
-          hash: "197e36859e4125cff50a9fcdc0b091ef8d374beb"
-          property: "P1245"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P1268: []
-      Q146786$919b7cd5-4b46-0827-8bb5-9174d47c3c5e
+            type string "string"
+            value string "424737"
+          hash string "197e36859e4125cff50a9fcdc0b091ef8d374beb"
+          property string "P1245"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P1268 (at-0000)
+      at-0000
+        id string "Q146786$919b7cd5-4b46-0827-8bb5-9174d47c3c5e"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q99527517"
-              numeric-id: 99527517
-          hash: "c2d6680598d3da2ebabb24f2bfb415a7fad07b27"
-          property: "P1268"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P12800: []
-      Q146786$32D4DB14-641D-4183-AD7F-AD08D3502E94
+              entity-type string "item"
+              id string "Q99527517"
+              numeric-id 99527517
+          hash string "c2d6680598d3da2ebabb24f2bfb415a7fad07b27"
+          property string "P1268"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P12800 (at-0000)
+      at-0000
+        id string "Q146786$32D4DB14-641D-4183-AD7F-AD08D3502E94"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "fr:Pluriel"
-          hash: "4609440ae538ff34075a514da25732762fd9f8b9"
-          property: "P12800"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P1296: []
-      Q146786$0B82C423-A56C-48C5-99D6-5892FB9C1D23
+            type string "string"
+            value string "fr:Pluriel"
+          hash string "4609440ae538ff34075a514da25732762fd9f8b9"
+          property string "P12800"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P1296 (at-0000)
+      at-0000
+        id string "Q146786$0B82C423-A56C-48C5-99D6-5892FB9C1D23"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "0239112"
-          hash: "81878d9c2d2a35657928c2d451d489492a817def"
-          property: "P1296"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "0239112"
+          hash string "81878d9c2d2a35657928c2d451d489492a817def"
+          property string "P1296"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "b3fd5e254143d8b52cd96cff43af9af5e3a82358"
+            hash string "b3fd5e254143d8b52cd96cff43af9af5e3a82358"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q199693"
-                      numeric-id: 199693
-                  hash: "f13c99a16441677ec69fcea23f221d866f1fc98f"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-    P1343: []
-      Q146786$c4d4ffb4-19d7-49e7-b758-b1c60a7e27fd
+                      entity-type string "item"
+                      id string "Q199693"
+                      numeric-id 199693
+                  hash string "f13c99a16441677ec69fcea23f221d866f1fc98f"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+    P1343 (at-0000 at-0001 at-0002)
+      at-0000
+        id string "Q146786$c4d4ffb4-19d7-49e7-b758-b1c60a7e27fd"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q20078554"
-              numeric-id: 20078554
-          hash: "18e6d3e5a4b2e8891df3becff7db1570f149a24e"
-          property: "P1343"
-          snaktype: "value"
+              entity-type string "item"
+              id string "Q20078554"
+              numeric-id 20078554
+          hash string "18e6d3e5a4b2e8891df3becff7db1570f149a24e"
+          property string "P1343"
+          snaktype string "value"
         qualifiers
-          P805: []
+          P805 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q112118718"
-                  numeric-id: 112118718
-              hash: "d444b1d398a92dcf452c286d8ada9259cacd9651"
-              property: "P805"
-              snaktype: "value"
-        qualifiers-order: ("P805")
-        rank: "normal"
-        type: "statement"
-      Q146786$7FF22493-875C-4810-A994-347E87ACE0C3
+                  entity-type string "item"
+                  id string "Q112118718"
+                  numeric-id 112118718
+              hash string "d444b1d398a92dcf452c286d8ada9259cacd9651"
+              property string "P805"
+              snaktype string "value"
+        qualifiers-order ("P805")
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "Q146786$7FF22493-875C-4810-A994-347E87ACE0C3"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q2041543"
-              numeric-id: 2041543
-          hash: "eda63bed5c3d7a3460033092338ab321a2374c7f"
-          property: "P1343"
-          snaktype: "value"
+              entity-type string "item"
+              id string "Q2041543"
+              numeric-id 2041543
+          hash string "eda63bed5c3d7a3460033092338ab321a2374c7f"
+          property string "P1343"
+          snaktype string "value"
         qualifiers
-          P805: []
+          P805 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q23866832"
-                  numeric-id: 23866832
-              hash: "a15c3b66d20bb00ed1db4fb58c63ecaa6bf34db8"
-              property: "P805"
-              snaktype: "value"
-        qualifiers-order: ("P805")
-        rank: "normal"
-        type: "statement"
-      Q146786$20f243ce-99c3-4112-81bc-1e01055e8f2b
+                  entity-type string "item"
+                  id string "Q23866832"
+                  numeric-id 23866832
+              hash string "a15c3b66d20bb00ed1db4fb58c63ecaa6bf34db8"
+              property string "P805"
+              snaktype string "value"
+        qualifiers-order ("P805")
+        rank string "normal"
+        type string "statement"
+      at-0002
+        id string "Q146786$20f243ce-99c3-4112-81bc-1e01055e8f2b"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q19190511"
-              numeric-id: 19190511
-          hash: "bce6a36f982b01f6cec4a97d253565328f22b47d"
-          property: "P1343"
-          snaktype: "value"
+              entity-type string "item"
+              id string "Q19190511"
+              numeric-id 19190511
+          hash string "bce6a36f982b01f6cec4a97d253565328f22b47d"
+          property string "P1343"
+          snaktype string "value"
         qualifiers
-          P805: []
+          P805 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q84065763"
-                  numeric-id: 84065763
-              hash: "6917ae1917d14e64d3e8e75f5531e15cd476a537"
-              property: "P805"
-              snaktype: "value"
-        qualifiers-order: ("P805")
-        rank: "normal"
-        type: "statement"
-    P1417: []
-      Q146786$A66D4982-EAF7-4164-A673-A96350359CA0
+                  entity-type string "item"
+                  id string "Q84065763"
+                  numeric-id 84065763
+              hash string "6917ae1917d14e64d3e8e75f5531e15cd476a537"
+              property string "P805"
+              snaktype string "value"
+        qualifiers-order ("P805")
+        rank string "normal"
+        type string "statement"
+    P1417 (at-0000)
+      at-0000
+        id string "Q146786$A66D4982-EAF7-4164-A673-A96350359CA0"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "topic/plural"
-          hash: "1e685abb91f9af8c78f8679b8f11a066a3dea86b"
-          property: "P1417"
-          snaktype: "value"
+            type string "string"
+            value string "topic/plural"
+          hash string "1e685abb91f9af8c78f8679b8f11a066a3dea86b"
+          property string "P1417"
+          snaktype string "value"
         qualifiers
-          P1810: []
+          P1810 (at-0000)
             at-0000
-              datatype: "string"
+              datatype string "string"
               datavalue
-                type: "string"
-                value: "plural"
-              hash: "4eb5a04f797e600f378395c9798b6dc5ac931f96"
-              property: "P1810"
-              snaktype: "value"
-        qualifiers-order: ("P1810")
-        rank: "normal"
-        type: "statement"
-    P1424: []
-      Q146786$3b18059c-4750-12a9-848f-884ed10fe28d
+                type string "string"
+                value string "plural"
+              hash string "4eb5a04f797e600f378395c9798b6dc5ac931f96"
+              property string "P1810"
+              snaktype string "value"
+        qualifiers-order ("P1810")
+        rank string "normal"
+        type string "statement"
+    P1424 (at-0000)
+      at-0000
+        id string "Q146786$3b18059c-4750-12a9-848f-884ed10fe28d"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q36485912"
-              numeric-id: 36485912
-          hash: "15fb0024957043a7f94bf0721c035caabb665a43"
-          property: "P1424"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P18: []
-      Q146786$8b774041-4a47-ec0c-7cda-c472d76e47a8
+              entity-type string "item"
+              id string "Q36485912"
+              numeric-id 36485912
+          hash string "15fb0024957043a7f94bf0721c035caabb665a43"
+          property string "P1424"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P18 (at-0000)
+      at-0000
+        id string "Q146786$8b774041-4a47-ec0c-7cda-c472d76e47a8"
         mainsnak
-          datatype: "commonsMedia"
+          datatype string "commonsMedia"
           datavalue
-            type: "string"
-            value: "FlexiónGato-svg.svg"
-          hash: "cfddbc12072e11d76bdea9d16bead5d13e1d9528"
-          property: "P18"
-          snaktype: "value"
+            type string "string"
+            value string "FlexiónGato-svg.svg"
+          hash string "cfddbc12072e11d76bdea9d16bead5d13e1d9528"
+          property string "P18"
+          snaktype string "value"
         qualifiers
-          P2096: []
+          P2096 (at-0000)
             at-0000
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "fr"
-                  text: "Les différentes formes grammaticales sur le thème du mot Gato (Chat) en espagnol."
-              hash: "ae95cef32aa3857448db7d66c8da222061fb53d9"
-              property: "P2096"
-              snaktype: "value"
-        qualifiers-order: ("P2096")
-        rank: "normal"
-        type: "statement"
-    P1813: []
-      Q146786$2b6fd296-4725-3ae4-3cb8-f74f9b1e6f2d
+                  language string "fr"
+                  text string "Les différentes formes grammaticales sur le thème du mot Gato (Chat) en espagnol."
+              hash string "ae95cef32aa3857448db7d66c8da222061fb53d9"
+              property string "P2096"
+              snaktype string "value"
+        qualifiers-order ("P2096")
+        rank string "normal"
+        type string "statement"
+    P1813 (at-0000)
+      at-0000
+        id string "Q146786$2b6fd296-4725-3ae4-3cb8-f74f9b1e6f2d"
         mainsnak
-          datatype: "monolingualtext"
+          datatype string "monolingualtext"
           datavalue
-            type: "monolingualtext"
+            type string "monolingualtext"
             value
-              language: "en"
-              text: "PL"
-          hash: "742aa1629de157cfd94efef13e47c70dd8a01914"
-          property: "P1813"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+              language string "en"
+              text string "PL"
+          hash string "742aa1629de157cfd94efef13e47c70dd8a01914"
+          property string "P1813"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "8d9191a4732c6c0b893f80a3632dac736c4064a9"
+            hash string "8d9191a4732c6c0b893f80a3632dac736c4064a9"
             snaks
-              P1476: []
+              P1476 (at-0000)
                 at-0000
-                  datatype: "monolingualtext"
+                  datatype string "monolingualtext"
                   datavalue
-                    type: "monolingualtext"
+                    type string "monolingualtext"
                     value
-                      language: "en"
-                      text: "Dept. of Linguistics | Resources | Glossing Rules"
-                  hash: "ec124c52d2dcbb9acbe4a09f5e6d34f42bf5885d"
-                  property: "P1476"
-                  snaktype: "value"
-              P813: []
+                      language string "en"
+                      text string "Dept. of Linguistics | Resources | Glossing Rules"
+                  hash string "ec124c52d2dcbb9acbe4a09f5e6d34f42bf5885d"
+                  property string "P1476"
+                  snaktype string "value"
+              P813 (at-0000)
                 at-0000
-                  datatype: "time"
+                  datatype string "time"
                   datavalue
-                    type: "time"
+                    type string "time"
                     value
-                      after: 0
-                      before: 0
-                      calendarmodel: "http://www.wikidata.org/entity/Q1985727"
-                      precision: 11
-                      time: "+2023-01-06T00:00:00Z"
-                      timezone: 0
-                  hash: "07079106a960f0faf76d8b3b777755fd378514b2"
-                  property: "P813"
-                  snaktype: "value"
-              P854: []
+                      after 0
+                      before 0
+                      calendarmodel string "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time string "+2023-01-06T00:00:00Z"
+                      timezone 0
+                  hash string "07079106a960f0faf76d8b3b777755fd378514b2"
+                  property string "P813"
+                  snaktype string "value"
+              P854 (at-0000)
                 at-0000
-                  datatype: "url"
+                  datatype string "url"
                   datavalue
-                    type: "string"
-                    value: "https://www.eva.mpg.de/lingua/resources/glossing-rules.php"
-                  hash: "592261b1b692292b08d23edb98cb57ae46ddc724"
-                  property: "P854"
-                  snaktype: "value"
-            snaks-order: ("P854" "P1476" "P813")
-        type: "statement"
-    P1889: []
-      Q146786$21261E75-2667-4063-B6B3-FB32EDE31707
+                    type string "string"
+                    value string "https://www.eva.mpg.de/lingua/resources/glossing-rules.php"
+                  hash string "592261b1b692292b08d23edb98cb57ae46ddc724"
+                  property string "P854"
+                  snaktype string "value"
+            snaks-order ("P854" "P1476" "P813")
+        type string "statement"
+    P1889 (at-0000)
+      at-0000
+        id string "Q146786$21261E75-2667-4063-B6B3-FB32EDE31707"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q134703312"
-              numeric-id: 134703312
-          hash: "4a98708f08eee99de55cbb3a92e99b80294d5cf8"
-          property: "P1889"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P2263: []
-      Q146786$fb2a8c78-469a-a67a-2789-1d813430c979
+              entity-type string "item"
+              id string "Q134703312"
+              numeric-id 134703312
+          hash string "4a98708f08eee99de55cbb3a92e99b80294d5cf8"
+          property string "P1889"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P2263 (at-0000 at-0001 at-0002 at-0003)
+      at-0000
+        id string "Q146786$fb2a8c78-469a-a67a-2789-1d813430c979"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "1354"
-          hash: "ce9e680f4b662e0ddf2563af6cc5b90387c90255"
-          property: "P2263"
-          snaktype: "value"
+            type string "string"
+            value string "1354"
+          hash string "ce9e680f4b662e0ddf2563af6cc5b90387c90255"
+          property string "P2263"
+          snaktype string "value"
         qualifiers
-          P1065: []
+          P1065 (at-0000)
             at-0000
-              datatype: "url"
+              datatype string "url"
               datavalue
-                type: "string"
-                value: "https://web.archive.org/web/20160916072907/http://www.isocat.org/rest/dc/1354.html"
-              hash: "0b530b1057e62d30f4cc4b964b1b2b4f9c1513d8"
-              property: "P1065"
-              snaktype: "value"
-        qualifiers-order: ("P1065")
-        rank: "normal"
-        type: "statement"
-      Q146786$34e9826e-4366-8983-5cb4-b7614eb50182
+                type string "string"
+                value string "https://web.archive.org/web/20160916072907/http://www.isocat.org/rest/dc/1354.html"
+              hash string "0b530b1057e62d30f4cc4b964b1b2b4f9c1513d8"
+              property string "P1065"
+              snaktype string "value"
+        qualifiers-order ("P1065")
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "Q146786$34e9826e-4366-8983-5cb4-b7614eb50182"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "253"
-          hash: "3409f7f696285fc49c1194fefce3b76a67aca74f"
-          property: "P2263"
-          snaktype: "value"
+            type string "string"
+            value string "253"
+          hash string "3409f7f696285fc49c1194fefce3b76a67aca74f"
+          property string "P2263"
+          snaktype string "value"
         qualifiers
-          P1065: []
+          P1065 (at-0000)
             at-0000
-              datatype: "url"
+              datatype string "url"
               datavalue
-                type: "string"
-                value: "https://web.archive.org/web/20160617144614/http://www.isocat.org/rest/dc/253"
-              hash: "cd57ab3d0cf034fad6cf041ed379639ee519a024"
-              property: "P1065"
-              snaktype: "value"
-        qualifiers-order: ("P1065")
-        rank: "normal"
-        type: "statement"
-      Q146786$6e50e92e-4132-cbf5-8884-191b2bd1cb7f
+                type string "string"
+                value string "https://web.archive.org/web/20160617144614/http://www.isocat.org/rest/dc/253"
+              hash string "cd57ab3d0cf034fad6cf041ed379639ee519a024"
+              property string "P1065"
+              snaktype string "value"
+        qualifiers-order ("P1065")
+        rank string "normal"
+        type string "statement"
+      at-0002
+        id string "Q146786$6e50e92e-4132-cbf5-8884-191b2bd1cb7f"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "3393"
-          hash: "8ee77f7094ac93afdeb4b4cae166abff8e3582e7"
-          property: "P2263"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "3393"
+          hash string "8ee77f7094ac93afdeb4b4cae166abff8e3582e7"
+          property string "P2263"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "8d5cb9f53315adf9f20973879d7edc7e041170c4"
+            hash string "8d5cb9f53315adf9f20973879d7edc7e041170c4"
             snaks
-              P1065: []
+              P1065 (at-0000)
                 at-0000
-                  datatype: "url"
+                  datatype string "url"
                   datavalue
-                    type: "string"
-                    value: "https://web.archive.org/web/20160208164418/http://www.isocat.org/rest/profile/6.html#DC-3398"
-                  hash: "58b97fcd5c4d56d8998182356110c749702261df"
-                  property: "P1065"
-                  snaktype: "value"
-            snaks-order: ("P1065")
-        type: "statement"
-      Q146786$E7A71771-F4F5-41A1-ABE6-F8B3F828546A
+                    type string "string"
+                    value string "https://web.archive.org/web/20160208164418/http://www.isocat.org/rest/profile/6.html#DC-3398"
+                  hash string "58b97fcd5c4d56d8998182356110c749702261df"
+                  property string "P1065"
+                  snaktype string "value"
+            snaks-order ("P1065")
+        type string "statement"
+      at-0003
+        id string "Q146786$E7A71771-F4F5-41A1-ABE6-F8B3F828546A"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "2708"
-          hash: "80e0497c9f9d885ab45262f0fe3035e8beda475c"
-          property: "P2263"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P227: []
-      Q146786$454F16AB-312E-447E-BCDA-64030A9A1C6E
+            type string "string"
+            value string "2708"
+          hash string "80e0497c9f9d885ab45262f0fe3035e8beda475c"
+          property string "P2263"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P227 (at-0000)
+      at-0000
+        id string "Q146786$454F16AB-312E-447E-BCDA-64030A9A1C6E"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "4198427-4"
-          hash: "b46f2bbc308a24eb925b3b203840cc724d0d24f9"
-          property: "P227"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "4198427-4"
+          hash string "b46f2bbc308a24eb925b3b203840cc724d0d24f9"
+          property string "P227"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "9a24f7c0208b05d6be97077d855671d1dfdbc0dd"
+            hash string "9a24f7c0208b05d6be97077d855671d1dfdbc0dd"
             snaks
-              P143: []
+              P143 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q48183"
-                      numeric-id: 48183
-                  hash: "d38375ffe6fe142663ff55cd783aa4df4301d83d"
-                  property: "P143"
-                  snaktype: "value"
-            snaks-order: ("P143")
-        type: "statement"
-    P2347: []
-      Q146786$5B5409A0-AF24-4974-B337-B89765728CA1
+                      entity-type string "item"
+                      id string "Q48183"
+                      numeric-id 48183
+                  hash string "d38375ffe6fe142663ff55cd783aa4df4301d83d"
+                  property string "P143"
+                  snaktype string "value"
+            snaks-order ("P143")
+        type string "statement"
+    P2347 (at-0000)
+      at-0000
+        id string "Q146786$5B5409A0-AF24-4974-B337-B89765728CA1"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "8383"
-          hash: "ddaa8ee67ee8491c39ad1105ef9bd3e7d5b03b13"
-          property: "P2347"
-          snaktype: "value"
+            type string "string"
+            value string "8383"
+          hash string "ddaa8ee67ee8491c39ad1105ef9bd3e7d5b03b13"
+          property string "P2347"
+          snaktype string "value"
         qualifiers
-          P14457: []
+          P14457 (at-0000 at-0001 at-0002 at-0003)
             at-0000
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "en"
-                  text: "plural"
-              hash: "991bf1c3b0485cd7a4a1b95fce72a38a96518cfa"
-              property: "P14457"
-              snaktype: "value"
+                  language string "en"
+                  text string "plural"
+              hash string "991bf1c3b0485cd7a4a1b95fce72a38a96518cfa"
+              property string "P14457"
+              snaktype string "value"
             at-0001
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "se"
-                  text: "máŋggaidlohku"
-              hash: "e3715abeb9e35bc13dc2172e11c89fb5610fe407"
-              property: "P14457"
-              snaktype: "value"
+                  language string "se"
+                  text string "máŋggaidlohku"
+              hash string "e3715abeb9e35bc13dc2172e11c89fb5610fe407"
+              property string "P14457"
+              snaktype string "value"
             at-0002
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "sv"
-                  text: "pluralis"
-              hash: "027f15ef568f1f957712890eb91307fbe7adcfb0"
-              property: "P14457"
-              snaktype: "value"
+                  language string "sv"
+                  text string "pluralis"
+              hash string "027f15ef568f1f957712890eb91307fbe7adcfb0"
+              property string "P14457"
+              snaktype string "value"
             at-0003
-              datatype: "monolingualtext"
+              datatype string "monolingualtext"
               datavalue
-                type: "monolingualtext"
+                type string "monolingualtext"
                 value
-                  language: "fi"
-                  text: "monikko"
-              hash: "9bb4a2f14136982f96b2563371fadaf3af13e77b"
-              property: "P14457"
-              snaktype: "value"
-        qualifiers-order: ("P14457")
-        rank: "normal"
-        type: "statement"
-    P2671: []
-      Q146786$605CC3E4-13E2-4CDD-A77F-52620BA0CC33
+                  language string "fi"
+                  text string "monikko"
+              hash string "9bb4a2f14136982f96b2563371fadaf3af13e77b"
+              property string "P14457"
+              snaktype string "value"
+        qualifiers-order ("P14457")
+        rank string "normal"
+        type string "statement"
+    P2671 (at-0000)
+      at-0000
+        id string "Q146786$605CC3E4-13E2-4CDD-A77F-52620BA0CC33"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "/g/120jr83_"
-          hash: "c52bc9e8d54a13a04977a2deff0c5c7b1c5b5091"
-          property: "P2671"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P279: []
-      Q146786$e3cc2aa7-4978-d11e-4a04-1fc8bcae7d08
+            type string "string"
+            value string "/g/120jr83_"
+          hash string "c52bc9e8d54a13a04977a2deff0c5c7b1c5b5091"
+          property string "P2671"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P279 (at-0000)
+      at-0000
+        id string "Q146786$e3cc2aa7-4978-d11e-4a04-1fc8bcae7d08"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q4423888"
-              numeric-id: 4423888
-          hash: "4b563cfd4cd8c0550a8c31012ae1c3a350deb56a"
-          property: "P279"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P2888: []
-      Q146786$f7eb9005-4a24-31fa-922a-5180c3343e13
+              entity-type string "item"
+              id string "Q4423888"
+              numeric-id 4423888
+          hash string "4b563cfd4cd8c0550a8c31012ae1c3a350deb56a"
+          property string "P279"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P2888 (at-0000 at-0001 at-0002)
+      at-0000
+        id string "Q146786$f7eb9005-4a24-31fa-922a-5180c3343e13"
         mainsnak
-          datatype: "url"
+          datatype string "url"
           datavalue
-            type: "string"
-            value: "http://www.lexinfo.net/ontology/3.0/lexinfo#plural"
-          hash: "74e095346e2a1e352502c4d335cd8f843ac17a9d"
-          property: "P2888"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-      Q146786$63fe9ca8-44c4-e03c-a121-ed3aa6fcae20
+            type string "string"
+            value string "http://www.lexinfo.net/ontology/3.0/lexinfo#plural"
+          hash string "74e095346e2a1e352502c4d335cd8f843ac17a9d"
+          property string "P2888"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "Q146786$63fe9ca8-44c4-e03c-a121-ed3aa6fcae20"
         mainsnak
-          datatype: "url"
+          datatype string "url"
           datavalue
-            type: "string"
-            value: "http://purl.org/linguistics/gold/PluralNumber"
-          hash: "d9a83896d1bd155e8f647f49157a03ed8562693e"
-          property: "P2888"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-      Q146786$ccf43745-43b8-acdb-ecfd-3c41f7c2c9ed
+            type string "string"
+            value string "http://purl.org/linguistics/gold/PluralNumber"
+          hash string "d9a83896d1bd155e8f647f49157a03ed8562693e"
+          property string "P2888"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+      at-0002
+        id string "Q146786$ccf43745-43b8-acdb-ecfd-3c41f7c2c9ed"
         mainsnak
-          datatype: "url"
+          datatype string "url"
           datavalue
-            type: "string"
-            value: "http://www.lexinfo.net/ontology/2.0/lexinfo#plural"
-          hash: "6d2033f56f59532a71213da8c268434f54e6de3f"
-          property: "P2888"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P31: []
-      Q146786$e7b1bf48-47d0-ddad-762e-8718326c2b78
+            type string "string"
+            value string "http://www.lexinfo.net/ontology/2.0/lexinfo#plural"
+          hash string "6d2033f56f59532a71213da8c268434f54e6de3f"
+          property string "P2888"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P31 (at-0000)
+      at-0000
+        id string "Q146786$e7b1bf48-47d0-ddad-762e-8718326c2b78"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q104083"
-              numeric-id: 104083
-          hash: "48d272aa30d7c0b73ae33bff03b791e1ba6ec762"
-          property: "P31"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P3417: []
-      Q146786$A439B93A-FE36-4AD0-9845-BBB9E53D6E0D
+              entity-type string "item"
+              id string "Q104083"
+              numeric-id 104083
+          hash string "48d272aa30d7c0b73ae33bff03b791e1ba6ec762"
+          property string "P31"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P3417 (at-0000)
+      at-0000
+        id string "Q146786$A439B93A-FE36-4AD0-9845-BBB9E53D6E0D"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "Plurals"
-          hash: "68e1f56573bd098e740da2850181fcee613b8aa6"
-          property: "P3417"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P461: []
-      Q146786$6266c292-43bc-667b-bf8d-db952d190c11
+            type string "string"
+            value string "Plurals"
+          hash string "68e1f56573bd098e740da2850181fcee613b8aa6"
+          property string "P3417"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P461 (at-0000)
+      at-0000
+        id string "Q146786$6266c292-43bc-667b-bf8d-db952d190c11"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q110786"
-              numeric-id: 110786
-          hash: "8e813c16aed12ca276f15529e91ff4acb366f789"
-          property: "P461"
-          snaktype: "value"
+              entity-type string "item"
+              id string "Q110786"
+              numeric-id 110786
+          hash string "8e813c16aed12ca276f15529e91ff4acb366f789"
+          property string "P461"
+          snaktype string "value"
         qualifiers
-          P1013: []
+          P1013 (at-0000 at-0001 at-0002)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q7737"
-                  numeric-id: 7737
-              hash: "9b250ddcc4169b8dc3243751f8fedba4bd9bf5bd"
-              property: "P1013"
-              snaktype: "value"
+                  entity-type string "item"
+                  id string "Q7737"
+                  numeric-id 7737
+              hash string "9b250ddcc4169b8dc3243751f8fedba4bd9bf5bd"
+              property string "P1013"
+              snaktype string "value"
             at-0001
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q8798"
-                  numeric-id: 8798
-              hash: "097ddce7971b83d9aca4dbda1a4b74667825c7b8"
-              property: "P1013"
-              snaktype: "value"
+                  entity-type string "item"
+                  id string "Q8798"
+                  numeric-id 8798
+              hash string "097ddce7971b83d9aca4dbda1a4b74667825c7b8"
+              property string "P1013"
+              snaktype string "value"
             at-0002
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q9058"
-                  numeric-id: 9058
-              hash: "861ec040c88afd26db5bc1803b1fc36712c32103"
-              property: "P1013"
-              snaktype: "value"
-        qualifiers-order: ("P1013")
-        rank: "normal"
-        type: "statement"
-    P6254: []
-      Q146786$56f6ff91-4808-2439-52e1-490a789b00ef
+                  entity-type string "item"
+                  id string "Q9058"
+                  numeric-id 9058
+              hash string "861ec040c88afd26db5bc1803b1fc36712c32103"
+              property string "P1013"
+              snaktype string "value"
+        qualifiers-order ("P1013")
+        rank string "normal"
+        type string "statement"
+    P6254 (at-0000)
+      at-0000
+        id string "Q146786$56f6ff91-4808-2439-52e1-490a789b00ef"
         mainsnak
-          datatype: "wikibase-lexeme"
+          datatype string "wikibase-lexeme"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "lexeme"
-              id: "L1548743"
-              numeric-id: 1548743
-          hash: "d8c27249bfbc723c75864a603036cd204fdb1062"
-          property: "P6254"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P6366: []
-      Q146786$BBAB7FBF-3686-4C38-A04D-BF2C1E20E91C
+              entity-type string "lexeme"
+              id string "L1548743"
+              numeric-id 1548743
+          hash string "d8c27249bfbc723c75864a603036cd204fdb1062"
+          property string "P6254"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P6366 (at-0000)
+      at-0000
+        id string "Q146786$BBAB7FBF-3686-4C38-A04D-BF2C1E20E91C"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "2779835924"
-          hash: "cd8a5cb5e9cbb8b427a50ddddbac0393dc33c00b"
-          property: "P6366"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P646: []
-      Q146786$E29B520B-16C4-49A2-B8FC-BCB21AC657F9
+            type string "string"
+            value string "2779835924"
+          hash string "cd8a5cb5e9cbb8b427a50ddddbac0393dc33c00b"
+          property string "P6366"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P646 (at-0000)
+      at-0000
+        id string "Q146786$E29B520B-16C4-49A2-B8FC-BCB21AC657F9"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "/m/0130mq"
-          hash: "5edf70aace8b5b50fa6776687b43d953677d7bdd"
-          property: "P646"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "/m/0130mq"
+          hash string "5edf70aace8b5b50fa6776687b43d953677d7bdd"
+          property string "P646"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "2b00cb481cddcac7623114367489b5c194901c4a"
+            hash string "2b00cb481cddcac7623114367489b5c194901c4a"
             snaks
-              P248: []
+              P248 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q15241312"
-                      numeric-id: 15241312
-                  hash: "a94b740202b097dd33355e0e6c00e54b9395e5e0"
-                  property: "P248"
-                  snaktype: "value"
-              P577: []
+                      entity-type string "item"
+                      id string "Q15241312"
+                      numeric-id 15241312
+                  hash string "a94b740202b097dd33355e0e6c00e54b9395e5e0"
+                  property string "P248"
+                  snaktype string "value"
+              P577 (at-0000)
                 at-0000
-                  datatype: "time"
+                  datatype string "time"
                   datavalue
-                    type: "time"
+                    type string "time"
                     value
-                      after: 0
-                      before: 0
-                      calendarmodel: "http://www.wikidata.org/entity/Q1985727"
-                      precision: 11
-                      time: "+2013-10-28T00:00:00Z"
-                      timezone: 0
-                  hash: "fde79ecb015112d2f29229ccc1ec514ed3e71fa2"
-                  property: "P577"
-                  snaktype: "value"
-            snaks-order: ("P248" "P577")
-        type: "statement"
-    P7033: []
-      Q146786$FC258092-8B59-4B97-91A5-226C45789181
+                      after 0
+                      before 0
+                      calendarmodel string "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time string "+2013-10-28T00:00:00Z"
+                      timezone 0
+                  hash string "fde79ecb015112d2f29229ccc1ec514ed3e71fa2"
+                  property string "P577"
+                  snaktype string "value"
+            snaks-order ("P248" "P577")
+        type string "statement"
+    P7033 (at-0000)
+      at-0000
+        id string "Q146786$FC258092-8B59-4B97-91A5-226C45789181"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "scot/11485"
-          hash: "c7be19af9d7ecc21b19406921ce1359cb4d71e9d"
-          property: "P7033"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P7783: []
-      Q146786$8B66F923-B052-4E97-9E56-145DB42125E7
+            type string "string"
+            value string "scot/11485"
+          hash string "c7be19af9d7ecc21b19406921ce1359cb4d71e9d"
+          property string "P7033"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P7783 (at-0000)
+      at-0000
+        id string "Q146786$8B66F923-B052-4E97-9E56-145DB42125E7"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "201006032307698672"
-          hash: "441f4961271a0a5acfedea6dc5efcf373ab46751"
-          property: "P7783"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P8408: []
-      Q146786$BE8EAA5D-6320-4EC3-893E-68A47C018BF3
+            type string "string"
+            value string "201006032307698672"
+          hash string "441f4961271a0a5acfedea6dc5efcf373ab46751"
+          property string "P7783"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P8408 (at-0000)
+      at-0000
+        id string "Q146786$BE8EAA5D-6320-4EC3-893E-68A47C018BF3"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "Plural-NLAttr"
-          hash: "457fcc51b083673e9e7d31f55e3e33b4dc55dd97"
-          property: "P8408"
-          snaktype: "value"
-        rank: "normal"
-        references: []
+            type string "string"
+            value string "Plural-NLAttr"
+          hash string "457fcc51b083673e9e7d31f55e3e33b4dc55dd97"
+          property string "P8408"
+          snaktype string "value"
+        rank string "normal"
+        references (at-0000)
           at-0000
-            hash: "9a681f9dd95c90224547c404e11295f4f7dcf54e"
+            hash string "9a681f9dd95c90224547c404e11295f4f7dcf54e"
             snaks
-              P248: []
+              P248 (at-0000)
                 at-0000
-                  datatype: "wikibase-item"
+                  datatype string "wikibase-item"
                   datavalue
-                    type: "wikibase-entityid"
+                    type string "wikibase-entityid"
                     value
-                      entity-type: "item"
-                      id: "Q64139102"
-                      numeric-id: 64139102
-                  hash: "9d5780dddffa8746637a9929a936ab6b0f601e24"
-                  property: "P248"
-                  snaktype: "value"
-              P813: []
+                      entity-type string "item"
+                      id string "Q64139102"
+                      numeric-id 64139102
+                  hash string "9d5780dddffa8746637a9929a936ab6b0f601e24"
+                  property string "P248"
+                  snaktype string "value"
+              P813 (at-0000)
                 at-0000
-                  datatype: "time"
+                  datatype string "time"
                   datavalue
-                    type: "time"
+                    type string "time"
                     value
-                      after: 0
-                      before: 0
-                      calendarmodel: "http://www.wikidata.org/entity/Q1985727"
-                      precision: 11
-                      time: "+2020-07-09T00:00:00Z"
-                      timezone: 0
-                  hash: "622a5a27fa5b25e7e7984974e9db494cf8460990"
-                  property: "P813"
-                  snaktype: "value"
-            snaks-order: ("P248" "P813")
-        type: "statement"
-    P8703: []
-      Q146786$f00c44e9-47ae-3fb9-72a3-5f14f7e578e5
+                      after 0
+                      before 0
+                      calendarmodel string "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time string "+2020-07-09T00:00:00Z"
+                      timezone 0
+                  hash string "622a5a27fa5b25e7e7984974e9db494cf8460990"
+                  property string "P813"
+                  snaktype string "value"
+            snaks-order ("P248" "P813")
+        type string "statement"
+    P8703 (at-0000 at-0001 at-0002 at-0003 at-0004)
+      at-0000
+        id string "Q146786$f00c44e9-47ae-3fb9-72a3-5f14f7e578e5"
         mainsnak
-          datatype: "string"
+          datatype string "string"
           datavalue
-            type: "string"
-            value: "iol"
-          hash: "c3115225726b3df5f5816e8736e5bb37b5e6d330"
-          property: "P8703"
-          snaktype: "value"
+            type string "string"
+            value string "iol"
+          hash string "c3115225726b3df5f5816e8736e5bb37b5e6d330"
+          property string "P8703"
+          snaktype string "value"
         qualifiers
-          P1535: []
+          P1535 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q5463833"
-                  numeric-id: 5463833
-              hash: "17a8e2685931b3e58ee59daf78d9f36ca32a7f85"
-              property: "P1535"
-              snaktype: "value"
-        qualifiers-order: ("P1535")
-        rank: "normal"
-        type: "statement"
-      Q146786$e5e148f5-4122-9703-7a7e-9f02b36573a9
+                  entity-type string "item"
+                  id string "Q5463833"
+                  numeric-id 5463833
+              hash string "17a8e2685931b3e58ee59daf78d9f36ca32a7f85"
+              property string "P1535"
+              snaktype string "value"
+        qualifiers-order ("P1535")
+        rank string "normal"
+        type string "statement"
+      at-0001
+        id string "Q146786$e5e148f5-4122-9703-7a7e-9f02b36573a9"
         mainsnak
-          datatype: "string"
+          datatype string "string"
           datavalue
-            type: "string"
-            value: "ج"
-          hash: "1158929fa02dc16ad335af7f7a6a082b4ab2bc00"
-          property: "P8703"
-          snaktype: "value"
+            type string "string"
+            value string "ج"
+          hash string "1158929fa02dc16ad335af7f7a6a082b4ab2bc00"
+          property string "P8703"
+          snaktype string "value"
         qualifiers
-          P1535: []
+          P1535 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q1182988"
-                  numeric-id: 1182988
-              hash: "18316236ade0e07091edc94ec557fef7a02af344"
-              property: "P1535"
-              snaktype: "value"
-        qualifiers-order: ("P1535")
-        rank: "normal"
-        type: "statement"
-      Q146786$cc434b9d-41fe-5d14-83c4-4ec17c005b78
+                  entity-type string "item"
+                  id string "Q1182988"
+                  numeric-id 1182988
+              hash string "18316236ade0e07091edc94ec557fef7a02af344"
+              property string "P1535"
+              snaktype string "value"
+        qualifiers-order ("P1535")
+        rank string "normal"
+        type string "statement"
+      at-0002
+        id string "Q146786$cc434b9d-41fe-5d14-83c4-4ec17c005b78"
         mainsnak
-          datatype: "string"
+          datatype string "string"
           datavalue
-            type: "string"
-            value: "мн."
-          hash: "4d44799c387aeaaf80deba7822f06d1af0197837"
-          property: "P8703"
-          snaktype: "value"
+            type string "string"
+            value string "мн."
+          hash string "4d44799c387aeaaf80deba7822f06d1af0197837"
+          property string "P8703"
+          snaktype string "value"
         qualifiers
-          P1535: []
+          P1535 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q126368177"
-                  numeric-id: 126368177
-              hash: "fd6b6b08850760268b86ce23a004ebc88a5b2d9f"
-              property: "P1535"
-              snaktype: "value"
-        qualifiers-order: ("P1535")
-        rank: "normal"
-        type: "statement"
-      Q146786$f940e18b-4e0a-7561-184e-db088e353b8d
+                  entity-type string "item"
+                  id string "Q126368177"
+                  numeric-id 126368177
+              hash string "fd6b6b08850760268b86ce23a004ebc88a5b2d9f"
+              property string "P1535"
+              snaktype string "value"
+        qualifiers-order ("P1535")
+        rank string "normal"
+        type string "statement"
+      at-0003
+        id string "Q146786$f940e18b-4e0a-7561-184e-db088e353b8d"
         mainsnak
-          datatype: "string"
+          datatype string "string"
           datavalue
-            type: "string"
-            value: "pl."
-          hash: "638377adcfcbf8d175c5b8f4fd37a606b31d23c4"
-          property: "P8703"
-          snaktype: "value"
+            type string "string"
+            value string "pl."
+          hash string "638377adcfcbf8d175c5b8f4fd37a606b31d23c4"
+          property string "P8703"
+          snaktype string "value"
         qualifiers
-          P1535: []
+          P1535 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q123156076"
-                  numeric-id: 123156076
-              hash: "e87836d07d71072cd9e48aca84d581138991ef71"
-              property: "P1535"
-              snaktype: "value"
-        qualifiers-order: ("P1535")
-        rank: "normal"
-        type: "statement"
-      Q146786$790489f6-4ad7-9645-6ef8-1eeb97ff88ab
+                  entity-type string "item"
+                  id string "Q123156076"
+                  numeric-id 123156076
+              hash string "e87836d07d71072cd9e48aca84d581138991ef71"
+              property string "P1535"
+              snaktype string "value"
+        qualifiers-order ("P1535")
+        rank string "normal"
+        type string "statement"
+      at-0004
+        id string "Q146786$790489f6-4ad7-9645-6ef8-1eeb97ff88ab"
         mainsnak
-          datatype: "string"
+          datatype string "string"
           datavalue
-            type: "string"
-            value: "Pl."
-          hash: "2c2d6bc94a2e1b028a23befaa6b1c592236910c1"
-          property: "P8703"
-          snaktype: "value"
+            type string "string"
+            value string "Pl."
+          hash string "2c2d6bc94a2e1b028a23befaa6b1c592236910c1"
+          property string "P8703"
+          snaktype string "value"
         qualifiers
-          P1535: []
+          P1535 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q5204881"
-                  numeric-id: 5204881
-              hash: "c463434d7590aed3a0002e0ac4dd06a86772dce1"
-              property: "P1535"
-              snaktype: "value"
-        qualifiers-order: ("P1535")
-        rank: "normal"
-        type: "statement"
-    P8814: []
-      Q146786$7D73F39F-D9B4-4B55-858F-CE2253B2895F
+                  entity-type string "item"
+                  id string "Q5204881"
+                  numeric-id 5204881
+              hash string "c463434d7590aed3a0002e0ac4dd06a86772dce1"
+              property string "P1535"
+              snaktype string "value"
+        qualifiers-order ("P1535")
+        rank string "normal"
+        type string "statement"
+    P8814 (at-0000)
+      at-0000
+        id string "Q146786$7D73F39F-D9B4-4B55-858F-CE2253B2895F"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "06306016-n"
-          hash: "43e5205478bec777655332a3fe93db18cbfd03f0"
-          property: "P8814"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P910: []
-      Q146786$08d3a84e-427f-a97d-5d4a-64a7820ab945
+            type string "string"
+            value string "06306016-n"
+          hash string "43e5205478bec777655332a3fe93db18cbfd03f0"
+          property string "P8814"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P910 (at-0000)
+      at-0000
+        id string "Q146786$08d3a84e-427f-a97d-5d4a-64a7820ab945"
         mainsnak
-          datatype: "wikibase-item"
+          datatype string "wikibase-item"
           datavalue
-            type: "wikibase-entityid"
+            type string "wikibase-entityid"
             value
-              entity-type: "item"
-              id: "Q31157142"
-              numeric-id: 31157142
-          hash: "44f9447bd4d5a6ba254370a3b278d138558782c4"
-          property: "P910"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P9497: []
-      Q146786$D30CEF07-75F2-46FF-AA25-888B313ED2F5
+              entity-type string "item"
+              id string "Q31157142"
+              numeric-id 31157142
+          hash string "44f9447bd4d5a6ba254370a3b278d138558782c4"
+          property string "P910"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P9497 (at-0000)
+      at-0000
+        id string "Q146786$D30CEF07-75F2-46FF-AA25-888B313ED2F5"
         mainsnak
-          datatype: "external-id"
+          datatype string "external-id"
           datavalue
-            type: "string"
-            value: "7406"
-          hash: "dabd8289a1e923f49eda83c0125c811510cba582"
-          property: "P9497"
-          snaktype: "value"
-        rank: "normal"
-        type: "statement"
-    P973: []
-      Q146786$ac8040fd-4b13-e0c9-2a5f-ad0a3a025380
+            type string "string"
+            value string "7406"
+          hash string "dabd8289a1e923f49eda83c0125c811510cba582"
+          property string "P9497"
+          snaktype string "value"
+        rank string "normal"
+        type string "statement"
+    P973 (at-0000)
+      at-0000
+        id string "Q146786$ac8040fd-4b13-e0c9-2a5f-ad0a3a025380"
         mainsnak
-          datatype: "url"
+          datatype string "url"
           datavalue
-            type: "string"
-            value: "https://universaldependencies.org/u/feat/Number.html#plur-plural-number"
-          hash: "79148d821faf1a9653451d63e35939785133b9a1"
-          property: "P973"
-          snaktype: "value"
+            type string "string"
+            value string "https://universaldependencies.org/u/feat/Number.html#plur-plural-number"
+          hash string "79148d821faf1a9653451d63e35939785133b9a1"
+          property string "P973"
+          snaktype string "value"
         qualifiers
-          P407: []
+          P407 (at-0000)
             at-0000
-              datatype: "wikibase-item"
+              datatype string "wikibase-item"
               datavalue
-                type: "wikibase-entityid"
+                type string "wikibase-entityid"
                 value
-                  entity-type: "item"
-                  id: "Q1860"
-                  numeric-id: 1860
-              hash: "daf1c4fcb58181b02dff9cc89deb084004ddae4b"
-              property: "P407"
-              snaktype: "value"
-        qualifiers-order: ("P407")
-        rank: "normal"
-        type: "statement"
+                  entity-type string "item"
+                  id string "Q1860"
+                  numeric-id 1860
+              hash string "daf1c4fcb58181b02dff9cc89deb084004ddae4b"
+              property string "P407"
+              snaktype string "value"
+        qualifiers-order ("P407")
+        rank string "normal"
+        type string "statement"
   descriptions
     af
-      language: "af"
-      value: "vorm van 'n selfstandige naamwoord wat dui op meer as een entiteit"
+      language string "af"
+      value string "vorm van 'n selfstandige naamwoord wat dui op meer as een entiteit"
     ar
-      language: "ar"
-      value: "ما دل على أكثر من اثنين"
+      language string "ar"
+      value string "ما دل على أكثر من اثنين"
     ast
-      language: "ast"
-      value: "númberu gramatical"
+      language string "ast"
+      value string "númberu gramatical"
     be-tarask
-      language: "be-tarask"
-      value: "граматычны лік"
+      language string "be-tarask"
+      value string "граматычны лік"
     bg
-      language: "bg"
-      value: "граматическо число, използвано за назоваване на повече от един предмет"
+      language string "bg"
+      value string "граматическо число, използвано за назоваване на повече от един предмет"
     bn
-      language: "bn"
-      value: "ব্যাকরণগত সংখ্যা"
+      language string "bn"
+      value string "ব্যাকরণগত সংখ্যা"
     br
-      language: "br"
-      value: "rumm yezhadurel"
+      language string "br"
+      value string "rumm yezhadurel"
     ca
-      language: "ca"
-      value: "categoria gramatical de nombre"
+      language string "ca"
+      value string "categoria gramatical de nombre"
     cs
-      language: "cs"
-      value: "gramatické číslo"
+      language string "cs"
+      value string "gramatické číslo"
     da
-      language: "da"
-      value: "grammatisk tal"
+      language string "da"
+      value string "grammatisk tal"
     dag
-      language: "dag"
-      value: "zaɣi bɔbgu"
+      language string "dag"
+      value string "zaɣi bɔbgu"
     de
-      language: "de"
-      value: "grammatische Kategorie"
+      language string "de"
+      value string "grammatische Kategorie"
     dty
-      language: "dty"
-      value: "व्याकरणीय अङ्का"
+      language string "dty"
+      value string "व्याकरणीय अङ्का"
     el
-      language: "el"
-      value: "γραμματικός αριθμός"
+      language string "el"
+      value string "γραμματικός αριθμός"
     en
-      language: "en"
-      value: "grammatical number"
+      language string "en"
+      value string "grammatical number"
     eo
-      language: "eo"
-      value: "gramatika nombro"
+      language string "eo"
+      value string "gramatika nombro"
     es
-      language: "es"
-      value: "número gramatical"
+      language string "es"
+      value string "número gramatical"
     fi
-      language: "fi"
-      value: "kieliopillinen luku"
+      language string "fi"
+      value string "kieliopillinen luku"
     fr
-      language: "fr"
-      value: "nombre grammatical"
+      language string "fr"
+      value string "nombre grammatical"
     ga
-      language: "ga"
-      value: "i gcúrsaí gramadaí"
+      language string "ga"
+      value string "i gcúrsaí gramadaí"
     gl
-      language: "gl"
-      value: "número gramatical"
+      language string "gl"
+      value string "número gramatical"
     gu
-      language: "gu"
-      value: "વ્યાકરણ વચન"
+      language string "gu"
+      value string "વ્યાકરણ વચન"
     he
-      language: "he"
-      value: "מספר דקדוקי"
+      language string "he"
+      value string "מספר דקדוקי"
     hsb
-      language: "hsb"
-      value: "gramatiska kategorija"
+      language string "hsb"
+      value string "gramatiska kategorija"
     ig
-      language: "ig"
-      value: "ọnụọgụ atụmatụokwu"
+      language string "ig"
+      value string "ọnụọgụ atụmatụokwu"
     it
-      language: "it"
-      value: "numero grammaticale che indica quando una certa quantità è numericamente superiore all'unità"
+      language string "it"
+      value string "numero grammaticale che indica quando una certa quantità è numericamente superiore all'unità"
     ja
-      language: "ja"
-      value: "文法上の数"
+      language string "ja"
+      value string "文法上の数"
     ko
-      language: "ko"
-      value: "문법적 수"
+      language string "ko"
+      value string "문법적 수"
     lb
-      language: "lb"
-      value: "grammatesch Zuel"
+      language string "lb"
+      value string "grammatesch Zuel"
     lv
-      language: "lv"
-      value: "gramatiskais skaitlis"
+      language string "lv"
+      value string "gramatiskais skaitlis"
     mnw
-      language: "mnw"
-      value: "လၟိဟ်မစပ်ကဵုသဒ္ဒါ"
+      language string "mnw"
+      value string "လၟိဟ်မစပ်ကဵုသဒ္ဒါ"
     ms
-      language: "ms"
-      value: "bilangan tatabahasa"
+      language string "ms"
+      value string "bilangan tatabahasa"
     mt
-      language: "mt"
-      value: "numru grammatikali"
+      language string "mt"
+      value string "numru grammatikali"
     nb
-      language: "nb"
-      value: "grammatisk tall"
+      language string "nb"
+      value string "grammatisk tall"
     ne
-      language: "ne"
-      value: "व्याकरणीय अङ्क"
+      language string "ne"
+      value string "व्याकरणीय अङ्क"
     nl
-      language: "nl"
-      value: "taal"
+      language string "nl"
+      value string "taal"
     pa
-      language: "pa"
-      value: "ਵਿਆਕਰਨਿਕ ਗਿਣਤੀ"
+      language string "pa"
+      value string "ਵਿਆਕਰਨਿਕ ਗਿਣਤੀ"
     pl
-      language: "pl"
-      value: "liczba gramatyczna"
+      language string "pl"
+      value string "liczba gramatyczna"
     pt
-      language: "pt"
-      value: "número gramatical"
+      language string "pt"
+      value string "número gramatical"
     ru
-      language: "ru"
-      value: "грамматическое число, используемое при обозначении нескольких предметов, объединённых по какому-либо признаку"
+      language string "ru"
+      value string "грамматическое число, используемое при обозначении нескольких предметов, объединённых по какому-либо признаку"
     scn
-      language: "scn"
-      value: "nùmmiru grammaticali"
+      language string "scn"
+      value string "nùmmiru grammaticali"
     shi
-      language: "shi"
-      value: "amḍan n tjṛṛumt"
+      language string "shi"
+      value string "amḍan n tjṛṛumt"
     sl
-      language: "sl"
-      value: "slovnično število"
+      language string "sl"
+      value string "slovnično število"
     sr
-      language: "sr"
-      value: "граматички број"
+      language string "sr"
+      value string "граматички број"
     sr-ec
-      language: "sr-ec"
-      value: "граматички број"
+      language string "sr-ec"
+      value string "граматички број"
     sv
-      language: "sv"
-      value: "grammatiskt antal"
+      language string "sv"
+      value string "grammatiskt antal"
     ta
-      language: "ta"
-      value: "இலக்கண எண்"
+      language string "ta"
+      value string "இலக்கண எண்"
     te
-      language: "te"
-      value: "వ్యాకరణాత్మక సంఖ్యాసూచకం"
+      language string "te"
+      value string "వ్యాకరణాత్మక సంఖ్యాసూచకం"
     th
-      language: "th"
-      value: "สรรพนามศัพท์บ่งชี้จำนวน"
+      language string "th"
+      value string "สรรพนามศัพท์บ่งชี้จำนวน"
     tr
-      language: "tr"
-      value: "dilbilgisel sayı"
+      language string "tr"
+      value string "dilbilgisel sayı"
     uk
-      language: "uk"
-      value: "в мовознавстві - граматична форма числа"
+      language string "uk"
+      value string "в мовознавстві - граматична форма числа"
     wa
-      language: "wa"
-      value: "nombe grammaticål"
+      language string "wa"
+      value string "nombe grammaticål"
     zh
-      language: "zh"
-      value: "語法上的數"
+      language string "zh"
+      value string "語法上的數"
     zh-hans
-      language: "zh-hans"
-      value: "语法上的数"
-  id: "Q146786"
+      language string "zh-hans"
+      value string "语法上的数"
+  id string "Q146786"
   labels
     af
-      language: "af"
-      value: "meervoud"
+      language string "af"
+      value string "meervoud"
     ang
-      language: "ang"
-      value: "manigfeald"
+      language string "ang"
+      value string "manigfeald"
     ar
-      language: "ar"
-      value: "جمع"
+      language string "ar"
+      value string "جمع"
     ary
-      language: "ary"
-      value: "الجمع"
+      language string "ary"
+      value string "الجمع"
     as
-      language: "as"
-      value: "বহুবচন"
+      language string "as"
+      value string "বহুবচন"
     ast
-      language: "ast"
-      value: "plural"
+      language string "ast"
+      value string "plural"
     bar
-      language: "bar"
-      value: "Plural"
+      language string "bar"
+      value string "Plural"
     be
-      language: "be"
-      value: "множны лік"
+      language string "be"
+      value string "множны лік"
     be-tarask
-      language: "be-tarask"
-      value: "множны лік"
+      language string "be-tarask"
+      value string "множны лік"
     bg
-      language: "bg"
-      value: "множествено число"
+      language string "bg"
+      value string "множествено число"
     bn
-      language: "bn"
-      value: "বহুবচন"
+      language string "bn"
+      value string "বহুবচন"
     br
-      language: "br"
-      value: "liester"
+      language string "br"
+      value string "liester"
     bs
-      language: "bs"
-      value: "množina"
+      language string "bs"
+      value string "množina"
     ca
-      language: "ca"
-      value: "plural"
+      language string "ca"
+      value string "plural"
     crh-ro
-      language: "crh-ro"
-      value: "kóplík"
+      language string "crh-ro"
+      value string "kóplík"
     cs
-      language: "cs"
-      value: "množné číslo"
+      language string "cs"
+      value string "množné číslo"
     cv
-      language: "cv"
-      value: "нумайлă хисеп"
+      language string "cv"
+      value string "нумайлă хисеп"
     cy
-      language: "cy"
-      value: "lluosog"
+      language string "cy"
+      value string "lluosog"
     da
-      language: "da"
-      value: "flertal"
+      language string "da"
+      value string "flertal"
     dag
-      language: "dag"
-      value: "bɔbigu"
+      language string "dag"
+      value string "bɔbigu"
     de
-      language: "de"
-      value: "Plural"
+      language string "de"
+      value string "Plural"
     dsb
-      language: "dsb"
-      value: "plural"
+      language string "dsb"
+      value string "plural"
     dty
-      language: "dty"
-      value: "बहुवचन"
+      language string "dty"
+      value string "बहुवचन"
     el
-      language: "el"
-      value: "πληθυντικός"
+      language string "el"
+      value string "πληθυντικός"
     en
-      language: "en"
-      value: "plural"
+      language string "en"
+      value string "plural"
     en-gb
-      language: "en-gb"
-      value: "plural"
+      language string "en-gb"
+      value string "plural"
     eo
-      language: "eo"
-      value: "pluralo"
+      language string "eo"
+      value string "pluralo"
     es
-      language: "es"
-      value: "plural"
+      language string "es"
+      value string "plural"
     et
-      language: "et"
-      value: "mitmus"
+      language string "et"
+      value string "mitmus"
     eu
-      language: "eu"
-      value: "plural"
+      language string "eu"
+      value string "plural"
     ext
-      language: "ext"
-      value: "plural"
+      language string "ext"
+      value string "plural"
     fa
-      language: "fa"
-      value: "جمع"
+      language string "fa"
+      value string "جمع"
     fi
-      language: "fi"
-      value: "monikko"
+      language string "fi"
+      value string "monikko"
     fo
-      language: "fo"
-      value: "fleirtal"
+      language string "fo"
+      value string "fleirtal"
     fr
-      language: "fr"
-      value: "pluriel"
+      language string "fr"
+      value string "pluriel"
     fy
-      language: "fy"
-      value: "meartal"
+      language string "fy"
+      value string "meartal"
     ga
-      language: "ga"
-      value: "iolra"
+      language string "ga"
+      value string "iolra"
     gd
-      language: "gd"
-      value: "iolra"
+      language string "gd"
+      value string "iolra"
     gl
-      language: "gl"
-      value: "plural"
+      language string "gl"
+      value string "plural"
     got
-      language: "got"
-      value: "𐍆𐌹𐌻𐌿𐍂𐌰𐌸𐌾𐍉"
+      language string "got"
+      value string "𐍆𐌹𐌻𐌿𐍂𐌰𐌸𐌾𐍉"
     grc
-      language: "grc"
-      value: "πληθυντικός"
+      language string "grc"
+      value string "πληθυντικός"
     gsw
-      language: "gsw"
-      value: "Plural"
+      language string "gsw"
+      value string "Plural"
     gu
-      language: "gu"
-      value: "બહુવચન"
+      language string "gu"
+      value string "બહુવચન"
     guw
-      language: "guw"
-      value: "hugan-dopo"
+      language string "guw"
+      value string "hugan-dopo"
     ha
-      language: "ha"
-      value: "jam'i"
+      language string "ha"
+      value string "jam'i"
     haw
-      language: "haw"
-      value: "helu nui"
+      language string "haw"
+      value string "helu nui"
     he
-      language: "he"
-      value: "רבים"
+      language string "he"
+      value string "רבים"
     hi
-      language: "hi"
-      value: "बहुवचन"
+      language string "hi"
+      value string "बहुवचन"
     hno
-      language: "hno"
-      value: "جمع"
+      language string "hno"
+      value string "جمع"
     hr
-      language: "hr"
-      value: "množina"
+      language string "hr"
+      value string "množina"
     hsb
-      language: "hsb"
-      value: "plural"
+      language string "hsb"
+      value string "plural"
     hu
-      language: "hu"
-      value: "többes szám"
+      language string "hu"
+      value string "többes szám"
     hy
-      language: "hy"
-      value: "հոգնակի թիվ"
+      language string "hy"
+      value string "հոգնակի թիվ"
     id
-      language: "id"
-      value: "jamak"
+      language string "id"
+      value string "jamak"
     ig
-      language: "ig"
-      value: "ụ̀bàrà"
+      language string "ig"
+      value string "ụ̀bàrà"
     is
-      language: "is"
-      value: "fleirtala"
+      language string "is"
+      value string "fleirtala"
     it
-      language: "it"
-      value: "plurale"
+      language string "it"
+      value string "plurale"
     ja
-      language: "ja"
-      value: "複数"
+      language string "ja"
+      value string "複数"
     jbo
-      language: "jbo"
-      value: "sordaivla"
+      language string "jbo"
+      value string "sordaivla"
     ka
-      language: "ka"
-      value: "მრავლობითი რიცხვი"
+      language string "ka"
+      value string "მრავლობითი რიცხვი"
     kaa
-      language: "kaa"
-      value: "kóplik"
+      language string "kaa"
+      value string "kóplik"
     kab
-      language: "kab"
-      value: "asget"
+      language string "kab"
+      value string "asget"
     kk
-      language: "kk"
-      value: "көптік жалғау"
+      language string "kk"
+      value string "көптік жалғау"
     kl
-      language: "kl"
-      value: "qasseersiut"
+      language string "kl"
+      value string "qasseersiut"
     ko
-      language: "ko"
-      value: "복수"
+      language string "ko"
+      value string "복수"
     krj
-      language: "krj"
-      value: "sarakë̂"
+      language string "krj"
+      value string "sarakë̂"
     ku
-      language: "ku"
-      value: "pirjimar"
+      language string "ku"
+      value string "pirjimar"
     ku-latn
-      language: "ku-latn"
-      value: "pirjimar"
+      language string "ku-latn"
+      value string "pirjimar"
     la
-      language: "la"
-      value: "pluralis"
+      language string "la"
+      value string "pluralis"
     lb
-      language: "lb"
-      value: "Méizuel"
+      language string "lb"
+      value string "Méizuel"
     lmo
-      language: "lmo"
-      value: "plural"
+      language string "lmo"
+      value string "plural"
     ln
-      language: "ln"
-      value: "boyíké"
+      language string "ln"
+      value string "boyíké"
     lt
-      language: "lt"
-      value: "daugiskaita"
+      language string "lt"
+      value string "daugiskaita"
     lv
-      language: "lv"
-      value: "daudzskaitlis"
+      language string "lv"
+      value string "daudzskaitlis"
     mk
-      language: "mk"
-      value: "множина"
+      language string "mk"
+      value string "множина"
     ml
-      language: "ml"
-      value: "ബഹുവചനം"
+      language string "ml"
+      value string "ബഹുവചനം"
     mn
-      language: "mn"
-      value: "олон тоо"
+      language string "mn"
+      value string "олон тоо"
     mnw
-      language: "mnw"
-      value: "လၟိဟ်ဂလိုင်"
+      language string "mnw"
+      value string "လၟိဟ်ဂလိုင်"
     ms
-      language: "ms"
-      value: "jamak"
+      language string "ms"
+      value string "jamak"
     ms-arab
-      language: "ms-arab"
-      value: "جمع"
+      language string "ms-arab"
+      value string "جمع"
     mt
-      language: "mt"
-      value: "plural"
+      language string "mt"
+      value string "plural"
     nb
-      language: "nb"
-      value: "flertall"
+      language string "nb"
+      value string "flertall"
     nds
-      language: "nds"
-      value: "Mehrtall"
+      language string "nds"
+      value string "Mehrtall"
     ne
-      language: "ne"
-      value: "बहुवचन"
+      language string "ne"
+      value string "बहुवचन"
     nl
-      language: "nl"
-      value: "meervoud"
+      language string "nl"
+      value string "meervoud"
     nn
-      language: "nn"
-      value: "fleirtal"
+      language string "nn"
+      value string "fleirtal"
     oc
-      language: "oc"
-      value: "plurau"
+      language string "oc"
+      value string "plurau"
     pa
-      language: "pa"
-      value: "ਬਹੁ ਵਚਨ"
+      language string "pa"
+      value string "ਬਹੁ ਵਚਨ"
     pl
-      language: "pl"
-      value: "liczba mnoga"
+      language string "pl"
+      value string "liczba mnoga"
     pnb
-      language: "pnb"
-      value: "جمع"
+      language string "pnb"
+      value string "جمع"
     pt
-      language: "pt"
-      value: "plural"
+      language string "pt"
+      value string "plural"
     qu
-      language: "qu"
-      value: "achkha yupa"
+      language string "qu"
+      value string "achkha yupa"
     ro
-      language: "ro"
-      value: "plural"
+      language string "ro"
+      value string "plural"
     ru
-      language: "ru"
-      value: "множественное число"
+      language string "ru"
+      value string "множественное число"
     sa
-      language: "sa"
-      value: "बहुवचनम्"
+      language string "sa"
+      value string "बहुवचनम्"
     scn
-      language: "scn"
-      value: "plurali"
+      language string "scn"
+      value string "plurali"
     sco
-      language: "sco"
-      value: "plural"
+      language string "sco"
+      value string "plural"
     sd
-      language: "sd"
-      value: "جمع"
+      language string "sd"
+      value string "جمع"
     se
-      language: "se"
-      value: "máŋggaidlohku"
+      language string "se"
+      value string "máŋggaidlohku"
     sh
-      language: "sh"
-      value: "množina"
+      language string "sh"
+      value string "množina"
     shi
-      language: "shi"
-      value: "amagut"
+      language string "shi"
+      value string "amagut"
     sk
-      language: "sk"
-      value: "množné číslo"
+      language string "sk"
+      value string "množné číslo"
     skr
-      language: "skr"
-      value: "ڄمع"
+      language string "skr"
+      value string "ڄمع"
     sl
-      language: "sl"
-      value: "množina"
+      language string "sl"
+      value string "množina"
     smn
-      language: "smn"
-      value: "maaŋgâloho"
+      language string "smn"
+      value string "maaŋgâloho"
     sms
-      language: "sms"
-      value: "määŋgailååkk"
+      language string "sms"
+      value string "määŋgailååkk"
     sq
-      language: "sq"
-      value: "shumës"
+      language string "sq"
+      value string "shumës"
     sr
-      language: "sr"
-      value: "множина"
+      language string "sr"
+      value string "множина"
     sr-ec
-      language: "sr-ec"
-      value: "множина"
+      language string "sr-ec"
+      value string "множина"
     sv
-      language: "sv"
-      value: "plural"
+      language string "sv"
+      value string "plural"
     ta
-      language: "ta"
-      value: "பன்மை"
+      language string "ta"
+      value string "பன்மை"
     te
-      language: "te"
-      value: "బహువచనం"
+      language string "te"
+      value string "బహువచనం"
     tg
-      language: "tg"
-      value: "шакли ҷамъ"
+      language string "tg"
+      value string "шакли ҷамъ"
     th
-      language: "th"
-      value: "คำพหูพจน์"
+      language string "th"
+      value string "คำพหูพจน์"
     tok
-      language: "tok"
-      value: "mute"
+      language string "tok"
+      value string "mute"
     tr
-      language: "tr"
-      value: "çoğul"
+      language string "tr"
+      value string "çoğul"
     tt
-      language: "tt"
-      value: "күплек саны"
+      language string "tt"
+      value string "күплек саны"
     tt-cyrl
-      language: "tt-cyrl"
-      value: "күплек саны"
+      language string "tt-cyrl"
+      value string "күплек саны"
     uk
-      language: "uk"
-      value: "множина"
+      language string "uk"
+      value string "множина"
     ur
-      language: "ur"
-      value: "جمع"
+      language string "ur"
+      value string "جمع"
     vec
-      language: "vec"
-      value: "plurałe"
+      language string "vec"
+      value string "plurałe"
     vi
-      language: "vi"
-      value: "số nhiều"
+      language string "vi"
+      value string "số nhiều"
     wa
-      language: "wa"
-      value: "pluriyal"
+      language string "wa"
+      value string "pluriyal"
     wuu
-      language: "wuu"
-      value: "复数"
+      language string "wuu"
+      value string "复数"
     yi
-      language: "yi"
-      value: "לשון־רבים"
+      language string "yi"
+      value string "לשון־רבים"
     yue
-      language: "yue"
-      value: "眾數"
+      language string "yue"
+      value string "眾數"
     zh
-      language: "zh"
-      value: "複數"
+      language string "zh"
+      value string "複數"
     zh-cn
-      language: "zh-cn"
-      value: "复数"
+      language string "zh-cn"
+      value string "复数"
     zh-hans
-      language: "zh-hans"
-      value: "复数"
+      language string "zh-hans"
+      value string "复数"
     zh-hant
-      language: "zh-hant"
-      value: "複數"
+      language string "zh-hant"
+      value string "複數"
     zh-hk
-      language: "zh-hk"
-      value: "複數"
+      language string "zh-hk"
+      value string "複數"
     zh-sg
-      language: "zh-sg"
-      value: "复数"
+      language string "zh-sg"
+      value string "复数"
     zh-tw
-      language: "zh-tw"
-      value: "複數"
-  lastrevid: 2493400474
-  modified: "2026-05-17T22:03:06Z"
-  ns: 0
-  pageid: 148388
+      language string "zh-tw"
+      value string "複數"
+  lastrevid 2493400474
+  modified string "2026-05-17T22:03:06Z"
+  ns 0
+  pageid 148388
   sitelinks
     afwiki
-      badges: ()
-      site: "afwiki"
-      title: "Meervoud"
-      url: "https://af.wikipedia.org/wiki/Meervoud"
+      badges ()
+      site string "afwiki"
+      title string "Meervoud"
+      url string "https://af.wikipedia.org/wiki/Meervoud"
     alswiki
-      badges: ()
-      site: "alswiki"
-      title: "Plural"
-      url: "https://als.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "alswiki"
+      title string "Plural"
+      url string "https://als.wikipedia.org/wiki/Plural"
     arwiki
-      badges: ()
-      site: "arwiki"
-      title: "جمع (لغة)"
-      url: "https://ar.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D9%84%D8%BA%D8%A9)"
+      badges ()
+      site string "arwiki"
+      title string "جمع (لغة)"
+      url string "https://ar.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D9%84%D8%BA%D8%A9)"
     barwiki
-      badges: ()
-      site: "barwiki"
-      title: "Plural"
-      url: "https://bar.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "barwiki"
+      title string "Plural"
+      url string "https://bar.wikipedia.org/wiki/Plural"
     brwiki
-      badges: ()
-      site: "brwiki"
-      title: "Liester"
-      url: "https://br.wikipedia.org/wiki/Liester"
+      badges ()
+      site string "brwiki"
+      title string "Liester"
+      url string "https://br.wikipedia.org/wiki/Liester"
     bswiki
-      badges: ()
-      site: "bswiki"
-      title: "Množina"
-      url: "https://bs.wikipedia.org/wiki/Mno%C5%BEina"
+      badges ()
+      site string "bswiki"
+      title string "Množina"
+      url string "https://bs.wikipedia.org/wiki/Mno%C5%BEina"
     cawiki
-      badges: ()
-      site: "cawiki"
-      title: "Plural"
-      url: "https://ca.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "cawiki"
+      title string "Plural"
+      url string "https://ca.wikipedia.org/wiki/Plural"
     cswiki
-      badges: ()
-      site: "cswiki"
-      title: "Množné číslo"
-      url: "https://cs.wikipedia.org/wiki/Mno%C5%BEn%C3%A9_%C4%8D%C3%ADslo"
+      badges ()
+      site string "cswiki"
+      title string "Množné číslo"
+      url string "https://cs.wikipedia.org/wiki/Mno%C5%BEn%C3%A9_%C4%8D%C3%ADslo"
     cvwiki
-      badges: ()
-      site: "cvwiki"
-      title: "Нумайлă хисеп"
-      url: "https://cv.wikipedia.org/wiki/%D0%9D%D1%83%D0%BC%D0%B0%D0%B9%D0%BB%C4%83_%D1%85%D0%B8%D1%81%D0%B5%D0%BF"
+      badges ()
+      site string "cvwiki"
+      title string "Нумайлă хисеп"
+      url string "https://cv.wikipedia.org/wiki/%D0%9D%D1%83%D0%BC%D0%B0%D0%B9%D0%BB%C4%83_%D1%85%D0%B8%D1%81%D0%B5%D0%BF"
     dewiki
-      badges: ()
-      site: "dewiki"
-      title: "Plural"
-      url: "https://de.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "dewiki"
+      title string "Plural"
+      url string "https://de.wikipedia.org/wiki/Plural"
     dsbwiki
-      badges: ()
-      site: "dsbwiki"
-      title: "Plural"
-      url: "https://dsb.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "dsbwiki"
+      title string "Plural"
+      url string "https://dsb.wikipedia.org/wiki/Plural"
     elwiki
-      badges: ()
-      site: "elwiki"
-      title: "Πληθυντικός"
-      url: "https://el.wikipedia.org/wiki/%CE%A0%CE%BB%CE%B7%CE%B8%CF%85%CE%BD%CF%84%CE%B9%CE%BA%CF%8C%CF%82"
+      badges ()
+      site string "elwiki"
+      title string "Πληθυντικός"
+      url string "https://el.wikipedia.org/wiki/%CE%A0%CE%BB%CE%B7%CE%B8%CF%85%CE%BD%CF%84%CE%B9%CE%BA%CF%8C%CF%82"
     enwiki
-      badges: ()
-      site: "enwiki"
-      title: "Plural"
-      url: "https://en.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "enwiki"
+      title string "Plural"
+      url string "https://en.wikipedia.org/wiki/Plural"
     eowiki
-      badges: ()
-      site: "eowiki"
-      title: "Pluralo"
-      url: "https://eo.wikipedia.org/wiki/Pluralo"
+      badges ()
+      site string "eowiki"
+      title string "Pluralo"
+      url string "https://eo.wikipedia.org/wiki/Pluralo"
     eswiki
-      badges: ()
-      site: "eswiki"
-      title: "Plural"
-      url: "https://es.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "eswiki"
+      title string "Plural"
+      url string "https://es.wikipedia.org/wiki/Plural"
     etwiki
-      badges: ()
-      site: "etwiki"
-      title: "Mitmus"
-      url: "https://et.wikipedia.org/wiki/Mitmus"
+      badges ()
+      site string "etwiki"
+      title string "Mitmus"
+      url string "https://et.wikipedia.org/wiki/Mitmus"
     etwikiquote
-      badges: ()
-      site: "etwikiquote"
-      title: "Mitmus"
-      url: "https://et.wikiquote.org/wiki/Mitmus"
+      badges ()
+      site string "etwikiquote"
+      title string "Mitmus"
+      url string "https://et.wikiquote.org/wiki/Mitmus"
     euwiki
-      badges: ()
-      site: "euwiki"
-      title: "Plural"
-      url: "https://eu.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "euwiki"
+      title string "Plural"
+      url string "https://eu.wikipedia.org/wiki/Plural"
     fawiki
-      badges: ()
-      site: "fawiki"
-      title: "جمع (دستور زبان)"
-      url: "https://fa.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D8%AF%D8%B3%D8%AA%D9%88%D8%B1_%D8%B2%D8%A8%D8%A7%D9%86)"
+      badges ()
+      site string "fawiki"
+      title string "جمع (دستور زبان)"
+      url string "https://fa.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D8%AF%D8%B3%D8%AA%D9%88%D8%B1_%D8%B2%D8%A8%D8%A7%D9%86)"
     frwiki
-      badges: ()
-      site: "frwiki"
-      title: "Pluriel"
-      url: "https://fr.wikipedia.org/wiki/Pluriel"
+      badges ()
+      site string "frwiki"
+      title string "Pluriel"
+      url string "https://fr.wikipedia.org/wiki/Pluriel"
     frwikiversity
-      badges: ()
-      site: "frwikiversity"
-      title: "Pluriel des noms en français"
-      url: "https://fr.wikiversity.org/wiki/Pluriel_des_noms_en_fran%C3%A7ais"
+      badges ()
+      site string "frwikiversity"
+      title string "Pluriel des noms en français"
+      url string "https://fr.wikiversity.org/wiki/Pluriel_des_noms_en_fran%C3%A7ais"
     fywiki
-      badges: ()
-      site: "fywiki"
-      title: "Meartal"
-      url: "https://fy.wikipedia.org/wiki/Meartal"
+      badges ()
+      site string "fywiki"
+      title string "Meartal"
+      url string "https://fy.wikipedia.org/wiki/Meartal"
     gdwiki
-      badges: ()
-      site: "gdwiki"
-      title: "Iolra"
-      url: "https://gd.wikipedia.org/wiki/Iolra"
+      badges ()
+      site string "gdwiki"
+      title string "Iolra"
+      url string "https://gd.wikipedia.org/wiki/Iolra"
     gotwiki
-      badges: ()
-      site: "gotwiki"
-      title: "𐌼𐌰𐌽𐌰𐌲𐍆𐌰𐌻𐌸𐌴𐌹"
-      url: "https://got.wikipedia.org/wiki/%F0%90%8C%BC%F0%90%8C%B0%F0%90%8C%BD%F0%90%8C%B0%F0%90%8C%B2%F0%90%8D%86%F0%90%8C%B0%F0%90%8C%BB%F0%90%8C%B8%F0%90%8C%B4%F0%90%8C%B9"
+      badges ()
+      site string "gotwiki"
+      title string "𐌼𐌰𐌽𐌰𐌲𐍆𐌰𐌻𐌸𐌴𐌹"
+      url string "https://got.wikipedia.org/wiki/%F0%90%8C%BC%F0%90%8C%B0%F0%90%8C%BD%F0%90%8C%B0%F0%90%8C%B2%F0%90%8D%86%F0%90%8C%B0%F0%90%8C%BB%F0%90%8C%B8%F0%90%8C%B4%F0%90%8C%B9"
     hewiki
-      badges: ("Q70894304")
-      site: "hewiki"
-      title: "רבים"
-      url: "https://he.wikipedia.org/wiki/%D7%A8%D7%91%D7%99%D7%9D"
+      badges ("Q70894304")
+      site string "hewiki"
+      title string "רבים"
+      url string "https://he.wikipedia.org/wiki/%D7%A8%D7%91%D7%99%D7%9D"
     hiwiki
-      badges: ()
-      site: "hiwiki"
-      title: "बहुवचन"
-      url: "https://hi.wikipedia.org/wiki/%E0%A4%AC%E0%A4%B9%E0%A5%81%E0%A4%B5%E0%A4%9A%E0%A4%A8"
+      badges ()
+      site string "hiwiki"
+      title string "बहुवचन"
+      url string "https://hi.wikipedia.org/wiki/%E0%A4%AC%E0%A4%B9%E0%A5%81%E0%A4%B5%E0%A4%9A%E0%A4%A8"
     hrwiki
-      badges: ()
-      site: "hrwiki"
-      title: "Množina"
-      url: "https://hr.wikipedia.org/wiki/Mno%C5%BEina"
+      badges ()
+      site string "hrwiki"
+      title string "Množina"
+      url string "https://hr.wikipedia.org/wiki/Mno%C5%BEina"
     hsbwiki
-      badges: ()
-      site: "hsbwiki"
-      title: "Plural"
-      url: "https://hsb.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "hsbwiki"
+      title string "Plural"
+      url string "https://hsb.wikipedia.org/wiki/Plural"
     huwiki
-      badges: ()
-      site: "huwiki"
-      title: "Többes szám"
-      url: "https://hu.wikipedia.org/wiki/T%C3%B6bbes_sz%C3%A1m"
+      badges ()
+      site string "huwiki"
+      title string "Többes szám"
+      url string "https://hu.wikipedia.org/wiki/T%C3%B6bbes_sz%C3%A1m"
     hywiki
-      badges: ()
-      site: "hywiki"
-      title: "Հոգնակի թիվ"
-      url: "https://hy.wikipedia.org/wiki/%D5%80%D5%B8%D5%A3%D5%B6%D5%A1%D5%AF%D5%AB_%D5%A9%D5%AB%D5%BE"
+      badges ()
+      site string "hywiki"
+      title string "Հոգնակի թիվ"
+      url string "https://hy.wikipedia.org/wiki/%D5%80%D5%B8%D5%A3%D5%B6%D5%A1%D5%AF%D5%AB_%D5%A9%D5%AB%D5%BE"
     idwiki
-      badges: ()
-      site: "idwiki"
-      title: "Jamak"
-      url: "https://id.wikipedia.org/wiki/Jamak"
+      badges ()
+      site string "idwiki"
+      title string "Jamak"
+      url string "https://id.wikipedia.org/wiki/Jamak"
     iswiki
-      badges: ()
-      site: "iswiki"
-      title: "Fleirtala"
-      url: "https://is.wikipedia.org/wiki/Fleirtala"
+      badges ()
+      site string "iswiki"
+      title string "Fleirtala"
+      url string "https://is.wikipedia.org/wiki/Fleirtala"
     itwiki
-      badges: ()
-      site: "itwiki"
-      title: "Plurale"
-      url: "https://it.wikipedia.org/wiki/Plurale"
+      badges ()
+      site string "itwiki"
+      title string "Plurale"
+      url string "https://it.wikipedia.org/wiki/Plurale"
     jawiki
-      badges: ()
-      site: "jawiki"
-      title: "複数"
-      url: "https://ja.wikipedia.org/wiki/%E8%A4%87%E6%95%B0"
+      badges ()
+      site string "jawiki"
+      title string "複数"
+      url string "https://ja.wikipedia.org/wiki/%E8%A4%87%E6%95%B0"
     jbowiki
-      badges: ()
-      site: "jbowiki"
-      title: "sordaivla"
-      url: "https://jbo.wikipedia.org/wiki/sordaivla"
+      badges ()
+      site string "jbowiki"
+      title string "sordaivla"
+      url string "https://jbo.wikipedia.org/wiki/sordaivla"
     kabwiki
-      badges: ()
-      site: "kabwiki"
-      title: "Asget"
-      url: "https://kab.wikipedia.org/wiki/Asget"
+      badges ()
+      site string "kabwiki"
+      title string "Asget"
+      url string "https://kab.wikipedia.org/wiki/Asget"
     kawiki
-      badges: ()
-      site: "kawiki"
-      title: "მრავლობითი რიცხვი"
-      url: "https://ka.wikipedia.org/wiki/%E1%83%9B%E1%83%A0%E1%83%90%E1%83%95%E1%83%9A%E1%83%9D%E1%83%91%E1%83%98%E1%83%97%E1%83%98_%E1%83%A0%E1%83%98%E1%83%AA%E1%83%AE%E1%83%95%E1%83%98"
+      badges ()
+      site string "kawiki"
+      title string "მრავლობითი რიცხვი"
+      url string "https://ka.wikipedia.org/wiki/%E1%83%9B%E1%83%A0%E1%83%90%E1%83%95%E1%83%9A%E1%83%9D%E1%83%91%E1%83%98%E1%83%97%E1%83%98_%E1%83%A0%E1%83%98%E1%83%AA%E1%83%AE%E1%83%95%E1%83%98"
     kkwiki
-      badges: ()
-      site: "kkwiki"
-      title: "Көптік жалғау"
-      url: "https://kk.wikipedia.org/wiki/%D0%9A%D3%A9%D0%BF%D1%82%D1%96%D0%BA_%D0%B6%D0%B0%D0%BB%D2%93%D0%B0%D1%83"
+      badges ()
+      site string "kkwiki"
+      title string "Көптік жалғау"
+      url string "https://kk.wikipedia.org/wiki/%D0%9A%D3%A9%D0%BF%D1%82%D1%96%D0%BA_%D0%B6%D0%B0%D0%BB%D2%93%D0%B0%D1%83"
     kowiki
-      badges: ()
-      site: "kowiki"
-      title: "복수 (문법)"
-      url: "https://ko.wikipedia.org/wiki/%EB%B3%B5%EC%88%98_(%EB%AC%B8%EB%B2%95)"
+      badges ()
+      site string "kowiki"
+      title string "복수 (문법)"
+      url string "https://ko.wikipedia.org/wiki/%EB%B3%B5%EC%88%98_(%EB%AC%B8%EB%B2%95)"
     lawiki
-      badges: ()
-      site: "lawiki"
-      title: "Pluralis"
-      url: "https://la.wikipedia.org/wiki/Pluralis"
+      badges ()
+      site string "lawiki"
+      title string "Pluralis"
+      url string "https://la.wikipedia.org/wiki/Pluralis"
     lbwiki
-      badges: ()
-      site: "lbwiki"
-      title: "Méizuel"
-      url: "https://lb.wikipedia.org/wiki/M%C3%A9izuel"
+      badges ()
+      site string "lbwiki"
+      title string "Méizuel"
+      url string "https://lb.wikipedia.org/wiki/M%C3%A9izuel"
     lnwiki
-      badges: ()
-      site: "lnwiki"
-      title: "Boyíké"
-      url: "https://ln.wikipedia.org/wiki/Boy%C3%ADk%C3%A9"
+      badges ()
+      site string "lnwiki"
+      title string "Boyíké"
+      url string "https://ln.wikipedia.org/wiki/Boy%C3%ADk%C3%A9"
     ltwiki
-      badges: ()
-      site: "ltwiki"
-      title: "Daugiskaita"
-      url: "https://lt.wikipedia.org/wiki/Daugiskaita"
+      badges ()
+      site string "ltwiki"
+      title string "Daugiskaita"
+      url string "https://lt.wikipedia.org/wiki/Daugiskaita"
     lvwiki
-      badges: ()
-      site: "lvwiki"
-      title: "Daudzskaitlis"
-      url: "https://lv.wikipedia.org/wiki/Daudzskaitlis"
+      badges ()
+      site string "lvwiki"
+      title string "Daudzskaitlis"
+      url string "https://lv.wikipedia.org/wiki/Daudzskaitlis"
     mkwiki
-      badges: ()
-      site: "mkwiki"
-      title: "Множина"
-      url: "https://mk.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B8%D0%BD%D0%B0"
+      badges ()
+      site string "mkwiki"
+      title string "Множина"
+      url string "https://mk.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B8%D0%BD%D0%B0"
     mnwiki
-      badges: ()
-      site: "mnwiki"
-      title: "Олон тоо"
-      url: "https://mn.wikipedia.org/wiki/%D0%9E%D0%BB%D0%BE%D0%BD_%D1%82%D0%BE%D0%BE"
+      badges ()
+      site string "mnwiki"
+      title string "Олон тоо"
+      url string "https://mn.wikipedia.org/wiki/%D0%9E%D0%BB%D0%BE%D0%BD_%D1%82%D0%BE%D0%BE"
     mswiki
-      badges: ()
-      site: "mswiki"
-      title: "Jamak"
-      url: "https://ms.wikipedia.org/wiki/Jamak"
+      badges ()
+      site string "mswiki"
+      title string "Jamak"
+      url string "https://ms.wikipedia.org/wiki/Jamak"
     ndswiki
-      badges: ()
-      site: "ndswiki"
-      title: "Mehrtall"
-      url: "https://nds.wikipedia.org/wiki/Mehrtall"
+      badges ()
+      site string "ndswiki"
+      title string "Mehrtall"
+      url string "https://nds.wikipedia.org/wiki/Mehrtall"
     nlwiki
-      badges: ()
-      site: "nlwiki"
-      title: "Meervoud (taal)"
-      url: "https://nl.wikipedia.org/wiki/Meervoud_(taal)"
+      badges ()
+      site string "nlwiki"
+      title string "Meervoud (taal)"
+      url string "https://nl.wikipedia.org/wiki/Meervoud_(taal)"
     nnwiki
-      badges: ()
-      site: "nnwiki"
-      title: "Pluralis"
-      url: "https://nn.wikipedia.org/wiki/Pluralis"
+      badges ()
+      site string "nnwiki"
+      title string "Pluralis"
+      url string "https://nn.wikipedia.org/wiki/Pluralis"
     nowiki
-      badges: ()
-      site: "nowiki"
-      title: "Pluralis"
-      url: "https://no.wikipedia.org/wiki/Pluralis"
+      badges ()
+      site string "nowiki"
+      title string "Pluralis"
+      url string "https://no.wikipedia.org/wiki/Pluralis"
     ocwiki
-      badges: ()
-      site: "ocwiki"
-      title: "Plural"
-      url: "https://oc.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "ocwiki"
+      title string "Plural"
+      url string "https://oc.wikipedia.org/wiki/Plural"
     plwiki
-      badges: ()
-      site: "plwiki"
-      title: "Liczba mnoga"
-      url: "https://pl.wikipedia.org/wiki/Liczba_mnoga"
+      badges ()
+      site string "plwiki"
+      title string "Liczba mnoga"
+      url string "https://pl.wikipedia.org/wiki/Liczba_mnoga"
     pnbwiki
-      badges: ()
-      site: "pnbwiki"
-      title: "جمع"
-      url: "https://pnb.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9"
+      badges ()
+      site string "pnbwiki"
+      title string "جمع"
+      url string "https://pnb.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9"
     ptwiki
-      badges: ()
-      site: "ptwiki"
-      title: "Plural"
-      url: "https://pt.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "ptwiki"
+      title string "Plural"
+      url string "https://pt.wikipedia.org/wiki/Plural"
     quwiki
-      badges: ()
-      site: "quwiki"
-      title: "Achkha yupa"
-      url: "https://qu.wikipedia.org/wiki/Achkha_yupa"
+      badges ()
+      site string "quwiki"
+      title string "Achkha yupa"
+      url string "https://qu.wikipedia.org/wiki/Achkha_yupa"
     ruwiki
-      badges: ()
-      site: "ruwiki"
-      title: "Множественное число"
-      url: "https://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5_%D1%87%D0%B8%D1%81%D0%BB%D0%BE"
+      badges ()
+      site string "ruwiki"
+      title string "Множественное число"
+      url string "https://ru.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D0%B5_%D1%87%D0%B8%D1%81%D0%BB%D0%BE"
     scowiki
-      badges: ()
-      site: "scowiki"
-      title: "Plural"
-      url: "https://sco.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "scowiki"
+      title string "Plural"
+      url string "https://sco.wikipedia.org/wiki/Plural"
     sewiki
-      badges: ()
-      site: "sewiki"
-      title: "Máŋggaidlohku"
-      url: "https://se.wikipedia.org/wiki/M%C3%A1%C5%8Bggaidlohku"
+      badges ()
+      site string "sewiki"
+      title string "Máŋggaidlohku"
+      url string "https://se.wikipedia.org/wiki/M%C3%A1%C5%8Bggaidlohku"
     shiwiki
-      badges: ()
-      site: "shiwiki"
-      title: "Amagut (tutlayt)"
-      url: "https://shi.wikipedia.org/wiki/Amagut_(tutlayt)"
+      badges ()
+      site string "shiwiki"
+      title string "Amagut (tutlayt)"
+      url string "https://shi.wikipedia.org/wiki/Amagut_(tutlayt)"
     shwiki
-      badges: ()
-      site: "shwiki"
-      title: "Množina"
-      url: "https://sh.wikipedia.org/wiki/Mno%C5%BEina"
+      badges ()
+      site string "shwiki"
+      title string "Množina"
+      url string "https://sh.wikipedia.org/wiki/Mno%C5%BEina"
     simplewiki
-      badges: ()
-      site: "simplewiki"
-      title: "Plural"
-      url: "https://simple.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "simplewiki"
+      title string "Plural"
+      url string "https://simple.wikipedia.org/wiki/Plural"
     skwiki
-      badges: ()
-      site: "skwiki"
-      title: "Množné číslo"
-      url: "https://sk.wikipedia.org/wiki/Mno%C5%BEn%C3%A9_%C4%8D%C3%ADslo"
+      badges ()
+      site string "skwiki"
+      title string "Množné číslo"
+      url string "https://sk.wikipedia.org/wiki/Mno%C5%BEn%C3%A9_%C4%8D%C3%ADslo"
     slwiki
-      badges: ()
-      site: "slwiki"
-      title: "Množina"
-      url: "https://sl.wikipedia.org/wiki/Mno%C5%BEina"
+      badges ()
+      site string "slwiki"
+      title string "Množina"
+      url string "https://sl.wikipedia.org/wiki/Mno%C5%BEina"
     srwiki
-      badges: ()
-      site: "srwiki"
-      title: "Množina"
-      url: "https://sr.wikipedia.org/wiki/Mno%C5%BEina"
+      badges ()
+      site string "srwiki"
+      title string "Množina"
+      url string "https://sr.wikipedia.org/wiki/Mno%C5%BEina"
     svwiki
-      badges: ()
-      site: "svwiki"
-      title: "Pluralis"
-      url: "https://sv.wikipedia.org/wiki/Pluralis"
+      badges ()
+      site string "svwiki"
+      title string "Pluralis"
+      url string "https://sv.wikipedia.org/wiki/Pluralis"
     tawiki
-      badges: ()
-      site: "tawiki"
-      title: "பன்மை"
-      url: "https://ta.wikipedia.org/wiki/%E0%AE%AA%E0%AE%A9%E0%AF%8D%E0%AE%AE%E0%AF%88"
+      badges ()
+      site string "tawiki"
+      title string "பன்மை"
+      url string "https://ta.wikipedia.org/wiki/%E0%AE%AA%E0%AE%A9%E0%AF%8D%E0%AE%AE%E0%AF%88"
     trwiki
-      badges: ()
-      site: "trwiki"
-      title: "Çoğul"
-      url: "https://tr.wikipedia.org/wiki/%C3%87o%C4%9Ful"
+      badges ()
+      site string "trwiki"
+      title string "Çoğul"
+      url string "https://tr.wikipedia.org/wiki/%C3%87o%C4%9Ful"
     ukwiki
-      badges: ()
-      site: "ukwiki"
-      title: "Множина (мовознавство)"
-      url: "https://uk.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B8%D0%BD%D0%B0_(%D0%BC%D0%BE%D0%B2%D0%BE%D0%B7%D0%BD%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D0%BE)"
+      badges ()
+      site string "ukwiki"
+      title string "Множина (мовознавство)"
+      url string "https://uk.wikipedia.org/wiki/%D0%9C%D0%BD%D0%BE%D0%B6%D0%B8%D0%BD%D0%B0_(%D0%BC%D0%BE%D0%B2%D0%BE%D0%B7%D0%BD%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D0%BE)"
     urwiki
-      badges: ()
-      site: "urwiki"
-      title: "جمع (قواعد)"
-      url: "https://ur.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D9%82%D9%88%D8%A7%D8%B9%D8%AF)"
+      badges ()
+      site string "urwiki"
+      title string "جمع (قواعد)"
+      url string "https://ur.wikipedia.org/wiki/%D8%AC%D9%85%D8%B9_(%D9%82%D9%88%D8%A7%D8%B9%D8%AF)"
     vecwiki
-      badges: ()
-      site: "vecwiki"
-      title: "Plural"
-      url: "https://vec.wikipedia.org/wiki/Plural"
+      badges ()
+      site string "vecwiki"
+      title string "Plural"
+      url string "https://vec.wikipedia.org/wiki/Plural"
     wuuwiki
-      badges: ()
-      site: "wuuwiki"
-      title: "复数（语法）"
-      url: "https://wuu.wikipedia.org/wiki/%E5%A4%8D%E6%95%B0%EF%BC%88%E8%AF%AD%E6%B3%95%EF%BC%89"
+      badges ()
+      site string "wuuwiki"
+      title string "复数（语法）"
+      url string "https://wuu.wikipedia.org/wiki/%E5%A4%8D%E6%95%B0%EF%BC%88%E8%AF%AD%E6%B3%95%EF%BC%89"
     yiwiki
-      badges: ()
-      site: "yiwiki"
-      title: "לשון־רבים"
-      url: "https://yi.wikipedia.org/wiki/%D7%9C%D7%A9%D7%95%D7%9F%D6%BE%D7%A8%D7%91%D7%99%D7%9D"
+      badges ()
+      site string "yiwiki"
+      title string "לשון־רבים"
+      url string "https://yi.wikipedia.org/wiki/%D7%9C%D7%A9%D7%95%D7%9F%D6%BE%D7%A8%D7%91%D7%99%D7%9D"
     zh_yuewiki
-      badges: ()
-      site: "zh_yuewiki"
-      title: "眾數 (文法)"
-      url: "https://zh-yue.wikipedia.org/wiki/%E7%9C%BE%E6%95%B8_(%E6%96%87%E6%B3%95)"
+      badges ()
+      site string "zh_yuewiki"
+      title string "眾數 (文法)"
+      url string "https://zh-yue.wikipedia.org/wiki/%E7%9C%BE%E6%95%B8_(%E6%96%87%E6%B3%95)"
     zhwiki
-      badges: ()
-      site: "zhwiki"
-      title: "複數 (語言學)"
-      url: "https://zh.wikipedia.org/wiki/%E8%A4%87%E6%95%B8_(%E8%AA%9E%E8%A8%80%E5%AD%B8)"
-  title: "Q146786"
-  type: "item"
+      badges ()
+      site string "zhwiki"
+      title string "複數 (語言學)"
+      url string "https://zh.wikipedia.org/wiki/%E8%A4%87%E6%95%B8_(%E8%AA%9E%E8%A8%80%E5%AD%B8)"
+  title string "Q146786"
+  type string "item"

@@ -1,0 +1,135 @@
+Q148
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009)
+      at-0000
+        language string "en"
+        value string "Red China"
+      at-0001
+        language string "en"
+        value string "PR China"
+      at-0002
+        language string "en"
+        value string "Communist China"
+      at-0003
+        language string "en"
+        value string "China PR"
+      at-0004
+        language string "en"
+        value string "RPC"
+      at-0005
+        language string "en"
+        value string "cn"
+      at-0006
+        language string "en"
+        value string "The PRC"
+      at-0007
+        language string "en"
+        value string "China"
+      at-0008
+        language string "en"
+        value string "P.R.C."
+      at-0009
+        language string "en"
+        value string "the People's Republic of China"
+    hi (at-0000 at-0001)
+      at-0000
+        language string "hi"
+        value string "चीन"
+      at-0001
+        language string "hi"
+        value string "मुख्य-भूमि चीन"
+    ru (at-0000 at-0001 at-0002 at-0003 at-0004)
+      at-0000
+        language string "ru"
+        value string "КНР"
+      at-0001
+        language string "ru"
+        value string "Поднебесная"
+      at-0002
+        language string "ru"
+        value string "Материковый Китай"
+      at-0003
+        language string "ru"
+        value string "Континентальный Китай"
+      at-0004
+        language string "ru"
+        value string "Китайская Народная Республика"
+    zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014)
+      at-0000
+        language string "zh"
+        value string "中国"
+      at-0001
+        language string "zh"
+        value string "中"
+      at-0002
+        language string "zh"
+        value string "红色中国"
+      at-0003
+        language string "zh"
+        value string "共产中国"
+      at-0004
+        language string "zh"
+        value string "中国大陆"
+      at-0005
+        language string "zh"
+        value string "大陆"
+      at-0006
+        language string "zh"
+        value string "陆"
+      at-0007
+        language string "zh"
+        value string "新中国"
+      at-0008
+        language string "zh"
+        value string "北京當局"
+      at-0009
+        language string "zh"
+        value string "中華人民共和國"
+      at-0010
+        language string "zh"
+        value string "🇨🇳"
+      at-0011
+        language string "zh"
+        value string "cn"
+      at-0012
+        language string "zh"
+        value string "中华"
+      at-0013
+        language string "zh"
+        value string "共產中國"
+      at-0014
+        language string "zh"
+        value string "中國"
+  descriptions
+    en
+      language string "en"
+      value string "country in East Asia"
+    hi
+      language string "hi"
+      value string "पूर्वी एशिया का देश"
+    ru
+      language string "ru"
+      value string "государство в Восточной Азии"
+    zh
+      language string "zh"
+      value string "东亚国家"
+  id string "Q148"
+  labels
+    en
+      language string "en"
+      value string "People's Republic of China"
+    hi
+      language string "hi"
+      value string "चीनी जनवादी गणराज्य"
+    ru
+      language string "ru"
+      value string "Китай"
+    zh
+      language string "zh"
+      value string "中华人民共和国"
+  lastrevid 2502331652
+  modified string "2026-06-05T20:09:29Z"
+  ns 0
+  pageid 284
+  title string "Q148"
+  type string "item"

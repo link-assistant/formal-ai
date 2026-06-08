@@ -1,0 +1,63 @@
+Q90
+  aliases
+    en (at-0000 at-0001 at-0002)
+      at-0000
+        language string "en"
+        value string "City of Light"
+      at-0001
+        language string "en"
+        value string "City of Love"
+      at-0002
+        language string "en"
+        value string "Lutetia"
+    hi (at-0000)
+      at-0000
+        language string "hi"
+        value string "पेरिस"
+    ru (at-0000 at-0001 at-0002)
+      at-0000
+        language string "ru"
+        value string "Париж (Франция)"
+      at-0001
+        language string "ru"
+        value string "Париж, Франция"
+      at-0002
+        language string "ru"
+        value string "Париж (столица)"
+    zh (at-0000)
+      at-0000
+        language string "zh"
+        value string "巴黎省"
+  descriptions
+    en
+      language string "en"
+      value string "capital and most populous city in France"
+    hi
+      language string "hi"
+      value string "फ़्रांस की राजधानी और सबसे बड़ा शहर"
+    ru
+      language string "ru"
+      value string "столица Франции"
+    zh
+      language string "zh"
+      value string "法國首都及最大都市"
+  id string "Q90"
+  labels
+    en
+      language string "en"
+      value string "Paris"
+    hi
+      language string "hi"
+      value string "पैरिस"
+    ru
+      language string "ru"
+      value string "Париж"
+    zh
+      language string "zh"
+      value string "巴黎"
+  lastrevid 2503052896
+  modified string "2026-06-07T14:58:22Z"
+  ns 0
+  pageid 221
+  title string "Q90"
+  type string "item"

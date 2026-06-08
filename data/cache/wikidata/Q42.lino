@@ -1,0 +1,49 @@
+Q42
+  aliases
+    ru (at-0000 at-0001 at-0002)
+      at-0000
+        language string "ru"
+        value string "Адамс, Дуглас"
+      at-0001
+        language string "ru"
+        value string "Дуглас Ноэль Адамс"
+      at-0002
+        language string "ru"
+        value string "Адамс, Дуглас Ноэль"
+    zh (at-0000)
+      at-0000
+        language string "zh"
+        value string "亞當斯"
+  descriptions
+    en
+      language string "en"
+      value string "British science fiction writer and humorist (1952–2001)"
+    hi
+      language string "hi"
+      value string "अंग्रेजी लेखक"
+    ru
+      language string "ru"
+      value string "английский писатель, драматург и сценарист и юморист (1952—2001)"
+    zh
+      language string "zh"
+      value string "英國文學家、幽默作家 (1952–2001)"
+  id string "Q42"
+  labels
+    en
+      language string "en"
+      value string "Douglas Adams"
+    hi
+      language string "hi"
+      value string "डग्लस अ‍डम्स"
+    ru
+      language string "ru"
+      value string "Дуглас Адамс"
+    zh
+      language string "zh"
+      value string "道格拉斯·亞當斯"
+  lastrevid 2503217565
+  modified string "2026-06-07T23:01:49Z"
+  ns 0
+  pageid 138
+  title string "Q42"
+  type string "item"

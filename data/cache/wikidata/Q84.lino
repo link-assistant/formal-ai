@@ -1,0 +1,127 @@
+Q84
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015 at-0016 at-0017 at-0018 at-0019 at-0020 at-0021 at-0022 at-0023 at-0024 at-0025 at-0026 at-0027)
+      at-0000
+        language string "en"
+        value string "London, UK"
+      at-0001
+        language string "en"
+        value string "London, United Kingdom"
+      at-0002
+        language string "en"
+        value string "London, England"
+      at-0003
+        language string "en"
+        value string "London UK"
+      at-0004
+        language string "en"
+        value string "London U.K."
+      at-0005
+        language string "en"
+        value string "Londinium"
+      at-0006
+        language string "en"
+        value string "Loñ"
+      at-0007
+        language string "en"
+        value string "Lundenwic"
+      at-0008
+        language string "en"
+        value string "Londinio"
+      at-0009
+        language string "en"
+        value string "Londini"
+      at-0010
+        language string "en"
+        value string "Londiniensium"
+      at-0011
+        language string "en"
+        value string "Augusta"
+      at-0012
+        language string "en"
+        value string "Trinovantum"
+      at-0013
+        language string "en"
+        value string "Kaerlud"
+      at-0014
+        language string "en"
+        value string "Karelundein"
+      at-0015
+        language string "en"
+        value string "Lunden"
+      at-0016
+        language string "en"
+        value string "Big Smoke"
+      at-0017
+        language string "en"
+        value string "the Big Smoke"
+      at-0018
+        language string "en"
+        value string "Lundenburh"
+      at-0019
+        language string "en"
+        value string "Lundenburgh"
+      at-0020
+        language string "en"
+        value string "Llyn Dain"
+      at-0021
+        language string "en"
+        value string "Llan Dian"
+      at-0022
+        language string "en"
+        value string "Londinion"
+      at-0023
+        language string "en"
+        value string "Loniniensi"
+      at-0024
+        language string "en"
+        value string "Lon."
+      at-0025
+        language string "en"
+        value string "Loñ."
+      at-0026
+        language string "en"
+        value string "Lond."
+      at-0027
+        language string "en"
+        value string "LDN"
+    hi (at-0000 at-0001)
+      at-0000
+        language string "hi"
+        value string "लंदन,इंग्लॅण्ड"
+      at-0001
+        language string "hi"
+        value string "लंदन,यूनाइटेड किंगडम"
+  descriptions
+    en
+      language string "en"
+      value string "capital and largest city of England and the United Kingdom"
+    hi
+      language string "hi"
+      value string "इंग्लैंड और यूनाइटेड किंगडम की राजधानी"
+    ru
+      language string "ru"
+      value string "столица и крупнейший город Соединённого Королевства Великобритании и Северной Ирландии"
+    zh
+      language string "zh"
+      value string "英國的首都與最大城市"
+  id string "Q84"
+  labels
+    en
+      language string "en"
+      value string "London"
+    hi
+      language string "hi"
+      value string "लंदन"
+    ru
+      language string "ru"
+      value string "Лондон"
+    zh
+      language string "zh"
+      value string "倫敦"
+  lastrevid 2501288912
+  modified string "2026-06-03T01:38:49Z"
+  ns 0
+  pageid 214
+  title string "Q84"
+  type string "item"

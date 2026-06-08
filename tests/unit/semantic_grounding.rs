@@ -1,24 +1,13 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use formal_ai::seed::lexicon;
-use lino_objects_codec::format::parse_indented;
+use links_notation::parse_lino as parse_canonical_lino;
+use regex::Regex;
 use walkdir::WalkDir;
 
 const LINKS_ROOT_SEED: &str = "data/seed/meanings-links-root.lino";
-const SOURCE_KEYS: &[&str] = &[
-    "grounded-in",
-    "wikidata",
-    "source-lexeme",
-    "related-lexeme",
-    "surface",
-    "language",
-    "lexical-category",
-    "feature",
-    "form",
-    "sense",
-];
 
 #[test]
 fn links_root_seed_uses_colon_definitions() {
@@ -123,28 +112,40 @@ fn semantic_definition_graph_is_closed() {
 }
 
 #[test]
-fn semantic_source_ids_have_checked_in_cache_records() {
+fn seed_and_source_wikidata_ids_have_checked_in_cache_records() {
     let root = repo_root();
-    let seed_dir = root.join("data/seed");
     let wikidata_cache_dir = root.join("data/cache/wikidata");
-    let mut missing = Vec::new();
+    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
+    let mut references: BTreeMap<String, Vec<String>> = BTreeMap::new();
 
-    for path in meaning_seed_paths(&seed_dir) {
-        let content = fs::read_to_string(&path).expect("meaning seed file should be readable");
+    for path in seed_and_rust_source_paths(&root) {
+        let content = fs::read_to_string(&path).expect("source file should be readable");
         for (index, line) in content.lines().enumerate() {
-            let Some(id) = source_id_from_line(line) else {
-                continue;
-            };
-            let cache_path = wikidata_cache_dir.join(format!("{id}.lino"));
-            if !cache_path.is_file() {
-                missing.push(format!("{}:{} -> {}", path.display(), index + 1, id));
+            for id in source_id.find_iter(line).map(|matched| matched.as_str()) {
+                references.entry(id.to_string()).or_default().push(format!(
+                    "{}:{}",
+                    path.display(),
+                    index + 1
+                ));
             }
         }
     }
 
     assert!(
+        !references.is_empty(),
+        "semantic grounding should find checked-in Q/L/P source ids"
+    );
+    let missing: Vec<String> = references
+        .into_iter()
+        .filter_map(|(id, locations)| {
+            let cache_path = wikidata_cache_dir.join(format!("{id}.lino"));
+            (!cache_path.is_file()).then(|| format!("{id} -> {}", locations.join(", ")))
+        })
+        .collect();
+
+    assert!(
         missing.is_empty(),
-        "semantic source ids are missing Wikidata cache files:\n{}",
+        "seed/source Wikidata ids are missing checked-in cache files:\n{}",
         missing.join("\n")
     );
 }
@@ -172,7 +173,7 @@ fn wiktionary_cache_records_are_present_and_parseable() {
 
     for path in &cache_files {
         let content = fs::read_to_string(path).expect("wiktionary cache should be UTF-8");
-        parse_indented(strip_lino_comments(&content).trim())
+        parse_canonical_lino(canonical_lino_content(&content).trim())
             .unwrap_or_else(|error| panic!("{} is invalid LiNo: {error}", path.display()));
     }
 
@@ -216,30 +217,23 @@ fn meaning_seed_paths(seed_dir: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
-fn source_id_from_line(line: &str) -> Option<String> {
-    let trimmed = strip_comment(line).trim();
-    let (key, raw) = trimmed.split_once(' ')?;
-    if !SOURCE_KEYS.contains(&key) {
-        return None;
-    }
-    let id = raw.split_whitespace().next()?;
-    if id.starts_with("seed-surface-") || id.starts_with("WT-") {
-        return None;
-    }
-    source_root_id(id)
-}
-
-fn source_root_id(id: &str) -> Option<String> {
-    let mut chars = id.chars();
-    let prefix = chars.next()?;
-    if !matches!(prefix, 'L' | 'P' | 'Q') {
-        return None;
-    }
-    let numeric: String = chars.take_while(char::is_ascii_digit).collect();
-    if numeric.is_empty() {
-        return None;
-    }
-    Some(format!("{prefix}{numeric}"))
+fn seed_and_rust_source_paths(root: &Path) -> Vec<PathBuf> {
+    ["data/seed", "src"]
+        .into_iter()
+        .flat_map(|directory| {
+            WalkDir::new(root.join(directory))
+                .into_iter()
+                .filter_map(Result::ok)
+                .filter(|entry| entry.file_type().is_file())
+                .map(walkdir::DirEntry::into_path)
+                .filter(|path| {
+                    matches!(
+                        path.extension().and_then(|extension| extension.to_str()),
+                        Some("lino" | "rs")
+                    )
+                })
+        })
+        .collect()
 }
 
 fn top_level_colon_definition(line: &str) -> Option<(String, String)> {
@@ -251,10 +245,13 @@ fn top_level_colon_definition(line: &str) -> Option<(String, String)> {
     Some((slug.trim().to_string(), body.trim().to_string()))
 }
 
-fn strip_lino_comments(content: &str) -> String {
+fn canonical_lino_content(content: &str) -> String {
     let mut out = String::new();
-    for line in content.lines() {
-        out.push_str(strip_comment(line));
+    for line in content.lines().map(strip_comment) {
+        if line.trim().is_empty() {
+            continue;
+        }
+        out.push_str(line);
         out.push('\n');
     }
     out

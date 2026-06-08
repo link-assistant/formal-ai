@@ -1,0 +1,111 @@
+Q892
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006)
+      at-0000
+        language string "en"
+        value string "J-R-R Tolkien"
+      at-0001
+        language string "en"
+        value string "Tolkien"
+      at-0002
+        language string "en"
+        value string "John Ronald Reuel Tolkien"
+      at-0003
+        language string "en"
+        value string "John Tolkien"
+      at-0004
+        language string "en"
+        value string "J.R.R Tolkien"
+      at-0005
+        language string "en"
+        value string "J.R.R. Tolkien"
+      at-0006
+        language string "en"
+        value string "John R. R. Tolkien"
+    hi (at-0000 at-0001)
+      at-0000
+        language string "hi"
+        value string "जे॰आर॰आर॰ टोल्किन"
+      at-0001
+        language string "hi"
+        value string "जॉन रोनल्ड राउल टोल्किन"
+    ru (at-0000 at-0001 at-0002 at-0003 at-0004)
+      at-0000
+        language string "ru"
+        value string "Джон Толкин"
+      at-0001
+        language string "ru"
+        value string "Толкин, Джон Рональд Руэл"
+      at-0002
+        language string "ru"
+        value string "Толкиен, Джон Роналд Руэл"
+      at-0003
+        language string "ru"
+        value string "Дж. Р. Р. Толкин"
+      at-0004
+        language string "ru"
+        value string "Дж. Р. Р. Толкиен"
+    zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009)
+      at-0000
+        language string "zh"
+        value string "約翰·羅納德·瑞爾·託爾金"
+      at-0001
+        language string "zh"
+        value string "约翰·罗纳德·瑞尔·托尔金"
+      at-0002
+        language string "zh"
+        value string "約翰·羅納德·瑞爾·托爾金"
+      at-0003
+        language string "zh"
+        value string "托爾金"
+      at-0004
+        language string "zh"
+        value string "托尔金"
+      at-0005
+        language string "zh"
+        value string "J·R·R·託爾金"
+      at-0006
+        language string "zh"
+        value string "J·R·R·托爾金"
+      at-0007
+        language string "zh"
+        value string "J·R·R·托尔金"
+      at-0008
+        language string "zh"
+        value string "約翰·托爾金"
+      at-0009
+        language string "zh"
+        value string "J.R.R. 托尔金"
+  descriptions
+    en
+      language string "en"
+      value string "English writer and philologist (1892–1973)"
+    hi
+      language string "hi"
+      value string "अंग्रेज़ी भाषा के लेखक और कहानीकार"
+    ru
+      language string "ru"
+      value string "английский писатель, лингвист, филолог, фантаст, переводчик (1892—1973)"
+    zh
+      language string "zh"
+      value string "英國語言學家及作家（1892－1973）"
+  id string "Q892"
+  labels
+    en
+      language string "en"
+      value string "J. R. R. Tolkien"
+    hi
+      language string "hi"
+      value string "जे. आर. आर. टोल्किन"
+    ru
+      language string "ru"
+      value string "Джон Рональд Руэл Толкин"
+    zh
+      language string "zh"
+      value string "約翰·羅納德·魯埃爾·托爾金"
+  lastrevid 2503480095
+  modified string "2026-06-08T14:55:44Z"
+  ns 0
+  pageid 1215
+  title string "Q892"
+  type string "item"

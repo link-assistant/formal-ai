@@ -1,46 +1,46 @@
-Q151 # cached json source
+Q151
   value
     entities
       Q151
         aliases
-          en: []
+          en (at-0000)
             at-0000
-              language: "en"
-              value: "Wiktionary, the free dictionary"
-          hi: []
+              language string "en"
+              value string "Wiktionary, the free dictionary"
+          hi (at-0000)
             at-0000
-              language: "hi"
-              value: "विक्षनरी"
-          zh: []
+              language string "hi"
+              value string "विक्षनरी"
+          zh (at-0000)
             at-0000
-              language: "zh"
-              value: "WT"
+              language string "zh"
+              value string "WT"
         descriptions
           en
-            language: "en"
-            value: "free online multilingual dictionary"
+            language string "en"
+            value string "free online multilingual dictionary"
           hi
-            language: "hi"
-            value: "एक मुक्त शब्दकोश"
+            language string "hi"
+            value string "एक मुक्त शब्दकोश"
           ru
-            language: "ru"
-            value: "свободно пополняемый многофункциональный многоязычный словарь и тезаурус, основанный на вики-движке"
+            language string "ru"
+            value string "свободно пополняемый многофункциональный многоязычный словарь и тезаурус, основанный на вики-движке"
           zh
-            language: "zh"
-            value: "自由的多語言詞典"
-        id: "Q151"
+            language string "zh"
+            value string "自由的多語言詞典"
+        id string "Q151"
         labels
           en
-            language: "en"
-            value: "Wiktionary"
+            language string "en"
+            value string "Wiktionary"
           hi
-            language: "hi"
-            value: "विकिकोश"
+            language string "hi"
+            value string "विकिकोश"
           ru
-            language: "ru"
-            value: "Викисловарь"
+            language string "ru"
+            value string "Викисловарь"
           zh
-            language: "zh"
-            value: "维基词典"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "维基词典"
+        type string "item"
+    success 1

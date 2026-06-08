@@ -1,0 +1,56 @@
+Q987
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003)
+      at-0000
+        language string "en"
+        value string "Nayi Dilli"
+      at-0001
+        language string "en"
+        value string "New Delhi Municipal Council Area"
+      at-0002
+        language string "en"
+        value string "NDMC area"
+      at-0003
+        language string "en"
+        value string "Nai Dilli"
+    hi (at-0000)
+      at-0000
+        language string "hi"
+        value string "नयी दिल्ली"
+    ru (at-0000)
+      at-0000
+        language string "ru"
+        value string "Новый Дели"
+  descriptions
+    en
+      language string "en"
+      value string "capital city of India"
+    hi
+      language string "hi"
+      value string "भारत की राजधानी"
+    ru
+      language string "ru"
+      value string "столица Индии"
+    zh
+      language string "zh"
+      value string "印度首都"
+  id string "Q987"
+  labels
+    en
+      language string "en"
+      value string "New Delhi"
+    hi
+      language string "hi"
+      value string "नई दिल्ली"
+    ru
+      language string "ru"
+      value string "Нью-Дели"
+    zh
+      language string "zh"
+      value string "新德里"
+  lastrevid 2502353572
+  modified string "2026-06-05T21:28:49Z"
+  ns 0
+  pageid 1316
+  title string "Q987"
+  type string "item"

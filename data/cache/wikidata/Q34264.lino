@@ -1,0 +1,45 @@
+Q34264
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004)
+      at-0000
+        language string "en"
+        value string "BSD"
+      at-0001
+        language string "en"
+        value string "Berkeley Unix"
+      at-0002
+        language string "en"
+        value string "BSD UNIX"
+      at-0003
+        language string "en"
+        value string "4.4BSD"
+      at-0004
+        language string "en"
+        value string "Berkeley System Distribution"
+  descriptions
+    en
+      language string "en"
+      value string "free, open-source reimplementation of the AT&T UNIX operating system"
+    hi
+      language string "hi"
+      value string "प्रचालन तन्त्र"
+    ru
+      language string "ru"
+      value string "операционная система"
+  id string "Q34264"
+  labels
+    en
+      language string "en"
+      value string "Berkeley Software Distribution"
+    ru
+      language string "ru"
+      value string "BSD"
+    zh
+      language string "zh"
+      value string "BSD"
+  lastrevid 2480734021
+  modified string "2026-04-12T19:45:17Z"
+  ns 0
+  pageid 37038
+  title string "Q34264"
+  type string "item"

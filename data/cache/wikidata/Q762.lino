@@ -1,0 +1,108 @@
+Q762
+  aliases
+    zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015 at-0016 at-0017 at-0018 at-0019 at-0020 at-0021 at-0022 at-0023)
+      at-0000
+        language string "zh"
+        value string "达芬奇"
+      at-0001
+        language string "zh"
+        value string "達文西"
+      at-0002
+        language string "zh"
+        value string "达·芬奇"
+      at-0003
+        language string "zh"
+        value string "莱奥纳尔多·达芬奇"
+      at-0004
+        language string "zh"
+        value string "列奧納多·達文西"
+      at-0005
+        language string "zh"
+        value string "李奧納多·達文西"
+      at-0006
+        language string "zh"
+        value string "列奥那多·达芬奇"
+      at-0007
+        language string "zh"
+        value string "列昂纳多·达芬奇"
+      at-0008
+        language string "zh"
+        value string "達·芬奇"
+      at-0009
+        language string "zh"
+        value string "李安納度·迪·瑟皮耶羅·達文西"
+      at-0010
+        language string "zh"
+        value string "李奧納多·達·文西"
+      at-0011
+        language string "zh"
+        value string "列奥纳多·达芬奇"
+      at-0012
+        language string "zh"
+        value string "列奧納多·達·芬奇"
+      at-0013
+        language string "zh"
+        value string "李奥纳多·达文西"
+      at-0014
+        language string "zh"
+        value string "列奥纳多·迪·瑟皮耶罗·达·芬奇"
+      at-0015
+        language string "zh"
+        value string "列奧納多·迪·瑟皮耶羅·達·芬奇"
+      at-0016
+        language string "zh"
+        value string "达文西"
+      at-0017
+        language string "zh"
+        value string "達芬奇"
+      at-0018
+        language string "zh"
+        value string "莱奥纳多·达·芬奇"
+      at-0019
+        language string "zh"
+        value string "达·芬奇，L."
+      at-0020
+        language string "zh"
+        value string "李安納度·達文西"
+      at-0021
+        language string "zh"
+        value string "莱奥纳多"
+      at-0022
+        language string "zh"
+        value string "达文謇"
+      at-0023
+        language string "zh"
+        value string "莱昂纳多·达·芬奇"
+  descriptions
+    en
+      language string "en"
+      value string "Italian Renaissance polymath (1452−1519)"
+    hi
+      language string "hi"
+      value string "इतलवी बहुज्ञ (1452-1519)"
+    ru
+      language string "ru"
+      value string "итальянский художник, учёный, изобретатель, писатель, один из крупнейших представителей искусства Высокого Возрождения (1452–1519)"
+    zh
+      language string "zh"
+      value string "義大利文藝復興時期人物"
+  id string "Q762"
+  labels
+    en
+      language string "en"
+      value string "Leonardo da Vinci"
+    hi
+      language string "hi"
+      value string "लिओनार्दो दा विंची"
+    ru
+      language string "ru"
+      value string "Леонардо да Винчи"
+    zh
+      language string "zh"
+      value string "列奥纳多·达·芬奇"
+  lastrevid 2503341538
+  modified string "2026-06-08T07:26:34Z"
+  ns 0
+  pageid 1069
+  title string "Q762"
+  type string "item"

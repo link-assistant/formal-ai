@@ -3,147 +3,239 @@ meanings
     defined-by concept # definition-link
     role summary_statement_kind # semantic-role
     lexeme en # language
-      surface unformalized-raw 115 116 97 116 101 109 101 110 116 32 107 105 110 100 # unresolved-surface
-      surface unformalized-raw 115 101 110 116 101 110 99 101 32 107 105 110 100 # unresolved-surface
+      surface seed-surface-76b3d6ba39cd
+        codepoints 115 116 97 116 101 109 101 110 116 32 107 105 110 100
+      surface seed-surface-e5302f5b51d2
+        codepoints 115 101 110 116 101 110 99 101 32 107 105 110 100
     lexeme ru # language
-      surface unformalized-raw 1074 1080 1076 32 1091 1090 1074 1077 1088 1078 1076 1077 1085 1080 1103 # unresolved-surface
-      surface unformalized-raw 1090 1080 1087 32 1087 1088 1077 1076 1083 1086 1078 1077 1085 1080 1103 # unresolved-surface
+      surface seed-surface-69ff78c0ec9e
+        codepoints 1074 1080 1076 32 1091 1090 1074 1077 1088 1078 1076 1077 1085 1080 1103
+      surface seed-surface-197db2fc21d2
+        codepoints 1090 1080 1087 32 1087 1088 1077 1076 1083 1086 1078 1077 1085 1080 1103
     lexeme hi # language
-      surface unformalized-raw 2325 2341 2344 32 2325 2366 32 2346 2381 2352 2325 2366 2352 # unresolved-surface
-      surface unformalized-raw 2357 2366 2325 2381 2351 32 2325 2366 32 2346 2381 2352 2325 2366 2352 # unresolved-surface
+      surface seed-surface-15c10b209391
+        codepoints 2325 2341 2344 32 2325 2366 32 2346 2381 2352 2325 2366 2352
+      surface seed-surface-5cd2ba19ffbb
+        codepoints 2357 2366 2325 2381 2351 32 2325 2366 32 2346 2381 2352 2325 2366 2352
     lexeme zh # language
-      surface unformalized-raw 38472 36848 31867 22411 # unresolved-surface
-      surface unformalized-raw 21477 23376 31867 22411 # unresolved-surface
+      surface seed-surface-3879d5b640f1
+        codepoints 38472 36848 31867 22411
+      surface seed-surface-95054526b926
+        codepoints 21477 23376 31867 22411
   summary_kind_install: # concept summary_kind_install
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 116 111 32 105 110 115 116 97 108 108 # unresolved-surface
-      surface unformalized-raw 105 110 115 116 97 108 108 32 119 105 116 104 # unresolved-surface
-      surface unformalized-raw 105 110 115 116 97 108 108 97 116 105 111 110 # unresolved-surface
-      surface unformalized-raw 110 112 109 32 105 110 115 116 97 108 108 # unresolved-surface
-      surface unformalized-raw 99 97 114 103 111 32 105 110 115 116 97 108 108 # unresolved-surface
-      surface unformalized-raw 112 105 112 32 105 110 115 116 97 108 108 # unresolved-surface
+      surface seed-surface-6b12f11cf90b
+        codepoints 116 111 32 105 110 115 116 97 108 108
+      surface seed-surface-f86620e9b5bf
+        codepoints 105 110 115 116 97 108 108 32 119 105 116 104
+      surface seed-surface-2b71cc4ca4e2
+        codepoints 105 110 115 116 97 108 108 97 116 105 111 110
+      surface seed-surface-53e4f03bb05e
+        codepoints 110 112 109 32 105 110 115 116 97 108 108
+      surface seed-surface-3cb48789de11
+        codepoints 99 97 114 103 111 32 105 110 115 116 97 108 108
+      surface seed-surface-c67814fbc1e9
+        codepoints 112 105 112 32 105 110 115 116 97 108 108
     lexeme ru # language
-      surface unformalized-raw 1091 1089 1090 1072 1085 1086 1074 1080 1090 1100 # unresolved-surface
-      surface unformalized-raw 1091 1089 1090 1072 1085 1086 1074 1082 1072 # unresolved-surface
-      surface unformalized-raw 1091 1089 1090 1072 1085 1086 1074 1080 1090 1077 # unresolved-surface
+      surface seed-surface-4a5e53094b69
+        codepoints 1091 1089 1090 1072 1085 1086 1074 1080 1090 1100
+      surface seed-surface-7c4434fcb1f5
+        codepoints 1091 1089 1090 1072 1085 1086 1074 1082 1072
+      surface seed-surface-57edcee324d7
+        codepoints 1091 1089 1090 1072 1085 1086 1074 1080 1090 1077
     lexeme hi # language
-      surface unformalized-raw 2311 2306 2360 2381 2335 2377 2354 32 2325 2352 2375 2306 # unresolved-surface
-      surface unformalized-raw 2360 2381 2341 2366 2346 2344 2366 # unresolved-surface
+      surface seed-surface-cac86ad33d46
+        codepoints 2311 2306 2360 2381 2335 2377 2354 32 2325 2352 2375 2306
+      surface seed-surface-7bd6cb9418a9
+        codepoints 2360 2381 2341 2366 2346 2344 2366
     lexeme zh # language
-      surface unformalized-raw 23433 35013 # unresolved-surface
-      surface unformalized-raw 23433 35013 26041 27861 # unresolved-surface
+      surface seed-surface-95711b4c4e22
+        codepoints 23433 35013
+      surface seed-surface-c7fa1c0aa9b9
+        codepoints 23433 35013 26041 27861
   summary_kind_example: # concept summary_kind_example
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 102 111 114 32 101 120 97 109 112 108 101 # unresolved-surface
-      surface unformalized-raw 101 120 97 109 112 108 101 58 # unresolved-surface
-      surface unformalized-raw 101 46 103 46 # unresolved-surface
-      surface unformalized-raw 114 117 110 32 45 45 # unresolved-surface
-      surface unformalized-raw 36 32 # unresolved-surface
-      surface unformalized-raw 96 96 96 # unresolved-surface
+      surface seed-surface-154133be4a7c
+        codepoints 102 111 114 32 101 120 97 109 112 108 101
+      surface seed-surface-f6ec30e5fdbf
+        codepoints 101 120 97 109 112 108 101 58
+      surface seed-surface-4978263b86af
+        codepoints 101 46 103 46
+      surface seed-surface-05c2e373b4a7
+        codepoints 114 117 110 32 45 45
+      surface seed-surface-5bf65499a62f
+        codepoints 36 32
+      surface seed-surface-8f5d263a7d36
+        codepoints 96 96 96
     lexeme ru # language
-      surface unformalized-raw 1074 1099 1087 1086 1083 1085 1080 # unresolved-surface
-      surface unformalized-raw 1085 1072 1087 1088 1080 1084 1077 1088 # unresolved-surface
+      surface seed-surface-b5365a41e9b6
+        codepoints 1074 1099 1087 1086 1083 1085 1080
+      surface seed-surface-6dcea08eb6b7
+        codepoints 1085 1072 1087 1088 1080 1084 1077 1088
     lexeme hi # language
-      surface unformalized-raw 2313 2342 2366 2361 2352 2339 32 2325 2375 32 2354 2367 2319 # unresolved-surface
-      surface unformalized-raw 2313 2342 2366 2361 2352 2339 58 # unresolved-surface
+      surface seed-surface-d333dd8ba15f
+        codepoints 2313 2342 2366 2361 2352 2339 32 2325 2375 32 2354 2367 2319
+      surface seed-surface-5b959b1f219e
+        codepoints 2313 2342 2366 2361 2352 2339 58
     lexeme zh # language
-      surface unformalized-raw 20363 22914 # unresolved-surface
-      surface unformalized-raw 27604 22914 # unresolved-surface
+      surface seed-surface-d63823b4d125
+        codepoints 20363 22914
+      surface seed-surface-b358aecbdc98
+        codepoints 27604 22914
   summary_kind_language: # concept summary_kind_language
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 119 114 105 116 116 101 110 32 105 110 32 # unresolved-surface
-      surface unformalized-raw 108 97 110 103 117 97 103 101 58 # unresolved-surface
-      surface unformalized-raw 105 115 32 97 32 # unresolved-surface
-      surface unformalized-raw 98 117 105 108 100 32 119 105 116 104 32 # unresolved-surface
+      surface seed-surface-925af9ba7efe
+        codepoints 119 114 105 116 116 101 110 32 105 110 32
+      surface seed-surface-47eb2d96ff60
+        codepoints 108 97 110 103 117 97 103 101 58
+      surface seed-surface-108f77ff4cb7
+        codepoints 105 115 32 97 32
+      surface seed-surface-c742e2777886
+        codepoints 98 117 105 108 100 32 119 105 116 104 32
     lexeme ru # language
-      surface unformalized-raw 1085 1072 1087 1080 1089 1072 1085 32 1085 1072 32 # unresolved-surface
-      surface unformalized-raw 1085 1072 32 1103 1079 1099 1082 1077 32 # unresolved-surface
+      surface seed-surface-62d2fba583f6
+        codepoints 1085 1072 1087 1080 1089 1072 1085 32 1085 1072 32
+      surface seed-surface-c5a998e0f925
+        codepoints 1085 1072 32 1103 1079 1099 1082 1077 32
     lexeme hi # language
-      surface unformalized-raw 2350 2375 2306 32 2354 2367 2326 2366 # unresolved-surface
-      surface unformalized-raw 2349 2366 2359 2366 58 # unresolved-surface
+      surface seed-surface-e4267b561928
+        codepoints 2350 2375 2306 32 2354 2367 2326 2366
+      surface seed-surface-a0cbef05f27c
+        codepoints 2349 2366 2359 2366 58
     lexeme zh # language
-      surface unformalized-raw 35821 35328 # unresolved-surface
-      surface unformalized-raw 32534 20889 # unresolved-surface
+      surface seed-surface-3aa554bf2683
+        codepoints 35821 35328
+      surface seed-surface-3f71f415e3a5
+        codepoints 32534 20889
   summary_kind_stars: # concept summary_kind_stars
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 32 115 116 97 114 115 # unresolved-surface
-      surface unformalized-raw 103 105 116 104 117 98 32 115 116 97 114 115 # unresolved-surface
-      surface unformalized-raw 9733 # unresolved-surface
-      surface unformalized-raw 115 116 97 114 103 97 122 101 114 115 # unresolved-surface
+      surface seed-surface-7fc1273d3d44
+        codepoints 32 115 116 97 114 115
+      surface seed-surface-50a9a585fb4d
+        codepoints 103 105 116 104 117 98 32 115 116 97 114 115
+      surface seed-surface-f3b9aae23959
+        codepoints 9733
+      surface seed-surface-6358ee6ef7c5
+        codepoints 115 116 97 114 103 97 122 101 114 115
     lexeme ru # language
-      surface unformalized-raw 1079 1074 1105 1079 1076 1099 # unresolved-surface
-      surface unformalized-raw 1079 1074 1077 1079 1076 # unresolved-surface
+      surface seed-surface-1724879a4a10
+        codepoints 1079 1074 1105 1079 1076 1099
+      surface seed-surface-dd61aa200c48
+        codepoints 1079 1074 1077 1079 1076
     lexeme hi # language
-      surface unformalized-raw 2360 2367 2340 2366 2352 2375 # unresolved-surface
-      surface unformalized-raw 2340 2366 2352 2375 # unresolved-surface
+      surface seed-surface-47edd1064e1a
+        codepoints 2360 2367 2340 2366 2352 2375
+      surface seed-surface-7602aaf123c5
+        codepoints 2340 2366 2352 2375
     lexeme zh # language
-      surface unformalized-raw 26143 26631 # unresolved-surface
-      surface unformalized-raw 26143 25968 # unresolved-surface
+      surface seed-surface-f32910274968
+        codepoints 26143 26631
+      surface seed-surface-533752c9cc89
+        codepoints 26143 25968
   summary_kind_purpose: # concept summary_kind_purpose
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 105 115 32 102 111 114 32 # unresolved-surface
-      surface unformalized-raw 105 115 32 116 104 101 32 97 105 # unresolved-surface
-      surface unformalized-raw 105 115 32 97 110 32 97 105 # unresolved-surface
-      surface unformalized-raw 105 115 32 117 115 101 100 32 116 111 # unresolved-surface
-      surface unformalized-raw 105 115 32 109 101 97 110 116 32 116 111 # unresolved-surface
-      surface unformalized-raw 105 115 32 100 101 115 105 103 110 101 100 32 116 111 # unresolved-surface
-      surface unformalized-raw 104 101 108 112 115 32 121 111 117 # unresolved-surface
-      surface unformalized-raw 108 101 116 115 32 121 111 117 # unresolved-surface
+      surface seed-surface-bf66b6201460
+        codepoints 105 115 32 102 111 114 32
+      surface seed-surface-55c10f8abd46
+        codepoints 105 115 32 116 104 101 32 97 105
+      surface seed-surface-0adc24a8517a
+        codepoints 105 115 32 97 110 32 97 105
+      surface seed-surface-93c5852542cd
+        codepoints 105 115 32 117 115 101 100 32 116 111
+      surface seed-surface-1e79d251bfb3
+        codepoints 105 115 32 109 101 97 110 116 32 116 111
+      surface seed-surface-bc864c8d1898
+        codepoints 105 115 32 100 101 115 105 103 110 101 100 32 116 111
+      surface seed-surface-218c4b105b40
+        codepoints 104 101 108 112 115 32 121 111 117
+      surface seed-surface-c9495a6d3b82
+        codepoints 108 101 116 115 32 121 111 117
     lexeme ru # language
-      surface unformalized-raw 1101 1090 1086 32 1080 1080 # unresolved-surface
-      surface unformalized-raw 1087 1088 1077 1076 1085 1072 1079 1085 1072 1095 # unresolved-surface
+      surface seed-surface-2a75cd785f75
+        codepoints 1101 1090 1086 32 1080 1080
+      surface seed-surface-51e189809dc7
+        codepoints 1087 1088 1077 1076 1085 1072 1079 1085 1072 1095
     lexeme hi # language
-      surface unformalized-raw 2325 2375 32 2354 2367 2319 32 2361 2376 # unresolved-surface
-      surface unformalized-raw 2350 2342 2342 32 2325 2352 2340 2366 32 2361 2376 # unresolved-surface
+      surface seed-surface-50170b094fa3
+        codepoints 2325 2375 32 2354 2367 2319 32 2361 2376
+      surface seed-surface-83f9bb935073
+        codepoints 2350 2342 2342 32 2325 2352 2340 2366 32 2361 2376
     lexeme zh # language
-      surface unformalized-raw 29992 20110 # unresolved-surface
-      surface unformalized-raw 26088 22312 # unresolved-surface
-      surface unformalized-raw 24110 21161 20320 # unresolved-surface
+      surface seed-surface-e0f2fc1671af
+        codepoints 29992 20110
+      surface seed-surface-c4b18e8f5fe0
+        codepoints 26088 22312
+      surface seed-surface-58a73fcd43d2
+        codepoints 24110 21161 20320
   summary_kind_use_case: # concept summary_kind_use_case
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 117 115 101 32 105 116 32 119 104 101 110 # unresolved-surface
-      surface unformalized-raw 117 115 101 32 116 104 105 115 32 119 104 101 110 # unresolved-surface
-      surface unformalized-raw 119 104 101 110 32 121 111 117 32 110 101 101 100 # unresolved-surface
-      surface unformalized-raw 105 100 101 97 108 32 102 111 114 # unresolved-surface
-      surface unformalized-raw 117 115 101 102 117 108 32 119 104 101 110 # unresolved-surface
+      surface seed-surface-75c3caf8e60a
+        codepoints 117 115 101 32 105 116 32 119 104 101 110
+      surface seed-surface-e772c1b08bab
+        codepoints 117 115 101 32 116 104 105 115 32 119 104 101 110
+      surface seed-surface-4210a635d0c6
+        codepoints 119 104 101 110 32 121 111 117 32 110 101 101 100
+      surface seed-surface-26de21b19816
+        codepoints 105 100 101 97 108 32 102 111 114
+      surface seed-surface-549725ee3fc3
+        codepoints 117 115 101 102 117 108 32 119 104 101 110
     lexeme ru # language
-      surface unformalized-raw 1080 1089 1087 1086 1083 1100 1079 1091 1081 1090 1077 32 1082 1086 1075 1076 1072 # unresolved-surface
-      surface unformalized-raw 1082 1086 1075 1076 1072 32 1085 1091 1078 1085 1086 # unresolved-surface
-      surface unformalized-raw 1080 1076 1077 1072 1083 1100 1085 1086 32 1076 1083 1103 # unresolved-surface
+      surface seed-surface-9837e01aaa5c
+        codepoints 1080 1089 1087 1086 1083 1100 1079 1091 1081 1090 1077 32 1082 1086 1075 1076 1072
+      surface seed-surface-074e3353bc90
+        codepoints 1082 1086 1075 1076 1072 32 1085 1091 1078 1085 1086
+      surface seed-surface-654e67300986
+        codepoints 1080 1076 1077 1072 1083 1100 1085 1086 32 1076 1083 1103
     lexeme hi # language
-      surface unformalized-raw 2332 2348 32 2310 2346 2325 2379 32 2330 2366 2361 2367 2319 # unresolved-surface
-      surface unformalized-raw 2325 2375 32 2354 2367 2319 32 2310 2342 2352 2381 2358 # unresolved-surface
+      surface seed-surface-5ff84df6e988
+        codepoints 2332 2348 32 2310 2346 2325 2379 32 2330 2366 2361 2367 2319
+      surface seed-surface-0d3e5a4452e4
+        codepoints 2325 2375 32 2354 2367 2319 32 2310 2342 2352 2381 2358
     lexeme zh # language
-      surface unformalized-raw 24403 20320 38656 35201 # unresolved-surface
-      surface unformalized-raw 36866 29992 20110 # unresolved-surface
+      surface seed-surface-b5f93cf25162
+        codepoints 24403 20320 38656 35201
+      surface seed-surface-711e8850223a
+        codepoints 36866 29992 20110
   summary_kind_feature: # concept summary_kind_feature
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
-      surface unformalized-raw 32 115 117 112 112 111 114 116 115 32 # unresolved-surface
-      surface unformalized-raw 32 112 114 111 118 105 100 101 115 32 # unresolved-surface
-      surface unformalized-raw 32 111 102 102 101 114 115 32 # unresolved-surface
-      surface unformalized-raw 32 101 120 112 111 115 101 115 32 # unresolved-surface
-      surface unformalized-raw 32 115 104 105 112 115 32 # unresolved-surface
-      surface unformalized-raw 32 111 114 99 104 101 115 116 114 97 116 101 115 32 # unresolved-surface
+      surface seed-surface-ea5abd1907bc
+        codepoints 32 115 117 112 112 111 114 116 115 32
+      surface seed-surface-4a3a8a94f05a
+        codepoints 32 112 114 111 118 105 100 101 115 32
+      surface seed-surface-4be1df681261
+        codepoints 32 111 102 102 101 114 115 32
+      surface seed-surface-b9d92bafe133
+        codepoints 32 101 120 112 111 115 101 115 32
+      surface seed-surface-fa0b44e61396
+        codepoints 32 115 104 105 112 115 32
+      surface seed-surface-5ae37b2c837c
+        codepoints 32 111 114 99 104 101 115 116 114 97 116 101 115 32
     lexeme ru # language
-      surface unformalized-raw 32 1087 1088 1077 1076 1086 1089 1090 1072 1074 1083 1103 1077 1090 32 # unresolved-surface
-      surface unformalized-raw 32 1087 1086 1076 1076 1077 1088 1078 1080 1074 1072 1077 1090 32 # unresolved-surface
+      surface seed-surface-0693c99ec65a
+        codepoints 32 1087 1088 1077 1076 1086 1089 1090 1072 1074 1083 1103 1077 1090 32
+      surface seed-surface-4fa1f5a1c7d9
+        codepoints 32 1087 1086 1076 1076 1077 1088 1078 1080 1074 1072 1077 1090 32
     lexeme hi # language
-      surface unformalized-raw 2360 2350 2352 2381 2341 2344 32 2325 2352 2340 2366 32 2361 2376 # unresolved-surface
-      surface unformalized-raw 2346 2381 2352 2342 2366 2344 32 2325 2352 2340 2366 32 2361 2376 # unresolved-surface
+      surface seed-surface-ea68f2191ef0
+        codepoints 2360 2350 2352 2381 2341 2344 32 2325 2352 2340 2366 32 2361 2376
+      surface seed-surface-5f7a6aa608a1
+        codepoints 2346 2381 2352 2342 2366 2344 32 2325 2352 2340 2366 32 2361 2376
     lexeme zh # language
-      surface unformalized-raw 25903 25345 # unresolved-surface
-      surface unformalized-raw 25552 20379 # unresolved-surface
+      surface seed-surface-f195eecbdf9a
+        codepoints 25903 25345
+      surface seed-surface-b1e7c89420ef
+        codepoints 25552 20379

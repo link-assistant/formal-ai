@@ -1,0 +1,31 @@
+Q2844
+  descriptions
+    en
+      language string "en"
+      value string "federal capital of Brazil"
+    ru
+      language string "ru"
+      value string "столица Бразилии"
+    zh
+      language string "zh"
+      value string "巴西首都"
+  id string "Q2844"
+  labels
+    en
+      language string "en"
+      value string "Brasília"
+    hi
+      language string "hi"
+      value string "ब्रासीलिया"
+    ru
+      language string "ru"
+      value string "Бразилиа"
+    zh
+      language string "zh"
+      value string "巴西利亚"
+  lastrevid 2499697651
+  modified string "2026-05-30T19:23:07Z"
+  ns 0
+  pageid 3826
+  title string "Q2844"
+  type string "item"

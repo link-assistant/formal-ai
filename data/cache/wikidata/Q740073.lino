@@ -1,0 +1,22 @@
+Q740073
+  descriptions
+    en
+      language string "en"
+      value string "species of prokaryote"
+    zh
+      language string "zh"
+      value string "變形蟲的一種"
+  id string "Q740073"
+  labels
+    en
+      language string "en"
+      value string "Protacanthamoeba bohemica"
+    ru
+      language string "ru"
+      value string "Protacanthamoeba bohemica"
+  lastrevid 2457238058
+  modified string "2026-01-24T01:38:09Z"
+  ns 0
+  pageid 696111
+  title string "Q740073"
+  type string "item"

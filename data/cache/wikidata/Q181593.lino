@@ -1,70 +1,70 @@
-Q181593 # cached json source
+Q181593
   value
     entities
       Q181593
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002)
             at-0000
-              language: "en"
-              value: "asc"
+              language string "en"
+              value string "asc"
             at-0001
-              language: "en"
-              value: "desc"
+              language string "en"
+              value string "desc"
             at-0002
-              language: "en"
-              value: "sort"
-          ru: []
+              language string "en"
+              value string "sort"
+          ru (at-0000 at-0001 at-0002)
             at-0000
-              language: "ru"
-              value: "алгоритмы сортировки"
+              language string "ru"
+              value string "алгоритмы сортировки"
             at-0001
-              language: "ru"
-              value: "сортировка"
+              language string "ru"
+              value string "сортировка"
             at-0002
-              language: "ru"
-              value: "сортировка массива"
-          zh: []
+              language string "ru"
+              value string "сортировка массива"
+          zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005)
             at-0000
-              language: "zh"
-              value: "排序"
+              language string "zh"
+              value string "排序"
             at-0001
-              language: "zh"
-              value: "升序"
+              language string "zh"
+              value string "升序"
             at-0002
-              language: "zh"
-              value: "自然顺序"
+              language string "zh"
+              value string "自然顺序"
             at-0003
-              language: "zh"
-              value: "降序"
+              language string "zh"
+              value string "降序"
             at-0004
-              language: "zh"
-              value: "反字典顺序"
+              language string "zh"
+              value string "反字典顺序"
             at-0005
-              language: "zh"
-              value: "排序演算法"
+              language string "zh"
+              value string "排序演算法"
         descriptions
           en
-            language: "en"
-            value: "algorithm that puts elements of a list in a certain order"
+            language string "en"
+            value string "algorithm that puts elements of a list in a certain order"
           ru
-            language: "ru"
-            value: "алгоритм для упорядочивания элементов в списке"
+            language string "ru"
+            value string "алгоритм для упорядочивания элементов в списке"
           zh
-            language: "zh"
-            value: "算法,按照一定的顺序列表的元素"
-        id: "Q181593"
+            language string "zh"
+            value string "算法,按照一定的顺序列表的元素"
+        id string "Q181593"
         labels
           en
-            language: "en"
-            value: "sorting algorithm"
+            language string "en"
+            value string "sorting algorithm"
           hi
-            language: "hi"
-            value: "अनुक्रमण की कलनविधि"
+            language string "hi"
+            value string "अनुक्रमण की कलनविधि"
           ru
-            language: "ru"
-            value: "алгоритм сортировки"
+            language string "ru"
+            value string "алгоритм сортировки"
           zh
-            language: "zh"
-            value: "排序算法"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "排序算法"
+        type string "item"
+    success 1

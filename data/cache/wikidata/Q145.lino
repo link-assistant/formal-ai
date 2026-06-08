@@ -1,0 +1,83 @@
+Q145
+  aliases
+    en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007)
+      at-0000
+        language string "en"
+        value string "United Kingdom of Great Britain and Northern Ireland"
+      at-0001
+        language string "en"
+        value string "U K"
+      at-0002
+        language string "en"
+        value string "G B"
+      at-0003
+        language string "en"
+        value string "Great Britain"
+      at-0004
+        language string "en"
+        value string "Great Britain and Northern Ireland"
+      at-0005
+        language string "en"
+        value string "the United Kingdom of Great Britain and Northern Ireland"
+      at-0006
+        language string "en"
+        value string "the UK"
+      at-0007
+        language string "en"
+        value string "the United Kingdom"
+    ru (at-0000 at-0001 at-0002 at-0003)
+      at-0000
+        language string "ru"
+        value string "Соединённое Королевство Великобритании и Северной Ирландии"
+      at-0001
+        language string "ru"
+        value string "Соединённое Королевство"
+      at-0002
+        language string "ru"
+        value string "Британия"
+      at-0003
+        language string "ru"
+        value string "Туманный Альбион"
+    zh (at-0000 at-0001 at-0002)
+      at-0000
+        language string "zh"
+        value string "联合王国"
+      at-0001
+        language string "zh"
+        value string "大不列颠及北爱尔兰联合王国"
+      at-0002
+        language string "zh"
+        value string "不列颠"
+  descriptions
+    en
+      language string "en"
+      value string "island country in north-west Europe"
+    hi
+      language string "hi"
+      value string "पश्चिमोत्तरी यूरोप का देश"
+    ru
+      language string "ru"
+      value string "государство в Европе"
+    zh
+      language string "zh"
+      value string "歐洲西部的島國"
+  id string "Q145"
+  labels
+    en
+      language string "en"
+      value string "United Kingdom"
+    hi
+      language string "hi"
+      value string "यूनाइटेड किंगडम"
+    ru
+      language string "ru"
+      value string "Великобритания"
+    zh
+      language string "zh"
+      value string "英国"
+  lastrevid 2503023074
+  modified string "2026-06-07T13:22:59Z"
+  ns 0
+  pageid 281
+  title string "Q145"
+  type string "item"

@@ -1,51 +1,51 @@
-Q7802 # cached json source
+Q7802
   value
     entities
       Q7802
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002)
             at-0000
-              language: "en"
-              value: "bun"
+              language string "en"
+              value string "bun"
             at-0001
-              language: "en"
-              value: "breads"
+              language string "en"
+              value string "breads"
             at-0002
-              language: "en"
-              value: "buns"
-          zh: []
+              language string "en"
+              value string "buns"
+          zh (at-0000 at-0001)
             at-0000
-              language: "zh"
-              value: "面包"
+              language string "zh"
+              value string "面包"
             at-0001
-              language: "zh"
-              value: "麭"
+              language string "zh"
+              value string "麭"
         descriptions
           en
-            language: "en"
-            value: "baked food made of flour, water and other ingredients"
+            language string "en"
+            value string "baked food made of flour, water and other ingredients"
           hi
-            language: "hi"
-            value: "आटे से तैयार प्रधान भोजन"
+            language string "hi"
+            value string "आटे से तैयार प्रधान भोजन"
           ru
-            language: "ru"
-            value: "пищевой продукт"
+            language string "ru"
+            value string "пищевой продукт"
           zh
-            language: "zh"
-            value: "由麵粉製作烘烤而成的食物"
-        id: "Q7802"
+            language string "zh"
+            value string "由麵粉製作烘烤而成的食物"
+        id string "Q7802"
         labels
           en
-            language: "en"
-            value: "bread"
+            language string "en"
+            value string "bread"
           hi
-            language: "hi"
-            value: "डबलरोटी"
+            language string "hi"
+            value string "डबलरोटी"
           ru
-            language: "ru"
-            value: "хлеб"
+            language string "ru"
+            value string "хлеб"
           zh
-            language: "zh"
-            value: "麵包"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "麵包"
+        type string "item"
+    success 1

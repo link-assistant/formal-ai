@@ -1,122 +1,122 @@
-P36 # cached json source
+P36
   value
     entities
       P36
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015 at-0016 at-0017)
             at-0000
-              language: "en"
-              value: "capital city"
+              language string "en"
+              value string "capital city"
             at-0001
-              language: "en"
-              value: "capital town"
+              language string "en"
+              value string "capital town"
             at-0002
-              language: "en"
-              value: "chef-lieu"
+              language string "en"
+              value string "chef-lieu"
             at-0003
-              language: "en"
-              value: "principal place"
+              language string "en"
+              value string "principal place"
             at-0004
-              language: "en"
-              value: "county seat"
+              language string "en"
+              value string "county seat"
             at-0005
-              language: "en"
-              value: "administrative centre"
+              language string "en"
+              value string "administrative centre"
             at-0006
-              language: "en"
-              value: "administrative headquarters"
+              language string "en"
+              value string "administrative headquarters"
             at-0007
-              language: "en"
-              value: "has capital"
+              language string "en"
+              value string "has capital"
             at-0008
-              language: "en"
-              value: "court residence"
+              language string "en"
+              value string "court residence"
             at-0009
-              language: "en"
-              value: "seat"
+              language string "en"
+              value string "seat"
             at-0010
-              language: "en"
-              value: "administrative seat"
+              language string "en"
+              value string "administrative seat"
             at-0011
-              language: "en"
-              value: "seat of government"
+              language string "en"
+              value string "seat of government"
             at-0012
-              language: "en"
-              value: "administrative capital"
+              language string "en"
+              value string "administrative capital"
             at-0013
-              language: "en"
-              value: "government capital"
+              language string "en"
+              value string "government capital"
             at-0014
-              language: "en"
-              value: "county town"
+              language string "en"
+              value string "county town"
             at-0015
-              language: "en"
-              value: "government seat"
+              language string "en"
+              value string "government seat"
             at-0016
-              language: "en"
-              value: "administrative center"
+              language string "en"
+              value string "administrative center"
             at-0017
-              language: "en"
-              value: "location of capital"
-          ru: []
+              language string "en"
+              value string "location of capital"
+          ru (at-0000 at-0001)
             at-0000
-              language: "ru"
-              value: "главный город"
+              language string "ru"
+              value string "главный город"
             at-0001
-              language: "ru"
-              value: "столица"
-          zh: []
+              language string "ru"
+              value string "столица"
+          zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007)
             at-0000
-              language: "zh"
-              value: "首都"
+              language string "zh"
+              value string "首都"
             at-0001
-              language: "zh"
-              value: "省会"
+              language string "zh"
+              value string "省会"
             at-0002
-              language: "zh"
-              value: "首府"
+              language string "zh"
+              value string "首府"
             at-0003
-              language: "zh"
-              value: "治所"
+              language string "zh"
+              value string "治所"
             at-0004
-              language: "zh"
-              value: "县治"
+              language string "zh"
+              value string "县治"
             at-0005
-              language: "zh"
-              value: "縣治"
+              language string "zh"
+              value string "縣治"
             at-0006
-              language: "zh"
-              value: "公所所在地"
+              language string "zh"
+              value string "公所所在地"
             at-0007
-              language: "zh"
-              value: "役場所在地"
-        datatype: "wikibase-item"
+              language string "zh"
+              value string "役場所在地"
+        datatype string "wikibase-item"
         descriptions
           en
-            language: "en"
-            value: "seat of government of a country, province, state or other type of administrative territorial entity"
+            language string "en"
+            value string "seat of government of a country, province, state or other type of administrative territorial entity"
           hi
-            language: "hi"
-            value: "देश, राज्य या प्रशासनिक उपखंड की शासकीय सीट की नगर पालिका"
+            language string "hi"
+            value string "देश, राज्य या प्रशासनिक उपखंड की शासकीय सीट की नगर पालिका"
           ru
-            language: "ru"
-            value: "официальный главный населённый пункт в административной единице"
+            language string "ru"
+            value string "официальный главный населённый пункт в административной единице"
           zh
-            language: "zh"
-            value: "国家、省、州或其他类型行政领土实体的政府所在地"
-        id: "P36"
+            language string "zh"
+            value string "国家、省、州或其他类型行政领土实体的政府所在地"
+        id string "P36"
         labels
           en
-            language: "en"
-            value: "capital"
+            language string "en"
+            value string "capital"
           hi
-            language: "hi"
-            value: "राजधानी"
+            language string "hi"
+            value string "राजधानी"
           ru
-            language: "ru"
-            value: "административный центр"
+            language string "ru"
+            value string "административный центр"
           zh
-            language: "zh"
-            value: "行政中心"
-        type: "property"
-    success: 1
+            language string "zh"
+            value string "行政中心"
+        type string "property"
+    success 1

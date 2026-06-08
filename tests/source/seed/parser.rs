@@ -2,7 +2,7 @@
 //!
 //! Seed files are indentation trees. Historical files used `name "value"`;
 //! issue #398 migrates data to unquoted links with `#` comments and explicit
-//! `unformalized-raw` codepoint scalars for text that is not yet formalized.
+//! codepoint metadata for text that is not yet formalized as a lexeme id.
 
 #[derive(Debug, Default, Clone)]
 pub struct LinoNode {
@@ -70,19 +70,7 @@ fn parse_lino_line(content: &str) -> Option<LinoNode> {
 
     if let Some((name, id)) = parse_colon_definition(content) {
         node.name = name.to_string();
-        node.id = decode_raw_reference(id);
-    } else if let Some(quote_start) = content.find(" \"") {
-        node.name = content[..quote_start].trim().to_string();
-        let rest = &content[quote_start + 2..];
-        if let Some(close) = find_closing_quote(rest) {
-            node.id = unescape_value(&rest[..close]);
-        }
-    } else if let Some(quote_start) = content.find(" '") {
-        node.name = content[..quote_start].trim().to_string();
-        let rest = &content[quote_start + 2..];
-        if let Some(close) = find_closing_single_quote(rest) {
-            node.id = unescape_single_value(&rest[..close]);
-        }
+        node.id = decode_raw_reference_preserving_quotes(id);
     } else if let Some((name, id)) = content.split_once(char::is_whitespace) {
         node.name = name.trim().to_string();
         node.id = decode_raw_reference(id.trim());
@@ -229,13 +217,46 @@ fn unescape_single_value(raw: &str) -> String {
 }
 
 fn decode_raw_reference(raw: &str) -> String {
-    if raw == "unformalized-raw" {
-        return String::new();
+    if let Some(value) = decode_codepoint_reference(raw) {
+        return value;
     }
-    let Some(codepoints) = raw.strip_prefix("unformalized-raw ") else {
-        return raw.to_string();
-    };
-    decode_codepoints(codepoints)
+    if let Some(value) = decode_quoted_reference(raw) {
+        return value;
+    }
+    raw.to_string()
+}
+
+fn decode_raw_reference_preserving_quotes(raw: &str) -> String {
+    decode_codepoint_reference(raw).unwrap_or_else(|| raw.to_string())
+}
+
+fn decode_codepoint_reference(raw: &str) -> Option<String> {
+    if raw == "codepoints" || raw == "unformalized-raw" {
+        return Some(String::new());
+    }
+    if let Some(codepoints) = raw.strip_prefix("codepoints ") {
+        return Some(decode_codepoints(codepoints));
+    }
+    if let Some(codepoints) = raw.strip_prefix("unformalized-raw ") {
+        return Some(decode_codepoints(codepoints));
+    }
+    None
+}
+
+fn decode_quoted_reference(raw: &str) -> Option<String> {
+    if let Some(rest) = raw.strip_prefix('"') {
+        let close = find_closing_quote(rest)?;
+        if rest[close + 1..].trim().is_empty() {
+            return Some(unescape_value(&rest[..close]));
+        }
+    }
+    if let Some(rest) = raw.strip_prefix('\'') {
+        let close = find_closing_single_quote(rest)?;
+        if rest[close + 1..].trim().is_empty() {
+            return Some(unescape_single_value(&rest[..close]));
+        }
+    }
+    None
 }
 
 pub fn decode_codepoints(raw: &str) -> String {
@@ -260,10 +281,23 @@ pub fn parse_codepoint(value: &str) -> u32 {
 }
 
 pub fn split_pipe_list(raw: &str) -> Vec<String> {
-    if raw.is_empty() {
+    let trimmed = raw.trim();
+    if trimmed.is_empty() {
         return Vec::new();
     }
-    raw.split('|')
+    if let Some(body) = trimmed
+        .strip_prefix('(')
+        .and_then(|value| value.strip_suffix(')'))
+    {
+        return body
+            .split_whitespace()
+            .map(str::trim)
+            .filter(|s| !s.is_empty())
+            .map(ToOwned::to_owned)
+            .collect();
+    }
+    trimmed
+        .split('|')
         .map(str::trim)
         .filter(|s| !s.is_empty())
         .map(ToOwned::to_owned)

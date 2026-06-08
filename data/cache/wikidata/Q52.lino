@@ -1,122 +1,122 @@
-Q52 # cached json source
+Q52
   value
     entities
       Q52
         aliases
-          en: []
+          en (at-0000 at-0001 at-0002 at-0003)
             at-0000
-              language: "en"
-              value: "Wikipedia, the free encyclopedia"
+              language string "en"
+              value string "Wikipedia, the free encyclopedia"
             at-0001
-              language: "en"
-              value: "The free encyclopedia"
+              language string "en"
+              value string "The free encyclopedia"
             at-0002
-              language: "en"
-              value: "Wikipedia, the free encyclopedia that anyone can edit"
+              language string "en"
+              value string "Wikipedia, the free encyclopedia that anyone can edit"
             at-0003
-              language: "en"
-              value: "Q52"
-          hi: []
+              language string "en"
+              value string "Q52"
+          hi (at-0000 at-0001 at-0002 at-0003 at-0004)
             at-0000
-              language: "hi"
-              value: "विकीपीडिया"
+              language string "hi"
+              value string "विकीपीडिया"
             at-0001
-              language: "hi"
-              value: "विकि"
+              language string "hi"
+              value string "विकि"
             at-0002
-              language: "hi"
-              value: "विकिविश्वकोश"
+              language string "hi"
+              value string "विकिविश्वकोश"
             at-0003
-              language: "hi"
-              value: "मुक्त विश्वकोश"
+              language string "hi"
+              value string "मुक्त विश्वकोश"
             at-0004
-              language: "hi"
-              value: "विश्वकोश"
-          ru: []
+              language string "hi"
+              value string "विश्वकोश"
+          ru (at-0000 at-0001 at-0002)
             at-0000
-              language: "ru"
-              value: "ВП"
+              language string "ru"
+              value string "ВП"
             at-0001
-              language: "ru"
-              value: "Вики"
+              language string "ru"
+              value string "Вики"
             at-0002
-              language: "ru"
-              value: "Википедия, свободная энциклопедия"
-          zh: []
+              language string "ru"
+              value string "Википедия, свободная энциклопедия"
+          zh (at-0000 at-0001 at-0002 at-0003 at-0004 at-0005 at-0006 at-0007 at-0008 at-0009 at-0010 at-0011 at-0012 at-0013 at-0014 at-0015)
             at-0000
-              language: "zh"
-              value: "维基百科全书"
+              language string "zh"
+              value string "维基百科全书"
             at-0001
-              language: "zh"
-              value: "维基大典"
+              language string "zh"
+              value string "维基大典"
             at-0002
-              language: "zh"
-              value: "維基百科全書"
+              language string "zh"
+              value string "維基百科全書"
             at-0003
-              language: "zh"
-              value: "維基大典"
+              language string "zh"
+              value string "維基大典"
             at-0004
-              language: "zh"
-              value: "自由的百科全书"
+              language string "zh"
+              value string "自由的百科全书"
             at-0005
-              language: "zh"
-              value: "自由的百科全書"
+              language string "zh"
+              value string "自由的百科全書"
             at-0006
-              language: "zh"
-              value: "维基百科，自由的百科全书"
+              language string "zh"
+              value string "维基百科，自由的百科全书"
             at-0007
-              language: "zh"
-              value: "維基百科 自由的百科全書"
+              language string "zh"
+              value string "維基百科 自由的百科全書"
             at-0008
-              language: "zh"
-              value: "维基百科 自由的百科全书"
+              language string "zh"
+              value string "维基百科 自由的百科全书"
             at-0009
-              language: "zh"
-              value: "Wikipedia"
+              language string "zh"
+              value string "Wikipedia"
             at-0010
-              language: "zh"
-              value: "维基百科"
+              language string "zh"
+              value string "维基百科"
             at-0011
-              language: "zh"
-              value: "維基百科，自由的百科全書"
+              language string "zh"
+              value string "維基百科，自由的百科全書"
             at-0012
-              language: "zh"
-              value: "Wiki"
+              language string "zh"
+              value string "Wiki"
             at-0013
-              language: "zh"
-              value: "WP"
+              language string "zh"
+              value string "WP"
             at-0014
-              language: "zh"
-              value: "維基"
+              language string "zh"
+              value string "維基"
             at-0015
-              language: "zh"
-              value: "维基"
+              language string "zh"
+              value string "维基"
         descriptions
           en
-            language: "en"
-            value: "free multilingual online encyclopedia"
+            language string "en"
+            value string "free multilingual online encyclopedia"
           hi
-            language: "hi"
-            value: "निःशुल्क बहुभाषी ऑनलाइन विश्वकोश"
+            language string "hi"
+            value string "निःशुल्क बहुभाषी ऑनलाइन विश्वकोश"
           ru
-            language: "ru"
-            value: "многоязычная интернет-энциклопедия со свободным контентом"
+            language string "ru"
+            value string "многоязычная интернет-энциклопедия со свободным контентом"
           zh
-            language: "zh"
-            value: "人人可編輯的自由線上百科全書，2001年於美國創立"
-        id: "Q52"
+            language string "zh"
+            value string "人人可編輯的自由線上百科全書，2001年於美國創立"
+        id string "Q52"
         labels
           en
-            language: "en"
-            value: "Wikipedia"
+            language string "en"
+            value string "Wikipedia"
           hi
-            language: "hi"
-            value: "विकिपीडिया"
+            language string "hi"
+            value string "विकिपीडिया"
           ru
-            language: "ru"
-            value: "Википедия"
+            language string "ru"
+            value string "Википедия"
           zh
-            language: "zh"
-            value: "維基百科"
-        type: "item"
-    success: 1
+            language string "zh"
+            value string "維基百科"
+        type string "item"
+    success 1
