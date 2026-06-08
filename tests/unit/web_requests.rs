@@ -32,46 +32,55 @@ const WEB_SEARCH_ENUMERATION_RESEARCH_CASES: &[(&str, &str, &str)] = &[
     ),
 ];
 
-#[test]
-fn russian_latest_news_routes_to_wikinews_search() {
-    let response = FormalAiEngine.answer("последние новости");
+const WEB_SEARCH_LATEST_NEWS_CASES: &[(&str, &str, &str)] = &[
+    ("English", "latest news", "latest news"),
+    ("Russian", "последние новости", "последние новости"),
+    ("Hindi", "नवीनतम समाचार", "नवीनतम समाचार"),
+    ("Chinese", "最新新闻", "最新新闻"),
+];
 
-    assert_eq!(
-        response.intent, "web_search",
-        "reported Russian latest-news prompt should route to web_search, got {} with answer {}",
-        response.intent, response.answer,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "web_search:request:последние новости"),
-        "latest-news prompt should preserve the requested news query: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "web_search:query_kind:latest_news"),
-        "latest-news prompt should record the specialized query kind: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response
-            .evidence_links
-            .iter()
-            .any(|link| link == "web_search:provider:wikinews"),
-        "latest-news prompt should include Wikinews as a search provider: {:?}",
-        response.evidence_links,
-    );
-    assert!(
-        response.answer.to_lowercase().contains("wikinews")
-            || response.answer.to_lowercase().contains("викиновости"),
-        "latest-news answer should direct the user to Wikinews, got: {}",
-        response.answer,
-    );
-    assert_ne!(response.intent, "unknown");
+#[test]
+fn latest_news_routes_to_wikinews_search_across_supported_languages() {
+    for &(language, prompt, expected_query) in WEB_SEARCH_LATEST_NEWS_CASES {
+        let response = FormalAiEngine.answer(prompt);
+
+        assert_eq!(
+            response.intent, "web_search",
+            "{language} latest-news prompt should route to web_search, got {} with answer {}",
+            response.intent, response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == &format!("web_search:request:{expected_query}")),
+            "{language} latest-news prompt should preserve the requested news query: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:query_kind:latest_news"),
+            "{language} latest-news prompt should record the specialized query kind: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "web_search:provider:wikinews"),
+            "{language} latest-news prompt should include Wikinews as a search provider: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response.answer.to_lowercase().contains("wikinews")
+                || response.answer.to_lowercase().contains("викиновости"),
+            "{language} latest-news answer should direct the user to Wikinews, got: {}",
+            response.answer,
+        );
+        assert_ne!(response.intent, "unknown");
+    }
 }
 
 #[test]
