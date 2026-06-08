@@ -1,5 +1,5 @@
 meanings
-  explicit_web_search_command: # concept explicit_web_search_command
+  explicit_web_search_command:
     defined-by web_search # definition-link
     defined-by action # definition-link
     role web_search_explicit_prefix # semantic-role
@@ -137,7 +137,7 @@ meanings
         codepoints 22312 32500 22522 30334 31185 19978 25628 32034 8230
       surface seed-surface-6e990d48b09c
         codepoints 19978 32593 26597 25214 8230
-  topic_connective: # concept topic_connective
+  topic_connective:
     defined-by relation # definition-link
     role web_search_topic_marker # semantic-role
     lexeme en # language
@@ -186,7 +186,7 @@ meanings
         codepoints 26377 20851 8230
       surface seed-surface-492040f73a07
         codepoints 26377 38364 8230
-  query_leading_noise: # concept query_leading_noise
+  query_leading_noise:
     defined-by concept # definition-link
     role web_search_query_leading_noise # semantic-role
     lexeme en # language
@@ -281,7 +281,7 @@ meanings
         codepoints 26377 20851 8230
       surface seed-surface-a928eecb6644
         codepoints 26377 38364 8230
-  query_trailing_noise: # concept query_trailing_noise
+  query_trailing_noise:
     defined-by concept # definition-link
     role web_search_query_trailing_noise # semantic-role
     lexeme en # language

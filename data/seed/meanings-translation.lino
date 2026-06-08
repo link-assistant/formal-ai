@@ -1,5 +1,5 @@
 meanings
-  human_language: # concept human_language
+  human_language:
     defined-by concept # definition-link
     role translation_language_genus # semantic-role
     lexeme en # language
@@ -14,7 +14,7 @@ meanings
     lexeme zh # language
       surface seed-surface-90f6b9c2ffe9
         codepoints 35821 35328
-  language_english: # concept language_english
+  language_english:
     defined-by human_language # definition-link
     role translation_language # semantic-role
     lexeme en # language
@@ -33,7 +33,7 @@ meanings
         codepoints 33521 35821
       surface seed-surface-de267a229536
         codepoints 33521 25991
-  language_russian: # concept language_russian
+  language_russian:
     defined-by human_language # definition-link
     role translation_language # semantic-role
     lexeme en # language
@@ -48,7 +48,7 @@ meanings
     lexeme zh # language
       surface seed-surface-cab5fd6745e6
         codepoints 20420 35821
-  language_hindi: # concept language_hindi
+  language_hindi:
     defined-by human_language # definition-link
     role translation_language # semantic-role
     lexeme en # language
@@ -65,7 +65,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9c41f532f3d2
         codepoints 21360 22320 35821
-  language_chinese: # concept language_chinese
+  language_chinese:
     defined-by human_language # definition-link
     role translation_language # semantic-role
     lexeme en # language
@@ -84,7 +84,7 @@ meanings
         codepoints 27721 35821
       surface seed-surface-c5474cd023dd
         codepoints 28450 35486
-  translate: # concept translate
+  translate:
     defined-by action # definition-link
     role translation_action # semantic-role
     lexeme en # language
@@ -105,7 +105,7 @@ meanings
         codepoints 32763 35793
       surface seed-surface-9f9e56330129
         codepoints 32763 35695
-  translation_direction_source: # concept translation_direction_source
+  translation_direction_source:
     defined-by relation # definition-link
     role translation_source_direction # semantic-role
     lexeme en # language
@@ -120,7 +120,7 @@ meanings
     lexeme zh # language
       surface seed-surface-121ccb090929
         codepoints 20174
-  translation_direction_target: # concept translation_direction_target
+  translation_direction_target:
     defined-by relation # definition-link
     role translation_target_direction # semantic-role
     lexeme en # language
@@ -141,7 +141,7 @@ meanings
         codepoints 28858
       surface seed-surface-65d2a44f9473
         codepoints 21040
-  translate_from_english: # concept translate_from_english
+  translate_from_english:
     defined-by language_english # definition-link
     defined-by translation_direction_source # definition-link
     role translation_source_marker # semantic-role
@@ -161,7 +161,7 @@ meanings
         codepoints 20174 33521 35821
       surface seed-surface-fca9a3db4033
         codepoints 20174 33521 25991
-  translate_from_russian: # concept translate_from_russian
+  translate_from_russian:
     defined-by language_russian # definition-link
     defined-by translation_direction_source # definition-link
     role translation_source_marker # semantic-role
@@ -177,7 +177,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b1d469e5a62d
         codepoints 20174 20420 35821
-  translate_from_hindi: # concept translate_from_hindi
+  translate_from_hindi:
     defined-by language_hindi # definition-link
     defined-by translation_direction_source # definition-link
     role translation_source_marker # semantic-role
@@ -197,7 +197,7 @@ meanings
         codepoints 20174 21360 22320 35821
       surface seed-surface-ef9b8ae0cccc
         codepoints 20174 21360 22320 25991
-  translate_from_chinese: # concept translate_from_chinese
+  translate_from_chinese:
     defined-by language_chinese # definition-link
     defined-by translation_direction_source # definition-link
     role translation_source_marker # semantic-role
@@ -217,7 +217,7 @@ meanings
         codepoints 20174 27721 35821
       surface seed-surface-38a2d26b2c34
         codepoints 20174 28450 35486
-  translate_into_english: # concept translate_into_english
+  translate_into_english:
     defined-by language_english # definition-link
     defined-by translation_direction_target # definition-link
     role translation_target_marker # semantic-role
@@ -251,7 +251,7 @@ meanings
         codepoints 21040 33521 25991
       surface seed-surface-c95f9d85b7b8
         codepoints 21040 33521 35821
-  translate_into_russian: # concept translate_into_russian
+  translate_into_russian:
     defined-by language_russian # definition-link
     defined-by translation_direction_target # definition-link
     role translation_target_marker # semantic-role
@@ -281,7 +281,7 @@ meanings
         codepoints 21040 20420 35821
       surface seed-surface-e936262d96e2
         codepoints 21040 20420 35486
-  translate_into_hindi: # concept translate_into_hindi
+  translate_into_hindi:
     defined-by language_hindi # definition-link
     defined-by translation_direction_target # definition-link
     role translation_target_marker # semantic-role
@@ -313,7 +313,7 @@ meanings
         codepoints 21040 21360 22320 35821
       surface seed-surface-49a2cb1f7eff
         codepoints 21040 21360 22320 25991
-  translate_into_chinese: # concept translate_into_chinese
+  translate_into_chinese:
     defined-by language_chinese # definition-link
     defined-by translation_direction_target # definition-link
     role translation_target_marker # semantic-role
@@ -351,7 +351,7 @@ meanings
         codepoints 21040 27721 35821
       surface seed-surface-abb9e0119882
         codepoints 21040 28450 35486
-  translation_unquoted_frame: # concept translation_unquoted_frame
+  translation_unquoted_frame:
     defined-by translate # definition-link
     defined-by translation_direction_target # definition-link
     role translation_unquoted_frame # semantic-role
@@ -369,7 +369,7 @@ meanings
         codepoints 32763 35793
       surface seed-surface-bc4b9234fad2
         codepoints 32763 35695
-  translation_into_marker: # concept translation_into_marker
+  translation_into_marker:
     defined-by translate # definition-link
     defined-by translation_direction_target # definition-link
     role translation_into_marker # semantic-role
@@ -397,7 +397,7 @@ meanings
         codepoints 32763 35695 28858
       surface seed-surface-0e40f739e4a2
         codepoints 32763 35695 21040
-  translation_object_marker: # concept translation_object_marker
+  translation_object_marker:
     defined-by relation # definition-link
     role translation_object_marker # semantic-role
     lexeme en # language
@@ -416,7 +416,7 @@ meanings
         codepoints 25226
       surface seed-surface-cbeda6ee8dea
         codepoints 23558
-  definition_command: # concept definition_command
+  definition_command:
     defined-by action # definition-link
     role definition_command # semantic-role
     lexeme en # language
@@ -431,7 +431,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e77643498d26
         codepoints 23450 20041
-  links_notation_format: # concept links_notation_format
+  links_notation_format:
     defined-by concept # definition-link
     role links_notation_format # semantic-role
     lexeme en # language
@@ -446,7 +446,7 @@ meanings
     lexeme zh # language
       surface seed-surface-200013f0a293
         codepoints 38142 25509 34920 31034 27861
-  apple: # concept apple
+  apple:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -479,7 +479,7 @@ meanings
     lexeme zh # language
       surface seed-surface-12722046baca
         codepoints 33529 26524
-  greeting_hello: # concept greeting_hello
+  greeting_hello:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -496,7 +496,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3003922d3d19
         codepoints 20320 22909
-  gratitude_thank_you: # concept gratitude_thank_you
+  gratitude_thank_you:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -515,7 +515,7 @@ meanings
         codepoints 35874 35874
       surface seed-surface-dc17b5bb524d
         codepoints 35613 35613
-  affirmation_yes: # concept affirmation_yes
+  affirmation_yes:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -530,7 +530,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ed48db161116
         codepoints 26159
-  negation_no: # concept negation_no
+  negation_no:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -545,7 +545,7 @@ meanings
     lexeme zh # language
       surface seed-surface-532272c1473b
         codepoints 19981
-  tomato: # concept tomato
+  tomato:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -564,7 +564,7 @@ meanings
         codepoints 30058 33540
       surface seed-surface-46938fb1fc92
         codepoints 35199 32418 26623
-  cucumber: # concept cucumber
+  cucumber:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -579,7 +579,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2a59a58ba691
         codepoints 40644 29916
-  potato: # concept potato
+  potato:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -598,7 +598,7 @@ meanings
         codepoints 22303 35910
       surface seed-surface-8f612219f897
         codepoints 39532 38083 34223
-  carrot: # concept carrot
+  carrot:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -613,7 +613,7 @@ meanings
     lexeme zh # language
       surface seed-surface-141d4f291241
         codepoints 32993 33821 21340
-  bread: # concept bread
+  bread:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -628,7 +628,7 @@ meanings
     lexeme zh # language
       surface seed-surface-96c0c4bc8c4f
         codepoints 38754 21253
-  water: # concept water
+  water:
     defined-by entity # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -643,7 +643,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7934b630eb20
         codepoints 27700
-  good: # concept good
+  good:
     defined-by property # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -684,7 +684,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d9c879eca571
         codepoints 22909
-  find: # concept find
+  find:
     defined-by action # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -703,7 +703,7 @@ meanings
     lexeme zh # language
       surface seed-surface-094301868038
         codepoints 26597 25214
-  synonym: # concept synonym
+  synonym:
     defined-by concept # definition-link
     role compositional_lemma # semantic-role
     role compositional_genitive_head # semantic-role
@@ -723,7 +723,7 @@ meanings
     lexeme zh # language
       surface seed-surface-199216137aff
         codepoints 21516 20041 35789
-  example: # concept example
+  example:
     defined-by concept # definition-link
     role compositional_lemma # semantic-role
     role compositional_genitive_head # semantic-role
@@ -743,7 +743,7 @@ meanings
     lexeme zh # language
       surface seed-surface-bc8edee76164
         codepoints 20363 23376
-  agreement: # concept agreement
+  agreement:
     defined-by concept # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -767,7 +767,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e19b69cb653f
         codepoints 19968 33268
-  conjunction_or: # concept conjunction_or
+  conjunction_or:
     defined-by relation # definition-link
     role compositional_lemma # semantic-role
     lexeme en # language
@@ -782,7 +782,7 @@ meanings
     lexeme zh # language
       surface seed-surface-5fcc4ede8c75
         codepoints 25110
-  who_are_you: # concept who_are_you
+  who_are_you:
     defined-by concept # definition-link
     role compositional_phrase # semantic-role
     lexeme en # language
@@ -807,7 +807,7 @@ meanings
     lexeme zh # language
       surface seed-surface-356edc73f7f1
         codepoints 20320 26159 35841
-  what_is_this: # concept what_is_this
+  what_is_this:
     defined-by concept # definition-link
     role compositional_phrase # semantic-role
     lexeme en # language
@@ -824,7 +824,7 @@ meanings
     lexeme zh # language
       surface seed-surface-1848fc81d91f
         codepoints 36825 26159 20160 20040
-  how_are_you: # concept how_are_you
+  how_are_you:
     defined-by concept # definition-link
     role compositional_phrase # semantic-role
     lexeme en # language

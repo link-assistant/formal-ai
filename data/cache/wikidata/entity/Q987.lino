@@ -1,0 +1,16 @@
+Q987
+  aliases
+    en ("Nayi Dilli" "New Delhi Municipal Council Area" "NDMC area" "Nai Dilli")
+    hi ("नयी दिल्ली")
+    ru ("Новый Дели")
+  descriptions
+    en "capital city of India"
+    hi "भारत की राजधानी"
+    ru "столица Индии"
+    zh "印度首都"
+  labels
+    en "New Delhi"
+    hi "नई दिल्ली"
+    ru "Нью-Дели"
+    zh "新德里"
+  type item

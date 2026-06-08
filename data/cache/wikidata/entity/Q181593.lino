@@ -1,0 +1,15 @@
+Q181593
+  aliases
+    en ("asc" "desc" "sort")
+    ru ("алгоритмы сортировки" "сортировка" "сортировка массива")
+    zh ("排序" "升序" "自然顺序" "降序" "反字典顺序" "排序演算法")
+  descriptions
+    en "algorithm that puts elements of a list in a certain order"
+    ru "алгоритм для упорядочивания элементов в списке"
+    zh "算法,按照一定的顺序列表的元素"
+  labels
+    en "sorting algorithm"
+    hi "अनुक्रमण की कलनविधि"
+    ru "алгоритм сортировки"
+    zh "排序算法"
+  type item

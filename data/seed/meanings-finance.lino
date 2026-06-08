@@ -1,5 +1,5 @@
 meanings
-  investment: # concept investment
+  investment:
     defined-by money # definition-link
     defined-by action # definition-link
     role investment_cue # semantic-role
@@ -19,7 +19,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f8a5bd88c67f
         codepoints 25237 36164
-  interest_finance: # concept interest_finance
+  interest_finance:
     defined-by money # definition-link
     role interest_cue # semantic-role
     lexeme en # language
@@ -34,7 +34,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2f1ed48c3897
         codepoints 21033 24687
-  compounding: # concept compounding
+  compounding:
     defined-by action # definition-link
     defined-by money # definition-link
     role compounding_action_cue # semantic-role
@@ -52,7 +52,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7487b525e39b
         codepoints 22797 21033
-  compounding_monthly: # concept compounding_monthly
+  compounding_monthly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
@@ -67,7 +67,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e886d8dc785e
         codepoints 27599 26376
-  compounding_quarterly: # concept compounding_quarterly
+  compounding_quarterly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
@@ -82,7 +82,7 @@ meanings
     lexeme zh # language
       surface seed-surface-92505222b10d
         codepoints 27599 23395 24230
-  compounding_weekly: # concept compounding_weekly
+  compounding_weekly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
@@ -97,7 +97,7 @@ meanings
     lexeme zh # language
       surface seed-surface-405b88e9f665
         codepoints 27599 21608
-  compounding_daily: # concept compounding_daily
+  compounding_daily:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
@@ -112,7 +112,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ea097dbbe253
         codepoints 27599 26085
-  compounding_annual: # concept compounding_annual
+  compounding_annual:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
@@ -129,7 +129,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e2a1b888b63b
         codepoints 27599 24180
-  live_rate_freshness: # concept live_rate_freshness
+  live_rate_freshness:
     defined-by exchange_rate # definition-link
     defined-by concept # definition-link
     role live_rate_freshness_cue # semantic-role
@@ -153,7 +153,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3beb15b4dddd
         codepoints 23454 26102 27719 29575
-  year_period: # concept year_period
+  year_period:
     defined-by concept # definition-link
     role year_unit_cue # semantic-role
     lexeme en # language
@@ -170,7 +170,7 @@ meanings
     lexeme zh # language
       surface seed-surface-0aa0bbce0f88
         codepoints 24180
-  conversion_action: # concept conversion_action
+  conversion_action:
     defined-by action # definition-link
     defined-by money # definition-link
     role conversion_action_cue # semantic-role
@@ -186,7 +186,7 @@ meanings
     lexeme zh # language
       surface seed-surface-05f5b4ce237e
         codepoints 36716 25442
-  final_amount: # concept final_amount
+  final_amount:
     defined-by money # definition-link
     role final_amount_reference # semantic-role
     lexeme en # language

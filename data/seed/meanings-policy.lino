@@ -1,5 +1,5 @@
 meanings
-  physical_action_query: # concept physical_action_query
+  physical_action_query:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role physical_action_trigger # semantic-role
@@ -23,7 +23,7 @@ meanings
     lexeme zh # language
       surface seed-surface-5a3b889e2df3
         codepoints 20320 21560 20102 21527
-  circular_joke_idiom: # concept circular_joke_idiom
+  circular_joke_idiom:
     defined-by inquiry # definition-link
     defined-by concept # definition-link
     role circular_joke_phrase # semantic-role
@@ -39,7 +39,7 @@ meanings
     lexeme zh # language
       surface seed-surface-5a15ece5c333
         codepoints 20080 22823 35937
-  vulgar_content: # concept vulgar_content
+  vulgar_content:
     defined-by concept # definition-link
     role vulgar_content_marker # semantic-role
     lexeme en # language

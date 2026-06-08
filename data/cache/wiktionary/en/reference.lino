@@ -1,0 +1,100 @@
+reference
+  value
+    entry
+      license
+        name "CC BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      meanings
+        entry
+          antonyms ()
+          definitions
+            entry
+              antonyms ()
+              definition "A relationship or relation (to something)."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "A measurement one can compare to."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "Information about a person, provided by someone (a referee) with whom they are well acquainted."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "A person who provides this information; a referee."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "A reference work."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "That which serves as a reference work."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "The act of referring: a submitting for information or decision."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "A relation between objects in which one object designates, or acts as a means by which to connect to or link to, another object."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "(academic writing) A short written identification of a previously published work which is used as a source for a text."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "(academic writing) A previously published written work thus indicated; a source."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "An object containing information which refers to data stored elsewhere, as opposed to containing the data itself."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "(character entity) A special sequence used to represent complex characters in markup languages, such as ™ for the ™ symbol."
+              synonyms ()
+            entry
+              antonyms ()
+              definition Appeal.
+              synonyms ()
+          partOfSpeech noun
+          synonyms ()
+        entry
+          antonyms ()
+          definitions
+            entry
+              antonyms ()
+              definition "To provide a list of references for (a text)."
+              example "You must thoroughly reference your paper before submitting it."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "To refer to, to use as a reference."
+              example "Reference the dictionary for word meanings."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "To mention, to cite."
+              example "In his speech, the candidate obliquely referenced the past failures of his opponent."
+              synonyms ()
+            entry
+              antonyms ()
+              definition "To contain the value that is a memory address of some value stored in memory."
+              example "The given pointer will reference the actual generated data."
+              synonyms ()
+          partOfSpeech verb
+          synonyms ()
+      phonetic "/ˈɹɛf.(ə)ɹəns/"
+      phonetics
+        entry
+          audio "https://api.dictionaryapi.dev/media/pronunciations/en/reference-us.mp3"
+          license
+            name "BY-SA 3.0"
+            url "https://creativecommons.org/licenses/by-sa/3.0"
+          sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1684715"
+          text "/ˈɹɛf.(ə)ɹəns/"
+      sourceUrls ("https://en.wiktionary.org/wiki/reference")
+      word reference

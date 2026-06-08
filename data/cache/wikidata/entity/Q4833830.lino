@@ -1,0 +1,13 @@
+Q4833830
+  aliases
+    en ("prep." "prep" "PRP")
+    ru ("предлоги" "предлог (грамматика)")
+    zh ("介词")
+  descriptions
+    en "word or phrase able to connect a following noun or noun phrase (and often other parts of the speech) as a complement to some other part of the sentence, expressing a relation between them"
+    ru "служебная часть речи"
+  labels
+    en preposition
+    ru "предлог"
+    zh "介詞"
+  type item

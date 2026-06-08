@@ -115,21 +115,7 @@ fn semantic_definition_graph_is_closed() {
 fn seed_and_source_wikidata_ids_have_checked_in_cache_records() {
     let root = repo_root();
     let wikidata_cache_dir = root.join("data/cache/wikidata");
-    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
-    let mut references: BTreeMap<String, Vec<String>> = BTreeMap::new();
-
-    for path in seed_and_rust_source_paths(&root) {
-        let content = fs::read_to_string(&path).expect("source file should be readable");
-        for (index, line) in content.lines().enumerate() {
-            for id in source_id.find_iter(line).map(|matched| matched.as_str()) {
-                references.entry(id.to_string()).or_default().push(format!(
-                    "{}:{}",
-                    path.display(),
-                    index + 1
-                ));
-            }
-        }
-    }
+    let references = wikidata_references_from_paths(seed_and_rust_source_paths(&root));
 
     assert!(
         !references.is_empty(),
@@ -137,15 +123,68 @@ fn seed_and_source_wikidata_ids_have_checked_in_cache_records() {
     );
     let missing: Vec<String> = references
         .into_iter()
-        .filter_map(|(id, locations)| {
-            let cache_path = wikidata_cache_dir.join(format!("{id}.lino"));
-            (!cache_path.is_file()).then(|| format!("{id} -> {}", locations.join(", ")))
+        .flat_map(|(id, locations)| {
+            missing_wikidata_cache_files(&wikidata_cache_dir, &id, &locations)
         })
         .collect();
 
     assert!(
         missing.is_empty(),
         "seed/source Wikidata ids are missing checked-in cache files:\n{}",
+        missing.join("\n")
+    );
+}
+
+#[test]
+fn wikidata_cache_records_cover_recursive_grounding_closure() {
+    let root = repo_root();
+    let wikidata_cache_dir = root.join("data/cache/wikidata");
+    let initial_references = wikidata_references_from_paths(seed_and_rust_source_paths(&root));
+    let mut queue: Vec<String> = initial_references.keys().cloned().collect();
+    let mut checked = BTreeSet::new();
+    let mut missing = Vec::new();
+
+    for (id, locations) in initial_references {
+        missing.extend(missing_wikidata_cache_files(
+            &wikidata_cache_dir,
+            &id,
+            &locations,
+        ));
+    }
+
+    while let Some(id) = queue.pop() {
+        if !checked.insert(id.clone()) {
+            continue;
+        }
+
+        let cache_path = wikidata_cache_path(&wikidata_cache_dir, &id, "lino");
+        if !cache_path.is_file() {
+            continue;
+        }
+        let content = fs::read_to_string(&cache_path).expect("wikidata cache should be UTF-8");
+        for referenced_id in wikidata_ids_outside_quotes(&content) {
+            let location = vec![cache_path.display().to_string()];
+            let referenced_cache_path =
+                wikidata_cache_path(&wikidata_cache_dir, &referenced_id, "lino");
+            if !referenced_cache_path.is_file() {
+                missing.extend(missing_wikidata_cache_files(
+                    &wikidata_cache_dir,
+                    &referenced_id,
+                    &location,
+                ));
+                continue;
+            }
+            if !checked.contains(&referenced_id) {
+                queue.push(referenced_id);
+            }
+        }
+    }
+
+    missing.sort();
+    missing.dedup();
+    assert!(
+        missing.is_empty(),
+        "recursive Wikidata grounding closure is missing checked-in cache files:\n{}",
         missing.join("\n")
     );
 }
@@ -173,7 +212,7 @@ fn wiktionary_cache_records_are_present_and_parseable() {
 
     for path in &cache_files {
         let content = fs::read_to_string(path).expect("wiktionary cache should be UTF-8");
-        parse_canonical_lino(canonical_lino_content(&content).trim())
+        parse_canonical_lino(content.trim())
             .unwrap_or_else(|error| panic!("{} is invalid LiNo: {error}", path.display()));
     }
 
@@ -183,7 +222,7 @@ fn wiktionary_cache_records_are_present_and_parseable() {
         for (index, line) in content.lines().enumerate() {
             let trimmed = strip_comment(line).trim();
             if let Some(id) = trimmed.strip_prefix("wiktionary ") {
-                let cache_path = cache_dir.join(format!("{id}.lino"));
+                let cache_path = wiktionary_cache_path(&cache_dir, id);
                 if !cache_path.is_file() {
                     missing.push(format!("{}:{} -> {}", path.display(), index + 1, id));
                 }
@@ -236,6 +275,97 @@ fn seed_and_rust_source_paths(root: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
+fn wikidata_references_from_paths(paths: Vec<PathBuf>) -> BTreeMap<String, Vec<String>> {
+    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
+    let mut references: BTreeMap<String, Vec<String>> = BTreeMap::new();
+
+    for path in paths {
+        let content = fs::read_to_string(&path).expect("source file should be readable");
+        for (index, line) in content.lines().enumerate() {
+            for id in source_id.find_iter(line).map(|matched| matched.as_str()) {
+                references.entry(id.to_string()).or_default().push(format!(
+                    "{}:{}",
+                    path.display(),
+                    index + 1
+                ));
+            }
+        }
+    }
+
+    references
+}
+
+fn wikidata_ids_outside_quotes(content: &str) -> BTreeSet<String> {
+    let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
+    let mut references = BTreeSet::new();
+
+    for line in content.lines() {
+        let stripped = strip_comment(line);
+        let unquoted = remove_quoted_segments(stripped);
+        for id in source_id
+            .find_iter(&unquoted)
+            .map(|matched| matched.as_str())
+        {
+            references.insert(id.to_string());
+        }
+    }
+
+    references
+}
+
+fn remove_quoted_segments(line: &str) -> String {
+    let mut output = String::with_capacity(line.len());
+    let mut quote = None;
+    let mut escaped = false;
+    let mut characters = line.chars().peekable();
+
+    while let Some(character) = characters.next() {
+        if let Some(quote_character) = quote {
+            output.push(' ');
+            if escaped {
+                escaped = false;
+                continue;
+            }
+            if quote_character == '"' && character == '\\' {
+                escaped = true;
+                continue;
+            }
+            if quote_character == '\''
+                && character == '\''
+                && characters.peek().is_some_and(|next| *next == '\'')
+            {
+                output.push(' ');
+                characters.next();
+                continue;
+            }
+            if character == quote_character {
+                quote = None;
+            }
+            continue;
+        }
+
+        if matches!(character, '"' | '\'') {
+            quote = Some(character);
+            output.push(' ');
+        } else {
+            output.push(character);
+        }
+    }
+
+    output
+}
+
+fn missing_wikidata_cache_files(root: &Path, id: &str, locations: &[String]) -> Vec<String> {
+    let mut missing = Vec::new();
+    for extension in ["lino", "json"] {
+        let cache_path = wikidata_cache_path(root, id, extension);
+        if !cache_path.is_file() {
+            missing.push(format!("{id}.{extension} -> {}", locations.join(", ")));
+        }
+    }
+    missing
+}
+
 fn top_level_colon_definition(line: &str) -> Option<(String, String)> {
     let trimmed = strip_comment(line);
     if !trimmed.starts_with("  ") || trimmed.starts_with("    ") {
@@ -243,18 +373,6 @@ fn top_level_colon_definition(line: &str) -> Option<(String, String)> {
     }
     let (slug, body) = trimmed.trim().split_once(':')?;
     Some((slug.trim().to_string(), body.trim().to_string()))
-}
-
-fn canonical_lino_content(content: &str) -> String {
-    let mut out = String::new();
-    for line in content.lines().map(strip_comment) {
-        if line.trim().is_empty() {
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    out
 }
 
 fn strip_comment(line: &str) -> &str {
@@ -266,4 +384,23 @@ fn strip_comment(line: &str) -> &str {
         previous_was_space = character.is_whitespace();
     }
     line
+}
+
+fn wikidata_cache_path(root: &Path, id: &str, extension: &str) -> PathBuf {
+    let kind = match id.chars().next() {
+        Some('L') => "lexeme",
+        Some('P') => "property",
+        Some('Q') => "entity",
+        _ => panic!("unexpected Wikidata id `{id}`"),
+    };
+    root.join(kind).join(format!("{id}.{extension}"))
+}
+
+fn wiktionary_cache_path(root: &Path, id: &str) -> PathBuf {
+    if let Some(rest) = id.strip_prefix("WT-") {
+        if let Some((language, page)) = rest.split_once('-') {
+            return root.join(language).join(format!("{page}.lino"));
+        }
+    }
+    root.join(format!("{id}.lino"))
 }

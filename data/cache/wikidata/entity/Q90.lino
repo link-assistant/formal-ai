@@ -1,0 +1,17 @@
+Q90
+  aliases
+    en ("City of Light" "City of Love" "Lutetia")
+    hi ("पेरिस")
+    ru ("Париж (Франция)" "Париж, Франция" "Париж (столица)")
+    zh ("巴黎省")
+  descriptions
+    en "capital and most populous city in France"
+    hi "फ़्रांस की राजधानी और सबसे बड़ा शहर"
+    ru "столица Франции"
+    zh "法國首都及最大都市"
+  labels
+    en Paris
+    hi "पैरिस"
+    ru "Париж"
+    zh "巴黎"
+  type item

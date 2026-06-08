@@ -1,5 +1,5 @@
 meanings
-  software_followup: # concept software_followup
+  software_followup:
     defined-by software_followup_verification # definition-link
     defined-by software_followup_execution # definition-link
     defined-by software_followup_demonstration # definition-link
@@ -25,7 +25,7 @@ meanings
         codepoints 21518 32493
       surface seed-surface-30147a1b2186
         codepoints 28436 32451
-  software_followup_verification: # concept software_followup_verification
+  software_followup_verification:
     defined-by software_followup # definition-link
     role software_followup_verification # semantic-role
     lexeme en # language
@@ -66,7 +66,7 @@ meanings
         codepoints 26816 39564
       surface seed-surface-4a47159970b1
         codepoints 26816 26597
-  software_followup_execution: # concept software_followup_execution
+  software_followup_execution:
     defined-by software_followup # definition-link
     role software_followup_execution # semantic-role
     lexeme en # language
@@ -97,7 +97,7 @@ meanings
         codepoints 36816 34892
       surface seed-surface-50999c58402e
         codepoints 25191 34892
-  software_followup_demonstration: # concept software_followup_demonstration
+  software_followup_demonstration:
     defined-by software_followup # definition-link
     role software_followup_demonstration # semantic-role
     lexeme en # language
@@ -120,7 +120,7 @@ meanings
         codepoints 26174 31034
       surface seed-surface-83baae1266b1
         codepoints 23637 31034
-  output_display_request: # concept output_display_request
+  output_display_request:
     defined-by software_followup # definition-link
     defined-by action # definition-link
     role output_display_request # semantic-role
@@ -150,7 +150,7 @@ meanings
         codepoints 32473 25105 30475 8230
       surface seed-surface-d782628232b2
         codepoints 26174 31034 8230
-  implement: # concept implement
+  implement:
     defined-by code # definition-link
     defined-by program # definition-link
     role software_authoring_action # semantic-role
@@ -168,7 +168,7 @@ meanings
     lexeme zh # language
       surface seed-surface-90662dcd7487
         codepoints 23454 29616
-  develop: # concept develop
+  develop:
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
@@ -185,7 +185,7 @@ meanings
     lexeme zh # language
       surface seed-surface-65c906ed5866
         codepoints 24320 21457
-  design: # concept design
+  design:
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
@@ -202,7 +202,7 @@ meanings
     lexeme zh # language
       surface seed-surface-4686ee465706
         codepoints 35774 35745
-  scaffold: # concept scaffold
+  scaffold:
     defined-by code # definition-link
     defined-by program # definition-link
     role software_authoring_action # semantic-role
@@ -220,7 +220,7 @@ meanings
     lexeme zh # language
       surface seed-surface-10a71adbeb72
         codepoints 25645 24314
-  software_artifact: # concept software_artifact
+  software_artifact:
     defined-by artifact_application # definition-link
     defined-by artifact_tool # definition-link
     defined-by entity # definition-link
@@ -241,7 +241,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7b66880efa2d
         codepoints 36719 20214 21046 21697
-  artifact_browser_extension: # concept artifact_browser_extension
+  artifact_browser_extension:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -256,7 +256,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fe5c7df9502b
         codepoints 27983 35272 22120 25193 23637
-  artifact_command_line_tool: # concept artifact_command_line_tool
+  artifact_command_line_tool:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -275,7 +275,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7d10be995956
         codepoints 21629 20196 34892 24037 20855
-  artifact_github_action: # concept artifact_github_action
+  artifact_github_action:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -290,7 +290,7 @@ meanings
     lexeme zh # language
       surface seed-surface-04cdefbb0e81
         codepoints 103 105 116 104 117 98 32 25805 20316
-  artifact_mobile_app: # concept artifact_mobile_app
+  artifact_mobile_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -305,7 +305,7 @@ meanings
     lexeme zh # language
       surface seed-surface-571a0c075077
         codepoints 31227 21160 24212 29992
-  artifact_web_app: # concept artifact_web_app
+  artifact_web_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -320,7 +320,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2d80ab3ffe09
         codepoints 32593 39029 24212 29992
-  artifact_application: # concept artifact_application
+  artifact_application:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -335,7 +335,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c307628fab18
         codepoints 24212 29992 31243 24207
-  artifact_extension: # concept artifact_extension
+  artifact_extension:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -360,7 +360,7 @@ meanings
         codepoints 25193 23637
       surface seed-surface-8c0b90b68cc4
         codepoints 25193 23637 31243 24207
-  artifact_dashboard: # concept artifact_dashboard
+  artifact_dashboard:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -377,7 +377,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2750ccc67929
         codepoints 20202 34920 26495
-  artifact_scraper: # concept artifact_scraper
+  artifact_scraper:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -394,7 +394,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2e940e506dfb
         codepoints 29228 34411
-  artifact_library: # concept artifact_library
+  artifact_library:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -411,7 +411,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ca4a0ecbbf2d
         codepoints 24211
-  artifact_website: # concept artifact_website
+  artifact_website:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -428,7 +428,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8af2840a3f73
         codepoints 32593 31449
-  artifact_plugin: # concept artifact_plugin
+  artifact_plugin:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -443,7 +443,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ebe6be967fb9
         codepoints 25554 20214
-  artifact_service: # concept artifact_service
+  artifact_service:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -462,7 +462,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fa5c8d906922
         codepoints 26381 21153
-  artifact_bot: # concept artifact_bot
+  artifact_bot:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -477,7 +477,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7e8717c72fe6
         codepoints 26426 22120 20154
-  artifact_app: # concept artifact_app
+  artifact_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -492,7 +492,7 @@ meanings
     lexeme zh # language
       surface seed-surface-592a5ed9310f
         codepoints 24212 29992
-  artifact_api: # concept artifact_api
+  artifact_api:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -507,7 +507,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c3ef7bb83d81
         codepoints 25509 21475
-  artifact_sdk: # concept artifact_sdk
+  artifact_sdk:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -522,7 +522,7 @@ meanings
     lexeme zh # language
       surface seed-surface-dda306cd961b
         codepoints 24320 21457 21253
-  artifact_tool: # concept artifact_tool
+  artifact_tool:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -539,7 +539,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8b4a4feb432d
         codepoints 24037 20855
-  artifact_mod: # concept artifact_mod
+  artifact_mod:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
@@ -554,7 +554,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2aaa94f41ce6
         codepoints 27169 32452
-  software_feature: # concept software_feature
+  software_feature:
     defined-by requirement_state_tracking # definition-link
     defined-by requirement_project_behavior # definition-link
     defined-by property # definition-link
@@ -583,7 +583,7 @@ meanings
         codepoints 21151 33021
       surface seed-surface-fa27f3e63aa2
         codepoints 38656 27714
-  requirement_state_tracking: # concept requirement_state_tracking
+  requirement_state_tracking:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -616,7 +616,7 @@ meanings
         codepoints 20260 23475
       surface seed-surface-d39bde809fe9
         codepoints 20919 21364
-  requirement_data_exchange: # concept requirement_data_exchange
+  requirement_data_exchange:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -657,7 +657,7 @@ meanings
         codepoints 22791 20221
       surface seed-surface-5e2306e20f93
         codepoints 25253 21578
-  requirement_automation: # concept requirement_automation
+  requirement_automation:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -688,7 +688,7 @@ meanings
         codepoints 36890 30693
       surface seed-surface-4782de3c89b6
         codepoints 35745 21010
-  requirement_validation: # concept requirement_validation
+  requirement_validation:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -719,7 +719,7 @@ meanings
         codepoints 26816 26597
       surface seed-surface-4aeff0db4222
         codepoints 23457 35745
-  requirement_integration: # concept requirement_integration
+  requirement_integration:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -752,7 +752,7 @@ meanings
         codepoints 25509 21475
       surface seed-surface-837b116e637f
         codepoints 27983 35272 22120
-  requirement_user_interface: # concept requirement_user_interface
+  requirement_user_interface:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -783,7 +783,7 @@ meanings
         codepoints 22270 34920
       surface seed-surface-743db3c8c3bb
         codepoints 31579 36873
-  requirement_project_behavior: # concept requirement_project_behavior
+  requirement_project_behavior:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
@@ -852,7 +852,7 @@ meanings
         codepoints 25991 20214
       surface seed-surface-9dbaf8d01855
         codepoints 19978 20256
-  software_delivery: # concept software_delivery
+  software_delivery:
     defined-by software_artifact # definition-link
     defined-by delivery_manual_instructions # definition-link
     role software_delivery # semantic-role
@@ -868,7 +868,7 @@ meanings
     lexeme zh # language
       surface seed-surface-dda09e7f58be
         codepoints 20132 20184
-  delivery_manual_instructions: # concept delivery_manual_instructions
+  delivery_manual_instructions:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
@@ -899,7 +899,7 @@ meanings
         codepoints 25163 21160 35828 26126
       surface seed-surface-f4a1b72ee73f
         codepoints 35828 26126
-  delivery_immediate_execution: # concept delivery_immediate_execution
+  delivery_immediate_execution:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
@@ -928,7 +928,7 @@ meanings
         codepoints 31435 21363 36816 34892
       surface seed-surface-7fcd8e62699a
         codepoints 25191 34892
-  delivery_script_generation: # concept delivery_script_generation
+  delivery_script_generation:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
@@ -959,7 +959,7 @@ meanings
         codepoints 33050 26412
       surface seed-surface-37a38099aeef
         codepoints 22806 22771 33050 26412
-  software_language: # concept software_language
+  software_language:
     defined-by software_artifact # definition-link
     defined-by language_python # definition-link
     role software_language # semantic-role
@@ -975,7 +975,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8416691a8b9d
         codepoints 32534 31243 35821 35328
-  language_python: # concept language_python
+  language_python:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
@@ -996,7 +996,7 @@ meanings
     lexeme zh # language
       surface seed-surface-088ac802e6c8
         codepoints 112 121 116 104 111 110
-  language_rust: # concept language_rust
+  language_rust:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
@@ -1013,7 +1013,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3daff187025b
         codepoints 114 117 115 116
-  language_javascript: # concept language_javascript
+  language_javascript:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
@@ -1030,7 +1030,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ce8d910a2175
         codepoints 106 97 118 97 115 99 114 105 112 116
-  implementation_language_preposition: # concept implementation_language_preposition
+  implementation_language_preposition:
     defined-by software_language # definition-link
     role implementation_language_preposition # semantic-role
     lexeme en # language
@@ -1045,7 +1045,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f13773dc260d
         codepoints 29992
-  implementation_language_noun: # concept implementation_language_noun
+  implementation_language_noun:
     defined-by software_language # definition-link
     role implementation_language_noun # semantic-role
     lexeme en # language
@@ -1060,7 +1060,7 @@ meanings
     lexeme zh # language
       surface seed-surface-714701e57af7
         codepoints 35821 35328
-  tabletop_game_tracker: # concept tabletop_game_tracker
+  tabletop_game_tracker:
     defined-by game_tracker_domain # definition-link
     defined-by game_tracker_mechanic # definition-link
     role tabletop_game_tracker # semantic-role
@@ -1076,7 +1076,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7cdfcf81f9b7
         codepoints 26700 28216 36861 36394 22120
-  game_tracker_domain: # concept game_tracker_domain
+  game_tracker_domain:
     defined-by tabletop_game_tracker # definition-link
     role game_tracker_domain # semantic-role
     lexeme en # language
@@ -1111,7 +1111,7 @@ meanings
         codepoints 26827 23376
       surface seed-surface-8b64048244dd
         codepoints 25112 26827
-  game_tracker_mechanic: # concept game_tracker_mechanic
+  game_tracker_mechanic:
     defined-by tabletop_game_tracker # definition-link
     defined-by requirement_state_tracking # definition-link
     role game_tracker_mechanic # semantic-role
@@ -1157,7 +1157,7 @@ meanings
         codepoints 25239 24615
       surface seed-surface-649b71eb4089
         codepoints 20919 21364
-  software_approval: # concept software_approval
+  software_approval:
     defined-by software_approval_trigger # definition-link
     defined-by software_step_granularity # definition-link
     defined-by concept # definition-link
@@ -1174,7 +1174,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d651ff8b068b
         codepoints 25209 20934
-  software_approval_trigger: # concept software_approval_trigger
+  software_approval_trigger:
     defined-by software_approval # definition-link
     role software_approval_trigger # semantic-role
     lexeme en # language
@@ -1225,7 +1225,7 @@ meanings
         codepoints 21516 24847
       surface seed-surface-7071ca0b73ae
         codepoints 24320 22987
-  software_step_granularity: # concept software_step_granularity
+  software_step_granularity:
     defined-by software_approval # definition-link
     role software_step_granularity # semantic-role
     lexeme en # language
@@ -1248,7 +1248,7 @@ meanings
         codepoints 27599 19968 27493
       surface seed-surface-cb59441f007d
         codepoints 36880 27493
-  software_bash_command: # concept software_bash_command
+  software_bash_command:
     defined-by software_delivery # definition-link
     role software_bash_command # semantic-role
     lexeme en # language

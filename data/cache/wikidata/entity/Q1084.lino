@@ -1,0 +1,15 @@
+Q1084
+  aliases
+    en ("substantive" "common noun")
+    ru ("существительное" "существительные" "имена существительные" "субстантив")
+  descriptions
+    en "word that functions as the name of a specific object or set of objects"
+    hi "विकारी शब्द, जिससे किसी व्यक्ति, वस्तु ,स्थान आदि का बोध हो"
+    ru "самостоятельная часть речи, обозначает объект или понятие"
+    zh "詞性的一種"
+  labels
+    en noun
+    hi "संज्ञा"
+    ru "имя существительное"
+    zh "名詞"
+  type item

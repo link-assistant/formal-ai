@@ -1,0 +1,17 @@
+Q283
+  aliases
+    en ("dihydrogen monoxide" "dihydridooxygen" "hydrogen hydroxide" "dihydrogen oxide" "oxidane" "hydrogen oxide" "pure water")
+    hi ("पानी" "पीयूष" "हाइड्रोजन हाइड्रॉक्साइड" "डाईहाइड्रोजन मोनो ऑक्साइड")
+    ru ("оксид водорода" "гидроксид водорода" "гидроксильная кислота" "монооксид дигидрогена" "дигидромонооксид")
+    zh ("氢氧化氢" "一氧化二氢")
+  descriptions
+    en "chemical compound whose molecules are formed by two hydrogen atoms and one oxygen atom"
+    hi "रासायनिक यौगिक; जीवन अमृत"
+    ru "химическое вещество, оксид водорода"
+    zh "無機化合物"
+  labels
+    en water
+    hi "जल"
+    ru "вода"
+    zh "水"
+  type item

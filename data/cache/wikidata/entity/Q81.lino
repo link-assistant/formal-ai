@@ -1,0 +1,16 @@
+Q81
+  aliases
+    en ("carrot taproot" "domesticated carrot")
+    ru ("морковь (овощ)")
+    zh ("红萝卜" "紅蘿蔔" "紅菜頭")
+  descriptions
+    en "root vegetable, plant of the Apiaceae family"
+    hi "जड़ वाली सब्जी, आमतौर पर नारंगी रंग"
+    ru "овощ и фрукт"
+    zh "伞形目伞形科的植物"
+  labels
+    en carrot
+    hi "गाजर"
+    ru "морковь"
+    zh "胡萝卜"
+  type item

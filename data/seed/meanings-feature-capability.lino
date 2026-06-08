@@ -1,5 +1,5 @@
 meanings
-  feature_capability_web_search: # concept feature_capability_web_search
+  feature_capability_web_search:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -108,7 +108,7 @@ meanings
         codepoints 20351 29992 25628 32034 24341 25806
       surface seed-surface-f97390f7b910
         codepoints 32593 32476 25628 32034
-  feature_capability_diagnostics: # concept feature_capability_diagnostics
+  feature_capability_diagnostics:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -145,7 +145,7 @@ meanings
         codepoints 116 114 97 99 101
       surface seed-surface-911981685580
         codepoints 25512 29702 36319 36394
-  feature_capability_agent_mode: # concept feature_capability_agent_mode
+  feature_capability_agent_mode:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -180,7 +180,7 @@ meanings
         codepoints 20195 29702
       surface seed-surface-19952f64038a
         codepoints 22810 27493 39588
-  feature_capability_definition_fusion: # concept feature_capability_definition_fusion
+  feature_capability_definition_fusion:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -207,7 +207,7 @@ meanings
         codepoints 100 101 102 105 110 105 116 105 111 110 32 102 117 115 105 111 110
       surface seed-surface-a2b8330a9ee1
         codepoints 21512 24182 23450 20041
-  feature_capability_configuration: # concept feature_capability_configuration
+  feature_capability_configuration:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -274,7 +274,7 @@ meanings
         codepoints 35821 35328
       surface seed-surface-4477a1fb5bb4
         codepoints 32842 22825 26679 24335
-  feature_capability_memory_actions: # concept feature_capability_memory_actions
+  feature_capability_memory_actions:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -313,7 +313,7 @@ meanings
         codepoints 109 101 109 111 114 121 32 101 120 112 111 114 116
       surface seed-surface-c9b00046d945
         codepoints 109 101 109 111 114 121 32 105 109 112 111 114 116
-  feature_capability_greeting: # concept feature_capability_greeting
+  feature_capability_greeting:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -348,7 +348,7 @@ meanings
         codepoints 25171 25307 21628
       surface seed-surface-6d8080f548ba
         codepoints 20320 22909
-  feature_capability_write_program: # concept feature_capability_write_program
+  feature_capability_write_program:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -387,7 +387,7 @@ meanings
         codepoints 20195 30721
       surface seed-surface-5b39352ab99e
         codepoints 31243 24207
-  feature_capability_concept_lookup: # concept feature_capability_concept_lookup
+  feature_capability_concept_lookup:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -410,7 +410,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7f9f8a25e5c6
         codepoints 27010 24565
-  feature_capability_arithmetic: # concept feature_capability_arithmetic
+  feature_capability_arithmetic:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -449,7 +449,7 @@ meanings
         codepoints 25968 23398
       surface seed-surface-a597bcab12c5
         codepoints 50 32 43 32 50
-  feature_capability_translation: # concept feature_capability_translation
+  feature_capability_translation:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -480,7 +480,7 @@ meanings
         codepoints 116 114 97 110 115 108 97 116 105 111 110
       surface seed-surface-2a921dc95688
         codepoints 116 114 97 110 115 108 97 116 101
-  feature_capability_memory: # concept feature_capability_memory
+  feature_capability_memory:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -519,7 +519,7 @@ meanings
         codepoints 22238 24518
       surface seed-surface-97eb4542a1f5
         codepoints 19978 19979 25991
-  feature_capability_demo_mode: # concept feature_capability_demo_mode
+  feature_capability_demo_mode:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -546,7 +546,7 @@ meanings
         codepoints 100 101 109 111
       surface seed-surface-7cb4a0f23163
         codepoints 28436 31034
-  feature_capability_http_url: # concept feature_capability_http_url
+  feature_capability_http_url:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -595,7 +595,7 @@ meanings
         codepoints 25171 24320 38142 25509
       surface seed-surface-0625eed845c4
         codepoints 35775 38382 38142 25509
-  feature_capability_javascript_execution: # concept feature_capability_javascript_execution
+  feature_capability_javascript_execution:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -630,7 +630,7 @@ meanings
         codepoints 33050 26412 25191 34892
       surface seed-surface-2ff685d7d8e0
         codepoints 25191 34892 33050 26412
-  feature_capability_planning: # concept feature_capability_planning
+  feature_capability_planning:
     defined-by concept # definition-link
     role feature_capability_alias # semantic-role
     lexeme en # language
@@ -675,7 +675,7 @@ meanings
         codepoints 35282 33394 25198 28436
       surface seed-surface-e8e8e7e801e5
         codepoints 39033 30446 35745 21010
-  feature_capability_question: # concept feature_capability_question
+  feature_capability_question:
     defined-by action # definition-link
     role feature_capability_question # semantic-role
     lexeme en # language
@@ -748,7 +748,7 @@ meanings
         codepoints 21551 29992
       surface seed-surface-00942c79cd87
         codepoints 21487 29992
-  feature_action_arithmetic: # concept feature_action_arithmetic
+  feature_action_arithmetic:
     defined-by action # definition-link
     role feature_action_arithmetic # semantic-role
     lexeme en # language
@@ -767,7 +767,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fc4b2ee5eab3
         codepoints 20320 33021 35745 31639
-  feature_action_planning: # concept feature_action_planning
+  feature_action_planning:
     defined-by action # definition-link
     role feature_action_planning # semantic-role
     lexeme en # language

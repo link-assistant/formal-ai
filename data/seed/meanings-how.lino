@@ -1,5 +1,5 @@
 meanings
-  mechanism_inquiry: # concept mechanism_inquiry
+  mechanism_inquiry:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role mechanism_inquiry # semantic-role
@@ -97,7 +97,7 @@ meanings
         codepoints 8230 32 30340 24037 20316 21407 29702 26159 20160 20040
       surface seed-surface-99224c6664cc
         codepoints 8230 30340 24037 20316 21407 29702 26159 20160 20040
-  procedural_request: # concept procedural_request
+  procedural_request:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role procedural_request # semantic-role
@@ -204,7 +204,7 @@ meanings
       surface seed-surface-d1472de5a88d
         codepoints 24590 20040 20889 32 8230
         action write # action
-  mechanism_predicate: # concept mechanism_predicate
+  mechanism_predicate:
     defined-by action # definition-link
     defined-by mechanism_inquiry # definition-link
     role mechanism_predicate # semantic-role
@@ -236,7 +236,7 @@ meanings
         codepoints 8230 24037 20316
       surface seed-surface-6cbc70a3e022
         codepoints 8230 26500 24314
-  detail_modifier: # concept detail_modifier
+  detail_modifier:
     defined-by property # definition-link
     defined-by mechanism_inquiry # definition-link
     role detail_modifier # semantic-role
@@ -266,7 +266,7 @@ meanings
         codepoints 8230 35814 32454
       surface seed-surface-6e76a2e66c8d
         codepoints 8230 35831
-  non_referential_subject: # concept non_referential_subject
+  non_referential_subject:
     defined-by entity # definition-link
     defined-by mechanism_inquiry # definition-link
     role non_referential_subject # semantic-role
@@ -320,7 +320,7 @@ meanings
         codepoints 36825 20010
       surface seed-surface-0c0eebc890d1
         codepoints 23427
-  procedural_task_modifier: # concept procedural_task_modifier
+  procedural_task_modifier:
     defined-by property # definition-link
     defined-by procedural_request # definition-link
     role procedural_task_modifier # semantic-role
@@ -362,7 +362,7 @@ meanings
         codepoints 8230 32 19968 27493 19968 27493 20889
       surface seed-surface-a1a1be16db0b
         codepoints 8230 32 35831
-  common_typo: # concept common_typo
+  common_typo:
     defined-by relation # definition-link
     role common_typo # semantic-role
     lexeme en # language
@@ -381,7 +381,7 @@ meanings
       surface seed-surface-b2def5c5518a
         codepoints 30331 38470
         action 登录 # action
-  topic_scan_stop_word: # concept topic_scan_stop_word
+  topic_scan_stop_word:
     defined-by concept # definition-link
     role topic_scan_stop_word # semantic-role
     lexeme en # language

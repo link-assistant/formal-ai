@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Q145": {
+      "type": "item",
+      "id": "Q145",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "यूनाइटेड किंगडम"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Великобритания"
+        },
+        "en": {
+          "language": "en",
+          "value": "United Kingdom"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英国"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "歐洲西部的島國"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Европе"
+        },
+        "en": {
+          "language": "en",
+          "value": "island country in north-west Europe"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पश्चिमोत्तरी यूरोप का देश"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Соединённое Королевство Великобритании и Северной Ирландии"
+          },
+          {
+            "language": "ru",
+            "value": "Соединённое Королевство"
+          },
+          {
+            "language": "ru",
+            "value": "Британия"
+          },
+          {
+            "language": "ru",
+            "value": "Туманный Альбион"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "联合王国"
+          },
+          {
+            "language": "zh",
+            "value": "大不列颠及北爱尔兰联合王国"
+          },
+          {
+            "language": "zh",
+            "value": "不列颠"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "United Kingdom of Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "U K"
+          },
+          {
+            "language": "en",
+            "value": "G B"
+          },
+          {
+            "language": "en",
+            "value": "Great Britain"
+          },
+          {
+            "language": "en",
+            "value": "Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "the United Kingdom of Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "the UK"
+          },
+          {
+            "language": "en",
+            "value": "the United Kingdom"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

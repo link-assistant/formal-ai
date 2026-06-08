@@ -1,0 +1,16 @@
+Q151
+  aliases
+    en ("Wiktionary, the free dictionary")
+    hi ("विक्षनरी")
+    zh ("WT")
+  descriptions
+    en "free online multilingual dictionary"
+    hi "एक मुक्त शब्दकोश"
+    ru "свободно пополняемый многофункциональный многоязычный словарь и тезаурус, основанный на вики-движке"
+    zh "自由的多語言詞典"
+  labels
+    en Wiktionary
+    hi "विकिकोश"
+    ru "Викисловарь"
+    zh "维基词典"
+  type item

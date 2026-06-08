@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q2111": {
+      "type": "item",
+      "id": "Q2111",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "скорость света"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रकाश का वेग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "光速"
+        },
+        "en": {
+          "language": "en",
+          "value": "speed of light in vacuum"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "speed of electromagnetic waves in vacuum"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "скорость движения в вакууме безмассовых частиц и связанных с ними полей"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "所有無質量粒子和相關場在真空中傳播的速度"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "скорость света в вакууме"
+          },
+          {
+            "language": "ru",
+            "value": "электродинамическая постоянная"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "光的速度"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "lightspeed"
+          },
+          {
+            "language": "en",
+            "value": "Planck speed"
+          },
+          {
+            "language": "en",
+            "value": "light speed"
+          },
+          {
+            "language": "en",
+            "value": "speed of electromagnetic waves in vacuum"
+          },
+          {
+            "language": "en",
+            "value": "vacuum speed of light"
+          },
+          {
+            "language": "en",
+            "value": "speed of light in a vacuum"
+          },
+          {
+            "language": "en",
+            "value": "velocity of light"
+          },
+          {
+            "language": "en",
+            "value": "luminal speed"
+          },
+          {
+            "language": "en",
+            "value": "light speed in vacuum"
+          },
+          {
+            "language": "en",
+            "value": "speed of light"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

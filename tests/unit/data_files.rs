@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::json_lino::{json_to_lino, lino_to_json};
+use formal_ai::json_lino::{json_cache_file, json_cache_projection, lino_to_json};
 use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
 use walkdir::WalkDir;
@@ -40,8 +40,7 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
             path.display()
         );
 
-        let parseable_content = canonical_lino_content(&content);
-        parse_canonical_lino(parseable_content.trim()).unwrap_or_else(|error| {
+        parse_canonical_lino(content.trim()).unwrap_or_else(|error| {
             panic!(
                 "{} contains invalid canonical Links Notation: {error}",
                 path.display()
@@ -61,6 +60,8 @@ fn lino_data_files_avoid_jsonish_and_unresolved_tokens() {
         Regex::new(r"\b[QLP][0-9]+(?:\|[QLP][0-9]+)+\b").expect("pipe id regex should compile");
     let jsonish_colon_value =
         Regex::new(r"^\s*[A-Za-z0-9_.-]+:\s+\S").expect("jsonish colon regex should compile");
+    let colon_comment =
+        Regex::new(r"^\s*[A-Za-z0-9_.-]+:\s+#").expect("colon comment regex should compile");
 
     for path in data_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
@@ -90,6 +91,12 @@ fn lino_data_files_avoid_jsonish_and_unresolved_tokens() {
                     index + 1
                 );
             }
+            assert!(
+                !colon_comment.is_match(line),
+                "{}:{} still uses an empty colon definition with comment-only data: {line}",
+                path.display(),
+                index + 1
+            );
         }
     }
 }
@@ -111,6 +118,9 @@ fn wikidata_cache_uses_compact_native_lino() {
     let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
     let encoded_text = Regex::new(r"\bu-[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2})+\b")
         .expect("hex reference regex should compile");
+    let generated_array_id = Regex::new(r"\bat-[0-9]{4}\b").expect("array id regex should compile");
+    let scalar_string_tag =
+        Regex::new(r#"\bstring\s+["']"#).expect("string tag regex should compile");
     let forbidden = [
         "json-object",
         "json-array",
@@ -140,6 +150,18 @@ fn wikidata_cache_uses_compact_native_lino() {
                     index + 1
                 );
             }
+            assert!(
+                !generated_array_id.is_match(trimmed),
+                "{}:{} still contains generated array id syntax: {line}",
+                path.display(),
+                index + 1
+            );
+            assert!(
+                !scalar_string_tag.is_match(trimmed),
+                "{}:{} still contains a JSON scalar `string` tag: {line}",
+                path.display(),
+                index + 1
+            );
         }
         assert!(
             !encoded_text.is_match(&content),
@@ -148,11 +170,11 @@ fn wikidata_cache_uses_compact_native_lino() {
         );
     }
 
-    let reference_cache =
-        fs::read_to_string(cache_dir.join("L41576.lino")).expect("L41576 cache file should exist");
+    let reference_cache = fs::read_to_string(wikidata_cache_path(&cache_dir, "Q181593", "lino"))
+        .expect("Q181593 cache file should exist");
     assert!(
-        reference_cache.contains("\"reference\""),
-        "raw cached strings should stay quoted and searchable"
+        reference_cache.contains("\"sorting algorithm\""),
+        "raw cached strings with spaces should stay quoted and searchable"
     );
 }
 
@@ -206,11 +228,17 @@ fn wikidata_lino_cache_roundtrips_json_values() {
         "Q146786", "L3744", "L3743", "L3412", "L5848",
     ];
     for id in required {
-        let path = cache_dir.join(format!("{id}.lino"));
+        let path = wikidata_cache_path(&cache_dir, id, "lino");
         assert!(
             path.is_file(),
             "missing cached Wikidata file {}",
             path.display()
+        );
+        let json_path = wikidata_cache_path(&cache_dir, id, "json");
+        assert!(
+            json_path.is_file(),
+            "missing raw Wikidata JSON file {}",
+            json_path.display()
         );
     }
 
@@ -221,19 +249,35 @@ fn wikidata_lino_cache_roundtrips_json_values() {
         .map(walkdir::DirEntry::into_path)
         .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
     {
+        let id = path
+            .file_stem()
+            .and_then(|stem| stem.to_str())
+            .expect("cache file should have an id stem");
+        let json_path = path.with_extension("json");
+        assert!(
+            json_path.is_file(),
+            "{} must have a raw JSON snapshot beside it",
+            path.display()
+        );
+        let raw_json: serde_json::Value = serde_json::from_str(
+            &fs::read_to_string(&json_path).expect("raw json cache file should be UTF-8"),
+        )
+        .unwrap_or_else(|error| panic!("{} contains invalid JSON: {error}", json_path.display()));
+
         let content = fs::read_to_string(&path).expect("cache file should be UTF-8");
+        assert_eq!(
+            content,
+            json_cache_file(id, &raw_json),
+            "{} is not the canonical LiNo projection of {}",
+            path.display(),
+            json_path.display()
+        );
         let json = lino_to_json(&content)
             .unwrap_or_else(|error| panic!("{} failed to decode: {error}", path.display()));
-        let roundtrip = lino_to_json(&json_to_lino(&json)).unwrap_or_else(|error| {
-            panic!(
-                "{} failed to decode after re-encode: {error}",
-                path.display()
-            )
-        });
         assert_eq!(
+            json_cache_projection(id, &raw_json),
             json,
-            roundtrip,
-            "{} lost data in json<->lino roundtrip",
+            "{} decoded projection does not match raw JSON source fields",
             path.display()
         );
     }
@@ -259,18 +303,6 @@ fn data_lino_paths() -> Vec<std::path::PathBuf> {
         .map(walkdir::DirEntry::into_path)
         .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
         .collect()
-}
-
-fn canonical_lino_content(content: &str) -> String {
-    let mut out = String::new();
-    for line in content.lines().map(strip_lino_comment) {
-        if line.trim().is_empty() {
-            continue;
-        }
-        out.push_str(line);
-        out.push('\n');
-    }
-    out
 }
 
 fn strip_lino_comment(line: &str) -> &str {
@@ -311,6 +343,16 @@ fn strip_lino_comment(line: &str) -> &str {
         previous_was_space = character.is_whitespace();
     }
     line
+}
+
+fn wikidata_cache_path(root: &Path, id: &str, extension: &str) -> std::path::PathBuf {
+    let kind = match id.chars().next() {
+        Some('L') => "lexeme",
+        Some('P') => "property",
+        Some('Q') => "entity",
+        _ => panic!("unexpected Wikidata id `{id}`"),
+    };
+    root.join(kind).join(format!("{id}.{extension}"))
 }
 
 fn forbidden_meaning_key(trimmed: &str) -> bool {

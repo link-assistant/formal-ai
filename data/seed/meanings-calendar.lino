@@ -1,5 +1,5 @@
 meanings
-  monday: # concept monday
+  monday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -26,7 +26,7 @@ meanings
         codepoints 26143 26399 19968
       surface seed-surface-16ca6eb2399e
         codepoints 21608 19968
-  tuesday: # concept tuesday
+  tuesday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -55,7 +55,7 @@ meanings
         codepoints 26143 26399 20108
       surface seed-surface-f2a717b78573
         codepoints 21608 20108
-  wednesday: # concept wednesday
+  wednesday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -82,7 +82,7 @@ meanings
         codepoints 26143 26399 19977
       surface seed-surface-d23a428f2b4b
         codepoints 21608 19977
-  thursday: # concept thursday
+  thursday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -113,7 +113,7 @@ meanings
         codepoints 26143 26399 22235
       surface seed-surface-8a73af8845df
         codepoints 21608 22235
-  friday: # concept friday
+  friday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -140,7 +140,7 @@ meanings
         codepoints 26143 26399 20116
       surface seed-surface-07841dfbb3f6
         codepoints 21608 20116
-  saturday: # concept saturday
+  saturday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -167,7 +167,7 @@ meanings
         codepoints 26143 26399 20845
       surface seed-surface-ab1faba09a28
         codepoints 21608 20845
-  sunday: # concept sunday
+  sunday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
@@ -194,7 +194,7 @@ meanings
         codepoints 26143 26399 22825
       surface seed-surface-be301fad779c
         codepoints 21608 26085
-  calendar_day: # concept calendar_day
+  calendar_day:
     defined-by calendar_week # definition-link
     defined-by calendar_date # definition-link
     defined-by concept # definition-link
@@ -223,7 +223,7 @@ meanings
         codepoints 26143 26399 20960
       surface seed-surface-825686a5da7e
         codepoints 26085 23376
-  calendar_date: # concept calendar_date
+  calendar_date:
     defined-by calendar_day # definition-link
     role calendar_day_reference # semantic-role
     lexeme en # language
@@ -246,7 +246,7 @@ meanings
         codepoints 26085 26399
       surface seed-surface-ad3be0ca7391
         codepoints 20960 21495
-  calendar_week: # concept calendar_week
+  calendar_week:
     defined-by calendar_day # definition-link
     role calendar_day_reference # semantic-role
     lexeme en # language
@@ -273,7 +273,7 @@ meanings
         codepoints 26143 26399
       surface seed-surface-1aca64eee800
         codepoints 21608
-  calendar_following: # concept calendar_following
+  calendar_following:
     defined-by calendar_day # definition-link
     role calendar_direction_next # semantic-role
     lexeme en # language
@@ -320,7 +320,7 @@ meanings
         codepoints 19979 19968 20010
       surface seed-surface-20177a95e744
         codepoints 19979 19968 22825
-  calendar_preceding: # concept calendar_preceding
+  calendar_preceding:
     defined-by calendar_day # definition-link
     role calendar_direction_previous # semantic-role
     lexeme en # language
@@ -363,7 +363,7 @@ meanings
         codepoints 19978 19968 20010
       surface seed-surface-d97dc269e365
         codepoints 19978 19968 22825
-  calendar_today: # concept calendar_today
+  calendar_today:
     defined-by calendar_day # definition-link
     role calendar_today # semantic-role
     lexeme en # language
@@ -378,7 +378,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b99cdcf817ef
         codepoints 20170 22825
-  calendar_interrogative: # concept calendar_interrogative
+  calendar_interrogative:
     defined-by calendar_day # definition-link
     role calendar_question # semantic-role
     lexeme en # language

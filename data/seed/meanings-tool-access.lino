@@ -1,5 +1,5 @@
 meanings
-  tool_invocation_cue: # concept tool_invocation_cue
+  tool_invocation_cue:
     defined-by action # definition-link
     role tool_invocation_cue # semantic-role
     lexeme en # language
@@ -36,7 +36,7 @@ meanings
         codepoints 36816 34892
       surface seed-surface-49f2104a12d9
         codepoints 24037 20855
-  calculator_tool: # concept calculator_tool
+  calculator_tool:
     defined-by entity # definition-link
     role calculator_tool_name # semantic-role
     lexeme en # language
@@ -51,7 +51,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9435d29fb6b7
         codepoints 35745 31639 22120
-  web_search_tool: # concept web_search_tool
+  web_search_tool:
     defined-by entity # definition-link
     role web_search_tool_name # semantic-role
     lexeme en # language
@@ -76,7 +76,7 @@ meanings
         codepoints 32593 32476 25628 32034
       surface seed-surface-65b8ff0cf609
         codepoints 32593 39029 25628 32034
-  local_shell_tool: # concept local_shell_tool
+  local_shell_tool:
     defined-by entity # definition-link
     role local_shell_request_cue # semantic-role
     lexeme en # language
@@ -105,7 +105,7 @@ meanings
         codepoints 26412 22320 22806 22771
       surface seed-surface-1bdc4e36a7a4
         codepoints 35843 29992 22806 22771 24037 20855
-  tool_argument_marker: # concept tool_argument_marker
+  tool_argument_marker:
     defined-by relation # definition-link
     role tool_argument_marker # semantic-role
     lexeme en # language

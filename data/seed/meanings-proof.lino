@@ -1,5 +1,5 @@
 meanings
-  prove: # concept prove
+  prove:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role proof_directive # semantic-role
@@ -82,7 +82,7 @@ meanings
         codepoints 35777 26126 8230
       surface seed-surface-67d323d6a587
         codepoints 35657 26126 8230
-  proof_request_frame: # concept proof_request_frame
+  proof_request_frame:
     defined-by inquiry # definition-link
     defined-by prove # definition-link
     role proof_request_lead # semantic-role
@@ -130,7 +130,7 @@ meanings
         codepoints 35831 35777 26126 8230
       surface seed-surface-40451ea84dd9
         codepoints 35531 35657 26126 8230
-  proof_assertion: # concept proof_assertion
+  proof_assertion:
     defined-by inquiry # definition-link
     defined-by prove # definition-link
     role proof_marker # semantic-role
@@ -168,7 +168,7 @@ meanings
         codepoints 35777 26126
       surface seed-surface-b21afdf8d660
         codepoints 35657 26126
-  godel: # concept godel
+  godel:
     defined-by concept # definition-link
     role proof_concept_godel # semantic-role
     lexeme en # language
@@ -189,7 +189,7 @@ meanings
     lexeme zh # language
       surface seed-surface-828978faab61
         codepoints 21733 24503 23572
-  determinism: # concept determinism
+  determinism:
     defined-by concept # definition-link
     role proof_concept_determinism # semantic-role
     lexeme en # language

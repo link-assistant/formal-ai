@@ -1,5 +1,5 @@
 meanings
-  compare: # concept compare
+  compare:
     defined-by action # definition-link
     role comparison_table_trigger # semantic-role
     lexeme en # language
@@ -28,7 +28,7 @@ meanings
         codepoints 27604 36739
       surface seed-surface-b3c96b1a6fe0
         codepoints 23545 27604
-  table: # concept table
+  table:
     defined-by concept # definition-link
     role comparison_table_noun # semantic-role
     lexeme en # language
@@ -43,7 +43,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fe49aad14db5
         codepoints 34920 26684
-  differences: # concept differences
+  differences:
     defined-by relation # definition-link
     role comparison_difference_cue # semantic-role
     lexeme en # language
@@ -62,7 +62,7 @@ meanings
         codepoints 24046 24322
       surface seed-surface-f6d599905f35
         codepoints 21306 21035
-  research_prompt_signal: # concept research_prompt_signal
+  research_prompt_signal:
     defined-by concept # definition-link
     role research_prompt_signal # semantic-role
     lexeme en # language
@@ -95,7 +95,7 @@ meanings
         codepoints 25628 32034
       surface seed-surface-7242e9f5b4b5
         codepoints 30740 31350
-  key_differences: # concept key_differences
+  key_differences:
     defined-by relation # definition-link
     role research_criterion # semantic-role
     lexeme en # language
@@ -118,7 +118,7 @@ meanings
         codepoints 20027 35201 21306 21035
       surface seed-surface-5efd30dd721d
         codepoints 21306 21035
-  use_cases: # concept use_cases
+  use_cases:
     defined-by concept # definition-link
     role research_criterion # semantic-role
     lexeme en # language
@@ -141,7 +141,7 @@ meanings
         codepoints 29992 20363
       surface seed-surface-1a820cd25cf7
         codepoints 24212 29992
-  advantages: # concept advantages
+  advantages:
     defined-by property # definition-link
     role research_criterion # semantic-role
     lexeme en # language
@@ -164,7 +164,7 @@ meanings
         codepoints 20248 28857
       surface seed-surface-3c44e0f56a1d
         codepoints 20248 21183
-  disadvantages: # concept disadvantages
+  disadvantages:
     defined-by property # definition-link
     role research_criterion # semantic-role
     lexeme en # language

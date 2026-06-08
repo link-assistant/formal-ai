@@ -1,5 +1,5 @@
 meanings
-  money: # concept money
+  money:
     defined-by concept # definition-link
     role monetary_concept # semantic-role
     lexeme en # language
@@ -22,7 +22,7 @@ meanings
         codepoints 36135 24065
       surface seed-surface-03010cf00432
         codepoints 38065
-  exchange_rate: # concept exchange_rate
+  exchange_rate:
     defined-by money # definition-link
     defined-by relation # definition-link
     role exchange_rate_reference # semantic-role
@@ -40,7 +40,7 @@ meanings
     lexeme zh # language
       surface seed-surface-a9605787feeb
         codepoints 27719 29575
-  us_dollar: # concept us_dollar
+  us_dollar:
     defined-by money # definition-link
     role currency_usd_reference # semantic-role
     role calculation_domain_term # semantic-role
@@ -64,7 +64,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fffd5ffdeed3
         codepoints 32654 20803
-  euro: # concept euro
+  euro:
     defined-by money # definition-link
     role currency_eur_reference # semantic-role
     role calculation_domain_term # semantic-role
@@ -84,7 +84,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8d3527a7c2c5
         codepoints 27431 20803
-  ruble: # concept ruble
+  ruble:
     defined-by money # definition-link
     role currency_rub_reference # semantic-role
     role calculation_domain_term # semantic-role
@@ -108,7 +108,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3e1d64ddf3f1
         codepoints 21346 24067
-  calculation_basis: # concept calculation_basis
+  calculation_basis:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_basis_reference # semantic-role
@@ -156,7 +156,7 @@ meanings
         codepoints 35745 31639
       surface seed-surface-740d07b333d7
         codepoints 20351 29992
-  arithmetic_operation: # concept arithmetic_operation
+  arithmetic_operation:
     defined-by action # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
@@ -173,7 +173,7 @@ meanings
     lexeme zh # language
       surface seed-surface-6ad81b1855da
         codepoints 31639 26415 36816 31639
-  addition: # concept addition
+  addition:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
@@ -190,7 +190,7 @@ meanings
     lexeme zh # language
       surface seed-surface-077daa8feaee
         codepoints 21152 19978
-  subtraction: # concept subtraction
+  subtraction:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
@@ -207,7 +207,7 @@ meanings
     lexeme zh # language
       surface seed-surface-516737050bce
         codepoints 20943 21435
-  multiplication: # concept multiplication
+  multiplication:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
@@ -230,7 +230,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e4aef0f4ad76
         codepoints 20056 20197
-  division: # concept division
+  division:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
@@ -249,7 +249,7 @@ meanings
     lexeme zh # language
       surface seed-surface-121455950f89
         codepoints 38500 20197
-  modulo: # concept modulo
+  modulo:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
@@ -268,7 +268,7 @@ meanings
     lexeme zh # language
       surface seed-surface-cedd1c60dabd
         codepoints 21462 27169
-  calculation_request: # concept calculation_request
+  calculation_request:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_request_cue # semantic-role
@@ -332,7 +332,7 @@ meanings
         codepoints 2325 2371 2346 2351 2366 32 2327 2339 2344 2366 32 2325 2352 2375 2306
       surface seed-surface-571ee06a6954
         codepoints 2327 2339 2344 2366 32 2325 2352 2375 2306
-  politeness: # concept politeness
+  politeness:
     defined-by property # definition-link
     role politeness_cue # semantic-role
     lexeme en # language
@@ -349,7 +349,7 @@ meanings
     lexeme zh # language
       surface seed-surface-17ceb56d45ee
         codepoints 35831
-  calculation_result_query: # concept calculation_result_query
+  calculation_result_query:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_result_query_cue # semantic-role
@@ -377,7 +377,7 @@ meanings
         codepoints 2325 2381 2351 2366 32 2361 2376
       surface seed-surface-e25636c7e04d
         codepoints 2325 2368 32 2327 2339 2344 2366 32 2325 2352 2375 2306
-  quantity_conversion: # concept quantity_conversion
+  quantity_conversion:
     defined-by action # definition-link
     defined-by relation # definition-link
     role quantity_conversion_cue # semantic-role
@@ -407,7 +407,7 @@ meanings
         codepoints 20817 25442
       surface seed-surface-a678a8614916
         codepoints 25442 25104
-  mathematical_function: # concept mathematical_function
+  mathematical_function:
     defined-by function # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
@@ -422,7 +422,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e063f02b958c
         codepoints 25968 23398 20989 25968
-  square_root: # concept square_root
+  square_root:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
@@ -441,7 +441,7 @@ meanings
     lexeme zh # language
       surface seed-surface-514170230267
         codepoints 24179 26041 26681
-  sine: # concept sine
+  sine:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
@@ -458,7 +458,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c650812642d0
         codepoints 27491 24358
-  cosine: # concept cosine
+  cosine:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
@@ -475,7 +475,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c2df3a6be450
         codepoints 20313 24358
-  tangent: # concept tangent
+  tangent:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
@@ -492,7 +492,7 @@ meanings
     lexeme zh # language
       surface seed-surface-49c9116bb55c
         codepoints 27491 20999
-  logarithm: # concept logarithm
+  logarithm:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
@@ -509,7 +509,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f66bf563cd26
         codepoints 23545 25968
-  natural_logarithm: # concept natural_logarithm
+  natural_logarithm:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language

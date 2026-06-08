@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q4833830": {
+      "type": "item",
+      "id": "Q4833830",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "介詞"
+        },
+        "en": {
+          "language": "en",
+          "value": "preposition"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "предлог"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "служебная часть речи"
+        },
+        "en": {
+          "language": "en",
+          "value": "word or phrase able to connect a following noun or noun phrase (and often other parts of the speech) as a complement to some other part of the sentence, expressing a relation between them"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "предлоги"
+          },
+          {
+            "language": "ru",
+            "value": "предлог (грамматика)"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "prep."
+          },
+          {
+            "language": "en",
+            "value": "prep"
+          },
+          {
+            "language": "en",
+            "value": "PRP"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "介词"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

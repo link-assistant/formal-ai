@@ -1,0 +1,160 @@
+{
+  "entities": {
+    "L41576": {
+      "pageid": 60534824,
+      "ns": 146,
+      "title": "Lexeme:L41576",
+      "lastrevid": 2337052661,
+      "modified": "2025-04-11T20:53:13Z",
+      "type": "lexeme",
+      "id": "L41576",
+      "lemmas": {
+        "en": {
+          "language": "en",
+          "value": "reference"
+        }
+      },
+      "lexicalCategory": "Q24905",
+      "language": "Q1860",
+      "claims": {
+        "P5275": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5275",
+              "hash": "90496d27eb3d0a2e1db950c4f8fb83b5154d9cd7",
+              "datavalue": {
+                "value": "160845",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L41576$EA11B112-CEFE-417E-B393-588810917E84",
+            "rank": "normal"
+          }
+        ],
+        "P5402": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5402",
+              "hash": "edcc7c409a32b84eaae4ce2821600047b5170df7",
+              "datavalue": {
+                "value": {
+                  "entity-type": "lexeme",
+                  "numeric-id": 5785,
+                  "id": "L5785"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-lexeme"
+            },
+            "type": "statement",
+            "id": "L41576$F5C183B1-EE96-442D-8FD2-6EC87B182D40",
+            "rank": "normal"
+          }
+        ],
+        "P12510": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12510",
+              "hash": "1717c8c15d4bb1d81d28853e0137abb900900baa",
+              "datavalue": {
+                "value": "4299660167",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L41576$80F6630A-623A-4A21-953E-08014C5A88F8",
+            "rank": "normal"
+          }
+        ]
+      },
+      "forms": [
+        {
+          "id": "L41576-F1",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "reference"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q3910936"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L41576-F2",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "references"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786",
+            "Q3910936",
+            "Q51929074"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L41576-F3",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "referenced"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q1392475"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L41576-F4",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "referencing"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q10345583"
+          ],
+          "claims": {}
+        },
+        {
+          "id": "L41576-F5",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "referenced"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q1230649"
+          ],
+          "claims": {}
+        }
+      ],
+      "senses": [
+        {
+          "id": "L41576-S1",
+          "glosses": {
+            "en": {
+              "language": "en",
+              "value": "refer to"
+            }
+          },
+          "claims": {}
+        }
+      ]
+    }
+  },
+  "success": 1
+}

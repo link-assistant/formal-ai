@@ -1,5 +1,5 @@
 meanings
-  definition_merge_action: # concept definition_merge_action
+  definition_merge_action:
     defined-by action # definition-link
     role definition_merge_action # semantic-role
     lexeme en # language
@@ -30,7 +30,7 @@ meanings
         codepoints 21512 24182
       surface seed-surface-15cf809a7f8b
         codepoints 34701 21512
-  definition_artifact_request: # concept definition_artifact_request
+  definition_artifact_request:
     defined-by inquiry # definition-link
     role definition_artifact_request # semantic-role
     lexeme en # language
@@ -63,7 +63,7 @@ meanings
         codepoints 23450 20041
       surface seed-surface-260b68b9c4fd
         codepoints 32763 35793
-  definition_merge_marker: # concept definition_merge_marker
+  definition_merge_marker:
     defined-by inquiry # definition-link
     role definition_merge_marker # semantic-role
     lexeme en # language
@@ -110,7 +110,7 @@ meanings
         codepoints 30340 23450 20041 32 8230
       surface seed-surface-e466a1ba01b2
         codepoints 30340 32763 35793 32 8230
-  definition_merge_tail_boundary: # concept definition_merge_tail_boundary
+  definition_merge_tail_boundary:
     defined-by relation # definition-link
     role definition_merge_tail_boundary # semantic-role
     lexeme en # language

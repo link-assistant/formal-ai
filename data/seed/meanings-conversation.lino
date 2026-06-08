@@ -1,5 +1,5 @@
 meanings
-  conversation_topic_opener: # concept conversation_topic_opener
+  conversation_topic_opener:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role conversation_topic_opener # semantic-role

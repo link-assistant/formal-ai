@@ -209,7 +209,7 @@ meanings
         codepoints 21644 # surface text
   not: not (not not) # concept not
     facet self-equation # facet
-      not: # concept not
+      not:
     role links_root # semantic-role
     lexeme en # language
       surface seed-surface-not-en # seed lexical surface
@@ -225,7 +225,7 @@ meanings
         codepoints 38750 # surface text
   same: not (not same) link # concept same
     facet self-equation # facet
-      same: # concept same
+      same:
     role links_root # semantic-role
     lexeme en # language
       surface seed-surface-same-en # seed lexical surface

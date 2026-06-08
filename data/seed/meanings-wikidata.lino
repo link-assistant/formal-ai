@@ -1,5 +1,5 @@
 meanings
-  wikidata_item_apple: # concept wikidata_item_apple
+  wikidata_item_apple:
     grounded-in Q89 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -21,7 +21,7 @@ meanings
         codepoints 33529 26524
       surface seed-surface-038d1a6e268d
         codepoints 34315 26524
-  wikidata_item_fruit: # concept wikidata_item_fruit
+  wikidata_item_fruit:
     grounded-in Q3314483 # source-id
     defined-by concept # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -47,7 +47,7 @@ meanings
         codepoints 27700 26524
       surface seed-surface-a35289b0b96e
         codepoints 27700 26524 31867
-  wikidata_item_sorting_algorithm: # concept wikidata_item_sorting_algorithm
+  wikidata_item_sorting_algorithm:
     grounded-in Q181593 # source-id
     defined-by concept # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -67,7 +67,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3a03b9c0b646
         codepoints 25490 24207 31639 27861
-  wikidata_item_water: # concept wikidata_item_water
+  wikidata_item_water:
     grounded-in Q283 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -83,7 +83,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d8910989404e
         codepoints 27700
-  wikidata_item_bread: # concept wikidata_item_bread
+  wikidata_item_bread:
     grounded-in Q7802 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -101,7 +101,7 @@ meanings
         codepoints 38754 21253
       surface seed-surface-ab94839019ca
         codepoints 40629 21253
-  wikidata_item_carrot: # concept wikidata_item_carrot
+  wikidata_item_carrot:
     grounded-in Q81 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -121,7 +121,7 @@ meanings
         codepoints 32993 33821 21340
       surface seed-surface-7b8b89ab2b30
         codepoints 32993 34367 34068
-  wikidata_item_wikidata: # concept wikidata_item_wikidata
+  wikidata_item_wikidata:
     grounded-in Q2013 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -139,7 +139,7 @@ meanings
         codepoints 32500 22522 25968 25454
       surface seed-surface-578327539805
         codepoints 32173 22522 25976 25818
-  wikidata_item_wikipedia: # concept wikidata_item_wikipedia
+  wikidata_item_wikipedia:
     grounded-in Q52 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -157,7 +157,7 @@ meanings
         codepoints 32500 22522 30334 31185
       surface seed-surface-723b3bbc99a9
         codepoints 32173 22522 30334 31185
-  wikidata_item_wiktionary: # concept wikidata_item_wiktionary
+  wikidata_item_wiktionary:
     grounded-in Q151 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
@@ -175,7 +175,7 @@ meanings
         codepoints 32500 22522 35789 20856
       surface seed-surface-0bf9d4010341
         codepoints 32173 22522 36781 20856
-  wikidata_property_subclass_of: # concept wikidata_property_subclass_of
+  wikidata_property_subclass_of:
     grounded-in P279 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -203,7 +203,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7565c7eb96c4
         codepoints 23376 31867
-  wikidata_property_instance_of: # concept wikidata_property_instance_of
+  wikidata_property_instance_of:
     grounded-in P31 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -235,7 +235,7 @@ meanings
     lexeme zh # language
       surface seed-surface-4296a556aa86
         codepoints 26159
-  wikidata_property_part_of: # concept wikidata_property_part_of
+  wikidata_property_part_of:
     grounded-in P361 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -257,7 +257,7 @@ meanings
     lexeme zh # language
       surface seed-surface-908c5d163d0b
         codepoints 23646 20110
-  wikidata_property_has_part: # concept wikidata_property_has_part
+  wikidata_property_has_part:
     grounded-in P527 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -279,7 +279,7 @@ meanings
     lexeme zh # language
       surface seed-surface-eb43a6424b1a
         codepoints 21253 21547
-  wikidata_property_capital: # concept wikidata_property_capital
+  wikidata_property_capital:
     grounded-in P36 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -301,7 +301,7 @@ meanings
     lexeme zh # language
       surface seed-surface-fe86f2269d27
         codepoints 39318 37117
-  wikidata_property_named_after: # concept wikidata_property_named_after
+  wikidata_property_named_after:
     grounded-in P138 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
@@ -319,7 +319,7 @@ meanings
     lexeme zh # language
       surface seed-surface-41c3a99193a4
         codepoints 21629 21517 33258
-  wikidata_property_translation: # concept wikidata_property_translation
+  wikidata_property_translation:
     grounded-in P5972 # source-id
     defined-by relation # definition-link
     role translation_property # semantic-role
@@ -343,7 +343,7 @@ meanings
         codepoints 32763 35793
       surface seed-surface-c0ea72ca0197
         codepoints 32763 35695
-  wikidata_property_item_for_this_sense: # concept wikidata_property_item_for_this_sense
+  wikidata_property_item_for_this_sense:
     grounded-in P5137 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role

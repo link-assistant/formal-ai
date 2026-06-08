@@ -1,5 +1,5 @@
 meanings
-  summary_statement_kind: # concept summary_statement_kind
+  summary_statement_kind:
     defined-by concept # definition-link
     role summary_statement_kind # semantic-role
     lexeme en # language
@@ -22,7 +22,7 @@ meanings
         codepoints 38472 36848 31867 22411
       surface seed-surface-95054526b926
         codepoints 21477 23376 31867 22411
-  summary_kind_install: # concept summary_kind_install
+  summary_kind_install:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -55,7 +55,7 @@ meanings
         codepoints 23433 35013
       surface seed-surface-c7fa1c0aa9b9
         codepoints 23433 35013 26041 27861
-  summary_kind_example: # concept summary_kind_example
+  summary_kind_example:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -86,7 +86,7 @@ meanings
         codepoints 20363 22914
       surface seed-surface-b358aecbdc98
         codepoints 27604 22914
-  summary_kind_language: # concept summary_kind_language
+  summary_kind_language:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -113,7 +113,7 @@ meanings
         codepoints 35821 35328
       surface seed-surface-3f71f415e3a5
         codepoints 32534 20889
-  summary_kind_stars: # concept summary_kind_stars
+  summary_kind_stars:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -140,7 +140,7 @@ meanings
         codepoints 26143 26631
       surface seed-surface-533752c9cc89
         codepoints 26143 25968
-  summary_kind_purpose: # concept summary_kind_purpose
+  summary_kind_purpose:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -177,7 +177,7 @@ meanings
         codepoints 26088 22312
       surface seed-surface-58a73fcd43d2
         codepoints 24110 21161 20320
-  summary_kind_use_case: # concept summary_kind_use_case
+  summary_kind_use_case:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language
@@ -208,7 +208,7 @@ meanings
         codepoints 24403 20320 38656 35201
       surface seed-surface-711e8850223a
         codepoints 36866 29992 20110
-  summary_kind_feature: # concept summary_kind_feature
+  summary_kind_feature:
     defined-by summary_statement_kind # definition-link
     role summary_classification_cue # semantic-role
     lexeme en # language

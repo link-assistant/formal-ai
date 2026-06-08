@@ -1,5 +1,5 @@
 meanings
-  explanation_request: # concept explanation_request
+  explanation_request:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role explanation_request_lead # semantic-role
@@ -47,7 +47,7 @@ meanings
         codepoints 35299 37322 8230
       surface seed-surface-6d1ddc5a4bc3
         codepoints 26159 20160 20040
-  code_method: # concept code_method
+  code_method:
     defined-by action # definition-link
     defined-by concept # definition-link
     role code_method_noun # semantic-role

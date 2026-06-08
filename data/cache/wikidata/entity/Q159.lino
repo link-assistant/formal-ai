@@ -1,0 +1,16 @@
+Q159
+  aliases
+    en ("Russian Federation" "Federation of Russia")
+    ru ("Российская Федерация" "РФ")
+    zh ("俄羅斯" "俄国" "俄國")
+  descriptions
+    en "country in Eastern Europe and Northern Asia, the largest in the world by area"
+    hi "यूरोप और एशिया में फैले एक देश"
+    ru "государство в Восточной Европе и Северной Азии, крупнейшее по площади в мире"
+    zh "東歐及北亞國家"
+  labels
+    en Russia
+    hi "रूस"
+    ru "Россия"
+    zh "俄罗斯"
+  type item

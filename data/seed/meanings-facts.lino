@@ -1,5 +1,5 @@
 meanings
-  knowledge_relation: # concept knowledge_relation
+  knowledge_relation:
     defined-by knowledge_subject # definition-link
     defined-by knowledge_value # definition-link
     defined-by relation # definition-link
@@ -24,7 +24,7 @@ meanings
         codepoints 20851 31995
       surface seed-surface-c7ba32540e7e
         codepoints 23646 24615
-  knowledge_subject: # concept knowledge_subject
+  knowledge_subject:
     defined-by knowledge_relation # definition-link
     role knowledge_subject # semantic-role
     lexeme en # language
@@ -51,7 +51,7 @@ meanings
         codepoints 20027 20307
       surface seed-surface-2200eb66a446
         codepoints 23454 20307
-  knowledge_value: # concept knowledge_value
+  knowledge_value:
     defined-by knowledge_relation # definition-link
     role knowledge_value # semantic-role
     lexeme en # language
@@ -74,7 +74,7 @@ meanings
         codepoints 20540
       surface seed-surface-b5a9d91a2d2b
         codepoints 31572 26696
-  capital: # concept capital
+  capital:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -93,7 +93,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b6883e07588e
         codepoints 39318 37117
-  population: # concept population
+  population:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -112,7 +112,7 @@ meanings
     lexeme zh # language
       surface seed-surface-05a6310fee65
         codepoints 20154 21475
-  currency: # concept currency
+  currency:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -129,7 +129,7 @@ meanings
         codepoints 36135 24065
       surface seed-surface-58c58cd34744
         codepoints 36008 24163
-  official_language: # concept official_language
+  official_language:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -152,7 +152,7 @@ meanings
         codepoints 23448 26041 35821 35328
       surface seed-surface-89e7b76e34f9
         codepoints 23448 26041 35486 35328
-  continent: # concept continent
+  continent:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -167,7 +167,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3217b43dcb80
         codepoints 22823 27954
-  author_of_book: # concept author_of_book
+  author_of_book:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -196,7 +196,7 @@ meanings
         codepoints 26159 35841 20889 30340
       surface seed-surface-54fa6aad6e63
         codepoints 20316 32773
-  painter_of_painting: # concept painter_of_painting
+  painter_of_painting:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -227,7 +227,7 @@ meanings
         codepoints 35841 30011 30340
       surface seed-surface-4c7a77053537
         codepoints 30011 23478
-  built_year: # concept built_year
+  built_year:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
@@ -258,7 +258,7 @@ meanings
         codepoints 24314 20110
       surface seed-surface-e346203a9b7b
         codepoints 24314 36896
-  physical_constant: # concept physical_constant
+  physical_constant:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language

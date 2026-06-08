@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q146786": {
+      "type": "item",
+      "id": "Q146786",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "plural"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "множественное число"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "複數"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बहुवचन"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "grammatical number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическое число, используемое при обозначении нескольких предметов, объединённых по какому-либо признаку"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "語法上的數"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "複數"
+          },
+          {
+            "language": "zh",
+            "value": "复数"
+          },
+          {
+            "language": "zh",
+            "value": "众数"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мн.ч."
+          },
+          {
+            "language": "ru",
+            "value": "мн. ч."
+          },
+          {
+            "language": "ru",
+            "value": "плюралис"
+          },
+          {
+            "language": "ru",
+            "value": "плурал"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "pl"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

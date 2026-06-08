@@ -1,0 +1,145 @@
+{
+  "entities": {
+    "Q1490": {
+      "type": "item",
+      "id": "Q1490",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Tokyo"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "टोक्यो"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Токио"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "東京都"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital and largest city of Japan"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица Японии, одна из 47 префектур Японии, самый населённый город в мире"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "日本一級行政區及中央政府所在地"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जापान की राजधानी और सबसे बड़ा शहर"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Tōkyō"
+          },
+          {
+            "language": "en",
+            "value": "Tôkyô"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo-to"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Metropolitan prefecture"
+          },
+          {
+            "language": "en",
+            "value": "Tōkyō-to"
+          },
+          {
+            "language": "en",
+            "value": "Tôkyô-to"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Metropolis"
+          },
+          {
+            "language": "en",
+            "value": "Tokio"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo Prefecture"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo, Japan"
+          },
+          {
+            "language": "en",
+            "value": "Tokei"
+          },
+          {
+            "language": "en",
+            "value": "Tokyo (Japan)"
+          },
+          {
+            "language": "en",
+            "value": "Edo"
+          },
+          {
+            "language": "en",
+            "value": "Jedo"
+          },
+          {
+            "language": "en",
+            "value": "Yedo"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "东京都"
+          },
+          {
+            "language": "zh",
+            "value": "东京"
+          },
+          {
+            "language": "zh",
+            "value": "東京"
+          },
+          {
+            "language": "zh",
+            "value": "日本东京"
+          },
+          {
+            "language": "zh",
+            "value": "日本東京"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Токио-то"
+          },
+          {
+            "language": "ru",
+            "value": "Токё"
+          },
+          {
+            "language": "ru",
+            "value": "Токё-то"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

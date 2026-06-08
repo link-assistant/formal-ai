@@ -1,0 +1,17 @@
+Q2095
+  aliases
+    en ("foodstuff" "edibles" "feed" "chow" "foodstuffs" "sustenance" "food item" "victuals" "food material")
+    hi ("फ़ूड" "फूड" "खाना" "आहार" "खुराक" "खाना-पीना")
+    ru ("продовольствие" "харчи" "провиант" "еда" "питание")
+    zh ("食品" "食" "吃的" "物食")
+  descriptions
+    en "any substance consumed to provide nutritional support for the body; form of energy stored in chemical"
+    hi "ऐसा कोइ भी पदार्थ जो शर्करा (कार्बोहाइड्रेट), वसा, जल तथा/अथवा प्रोटीन से बना हो और जीव जगत द्वारा ग्रहण किया जा सके"
+    ru "то, что употребляют в пищу, чем утоляют голод"
+    zh "被生物食用以提供營養的物質"
+  labels
+    en food
+    hi "भोजन"
+    ru "пища"
+    zh "食物"
+  type item

@@ -1,0 +1,15 @@
+Q84
+  aliases
+    en ("London, UK" "London, United Kingdom" "London, England" "London UK" "London U.K." "Londinium" "Loñ" "Lundenwic" "Londinio" "Londini" "Londiniensium" "Augusta" "Trinovantum" "Kaerlud" "Karelundein" "Lunden" "Big Smoke" "the Big Smoke" "Lundenburh" "Lundenburgh" "Llyn Dain" "Llan Dian" "Londinion" "Loniniensi" "Lon." "Loñ." "Lond." "LDN")
+    hi ("लंदन,इंग्लॅण्ड" "लंदन,यूनाइटेड किंगडम")
+  descriptions
+    en "capital and largest city of England and the United Kingdom"
+    hi "इंग्लैंड और यूनाइटेड किंगडम की राजधानी"
+    ru "столица и крупнейший город Соединённого Королевства Великобритании и Северной Ирландии"
+    zh "英國的首都與最大城市"
+  labels
+    en London
+    hi "लंदन"
+    ru "Лондон"
+    zh "倫敦"
+  type item

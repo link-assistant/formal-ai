@@ -1,5 +1,5 @@
 meanings
-  web_resource: # concept web_resource
+  web_resource:
     defined-by entity # definition-link
     role web_navigation_concept # semantic-role
     lexeme en # language
@@ -32,7 +32,7 @@ meanings
         codepoints 32593 39029
       surface seed-surface-7738a07b5996
         codepoints 32593 31449
-  http_fetch: # concept http_fetch
+  http_fetch:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     defined-by web_resource # definition-link
@@ -123,7 +123,7 @@ meanings
         codepoints 21457 36865 35831 27714
       surface seed-surface-dc6bb56b0bda
         codepoints 33719 21462
-  url_navigate: # concept url_navigate
+  url_navigate:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     defined-by web_resource # definition-link

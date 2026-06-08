@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q81": {
+      "type": "item",
+      "id": "Q81",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "carrot"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गाजर"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "морковь"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "胡萝卜"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "root vegetable, plant of the Apiaceae family"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "овощ и фрукт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "伞形目伞形科的植物"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जड़ वाली सब्जी, आमतौर पर नारंगी रंग"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "морковь (овощ)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "红萝卜"
+          },
+          {
+            "language": "zh",
+            "value": "紅蘿蔔"
+          },
+          {
+            "language": "zh",
+            "value": "紅菜頭"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "carrot taproot"
+          },
+          {
+            "language": "en",
+            "value": "domesticated carrot"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

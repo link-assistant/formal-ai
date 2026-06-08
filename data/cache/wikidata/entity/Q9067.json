@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q9067": {
+      "type": "item",
+      "id": "Q9067",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "हंगेरियाई भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "匈牙利語"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "венгерский язык"
+        },
+        "en": {
+          "language": "en",
+          "value": "Hungarian"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "язык венгров, принадлежит к финно-угорской семье языков"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "乌拉尔语系乌戈尔语支語言"
+        },
+        "en": {
+          "language": "en",
+          "value": "Ugric language mainly spoken in Hungary and surrounding countries"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूग्रिक भाषा"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Hungarian language"
+          },
+          {
+            "language": "en",
+            "value": "Magyar"
+          },
+          {
+            "language": "en",
+            "value": "Magyar language"
+          },
+          {
+            "language": "en",
+            "value": "Modern Hungarian"
+          },
+          {
+            "language": "en",
+            "value": "Modern Hungarian language"
+          },
+          {
+            "language": "en",
+            "value": "hu"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हंगेरियन भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "तुलु भाषा"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мадьярский язык"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

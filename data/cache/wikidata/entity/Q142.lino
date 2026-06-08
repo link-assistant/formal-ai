@@ -1,0 +1,17 @@
+Q142
+  aliases
+    en ("French Republic")
+    hi ("फ़्राँस" "फ्रांस" "फ्रान्स" "फ़्रांस" "फ्राँस")
+    ru ("Французская Республика" "ФР" "Французская республика" "Республика Франция" "Пятая Французская Республика")
+    zh ("法兰西共和国" "法兰西" "法蘭西共和國" "法蘭西" "法国")
+  descriptions
+    en "country in Western Europe and other continents (through its overseas territories in America, Africa and Oceania)"
+    hi "पश्चिम यूरोप का देश"
+    ru "государство в Западной Европе"
+    zh "西歐國家"
+  labels
+    en France
+    hi "फ़्रान्स"
+    ru "Франция"
+    zh "法國"
+  type item

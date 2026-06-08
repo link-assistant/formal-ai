@@ -1,289 +1,289 @@
 meanings
-  lexical_form: # concept lexical_form
+  lexical_form:
     defined-by notation # definition-link
     defined-by word_surface # definition-link
     role lexical_meta # semantic-role
     facet notation # facet
-      word_surface: # concept word_surface
+      word_surface:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      lexical_sense: # concept lexical_sense
+      lexical_sense:
     facet connotation # facet
-      part_of_speech: # concept part_of_speech
+      part_of_speech:
     lexeme en # language
       surface seed-surface-d827c02ccc88
         codepoints 108 101 120 105 99 97 108 32 102 111 114 109
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_form: # concept lexical_form
+          lexical_form:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme ru # language
       surface seed-surface-b6840fd4a372
         codepoints 1083 1077 1082 1089 1080 1095 1077 1089 1082 1072 1103 32 1092 1086 1088 1084 1072
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_form: # concept lexical_form
+          lexical_form:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme hi # language
       surface seed-surface-aa35908bcfe0
         codepoints 2358 2366 2348 2381 2342 2367 2325 32 2352 2370 2346
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_form: # concept lexical_form
+          lexical_form:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme zh # language
       surface seed-surface-dd3ee21f2dfd
         codepoints 35789 24418
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_form: # concept lexical_form
+          lexical_form:
         facet part_of_speech # facet
-          noun: # concept noun
-  word_surface: # concept word_surface
+          noun:
+  word_surface:
     defined-by lexical_form # definition-link
     defined-by notation # definition-link
     role lexical_meta # semantic-role
     facet notation # facet
-      links_notation_format: # concept links_notation_format
+      links_notation_format:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      lexical_form: # concept lexical_form
+      lexical_form:
     facet connotation # facet
-      lexical_sense: # concept lexical_sense
+      lexical_sense:
     lexeme en # language
       surface seed-surface-d135969c0f90
         codepoints 119 111 114 100 32 115 117 114 102 97 99 101
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme ru # language
       surface seed-surface-9edd525c19cf
         codepoints 1089 1083 1086 1074 1077 1089 1085 1072 1103 32 1092 1086 1088 1084 1072
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme hi # language
       surface seed-surface-6bb273d81077
         codepoints 2358 2348 2381 2342 32 2360 2340 2361
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme zh # language
       surface seed-surface-beb73b25e558
         codepoints 35789 38754
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet part_of_speech # facet
-          noun: # concept noun
-  lexical_sense: # concept lexical_sense
+          noun:
+  lexical_sense:
     defined-by denotation # definition-link
     defined-by concept # definition-link
     role lexical_meta # semantic-role
     facet notation # facet
-      word_surface: # concept word_surface
+      word_surface:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      concept: # concept concept
+      concept:
     facet connotation # facet
-      lexical_form: # concept lexical_form
+      lexical_form:
     lexeme en # language
       surface seed-surface-8f80a4c534ce
         codepoints 108 101 120 105 99 97 108 32 115 101 110 115 101
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_sense: # concept lexical_sense
+          lexical_sense:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme ru # language
       surface seed-surface-098bf701cdbb
         codepoints 1083 1077 1082 1089 1080 1095 1077 1089 1082 1086 1077 32 1079 1085 1072 1095 1077 1085 1080 1077
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_sense: # concept lexical_sense
+          lexical_sense:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme hi # language
       surface seed-surface-7e3f3481d27b
         codepoints 2358 2366 2348 2381 2342 2367 2325 32 2309 2352 2381 2341
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_sense: # concept lexical_sense
+          lexical_sense:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme zh # language
       surface seed-surface-e5379fe74b1e
         codepoints 35789 20041
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          lexical_sense: # concept lexical_sense
+          lexical_sense:
         facet part_of_speech # facet
-          noun: # concept noun
-  part_of_speech: # concept part_of_speech
+          noun:
+  part_of_speech:
     defined-by semantic_facet # definition-link
     defined-by lexical_form # definition-link
     role semantic_facet_kind # semantic-role
     role lexical_meta # semantic-role
     facet notation # facet
-      word_surface: # concept word_surface
+      word_surface:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      semantic_facet: # concept semantic_facet
+      semantic_facet:
     facet connotation # facet
-      lexical_form: # concept lexical_form
+      lexical_form:
     lexeme en # language
       surface seed-surface-2db016e8121a
         codepoints 112 97 114 116 32 111 102 32 115 112 101 101 99 104
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          part_of_speech: # concept part_of_speech
+          part_of_speech:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme ru # language
       surface seed-surface-9e7979a82cf2
         codepoints 1095 1072 1089 1090 1100 32 1088 1077 1095 1080
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          part_of_speech: # concept part_of_speech
+          part_of_speech:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme hi # language
       surface seed-surface-9629c809cc79
         codepoints 2358 2348 2381 2342 32 2349 2375 2342
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          part_of_speech: # concept part_of_speech
+          part_of_speech:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme zh # language
       surface seed-surface-97ac68803f2b
         codepoints 35789 31867
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          part_of_speech: # concept part_of_speech
+          part_of_speech:
         facet part_of_speech # facet
-          noun: # concept noun
-  noun: # concept noun
+          noun:
+  noun:
     defined-by part_of_speech # definition-link
     role lexical_meta # semantic-role
     facet notation # facet
-      word_surface: # concept word_surface
+      word_surface:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      part_of_speech: # concept part_of_speech
+      part_of_speech:
     facet connotation # facet
-      lexical_form: # concept lexical_form
+      lexical_form:
     lexeme en # language
       surface seed-surface-a17d8bac18ca
         codepoints 110 111 117 110
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun: # concept noun
+          noun:
         facet part_of_speech # facet
-          noun: # concept noun
+          noun:
     lexeme ru # language
       surface seed-surface-1b9b2dd57e58
         codepoints 1089 1091 1097 1077 1089 1090 1074 1080 1090 1077 1083 1100 1085 1086 1077
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun: # concept noun
+          noun:
         facet part_of_speech # facet
-          noun: # concept noun
+          noun:
     lexeme hi # language
       surface seed-surface-5efe47b4a2e5
         codepoints 2360 2306 2332 2381 2334 2366
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun: # concept noun
+          noun:
         facet part_of_speech # facet
-          noun: # concept noun
+          noun:
     lexeme zh # language
       surface seed-surface-bfeb079707b8
         codepoints 21517 35789
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun: # concept noun
+          noun:
         facet part_of_speech # facet
-          noun: # concept noun
-  noun_phrase: # concept noun_phrase
+          noun:
+  noun_phrase:
     defined-by noun # definition-link
     defined-by lexical_form # definition-link
     role lexical_meta # semantic-role
     facet notation # facet
-      word_surface: # concept word_surface
+      word_surface:
     facet annotation # facet
-      semantic_gloss: # concept semantic_gloss
+      semantic_gloss:
     facet denotation # facet
-      part_of_speech: # concept part_of_speech
+      part_of_speech:
     facet connotation # facet
-      noun: # concept noun
+      noun:
     lexeme en # language
       surface seed-surface-2892609ff7f7
         codepoints 110 111 117 110 32 112 104 114 97 115 101
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme ru # language
       surface seed-surface-ae7e09d7a09d
         codepoints 1080 1084 1077 1085 1085 1072 1103 32 1075 1088 1091 1087 1087 1072
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme hi # language
       surface seed-surface-ae72c48720cd
         codepoints 2360 2306 2332 2381 2334 2366 32 2346 2342
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
     lexeme zh # language
       surface seed-surface-38cf91f43c74
         codepoints 21517 35789 30701 35821
         facet notation # facet
-          word_surface: # concept word_surface
+          word_surface:
         facet denotation # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:
         facet part_of_speech # facet
-          noun_phrase: # concept noun_phrase
+          noun_phrase:

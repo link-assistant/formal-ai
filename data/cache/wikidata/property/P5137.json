@@ -1,0 +1,152 @@
+{
+  "entities": {
+    "P5137": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P5137",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "item for this sense"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "элемент для значения"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "对应此义项的项目"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इस अर्थ के लिए आइटम"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "concept corresponding to this sense of a lexeme. Use only on lexeme senses; do not use on items or properties"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "связывает смысл лексемы с соответствующим понятием. Не используйте для элементов и свойств"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "与该词位义项相对应的概念： 仅限在“词位义项”上使用；严禁用于普通项（Item）或属性"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "denotes"
+          },
+          {
+            "language": "en",
+            "value": "sense"
+          },
+          {
+            "language": "en",
+            "value": "means"
+          },
+          {
+            "language": "en",
+            "value": "sense item"
+          },
+          {
+            "language": "en",
+            "value": "item"
+          },
+          {
+            "language": "en",
+            "value": "item of this sense"
+          },
+          {
+            "language": "en",
+            "value": "sense has this item"
+          },
+          {
+            "language": "en",
+            "value": "sense's main topic"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "смысл"
+          },
+          {
+            "language": "ru",
+            "value": "означает"
+          },
+          {
+            "language": "ru",
+            "value": "значение"
+          },
+          {
+            "language": "ru",
+            "value": "значит"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "該義項的項目"
+          },
+          {
+            "language": "zh",
+            "value": "意義項目"
+          },
+          {
+            "language": "zh",
+            "value": "項目"
+          },
+          {
+            "language": "zh",
+            "value": "意义项目"
+          },
+          {
+            "language": "zh",
+            "value": "项目"
+          },
+          {
+            "language": "zh",
+            "value": "義項項目"
+          },
+          {
+            "language": "zh",
+            "value": "义项项目"
+          },
+          {
+            "language": "zh",
+            "value": "该词义专用项目"
+          },
+          {
+            "language": "zh",
+            "value": "义项"
+          },
+          {
+            "language": "zh",
+            "value": "含义"
+          },
+          {
+            "language": "zh",
+            "value": "义项对应项"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आयटम"
+          },
+          {
+            "language": "hi",
+            "value": "अर्थ"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

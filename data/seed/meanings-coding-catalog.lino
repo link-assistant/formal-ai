@@ -1,5 +1,5 @@
 meanings
-  program_language: # concept program_language
+  program_language:
     defined-by software_language # definition-link
     role program_language # semantic-role
     lexeme en # language
@@ -14,7 +14,7 @@ meanings
     lexeme zh # language
       surface seed-surface-4c9254a04e02
         codepoints 32534 31243 35821 35328
-  program_language_rust: # concept program_language_rust
+  program_language_rust:
     defined-by program_language # definition-link
     defined-by language_rust # definition-link
     role program_language_alias # semantic-role
@@ -34,7 +34,7 @@ meanings
     lexeme zh # language
       surface seed-surface-24d0bfa73a34
         codepoints 114 117 115 116
-  program_language_python: # concept program_language_python
+  program_language_python:
     defined-by program_language # definition-link
     defined-by language_python # definition-link
     role program_language_alias # semantic-role
@@ -54,7 +54,7 @@ meanings
     lexeme zh # language
       surface seed-surface-07cb378a8478
         codepoints 112 121 116 104 111 110
-  program_language_javascript: # concept program_language_javascript
+  program_language_javascript:
     defined-by program_language # definition-link
     defined-by language_javascript # definition-link
     role program_language_alias # semantic-role
@@ -74,7 +74,7 @@ meanings
     lexeme zh # language
       surface seed-surface-4ff352bbf47f
         codepoints 106 97 118 97 115 99 114 105 112 116
-  program_language_typescript: # concept program_language_typescript
+  program_language_typescript:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -91,7 +91,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e7e6fddb3d66
         codepoints 116 121 112 101 115 99 114 105 112 116
-  program_language_go: # concept program_language_go
+  program_language_go:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -108,7 +108,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ddb9e4143a4f
         codepoints 103 111
-  program_language_c: # concept program_language_c
+  program_language_c:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -123,7 +123,7 @@ meanings
     lexeme zh # language
       surface seed-surface-08f7aa1a4855
         codepoints 99
-  program_language_cpp: # concept program_language_cpp
+  program_language_cpp:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -142,7 +142,7 @@ meanings
     lexeme zh # language
       surface seed-surface-0041483086cf
         codepoints 99 43 43
-  program_language_java: # concept program_language_java
+  program_language_java:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -157,7 +157,7 @@ meanings
     lexeme zh # language
       surface seed-surface-1108cda60c1d
         codepoints 106 97 118 97
-  program_language_csharp: # concept program_language_csharp
+  program_language_csharp:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -178,7 +178,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7537afc8ddd6
         codepoints 99 35
-  program_language_ruby: # concept program_language_ruby
+  program_language_ruby:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
@@ -195,7 +195,7 @@ meanings
     lexeme zh # language
       surface seed-surface-63078e9233b5
         codepoints 114 117 98 121
-  program_task: # concept program_task
+  program_task:
     defined-by program # definition-link
     role program_task # semantic-role
     lexeme en # language
@@ -210,7 +210,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d8370691ecc5
         codepoints 32534 31243 20219 21153
-  program_task_hello_world: # concept program_task_hello_world
+  program_task_hello_world:
     defined-by program_task # definition-link
     defined-by hello_world # definition-link
     role program_task_alias # semantic-role
@@ -226,7 +226,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9644f65803e6
         codepoints 20320 22909 19990 30028
-  program_task_count_to_three: # concept program_task_count_to_three
+  program_task_count_to_three:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -253,7 +253,7 @@ meanings
         codepoints 25968 21040 19977
       surface seed-surface-0bf03a7b18f3
         codepoints 25968 21040 51
-  program_task_list_files: # concept program_task_list_files
+  program_task_list_files:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -330,7 +330,7 @@ meanings
         codepoints 21015 20986 30446 24405 20013 30340 25991 20214
       surface seed-surface-27283cedd793
         codepoints 21015 20986 25991 20214
-  program_task_list_files_arg: # concept program_task_list_files_arg
+  program_task_list_files_arg:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -361,7 +361,7 @@ meanings
         codepoints 21015 20986 20316 20026 36335 24452 21442 25968 32473 20986 30340 30446 24405 20013 30340 25991 20214
       surface seed-surface-7ab29e4bf568
         codepoints 21015 20986 36335 24452 21442 25968 25351 23450 30446 24405 20013 30340 25991 20214
-  program_task_list_files_reverse_sort: # concept program_task_list_files_reverse_sort
+  program_task_list_files_reverse_sort:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -388,7 +388,7 @@ meanings
         codepoints 25353 30456 21453 39034 24207 21015 20986 25991 20214
       surface seed-surface-a2096491e3ff
         codepoints 20498 24207 21015 20986 25991 20214
-  program_task_list_files_arg_reverse_sort: # concept program_task_list_files_arg_reverse_sort
+  program_task_list_files_arg_reverse_sort:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -415,7 +415,7 @@ meanings
         codepoints 25353 30456 21453 39034 24207 21015 20986 36335 24452 21442 25968 20013 30340 25991 20214
       surface seed-surface-e0f164fcb9d1
         codepoints 20498 24207 21015 20986 36335 24452 21442 25968 25351 23450 30446 24405 20013 30340 25991 20214
-  program_task_fizzbuzz: # concept program_task_fizzbuzz
+  program_task_fizzbuzz:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -438,7 +438,7 @@ meanings
     lexeme zh # language
       surface seed-surface-aa4f5083fb30
         codepoints 33778 33576 24052 20857
-  program_task_factorial: # concept program_task_factorial
+  program_task_factorial:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -467,7 +467,7 @@ meanings
         codepoints 53 30340 38454 20056
       surface seed-surface-9c8313427c3d
         codepoints 20116 30340 38454 20056
-  program_task_reverse_string: # concept program_task_reverse_string
+  program_task_reverse_string:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -500,7 +500,7 @@ meanings
         codepoints 32763 36716 23383 31526 20018
       surface seed-surface-d0416fa7f2da
         codepoints 21453 36716 104 101 108 108 111
-  program_task_sum_to_ten: # concept program_task_sum_to_ten
+  program_task_sum_to_ten:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
@@ -535,7 +535,7 @@ meanings
         codepoints 49 21040 49 48 27714 21644
       surface seed-surface-87164580e52a
         codepoints 27714 49 21040 49 48 30340 21644
-  program_task_fibonacci: # concept program_task_fibonacci
+  program_task_fibonacci:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language

@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q17": {
+      "type": "item",
+      "id": "Q17",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "जापान"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Япония"
+        },
+        "en": {
+          "language": "en",
+          "value": "Japan"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "日本"
+        }
+      },
+      "descriptions": {
+        "hi": {
+          "language": "hi",
+          "value": "पूर्वी एशिया का देश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "東亞國家"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "островное государство в Восточной Азии"
+        },
+        "en": {
+          "language": "en",
+          "value": "island country in East Asia"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "扶桑"
+          },
+          {
+            "language": "zh",
+            "value": "扶桑國"
+          },
+          {
+            "language": "zh",
+            "value": "日"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "State of Japan"
+          },
+          {
+            "language": "en",
+            "value": "Land of the Rising Sun"
+          },
+          {
+            "language": "en",
+            "value": "Nippon-koku"
+          },
+          {
+            "language": "en",
+            "value": "Nihon-koku"
+          },
+          {
+            "language": "en",
+            "value": "Iapan"
+          },
+          {
+            "language": "en",
+            "value": "Iapon"
+          },
+          {
+            "language": "en",
+            "value": "Land of Rising Sun"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Страна восходящего солнца"
+          },
+          {
+            "language": "ru",
+            "value": "Ниппон"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "निप्पोन"
+          },
+          {
+            "language": "hi",
+            "value": "निहोन"
+          },
+          {
+            "language": "hi",
+            "value": "उगते सूरज की भूमि"
+          },
+          {
+            "language": "hi",
+            "value": "उदयवर्ष"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

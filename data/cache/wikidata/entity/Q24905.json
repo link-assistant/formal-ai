@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q24905": {
+      "type": "item",
+      "id": "Q24905",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "动词"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "глагол"
+        },
+        "en": {
+          "language": "en",
+          "value": "verb"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क्रिया"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "class of words that semantically convey actions, processes, or states, and syntactically serve as the central element of the sentence predicate"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть речи, означающая действие"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकारी शब्द ,अक्षर सम्बन्धित कार्यवाई"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "глаголы"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "v."
+          },
+          {
+            "language": "en",
+            "value": "vb."
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "動詞"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

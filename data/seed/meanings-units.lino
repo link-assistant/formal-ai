@@ -1,5 +1,5 @@
 meanings
-  quantity: # concept quantity
+  quantity:
     defined-by unit # definition-link
     defined-by property # definition-link
     defined-by amount # definition-link
@@ -17,7 +17,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9f242789df0e
         codepoints 25968 37327
-  unit: # concept unit
+  unit:
     defined-by quantity # definition-link
     role measurement_concept # semantic-role
     lexeme en # language
@@ -32,7 +32,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ade130c7c173
         codepoints 21333 20301
-  cardinal_number: # concept cardinal_number
+  cardinal_number:
     defined-by quantity # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
@@ -49,7 +49,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e8eb446f4a4d
         codepoints 22522 25968
-  zero: # concept zero
+  zero:
     defined-by cardinal_number # definition-link
     defined-by empty # definition-link
     role cardinal_number_word # semantic-role
@@ -69,7 +69,7 @@ meanings
     lexeme zh # language
       surface seed-surface-0633007c1397
         codepoints 38646
-  one: # concept one
+  one:
     defined-by cardinal_number # definition-link
     defined-by single # definition-link
     role cardinal_number_word # semantic-role
@@ -91,7 +91,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2a69118803d8
         codepoints 19968
-  two: # concept two
+  two:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -110,7 +110,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8e4229242731
         codepoints 20108
-  three: # concept three
+  three:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -127,7 +127,7 @@ meanings
     lexeme zh # language
       surface seed-surface-289cf99ebe95
         codepoints 19977
-  four: # concept four
+  four:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -144,7 +144,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b23a91d79973
         codepoints 22235
-  five: # concept five
+  five:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -161,7 +161,7 @@ meanings
     lexeme zh # language
       surface seed-surface-0d4318541e0c
         codepoints 20116
-  six: # concept six
+  six:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -178,7 +178,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f0dbd61f2600
         codepoints 20845
-  seven: # concept seven
+  seven:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -195,7 +195,7 @@ meanings
     lexeme zh # language
       surface seed-surface-1c70152fb8da
         codepoints 19971
-  eight: # concept eight
+  eight:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -212,7 +212,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9196d602cb0b
         codepoints 20843
-  nine: # concept nine
+  nine:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -229,7 +229,7 @@ meanings
     lexeme zh # language
       surface seed-surface-bacfeb5ff0e2
         codepoints 20061
-  ten: # concept ten
+  ten:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
@@ -246,7 +246,7 @@ meanings
     lexeme zh # language
       surface seed-surface-54298ab10c98
         codepoints 21313
-  length: # concept length
+  length:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
@@ -261,7 +261,7 @@ meanings
     lexeme zh # language
       surface seed-surface-62583b5e7e25
         codepoints 38271 24230
-  data_storage: # concept data_storage
+  data_storage:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
@@ -276,7 +276,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3b0891a635bf
         codepoints 25968 25454 23384 20648
-  mass: # concept mass
+  mass:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
@@ -291,7 +291,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f864f89d7af2
         codepoints 36136 37327
-  time: # concept time
+  time:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
@@ -306,7 +306,7 @@ meanings
     lexeme zh # language
       surface seed-surface-19b1b6234dfc
         codepoints 26102 38388
-  temperature: # concept temperature
+  temperature:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
@@ -321,7 +321,7 @@ meanings
     lexeme zh # language
       surface seed-surface-0db0dd9f361f
         codepoints 28201 24230
-  meter: # concept meter
+  meter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -347,7 +347,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b238edd9fb93
         codepoints 31859
-  kilometer: # concept kilometer
+  kilometer:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -377,7 +377,7 @@ meanings
         codepoints 21315 31859
       surface seed-surface-45364be79d06
         codepoints 20844 37324
-  centimeter: # concept centimeter
+  centimeter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -397,7 +397,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7420ad390bd7
         codepoints 21400 31859
-  millimeter: # concept millimeter
+  millimeter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -417,7 +417,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c744c0a14288
         codepoints 27627 31859
-  byte: # concept byte
+  byte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -439,7 +439,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3f5d3bb8a5a6
         codepoints 23383 33410
-  kilobyte: # concept kilobyte
+  kilobyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -460,7 +460,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8a3a99934ff9
         codepoints 21315 23383 33410
-  megabyte: # concept megabyte
+  megabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -481,7 +481,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d30cc2d1a9d7
         codepoints 20806 23383 33410
-  gigabyte: # concept gigabyte
+  gigabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -501,7 +501,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3bef505a9b85
         codepoints 21513 23383 33410
-  terabyte: # concept terabyte
+  terabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -521,7 +521,7 @@ meanings
     lexeme zh # language
       surface seed-surface-603d729776dc
         codepoints 22826 23383 33410
-  bit: # concept bit
+  bit:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -543,7 +543,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2f6f78dd22c1
         codepoints 27604 29305
-  kilogram: # concept kilogram
+  kilogram:
     defined-by mass # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -568,7 +568,7 @@ meanings
         codepoints 21315 20811
       surface seed-surface-697bb33f71d5
         codepoints 20844 26020
-  gram: # concept gram
+  gram:
     defined-by mass # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -587,7 +587,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7af7121c97ef
         codepoints 20811
-  pound: # concept pound
+  pound:
     defined-by mass # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -605,7 +605,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3b3f0ade6b9f
         codepoints 30917
-  ton: # concept ton
+  ton:
     defined-by mass # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -630,7 +630,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c69880f9f5f5
         codepoints 21544
-  second: # concept second
+  second:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -653,7 +653,7 @@ meanings
     lexeme zh # language
       surface seed-surface-43ed0365e317
         codepoints 31186
-  minute: # concept minute
+  minute:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -676,7 +676,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e1e541534966
         codepoints 20998 38047
-  hour: # concept hour
+  hour:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -699,7 +699,7 @@ meanings
     lexeme zh # language
       surface seed-surface-6519975ca1a6
         codepoints 23567 26102
-  millisecond: # concept millisecond
+  millisecond:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -722,7 +722,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d5220a9be1c0
         codepoints 27627 31186
-  day: # concept day
+  day:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -747,7 +747,7 @@ meanings
         codepoints 22825
       surface seed-surface-1a428b7d3ce1
         codepoints 26085
-  month: # concept month
+  month:
     defined-by time # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -774,7 +774,7 @@ meanings
         codepoints 26376
       surface seed-surface-ba17ff02b23a
         codepoints 20010 26376
-  celsius: # concept celsius
+  celsius:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -790,7 +790,7 @@ meanings
     lexeme zh # language
       surface seed-surface-068efb9a020c
         codepoints 25668 27663 24230
-  fahrenheit: # concept fahrenheit
+  fahrenheit:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
@@ -806,7 +806,7 @@ meanings
     lexeme zh # language
       surface seed-surface-64333ba22abd
         codepoints 21326 27663 24230
-  kelvin: # concept kelvin
+  kelvin:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role

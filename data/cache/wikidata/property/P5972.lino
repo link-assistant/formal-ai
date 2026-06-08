@@ -1,0 +1,14 @@
+P5972
+  aliases
+    en ("translations" "foreign language synonym" "synonym in foreign language" "synonym in another language" "synonym in other language" "translates as")
+    zh ("译文" "外语同义词")
+  datatype wikibase-sense
+  descriptions
+    en "sense (meaning) of a lexeme in another language that corresponds exactly to this sense (meaning) of the lexeme"
+    ru "значение лексемы на другом языке, точно соответствующее данному значению лексемы"
+    zh "与该词语的意义完全对应的另一种语言中词语的意义"
+  labels
+    en translation
+    ru "перевод"
+    zh "翻譯"
+  type property

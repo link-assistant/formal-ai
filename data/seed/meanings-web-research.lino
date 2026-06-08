@@ -1,5 +1,5 @@
 meanings
-  research_question_opener: # concept research_question_opener
+  research_question_opener:
     defined-by inquiry # definition-link
     role research_question_opener # semantic-role
     lexeme en # language
@@ -148,7 +148,7 @@ meanings
         codepoints 21578 35785 25105 8230
       surface seed-surface-62720d1390e9
         codepoints 20320 30693 36947 8230
-  research_superlative_modifier: # concept research_superlative_modifier
+  research_superlative_modifier:
     defined-by property # definition-link
     role research_superlative_modifier # semantic-role
     lexeme en # language
@@ -257,7 +257,7 @@ meanings
         codepoints 26368 26032
       surface seed-surface-f4c43c099449
         codepoints 26368 36817
-  research_evidence_domain: # concept research_evidence_domain
+  research_evidence_domain:
     defined-by entity # definition-link
     role research_evidence_domain # semantic-role
     lexeme en # language
@@ -336,7 +336,7 @@ meanings
         codepoints 35770 25991
       surface seed-surface-77c205087ae0
         codepoints 30740 31350
-  research_evaluation_domain: # concept research_evaluation_domain
+  research_evaluation_domain:
     defined-by concept # definition-link
     role research_evaluation_domain # semantic-role
     lexeme en # language
@@ -397,7 +397,7 @@ meanings
         codepoints 32763 35793
       surface seed-surface-f5d1e24036be
         codepoints 27604 36739
-  enumeration_request_opener: # concept enumeration_request_opener
+  enumeration_request_opener:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role enumeration_request_opener # semantic-role
@@ -443,7 +443,7 @@ meanings
         codepoints 26174 31034 25152 26377 32 8230
       surface seed-surface-7878eac55496
         codepoints 26522 20030 25152 26377 32 8230
-  enumeration_constraint: # concept enumeration_constraint
+  enumeration_constraint:
     defined-by relation # definition-link
     role enumeration_constraint # semantic-role
     lexeme en # language

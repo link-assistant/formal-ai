@@ -1,0 +1,175 @@
+{
+  "entities": {
+    "Q937": {
+      "type": "item",
+      "id": "Q937",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "अल्बर्ट आइंस्टीन"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Альберт Эйнштейн"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "阿尔伯特·爱因斯坦"
+        },
+        "en": {
+          "language": "en",
+          "value": "Albert Einstein"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "german-born theoretical physicist (1879–1955)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "физик-теоретик, один из основателей современной теоретической физики, лауреат Нобелевской премии, общественный деятель-гуманист"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मन सैद्धांतिक भौतिक विज्ञानी (1879–1955)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "猶太裔美國物理學家，相對論創立者"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "阿尔贝特·爱因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "艾尔伯特·爱因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱尔伯特·爱因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "阿爾貝特·愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "艾爾伯特·愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "愛爾伯特·愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "阿爾伯特·愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱恩斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "艾因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱恩思坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱因思坦"
+          },
+          {
+            "language": "zh",
+            "value": "愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "愛恩斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "愛恩思坦"
+          },
+          {
+            "language": "zh",
+            "value": "愛因思坦"
+          },
+          {
+            "language": "zh",
+            "value": "爱因斯坦，A."
+          },
+          {
+            "language": "zh",
+            "value": "亞伯特·愛因斯坦"
+          },
+          {
+            "language": "zh",
+            "value": "艾伯特·愛因斯坦"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Эйнштейн, Альберт"
+          },
+          {
+            "language": "ru",
+            "value": "Эйнштейн"
+          },
+          {
+            "language": "ru",
+            "value": "Айнштайн"
+          },
+          {
+            "language": "ru",
+            "value": "Эйнштейн А."
+          },
+          {
+            "language": "ru",
+            "value": "Эйнштейн Альберт"
+          },
+          {
+            "language": "ru",
+            "value": "А. Эйнштейн"
+          },
+          {
+            "language": "ru",
+            "value": "Альберт Энштейн"
+          },
+          {
+            "language": "ru",
+            "value": "Эйнштейн, Алберт"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आइंस्टीन"
+          },
+          {
+            "language": "hi",
+            "value": "आइंस्टीन,अल्बर्ट"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "A. Einsten"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

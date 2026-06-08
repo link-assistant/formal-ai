@@ -1,5 +1,5 @@
 meanings
-  web_search: # concept web_search
+  web_search:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     defined-by web_resource # definition-link
@@ -24,7 +24,7 @@ meanings
         codepoints 32593 32476 25628 32034
       surface seed-surface-a83ee4a1f243
         codepoints 22312 32593 19978 25628 32034
-  reference_internet: # concept reference_internet
+  reference_internet:
     defined-by web_resource # definition-link
     defined-by entity # definition-link
     role web_search_signal # semantic-role
@@ -68,7 +68,7 @@ meanings
         codepoints 32178 36335
       surface seed-surface-f236fb9174b4
         codepoints 32593 32476
-  reference_encyclopedia: # concept reference_encyclopedia
+  reference_encyclopedia:
     defined-by web_resource # definition-link
     defined-by entity # definition-link
     role web_search_signal # semantic-role
@@ -103,7 +103,7 @@ meanings
         codepoints 32500 22522 25968 25454
       surface seed-surface-7f59d8de68e8
         codepoints 32173 22522 25976 25818
-  reference_information: # concept reference_information
+  reference_information:
     defined-by concept # definition-link
     role web_search_signal # semantic-role
     lexeme en # language
@@ -180,7 +180,7 @@ meanings
         codepoints 36039 28304
       surface seed-surface-88bb7339ac9b
         codepoints 25991 31456
-  reference_news: # concept reference_news
+  reference_news:
     defined-by web_resource # definition-link
     defined-by concept # definition-link
     role web_search_signal # semantic-role
@@ -207,7 +207,7 @@ meanings
         codepoints 22836 26465
       surface seed-surface-ef77f881c94e
         codepoints 38957 26781
-  news_recency_request: # concept news_recency_request
+  news_recency_request:
     defined-by time # definition-link
     role web_search_news_recency # semantic-role
     lexeme en # language
@@ -244,7 +244,7 @@ meanings
         codepoints 20170 26085
       surface seed-surface-521e65c053b1
         codepoints 20170 22825
-  act_search_strong: # concept act_search_strong
+  act_search_strong:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role web_search_action # semantic-role
@@ -338,7 +338,7 @@ meanings
         codepoints 25628 19968 19979 8230
       surface seed-surface-df1dd6869be2
         codepoints 26597 19968 19979 8230
-  act_find_weak: # concept act_find_weak
+  act_find_weak:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role web_search_action # semantic-role
@@ -375,7 +375,7 @@ meanings
         codepoints 25214 21040
       surface seed-surface-4f47b1f547ab
         codepoints 25214 21040 8230
-  web_search_mention: # concept web_search_mention
+  web_search_mention:
     defined-by web_search # definition-link
     role web_search_history_signal # semantic-role
     lexeme en # language

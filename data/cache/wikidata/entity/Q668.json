@@ -1,0 +1,171 @@
+{
+  "entities": {
+    "Q668": {
+      "type": "item",
+      "id": "Q668",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "印度"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भारत"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Индия"
+        },
+        "en": {
+          "language": "en",
+          "value": "India"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "南亞國家"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "страна в Южной Азии"
+        },
+        "en": {
+          "language": "en",
+          "value": "country in South Asia"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दक्षिण एशिया का देश"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Republic of India"
+          },
+          {
+            "language": "en",
+            "value": "Bharat"
+          },
+          {
+            "language": "en",
+            "value": "Bharatvarsh"
+          },
+          {
+            "language": "en",
+            "value": "Hindustan"
+          },
+          {
+            "language": "en",
+            "value": "Bharata"
+          },
+          {
+            "language": "en",
+            "value": "Hindoostan"
+          },
+          {
+            "language": "en",
+            "value": "Indostan"
+          },
+          {
+            "language": "en",
+            "value": "Bharat Ganarajya"
+          },
+          {
+            "language": "en",
+            "value": "Al Hind"
+          },
+          {
+            "language": "en",
+            "value": "Tianzhu"
+          },
+          {
+            "language": "en",
+            "value": "Tenjiku"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "印度共和国"
+          },
+          {
+            "language": "zh",
+            "value": "印度共和國"
+          },
+          {
+            "language": "zh",
+            "value": "印"
+          },
+          {
+            "language": "zh",
+            "value": "天竺"
+          },
+          {
+            "language": "zh",
+            "value": "身毒"
+          },
+          {
+            "language": "zh",
+            "value": "贤督"
+          },
+          {
+            "language": "zh",
+            "value": "賢豆"
+          },
+          {
+            "language": "zh",
+            "value": "神督"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हिंदुस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "भारतवर्ष"
+          },
+          {
+            "language": "hi",
+            "value": "इंडिया"
+          },
+          {
+            "language": "hi",
+            "value": "भारत गणराज्य"
+          },
+          {
+            "language": "hi",
+            "value": "इण्डिया"
+          },
+          {
+            "language": "hi",
+            "value": "हिन्दोस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "हिन्दुस्तान"
+          },
+          {
+            "language": "hi",
+            "value": "आर्यवर्त"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Республика Индия"
+          },
+          {
+            "language": "ru",
+            "value": "Бхарат"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

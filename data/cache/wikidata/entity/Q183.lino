@@ -1,0 +1,16 @@
+Q183
+  aliases
+    en ("Federal Republic of Germany")
+    ru ("Федеративная Республика Германия" "ФРГ" "Дойчланд")
+    zh ("德意志" "德意志联邦" "德意志联邦共和国" "德意志聯邦" "德意志聯邦共和國" "德国")
+  descriptions
+    en "country in Central Europe"
+    hi "मध्य यूरोप का देश"
+    ru "государство в Центральной Европе"
+    zh "歐洲國家"
+  labels
+    en Germany
+    hi "जर्मनी"
+    ru "Германия"
+    zh "德國"
+  type item

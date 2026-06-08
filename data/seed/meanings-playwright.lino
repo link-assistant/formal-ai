@@ -1,5 +1,5 @@
 meanings
-  playwright: # concept playwright
+  playwright:
     defined-by entity # definition-link
     role playwright_tool_name # semantic-role
     lexeme en # language
@@ -19,7 +19,7 @@ meanings
     lexeme zh # language
       surface seed-surface-03d918c64747
         codepoints 26222 33713 36182 29305
-  playwright_script_request_cue: # concept playwright_script_request_cue
+  playwright_script_request_cue:
     defined-by concept # definition-link
     role playwright_script_cue # semantic-role
     lexeme en # language

@@ -1,5 +1,5 @@
 meanings
-  followup_instruction_verb: # concept followup_instruction_verb
+  followup_instruction_verb:
     defined-by action # definition-link
     role followup_instruction_verb # semantic-role
     lexeme en # language
@@ -60,7 +60,7 @@ meanings
         codepoints 26174 31034
       surface seed-surface-0f8b37846f7b
         codepoints 21578 35785
-  clause_continuation_marker: # concept clause_continuation_marker
+  clause_continuation_marker:
     defined-by relation # definition-link
     role clause_continuation_marker # semantic-role
     lexeme en # language

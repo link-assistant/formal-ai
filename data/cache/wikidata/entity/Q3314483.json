@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q3314483": {
+      "type": "item",
+      "id": "Q3314483",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "фрукт"
+        },
+        "en": {
+          "language": "en",
+          "value": "fruit"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "水果"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फल"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "typically sweet and/or sour, edible part/s of a plant that resembles seed-bearing fruit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод, съедобный в сыром виде, обычно сладкий или кислый"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "निषेचित, परिवर्तित एवं परिपक्व अंडाशय"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "可生食的植物果實（生果）"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "фрукты"
+          },
+          {
+            "language": "ru",
+            "value": "в сыром виде"
+          },
+          {
+            "language": "ru",
+            "value": "группа фруктов"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "fruit group"
+          },
+          {
+            "language": "en",
+            "value": "fruit food group"
+          },
+          {
+            "language": "en",
+            "value": "edible fruit"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

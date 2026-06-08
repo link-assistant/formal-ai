@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q131560": {
+      "type": "item",
+      "id": "Q131560",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "KISS"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "KISS"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "KISS原则"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "acronym for \"Keep it simple, stupid\"; design principle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "принцип проектирования, при котором простота является основной целью или ценностью"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Принцип KISS"
+          },
+          {
+            "language": "ru",
+            "value": "Keep It Simple, Stupid"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "KISS principle"
+          },
+          {
+            "language": "en",
+            "value": "keep it simple, stupid"
+          },
+          {
+            "language": "en",
+            "value": "keep it simple stupid"
+          },
+          {
+            "language": "en",
+            "value": "Keep it simple, silly"
+          },
+          {
+            "language": "en",
+            "value": "keep it short and simple"
+          },
+          {
+            "language": "en",
+            "value": "keep it simple and straightforward"
+          },
+          {
+            "language": "en",
+            "value": "keep it small and simple"
+          },
+          {
+            "language": "en",
+            "value": "keep it stupid simple"
+          },
+          {
+            "language": "en",
+            "value": "Keep It Simple Sailor"
+          },
+          {
+            "language": "en",
+            "value": "K.I.S.S."
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

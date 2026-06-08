@@ -1,0 +1,16 @@
+P138
+  aliases
+    en ("eponym" "named for" "namesake" "etymology" "toponym" "name after" "named in honor of" "name origin")
+    ru ("назван в честь" "названа в честь" "в честь" "имени" "носит имя" "эпоним" "название в честь" "происходит от")
+    zh ("命名来源" "词源" "得名" "冠名者" "名称由来" "得名自" "命名自" "命名由来" "同名者" "命名者" "名称来源")
+  datatype wikibase-item
+  descriptions
+    en 'entity or event that inspired the subject''s name, or namesake (in at least one language). Qualifier "applies to name" (P5168) can be used to indicate which one'
+    ru "объект, персона или событие, чьё имя/название послужило основой для данного элемента"
+    zh "启发该主体名称的实体或事件，或同名者（至少在一种语言中）。限定词“适用于名称”（P5168）可用于指明具体是哪一个。"
+  labels
+    en "named after"
+    hi "नामकरण का आधार"
+    ru "названо в честь"
+    zh "得名自"
+  type property

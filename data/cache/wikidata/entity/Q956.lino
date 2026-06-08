@@ -1,0 +1,16 @@
+Q956
+  aliases
+    en ("Beiping" "Peiping" "Yanjing" "Zhongdu" "Khanbaliq" "BJ" "Pekin" "Shuntian" "Shuntianfu" "Shuntian Fu" "Pe-king" "Pei-p'ing" "Pei-ping" "Peip'ing" "Pei-ching" "Yan-ching" "Yanking" "Chung-tu" "Chungtu" "Khanbalik" "Shun-t'ien" "Shun-tien" "Beeijing" "Poh-cin" "Bākgīng" "Pak-kiann" "Ji" "Jicheng" "Chi" "Chi-ch'eng" "Chi-cheng" "Chi-ch’êng" "Bei Jing Shi" "Beijing Shi" "Peking Shi" "Běijīng")
+    ru ("Бэйцзин" "Бэйпин")
+    zh ("北平" "北平市" "平" "燕京" "燕" "京兆地方" "Běijīng shì" "Běijīng" "Jīng" "Běipíng" "Běipíng shì" "Píng" "Yànjīng" "Yàn" "Jīngzhào dìfāng")
+  descriptions
+    en "capital city of China"
+    hi "चीन की राजधानी"
+    ru "столица и город центрального подчинения КНР"
+    zh "中華人民共和國首都暨直轄市"
+  labels
+    en Beijing
+    hi "बीजिंग"
+    ru "Пекин"
+    zh "北京市"
+  type item

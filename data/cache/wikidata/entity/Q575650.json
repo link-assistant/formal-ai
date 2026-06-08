@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Q575650": {
+      "type": "item",
+      "id": "Q575650",
+      "labels": {},
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "memory-safe programming language without garbage collection"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мультипарадигменный компилируемый язык программирования общего назначения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "重視記憶體安全性與並行處理的程式語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Rust language"
+          },
+          {
+            "language": "en",
+            "value": "Rust programming language"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Rust language"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,5 +1,5 @@
 meanings
-  program_synthesis: # concept program_synthesis
+  program_synthesis:
     defined-by function # definition-link
     defined-by code # definition-link
     defined-by implement # definition-link
@@ -20,7 +20,7 @@ meanings
     lexeme zh # language
       surface seed-surface-89b44f51f135
         codepoints 31243 24207 21512 25104
-  synthesis_subject_function: # concept synthesis_subject_function
+  synthesis_subject_function:
     defined-by program_synthesis # definition-link
     defined-by function # definition-link
     role program_synthesis_subject # semantic-role
@@ -42,7 +42,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8b3cf9d71c58
         codepoints 20989 25968
-  synthesis_domain_python: # concept synthesis_domain_python
+  synthesis_domain_python:
     defined-by program_synthesis # definition-link
     defined-by language_python # definition-link
     role program_synthesis_domain # semantic-role
@@ -60,7 +60,7 @@ meanings
     lexeme zh # language
       surface seed-surface-2037fa07b2e8
         codepoints 112 121 116 104 111 110
-  synthesis_domain_tuple: # concept synthesis_domain_tuple
+  synthesis_domain_tuple:
     defined-by program_synthesis # definition-link
     defined-by code # definition-link
     role program_synthesis_domain # semantic-role
@@ -80,7 +80,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3f5114593288
         codepoints 20803 32452
-  synthesis_domain_numbers: # concept synthesis_domain_numbers
+  synthesis_domain_numbers:
     defined-by program_synthesis # definition-link
     defined-by result # definition-link
     role program_synthesis_domain # semantic-role
@@ -100,7 +100,7 @@ meanings
     lexeme zh # language
       surface seed-surface-3ae2a0d51998
         codepoints 25968 23383
-  synthesis_domain_vowels: # concept synthesis_domain_vowels
+  synthesis_domain_vowels:
     defined-by program_synthesis # definition-link
     defined-by result # definition-link
     role program_synthesis_domain # semantic-role
@@ -122,7 +122,7 @@ meanings
     lexeme zh # language
       surface seed-surface-056c9f78e386
         codepoints 20803 38899
-  synthesis_action_implement: # concept synthesis_action_implement
+  synthesis_action_implement:
     defined-by program_synthesis # definition-link
     defined-by implement # definition-link
     role program_synthesis_action # semantic-role
@@ -140,7 +140,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b3b516e70d81
         codepoints 23454 29616
-  synthesis_action_write: # concept synthesis_action_write
+  synthesis_action_write:
     defined-by program_synthesis # definition-link
     defined-by write # definition-link
     role program_synthesis_action # semantic-role
@@ -162,7 +162,7 @@ meanings
         codepoints 32534 20889
       surface seed-surface-160715f621f9
         codepoints 20889
-  synthesis_action_return: # concept synthesis_action_return
+  synthesis_action_return:
     defined-by program_synthesis # definition-link
     defined-by output # definition-link
     defined-by result # definition-link
@@ -189,7 +189,7 @@ meanings
     lexeme zh # language
       surface seed-surface-7f41d2710fac
         codepoints 36820 22238
-  signal_distinct_numbers: # concept signal_distinct_numbers
+  signal_distinct_numbers:
     defined-by program_synthesis # definition-link
     defined-by synthesis_domain_numbers # definition-link
     role program_synthesis_signal # semantic-role
@@ -207,7 +207,7 @@ meanings
     lexeme zh # language
       surface seed-surface-79c73afbbcc5
         codepoints 19981 21516 30340 25968 23383
-  signal_difference: # concept signal_difference
+  signal_difference:
     defined-by program_synthesis # definition-link
     role program_synthesis_signal # semantic-role
     lexeme en # language
@@ -234,7 +234,7 @@ meanings
         codepoints 19981 21516
       surface seed-surface-f445bc83af22
         codepoints 24046 24322
-  signal_threshold: # concept signal_threshold
+  signal_threshold:
     defined-by program_synthesis # definition-link
     role program_synthesis_signal # semantic-role
     lexeme en # language
@@ -255,7 +255,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8cb8debde33c
         codepoints 38408 20540
-  signal_similar_elements: # concept signal_similar_elements
+  signal_similar_elements:
     defined-by program_synthesis # definition-link
     defined-by synthesis_subject_function # definition-link
     role program_synthesis_signal # semantic-role
@@ -273,7 +273,7 @@ meanings
     lexeme zh # language
       surface seed-surface-d521018452de
         codepoints 30456 20284 20803 32032
-  signal_count_vowels: # concept signal_count_vowels
+  signal_count_vowels:
     defined-by program_synthesis # definition-link
     defined-by synthesis_domain_vowels # definition-link
     role program_synthesis_signal # semantic-role
@@ -295,7 +295,7 @@ meanings
         codepoints 20803 38899 25968 37327
       surface seed-surface-eee851f8b331
         codepoints 20803 38899 30340 25968 37327
-  has_close_elements: # concept has_close_elements
+  has_close_elements:
     defined-by signal_distinct_numbers # definition-link
     defined-by signal_difference # definition-link
     defined-by signal_threshold # definition-link
@@ -312,7 +312,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8b184faa992e
         codepoints 104 97 115 95 99 108 111 115 101 95 101 108 101 109 101 110 116 115
-  similar_elements: # concept similar_elements
+  similar_elements:
     defined-by signal_similar_elements # definition-link
     role program_synthesis_task # semantic-role
     lexeme en # language
@@ -327,7 +327,7 @@ meanings
     lexeme zh # language
       surface seed-surface-737061f9d10e
         codepoints 115 105 109 105 108 97 114 95 101 108 101 109 101 110 116 115
-  count_vowels: # concept count_vowels
+  count_vowels:
     defined-by signal_count_vowels # definition-link
     role program_synthesis_task # semantic-role
     lexeme en # language

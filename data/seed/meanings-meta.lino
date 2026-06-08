@@ -1,5 +1,5 @@
 meanings
-  causal_interrogative: # concept causal_interrogative
+  causal_interrogative:
     defined-by inquiry # definition-link
     role causal_interrogative # semantic-role
     lexeme en # language
@@ -14,7 +14,7 @@ meanings
     lexeme zh # language
       surface seed-surface-b0a96c4c958c
         codepoints 20026 20160 20040
-  prior_answer_reference: # concept prior_answer_reference
+  prior_answer_reference:
     defined-by answer # definition-link
     role prior_answer_reference # semantic-role
     lexeme en # language
@@ -31,7 +31,7 @@ meanings
     lexeme zh # language
       surface seed-surface-f907d148bf93
         codepoints 22238 31572
-  answer_rationale_inquiry: # concept answer_rationale_inquiry
+  answer_rationale_inquiry:
     defined-by causal_interrogative # definition-link
     defined-by prior_answer_reference # definition-link
     defined-by inquiry # definition-link
@@ -56,7 +56,7 @@ meanings
     lexeme zh # language
       surface seed-surface-505b1fad6b8b
         codepoints 20026 20160 20040 36825 26679 22238 31572
-  assistant_self_reference: # concept assistant_self_reference
+  assistant_self_reference:
     defined-by assistant # definition-link
     defined-by self_reference # definition-link
     role assistant_self_reference # semantic-role
@@ -90,7 +90,7 @@ meanings
         codepoints 20320
       surface seed-surface-da3466162bee
         codepoints 24744
-  assistant_mechanism_inquiry: # concept assistant_mechanism_inquiry
+  assistant_mechanism_inquiry:
     defined-by mechanism_inquiry # definition-link
     defined-by assistant # definition-link
     role assistant_mechanism_inquiry # semantic-role
@@ -138,7 +138,7 @@ meanings
         codepoints 20320 26159 24590 20040 24037 20316 30340
       surface seed-surface-5ff0906f50e6
         codepoints 20320 24590 20040 36816 20316
-  operating_principle: # concept operating_principle
+  operating_principle:
     defined-by concept # definition-link
     defined-by action # definition-link
     role operating_principle # semantic-role
@@ -154,7 +154,7 @@ meanings
     lexeme zh # language
       surface seed-surface-14c0a5f2ea64
         codepoints 24037 20316 21407 29702
-  architecture_concept: # concept architecture_concept
+  architecture_concept:
     defined-by concept # definition-link
     defined-by assistant # definition-link
     role architecture_concept # semantic-role

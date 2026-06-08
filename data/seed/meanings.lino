@@ -1,5 +1,5 @@
 meanings
-  result: # concept result
+  result:
     defined-by output # definition-link
     role program_artifact # semantic-role
     lexeme en # language
@@ -28,7 +28,7 @@ meanings
     lexeme zh # language
       surface seed-surface-1416e727f9de
         codepoints 32467 26524
-  output: # concept output
+  output:
     defined-by result # definition-link
     defined-by program # definition-link
     role program_artifact # semantic-role
@@ -44,7 +44,7 @@ meanings
     lexeme zh # language
       surface seed-surface-c240b01c8d88
         codepoints 36755 20986
-  program: # concept program
+  program:
     defined-by code # definition-link
     defined-by entity # definition-link
     role program_artifact # semantic-role
@@ -72,7 +72,7 @@ meanings
     lexeme zh # language
       surface seed-surface-44d4aee73ace
         codepoints 31243 24207
-  script: # concept script
+  script:
     defined-by program # definition-link
     defined-by code # definition-link
     role program_artifact # semantic-role
@@ -90,7 +90,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8b75f9a72d2b
         codepoints 33050 26412
-  code: # concept code
+  code:
     defined-by program # definition-link
     role program_artifact # semantic-role
     role program_kind # semantic-role
@@ -111,7 +111,7 @@ meanings
     lexeme zh # language
       surface seed-surface-cfc7a29ac643
         codepoints 20195 30721
-  hello_world: # concept hello_world
+  hello_world:
     defined-by program # definition-link
     defined-by code # definition-link
     role hello_world_reference # semantic-role
@@ -133,7 +133,7 @@ meanings
         codepoints 20320 22909 19990 30028
       surface seed-surface-eb67680b4214
         codepoints 20320 22909 65292 19990 30028
-  sort: # concept sort
+  sort:
     defined-by order # definition-link
     defined-by action # definition-link
     role program_artifact # semantic-role
@@ -174,7 +174,7 @@ meanings
     lexeme zh # language
       surface seed-surface-544470468e6a
         codepoints 25490 24207
-  order: # concept order
+  order:
     defined-by sort # definition-link
     role program_artifact # semantic-role
     role program_modification # semantic-role
@@ -196,7 +196,7 @@ meanings
     lexeme zh # language
       surface seed-surface-67e1c6e33aa9
         codepoints 39034 24207
-  reverse: # concept reverse
+  reverse:
     defined-by order # definition-link
     role program_modification # semantic-role
     lexeme en # language
@@ -225,7 +225,7 @@ meanings
         codepoints 30456 21453
       surface seed-surface-3dcfff79a727
         codepoints 20498 24207
-  cancel: # concept cancel
+  cancel:
     defined-by reverse # definition-link
     defined-by modify # definition-link
     role program_modification # semantic-role
@@ -269,7 +269,7 @@ meanings
         codepoints 21435 25481
       surface seed-surface-ebbc126a91fd
         codepoints 21435 38500
-  modify: # concept modify
+  modify:
     defined-by update # definition-link
     defined-by action # definition-link
     role program_modification # semantic-role
@@ -297,7 +297,7 @@ meanings
         codepoints 20462 25913
       surface seed-surface-f11a80331297
         codepoints 25913
-  update: # concept update
+  update:
     defined-by modify # definition-link
     role program_modification # semantic-role
     lexeme en # language
@@ -316,7 +316,7 @@ meanings
     lexeme zh # language
       surface seed-surface-63ec19532448
         codepoints 26356 26032
-  make: # concept make
+  make:
     defined-by program # definition-link
     defined-by output # definition-link
     role program_modification # semantic-role
@@ -340,7 +340,7 @@ meanings
     lexeme zh # language
       surface seed-surface-de03e662dbf1
         codepoints 21046 20316
-  function: # concept function
+  function:
     defined-by code # definition-link
     defined-by program # definition-link
     role program_artifact # semantic-role
@@ -363,7 +363,7 @@ meanings
     lexeme zh # language
       surface seed-surface-dfd6ae71dd3d
         codepoints 20989 25968
-  write: # concept write
+  write:
     defined-by code # definition-link
     defined-by program # definition-link
     role program_request # semantic-role
@@ -389,7 +389,7 @@ meanings
         codepoints 32534 20889
       surface seed-surface-2c181c9092da
         codepoints 20889
-  create: # concept create
+  create:
     defined-by make # definition-link
     defined-by program # definition-link
     role program_request # semantic-role
@@ -410,7 +410,7 @@ meanings
     lexeme zh # language
       surface seed-surface-9b23ac8fe3f8
         codepoints 21019 24314
-  show: # concept show
+  show:
     defined-by output # definition-link
     defined-by result # definition-link
     role program_request # semantic-role
@@ -430,7 +430,7 @@ meanings
     lexeme zh # language
       surface seed-surface-8e4ecd3c5af2
         codepoints 26174 31034
-  generate: # concept generate
+  generate:
     defined-by output # definition-link
     defined-by program # definition-link
     role program_request # semantic-role
@@ -451,7 +451,7 @@ meanings
     lexeme zh # language
       surface seed-surface-95c7ea012f15
         codepoints 29983 25104
-  build: # concept build
+  build:
     defined-by make # definition-link
     defined-by program # definition-link
     role program_request # semantic-role

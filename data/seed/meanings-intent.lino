@@ -1,5 +1,5 @@
 meanings
-  assistant: # concept assistant
+  assistant:
     defined-by answer # definition-link
     defined-by self_reference # definition-link
     defined-by entity # definition-link
@@ -22,7 +22,7 @@ meanings
         codepoints 21161 25163
       surface seed-surface-7641a431519f
         codepoints 21161 29702
-  user: # concept user
+  user:
     defined-by inquiry # definition-link
     defined-by entity # definition-link
     role conversational_entity # semantic-role
@@ -38,7 +38,7 @@ meanings
     lexeme zh # language
       surface seed-surface-e955f81a4419
         codepoints 29992 25143
-  inquiry: # concept inquiry
+  inquiry:
     defined-by answer # definition-link
     defined-by user # definition-link
     role conversational_act # semantic-role
@@ -64,7 +64,7 @@ meanings
         codepoints 35810 38382
       surface seed-surface-3a8db5693cbd
         codepoints 35831 27714
-  answer: # concept answer
+  answer:
     defined-by inquiry # definition-link
     defined-by assistant # definition-link
     role conversational_act # semantic-role
@@ -88,7 +88,7 @@ meanings
         codepoints 22238 31572
       surface seed-surface-8fc7a85847e8
         codepoints 31572 22797
-  self_reference: # concept self_reference
+  self_reference:
     defined-by assistant # definition-link
     role conversational_concept # semantic-role
     lexeme en # language
@@ -109,7 +109,7 @@ meanings
     lexeme zh # language
       surface seed-surface-32c6a3f56484
         codepoints 33258 24049
-  capability: # concept capability
+  capability:
     defined-by assistant # definition-link
     defined-by answer # definition-link
     role conversational_concept # semantic-role
@@ -131,7 +131,7 @@ meanings
         codepoints 33021 21147
       surface seed-surface-fc0a1b29899d
         codepoints 21151 33021
-  knowledge: # concept knowledge
+  knowledge:
     defined-by assistant # definition-link
     defined-by fact # definition-link
     role conversational_concept # semantic-role
@@ -147,7 +147,7 @@ meanings
     lexeme zh # language
       surface seed-surface-4c04d98b0f46
         codepoints 30693 35782
-  fact: # concept fact
+  fact:
     defined-by knowledge # definition-link
     role conversational_concept # semantic-role
     role knowledge_inventory_noun # semantic-role
@@ -169,7 +169,7 @@ meanings
         codepoints 20107 23454
       surface seed-surface-7d2f99c299a5
         codepoints 20107 23526
-  knowledge_inventory_probe: # concept knowledge_inventory_probe
+  knowledge_inventory_probe:
     defined-by inquiry # definition-link
     role knowledge_inventory_interrogative # semantic-role
     lexeme en # language
@@ -220,7 +220,7 @@ meanings
         codepoints 20320 26377
       surface seed-surface-6f9588ae4e2a
         codepoints 24744 26377
-  assistant_knowing: # concept assistant_knowing
+  assistant_knowing:
     defined-by knowledge # definition-link
     defined-by assistant # definition-link
     role knowledge_possession # semantic-role
@@ -276,7 +276,7 @@ meanings
         codepoints 20320 26377
       surface seed-surface-8de0a450abcf
         codepoints 24744 26377
-  knowledge_inventory_query: # concept knowledge_inventory_query
+  knowledge_inventory_query:
     defined-by knowledge # definition-link
     defined-by fact # definition-link
     role knowledge_inventory_phrase # semantic-role
@@ -318,7 +318,7 @@ meanings
         codepoints 24744 30693 36947 20160 20040
       surface seed-surface-b55b5b09d89c
         codepoints 20320 30693 36947 21738 20123
-  introduction: # concept introduction
+  introduction:
     defined-by self_reference # definition-link
     defined-by answer # definition-link
     role conversational_concept # semantic-role
@@ -334,7 +334,7 @@ meanings
     lexeme zh # language
       surface seed-surface-32a2fa543c6e
         codepoints 20171 32461
-  clarification: # concept clarification
+  clarification:
     defined-by inquiry # definition-link
     defined-by answer # definition-link
     role conversational_concept # semantic-role
@@ -350,7 +350,7 @@ meanings
     lexeme zh # language
       surface seed-surface-ea3c10681fb0
         codepoints 28548 28165
-  understanding: # concept understanding
+  understanding:
     defined-by clarification # definition-link
     defined-by knowledge # definition-link
     role conversational_concept # semantic-role
@@ -366,7 +366,7 @@ meanings
     lexeme zh # language
       surface seed-surface-cf766d19908c
         codepoints 29702 35299
-  clarification_request: # concept clarification_request
+  clarification_request:
     defined-by clarification # definition-link
     defined-by understanding # definition-link
     defined-by inquiry # definition-link
@@ -419,7 +419,7 @@ meanings
         codepoints 25105 19981 25026
       surface seed-surface-2bd3c8f95ddd
         codepoints 21548 19981 25026
-  capability_query: # concept capability_query
+  capability_query:
     defined-by capability # definition-link
     defined-by inquiry # definition-link
     role capability_query # semantic-role
@@ -485,7 +485,7 @@ meanings
         codepoints 20320 26377 20160 20040 21151 33021
       surface seed-surface-a5955d2bb9fb
         codepoints 20320 33021 24178 20160 20040
-  capability_query_more: # concept capability_query_more
+  capability_query_more:
     defined-by capability_query # definition-link
     defined-by capability # definition-link
     role capability_query_more # semantic-role
@@ -519,7 +519,7 @@ meanings
         codepoints 20320 36824 33021 20570 20160 20040
       surface seed-surface-ec9ae9de6e55
         codepoints 20320 36824 20250 20570 20160 20040
-  self_fact_query: # concept self_fact_query
+  self_fact_query:
     defined-by fact # definition-link
     defined-by self_reference # definition-link
     defined-by inquiry # definition-link
@@ -548,7 +548,7 @@ meanings
         codepoints 20851 20110 20320 33258 24049 30340 20107 23454
       surface seed-surface-26287fd51220
         codepoints 33258 25105 20107 23454
-  self_introduction_request: # concept self_introduction_request
+  self_introduction_request:
     defined-by introduction # definition-link
     defined-by self_reference # definition-link
     defined-by inquiry # definition-link
@@ -609,7 +609,7 @@ meanings
         codepoints 35748 35782 19968 19979 21543
       surface seed-surface-260efaeb5be7
         codepoints 35753 25105 20204 35748 35782 19968 19979
-  conversation_summary_directive: # concept conversation_summary_directive
+  conversation_summary_directive:
     defined-by inquiry # definition-link
     defined-by answer # definition-link
     role conversation_summary_directive # semantic-role
@@ -651,7 +651,7 @@ meanings
         codepoints 24402 32435
       surface seed-surface-c0e6837d477f
         codepoints 27512 32013
-  conversation_reference: # concept conversation_reference
+  conversation_reference:
     defined-by inquiry # definition-link
     defined-by answer # definition-link
     role conversation_reference # semantic-role
@@ -715,7 +715,7 @@ meanings
         codepoints 35848 35805
       surface seed-surface-b4bdc31f96d9
         codepoints 35527 35441
-  conversation_summary_phrase: # concept conversation_summary_phrase
+  conversation_summary_phrase:
     defined-by inquiry # definition-link
     defined-by conversation_reference # definition-link
     role conversation_summary_phrase # semantic-role
@@ -757,7 +757,7 @@ meanings
         codepoints 25105 20204 35828 20102 20160 20040
       surface seed-surface-702bb8c64287
         codepoints 25105 20497 32842 20102 20160 40636
-  conversation_summary_courtesy: # concept conversation_summary_courtesy
+  conversation_summary_courtesy:
     defined-by inquiry # definition-link
     defined-by conversation_summary_directive # definition-link
     role conversation_summary_courtesy # semantic-role
@@ -803,7 +803,7 @@ meanings
         codepoints 24635 32467 19968 19979
       surface seed-surface-1f2fd682a67e
         codepoints 27010 25324 19968 19979
-  who_is_question: # concept who_is_question
+  who_is_question:
     defined-by inquiry # definition-link
     role who_question_lead # semantic-role
     role who_question_tail # semantic-role
@@ -833,7 +833,7 @@ meanings
         codepoints 8230 26159 35841
       surface seed-surface-db7aec916320
         codepoints 8230 26159 35504
-  interrogative_opener: # concept interrogative_opener
+  interrogative_opener:
     defined-by inquiry # definition-link
     role interrogative_opener # semantic-role
     lexeme en # language
