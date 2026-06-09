@@ -91,7 +91,7 @@ fn strip_comment(line: &str) -> &str {
                 escaped = false;
                 continue;
             }
-            if quote_character == '"' && character == '\\' {
+            if (quote_character == '"' || quote_character == '`') && character == '\\' {
                 escaped = true;
                 continue;
             }
@@ -108,7 +108,7 @@ fn strip_comment(line: &str) -> &str {
             continue;
         }
 
-        if matches!(character, '"' | '\'') {
+        if matches!(character, '"' | '\'' | '`') {
             quote = Some(character);
             previous_was_space = false;
             continue;
@@ -159,6 +159,22 @@ fn find_closing_single_quote(rest: &str) -> Option<usize> {
             continue;
         }
         if bytes[i] == b'\'' {
+            return Some(i);
+        }
+        i += 1;
+    }
+    None
+}
+
+fn find_closing_backtick(rest: &str) -> Option<usize> {
+    let bytes = rest.as_bytes();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] == b'\\' {
+            i += 2;
+            continue;
+        }
+        if bytes[i] == b'`' {
             return Some(i);
         }
         i += 1;
@@ -254,6 +270,12 @@ fn decode_quoted_reference(raw: &str) -> Option<String> {
         let close = find_closing_single_quote(rest)?;
         if rest[close + 1..].trim().is_empty() {
             return Some(unescape_single_value(&rest[..close]));
+        }
+    }
+    if let Some(rest) = raw.strip_prefix('`') {
+        let close = find_closing_backtick(rest)?;
+        if rest[close + 1..].trim().is_empty() {
+            return Some(unescape_value(&rest[..close]));
         }
     }
     None

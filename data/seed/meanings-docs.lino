@@ -5,61 +5,61 @@ meanings
     role explanation_request_lead # semantic-role
     lexeme en # language
       surface seed-surface-fd5fb03d3333
-        codepoints 104 111 119 32 8230
+        text "how …"
       surface seed-surface-87d0f4db245e
-        codepoints 32 104 111 119 32
+        text " how "
       surface seed-surface-38cad9cb70cc
-        codepoints 101 120 112 108 97 105 110 32 8230
+        text "explain …"
       surface seed-surface-14edd51bb0ef
-        codepoints 100 101 115 99 114 105 98 101 32 8230
+        text "describe …"
       surface seed-surface-b2d84ed84017
-        codepoints 119 104 97 116 32 100 111 101 115 32 8230
+        text "what does …"
       surface seed-surface-c7a25a17cb57
-        codepoints 119 104 97 116 32 105 115 32 8230
+        text "what is …"
       surface seed-surface-92ad0ad8ec21
-        codepoints 116 101 108 108 32 109 101 32 97 98 111 117 116 32 8230
+        text "tell me about …"
       surface seed-surface-4230184c711b
-        codepoints 104 111 119 32 116 111 32 117 115 101 32 8230
+        text "how to use …"
     lexeme ru # language
       surface seed-surface-03afa5d26ecd
-        codepoints 1082 1072 1082 32 8230
+        text "как …"
       surface seed-surface-4126020cd64e
-        codepoints 32 1082 1072 1082 32
+        text " как "
       surface seed-surface-9618760cfcfc
-        codepoints 1086 1073 1098 1103 1089 1085 1080 32 8230
+        text "объясни …"
       surface seed-surface-fb0d93abc724
-        codepoints 1088 1072 1089 1089 1082 1072 1078 1080 32 8230
+        text "расскажи …"
       surface seed-surface-35ab50b4124e
-        codepoints 1095 1090 1086 32 1090 1072 1082 1086 1077 32 8230
+        text "что такое …"
     lexeme hi # language
       surface seed-surface-77fc648bcbb5
-        codepoints 2325 2376 2360 2375 32 2325 2366 2350
+        text "कैसे काम"
       surface seed-surface-07c206908209
-        codepoints 2360 2350 2333 2366 2323 8230
+        text समझाओ…
       surface seed-surface-232b181c45e7
-        codepoints 2325 2381 2351 2366 32 2361 2376 32 8230
+        text "क्या है …"
     lexeme zh # language
       surface seed-surface-a02e6f81a7c6
-        codepoints 22914 20309 24037 20316
+        text 如何工作
       surface seed-surface-bb6b52f0914c
-        codepoints 24590 20040 24037 20316
+        text 怎么工作
       surface seed-surface-6e252213cff7
-        codepoints 35299 37322 8230
+        text 解释…
       surface seed-surface-6d1ddc5a4bc3
-        codepoints 26159 20160 20040
+        text 是什么
   code_method:
     defined-by action # definition-link
     defined-by concept # definition-link
     role code_method_noun # semantic-role
     lexeme en # language
       surface seed-surface-3bff173522de
-        codepoints 109 101 116 104 111 100
+        text method
     lexeme ru # language
       surface seed-surface-fefb7f6f9a53
-        codepoints 1084 1077 1090 1086 1076
+        text метод
     lexeme hi # language
       surface seed-surface-5c5dcab302c1
-        codepoints 2357 2367 2343 2367
+        text विधि
     lexeme zh # language
       surface seed-surface-dd834e0c34ba
-        codepoints 26041 27861
+        text 方法

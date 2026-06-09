@@ -65,18 +65,25 @@ fn lino_data_files_avoid_jsonish_and_unresolved_tokens() {
 
     for path in data_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
-        assert!(
-            !content.contains("unformalized-raw"),
-            "{} still contains unresolved raw surface ids",
-            path.display()
-        );
-        assert!(
-            !content.contains("[]"),
-            "{} still contains invalid empty array syntax",
-            path.display()
-        );
         for (index, line) in content.lines().enumerate() {
-            let stripped = strip_lino_comment(line);
+            // Strip the trailing comment first, then any quoted scalar spans, so
+            // structural checks only inspect the Links Notation skeleton and not
+            // human-readable values (which may legitimately contain `[]`, ids,
+            // etc. when they quote source code or prose).
+            let stripped = strip_quoted_spans(strip_lino_comment(line));
+            assert!(
+                !stripped.contains("unformalized-raw"),
+                "{}:{} still contains unresolved raw surface ids: {line}",
+                path.display(),
+                index + 1
+            );
+            assert!(
+                !stripped.contains("[]"),
+                "{}:{} still contains invalid empty array syntax: {line}",
+                path.display(),
+                index + 1
+            );
+            let stripped = stripped.as_str();
             assert!(
                 !pipe_id_blob.is_match(stripped),
                 "{}:{} still contains a pipe-separated id blob: {line}",
@@ -102,14 +109,31 @@ fn lino_data_files_avoid_jsonish_and_unresolved_tokens() {
 }
 
 #[test]
-fn seed_lino_files_have_no_double_quoted_data() {
+fn seed_lino_files_have_no_codepoint_byte_dumps() {
+    // Issue #398 review (comment 4660584608): seed data must be human readable.
+    // Codepoint byte-dumps such as `answer codepoints 72 105 44 ...` are banned;
+    // text must be grounded references or, as a last resort, quoted strings.
+    let bare_integer_run =
+        Regex::new(r"(?:^|\s)\d+(?:\s+\d+){3,}(?:\s|$)").expect("integer run regex should compile");
     for path in seed_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
-        assert!(
-            !content.contains('"'),
-            "{} contains a double quote; seed text must be codepoints or ids",
-            path.display()
-        );
+        for (index, line) in content.lines().enumerate() {
+            let line_number = index + 1;
+            let skeleton = strip_quoted_spans(strip_lino_comment(line));
+            for token in skeleton.split_whitespace() {
+                assert!(
+                    token != "codepoints" && token != "unformalized-raw",
+                    "{}:{line_number} still encodes text as a codepoint byte-dump: {line}",
+                    path.display()
+                );
+            }
+            assert!(
+                !bare_integer_run.is_match(&skeleton),
+                "{}:{line_number} contains a bare integer run used as text; \
+                 use a grounded reference or a quoted string: {line}",
+                path.display()
+            );
+        }
     }
 }
 
@@ -343,6 +367,34 @@ fn strip_lino_comment(line: &str) -> &str {
         previous_was_space = character.is_whitespace();
     }
     line
+}
+
+/// Remove quoted scalar spans (`"..."`, `'...'`, `` `...` ``) from a line so
+/// structural assertions only inspect the Links Notation skeleton. Backslash
+/// escapes are honoured inside double-quote and backtick spans (matching the
+/// seed parser), so an escaped delimiter does not prematurely close the span.
+fn strip_quoted_spans(line: &str) -> String {
+    let mut out = String::with_capacity(line.len());
+    let mut chars = line.chars();
+    while let Some(character) = chars.next() {
+        if matches!(character, '"' | '\'' | '`') {
+            let delimiter = character;
+            let escapes = delimiter != '\'';
+            while let Some(inner) = chars.next() {
+                if escapes && inner == '\\' {
+                    chars.next();
+                    continue;
+                }
+                if inner == delimiter {
+                    break;
+                }
+            }
+            out.push(' ');
+        } else {
+            out.push(character);
+        }
+    }
+    out
 }
 
 fn wikidata_cache_path(root: &Path, id: &str, extension: &str) -> std::path::PathBuf {

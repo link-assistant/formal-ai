@@ -2,355 +2,355 @@ operation_vocabulary
   operation uppercase
     language en
       phrase uppercase
-      phrase codepoints 117 112 112 101 114 32 99 97 115 101
+      phrase "upper case"
     language ru
-      phrase codepoints 1074 1077 1088 1093 1085 1080 1081 32 1088 1077 1075 1080 1089 1090 1088
-      phrase codepoints 1079 1072 1075 1083 1072 1074 1085 1099 1084 1080 32 1073 1091 1082 1074 1072 1084 1080
-      phrase codepoints 1087 1088 1086 1087 1080 1089 1085 1099 1084 1080 32 1073 1091 1082 1074 1072 1084 1080
-      combo codepoints 1074 1077 1088 1093 1085 1080 1081 43 1088 1077 1075 1080 1089 1090 1088
+      phrase "верхний регистр"
+      phrase "заглавными буквами"
+      phrase "прописными буквами"
+      combo верхний+регистр
     language hi
-      phrase codepoints 2348 2337 2364 2375 32 2309 2325 2381 2359 2352
-      phrase codepoints 2309 2346 2352 2325 2375 2360
+      phrase "बड़े अक्षर"
+      phrase अपरकेस
     language zh
-      phrase codepoints 22823 20889
+      phrase 大写
   operation lowercase
     language en
       phrase lowercase
-      phrase codepoints 108 111 119 101 114 32 99 97 115 101
+      phrase "lower case"
     language ru
-      phrase codepoints 1085 1080 1078 1085 1080 1081 32 1088 1077 1075 1080 1089 1090 1088
-      phrase codepoints 1089 1090 1088 1086 1095 1085 1099 1084 1080 32 1073 1091 1082 1074 1072 1084 1080
-      combo codepoints 1085 1080 1078 1085 1080 1081 43 1088 1077 1075 1080 1089 1090 1088
+      phrase "нижний регистр"
+      phrase "строчными буквами"
+      combo нижний+регистр
     language hi
-      phrase codepoints 2331 2379 2335 2375 32 2309 2325 2381 2359 2352
-      phrase codepoints 2354 2379 2309 2352 2325 2375 2360
+      phrase "छोटे अक्षर"
+      phrase लोअरकेस
     language zh
-      phrase codepoints 23567 20889
+      phrase 小写
   operation replace
     language en
       phrase replace
     language ru
-      phrase codepoints 1079 1072 1084 1077 1085
+      phrase замен
     language hi
-      phrase codepoints 2348 2342 2354
+      phrase बदल
     language zh
-      phrase codepoints 26367 25442
+      phrase 替换
   operation reverse_words
     language en
-      phrase codepoints 114 101 118 101 114 115 101 32 119 111 114 100 115
-      phrase codepoints 114 101 118 101 114 115 101 32 116 104 101 32 119 111 114 100 115
+      phrase "reverse words"
+      phrase "reverse the words"
     language ru
-      phrase codepoints 1086 1073 1088 1072 1090 1085 1099 1081 32 1087 1086 1088 1103 1076 1086 1082 32 1089 1083 1086 1074
-      combo codepoints 1087 1077 1088 1077 1074 1077 1088 1085 1080 43 1089 1083 1086 1074 1072
-      combo codepoints 1086 1073 1088 1072 1090 1080 43 1089 1083 1086 1074 1072
-      combo codepoints 1088 1072 1079 1074 1077 1088 1085 1080 43 1089 1083 1086 1074 1072
+      phrase "обратный порядок слов"
+      combo переверни+слова
+      combo обрати+слова
+      combo разверни+слова
     language hi
-      phrase codepoints 2358 2348 2381 2342 2379 2306 32 2325 2379 32 2313 2354 2381 2335 2366
-      combo codepoints 2358 2348 2381 2342 43 2313 2354 2381 2335 2366
+      phrase "शब्दों को उल्टा"
+      combo शब्द+उल्टा
     language zh
-      phrase codepoints 21453 36716 21333 35789
-      phrase codepoints 20498 36716 21333 35789
-      phrase codepoints 39072 20498 21333 35789
+      phrase 反转单词
+      phrase 倒转单词
+      phrase 颠倒单词
   operation extract_email
     language en
-      combo codepoints 101 120 116 114 97 99 116 43 101 109 97 105 108
-      combo codepoints 101 120 116 114 97 99 116 43 101 45 109 97 105 108
+      combo extract+email
+      combo extract+e-mail
     language ru
-      combo codepoints 1080 1079 1074 1083 1077 1082 1080 43 1080 1084 1077 1081 1083
-      combo codepoints 1080 1079 1074 1083 1077 1082 1080 43 1087 1086 1095 1090
-      combo codepoints 1080 1079 1074 1083 1077 1095 1100 43 1080 1084 1077 1081 1083
-      combo codepoints 1085 1072 1081 1076 1080 43 1080 1084 1077 1081 1083
+      combo извлеки+имейл
+      combo извлеки+почт
+      combo извлечь+имейл
+      combo найди+имейл
     language hi
-      combo codepoints 2312 2350 2375 2354 43 2344 2367 2325 2366 2354
+      combo ईमेल+निकाल
     language zh
-      phrase codepoints 25552 21462 37038 31665
-      phrase codepoints 25552 21462 30005 23376 37038 20214
-      phrase codepoints 25552 21462 37038 20214
+      phrase 提取邮箱
+      phrase 提取电子邮件
+      phrase 提取邮件
   operation count_occurrences
     language en
-      phrase codepoints 99 111 117 110 116 32 111 99 99 117 114 114 101 110 99 101 115
+      phrase "count occurrences"
     language ru
-      phrase codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 32 1074 1093 1086 1078 1076 1077 1085 1080 1081
-      combo codepoints 1087 1086 1089 1095 1080 1090 1072 1081 43 1074 1093 1086 1078 1076 1077 1085 1080
-      combo codepoints 1087 1086 1076 1089 1095 1080 1090 1072 1081 43 1074 1093 1086 1078 1076 1077 1085 1080
-      combo codepoints 1089 1082 1086 1083 1100 1082 1086 43 1088 1072 1079
+      phrase "количество вхождений"
+      combo посчитай+вхождени
+      combo подсчитай+вхождени
+      combo сколько+раз
     language hi
-      phrase codepoints 2325 2367 2340 2344 2368 32 2348 2366 2352
-      combo codepoints 2348 2366 2352 43 2327 2367 2344
+      phrase "कितनी बार"
+      combo बार+गिन
     language zh
-      phrase codepoints 20986 29616 27425 25968
-      phrase codepoints 32479 35745 20986 29616
-      phrase codepoints 35745 31639 20986 29616
+      phrase 出现次数
+      phrase 统计出现
+      phrase 计算出现
   operation count_unique_words
     language en
-      phrase codepoints 99 111 117 110 116 32 117 110 105 113 117 101 32 119 111 114 100 115
-      phrase codepoints 99 111 117 110 116 32 100 105 115 116 105 110 99 116 32 119 111 114 100 115
+      phrase "count unique words"
+      phrase "count distinct words"
     language ru
-      phrase codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 32 1091 1085 1080 1082 1072 1083 1100 1085 1099 1093 32 1089 1083 1086 1074
-      combo codepoints 1091 1085 1080 1082 1072 1083 1100 1085 43 1089 1083 1086 1074
-      combo codepoints 1088 1072 1079 1083 1080 1095 1085 43 1089 1083 1086 1074
+      phrase "количество уникальных слов"
+      combo уникальн+слов
+      combo различн+слов
     language hi
-      combo codepoints 2309 2342 2381 2357 2367 2340 2368 2351 43 2358 2348 2381 2342
-      combo codepoints 2357 2367 2358 2367 2359 2381 2335 43 2358 2348 2381 2342
+      combo अद्वितीय+शब्द
+      combo विशिष्ट+शब्द
     language zh
-      phrase codepoints 21807 19968 21333 35789
-      phrase codepoints 19981 21516 21333 35789
-      phrase codepoints 32479 35745 21807 19968
+      phrase 唯一单词
+      phrase 不同单词
+      phrase 统计唯一
   operation deduplicate_lines
     language en
-      phrase codepoints 100 101 100 117 112 108 105 99 97 116 101 32 108 105 110 101 115
-      phrase codepoints 100 101 100 117 112 101 32 108 105 110 101 115
-      combo codepoints 100 101 100 117 112 108 105 99 97 116 101 43 108 105 110 101
+      phrase "deduplicate lines"
+      phrase "dedupe lines"
+      combo deduplicate+line
     language ru
-      combo codepoints 1076 1091 1073 1083 1080 1082 1072 1090 43 1089 1090 1088 1086 1082
-      combo codepoints 1076 1077 1076 1091 1087 1083 1080 1082 1072 1094 43 1089 1090 1088 1086 1082
+      combo дубликат+строк
+      combo дедупликац+строк
     language hi
-      combo codepoints 2337 2369 2346 2381 2354 2367 2325 2375 2335 43 2354 2366 2311 2344
-      combo codepoints 2342 2379 2361 2352 2366 2357 43 2354 2366 2311 2344
+      combo डुप्लिकेट+लाइन
+      combo दोहराव+लाइन
     language zh
-      phrase codepoints 21435 37325 34892
-      phrase codepoints 34892 21435 37325
-      phrase codepoints 21024 38500 37325 22797 34892
+      phrase 去重行
+      phrase 行去重
+      phrase 删除重复行
   operation sort_lines
     language en
-      phrase codepoints 115 111 114 116 32 108 105 110 101 115
-      phrase codepoints 115 111 114 116 32 116 104 101 32 108 105 110 101 115
-      combo codepoints 115 111 114 116 43 108 105 110 101
+      phrase "sort lines"
+      phrase "sort the lines"
+      combo sort+line
     language ru
-      combo codepoints 1089 1086 1088 1090 1080 1088 43 1089 1090 1088 1086 1082
+      combo сортир+строк
     language hi
-      combo codepoints 2354 2366 2311 2344 43 2325 2381 2352 2350 2348 2342 2381 2343
-      combo codepoints 2354 2366 2311 2344 2379 2306 43 2325 2381 2352 2350 2348 2342 2381 2343
+      combo लाइन+क्रमबद्ध
+      combo लाइनों+क्रमबद्ध
     language zh
-      phrase codepoints 25490 24207 34892
-      phrase codepoints 34892 25490 24207
-      phrase codepoints 23545 34892 25490 24207
+      phrase 排序行
+      phrase 行排序
+      phrase 对行排序
   operation path_argument
     language en
-      phrase codepoints 112 97 116 104 32 97 114 103 117 109 101 110 116
-      phrase codepoints 112 97 116 104 32 97 115 32 97 110 32 97 114 103 117 109 101 110 116
-      combo codepoints 112 97 116 104 43 97 114 103 117 109 101 110 116
+      phrase "path argument"
+      phrase "path as an argument"
+      combo path+argument
     language ru
-      combo codepoints 1087 1091 1090 1100 43 1072 1088 1075 1091 1084 1077 1085 1090
-      combo codepoints 1087 1091 1090 1100 43 1072 1088 1075 1091 1084 1077 1085 1090 1072
-      combo codepoints 1087 1091 1090 1100 43 1072 1088 1075 1091 1084 1077 1085 1090 1086 1084
+      combo путь+аргумент
+      combo путь+аргумента
+      combo путь+аргументом
     language hi
-      phrase codepoints 2346 2341 32 2325 2379 32 2340 2352 2381 2325
-      combo codepoints 2346 2341 43 2340 2352 2381 2325
+      phrase "पथ को तर्क"
+      combo पथ+तर्क
     language zh
-      phrase codepoints 36335 24452 20316 20026 21442 25968
-      combo codepoints 36335 24452 43 21442 25968
+      phrase 路径作为参数
+      combo 路径+参数
   operation reverse_sort
     language en
-      phrase codepoints 114 101 118 101 114 115 101 32 115 111 114 116
-      phrase codepoints 114 101 118 101 114 115 101 32 115 111 114 116 101 100
-      phrase codepoints 115 111 114 116 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
-      phrase codepoints 115 111 114 116 32 116 104 101 32 114 101 115 117 108 116 115 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
-      phrase codepoints 114 101 118 101 114 115 101 32 111 114 100 101 114
-      phrase codepoints 100 101 115 99 101 110 100 105 110 103 32 111 114 100 101 114
-      combo codepoints 115 111 114 116 43 114 101 118 101 114 115 101
-      combo codepoints 115 111 114 116 43 100 101 115 99 101 110 100 105 110 103
+      phrase "reverse sort"
+      phrase "reverse sorted"
+      phrase "sort in reverse order"
+      phrase "sort the results in reverse order"
+      phrase "reverse order"
+      phrase "descending order"
+      combo sort+reverse
+      combo sort+descending
     language ru
-      phrase codepoints 1074 32 1086 1073 1088 1072 1090 1085 1086 1084 32 1087 1086 1088 1103 1076 1082 1077
-      combo codepoints 1089 1086 1088 1090 1080 1088 1086 1074 43 1086 1073 1088 1072 1090 1085
-      combo codepoints 1086 1090 1089 1086 1088 1090 1080 1088 43 1086 1073 1088 1072 1090 1085
+      phrase "в обратном порядке"
+      combo сортиров+обратн
+      combo отсортир+обратн
     language hi
-      phrase codepoints 2313 2354 2381 2335 2375 32 2325 2381 2352 2350
-      combo codepoints 2325 2381 2352 2350 2348 2342 2381 2343 43 2313 2354 2381 2335 2375
-      combo codepoints 2325 2381 2352 2350 2348 2342 2381 2343 43 2313 2354 2381 2335 2366
+      phrase "उल्टे क्रम"
+      combo क्रमबद्ध+उल्टे
+      combo क्रमबद्ध+उल्टा
     language zh
-      phrase codepoints 30456 21453 39034 24207 25490 24207
-      combo codepoints 25490 24207 43 30456 21453
-      combo codepoints 25490 24207 43 21453 21521
-      combo codepoints 25490 24207 43 20498 24207
+      phrase 相反顺序排序
+      combo 排序+相反
+      combo 排序+反向
+      combo 排序+倒序
   operation cancel_reverse_sort
     inverse reverse_sort
     language en
-      phrase codepoints 99 97 110 99 101 108 32 115 111 114 116
-      phrase codepoints 99 97 110 99 101 108 32 116 104 101 32 115 111 114 116
-      phrase codepoints 99 97 110 99 101 108 32 115 111 114 116 105 110 103
-      phrase codepoints 99 97 110 99 101 108 32 116 104 101 32 115 111 114 116 105 110 103
-      phrase codepoints 117 110 100 111 32 115 111 114 116
-      phrase codepoints 117 110 100 111 32 116 104 101 32 115 111 114 116
-      phrase codepoints 117 110 100 111 32 115 111 114 116 105 110 103
-      phrase codepoints 117 110 100 111 32 116 104 101 32 115 111 114 116 105 110 103
-      phrase codepoints 114 101 109 111 118 101 32 115 111 114 116
-      phrase codepoints 114 101 109 111 118 101 32 116 104 101 32 115 111 114 116
-      phrase codepoints 114 101 109 111 118 101 32 115 111 114 116 105 110 103
-      phrase codepoints 114 101 109 111 118 101 32 116 104 101 32 115 111 114 116 105 110 103
-      phrase codepoints 110 111 32 115 111 114 116 105 110 103
-      phrase codepoints 119 105 116 104 111 117 116 32 115 111 114 116 105 110 103
-      combo codepoints 99 97 110 99 101 108 43 115 111 114 116
-      combo codepoints 117 110 100 111 43 115 111 114 116
-      combo codepoints 114 101 109 111 118 101 43 115 111 114 116
+      phrase "cancel sort"
+      phrase "cancel the sort"
+      phrase "cancel sorting"
+      phrase "cancel the sorting"
+      phrase "undo sort"
+      phrase "undo the sort"
+      phrase "undo sorting"
+      phrase "undo the sorting"
+      phrase "remove sort"
+      phrase "remove the sort"
+      phrase "remove sorting"
+      phrase "remove the sorting"
+      phrase "no sorting"
+      phrase "without sorting"
+      combo cancel+sort
+      combo undo+sort
+      combo remove+sort
     language ru
-      phrase codepoints 1086 1090 1084 1077 1085 1080 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1091
-      phrase codepoints 1086 1090 1084 1077 1085 1080 1090 1077 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1091
-      phrase codepoints 1091 1073 1077 1088 1080 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1091
-      phrase codepoints 1091 1073 1077 1088 1080 1090 1077 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1091
-      phrase codepoints 1073 1077 1079 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1080
-      combo codepoints 1086 1090 1084 1077 1085 1080 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1086 1090 1084 1077 1085 1080 1090 1077 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1086 1090 1084 1077 1085 1080 1090 1100 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1091 1073 1077 1088 1080 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1091 1073 1077 1088 1080 1090 1077 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1091 1073 1088 1072 1090 1100 43 1089 1086 1088 1090 1080 1088 1086 1074
-      combo codepoints 1073 1077 1079 43 1089 1086 1088 1090 1080 1088 1086 1074
+      phrase "отмени сортировку"
+      phrase "отмените сортировку"
+      phrase "убери сортировку"
+      phrase "уберите сортировку"
+      phrase "без сортировки"
+      combo отмени+сортиров
+      combo отмените+сортиров
+      combo отменить+сортиров
+      combo убери+сортиров
+      combo уберите+сортиров
+      combo убрать+сортиров
+      combo без+сортиров
     language hi
-      phrase codepoints 2360 2377 2352 2381 2335 32 2361 2335 2366 2323
-      phrase codepoints 2325 2381 2352 2350 32 2361 2335 2366 2323
-      phrase codepoints 2360 2377 2352 2381 2335 32 2352 2342 2381 2342 32 2325 2352 2379
-      combo codepoints 2360 2377 2352 2381 2335 43 2361 2335 2366
-      combo codepoints 2325 2381 2352 2350 2348 2342 2381 2343 43 2361 2335 2366
-      combo codepoints 2360 2377 2352 2381 2335 43 2352 2342 2381 2342
+      phrase "सॉर्ट हटाओ"
+      phrase "क्रम हटाओ"
+      phrase "सॉर्ट रद्द करो"
+      combo सॉर्ट+हटा
+      combo क्रमबद्ध+हटा
+      combo सॉर्ट+रद्द
     language zh
-      phrase codepoints 21462 28040 25490 24207
-      phrase codepoints 25764 38144 25490 24207
-      phrase codepoints 21435 25481 25490 24207
-      phrase codepoints 21462 28040 25490 24207 39034 24207
-      combo codepoints 21462 28040 43 25490 24207
-      combo codepoints 25764 38144 43 25490 24207
+      phrase 取消排序
+      phrase 撤销排序
+      phrase 去掉排序
+      phrase 取消排序顺序
+      combo 取消+排序
+      combo 撤销+排序
   operation function
     language en
       phrase function
     language ru
-      phrase codepoints 1092 1091 1085 1082 1094 1080 1103
-      phrase codepoints 1092 1091 1085 1082 1094 1080 1102
-      phrase codepoints 1092 1091 1085 1082 1094 1080 1080
+      phrase функция
+      phrase функцию
+      phrase функции
     language hi
-      phrase codepoints 2347 2364 2306 2325 2381 2358 2344
-      phrase codepoints 2347 2306 2325 2381 2358 2344
+      phrase फ़ंक्शन
+      phrase फंक्शन
     language zh
-      phrase codepoints 20989 25968
+      phrase 函数
   operation implement
     language en
       phrase implement
     language ru
-      phrase codepoints 1088 1077 1072 1083 1080 1079 1091 1081
-      phrase codepoints 1088 1077 1072 1083 1080 1079 1086 1074 1072 1090 1100
-      phrase codepoints 1088 1077 1072 1083 1080 1079 1091 1081 1090 1077
+      phrase реализуй
+      phrase реализовать
+      phrase реализуйте
     language hi
-      phrase codepoints 2354 2366 2327 2370 32 2325 2352 2375 2306
-      phrase codepoints 2354 2366 2327 2370 32 2325 2352 2379
+      phrase "लागू करें"
+      phrase "लागू करो"
     language zh
-      phrase codepoints 23454 29616
+      phrase 实现
   operation write
     language en
       phrase write
     language ru
-      phrase codepoints 1085 1072 1087 1080 1096 1080
-      phrase codepoints 1085 1072 1087 1080 1096 1080 1090 1077
-      phrase codepoints 1085 1072 1087 1080 1089 1072 1090 1100
+      phrase напиши
+      phrase напишите
+      phrase написать
     language hi
-      phrase codepoints 2354 2367 2326 2375 2306
-      phrase codepoints 2354 2367 2326 2379
+      phrase लिखें
+      phrase लिखो
     language zh
-      phrase codepoints 32534 20889
-      phrase codepoints 20889
+      phrase 编写
+      phrase 写
   operation return
     language en
       phrase return
     language ru
-      phrase codepoints 1074 1077 1088 1085 1080
-      phrase codepoints 1074 1077 1088 1085 1080 1090 1077
-      phrase codepoints 1074 1086 1079 1074 1088 1072 1097 1072 1077 1090
+      phrase верни
+      phrase верните
+      phrase возвращает
     language hi
-      phrase codepoints 2354 2380 2335 2366 2319 2305
-      phrase codepoints 2354 2380 2335 2366 2319 2306
-      phrase codepoints 2357 2366 2346 2360 32 2325 2352 2375 2306
+      phrase लौटाएँ
+      phrase लौटाएं
+      phrase "वापस करें"
     language zh
-      phrase codepoints 36820 22238
+      phrase 返回
   operation tuple
     language en
       phrase tuple
     language ru
-      phrase codepoints 1082 1086 1088 1090 1077 1078
+      phrase кортеж
     language hi
-      phrase codepoints 2335 2346 2354
+      phrase टपल
     language zh
-      phrase codepoints 20803 32452
+      phrase 元组
   operation numbers
     language en
       phrase numbers
       phrase number
     language ru
-      phrase codepoints 1095 1080 1089 1083 1072
-      phrase codepoints 1095 1080 1089 1077 1083
+      phrase числа
+      phrase чисел
     language hi
-      phrase codepoints 2360 2306 2326 2381 2351 2366 2319 2305
-      phrase codepoints 2360 2306 2326 2381 2351 2366 2319 2306
-      phrase codepoints 2360 2306 2326 2381 2351 2366
+      phrase संख्याएँ
+      phrase संख्याएं
+      phrase संख्या
     language zh
-      phrase codepoints 25968 23383
-      phrase codepoints 25968 20540
+      phrase 数字
+      phrase 数值
   operation vowels
     language en
       phrase vowels
       phrase vowel
     language ru
-      phrase codepoints 1075 1083 1072 1089 1085 1099 1077
-      phrase codepoints 1075 1083 1072 1089 1085 1099 1093
+      phrase гласные
+      phrase гласных
     language hi
-      phrase codepoints 2360 2381 2357 2352
-      phrase codepoints 2360 2381 2357 2352 2379 2306
+      phrase स्वर
+      phrase स्वरों
     language zh
-      phrase codepoints 20803 38899
+      phrase 元音
   operation count_vowels
     language en
-      phrase codepoints 99 111 117 110 116 32 118 111 119 101 108 115
-      phrase codepoints 110 117 109 98 101 114 32 111 102 32 118 111 119 101 108 115
+      phrase "count vowels"
+      phrase "number of vowels"
       phrase count_vowels
     language ru
-      phrase codepoints 1087 1086 1089 1095 1080 1090 1072 1081 32 1075 1083 1072 1089 1085 1099 1077
-      phrase codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086 32 1075 1083 1072 1089 1085 1099 1093
+      phrase "посчитай гласные"
+      phrase "количество гласных"
     language hi
-      phrase codepoints 2360 2381 2357 2352 32 2327 2367 2344 2375 2306
-      phrase codepoints 2360 2381 2357 2352 2379 2306 32 2325 2368 32 2360 2306 2326 2381 2351 2366
+      phrase "स्वर गिनें"
+      phrase "स्वरों की संख्या"
     language zh
-      phrase codepoints 32479 35745 20803 38899
-      phrase codepoints 20803 38899 25968 37327
+      phrase 统计元音
+      phrase 元音数量
   operation similar_elements
     language en
-      phrase codepoints 115 105 109 105 108 97 114 32 101 108 101 109 101 110 116 115
+      phrase "similar elements"
       phrase similar_elements
     language ru
-      phrase codepoints 1086 1073 1097 1080 1077 32 1101 1083 1077 1084 1077 1085 1090 1099
-      phrase codepoints 1087 1086 1093 1086 1078 1080 1077 32 1101 1083 1077 1084 1077 1085 1090 1099
+      phrase "общие элементы"
+      phrase "похожие элементы"
     language hi
-      phrase codepoints 2360 2350 2366 2344 32 2340 2340 2381 2357
+      phrase "समान तत्व"
     language zh
-      phrase codepoints 30456 21516 20803 32032
-      phrase codepoints 30456 20284 20803 32032
+      phrase 相同元素
+      phrase 相似元素
   operation distinct_numbers
     language en
-      phrase codepoints 100 105 115 116 105 110 99 116 32 110 117 109 98 101 114 115
+      phrase "distinct numbers"
     language ru
-      phrase codepoints 1088 1072 1079 1083 1080 1095 1085 1099 1077 32 1095 1080 1089 1083 1072
-      phrase codepoints 1088 1072 1079 1085 1099 1093 32 1095 1080 1089 1083 1072
+      phrase "различные числа"
+      phrase "разных числа"
     language hi
-      phrase codepoints 2309 2354 2327 32 2360 2306 2326 2381 2351 2366 2319 2305
-      phrase codepoints 2309 2354 2327 32 2360 2306 2326 2381 2351 2366 2319 2306
+      phrase "अलग संख्याएँ"
+      phrase "अलग संख्याएं"
     language zh
-      phrase codepoints 19981 21516 25968 23383
-      phrase codepoints 19981 21516 25968 20540
+      phrase 不同数字
+      phrase 不同数值
   operation differ
     language en
       phrase differ
     language ru
-      phrase codepoints 1086 1090 1083 1080 1095 1072 1102 1090 1089 1103
-      phrase codepoints 1088 1072 1079 1085 1080 1094 1072
+      phrase отличаются
+      phrase разница
     language hi
-      phrase codepoints 2309 2306 2340 2352
+      phrase अंतर
     language zh
-      phrase codepoints 30456 24046
-      phrase codepoints 24046
+      phrase 相差
+      phrase 差
   operation threshold
     language en
       phrase threshold
     language ru
-      phrase codepoints 1087 1086 1088 1086 1075
-      phrase codepoints 1087 1086 1088 1086 1075 1072
+      phrase порог
+      phrase порога
     language hi
-      phrase codepoints 2360 2368 2350 2366
+      phrase सीमा
     language zh
-      phrase codepoints 38408 20540
+      phrase 阈值

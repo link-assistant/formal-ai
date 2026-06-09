@@ -4,186 +4,186 @@ meanings
     role comparison_table_trigger # semantic-role
     lexeme en # language
       surface seed-surface-2c3c3503ab95
-        codepoints 99 111 109 112 97 114 105 115 111 110 32 116 97 98 108 101
+        text "comparison table"
       surface seed-surface-ed639ad96e29
-        codepoints 99 111 109 112 97 114 101
+        text compare
       surface seed-surface-e6b803fd56a5
-        codepoints 99 111 109 112 97 114 105 110 103
+        text comparing
     lexeme ru # language
       surface seed-surface-d71f4167f6ac
-        codepoints 1089 1088 1072 1074 1085 1080 1090 1077 1083 1100 1085 1072 1103 32 1090 1072 1073 1083 1080 1094 1072
+        text "сравнительная таблица"
       surface seed-surface-908f6a46883d
-        codepoints 1089 1088 1072 1074 1085 1080 1090 1100
+        text сравнить
       surface seed-surface-7f1197470034
-        codepoints 1089 1088 1072 1074 1085 1077 1085 1080 1077
+        text сравнение
     lexeme hi # language
       surface seed-surface-431a09473cba
-        codepoints 2340 2369 2354 2344 2366 32 2340 2366 2354 2367 2325 2366
+        text "तुलना तालिका"
       surface seed-surface-a0264343e2c3
-        codepoints 2340 2369 2354 2344 2366
+        text तुलना
     lexeme zh # language
       surface seed-surface-980821885250
-        codepoints 27604 36739 34920
+        text 比较表
       surface seed-surface-8413ef16e9a8
-        codepoints 27604 36739
+        text 比较
       surface seed-surface-b3c96b1a6fe0
-        codepoints 23545 27604
+        text 对比
   table:
     defined-by concept # definition-link
     role comparison_table_noun # semantic-role
     lexeme en # language
       surface seed-surface-75a12977f148
-        codepoints 116 97 98 108 101
+        text table
     lexeme ru # language
       surface seed-surface-f9004208312a
-        codepoints 1090 1072 1073 1083 1080 1094 1072
+        text таблица
     lexeme hi # language
       surface seed-surface-82ff87fd59e1
-        codepoints 2340 2366 2354 2367 2325 2366
+        text तालिका
     lexeme zh # language
       surface seed-surface-fe49aad14db5
-        codepoints 34920 26684
+        text 表格
   differences:
     defined-by relation # definition-link
     role comparison_difference_cue # semantic-role
     lexeme en # language
       surface seed-surface-3ce750320e88
-        codepoints 100 105 102 102 101 114 101 110 99 101 115
+        text differences
     lexeme ru # language
       surface seed-surface-e78130b0c3b9
-        codepoints 1088 1072 1079 1083 1080 1095 1080 1103
+        text различия
       surface seed-surface-20d959a45525
-        codepoints 1086 1090 1083 1080 1095 1080 1103
+        text отличия
     lexeme hi # language
       surface seed-surface-76cc3b30a855
-        codepoints 2309 2306 2340 2352
+        text अंतर
     lexeme zh # language
       surface seed-surface-a8b382eb38a5
-        codepoints 24046 24322
+        text 差异
       surface seed-surface-f6d599905f35
-        codepoints 21306 21035
+        text 区别
   research_prompt_signal:
     defined-by concept # definition-link
     role research_prompt_signal # semantic-role
     lexeme en # language
       surface seed-surface-4d76f6bf379a
-        codepoints 115 101 97 114 99 104 32 8230
+        text "search …"
       surface seed-surface-70c96936da2f
-        codepoints 102 105 110 100 32 105 110 102 111 114 109 97 116 105 111 110 32 8230
+        text "find information …"
       surface seed-surface-1667c1af2dd6
-        codepoints 108 111 111 107 32 117 112 32 105 110 102 111 114 109 97 116 105 111 110 32 8230
+        text "look up information …"
       surface seed-surface-1aa4d225a5c1
-        codepoints 115 101 97 114 99 104 32 102 111 114 32 105 110 102 111 114 109 97 116 105 111 110
+        text "search for information"
       surface seed-surface-ebfadb19d201
-        codepoints 119 101 98 32 115 101 97 114 99 104
+        text "web search"
       surface seed-surface-9159b8317683
-        codepoints 114 101 115 101 97 114 99 104
+        text research
     lexeme ru # language
       surface seed-surface-eb2d78501dfe
-        codepoints 1087 1086 1080 1089 1082
+        text поиск
       surface seed-surface-63dec12525de
-        codepoints 1080 1089 1089 1083 1077 1076 1086 1074 1072 1085 1080 1077
+        text исследование
       surface seed-surface-d7d27c155619
-        codepoints 1074 1077 1073 45 1087 1086 1080 1089 1082
+        text веб-поиск
     lexeme hi # language
       surface seed-surface-f00cc90140e2
-        codepoints 2326 2379 2332
+        text खोज
       surface seed-surface-573ff8f45242
-        codepoints 2309 2344 2369 2360 2306 2343 2366 2344
+        text अनुसंधान
     lexeme zh # language
       surface seed-surface-4b0c7d211172
-        codepoints 25628 32034
+        text 搜索
       surface seed-surface-7242e9f5b4b5
-        codepoints 30740 31350
+        text 研究
   key_differences:
     defined-by relation # definition-link
     role research_criterion # semantic-role
     lexeme en # language
       surface seed-surface-c5ba51143fd8
-        codepoints 107 101 121 32 100 105 102 102 101 114 101 110 99 101
+        text "key difference"
       surface seed-surface-e81bdd8a6cfc
-        codepoints 100 105 102 102 101 114 101 110 99 101
+        text difference
     lexeme ru # language
       surface seed-surface-7729d8b6290a
-        codepoints 1082 1083 1102 1095 1077 1074 1099 1077 32 1088 1072 1079 1083 1080 1095 1080 1103
+        text "ключевые различия"
       surface seed-surface-c8fba79d0dce
-        codepoints 1088 1072 1079 1083 1080 1095 1080 1103
+        text различия
     lexeme hi # language
       surface seed-surface-c183f8e0e43f
-        codepoints 2350 2369 2326 2381 2351 32 2309 2306 2340 2352
+        text "मुख्य अंतर"
       surface seed-surface-8615a7af0bc7
-        codepoints 2309 2306 2340 2352
+        text अंतर
     lexeme zh # language
       surface seed-surface-52f9681635ee
-        codepoints 20027 35201 21306 21035
+        text 主要区别
       surface seed-surface-5efd30dd721d
-        codepoints 21306 21035
+        text 区别
   use_cases:
     defined-by concept # definition-link
     role research_criterion # semantic-role
     lexeme en # language
       surface seed-surface-712cd2b0a70f
-        codepoints 117 115 101 32 99 97 115 101
+        text "use case"
       surface seed-surface-d644047dbf1d
-        codepoints 97 112 112 108 105 99 97 116 105 111 110
+        text application
     lexeme ru # language
       surface seed-surface-ca3a18f50585
-        codepoints 1089 1094 1077 1085 1072 1088 1080 1080 32 1080 1089 1087 1086 1083 1100 1079 1086 1074 1072 1085 1080 1103
+        text "сценарии использования"
       surface seed-surface-25fed7760f52
-        codepoints 1087 1088 1080 1084 1077 1085 1077 1085 1080 1077
+        text применение
     lexeme hi # language
       surface seed-surface-5653a6d2cb7e
-        codepoints 2313 2346 2351 2379 2327 32 2325 2375 32 2350 2366 2350 2354 2375
+        text "उपयोग के मामले"
       surface seed-surface-ffe4334be3d8
-        codepoints 2309 2344 2369 2346 2381 2352 2351 2379 2327
+        text अनुप्रयोग
     lexeme zh # language
       surface seed-surface-7dd7eb251354
-        codepoints 29992 20363
+        text 用例
       surface seed-surface-1a820cd25cf7
-        codepoints 24212 29992
+        text 应用
   advantages:
     defined-by property # definition-link
     role research_criterion # semantic-role
     lexeme en # language
       surface seed-surface-257fe359293b
-        codepoints 97 100 118 97 110 116 97 103 101
+        text advantage
       surface seed-surface-0260a6e42d0e
-        codepoints 112 114 111 32
+        text "pro "
     lexeme ru # language
       surface seed-surface-8ad9b6fdd6e3
-        codepoints 1087 1088 1077 1080 1084 1091 1097 1077 1089 1090 1074 1072
+        text преимущества
       surface seed-surface-19d62315b92c
-        codepoints 1087 1083 1102 1089 1099
+        text плюсы
     lexeme hi # language
       surface seed-surface-4f1c547bb434
-        codepoints 2347 2366 2351 2342 2375
+        text फायदे
       surface seed-surface-4e8a87b4d63a
-        codepoints 2354 2366 2349
+        text लाभ
     lexeme zh # language
       surface seed-surface-226f341f610a
-        codepoints 20248 28857
+        text 优点
       surface seed-surface-3c44e0f56a1d
-        codepoints 20248 21183
+        text 优势
   disadvantages:
     defined-by property # definition-link
     role research_criterion # semantic-role
     lexeme en # language
       surface seed-surface-573e099b0746
-        codepoints 100 105 115 97 100 118 97 110 116 97 103 101
+        text disadvantage
       surface seed-surface-e4224fbd9a4a
-        codepoints 32 99 111 110 32
+        text " con "
     lexeme ru # language
       surface seed-surface-18577216b3dc
-        codepoints 1085 1077 1076 1086 1089 1090 1072 1090 1082 1080
+        text недостатки
       surface seed-surface-64e63f355b9a
-        codepoints 1084 1080 1085 1091 1089 1099
+        text минусы
     lexeme hi # language
       surface seed-surface-c3702eec6601
-        codepoints 2344 2369 2325 2360 2366 2344
+        text नुकसान
       surface seed-surface-a6960729f2e7
-        codepoints 2361 2366 2344 2367
+        text हानि
     lexeme zh # language
       surface seed-surface-8fa04c120bcc
-        codepoints 32570 28857
+        text 缺点
       surface seed-surface-fc07b5e8a7b2
-        codepoints 21155 21183
+        text 劣势

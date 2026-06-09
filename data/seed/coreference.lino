@@ -1,81 +1,81 @@
 coreference
   pronoun it
-    context codepoints 32 105 116 32
-    context codepoints 32 105 116 63
-    context codepoints 32 105 116 46
-    context codepoints 99 111 109 112 97 114 101 32 105 116
-    starts_with codepoints 105 116 32
+    context " it "
+    context " it?"
+    context " it."
+    context "compare it"
+    starts_with "it "
   pronoun results
-    context codepoints 32 114 101 115 117 108 116 32
-    context codepoints 32 114 101 115 117 108 116 63
-    context codepoints 32 114 101 115 117 108 116 46
-    context codepoints 32 114 101 115 117 108 116 115 32
-    context codepoints 32 114 101 115 117 108 116 115 63
-    context codepoints 32 114 101 115 117 108 116 115 46
-    starts_with codepoints 114 101 115 117 108 116 32
-    starts_with codepoints 114 101 115 117 108 116 115 32
+    context " result "
+    context " result?"
+    context " result."
+    context " results "
+    context " results?"
+    context " results."
+    starts_with "result "
+    starts_with "results "
   pronoun program
-    context codepoints 32 112 114 111 103 114 97 109 32
-    context codepoints 32 112 114 111 103 114 97 109 63
-    context codepoints 32 112 114 111 103 114 97 109 46
-    context codepoints 32 112 114 111 103 114 97 109 109 101 32
-    starts_with codepoints 112 114 111 103 114 97 109 32
-    starts_with codepoints 112 114 111 103 114 97 109 109 101 32
-  pronoun codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 1099
-    context codepoints 32 1088 1077 1079 1091 1083 1100 1090 1072 1090 32
-    context codepoints 32 1088 1077 1079 1091 1083 1100 1090 1072 1090 1072 32
-    context codepoints 32 1088 1077 1079 1091 1083 1100 1090 1072 1090 1099 32
-    context codepoints 32 1088 1077 1079 1091 1083 1100 1090 1072 1090 1086 1074 32
-    starts_with codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 32
-    starts_with codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 1099 32
-    starts_with codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 1086 1074 32
-  pronoun codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1072
-    context codepoints 32 1087 1088 1086 1075 1088 1072 1084 1084 1072 32
-    context codepoints 32 1087 1088 1086 1075 1088 1072 1084 1084 1091 32
-    context codepoints 32 1087 1088 1086 1075 1088 1072 1084 1084 1099 32
-    starts_with codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1072 32
-    starts_with codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1091 32
-  pronoun codepoints 2346 2352 2367 2339 2366 2350
-    context codepoints 32 2346 2352 2367 2339 2366 2350 32
-    context codepoints 32 2346 2352 2367 2339 2366 2350 2379 2306 32
-    context codepoints 32 2344 2340 2368 2332 2366 32
-    context codepoints 32 2344 2340 2368 2332 2375 32
-    starts_with codepoints 2346 2352 2367 2339 2366 2350 32
-    starts_with codepoints 2346 2352 2367 2339 2366 2350 2379 2306 32
-  pronoun codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350
-    context codepoints 32 2346 2381 2352 2379 2327 2381 2352 2366 2350 32
-    starts_with codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350 32
-  pronoun codepoints 32467 26524
-    context codepoints 32467 26524
-    starts_with codepoints 32467 26524
-  pronoun codepoints 31243 24207
-    context codepoints 31243 24207
-    starts_with codepoints 31243 24207
-  antecedent codepoints 80 114 111 103 114 97 109 32 97 114 116 105 102 97 99 116
+    context " program "
+    context " program?"
+    context " program."
+    context " programme "
+    starts_with "program "
+    starts_with "programme "
+  pronoun результаты
+    context " результат "
+    context " результата "
+    context " результаты "
+    context " результатов "
+    starts_with "результат "
+    starts_with "результаты "
+    starts_with "результатов "
+  pronoun программа
+    context " программа "
+    context " программу "
+    context " программы "
+    starts_with "программа "
+    starts_with "программу "
+  pronoun परिणाम
+    context " परिणाम "
+    context " परिणामों "
+    context " नतीजा "
+    context " नतीजे "
+    starts_with "परिणाम "
+    starts_with "परिणामों "
+  pronoun प्रोग्राम
+    context " प्रोग्राम "
+    starts_with "प्रोग्राम "
+  pronoun 结果
+    context 结果
+    starts_with 结果
+  pronoun 程序
+    context 程序
+    starts_with 程序
+  antecedent "Program artifact"
     alias program
     alias programme
-    alias codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1072
-    alias codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1091
-    alias codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1099
-    alias codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350
-    alias codepoints 31243 24207
+    alias программа
+    alias программу
+    alias программы
+    alias प्रोग्राम
+    alias 程序
     intent coreference_program_artifact
-    body codepoints 84 104 101 32 114 101 102 101 114 101 110 116 32 105 115 32 116 104 101 32 97 99 116 105 118 101 32 112 114 111 103 114 97 109 32 97 114 116 105 102 97 99 116 32 102 114 111 109 32 116 104 101 32 112 114 105 111 114 32 116 117 114 110 46
-  antecedent codepoints 80 114 111 103 114 97 109 32 114 101 115 117 108 116 115
+    body "The referent is the active program artifact from the prior turn."
+  antecedent "Program results"
     alias result
     alias results
-    alias codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090
-    alias codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 1099
-    alias codepoints 1088 1077 1079 1091 1083 1100 1090 1072 1090 1086 1074
-    alias codepoints 2346 2352 2367 2339 2366 2350
-    alias codepoints 2346 2352 2367 2339 2366 2350 2379 2306
-    alias codepoints 32467 26524
+    alias результат
+    alias результаты
+    alias результатов
+    alias परिणाम
+    alias परिणामों
+    alias 结果
     intent coreference_program_results
-    body codepoints 84 104 101 32 114 101 102 101 114 101 110 116 32 105 115 32 116 104 101 32 111 117 116 112 117 116 47 114 101 115 117 108 116 115 32 112 114 111 100 117 99 101 100 32 98 121 32 116 104 101 32 97 99 116 105 118 101 32 112 114 111 103 114 97 109 32 97 114 116 105 102 97 99 116 46
+    body "The referent is the output/results produced by the active program artifact."
   antecedent Rust
     alias rust
-    alias codepoints 1088 1072 1089 1090
-    alias codepoints 2352 2360 2381 2335
+    alias раст
+    alias रस्ट
     wikidata Q575650
     intent coreference_rust
-    body codepoints 96 105 116 96 32 114 101 115 111 108 118 101 115 32 116 111 32 82 117 115 116 32 102 114 111 109 32 121 111 117 114 32 112 114 105 111 114 32 116 117 114 110 46 32 67 111 109 112 97 114 101 100 32 119 105 116 104 32 67 44 32 82 117 115 116 32 97 100 100 115 32 111 119 110 101 114 115 104 105 112 44 32 98 111 114 114 111 119 105 110 103 44 32 97 110 100 32 115 116 114 111 110 103 101 114 32 99 111 109 112 105 108 101 45 116 105 109 101 32 99 104 101 99 107 115 32 115 111 32 109 101 109 111 114 121 45 115 97 102 101 116 121 32 101 114 114 111 114 115 32 97 114 101 32 99 97 117 103 104 116 32 98 101 102 111 114 101 32 116 104 101 32 112 114 111 103 114 97 109 32 114 117 110 115 32 119 104 105 108 101 32 114 101 116 97 105 110 105 110 103 32 110 97 116 105 118 101 45 99 111 100 101 32 112 101 114 102 111 114 109 97 110 99 101 46
+    body "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, borrowing, and stronger compile-time checks so memory-safety errors are caught before the program runs while retaining native-code performance."

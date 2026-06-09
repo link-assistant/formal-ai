@@ -892,6 +892,11 @@ fn lexeme_language(node: &LinoNode) -> String {
 }
 
 fn surface_text(node: &LinoNode) -> String {
+    let text = node.find_child_value("text");
+    if !text.is_empty() {
+        return text.to_string();
+    }
+    // Backward compatibility with the historical `codepoints <ints>` encoding.
     let codepoints = node.find_child_value("codepoints");
     if codepoints.is_empty() {
         node.id.clone()

@@ -80,18 +80,51 @@
     );
   }
 
+  // Single left-to-right pass so escape sequences never re-trigger each other
+  // (e.g. `\\n`, an escaped backslash followed by `n`, must stay `\n`, not a
+  // newline). Mirrors `src/seed/parser.rs::unescape_value` and serves every
+  // quote style emitted by the seed migration (`"`, `'`, and backticks).
+  function unescapeQuoted(value) {
+    var source = String(value || "");
+    var out = "";
+    for (var i = 0; i < source.length; i += 1) {
+      var ch = source[i];
+      if (ch !== "\\") {
+        out += ch;
+        continue;
+      }
+      var next = source[i + 1];
+      if (next === undefined) {
+        out += "\\";
+      } else if (next === "n") {
+        out += "\n";
+        i += 1;
+      } else if (next === "r") {
+        out += "\r";
+        i += 1;
+      } else if (next === "t") {
+        out += "\t";
+        i += 1;
+      } else if (next === "\\" || next === '"' || next === "'" || next === "`") {
+        out += next;
+        i += 1;
+      } else if (next === "x" && source[i + 2] === "2" && source[i + 3] === "7") {
+        out += "'";
+        i += 3;
+      } else {
+        out += "\\" + next;
+        i += 1;
+      }
+    }
+    return out;
+  }
+
   function unescapeValue(value) {
-    return String(value || "")
-      .replace(/\\n/g, "\n")
-      .replace(/\\"/g, '"')
-      .replace(/\\\\/g, "\\");
+    return unescapeQuoted(value);
   }
 
   function unescapeSingleValue(value) {
-    return String(value || "")
-      .replace(/\\n/g, "\n")
-      .replace(/\\x27/g, "'")
-      .replace(/\\\\/g, "\\");
+    return unescapeQuoted(value);
   }
 
   function decodeRawReference(value) {
@@ -119,23 +152,23 @@
   }
 
   function stripComment(line) {
-    var inDoubleQuote = false;
+    var quote = null;
     var escaped = false;
     var previousWasSpace = true;
     for (var i = 0; i < line.length; i += 1) {
       var ch = line[i];
-      if (inDoubleQuote) {
+      if (quote !== null) {
         if (escaped) {
           escaped = false;
-        } else if (ch === "\\") {
+        } else if ((quote === '"' || quote === "`") && ch === "\\") {
           escaped = true;
-        } else if (ch === '"') {
-          inDoubleQuote = false;
+        } else if (ch === quote) {
+          quote = null;
         }
         continue;
       }
-      if (ch === '"') {
-        inDoubleQuote = true;
+      if (ch === '"' || ch === "'" || ch === "`") {
+        quote = ch;
         previousWasSpace = false;
         continue;
       }
@@ -191,52 +224,33 @@
       node.value = node.id;
       return node;
     }
-    var first = content.indexOf(' "');
-    if (first === -1) {
-      var singleFirst = content.indexOf(" '");
-      if (singleFirst !== -1) {
-        node.name = content.slice(0, singleFirst).trim();
-        var singleRest = content.slice(singleFirst + 1).trim();
-        if (singleRest.length === 0 || singleRest[0] !== "'") return node;
-        var singleClosing = -1;
-        for (var j = 1; j < singleRest.length; j += 1) {
-          if (singleRest[j] === "\\") {
-            j += 1;
-            continue;
-          }
-          if (singleRest[j] === "'") {
-            singleClosing = j;
-            break;
-          }
+    var parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim());
+    if (!parts) return node;
+    node.name = parts[1] || "";
+    var rest = (parts[2] || "").trim();
+    var delimiter = rest[0];
+    if (delimiter === '"' || delimiter === "'" || delimiter === "`") {
+      // The migration backslash-escapes `\` and newlines inside every quote
+      // style, so the closing scan honours escapes regardless of delimiter.
+      var closing = -1;
+      for (var i = 1; i < rest.length; i += 1) {
+        if (rest[i] === "\\") {
+          i += 1;
+          continue;
         }
-        if (singleClosing === -1) return node;
-        node.id = unescapeSingleValue(singleRest.slice(1, singleClosing));
+        if (rest[i] === delimiter) {
+          closing = i;
+          break;
+        }
+      }
+      // Only treat it as a quoted scalar when the quote spans the whole value.
+      if (closing !== -1 && rest.slice(closing + 1).trim().length === 0) {
+        node.id = unescapeQuoted(rest.slice(1, closing));
         node.value = node.id;
         return node;
       }
-      var parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim());
-      if (!parts) return node;
-      node.name = parts[1] || "";
-      node.id = decodeRawReference((parts[2] || "").trim());
-      node.value = node.id;
-      return node;
     }
-    node.name = content.slice(0, first).trim();
-    var rest = content.slice(first + 1).trim();
-    if (rest.length === 0 || rest[0] !== '"') return node;
-    var closing = -1;
-    for (var i = 1; i < rest.length; i += 1) {
-      if (rest[i] === "\\") {
-        i += 1;
-        continue;
-      }
-      if (rest[i] === '"') {
-        closing = i;
-        break;
-      }
-    }
-    if (closing === -1) return node;
-    node.id = unescapeValue(rest.slice(1, closing));
+    node.id = decodeRawReference(rest);
     node.value = node.id;
     return node;
   }

@@ -4,131 +4,131 @@ meanings
     role tool_invocation_cue # semantic-role
     lexeme en # language
       surface seed-surface-7466a8918768
-        codepoints 99 97 108 108
+        text call
       surface seed-surface-02583e146506
-        codepoints 105 110 118 111 107 101
+        text invoke
       surface seed-surface-6691a02cae50
-        codepoints 114 117 110
+        text run
       surface seed-surface-530af7229a43
-        codepoints 97 112 105
+        text api
       surface seed-surface-28594bd04432
-        codepoints 116 111 111 108
+        text tool
     lexeme ru # language
       surface seed-surface-797a0a0545e5
-        codepoints 1074 1099 1079 1086 1074 1080
+        text вызови
       surface seed-surface-b44ca6376cd8
-        codepoints 1074 1099 1079 1074 1072 1090 1100
+        text вызвать
       surface seed-surface-1045f62a17a8
-        codepoints 1079 1072 1087 1091 1089 1090 1080
+        text запусти
       surface seed-surface-c4bb8f26d950
-        codepoints 1080 1085 1089 1090 1088 1091 1084 1077 1085 1090
+        text инструмент
     lexeme hi # language
       surface seed-surface-43b409988079
-        codepoints 2325 2377 2354
+        text कॉल
       surface seed-surface-6ddc89a51d64
-        codepoints 2330 2354 2366 2323
+        text चलाओ
       surface seed-surface-bb90e13c087e
-        codepoints 2313 2346 2325 2352 2339
+        text उपकरण
     lexeme zh # language
       surface seed-surface-6cc578a90e74
-        codepoints 35843 29992
+        text 调用
       surface seed-surface-2ec44f6d3976
-        codepoints 36816 34892
+        text 运行
       surface seed-surface-49f2104a12d9
-        codepoints 24037 20855
+        text 工具
   calculator_tool:
     defined-by entity # definition-link
     role calculator_tool_name # semantic-role
     lexeme en # language
       surface seed-surface-36a3ecdb5353
-        codepoints 99 97 108 99 117 108 97 116 111 114
+        text calculator
     lexeme ru # language
       surface seed-surface-497252476872
-        codepoints 1082 1072 1083 1100 1082 1091 1083 1103 1090 1086 1088
+        text калькулятор
     lexeme hi # language
       surface seed-surface-8bd0ca865e90
-        codepoints 2325 2376 2354 2325 2369 2354 2375 2335 2352
+        text कैलकुलेटर
     lexeme zh # language
       surface seed-surface-9435d29fb6b7
-        codepoints 35745 31639 22120
+        text 计算器
   web_search_tool:
     defined-by entity # definition-link
     role web_search_tool_name # semantic-role
     lexeme en # language
       surface seed-surface-dc339f5bcd18
-        codepoints 119 101 98 95 115 101 97 114 99 104
+        text web_search
       surface seed-surface-157f96531228
-        codepoints 119 101 98 32 115 101 97 114 99 104
+        text "web search"
       surface seed-surface-75bc90c9dc33
-        codepoints 119 101 98 45 115 101 97 114 99 104
+        text web-search
     lexeme ru # language
       surface seed-surface-ce8df92d3b29
-        codepoints 1074 1077 1073 45 1087 1086 1080 1089 1082
+        text веб-поиск
       surface seed-surface-d73d039ac271
-        codepoints 1087 1086 1080 1089 1082 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077
+        text "поиск в интернете"
     lexeme hi # language
       surface seed-surface-fd37d339d7b2
-        codepoints 2357 2375 2348 32 2326 2379 2332
+        text "वेब खोज"
       surface seed-surface-14045d0f18b1
-        codepoints 2311 2306 2335 2352 2344 2375 2335 32 2326 2379 2332
+        text "इंटरनेट खोज"
     lexeme zh # language
       surface seed-surface-19e160d21adf
-        codepoints 32593 32476 25628 32034
+        text 网络搜索
       surface seed-surface-65b8ff0cf609
-        codepoints 32593 39029 25628 32034
+        text 网页搜索
   local_shell_tool:
     defined-by entity # definition-link
     role local_shell_request_cue # semantic-role
     lexeme en # language
       surface seed-surface-72b1a590e3cd
-        codepoints 108 111 99 97 108 95 115 104 101 108 108
+        text local_shell
       surface seed-surface-6f4d062e34c3
-        codepoints 108 111 99 97 108 32 115 104 101 108 108 32 116 111 111 108
+        text "local shell tool"
       surface seed-surface-15b7066ec547
-        codepoints 108 111 99 97 108 32 115 104 101 108 108 32 97 112 105
+        text "local shell api"
       surface seed-surface-3ba0f0b8af33
-        codepoints 99 97 108 108 32 116 104 101 32 115 104 101 108 108 32 116 111 111 108
+        text "call the shell tool"
       surface seed-surface-66d207ec7eba
-        codepoints 105 110 118 111 107 101 32 116 104 101 32 115 104 101 108 108 32 116 111 111 108
+        text "invoke the shell tool"
     lexeme ru # language
       surface seed-surface-e9c908336f93
-        codepoints 1083 1086 1082 1072 1083 1100 1085 1072 1103 32 1086 1073 1086 1083 1086 1095 1082 1072
+        text "локальная оболочка"
       surface seed-surface-b9663d3d44d8
-        codepoints 1074 1099 1079 1086 1074 1080 32 1086 1073 1086 1083 1086 1095 1082 1091
+        text "вызови оболочку"
     lexeme hi # language
       surface seed-surface-899c3454dcb3
-        codepoints 2354 2379 2325 2354 32 2358 2375 2354
+        text "लोकल शेल"
       surface seed-surface-e65bac185790
-        codepoints 2358 2375 2354 32 2335 2370 2354 32 2330 2354 2366 2323
+        text "शेल टूल चलाओ"
     lexeme zh # language
       surface seed-surface-17dade3d7a9c
-        codepoints 26412 22320 22806 22771
+        text 本地外壳
       surface seed-surface-1bdc4e36a7a4
-        codepoints 35843 29992 22806 22771 24037 20855
+        text 调用外壳工具
   tool_argument_marker:
     defined-by relation # definition-link
     role tool_argument_marker # semantic-role
     lexeme en # language
       surface seed-surface-46cc69491a50
-        codepoints 119 105 116 104 32 113 117 101 114 121
+        text "with query"
       surface seed-surface-2b120946a4d5
-        codepoints 113 117 101 114 121
+        text query
       surface seed-surface-7b3443611da9
-        codepoints 119 105 116 104
+        text with
       surface seed-surface-bd7d80433b73
-        codepoints 102 111 114
+        text for
     lexeme ru # language
       surface seed-surface-72ca19725d8d
-        codepoints 1089 32 1079 1072 1087 1088 1086 1089 1086 1084
+        text "с запросом"
       surface seed-surface-d3827d760244
-        codepoints 1076 1083 1103
+        text для
     lexeme hi # language
       surface seed-surface-5bd9ded4ab33
-        codepoints 2325 2381 2357 2375 2352 2368 32 2325 2375 32 2360 2366 2341
+        text "क्वेरी के साथ"
       surface seed-surface-58145eed5943
-        codepoints 2325 2375 32 2354 2367 2319
+        text "के लिए"
     lexeme zh # language
       surface seed-surface-3e26d2c00188
-        codepoints 26597 35810
+        text 查询
       surface seed-surface-0ea703c38354
-        codepoints 29992 20110
+        text 用于

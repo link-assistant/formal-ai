@@ -5,365 +5,365 @@ meanings
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-12005550f760
-        codepoints 97 112 112 108 101
+        text apple
       surface seed-surface-07639b82b2c1
-        codepoints 97 112 112 108 101 115
+        text apples
     lexeme ru # language
       surface seed-surface-ab1aec3c115c
-        codepoints 1103 1073 1083 1086 1082 1086
+        text яблоко
       surface seed-surface-b1632d257d8f
-        codepoints 1103 1073 1083 1086 1082 1080
+        text яблоки
     lexeme hi # language
       surface seed-surface-eff2c3e390f5
-        codepoints 2360 2375 2348
+        text सेब
     lexeme zh # language
       surface seed-surface-26a19114e6d1
-        codepoints 33529 26524
+        text 苹果
       surface seed-surface-038d1a6e268d
-        codepoints 34315 26524
+        text 蘋果
   wikidata_item_fruit:
     grounded-in Q3314483 # source-id
     defined-by concept # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-26e7a9e74c40
-        codepoints 102 114 117 105 116
+        text fruit
       surface seed-surface-a776c1ca5efb
-        codepoints 102 114 117 105 116 115
+        text fruits
       surface seed-surface-f0012554fcf0
-        codepoints 101 100 105 98 108 101 32 102 114 117 105 116
+        text "edible fruit"
     lexeme ru # language
       surface seed-surface-3898945780fc
-        codepoints 1092 1088 1091 1082 1090
+        text фрукт
       surface seed-surface-f61b5673293f
-        codepoints 1092 1088 1091 1082 1090 1099
+        text фрукты
       surface seed-surface-0a96dd514531
-        codepoints 1087 1083 1086 1076
+        text плод
     lexeme hi # language
       surface seed-surface-b4fb983078fb
-        codepoints 2347 2354
+        text फल
     lexeme zh # language
       surface seed-surface-4b23fa710f4a
-        codepoints 27700 26524
+        text 水果
       surface seed-surface-a35289b0b96e
-        codepoints 27700 26524 31867
+        text 水果类
   wikidata_item_sorting_algorithm:
     grounded-in Q181593 # source-id
     defined-by concept # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-0ded693250cd
-        codepoints 115 111 114 116 105 110 103 32 97 108 103 111 114 105 116 104 109
+        text "sorting algorithm"
       surface seed-surface-e20bc8df2518
-        codepoints 115 111 114 116 105 110 103 32 97 108 103 111 114 105 116 104 109 115
+        text "sorting algorithms"
       surface seed-surface-02c192e44f9d
-        codepoints 115 111 114 116 32 97 108 103 111 114 105 116 104 109
+        text "sort algorithm"
     lexeme ru # language
       surface seed-surface-81a366608961
-        codepoints 1072 1083 1075 1086 1088 1080 1090 1084 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1080
+        text "алгоритм сортировки"
     lexeme hi # language
       surface seed-surface-39e7b5ffad76
-        codepoints 2360 2377 2352 2381 2335 2367 2306 2327 32 2319 2354 2381 2327 2379 2352 2367 2342 2350
+        text "सॉर्टिंग एल्गोरिदम"
     lexeme zh # language
       surface seed-surface-3a03b9c0b646
-        codepoints 25490 24207 31639 27861
+        text 排序算法
   wikidata_item_water:
     grounded-in Q283 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-1e646692834e
-        codepoints 119 97 116 101 114
+        text water
     lexeme ru # language
       surface seed-surface-f5208c5ffc5c
-        codepoints 1074 1086 1076 1072
+        text вода
     lexeme hi # language
       surface seed-surface-5b91bd1f6602
-        codepoints 2346 2366 2344 2368
+        text पानी
     lexeme zh # language
       surface seed-surface-d8910989404e
-        codepoints 27700
+        text 水
   wikidata_item_bread:
     grounded-in Q7802 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-42a206c3f4e8
-        codepoints 98 114 101 97 100
+        text bread
     lexeme ru # language
       surface seed-surface-82b92892ab0f
-        codepoints 1093 1083 1077 1073
+        text хлеб
     lexeme hi # language
       surface seed-surface-418eb2db338c
-        codepoints 2352 2379 2335 2368
+        text रोटी
     lexeme zh # language
       surface seed-surface-04c4509c8a48
-        codepoints 38754 21253
+        text 面包
       surface seed-surface-ab94839019ca
-        codepoints 40629 21253
+        text 麵包
   wikidata_item_carrot:
     grounded-in Q81 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-595fdc79200a
-        codepoints 99 97 114 114 111 116
+        text carrot
       surface seed-surface-f2a3e2b408b7
-        codepoints 99 97 114 114 111 116 115
+        text carrots
     lexeme ru # language
       surface seed-surface-c1bd62edf48c
-        codepoints 1084 1086 1088 1082 1086 1074 1100
+        text морковь
     lexeme hi # language
       surface seed-surface-a4dd8fccc0ff
-        codepoints 2327 2366 2332 2352
+        text गाजर
     lexeme zh # language
       surface seed-surface-fec7cbf97521
-        codepoints 32993 33821 21340
+        text 胡萝卜
       surface seed-surface-7b8b89ab2b30
-        codepoints 32993 34367 34068
+        text 胡蘿蔔
   wikidata_item_wikidata:
     grounded-in Q2013 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-9d333fa91e98
-        codepoints 87 105 107 105 100 97 116 97
+        text Wikidata
     lexeme ru # language
       surface seed-surface-97a169d2aadb
-        codepoints 1074 1080 1082 1080 1076 1072 1090 1072
+        text викидата
     lexeme hi # language
       surface seed-surface-a7cbffc8d466
-        codepoints 2357 2367 2325 2367 2337 2375 2335 2366
+        text विकिडेटा
     lexeme zh # language
       surface seed-surface-800674093a4b
-        codepoints 32500 22522 25968 25454
+        text 维基数据
       surface seed-surface-578327539805
-        codepoints 32173 22522 25976 25818
+        text 維基數據
   wikidata_item_wikipedia:
     grounded-in Q52 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-0dc4ce3fae94
-        codepoints 87 105 107 105 112 101 100 105 97
+        text Wikipedia
     lexeme ru # language
       surface seed-surface-9112283b0085
-        codepoints 1074 1080 1082 1080 1087 1077 1076 1080 1103
+        text википедия
     lexeme hi # language
       surface seed-surface-c90e2bd3320a
-        codepoints 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366
+        text विकिपीडिया
     lexeme zh # language
       surface seed-surface-3aa0fefefa07
-        codepoints 32500 22522 30334 31185
+        text 维基百科
       surface seed-surface-723b3bbc99a9
-        codepoints 32173 22522 30334 31185
+        text 維基百科
   wikidata_item_wiktionary:
     grounded-in Q151 # source-id
     defined-by entity # definition-link
     role wikidata_entity_anchor # semantic-role
     lexeme en # language
       surface seed-surface-05574cb57a14
-        codepoints 87 105 107 116 105 111 110 97 114 121
+        text Wiktionary
     lexeme ru # language
       surface seed-surface-67d87c79664b
-        codepoints 1074 1080 1082 1080 1089 1083 1086 1074 1072 1088 1100
+        text викисловарь
     lexeme hi # language
       surface seed-surface-559384fe7064
-        codepoints 2357 2367 2325 2381 2359 2344 2352 2368
+        text विक्षनरी
     lexeme zh # language
       surface seed-surface-f167c182127f
-        codepoints 32500 22522 35789 20856
+        text 维基词典
       surface seed-surface-0bf9d4010341
-        codepoints 32173 22522 36781 20856
+        text 維基辭典
   wikidata_property_subclass_of:
     grounded-in P279 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-4f4d5c76a136
-        codepoints 115 117 98 99 108 97 115 115 32 111 102
+        text "subclass of"
       surface seed-surface-e7db8a579a9e
-        codepoints 105 115 32 97 32 107 105 110 100 32 111 102
+        text "is a kind of"
       surface seed-surface-0a3773240f1f
-        codepoints 105 115 32 97 32 116 121 112 101 32 111 102
+        text "is a type of"
       surface seed-surface-b48488b57cbc
-        codepoints 105 115 32 115 117 98 99 108 97 115 115 32 111 102
+        text "is subclass of"
       surface seed-surface-808a16e89f75
-        codepoints 107 105 110 100 32 111 102
+        text "kind of"
       surface seed-surface-ea2c12a4da0a
-        codepoints 116 121 112 101 32 111 102
+        text "type of"
     lexeme ru # language
       surface seed-surface-d9271054c995
-        codepoints 1088 1086 1076
+        text род
       surface seed-surface-58bfa4d6f61d
-        codepoints 1090 1080 1087
+        text тип
     lexeme hi # language
       surface seed-surface-e670e078ced7
-        codepoints 2313 2346 2357 2352 2381 2327
+        text उपवर्ग
     lexeme zh # language
       surface seed-surface-7565c7eb96c4
-        codepoints 23376 31867
+        text 子类
   wikidata_property_instance_of:
     grounded-in P31 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-7f9b6c579862
-        codepoints 105 110 115 116 97 110 99 101 32 111 102
+        text "instance of"
       surface seed-surface-d5696bc29031
-        codepoints 105 115 32 97
+        text "is a"
         action wikidata_property_subclass_of # action
       surface seed-surface-e2d7a65f4887
-        codepoints 105 115 32 97 110
+        text "is an"
         action wikidata_property_subclass_of # action
       surface seed-surface-03b8f43ebd42
-        codepoints 105 115 32 116 104 101
+        text "is the"
       surface seed-surface-89e5f156e8e7
-        codepoints 97 114 101 32 97
+        text "are a"
         action wikidata_property_subclass_of # action
       surface seed-surface-49f1c84dda07
-        codepoints 97 114 101 32 97 110
+        text "are an"
         action wikidata_property_subclass_of # action
     lexeme ru # language
       surface seed-surface-385560816c03
-        codepoints 1103 1074 1083 1103 1077 1090 1089 1103
+        text является
       surface seed-surface-7f03997288df
-        codepoints 1101 1090 1086
+        text это
     lexeme hi # language
       surface seed-surface-7feb40973541
-        codepoints 2361 2376
+        text है
     lexeme zh # language
       surface seed-surface-4296a556aa86
-        codepoints 26159
+        text 是
   wikidata_property_part_of:
     grounded-in P361 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-7dff86316c3f
-        codepoints 112 97 114 116 32 111 102
+        text "part of"
       surface seed-surface-5e9af2d2fbec
-        codepoints 105 115 32 112 97 114 116 32 111 102
+        text "is part of"
       surface seed-surface-1c9159875c88
-        codepoints 98 101 108 111 110 103 115 32 116 111
+        text "belongs to"
     lexeme ru # language
       surface seed-surface-c01be404f956
-        codepoints 1103 1074 1083 1103 1077 1090 1089 1103 32 1095 1072 1089 1090 1100 1102
+        text "является частью"
       surface seed-surface-6d789a7e6d4a
-        codepoints 1095 1072 1089 1090 1100
+        text часть
     lexeme hi # language
       surface seed-surface-7ea35c05b961
-        codepoints 2325 2366 32 2361 2367 2360 2381 2360 2366
+        text "का हिस्सा"
     lexeme zh # language
       surface seed-surface-908c5d163d0b
-        codepoints 23646 20110
+        text 属于
   wikidata_property_has_part:
     grounded-in P527 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-20914c948ac1
-        codepoints 104 97 115 32 112 97 114 116
+        text "has part"
       surface seed-surface-bda19cf69e99
-        codepoints 104 97 115 32 97 32 112 97 114 116
+        text "has a part"
       surface seed-surface-67736ce02a67
-        codepoints 99 111 110 116 97 105 110 115
+        text contains
       surface seed-surface-3922a00534b6
-        codepoints 105 110 99 108 117 100 101 115
+        text includes
     lexeme ru # language
       surface seed-surface-2c9c4c353e43
-        codepoints 1089 1086 1076 1077 1088 1078 1080 1090
+        text содержит
     lexeme hi # language
       surface seed-surface-2284cef32690
-        codepoints 2358 2366 2350 2367 2354 32 2361 2376
+        text "शामिल है"
     lexeme zh # language
       surface seed-surface-eb43a6424b1a
-        codepoints 21253 21547
+        text 包含
   wikidata_property_capital:
     grounded-in P36 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-b72749752eee
-        codepoints 99 97 112 105 116 97 108
+        text capital
       surface seed-surface-a558664e1286
-        codepoints 105 115 32 116 104 101 32 99 97 112 105 116 97 108 32 111 102
+        text "is the capital of"
       surface seed-surface-f01df2fe5119
-        codepoints 105 115 32 99 97 112 105 116 97 108 32 111 102
+        text "is capital of"
       surface seed-surface-90ed3f013613
-        codepoints 99 97 112 105 116 97 108 32 111 102
+        text "capital of"
     lexeme ru # language
       surface seed-surface-7e50e6bc9f49
-        codepoints 1089 1090 1086 1083 1080 1094 1072
+        text столица
     lexeme hi # language
       surface seed-surface-422114b91eb6
-        codepoints 2352 2366 2332 2343 2366 2344 2368
+        text राजधानी
     lexeme zh # language
       surface seed-surface-fe86f2269d27
-        codepoints 39318 37117
+        text 首都
   wikidata_property_named_after:
     grounded-in P138 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-655bcea24417
-        codepoints 110 97 109 101 100 32 97 102 116 101 114
+        text "named after"
       surface seed-surface-16777c7973a4
-        codepoints 105 115 32 110 97 109 101 100 32 97 102 116 101 114
+        text "is named after"
     lexeme ru # language
       surface seed-surface-7587fa6a8b17
-        codepoints 1085 1072 1079 1074 1072 1085 32 1074 32 1095 1077 1089 1090 1100
+        text "назван в честь"
     lexeme hi # language
       surface seed-surface-1d0f568132ac
-        codepoints 2325 2375 32 2344 2366 2350 32 2346 2352
+        text "के नाम पर"
     lexeme zh # language
       surface seed-surface-41c3a99193a4
-        codepoints 21629 21517 33258
+        text 命名自
   wikidata_property_translation:
     grounded-in P5972 # source-id
     defined-by relation # definition-link
     role translation_property # semantic-role
     lexeme en # language
       surface seed-surface-4f066fbe07ce
-        codepoints 116 114 97 110 115 108 97 116 105 111 110
+        text translation
       surface seed-surface-82b92ab60014
-        codepoints 116 114 97 110 115 108 97 116 101
+        text translate
       surface seed-surface-a1430216dbc9
-        codepoints 116 114 97 110 115 108 97 116 101 115
+        text translates
     lexeme ru # language
       surface seed-surface-94cfadd30f82
-        codepoints 1087 1077 1088 1077 1074 1077 1076 1080
+        text переведи
       surface seed-surface-317944c5bc74
-        codepoints 1087 1077 1088 1077 1074 1077 1089 1090 1080
+        text перевести
     lexeme hi # language
       surface seed-surface-8fe959e95cd9
-        codepoints 2309 2344 2369 2357 2366 2342
+        text अनुवाद
     lexeme zh # language
       surface seed-surface-8f739d2b4ea4
-        codepoints 32763 35793
+        text 翻译
       surface seed-surface-c0ea72ca0197
-        codepoints 32763 35695
+        text 翻譯
   wikidata_property_item_for_this_sense:
     grounded-in P5137 # source-id
     defined-by relation # definition-link
     role binary_relation_property # semantic-role
     lexeme en # language
       surface seed-surface-8b4fd11da9ce
-        codepoints 105 116 101 109 32 102 111 114 32 116 104 105 115 32 115 101 110 115 101
+        text "item for this sense"
       surface seed-surface-6ec62c5d1109
-        codepoints 109 101 97 110 115
+        text means
       surface seed-surface-7b349a583956
-        codepoints 109 101 97 110 105 110 103 32 111 102
+        text "meaning of"
       surface seed-surface-4db64ecc73f0
-        codepoints 109 101 97 110 105 110 103 32 105 116 101 109
+        text "meaning item"
       surface seed-surface-d5fcdc49c80e
-        codepoints 115 101 110 115 101 32 105 116 101 109
+        text "sense item"
     lexeme ru # language
       surface seed-surface-8b708b95e8fe
-        codepoints 1086 1079 1085 1072 1095 1072 1077 1090
+        text означает
     lexeme hi # language
       surface seed-surface-42a52e72376e
-        codepoints 2309 2352 2381 2341
+        text अर्थ
     lexeme zh # language
       surface seed-surface-3db40d4d22c6
-        codepoints 24847 24605
+        text 意思

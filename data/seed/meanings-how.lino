@@ -5,204 +5,204 @@ meanings
     role mechanism_inquiry # semantic-role
     lexeme en # language
       surface seed-surface-670387d74779
-        codepoints 104 111 119 32 105 116 32 119 111 114 107 115
+        text "how it works"
       surface seed-surface-06f56972f615
-        codepoints 104 111 119 32 100 111 101 115 32 105 116 32 119 111 114 107
+        text "how does it work"
       surface seed-surface-26b44693b546
-        codepoints 104 111 119 32 100 111 101 115 32 8230
+        text "how does …"
       surface seed-surface-3c6968378eb1
-        codepoints 104 111 119 32 100 111 32 8230
+        text "how do …"
       surface seed-surface-5ac3cb9c275e
-        codepoints 104 111 119 32 100 105 100 32 8230
+        text "how did …"
       surface seed-surface-010de776cd6b
-        codepoints 104 111 119 32 105 115 32 8230
+        text "how is …"
       surface seed-surface-46cdd849aad6
-        codepoints 104 111 119 32 8230 32 119 111 114 107 115
+        text "how … works"
       surface seed-surface-3f42d94bfef8
-        codepoints 104 111 119 32 8230 32 119 111 114 107
+        text "how … work"
     lexeme ru # language
       surface seed-surface-e84ffd375be8
-        codepoints 1082 1072 1082 32 1101 1090 1086 32 1088 1072 1073 1086 1090 1072 1077 1090
+        text "как это работает"
       surface seed-surface-2cdafec39523
-        codepoints 1082 1072 1082 32 1086 1085 1086 32 1088 1072 1073 1086 1090 1072 1077 1090
+        text "как оно работает"
       surface seed-surface-4afd2b751ab1
-        codepoints 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 32 8230
+        text "как устроен …"
       surface seed-surface-e1ad06e769d9
-        codepoints 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 1072 32 8230
+        text "как устроена …"
       surface seed-surface-dde84bc119be
-        codepoints 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 1086 32 8230
+        text "как устроено …"
       surface seed-surface-bd6d99d2e14e
-        codepoints 1082 1072 1082 32 1091 1089 1090 1088 1086 1077 1085 1099 32 8230
+        text "как устроены …"
       surface seed-surface-119ed4c7ed58
-        codepoints 1082 1072 1082 32 1088 1072 1073 1086 1090 1072 1077 1090 32 8230
+        text "как работает …"
       surface seed-surface-b9c5b8de09d1
-        codepoints 1082 1072 1082 32 1088 1072 1073 1086 1090 1072 1102 1090 32 8230
+        text "как работают …"
       surface seed-surface-dfbb0f3e2cec
-        codepoints 1082 1072 1082 32 8230 32 1088 1072 1073 1086 1090 1072 1077 1090
+        text "как … работает"
       surface seed-surface-d4da2d2f0ebe
-        codepoints 1082 1072 1082 32 8230 32 1088 1072 1073 1086 1090 1072 1102 1090
+        text "как … работают"
       surface seed-surface-a28a3a104df3
-        codepoints 8230 32 1082 1072 1082 32 1088 1072 1073 1086 1090 1072 1077 1090
+        text "… как работает"
       surface seed-surface-47bd0369d74b
-        codepoints 8230 32 1082 1072 1082 32 1088 1072 1073 1086 1090 1072 1102 1090
+        text "… как работают"
     lexeme hi # language
       surface seed-surface-bb4278bfbe64
-        codepoints 2351 2361 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2366 32 2361 2376
+        text "यह कैसे काम करता है"
       surface seed-surface-dae7a5fbf6dd
-        codepoints 2351 2361 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2368 32 2361 2376
+        text "यह कैसे काम करती है"
       surface seed-surface-873f5f712a36
-        codepoints 2351 2361 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2366
+        text "यह कैसे काम करता"
       surface seed-surface-910d05e35b16
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2366 32 2361 2376
+        text "… कैसे काम करता है"
       surface seed-surface-1f8813d1fc58
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2368 32 2361 2376
+        text "… कैसे काम करती है"
       surface seed-surface-446a059921a5
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2375 32 2361 2376 2306
+        text "… कैसे काम करते हैं"
       surface seed-surface-121a87ae2f1d
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2366
+        text "… कैसे काम करता"
       surface seed-surface-0aff9ae1ab21
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2368
+        text "… कैसे काम करती"
       surface seed-surface-a7a844d23216
-        codepoints 8230 32 2325 2376 2360 2375 32 2325 2366 2350 32 2325 2352 2340 2375
+        text "… कैसे काम करते"
     lexeme zh # language
       surface seed-surface-c2e428345163
-        codepoints 36825 26159 22914 20309 24037 20316 30340
+        text 这是如何工作的
       surface seed-surface-cd95f77b7e8f
-        codepoints 36825 26159 24590 20040 24037 20316 30340
+        text 这是怎么工作的
       surface seed-surface-c27396542c2e
-        codepoints 36825 20010 22914 20309 24037 20316
+        text 这个如何工作
       surface seed-surface-acb3b0cea450
-        codepoints 23427 22914 20309 24037 20316
+        text 它如何工作
       surface seed-surface-0e28bc79f127
-        codepoints 23427 26159 22914 20309 24037 20316 30340
+        text 它是如何工作的
       surface seed-surface-bcc7376c6672
-        codepoints 23427 24590 20040 24037 20316
+        text 它怎么工作
       surface seed-surface-6160ae642bcd
-        codepoints 8230 32 26159 22914 20309 24037 20316 30340
+        text "… 是如何工作的"
       surface seed-surface-b90d7771cc67
-        codepoints 8230 26159 22914 20309 24037 20316 30340
+        text …是如何工作的
       surface seed-surface-f7acdb27ebfa
-        codepoints 8230 32 26159 24590 20040 24037 20316 30340
+        text "… 是怎么工作的"
       surface seed-surface-e64943ae699f
-        codepoints 8230 26159 24590 20040 24037 20316 30340
+        text …是怎么工作的
       surface seed-surface-09478bd3d452
-        codepoints 8230 32 22914 20309 24037 20316
+        text "… 如何工作"
       surface seed-surface-d9eb89454610
-        codepoints 8230 22914 20309 24037 20316
+        text …如何工作
       surface seed-surface-0abe4d20ae0d
-        codepoints 8230 32 24590 20040 24037 20316
+        text "… 怎么工作"
       surface seed-surface-d9e87b13d6fd
-        codepoints 8230 24590 20040 24037 20316
+        text …怎么工作
       surface seed-surface-90ef24c79709
-        codepoints 8230 32 30340 24037 20316 21407 29702 26159 20160 20040
+        text "… 的工作原理是什么"
       surface seed-surface-99224c6664cc
-        codepoints 8230 30340 24037 20316 21407 29702 26159 20160 20040
+        text …的工作原理是什么
   procedural_request:
     defined-by inquiry # definition-link
     defined-by action # definition-link
     role procedural_request # semantic-role
     lexeme en # language
       surface seed-surface-47a5709120df
-        codepoints 112 108 101 97 115 101 32 116 101 108 108 32 109 101 32 104 111 119 32 116 111 32 8230
+        text "please tell me how to …"
       surface seed-surface-2652a53a300a
-        codepoints 112 108 101 97 115 101 32 115 104 111 119 32 109 101 32 104 111 119 32 116 111 32 8230
+        text "please show me how to …"
       surface seed-surface-09219d3195ed
-        codepoints 116 101 108 108 32 109 101 32 104 111 119 32 116 111 32 8230
+        text "tell me how to …"
       surface seed-surface-7801ebd4d983
-        codepoints 115 104 111 119 32 109 101 32 104 111 119 32 116 111 32 8230
+        text "show me how to …"
       surface seed-surface-c1940b56b126
-        codepoints 119 104 97 116 32 97 114 101 32 116 104 101 32 115 116 101 112 115 32 116 111 32 8230
+        text "what are the steps to …"
       surface seed-surface-b2076b5fad6b
-        codepoints 119 104 97 116 32 115 116 101 112 115 32 100 111 32 105 32 110 101 101 100 32 116 111 32 8230
+        text "what steps do i need to …"
       surface seed-surface-2036a22df500
-        codepoints 119 104 97 116 32 115 116 101 112 115 32 100 111 32 119 101 32 110 101 101 100 32 116 111 32 8230
+        text "what steps do we need to …"
       surface seed-surface-30df96d6f88b
-        codepoints 104 111 119 32 115 104 111 117 108 100 32 105 32 8230
+        text "how should i …"
       surface seed-surface-8939bd1e556b
-        codepoints 104 111 119 32 115 104 111 117 108 100 32 119 101 32 8230
+        text "how should we …"
       surface seed-surface-2f2df0913add
-        codepoints 104 111 119 32 99 111 117 108 100 32 105 32 8230
+        text "how could i …"
       surface seed-surface-fb482f1263ca
-        codepoints 104 111 119 32 99 111 117 108 100 32 119 101 32 8230
+        text "how could we …"
       surface seed-surface-124073bd755f
-        codepoints 104 111 119 32 119 111 117 108 100 32 105 32 8230
+        text "how would i …"
       surface seed-surface-3680976e7e3d
-        codepoints 104 111 119 32 119 111 117 108 100 32 119 101 32 8230
+        text "how would we …"
       surface seed-surface-2406cd483959
-        codepoints 104 111 119 32 99 97 110 32 105 32 8230
+        text "how can i …"
       surface seed-surface-0c4aa5b93da9
-        codepoints 104 111 119 32 99 97 110 32 119 101 32 8230
+        text "how can we …"
       surface seed-surface-d25792317726
-        codepoints 104 111 119 32 100 111 32 105 32 8230
+        text "how do i …"
       surface seed-surface-505ca8eb2e7e
-        codepoints 104 111 119 32 100 111 32 119 101 32 8230
+        text "how do we …"
       surface seed-surface-01119fe5e761
-        codepoints 104 111 119 32 116 111 32 100 111 32 8230
+        text "how to do …"
         action do # action
       surface seed-surface-1a3cb0b23f50
-        codepoints 104 111 119 32 116 111 32 8230
+        text "how to …"
     lexeme ru # language
       surface seed-surface-cfc238848f04
-        codepoints 1082 1072 1082 32 1089 1076 1077 1083 1072 1090 1100 32 8230
+        text "как сделать …"
         action do # action
       surface seed-surface-80e920f4d567
-        codepoints 1082 1072 1082 32 1076 1077 1083 1072 1090 1100 32 8230
+        text "как делать …"
         action do # action
       surface seed-surface-7e8958f76809
-        codepoints 1082 1072 1082 32 1074 1099 1087 1086 1083 1085 1080 1090 1100 32 8230
+        text "как выполнить …"
         action perform # action
       surface seed-surface-ca5d89040114
-        codepoints 1082 1072 1082 32 1088 1077 1072 1083 1080 1079 1086 1074 1072 1090 1100 32 8230
+        text "как реализовать …"
         action implement # action
       surface seed-surface-42f030ca3f17
-        codepoints 1082 1072 1082 32 1089 1086 1079 1076 1072 1090 1100 32 8230
+        text "как создать …"
         action create # action
       surface seed-surface-e3794494d4d4
-        codepoints 1082 1072 1082 32 1085 1072 1087 1080 1089 1072 1090 1100 32 8230
+        text "как написать …"
         action write # action
     lexeme hi # language
       surface seed-surface-798e8152fc78
-        codepoints 2325 2376 2360 2375 32 2325 2352 2375 2306 32 8230
+        text "कैसे करें …"
         action do # action
       surface seed-surface-ed7124adc76b
-        codepoints 2325 2376 2360 2375 32 2325 2352 2375 32 8230
+        text "कैसे करे …"
         action do # action
       surface seed-surface-fae7a23d463d
-        codepoints 2325 2376 2360 2375 32 2354 2366 2327 2370 32 2325 2352 2375 2306 32 8230
+        text "कैसे लागू करें …"
         action implement # action
       surface seed-surface-0e85cc095e8f
-        codepoints 2325 2376 2360 2375 32 2348 2344 2366 2319 2306 32 8230
+        text "कैसे बनाएं …"
         action create # action
       surface seed-surface-06396bf8bea1
-        codepoints 2325 2376 2360 2375 32 2348 2344 2366 2319 2305 32 8230
+        text "कैसे बनाएँ …"
         action create # action
       surface seed-surface-c8ddaa5d199c
-        codepoints 2325 2376 2360 2375 32 2354 2367 2326 2375 2306 32 8230
+        text "कैसे लिखें …"
         action write # action
     lexeme zh # language
       surface seed-surface-5cb444e45d17
-        codepoints 22914 20309 20570 32 8230
+        text "如何做 …"
         action do # action
       surface seed-surface-78aa3e8d39b8
-        codepoints 24590 20040 20570 32 8230
+        text "怎么做 …"
         action do # action
       surface seed-surface-59603ca578ff
-        codepoints 22914 20309 23454 29616 32 8230
+        text "如何实现 …"
         action implement # action
       surface seed-surface-ca9bb44ced10
-        codepoints 24590 20040 23454 29616 32 8230
+        text "怎么实现 …"
         action implement # action
       surface seed-surface-408c66e181f3
-        codepoints 22914 20309 21019 24314 32 8230
+        text "如何创建 …"
         action create # action
       surface seed-surface-bdf964ec26b4
-        codepoints 24590 20040 21019 24314 32 8230
+        text "怎么创建 …"
         action create # action
       surface seed-surface-c17c763c2197
-        codepoints 22914 20309 20889 32 8230
+        text "如何写 …"
         action write # action
       surface seed-surface-d1472de5a88d
-        codepoints 24590 20040 20889 32 8230
+        text "怎么写 …"
         action write # action
   mechanism_predicate:
     defined-by action # definition-link
@@ -210,241 +210,241 @@ meanings
     role mechanism_predicate # semantic-role
     lexeme en # language
       surface seed-surface-215bb33fa40b
-        codepoints 8230 32 119 111 114 107
+        text "… work"
       surface seed-surface-a8a9d5888f6b
-        codepoints 8230 32 119 111 114 107 115
+        text "… works"
       surface seed-surface-87a5571d08cf
-        codepoints 8230 32 115 116 114 117 99 116 117 114 101 100
+        text "… structured"
       surface seed-surface-64cdf9360ef7
-        codepoints 8230 32 111 114 103 97 110 105 122 101 100
+        text "… organized"
       surface seed-surface-b495a7b8a3b5
-        codepoints 8230 32 111 114 103 97 110 105 115 101 100
+        text "… organised"
       surface seed-surface-4f87f71950af
-        codepoints 8230 32 98 117 105 108 116
+        text "… built"
     lexeme ru # language
       surface seed-surface-f06b45a4be75
-        codepoints 8230 32 1088 1072 1073 1086 1090 1072 1077 1090
+        text "… работает"
       surface seed-surface-42b6703df828
-        codepoints 8230 32 1091 1089 1090 1088 1086 1077 1085
+        text "… устроен"
     lexeme hi # language
       surface seed-surface-7c55e80311cb
-        codepoints 8230 32 2325 2366 2350 32 2325 2352 2340 2366 32 2361 2376
+        text "… काम करता है"
       surface seed-surface-0c7346195849
-        codepoints 8230 32 2348 2344 2366 32 2361 2376
+        text "… बना है"
     lexeme zh # language
       surface seed-surface-80bfaffa8530
-        codepoints 8230 24037 20316
+        text …工作
       surface seed-surface-6cbc70a3e022
-        codepoints 8230 26500 24314
+        text …构建
   detail_modifier:
     defined-by property # definition-link
     defined-by mechanism_inquiry # definition-link
     role detail_modifier # semantic-role
     lexeme en # language
       surface seed-surface-03ecd49b1770
-        codepoints 8230 32 105 110 32 100 101 116 97 105 108
+        text "… in detail"
       surface seed-surface-a2b52b623f8d
-        codepoints 8230 32 105 110 116 101 114 110 97 108 108 121
+        text "… internally"
       surface seed-surface-ad7953cf7e06
-        codepoints 8230 32 101 120 97 99 116 108 121
+        text "… exactly"
       surface seed-surface-f4ef7164f4b5
-        codepoints 8230 32 112 108 101 97 115 101
+        text "… please"
     lexeme ru # language
       surface seed-surface-e07f11aa2864
-        codepoints 8230 32 1087 1086 1076 1088 1086 1073 1085 1077 1077
+        text "… подробнее"
       surface seed-surface-9674f5cd55a4
-        codepoints 8230 32 1087 1086 1076 1088 1086 1073 1085 1086
+        text "… подробно"
       surface seed-surface-52f4aae80327
-        codepoints 8230 32 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072
+        text "… пожалуйста"
     lexeme hi # language
       surface seed-surface-18d0c293786f
-        codepoints 8230 32 2357 2367 2360 2381 2340 2366 2352 32 2360 2375
+        text "… विस्तार से"
       surface seed-surface-28917274e0d2
-        codepoints 8230 32 2325 2371 2346 2351 2366
+        text "… कृपया"
     lexeme zh # language
       surface seed-surface-2f51e1f75dad
-        codepoints 8230 35814 32454
+        text …详细
       surface seed-surface-6e76a2e66c8d
-        codepoints 8230 35831
+        text …请
   non_referential_subject:
     defined-by entity # definition-link
     defined-by mechanism_inquiry # definition-link
     role non_referential_subject # semantic-role
     lexeme en # language
       surface seed-surface-4c3e11477067
-        codepoints 105 116
+        text it
       surface seed-surface-a20e5b598755
-        codepoints 116 104 105 115
+        text this
       surface seed-surface-73a4be60193e
-        codepoints 116 104 97 116
+        text that
       surface seed-surface-66ac4b50da0b
-        codepoints 121 111 117
+        text you
       surface seed-surface-04832f33f158
-        codepoints 121 111 117 114 115 101 108 102
+        text yourself
       surface seed-surface-c1be8a802858
-        codepoints 100 111 101 115
+        text does
       surface seed-surface-56b986a18b60
-        codepoints 100 111
+        text do
       surface seed-surface-6c606a96738c
-        codepoints 100 111 101 115 32 8230
+        text "does …"
       surface seed-surface-daa1f1be8f16
-        codepoints 100 111 32 8230
+        text "do …"
       surface seed-surface-d0c8d303ed0b
-        codepoints 116 111 32 8230
+        text "to …"
       surface seed-surface-d92479e7440a
-        codepoints 121 111 117 32 8230
+        text "you …"
     lexeme ru # language
       surface seed-surface-2152a1a6ab9c
-        codepoints 1101 1090 1086
+        text это
       surface seed-surface-c6d7e95e0e62
-        codepoints 1086 1085 1086
+        text оно
       surface seed-surface-14b0bd8a4746
-        codepoints 1086 1085
+        text он
       surface seed-surface-71ac44cbdbbe
-        codepoints 1086 1085 1072
+        text она
       surface seed-surface-b4955d2793cb
-        codepoints 1086 1085 1080
+        text они
       surface seed-surface-3d6a6fa57201
-        codepoints 1090 1099
+        text ты
       surface seed-surface-2b75bb4af618
-        codepoints 1074 1099
+        text вы
     lexeme hi # language
       surface seed-surface-0e74a06a9124
-        codepoints 2351 2361
+        text यह
       surface seed-surface-27321187b802
-        codepoints 2351 2375
+        text ये
     lexeme zh # language
       surface seed-surface-c64e41259877
-        codepoints 36825
+        text 这
       surface seed-surface-93564f7dcf1e
-        codepoints 36825 20010
+        text 这个
       surface seed-surface-0c0eebc890d1
-        codepoints 23427
+        text 它
   procedural_task_modifier:
     defined-by property # definition-link
     defined-by procedural_request # definition-link
     role procedural_task_modifier # semantic-role
     lexeme en # language
       surface seed-surface-14f255ec4c70
-        codepoints 8230 32 115 116 101 112 32 98 121 32 115 116 101 112
+        text "… step by step"
       surface seed-surface-53cae444a9aa
-        codepoints 8230 32 105 110 32 115 116 101 112 115
+        text "… in steps"
       surface seed-surface-b79a01ea4825
-        codepoints 8230 32 119 105 116 104 32 115 116 101 112 115
+        text "… with steps"
       surface seed-surface-a331caeafa46
-        codepoints 8230 32 102 111 114 32 109 101
+        text "… for me"
       surface seed-surface-559da64f9816
-        codepoints 8230 32 112 108 101 97 115 101
+        text "… please"
     lexeme ru # language
       surface seed-surface-50ccc018f733
-        codepoints 8230 32 1085 1072 1087 1080 1096 1080 32 1087 1086 32 1096 1072 1075 1072 1084
+        text "… напиши по шагам"
       surface seed-surface-4471746f4db3
-        codepoints 8230 32 1087 1086 32 1096 1072 1075 1072 1084
+        text "… по шагам"
       surface seed-surface-df2147801e7e
-        codepoints 8230 32 1087 1086 1096 1072 1075 1086 1074 1086
+        text "… пошагово"
       surface seed-surface-345ca7feaac1
-        codepoints 8230 32 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072
+        text "… пожалуйста"
     lexeme hi # language
       surface seed-surface-13abbb4f4b3f
-        codepoints 8230 32 2330 2352 2339 2379 2306 32 2350 2375 2306 32 2354 2367 2326 2379
+        text "… चरणों में लिखो"
       surface seed-surface-82938a33b7e3
-        codepoints 8230 32 2330 2352 2339 2379 2306 32 2350 2375 2306 32 2348 2340 2366 2323
+        text "… चरणों में बताओ"
       surface seed-surface-8fd2db94a5d2
-        codepoints 8230 32 2325 2342 2350 32 2342 2352 32 2325 2342 2350
+        text "… कदम दर कदम"
       surface seed-surface-07fa6450ee9b
-        codepoints 8230 32 2325 2371 2346 2351 2366
+        text "… कृपया"
     lexeme zh # language
       surface seed-surface-5e2c452da240
-        codepoints 8230 32 25353 27493 39588 20889
+        text "… 按步骤写"
       surface seed-surface-0738e87448a7
-        codepoints 8230 32 25353 27493 39588 35828 26126
+        text "… 按步骤说明"
       surface seed-surface-62a06fe12684
-        codepoints 8230 32 19968 27493 19968 27493 20889
+        text "… 一步一步写"
       surface seed-surface-a1a1be16db0b
-        codepoints 8230 32 35831
+        text "… 请"
   common_typo:
     defined-by relation # definition-link
     role common_typo # semantic-role
     lexeme en # language
       surface seed-surface-4bd37f5caa07
-        codepoints 100 105 114 118 101 110
+        text dirven
         action driven # action
     lexeme ru # language
       surface seed-surface-ef1fed7e0774
-        codepoints 1088 1091 1089 1082 1080 1081
+        text руский
         action русский # action
     lexeme hi # language
       surface seed-surface-e605ad13c935
-        codepoints 2357 2375 2348 2360 2366 2312 2335
+        text वेबसाईट
         action वेबसाइट # action
     lexeme zh # language
       surface seed-surface-b2def5c5518a
-        codepoints 30331 38470
+        text 登陆
         action 登录 # action
   topic_scan_stop_word:
     defined-by concept # definition-link
     role topic_scan_stop_word # semantic-role
     lexeme en # language
       surface seed-surface-ed368d743f8f
-        codepoints 105
+        text i
       surface seed-surface-d90097697a84
-        codepoints 116 104 101
+        text the
       surface seed-surface-81982cb4a3a2
-        codepoints 97
+        text a
       surface seed-surface-6617c556a31e
-        codepoints 97 110
+        text an
       surface seed-surface-a0f2dee03a89
-        codepoints 105 110
+        text in
       surface seed-surface-5d995779d5e2
-        codepoints 116 111
+        text to
       surface seed-surface-4437ef8981fb
-        codepoints 102 111 114
+        text for
       surface seed-surface-3fc8514507d2
-        codepoints 111 102
+        text of
       surface seed-surface-87b0075180ac
-        codepoints 97 110 100
+        text and
       surface seed-surface-b14e3a258af3
-        codepoints 111 114
+        text or
       surface seed-surface-8a5f2412a959
-        codepoints 115 111 117 114 99 101
+        text source
     lexeme ru # language
       surface seed-surface-2dfbc5c8267e
-        codepoints 1080
+        text и
       surface seed-surface-50df288b89ad
-        codepoints 1080 1083 1080
+        text или
       surface seed-surface-3d3cfe94ae55
-        codepoints 1074
+        text в
       surface seed-surface-68aba803a12a
-        codepoints 1082
+        text к
       surface seed-surface-a26c92f2a8d2
-        codepoints 1076 1083 1103
+        text для
       surface seed-surface-9eb1ad6c68a5
-        codepoints 1080 1079
+        text из
       surface seed-surface-8afd1dad0390
-        codepoints 1080 1089 1090 1086 1095 1085 1080 1082
+        text источник
     lexeme hi # language
       surface seed-surface-4f7a7b1fea6c
-        codepoints 2324 2352
+        text और
       surface seed-surface-6de2968facd8
-        codepoints 2351 2366
+        text या
       surface seed-surface-002ddc18a46d
-        codepoints 2350 2375 2306
+        text में
       surface seed-surface-f49126695270
-        codepoints 2325 2379
+        text को
       surface seed-surface-91a58b11bca8
-        codepoints 2325 2375
+        text के
       surface seed-surface-beb6f6ccb8a6
-        codepoints 2325 2366
+        text का
       surface seed-surface-bbda5fde8cfb
-        codepoints 2360 2381 2352 2379 2340
+        text स्रोत
     lexeme zh # language
       surface seed-surface-77a7703dd185
-        codepoints 21644
+        text 和
       surface seed-surface-b5e545d44890
-        codepoints 25110
+        text 或
       surface seed-surface-503976ffa16a
-        codepoints 22312
+        text 在
       surface seed-surface-bdca06898f2e
-        codepoints 30340
+        text 的
       surface seed-surface-31c27c41da73
-        codepoints 26469 28304
+        text 来源

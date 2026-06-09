@@ -6,203 +6,203 @@ meanings
     role proof_claim_scaffold # semantic-role
     lexeme en # language
       surface seed-surface-ecfe3945b24a
-        codepoints 112 114 111 118 101
+        text prove
       surface seed-surface-0efd40242637
-        codepoints 112 114 111 111 102
+        text proof
       surface seed-surface-58a2c3b5dfba
-        codepoints 112 114 111 118 101 32 116 104 97 116 32 8230
+        text "prove that …"
       surface seed-surface-a3fba3067b29
-        codepoints 112 114 111 118 101 32 8230
+        text "prove …"
       surface seed-surface-ad2553ecc0fe
-        codepoints 112 114 111 111 102 32 111 102 32 8230
+        text "proof of …"
       surface seed-surface-9c2cce2d776c
-        codepoints 112 114 111 111 102 32 116 104 97 116 32 8230
+        text "proof that …"
       surface seed-surface-c90f2c1d32a4
-        codepoints 115 104 111 119 32 116 104 97 116 32 8230
+        text "show that …"
       surface seed-surface-67b4de215085
-        codepoints 100 101 109 111 110 115 116 114 97 116 101 32 116 104 97 116 32 8230
+        text "demonstrate that …"
       surface seed-surface-cac664b35f31
-        codepoints 100 101 109 111 110 115 116 114 97 116 101 32 8230
+        text "demonstrate …"
       surface seed-surface-fa2a2ef2ab07
-        codepoints 99 97 110 32 121 111 117 32 112 114 111 118 101 32 116 104 97 116 32 8230
+        text "can you prove that …"
       surface seed-surface-d9c665db43a4
-        codepoints 99 97 110 32 121 111 117 32 112 114 111 118 101 32 8230
+        text "can you prove …"
       surface seed-surface-d3268df2d093
-        codepoints 99 111 117 108 100 32 121 111 117 32 112 114 111 118 101 32 116 104 97 116 32 8230
+        text "could you prove that …"
       surface seed-surface-dcd9f657bc2a
-        codepoints 99 111 117 108 100 32 121 111 117 32 112 114 111 118 101 32 8230
+        text "could you prove …"
       surface seed-surface-53e496d36020
-        codepoints 112 108 101 97 115 101 32 112 114 111 118 101 32 116 104 97 116 32 8230
+        text "please prove that …"
       surface seed-surface-12a040a67ef8
-        codepoints 112 108 101 97 115 101 32 112 114 111 118 101 32 8230
+        text "please prove …"
       surface seed-surface-112782605bd6
-        codepoints 103 105 118 101 32 109 101 32 97 32 112 114 111 111 102 32 111 102 32 8230
+        text "give me a proof of …"
       surface seed-surface-9d6874660de8
-        codepoints 103 105 118 101 32 109 101 32 97 32 112 114 111 111 102 32 116 104 97 116 32 8230
+        text "give me a proof that …"
       surface seed-surface-c7dd923c8a66
-        codepoints 103 105 118 101 32 97 32 112 114 111 111 102 32 111 102 32 8230
+        text "give a proof of …"
       surface seed-surface-e4126a9907b4
-        codepoints 103 105 118 101 32 97 32 112 114 111 111 102 32 116 104 97 116 32 8230
+        text "give a proof that …"
     lexeme ru # language
       surface seed-surface-061ca4be2a0c
-        codepoints 1076 1086 1082 1072 1078 1080
+        text докажи
       surface seed-surface-b27b43cd1c80
-        codepoints 1076 1086 1082 1072 1078 1080 1090 1077
+        text докажите
       surface seed-surface-ea8e53b387ee
-        codepoints 1076 1086 1082 1072 1079 1072 1090 1100
+        text доказать
       surface seed-surface-7d79862b08b7
-        codepoints 1076 1086 1082 1072 1079 1072 1090 1077 1083 1100 1089 1090 1074 1086
+        text доказательство
       surface seed-surface-c386979e2392
-        codepoints 1076 1086 1082 1072 1078 1080 32 1095 1090 1086 32 8230
+        text "докажи что …"
       surface seed-surface-de646229faf2
-        codepoints 1076 1086 1082 1072 1078 1080 1090 1077 32 1095 1090 1086 32 8230
+        text "докажите что …"
       surface seed-surface-f84bd62ea44b
-        codepoints 1076 1086 1082 1072 1079 1072 1090 1100 32 1095 1090 1086 32 8230
+        text "доказать что …"
       surface seed-surface-2aee89612deb
-        codepoints 1076 1086 1082 1072 1078 1080 1090 1077 32 8230
+        text "докажите …"
       surface seed-surface-effa72f542fa
-        codepoints 1076 1086 1082 1072 1078 1080 32 8230
+        text "докажи …"
       surface seed-surface-bbbffac8a1df
-        codepoints 1076 1086 1082 1072 1079 1072 1090 1100 32 8230
+        text "доказать …"
       surface seed-surface-a9200b93043b
-        codepoints 1076 1086 1082 1072 1079 1072 1090 1077 1083 1100 1089 1090 1074 1086 32 8230
+        text "доказательство …"
     lexeme hi # language
       surface seed-surface-ea0fcb261c3d
-        codepoints 2360 2366 2348 2367 2340 32 2325 2352 2379 32 2325 2367 32 8230
+        text "साबित करो कि …"
       surface seed-surface-839199cc4947
-        codepoints 2360 2366 2348 2367 2340 32 2325 2368 2332 2367 2319 32 2325 2367 32 8230
+        text "साबित कीजिए कि …"
       surface seed-surface-e769d971c659
-        codepoints 2360 2366 2348 2367 2340 32 2325 2352 32 8230
+        text "साबित कर …"
       surface seed-surface-e48114770a2a
-        codepoints 2360 2367 2342 2381 2343 32 2325 2368 2332 2367 2319 32 2325 2367 32 8230
+        text "सिद्ध कीजिए कि …"
       surface seed-surface-2cb19260e809
-        codepoints 2360 2367 2342 2381 2343 32 2325 2352 2379 32 2325 2367 32 8230
+        text "सिद्ध करो कि …"
     lexeme zh # language
       surface seed-surface-a831491b6170
-        codepoints 35777 26126 8230
+        text 证明…
       surface seed-surface-67d323d6a587
-        codepoints 35657 26126 8230
+        text 證明…
   proof_request_frame:
     defined-by inquiry # definition-link
     defined-by prove # definition-link
     role proof_request_lead # semantic-role
     lexeme en # language
       surface seed-surface-9fd02ab255be
-        codepoints 99 97 110 32 121 111 117 32 112 114 111 118 101 8230
+        text "can you prove…"
       surface seed-surface-3a468204f9b2
-        codepoints 99 111 117 108 100 32 121 111 117 32 112 114 111 118 101 8230
+        text "could you prove…"
       surface seed-surface-9613f907382e
-        codepoints 112 108 101 97 115 101 32 112 114 111 118 101 8230
+        text "please prove…"
       surface seed-surface-2a484e065c4a
-        codepoints 103 105 118 101 32 109 101 32 97 32 112 114 111 111 102 8230
+        text "give me a proof…"
       surface seed-surface-bc4616ad4bf3
-        codepoints 103 105 118 101 32 97 32 112 114 111 111 102 8230
+        text "give a proof…"
       surface seed-surface-25297c9d131e
-        codepoints 115 104 111 119 32 116 104 97 116 32 8230
+        text "show that …"
       surface seed-surface-7855d525f96f
-        codepoints 100 101 109 111 110 115 116 114 97 116 101 32 116 104 97 116 32 8230
+        text "demonstrate that …"
     lexeme ru # language
       surface seed-surface-65da93150115
-        codepoints 1084 1086 1078 1077 1096 1100 32 1076 1086 1082 1072 1079 1072 1090 1100 8230
+        text "можешь доказать…"
       surface seed-surface-c25f638ebcd6
-        codepoints 1084 1086 1078 1077 1090 1077 32 1076 1086 1082 1072 1079 1072 1090 1100 8230
+        text "можете доказать…"
       surface seed-surface-521e392a7b00
-        codepoints 1089 1084 1086 1078 1077 1096 1100 32 1076 1086 1082 1072 1079 1072 1090 1100 8230
+        text "сможешь доказать…"
       surface seed-surface-de5e71cda9a2
-        codepoints 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072 32 1076 1086 1082 1072 1078 1080 8230
+        text "пожалуйста докажи…"
       surface seed-surface-2bf2911b7fde
-        codepoints 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072 32 1076 1086 1082 1072 1078 1080 1090 1077 8230
+        text "пожалуйста докажите…"
     lexeme hi # language
       surface seed-surface-dd79e0019b7b
-        codepoints 2325 2381 2351 2366 32 2310 2346 32 2360 2366 2348 2367 2340 32 2325 2352 32 2360 2325 2340 2375 32 2361 2376 2306 8230
+        text "क्या आप साबित कर सकते हैं…"
       surface seed-surface-aa1bfc678568
-        codepoints 2325 2381 2351 2366 32 2310 2346 32 2360 2367 2342 2381 2343 32 2325 2352 32 2360 2325 2340 2375 32 2361 2376 2306 8230
+        text "क्या आप सिद्ध कर सकते हैं…"
       surface seed-surface-b2ff44b78ca9
-        codepoints 2325 2371 2346 2351 2366 32 2360 2367 2342 2381 2343 32 2325 2368 2332 2367 2319 8230
+        text "कृपया सिद्ध कीजिए…"
       surface seed-surface-0a78e2893ec0
-        codepoints 2325 2371 2346 2351 2366 32 2360 2366 2348 2367 2340 32 2325 2368 2332 2367 2319 8230
+        text "कृपया साबित कीजिए…"
     lexeme zh # language
       surface seed-surface-1da0a925d01f
-        codepoints 20320 33021 35777 26126 8230
+        text 你能证明…
       surface seed-surface-269e6df30c11
-        codepoints 20320 33021 35657 26126 8230
+        text 你能證明…
       surface seed-surface-ba4069113226
-        codepoints 35831 35777 26126 8230
+        text 请证明…
       surface seed-surface-40451ea84dd9
-        codepoints 35531 35657 26126 8230
+        text 請證明…
   proof_assertion:
     defined-by inquiry # definition-link
     defined-by prove # definition-link
     role proof_marker # semantic-role
     lexeme en # language
       surface seed-surface-e98448e4ba63
-        codepoints 32 112 114 111 118 101 32 116 104 97 116 32
+        text " prove that "
       surface seed-surface-f484f1f50791
-        codepoints 32 112 114 111 111 102 32 111 102 32
+        text " proof of "
     lexeme ru # language
       surface seed-surface-e9171156d051
-        codepoints 32 1076 1086 1082 1072 1078 1080 32
+        text " докажи "
       surface seed-surface-f436354dbe0c
-        codepoints 32 1076 1086 1082 1072 1078 1080 1090 1077 32
+        text " докажите "
       surface seed-surface-e65885570249
-        codepoints 32 1076 1086 1082 1072 1079 1072 1090 1100 32
+        text " доказать "
       surface seed-surface-f1f681123be8
-        codepoints 32 1076 1086 1082 1072 1079 1072 1090 1077 1083 1100 1089 1090 1074 1086 32
+        text " доказательство "
     lexeme hi # language
       surface seed-surface-8034c1bcc193
-        codepoints 2360 2366 2348 2367 2340 32 2325 2352
+        text "साबित कर"
       surface seed-surface-e4b29a8f68b3
-        codepoints 2360 2366 2348 2367 2340 32 2325 2368 2332 2367 2319
+        text "साबित कीजिए"
       surface seed-surface-acbcb96d62da
-        codepoints 2360 2366 2348 2367 2340 32 2325 2368 2332 2367 2351 2375
+        text "साबित कीजिये"
       surface seed-surface-46cf72aaca5b
-        codepoints 2360 2367 2342 2381 2343 32 2325 2352
+        text "सिद्ध कर"
       surface seed-surface-538439b21f10
-        codepoints 2360 2367 2342 2381 2343 32 2325 2368 2332 2367 2319
+        text "सिद्ध कीजिए"
       surface seed-surface-85551ac29ad5
-        codepoints 2360 2367 2342 2381 2343 32 2325 2368 2332 2367 2351 2375
+        text "सिद्ध कीजिये"
       surface seed-surface-9d178fa4034e
-        codepoints 2346 2381 2352 2350 2366 2339
+        text प्रमाण
     lexeme zh # language
       surface seed-surface-18fcdc0ad30e
-        codepoints 35777 26126
+        text 证明
       surface seed-surface-b21afdf8d660
-        codepoints 35657 26126
+        text 證明
   godel:
     defined-by concept # definition-link
     role proof_concept_godel # semantic-role
     lexeme en # language
       surface seed-surface-86087f8d2b6f
-        codepoints 103 111 100 101 108
+        text godel
       surface seed-surface-72d3bbf328a2
-        codepoints 103 246 100 101 108
+        text gödel
     lexeme ru # language
       surface seed-surface-0ca11dec19f6
-        codepoints 1075 1105 1076 1077 1083
+        text гёдел
       surface seed-surface-46dd030d6506
-        codepoints 1075 1105 1076 1077 1083 1103
+        text гёделя
       surface seed-surface-2938816e1f36
-        codepoints 1075 1077 1076 1077 1083
+        text гедел
     lexeme hi # language
       surface seed-surface-5d58232d37fe
-        codepoints 2327 2379 2337 2375 2354
+        text गोडेल
     lexeme zh # language
       surface seed-surface-828978faab61
-        codepoints 21733 24503 23572
+        text 哥德尔
   determinism:
     defined-by concept # definition-link
     role proof_concept_determinism # semantic-role
     lexeme en # language
       surface seed-surface-efcd91b7e202
-        codepoints 100 101 116 101 114 109 105 110 105 115 109
+        text determinism
       surface seed-surface-1da2cce1db6f
-        codepoints 100 101 116 101 114 109 105 110 105 115 116 105 99
+        text deterministic
     lexeme ru # language
       surface seed-surface-5691c1dc5975
-        codepoints 1076 1077 1090 1077 1088 1084 1080 1085 1080 1079 1084
+        text детерминизм
     lexeme hi # language
       surface seed-surface-d2ab3965ca8d
-        codepoints 2344 2367 2352 2381 2343 2366 2352 2339 2357 2366 2342
+        text निर्धारणवाद
     lexeme zh # language
       surface seed-surface-18ead0abba53
-        codepoints 20915 23450 35770
+        text 决定论

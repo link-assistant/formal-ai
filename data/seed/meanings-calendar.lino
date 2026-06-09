@@ -4,196 +4,196 @@ meanings
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-f382ba87bc78
-        codepoints 109 111 110 100 97 121
+        text monday
       surface seed-surface-23c2e196685e
-        codepoints 109 111 110
+        text mon
     lexeme ru # language
       surface seed-surface-2686d07b02c8
-        codepoints 1087 1086 1085 1077 1076 1077 1083 1100 1085 1080 1082
+        text понедельник
       surface seed-surface-9cbc891de9e7
-        codepoints 1087 1086 1085 1077 1076 1077 1083 1100 1085 1080 1082 1072
+        text понедельника
       surface seed-surface-0bc4f1405694
-        codepoints 1087 1086 1085 1077 1076 1077 1083 1100 1085 1080 1082 1086 1084
+        text понедельником
       surface seed-surface-a1b978e61b74
-        codepoints 1087 1086 1085 1077 1076 1077 1083 1100 1085 1080 1082 1091
+        text понедельнику
       surface seed-surface-e1bdf185425e
-        codepoints 1087 1086 1085 1077 1076 1077 1083 1100 1085 1080 1082 1077
+        text понедельнике
     lexeme hi # language
       surface seed-surface-5daabe2c3e5d
-        codepoints 2360 2379 2350 2357 2366 2352
+        text सोमवार
     lexeme zh # language
       surface seed-surface-f9c927eec440
-        codepoints 26143 26399 19968
+        text 星期一
       surface seed-surface-16ca6eb2399e
-        codepoints 21608 19968
+        text 周一
   tuesday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-2c07de148ce7
-        codepoints 116 117 101 115 100 97 121
+        text tuesday
       surface seed-surface-482a24d5cb63
-        codepoints 116 117 101
+        text tue
       surface seed-surface-cb76cc4c12e3
-        codepoints 116 117 101 115
+        text tues
     lexeme ru # language
       surface seed-surface-6d852650f1b2
-        codepoints 1074 1090 1086 1088 1085 1080 1082
+        text вторник
       surface seed-surface-0ccdc38d8dad
-        codepoints 1074 1090 1086 1088 1085 1080 1082 1072
+        text вторника
       surface seed-surface-fb1b63c198db
-        codepoints 1074 1090 1086 1088 1085 1080 1082 1086 1084
+        text вторником
       surface seed-surface-b8a85352a70c
-        codepoints 1074 1090 1086 1088 1085 1080 1082 1091
+        text вторнику
       surface seed-surface-b05271afceb2
-        codepoints 1074 1090 1086 1088 1085 1080 1082 1077
+        text вторнике
     lexeme hi # language
       surface seed-surface-4ae7c15ce9d5
-        codepoints 2350 2306 2327 2354 2357 2366 2352
+        text मंगलवार
     lexeme zh # language
       surface seed-surface-ded9fcef2e77
-        codepoints 26143 26399 20108
+        text 星期二
       surface seed-surface-f2a717b78573
-        codepoints 21608 20108
+        text 周二
   wednesday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-bdeca405520e
-        codepoints 119 101 100 110 101 115 100 97 121
+        text wednesday
       surface seed-surface-2283115c74b2
-        codepoints 119 101 100
+        text wed
     lexeme ru # language
       surface seed-surface-10b970e804e2
-        codepoints 1089 1088 1077 1076 1072
+        text среда
       surface seed-surface-ed897384b7c9
-        codepoints 1089 1088 1077 1076 1099
+        text среды
       surface seed-surface-5c5465b7656b
-        codepoints 1089 1088 1077 1076 1077
+        text среде
       surface seed-surface-94235c70faef
-        codepoints 1089 1088 1077 1076 1091
+        text среду
       surface seed-surface-e097a9829507
-        codepoints 1089 1088 1077 1076 1086 1081
+        text средой
     lexeme hi # language
       surface seed-surface-f6ecb305ccc1
-        codepoints 2348 2369 2343 2357 2366 2352
+        text बुधवार
     lexeme zh # language
       surface seed-surface-c0babe36cc51
-        codepoints 26143 26399 19977
+        text 星期三
       surface seed-surface-d23a428f2b4b
-        codepoints 21608 19977
+        text 周三
   thursday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-3ab529f135e4
-        codepoints 116 104 117 114 115 100 97 121
+        text thursday
       surface seed-surface-4506b332b41d
-        codepoints 116 104 117
+        text thu
       surface seed-surface-c56459b4166e
-        codepoints 116 104 117 114
+        text thur
       surface seed-surface-68dc2c9f1957
-        codepoints 116 104 117 114 115
+        text thurs
     lexeme ru # language
       surface seed-surface-b911e857635c
-        codepoints 1095 1077 1090 1074 1077 1088 1075
+        text четверг
       surface seed-surface-ae7d41f4cbed
-        codepoints 1095 1077 1090 1074 1077 1088 1075 1072
+        text четверга
       surface seed-surface-f5bfdb65708a
-        codepoints 1095 1077 1090 1074 1077 1088 1075 1086 1084
+        text четвергом
       surface seed-surface-5b6abecc3607
-        codepoints 1095 1077 1090 1074 1077 1088 1075 1091
+        text четвергу
       surface seed-surface-212a2d9e8c99
-        codepoints 1095 1077 1090 1074 1077 1088 1075 1077
+        text четверге
     lexeme hi # language
       surface seed-surface-ae64b17cc80d
-        codepoints 2327 2369 2352 2369 2357 2366 2352
+        text गुरुवार
     lexeme zh # language
       surface seed-surface-313fc87d71c7
-        codepoints 26143 26399 22235
+        text 星期四
       surface seed-surface-8a73af8845df
-        codepoints 21608 22235
+        text 周四
   friday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-3012b4aef584
-        codepoints 102 114 105 100 97 121
+        text friday
       surface seed-surface-68ec9e7fe981
-        codepoints 102 114 105
+        text fri
     lexeme ru # language
       surface seed-surface-4d2734ece673
-        codepoints 1087 1103 1090 1085 1080 1094 1072
+        text пятница
       surface seed-surface-e7143d4dd15f
-        codepoints 1087 1103 1090 1085 1080 1094 1099
+        text пятницы
       surface seed-surface-9a6ee5851b73
-        codepoints 1087 1103 1090 1085 1080 1094 1077
+        text пятнице
       surface seed-surface-22f09048acff
-        codepoints 1087 1103 1090 1085 1080 1094 1091
+        text пятницу
       surface seed-surface-8704bfe6806e
-        codepoints 1087 1103 1090 1085 1080 1094 1077 1081
+        text пятницей
     lexeme hi # language
       surface seed-surface-485e219c4d28
-        codepoints 2358 2369 2325 2381 2352 2357 2366 2352
+        text शुक्रवार
     lexeme zh # language
       surface seed-surface-e08b09441b80
-        codepoints 26143 26399 20116
+        text 星期五
       surface seed-surface-07841dfbb3f6
-        codepoints 21608 20116
+        text 周五
   saturday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-7321d282f36c
-        codepoints 115 97 116 117 114 100 97 121
+        text saturday
       surface seed-surface-b204a2b3842e
-        codepoints 115 97 116
+        text sat
     lexeme ru # language
       surface seed-surface-2f33b4092327
-        codepoints 1089 1091 1073 1073 1086 1090 1072
+        text суббота
       surface seed-surface-3a4eb6170911
-        codepoints 1089 1091 1073 1073 1086 1090 1099
+        text субботы
       surface seed-surface-405db3d8852e
-        codepoints 1089 1091 1073 1073 1086 1090 1077
+        text субботе
       surface seed-surface-9aeecbc6d23a
-        codepoints 1089 1091 1073 1073 1086 1090 1091
+        text субботу
       surface seed-surface-c315b020edf2
-        codepoints 1089 1091 1073 1073 1086 1090 1086 1081
+        text субботой
     lexeme hi # language
       surface seed-surface-be0446ca84cc
-        codepoints 2358 2344 2367 2357 2366 2352
+        text शनिवार
     lexeme zh # language
       surface seed-surface-afc759e47532
-        codepoints 26143 26399 20845
+        text 星期六
       surface seed-surface-ab1faba09a28
-        codepoints 21608 20845
+        text 周六
   sunday:
     defined-by calendar_day # definition-link
     role calendar_weekday # semantic-role
     lexeme en # language
       surface seed-surface-b7f7e0d28dd5
-        codepoints 115 117 110 100 97 121
+        text sunday
       surface seed-surface-0656411203fa
-        codepoints 115 117 110
+        text sun
     lexeme ru # language
       surface seed-surface-a52b4dec7ef5
-        codepoints 1074 1086 1089 1082 1088 1077 1089 1077 1085 1100 1077
+        text воскресенье
       surface seed-surface-f14907d44d1e
-        codepoints 1074 1086 1089 1082 1088 1077 1089 1077 1085 1100 1103
+        text воскресенья
       surface seed-surface-98bde41f2640
-        codepoints 1074 1086 1089 1082 1088 1077 1089 1077 1085 1100 1102
+        text воскресенью
       surface seed-surface-85deebf05713
-        codepoints 1074 1086 1089 1082 1088 1077 1089 1077 1085 1100 1077 1084
+        text воскресеньем
     lexeme hi # language
       surface seed-surface-e170f73809cb
-        codepoints 2352 2357 2367 2357 2366 2352
+        text रविवार
     lexeme zh # language
       surface seed-surface-56232a95085b
-        codepoints 26143 26399 26085
+        text 星期日
       surface seed-surface-53634b3bc79c
-        codepoints 26143 26399 22825
+        text 星期天
       surface seed-surface-be301fad779c
-        codepoints 21608 26085
+        text 周日
   calendar_day:
     defined-by calendar_week # definition-link
     defined-by calendar_date # definition-link
@@ -201,223 +201,223 @@ meanings
     role calendar_day_reference # semantic-role
     lexeme en # language
       surface seed-surface-8089f406576b
-        codepoints 100 97 121
+        text day
       surface seed-surface-ef7f92b2cfed
-        codepoints 119 101 101 107 100 97 121
+        text weekday
       surface seed-surface-3fec8127587e
-        codepoints 119 101 101 107 32 100 97 121
+        text "week day"
     lexeme ru # language
       surface seed-surface-628cc83a2999
-        codepoints 1076 1077 1085 1100
+        text день
       surface seed-surface-b89a4e3e8e57
-        codepoints 1076 1085 1103
+        text дня
       surface seed-surface-c372d6e2e20a
-        codepoints 1076 1085 1080
+        text дни
       surface seed-surface-550851eea773
-        codepoints 1076 1085 1077 1081
+        text дней
     lexeme hi # language
       surface seed-surface-6d641f885e2c
-        codepoints 2342 2367 2344
+        text दिन
     lexeme zh # language
       surface seed-surface-2d92f72503cd
-        codepoints 26143 26399 20960
+        text 星期几
       surface seed-surface-825686a5da7e
-        codepoints 26085 23376
+        text 日子
   calendar_date:
     defined-by calendar_day # definition-link
     role calendar_day_reference # semantic-role
     lexeme en # language
       surface seed-surface-ad364193a7ff
-        codepoints 100 97 116 101
+        text date
     lexeme ru # language
       surface seed-surface-8f67cf2db19b
-        codepoints 1076 1072 1090 1072
+        text дата
       surface seed-surface-5a19a4ebfaf3
-        codepoints 1076 1072 1090 1091
+        text дату
       surface seed-surface-17a7fc0bafd2
-        codepoints 1095 1080 1089 1083 1086
+        text число
     lexeme hi # language
       surface seed-surface-c1e2bf8a56bb
-        codepoints 2340 2366 2352 2368 2326
+        text तारीख
       surface seed-surface-741b7db5a992
-        codepoints 2342 2367 2344 2366 2306 2325
+        text दिनांक
     lexeme zh # language
       surface seed-surface-eb6f7826b1fd
-        codepoints 26085 26399
+        text 日期
       surface seed-surface-ad3be0ca7391
-        codepoints 20960 21495
+        text 几号
   calendar_week:
     defined-by calendar_day # definition-link
     role calendar_day_reference # semantic-role
     lexeme en # language
       surface seed-surface-ec41011f4540
-        codepoints 119 101 101 107
+        text week
     lexeme ru # language
       surface seed-surface-5c07035926d6
-        codepoints 1085 1077 1076 1077 1083 1103
+        text неделя
       surface seed-surface-5a8dd0ded59f
-        codepoints 1085 1077 1076 1077 1083 1080
+        text недели
       surface seed-surface-b9a62bd11848
-        codepoints 1085 1077 1076 1077 1083 1077
+        text неделе
       surface seed-surface-464999642aab
-        codepoints 1085 1077 1076 1077 1083 1102
+        text неделю
       surface seed-surface-b39e8e278e08
-        codepoints 1085 1077 1076 1077 1083 1077 1081
+        text неделей
       surface seed-surface-b711ae5d7ad9
-        codepoints 1085 1077 1076 1077 1083 1100
+        text недель
     lexeme hi # language
       surface seed-surface-18c506efeea5
-        codepoints 2360 2346 2381 2340 2366 2361
+        text सप्ताह
     lexeme zh # language
       surface seed-surface-0a46ddde7de6
-        codepoints 26143 26399
+        text 星期
       surface seed-surface-1aca64eee800
-        codepoints 21608
+        text 周
   calendar_following:
     defined-by calendar_day # definition-link
     role calendar_direction_next # semantic-role
     lexeme en # language
       surface seed-surface-355a7f41aecf
-        codepoints 97 102 116 101 114
+        text after
       surface seed-surface-37e764631521
-        codepoints 99 111 109 101 115 32 97 102 116 101 114
+        text "comes after"
       surface seed-surface-b53393dae260
-        codepoints 100 97 121 32 97 102 116 101 114
+        text "day after"
       surface seed-surface-3a9d982f9764
-        codepoints 110 101 120 116 32 100 97 121
+        text "next day"
       surface seed-surface-35d5b0691e5f
-        codepoints 102 111 108 108 111 119 105 110 103 32 100 97 121
+        text "following day"
       surface seed-surface-d3f200683127
-        codepoints 102 111 108 108 111 119 105 110 103 32 119 101 101 107 100 97 121
+        text "following weekday"
       surface seed-surface-214b2afceb89
-        codepoints 102 111 108 108 111 119 115
+        text follows
     lexeme ru # language
       surface seed-surface-34f525a256f2
-        codepoints 1087 1086 1089 1083 1077
+        text после
       surface seed-surface-32e1162fd0b9
-        codepoints 1085 1072 1089 1090 1091 1087 1072 1077 1090 32 1087 1086 1089 1083 1077
+        text "наступает после"
       surface seed-surface-ed8a32efddfb
-        codepoints 1089 1083 1077 1076 1091 1102 1097 1080 1081 32 1076 1077 1085 1100
+        text "следующий день"
       surface seed-surface-ea2d32d0297b
-        codepoints 1089 1083 1077 1076 1091 1102 1097 1072 1103
+        text следующая
       surface seed-surface-67f4ef9fc192
-        codepoints 1089 1083 1077 1076 1086 1084 32 1079 1072
+        text "следом за"
     lexeme hi # language
       surface seed-surface-ed60f70317af
-        codepoints 2325 2375 32 2348 2366 2342
+        text "के बाद"
       surface seed-surface-665748829bc2
-        codepoints 2348 2366 2342
+        text बाद
       surface seed-surface-de40ca1e9b91
-        codepoints 2309 2327 2354 2366
+        text अगला
       surface seed-surface-79c036e31656
-        codepoints 2309 2327 2354 2375
+        text अगले
     lexeme zh # language
       surface seed-surface-9650653f4817
-        codepoints 20043 21518
+        text 之后
       surface seed-surface-880e91dc59d2
-        codepoints 21518
+        text 后
       surface seed-surface-238ba9bf0e1b
-        codepoints 19979 19968 20010
+        text 下一个
       surface seed-surface-20177a95e744
-        codepoints 19979 19968 22825
+        text 下一天
   calendar_preceding:
     defined-by calendar_day # definition-link
     role calendar_direction_previous # semantic-role
     lexeme en # language
       surface seed-surface-e2d1237f193e
-        codepoints 98 101 102 111 114 101
+        text before
       surface seed-surface-e514bced7513
-        codepoints 99 111 109 101 115 32 98 101 102 111 114 101
+        text "comes before"
       surface seed-surface-a89322fea565
-        codepoints 100 97 121 32 98 101 102 111 114 101
+        text "day before"
       surface seed-surface-2a0ce4da6294
-        codepoints 112 114 101 118 105 111 117 115 32 100 97 121
+        text "previous day"
       surface seed-surface-2354e986de52
-        codepoints 112 114 101 118 105 111 117 115 32 119 101 101 107 100 97 121
+        text "previous weekday"
       surface seed-surface-d806d6ec85e8
-        codepoints 112 114 101 99 101 100 101 115
+        text precedes
     lexeme ru # language
       surface seed-surface-3b7a97298e16
-        codepoints 1087 1077 1088 1077 1076
+        text перед
       surface seed-surface-3e7eb38b0830
-        codepoints 1087 1088 1077 1076 1099 1076 1091 1097 1080 1081 32 1076 1077 1085 1100
+        text "предыдущий день"
       surface seed-surface-7d6d13907a8c
-        codepoints 1087 1088 1077 1076 1099 1076 1091 1097 1072 1103
+        text предыдущая
       surface seed-surface-647300c5474e
-        codepoints 1087 1088 1077 1076 1096 1077 1089 1090 1074 1091 1077 1090
+        text предшествует
     lexeme hi # language
       surface seed-surface-1d9c1a752a43
-        codepoints 2360 2375 32 2346 2361 2354 2375
+        text "से पहले"
       surface seed-surface-7d9499ad9947
-        codepoints 2325 2375 32 2346 2361 2354 2375
+        text "के पहले"
       surface seed-surface-9447d372c438
-        codepoints 2346 2361 2354 2375
+        text पहले
       surface seed-surface-a0a2201c744f
-        codepoints 2346 2367 2331 2354 2366
+        text पिछला
     lexeme zh # language
       surface seed-surface-4a87d272ab2a
-        codepoints 20043 21069
+        text 之前
       surface seed-surface-c9af6f51f4a0
-        codepoints 21069
+        text 前
       surface seed-surface-b33f11e424c2
-        codepoints 19978 19968 20010
+        text 上一个
       surface seed-surface-d97dc269e365
-        codepoints 19978 19968 22825
+        text 上一天
   calendar_today:
     defined-by calendar_day # definition-link
     role calendar_today # semantic-role
     lexeme en # language
       surface seed-surface-660a3c999415
-        codepoints 116 111 100 97 121
+        text today
     lexeme ru # language
       surface seed-surface-15a0cbbe9965
-        codepoints 1089 1077 1075 1086 1076 1085 1103
+        text сегодня
     lexeme hi # language
       surface seed-surface-0a69231c547a
-        codepoints 2310 2332
+        text आज
     lexeme zh # language
       surface seed-surface-b99cdcf817ef
-        codepoints 20170 22825
+        text 今天
   calendar_interrogative:
     defined-by calendar_day # definition-link
     role calendar_question # semantic-role
     lexeme en # language
       surface seed-surface-0b4047a7e10c
-        codepoints 119 104 97 116
+        text what
       surface seed-surface-c6ac898a7473
-        codepoints 119 104 105 99 104
+        text which
       surface seed-surface-35158b8180a5
-        codepoints 116 101 108 108 32 109 101
+        text "tell me"
       surface seed-surface-d246e6683b41
-        codepoints 115 104 111 119
+        text show
       surface seed-surface-5b5bdf8a84f1
-        codepoints 63
+        text ?
     lexeme ru # language
       surface seed-surface-b9251468f1ac
-        codepoints 1082 1072 1082 1086 1081
+        text какой
       surface seed-surface-5cfecd39e7af
-        codepoints 1082 1072 1082 1072 1103
+        text какая
       surface seed-surface-cf67d808cf35
-        codepoints 1082 1072 1082 1086 1077
+        text какое
       surface seed-surface-aba65a315918
-        codepoints 1089 1082 1072 1078 1080
+        text скажи
       surface seed-surface-8c2827693c71
-        codepoints 1087 1086 1082 1072 1078 1080
+        text покажи
     lexeme hi # language
       surface seed-surface-0552ceff358f
-        codepoints 2325 2380 2344
+        text कौन
       surface seed-surface-12c6b4997c32
-        codepoints 2325 2381 2351 2366
+        text क्या
       surface seed-surface-7c455e66e322
-        codepoints 2348 2340 2366 2323
+        text बताओ
       surface seed-surface-6b06f8dd8dec
-        codepoints 2342 2367 2326 2366 2323
+        text दिखाओ
     lexeme zh # language
       surface seed-surface-ce26d0ff30d6
-        codepoints 20160 20040
+        text 什么
       surface seed-surface-a1e7a8cb5a95
-        codepoints 20960
+        text 几
       surface seed-surface-25328e66b081
-        codepoints 21578 35785
+        text 告诉
       surface seed-surface-e08de3e48ea4
-        codepoints 26174 31034
+        text 显示

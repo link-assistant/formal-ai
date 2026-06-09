@@ -7,438 +7,438 @@ meanings
     role measurement_concept # semantic-role
     lexeme en # language
       surface seed-surface-e5eea6f6f319
-        codepoints 113 117 97 110 116 105 116 121
+        text quantity
     lexeme ru # language
       surface seed-surface-793d78eb76a0
-        codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1086
+        text количество
     lexeme hi # language
       surface seed-surface-ee7b6a797d59
-        codepoints 2350 2366 2340 2381 2352 2366
+        text मात्रा
     lexeme zh # language
       surface seed-surface-9f242789df0e
-        codepoints 25968 37327
+        text 数量
   unit:
     defined-by quantity # definition-link
     role measurement_concept # semantic-role
     lexeme en # language
       surface seed-surface-a5ead0f56066
-        codepoints 117 110 105 116
+        text unit
     lexeme ru # language
       surface seed-surface-07fc96f15559
-        codepoints 1077 1076 1080 1085 1080 1094 1072
+        text единица
     lexeme hi # language
       surface seed-surface-078cf8ab716f
-        codepoints 2311 2325 2366 2312
+        text इकाई
     lexeme zh # language
       surface seed-surface-ade130c7c173
-        codepoints 21333 20301
+        text 单位
   cardinal_number:
     defined-by quantity # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
       surface seed-surface-35ff6af05b70
-        codepoints 99 97 114 100 105 110 97 108 32 110 117 109 98 101 114
+        text "cardinal number"
       surface seed-surface-6dfec81315d2
-        codepoints 110 117 109 98 101 114
+        text number
     lexeme ru # language
       surface seed-surface-cc2023d806cc
-        codepoints 1082 1086 1083 1080 1095 1077 1089 1090 1074 1077 1085 1085 1086 1077 32 1095 1080 1089 1083 1086
+        text "количественное число"
     lexeme hi # language
       surface seed-surface-52ff47a63f18
-        codepoints 2327 2339 2344 32 2360 2306 2326 2381 2351 2366
+        text "गणन संख्या"
     lexeme zh # language
       surface seed-surface-e8eb446f4a4d
-        codepoints 22522 25968
+        text 基数
   zero:
     defined-by cardinal_number # definition-link
     defined-by empty # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-05f8f9811abf
-        codepoints 122 101 114 111
+        text zero
       surface seed-surface-989edea11c01
-        codepoints 48
+        text 0
     lexeme ru # language
       surface seed-surface-d7ae0eb26ee3
-        codepoints 1085 1086 1083 1100
+        text ноль
       surface seed-surface-63993ba22015
-        codepoints 1085 1091 1083 1100
+        text нуль
     lexeme hi # language
       surface seed-surface-3f9d95537884
-        codepoints 2358 2370 2344 2381 2351
+        text शून्य
     lexeme zh # language
       surface seed-surface-0633007c1397
-        codepoints 38646
+        text 零
   one:
     defined-by cardinal_number # definition-link
     defined-by single # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-6507f53a48ef
-        codepoints 111 110 101
+        text one
       surface seed-surface-2b683277f197
-        codepoints 49
+        text 1
     lexeme ru # language
       surface seed-surface-3df174355358
-        codepoints 1086 1076 1080 1085
+        text один
       surface seed-surface-4c5bafa67929
-        codepoints 1086 1076 1085 1072
+        text одна
       surface seed-surface-fd6c306fbfa2
-        codepoints 1086 1076 1085 1086
+        text одно
     lexeme hi # language
       surface seed-surface-66401107c98c
-        codepoints 2319 2325
+        text एक
     lexeme zh # language
       surface seed-surface-2a69118803d8
-        codepoints 19968
+        text 一
   two:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-494532ec9121
-        codepoints 116 119 111
+        text two
       surface seed-surface-c9262495989d
-        codepoints 50
+        text 2
     lexeme ru # language
       surface seed-surface-b1976887bede
-        codepoints 1076 1074 1072
+        text два
       surface seed-surface-3901ef342b74
-        codepoints 1076 1074 1077
+        text две
     lexeme hi # language
       surface seed-surface-c38e17b8ca32
-        codepoints 2342 2379
+        text दो
     lexeme zh # language
       surface seed-surface-8e4229242731
-        codepoints 20108
+        text 二
   three:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-d325e3617c34
-        codepoints 116 104 114 101 101
+        text three
       surface seed-surface-15e51d25a3d6
-        codepoints 51
+        text 3
     lexeme ru # language
       surface seed-surface-14416cc55297
-        codepoints 1090 1088 1080
+        text три
     lexeme hi # language
       surface seed-surface-8656b7dfbed2
-        codepoints 2340 2368 2344
+        text तीन
     lexeme zh # language
       surface seed-surface-289cf99ebe95
-        codepoints 19977
+        text 三
   four:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-0f8b3d2497bf
-        codepoints 102 111 117 114
+        text four
       surface seed-surface-5884ad66a1fa
-        codepoints 52
+        text 4
     lexeme ru # language
       surface seed-surface-9704f6ba9f46
-        codepoints 1095 1077 1090 1099 1088 1077
+        text четыре
     lexeme hi # language
       surface seed-surface-778a48eeadb2
-        codepoints 2330 2366 2352
+        text चार
     lexeme zh # language
       surface seed-surface-b23a91d79973
-        codepoints 22235
+        text 四
   five:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-cdf728852c7d
-        codepoints 102 105 118 101
+        text five
       surface seed-surface-c93c0e4c61ec
-        codepoints 53
+        text 5
     lexeme ru # language
       surface seed-surface-d61880cd4463
-        codepoints 1087 1103 1090 1100
+        text пять
     lexeme hi # language
       surface seed-surface-a713f81f5bfd
-        codepoints 2346 2366 2305 2330
+        text पाँच
     lexeme zh # language
       surface seed-surface-0d4318541e0c
-        codepoints 20116
+        text 五
   six:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-e9b2d3aa2559
-        codepoints 115 105 120
+        text six
       surface seed-surface-0a1437bef615
-        codepoints 54
+        text 6
     lexeme ru # language
       surface seed-surface-b80c59ea7d69
-        codepoints 1096 1077 1089 1090 1100
+        text шесть
     lexeme hi # language
       surface seed-surface-2a3428465557
-        codepoints 2331 2361
+        text छह
     lexeme zh # language
       surface seed-surface-f0dbd61f2600
-        codepoints 20845
+        text 六
   seven:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-1cf9edd8e73f
-        codepoints 115 101 118 101 110
+        text seven
       surface seed-surface-e38e752b6042
-        codepoints 55
+        text 7
     lexeme ru # language
       surface seed-surface-3e1f3facdf97
-        codepoints 1089 1077 1084 1100
+        text семь
     lexeme hi # language
       surface seed-surface-3612443ba468
-        codepoints 2360 2366 2340
+        text सात
     lexeme zh # language
       surface seed-surface-1c70152fb8da
-        codepoints 19971
+        text 七
   eight:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-668056f20a93
-        codepoints 101 105 103 104 116
+        text eight
       surface seed-surface-d4119fa6e9ec
-        codepoints 56
+        text 8
     lexeme ru # language
       surface seed-surface-bda62715dd43
-        codepoints 1074 1086 1089 1077 1084 1100
+        text восемь
     lexeme hi # language
       surface seed-surface-fc82dcd66a70
-        codepoints 2310 2336
+        text आठ
     lexeme zh # language
       surface seed-surface-9196d602cb0b
-        codepoints 20843
+        text 八
   nine:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-7f949a10e7db
-        codepoints 110 105 110 101
+        text nine
       surface seed-surface-041c5e29d605
-        codepoints 57
+        text 9
     lexeme ru # language
       surface seed-surface-553fe8ee5341
-        codepoints 1076 1077 1074 1103 1090 1100
+        text девять
     lexeme hi # language
       surface seed-surface-3ab83a6cc695
-        codepoints 2344 2380
+        text नौ
     lexeme zh # language
       surface seed-surface-bacfeb5ff0e2
-        codepoints 20061
+        text 九
   ten:
     defined-by cardinal_number # definition-link
     role cardinal_number_word # semantic-role
     lexeme en # language
       surface seed-surface-41c7ad3822bc
-        codepoints 116 101 110
+        text ten
       surface seed-surface-3fe1f7425da6
-        codepoints 49 48
+        text 10
     lexeme ru # language
       surface seed-surface-9088ed6044ee
-        codepoints 1076 1077 1089 1103 1090 1100
+        text десять
     lexeme hi # language
       surface seed-surface-53a46b551451
-        codepoints 2342 2360
+        text दस
     lexeme zh # language
       surface seed-surface-54298ab10c98
-        codepoints 21313
+        text 十
   length:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
       surface seed-surface-f57a61f64c92
-        codepoints 108 101 110 103 116 104
+        text length
     lexeme ru # language
       surface seed-surface-441cf1a94c80
-        codepoints 1076 1083 1080 1085 1072
+        text длина
     lexeme hi # language
       surface seed-surface-0cb16ce48cd5
-        codepoints 2354 2306 2348 2366 2312
+        text लंबाई
     lexeme zh # language
       surface seed-surface-62583b5e7e25
-        codepoints 38271 24230
+        text 长度
   data_storage:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
       surface seed-surface-19f06b870f36
-        codepoints 100 97 116 97 32 115 116 111 114 97 103 101
+        text "data storage"
     lexeme ru # language
       surface seed-surface-207eec4695b9
-        codepoints 1093 1088 1072 1085 1077 1085 1080 1077 32 1076 1072 1085 1085 1099 1093
+        text "хранение данных"
     lexeme hi # language
       surface seed-surface-adfc53a33bf6
-        codepoints 2337 2375 2335 2366 32 2349 2306 2337 2366 2352 2339
+        text "डेटा भंडारण"
     lexeme zh # language
       surface seed-surface-3b0891a635bf
-        codepoints 25968 25454 23384 20648
+        text 数据存储
   mass:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
       surface seed-surface-add622a35c05
-        codepoints 109 97 115 115
+        text mass
     lexeme ru # language
       surface seed-surface-37c7e9a8a79d
-        codepoints 1084 1072 1089 1089 1072
+        text масса
     lexeme hi # language
       surface seed-surface-6f6da0374b04
-        codepoints 2342 2381 2352 2357 2381 2351 2350 2366 2344
+        text द्रव्यमान
     lexeme zh # language
       surface seed-surface-f864f89d7af2
-        codepoints 36136 37327
+        text 质量
   time:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
       surface seed-surface-72f36d50026b
-        codepoints 116 105 109 101
+        text time
     lexeme ru # language
       surface seed-surface-c2adfd33bd0a
-        codepoints 1074 1088 1077 1084 1103
+        text время
     lexeme hi # language
       surface seed-surface-647534f6ded7
-        codepoints 2360 2350 2351
+        text समय
     lexeme zh # language
       surface seed-surface-19b1b6234dfc
-        codepoints 26102 38388
+        text 时间
   temperature:
     defined-by quantity # definition-link
     role physical_dimension # semantic-role
     lexeme en # language
       surface seed-surface-120c6cf463bc
-        codepoints 116 101 109 112 101 114 97 116 117 114 101
+        text temperature
     lexeme ru # language
       surface seed-surface-7a771c594752
-        codepoints 1090 1077 1084 1087 1077 1088 1072 1090 1091 1088 1072
+        text температура
     lexeme hi # language
       surface seed-surface-4511ec4e3c8b
-        codepoints 2340 2366 2346 2350 2366 2344
+        text तापमान
     lexeme zh # language
       surface seed-surface-0db0dd9f361f
-        codepoints 28201 24230
+        text 温度
   meter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-39f1d380a4f8
-        codepoints 109 101 116 101 114
+        text meter
       surface seed-surface-c70c39e4596b
-        codepoints 109 101 116 114 101
+        text metre
       surface seed-surface-ce3049b9a530
-        codepoints 109 101 116 101 114 115
+        text meters
       surface seed-surface-a4e56eea8f2d
-        codepoints 109 101 116 114 101 115
+        text metres
     lexeme ru # language
       surface seed-surface-ecc27b8a985b
-        codepoints 1084 1077 1090 1088
+        text метр
       surface seed-surface-759c0e425eaf
-        codepoints 1084 1077 1090 1088 1072
+        text метра
       surface seed-surface-ca1bd6e6f279
-        codepoints 1084 1077 1090 1088 1086 1074
+        text метров
     lexeme hi # language
       surface seed-surface-ab5e9af09974
-        codepoints 2350 2368 2335 2352
+        text मीटर
     lexeme zh # language
       surface seed-surface-b238edd9fb93
-        codepoints 31859
+        text 米
   kilometer:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-e17e59d91c91
-        codepoints 107 109
+        text km
       surface seed-surface-a371deea77ae
-        codepoints 107 105 108 111 109 101 116 101 114
+        text kilometer
       surface seed-surface-49124ce67034
-        codepoints 107 105 108 111 109 101 116 114 101
+        text kilometre
       surface seed-surface-27314aa436e1
-        codepoints 107 105 108 111 109 101 116 101 114 115
+        text kilometers
       surface seed-surface-d97107c14d7e
-        codepoints 107 105 108 111 109 101 116 114 101 115
+        text kilometres
     lexeme ru # language
       surface seed-surface-4cfa9cb373db
-        codepoints 1082 1080 1083 1086 1084 1077 1090 1088
+        text километр
       surface seed-surface-363439f0478a
-        codepoints 1082 1080 1083 1086 1084 1077 1090 1088 1072
+        text километра
       surface seed-surface-e701b2561b70
-        codepoints 1082 1080 1083 1086 1084 1077 1090 1088 1086 1074
+        text километров
     lexeme hi # language
       surface seed-surface-610da715a5e7
-        codepoints 2325 2367 2354 2379 2350 2368 2335 2352
+        text किलोमीटर
     lexeme zh # language
       surface seed-surface-ee12b8ece7c9
-        codepoints 21315 31859
+        text 千米
       surface seed-surface-45364be79d06
-        codepoints 20844 37324
+        text 公里
   centimeter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-ff431574bb00
-        codepoints 99 109
+        text cm
       surface seed-surface-867f82bc114d
-        codepoints 99 101 110 116 105 109 101 116 101 114
+        text centimeter
       surface seed-surface-b394e1e51722
-        codepoints 99 101 110 116 105 109 101 116 114 101
+        text centimetre
     lexeme ru # language
       surface seed-surface-6089ea351e12
-        codepoints 1089 1072 1085 1090 1080 1084 1077 1090 1088
+        text сантиметр
     lexeme hi # language
       surface seed-surface-8d44be546db4
-        codepoints 2360 2375 2306 2335 2368 2350 2368 2335 2352
+        text सेंटीमीटर
     lexeme zh # language
       surface seed-surface-7420ad390bd7
-        codepoints 21400 31859
+        text 厘米
   millimeter:
     defined-by length # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-0e67aeb87ad0
-        codepoints 109 109
+        text mm
       surface seed-surface-47b04bfbb5de
-        codepoints 109 105 108 108 105 109 101 116 101 114
+        text millimeter
       surface seed-surface-6a530ce8be49
-        codepoints 109 105 108 108 105 109 101 116 114 101
+        text millimetre
     lexeme ru # language
       surface seed-surface-f099cf46192b
-        codepoints 1084 1080 1083 1083 1080 1084 1077 1090 1088
+        text миллиметр
     lexeme hi # language
       surface seed-surface-e74df176ff76
-        codepoints 2350 2367 2354 2368 2350 2368 2335 2352
+        text मिलीमीटर
     lexeme zh # language
       surface seed-surface-c744c0a14288
-        codepoints 27627 31859
+        text 毫米
   byte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-6b78e08a73fd
-        codepoints 98 121 116 101
+        text byte
       surface seed-surface-01f5ec7135a9
-        codepoints 98 121 116 101 115
+        text bytes
     lexeme ru # language
       surface seed-surface-90f937006530
-        codepoints 1073 1072 1081 1090
+        text байт
       surface seed-surface-70cf1e7fac33
-        codepoints 1073 1072 1081 1090 1072
+        text байта
       surface seed-surface-63c9d5244e01
-        codepoints 1073 1072 1081 1090 1086 1074
+        text байтов
     lexeme hi # language
       surface seed-surface-861217a7a3bb
-        codepoints 2348 2366 2311 2335
+        text बाइट
     lexeme zh # language
       surface seed-surface-3f5d3bb8a5a6
-        codepoints 23383 33410
+        text 字节
   kilobyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
@@ -446,20 +446,20 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-19d7c0bc3617
-        codepoints 107 98
+        text kb
       surface seed-surface-ae4230cb2c07
-        codepoints 107 105 108 111 98 121 116 101
+        text kilobyte
       surface seed-surface-5958bb053a4a
-        codepoints 107 105 108 111 98 121 116 101 115
+        text kilobytes
     lexeme ru # language
       surface seed-surface-d54432ded508
-        codepoints 1082 1080 1083 1086 1073 1072 1081 1090
+        text килобайт
     lexeme hi # language
       surface seed-surface-ca54f077f9af
-        codepoints 2325 2367 2354 2379 2348 2366 2311 2335
+        text किलोबाइट
     lexeme zh # language
       surface seed-surface-8a3a99934ff9
-        codepoints 21315 23383 33410
+        text 千字节
   megabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
@@ -467,82 +467,82 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-84164536101b
-        codepoints 109 98
+        text mb
       surface seed-surface-de076d5b37ae
-        codepoints 109 101 103 97 98 121 116 101
+        text megabyte
       surface seed-surface-44d1c1fad0a1
-        codepoints 109 101 103 97 98 121 116 101 115
+        text megabytes
     lexeme ru # language
       surface seed-surface-fbe98edc3100
-        codepoints 1084 1077 1075 1072 1073 1072 1081 1090
+        text мегабайт
     lexeme hi # language
       surface seed-surface-a580362a03cf
-        codepoints 2350 2375 2327 2366 2348 2366 2311 2335
+        text मेगाबाइट
     lexeme zh # language
       surface seed-surface-d30cc2d1a9d7
-        codepoints 20806 23383 33410
+        text 兆字节
   gigabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-d80b9141b63e
-        codepoints 103 98
+        text gb
       surface seed-surface-82bc6e7aa3e6
-        codepoints 103 105 103 97 98 121 116 101
+        text gigabyte
       surface seed-surface-4a03ac6edfbe
-        codepoints 103 105 103 97 98 121 116 101 115
+        text gigabytes
     lexeme ru # language
       surface seed-surface-26787b2d9d8c
-        codepoints 1075 1080 1075 1072 1073 1072 1081 1090
+        text гигабайт
     lexeme hi # language
       surface seed-surface-cb9480bbc4ba
-        codepoints 2327 2368 2327 2366 2348 2366 2311 2335
+        text गीगाबाइट
     lexeme zh # language
       surface seed-surface-3bef505a9b85
-        codepoints 21513 23383 33410
+        text 吉字节
   terabyte:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-3371321a1356
-        codepoints 116 98
+        text tb
       surface seed-surface-c1b6e56cd738
-        codepoints 116 101 114 97 98 121 116 101
+        text terabyte
       surface seed-surface-31c8912d6196
-        codepoints 116 101 114 97 98 121 116 101 115
+        text terabytes
     lexeme ru # language
       surface seed-surface-96f47b60807a
-        codepoints 1090 1077 1088 1072 1073 1072 1081 1090
+        text терабайт
     lexeme hi # language
       surface seed-surface-ac6e3b9ae946
-        codepoints 2335 2375 2352 2366 2348 2366 2311 2335
+        text टेराबाइट
     lexeme zh # language
       surface seed-surface-603d729776dc
-        codepoints 22826 23383 33410
+        text 太字节
   bit:
     defined-by data_storage # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-f984db129f19
-        codepoints 98 105 116
+        text bit
       surface seed-surface-7ee8e9efa02a
-        codepoints 98 105 116 115
+        text bits
     lexeme ru # language
       surface seed-surface-b8a29ddb2e14
-        codepoints 1073 1080 1090
+        text бит
       surface seed-surface-2bf9da7387af
-        codepoints 1073 1080 1090 1072
+        text бита
       surface seed-surface-c43a4891cc11
-        codepoints 1073 1080 1090 1086 1074
+        text битов
     lexeme hi # language
       surface seed-surface-b14bfbf5f1e4
-        codepoints 2348 2367 2335
+        text बिट
     lexeme zh # language
       surface seed-surface-2f6f78dd22c1
-        codepoints 27604 29305
+        text 比特
   kilogram:
     defined-by mass # definition-link
     defined-by unit # definition-link
@@ -550,24 +550,24 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-780a019d35d9
-        codepoints 107 103
+        text kg
       surface seed-surface-ebff17f8d79a
-        codepoints 107 105 108 111 103 114 97 109
+        text kilogram
       surface seed-surface-de25e1628517
-        codepoints 107 105 108 111 103 114 97 109 115
+        text kilograms
     lexeme ru # language
       surface seed-surface-ffcc7a06c858
-        codepoints 1082 1075
+        text кг
       surface seed-surface-2fe5d540998b
-        codepoints 1082 1080 1083 1086 1075 1088 1072 1084 1084
+        text килограмм
     lexeme hi # language
       surface seed-surface-289f0f6840ca
-        codepoints 2325 2367 2354 2379 2327 2381 2352 2366 2350
+        text किलोग्राम
     lexeme zh # language
       surface seed-surface-c902fea24d0d
-        codepoints 21315 20811
+        text 千克
       surface seed-surface-697bb33f71d5
-        codepoints 20844 26020
+        text 公斤
   gram:
     defined-by mass # definition-link
     defined-by unit # definition-link
@@ -575,36 +575,36 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-d469cdea7f3f
-        codepoints 103 114 97 109
+        text gram
       surface seed-surface-cd39b8e2d750
-        codepoints 103 114 97 109 115
+        text grams
     lexeme ru # language
       surface seed-surface-fb0fb6427cfa
-        codepoints 1075 1088 1072 1084 1084
+        text грамм
     lexeme hi # language
       surface seed-surface-a4458166e8ad
-        codepoints 2327 2381 2352 2366 2350
+        text ग्राम
     lexeme zh # language
       surface seed-surface-7af7121c97ef
-        codepoints 20811
+        text 克
   pound:
     defined-by mass # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-4e1ee8c10459
-        codepoints 112 111 117 110 100
+        text pound
       surface seed-surface-4dddc83163a6
-        codepoints 112 111 117 110 100 115
+        text pounds
     lexeme ru # language
       surface seed-surface-8f423c9d3b17
-        codepoints 1092 1091 1085 1090
+        text фунт
     lexeme hi # language
       surface seed-surface-2a44793775ed
-        codepoints 2346 2366 2313 2306 2337
+        text पाउंड
     lexeme zh # language
       surface seed-surface-3b3f0ade6b9f
-        codepoints 30917
+        text 磅
   ton:
     defined-by mass # definition-link
     defined-by unit # definition-link
@@ -612,24 +612,24 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-d474a8ce04e1
-        codepoints 116 111 110
+        text ton
       surface seed-surface-405d953d7413
-        codepoints 116 111 110 115
+        text tons
       surface seed-surface-d5a33727c072
-        codepoints 116 111 110 110 101
+        text tonne
     lexeme ru # language
       surface seed-surface-119b13a7e21d
-        codepoints 1090 1086 1085 1085 1072
+        text тонна
       surface seed-surface-59a92a9274df
-        codepoints 1090 1086 1085 1085 1099
+        text тонны
       surface seed-surface-eb592c5fed94
-        codepoints 1090 1086 1085 1085
+        text тонн
     lexeme hi # language
       surface seed-surface-333dda8be347
-        codepoints 2335 2344
+        text टन
     lexeme zh # language
       surface seed-surface-c69880f9f5f5
-        codepoints 21544
+        text 吨
   second:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -637,22 +637,22 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-3db6360df7b9
-        codepoints 115 101 99 111 110 100
+        text second
       surface seed-surface-fdb749cdfb3b
-        codepoints 115 101 99 111 110 100 115
+        text seconds
     lexeme ru # language
       surface seed-surface-c6253a8ffb90
-        codepoints 1089 1077 1082 1091 1085 1076 1072
+        text секунда
       surface seed-surface-d93283752161
-        codepoints 1089 1077 1082 1091 1085 1076 1099
+        text секунды
       surface seed-surface-7895bb0a9c60
-        codepoints 1089 1077 1082 1091 1085 1076
+        text секунд
     lexeme hi # language
       surface seed-surface-b328f80aa5fe
-        codepoints 2360 2375 2325 2306 2337
+        text सेकंड
     lexeme zh # language
       surface seed-surface-43ed0365e317
-        codepoints 31186
+        text 秒
   minute:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -660,22 +660,22 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-7dcacaac8369
-        codepoints 109 105 110 117 116 101
+        text minute
       surface seed-surface-4236217f4964
-        codepoints 109 105 110 117 116 101 115
+        text minutes
     lexeme ru # language
       surface seed-surface-ed0185c4df5b
-        codepoints 1084 1080 1085 1091 1090 1072
+        text минута
       surface seed-surface-313a2434da49
-        codepoints 1084 1080 1085 1091 1090 1099
+        text минуты
       surface seed-surface-48dbc4bd35ac
-        codepoints 1084 1080 1085 1091 1090
+        text минут
     lexeme hi # language
       surface seed-surface-40f18a456780
-        codepoints 2350 2367 2344 2335
+        text मिनट
     lexeme zh # language
       surface seed-surface-e1e541534966
-        codepoints 20998 38047
+        text 分钟
   hour:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -683,22 +683,22 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-7deacc6314b1
-        codepoints 104 111 117 114
+        text hour
       surface seed-surface-7459d8c874a0
-        codepoints 104 111 117 114 115
+        text hours
     lexeme ru # language
       surface seed-surface-9bd95c79b80b
-        codepoints 1095 1072 1089
+        text час
       surface seed-surface-4909464d65d3
-        codepoints 1095 1072 1089 1072
+        text часа
       surface seed-surface-5b9c083b0663
-        codepoints 1095 1072 1089 1086 1074
+        text часов
     lexeme hi # language
       surface seed-surface-117513a2ad98
-        codepoints 2328 2306 2335 2366
+        text घंटा
     lexeme zh # language
       surface seed-surface-6519975ca1a6
-        codepoints 23567 26102
+        text 小时
   millisecond:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -706,22 +706,22 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-03f37f3fb39c
-        codepoints 109 115
+        text ms
       surface seed-surface-33086ff55b39
-        codepoints 109 105 108 108 105 115 101 99 111 110 100
+        text millisecond
       surface seed-surface-a13bd5548dc0
-        codepoints 109 105 108 108 105 115 101 99 111 110 100 115
+        text milliseconds
     lexeme ru # language
       surface seed-surface-ba91b75f1600
-        codepoints 1084 1080 1083 1083 1080 1089 1077 1082 1091 1085 1076 1072
+        text миллисекунда
       surface seed-surface-abc0b829040e
-        codepoints 1084 1080 1083 1083 1080 1089 1077 1082 1091 1085 1076
+        text миллисекунд
     lexeme hi # language
       surface seed-surface-fc7083763d27
-        codepoints 2350 2367 2354 2368 2360 2375 2325 2306 2337
+        text मिलीसेकंड
     lexeme zh # language
       surface seed-surface-d5220a9be1c0
-        codepoints 27627 31186
+        text 毫秒
   day:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -729,24 +729,24 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-5d52246b8a87
-        codepoints 100 97 121
+        text day
       surface seed-surface-63bf3b407313
-        codepoints 100 97 121 115
+        text days
     lexeme ru # language
       surface seed-surface-e44cbc981b98
-        codepoints 1076 1077 1085 1100
+        text день
       surface seed-surface-1c1f2e52eb0b
-        codepoints 1076 1085 1103
+        text дня
       surface seed-surface-764b88e1af7f
-        codepoints 1076 1085 1077 1081
+        text дней
     lexeme hi # language
       surface seed-surface-e0951328d712
-        codepoints 2342 2367 2344
+        text दिन
     lexeme zh # language
       surface seed-surface-bd68e4867aaf
-        codepoints 22825
+        text 天
       surface seed-surface-1a428b7d3ce1
-        codepoints 26085
+        text 日
   month:
     defined-by time # definition-link
     defined-by unit # definition-link
@@ -754,71 +754,71 @@ meanings
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-d6da55bfe496
-        codepoints 109 111 110 116 104
+        text month
       surface seed-surface-442b27879b3d
-        codepoints 109 111 110 116 104 115
+        text months
     lexeme ru # language
       surface seed-surface-4b4faba1839b
-        codepoints 1084 1077 1089 1103 1094
+        text месяц
       surface seed-surface-9059cd0b55ff
-        codepoints 1084 1077 1089 1103 1094 1072
+        text месяца
       surface seed-surface-c189543fcd1a
-        codepoints 1084 1077 1089 1103 1094 1077 1074
+        text месяцев
     lexeme hi # language
       surface seed-surface-a4c34841b794
-        codepoints 2350 2361 2368 2344 2366
+        text महीना
       surface seed-surface-94fbae4bcf70
-        codepoints 2350 2361 2368 2344 2375
+        text महीने
     lexeme zh # language
       surface seed-surface-91b35f691781
-        codepoints 26376
+        text 月
       surface seed-surface-ba17ff02b23a
-        codepoints 20010 26376
+        text 个月
   celsius:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-5baa1cb84b94
-        codepoints 99 101 108 115 105 117 115
+        text celsius
     lexeme ru # language
       surface seed-surface-b9cbaaefbc72
-        codepoints 1094 1077 1083 1100 1089 1080 1081
+        text цельсий
     lexeme hi # language
       surface seed-surface-d1bdf2156a0a
-        codepoints 2360 2375 2354 2381 2360 2367 2351 2360
+        text सेल्सियस
     lexeme zh # language
       surface seed-surface-068efb9a020c
-        codepoints 25668 27663 24230
+        text 摄氏度
   fahrenheit:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-fd7137f2be1a
-        codepoints 102 97 104 114 101 110 104 101 105 116
+        text fahrenheit
     lexeme ru # language
       surface seed-surface-1b745d545082
-        codepoints 1092 1072 1088 1077 1085 1075 1077 1081 1090
+        text фаренгейт
     lexeme hi # language
       surface seed-surface-327a6a87bdc9
-        codepoints 2347 2364 2366 2352 2375 2344 2361 2366 2311 2335
+        text फ़ारेनहाइट
     lexeme zh # language
       surface seed-surface-64333ba22abd
-        codepoints 21326 27663 24230
+        text 华氏度
   kelvin:
     defined-by temperature # definition-link
     defined-by unit # definition-link
     role measurement_unit # semantic-role
     lexeme en # language
       surface seed-surface-dc808c32437c
-        codepoints 107 101 108 118 105 110
+        text kelvin
     lexeme ru # language
       surface seed-surface-07c7a916d0f1
-        codepoints 1082 1077 1083 1100 1074 1080 1085
+        text кельвин
     lexeme hi # language
       surface seed-surface-b343a0873dae
-        codepoints 2325 2375 2354 2381 2357 2367 2344
+        text केल्विन
     lexeme zh # language
       surface seed-surface-79ac06265c20
-        codepoints 24320 23572 25991
+        text 开尔文

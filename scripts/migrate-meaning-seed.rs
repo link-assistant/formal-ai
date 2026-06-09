@@ -260,18 +260,43 @@ fn write_safe_value_line(
 }
 
 fn write_raw_line(out: &mut String, indent: &str, name: &str, value: &str, comment: Option<&str>) {
+    // Issue #398: emit a human-readable quoted scalar rather than a codepoint
+    // byte-dump. The seed/web/e2e parsers all decode the quoted form back to the
+    // same string, so runtime values are preserved while the data stays legible.
     out.push_str(indent);
     out.push_str(name);
-    out.push_str(" unformalized-raw");
-    for character in value.chars() {
+    if !value.is_empty() {
         out.push(' ');
-        out.push_str(&(character as u32).to_string());
+        out.push_str(&quote_scalar(value));
     }
     if let Some(comment) = comment {
         out.push_str(" # ");
         out.push_str(comment);
     }
     out.push('\n');
+}
+
+/// Wrap `value` in a quote delimiter that does not occur in the text, so the
+/// inner quote never needs backslash-escaping. The canonical Links Notation
+/// parser mishandles a `\"` escape immediately followed by `)`, so emitting an
+/// escaped delimiter must be avoided. Mirrors `quote()` in
+/// `experiments/decode_seed_codepoints.py`.
+fn quote_scalar(value: &str) -> String {
+    let delimiter = if !value.contains('"') {
+        '"'
+    } else if !value.contains('\'') {
+        '\''
+    } else if !value.contains('`') {
+        '`'
+    } else {
+        '"'
+    };
+    let mut body = value
+        .replace('\\', "\\\\")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r");
+    body = body.replace(delimiter, &format!("\\{delimiter}"));
+    format!("{delimiter}{body}{delimiter}")
 }
 
 fn quoted_value(line: &str, name: &str) -> Option<String> {

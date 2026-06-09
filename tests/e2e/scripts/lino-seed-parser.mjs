@@ -1,13 +1,84 @@
+// Single-pass unescape shared by every quote delimiter. The migration only ever
+// emits `\\`, `\n` and `\r` inside a quoted body (the chosen delimiter is always
+// absent from the text, so an escaped delimiter is never produced), but we accept
+// the full escape set so the four parsers decode identically.
+function unescapeQuoted(body) {
+  let out = '';
+  for (let i = 0; i < body.length; i += 1) {
+    const ch = body[i];
+    if (ch !== '\\') {
+      out += ch;
+      continue;
+    }
+    const next = body[i + 1];
+    if (next === undefined) {
+      out += '\\';
+      break;
+    }
+    i += 1;
+    switch (next) {
+      case 'n':
+        out += '\n';
+        break;
+      case 'r':
+        out += '\r';
+        break;
+      case 't':
+        out += '\t';
+        break;
+      case '\\':
+        out += '\\';
+        break;
+      case '"':
+        out += '"';
+        break;
+      case "'":
+        out += "'";
+        break;
+      case '`':
+        out += '`';
+        break;
+      case 'x':
+        if (body[i + 1] === '2' && body[i + 2] === '7') {
+          out += "'";
+          i += 2;
+        } else {
+          out += '\\x';
+        }
+        break;
+      default:
+        out += '\\' + next;
+        break;
+    }
+  }
+  return out;
+}
+
+// Find the index of the unescaped closing delimiter, skipping `\` escape pairs.
+function findClosingDelimiter(body, delimiter) {
+  for (let i = 0; i < body.length; i += 1) {
+    if (body[i] === '\\') {
+      i += 1;
+      continue;
+    }
+    if (body[i] === delimiter) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 export function decodeLinoValue(rawValue) {
   const value = (rawValue ?? '').trim();
   if (value.length === 0) return '';
 
-  if (value.startsWith('"')) {
-    return JSON.parse(value);
-  }
-
-  if (value.startsWith("'") && value.endsWith("'")) {
-    return value.slice(1, -1);
+  const delimiter = value[0];
+  if (delimiter === '"' || delimiter === "'" || delimiter === '`') {
+    const rest = value.slice(1);
+    const close = findClosingDelimiter(rest, delimiter);
+    if (close >= 0 && rest.slice(close + 1).trim().length === 0) {
+      return unescapeQuoted(rest.slice(0, close));
+    }
   }
 
   if (value === 'unformalized-raw' || value === 'codepoints') {

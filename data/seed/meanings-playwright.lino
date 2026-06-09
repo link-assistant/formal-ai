@@ -4,85 +4,85 @@ meanings
     role playwright_tool_name # semantic-role
     lexeme en # language
       surface seed-surface-fe1c1b3dbcea
-        codepoints 112 108 97 121 119 114 105 103 104 116
+        text playwright
       surface seed-surface-a98bea0357a3
-        codepoints 112 108 97 121 114 105 103 104 116
+        text playright
         action playwright # action
     lexeme ru # language
       surface seed-surface-a55f4bc96f3a
-        codepoints 1087 1083 1077 1081 1074 1088 1072 1081 1090
+        text плейврайт
       surface seed-surface-437b8a3199ee
-        codepoints 1087 1083 1077 1081 1088 1072 1081 1090
+        text плейрайт
     lexeme hi # language
       surface seed-surface-7cfe59d95110
-        codepoints 2346 2381 2354 2375 2352 2366 2311 2335
+        text प्लेराइट
     lexeme zh # language
       surface seed-surface-03d918c64747
-        codepoints 26222 33713 36182 29305
+        text 普莱赖特
   playwright_script_request_cue:
     defined-by concept # definition-link
     role playwright_script_cue # semantic-role
     lexeme en # language
       surface seed-surface-6c545c145c75
-        codepoints 115 99 114 105 112 116
+        text script
       surface seed-surface-61d0b7aaec52
-        codepoints 116 101 115 116
+        text test
       surface seed-surface-b0780756bf1c
-        codepoints 115 112 101 99
+        text spec
       surface seed-surface-2bc9fb1b9851
-        codepoints 99 111 100 101
+        text code
       surface seed-surface-cbebf47add14
-        codepoints 119 114 105 116 101
+        text write
       surface seed-surface-cdbe3fa4a9f5
-        codepoints 99 114 101 97 116 101
+        text create
       surface seed-surface-e0dfa82fe0d0
-        codepoints 103 101 110 101 114 97 116 101
+        text generate
       surface seed-surface-23b4edcdf347
-        codepoints 109 97 107 101
+        text make
       surface seed-surface-0f091d3f9efe
-        codepoints 98 117 105 108 100
+        text build
       surface seed-surface-41f1197e5270
-        codepoints 99 97 110 32 121 111 117
+        text "can you"
       surface seed-surface-631c8420eb97
-        codepoints 99 111 117 108 100 32 121 111 117
+        text "could you"
     lexeme ru # language
       surface seed-surface-52f9dfba7bc4
-        codepoints 1089 1082 1088 1080 1087 1090
+        text скрипт
       surface seed-surface-de27ec25fdd6
-        codepoints 1089 1094 1077 1085 1072 1088
+        text сценар
       surface seed-surface-691ed2dfd296
-        codepoints 1090 1077 1089 1090
+        text тест
       surface seed-surface-cfff0af35539
-        codepoints 1082 1086 1076
+        text код
       surface seed-surface-8ff6a6ecce2f
-        codepoints 1085 1072 1087 1080 1096 1080
+        text напиши
       surface seed-surface-8a4145d80548
-        codepoints 1085 1072 1087 1080 1089 1072 1090 1100
+        text написать
       surface seed-surface-1aca6fdddc5f
-        codepoints 1084 1086 1078 1077 1096 1100
+        text можешь
       surface seed-surface-51cda388dc03
-        codepoints 1089 1076 1077 1083 1072 1081
+        text сделай
       surface seed-surface-c8bc975ca04a
-        codepoints 1089 1086 1079 1076 1072 1081
+        text создай
     lexeme hi # language
       surface seed-surface-0c324d3b01b4
-        codepoints 2360 2381 2325 2381 2352 2367 2346 2381 2335
+        text स्क्रिप्ट
       surface seed-surface-8edd51813a80
-        codepoints 2335 2375 2360 2381 2335
+        text टेस्ट
       surface seed-surface-3a00bd1fbbed
-        codepoints 2325 2379 2337
+        text कोड
       surface seed-surface-d601cc36d1b0
-        codepoints 2354 2367 2326 2379
+        text लिखो
       surface seed-surface-dc1b2d13ca6d
-        codepoints 2348 2344 2366 2323
+        text बनाओ
     lexeme zh # language
       surface seed-surface-d633e1c49e16
-        codepoints 33050 26412
+        text 脚本
       surface seed-surface-b4fe3ec34f2b
-        codepoints 27979 35797
+        text 测试
       surface seed-surface-f605db3e2180
-        codepoints 20195 30721
+        text 代码
       surface seed-surface-87b6acb01c8f
-        codepoints 20889
+        text 写
       surface seed-surface-a85f8b9456b1
-        codepoints 29983 25104
+        text 生成

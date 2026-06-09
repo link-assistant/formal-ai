@@ -6,282 +6,282 @@ meanings
     role knowledge_relation # semantic-role
     lexeme en # language
       surface seed-surface-a1368f456d7a
-        codepoints 114 101 108 97 116 105 111 110
+        text relation
       surface seed-surface-f8a09439f349
-        codepoints 112 114 111 112 101 114 116 121
+        text property
     lexeme ru # language
       surface seed-surface-9c9c215db94d
-        codepoints 1086 1090 1085 1086 1096 1077 1085 1080 1077
+        text отношение
       surface seed-surface-0ba2f4c57235
-        codepoints 1089 1074 1086 1081 1089 1090 1074 1086
+        text свойство
     lexeme hi # language
       surface seed-surface-745a5aae3c4e
-        codepoints 2360 2306 2348 2306 2343
+        text संबंध
       surface seed-surface-0e1e434b439b
-        codepoints 2327 2369 2339
+        text गुण
     lexeme zh # language
       surface seed-surface-6cab7cdc59f9
-        codepoints 20851 31995
+        text 关系
       surface seed-surface-c7ba32540e7e
-        codepoints 23646 24615
+        text 属性
   knowledge_subject:
     defined-by knowledge_relation # definition-link
     role knowledge_subject # semantic-role
     lexeme en # language
       surface seed-surface-e94976989389
-        codepoints 115 117 98 106 101 99 116
+        text subject
       surface seed-surface-5736ec831513
-        codepoints 101 110 116 105 116 121
+        text entity
       surface seed-surface-f7d1f3079d64
-        codepoints 116 111 112 105 99
+        text topic
     lexeme ru # language
       surface seed-surface-a94c29cdaa8c
-        codepoints 1089 1091 1073 1098 1077 1082 1090
+        text субъект
       surface seed-surface-0a93ebc986d8
-        codepoints 1089 1091 1097 1085 1086 1089 1090 1100
+        text сущность
       surface seed-surface-87f6f2668a88
-        codepoints 1087 1088 1077 1076 1084 1077 1090
+        text предмет
     lexeme hi # language
       surface seed-surface-0d16b84d405c
-        codepoints 2357 2367 2359 2351
+        text विषय
       surface seed-surface-345b068ae53f
-        codepoints 2311 2325 2366 2312
+        text इकाई
     lexeme zh # language
       surface seed-surface-3b0c5814cbaf
-        codepoints 20027 20307
+        text 主体
       surface seed-surface-2200eb66a446
-        codepoints 23454 20307
+        text 实体
   knowledge_value:
     defined-by knowledge_relation # definition-link
     role knowledge_value # semantic-role
     lexeme en # language
       surface seed-surface-04d2f161c827
-        codepoints 118 97 108 117 101
+        text value
       surface seed-surface-bd7aebdc9c72
-        codepoints 97 110 115 119 101 114
+        text answer
     lexeme ru # language
       surface seed-surface-6c190c662480
-        codepoints 1079 1085 1072 1095 1077 1085 1080 1077
+        text значение
       surface seed-surface-5b55e24eb07d
-        codepoints 1086 1090 1074 1077 1090
+        text ответ
     lexeme hi # language
       surface seed-surface-baa559e81fec
-        codepoints 2350 2366 2344
+        text मान
       surface seed-surface-53767ab6e49a
-        codepoints 2313 2340 2381 2340 2352
+        text उत्तर
     lexeme zh # language
       surface seed-surface-b2e05aa13114
-        codepoints 20540
+        text 值
       surface seed-surface-b5a9d91a2d2b
-        codepoints 31572 26696
+        text 答案
   capital:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-896989d5480d
-        codepoints 99 97 112 105 116 97 108
+        text capital
     lexeme ru # language
       surface seed-surface-06720618dfe8
-        codepoints 1089 1090 1086 1083 1080 1094 1072
+        text столица
       surface seed-surface-723dd28abc5c
-        codepoints 1089 1090 1086 1083 1080 1094 1099
+        text столицы
       surface seed-surface-8897d4abe023
-        codepoints 1089 1090 1086 1083 1080 1094 1077 1081
+        text столицей
     lexeme hi # language
       surface seed-surface-b1dec4ffccb1
-        codepoints 2352 2366 2332 2343 2366 2344 2368
+        text राजधानी
     lexeme zh # language
       surface seed-surface-b6883e07588e
-        codepoints 39318 37117
+        text 首都
   population:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-4b815e5b52c8
-        codepoints 112 111 112 117 108 97 116 105 111 110
+        text population
       surface seed-surface-34fb7a5847a4
-        codepoints 104 111 119 32 109 97 110 121 32 112 101 111 112 108 101
+        text "how many people"
     lexeme ru # language
       surface seed-surface-4e82df8b921f
-        codepoints 1085 1072 1089 1077 1083 1077 1085 1080 1077
+        text население
     lexeme hi # language
       surface seed-surface-cbd813be263b
-        codepoints 2332 2344 2360 2306 2326 2381 2351 2366
+        text जनसंख्या
       surface seed-surface-1cb15a15d0f2
-        codepoints 2310 2348 2366 2342 2368
+        text आबादी
     lexeme zh # language
       surface seed-surface-05a6310fee65
-        codepoints 20154 21475
+        text 人口
   currency:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-5b214268f95f
-        codepoints 99 117 114 114 101 110 99 121
+        text currency
     lexeme ru # language
       surface seed-surface-30e844076cd5
-        codepoints 1074 1072 1083 1102 1090 1072
+        text валюта
     lexeme hi # language
       surface seed-surface-563a619a4f6e
-        codepoints 2350 2369 2342 2381 2352 2366
+        text मुद्रा
     lexeme zh # language
       surface seed-surface-1acbb53c3e1d
-        codepoints 36135 24065
+        text 货币
       surface seed-surface-58c58cd34744
-        codepoints 36008 24163
+        text 貨幣
   official_language:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-e268401ad64c
-        codepoints 111 102 102 105 99 105 97 108 32 108 97 110 103 117 97 103 101
+        text "official language"
       surface seed-surface-d20bfca1d917
-        codepoints 119 104 97 116 32 108 97 110 103 117 97 103 101
+        text "what language"
     lexeme ru # language
       surface seed-surface-7fa87e38f9f4
-        codepoints 1075 1086 1089 1091 1076 1072 1088 1089 1090 1074 1077 1085 1085 1099 1081 32 1103 1079 1099 1082
+        text "государственный язык"
       surface seed-surface-330b7f599347
-        codepoints 1086 1092 1080 1094 1080 1072 1083 1100 1085 1099 1081 32 1103 1079 1099 1082
+        text "официальный язык"
     lexeme hi # language
       surface seed-surface-280bbf9fc078
-        codepoints 2352 2366 2332 2349 2366 2359 2366
+        text राजभाषा
       surface seed-surface-90d2f9406c31
-        codepoints 2310 2343 2367 2325 2366 2352 2367 2325 32 2349 2366 2359 2366
+        text "आधिकारिक भाषा"
     lexeme zh # language
       surface seed-surface-39addcc67728
-        codepoints 23448 26041 35821 35328
+        text 官方语言
       surface seed-surface-89e7b76e34f9
-        codepoints 23448 26041 35486 35328
+        text 官方語言
   continent:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-f713e83f38b6
-        codepoints 99 111 110 116 105 110 101 110 116
+        text continent
     lexeme ru # language
       surface seed-surface-839b657a5d07
-        codepoints 1082 1086 1085 1090 1080 1085 1077 1085 1090
+        text континент
     lexeme hi # language
       surface seed-surface-0f19719979e3
-        codepoints 2350 2361 2366 2342 2381 2357 2368 2346
+        text महाद्वीप
     lexeme zh # language
       surface seed-surface-3217b43dcb80
-        codepoints 22823 27954
+        text 大洲
   author_of_book:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-ca503f7b7603
-        codepoints 119 104 111 32 119 114 111 116 101
+        text "who wrote"
       surface seed-surface-71a12218c16d
-        codepoints 97 117 116 104 111 114
+        text author
       surface seed-surface-6abb064fce60
-        codepoints 119 114 105 116 116 101 110 32 98 121
+        text "written by"
     lexeme ru # language
       surface seed-surface-b215cd10db3d
-        codepoints 1082 1090 1086 32 1085 1072 1087 1080 1089 1072 1083
+        text "кто написал"
       surface seed-surface-343c96581230
-        codepoints 1085 1072 1087 1080 1089 1072 1083
+        text написал
       surface seed-surface-44b2e416e592
-        codepoints 1072 1074 1090 1086 1088
+        text автор
     lexeme hi # language
       surface seed-surface-0f08418924c8
-        codepoints 2325 2367 2360 2344 2375 32 2354 2367 2326 2368
+        text "किसने लिखी"
       surface seed-surface-c47f58d7ee6c
-        codepoints 2325 2367 2360 2344 2375 32 2354 2367 2326 2366
+        text "किसने लिखा"
       surface seed-surface-5478e89d4bf2
-        codepoints 2354 2375 2326 2325
+        text लेखक
     lexeme zh # language
       surface seed-surface-7f8efbaad2fc
-        codepoints 26159 35841 20889 30340
+        text 是谁写的
       surface seed-surface-54fa6aad6e63
-        codepoints 20316 32773
+        text 作者
   painter_of_painting:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-0ef51db4926d
-        codepoints 119 104 111 32 112 97 105 110 116 101 100
+        text "who painted"
       surface seed-surface-e73b71a49c63
-        codepoints 112 97 105 110 116 101 100
+        text painted
       surface seed-surface-e257ea931bf3
-        codepoints 112 97 105 110 116 101 114
+        text painter
       surface seed-surface-139532ce4732
-        codepoints 97 114 116 105 115 116
+        text artist
     lexeme ru # language
       surface seed-surface-b6d0757cce50
-        codepoints 1082 1090 1086 32 1085 1072 1087 1080 1089 1072 1083
+        text "кто написал"
       surface seed-surface-3619e28e18f0
-        codepoints 1085 1072 1087 1080 1089 1072 1083
+        text написал
       surface seed-surface-4779f4714fa4
-        codepoints 1093 1091 1076 1086 1078 1085 1080 1082
+        text художник
     lexeme hi # language
       surface seed-surface-995fe421eb70
-        codepoints 2325 2367 2360 2344 2375 32 2348 2344 2366 2312
+        text "किसने बनाई"
       surface seed-surface-95015309d123
-        codepoints 2330 2367 2340 2381 2352 2325 2366 2352
+        text चित्रकार
       surface seed-surface-5df83efbc36b
-        codepoints 2325 2354 2366 2325 2366 2352
+        text कलाकार
     lexeme zh # language
       surface seed-surface-c0c92fcf6a3e
-        codepoints 35841 30011 30340
+        text 谁画的
       surface seed-surface-4c7a77053537
-        codepoints 30011 23478
+        text 画家
   built_year:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-6ab69c741ddb
-        codepoints 119 104 101 110
+        text when
       surface seed-surface-aa1659cfe058
-        codepoints 98 117 105 108 116
+        text built
       surface seed-surface-7ef132455317
-        codepoints 99 111 110 115 116 114 117 99 116 105 111 110
+        text construction
     lexeme ru # language
       surface seed-surface-eac0b5a50c81
-        codepoints 1082 1086 1075 1076 1072
+        text когда
       surface seed-surface-c6480d778a7e
-        codepoints 1087 1086 1089 1090 1088 1086 1077 1085 1072
+        text построена
       surface seed-surface-af0eeb726abb
-        codepoints 1087 1086 1089 1090 1088 1086 1080 1083 1080
+        text построили
     lexeme hi # language
       surface seed-surface-b4879f945c64
-        codepoints 2348 2344 2368
+        text बनी
       surface seed-surface-6c9f19aba7ee
-        codepoints 2348 2344 2366 2312
+        text बनाई
       surface seed-surface-c80cf6bcbc4b
-        codepoints 2325 2348
+        text कब
     lexeme zh # language
       surface seed-surface-52f5aeb75f70
-        codepoints 20309 26102
+        text 何时
       surface seed-surface-ac43952988e6
-        codepoints 24314 20110
+        text 建于
       surface seed-surface-e346203a9b7b
-        codepoints 24314 36896
+        text 建造
   physical_constant:
     defined-by knowledge_relation # definition-link
     role fact_relation # semantic-role
     lexeme en # language
       surface seed-surface-da920a2ea323
-        codepoints 115 112 101 101 100 32 111 102 32 108 105 103 104 116
+        text "speed of light"
       surface seed-surface-fe085d63ad13
-        codepoints 119 104 97 116 32 105 115
+        text "what is"
       surface seed-surface-0284079501e3
-        codepoints 104 111 119 32 102 97 115 116
+        text "how fast"
     lexeme ru # language
       surface seed-surface-0223970858a8
-        codepoints 1089 1082 1086 1088 1086 1089 1090 1100 32 1089 1074 1077 1090 1072
+        text "скорость света"
       surface seed-surface-a79ac92c4374
-        codepoints 1082 1072 1082 1086 1074 1072
+        text какова
       surface seed-surface-38fb3886d65e
-        codepoints 1095 1077 1084 1091 32 1088 1072 1074 1085 1072
+        text "чему равна"
     lexeme hi # language
       surface seed-surface-1a45147022a8
-        codepoints 2346 2381 2352 2325 2366 2358 32 2325 2368 32 2327 2340 2367
+        text "प्रकाश की गति"
       surface seed-surface-fb056df6cb7f
-        codepoints 2325 2367 2340 2344 2368
+        text कितनी
     lexeme zh # language
       surface seed-surface-eeba3c905cb8
-        codepoints 20809 36895
+        text 光速
       surface seed-surface-1cba804fc2d7
-        codepoints 26159 22810 23569
+        text 是多少

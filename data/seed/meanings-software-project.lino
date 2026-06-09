@@ -7,219 +7,219 @@ meanings
     role software_followup # semantic-role
     lexeme en # language
       surface seed-surface-3c64bcba0c41
-        codepoints 102 111 108 108 111 119 45 117 112
+        text follow-up
       surface seed-surface-ff9db8c7ea12
-        codepoints 101 120 101 114 99 105 115 101
+        text exercise
     lexeme ru # language
       surface seed-surface-dc4b2f458f55
-        codepoints 1087 1088 1086 1076 1086 1083 1078 1077 1085 1080 1077
+        text продолжение
       surface seed-surface-b60e65f66d36
-        codepoints 1086 1090 1088 1072 1073 1086 1090 1082 1072
+        text отработка
     lexeme hi # language
       surface seed-surface-ffe18e428365
-        codepoints 2309 2344 2369 2357 2352 2381 2340 2368
+        text अनुवर्ती
       surface seed-surface-cd1d84137dfe
-        codepoints 2309 2349 2381 2351 2366 2360
+        text अभ्यास
     lexeme zh # language
       surface seed-surface-da118ac1a74c
-        codepoints 21518 32493
+        text 后续
       surface seed-surface-30147a1b2186
-        codepoints 28436 32451
+        text 演练
   software_followup_verification:
     defined-by software_followup # definition-link
     role software_followup_verification # semantic-role
     lexeme en # language
       surface seed-surface-9534f4fa80bb
-        codepoints 116 101 115 116 32 105 116
+        text "test it"
       surface seed-surface-410ec8b71ab5
-        codepoints 116 101 115 116 32 116 104 101
+        text "test the"
       surface seed-surface-72fe8277fb23
-        codepoints 116 101 115 116 32 116 104 105 115
+        text "test this"
       surface seed-surface-c5170e7a7f24
-        codepoints 118 101 114 105 102 121
+        text verify
       surface seed-surface-47dc456edc59
-        codepoints 99 104 101 99 107 32 105 116
+        text "check it"
       surface seed-surface-08b700b2e89c
-        codepoints 99 104 101 99 107 32 116 104 97 116
+        text "check that"
       surface seed-surface-978d6d8b8457
-        codepoints 114 117 110 32 116 104 101 32 116 101 115 116 115
+        text "run the tests"
     lexeme ru # language
       surface seed-surface-92701259922c
-        codepoints 1087 1088 1086 1090 1077 1089 1090 1080 1088 1091 1081
+        text протестируй
       surface seed-surface-8ec7c479e572
-        codepoints 1087 1088 1086 1090 1077 1089 1090 1080 1088 1086 1074 1072 1090 1100
+        text протестировать
       surface seed-surface-14098cc2365e
-        codepoints 1087 1088 1086 1074 1077 1088 1100
+        text проверь
       surface seed-surface-b0998f801536
-        codepoints 1090 1077 1089 1090 1080 1088 1091 1081
+        text тестируй
     lexeme hi # language
       surface seed-surface-23587044e7ac
-        codepoints 2346 2352 2368 2325 2381 2359 2339
+        text परीक्षण
       surface seed-surface-b3b0771b0bbb
-        codepoints 2332 2366 2305 2330
+        text जाँच
       surface seed-surface-d480da7d8108
-        codepoints 2332 2366 2306 2330
+        text जांच
     lexeme zh # language
       surface seed-surface-5a87c45a426d
-        codepoints 27979 35797
+        text 测试
       surface seed-surface-04cd6e4b7898
-        codepoints 26816 39564
+        text 检验
       surface seed-surface-4a47159970b1
-        codepoints 26816 26597
+        text 检查
   software_followup_execution:
     defined-by software_followup # definition-link
     role software_followup_execution # semantic-role
     lexeme en # language
       surface seed-surface-113c11146fc6
-        codepoints 114 117 110 32 105 116
+        text "run it"
       surface seed-surface-be0abe2ffdb5
-        codepoints 114 117 110 32 116 104 105 115
+        text "run this"
       surface seed-surface-e0427f85876b
-        codepoints 114 117 110 32 116 104 101
+        text "run the"
       surface seed-surface-41a3b4c03aae
-        codepoints 101 120 101 99 117 116 101 32 105 116
+        text "execute it"
       surface seed-surface-20ad949bc315
-        codepoints 101 120 101 99 117 116 101 32 116 104 101
+        text "execute the"
       surface seed-surface-188173fb613d
-        codepoints 116 114 121 32 105 116
+        text "try it"
     lexeme ru # language
       surface seed-surface-fcea33dcefa9
-        codepoints 1079 1072 1087 1091 1089 1090 1080
+        text запусти
       surface seed-surface-9f16346ebcc4
-        codepoints 1074 1099 1087 1086 1083 1085 1080
+        text выполни
     lexeme hi # language
       surface seed-surface-dbfa87080534
-        codepoints 2330 2354 2366 2323
+        text चलाओ
       surface seed-surface-730354a2c206
-        codepoints 2344 2367 2359 2381 2346 2366 2342 2367 2340
+        text निष्पादित
     lexeme zh # language
       surface seed-surface-2436b18680bd
-        codepoints 36816 34892
+        text 运行
       surface seed-surface-50999c58402e
-        codepoints 25191 34892
+        text 执行
   software_followup_demonstration:
     defined-by software_followup # definition-link
     role software_followup_demonstration # semantic-role
     lexeme en # language
       surface seed-surface-197b7822171d
-        codepoints 100 101 109 111 32 105 116
+        text "demo it"
       surface seed-surface-9a86e4c0ae17
-        codepoints 115 104 111 119 32 109 101
+        text "show me"
       surface seed-surface-a3ddd17425d4
-        codepoints 115 104 111 119 32 116 104 101
+        text "show the"
       surface seed-surface-47c78ee9d3c1
-        codepoints 112 114 105 110 116 32 116 104 101
+        text "print the"
     lexeme ru # language
       surface seed-surface-32cbeed10837
-        codepoints 1087 1086 1082 1072 1078 1080
+        text покажи
     lexeme hi # language
       surface seed-surface-c423786cca81
-        codepoints 2342 2367 2326 2366 2323
+        text दिखाओ
     lexeme zh # language
       surface seed-surface-c235b3ab7f11
-        codepoints 26174 31034
+        text 显示
       surface seed-surface-83baae1266b1
-        codepoints 23637 31034
+        text 展示
   output_display_request:
     defined-by software_followup # definition-link
     defined-by action # definition-link
     role output_display_request # semantic-role
     lexeme en # language
       surface seed-surface-00ef269fa4a0
-        codepoints 115 104 111 119 32 109 101 32 8230
+        text "show me …"
       surface seed-surface-93731837ed8b
-        codepoints 115 104 111 119 32 8230
+        text "show …"
       surface seed-surface-7f085ff4c6ba
-        codepoints 112 114 105 110 116 32 8230
+        text "print …"
       surface seed-surface-efb3a2522c4d
-        codepoints 100 105 115 112 108 97 121 32 8230
+        text "display …"
     lexeme ru # language
       surface seed-surface-14ef46761784
-        codepoints 1087 1086 1082 1072 1078 1080 32 1084 1085 1077 32 8230
+        text "покажи мне …"
       surface seed-surface-d008e1271c3a
-        codepoints 1087 1086 1082 1072 1078 1080 32 8230
+        text "покажи …"
       surface seed-surface-a1a3db936d94
-        codepoints 1074 1099 1074 1077 1076 1080 32 8230
+        text "выведи …"
     lexeme hi # language
       surface seed-surface-6705f90926d7
-        codepoints 2350 2369 2333 2375 32 2342 2367 2326 2366 2323 32 8230
+        text "मुझे दिखाओ …"
       surface seed-surface-d29bc024038f
-        codepoints 2342 2367 2326 2366 2323 32 8230
+        text "दिखाओ …"
     lexeme zh # language
       surface seed-surface-1c94dea41276
-        codepoints 32473 25105 30475 8230
+        text 给我看…
       surface seed-surface-d782628232b2
-        codepoints 26174 31034 8230
+        text 显示…
   implement:
     defined-by code # definition-link
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
       surface seed-surface-fd1849dbefe7
-        codepoints 105 109 112 108 101 109 101 110 116
+        text implement
     lexeme ru # language
       surface seed-surface-edabe9f067a4
-        codepoints 1088 1077 1072 1083 1080 1079 1091 1081
+        text реализуй
       surface seed-surface-988fc2c33ae9
-        codepoints 1088 1077 1072 1083 1080 1079 1086 1074 1072 1090 1100
+        text реализовать
     lexeme hi # language
       surface seed-surface-3527bcd01c84
-        codepoints 2354 2366 2327 2370
+        text लागू
     lexeme zh # language
       surface seed-surface-90662dcd7487
-        codepoints 23454 29616
+        text 实现
   develop:
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
       surface seed-surface-ae07f5706848
-        codepoints 100 101 118 101 108 111 112
+        text develop
     lexeme ru # language
       surface seed-surface-49290a9a64c5
-        codepoints 1088 1072 1079 1088 1072 1073 1086 1090 1072 1081
+        text разработай
       surface seed-surface-9892e5222b9b
-        codepoints 1088 1072 1079 1088 1072 1073 1086 1090 1072 1090 1100
+        text разработать
     lexeme hi # language
       surface seed-surface-be1e0cd8c90b
-        codepoints 2357 2367 2325 2360 2367 2340
+        text विकसित
     lexeme zh # language
       surface seed-surface-65c906ed5866
-        codepoints 24320 21457
+        text 开发
   design:
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
       surface seed-surface-3ca697b0ceb9
-        codepoints 100 101 115 105 103 110
+        text design
     lexeme ru # language
       surface seed-surface-3fa389ac92ff
-        codepoints 1089 1087 1088 1086 1077 1082 1090 1080 1088 1091 1081
+        text спроектируй
       surface seed-surface-fb8cccfd50e5
-        codepoints 1089 1086 1079 1076 1072 1081 32 1076 1080 1079 1072 1081 1085
+        text "создай дизайн"
     lexeme hi # language
       surface seed-surface-1203622b5daa
-        codepoints 2337 2367 2332 2364 2366 2311 2344
+        text डिज़ाइन
     lexeme zh # language
       surface seed-surface-4686ee465706
-        codepoints 35774 35745
+        text 设计
   scaffold:
     defined-by code # definition-link
     defined-by program # definition-link
     role software_authoring_action # semantic-role
     lexeme en # language
       surface seed-surface-2bfe70c6afa7
-        codepoints 115 99 97 102 102 111 108 100
+        text scaffold
     lexeme ru # language
       surface seed-surface-505b050552d4
-        codepoints 1089 1086 1079 1076 1072 1081 32 1082 1072 1088 1082 1072 1089
+        text "создай каркас"
       surface seed-surface-fdc5b403b377
-        codepoints 1089 1075 1077 1085 1077 1088 1080 1088 1091 1081 32 1082 1072 1088 1082 1072 1089
+        text "сгенерируй каркас"
     lexeme hi # language
       surface seed-surface-733e649de679
-        codepoints 2338 2366 2305 2330 2366 32 2348 2344 2366 2323
+        text "ढाँचा बनाओ"
     lexeme zh # language
       surface seed-surface-10a71adbeb72
-        codepoints 25645 24314
+        text 搭建
   software_artifact:
     defined-by artifact_application # definition-link
     defined-by artifact_tool # definition-link
@@ -227,333 +227,333 @@ meanings
     role software_artifact # semantic-role
     lexeme en # language
       surface seed-surface-47e75314a7f0
-        codepoints 115 111 102 116 119 97 114 101 32 97 114 116 105 102 97 99 116
+        text "software artifact"
       surface seed-surface-6efd5dca4792
-        codepoints 100 101 108 105 118 101 114 97 98 108 101
+        text deliverable
     lexeme ru # language
       surface seed-surface-dcec8b0cb15a
-        codepoints 1087 1088 1086 1075 1088 1072 1084 1084 1085 1099 1081 32 1087 1088 1086 1076 1091 1082 1090
+        text "программный продукт"
       surface seed-surface-1da23861e17b
-        codepoints 1072 1088 1090 1077 1092 1072 1082 1090
+        text артефакт
     lexeme hi # language
       surface seed-surface-f3187ac95efe
-        codepoints 2360 2377 2347 2364 2381 2335 2357 2375 2351 2352 32 2325 2354 2366 2325 2371 2340 2367
+        text "सॉफ़्टवेयर कलाकृति"
     lexeme zh # language
       surface seed-surface-7b66880efa2d
-        codepoints 36719 20214 21046 21697
+        text 软件制品
   artifact_browser_extension:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-60ef45a6c4ef
-        codepoints 98 114 111 119 115 101 114 32 101 120 116 101 110 115 105 111 110
+        text "browser extension"
     lexeme ru # language
       surface seed-surface-ef36cfa70186
-        codepoints 1088 1072 1089 1096 1080 1088 1077 1085 1080 1077 32 1073 1088 1072 1091 1079 1077 1088 1072
+        text "расширение браузера"
     lexeme hi # language
       surface seed-surface-63149418dc32
-        codepoints 2348 2381 2352 2366 2313 2332 2364 2352 32 2319 2325 2381 2360 2335 2375 2306 2358 2344
+        text "ब्राउज़र एक्सटेंशन"
     lexeme zh # language
       surface seed-surface-fe5c7df9502b
-        codepoints 27983 35272 22120 25193 23637
+        text 浏览器扩展
   artifact_command_line_tool:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-b17d8a078149
-        codepoints 99 111 109 109 97 110 100 32 108 105 110 101 32 116 111 111 108
+        text "command line tool"
       surface seed-surface-0b746e22b38e
-        codepoints 99 108 105 32 116 111 111 108
+        text "cli tool"
     lexeme ru # language
       surface seed-surface-58786334025d
-        codepoints 1082 1086 1085 1089 1086 1083 1100 1085 1072 1103 32 1091 1090 1080 1083 1080 1090 1072
+        text "консольная утилита"
       surface seed-surface-3501363ab50d
-        codepoints 1091 1090 1080 1083 1080 1090 1072 32 1082 1086 1084 1072 1085 1076 1085 1086 1081 32 1089 1090 1088 1086 1082 1080
+        text "утилита командной строки"
     lexeme hi # language
       surface seed-surface-603c568c65d2
-        codepoints 2325 2350 2366 2306 2337 32 2354 2366 2311 2344 32 2335 2370 2354
+        text "कमांड लाइन टूल"
     lexeme zh # language
       surface seed-surface-7d10be995956
-        codepoints 21629 20196 34892 24037 20855
+        text 命令行工具
   artifact_github_action:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-3680cf6aa3fa
-        codepoints 103 105 116 104 117 98 32 97 99 116 105 111 110
+        text "github action"
     lexeme ru # language
       surface seed-surface-027bf3e1c32f
-        codepoints 1076 1077 1081 1089 1090 1074 1080 1077 32 103 105 116 104 117 98
+        text "действие github"
     lexeme hi # language
       surface seed-surface-e2068540fd2e
-        codepoints 2327 2367 2335 2361 2348 32 2319 2325 2381 2358 2344
+        text "गिटहब एक्शन"
     lexeme zh # language
       surface seed-surface-04cdefbb0e81
-        codepoints 103 105 116 104 117 98 32 25805 20316
+        text "github 操作"
   artifact_mobile_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-69cb263d5c85
-        codepoints 109 111 98 105 108 101 32 97 112 112
+        text "mobile app"
     lexeme ru # language
       surface seed-surface-a681e0a52ccd
-        codepoints 1084 1086 1073 1080 1083 1100 1085 1086 1077 32 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077
+        text "мобильное приложение"
     lexeme hi # language
       surface seed-surface-cc841dce963b
-        codepoints 2350 2379 2348 2366 2311 2354 32 2320 2346
+        text "मोबाइल ऐप"
     lexeme zh # language
       surface seed-surface-571a0c075077
-        codepoints 31227 21160 24212 29992
+        text 移动应用
   artifact_web_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-b5f14d88d851
-        codepoints 119 101 98 32 97 112 112
+        text "web app"
     lexeme ru # language
       surface seed-surface-12d297e6f44c
-        codepoints 1074 1077 1073 32 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077
+        text "веб приложение"
     lexeme hi # language
       surface seed-surface-742ab6ed055a
-        codepoints 2357 2375 2348 32 2320 2346
+        text "वेब ऐप"
     lexeme zh # language
       surface seed-surface-2d80ab3ffe09
-        codepoints 32593 39029 24212 29992
+        text 网页应用
   artifact_application:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-718d0c095dad
-        codepoints 97 112 112 108 105 99 97 116 105 111 110
+        text application
     lexeme ru # language
       surface seed-surface-2bbc93223c92
-        codepoints 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077
+        text приложение
     lexeme hi # language
       surface seed-surface-181a9788e6fd
-        codepoints 2319 2346 2381 2354 2367 2325 2375 2358 2344
+        text एप्लिकेशन
     lexeme zh # language
       surface seed-surface-c307628fab18
-        codepoints 24212 29992 31243 24207
+        text 应用程序
   artifact_extension:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-9b9bec419bf2
-        codepoints 101 120 116 101 110 115 105 111 110
+        text extension
       surface seed-surface-55c7e507aece
-        codepoints 97 100 100 32 111 110
+        text "add on"
       surface seed-surface-aeef4f9dda10
-        codepoints 97 100 100 111 110
+        text addon
     lexeme ru # language
       surface seed-surface-e008d1a68a1b
-        codepoints 1088 1072 1089 1096 1080 1088 1077 1085 1080 1077
+        text расширение
       surface seed-surface-0ef7694d6884
-        codepoints 1076 1086 1087 1086 1083 1085 1077 1085 1080 1077
+        text дополнение
     lexeme hi # language
       surface seed-surface-3390a05a7d17
-        codepoints 2319 2325 2381 2360 2335 2375 2306 2358 2344
+        text एक्सटेंशन
       surface seed-surface-9884c8139f63
-        codepoints 2320 2337 45 2321 2344
+        text ऐड-ऑन
     lexeme zh # language
       surface seed-surface-8fc528d0f3e9
-        codepoints 25193 23637
+        text 扩展
       surface seed-surface-8c0b90b68cc4
-        codepoints 25193 23637 31243 24207
+        text 扩展程序
   artifact_dashboard:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-4a475bf5c4f0
-        codepoints 100 97 115 104 98 111 97 114 100
+        text dashboard
     lexeme ru # language
       surface seed-surface-cb10ec3438b5
-        codepoints 1087 1072 1085 1077 1083 1100 32 1091 1087 1088 1072 1074 1083 1077 1085 1080 1103
+        text "панель управления"
       surface seed-surface-15ff3b0fb72b
-        codepoints 1076 1072 1096 1073 1086 1088 1076
+        text дашборд
     lexeme hi # language
       surface seed-surface-865cfb378055
-        codepoints 2337 2376 2358 2348 2379 2352 2381 2337
+        text डैशबोर्ड
     lexeme zh # language
       surface seed-surface-2750ccc67929
-        codepoints 20202 34920 26495
+        text 仪表板
   artifact_scraper:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-d47ccf138887
-        codepoints 115 99 114 97 112 101 114
+        text scraper
     lexeme ru # language
       surface seed-surface-b0de97794965
-        codepoints 1089 1082 1088 1072 1087 1077 1088
+        text скрапер
       surface seed-surface-c1292dc38677
-        codepoints 1087 1072 1088 1089 1077 1088
+        text парсер
     lexeme hi # language
       surface seed-surface-922cdee48eec
-        codepoints 2360 2381 2325 2381 2352 2376 2346 2352
+        text स्क्रैपर
     lexeme zh # language
       surface seed-surface-2e940e506dfb
-        codepoints 29228 34411
+        text 爬虫
   artifact_library:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-8b30c316d930
-        codepoints 108 105 98 114 97 114 121
+        text library
     lexeme ru # language
       surface seed-surface-087cc28be230
-        codepoints 1073 1080 1073 1083 1080 1086 1090 1077 1082 1072
+        text библиотека
       surface seed-surface-c10e2668db87
-        codepoints 1073 1080 1073 1083 1080 1086 1090 1077 1082 1091
+        text библиотеку
     lexeme hi # language
       surface seed-surface-d26bfc897571
-        codepoints 2354 2366 2311 2348 2381 2352 2375 2352 2368
+        text लाइब्रेरी
     lexeme zh # language
       surface seed-surface-ca4a0ecbbf2d
-        codepoints 24211
+        text 库
   artifact_website:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-63a8082127c3
-        codepoints 119 101 98 115 105 116 101
+        text website
     lexeme ru # language
       surface seed-surface-4ba80773d1f6
-        codepoints 1089 1072 1081 1090
+        text сайт
       surface seed-surface-ca645c277e43
-        codepoints 1074 1077 1073 32 1089 1072 1081 1090
+        text "веб сайт"
     lexeme hi # language
       surface seed-surface-2e23b485f1fc
-        codepoints 2357 2375 2348 2360 2366 2311 2335
+        text वेबसाइट
     lexeme zh # language
       surface seed-surface-8af2840a3f73
-        codepoints 32593 31449
+        text 网站
   artifact_plugin:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-8b297c498ecc
-        codepoints 112 108 117 103 105 110
+        text plugin
     lexeme ru # language
       surface seed-surface-ef481292748e
-        codepoints 1087 1083 1072 1075 1080 1085
+        text плагин
     lexeme hi # language
       surface seed-surface-479db26325c3
-        codepoints 2346 2381 2354 2327 2311 2344
+        text प्लगइन
     lexeme zh # language
       surface seed-surface-ebe6be967fb9
-        codepoints 25554 20214
+        text 插件
   artifact_service:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-38078206731b
-        codepoints 115 101 114 118 105 99 101
+        text service
     lexeme ru # language
       surface seed-surface-7bc873bd8645
-        codepoints 1089 1077 1088 1074 1080 1089
+        text сервис
       surface seed-surface-65c2cb7b6801
-        codepoints 1089 1083 1091 1078 1073 1072
+        text служба
       surface seed-surface-f47283e1dbd2
-        codepoints 1089 1083 1091 1078 1073 1091
+        text службу
     lexeme hi # language
       surface seed-surface-9c30b8c650d6
-        codepoints 2360 2375 2357 2366
+        text सेवा
     lexeme zh # language
       surface seed-surface-fa5c8d906922
-        codepoints 26381 21153
+        text 服务
   artifact_bot:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-99d78317235c
-        codepoints 98 111 116
+        text bot
     lexeme ru # language
       surface seed-surface-6318e2acafe9
-        codepoints 1073 1086 1090
+        text бот
     lexeme hi # language
       surface seed-surface-5703bbb22e29
-        codepoints 2348 2377 2335
+        text बॉट
     lexeme zh # language
       surface seed-surface-7e8717c72fe6
-        codepoints 26426 22120 20154
+        text 机器人
   artifact_app:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-771ac92c41e9
-        codepoints 97 112 112
+        text app
     lexeme ru # language
       surface seed-surface-89166b44e5d4
-        codepoints 1087 1088 1080 1083 1086 1078 1077 1085 1080 1077
+        text приложение
     lexeme hi # language
       surface seed-surface-114f94e31d33
-        codepoints 2320 2346
+        text ऐप
     lexeme zh # language
       surface seed-surface-592a5ed9310f
-        codepoints 24212 29992
+        text 应用
   artifact_api:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-6c4ffdcabb8b
-        codepoints 97 112 105
+        text api
     lexeme ru # language
       surface seed-surface-396bc36b1df7
-        codepoints 1072 1087 1080
+        text апи
     lexeme hi # language
       surface seed-surface-804d0ad84cb6
-        codepoints 2319 2346 2368 2310 2312
+        text एपीआई
     lexeme zh # language
       surface seed-surface-c3ef7bb83d81
-        codepoints 25509 21475
+        text 接口
   artifact_sdk:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-f0b9a5548f05
-        codepoints 115 100 107
+        text sdk
     lexeme ru # language
       surface seed-surface-e7cf257c5b16
-        codepoints 1089 1076 1082
+        text сдк
     lexeme hi # language
       surface seed-surface-91b9ebf6201a
-        codepoints 2319 2360 2337 2368 2325 2375
+        text एसडीके
     lexeme zh # language
       surface seed-surface-dda306cd961b
-        codepoints 24320 21457 21253
+        text 开发包
   artifact_tool:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-3bde6616b26c
-        codepoints 116 111 111 108
+        text tool
     lexeme ru # language
       surface seed-surface-fe16fca86074
-        codepoints 1080 1085 1089 1090 1088 1091 1084 1077 1085 1090
+        text инструмент
     lexeme hi # language
       surface seed-surface-01d23c47082f
-        codepoints 2335 2370 2354
+        text टूल
       surface seed-surface-1efc5b02a8fb
-        codepoints 2313 2346 2325 2352 2339
+        text उपकरण
     lexeme zh # language
       surface seed-surface-8b4a4feb432d
-        codepoints 24037 20855
+        text 工具
   artifact_mod:
     defined-by software_artifact # definition-link
     role software_artifact_kind # semantic-role
     lexeme en # language
       surface seed-surface-69f3d254c45e
-        codepoints 109 111 100
+        text mod
     lexeme ru # language
       surface seed-surface-7ab0ac4108a1
-        codepoints 1084 1086 1076
+        text мод
     lexeme hi # language
       surface seed-surface-82266f1357b9
-        codepoints 2350 2377 2337
+        text मॉड
     lexeme zh # language
       surface seed-surface-2aaa94f41ce6
-        codepoints 27169 32452
+        text 模组
   software_feature:
     defined-by requirement_state_tracking # definition-link
     defined-by requirement_project_behavior # definition-link
@@ -561,602 +561,602 @@ meanings
     role software_feature # semantic-role
     lexeme en # language
       surface seed-surface-3b8cbb2d42c6
-        codepoints 102 101 97 116 117 114 101
+        text feature
       surface seed-surface-38876a44e19b
-        codepoints 102 101 97 116 117 114 101 115
+        text features
       surface seed-surface-c1d3549b121c
-        codepoints 114 101 113 117 105 114 101 109 101 110 116
+        text requirement
       surface seed-surface-32163ce864dc
-        codepoints 114 101 113 117 105 114 101 109 101 110 116 115
+        text requirements
     lexeme ru # language
       surface seed-surface-189dd6a5cc13
-        codepoints 1092 1091 1085 1082 1094 1080 1103
+        text функция
       surface seed-surface-0d7c941bc73a
-        codepoints 1090 1088 1077 1073 1086 1074 1072 1085 1080 1077
+        text требование
     lexeme hi # language
       surface seed-surface-fd9548defe1e
-        codepoints 2360 2369 2357 2367 2343 2366
+        text सुविधा
       surface seed-surface-a434bfcf131b
-        codepoints 2310 2357 2358 2381 2351 2325 2340 2366
+        text आवश्यकता
     lexeme zh # language
       surface seed-surface-cc1d135ab7e7
-        codepoints 21151 33021
+        text 功能
       surface seed-surface-fa27f3e63aa2
-        codepoints 38656 27714
+        text 需求
   requirement_state_tracking:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-3822355696fc
-        codepoints 116 114 97 99 107
+        text track
       surface seed-surface-97d7181d9e89
-        codepoints 104 112
+        text hp
       surface seed-surface-45e41c1b3065
-        codepoints 115 116 97 116 117 115
+        text status
       surface seed-surface-b8c284170af4
-        codepoints 100 97 109 97 103 101
+        text damage
       surface seed-surface-0cf29de053b8
-        codepoints 99 111 111 108 100 111 119 110
+        text cooldown
     lexeme ru # language
       surface seed-surface-67aedc8872b4
-        codepoints 1089 1086 1089 1090 1086 1103 1085 1080 1077
+        text состояние
       surface seed-surface-c7a724f42d72
-        codepoints 1091 1088 1086 1085
+        text урон
       surface seed-surface-641a865c09eb
-        codepoints 1086 1090 1082 1072 1090
+        text откат
     lexeme hi # language
       surface seed-surface-51b6c65acc36
-        codepoints 2360 2381 2341 2367 2340 2367
+        text स्थिति
       surface seed-surface-25e62b834aaf
-        codepoints 2325 2381 2359 2340 2367
+        text क्षति
     lexeme zh # language
       surface seed-surface-e78c0818f9bd
-        codepoints 29366 24577
+        text 状态
       surface seed-surface-a8a145093b82
-        codepoints 20260 23475
+        text 伤害
       surface seed-surface-d39bde809fe9
-        codepoints 20919 21364
+        text 冷却
   requirement_data_exchange:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-cd913bb97b4b
-        codepoints 105 109 112 111 114 116
+        text import
       surface seed-surface-568e1d2f9a5d
-        codepoints 101 120 112 111 114 116
+        text export
       surface seed-surface-368602c337f2
-        codepoints 99 115 118
+        text csv
       surface seed-surface-e78c46a3d435
-        codepoints 98 97 99 107 117 112
+        text backup
       surface seed-surface-0da1370058de
-        codepoints 114 101 112 111 114 116
+        text report
       surface seed-surface-99e9506f2460
-        codepoints 99 97 108 101 110 100 97 114
+        text calendar
     lexeme ru # language
       surface seed-surface-acb2e4c0e784
-        codepoints 1080 1084 1087 1086 1088 1090
+        text импорт
       surface seed-surface-f56fedcc492d
-        codepoints 1101 1082 1089 1087 1086 1088 1090
+        text экспорт
       surface seed-surface-b1c14d176e73
-        codepoints 1088 1077 1079 1077 1088 1074 1085 1072 1103 32 1082 1086 1087 1080 1103
+        text "резервная копия"
       surface seed-surface-3de6b890e065
-        codepoints 1086 1090 1095 1105 1090
+        text отчёт
     lexeme hi # language
       surface seed-surface-75c978a45c4b
-        codepoints 2310 2351 2366 2340
+        text आयात
       surface seed-surface-55244e86e226
-        codepoints 2344 2367 2352 2381 2351 2366 2340
+        text निर्यात
       surface seed-surface-1b5f0abbf41a
-        codepoints 2352 2367 2346 2379 2352 2381 2335
+        text रिपोर्ट
     lexeme zh # language
       surface seed-surface-51a09cc26272
-        codepoints 23548 20837
+        text 导入
       surface seed-surface-e35ed7520ecd
-        codepoints 23548 20986
+        text 导出
       surface seed-surface-6e7ca62c6203
-        codepoints 22791 20221
+        text 备份
       surface seed-surface-5e2306e20f93
-        codepoints 25253 21578
+        text 报告
   requirement_automation:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-d5aa7acad1e1
-        codepoints 114 101 109 105 110 100 101 114
+        text reminder
       surface seed-surface-1ae3acdd8ca5
-        codepoints 110 111 116 105 102 105 99 97 116 105 111 110
+        text notification
       surface seed-surface-cfe11c0ac2d8
-        codepoints 115 99 104 101 100 117 108 101
+        text schedule
       surface seed-surface-73e1ea9f2794
-        codepoints 119 101 101 107 108 121
+        text weekly
     lexeme ru # language
       surface seed-surface-126f7c8f480a
-        codepoints 1085 1072 1087 1086 1084 1080 1085 1072 1085 1080 1077
+        text напоминание
       surface seed-surface-f7a807625136
-        codepoints 1091 1074 1077 1076 1086 1084 1083 1077 1085 1080 1077
+        text уведомление
       surface seed-surface-32bd2e4504d6
-        codepoints 1088 1072 1089 1087 1080 1089 1072 1085 1080 1077
+        text расписание
     lexeme hi # language
       surface seed-surface-8f203c978d42
-        codepoints 2309 2344 2369 2360 2381 2350 2366 2352 2325
+        text अनुस्मारक
       surface seed-surface-018d9034f6db
-        codepoints 2360 2370 2330 2344 2366
+        text सूचना
     lexeme zh # language
       surface seed-surface-b001723e6b4c
-        codepoints 25552 37266
+        text 提醒
       surface seed-surface-b8708949ea59
-        codepoints 36890 30693
+        text 通知
       surface seed-surface-4782de3c89b6
-        codepoints 35745 21010
+        text 计划
   requirement_validation:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-0a7627fa4ecb
-        codepoints 118 97 108 105 100 97 116 101
+        text validate
       surface seed-surface-f8a056b64190
-        codepoints 99 104 101 99 107
+        text check
       surface seed-surface-d44b11c8f28d
-        codepoints 99 111 110 102 108 105 99 116
+        text conflict
       surface seed-surface-6af0e043fabb
-        codepoints 97 117 100 105 116
+        text audit
     lexeme ru # language
       surface seed-surface-2218edad9d43
-        codepoints 1087 1088 1086 1074 1077 1088 1082 1072
+        text проверка
       surface seed-surface-4455f2418676
-        codepoints 1087 1088 1086 1074 1077 1088 1100
+        text проверь
       surface seed-surface-47dc121907af
-        codepoints 1072 1091 1076 1080 1090
+        text аудит
     lexeme hi # language
       surface seed-surface-3e39c05a9305
-        codepoints 2360 2340 2381 2351 2366 2346 2344
+        text सत्यापन
       surface seed-surface-215f63b443c0
-        codepoints 2332 2366 2305 2330
+        text जाँच
     lexeme zh # language
       surface seed-surface-033a287a1bf1
-        codepoints 39564 35777
+        text 验证
       surface seed-surface-6f95303928c5
-        codepoints 26816 26597
+        text 检查
       surface seed-surface-4aeff0db4222
-        codepoints 23457 35745
+        text 审计
   requirement_integration:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-22d1146709a4
-        codepoints 97 112 105
+        text api
       surface seed-surface-3fce907fd5fb
-        codepoints 100 105 115 99 111 114 100
+        text discord
       surface seed-surface-bbb01bc25f15
-        codepoints 116 101 108 101 103 114 97 109
+        text telegram
       surface seed-surface-704ee91569d8
-        codepoints 103 105 116 104 117 98
+        text github
       surface seed-surface-42d972257c4d
-        codepoints 98 114 111 119 115 101 114
+        text browser
     lexeme ru # language
       surface seed-surface-8bbc55cad0a2
-        codepoints 1080 1085 1090 1077 1075 1088 1072 1094 1080 1103
+        text интеграция
       surface seed-surface-a06a2846a4b0
-        codepoints 1072 1087 1080
+        text апи
       surface seed-surface-1c1ebc776c59
-        codepoints 1073 1088 1072 1091 1079 1077 1088
+        text браузер
     lexeme hi # language
       surface seed-surface-ecbb8f0d5be5
-        codepoints 2319 2325 2368 2325 2352 2339
+        text एकीकरण
       surface seed-surface-5db1383afa23
-        codepoints 2319 2346 2368 2310 2312
+        text एपीआई
     lexeme zh # language
       surface seed-surface-f267ba290ab1
-        codepoints 38598 25104
+        text 集成
       surface seed-surface-b8ac440f7d9f
-        codepoints 25509 21475
+        text 接口
       surface seed-surface-837b116e637f
-        codepoints 27983 35272 22120
+        text 浏览器
   requirement_user_interface:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-e7918b08d383
-        codepoints 100 97 115 104 98 111 97 114 100
+        text dashboard
       surface seed-surface-b74a7d85d790
-        codepoints 99 104 97 114 116
+        text chart
       surface seed-surface-fea0f0f581e0
-        codepoints 102 105 108 116 101 114
+        text filter
       surface seed-surface-95b488e12b0e
-        codepoints 112 114 111 103 114 101 115 115
+        text progress
     lexeme ru # language
       surface seed-surface-f76e19b11634
-        codepoints 1087 1072 1085 1077 1083 1100
+        text панель
       surface seed-surface-8ef963692229
-        codepoints 1075 1088 1072 1092 1080 1082
+        text график
       surface seed-surface-749e5da549d7
-        codepoints 1092 1080 1083 1100 1090 1088
+        text фильтр
     lexeme hi # language
       surface seed-surface-6d15864202d0
-        codepoints 2337 2376 2358 2348 2379 2352 2381 2337
+        text डैशबोर्ड
       surface seed-surface-fb0aeff17a92
-        codepoints 2330 2366 2352 2381 2335
+        text चार्ट
     lexeme zh # language
       surface seed-surface-8ce92f5c2c7e
-        codepoints 20202 34920 26495
+        text 仪表板
       surface seed-surface-d017526fd8c0
-        codepoints 22270 34920
+        text 图表
       surface seed-surface-743db3c8c3bb
-        codepoints 31579 36873
+        text 筛选
   requirement_project_behavior:
     defined-by software_feature # definition-link
     role software_requirement_category # semantic-role
     lexeme en # language
       surface seed-surface-dfd8d4bd613c
-        codepoints 97 100 100
+        text add
       surface seed-surface-241caad27532
-        codepoints 97 100 109 105 110
+        text admin
       surface seed-surface-4bc3a3930a58
-        codepoints 99 117 115 116 111 109 101 114
+        text customer
       surface seed-surface-58c8a1b45ee9
-        codepoints 100 97 116 101
+        text date
       surface seed-surface-d4f31f00d865
-        codepoints 101 109 97 105 108
+        text email
       surface seed-surface-3ae897d02c6d
-        codepoints 101 120 112 101 110 115 101
+        text expense
       surface seed-surface-97d590a6a577
-        codepoints 102 105 108 101
+        text file
       surface seed-surface-c60a3d6bdb3c
-        codepoints 104 105 115 116 111 114 121
+        text history
       surface seed-surface-83ade6f8ea90
-        codepoints 105 110 118 111 105 99 101
+        text invoice
       surface seed-surface-5d2f2a0705ce
-        codepoints 108 111 103
+        text log
       surface seed-surface-001047d15df3
-        codepoints 109 97 105 110 116 101 110 97 110 99 101
+        text maintenance
       surface seed-surface-865719fb1bf6
-        codepoints 112 97 121 109 101 110 116
+        text payment
       surface seed-surface-68f716dfc399
-        codepoints 112 114 111 116 101 99 116 105 111 110
+        text protection
       surface seed-surface-9be0e5cf923d
-        codepoints 114 101 99 111 114 100
+        text record
       surface seed-surface-a1de8296f0cc
-        codepoints 114 101 110 97 109 101
+        text rename
       surface seed-surface-bdc238e25ae1
-        codepoints 114 101 115 105 115 116 97 110 99 101
+        text resistance
       surface seed-surface-e8be2ca4b29c
-        codepoints 114 101 116 114 121
+        text retry
       surface seed-surface-c3deb5595284
-        codepoints 115 99 114 97 112 101
+        text scrape
       surface seed-surface-6c301091fcad
-        codepoints 115 116 97 99 107
+        text stack
       surface seed-surface-8b4886b2fe10
-        codepoints 115 121 110 99
+        text sync
       surface seed-surface-13c8402286c2
-        codepoints 116 114 97 99 107 105 110 103
+        text tracking
       surface seed-surface-9ae1871ecb1b
-        codepoints 117 112 108 111 97 100
+        text upload
     lexeme ru # language
       surface seed-surface-f9262a02367f
-        codepoints 1076 1086 1073 1072 1074 1080 1090 1100
+        text добавить
       surface seed-surface-63490eee7f92
-        codepoints 1082 1083 1080 1077 1085 1090
+        text клиент
       surface seed-surface-16586a04414d
-        codepoints 1092 1072 1081 1083
+        text файл
       surface seed-surface-c79400de73ed
-        codepoints 1079 1072 1075 1088 1091 1079 1082 1072
+        text загрузка
     lexeme hi # language
       surface seed-surface-d18257184166
-        codepoints 2332 2379 2337 2364 2375 2306
+        text जोड़ें
       surface seed-surface-03a04ec1b3e4
-        codepoints 2347 2364 2366 2311 2354
+        text फ़ाइल
     lexeme zh # language
       surface seed-surface-23fb126dfc1f
-        codepoints 28155 21152
+        text 添加
       surface seed-surface-dcf634f1a4a6
-        codepoints 25991 20214
+        text 文件
       surface seed-surface-9dbaf8d01855
-        codepoints 19978 20256
+        text 上传
   software_delivery:
     defined-by software_artifact # definition-link
     defined-by delivery_manual_instructions # definition-link
     role software_delivery # semantic-role
     lexeme en # language
       surface seed-surface-541e1e593c24
-        codepoints 100 101 108 105 118 101 114 121
+        text delivery
     lexeme ru # language
       surface seed-surface-794d761cc143
-        codepoints 1076 1086 1089 1090 1072 1074 1082 1072
+        text доставка
     lexeme hi # language
       surface seed-surface-aa7c891e4b75
-        codepoints 2357 2367 2340 2352 2339
+        text वितरण
     lexeme zh # language
       surface seed-surface-dda09e7f58be
-        codepoints 20132 20184
+        text 交付
   delivery_manual_instructions:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
       surface seed-surface-d6277a92c0e1
-        codepoints 109 97 110 117 97 108 32 105 110 115 116 114 117 99 116 105 111 110
+        text "manual instruction"
       surface seed-surface-9f814ee950f2
-        codepoints 109 97 110 117 97 108 32 105 110 115 116 114 117 99 116 105 111 110 115
+        text "manual instructions"
       surface seed-surface-80f719e42a00
-        codepoints 105 110 115 116 114 117 99 116 105 111 110
+        text instruction
       surface seed-surface-ed236787df6e
-        codepoints 105 110 115 116 114 117 99 116 105 111 110 115
+        text instructions
       surface seed-surface-82f41228fbd7
-        codepoints 110 111 32 99 111 100 101
+        text "no code"
     lexeme ru # language
       surface seed-surface-2d6b9924b872
-        codepoints 1080 1085 1089 1090 1088 1091 1082 1094 1080 1103
+        text инструкция
       surface seed-surface-b97340e70d5d
-        codepoints 1080 1085 1089 1090 1088 1091 1082 1094 1080 1080
+        text инструкции
       surface seed-surface-2d4ea49ad06d
-        codepoints 1074 1088 1091 1095 1085 1091 1102
+        text вручную
     lexeme hi # language
       surface seed-surface-d0bcee79d474
-        codepoints 2344 2367 2352 2381 2342 2375 2358
+        text निर्देश
       surface seed-surface-da3485136470
-        codepoints 2350 2376 2344 2369 2309 2354
+        text मैनुअल
     lexeme zh # language
       surface seed-surface-9a2fa91a2702
-        codepoints 25163 21160 35828 26126
+        text 手动说明
       surface seed-surface-f4a1b72ee73f
-        codepoints 35828 26126
+        text 说明
   delivery_immediate_execution:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
       surface seed-surface-207d38fcdcbb
-        codepoints 101 120 101 99 117 116 101
+        text execute
       surface seed-surface-888d84b73924
-        codepoints 114 117 110 32 99 111 109 109 97 110 100
+        text "run command"
       surface seed-surface-368555693324
-        codepoints 114 117 110 32 99 111 109 109 97 110 100 115
+        text "run commands"
       surface seed-surface-5bb20f130e03
-        codepoints 114 117 110 32 105 116
+        text "run it"
       surface seed-surface-6005f0aa5ca2
-        codepoints 119 101 98 118 109
+        text webvm
     lexeme ru # language
       surface seed-surface-34e21e94c57f
-        codepoints 1074 1099 1087 1086 1083 1085 1080
+        text выполни
       surface seed-surface-817d09d38938
-        codepoints 1079 1072 1087 1091 1089 1090 1080 32 1082 1086 1084 1072 1085 1076 1091
+        text "запусти команду"
     lexeme hi # language
       surface seed-surface-9f8b4e2c7242
-        codepoints 2344 2367 2359 2381 2346 2366 2342 2367 2340 32 2325 2352 2375 2306
+        text "निष्पादित करें"
       surface seed-surface-e6932715e85a
-        codepoints 2330 2354 2366 2319 2305
+        text चलाएँ
     lexeme zh # language
       surface seed-surface-40eae4ac7451
-        codepoints 31435 21363 36816 34892
+        text 立即运行
       surface seed-surface-7fcd8e62699a
-        codepoints 25191 34892
+        text 执行
   delivery_script_generation:
     defined-by software_delivery # definition-link
     role software_delivery_mode # semantic-role
     lexeme en # language
       surface seed-surface-04dd892d9d52
-        codepoints 98 97 115 104
+        text bash
       surface seed-surface-4b1a364685fc
-        codepoints 115 104 101 108 108
+        text shell
       surface seed-surface-1c463beb9a8d
-        codepoints 115 99 114 105 112 116
+        text script
       surface seed-surface-40b723dcdfa3
-        codepoints 115 99 114 105 112 116 115
+        text scripts
       surface seed-surface-032f63882113
-        codepoints 99 111 109 109 97 110 100 115
+        text commands
     lexeme ru # language
       surface seed-surface-a8183d568946
-        codepoints 1089 1082 1088 1080 1087 1090
+        text скрипт
       surface seed-surface-d3a8853a55ef
-        codepoints 1086 1073 1086 1083 1086 1095 1082 1072
+        text оболочка
       surface seed-surface-9a09f0ded0dc
-        codepoints 1082 1086 1084 1072 1085 1076 1099
+        text команды
     lexeme hi # language
       surface seed-surface-70230c3c60c7
-        codepoints 2360 2381 2325 2381 2352 2367 2346 2381 2335
+        text स्क्रिप्ट
       surface seed-surface-546220a7fbf5
-        codepoints 2358 2375 2354
+        text शेल
     lexeme zh # language
       surface seed-surface-ddca0d341e89
-        codepoints 33050 26412
+        text 脚本
       surface seed-surface-37a38099aeef
-        codepoints 22806 22771 33050 26412
+        text 外壳脚本
   software_language:
     defined-by software_artifact # definition-link
     defined-by language_python # definition-link
     role software_language # semantic-role
     lexeme en # language
       surface seed-surface-254b7e667602
-        codepoints 112 114 111 103 114 97 109 109 105 110 103 32 108 97 110 103 117 97 103 101
+        text "programming language"
     lexeme ru # language
       surface seed-surface-e15a78502405
-        codepoints 1103 1079 1099 1082 32 1087 1088 1086 1075 1088 1072 1084 1084 1080 1088 1086 1074 1072 1085 1080 1103
+        text "язык программирования"
     lexeme hi # language
       surface seed-surface-d341a7770804
-        codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350 2367 2306 2327 32 2349 2366 2359 2366
+        text "प्रोग्रामिंग भाषा"
     lexeme zh # language
       surface seed-surface-8416691a8b9d
-        codepoints 32534 31243 35821 35328
+        text 编程语言
   language_python:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
       surface seed-surface-13d0906b2a41
-        codepoints 112 121 116 104 111 110
+        text python
       surface seed-surface-a586066d1e4c
-        codepoints 100 106 97 110 103 111
+        text django
       surface seed-surface-c225637d50e3
-        codepoints 102 97 115 116 97 112 105
+        text fastapi
     lexeme ru # language
       surface seed-surface-9b48f9e5d765
-        codepoints 1087 1080 1090 1086 1085
+        text питон
       surface seed-surface-61f89f12ca37
-        codepoints 1087 1072 1081 1090 1086 1085
+        text пайтон
     lexeme hi # language
       surface seed-surface-ce62b32e78e1
-        codepoints 2346 2366 2351 2341 2344
+        text पायथन
     lexeme zh # language
       surface seed-surface-088ac802e6c8
-        codepoints 112 121 116 104 111 110
+        text python
   language_rust:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
       surface seed-surface-27c76f238326
-        codepoints 114 117 115 116
+        text rust
       surface seed-surface-f20def6b7009
-        codepoints 99 97 114 103 111
+        text cargo
     lexeme ru # language
       surface seed-surface-796135d6085e
-        codepoints 1088 1072 1089 1090
+        text раст
     lexeme hi # language
       surface seed-surface-9574d86b96e4
-        codepoints 2352 2360 2381 2335
+        text रस्ट
     lexeme zh # language
       surface seed-surface-3daff187025b
-        codepoints 114 117 115 116
+        text rust
   language_javascript:
     defined-by software_language # definition-link
     role software_implementation_language # semantic-role
     lexeme en # language
       surface seed-surface-cf31ca54bae0
-        codepoints 106 97 118 97 115 99 114 105 112 116
+        text javascript
       surface seed-surface-a703526fe4ac
-        codepoints 110 111 100 101
+        text node
     lexeme ru # language
       surface seed-surface-e919609d637c
-        codepoints 1076 1078 1072 1074 1072 1089 1082 1088 1080 1087 1090
+        text джаваскрипт
     lexeme hi # language
       surface seed-surface-a286a4aa6e5c
-        codepoints 2332 2366 2357 2366 2360 2381 2325 2381 2352 2367 2346 2381 2335
+        text जावास्क्रिप्ट
     lexeme zh # language
       surface seed-surface-ce8d910a2175
-        codepoints 106 97 118 97 115 99 114 105 112 116
+        text javascript
   implementation_language_preposition:
     defined-by software_language # definition-link
     role implementation_language_preposition # semantic-role
     lexeme en # language
       surface seed-surface-17f473b1ed94
-        codepoints 105 110
+        text in
     lexeme ru # language
       surface seed-surface-2ff32f976246
-        codepoints 1085 1072
+        text на
     lexeme hi # language
       surface seed-surface-76b80a86882a
-        codepoints 2350 2375 2306
+        text में
     lexeme zh # language
       surface seed-surface-f13773dc260d
-        codepoints 29992
+        text 用
   implementation_language_noun:
     defined-by software_language # definition-link
     role implementation_language_noun # semantic-role
     lexeme en # language
       surface seed-surface-a269a97b2107
-        codepoints 108 97 110 103 117 97 103 101
+        text language
     lexeme ru # language
       surface seed-surface-b3f39926cd63
-        codepoints 1103 1079 1099 1082 1077
+        text языке
     lexeme hi # language
       surface seed-surface-1e995ccfe718
-        codepoints 2349 2366 2359 2366
+        text भाषा
     lexeme zh # language
       surface seed-surface-714701e57af7
-        codepoints 35821 35328
+        text 语言
   tabletop_game_tracker:
     defined-by game_tracker_domain # definition-link
     defined-by game_tracker_mechanic # definition-link
     role tabletop_game_tracker # semantic-role
     lexeme en # language
       surface seed-surface-5a4966ce06f3
-        codepoints 116 97 98 108 101 116 111 112 32 103 97 109 101 32 116 114 97 99 107 101 114
+        text "tabletop game tracker"
     lexeme ru # language
       surface seed-surface-82552f9a6e35
-        codepoints 1090 1088 1077 1082 1077 1088 32 1085 1072 1089 1090 1086 1083 1100 1085 1086 1081 32 1080 1075 1088 1099
+        text "трекер настольной игры"
     lexeme hi # language
       surface seed-surface-9422c725121b
-        codepoints 2335 2375 2348 2354 2335 2377 2346 32 2327 2375 2350 32 2335 2381 2352 2376 2325 2352
+        text "टेबलटॉप गेम ट्रैकर"
     lexeme zh # language
       surface seed-surface-7cdfcf81f9b7
-        codepoints 26700 28216 36861 36394 22120
+        text 桌游追踪器
   game_tracker_domain:
     defined-by tabletop_game_tracker # definition-link
     role game_tracker_domain # semantic-role
     lexeme en # language
       surface seed-surface-256a62a93bf5
-        codepoints 100 110 100
+        text dnd
       surface seed-surface-04f07e80a3a0
-        codepoints 119 97 114 103 97 109 101
+        text wargame
       surface seed-surface-c616bc109290
-        codepoints 116 97 98 108 101 116 111 112
+        text tabletop
       surface seed-surface-889b3b832e24
-        codepoints 117 110 105 116
+        text unit
       surface seed-surface-bbad9e09f24f
-        codepoints 116 111 107 101 110
+        text token
       surface seed-surface-b1c462ee5588
-        codepoints 111 119 108 98 101 97 114
+        text owlbear
     lexeme ru # language
       surface seed-surface-cd373d7dafff
-        codepoints 1085 1072 1089 1090 1086 1083 1100 1085 1072 1103 32 1080 1075 1088 1072
+        text "настольная игра"
       surface seed-surface-9e0745fb5208
-        codepoints 1092 1080 1096 1082 1072
+        text фишка
       surface seed-surface-7c155299afb4
-        codepoints 1078 1077 1090 1086 1085
+        text жетон
     lexeme hi # language
       surface seed-surface-8785e210804f
-        codepoints 2335 2375 2348 2354 2335 2377 2346
+        text टेबलटॉप
       surface seed-surface-d0561723fe62
-        codepoints 2350 2379 2361 2352 2366
+        text मोहरा
     lexeme zh # language
       surface seed-surface-c130d062de14
-        codepoints 26700 28216
+        text 桌游
       surface seed-surface-630353d915ed
-        codepoints 26827 23376
+        text 棋子
       surface seed-surface-8b64048244dd
-        codepoints 25112 26827
+        text 战棋
   game_tracker_mechanic:
     defined-by tabletop_game_tracker # definition-link
     defined-by requirement_state_tracking # definition-link
     role game_tracker_mechanic # semantic-role
     lexeme en # language
       surface seed-surface-e7ad9bf5d2ff
-        codepoints 104 112
+        text hp
       surface seed-surface-2e28279174b0
-        codepoints 100 97 109 97 103 101
+        text damage
       surface seed-surface-939c3c16a3a6
-        codepoints 112 114 111 116 101 99 116 105 111 110
+        text protection
       surface seed-surface-55c3d7e9160e
-        codepoints 114 101 115 105 115 116 97 110 99 101
+        text resistance
       surface seed-surface-f139b94321bd
-        codepoints 99 111 111 108 100 111 119 110
+        text cooldown
       surface seed-surface-7d1a48c227ba
-        codepoints 99 111 111 108 100 111 119 110 115
+        text cooldowns
     lexeme ru # language
       surface seed-surface-7d31ef319c8a
-        codepoints 1093 1087
+        text хп
       surface seed-surface-2e20e75d343d
-        codepoints 1091 1088 1086 1085
+        text урон
       surface seed-surface-c1dc0b095f52
-        codepoints 1079 1072 1097 1080 1090 1072
+        text защита
       surface seed-surface-1c20d95a1969
-        codepoints 1089 1086 1087 1088 1086 1090 1080 1074 1083 1077 1085 1080 1077
+        text сопротивление
       surface seed-surface-43e1a8681b2d
-        codepoints 1086 1090 1082 1072 1090
+        text откат
     lexeme hi # language
       surface seed-surface-f91b89c62283
-        codepoints 2319 2330 2346 2368
+        text एचपी
       surface seed-surface-9a17b1fe25cc
-        codepoints 2325 2381 2359 2340 2367
+        text क्षति
       surface seed-surface-3d30aa1ddeab
-        codepoints 2352 2325 2381 2359 2366
+        text रक्षा
     lexeme zh # language
       surface seed-surface-24b34eb73803
-        codepoints 29983 21629 20540
+        text 生命值
       surface seed-surface-13f0b22c10d8
-        codepoints 20260 23475
+        text 伤害
       surface seed-surface-2d89e8489906
-        codepoints 38450 25252
+        text 防护
       surface seed-surface-4ec867cf3edf
-        codepoints 25239 24615
+        text 抗性
       surface seed-surface-649b71eb4089
-        codepoints 20919 21364
+        text 冷却
   software_approval:
     defined-by software_approval_trigger # definition-link
     defined-by software_step_granularity # definition-link
@@ -1164,122 +1164,122 @@ meanings
     role software_approval # semantic-role
     lexeme en # language
       surface seed-surface-7a3654096563
-        codepoints 97 112 112 114 111 118 97 108
+        text approval
     lexeme ru # language
       surface seed-surface-10dc6249e09e
-        codepoints 1086 1076 1086 1073 1088 1077 1085 1080 1077
+        text одобрение
     lexeme hi # language
       surface seed-surface-4d76a025b4d3
-        codepoints 2309 2344 2369 2350 2379 2342 2344
+        text अनुमोदन
     lexeme zh # language
       surface seed-surface-d651ff8b068b
-        codepoints 25209 20934
+        text 批准
   software_approval_trigger:
     defined-by software_approval # definition-link
     role software_approval_trigger # semantic-role
     lexeme en # language
       surface seed-surface-32d0d9892ee8
-        codepoints 97 112 112 114 111 118 101
+        text approve
       surface seed-surface-0aeff2de6ccd
-        codepoints 97 112 112 114 111 118 101 100
+        text approved
       surface seed-surface-5c12e9166dc8
-        codepoints 97 112 112 114 111 118 101 32 112 108 97 110
+        text "approve plan"
       surface seed-surface-bf6e84cfad3d
-        codepoints 121 101 115
+        text yes
       surface seed-surface-d4ff7be4afe4
-        codepoints 121 101 115 32 112 114 111 99 101 101 100
+        text "yes proceed"
       surface seed-surface-65f510b1c2c9
-        codepoints 112 114 111 99 101 101 100
+        text proceed
       surface seed-surface-f55604fd9554
-        codepoints 103 111 32 97 104 101 97 100
+        text "go ahead"
       surface seed-surface-91b9f9622bf0
-        codepoints 108 111 111 107 115 32 103 111 111 100
+        text "looks good"
       surface seed-surface-91fcc4bece5d
-        codepoints 100 111 32 105 116
+        text "do it"
       surface seed-surface-b2a3a4658960
-        codepoints 115 116 97 114 116 32 105 109 112 108 101 109 101 110 116 97 116 105 111 110
+        text "start implementation"
       surface seed-surface-fa0516d919b4
-        codepoints 103 101 110 101 114 97 116 101 32 99 111 100 101
+        text "generate code"
       surface seed-surface-c0717759b39d
-        codepoints 99 111 110 118 101 114 116 32 116 111 32 99 111 100 101
+        text "convert to code"
     lexeme ru # language
       surface seed-surface-1847afe15a14
-        codepoints 1086 1076 1086 1073 1088 1103 1102
+        text одобряю
       surface seed-surface-bdd43d57645e
-        codepoints 1076 1072
+        text да
       surface seed-surface-05c08775fd5b
-        codepoints 1087 1088 1080 1089 1090 1091 1087 1072 1081
+        text приступай
       surface seed-surface-02a75d0897ec
-        codepoints 1087 1086 1077 1093 1072 1083 1080
+        text поехали
     lexeme hi # language
       surface seed-surface-969bbe76ded3
-        codepoints 2360 2381 2357 2368 2325 2371 2340
+        text स्वीकृत
       surface seed-surface-40434d6ab3f7
-        codepoints 2361 2366 2305
+        text हाँ
       surface seed-surface-1bccd66952a5
-        codepoints 2310 2327 2375 32 2348 2338 2364 2379
+        text "आगे बढ़ो"
     lexeme zh # language
       surface seed-surface-23fa1a0e1adb
-        codepoints 25209 20934
+        text 批准
       surface seed-surface-20bfbd6d1443
-        codepoints 21516 24847
+        text 同意
       surface seed-surface-7071ca0b73ae
-        codepoints 24320 22987
+        text 开始
   software_step_granularity:
     defined-by software_approval # definition-link
     role software_step_granularity # semantic-role
     lexeme en # language
       surface seed-surface-cad747d51428
-        codepoints 101 97 99 104 32 115 116 101 112
+        text "each step"
       surface seed-surface-9bf5e358868b
-        codepoints 115 116 101 112 32 98 121 32 115 116 101 112
+        text "step by step"
     lexeme ru # language
       surface seed-surface-62c016fc3c83
-        codepoints 1082 1072 1078 1076 1099 1081 32 1096 1072 1075
+        text "каждый шаг"
       surface seed-surface-fe8e5c41e29d
-        codepoints 1087 1086 1096 1072 1075 1086 1074 1086
+        text пошагово
     lexeme hi # language
       surface seed-surface-425f661b2496
-        codepoints 2361 2352 32 2330 2352 2339
+        text "हर चरण"
       surface seed-surface-851230076fe2
-        codepoints 2330 2352 2339 32 2342 2352 32 2330 2352 2339
+        text "चरण दर चरण"
     lexeme zh # language
       surface seed-surface-a00bf91ae9e9
-        codepoints 27599 19968 27493
+        text 每一步
       surface seed-surface-cb59441f007d
-        codepoints 36880 27493
+        text 逐步
   software_bash_command:
     defined-by software_delivery # definition-link
     role software_bash_command # semantic-role
     lexeme en # language
       surface seed-surface-48ce2e4ee476
-        codepoints 115 104 101 108 108
+        text shell
       surface seed-surface-f4516b646e55
-        codepoints 98 97 115 104
+        text bash
       surface seed-surface-1ce87ecf4978
-        codepoints 99 111 109 109 97 110 100
+        text command
       surface seed-surface-85547301bbd9
-        codepoints 99 111 109 109 97 110 100 115
+        text commands
       surface seed-surface-1ba1126c5ee4
-        codepoints 100 111 99 107 101 114
+        text docker
       surface seed-surface-806a1aa047fe
-        codepoints 119 101 98 118 109
+        text webvm
     lexeme ru # language
       surface seed-surface-4601c147227d
-        codepoints 1086 1073 1086 1083 1086 1095 1082 1072
+        text оболочка
       surface seed-surface-e17424e32c60
-        codepoints 1082 1086 1084 1072 1085 1076 1072
+        text команда
       surface seed-surface-16555bf0c821
-        codepoints 1082 1086 1084 1072 1085 1076 1099
+        text команды
     lexeme hi # language
       surface seed-surface-2d7ba5bab5c0
-        codepoints 2358 2375 2354
+        text शेल
       surface seed-surface-8c9ad7da6362
-        codepoints 2325 2350 2366 2306 2337
+        text कमांड
     lexeme zh # language
       surface seed-surface-a625dce3b504
-        codepoints 22806 22771
+        text 外壳
       surface seed-surface-40290f96199d
-        codepoints 21629 20196
+        text 命令
       surface seed-surface-3c2ff6befe3d
-        codepoints 100 111 99 107 101 114
+        text docker

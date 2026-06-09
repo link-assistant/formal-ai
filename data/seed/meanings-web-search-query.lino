@@ -5,418 +5,418 @@ meanings
     role web_search_explicit_prefix # semantic-role
     lexeme en # language
       surface seed-surface-f6b864bc7537
-        codepoints 115 101 97 114 99 104 32 116 104 101 32 119 101 98 32 102 111 114 32 8230
+        text "search the web for …"
       surface seed-surface-360ef51eec9f
-        codepoints 115 101 97 114 99 104 32 119 101 98 32 102 111 114 32 8230
+        text "search web for …"
       surface seed-surface-c2cc74048f97
-        codepoints 115 101 97 114 99 104 32 116 104 101 32 105 110 116 101 114 110 101 116 32 102 111 114 32 8230
+        text "search the internet for …"
       surface seed-surface-586d0a413cc8
-        codepoints 115 101 97 114 99 104 32 105 110 116 101 114 110 101 116 32 102 111 114 32 8230
+        text "search internet for …"
       surface seed-surface-7e4f587319d0
-        codepoints 115 101 97 114 99 104 32 111 110 108 105 110 101 32 102 111 114 32 8230
+        text "search online for …"
       surface seed-surface-9b0c31366225
-        codepoints 115 101 97 114 99 104 32 119 105 107 105 112 101 100 105 97 32 102 111 114 32 8230
+        text "search wikipedia for …"
       surface seed-surface-faa26fb1591c
-        codepoints 115 101 97 114 99 104 32 119 105 107 105 100 97 116 97 32 102 111 114 32 8230
+        text "search wikidata for …"
       surface seed-surface-ee9bf03a648d
-        codepoints 115 101 97 114 99 104 32 119 105 107 116 105 111 110 97 114 121 32 102 111 114 32 8230
+        text "search wiktionary for …"
       surface seed-surface-937d63cfed73
-        codepoints 115 101 97 114 99 104 32 102 111 114 32 105 110 102 111 114 109 97 116 105 111 110 32 97 98 111 117 116 32 8230
+        text "search for information about …"
       surface seed-surface-4e9fca957396
-        codepoints 115 101 97 114 99 104 32 102 111 114 32 105 110 102 111 114 109 97 116 105 111 110 32 111 110 32 8230
+        text "search for information on …"
       surface seed-surface-b23ba698f491
-        codepoints 119 101 98 32 115 101 97 114 99 104 32 102 111 114 32 8230
+        text "web search for …"
       surface seed-surface-5de715d2724c
-        codepoints 102 105 110 100 32 111 110 32 116 104 101 32 105 110 116 101 114 110 101 116 32 8230
+        text "find on the internet …"
       surface seed-surface-bc77f90c80cc
-        codepoints 102 105 110 100 32 111 110 108 105 110 101 32 8230
+        text "find online …"
       surface seed-surface-b71af2a8f348
-        codepoints 102 105 110 100 32 105 110 102 111 114 109 97 116 105 111 110 32 97 98 111 117 116 32 8230
+        text "find information about …"
       surface seed-surface-652b4ea4eee4
-        codepoints 102 105 110 100 32 105 110 102 111 114 109 97 116 105 111 110 32 111 110 32 8230
+        text "find information on …"
       surface seed-surface-1a0040ae9a31
-        codepoints 102 105 110 100 32 100 101 116 97 105 108 101 100 32 105 110 102 111 114 109 97 116 105 111 110 32 97 98 111 117 116 32 8230
+        text "find detailed information about …"
       surface seed-surface-a018ccbda5b9
-        codepoints 102 105 110 100 32 100 101 116 97 105 108 101 100 32 105 110 102 111 114 109 97 116 105 111 110 32 111 110 32 8230
+        text "find detailed information on …"
       surface seed-surface-6b6130cc0da0
-        codepoints 102 105 110 100 32 105 110 102 111 32 97 98 111 117 116 32 8230
+        text "find info about …"
       surface seed-surface-9e2e90c198a3
-        codepoints 102 105 110 100 32 105 110 102 111 32 111 110 32 8230
+        text "find info on …"
       surface seed-surface-6efe9c205695
-        codepoints 108 111 111 107 32 117 112 32 105 110 102 111 114 109 97 116 105 111 110 32 97 98 111 117 116 32 8230
+        text "look up information about …"
       surface seed-surface-8dd53a0a123b
-        codepoints 108 111 111 107 32 117 112 32 105 110 102 111 114 109 97 116 105 111 110 32 111 110 32 8230
+        text "look up information on …"
       surface seed-surface-c5c04a17d99b
-        codepoints 108 111 111 107 32 117 112 32 105 110 102 111 32 97 98 111 117 116 32 8230
+        text "look up info about …"
       surface seed-surface-343dee0d5275
-        codepoints 108 111 111 107 32 117 112 32 105 110 102 111 32 111 110 32 8230
+        text "look up info on …"
       surface seed-surface-7437492e41af
-        codepoints 108 111 111 107 32 117 112 32 111 110 108 105 110 101 32 8230
+        text "look up online …"
     lexeme ru # language
       surface seed-surface-28935eb22774
-        codepoints 1085 1072 1081 1076 1080 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 8230
+        text "найди в интернете …"
       surface seed-surface-fd19fcff8fe5
-        codepoints 1087 1086 1080 1097 1080 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 8230
+        text "поищи в интернете …"
       surface seed-surface-ae5e7f8aada2
-        codepoints 1087 1086 1080 1089 1082 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 8230
+        text "поиск в интернете …"
       surface seed-surface-0e1eb82aaa5b
-        codepoints 1085 1072 1081 1076 1080 32 1086 1085 1083 1072 1081 1085 32 8230
+        text "найди онлайн …"
       surface seed-surface-5c8f59c69208
-        codepoints 1087 1086 1080 1097 1080 32 1086 1085 1083 1072 1081 1085 32 8230
+        text "поищи онлайн …"
       surface seed-surface-81bdfbeb3e59
-        codepoints 1085 1072 1081 1076 1080 32 1074 32 1089 1077 1090 1080 32 8230
+        text "найди в сети …"
       surface seed-surface-150b7cd9b609
-        codepoints 1087 1086 1080 1097 1080 32 1074 32 1089 1077 1090 1080 32 8230
+        text "поищи в сети …"
       surface seed-surface-04599db45d33
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 1086 32 8230
+        text "найди информацию в интернете о …"
       surface seed-surface-0341569e4402
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 1086 1073 32 8230
+        text "найди информацию в интернете об …"
       surface seed-surface-145f273fd3c3
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 1086 32 8230
+        text "поищи информацию в интернете о …"
       surface seed-surface-6794cee2fc92
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077 32 1086 1073 32 8230
+        text "поищи информацию в интернете об …"
       surface seed-surface-d0285cfa01dc
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 32 8230
+        text "найди информацию о …"
       surface seed-surface-4fd44ad032db
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 1073 32 8230
+        text "найди информацию об …"
       surface seed-surface-74a7d81f1a74
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1087 1088 1086 32 8230
+        text "найди информацию про …"
       surface seed-surface-6633dfc34556
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1087 1086 32 8230
+        text "найди информацию по …"
       surface seed-surface-d26db9c320cd
-        codepoints 1085 1072 1081 1090 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 32 8230
+        text "найти информацию о …"
       surface seed-surface-018ea46f7567
-        codepoints 1085 1072 1081 1090 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 1073 32 8230
+        text "найти информацию об …"
       surface seed-surface-a14049efa2cd
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 32 8230
+        text "поищи информацию о …"
       surface seed-surface-73bf3a16422e
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 1073 32 8230
+        text "поищи информацию об …"
       surface seed-surface-76e0f2e15f30
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1087 1088 1086 32 8230
+        text "поищи информацию про …"
       surface seed-surface-8446f656e912
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1087 1086 32 8230
+        text "поищи информацию по …"
       surface seed-surface-f838c5cea9b4
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1091 32 1086 32 8230
+        text "найди инфу о …"
       surface seed-surface-bf87ce452d89
-        codepoints 1085 1072 1081 1076 1080 32 1080 1085 1092 1091 32 1086 1073 32 8230
+        text "найди инфу об …"
       surface seed-surface-57cb64466ac7
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1091 32 1086 32 8230
+        text "поищи инфу о …"
       surface seed-surface-e9c76f8f1501
-        codepoints 1087 1086 1080 1097 1080 32 1080 1085 1092 1091 32 1086 1073 32 8230
+        text "поищи инфу об …"
       surface seed-surface-0da9622ea89b
-        codepoints 1085 1072 1081 1076 1080 32 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 32 8230
+        text "найди сведения о …"
       surface seed-surface-23a7a241fdeb
-        codepoints 1085 1072 1081 1076 1080 32 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 1073 32 8230
+        text "найди сведения об …"
       surface seed-surface-1b4c1121b4e3
-        codepoints 1087 1086 1080 1097 1080 32 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 32 8230
+        text "поищи сведения о …"
       surface seed-surface-69db3d7e7d80
-        codepoints 1087 1086 1080 1097 1080 32 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 1073 32 8230
+        text "поищи сведения об …"
       surface seed-surface-33422a5ec423
-        codepoints 1085 1072 1081 1076 1080 32 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 32 8230
+        text "найди материалы о …"
       surface seed-surface-7255f1218a5e
-        codepoints 1085 1072 1081 1076 1080 32 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 1073 32 8230
+        text "найди материалы об …"
       surface seed-surface-90fb5a454d22
-        codepoints 1087 1086 1080 1097 1080 32 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 32 8230
+        text "поищи материалы о …"
       surface seed-surface-8636cd5e47a2
-        codepoints 1087 1086 1080 1097 1080 32 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 1073 32 8230
+        text "поищи материалы об …"
     lexeme hi # language
       surface seed-surface-184640ed9932
-        codepoints 2311 2306 2335 2352 2344 2375 2335 32 2346 2352 32 2326 2379 2332 2375 2306 32 8230
+        text "इंटरनेट पर खोजें …"
       surface seed-surface-6100239c8991
-        codepoints 2357 2375 2348 32 2346 2352 32 2326 2379 2332 2375 2306 32 8230
+        text "वेब पर खोजें …"
       surface seed-surface-f781578b31d1
-        codepoints 2321 2344 2354 2366 2311 2344 32 2326 2379 2332 2375 2306 32 8230
+        text "ऑनलाइन खोजें …"
       surface seed-surface-91cb2d7ec637
-        codepoints 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366 32 2346 2352 32 2326 2379 2332 2375 2306 32 8230
+        text "विकिपीडिया पर खोजें …"
     lexeme zh # language
       surface seed-surface-d0103b3019be
-        codepoints 22312 32593 19978 25628 32034 8230
+        text 在网上搜索…
       surface seed-surface-6ba29c2a3ee7
-        codepoints 22312 20114 32852 32593 19978 25628 32034 8230
+        text 在互联网上搜索…
       surface seed-surface-59a2918fafb7
-        codepoints 22312 32500 22522 30334 31185 19978 25628 32034 8230
+        text 在维基百科上搜索…
       surface seed-surface-6e990d48b09c
-        codepoints 19978 32593 26597 25214 8230
+        text 上网查找…
   topic_connective:
     defined-by relation # definition-link
     role web_search_topic_marker # semantic-role
     lexeme en # language
       surface seed-surface-e016e2c3801f
-        codepoints 32 97 98 111 117 116 32 8230
+        text " about …"
       surface seed-surface-df7196ed830d
-        codepoints 32 111 110 32 8230
+        text " on …"
       surface seed-surface-6058cc58ec98
-        codepoints 32 114 101 103 97 114 100 105 110 103 32 8230
+        text " regarding …"
       surface seed-surface-3df353644c27
-        codepoints 32 99 111 110 99 101 114 110 105 110 103 32 8230
+        text " concerning …"
       surface seed-surface-5194974227b6
-        codepoints 32 102 111 114 32 8230
+        text " for …"
     lexeme ru # language
       surface seed-surface-9ab2e8286cae
-        codepoints 32 1086 32 8230
+        text " о …"
       surface seed-surface-10c32654e73d
-        codepoints 32 1086 1073 32 8230
+        text " об …"
       surface seed-surface-6b3d2ff20342
-        codepoints 32 1087 1088 1086 32 8230
+        text " про …"
       surface seed-surface-fe5fe556ce5b
-        codepoints 32 1087 1086 32 8230
+        text " по …"
       surface seed-surface-6433b4ae5c26
-        codepoints 32 1085 1072 1089 1095 1077 1090 32 8230
+        text " насчет …"
       surface seed-surface-6099c35657dd
-        codepoints 32 1086 1090 1085 1086 1089 1080 1090 1077 1083 1100 1085 1086 32 8230
+        text " относительно …"
     lexeme hi # language
       surface seed-surface-929a7dddfca0
-        codepoints 8230 32 2325 2375 32 2348 2366 2352 2375 32 2350 2375 2306
+        text "… के बारे में"
       surface seed-surface-83f3ad784e7a
-        codepoints 8230 32 2325 2375 32 2357 2367 2359 2351 32 2350 2375 2306
+        text "… के विषय में"
       surface seed-surface-650e79db06a4
-        codepoints 8230 32 2360 2375 32 2360 2306 2348 2306 2343 2367 2340
+        text "… से संबंधित"
       surface seed-surface-07527829415e
-        codepoints 8230 32 2346 2352
+        text "… पर"
       surface seed-surface-6cb2f2696110
-        codepoints 8230 32 2325 2368 32 2332 2366 2344 2325 2366 2352 2368
+        text "… की जानकारी"
       surface seed-surface-182875bc66dc
-        codepoints 8230 32 2325 2368 32 2360 2370 2330 2344 2366
+        text "… की सूचना"
     lexeme zh # language
       surface seed-surface-0a6efc74e2eb
-        codepoints 20851 20110 8230
+        text 关于…
       surface seed-surface-f4da1f7b6c37
-        codepoints 38364 26044 8230
+        text 關於…
       surface seed-surface-7cee72161b83
-        codepoints 26377 20851 8230
+        text 有关…
       surface seed-surface-492040f73a07
-        codepoints 26377 38364 8230
+        text 有關…
   query_leading_noise:
     defined-by concept # definition-link
     role web_search_query_leading_noise # semantic-role
     lexeme en # language
       surface seed-surface-d2e31529f79a
-        codepoints 112 108 101 97 115 101 32 8230
+        text "please …"
       surface seed-surface-f66cc2bd27ed
-        codepoints 99 97 110 32 121 111 117 32 8230
+        text "can you …"
       surface seed-surface-ff858c3e4f1a
-        codepoints 99 111 117 108 100 32 121 111 117 32 8230
+        text "could you …"
       surface seed-surface-d88583f7caca
-        codepoints 119 111 117 108 100 32 121 111 117 32 8230
+        text "would you …"
       surface seed-surface-0e44980fcaab
-        codepoints 109 101 32 8230
+        text "me …"
       surface seed-surface-6913d9b3305f
-        codepoints 116 104 101 32 8230
+        text "the …"
       surface seed-surface-fdcc531f31a0
-        codepoints 115 111 109 101 32 8230
+        text "some …"
       surface seed-surface-afb1eebd4ac3
-        codepoints 100 101 116 97 105 108 101 100 32 8230
+        text "detailed …"
       surface seed-surface-1f8048d10b03
-        codepoints 109 111 114 101 32 8230
+        text "more …"
       surface seed-surface-db9c50293d3e
-        codepoints 99 117 114 114 101 110 116 32 8230
+        text "current …"
       surface seed-surface-b7278f5d5dc9
-        codepoints 108 97 116 101 115 116 32 8230
+        text "latest …"
       surface seed-surface-543eac50d359
-        codepoints 105 110 102 111 114 109 97 116 105 111 110 32 97 98 111 117 116 32 8230
+        text "information about …"
       surface seed-surface-22b846cf9671
-        codepoints 105 110 102 111 114 109 97 116 105 111 110 32 111 110 32 8230
+        text "information on …"
       surface seed-surface-8aafb013ffbf
-        codepoints 105 110 102 111 32 97 98 111 117 116 32 8230
+        text "info about …"
       surface seed-surface-5a6353ddc424
-        codepoints 105 110 102 111 32 111 110 32 8230
+        text "info on …"
       surface seed-surface-3394adfba810
-        codepoints 100 101 116 97 105 108 115 32 97 98 111 117 116 32 8230
+        text "details about …"
       surface seed-surface-efcf7034424b
-        codepoints 100 101 116 97 105 108 115 32 111 110 32 8230
+        text "details on …"
       surface seed-surface-cc6478e77aab
-        codepoints 100 97 116 97 32 97 98 111 117 116 32 8230
+        text "data about …"
       surface seed-surface-c1e9d26ebd4c
-        codepoints 100 97 116 97 32 111 110 32 8230
+        text "data on …"
     lexeme ru # language
       surface seed-surface-41c5967469cb
-        codepoints 1087 1086 1076 1088 1086 1073 1085 1099 1077 32 8230
+        text "подробные …"
       surface seed-surface-05fc9e0d4152
-        codepoints 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 32 8230
+        text "информацию о …"
       surface seed-surface-2b3f5d251764
-        codepoints 1080 1085 1092 1086 1088 1084 1072 1094 1080 1102 32 1086 1073 32 8230
+        text "информацию об …"
       surface seed-surface-a42db720a9a5
-        codepoints 1080 1085 1092 1091 32 1086 32 8230
+        text "инфу о …"
       surface seed-surface-b50ce0a69cb8
-        codepoints 1080 1085 1092 1091 32 1086 1073 32 8230
+        text "инфу об …"
       surface seed-surface-3db118f54ead
-        codepoints 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 32 8230
+        text "сведения о …"
       surface seed-surface-a406fe89ebd4
-        codepoints 1089 1074 1077 1076 1077 1085 1080 1103 32 1086 1073 32 8230
+        text "сведения об …"
       surface seed-surface-75f1fc834104
-        codepoints 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 32 8230
+        text "материалы о …"
       surface seed-surface-b7608b3e8ecd
-        codepoints 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1086 1073 32 8230
+        text "материалы об …"
       surface seed-surface-f2c980ea1d41
-        codepoints 1084 1072 1090 1077 1088 1080 1072 1083 1099 32 1087 1086 32 8230
+        text "материалы по …"
       surface seed-surface-0a0edfc050bb
-        codepoints 1076 1072 1085 1085 1099 1077 32 1086 32 8230
+        text "данные о …"
       surface seed-surface-d4a24876db09
-        codepoints 1076 1072 1085 1085 1099 1077 32 1086 1073 32 8230
+        text "данные об …"
       surface seed-surface-5c8ddc2ec59c
-        codepoints 1086 32 8230
+        text "о …"
       surface seed-surface-f1f80661be1e
-        codepoints 1086 1073 32 8230
+        text "об …"
       surface seed-surface-9bb14ee3586a
-        codepoints 1087 1088 1086 32 8230
+        text "про …"
       surface seed-surface-224bcf2b781c
-        codepoints 1087 1086 32 8230
+        text "по …"
     lexeme hi # language
       surface seed-surface-6c0ddbffd293
-        codepoints 2325 2371 2346 2351 2366 32 8230
+        text "कृपया …"
       surface seed-surface-b4e8500abf05
-        codepoints 2332 2366 2344 2325 2366 2352 2368 32 8230
+        text "जानकारी …"
       surface seed-surface-c8cde356faec
-        codepoints 2360 2370 2330 2344 2366 32 8230
+        text "सूचना …"
       surface seed-surface-6e709003f3fc
-        codepoints 2357 2367 2357 2352 2339 32 8230
+        text "विवरण …"
       surface seed-surface-a9aba16cf068
-        codepoints 2360 2366 2350 2327 2381 2352 2368 32 8230
+        text "सामग्री …"
     lexeme zh # language
       surface seed-surface-bb91817c2675
-        codepoints 20851 20110 8230
+        text 关于…
       surface seed-surface-997a2a41501f
-        codepoints 38364 26044 8230
+        text 關於…
       surface seed-surface-960ac3829928
-        codepoints 26377 20851 8230
+        text 有关…
       surface seed-surface-a928eecb6644
-        codepoints 26377 38364 8230
+        text 有關…
   query_trailing_noise:
     defined-by concept # definition-link
     role web_search_query_trailing_noise # semantic-role
     lexeme en # language
       surface seed-surface-2ef4b95a6104
-        codepoints 8230 32 111 110 108 105 110 101
+        text "… online"
       surface seed-surface-9fc68d0b96e4
-        codepoints 8230 32 111 110 32 116 104 101 32 105 110 116 101 114 110 101 116
+        text "… on the internet"
       surface seed-surface-ca2e9c3f4136
-        codepoints 8230 32 111 110 32 116 104 101 32 119 101 98
+        text "… on the web"
       surface seed-surface-e592abb3ba9b
-        codepoints 8230 32 111 110 32 119 105 107 105 112 101 100 105 97
+        text "… on wikipedia"
       surface seed-surface-e27f0fb80f3f
-        codepoints 8230 32 105 110 32 119 105 107 105 112 101 100 105 97
+        text "… in wikipedia"
       surface seed-surface-b257304518ff
-        codepoints 8230 32 102 114 111 109 32 119 105 107 105 112 101 100 105 97
+        text "… from wikipedia"
       surface seed-surface-064879f3c6c7
-        codepoints 8230 32 105 110 102 111 114 109 97 116 105 111 110
+        text "… information"
       surface seed-surface-6b5c0ff84d09
-        codepoints 8230 32 105 110 102 111
+        text "… info"
       surface seed-surface-0a200416c131
-        codepoints 8230 32 100 101 116 97 105 108 115
+        text "… details"
       surface seed-surface-ea74ba16615b
-        codepoints 8230 32 100 97 116 97
+        text "… data"
       surface seed-surface-acf402de4757
-        codepoints 8230 32 109 97 116 101 114 105 97 108
+        text "… material"
       surface seed-surface-cc3e5bacbecf
-        codepoints 8230 32 109 97 116 101 114 105 97 108 115
+        text "… materials"
       surface seed-surface-c8db4bbd722e
-        codepoints 8230 32 114 101 115 111 117 114 99 101 115
+        text "… resources"
       surface seed-surface-add5e6d19eb2
-        codepoints 8230 32 115 111 117 114 99 101 115
+        text "… sources"
       surface seed-surface-605c1c99f24f
-        codepoints 8230 32 97 114 116 105 99 108 101 115
+        text "… articles"
       surface seed-surface-640f801168e8
-        codepoints 8230 32 102 97 99 116 115
+        text "… facts"
     lexeme ru # language
       surface seed-surface-a1f6ec20787b
-        codepoints 8230 32 1074 32 1080 1085 1090 1077 1088 1085 1077 1090 1077
+        text "… в интернете"
       surface seed-surface-434bedb9b8b1
-        codepoints 8230 32 1086 1085 1083 1072 1081 1085
+        text "… онлайн"
       surface seed-surface-da59334ea214
-        codepoints 8230 32 1074 32 1089 1077 1090 1080
+        text "… в сети"
       surface seed-surface-c0016f1f4b27
-        codepoints 8230 32 1074 32 1074 1080 1082 1080 1087 1077 1076 1080 1080
+        text "… в википедии"
       surface seed-surface-87285a31448d
-        codepoints 8230 32 1074 1080 1082 1080 1087 1077 1076 1080 1080
+        text "… википедии"
       surface seed-surface-de4eba670d1d
-        codepoints 8230 32 1080 1085 1092 1086 1088 1084 1072 1094 1080 1103
+        text "… информация"
       surface seed-surface-f7ff33e9ee96
-        codepoints 8230 32 1089 1074 1077 1076 1077 1085 1080 1103
+        text "… сведения"
       surface seed-surface-9d3442487493
-        codepoints 8230 32 1084 1072 1090 1077 1088 1080 1072 1083 1099
+        text "… материалы"
       surface seed-surface-51efb95e098b
-        codepoints 8230 32 1076 1072 1085 1085 1099 1077
+        text "… данные"
     lexeme hi # language
       surface seed-surface-9102cd48f254
-        codepoints 8230 32 2325 2375 32 2348 2366 2352 2375 32 2350 2375 2306
+        text "… के बारे में"
       surface seed-surface-39bd7e0bc742
-        codepoints 8230 32 2325 2375 32 2357 2367 2359 2351 32 2350 2375 2306
+        text "… के विषय में"
       surface seed-surface-e982a2f2fa45
-        codepoints 8230 32 2360 2375 32 2360 2306 2348 2306 2343 2367 2340
+        text "… से संबंधित"
       surface seed-surface-98de5b2ed5fe
-        codepoints 8230 32 2346 2352
+        text "… पर"
       surface seed-surface-0a38bd04ac91
-        codepoints 8230 32 2325 2368 32 2332 2366 2344 2325 2366 2352 2368
+        text "… की जानकारी"
       surface seed-surface-3b89217bdfd5
-        codepoints 8230 32 2325 2368 32 2360 2370 2330 2344 2366
+        text "… की सूचना"
       surface seed-surface-1f3ff8580f37
-        codepoints 8230 32 2332 2366 2344 2325 2366 2352 2368
+        text "… जानकारी"
       surface seed-surface-1f8ca64ebecd
-        codepoints 8230 32 2360 2370 2330 2344 2366
+        text "… सूचना"
       surface seed-surface-48494d3ef0ad
-        codepoints 8230 32 2357 2367 2357 2352 2339
+        text "… विवरण"
       surface seed-surface-cd7939ea8cf5
-        codepoints 8230 32 2360 2366 2350 2327 2381 2352 2368
+        text "… सामग्री"
       surface seed-surface-4f9e9e49c87e
-        codepoints 8230 32 2360 2381 2352 2379 2340
+        text "… स्रोत"
       surface seed-surface-d90e08881ca2
-        codepoints 8230 32 2357 2367 2325 2367 2346 2368 2337 2367 2351 2366 32 2350 2375 2306
+        text "… विकिपीडिया में"
       surface seed-surface-fcb438f1d587
-        codepoints 8230 32 2321 2344 2354 2366 2311 2344
+        text "… ऑनलाइन"
       surface seed-surface-ce54499f1a59
-        codepoints 8230 32 2311 2306 2335 2352 2344 2375 2335 32 2346 2352
+        text "… इंटरनेट पर"
       surface seed-surface-d08eade9166c
-        codepoints 8230 32 2326 2379 2332 2379
+        text "… खोजो"
       surface seed-surface-80544090530a
-        codepoints 8230 32 2326 2379 2332 2375 2306
+        text "… खोजें"
       surface seed-surface-79af9a87ef20
-        codepoints 8230 32 2326 2379 2332 2367 2319
+        text "… खोजिए"
       surface seed-surface-81fc7801884f
-        codepoints 8230 32 2338 2370 2306 2338 2379
+        text "… ढूंढो"
       surface seed-surface-1609dbf4a650
-        codepoints 8230 32 2338 2370 2305 2338 2379
+        text "… ढूँढो"
       surface seed-surface-8e43ff25061e
-        codepoints 8230 32 2338 2370 2306 2338 2375 2306
+        text "… ढूंढें"
       surface seed-surface-52b9daefb8df
-        codepoints 8230 32 2338 2370 2305 2338 2375 2306
+        text "… ढूँढें"
     lexeme zh # language
       surface seed-surface-641df15ebcd1
-        codepoints 8230 30340 20449 24687
+        text …的信息
       surface seed-surface-38b161822e72
-        codepoints 8230 30340 36039 26009
+        text …的資料
       surface seed-surface-85a8c49852ce
-        codepoints 8230 30340 36164 26009
+        text …的资料
       surface seed-surface-dadf22dbbf05
-        codepoints 8230 20449 24687
+        text …信息
       surface seed-surface-1c3c2c9eda79
-        codepoints 8230 36039 26009
+        text …資料
       surface seed-surface-19e4fcac3a4a
-        codepoints 8230 36164 26009
+        text …资料
       surface seed-surface-9b759c6a44f4
-        codepoints 8230 20869 23481
+        text …内容
       surface seed-surface-a47a2e710e7f
-        codepoints 8230 25991 31456
+        text …文章
       surface seed-surface-91cd160ee9fc
-        codepoints 8230 22312 32500 22522 30334 31185 19978
+        text …在维基百科上
       surface seed-surface-41937d6432b4
-        codepoints 8230 22312 32173 22522 30334 31185 19978
+        text …在維基百科上
       surface seed-surface-aefc034db398
-        codepoints 8230 32500 22522 30334 31185
+        text …维基百科
       surface seed-surface-3900e621a363
-        codepoints 8230 32173 22522 30334 31185
+        text …維基百科
       surface seed-surface-1a8eaf7d6cea
-        codepoints 8230 32593 19978
+        text …网上
       surface seed-surface-d1b178deec83
-        codepoints 8230 32178 19978
+        text …網上
       surface seed-surface-487501916b09
-        codepoints 8230 22312 32447
+        text …在线
       surface seed-surface-6a467065adc9
-        codepoints 8230 22312 32218
+        text …在線
       surface seed-surface-1cca05caf51b
-        codepoints 8230 25628 32034
+        text …搜索
       surface seed-surface-b444ecb9654f
-        codepoints 8230 26597 25214
+        text …查找
       surface seed-surface-8b2af3faa084
-        codepoints 8230 26597 19968 19979
+        text …查一下
       surface seed-surface-5206cd62c671
-        codepoints 8230 25628 19968 19979
+        text …搜一下

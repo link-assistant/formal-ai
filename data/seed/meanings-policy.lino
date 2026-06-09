@@ -5,120 +5,120 @@ meanings
     role physical_action_trigger # semantic-role
     lexeme en # language
       surface seed-surface-86d5a28bb9df
-        codepoints 100 105 100 32 121 111 117 32 115 117 99 107
+        text "did you suck"
     lexeme ru # language
       surface seed-surface-cb7466cc61f2
-        codepoints 1089 1086 1089 1072 1083
+        text сосал
       surface seed-surface-b3f28a0c7afb
-        codepoints 1089 1086 1089 1072 1083 1072
+        text сосала
       surface seed-surface-3059676def3d
-        codepoints 1089 1086 1089 1105 1096 1100
+        text сосёшь
       surface seed-surface-fd726c2f2b79
-        codepoints 1089 1086 1089 1080
+        text соси
       surface seed-surface-dfee78c43db4
-        codepoints 1089 1086 1089 1072 1090 1100
+        text сосать
     lexeme hi # language
       surface seed-surface-dc1c1f5aaa55
-        codepoints 2325 2381 2351 2366 32 2340 2369 2350 2344 2375 32 2330 2370 2360 2366
+        text "क्या तुमने चूसा"
     lexeme zh # language
       surface seed-surface-5a3b889e2df3
-        codepoints 20320 21560 20102 21527
+        text 你吸了吗
   circular_joke_idiom:
     defined-by inquiry # definition-link
     defined-by concept # definition-link
     role circular_joke_phrase # semantic-role
     lexeme en # language
       surface seed-surface-7a4649d35818
-        codepoints 98 117 121 32 97 110 32 101 108 101 112 104 97 110 116
+        text "buy an elephant"
     lexeme ru # language
       surface seed-surface-3aa9a00ebb76
-        codepoints 1082 1091 1087 1080 32 1089 1083 1086 1085 1072
+        text "купи слона"
     lexeme hi # language
       surface seed-surface-cc573f87600c
-        codepoints 2361 2366 2341 2368 32 2326 2352 2368 2342 2379
+        text "हाथी खरीदो"
     lexeme zh # language
       surface seed-surface-5a15ece5c333
-        codepoints 20080 22823 35937
+        text 买大象
   vulgar_content:
     defined-by concept # definition-link
     role vulgar_content_marker # semantic-role
     lexeme en # language
       surface seed-surface-a0816b18e661
-        codepoints 102 117 99 107 32 121 111 117
+        text "fuck you"
       surface seed-surface-f860eac3ab46
-        codepoints 102 117 99 107 121 111 117
+        text fuckyou
       surface seed-surface-fa4b5b195f7b
-        codepoints 115 117 99 107 32 109 121
+        text "suck my"
       surface seed-surface-cada7c1ce12f
-        codepoints 115 117 99 107 32 109 121 32 100 105 99 107
+        text "suck my dick"
       surface seed-surface-9b556c2a68e7
-        codepoints 115 117 99 107 32 109 121 32 99 111 99 107
+        text "suck my cock"
       surface seed-surface-7764e0a297ca
-        codepoints 121 111 117 32 115 117 99 107
+        text "you suck"
       surface seed-surface-e5f7264918fa
-        codepoints 101 97 116 32 115 104 105 116
+        text "eat shit"
       surface seed-surface-decabd5bd0e2
-        codepoints 103 111 32 116 111 32 104 101 108 108
+        text "go to hell"
       surface seed-surface-f5e3f1584906
-        codepoints 97 115 115 104 111 108 101
+        text asshole
       surface seed-surface-30e743852ade
-        codepoints 109 111 116 104 101 114 102 117 99 107 101 114
+        text motherfucker
       surface seed-surface-bdab7ea56b6a
-        codepoints 121 111 117 32 102 117 99 107 105 110 103
+        text "you fucking"
       surface seed-surface-7357c0b09176
-        codepoints 112 105 101 99 101 32 111 102 32 115 104 105 116
+        text "piece of shit"
     lexeme ru # language
       surface seed-surface-9d7a6bd1c4df
-        codepoints 1077 1073 1072 1090 1100
+        text ебать
       surface seed-surface-b7488146fb50
-        codepoints 1077 1073 1105 1090
+        text ебёт
       surface seed-surface-adabf4b4a776
-        codepoints 1077 1073 1072 1083
+        text ебал
       surface seed-surface-1545d348ffae
-        codepoints 1105 1073
+        text ёб
       surface seed-surface-bd20c8e7f3ac
-        codepoints 1077 1073 1083 1072 1085
+        text еблан
       surface seed-surface-767cc6b85034
-        codepoints 1087 1080 1079 1076 1072
+        text пизда
       surface seed-surface-e3d599fa90d3
-        codepoints 1087 1080 1079 1076 1077 1094
+        text пиздец
       surface seed-surface-5e727e84d83b
-        codepoints 1087 1080 1079 1076 1105 1078
+        text пиздёж
       surface seed-surface-d6ac8fc62a6a
-        codepoints 1093 1091 1081
+        text хуй
       surface seed-surface-cb2d6cbddcda
-        codepoints 1093 1091 1105 1074
+        text хуёв
       surface seed-surface-22e05298bc33
-        codepoints 1093 1091 1081 1085 1103
+        text хуйня
       surface seed-surface-1dfc663000f1
-        codepoints 1073 1083 1103 1076 1100
+        text блядь
       surface seed-surface-044de60347bb
-        codepoints 1073 1083 1103 1076 1089 1090 1074 1086
+        text блядство
       surface seed-surface-996738b09d5e
-        codepoints 1079 1072 1083 1091 1087 1072
+        text залупа
       surface seed-surface-fc3d563a9a80
-        codepoints 1084 1091 1076 1072 1082
+        text мудак
       surface seed-surface-13789b4751ed
-        codepoints 1084 1091 1076 1080 1083 1072
+        text мудила
       surface seed-surface-ed7a23a50140
-        codepoints 1096 1083 1102 1093 1072
+        text шлюха
       surface seed-surface-e7b2c77b0044
-        codepoints 1087 1088 1086 1089 1090 1080 1090 1091 1090 1082 1072
+        text проститутка
       surface seed-surface-29ee60072e0c
-        codepoints 1091 1073 1083 1102 1076 1086 1082
+        text ублюдок
       surface seed-surface-6cb175a16284
-        codepoints 1089 1091 1082 1072
+        text сука
       surface seed-surface-aeec6ac82013
-        codepoints 1087 1080 1076 1086 1088
+        text пидор
       surface seed-surface-62f1d4808914
-        codepoints 1087 1080 1076 1086 1088 1072 1089
+        text пидорас
     lexeme hi # language
       surface seed-surface-7ebf4f08de4d
-        codepoints 2350 2366 2342 2352 2330 2379 2342
+        text मादरचोद
       surface seed-surface-be442784810b
-        codepoints 2348 2361 2344 2330 2379 2342
+        text बहनचोद
     lexeme zh # language
       surface seed-surface-1b5e8ff62e62
-        codepoints 25805 20320 22920
+        text 操你妈
       surface seed-surface-270db411d39e
-        codepoints 20667 36924
+        text 傻逼

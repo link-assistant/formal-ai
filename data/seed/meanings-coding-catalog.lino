@@ -4,593 +4,593 @@ meanings
     role program_language # semantic-role
     lexeme en # language
       surface seed-surface-5e5d0ed5fd1b
-        codepoints 112 114 111 103 114 97 109 109 105 110 103 32 108 97 110 103 117 97 103 101
+        text "programming language"
     lexeme ru # language
       surface seed-surface-96d4986e9572
-        codepoints 1103 1079 1099 1082 32 1087 1088 1086 1075 1088 1072 1084 1084 1080 1088 1086 1074 1072 1085 1080 1103
+        text "язык программирования"
     lexeme hi # language
       surface seed-surface-050cb355c8e8
-        codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350 2367 2306 2327 32 2349 2366 2359 2366
+        text "प्रोग्रामिंग भाषा"
     lexeme zh # language
       surface seed-surface-4c9254a04e02
-        codepoints 32534 31243 35821 35328
+        text 编程语言
   program_language_rust:
     defined-by program_language # definition-link
     defined-by language_rust # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-f05d1f14e9d6
-        codepoints 114 117 115 116
+        text rust
       surface seed-surface-927846435a88
-        codepoints 114 115
+        text rs
     lexeme ru # language
       surface seed-surface-916ff1a92021
-        codepoints 1088 1072 1089 1090
+        text раст
       surface seed-surface-d837ee88f5d3
-        codepoints 1088 1072 1089 1090 1077
+        text расте
     lexeme hi # language
       surface seed-surface-5b9407610653
-        codepoints 2352 2360 2381 2335
+        text रस्ट
     lexeme zh # language
       surface seed-surface-24d0bfa73a34
-        codepoints 114 117 115 116
+        text rust
   program_language_python:
     defined-by program_language # definition-link
     defined-by language_python # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-dd9298468a25
-        codepoints 112 121 116 104 111 110
+        text python
       surface seed-surface-656995b394d8
-        codepoints 112 121
+        text py
     lexeme ru # language
       surface seed-surface-313f36364bcb
-        codepoints 1087 1080 1090 1086 1085
+        text питон
       surface seed-surface-db4f522ef9bd
-        codepoints 1087 1080 1090 1086 1085 1077
+        text питоне
     lexeme hi # language
       surface seed-surface-531fbc0b9773
-        codepoints 2346 2366 2351 2341 2344
+        text पायथन
     lexeme zh # language
       surface seed-surface-07cb378a8478
-        codepoints 112 121 116 104 111 110
+        text python
   program_language_javascript:
     defined-by program_language # definition-link
     defined-by language_javascript # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-7c3c9f6261c2
-        codepoints 106 97 118 97 115 99 114 105 112 116
+        text javascript
       surface seed-surface-a91a766234da
-        codepoints 106 115
+        text js
       surface seed-surface-8d1a7e6089a7
-        codepoints 110 111 100 101
+        text node
     lexeme ru # language
       surface seed-surface-615e66c39c6b
-        codepoints 1076 1078 1072 1074 1072 1089 1082 1088 1080 1087 1090
+        text джаваскрипт
     lexeme hi # language
       surface seed-surface-f2b3a9b295ab
-        codepoints 2332 2366 2357 2366 2360 2381 2325 2381 2352 2367 2346 2381 2335
+        text जावास्क्रिप्ट
     lexeme zh # language
       surface seed-surface-4ff352bbf47f
-        codepoints 106 97 118 97 115 99 114 105 112 116
+        text javascript
   program_language_typescript:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-5297b98a9b73
-        codepoints 116 121 112 101 115 99 114 105 112 116
+        text typescript
       surface seed-surface-acedd33c9174
-        codepoints 116 115
+        text ts
     lexeme ru # language
       surface seed-surface-1a50d5232eef
-        codepoints 1090 1072 1081 1087 1089 1082 1088 1080 1087 1090
+        text тайпскрипт
     lexeme hi # language
       surface seed-surface-93137b24be6b
-        codepoints 2335 2366 2311 2346 2360 2381 2325 2381 2352 2367 2346 2381 2335
+        text टाइपस्क्रिप्ट
     lexeme zh # language
       surface seed-surface-e7e6fddb3d66
-        codepoints 116 121 112 101 115 99 114 105 112 116
+        text typescript
   program_language_go:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-e36a9b113621
-        codepoints 103 111
+        text go
       surface seed-surface-f889efabf71e
-        codepoints 103 111 108 97 110 103
+        text golang
     lexeme ru # language
       surface seed-surface-eafca9e4933f
-        codepoints 1075 1086
+        text го
     lexeme hi # language
       surface seed-surface-fc3d183250dd
-        codepoints 2327 2379
+        text गो
     lexeme zh # language
       surface seed-surface-ddb9e4143a4f
-        codepoints 103 111
+        text go
   program_language_c:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-c43b4d30a459
-        codepoints 99
+        text c
     lexeme ru # language
       surface seed-surface-a85a4f164ab6
-        codepoints 1089 1080
+        text си
     lexeme hi # language
       surface seed-surface-7a807f14f4f5
-        codepoints 2360 2368
+        text सी
     lexeme zh # language
       surface seed-surface-08f7aa1a4855
-        codepoints 99
+        text c
   program_language_cpp:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-62aec80ca9cd
-        codepoints 99 112 112
+        text cpp
       surface seed-surface-3e1a635f62fc
-        codepoints 99 43 43
+        text c++
       surface seed-surface-b319982db5b9
-        codepoints 99 112 108 117 115 112 108 117 115
+        text cplusplus
     lexeme ru # language
       surface seed-surface-dd428662f441
-        codepoints 1089 1080 1087 1083 1102 1089 1087 1083 1102 1089
+        text сиплюсплюс
     lexeme hi # language
       surface seed-surface-ff6499f6f654
-        codepoints 2360 2368 2346 2368 2346 2368
+        text सीपीपी
     lexeme zh # language
       surface seed-surface-0041483086cf
-        codepoints 99 43 43
+        text c++
   program_language_java:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-03965da2d917
-        codepoints 106 97 118 97
+        text java
     lexeme ru # language
       surface seed-surface-f112bab59317
-        codepoints 1076 1078 1072 1074 1072
+        text джава
     lexeme hi # language
       surface seed-surface-e943e9ce9b2d
-        codepoints 2332 2366 2357 2366
+        text जावा
     lexeme zh # language
       surface seed-surface-1108cda60c1d
-        codepoints 106 97 118 97
+        text java
   program_language_csharp:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-6d6443533c56
-        codepoints 99 115 104 97 114 112
+        text csharp
       surface seed-surface-d35317b70b24
-        codepoints 99 35
+        text "c#"
       surface seed-surface-c9ed92d510e1
-        codepoints 99 115
+        text cs
       surface seed-surface-a601178ca489
-        codepoints 100 111 116 110 101 116
+        text dotnet
     lexeme ru # language
       surface seed-surface-d2cc95cc089f
-        codepoints 1089 1080 1096 1072 1088 1087
+        text сишарп
     lexeme hi # language
       surface seed-surface-81b7b2d3932a
-        codepoints 2360 2368 2358 2366 2352 2381 2346
+        text सीशार्प
     lexeme zh # language
       surface seed-surface-7537afc8ddd6
-        codepoints 99 35
+        text "c#"
   program_language_ruby:
     defined-by program_language # definition-link
     role program_language_alias # semantic-role
     lexeme en # language
       surface seed-surface-f6b95826614a
-        codepoints 114 117 98 121
+        text ruby
       surface seed-surface-e470362511ad
-        codepoints 114 98
+        text rb
     lexeme ru # language
       surface seed-surface-ef38339fba2e
-        codepoints 1088 1091 1073 1080
+        text руби
     lexeme hi # language
       surface seed-surface-2a8a32ead731
-        codepoints 2352 2370 2348 2368
+        text रूबी
     lexeme zh # language
       surface seed-surface-63078e9233b5
-        codepoints 114 117 98 121
+        text ruby
   program_task:
     defined-by program # definition-link
     role program_task # semantic-role
     lexeme en # language
       surface seed-surface-9ce0c1a56310
-        codepoints 99 111 100 105 110 103 32 116 97 115 107
+        text "coding task"
     lexeme ru # language
       surface seed-surface-f35432b47320
-        codepoints 1079 1072 1076 1072 1095 1072 32 1087 1088 1086 1075 1088 1072 1084 1084 1080 1088 1086 1074 1072 1085 1080 1103
+        text "задача программирования"
     lexeme hi # language
       surface seed-surface-a169487793e8
-        codepoints 2346 2381 2352 2379 2327 2381 2352 2366 2350 2367 2306 2327 32 2325 2366 2352 2381 2351
+        text "प्रोग्रामिंग कार्य"
     lexeme zh # language
       surface seed-surface-d8370691ecc5
-        codepoints 32534 31243 20219 21153
+        text 编程任务
   program_task_hello_world:
     defined-by program_task # definition-link
     defined-by hello_world # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-6167241334ae
-        codepoints 104 101 108 108 111 32 119 111 114 108 100
+        text "hello world"
     lexeme ru # language
       surface seed-surface-9c947e98ead6
-        codepoints 1093 1077 1083 1083 1086 32 1074 1086 1088 1083 1076
+        text "хелло ворлд"
     lexeme hi # language
       surface seed-surface-4ea98ca430dd
-        codepoints 2361 2376 2354 2379 32 2357 2352 2381 2354 2381 2337
+        text "हैलो वर्ल्ड"
     lexeme zh # language
       surface seed-surface-9644f65803e6
-        codepoints 20320 22909 19990 30028
+        text 你好世界
   program_task_count_to_three:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-98809740bc7d
-        codepoints 99 111 117 110 116 32 116 111 32 116 104 114 101 101
+        text "count to three"
       surface seed-surface-452bde4e0cdc
-        codepoints 99 111 117 110 116 32 116 111 32 51
+        text "count to 3"
       surface seed-surface-eeff6e9fa3cd
-        codepoints 99 111 117 110 116 115 32 116 111 32 116 104 114 101 101
+        text "counts to three"
       surface seed-surface-c73675ae4d2b
-        codepoints 99 111 117 110 116 115 32 116 111 32 51
+        text "counts to 3"
     lexeme ru # language
       surface seed-surface-8694a433d43c
-        codepoints 1087 1086 1089 1095 1080 1090 1072 1081 32 1076 1086 32 1090 1088 1105 1093
+        text "посчитай до трёх"
       surface seed-surface-c8612a3ab681
-        codepoints 1087 1086 1089 1095 1080 1090 1072 1081 32 1076 1086 32 51
+        text "посчитай до 3"
     lexeme hi # language
       surface seed-surface-324203f90e9d
-        codepoints 2340 2368 2344 32 2340 2325 32 2327 2367 2344 2375 2306
+        text "तीन तक गिनें"
       surface seed-surface-27c92825266e
-        codepoints 51 32 2340 2325 32 2327 2367 2344 2375 2306
+        text "3 तक गिनें"
     lexeme zh # language
       surface seed-surface-db477d8b272f
-        codepoints 25968 21040 19977
+        text 数到三
       surface seed-surface-0bf03a7b18f3
-        codepoints 25968 21040 51
+        text 数到3
   program_task_list_files:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-6a1a9cf256c1
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "list files in the current directory"
       surface seed-surface-61fdc0a055f9
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "list files in current directory"
       surface seed-surface-f4cbf66164b7
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 116 104 101 32 100 105 114 101 99 116 111 114 121
+        text "list files in the directory"
       surface seed-surface-9f52577e9a71
-        codepoints 108 105 115 116 32 116 104 101 32 102 105 108 101 115 32 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "list the files in the current directory"
       surface seed-surface-4f9b0000f0e1
-        codepoints 108 105 115 116 115 32 102 105 108 101 115 32 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "lists files in the current directory"
       surface seed-surface-dae031965cb8
-        codepoints 108 105 115 116 115 32 116 104 101 32 102 105 108 101 115 32 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "lists the files in the current directory"
       surface seed-surface-58a165a21a05
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 97 32 100 105 114 101 99 116 111 114 121
+        text "list files in a directory"
       surface seed-surface-edc8b245a143
-        codepoints 108 105 115 116 32 100 105 114 101 99 116 111 114 121 32 102 105 108 101 115
+        text "list directory files"
       surface seed-surface-090979158ec7
-        codepoints 108 105 115 116 32 102 105 108 101 115
+        text "list files"
       surface seed-surface-d18fe82c9f02
-        codepoints 108 105 115 116 115 32 102 105 108 101 115
+        text "lists files"
       surface seed-surface-9627b223b88e
-        codepoints 102 105 108 101 115 32 105 110 32 116 104 101 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "files in the current directory"
       surface seed-surface-41ddf18cf1d4
-        codepoints 102 105 108 101 115 32 105 110 32 99 117 114 114 101 110 116 32 100 105 114 101 99 116 111 114 121
+        text "files in current directory"
     lexeme ru # language
       surface seed-surface-81dc2daecc48
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1090 1077 1082 1091 1097 1077 1081 32 1076 1080 1088 1077 1082 1090 1086 1088 1080 1080
+        text "список файлов в текущей директории"
       surface seed-surface-a299a6660635
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1090 1077 1082 1091 1097 1077 1084 32 1082 1072 1090 1072 1083 1086 1075 1077
+        text "список файлов в текущем каталоге"
       surface seed-surface-2b4e4912efd1
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1076 1080 1088 1077 1082 1090 1086 1088 1080 1080
+        text "список файлов в директории"
       surface seed-surface-9c2d5adffc49
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1082 1072 1090 1072 1083 1086 1075 1077
+        text "список файлов в каталоге"
       surface seed-surface-d5a34452c714
-        codepoints 1074 1099 1076 1072 1105 1090 32 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074
+        text "выдаёт список файлов"
       surface seed-surface-d1ff52064ce5
-        codepoints 1074 1099 1076 1072 1077 1090 32 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074
+        text "выдает список файлов"
       surface seed-surface-c340afad6410
-        codepoints 1074 1099 1074 1086 1076 1080 1090 32 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074
+        text "выводит список файлов"
       surface seed-surface-7f511a6e06a6
-        codepoints 1074 1099 1074 1077 1089 1090 1080 32 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074
+        text "вывести список файлов"
       surface seed-surface-3dd151f9a7bf
-        codepoints 1074 1099 1074 1086 1076 32 1089 1087 1080 1089 1082 1072 32 1092 1072 1081 1083 1086 1074
+        text "вывод списка файлов"
       surface seed-surface-e10a8990783a
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074
+        text "список файлов"
       surface seed-surface-49a3a20dbb22
-        codepoints 1092 1072 1081 1083 1099 32 1074 32 1090 1077 1082 1091 1097 1077 1081 32 1076 1080 1088 1077 1082 1090 1086 1088 1080 1080
+        text "файлы в текущей директории"
       surface seed-surface-13a66a6958fe
-        codepoints 1092 1072 1081 1083 1099 32 1074 32 1090 1077 1082 1091 1097 1077 1084 32 1082 1072 1090 1072 1083 1086 1075 1077
+        text "файлы в текущем каталоге"
     lexeme hi # language
       surface seed-surface-5de9a67aae76
-        codepoints 2347 2364 2366 2311 2354 2379 2306 32 2325 2368 32 2360 2370 2330 2368
+        text "फ़ाइलों की सूची"
       surface seed-surface-53c2fe845fcc
-        codepoints 2347 2366 2311 2354 2379 2306 32 2325 2368 32 2360 2370 2330 2368
+        text "फाइलों की सूची"
       surface seed-surface-2ff447812607
-        codepoints 2357 2352 2381 2340 2350 2366 2344 32 2344 2367 2352 2381 2342 2375 2358 2367 2325 2366 32 2325 2368 32 2347 2364 2366 2311 2354 2375 2306
+        text "वर्तमान निर्देशिका की फ़ाइलें"
       surface seed-surface-e7853dc1e814
-        codepoints 2357 2352 2381 2340 2350 2366 2344 32 2344 2367 2352 2381 2342 2375 2358 2367 2325 2366 32 2325 2368 32 2347 2366 2311 2354 2375 2306
+        text "वर्तमान निर्देशिका की फाइलें"
       surface seed-surface-ea09dfc8aed2
-        codepoints 2344 2367 2352 2381 2342 2375 2358 2367 2325 2366 32 2325 2368 32 2347 2364 2366 2311 2354 2375 2306
+        text "निर्देशिका की फ़ाइलें"
     lexeme zh # language
       surface seed-surface-c6b984520d56
-        codepoints 21015 20986 24403 21069 30446 24405 20013 30340 25991 20214
+        text 列出当前目录中的文件
       surface seed-surface-3bc54d16a09d
-        codepoints 21015 20986 24403 21069 30446 24405 20013 25991 20214
+        text 列出当前目录中文件
       surface seed-surface-388c5cd16e55
-        codepoints 21015 20986 24403 21069 30446 24405 30340 25991 20214
+        text 列出当前目录的文件
       surface seed-surface-2d119f7adbcb
-        codepoints 21015 20986 24403 21069 30446 24405 25991 20214
+        text 列出当前目录文件
       surface seed-surface-36e8ef8e6c0a
-        codepoints 21015 20986 30446 24405 20013 30340 25991 20214
+        text 列出目录中的文件
       surface seed-surface-27283cedd793
-        codepoints 21015 20986 25991 20214
+        text 列出文件
   program_task_list_files_arg:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-acbd64c141ec
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 116 104 101 32 100 105 114 101 99 116 111 114 121 32 103 105 118 101 110 32 97 115 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116
+        text "list files in the directory given as a path argument"
       surface seed-surface-67a9842b8288
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 97 32 100 105 114 101 99 116 111 114 121 32 103 105 118 101 110 32 97 115 32 97 110 32 97 114 103 117 109 101 110 116
+        text "list files in a directory given as an argument"
       surface seed-surface-d58615c62dc4
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 116 104 101 32 100 105 114 101 99 116 111 114 121 32 112 97 115 115 101 100 32 97 115 32 97 110 32 97 114 103 117 109 101 110 116
+        text "list files in the directory passed as an argument"
       surface seed-surface-a7b77dfeca9f
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116
+        text "list files in a path argument"
       surface seed-surface-3767a4812abd
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 119 105 116 104 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116
+        text "list files with a path argument"
       surface seed-surface-5bbc75de258b
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 97 99 99 101 112 116 105 110 103 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116
+        text "list files accepting a path argument"
     lexeme ru # language
       surface seed-surface-f0dab08e6cac
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1082 1072 1090 1072 1083 1086 1075 1077 32 1087 1077 1088 1077 1076 1072 1085 1085 1086 1084 32 1082 1072 1082 32 1072 1088 1075 1091 1084 1077 1085 1090
+        text "список файлов в каталоге переданном как аргумент"
       surface seed-surface-0e725f426ede
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1076 1080 1088 1077 1082 1090 1086 1088 1080 1080 32 1087 1077 1088 1077 1076 1072 1085 1085 1086 1081 32 1082 1072 1082 32 1072 1088 1075 1091 1084 1077 1085 1090
+        text "список файлов в директории переданной как аргумент"
       surface seed-surface-85faa09fc937
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1087 1086 32 1087 1091 1090 1080 32 1080 1079 32 1072 1088 1075 1091 1084 1077 1085 1090 1072
+        text "список файлов по пути из аргумента"
     lexeme hi # language
       surface seed-surface-6038ff731352
-        codepoints 2346 2341 32 2340 2352 2381 2325 32 2325 2375 32 2352 2370 2346 32 2350 2375 2306 32 2342 2368 32 2327 2312 32 2344 2367 2352 2381 2342 2375 2358 2367 2325 2366 32 2325 2368 32 2347 2364 2366 2311 2354 2379 2306 32 2325 2368 32 2360 2370 2330 2368
+        text "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"
     lexeme zh # language
       surface seed-surface-cb34574c455d
-        codepoints 21015 20986 20316 20026 36335 24452 21442 25968 32473 20986 30340 30446 24405 20013 30340 25991 20214
+        text 列出作为路径参数给出的目录中的文件
       surface seed-surface-7ab29e4bf568
-        codepoints 21015 20986 36335 24452 21442 25968 25351 23450 30446 24405 20013 30340 25991 20214
+        text 列出路径参数指定目录中的文件
   program_task_list_files_reverse_sort:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-0ed38b08b9be
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
+        text "list files in reverse order"
       surface seed-surface-186ed5ef25aa
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 115 111 114 116 101 100 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
+        text "list files sorted in reverse order"
       surface seed-surface-6843b305cfd6
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 105 110 32 100 101 115 99 101 110 100 105 110 103 32 111 114 100 101 114
+        text "list files in descending order"
       surface seed-surface-3a0968a1756c
-        codepoints 114 101 118 101 114 115 101 32 115 111 114 116 101 100 32 108 105 115 116 32 102 105 108 101 115
+        text "reverse sorted list files"
     lexeme ru # language
       surface seed-surface-44465f99d4d4
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1074 32 1086 1073 1088 1072 1090 1085 1086 1084 32 1087 1086 1088 1103 1076 1082 1077
+        text "список файлов в обратном порядке"
       surface seed-surface-ff813309be86
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1089 32 1086 1073 1088 1072 1090 1085 1086 1081 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1086 1081
+        text "список файлов с обратной сортировкой"
     lexeme hi # language
       surface seed-surface-0a348cf8f1ad
-        codepoints 2347 2364 2366 2311 2354 2379 2306 32 2325 2368 32 2360 2370 2330 2368 32 2313 2354 2381 2335 2375 32 2325 2381 2352 2350 32 2350 2375 2306
+        text "फ़ाइलों की सूची उल्टे क्रम में"
       surface seed-surface-10d0fa09c7b6
-        codepoints 2347 2364 2366 2311 2354 2379 2306 32 2325 2379 32 2313 2354 2381 2335 2375 32 2325 2381 2352 2350 32 2350 2375 2306 32 2360 2370 2330 2368 2348 2342 2381 2343 32 2325 2352 2375 2306
+        text "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
     lexeme zh # language
       surface seed-surface-2a13f4f06016
-        codepoints 25353 30456 21453 39034 24207 21015 20986 25991 20214
+        text 按相反顺序列出文件
       surface seed-surface-a2096491e3ff
-        codepoints 20498 24207 21015 20986 25991 20214
+        text 倒序列出文件
   program_task_list_files_arg_reverse_sort:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-8ebb33499a85
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 102 114 111 109 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
+        text "list files from a path argument in reverse order"
       surface seed-surface-50edaae5291d
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 119 105 116 104 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116 32 105 110 32 114 101 118 101 114 115 101 32 111 114 100 101 114
+        text "list files with a path argument in reverse order"
       surface seed-surface-db814927fd73
-        codepoints 108 105 115 116 32 102 105 108 101 115 32 119 105 116 104 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116 32 115 111 114 116 101 100 32 100 101 115 99 101 110 100 105 110 103
+        text "list files with a path argument sorted descending"
       surface seed-surface-e5d31597e078
-        codepoints 114 101 118 101 114 115 101 32 115 111 114 116 101 100 32 108 105 115 116 32 102 105 108 101 115 32 119 105 116 104 32 97 32 112 97 116 104 32 97 114 103 117 109 101 110 116
+        text "reverse sorted list files with a path argument"
     lexeme ru # language
       surface seed-surface-f5610c4b141d
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1087 1086 32 1087 1091 1090 1080 32 1080 1079 32 1072 1088 1075 1091 1084 1077 1085 1090 1072 32 1074 32 1086 1073 1088 1072 1090 1085 1086 1084 32 1087 1086 1088 1103 1076 1082 1077
+        text "список файлов по пути из аргумента в обратном порядке"
       surface seed-surface-73aa513be2aa
-        codepoints 1089 1087 1080 1089 1086 1082 32 1092 1072 1081 1083 1086 1074 32 1080 1079 32 1072 1088 1075 1091 1084 1077 1085 1090 1072 32 1089 32 1086 1073 1088 1072 1090 1085 1086 1081 32 1089 1086 1088 1090 1080 1088 1086 1074 1082 1086 1081
+        text "список файлов из аргумента с обратной сортировкой"
     lexeme hi # language
       surface seed-surface-5f028c46e412
-        codepoints 2346 2341 32 2340 2352 2381 2325 32 2360 2375 32 2347 2364 2366 2311 2354 2379 2306 32 2325 2368 32 2360 2370 2330 2368 32 2313 2354 2381 2335 2375 32 2325 2381 2352 2350 32 2350 2375 2306
+        text "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में"
       surface seed-surface-f20762d9af05
-        codepoints 2346 2341 32 2340 2352 2381 2325 32 2357 2366 2354 2368 32 2347 2364 2366 2311 2354 2379 2306 32 2325 2379 32 2313 2354 2381 2335 2375 32 2325 2381 2352 2350 32 2350 2375 2306 32 2360 2370 2330 2368 2348 2342 2381 2343 32 2325 2352 2375 2306
+        text "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
     lexeme zh # language
       surface seed-surface-75936ffa0411
-        codepoints 25353 30456 21453 39034 24207 21015 20986 36335 24452 21442 25968 20013 30340 25991 20214
+        text 按相反顺序列出路径参数中的文件
       surface seed-surface-e0f164fcb9d1
-        codepoints 20498 24207 21015 20986 36335 24452 21442 25968 25351 23450 30446 24405 20013 30340 25991 20214
+        text 倒序列出路径参数指定目录中的文件
   program_task_fizzbuzz:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-73d4ce8a7be3
-        codepoints 102 105 122 122 98 117 122 122
+        text fizzbuzz
       surface seed-surface-16a85839707f
-        codepoints 102 105 122 122 32 98 117 122 122
+        text "fizz buzz"
     lexeme ru # language
       surface seed-surface-322d32b41cfd
-        codepoints 1092 1080 1079 1079 1073 1072 1079 1079
+        text физзбазз
       surface seed-surface-9a52f22e2fe5
-        codepoints 1092 1080 1079 1079 32 1073 1072 1079 1079
+        text "физз базз"
       surface seed-surface-c7643649fd1e
-        codepoints 1092 1080 1079 1073 1072 1079
+        text физбаз
     lexeme hi # language
       surface seed-surface-d9f3a5109db0
-        codepoints 2347 2364 2367 2332 2364 2348 2332 2364
+        text फ़िज़बज़
       surface seed-surface-e62cd17c8cec
-        codepoints 2347 2367 2332 2364 2348 2332 2364
+        text फिज़बज़
     lexeme zh # language
       surface seed-surface-aa4f5083fb30
-        codepoints 33778 33576 24052 20857
+        text 菲茨巴兹
   program_task_factorial:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-4864575b0b60
-        codepoints 102 97 99 116 111 114 105 97 108 32 111 102 32 53
+        text "factorial of 5"
       surface seed-surface-5eb3230f14d7
-        codepoints 102 97 99 116 111 114 105 97 108 32 111 102 32 102 105 118 101
+        text "factorial of five"
       surface seed-surface-3bb0ec93a6d2
-        codepoints 53 32 102 97 99 116 111 114 105 97 108
+        text "5 factorial"
       surface seed-surface-c67f10577dde
-        codepoints 102 105 118 101 32 102 97 99 116 111 114 105 97 108
+        text "five factorial"
     lexeme ru # language
       surface seed-surface-f8293ba74a4d
-        codepoints 1092 1072 1082 1090 1086 1088 1080 1072 1083 32 53
+        text "факториал 5"
       surface seed-surface-de0cda4e0cf0
-        codepoints 1092 1072 1082 1090 1086 1088 1080 1072 1083 32 1087 1103 1090 1080
+        text "факториал пяти"
       surface seed-surface-6b5e55a25d05
-        codepoints 1092 1072 1082 1090 1086 1088 1080 1072 1083 32 1095 1080 1089 1083 1072 32 53
+        text "факториал числа 5"
     lexeme hi # language
       surface seed-surface-5686809ebb76
-        codepoints 53 32 2325 2366 32 2347 2376 2325 2381 2335 2379 2352 2367 2351 2354
+        text "5 का फैक्टोरियल"
       surface seed-surface-a773e1ea18f4
-        codepoints 2346 2366 2305 2330 32 2325 2366 32 2347 2376 2325 2381 2335 2379 2352 2367 2351 2354
+        text "पाँच का फैक्टोरियल"
     lexeme zh # language
       surface seed-surface-5e01b971494b
-        codepoints 53 30340 38454 20056
+        text 5的阶乘
       surface seed-surface-9c8313427c3d
-        codepoints 20116 30340 38454 20056
+        text 五的阶乘
   program_task_reverse_string:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-cc8955d92b7a
-        codepoints 114 101 118 101 114 115 101 32 97 32 115 116 114 105 110 103
+        text "reverse a string"
       surface seed-surface-e9750a4c9667
-        codepoints 114 101 118 101 114 115 101 32 116 104 101 32 115 116 114 105 110 103 32 104 101 108 108 111
+        text "reverse the string hello"
       surface seed-surface-403bf388609b
-        codepoints 114 101 118 101 114 115 101 32 104 101 108 108 111
+        text "reverse hello"
       surface seed-surface-a749930b3d39
-        codepoints 114 101 118 101 114 115 101 32 115 116 114 105 110 103 32 104 101 108 108 111
+        text "reverse string hello"
       surface seed-surface-c995e66ba4f5
-        codepoints 114 101 118 101 114 115 101 32 116 104 101 32 119 111 114 100 32 104 101 108 108 111
+        text "reverse the word hello"
     lexeme ru # language
       surface seed-surface-223fc94f2e6b
-        codepoints 1087 1077 1088 1077 1074 1077 1088 1085 1091 1090 1100 32 1089 1090 1088 1086 1082 1091
+        text "перевернуть строку"
       surface seed-surface-c725ce9663ca
-        codepoints 1087 1077 1088 1077 1074 1077 1088 1085 1091 1090 1100 32 1089 1090 1088 1086 1082 1091 32 104 101 108 108 111
+        text "перевернуть строку hello"
       surface seed-surface-253e4053153d
-        codepoints 1088 1072 1079 1074 1077 1088 1085 1091 1090 1100 32 1089 1090 1088 1086 1082 1091
+        text "развернуть строку"
     lexeme hi # language
       surface seed-surface-73c30373c484
-        codepoints 2360 2381 2335 2381 2352 2367 2306 2327 32 2325 2379 32 2313 2354 2335 2375 2306
+        text "स्ट्रिंग को उलटें"
       surface seed-surface-b432b24a57df
-        codepoints 2360 2381 2335 2381 2352 2367 2306 2327 32 2346 2354 2335 2375 2306
+        text "स्ट्रिंग पलटें"
     lexeme zh # language
       surface seed-surface-7864006e68e6
-        codepoints 21453 36716 23383 31526 20018
+        text 反转字符串
       surface seed-surface-0dfbc2da141d
-        codepoints 32763 36716 23383 31526 20018
+        text 翻转字符串
       surface seed-surface-d0416fa7f2da
-        codepoints 21453 36716 104 101 108 108 111
+        text 反转hello
   program_task_sum_to_ten:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-d37af77f0248
-        codepoints 115 117 109 32 111 102 32 49 32 116 111 32 49 48
+        text "sum of 1 to 10"
       surface seed-surface-1a17506e6d82
-        codepoints 115 117 109 32 102 114 111 109 32 49 32 116 111 32 49 48
+        text "sum from 1 to 10"
       surface seed-surface-097daa653ca5
-        codepoints 115 117 109 32 116 104 101 32 110 117 109 98 101 114 115 32 49 32 116 111 32 49 48
+        text "sum the numbers 1 to 10"
       surface seed-surface-647902d0c5f6
-        codepoints 115 117 109 32 111 102 32 110 117 109 98 101 114 115 32 102 114 111 109 32 49 32 116 111 32 49 48
+        text "sum of numbers from 1 to 10"
       surface seed-surface-6af30678b7eb
-        codepoints 115 117 109 32 49 32 116 111 32 49 48
+        text "sum 1 to 10"
       surface seed-surface-bb665b0b9577
-        codepoints 115 117 109 32 116 111 32 116 101 110
+        text "sum to ten"
     lexeme ru # language
       surface seed-surface-108ffcc20a3d
-        codepoints 1089 1091 1084 1084 1072 32 1086 1090 32 49 32 1076 1086 32 49 48
+        text "сумма от 1 до 10"
       surface seed-surface-4dd820daf089
-        codepoints 1089 1091 1084 1084 1072 32 1095 1080 1089 1077 1083 32 1086 1090 32 49 32 1076 1086 32 49 48
+        text "сумма чисел от 1 до 10"
       surface seed-surface-697722f777dc
-        codepoints 1089 1091 1084 1084 1072 32 1095 1080 1089 1077 1083 32 1086 1090 32 1086 1076 1085 1086 1075 1086 32 1076 1086 32 1076 1077 1089 1103 1090 1080
+        text "сумма чисел от одного до десяти"
     lexeme hi # language
       surface seed-surface-8eea1b25d79e
-        codepoints 49 32 2360 2375 32 49 48 32 2340 2325 32 2325 2366 32 2351 2379 2327
+        text "1 से 10 तक का योग"
       surface seed-surface-ab876f573d4e
-        codepoints 49 32 2360 2375 32 49 48 32 2340 2325 32 2351 2379 2327
+        text "1 से 10 तक योग"
     lexeme zh # language
       surface seed-surface-29aeff2a5134
-        codepoints 49 21040 49 48 30340 21644
+        text 1到10的和
       surface seed-surface-86fc5e6729a9
-        codepoints 49 21040 49 48 27714 21644
+        text 1到10求和
       surface seed-surface-87164580e52a
-        codepoints 27714 49 21040 49 48 30340 21644
+        text 求1到10的和
   program_task_fibonacci:
     defined-by program_task # definition-link
     role program_task_alias # semantic-role
     lexeme en # language
       surface seed-surface-e96ea48c508d
-        codepoints 102 105 98 111 110 97 99 99 105 32 115 101 113 117 101 110 99 101 32 114 101 99 117 114 115 105 118 101 108 121
+        text "fibonacci sequence recursively"
       surface seed-surface-133a97749814
-        codepoints 102 105 98 111 110 97 99 99 105 32 115 101 113 117 101 110 99 101
+        text "fibonacci sequence"
       surface seed-surface-ebe7b667914e
-        codepoints 114 101 99 117 114 115 105 118 101 32 102 105 98 111 110 97 99 99 105
+        text "recursive fibonacci"
       surface seed-surface-957da895f435
-        codepoints 102 105 98 111 110 97 99 99 105 32 114 101 99 117 114 115 105 118 101 108 121
+        text "fibonacci recursively"
       surface seed-surface-cce1f4ba0341
-        codepoints 102 105 98 111 110 97 99 99 105 32 102 117 110 99 116 105 111 110
+        text "fibonacci function"
       surface seed-surface-4051f5dce182
-        codepoints 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114 115
+        text "fibonacci numbers"
       surface seed-surface-e589e1f17689
-        codepoints 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114
+        text "fibonacci number"
       surface seed-surface-5d27881e1ecf
-        codepoints 49 48 116 104 32 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114
+        text "10th fibonacci number"
       surface seed-surface-135195340470
-        codepoints 116 104 101 32 49 48 116 104 32 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114
+        text "the 10th fibonacci number"
       surface seed-surface-c8b61061011a
-        codepoints 116 101 110 116 104 32 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114
+        text "tenth fibonacci number"
       surface seed-surface-a19e92802f04
-        codepoints 110 116 104 32 102 105 98 111 110 97 99 99 105 32 110 117 109 98 101 114
+        text "nth fibonacci number"
     lexeme ru # language
       surface seed-surface-fcd799d20767
-        codepoints 1087 1086 1089 1083 1077 1076 1086 1074 1072 1090 1077 1083 1100 1085 1086 1089 1090 1100 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "последовательность фибоначчи"
       surface seed-surface-3aa9e6794fea
-        codepoints 1095 1080 1089 1083 1072 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "числа фибоначчи"
       surface seed-surface-f42ca5d12a9e
-        codepoints 1095 1080 1089 1083 1086 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "число фибоначчи"
       surface seed-surface-f87a62caeb29
-        codepoints 1088 1077 1082 1091 1088 1089 1080 1074 1085 1099 1081 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "рекурсивный фибоначчи"
       surface seed-surface-ccdca924d209
-        codepoints 1092 1080 1073 1086 1085 1072 1095 1095 1080 32 1088 1077 1082 1091 1088 1089 1080 1074 1085 1086
+        text "фибоначчи рекурсивно"
       surface seed-surface-fc2d17cb8821
-        codepoints 49 48 45 1077 32 1095 1080 1089 1083 1086 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "10-е число фибоначчи"
       surface seed-surface-5d39441a06c1
-        codepoints 1076 1077 1089 1103 1090 1086 1077 32 1095 1080 1089 1083 1086 32 1092 1080 1073 1086 1085 1072 1095 1095 1080
+        text "десятое число фибоначчи"
     lexeme hi # language
       surface seed-surface-d565aad215b3
-        codepoints 2347 2364 2367 2348 2379 2344 2366 2330 2368 32 2309 2344 2369 2325 2381 2352 2350
+        text "फ़िबोनाची अनुक्रम"
       surface seed-surface-dd00e347a678
-        codepoints 2347 2367 2348 2379 2344 2366 2330 2368 32 2309 2344 2369 2325 2381 2352 2350
+        text "फिबोनाची अनुक्रम"
       surface seed-surface-9c1a5089c8f4
-        codepoints 2347 2364 2367 2348 2379 2344 2366 2330 2368 32 2360 2306 2326 2381 2351 2366
+        text "फ़िबोनाची संख्या"
       surface seed-surface-e44e07a1c8f5
-        codepoints 2347 2367 2348 2379 2344 2366 2330 2368 32 2360 2306 2326 2381 2351 2366
+        text "फिबोनाची संख्या"
     lexeme zh # language
       surface seed-surface-adf102e0a476
-        codepoints 26000 27874 37027 22865 25968 21015
+        text 斐波那契数列
       surface seed-surface-cf9d4055fe85
-        codepoints 26000 27874 37027 22865 24207 21015
+        text 斐波那契序列
       surface seed-surface-fffa951b0b92
-        codepoints 26000 27874 37027 22865 25968
+        text 斐波那契数
       surface seed-surface-0f7c88f7a14c
-        codepoints 36882 24402 26000 27874 37027 22865
+        text 递归斐波那契

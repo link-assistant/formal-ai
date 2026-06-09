@@ -4,525 +4,525 @@ meanings
     role monetary_concept # semantic-role
     lexeme en # language
       surface seed-surface-6b6e0bca9c41
-        codepoints 109 111 110 101 121
+        text money
       surface seed-surface-4edd11579e28
-        codepoints 99 117 114 114 101 110 99 121
+        text currency
     lexeme ru # language
       surface seed-surface-4476b068ceee
-        codepoints 1076 1077 1085 1100 1075 1080
+        text деньги
       surface seed-surface-d9219a0726e3
-        codepoints 1074 1072 1083 1102 1090 1072
+        text валюта
     lexeme hi # language
       surface seed-surface-0f8b0e7e8cf5
-        codepoints 2346 2376 2360 2366
+        text पैसा
       surface seed-surface-702c0c5c477a
-        codepoints 2350 2369 2342 2381 2352 2366
+        text मुद्रा
     lexeme zh # language
       surface seed-surface-0c62e54aee29
-        codepoints 36135 24065
+        text 货币
       surface seed-surface-03010cf00432
-        codepoints 38065
+        text 钱
   exchange_rate:
     defined-by money # definition-link
     defined-by relation # definition-link
     role exchange_rate_reference # semantic-role
     lexeme en # language
       surface seed-surface-34ed881aeed4
-        codepoints 101 120 99 104 97 110 103 101 32 114 97 116 101
+        text "exchange rate"
       surface seed-surface-0b76bc824258
-        codepoints 99 117 114 114 101 110 99 121 32 114 97 116 101
+        text "currency rate"
     lexeme ru # language
       surface seed-surface-e9171b29aff5
-        codepoints 1082 1091 1088 1089
+        text курс
     lexeme hi # language
       surface seed-surface-5ca3916b0ff9
-        codepoints 2357 2367 2344 2367 2350 2351 32 2342 2352
+        text "विनिमय दर"
     lexeme zh # language
       surface seed-surface-a9605787feeb
-        codepoints 27719 29575
+        text 汇率
   us_dollar:
     defined-by money # definition-link
     role currency_usd_reference # semantic-role
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-4f687b98454f
-        codepoints 117 115 100
+        text usd
       surface seed-surface-f596f1062cf0
-        codepoints 100 111 108 108 97 114
+        text dollar
       surface seed-surface-0218e1c430ad
-        codepoints 100 111 108 108 97 114 115
+        text dollars
     lexeme ru # language
       surface seed-surface-6ecba31bad19
-        codepoints 1076 1086 1083 1083 1072 1088
+        text доллар
       surface seed-surface-4be5e9461a3b
-        codepoints 1076 1086 1083 1072 1088
+        text долар
       surface seed-surface-d9f17df9a340
-        codepoints 1076 1086 1083 1086 1088
+        text долор
     lexeme hi # language
       surface seed-surface-565fbd5867d8
-        codepoints 2337 2377 2354 2352
+        text डॉलर
     lexeme zh # language
       surface seed-surface-fffd5ffdeed3
-        codepoints 32654 20803
+        text 美元
   euro:
     defined-by money # definition-link
     role currency_eur_reference # semantic-role
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-8304f320ff5d
-        codepoints 101 117 114
+        text eur
       surface seed-surface-945530f70481
-        codepoints 101 117 114 111
+        text euro
       surface seed-surface-b063e6a5fedc
-        codepoints 101 117 114 111 115
+        text euros
     lexeme ru # language
       surface seed-surface-0d1e6c743b2d
-        codepoints 1077 1074 1088 1086
+        text евро
     lexeme hi # language
       surface seed-surface-9dad009a538c
-        codepoints 2351 2370 2352 2379
+        text यूरो
     lexeme zh # language
       surface seed-surface-8d3527a7c2c5
-        codepoints 27431 20803
+        text 欧元
   ruble:
     defined-by money # definition-link
     role currency_rub_reference # semantic-role
     role calculation_domain_term # semantic-role
     lexeme en # language
       surface seed-surface-ddbc9339b27e
-        codepoints 114 117 98
+        text rub
       surface seed-surface-344050af48a5
-        codepoints 114 117 98 108 101
+        text ruble
       surface seed-surface-385e5d1a58b3
-        codepoints 114 117 98 108 101 115
+        text rubles
     lexeme ru # language
       surface seed-surface-cd45db079b0a
-        codepoints 1088 1091 1073 1083 1100
+        text рубль
       surface seed-surface-371b41b3d685
-        codepoints 1088 1091 1073 1083 1077 1081
+        text рублей
       surface seed-surface-42ee5e0384c1
-        codepoints 1088 1091 1073
+        text руб
     lexeme hi # language
       surface seed-surface-8ea473a8f9c7
-        codepoints 2352 2370 2348 2354
+        text रूबल
     lexeme zh # language
       surface seed-surface-3e1d64ddf3f1
-        codepoints 21346 24067
+        text 卢布
   calculation_basis:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_basis_reference # semantic-role
     lexeme en # language
       surface seed-surface-8362b3dbde09
-        codepoints 99 97 108 99 117 108 97 116 105 111 110
+        text calculation
       surface seed-surface-25f8726320b6
-        codepoints 99 97 108 99 117 108 97 116 105 111 110 115
+        text calculations
       surface seed-surface-b18e9a0d8453
-        codepoints 100 111 32 121 111 117 32 117 115 101
+        text "do you use"
       surface seed-surface-27227a838044
-        codepoints 117 115 101 100 32 102 111 114
+        text "used for"
       surface seed-surface-633c8e5da796
-        codepoints 121 111 117 114 32 114 97 116 101
+        text "your rate"
     lexeme ru # language
       surface seed-surface-15c8712edb1b
-        codepoints 1087 1088 1080 32 1088 1072 1089 1095 1077 1090
+        text "при расчет"
       surface seed-surface-057fcbd4a838
-        codepoints 1087 1088 1080 32 1088 1072 1089 1095 1105 1090
+        text "при расчёт"
       surface seed-surface-bdd42ace0994
-        codepoints 1074 32 1088 1072 1089 1095 1077 1090
+        text "в расчет"
       surface seed-surface-afb67b038cc7
-        codepoints 1074 32 1088 1072 1089 1095 1105 1090
+        text "в расчёт"
       surface seed-surface-1f0bd4a58de8
-        codepoints 1076 1083 1103 32 1088 1072 1089 1095 1077 1090
+        text "для расчет"
       surface seed-surface-107564a31f93
-        codepoints 1076 1083 1103 32 1088 1072 1089 1095 1105 1090
+        text "для расчёт"
       surface seed-surface-d0f10289d2d2
-        codepoints 1091 32 1090 1077 1073 1103
+        text "у тебя"
       surface seed-surface-3d041bc260bb
-        codepoints 1080 1089 1087 1086 1083 1100 1079
+        text использ
       surface seed-surface-a13b5f98fecd
-        codepoints 1073 1077 1088 1077 1096 1100
+        text берешь
       surface seed-surface-f10f3881f5bd
-        codepoints 1073 1077 1088 1105 1096 1100
+        text берёшь
       surface seed-surface-43f8324df63c
-        codepoints 1087 1088 1080 1084 1077 1085
+        text примен
     lexeme hi # language
       surface seed-surface-7f5fb7c1a06d
-        codepoints 2327 2339 2344 2366
+        text गणना
       surface seed-surface-93414391ff0b
-        codepoints 2313 2346 2351 2379 2327
+        text उपयोग
     lexeme zh # language
       surface seed-surface-e419c82e90e0
-        codepoints 35745 31639
+        text 计算
       surface seed-surface-740d07b333d7
-        codepoints 20351 29992
+        text 使用
   arithmetic_operation:
     defined-by action # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
       surface seed-surface-7abf64c45901
-        codepoints 97 114 105 116 104 109 101 116 105 99 32 111 112 101 114 97 116 105 111 110
+        text "arithmetic operation"
       surface seed-surface-1f6aa1a0543b
-        codepoints 111 112 101 114 97 116 111 114
+        text operator
     lexeme ru # language
       surface seed-surface-84d8188afcfc
-        codepoints 1072 1088 1080 1092 1084 1077 1090 1080 1095 1077 1089 1082 1072 1103 32 1086 1087 1077 1088 1072 1094 1080 1103
+        text "арифметическая операция"
     lexeme hi # language
       surface seed-surface-3d2e2687bc91
-        codepoints 2309 2306 2325 2327 2339 2367 2340 2368 2351 32 2360 2306 2325 2381 2352 2367 2351 2366
+        text "अंकगणितीय संक्रिया"
     lexeme zh # language
       surface seed-surface-6ad81b1855da
-        codepoints 31639 26415 36816 31639
+        text 算术运算
   addition:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
       surface seed-surface-e4f99c8c2421
-        codepoints 112 108 117 115
+        text plus
       surface seed-surface-b1be1a228678
-        codepoints 43
+        text +
     lexeme ru # language
       surface seed-surface-da9ff4b133ab
-        codepoints 1087 1083 1102 1089
+        text плюс
     lexeme hi # language
       surface seed-surface-9f7d3e4fdd2c
-        codepoints 2332 2379 2337 2364
+        text जोड़
     lexeme zh # language
       surface seed-surface-077daa8feaee
-        codepoints 21152 19978
+        text 加上
   subtraction:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
       surface seed-surface-ea468229476c
-        codepoints 109 105 110 117 115
+        text minus
       surface seed-surface-0675c8eecb28
-        codepoints 45
+        text -
     lexeme ru # language
       surface seed-surface-e51edaf0902f
-        codepoints 1084 1080 1085 1091 1089
+        text минус
     lexeme hi # language
       surface seed-surface-4b787e54c886
-        codepoints 2328 2335 2366
+        text घटा
     lexeme zh # language
       surface seed-surface-516737050bce
-        codepoints 20943 21435
+        text 减去
   multiplication:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
       surface seed-surface-460091467765
-        codepoints 116 105 109 101 115
+        text times
       surface seed-surface-9cb3fb220df7
-        codepoints 109 117 108 116 105 112 108 105 101 100 32 98 121
+        text "multiplied by"
       surface seed-surface-3f814bf9ddb6
-        codepoints 42
+        text *
     lexeme ru # language
       surface seed-surface-5f0060c1888d
-        codepoints 1091 1084 1085 1086 1078 1080 1090 1100
+        text умножить
       surface seed-surface-91ed085de2f8
-        codepoints 1091 1084 1085 1086 1078 1100
+        text умножь
       surface seed-surface-e7e04c32bfd9
-        codepoints 1091 1084 1085 1086 1078 1080 1090 1100 32 1085 1072
+        text "умножить на"
     lexeme hi # language
       surface seed-surface-72ab9ec36fef
-        codepoints 2327 2369 2339 2366
+        text गुणा
     lexeme zh # language
       surface seed-surface-e4aef0f4ad76
-        codepoints 20056 20197
+        text 乘以
   division:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
       surface seed-surface-43ec50188024
-        codepoints 100 105 118 105 100 101 100 32 98 121
+        text "divided by"
       surface seed-surface-29500999c42e
-        codepoints 47
+        text /
     lexeme ru # language
       surface seed-surface-fcc2f47a3ec9
-        codepoints 1088 1072 1079 1076 1077 1083 1080 1090 1100 32 1085 1072
+        text "разделить на"
       surface seed-surface-d74e26a7c0f7
-        codepoints 1076 1077 1083 1080 1090 1100 32 1085 1072
+        text "делить на"
     lexeme hi # language
       surface seed-surface-f02343e19d1d
-        codepoints 2349 2366 2327
+        text भाग
     lexeme zh # language
       surface seed-surface-121455950f89
-        codepoints 38500 20197
+        text 除以
   modulo:
     defined-by arithmetic_operation # definition-link
     role arithmetic_operator_word # semantic-role
     lexeme en # language
       surface seed-surface-ee383c976b65
-        codepoints 109 111 100 117 108 111
+        text modulo
       surface seed-surface-2788b2f053b2
-        codepoints 109 111 100
+        text mod
       surface seed-surface-c57b7acf587a
-        codepoints 37
+        text %
     lexeme ru # language
       surface seed-surface-c468853efd97
-        codepoints 1087 1086 32 1084 1086 1076 1091 1083 1102
+        text "по модулю"
     lexeme hi # language
       surface seed-surface-6a4b6087fdab
-        codepoints 2350 2377 2337 2381 2351 2370 2354 2379
+        text मॉड्यूलो
     lexeme zh # language
       surface seed-surface-cedd1c60dabd
-        codepoints 21462 27169
+        text 取模
   calculation_request:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_request_cue # semantic-role
     lexeme en # language
       surface seed-surface-feab96e97f03
-        codepoints 112 108 101 97 115 101 32 99 97 108 99 117 108 97 116 101
+        text "please calculate"
       surface seed-surface-1c3a0cd791ee
-        codepoints 112 108 101 97 115 101 32 99 111 109 112 117 116 101
+        text "please compute"
       surface seed-surface-eee920c44dbc
-        codepoints 99 97 110 32 121 111 117 32 99 97 108 99 117 108 97 116 101
+        text "can you calculate"
       surface seed-surface-c4051294e7fe
-        codepoints 99 97 110 32 121 111 117 32 99 111 109 112 117 116 101
+        text "can you compute"
       surface seed-surface-a1f5cf246554
-        codepoints 99 111 117 108 100 32 121 111 117 32 99 97 108 99 117 108 97 116 101
+        text "could you calculate"
       surface seed-surface-c449b0583af9
-        codepoints 99 111 117 108 100 32 121 111 117 32 99 111 109 112 117 116 101
+        text "could you compute"
       surface seed-surface-83b6d3bc531b
-        codepoints 119 104 97 116 32 105 115
+        text "what is"
       surface seed-surface-584c51a9cafa
-        codepoints 119 104 97 116 39 115
+        text "what's"
       surface seed-surface-ecd58b75d292
-        codepoints 119 104 97 116 32 100 111 101 115
+        text "what does"
       surface seed-surface-c131f3dfaa53
-        codepoints 99 97 108 99 117 108 97 116 101
+        text calculate
       surface seed-surface-d5b39311c497
-        codepoints 99 111 109 112 117 116 101
+        text compute
       surface seed-surface-4eab509f08cc
-        codepoints 101 118 97 108 117 97 116 101
+        text evaluate
       surface seed-surface-45b9eef1e137
-        codepoints 104 111 119 32 109 117 99 104 32 105 115
+        text "how much is"
       surface seed-surface-ab5b056ded9c
-        codepoints 115 111 108 118 101
+        text solve
     lexeme ru # language
       surface seed-surface-4832ab9cca9f
-        codepoints 1089 1082 1086 1083 1100 1082 1086 32 1073 1091 1076 1077 1090
+        text "сколько будет"
       surface seed-surface-2823985b45eb
-        codepoints 1087 1086 1089 1095 1080 1090 1072 1081
+        text посчитай
       surface seed-surface-94e50eb2f39b
-        codepoints 1087 1086 1089 1095 1080 1090 1072 1081 1090 1077
+        text посчитайте
       surface seed-surface-907f0d67a11a
-        codepoints 1074 1099 1095 1080 1089 1083 1080
+        text вычисли
       surface seed-surface-dc6eb725b7ee
-        codepoints 1074 1099 1095 1080 1089 1083 1080 1090 1077
+        text вычислите
       surface seed-surface-e6e888738b5d
-        codepoints 1088 1072 1089 1089 1095 1080 1090 1072 1081
+        text рассчитай
       surface seed-surface-81e7f393d939
-        codepoints 1088 1072 1089 1089 1095 1080 1090 1072 1081 1090 1077
+        text рассчитайте
     lexeme zh # language
       surface seed-surface-1372bb80f90d
-        codepoints 35831 35745 31639
+        text 请计算
       surface seed-surface-85a252e6cf66
-        codepoints 35831 31639 19968 19979
+        text 请算一下
       surface seed-surface-f38811c7b6af
-        codepoints 35745 31639 19968 19979
+        text 计算一下
       surface seed-surface-92fa730a9fca
-        codepoints 31639 19968 19979
+        text 算一下
       surface seed-surface-c1d4872ac871
-        codepoints 35745 31639
+        text 计算
     lexeme hi # language
       surface seed-surface-997e02370ede
-        codepoints 2325 2371 2346 2351 2366 32 2327 2339 2344 2366 32 2325 2352 2375 2306
+        text "कृपया गणना करें"
       surface seed-surface-571ee06a6954
-        codepoints 2327 2339 2344 2366 32 2325 2352 2375 2306
+        text "गणना करें"
   politeness:
     defined-by property # definition-link
     role politeness_cue # semantic-role
     lexeme en # language
       surface seed-surface-3ddb1871b067
-        codepoints 112 108 101 97 115 101
+        text please
       surface seed-surface-d29ee8257155
-        codepoints 102 111 114 32 109 101
+        text "for me"
     lexeme ru # language
       surface seed-surface-2862c6385cd1
-        codepoints 1087 1086 1078 1072 1083 1091 1081 1089 1090 1072
+        text пожалуйста
     lexeme hi # language
       surface seed-surface-5c7fd65650f5
-        codepoints 2325 2371 2346 2351 2366
+        text कृपया
     lexeme zh # language
       surface seed-surface-17ceb56d45ee
-        codepoints 35831
+        text 请
   calculation_result_query:
     defined-by action # definition-link
     defined-by inquiry # definition-link
     role calculation_result_query_cue # semantic-role
     lexeme en # language
       surface seed-surface-ea230246c9fb
-        codepoints 101 113 117 97 108
+        text equal
       surface seed-surface-ec6c7a9174db
-        codepoints 101 113 117 97 108 115
+        text equals
       surface seed-surface-511e50c585e8
-        codepoints 61
+        text =
     lexeme ru # language
       surface seed-surface-693a2b05a3fc
-        codepoints 1088 1072 1074 1085 1086
+        text равно
     lexeme zh # language
       surface seed-surface-35d31f044a60
-        codepoints 26159 22810 23569
+        text 是多少
       surface seed-surface-74bd268fa4b9
-        codepoints 31561 20110 22810 23569
+        text 等于多少
       surface seed-surface-cd3c2c958c78
-        codepoints 31561 20110 20960
+        text 等于几
     lexeme hi # language
       surface seed-surface-8bd7922bf24e
-        codepoints 2325 2367 2340 2344 2366 32 2361 2376
+        text "कितना है"
       surface seed-surface-838748d9ff91
-        codepoints 2325 2381 2351 2366 32 2361 2376
+        text "क्या है"
       surface seed-surface-e25636c7e04d
-        codepoints 2325 2368 32 2327 2339 2344 2366 32 2325 2352 2375 2306
+        text "की गणना करें"
   quantity_conversion:
     defined-by action # definition-link
     defined-by relation # definition-link
     role quantity_conversion_cue # semantic-role
     lexeme en # language
       surface seed-surface-f2018ea6f39c
-        codepoints 116 111
+        text to
       surface seed-surface-b86add30c6bf
-        codepoints 105 110 116 111
+        text into
       surface seed-surface-45f78502c0a5
-        codepoints 99 111 110 118 101 114 116
+        text convert
       surface seed-surface-de8da507269d
-        codepoints 101 120 99 104 97 110 103 101
+        text exchange
     lexeme ru # language
       surface seed-surface-3eb4aa4d52b8
-        codepoints 1082 1086 1085 1074 1077 1088 1090 1080 1088 1086 1074 1072 1090 1100
+        text конвертировать
       surface seed-surface-f22c9edc784b
-        codepoints 1086 1073 1084 1077 1085
+        text обмен
     lexeme hi # language
       surface seed-surface-7450eb7bf40c
-        codepoints 2348 2342 2354 2375 2306
+        text बदलें
       surface seed-surface-a0b4bc0266d2
-        codepoints 2346 2352 2367 2357 2352 2381 2340 2367 2340
+        text परिवर्तित
     lexeme zh # language
       surface seed-surface-24a3ed54e2f6
-        codepoints 36716 25442
+        text 转换
       surface seed-surface-e6492707a9d8
-        codepoints 20817 25442
+        text 兑换
       surface seed-surface-a678a8614916
-        codepoints 25442 25104
+        text 换成
   mathematical_function:
     defined-by function # definition-link
     role numeric_concept # semantic-role
     lexeme en # language
       surface seed-surface-fcd9dc7ee39e
-        codepoints 109 97 116 104 101 109 97 116 105 99 97 108 32 102 117 110 99 116 105 111 110
+        text "mathematical function"
     lexeme ru # language
       surface seed-surface-bde72994c129
-        codepoints 1084 1072 1090 1077 1084 1072 1090 1080 1095 1077 1089 1082 1072 1103 32 1092 1091 1085 1082 1094 1080 1103
+        text "математическая функция"
     lexeme hi # language
       surface seed-surface-a48910d44377
-        codepoints 2327 2339 2367 2340 2368 2351 32 2347 2354 2344
+        text "गणितीय फलन"
     lexeme zh # language
       surface seed-surface-e063f02b958c
-        codepoints 25968 23398 20989 25968
+        text 数学函数
   square_root:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-f2a8fd468efc
-        codepoints 115 113 114 116
+        text sqrt
       surface seed-surface-d4b9b9d47d47
-        codepoints 115 113 117 97 114 101 32 114 111 111 116
+        text "square root"
     lexeme ru # language
       surface seed-surface-e74a8fe5f1e9
-        codepoints 1082 1074 1072 1076 1088 1072 1090 1085 1099 1081 32 1082 1086 1088 1077 1085 1100
+        text "квадратный корень"
       surface seed-surface-21841a4b7056
-        codepoints 1082 1086 1088 1077 1085 1100
+        text корень
     lexeme hi # language
       surface seed-surface-cce22c4efaa2
-        codepoints 2357 2352 2381 2327 2350 2370 2354
+        text वर्गमूल
     lexeme zh # language
       surface seed-surface-514170230267
-        codepoints 24179 26041 26681
+        text 平方根
   sine:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-ad5ea7de41cc
-        codepoints 115 105 110
+        text sin
       surface seed-surface-a67a4b36e666
-        codepoints 115 105 110 101
+        text sine
     lexeme ru # language
       surface seed-surface-a5fb312c6182
-        codepoints 1089 1080 1085 1091 1089
+        text синус
     lexeme hi # language
       surface seed-surface-9b6ed99f1f55
-        codepoints 2332 2381 2351 2366
+        text ज्या
     lexeme zh # language
       surface seed-surface-c650812642d0
-        codepoints 27491 24358
+        text 正弦
   cosine:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-dc73b8e0b1bd
-        codepoints 99 111 115
+        text cos
       surface seed-surface-9d3c4628ff3c
-        codepoints 99 111 115 105 110 101
+        text cosine
     lexeme ru # language
       surface seed-surface-278636dc9aea
-        codepoints 1082 1086 1089 1080 1085 1091 1089
+        text косинус
     lexeme hi # language
       surface seed-surface-2ef5008d45b6
-        codepoints 2325 2379 2332 2381 2351 2366
+        text कोज्या
     lexeme zh # language
       surface seed-surface-c2df3a6be450
-        codepoints 20313 24358
+        text 余弦
   tangent:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-8ca379c978ab
-        codepoints 116 97 110
+        text tan
       surface seed-surface-0d694108e90e
-        codepoints 116 97 110 103 101 110 116
+        text tangent
     lexeme ru # language
       surface seed-surface-8d7126433bae
-        codepoints 1090 1072 1085 1075 1077 1085 1089
+        text тангенс
     lexeme hi # language
       surface seed-surface-8a97b26931a3
-        codepoints 2360 2381 2346 2352 2381 2358 2332 2381 2351 2366
+        text स्पर्शज्या
     lexeme zh # language
       surface seed-surface-49c9116bb55c
-        codepoints 27491 20999
+        text 正切
   logarithm:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-9e61c3e3a0a6
-        codepoints 108 111 103
+        text log
       surface seed-surface-b823c865d768
-        codepoints 108 111 103 97 114 105 116 104 109
+        text logarithm
     lexeme ru # language
       surface seed-surface-7138d4149dc5
-        codepoints 1083 1086 1075 1072 1088 1080 1092 1084
+        text логарифм
     lexeme hi # language
       surface seed-surface-d01032d8967a
-        codepoints 2354 2328 2369 2327 2339 2325
+        text लघुगणक
     lexeme zh # language
       surface seed-surface-f66bf563cd26
-        codepoints 23545 25968
+        text 对数
   natural_logarithm:
     defined-by mathematical_function # definition-link
     role math_function_name # semantic-role
     lexeme en # language
       surface seed-surface-9fa83e4b25eb
-        codepoints 108 110
+        text ln
       surface seed-surface-b882e147c03f
-        codepoints 110 97 116 117 114 97 108 32 108 111 103 97 114 105 116 104 109
+        text "natural logarithm"
     lexeme ru # language
       surface seed-surface-a135ab863a5b
-        codepoints 1085 1072 1090 1091 1088 1072 1083 1100 1085 1099 1081 32 1083 1086 1075 1072 1088 1080 1092 1084
+        text "натуральный логарифм"
     lexeme hi # language
       surface seed-surface-d4e039a37408
-        codepoints 2346 2381 2352 2366 2325 2371 2340 2367 2325 32 2354 2328 2369 2327 2339 2325
+        text "प्राकृतिक लघुगणक"
     lexeme zh # language
       surface seed-surface-56efbebcd67f
-        codepoints 33258 28982 23545 25968
+        text 自然对数

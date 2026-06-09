@@ -5,199 +5,199 @@ meanings
     role investment_cue # semantic-role
     lexeme en # language
       surface seed-surface-478b5e462020
-        codepoints 105 110 118 101 115 116
+        text invest
       surface seed-surface-da3ab6f53a21
-        codepoints 105 110 118 101 115 116 109 101 110 116
+        text investment
     lexeme ru # language
       surface seed-surface-6907b2a6f35d
-        codepoints 1080 1085 1074 1077 1089 1090 1080 1088
+        text инвестир
       surface seed-surface-2321907dbe7d
-        codepoints 1080 1085 1074 1077 1089 1090 1080 1094
+        text инвестиц
     lexeme hi # language
       surface seed-surface-08d7a75b95d3
-        codepoints 2344 2367 2357 2375 2358
+        text निवेश
     lexeme zh # language
       surface seed-surface-f8a5bd88c67f
-        codepoints 25237 36164
+        text 投资
   interest_finance:
     defined-by money # definition-link
     role interest_cue # semantic-role
     lexeme en # language
       surface seed-surface-605555a0b3d3
-        codepoints 105 110 116 101 114 101 115 116
+        text interest
     lexeme ru # language
       surface seed-surface-8addd30accd3
-        codepoints 1087 1088 1086 1094 1077 1085 1090
+        text процент
     lexeme hi # language
       surface seed-surface-c8291ed3ab6d
-        codepoints 2348 2381 2351 2366 2332
+        text ब्याज
     lexeme zh # language
       surface seed-surface-2f1ed48c3897
-        codepoints 21033 24687
+        text 利息
   compounding:
     defined-by action # definition-link
     defined-by money # definition-link
     role compounding_action_cue # semantic-role
     lexeme en # language
       surface seed-surface-1b2286cb7a70
-        codepoints 99 111 109 112 111 117 110 100
+        text compound
     lexeme ru # language
       surface seed-surface-c3aa1e2b04b1
-        codepoints 1089 1083 1086 1078 1085 1099 1081 32 1087 1088 1086 1094 1077 1085 1090
+        text "сложный процент"
       surface seed-surface-1080ef3bd681
-        codepoints 1082 1072 1087 1080 1090 1072 1083 1080 1079 1072 1094 1080
+        text капитализаци
     lexeme hi # language
       surface seed-surface-f81d3cbf0598
-        codepoints 2330 2325 2381 2352 2357 2371 2342 2381 2343 2367
+        text चक्रवृद्धि
     lexeme zh # language
       surface seed-surface-7487b525e39b
-        codepoints 22797 21033
+        text 复利
   compounding_monthly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
       surface seed-surface-81e99cca269f
-        codepoints 109 111 110 116 104 108 121
+        text monthly
     lexeme ru # language
       surface seed-surface-c3bc7ae50527
-        codepoints 1077 1078 1077 1084 1077 1089 1103 1095 1085
+        text ежемесячн
     lexeme hi # language
       surface seed-surface-aea74fad8a7a
-        codepoints 2350 2366 2360 2367 2325
+        text मासिक
     lexeme zh # language
       surface seed-surface-e886d8dc785e
-        codepoints 27599 26376
+        text 每月
   compounding_quarterly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
       surface seed-surface-2968c6edb37d
-        codepoints 113 117 97 114 116 101 114 108 121
+        text quarterly
     lexeme ru # language
       surface seed-surface-bbdfaf33d1a3
-        codepoints 1077 1078 1077 1082 1074 1072 1088 1090 1072 1083 1100 1085
+        text ежеквартальн
     lexeme hi # language
       surface seed-surface-a1377d3fd209
-        codepoints 2340 2381 2352 2376 2350 2366 2360 2367 2325
+        text त्रैमासिक
     lexeme zh # language
       surface seed-surface-92505222b10d
-        codepoints 27599 23395 24230
+        text 每季度
   compounding_weekly:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
       surface seed-surface-08cc790ba10d
-        codepoints 119 101 101 107 108 121
+        text weekly
     lexeme ru # language
       surface seed-surface-dd3a3e5006b3
-        codepoints 1077 1078 1077 1085 1077 1076 1077 1083 1100 1085
+        text еженедельн
     lexeme hi # language
       surface seed-surface-721a8d4a5be9
-        codepoints 2360 2366 2346 2381 2340 2366 2361 2367 2325
+        text साप्ताहिक
     lexeme zh # language
       surface seed-surface-405b88e9f665
-        codepoints 27599 21608
+        text 每周
   compounding_daily:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
       surface seed-surface-66a8706eb586
-        codepoints 100 97 105 108 121
+        text daily
     lexeme ru # language
       surface seed-surface-aa7d90c38ecb
-        codepoints 1077 1078 1077 1076 1085 1077 1074 1085
+        text ежедневн
     lexeme hi # language
       surface seed-surface-9580572a7b91
-        codepoints 2342 2376 2344 2367 2325
+        text दैनिक
     lexeme zh # language
       surface seed-surface-ea097dbbe253
-        codepoints 27599 26085
+        text 每日
   compounding_annual:
     defined-by compounding # definition-link
     role compounding_frequency_cue # semantic-role
     lexeme en # language
       surface seed-surface-352321c9203e
-        codepoints 97 110 110 117 97 108 108 121
+        text annually
       surface seed-surface-95b2205ffbf0
-        codepoints 121 101 97 114 108 121
+        text yearly
     lexeme ru # language
       surface seed-surface-1006fbe3a3a4
-        codepoints 1077 1078 1077 1075 1086 1076 1085
+        text ежегодн
     lexeme hi # language
       surface seed-surface-8a47ec4b5527
-        codepoints 2357 2366 2352 2381 2359 2367 2325
+        text वार्षिक
     lexeme zh # language
       surface seed-surface-e2a1b888b63b
-        codepoints 27599 24180
+        text 每年
   live_rate_freshness:
     defined-by exchange_rate # definition-link
     defined-by concept # definition-link
     role live_rate_freshness_cue # semantic-role
     lexeme en # language
       surface seed-surface-e23e50200569
-        codepoints 119 101 98
+        text web
       surface seed-surface-0c397eaa51aa
-        codepoints 99 117 114 114 101 110 116 32 101 120 99 104 97 110 103 101
+        text "current exchange"
       surface seed-surface-8c2871cd755d
-        codepoints 99 117 114 114 101 110 116 32 114 97 116 101
+        text "current rate"
       surface seed-surface-c86ebabf2465
-        codepoints 101 120 99 104 97 110 103 101 32 114 97 116 101
+        text "exchange rate"
     lexeme ru # language
       surface seed-surface-d16360ac33f4
-        codepoints 1090 1077 1082 1091 1097 1080 1081 32 1082 1091 1088 1089
+        text "текущий курс"
       surface seed-surface-c3c665f912e9
-        codepoints 1072 1082 1090 1091 1072 1083 1100 1085 1099 1081 32 1082 1091 1088 1089
+        text "актуальный курс"
     lexeme hi # language
       surface seed-surface-17b8b4219d81
-        codepoints 2357 2352 2381 2340 2350 2366 2344 32 2342 2352
+        text "वर्तमान दर"
     lexeme zh # language
       surface seed-surface-3beb15b4dddd
-        codepoints 23454 26102 27719 29575
+        text 实时汇率
   year_period:
     defined-by concept # definition-link
     role year_unit_cue # semantic-role
     lexeme en # language
       surface seed-surface-b0db0d541702
-        codepoints 121 101 97 114
+        text year
     lexeme ru # language
       surface seed-surface-dda5b567575e
-        codepoints 1075 1086 1076
+        text год
       surface seed-surface-aa78051ffe64
-        codepoints 1083 1077 1090
+        text лет
     lexeme hi # language
       surface seed-surface-e0aeb0f1cba2
-        codepoints 2357 2352 2381 2359
+        text वर्ष
     lexeme zh # language
       surface seed-surface-0aa0bbce0f88
-        codepoints 24180
+        text 年
   conversion_action:
     defined-by action # definition-link
     defined-by money # definition-link
     role conversion_action_cue # semantic-role
     lexeme en # language
       surface seed-surface-eb0fa24893ef
-        codepoints 99 111 110 118 101 114 116
+        text convert
     lexeme ru # language
       surface seed-surface-6504e6775cf7
-        codepoints 1082 1086 1085 1074 1077 1088 1090 1080 1088
+        text конвертир
     lexeme hi # language
       surface seed-surface-746d2d2ee20b
-        codepoints 2346 2352 2367 2357 2352 2381 2340 2367 2340
+        text परिवर्तित
     lexeme zh # language
       surface seed-surface-05f5b4ce237e
-        codepoints 36716 25442
+        text 转换
   final_amount:
     defined-by money # definition-link
     role final_amount_reference # semantic-role
     lexeme en # language
       surface seed-surface-4cb4101f3a11
-        codepoints 102 105 110 97 108 32 97 109 111 117 110 116
+        text "final amount"
     lexeme ru # language
       surface seed-surface-1f940e2cc833
-        codepoints 1080 1090 1086 1075 1086 1074 1072 1103 32 1089 1091 1084 1084 1072
+        text "итоговая сумма"
     lexeme hi # language
       surface seed-surface-6b1e192c6f2d
-        codepoints 2309 2306 2340 2367 2350 32 2352 2366 2358 2367
+        text "अंतिम राशि"
     lexeme zh # language
       surface seed-surface-c62ed9589c32
-        codepoints 26368 32456 37329 39069
+        text 最终金额
