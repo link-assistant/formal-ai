@@ -715,6 +715,45 @@ fn issue_368_readme_documents_agentic_cli_setup() {
 }
 
 #[test]
+fn issue_398_pr_review_standards_are_recorded_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #398 PR Review Standards",
+            "latest requirement overrides any earlier one",
+            "| R278 ",
+            "| R279 ",
+            "| R280 ",
+            "| R281 ",
+            "| R282 ",
+            "| R283 ",
+            "data/overrides/",
+            "(cache or live API) then overrides",
+            "seed_lino_files_have_no_empty_redefinition_fields",
+            "overrides_are_disciplined_and_non_redundant",
+            "scripts/migrate-empty-facet-fields.rs",
+        ],
+    );
+
+    let overrides_readme = read(root.join("data/overrides/README.md"));
+    assert_contains_all(
+        "data/overrides/README.md",
+        &overrides_readme,
+        &[
+            "grounding override layer",
+            "then",
+            "overrides",
+            "Recorded reason",
+            "Never redundant",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();

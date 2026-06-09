@@ -245,6 +245,57 @@ round and tracked below:
   recursively defined/grounded to closure. Deferred; CI rule 5 not yet added.
 - **Rule 6 — no hardcoded domain-data string literals in `src/`:** deferred.
 
+## PR review standards round (comment 4663407299, 2026-06-09)
+
+The 2026-06-09 review tightened the data-quality bar and asked that every rule
+be applied tree-wide through re-runnable migrations and locked by a
+directory-walking CI check. The standards are recorded in `REQUIREMENTS.md`
+(R278-R283) under the governance rule *latest requirement overrides any earlier
+one*. Resolutions this round:
+
+- **Empty-redefinition fields removed (R278).** Semantic facets were written as
+  a `facet <kind>` wrapper whose single child was an empty colon redefinition
+  (`word_surface:`) — exactly the valueless `concept:` shape the review bans.
+  `scripts/migrate-empty-facet-fields.rs` collapses every such block into the
+  native Links Notation `subject predicate` form (`notation word_surface`)
+  across the whole `data/seed` tree and regenerates the browser worker embed.
+  `src/seed/meanings.rs` now reads both forms and de-duplicates targets. The
+  tree-walking guard `seed_lino_files_have_no_empty_redefinition_fields`
+  (`tests/unit/data_files.rs`) fails on any empty-bodied colon field that has no
+  deeper-indented child, with no hard-coded filename.
+
+- **`data/overrides/` grounding override layer added (R279).** A new layer sits
+  beside `data/cache/` with the same per-id structure
+  (`data/overrides/wikidata/{entity,property,lexeme}/<id>.lino`). Resolution is
+  `(cache or live API) then overrides`: `formal_ai::seed::resolve` decorates a
+  cached record with the override's facts (override wins on conflict, missing
+  keys are appended, untouched sections survive). Each override records **why**
+  it exists in a `reason "..."` line. `tests/unit/overrides.rs` walks the whole
+  tree and fails when an override references an id with no checked-in cache
+  record, omits its reason, carries no facts, or is **redundant** — repeating a
+  value the cache already holds. The redundancy check makes the layer
+  self-pruning: once a cache refresh (or live API) catches up to upstream, the
+  override must be deleted or CI stays red. The seeded example supplies the
+  Hindi (`hi`) label that Wikidata is missing for the KISS principle (Q131560).
+
+- **Tree-wide enforcement and migration-first discipline (R280, R281).** Both
+  new guards walk their entire trees and assert on relative paths, so a new file
+  cannot bypass a rule. Both data mutations are reproducible by algorithm
+  (`scripts/migrate-empty-facet-fields.rs`, `scripts/clean-seed-readability.rs`)
+  rather than hand-edited.
+
+- **External grounding (R282) — partial, expansion ongoing.** Source-grounded
+  meanings carry `grounded-in <Qid>` links whose recursive closure is verified
+  against checked-in cache records (`wikidata_cache_records_cover_recursive_grounding_closure`,
+  `seed_and_source_wikidata_ids_have_checked_in_cache_records`). Grounding every
+  remaining meaning to an external source — and sourcing per-language surfaces
+  from those records instead of hand-typing them — is a corpus-import effort
+  larger than one PR; it remains the primary follow-up below. A grounding-floor
+  CI check is intentionally held back until the data is grounded, because adding
+  it before the backfill would only make CI red without protecting any
+  invariant. The override layer (R279) is the sanctioned way to record a source
+  gap in the meantime.
+
 ## Follow-up issues worth opening
 
 1. Backfill semantic facets for all existing ontology and domain meanings.
