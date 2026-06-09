@@ -190,6 +190,10 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("affirmation_yes", "Q6452715", "yes"),
     ("example", "Q14944328", "example"),
     ("conjunction_or", "Q1651704", "disjunction"),
+    // core programming artifacts
+    ("program", "Q40056", "program"),
+    ("code", "Q128751", "source code"),
+    ("sort", "Q2303697", "sorting"),
 ];
 
 /// Meaning seed files mirrored into the browser worker fallback, in load order.

@@ -1,0 +1,17 @@
+Q128751
+  aliases
+    en (source src "software code" "program code" code)
+    ru ("код" "исходники" "исходник" "листинг" "исходные тексты" "программный код" "исходный текст")
+    zh ("源程序" "源代碼" "软件代码" "源碼" "原始码" "代码" "程式碼" "查看源代码" "原程式碼" "源程式碼" "原始碼")
+  descriptions
+    en "collection of computer instructions written using some human-readable computer language"
+    ru "текст компьютерной программы на каком-либо языке программирования или языке разметки"
+    zh "收集计算机使用一些人类可读的计算机语言编写的指令"
+  id Q128751
+  labels
+    en "source code"
+    hi "मूल कोड"
+    ru "исходный код"
+    zh "源代码"
+  type item
+success 1

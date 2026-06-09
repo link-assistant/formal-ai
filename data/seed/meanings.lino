@@ -45,6 +45,7 @@ meanings
       surface
         text 输出
   program
+    grounded-in Q40056
     defined-by code
     defined-by entity
     role program_artifact
@@ -91,6 +92,7 @@ meanings
       surface
         text 脚本
   code
+    grounded-in Q128751
     defined-by program
     role program_artifact
     role program_kind
@@ -134,6 +136,7 @@ meanings
       surface
         text 你好，世界
   sort
+    grounded-in Q2303697
     defined-by order
     defined-by action
     role program_artifact
