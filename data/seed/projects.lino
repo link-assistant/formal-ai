@@ -5,7 +5,7 @@ project_link_assistant_hive_mind
   url "https://github.com/link-assistant/hive-mind"
   language JavaScript
   category ai-orchestration
-  aliases "hive mind|hivemind|the hive mind"
+  aliases ("hive mind" "hivemind" "the hive mind")
   topic "Hive Mind"
   statement "Hive Mind is the AI that controls AIs to do the automation of automation."
     kind purpose
@@ -55,7 +55,7 @@ project_link_assistant_formal_ai
   url "https://github.com/link-assistant/formal-ai"
   language Rust
   category symbolic-ai
-  aliases "formal-ai|formal ai|the formal ai"
+  aliases ("formal-ai" "formal ai" "the formal ai")
   topic formal-ai
   statement "formal-ai is a deterministic symbolic AI that answers without any neural-network inference."
     kind purpose
@@ -93,7 +93,7 @@ project_link_assistant_agent
   url "https://github.com/link-assistant/agent"
   language TypeScript
   category automation
-  aliases "link-assistant agent|the agent"
+  aliases ("link-assistant agent" "the agent")
   topic agent
   statement "link-assistant agent is the entry point that talks to formal-ai and connected models."
     kind purpose
@@ -111,7 +111,7 @@ project_link_assistant_calculator
   url "https://github.com/link-assistant/calculator"
   language Rust
   category calculation
-  aliases "link-calculator|the link-assistant calculator"
+  aliases ("link-calculator" "the link-assistant calculator")
   topic link-calculator
   statement "link-calculator is the deterministic arithmetic and unit-aware evaluator used by formal-ai."
     kind purpose
@@ -129,7 +129,7 @@ project_link_assistant_human_language
   url "https://github.com/link-assistant/human-language"
   language Rust
   category language-detection
-  aliases "human-language|link-assistant human-language"
+  aliases ("human-language" "link-assistant human-language")
   topic human-language
   statement "human-language is the multilingual detector formal-ai uses to pick a language without any neural model."
     kind purpose
@@ -144,7 +144,7 @@ project_link_assistant_meta_expression
   url "https://github.com/link-assistant/meta-expression"
   language Rust
   category expression-language
-  aliases "meta-expression|link-assistant meta-expression"
+  aliases ("meta-expression" "link-assistant meta-expression")
   topic meta-expression
   statement "meta-expression is the symbolic expression syntax used to formalize prompts and seed records."
     kind purpose
@@ -159,7 +159,7 @@ project_link_assistant_react_chat_ui
   url "https://github.com/link-assistant/react-chat-ui"
   language TypeScript
   category ui
-  aliases "react-chat-ui|link-assistant react-chat-ui"
+  aliases ("react-chat-ui" "link-assistant react-chat-ui")
   topic react-chat-ui
   statement "react-chat-ui is the React component library that renders the link-assistant chat surface."
     kind purpose
@@ -174,7 +174,7 @@ project_link_foundation_meta_theory
   url "https://github.com/link-foundation/meta-theory"
   language TeX
   category knowledge-representation
-  aliases "meta-theory|link-foundation meta-theory|links theory|the links theory"
+  aliases ("meta-theory" "link-foundation meta-theory" "links theory" "the links theory")
   topic meta-theory
   statement "meta-theory archives the Links Theory articles that describe information as references to links."
     kind purpose
@@ -189,7 +189,7 @@ project_link_foundation_relative_meta_logic
   url "https://github.com/link-foundation/relative-meta-logic"
   language Rust
   category logic
-  aliases "relative-meta-logic|link-foundation relative-meta-logic"
+  aliases ("relative-meta-logic" "link-foundation relative-meta-logic")
   topic relative-meta-logic
   statement "relative-meta-logic explores reasoning rules relative to a chosen meta-theory."
     kind purpose
@@ -204,7 +204,7 @@ project_link_foundation_command_stream
   url "https://github.com/link-foundation/command-stream"
   language JavaScript
   category shell-helpers
-  aliases "command-stream|link-foundation command-stream"
+  aliases ("command-stream" "link-foundation command-stream")
   topic command-stream
   statement "command-stream is the streaming shell helper used by hive-mind and link-cli to run subprocesses."
     kind purpose
@@ -219,7 +219,7 @@ project_link_foundation_link_cli
   url "https://github.com/link-foundation/link-cli"
   language JavaScript
   category cli
-  aliases "link-cli|link-foundation link-cli"
+  aliases ("link-cli" "link-foundation link-cli")
   topic link-cli
   statement "link-cli is the command-line entry point for working with Links Notation files."
     kind purpose
@@ -234,7 +234,7 @@ project_link_foundation_lino_objects_codec
   url "https://github.com/link-foundation/lino-objects-codec"
   language Rust
   category codec
-  aliases "lino-objects-codec|link-foundation lino-objects-codec"
+  aliases ("lino-objects-codec" "link-foundation lino-objects-codec")
   topic lino-objects-codec
   statement "lino-objects-codec encodes and decodes Links Notation objects between Rust structs and text."
     kind purpose
@@ -249,7 +249,7 @@ project_link_foundation_links_notation
   url "https://github.com/link-foundation/links-notation"
   language Markdown
   category specification
-  aliases "links-notation|links notation spec|link-foundation links-notation"
+  aliases ("links-notation" "links notation spec" "link-foundation links-notation")
   topic links-notation
   statement "links-notation hosts the specification for the indentation-based serialization used by formal-ai."
     kind purpose
@@ -264,7 +264,7 @@ project_linksplatform_documentation
   url "https://github.com/linksplatform/Documentation"
   language Markdown
   category documentation
-  aliases "linksplatform documentation|links platform documentation|linksplatform docs|platform documentation"
+  aliases ("linksplatform documentation" "links platform documentation" "linksplatform docs" "platform documentation")
   topic "LinksPlatform docs"
   statement "LinksPlatform Documentation is the documentation and support root repository for all LinksPlatform projects."
     kind purpose
@@ -279,7 +279,7 @@ project_linksplatform_data_doublets
   url "https://github.com/linksplatform/Data.Doublets"
   language "C#"
   category class-library
-  aliases "data doublets|platform data doublets|linksplatform data doublets|Data.Doublets"
+  aliases ("data doublets" "platform data doublets" "linksplatform data doublets" "Data.Doublets")
   topic Data.Doublets
   statement "Data.Doublets is LinksPlatform's Platform.Data.Doublets class library."
     kind purpose

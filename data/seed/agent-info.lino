@@ -8,7 +8,7 @@ agent_info
   field default_language
     value en
   field supported_languages
-    value en|ru|hi|zh
+    value ("en" "ru" "hi" "zh")
   field repository
     value link-assistant/formal-ai
   field issue_template_labels

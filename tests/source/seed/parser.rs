@@ -311,12 +311,7 @@ pub fn split_pipe_list(raw: &str) -> Vec<String> {
         .strip_prefix('(')
         .and_then(|value| value.strip_suffix(')'))
     {
-        return body
-            .split_whitespace()
-            .map(str::trim)
-            .filter(|s| !s.is_empty())
-            .map(ToOwned::to_owned)
-            .collect();
+        return split_reference_tokens(body);
     }
     trimmed
         .split('|')
@@ -324,4 +319,54 @@ pub fn split_pipe_list(raw: &str) -> Vec<String> {
         .filter(|s| !s.is_empty())
         .map(ToOwned::to_owned)
         .collect()
+}
+
+/// Tokenize the body of a `(a "b c" d)` reference list. Each item is either a
+/// quoted scalar (`"…"`, `'…'`, or `` `…` ``, which may contain spaces) or a
+/// bare whitespace-delimited token. This is the canonical multi-value form that
+/// replaced the legacy `"a|b|c"` pipe packing.
+fn split_reference_tokens(body: &str) -> Vec<String> {
+    let mut tokens = Vec::new();
+    let mut chars = body.chars().peekable();
+    while let Some(&character) = chars.peek() {
+        if character.is_whitespace() {
+            chars.next();
+            continue;
+        }
+        if matches!(character, '"' | '\'' | '`') {
+            let quote = character;
+            chars.next();
+            let mut value = String::new();
+            let mut escaped = false;
+            for current in chars.by_ref() {
+                if escaped {
+                    value.push(current);
+                    escaped = false;
+                    continue;
+                }
+                if (quote == '"' || quote == '`') && current == '\\' {
+                    escaped = true;
+                    continue;
+                }
+                if current == quote {
+                    break;
+                }
+                value.push(current);
+            }
+            tokens.push(value);
+        } else {
+            let mut value = String::new();
+            while let Some(&current) = chars.peek() {
+                if current.is_whitespace() {
+                    break;
+                }
+                value.push(current);
+                chars.next();
+            }
+            if !value.is_empty() {
+                tokens.push(value);
+            }
+        }
+    }
+    tokens
 }

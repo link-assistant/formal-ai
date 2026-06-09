@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::{agent_info, environment_records};
+use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
 #[test]
@@ -616,11 +616,8 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         "rust_library environment should trace native bundle import"
     );
 
-    let agent_info = agent_info();
-    assert_eq!(
-        agent_info.get("supported_languages").map(String::as_str),
-        Some("en|ru|hi|zh")
-    );
+    let supported_languages = supported_languages();
+    assert_eq!(supported_languages, ["en", "ru", "hi", "zh"]);
     for (language_marker, code) in [
         ("language: \"en\" English", "en"),
         ("language: \"ru\" Russian", "ru"),
@@ -628,9 +625,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ("language: \"zh\" Chinese", "zh"),
     ] {
         assert!(
-            agent_info
-                .get("supported_languages")
-                .is_some_and(|languages| languages.split('|').any(|language| language == code)),
+            supported_languages.iter().any(|language| language == code),
             "missing issue #278 coverage for {language_marker}"
         );
     }

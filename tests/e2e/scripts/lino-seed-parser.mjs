@@ -110,6 +110,54 @@ export function decodeLinoValue(rawValue) {
   return value;
 }
 
+// Tokenize a `("a" "b c" d)` reference list into its individual items. Each
+// item is either a quoted scalar (which may contain spaces) or a bare
+// whitespace-delimited token. This is the canonical multi-value form that
+// replaced the legacy `"a|b|c"` pipe packing (issue #398, defect #4).
+export function splitReferenceList(value) {
+  const trimmed = (value ?? '').trim();
+  if (!trimmed.startsWith('(') || !trimmed.endsWith(')')) {
+    return trimmed.length === 0 ? [] : [trimmed];
+  }
+  const body = trimmed.slice(1, -1);
+  const tokens = [];
+  let i = 0;
+  while (i < body.length) {
+    const character = body[i];
+    if (/\s/.test(character)) {
+      i += 1;
+      continue;
+    }
+    if (character === '"' || character === "'" || character === '`') {
+      const quote = character;
+      i += 1;
+      let item = '';
+      while (i < body.length) {
+        if ((quote === '"' || quote === '`') && body[i] === '\\') {
+          item += body[i + 1] ?? '';
+          i += 2;
+          continue;
+        }
+        if (body[i] === quote) {
+          i += 1;
+          break;
+        }
+        item += body[i];
+        i += 1;
+      }
+      tokens.push(item);
+    } else {
+      let item = '';
+      while (i < body.length && !/\s/.test(body[i])) {
+        item += body[i];
+        i += 1;
+      }
+      if (item.length > 0) tokens.push(item);
+    }
+  }
+  return tokens;
+}
+
 export function parseLinoEntry(line, indent, keyword) {
   const pattern = new RegExp(`^ {${indent}}${keyword}(?:\\s+(.+))?$`);
   const match = line.match(pattern);
@@ -138,7 +186,7 @@ export function parseSupportedLanguagesFromAgentInfo(text) {
 
     const value = parseLinoEntry(line, 4, 'value');
     if (value !== null) {
-      return value.split('|').filter(Boolean);
+      return splitReferenceList(value).filter(Boolean);
     }
   }
 

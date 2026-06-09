@@ -2,7 +2,7 @@ concept_universal_solver
   term "universal solver"
   intent concept_lookup
   category algorithm
-  aliases "the universal solver|universal problem solver"
+  aliases ("the universal solver" "universal problem solver")
   summary "The universal solver is formal-ai's deterministic 11-step loop: impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, documentation. Every interface routes through the same loop."
   source docs/case-studies/issue-12/README.md
   source_kind project-docs
@@ -10,7 +10,7 @@ concept_event_log
   term "event log"
   intent concept_lookup
   category data-structure
-  aliases "the event log|eventlog|append-only log"
+  aliases ("the event log" "eventlog" "append-only log")
   summary "The event log is formal-ai's append-only system of record. Every step in the universal solver loop appends an Event with a stable content-addressed id; the user-facing answer is, by construction, a projection of this log."
   source docs/NON-GOALS.md
   source_kind project-docs
@@ -18,7 +18,7 @@ concept_links_notation
   term "Links Notation"
   intent concept_lookup
   category data-format
-  aliases "links notation|lino|the links notation format"
+  aliases ("links notation" "lino" "the links notation format")
   summary "Links Notation is an indentation-based, untyped serialization format used by the Deep Theory project to represent links and link networks as portable text."
   source "https://github.com/linksplatform/Documentation"
   source_kind project-docs
@@ -26,31 +26,31 @@ concept_links_meta_theory
   term "Links meta-theory"
   intent concept_lookup
   category knowledge-representation
-  aliases "links meta-theory|the links meta-theory|links theory|the links theory|link theory|theory of links|deep theory|deep theory of links|теория связей|теории связей|теорию связей|теория связи|глубокая теория связей|глубокой теории связей|глубокую теорию связей|метатеория связей|мета-теория связей|लिंक्स सिद्धांत|लिंक सिद्धांत|लिंक्स मेटा-सिद्धांत|डीप थ्योरी|संबंधों का सिद्धांत|链接元理论|链接理论|Links理论|Deep Theory|链接的理论|深度链接理论"
+  aliases ("links meta-theory" "the links meta-theory" "links theory" "the links theory" "link theory" "theory of links" "deep theory" "deep theory of links" "теория связей" "теории связей" "теорию связей" "теория связи" "глубокая теория связей" "глубокой теории связей" "глубокую теорию связей" "метатеория связей" "мета-теория связей" "लिंक्स सिद्धांत" "लिंक सिद्धांत" "लिंक्स मेटा-सिद्धांत" "डीप थ्योरी" "संबंधों का सिद्धांत" "链接元理论" "链接理论" "Links理论" "Deep Theory" "链接的理论" "深度链接理论")
   summary "In the Link Foundation context, links theory means the link-foundation/meta-theory repository and its archived Links Theory articles. It describes information representation through links: references to links, with the compact set-theory projection L -> L^2. In formal-ai, a bare question about links theory assumes this product; if you mean another similarly named theory, specify the domain because those theories are described differently."
   source "https://github.com/link-foundation/meta-theory"
   source_kind official-repository
   localized en
     term "Links meta-theory"
-    aliases "links meta-theory|the links meta-theory|links theory|the links theory|link theory|theory of links|deep theory|deep theory of links"
+    aliases ("links meta-theory" "the links meta-theory" "links theory" "the links theory" "link theory" "theory of links" "deep theory" "deep theory of links")
     summary "In the Link Foundation context, links theory means the link-foundation/meta-theory repository and its archived Links Theory articles. It describes information representation through links: references to links, with the compact set-theory projection L -> L^2. In formal-ai, a bare question about links theory assumes this product; if you mean another similarly named theory, specify the domain because those theories are described differently."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized ru
     term "Теория связей"
-    aliases "теория связей|теории связей|теорию связей|теория связи|глубокая теория связей|глубокой теории связей|глубокую теорию связей|метатеория связей|мета-теория связей"
+    aliases ("теория связей" "теории связей" "теорию связей" "теория связи" "глубокая теория связей" "глубокой теории связей" "глубокую теорию связей" "метатеория связей" "мета-теория связей")
     summary "В контексте Link Foundation «теория связей» означает репозиторий link-foundation/meta-theory и архивированные статьи о Links Theory. Она описывает представление информации через связи: ссылки на связи, с компактной проекцией в теории множеств L -> L^2. В formal-ai такой запрос по умолчанию относится к этому продукту; если имеется в виду другая теория с похожим названием, укажите область, потому что другие теории описываются иначе."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized hi
     term "लिंक्स मेटा-सिद्धांत"
-    aliases "लिंक्स सिद्धांत|लिंक सिद्धांत|लिंक्स मेटा-सिद्धांत|डीप थ्योरी|संबंधों का सिद्धांत"
+    aliases ("लिंक्स सिद्धांत" "लिंक सिद्धांत" "लिंक्स मेटा-सिद्धांत" "डीप थ्योरी" "संबंधों का सिद्धांत")
     summary "Link Foundation संदर्भ में links theory का अर्थ link-foundation/meta-theory रिपॉजिटरी और Links Theory लेखों का संग्रह है. यह सूचना को links के माध्यम से दर्शाता है: links पर references, compact set-theory projection L -> L^2 के साथ. formal-ai में links theory पर साधारण प्रश्न इसी उत्पाद को मानता है; यदि समान नाम वाली कोई दूसरी theory चाहिए तो domain बताएं."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized zh
     term 链接元理论
-    aliases "链接元理论|链接理论|Links理论|Deep Theory|链接的理论|深度链接理论"
+    aliases ("链接元理论" "链接理论" "Links理论" "Deep Theory" "链接的理论" "深度链接理论")
     summary "在 Link Foundation 语境中, links theory 指 link-foundation/meta-theory 仓库及其归档的 Links Theory 文章. 它用链接来表示信息: 指向链接的引用, 并带有紧凑的集合论投影 L -> L^2. 在 formal-ai 中, 对 links theory 的裸问题默认指这个项目; 如果指另一个同名理论, 请说明领域."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
@@ -58,31 +58,31 @@ concept_graph
   term Graph
   intent concept_lookup
   category knowledge-representation
-  aliases "graph|graphs|graph theory|граф|графы|теория графов|графовой структуры|ग्राफ|ग्राफ़|ग्राफ सिद्धांत|ग्राफ थ्योरी|图|图论|圖|圖論"
+  aliases ("graph" "graphs" "graph theory" "граф" "графы" "теория графов" "графовой структуры" "ग्राफ" "ग्राफ़" "ग्राफ सिद्धांत" "ग्राफ थ्योरी" "图" "图论" "圖" "圖論")
   summary "A graph is a mathematical structure made of vertices and edges, where edges relate pairs of vertices. Through Link Foundation meta-theory, a Links Notation links network can represent any graph while also allowing links to link to links. That avoids treating knowledge as two artificial classes of vertices and edges; in many common graph definitions, edges between edges are not allowed."
   source "https://github.com/link-foundation/meta-theory"
   source_kind official-repository
   localized en
     term Graph
-    aliases "graph|graphs|graph theory"
+    aliases ("graph" "graphs" "graph theory")
     summary "A graph is a mathematical structure made of vertices and edges, where edges relate pairs of vertices. Through Link Foundation meta-theory, a Links Notation links network can represent any graph while also allowing links to link to links. That avoids treating knowledge as two artificial classes of vertices and edges; in many common graph definitions, edges between edges are not allowed."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized ru
     term Граф
-    aliases "граф|графы|теория графов|графовая структура|графовой структуры"
+    aliases ("граф" "графы" "теория графов" "графовая структура" "графовой структуры")
     summary "Граф — математическая структура из вершин и ребер, где ребра связывают пары вершин. В контексте Link Foundation meta-theory и Links Notation сеть связей может представить любой граф, а также позволяет ссылкам ссылаться на ссылки. Поэтому Links Notation не ограничивает знание искусственным разделением на вершины и ребра: в популярных определениях графов ребра между ребрами обычно не допускаются."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized hi
     term ग्राफ
-    aliases "ग्राफ|ग्राफ़|ग्राफ सिद्धांत|ग्राफ थ्योरी"
+    aliases ("ग्राफ" "ग्राफ़" "ग्राफ सिद्धांत" "ग्राफ थ्योरी")
     summary "ग्राफ शीर्षों और किनारों से बनी गणितीय संरचना है, जहाँ किनारे शीर्षों के जोड़ों को जोड़ते हैं. Link Foundation meta-theory और Links Notation के संदर्भ में links network किसी भी graph को व्यक्त कर सकता है और links को links से जोड़ने देता है. इससे ज्ञान को vertices और edges की दो कृत्रिम श्रेणियों में बाँधने की जरूरत नहीं रहती; कई प्रचलित graph परिभाषाओं में edges between edges की अनुमति नहीं होती."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
   localized zh
     term 图
-    aliases "图|图论|圖|圖論"
+    aliases ("图" "图论" "圖" "圖論")
     summary "图是由顶点和边组成的数学结构, 边连接成对的顶点. 在 Link Foundation meta-theory 和 Links Notation 语境中, 链接网络可以表示任何图, 也允许链接指向链接. 因此 Links Notation 不必把知识人为拆成顶点和边两类; 许多常见图定义通常不允许边连接边."
     source "https://github.com/link-foundation/meta-theory"
     source_kind official-repository
@@ -90,7 +90,7 @@ concept_doublet
   term doublet
   intent concept_lookup
   category data-structure
-  aliases "doublet link|a doublet|two-link"
+  aliases ("doublet link" "a doublet" "two-link")
   summary "A doublet is a link with exactly two endpoints. In Deep Theory it is the canonical reduction target for higher-arity links because every higher arity can be encoded as a chain of doublets."
   source docs/VISION.md
   source_kind project-docs
@@ -98,7 +98,7 @@ concept_wikipedia
   term Wikipedia
   intent concept_lookup
   category encyclopedia
-  aliases "wikipedia|the wikipedia|en.wikipedia|википедия|विकिपीडिया|维基百科|維基百科"
+  aliases ("wikipedia" "the wikipedia" "en.wikipedia" "википедия" "विकिपीडिया" "维基百科" "維基百科")
   summary "Wikipedia is a free, multilingual online encyclopedia written and maintained by a community of volunteer contributors through a model of open collaboration."
   source "https://en.wikipedia.org/wiki/Wikipedia"
   source_kind wikipedia
@@ -106,7 +106,7 @@ concept_wikidata
   term Wikidata
   intent concept_lookup
   category structured-knowledge
-  aliases "wikidata|the wikidata knowledge graph|викидата|विकिडेटा|维基数据|維基數據"
+  aliases ("wikidata" "the wikidata knowledge graph" "викидата" "विकिडेटा" "维基数据" "維基數據")
   summary "Wikidata is a collaboratively edited multilingual knowledge graph hosted by the Wikimedia Foundation. It stores structured data items that power Wikipedia infoboxes and external knowledge applications."
   source "https://en.wikipedia.org/wiki/Wikidata"
   source_kind wikipedia
@@ -114,7 +114,7 @@ concept_wiktionary
   term Wiktionary
   intent concept_lookup
   category dictionary
-  aliases "wiktionary|the wiktionary dictionary|викисловарь|विक्षनरी|维基词典|維基辭典"
+  aliases ("wiktionary" "the wiktionary dictionary" "викисловарь" "विक्षनरी" "维基词典" "維基辭典")
   summary "Wiktionary is a multilingual, web-based free-content dictionary, available in many languages and including thesaurus, rhymes, translations, audio pronunciations, etymologies, and definitions."
   source "https://en.wikipedia.org/wiki/Wiktionary"
   source_kind wikipedia
@@ -122,7 +122,7 @@ concept_webassembly
   term WebAssembly
   intent concept_lookup
   category runtime
-  aliases "webassembly|wasm|the wasm runtime"
+  aliases ("webassembly" "wasm" "the wasm runtime")
   summary "WebAssembly (Wasm) is a binary instruction format for a stack-based virtual machine. It is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications."
   source "https://en.wikipedia.org/wiki/WebAssembly"
   source_kind wikipedia
@@ -130,7 +130,7 @@ concept_rust
   term Rust
   intent concept_lookup
   category programming-language
-  aliases "rust|rust programming language|the rust language|rust-lang|раст|язык раст|रस्ट|रस्ट प्रोग्रामिंग|rust 语言|rust语言|rust 程序设计语言"
+  aliases ("rust" "rust programming language" "the rust language" "rust-lang" "раст" "язык раст" "रस्ट" "रस्ट प्रोग्रामिंग" "rust 语言" "rust语言" "rust 程序设计语言")
   summary "Rust is a multi-paradigm, general-purpose programming language that emphasises performance, type safety, and concurrency. It enforces memory safety without using a garbage collector."
   source "https://en.wikipedia.org/wiki/Rust_(programming_language)"
   source_kind wikipedia
@@ -138,33 +138,33 @@ concept_bsd_ports
   term "BSD ports"
   intent concept_lookup
   category package-management
-  aliases "bsd ports|ports bsd|ports collection|ports tree|ports system|freebsd ports|freebsd ports collection|openbsd ports|openbsd ports tree|pkgsrc|netbsd pkgsrc|порты bsd|порты в bsd|коллекция портов bsd|дерево портов bsd|система портов bsd|порты freebsd|порты openbsd|bsd पोर्ट्स|पोर्ट्स bsd|bsd पोर्ट|पोर्ट bsd|bsd ports集合|bsd ports树|bsd ports 系统|bsd 端口集合|端口集合 bsd|bsd 端口系统|端口系统 bsd|pkgsrc"
-  contexts "bsd|berkeley software distribution|freebsd|openbsd|netbsd|dragonflybsd|unix|unix-like|package management|packages|ports collection|бсд|биэсди|юникс|пакеты|управление пакетами|коллекция портов|पैकेज|पैकेज प्रबंधन|पोर्ट्स संग्रह|包管理|软件包|ports集合"
+  aliases ("bsd ports" "ports bsd" "ports collection" "ports tree" "ports system" "freebsd ports" "freebsd ports collection" "openbsd ports" "openbsd ports tree" "pkgsrc" "netbsd pkgsrc" "порты bsd" "порты в bsd" "коллекция портов bsd" "дерево портов bsd" "система портов bsd" "порты freebsd" "порты openbsd" "bsd पोर्ट्स" "पोर्ट्स bsd" "bsd पोर्ट" "पोर्ट bsd" "bsd ports集合" "bsd ports树" "bsd ports 系统" "bsd 端口集合" "端口集合 bsd" "bsd 端口系统" "端口系统 bsd" "pkgsrc")
+  contexts ("bsd" "berkeley software distribution" "freebsd" "openbsd" "netbsd" "dragonflybsd" "unix" "unix-like" "package management" "packages" "ports collection" "бсд" "биэсди" "юникс" "пакеты" "управление пакетами" "коллекция портов" "पैकेज" "पैकेज प्रबंधन" "पोर्ट्स संग्रह" "包管理" "软件包" "ports集合")
   context_links context_bsd_operating_systems
   summary "BSD ports are source-based package recipes used by BSD operating systems to build and install third-party software. A port is not a network port: it is a directory of metadata and Makefiles that fetches source code, records dependencies and patches, and builds a package or installs an application. In day-to-day use, prebuilt binary packages are usually faster; ports are for custom build options and maintainers."
   source "https://docs.freebsd.org/en/books/handbook/ports/"
   source_kind official-docs
   localized en
     term "BSD ports"
-    aliases "bsd ports|ports collection|ports tree|ports system|freebsd ports|openbsd ports|pkgsrc|netbsd pkgsrc"
+    aliases ("bsd ports" "ports collection" "ports tree" "ports system" "freebsd ports" "openbsd ports" "pkgsrc" "netbsd pkgsrc")
     summary "BSD ports are source-based package recipes used by BSD operating systems to build and install third-party software. A port is not a network port: it is a directory of metadata and Makefiles that fetches source code, records dependencies and patches, and builds a package or installs an application. In day-to-day use, prebuilt binary packages are usually faster; ports are for custom build options and maintainers."
     source "https://docs.freebsd.org/en/books/handbook/ports/"
     source_kind official-docs
   localized ru
     term "Порты BSD"
-    aliases "порты bsd|порты в bsd|коллекция портов bsd|дерево портов bsd|система портов bsd|порты freebsd|порты openbsd|pkgsrc"
+    aliases ("порты bsd" "порты в bsd" "коллекция портов bsd" "дерево портов bsd" "система портов bsd" "порты freebsd" "порты openbsd" "pkgsrc")
     summary "Порты BSD — это не сетевые порты, а система рецептов для сборки и установки сторонних приложений из исходного кода. Обычно порт представляет собой каталог с метаданными и Makefile: он описывает, откуда взять исходники, какие зависимости и патчи нужны, как собрать пакет и как установить приложение. Для обычной установки чаще используют готовые бинарные пакеты, а порты полезны, когда нужны свои параметры сборки или сопровождение пакета."
     source "https://docs.freebsd.org/en/books/handbook/ports/"
     source_kind official-docs
   localized hi
     term "BSD पोर्ट्स"
-    aliases "bsd पोर्ट्स|पोर्ट्स bsd|bsd पोर्ट|पोर्ट bsd|freebsd पोर्ट्स|openbsd पोर्ट्स|pkgsrc"
+    aliases ("bsd पोर्ट्स" "पोर्ट्स bsd" "bsd पोर्ट" "पोर्ट bsd" "freebsd पोर्ट्स" "openbsd पोर्ट्स" "pkgsrc")
     summary "BSD पोर्ट्स नेटवर्क पोर्ट नहीं हैं; वे स्रोत कोड से तृतीय-पक्ष सॉफ्टवेयर बनाने और इंस्टॉल करने की पैकेज recipes हैं। आम तौर पर एक port metadata और Makefile वाली directory होता है: वह source कहां से लाना है, dependencies और patches क्या हैं, package कैसे बनाना है, और application कैसे install करना है, यह बताता है। सामान्य installation के लिए binary packages तेज होते हैं; ports custom build options और maintainers के लिए उपयोगी हैं।"
     source "https://docs.freebsd.org/en/books/handbook/ports/"
     source_kind official-docs
   localized zh
     term "BSD Ports"
-    aliases "bsd ports|ports bsd|bsd ports集合|bsd ports树|bsd ports 系统|bsd 端口集合|端口集合 bsd|bsd 端口系统|端口系统 bsd|freebsd ports|openbsd ports|pkgsrc"
+    aliases ("bsd ports" "ports bsd" "bsd ports集合" "bsd ports树" "bsd ports 系统" "bsd 端口集合" "端口集合 bsd" "bsd 端口系统" "端口系统 bsd" "freebsd ports" "openbsd ports" "pkgsrc")
     summary "BSD Ports 不是网络端口，而是 BSD 操作系统用来从源代码构建和安装第三方软件的包管理配方。一个 port 通常是包含 metadata 和 Makefile 的目录：它说明源代码从哪里获取、需要哪些依赖和补丁、如何构建 package，以及如何安装 application。日常安装通常使用预构建的二进制包更快；ports 更适合需要自定义构建选项或维护软件包的场景。"
     source "https://docs.freebsd.org/en/books/handbook/ports/"
     source_kind official-docs
@@ -173,33 +173,33 @@ concept_kiss_principle
   intent concept_lookup
   category software-design
   wikidata Q131560
-  aliases "kiss|kiss principle|keep it simple stupid|keep it simple, stupid|кисс|принцип kiss|keep it simple|kiss принцип|kiss सिद्धांत|किस सिद्धांत|सरल रखो|सरलता सिद्धांत|KISS原则|kiss原则|保持简单|简单原则"
-  contexts "programming|software|software development|software design|software engineering|coding|computer science|разработка|программирование|программировании|программирования|програмирования|програмировании|разработке|разработки|프로그래밍|编程|程序设计"
+  aliases ("kiss" "kiss principle" "keep it simple stupid" "keep it simple, stupid" "кисс" "принцип kiss" "keep it simple" "kiss принцип" "kiss सिद्धांत" "किस सिद्धांत" "सरल रखो" "सरलता सिद्धांत" "KISS原则" "kiss原则" "保持简单" "简单原则")
+  contexts ("programming" "software" "software development" "software design" "software engineering" "coding" "computer science" "разработка" "программирование" "программировании" "программирования" "програмирования" "програмировании" "разработке" "разработки" "프로그래밍" "编程" "程序设计")
   context_links context_programming
   summary "KISS (Keep it simple, stupid) is a design principle that states most systems work best when kept simple rather than complicated. Simplicity should be a key design goal, and unnecessary complexity should be avoided. The acronym was first noted by the U.S. Navy in 1960."
   source "https://en.wikipedia.org/wiki/KISS_principle"
   source_kind wikipedia
   localized en
     term "KISS principle"
-    aliases "kiss principle|keep it simple stupid|keep it simple, stupid|keep it simple|kiss design principle"
+    aliases ("kiss principle" "keep it simple stupid" "keep it simple, stupid" "keep it simple" "kiss design principle")
     summary "The KISS principle (Keep it simple, stupid) is a design guideline that emphasises simplicity as a primary goal. It was noted by the U.S. Navy in 1960 and remains a cornerstone of software engineering: code, APIs, and architectures should be as simple as possible and no simpler."
     source "https://en.wikipedia.org/wiki/KISS_principle"
     source_kind wikipedia
   localized ru
     term "Принцип KISS"
-    aliases "принцип kiss|принцип простоты|kiss принцип|«keep it simple, stupid»"
+    aliases ("принцип kiss" "принцип простоты" "kiss принцип" "«keep it simple, stupid»")
     summary "KISS — принцип проектирования программного обеспечения, который гласит: «Не усложняй без необходимости». Аббревиатура расшифровывается как «Keep it simple, stupid» («Делай проще, тупица»). Принят ВМС США в 1960 году и широко применяется в разработке программного обеспечения: системы работают лучше, когда они просты, а не усложнены."
     source "https://ru.wikipedia.org/wiki/KISS_(%D0%BF%D1%80%D0%B8%D0%BD%D1%86%D0%B8%D0%BF)"
     source_kind wikipedia
   localized hi
     term "KISS सिद्धांत"
-    aliases "kiss सिद्धांत|किस सिद्धांत|सरल रखो|सरलता सिद्धांत"
+    aliases ("kiss सिद्धांत" "किस सिद्धांत" "सरल रखो" "सरलता सिद्धांत")
     summary "KISS सिद्धांत एक डिजाइन दिशानिर्देश है: प्रणालियां तब सबसे अच्छी तरह काम करती हैं जब उन्हें अनावश्यक जटिलता के बजाय सरल रखा जाए. सॉफ्टवेयर विकास में इसका अर्थ है कि कोड, API और architecture को यथासंभव सरल और स्पष्ट रखा जाए."
     source "https://en.wikipedia.org/wiki/KISS_principle"
     source_kind wikipedia
   localized zh
     term KISS原则
-    aliases "KISS原则|kiss原则|保持简单|简单原则"
+    aliases ("KISS原则" "kiss原则" "保持简单" "简单原则")
     summary "KISS原则是一条设计准则: 系统保持简单通常比变得复杂更可靠. 在软件开发中, 这意味着代码、API 和架构应尽可能简单清晰, 避免不必要的复杂度."
     source "https://en.wikipedia.org/wiki/KISS_principle"
     source_kind wikipedia
@@ -208,33 +208,33 @@ concept_iir_signal_processing
   intent concept_lookup
   category signal-processing
   wikidata Q740073
-  aliases "iir|iir filter|infinite impulse response|infinite-impulse-response|бесконечная импульсная характеристика|бих-фильтр|бих фильтр|आईआईआर|अनंत आवेग प्रतिक्रिया|无限脉冲响应|无限脉冲响应滤波器|無限脈衝響應"
-  contexts "ml|machine learning|machine-learning|dsp|digital signal processing|signal processing|signal-processing|filtering|filter|audio|deep learning|neural network|нейронная сеть|обработка сигналов|цифровая обработка сигналов|сигнал|фильтр|фильтрация|машинное обучение|глубокое обучение|न्यूरल नेटवर्क|मशीन लर्निंग|गहन शिक्षण|डीएसपी|संकेत प्रसंस्करण|信号处理|信号|滤波|滤波器|机器学习|深度学习|神经网络|數位訊號處理|訊號處理|機器學習|深度學習|神經網路"
-  context_links context_machine_learning|context_signal_processing|context_neural_network
+  aliases ("iir" "iir filter" "infinite impulse response" "infinite-impulse-response" "бесконечная импульсная характеристика" "бих-фильтр" "бих фильтр" "आईआईआर" "अनंत आवेग प्रतिक्रिया" "无限脉冲响应" "无限脉冲响应滤波器" "無限脈衝響應")
+  contexts ("ml" "machine learning" "machine-learning" "dsp" "digital signal processing" "signal processing" "signal-processing" "filtering" "filter" "audio" "deep learning" "neural network" "нейронная сеть" "обработка сигналов" "цифровая обработка сигналов" "сигнал" "фильтр" "фильтрация" "машинное обучение" "глубокое обучение" "न्यूरल नेटवर्क" "मशीन लर्निंग" "गहन शिक्षण" "डीएसपी" "संकेत प्रसंस्करण" "信号处理" "信号" "滤波" "滤波器" "机器学习" "深度学习" "神经网络" "數位訊號處理" "訊號處理" "機器學習" "深度學習" "神經網路")
+  context_links ("context_machine_learning" "context_signal_processing" "context_neural_network")
   summary "An infinite impulse response (IIR) filter is a recursive digital filter whose impulse response continues indefinitely because the current output depends on past outputs as well as past inputs. In signal processing and machine-learning audio/time-series pipelines, IIR filters realise low-pass, high-pass, band-pass, and band-stop responses with far fewer coefficients than the equivalent finite impulse response (FIR) filter, at the cost of nonlinear phase and the need to verify stability."
   source "https://en.wikipedia.org/wiki/Infinite_impulse_response"
   source_kind wikipedia
   localized en
     term "infinite impulse response (IIR)"
-    aliases "iir filter|infinite impulse response filter|recursive digital filter"
+    aliases ("iir filter" "infinite impulse response filter" "recursive digital filter")
     summary "An infinite impulse response (IIR) filter is a type of recursive digital filter whose impulse response is non-zero over an infinite length of time. Such filters can be either analog or digital, and the impulse-response feedback means the same shape can be approximated with far fewer coefficients than a finite impulse response (FIR) filter, at the cost of nonlinear phase and the need to verify stability."
     source "https://en.wikipedia.org/wiki/Infinite_impulse_response"
     source_kind wikipedia
   localized ru
     term "Фильтр с бесконечной импульсной характеристикой"
-    aliases "IIR-фильтр|БИХ-фильтр|рекурсивный фильтр|бесконечная импульсная характеристика"
+    aliases ("IIR-фильтр" "БИХ-фильтр" "рекурсивный фильтр" "бесконечная импульсная характеристика")
     summary "Фильтр с бесконечной импульсной характеристикой (рекурсивный фильтр, БИХ-фильтр) или IIR-фильтр (IIR сокр. от англ. infinite impulse response — бесконечная импульсная характеристика) — линейный электронный фильтр, использующий один или более своих выходов в качестве входа, то есть образующий обратную связь. Основным свойством таких фильтров является то, что их импульсная переходная характеристика имеет бесконечную длину во временной области, а передаточная функция имеет дробно-рациональный вид. Такие фильтры могут быть как аналоговыми, так и цифровыми."
     source "https://ru.wikipedia.org/wiki/Фильтр_с_бесконечной_импульсной_характеристикой"
     source_kind wikipedia
   localized hi
     term "अनंत आवेग प्रतिक्रिया (IIR) फ़िल्टर"
-    aliases "आईआईआर फ़िल्टर|पुनरावर्ती डिजिटल फ़िल्टर"
+    aliases ("आईआईआर फ़िल्टर" "पुनरावर्ती डिजिटल फ़िल्टर")
     summary "अनंत आवेग प्रतिक्रिया (IIR) फ़िल्टर एक पुनरावर्ती डिजिटल फ़िल्टर है जिसकी आवेग प्रतिक्रिया अनंत अवधि तक शून्येतर बनी रहती है क्योंकि वर्तमान आउटपुट पिछले इनपुट के साथ-साथ पिछले आउटपुट पर भी निर्भर करता है। संकेत प्रसंस्करण और मशीन-लर्निंग ऑडियो/समय-शृंखला पाइपलाइनों में IIR फ़िल्टर बराबर FIR फ़िल्टर की तुलना में बहुत कम गुणांकों के साथ लो-पास, हाई-पास, बैंड-पास और बैंड-स्टॉप प्रतिक्रियाएँ प्राप्त करते हैं, अरैखिक फ़ेज़ और स्थिरता-सत्यापन की कीमत पर।"
     source "https://hi.wikipedia.org/wiki/अनंत_आवेग_प्रतिक्रिया"
     source_kind wikipedia
   localized zh
     term "无限脉冲响应(IIR)滤波器"
-    aliases "IIR滤波器|无限冲激响应滤波器|递归数字滤波器"
+    aliases ("IIR滤波器" "无限冲激响应滤波器" "递归数字滤波器")
     summary "无限脉冲响应(IIR)滤波器是一种递归型数字滤波器,其冲激响应在时间上具有无限长度,因为当前输出不仅取决于过去的输入,还取决于过去的输出。在信号处理与机器学习的音频/时间序列管线中,IIR 滤波器以远少于等价 FIR 滤波器的系数实现低通、高通、带通和带阻响应,代价是非线性相位以及需要验证稳定性。"
     source "https://zh.wikipedia.org/wiki/%E6%97%A0%E9%99%90%E8%84%89%E5%86%B2%E5%93%8D%E5%BA%94"
     source_kind wikipedia
@@ -243,31 +243,31 @@ concept_color
   intent concept_lookup
   category visual-property
   wikidata Q1075
-  aliases "color|colour|colors|colours|цвет|цвета|color of light|visible color|цвет света|رنگ|颜色|顏色|रंग"
+  aliases ("color" "colour" "colors" "colours" "цвет" "цвета" "color of light" "visible color" "цвет света" "رنگ" "颜色" "顏色" "रंग")
   summary "Color (British English: colour) is the visual perceptual property corresponding in humans to the categories called red, green, blue, and others. Colors derive from the spectrum of light (electromagnetic radiation visible to the human eye) interacting with the photoreceptor cells of the eyes. Examples of named colors include red, orange, yellow, green, blue, violet, white, black, and many more."
   source "https://en.wikipedia.org/wiki/Color"
   source_kind wikipedia
   localized en
     term color
-    aliases colour|colors|colours|hue|shade|tint
+    aliases ("colour" "colors" "colours" "hue" "shade" "tint")
     summary "Color is the visual perceptual property corresponding in humans to the categories called red, green, blue, and others. Colors derive from the spectrum of light interacting with the photoreceptor cells of the eyes. Examples of named colors include red, orange, yellow, green, blue, violet, white, and black."
     source "https://en.wikipedia.org/wiki/Color"
     source_kind wikipedia
   localized ru
     term Цвет
-    aliases "цвет|цвета|оттенок|краска|окраска"
+    aliases ("цвет" "цвета" "оттенок" "краска" "окраска")
     summary "Цвет — качественная субъективная характеристика электромагнитного излучения оптического диапазона, определяемая на основании возникающего физиологического зрительного ощущения. Примеры цветов: красный, оранжевый, жёлтый, зелёный, синий, фиолетовый, белый, чёрный."
     source "https://ru.wikipedia.org/wiki/Цвет"
     source_kind wikipedia
   localized hi
     term रंग
-    aliases "रंग|रङ्ग|वर्ण|रंगत"
+    aliases ("रंग" "रङ्ग" "वर्ण" "रंगत")
     summary "रंग वह दृश्य बोध है जो प्रकाश के विभिन्न तरंगदैर्घ्य आँखों पर पड़ने से उत्पन्न होता है। सामान्य रंगों के उदाहरण हैं: लाल, नारंगी, पीला, हरा, नीला, बैंगनी, सफेद, और काला।"
     source "https://hi.wikipedia.org/wiki/रंग"
     source_kind wikipedia
   localized zh
     term 颜色
-    aliases "颜色|色彩|色调|颜色|顏色"
+    aliases ("颜色" "色彩" "色调" "颜色" "顏色")
     summary 颜色（英语：Color），也称色彩，是眼睛感知不同波长光波所产生的视觉体验。常见颜色包括红色、橙色、黄色、绿色、蓝色、紫色、白色和黑色等。
     source "https://zh.wikipedia.org/wiki/颜色"
     source_kind wikipedia
@@ -275,31 +275,31 @@ concept_antiregime
   term antiregime
   intent concept_lookup
   category political-adjective
-  aliases "antiregime|anti-regime|anti regime|opposing a regime|антирежим|анти-режим|антирежимный|против режима|режиму противостоящий|सत्ता-विरोधी|शासन-विरोधी|政权反对|反政权|反体制"
+  aliases ("antiregime" "anti-regime" "anti regime" "opposing a regime" "антирежим" "анти-режим" "антирежимный" "против режима" "режиму противостоящий" "सत्ता-विरोधी" "शासन-विरोधी" "政权反对" "反政权" "反体制")
   summary "Antiregime means opposing a political regime. It is formed from anti- and regime and is usually used as an adjective for views, groups, protests, or activity directed against a regime."
   source "https://en.wiktionary.org/wiki/antiregime"
   source_kind wiktionary
   localized en
     term antiregime
-    aliases "anti-regime|anti regime|opposing a regime|against a regime"
+    aliases ("anti-regime" "anti regime" "opposing a regime" "against a regime")
     summary "Antiregime means opposing a political regime. It is formed from anti- and regime and is usually used as an adjective for views, groups, protests, or activity directed against a regime."
     source "https://en.wiktionary.org/wiki/antiregime"
     source_kind wiktionary
   localized ru
     term Антирежим
-    aliases "антирежим|анти-режим|антирежимный|против режима|направленный против режима"
+    aliases ("антирежим" "анти-режим" "антирежимный" "против режима" "направленный против режима")
     summary "Антирежим — это позиция, действие или характеристика, направленная против политического режима. Слово соответствует английскому antiregime: «противостоящий режиму»."
     source "https://en.wiktionary.org/wiki/antiregime"
     source_kind wiktionary
   localized hi
     term सत्ता-विरोधी
-    aliases "सत्ता-विरोधी|शासन-विरोधी|किसी शासन के विरुद्ध"
+    aliases ("सत्ता-विरोधी" "शासन-विरोधी" "किसी शासन के विरुद्ध")
     summary "सत्ता-विरोधी का अर्थ है किसी राजनीतिक शासन का विरोध करने वाला. यह शब्द विचारों, समूहों, विरोध प्रदर्शनों या शासन के विरुद्ध गतिविधि के लिए विशेषण की तरह इस्तेमाल हो सकता है."
     source "https://en.wiktionary.org/wiki/antiregime"
     source_kind wiktionary
   localized zh
     term 反政权
-    aliases "反政权|反体制|反对某个政权"
+    aliases ("反政权" "反体制" "反对某个政权")
     summary "反政权指反对某个政治政权。它通常作为形容词, 用来描述针对该政权的观点、团体、抗议或行动。"
     source "https://en.wiktionary.org/wiki/antiregime"
     source_kind wiktionary
@@ -307,31 +307,31 @@ concept_false_totality
   term "false totality"
   intent concept_lookup
   category philosophy
-  aliases "false totality|false totalization|bad totality|empty totality|abstract totality|ложная тотальность|ложной тотальности|ложную тотальность|ложная тотализация|плохая тотальность|пустая тотальность|абстрактная тотальность|झूठी समग्रता|虚假总体性|错误总体性"
+  aliases ("false totality" "false totalization" "bad totality" "empty totality" "abstract totality" "ложная тотальность" "ложной тотальности" "ложную тотальность" "ложная тотализация" "плохая тотальность" "пустая тотальность" "абстрактная тотальность" "झूठी समग्रता" "虚假总体性" "错误总体性")
   summary "False totality is a critical-theory and dialectical-materialist term for a mistaken whole: an explanatory totality that is treated as closed, independent, or higher than its concrete facts and contradictions. Karel Kosik contrasts it with concrete totality and describes empty, abstract, and bad totality as forms that flatten or mystify reality."
   source "https://www.lust-for-life.org/Lust-For-Life/DialecticOfTheConcrete/DialecticOfTheConcrete.htm"
   source_kind philosophy-text
   localized en
     term "false totality"
-    aliases "false totality|false totalization|bad totality|empty totality|abstract totality"
+    aliases ("false totality" "false totalization" "bad totality" "empty totality" "abstract totality")
     summary "False totality is a critical-theory and dialectical-materialist term for a mistaken whole: an explanatory totality that is treated as closed, independent, or higher than its concrete facts and contradictions. Karel Kosik contrasts it with concrete totality and describes empty, abstract, and bad totality as forms that flatten or mystify reality."
     source "https://www.lust-for-life.org/Lust-For-Life/DialecticOfTheConcrete/DialecticOfTheConcrete.htm"
     source_kind philosophy-text
   localized ru
     term "Ложная тотальность"
-    aliases "ложная тотальность|ложной тотальности|ложную тотальность|ложная тотализация|плохая тотальность|пустая тотальность|абстрактная тотальность"
+    aliases ("ложная тотальность" "ложной тотальности" "ложную тотальность" "ложная тотализация" "плохая тотальность" "пустая тотальность" "абстрактная тотальность")
     summary "Ложная тотальность — это понятие критической теории и диалектического материализма о неверно понятом целом: объясняющей целостности, которую принимают за замкнутую, самостоятельную или более реальную, чем конкретные факты и противоречия. Карел Косик противопоставляет ее конкретной тотальности и выделяет пустую, абстрактную и плохую тотальность как формы, которые уплощают или мистифицируют реальность."
     source "https://www.lust-for-life.org/Lust-For-Life/DialecticOfTheConcrete/DialecticOfTheConcrete.htm"
     source_kind philosophy-text
   localized hi
     term "झूठी समग्रता"
-    aliases "झूठी समग्रता|खराब समग्रता|अमूर्त समग्रता"
+    aliases ("झूठी समग्रता" "खराब समग्रता" "अमूर्त समग्रता")
     summary "झूठी समग्रता आलोचनात्मक सिद्धांत और द्वंद्वात्मक भौतिकवाद का शब्द है: ऐसा गलत ढंग से समझा गया समग्र, जिसे बंद, स्वतंत्र या ठोस तथ्यों और अंतर्विरोधों से अधिक वास्तविक मान लिया जाता है. कारेल कोसिक इसे concrete totality के विरुद्ध रखते हैं और empty, abstract, तथा bad totality को इसके रूप बताते हैं."
     source "https://www.lust-for-life.org/Lust-For-Life/DialecticOfTheConcrete/DialecticOfTheConcrete.htm"
     source_kind philosophy-text
   localized zh
     term 虚假总体性
-    aliases "虚假总体性|错误总体性|坏总体性|空洞总体性|抽象总体性"
+    aliases ("虚假总体性" "错误总体性" "坏总体性" "空洞总体性" "抽象总体性")
     summary "虚假总体性是批判理论和辩证唯物主义中的术语, 指一种被误解的整体: 它被当作封闭、独立、或高于具体事实和矛盾的解释性总体。卡雷尔·科西克把它同具体总体性相区分, 并把空洞、抽象和坏的总体性视为会压平或神秘化现实的形式。"
     source "https://www.lust-for-life.org/Lust-For-Life/DialecticOfTheConcrete/DialecticOfTheConcrete.htm"
     source_kind philosophy-text
@@ -339,31 +339,31 @@ concept_telegram_ads
   term "Telegram Ads"
   intent concept_lookup
   category advertising-platform
-  aliases "telegram ads|telegram advertising|реклама в telegram|telegram рекламa|тelegram ads|реклама телеграм|telegram ad platform|telegram sponsored messages|telegram विज्ञापन|टेलीग्राम विज्ञापन|टेलीग्राम एड्स|telegram प्रायोजित संदेश|Telegram广告|telegram广告|电报广告|Telegram赞助消息"
+  aliases ("telegram ads" "telegram advertising" "реклама в telegram" "telegram рекламa" "тelegram ads" "реклама телеграм" "telegram ad platform" "telegram sponsored messages" "telegram विज्ञापन" "टेलीग्राम विज्ञापन" "टेलीग्राम एड्स" "telegram प्रायोजित संदेश" "Telegram广告" "telegram广告" "电报广告" "Telegram赞助消息")
   summary "Telegram Ads is the official advertising platform of Telegram, allowing businesses to place sponsored messages in public channels with 1,000+ subscribers. Ads are short text messages (up to 160 characters) displayed at the bottom of channel feeds. Advertisers set a CPM (cost per mille) bid and target audiences by topic or specific channels. The minimum budget starts at €2 for self-serve via the TON blockchain payment system."
   source "https://promote.telegram.org"
   source_kind official-docs
   localized en
     term "Telegram Ads"
-    aliases "telegram ads|telegram advertising|telegram sponsored messages|telegram ad platform"
+    aliases ("telegram ads" "telegram advertising" "telegram sponsored messages" "telegram ad platform")
     summary "Telegram Ads is Telegram's native advertising platform that lets advertisers publish short sponsored messages (up to 160 characters) in public channels with over 1,000 subscribers. Targeting is based on channel topics or specific channels. Payments are processed via the TON blockchain, with a minimum budget of €2 for self-serve campaigns."
     source "https://promote.telegram.org"
     source_kind official-docs
   localized ru
     term "Реклама в Telegram"
-    aliases "telegram ads|реклама в телеграм|реклама telegram|телеграм реклама|рекламная платформа telegram|спонсируемые сообщения telegram"
+    aliases ("telegram ads" "реклама в телеграм" "реклама telegram" "телеграм реклама" "рекламная платформа telegram" "спонсируемые сообщения telegram")
     summary "Telegram Ads — официальная рекламная платформа Telegram, позволяющая размещать спонсируемые сообщения (до 160 символов) в публичных каналах с более чем 1 000 подписчиков. Таргетинг осуществляется по тематике каналов или конкретным каналам. Оплата производится через блокчейн TON, минимальный бюджет для самостоятельного запуска кампании — €2."
     source "https://promote.telegram.org"
     source_kind official-docs
   localized hi
     term "Telegram विज्ञापन"
-    aliases "telegram विज्ञापन|टेलीग्राम विज्ञापन|टेलीग्राम एड्स|telegram प्रायोजित संदेश"
+    aliases ("telegram विज्ञापन" "टेलीग्राम विज्ञापन" "टेलीग्राम एड्स" "telegram प्रायोजित संदेश")
     summary "Telegram Ads, Telegram का आधिकारिक विज्ञापन प्लेटफॉर्म है, जहाँ विज्ञापनदाता 1,000 से अधिक subscribers वाले सार्वजनिक channels में छोटे sponsored messages प्रकाशित कर सकते हैं. Targeting channel topics या specific channels पर आधारित होती है. Self-serve campaigns के लिए भुगतान TON blockchain के माध्यम से होता है और न्यूनतम बजट €2 है."
     source "https://promote.telegram.org"
     source_kind official-docs
   localized zh
     term Telegram广告
-    aliases "Telegram广告|telegram广告|电报广告|Telegram赞助消息"
+    aliases ("Telegram广告" "telegram广告" "电报广告" "Telegram赞助消息")
     summary "Telegram Ads 是 Telegram 的官方广告平台, 允许广告主在拥有 1,000 名以上订阅者的公开频道中发布短赞助消息. 定向可基于频道主题或指定频道. 自助投放通过 TON 区块链付款, 最低预算为 €2."
     source "https://promote.telegram.org"
     source_kind official-docs
@@ -371,7 +371,7 @@ concept_godel_incompleteness
   term "Gödel's incompleteness theorems"
   intent concept_lookup
   category mathematical-logic
-  aliases "godel incompleteness|godels incompleteness theorems|gödel's incompleteness theorems|godel incompleteness theorem|incompleteness theorem|incompleteness theorems|теоремы гёделя о неполноте|теорема гёделя о неполноте|гёделя неполнота|哥德尔不完备性定理|गोडेल अपूर्णता प्रमेय"
+  aliases ("godel incompleteness" "godels incompleteness theorems" "gödel's incompleteness theorems" "godel incompleteness theorem" "incompleteness theorem" "incompleteness theorems" "теоремы гёделя о неполноте" "теорема гёделя о неполноте" "гёделя неполнота" "哥德尔不完备性定理" "गोडेल अपूर्णता प्रमेय")
   summary "Gödel's incompleteness theorems are two theorems of mathematical logic proven by Kurt Gödel in 1931. The first states that any consistent formal system rich enough to express elementary arithmetic contains true statements that cannot be proven within the system. The second states that such a system cannot prove its own consistency. They apply only to sufficiently rich formal systems such as Peano Arithmetic or Zermelo-Fraenkel set theory."
   source "https://en.wikipedia.org/wiki/G%C3%B6del%27s_incompleteness_theorems"
   source_kind wikipedia
@@ -379,7 +379,7 @@ concept_determinism
   term determinism
   intent concept_lookup
   category philosophy
-  aliases "determinism|causal determinism|laplacian determinism|laplace's determinism|детерминизм|причинный детерминизм|決定論|决定论|निर्धारणवाद"
+  aliases ("determinism" "causal determinism" "laplacian determinism" "laplace's determinism" "детерминизм" "причинный детерминизм" "決定論" "决定论" "निर्धारणवाद")
   summary "Determinism is the philosophical view that every event, including human cognition and decision, is the necessary consequence of antecedent states of affairs together with the laws of nature. Causal determinism is not itself a formal proposition; to be checked formally it must be reduced to a concrete claim within a specific axiom set (for example, Laplacian determinism stated within classical mechanics)."
   source "https://en.wikipedia.org/wiki/Determinism"
   source_kind wikipedia
@@ -387,7 +387,7 @@ concept_relative_meta_logic
   term relative-meta-logic
   intent concept_lookup
   category proof-system
-  aliases "relative-meta-logic|relative meta logic|rml|link-foundation/relative-meta-logic|relative meta-logic"
+  aliases ("relative-meta-logic" "relative meta logic" "rml" "link-foundation/relative-meta-logic" "relative meta-logic")
   summary "relative-meta-logic (RML) is the Rust implementation of the Relative Meta-Logic framework maintained by Link Foundation. It exposes a `run`/`evaluate` entry point, a formalization pipeline (`formalize_selected_interpretation`, `evaluate_formalization`, `FormalizationRequest`, `Interpretation`), and exporters for Lean 4 and Rocq. formal-ai plans to use it as the prover backend for `proof_request` prompts once the crate is wired in as a library."
   source "https://github.com/link-foundation/relative-meta-logic"
   source_kind official-repository

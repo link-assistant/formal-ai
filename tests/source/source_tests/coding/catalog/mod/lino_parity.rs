@@ -15,13 +15,12 @@ fn lino_seed_tasks_line_lists_every_catalog_task() {
         .iter()
         .find(|node| node.name == WRITE_PROGRAM_INTENT)
         .expect("lino seed declares a tasks line");
-    let listed: Vec<&str> = child_value(write_program, "tasks")
-        .expect("write_program seed declares tasks")
-        .split('|')
-        .collect();
+    let listed = crate::seed::parser::split_pipe_list(
+        child_value(write_program, "tasks").expect("write_program seed declares tasks"),
+    );
     for task in PROGRAM_TASKS {
         assert!(
-            listed.contains(&task.slug),
+            listed.iter().any(|slug| slug == task.slug),
             "lino tasks line is missing `{}` (has {listed:?})",
             task.slug
         );

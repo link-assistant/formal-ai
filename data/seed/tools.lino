@@ -4,9 +4,9 @@ tools_registry
     note "Issue an HTTP GET request from the current environment and return body, status, and headers; when CORS blocks the response, check frame-policy metadata before using an iframe preview."
     mode thinking
     inputs url
-    outputs status|body|headers|iframe|external_link|frame_policy
+    outputs ("status" "body" "headers" "iframe" "external_link" "frame_policy")
     isolation network
-    sources "browser:fetch|rust:reqwest|browser:iframe|microlink:headers|direct_link"
+    sources ("browser:fetch" "rust:reqwest" "browser:iframe" "microlink:headers" "direct_link")
     localized ru
       name http_fetch
       note "Выполняет HTTP GET в текущей среде и возвращает тело, статус и заголовки; при блокировке CORS проверяет frame-policy перед iframe-превью."
@@ -21,9 +21,9 @@ tools_registry
     note "Normalize a requested URL, check CORS-readable frame-policy metadata, and return either an iframe preview or a direct external HTTPS link."
     mode thinking
     inputs url
-    outputs url|iframe|external_link|frame_policy
+    outputs ("url" "iframe" "external_link" "frame_policy")
     isolation browser-frame-policy
-    sources "microlink:headers|browser:iframe|direct_link|browser:new_tab"
+    sources ("microlink:headers" "browser:iframe" "direct_link" "browser:new_tab")
     localized ru
       name url_navigate
       note "Нормализует запрошенный URL, проверяет CORS-доступные frame-policy данные и возвращает iframe-превью или прямую внешнюю HTTPS-ссылку."
@@ -40,7 +40,7 @@ tools_registry
     inputs query
     outputs results
     isolation network
-    sources "browser:fetch|wikipedia"
+    sources ("browser:fetch" "wikipedia")
     localized ru
       name web_search
       note "Ищет в открытом вебе через настроенный поисковый источник и возвращает ранжированные ссылки."
@@ -54,8 +54,8 @@ tools_registry
     name wikipedia_lookup
     note "Fetch a structured Wikipedia REST summary for the given title in the detected language, falling back to English."
     mode thinking
-    inputs term|language
-    outputs title|extract|url|language
+    inputs ("term" "language")
+    outputs ("title" "extract" "url" "language")
     isolation network
     sources wikipedia
     localized ru
@@ -72,7 +72,7 @@ tools_registry
     note "Evaluate calculator-parsable math, unit, currency, percentage, and datetime expressions through link-calculator."
     mode thinking
     inputs expression
-    outputs result|lino|steps|engine
+    outputs ("result" "lino" "steps" "engine")
     isolation local-library
     sources "rust:link-calculator"
     localized ru
@@ -89,7 +89,7 @@ tools_registry
     note "Evaluate a JavaScript snippet inside the browser worker sandbox with no DOM and no network."
     mode agent
     inputs program
-    outputs stdout|returned|error
+    outputs ("stdout" "returned" "error")
     isolation browser-worker
     sources "browser:Function"
     localized ru
@@ -157,7 +157,7 @@ tools_registry
     note "Import a demo_memory log or full formal_ai_bundle from a user-selected .lino file."
     mode thinking
     inputs lino_text
-    outputs inserted_events|migration_hints
+    outputs ("inserted_events" "migration_hints")
     isolation browser-indexeddb
     sources "browser:IndexedDB"
     localized ru
@@ -173,8 +173,8 @@ tools_registry
     name conversation_recall
     note "Search the append-only memory log for prior mentions and group matches by conversation."
     mode thinking
-    inputs term|scope|current_conversation
-    outputs matches|conversation_report
+    inputs ("term" "scope" "current_conversation")
+    outputs ("matches" "conversation_report")
     isolation browser-indexeddb
     sources "browser:IndexedDB"
     localized ru
@@ -190,10 +190,10 @@ tools_registry
     name concept_lookup
     note "Resolve a seeded concept, alias, or Wikidata-backed entity to a grounded summary."
     mode thinking
-    inputs term|language|context
-    outputs summary|source|wikidata
+    inputs ("term" "language" "context")
+    outputs ("summary" "source" "wikidata")
     isolation seed
-    sources "data/seed/concepts.lino|data/seed/concept-contexts.lino"
+    sources ("data/seed/concepts.lino" "data/seed/concept-contexts.lino")
     localized ru
       name concept_lookup
       note "Сопоставляет seed-понятие, псевдоним или Wikidata-сущность с проверяемым резюме."
@@ -207,8 +207,8 @@ tools_registry
     name write_program
     note "Render seeded programs from language and task parameters."
     mode thinking
-    inputs language|task
-    outputs code_block|intent
+    inputs ("language" "task")
+    outputs ("code_block" "intent")
     isolation seed
     sources data/seed/hello-world-programs.lino
     localized ru
@@ -224,10 +224,10 @@ tools_registry
     name intent_routing
     note "Route normalized prompts through seeded multilingual keywords, phrases, tokens, and combos."
     mode thinking
-    inputs prompt|language
-    outputs intent|confidence|evidence
+    inputs ("prompt" "language")
+    outputs ("intent" "confidence" "evidence")
     isolation seed
-    sources "data/seed/intent-routing.lino|data/seed/prompt-patterns.lino"
+    sources ("data/seed/intent-routing.lino" "data/seed/prompt-patterns.lino")
     localized ru
       name intent_routing
       note "Маршрутизирует нормализованные запросы через seed-ключи, фразы, токены и комбинации на разных языках."
@@ -241,8 +241,8 @@ tools_registry
     name fact_lookup
     note "Answer seeded factual questions with localized text and Wikidata evidence anchors."
     mode thinking
-    inputs question|language
-    outputs answer|wikidata|source
+    inputs ("question" "language")
+    outputs ("answer" "wikidata" "source")
     isolation seed
     sources data/seed/facts.lino
     localized ru
@@ -259,7 +259,7 @@ tools_registry
     note "Summarize the current conversation from recorded user and assistant turns."
     mode thinking
     inputs history
-    outputs summary|topics|counts
+    outputs ("summary" "topics" "counts")
     isolation conversation-history
     sources data/seed/summary-topics.lino
     localized ru
@@ -275,7 +275,7 @@ tools_registry
     name brainstorm
     note "Generate seeded idea lists and names for common brainstorming prompts."
     mode thinking
-    inputs topic|count
+    inputs ("topic" "count")
     outputs ideas
     isolation seed
     sources data/seed/brainstorm-seeds.lino
@@ -292,8 +292,8 @@ tools_registry
     name coreference
     note "Resolve follow-up pronouns against previous conversation turns before answering."
     mode thinking
-    inputs prompt|history
-    outputs resolved_subject|answer|evidence
+    inputs ("prompt" "history")
+    outputs ("resolved_subject" "answer" "evidence")
     isolation conversation-history
     sources data/seed/coreference.lino
     localized ru
@@ -309,8 +309,8 @@ tools_registry
     name roleplay
     note "Respond from grounded persona templates while preserving deterministic symbolic behavior."
     mode thinking
-    inputs persona|topic|prompt
-    outputs persona_answer|evidence
+    inputs ("persona" "topic" "prompt")
+    outputs ("persona_answer" "evidence")
     isolation seed
     sources data/seed/personas.lino
     localized ru

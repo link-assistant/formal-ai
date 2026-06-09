@@ -320,6 +320,20 @@ pub fn agent_info() -> BTreeMap<String, String> {
     out
 }
 
+/// The languages the agent answers in, declared by `agent-info.lino`.
+///
+/// Stored as a reference list (`supported_languages ("en" "ru" "hi" "zh")`) so
+/// the multi-value is a sequence of separate references rather than a single
+/// `|`-packed string. This resolves it to the individual language ids in
+/// declaration order.
+#[must_use]
+pub fn supported_languages() -> Vec<String> {
+    agent_info()
+        .get("supported_languages")
+        .map(|value| split_pipe_list(value))
+        .unwrap_or_default()
+}
+
 /// A Unicode-range based language detection rule.
 #[derive(Debug, Clone)]
 pub struct LanguageRule {
@@ -704,17 +718,7 @@ pub fn environment_directory() -> EnvironmentDirectory {
         match root.name.as_str() {
             "environments" => {
                 for entry in root.children.iter().filter(|c| c.name == "environment") {
-                    let tools_raw = entry.find_child_value("tools").to_string();
-                    let tools = if tools_raw.is_empty() {
-                        Vec::new()
-                    } else {
-                        tools_raw
-                            .split('|')
-                            .map(str::trim)
-                            .filter(|s| !s.is_empty())
-                            .map(ToOwned::to_owned)
-                            .collect()
-                    };
+                    let tools = split_pipe_list(entry.find_child_value("tools"));
                     directory.environments.push(EnvironmentRecord {
                         id: entry.id.clone(),
                         label: entry.find_child_value("label").to_string(),

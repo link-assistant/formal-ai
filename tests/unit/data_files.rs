@@ -193,6 +193,39 @@ fn seed_lino_files_have_no_keyword_restating_comments() {
 }
 
 #[test]
+fn seed_lino_values_never_pipe_pack_multi_values() {
+    // Issue #398 review (comment 4660584608), defect #4: a multi-value field must
+    // be a sequence of separate references — `aliases ("a" "b" "c")` — not a
+    // single string with an in-band `|` separator. This guard is exhaustive: it
+    // fails on *any* seed value containing `|`, whether bare (`tasks a|b`) or
+    // quoted (`aliases "a|b"`), across every field. `scripts/migrate-pipe-lists.rs`
+    // performs the migration into `(...)` reference lists.
+    //
+    // `code` is the sole exemption: it carries verbatim source listings where `|`
+    // is legitimate syntax (Rust closures `|x|`, `||` short-circuits, shell pipes).
+    const PROSE_FIELDS: &[&str] = &["code"];
+    for path in seed_lino_paths() {
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        for (index, line) in content.lines().enumerate() {
+            let code = strip_lino_comment(line).trim();
+            let Some((keyword, value)) = code.split_once(char::is_whitespace) else {
+                continue;
+            };
+            if PROSE_FIELDS.contains(&keyword) {
+                continue;
+            }
+            assert!(
+                !value.contains('|'),
+                "{}:{} packs the `{keyword}` multi-value with `|`; use a \
+                 reference list `{keyword} (\"a\" \"b\")` instead: {line}",
+                path.display(),
+                index + 1,
+            );
+        }
+    }
+}
+
+#[test]
 fn wikidata_cache_uses_compact_native_lino() {
     let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
     let encoded_text = Regex::new(r"\bu-[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2})+\b")

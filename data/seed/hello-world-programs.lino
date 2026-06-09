@@ -1,8 +1,8 @@
 write_program
   intent write_program
   parameters "language, task"
-  tasks hello_world|count_to_three|list_files|list_files_arg|list_files_reverse_sort|list_files_arg_reverse_sort|fizzbuzz|factorial|reverse_string|sum_to_ten|fibonacci
-  languages rust|python|javascript|typescript|go|c|cpp|java|csharp|ruby
+  tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci")
+  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby")
   source "local public-domain seed templates"
 task_hello_world
   task hello_world

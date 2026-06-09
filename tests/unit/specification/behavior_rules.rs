@@ -1,6 +1,6 @@
 //! Behavior-rule inspection tests.
 
-use formal_ai::{agent_info, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -38,15 +38,9 @@ fn behavior_rules_list_possessive_list_phrase_covers_supported_languages() {
             prompt: "显示你的规则列表",
         },
     ];
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages");
+    let supported_languages = formal_ai::supported_languages();
 
-    for language in supported_languages
-        .split('|')
-        .filter(|lang| !lang.is_empty())
-    {
+    for language in supported_languages.iter().map(String::as_str) {
         assert!(
             cases
                 .iter()
@@ -95,15 +89,9 @@ fn behavior_rules_list_answer_is_localized_for_supported_languages() {
             rejected: "Behavior rules I can inspect",
         },
     ];
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages");
+    let supported_languages = formal_ai::supported_languages();
 
-    for language in supported_languages
-        .split('|')
-        .filter(|lang| !lang.is_empty())
-    {
+    for language in supported_languages.iter().map(String::as_str) {
         assert!(
             cases
                 .iter()

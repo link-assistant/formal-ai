@@ -2,8 +2,8 @@ fact_lotr_author
   intent fact_lookup
   category literature
   wikidata (Q892 Q15228)
-  subject_aliases "lord of the rings|the lord of the rings|властелин колец|властелина колец|властелину колец|властелином колец|властелине колец|द लॉर्ड ऑफ द रिंग्स|द लॉर्ड ऑफ़ द रिंग्स|魔戒|魔戒之王|指環王"
-  question_keywords "who wrote|wrote|author|written by|написал|автор|किसने लिखी|किसने लिखा|कौन है लेखक|लेखक|是谁写的|作者|作者是谁"
+  subject_aliases ("lord of the rings" "the lord of the rings" "властелин колец" "властелина колец" "властелину колец" "властелином колец" "властелине колец" "द लॉर्ड ऑफ द रिंग्स" "द लॉर्ड ऑफ़ द रिंग्स" "魔戒" "魔戒之王" "指環王")
+  question_keywords ("who wrote" "wrote" "author" "written by" "написал" "автор" "किसने लिखी" "किसने लिखा" "कौन है लेखक" "लेखक" "是谁写的" "作者" "作者是谁")
   summary "The Lord of the Rings was written by J. R. R. Tolkien."
   source "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings"
   source_kind wikipedia
@@ -26,8 +26,8 @@ fact_lotr_author
 fact_formal_ai_creator
   intent fact_lookup
   category identity
-  subject_aliases "formal-ai|formal ai|formalai|you|yourself|ты|тебя|тебе|вы|вас|себя|तुम|तुम्हें|आप|आपको|खुद|你|您|自己"
-  question_keywords "who created|who made|created you|made you|creator|кто создал|кто тебя создал|создал|создатель|किसने बनाया|किसने बनाय|बनाया|निर्माता|谁创建|谁创造|创建了你|创造了你|创建者|创造者"
+  subject_aliases ("formal-ai" "formal ai" "formalai" "you" "yourself" "ты" "тебя" "тебе" "вы" "вас" "себя" "तुम" "तुम्हें" "आप" "आपको" "खुद" "你" "您" "自己")
+  question_keywords ("who created" "who made" "created you" "made you" "creator" "кто создал" "кто тебя создал" "создал" "создатель" "किसने बनाया" "किसने बनाय" "बनाया" "निर्माता" "谁创建" "谁创造" "创建了你" "创造了你" "创建者" "创造者")
   summary "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."
   source "https://github.com/link-assistant/formal-ai"
   source_kind github
@@ -51,8 +51,8 @@ fact_eiffel_tower_built
   intent fact_lookup
   category landmark
   wikidata Q243
-  subject_aliases "eiffel tower|the eiffel tower|эйфелева башня|эйфелеву башню|эйфелевой башни|эйфелевой башне|эйфелевой башней|एफिल टॉवर|एफिल मीनार|埃菲尔铁塔|艾菲爾鐵塔"
-  question_keywords "when|built|construction|year|opened|completed|когда|построена|построили|открыта|открыли|строительство|кб|बनी|बनाई|कब|निर्माण|खुली|何时|建于|建造|完工|开放|什么时候"
+  subject_aliases ("eiffel tower" "the eiffel tower" "эйфелева башня" "эйфелеву башню" "эйфелевой башни" "эйфелевой башне" "эйфелевой башней" "एफिल टॉवर" "एफिल मीनार" "埃菲尔铁塔" "艾菲爾鐵塔")
+  question_keywords ("when" "built" "construction" "year" "opened" "completed" "когда" "построена" "построили" "открыта" "открыли" "строительство" "кб" "बनी" "बनाई" "कब" "निर्माण" "खुली" "何时" "建于" "建造" "完工" "开放" "什么时候")
   summary "Construction of the Eiffel Tower started in 1887 and it opened in 1889."
   source "https://en.wikipedia.org/wiki/Eiffel_Tower"
   source_kind wikipedia
@@ -79,8 +79,8 @@ fact_capital_japan
   relation capital
   subject_qid Q17
   value_qid Q1490
-  subject_aliases "japan|japan's|japans|япония|японии|япония's|जापान|जापानी|日本"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("japan" "japan's" "japans" "япония" "японии" "япония's" "जापान" "जापानी" "日本")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Japan is Tokyo."
   source "https://en.wikipedia.org/wiki/Tokyo"
   source_kind wikipedia
@@ -115,8 +115,8 @@ fact_capital_russia
   relation capital
   subject_qid Q159
   value_qid Q649
-  subject_aliases "russia|russia's|russias|russian federation|россия|россии|россию|российская федерация|российской федерации|रूस|रूसी संघ|俄罗斯|俄羅斯"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("russia" "russia's" "russias" "russian federation" "россия" "россии" "россию" "российская федерация" "российской федерации" "रूस" "रूसी संघ" "俄罗斯" "俄羅斯")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Russia is Moscow."
   source "https://en.wikipedia.org/wiki/Moscow"
   source_kind wikipedia
@@ -148,8 +148,8 @@ fact_speed_of_light
   intent fact_lookup
   category physics
   wikidata Q2111
-  subject_aliases "speed of light|light speed|c in vacuum|скорость света|световая скорость|प्रकाश की गति|光速|光的速度"
-  question_keywords "what is|how fast|какова|чему равна|कितनी|कितना|是多少|多快|多少"
+  subject_aliases ("speed of light" "light speed" "c in vacuum" "скорость света" "световая скорость" "प्रकाश की गति" "光速" "光的速度")
+  question_keywords ("what is" "how fast" "какова" "чему равна" "कितनी" "कितना" "是多少" "多快" "多少")
   summary "The speed of light in vacuum is exactly 299,792,458 metres per second."
   source "https://en.wikipedia.org/wiki/Speed_of_light"
   source_kind wikipedia
@@ -173,8 +173,8 @@ fact_mona_lisa_painter
   intent fact_lookup
   category art
   wikidata (Q12418 Q762)
-  subject_aliases "mona lisa|the mona lisa|джоконда|мона лиза|мону лизу|моне лизе|моной лизой|मोना लिसा|蒙娜丽莎|蒙娜麗莎"
-  question_keywords "who painted|painted|painter|artist|кто написал|написал|художник|किसने बनाई|चित्रकार|कलाकार|谁画的|画家|作者"
+  subject_aliases ("mona lisa" "the mona lisa" "джоконда" "мона лиза" "мону лизу" "моне лизе" "моной лизой" "मोना लिसा" "蒙娜丽莎" "蒙娜麗莎")
+  question_keywords ("who painted" "painted" "painter" "artist" "кто написал" "написал" "художник" "किसने बनाई" "चित्रकार" "कलाकार" "谁画的" "画家" "作者")
   summary "The Mona Lisa was painted by Leonardo da Vinci."
   source "https://en.wikipedia.org/wiki/Mona_Lisa"
   source_kind wikipedia
@@ -201,8 +201,8 @@ fact_capital_france
   relation capital
   subject_qid Q142
   value_qid Q90
-  subject_aliases "france|france's|frances|french republic|франция|франции|францию|французская республика|फ्रांस|फ़्रांस|法国|法國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("france" "france's" "frances" "french republic" "франция" "франции" "францию" "французская республика" "फ्रांस" "फ़्रांस" "法国" "法國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of France is Paris."
   source "https://en.wikipedia.org/wiki/Paris"
   source_kind wikipedia
@@ -237,8 +237,8 @@ fact_capital_germany
   relation capital
   subject_qid Q183
   value_qid Q64
-  subject_aliases "germany|germany's|germanys|federal republic of germany|германия|германии|германию|федеративная республика германия|जर्मनी|德国|德國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("germany" "germany's" "germanys" "federal republic of germany" "германия" "германии" "германию" "федеративная республика германия" "जर्मनी" "德国" "德國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Germany is Berlin."
   source "https://en.wikipedia.org/wiki/Berlin"
   source_kind wikipedia
@@ -273,8 +273,8 @@ fact_capital_china
   relation capital
   subject_qid Q148
   value_qid Q956
-  subject_aliases "china|china's|chinas|people's republic of china|prc|китай|китая|китаю|китаем|китае|китайская народная республика|चीन|中国|中華人民共和國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("china" "china's" "chinas" "people's republic of china" "prc" "китай" "китая" "китаю" "китаем" "китае" "китайская народная республика" "चीन" "中国" "中華人民共和國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of China is Beijing."
   source "https://en.wikipedia.org/wiki/Beijing"
   source_kind wikipedia
@@ -309,8 +309,8 @@ fact_capital_india
   relation capital
   subject_qid Q668
   value_qid Q987
-  subject_aliases "india|india's|indias|republic of india|индия|индии|индию|индией|भारत|इंडिया|印度"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("india" "india's" "indias" "republic of india" "индия" "индии" "индию" "индией" "भारत" "इंडिया" "印度")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of India is New Delhi."
   source "https://en.wikipedia.org/wiki/New_Delhi"
   source_kind wikipedia
@@ -345,8 +345,8 @@ fact_capital_usa
   relation capital
   subject_qid Q30
   value_qid Q61
-  subject_aliases "united states|united states of america|usa|us|america|the united states|сша|соединенные штаты|соединённые штаты|соединенных штатов|соединённых штатов|америка|америки|америку|संयुक्त राज्य अमेरिका|अमेरिका|美国|美利坚合众国|美國|美利堅合眾國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("united states" "united states of america" "usa" "us" "america" "the united states" "сша" "соединенные штаты" "соединённые штаты" "соединенных штатов" "соединённых штатов" "америка" "америки" "америку" "संयुक्त राज्य अमेरिका" "अमेरिका" "美国" "美利坚合众国" "美國" "美利堅合眾國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of the United States is Washington, D.C."
   source "https://en.wikipedia.org/wiki/Washington,_D.C."
   source_kind wikipedia
@@ -381,8 +381,8 @@ fact_capital_uk
   relation capital
   subject_qid Q145
   value_qid Q84
-  subject_aliases "united kingdom|uk|britain|great britain|england|the united kingdom|великобритания|великобритании|британия|британии|англия|англии|यूनाइटेड किंगडम|ब्रिटेन|इंग्लैंड|英国|大不列颠|英國|大不列顛"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("united kingdom" "uk" "britain" "great britain" "england" "the united kingdom" "великобритания" "великобритании" "британия" "британии" "англия" "англии" "यूनाइटेड किंगडम" "ब्रिटेन" "इंग्लैंड" "英国" "大不列颠" "英國" "大不列顛")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of the United Kingdom is London."
   source "https://en.wikipedia.org/wiki/London"
   source_kind wikipedia
@@ -417,8 +417,8 @@ fact_capital_brazil
   relation capital
   subject_qid Q155
   value_qid Q2844
-  subject_aliases "brazil|brazil's|brazils|brasil|federative republic of brazil|бразилия|бразилии|бразилию|бразилией|ब्राज़ील|ब्राजील|巴西|巴西聯邦共和國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  subject_aliases ("brazil" "brazil's" "brazils" "brasil" "federative republic of brazil" "бразилия" "бразилии" "бразилию" "бразилией" "ब्राज़ील" "ब्राजील" "巴西" "巴西聯邦共和國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Brazil is Brasília."
   source "https://en.wikipedia.org/wiki/Brasília"
   source_kind wikipedia

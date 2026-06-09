@@ -336,7 +336,7 @@
         return {
           language: loc.id,
           term: findChildValue(loc, "term"),
-          aliases: locAliases ? locAliases.split("|").map(trim).filter(Boolean) : [],
+          aliases: splitRefList(locAliases),
           summary: findChildValue(loc, "summary"),
           source: findChildValue(loc, "source"),
           sourceKind: findChildValue(loc, "source_kind"),
@@ -350,11 +350,9 @@
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind") || "project-docs",
         wikidata: findChildValue(item, "wikidata"),
-        aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
-        contexts: contexts ? contexts.split("|").map(trim).filter(Boolean) : [],
-        contextLinks: contextLinks
-          ? contextLinks.split("|").map(trim).filter(Boolean)
-          : [],
+        aliases: splitRefList(aliases),
+        contexts: splitRefList(contexts),
+        contextLinks: splitRefList(contextLinks),
         localized: localized,
       });
     };
@@ -385,7 +383,7 @@
         out.push({
           slug: entry.id,
           wikidata: findChildValue(entry, "wikidata"),
-          aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+          aliases: splitRefList(aliases),
           labels: labels,
         });
       }
@@ -734,12 +732,62 @@
     return routing;
   }
 
+  // Split a canonical `(a "b c" d)` reference list into its items. Each item is
+  // a quoted scalar (which may contain spaces) or a bare whitespace-delimited
+  // token. Falls back to the legacy `a|b|c` pipe packing for any value that is
+  // not wrapped in parentheses, so old and migrated seeds both load.
+  function splitRefList(value) {
+    var raw = trim(value);
+    if (!raw) return [];
+    if (raw.charAt(0) === "(" && raw.charAt(raw.length - 1) === ")") {
+      return tokenizeRefList(raw.slice(1, -1));
+    }
+    return raw.split("|").map(trim).filter(Boolean);
+  }
+
+  function tokenizeRefList(body) {
+    var tokens = [];
+    var i = 0;
+    while (i < body.length) {
+      var ch = body.charAt(i);
+      if (/\s/.test(ch)) {
+        i += 1;
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === "`") {
+        var quote = ch;
+        i += 1;
+        var value = "";
+        while (i < body.length) {
+          var c = body.charAt(i);
+          if ((quote === '"' || quote === "`") && c === "\\") {
+            value += body.charAt(i + 1) || "";
+            i += 2;
+            continue;
+          }
+          if (c === quote) {
+            i += 1;
+            break;
+          }
+          value += c;
+          i += 1;
+        }
+        tokens.push(value);
+      } else {
+        var bare = "";
+        while (i < body.length && !/\s/.test(body.charAt(i))) {
+          bare += body.charAt(i);
+          i += 1;
+        }
+        if (bare) tokens.push(bare);
+      }
+    }
+    return tokens;
+  }
+
+  // Backwards-compatible alias retained for existing call sites.
   function splitList(value) {
-    if (!value) return [];
-    return String(value)
-      .split("|")
-      .map(trim)
-      .filter(Boolean);
+    return splitRefList(value);
   }
 
   function trim(value) {
