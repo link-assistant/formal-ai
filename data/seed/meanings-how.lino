@@ -1,450 +1,450 @@
 meanings
   mechanism_inquiry:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role mechanism_inquiry # semantic-role
-    lexeme en # language
-      surface seed-surface-670387d74779
+    defined-by inquiry
+    defined-by action
+    role mechanism_inquiry
+    lexeme en
+      surface
         text "how it works"
-      surface seed-surface-06f56972f615
+      surface
         text "how does it work"
-      surface seed-surface-26b44693b546
+      surface
         text "how does …"
-      surface seed-surface-3c6968378eb1
+      surface
         text "how do …"
-      surface seed-surface-5ac3cb9c275e
+      surface
         text "how did …"
-      surface seed-surface-010de776cd6b
+      surface
         text "how is …"
-      surface seed-surface-46cdd849aad6
+      surface
         text "how … works"
-      surface seed-surface-3f42d94bfef8
+      surface
         text "how … work"
-    lexeme ru # language
-      surface seed-surface-e84ffd375be8
+    lexeme ru
+      surface
         text "как это работает"
-      surface seed-surface-2cdafec39523
+      surface
         text "как оно работает"
-      surface seed-surface-4afd2b751ab1
+      surface
         text "как устроен …"
-      surface seed-surface-e1ad06e769d9
+      surface
         text "как устроена …"
-      surface seed-surface-dde84bc119be
+      surface
         text "как устроено …"
-      surface seed-surface-bd6d99d2e14e
+      surface
         text "как устроены …"
-      surface seed-surface-119ed4c7ed58
+      surface
         text "как работает …"
-      surface seed-surface-b9c5b8de09d1
+      surface
         text "как работают …"
-      surface seed-surface-dfbb0f3e2cec
+      surface
         text "как … работает"
-      surface seed-surface-d4da2d2f0ebe
+      surface
         text "как … работают"
-      surface seed-surface-a28a3a104df3
+      surface
         text "… как работает"
-      surface seed-surface-47bd0369d74b
+      surface
         text "… как работают"
-    lexeme hi # language
-      surface seed-surface-bb4278bfbe64
+    lexeme hi
+      surface
         text "यह कैसे काम करता है"
-      surface seed-surface-dae7a5fbf6dd
+      surface
         text "यह कैसे काम करती है"
-      surface seed-surface-873f5f712a36
+      surface
         text "यह कैसे काम करता"
-      surface seed-surface-910d05e35b16
+      surface
         text "… कैसे काम करता है"
-      surface seed-surface-1f8813d1fc58
+      surface
         text "… कैसे काम करती है"
-      surface seed-surface-446a059921a5
+      surface
         text "… कैसे काम करते हैं"
-      surface seed-surface-121a87ae2f1d
+      surface
         text "… कैसे काम करता"
-      surface seed-surface-0aff9ae1ab21
+      surface
         text "… कैसे काम करती"
-      surface seed-surface-a7a844d23216
+      surface
         text "… कैसे काम करते"
-    lexeme zh # language
-      surface seed-surface-c2e428345163
+    lexeme zh
+      surface
         text 这是如何工作的
-      surface seed-surface-cd95f77b7e8f
+      surface
         text 这是怎么工作的
-      surface seed-surface-c27396542c2e
+      surface
         text 这个如何工作
-      surface seed-surface-acb3b0cea450
+      surface
         text 它如何工作
-      surface seed-surface-0e28bc79f127
+      surface
         text 它是如何工作的
-      surface seed-surface-bcc7376c6672
+      surface
         text 它怎么工作
-      surface seed-surface-6160ae642bcd
+      surface
         text "… 是如何工作的"
-      surface seed-surface-b90d7771cc67
+      surface
         text …是如何工作的
-      surface seed-surface-f7acdb27ebfa
+      surface
         text "… 是怎么工作的"
-      surface seed-surface-e64943ae699f
+      surface
         text …是怎么工作的
-      surface seed-surface-09478bd3d452
+      surface
         text "… 如何工作"
-      surface seed-surface-d9eb89454610
+      surface
         text …如何工作
-      surface seed-surface-0abe4d20ae0d
+      surface
         text "… 怎么工作"
-      surface seed-surface-d9e87b13d6fd
+      surface
         text …怎么工作
-      surface seed-surface-90ef24c79709
+      surface
         text "… 的工作原理是什么"
-      surface seed-surface-99224c6664cc
+      surface
         text …的工作原理是什么
   procedural_request:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role procedural_request # semantic-role
-    lexeme en # language
-      surface seed-surface-47a5709120df
+    defined-by inquiry
+    defined-by action
+    role procedural_request
+    lexeme en
+      surface
         text "please tell me how to …"
-      surface seed-surface-2652a53a300a
+      surface
         text "please show me how to …"
-      surface seed-surface-09219d3195ed
+      surface
         text "tell me how to …"
-      surface seed-surface-7801ebd4d983
+      surface
         text "show me how to …"
-      surface seed-surface-c1940b56b126
+      surface
         text "what are the steps to …"
-      surface seed-surface-b2076b5fad6b
+      surface
         text "what steps do i need to …"
-      surface seed-surface-2036a22df500
+      surface
         text "what steps do we need to …"
-      surface seed-surface-30df96d6f88b
+      surface
         text "how should i …"
-      surface seed-surface-8939bd1e556b
+      surface
         text "how should we …"
-      surface seed-surface-2f2df0913add
+      surface
         text "how could i …"
-      surface seed-surface-fb482f1263ca
+      surface
         text "how could we …"
-      surface seed-surface-124073bd755f
+      surface
         text "how would i …"
-      surface seed-surface-3680976e7e3d
+      surface
         text "how would we …"
-      surface seed-surface-2406cd483959
+      surface
         text "how can i …"
-      surface seed-surface-0c4aa5b93da9
+      surface
         text "how can we …"
-      surface seed-surface-d25792317726
+      surface
         text "how do i …"
-      surface seed-surface-505ca8eb2e7e
+      surface
         text "how do we …"
-      surface seed-surface-01119fe5e761
+      surface
         text "how to do …"
-        action do # action
-      surface seed-surface-1a3cb0b23f50
+        action do
+      surface
         text "how to …"
-    lexeme ru # language
-      surface seed-surface-cfc238848f04
+    lexeme ru
+      surface
         text "как сделать …"
-        action do # action
-      surface seed-surface-80e920f4d567
+        action do
+      surface
         text "как делать …"
-        action do # action
-      surface seed-surface-7e8958f76809
+        action do
+      surface
         text "как выполнить …"
-        action perform # action
-      surface seed-surface-ca5d89040114
+        action perform
+      surface
         text "как реализовать …"
-        action implement # action
-      surface seed-surface-42f030ca3f17
+        action implement
+      surface
         text "как создать …"
-        action create # action
-      surface seed-surface-e3794494d4d4
+        action create
+      surface
         text "как написать …"
-        action write # action
-    lexeme hi # language
-      surface seed-surface-798e8152fc78
+        action write
+    lexeme hi
+      surface
         text "कैसे करें …"
-        action do # action
-      surface seed-surface-ed7124adc76b
+        action do
+      surface
         text "कैसे करे …"
-        action do # action
-      surface seed-surface-fae7a23d463d
+        action do
+      surface
         text "कैसे लागू करें …"
-        action implement # action
-      surface seed-surface-0e85cc095e8f
+        action implement
+      surface
         text "कैसे बनाएं …"
-        action create # action
-      surface seed-surface-06396bf8bea1
+        action create
+      surface
         text "कैसे बनाएँ …"
-        action create # action
-      surface seed-surface-c8ddaa5d199c
+        action create
+      surface
         text "कैसे लिखें …"
-        action write # action
-    lexeme zh # language
-      surface seed-surface-5cb444e45d17
+        action write
+    lexeme zh
+      surface
         text "如何做 …"
-        action do # action
-      surface seed-surface-78aa3e8d39b8
+        action do
+      surface
         text "怎么做 …"
-        action do # action
-      surface seed-surface-59603ca578ff
+        action do
+      surface
         text "如何实现 …"
-        action implement # action
-      surface seed-surface-ca9bb44ced10
+        action implement
+      surface
         text "怎么实现 …"
-        action implement # action
-      surface seed-surface-408c66e181f3
+        action implement
+      surface
         text "如何创建 …"
-        action create # action
-      surface seed-surface-bdf964ec26b4
+        action create
+      surface
         text "怎么创建 …"
-        action create # action
-      surface seed-surface-c17c763c2197
+        action create
+      surface
         text "如何写 …"
-        action write # action
-      surface seed-surface-d1472de5a88d
+        action write
+      surface
         text "怎么写 …"
-        action write # action
+        action write
   mechanism_predicate:
-    defined-by action # definition-link
-    defined-by mechanism_inquiry # definition-link
-    role mechanism_predicate # semantic-role
-    lexeme en # language
-      surface seed-surface-215bb33fa40b
+    defined-by action
+    defined-by mechanism_inquiry
+    role mechanism_predicate
+    lexeme en
+      surface
         text "… work"
-      surface seed-surface-a8a9d5888f6b
+      surface
         text "… works"
-      surface seed-surface-87a5571d08cf
+      surface
         text "… structured"
-      surface seed-surface-64cdf9360ef7
+      surface
         text "… organized"
-      surface seed-surface-b495a7b8a3b5
+      surface
         text "… organised"
-      surface seed-surface-4f87f71950af
+      surface
         text "… built"
-    lexeme ru # language
-      surface seed-surface-f06b45a4be75
+    lexeme ru
+      surface
         text "… работает"
-      surface seed-surface-42b6703df828
+      surface
         text "… устроен"
-    lexeme hi # language
-      surface seed-surface-7c55e80311cb
+    lexeme hi
+      surface
         text "… काम करता है"
-      surface seed-surface-0c7346195849
+      surface
         text "… बना है"
-    lexeme zh # language
-      surface seed-surface-80bfaffa8530
+    lexeme zh
+      surface
         text …工作
-      surface seed-surface-6cbc70a3e022
+      surface
         text …构建
   detail_modifier:
-    defined-by property # definition-link
-    defined-by mechanism_inquiry # definition-link
-    role detail_modifier # semantic-role
-    lexeme en # language
-      surface seed-surface-03ecd49b1770
+    defined-by property
+    defined-by mechanism_inquiry
+    role detail_modifier
+    lexeme en
+      surface
         text "… in detail"
-      surface seed-surface-a2b52b623f8d
+      surface
         text "… internally"
-      surface seed-surface-ad7953cf7e06
+      surface
         text "… exactly"
-      surface seed-surface-f4ef7164f4b5
+      surface
         text "… please"
-    lexeme ru # language
-      surface seed-surface-e07f11aa2864
+    lexeme ru
+      surface
         text "… подробнее"
-      surface seed-surface-9674f5cd55a4
+      surface
         text "… подробно"
-      surface seed-surface-52f4aae80327
+      surface
         text "… пожалуйста"
-    lexeme hi # language
-      surface seed-surface-18d0c293786f
+    lexeme hi
+      surface
         text "… विस्तार से"
-      surface seed-surface-28917274e0d2
+      surface
         text "… कृपया"
-    lexeme zh # language
-      surface seed-surface-2f51e1f75dad
+    lexeme zh
+      surface
         text …详细
-      surface seed-surface-6e76a2e66c8d
+      surface
         text …请
   non_referential_subject:
-    defined-by entity # definition-link
-    defined-by mechanism_inquiry # definition-link
-    role non_referential_subject # semantic-role
-    lexeme en # language
-      surface seed-surface-4c3e11477067
+    defined-by entity
+    defined-by mechanism_inquiry
+    role non_referential_subject
+    lexeme en
+      surface
         text it
-      surface seed-surface-a20e5b598755
+      surface
         text this
-      surface seed-surface-73a4be60193e
+      surface
         text that
-      surface seed-surface-66ac4b50da0b
+      surface
         text you
-      surface seed-surface-04832f33f158
+      surface
         text yourself
-      surface seed-surface-c1be8a802858
+      surface
         text does
-      surface seed-surface-56b986a18b60
+      surface
         text do
-      surface seed-surface-6c606a96738c
+      surface
         text "does …"
-      surface seed-surface-daa1f1be8f16
+      surface
         text "do …"
-      surface seed-surface-d0c8d303ed0b
+      surface
         text "to …"
-      surface seed-surface-d92479e7440a
+      surface
         text "you …"
-    lexeme ru # language
-      surface seed-surface-2152a1a6ab9c
+    lexeme ru
+      surface
         text это
-      surface seed-surface-c6d7e95e0e62
+      surface
         text оно
-      surface seed-surface-14b0bd8a4746
+      surface
         text он
-      surface seed-surface-71ac44cbdbbe
+      surface
         text она
-      surface seed-surface-b4955d2793cb
+      surface
         text они
-      surface seed-surface-3d6a6fa57201
+      surface
         text ты
-      surface seed-surface-2b75bb4af618
+      surface
         text вы
-    lexeme hi # language
-      surface seed-surface-0e74a06a9124
+    lexeme hi
+      surface
         text यह
-      surface seed-surface-27321187b802
+      surface
         text ये
-    lexeme zh # language
-      surface seed-surface-c64e41259877
+    lexeme zh
+      surface
         text 这
-      surface seed-surface-93564f7dcf1e
+      surface
         text 这个
-      surface seed-surface-0c0eebc890d1
+      surface
         text 它
   procedural_task_modifier:
-    defined-by property # definition-link
-    defined-by procedural_request # definition-link
-    role procedural_task_modifier # semantic-role
-    lexeme en # language
-      surface seed-surface-14f255ec4c70
+    defined-by property
+    defined-by procedural_request
+    role procedural_task_modifier
+    lexeme en
+      surface
         text "… step by step"
-      surface seed-surface-53cae444a9aa
+      surface
         text "… in steps"
-      surface seed-surface-b79a01ea4825
+      surface
         text "… with steps"
-      surface seed-surface-a331caeafa46
+      surface
         text "… for me"
-      surface seed-surface-559da64f9816
+      surface
         text "… please"
-    lexeme ru # language
-      surface seed-surface-50ccc018f733
+    lexeme ru
+      surface
         text "… напиши по шагам"
-      surface seed-surface-4471746f4db3
+      surface
         text "… по шагам"
-      surface seed-surface-df2147801e7e
+      surface
         text "… пошагово"
-      surface seed-surface-345ca7feaac1
+      surface
         text "… пожалуйста"
-    lexeme hi # language
-      surface seed-surface-13abbb4f4b3f
+    lexeme hi
+      surface
         text "… चरणों में लिखो"
-      surface seed-surface-82938a33b7e3
+      surface
         text "… चरणों में बताओ"
-      surface seed-surface-8fd2db94a5d2
+      surface
         text "… कदम दर कदम"
-      surface seed-surface-07fa6450ee9b
+      surface
         text "… कृपया"
-    lexeme zh # language
-      surface seed-surface-5e2c452da240
+    lexeme zh
+      surface
         text "… 按步骤写"
-      surface seed-surface-0738e87448a7
+      surface
         text "… 按步骤说明"
-      surface seed-surface-62a06fe12684
+      surface
         text "… 一步一步写"
-      surface seed-surface-a1a1be16db0b
+      surface
         text "… 请"
   common_typo:
-    defined-by relation # definition-link
-    role common_typo # semantic-role
-    lexeme en # language
-      surface seed-surface-4bd37f5caa07
+    defined-by relation
+    role common_typo
+    lexeme en
+      surface
         text dirven
-        action driven # action
-    lexeme ru # language
-      surface seed-surface-ef1fed7e0774
+        action driven
+    lexeme ru
+      surface
         text руский
-        action русский # action
-    lexeme hi # language
-      surface seed-surface-e605ad13c935
+        action русский
+    lexeme hi
+      surface
         text वेबसाईट
-        action वेबसाइट # action
-    lexeme zh # language
-      surface seed-surface-b2def5c5518a
+        action वेबसाइट
+    lexeme zh
+      surface
         text 登陆
-        action 登录 # action
+        action 登录
   topic_scan_stop_word:
-    defined-by concept # definition-link
-    role topic_scan_stop_word # semantic-role
-    lexeme en # language
-      surface seed-surface-ed368d743f8f
+    defined-by concept
+    role topic_scan_stop_word
+    lexeme en
+      surface
         text i
-      surface seed-surface-d90097697a84
+      surface
         text the
-      surface seed-surface-81982cb4a3a2
+      surface
         text a
-      surface seed-surface-6617c556a31e
+      surface
         text an
-      surface seed-surface-a0f2dee03a89
+      surface
         text in
-      surface seed-surface-5d995779d5e2
+      surface
         text to
-      surface seed-surface-4437ef8981fb
+      surface
         text for
-      surface seed-surface-3fc8514507d2
+      surface
         text of
-      surface seed-surface-87b0075180ac
+      surface
         text and
-      surface seed-surface-b14e3a258af3
+      surface
         text or
-      surface seed-surface-8a5f2412a959
+      surface
         text source
-    lexeme ru # language
-      surface seed-surface-2dfbc5c8267e
+    lexeme ru
+      surface
         text и
-      surface seed-surface-50df288b89ad
+      surface
         text или
-      surface seed-surface-3d3cfe94ae55
+      surface
         text в
-      surface seed-surface-68aba803a12a
+      surface
         text к
-      surface seed-surface-a26c92f2a8d2
+      surface
         text для
-      surface seed-surface-9eb1ad6c68a5
+      surface
         text из
-      surface seed-surface-8afd1dad0390
+      surface
         text источник
-    lexeme hi # language
-      surface seed-surface-4f7a7b1fea6c
+    lexeme hi
+      surface
         text और
-      surface seed-surface-6de2968facd8
+      surface
         text या
-      surface seed-surface-002ddc18a46d
+      surface
         text में
-      surface seed-surface-f49126695270
+      surface
         text को
-      surface seed-surface-91a58b11bca8
+      surface
         text के
-      surface seed-surface-beb6f6ccb8a6
+      surface
         text का
-      surface seed-surface-bbda5fde8cfb
+      surface
         text स्रोत
-    lexeme zh # language
-      surface seed-surface-77a7703dd185
+    lexeme zh
+      surface
         text 和
-      surface seed-surface-b5e545d44890
+      surface
         text 或
-      surface seed-surface-503976ffa16a
+      surface
         text 在
-      surface seed-surface-bdca06898f2e
+      surface
         text 的
-      surface seed-surface-31c27c41da73
+      surface
         text 来源

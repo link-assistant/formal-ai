@@ -1,203 +1,203 @@
 meanings
   investment:
-    defined-by money # definition-link
-    defined-by action # definition-link
-    role investment_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-478b5e462020
+    defined-by money
+    defined-by action
+    role investment_cue
+    lexeme en
+      surface
         text invest
-      surface seed-surface-da3ab6f53a21
+      surface
         text investment
-    lexeme ru # language
-      surface seed-surface-6907b2a6f35d
+    lexeme ru
+      surface
         text инвестир
-      surface seed-surface-2321907dbe7d
+      surface
         text инвестиц
-    lexeme hi # language
-      surface seed-surface-08d7a75b95d3
+    lexeme hi
+      surface
         text निवेश
-    lexeme zh # language
-      surface seed-surface-f8a5bd88c67f
+    lexeme zh
+      surface
         text 投资
   interest_finance:
-    defined-by money # definition-link
-    role interest_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-605555a0b3d3
+    defined-by money
+    role interest_cue
+    lexeme en
+      surface
         text interest
-    lexeme ru # language
-      surface seed-surface-8addd30accd3
+    lexeme ru
+      surface
         text процент
-    lexeme hi # language
-      surface seed-surface-c8291ed3ab6d
+    lexeme hi
+      surface
         text ब्याज
-    lexeme zh # language
-      surface seed-surface-2f1ed48c3897
+    lexeme zh
+      surface
         text 利息
   compounding:
-    defined-by action # definition-link
-    defined-by money # definition-link
-    role compounding_action_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-1b2286cb7a70
+    defined-by action
+    defined-by money
+    role compounding_action_cue
+    lexeme en
+      surface
         text compound
-    lexeme ru # language
-      surface seed-surface-c3aa1e2b04b1
+    lexeme ru
+      surface
         text "сложный процент"
-      surface seed-surface-1080ef3bd681
+      surface
         text капитализаци
-    lexeme hi # language
-      surface seed-surface-f81d3cbf0598
+    lexeme hi
+      surface
         text चक्रवृद्धि
-    lexeme zh # language
-      surface seed-surface-7487b525e39b
+    lexeme zh
+      surface
         text 复利
   compounding_monthly:
-    defined-by compounding # definition-link
-    role compounding_frequency_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-81e99cca269f
+    defined-by compounding
+    role compounding_frequency_cue
+    lexeme en
+      surface
         text monthly
-    lexeme ru # language
-      surface seed-surface-c3bc7ae50527
+    lexeme ru
+      surface
         text ежемесячн
-    lexeme hi # language
-      surface seed-surface-aea74fad8a7a
+    lexeme hi
+      surface
         text मासिक
-    lexeme zh # language
-      surface seed-surface-e886d8dc785e
+    lexeme zh
+      surface
         text 每月
   compounding_quarterly:
-    defined-by compounding # definition-link
-    role compounding_frequency_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-2968c6edb37d
+    defined-by compounding
+    role compounding_frequency_cue
+    lexeme en
+      surface
         text quarterly
-    lexeme ru # language
-      surface seed-surface-bbdfaf33d1a3
+    lexeme ru
+      surface
         text ежеквартальн
-    lexeme hi # language
-      surface seed-surface-a1377d3fd209
+    lexeme hi
+      surface
         text त्रैमासिक
-    lexeme zh # language
-      surface seed-surface-92505222b10d
+    lexeme zh
+      surface
         text 每季度
   compounding_weekly:
-    defined-by compounding # definition-link
-    role compounding_frequency_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-08cc790ba10d
+    defined-by compounding
+    role compounding_frequency_cue
+    lexeme en
+      surface
         text weekly
-    lexeme ru # language
-      surface seed-surface-dd3a3e5006b3
+    lexeme ru
+      surface
         text еженедельн
-    lexeme hi # language
-      surface seed-surface-721a8d4a5be9
+    lexeme hi
+      surface
         text साप्ताहिक
-    lexeme zh # language
-      surface seed-surface-405b88e9f665
+    lexeme zh
+      surface
         text 每周
   compounding_daily:
-    defined-by compounding # definition-link
-    role compounding_frequency_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-66a8706eb586
+    defined-by compounding
+    role compounding_frequency_cue
+    lexeme en
+      surface
         text daily
-    lexeme ru # language
-      surface seed-surface-aa7d90c38ecb
+    lexeme ru
+      surface
         text ежедневн
-    lexeme hi # language
-      surface seed-surface-9580572a7b91
+    lexeme hi
+      surface
         text दैनिक
-    lexeme zh # language
-      surface seed-surface-ea097dbbe253
+    lexeme zh
+      surface
         text 每日
   compounding_annual:
-    defined-by compounding # definition-link
-    role compounding_frequency_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-352321c9203e
+    defined-by compounding
+    role compounding_frequency_cue
+    lexeme en
+      surface
         text annually
-      surface seed-surface-95b2205ffbf0
+      surface
         text yearly
-    lexeme ru # language
-      surface seed-surface-1006fbe3a3a4
+    lexeme ru
+      surface
         text ежегодн
-    lexeme hi # language
-      surface seed-surface-8a47ec4b5527
+    lexeme hi
+      surface
         text वार्षिक
-    lexeme zh # language
-      surface seed-surface-e2a1b888b63b
+    lexeme zh
+      surface
         text 每年
   live_rate_freshness:
-    defined-by exchange_rate # definition-link
-    defined-by concept # definition-link
-    role live_rate_freshness_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-e23e50200569
+    defined-by exchange_rate
+    defined-by concept
+    role live_rate_freshness_cue
+    lexeme en
+      surface
         text web
-      surface seed-surface-0c397eaa51aa
+      surface
         text "current exchange"
-      surface seed-surface-8c2871cd755d
+      surface
         text "current rate"
-      surface seed-surface-c86ebabf2465
+      surface
         text "exchange rate"
-    lexeme ru # language
-      surface seed-surface-d16360ac33f4
+    lexeme ru
+      surface
         text "текущий курс"
-      surface seed-surface-c3c665f912e9
+      surface
         text "актуальный курс"
-    lexeme hi # language
-      surface seed-surface-17b8b4219d81
+    lexeme hi
+      surface
         text "वर्तमान दर"
-    lexeme zh # language
-      surface seed-surface-3beb15b4dddd
+    lexeme zh
+      surface
         text 实时汇率
   year_period:
-    defined-by concept # definition-link
-    role year_unit_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-b0db0d541702
+    defined-by concept
+    role year_unit_cue
+    lexeme en
+      surface
         text year
-    lexeme ru # language
-      surface seed-surface-dda5b567575e
+    lexeme ru
+      surface
         text год
-      surface seed-surface-aa78051ffe64
+      surface
         text лет
-    lexeme hi # language
-      surface seed-surface-e0aeb0f1cba2
+    lexeme hi
+      surface
         text वर्ष
-    lexeme zh # language
-      surface seed-surface-0aa0bbce0f88
+    lexeme zh
+      surface
         text 年
   conversion_action:
-    defined-by action # definition-link
-    defined-by money # definition-link
-    role conversion_action_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-eb0fa24893ef
+    defined-by action
+    defined-by money
+    role conversion_action_cue
+    lexeme en
+      surface
         text convert
-    lexeme ru # language
-      surface seed-surface-6504e6775cf7
+    lexeme ru
+      surface
         text конвертир
-    lexeme hi # language
-      surface seed-surface-746d2d2ee20b
+    lexeme hi
+      surface
         text परिवर्तित
-    lexeme zh # language
-      surface seed-surface-05f5b4ce237e
+    lexeme zh
+      surface
         text 转换
   final_amount:
-    defined-by money # definition-link
-    role final_amount_reference # semantic-role
-    lexeme en # language
-      surface seed-surface-4cb4101f3a11
+    defined-by money
+    role final_amount_reference
+    lexeme en
+      surface
         text "final amount"
-    lexeme ru # language
-      surface seed-surface-1f940e2cc833
+    lexeme ru
+      surface
         text "итоговая сумма"
-    lexeme hi # language
-      surface seed-surface-6b1e192c6f2d
+    lexeme hi
+      surface
         text "अंतिम राशि"
-    lexeme zh # language
-      surface seed-surface-c62ed9589c32
+    lexeme zh
+      surface
         text 最终金额

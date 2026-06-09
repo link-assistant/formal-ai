@@ -1,278 +1,278 @@
 meanings
   web_resource:
-    defined-by entity # definition-link
-    role web_navigation_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-5e1560ab76fa
+    defined-by entity
+    role web_navigation_concept
+    lexeme en
+      surface
         text url
-      surface seed-surface-0ec6c913ed08
+      surface
         text "web page"
-      surface seed-surface-58383d4f27c5
+      surface
         text website
-    lexeme ru # language
-      surface seed-surface-c9bbf4fc11a9
+    lexeme ru
+      surface
         text сайт
-      surface seed-surface-d3fb9f3ab033
+      surface
         text страница
-      surface seed-surface-93d12201a2c2
+      surface
         text ссылка
-      surface seed-surface-edb40fba5e5d
+      surface
         text урл
-    lexeme hi # language
-      surface seed-surface-7af0921f75a9
+    lexeme hi
+      surface
         text वेबसाइट
-      surface seed-surface-0f0526afb55f
+      surface
         text "वेब पेज"
-      surface seed-surface-882110e1025b
+      surface
         text लिंक
-    lexeme zh # language
-      surface seed-surface-aae59b79124e
+    lexeme zh
+      surface
         text 网址
-      surface seed-surface-aae8a2618955
+      surface
         text 网页
-      surface seed-surface-7738a07b5996
+      surface
         text 网站
   http_fetch:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    defined-by web_resource # definition-link
-    role http_fetch # semantic-role
-    lexeme en # language
-      surface seed-surface-b46f514115a7
+    defined-by inquiry
+    defined-by action
+    defined-by web_resource
+    role http_fetch
+    lexeme en
+      surface
         text "fetch …"
-      surface seed-surface-3b578992d3f7
+      surface
         text "fetch url …"
-      surface seed-surface-70a82e91dc8d
+      surface
         text "http fetch …"
-      surface seed-surface-06ec565fe295
+      surface
         text "request …"
-      surface seed-surface-c1fbfa0a2450
+      surface
         text "make request to …"
-      surface seed-surface-4c8697cdf09f
+      surface
         text "send request to …"
-      surface seed-surface-99d2b765450f
+      surface
         text "make a request to"
-      surface seed-surface-a0ee81b36b20
+      surface
         text "make an http request to"
-      surface seed-surface-bf163742b835
+      surface
         text "send a request to"
-      surface seed-surface-edd2f485dee8
+      surface
         text "send an http request to"
-      surface seed-surface-8d5e959be968
+      surface
         text "http request to"
-      surface seed-surface-d8b7993d1f10
+      surface
         text "http get to"
-      surface seed-surface-6f6f606f162d
+      surface
         text "fetch the url"
-      surface seed-surface-7fb8f42ef5e4
+      surface
         text "fetch this url"
-      surface seed-surface-f242b685d46e
+      surface
         text "fetch the page"
-    lexeme ru # language
-      surface seed-surface-de354825d6da
+    lexeme ru
+      surface
         text "сделай запрос …"
-      surface seed-surface-1bf50a3c7db8
+      surface
         text "сделай http запрос …"
-      surface seed-surface-443405588936
+      surface
         text "выполни запрос …"
-      surface seed-surface-285987694b22
+      surface
         text "выполни http запрос …"
-      surface seed-surface-4126e27f414b
+      surface
         text "запроси …"
-      surface seed-surface-ffb2474fc450
+      surface
         text "получи …"
-      surface seed-surface-a4511149321e
+      surface
         text "http запрос к …"
-      surface seed-surface-c66bc413dec6
+      surface
         text "http запрос на …"
-      surface seed-surface-6dc71093b08a
+      surface
         text "сделать запрос к …"
-      surface seed-surface-b5e21087242f
+      surface
         text "выполнить запрос к …"
-      surface seed-surface-25b92f1c210d
+      surface
         text "сделай запрос к"
-      surface seed-surface-d4909debb48c
+      surface
         text "сделай запрос на"
-      surface seed-surface-cf57231c692d
+      surface
         text "сделай http запрос к"
-      surface seed-surface-d4557d2cc77c
+      surface
         text "сделай http запрос на"
-      surface seed-surface-117673ec30be
+      surface
         text "выполни запрос к"
-      surface seed-surface-a54ea705a455
+      surface
         text "выполни запрос на"
-      surface seed-surface-998109f3ff86
+      surface
         text "выполни http запрос к"
-      surface seed-surface-8973bc522476
+      surface
         text "выполни http запрос на"
-      surface seed-surface-71199f8ebf76
+      surface
         text "запрос к"
-      surface seed-surface-2105451370d4
+      surface
         text "запрос на"
-      surface seed-surface-9d014970995e
+      surface
         text "http запрос к"
-      surface seed-surface-fa5beb69546c
+      surface
         text "http запрос на"
-    lexeme hi # language
-      surface seed-surface-4670076d865b
+    lexeme hi
+      surface
         text "अनुरोध भेजें"
-      surface seed-surface-fb88b1f6706d
+      surface
         text "अनुरोध करें"
-    lexeme zh # language
-      surface seed-surface-3a57089b7ab1
+    lexeme zh
+      surface
         text 发送请求
-      surface seed-surface-dc6bb56b0bda
+      surface
         text 获取
   url_navigate:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    defined-by web_resource # definition-link
-    role url_navigate # semantic-role
-    lexeme en # language
-      surface seed-surface-b8d01681ea55
+    defined-by inquiry
+    defined-by action
+    defined-by web_resource
+    role url_navigate
+    lexeme en
+      surface
         text "navigate to …"
-      surface seed-surface-f017268c381a
+      surface
         text "navigate …"
-      surface seed-surface-344fca21a82a
+      surface
         text "go to …"
-      surface seed-surface-4322e076c666
+      surface
         text "goto …"
-      surface seed-surface-c3c36ef9f281
+      surface
         text "visit …"
-      surface seed-surface-a0f2189b61c0
+      surface
         text "browse to …"
-      surface seed-surface-810efb601559
+      surface
         text "browse …"
-      surface seed-surface-0c11c8642098
+      surface
         text "show …"
-      surface seed-surface-59caea5ff76c
+      surface
         text "show me …"
-      surface seed-surface-0dc76f9936d6
+      surface
         text "display …"
-      surface seed-surface-832d5e514f6b
+      surface
         text "load …"
-      surface seed-surface-dc247fafb1ab
+      surface
         text "open …"
-      surface seed-surface-1ddb70f65dc4
+      surface
         text "open url …"
-      surface seed-surface-55252c8a4238
+      surface
         text "open the url …"
-      surface seed-surface-31516cc31720
+      surface
         text "open site …"
-      surface seed-surface-f516bd07aaf0
+      surface
         text "open website …"
-      surface seed-surface-8ce78934374e
+      surface
         text "open page …"
-      surface seed-surface-9c71e82791b1
+      surface
         text "open the page …"
-      surface seed-surface-ab5f6f523d69
+      surface
         text "open the website …"
-      surface seed-surface-13020e7266a9
+      surface
         text "take me to …"
-      surface seed-surface-d9f9a61b2d6b
+      surface
         text "preview …"
-      surface seed-surface-ec74ed4d1251
+      surface
         text "view …"
-      surface seed-surface-44d42d425dd5
+      surface
         text "see …"
-      surface seed-surface-c1a4fb9145b2
+      surface
         text "get …"
-      surface seed-surface-c23273e4191d
+      surface
         text "navigate to"
-      surface seed-surface-3fcf8aa350dd
+      surface
         text "go to"
-      surface seed-surface-fd04676ba333
+      surface
         text goto
-      surface seed-surface-feafd8767c9c
+      surface
         text "browse to"
-      surface seed-surface-b3fae6cbbaa6
+      surface
         text "take me to"
-      surface seed-surface-aa024eee79e5
+      surface
         text "open the page"
-      surface seed-surface-a251151fe899
+      surface
         text "open the site"
-      surface seed-surface-6ff7861e7f81
+      surface
         text "open the website"
-      surface seed-surface-1b8341504b2f
+      surface
         text "open the url"
-      surface seed-surface-2266649e629c
+      surface
         text "open url"
-    lexeme ru # language
-      surface seed-surface-cd50d47f471c
+    lexeme ru
+      surface
         text "перейди …"
-      surface seed-surface-c8b1e72344de
+      surface
         text "перейди на …"
-      surface seed-surface-594242d91655
+      surface
         text "переходи на …"
-      surface seed-surface-1aadc9b9d598
+      surface
         text "переходи …"
-      surface seed-surface-ff91cca6d255
+      surface
         text "перейдите на …"
-      surface seed-surface-2b1de7b8bba9
+      surface
         text "открой …"
-      surface seed-surface-094f58512693
+      surface
         text "открой сайт …"
-      surface seed-surface-88625b484356
+      surface
         text "открой страницу …"
-      surface seed-surface-b84e89175d2e
+      surface
         text "открой ссылку …"
-      surface seed-surface-d911b3f76c5b
+      surface
         text "открой урл …"
-      surface seed-surface-177eba58504a
+      surface
         text "покажи …"
-      surface seed-surface-d699ba741723
+      surface
         text "покажи сайт …"
-      surface seed-surface-4d921b03bf3f
+      surface
         text "покажи страницу …"
-      surface seed-surface-b002766a45b8
+      surface
         text "покажи мне …"
-      surface seed-surface-c72c7c84e722
+      surface
         text "загрузи …"
-      surface seed-surface-3809ac6ad0f1
+      surface
         text "загрузи страницу …"
-      surface seed-surface-cedee7cba2fc
+      surface
         text "посети …"
-      surface seed-surface-e4cdc8f70add
+      surface
         text "зайди на …"
-      surface seed-surface-57f75e1f79a0
+      surface
         text "зайди …"
-      surface seed-surface-22eeb335f2bd
+      surface
         text "просмотри …"
-      surface seed-surface-59b4a99303dd
+      surface
         text "отобрази …"
-      surface seed-surface-1fbc93d572d4
+      surface
         text "перейди на"
-      surface seed-surface-b9d922a105eb
+      surface
         text "переходи на"
-      surface seed-surface-7668972c6795
+      surface
         text "перейдите на"
-      surface seed-surface-934d18d1d325
+      surface
         text "открой сайт"
-      surface seed-surface-8f6084820413
+      surface
         text "открой страницу"
-      surface seed-surface-aeddd01eec26
+      surface
         text "открой ссылку"
-      surface seed-surface-7d2ac444f4bf
+      surface
         text "открой урл"
-      surface seed-surface-25c0ba008b13
+      surface
         text "покажи сайт"
-      surface seed-surface-9d60cdf9e794
+      surface
         text "покажи страницу"
-      surface seed-surface-f6bc23a609f4
+      surface
         text "зайди на"
-    lexeme hi # language
-      surface seed-surface-713c7709c2dd
+    lexeme hi
+      surface
         text "पर जाएं"
-      surface seed-surface-8bdd810d03ee
+      surface
         text खोलें
-      surface seed-surface-301e6ed05226
+      surface
         text देखें
-    lexeme zh # language
-      surface seed-surface-5b3e3355ca63
+    lexeme zh
+      surface
         text 打开
-      surface seed-surface-ffec39f9ebbe
+      surface
         text 访问
-      surface seed-surface-531911cfa0b3
+      surface
         text 前往
-      surface seed-surface-7a7e5912c524
+      surface
         text 查看

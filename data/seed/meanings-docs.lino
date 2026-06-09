@@ -1,65 +1,65 @@
 meanings
   explanation_request:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role explanation_request_lead # semantic-role
-    lexeme en # language
-      surface seed-surface-fd5fb03d3333
+    defined-by inquiry
+    defined-by action
+    role explanation_request_lead
+    lexeme en
+      surface
         text "how …"
-      surface seed-surface-87d0f4db245e
+      surface
         text " how "
-      surface seed-surface-38cad9cb70cc
+      surface
         text "explain …"
-      surface seed-surface-14edd51bb0ef
+      surface
         text "describe …"
-      surface seed-surface-b2d84ed84017
+      surface
         text "what does …"
-      surface seed-surface-c7a25a17cb57
+      surface
         text "what is …"
-      surface seed-surface-92ad0ad8ec21
+      surface
         text "tell me about …"
-      surface seed-surface-4230184c711b
+      surface
         text "how to use …"
-    lexeme ru # language
-      surface seed-surface-03afa5d26ecd
+    lexeme ru
+      surface
         text "как …"
-      surface seed-surface-4126020cd64e
+      surface
         text " как "
-      surface seed-surface-9618760cfcfc
+      surface
         text "объясни …"
-      surface seed-surface-fb0d93abc724
+      surface
         text "расскажи …"
-      surface seed-surface-35ab50b4124e
+      surface
         text "что такое …"
-    lexeme hi # language
-      surface seed-surface-77fc648bcbb5
+    lexeme hi
+      surface
         text "कैसे काम"
-      surface seed-surface-07c206908209
+      surface
         text समझाओ…
-      surface seed-surface-232b181c45e7
+      surface
         text "क्या है …"
-    lexeme zh # language
-      surface seed-surface-a02e6f81a7c6
+    lexeme zh
+      surface
         text 如何工作
-      surface seed-surface-bb6b52f0914c
+      surface
         text 怎么工作
-      surface seed-surface-6e252213cff7
+      surface
         text 解释…
-      surface seed-surface-6d1ddc5a4bc3
+      surface
         text 是什么
   code_method:
-    defined-by action # definition-link
-    defined-by concept # definition-link
-    role code_method_noun # semantic-role
-    lexeme en # language
-      surface seed-surface-3bff173522de
+    defined-by action
+    defined-by concept
+    role code_method_noun
+    lexeme en
+      surface
         text method
-    lexeme ru # language
-      surface seed-surface-fefb7f6f9a53
+    lexeme ru
+      surface
         text метод
-    lexeme hi # language
-      surface seed-surface-5c5dcab302c1
+    lexeme hi
+      surface
         text विधि
-    lexeme zh # language
-      surface seed-surface-dd834e0c34ba
+    lexeme zh
+      surface
         text 方法

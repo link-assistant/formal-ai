@@ -1,369 +1,369 @@
 meanings
   wikidata_item_apple:
-    grounded-in Q89 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-12005550f760
+    grounded-in Q89
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text apple
-      surface seed-surface-07639b82b2c1
+      surface
         text apples
-    lexeme ru # language
-      surface seed-surface-ab1aec3c115c
+    lexeme ru
+      surface
         text яблоко
-      surface seed-surface-b1632d257d8f
+      surface
         text яблоки
-    lexeme hi # language
-      surface seed-surface-eff2c3e390f5
+    lexeme hi
+      surface
         text सेब
-    lexeme zh # language
-      surface seed-surface-26a19114e6d1
+    lexeme zh
+      surface
         text 苹果
-      surface seed-surface-038d1a6e268d
+      surface
         text 蘋果
   wikidata_item_fruit:
-    grounded-in Q3314483 # source-id
-    defined-by concept # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-26e7a9e74c40
+    grounded-in Q3314483
+    defined-by concept
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text fruit
-      surface seed-surface-a776c1ca5efb
+      surface
         text fruits
-      surface seed-surface-f0012554fcf0
+      surface
         text "edible fruit"
-    lexeme ru # language
-      surface seed-surface-3898945780fc
+    lexeme ru
+      surface
         text фрукт
-      surface seed-surface-f61b5673293f
+      surface
         text фрукты
-      surface seed-surface-0a96dd514531
+      surface
         text плод
-    lexeme hi # language
-      surface seed-surface-b4fb983078fb
+    lexeme hi
+      surface
         text फल
-    lexeme zh # language
-      surface seed-surface-4b23fa710f4a
+    lexeme zh
+      surface
         text 水果
-      surface seed-surface-a35289b0b96e
+      surface
         text 水果类
   wikidata_item_sorting_algorithm:
-    grounded-in Q181593 # source-id
-    defined-by concept # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-0ded693250cd
+    grounded-in Q181593
+    defined-by concept
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text "sorting algorithm"
-      surface seed-surface-e20bc8df2518
+      surface
         text "sorting algorithms"
-      surface seed-surface-02c192e44f9d
+      surface
         text "sort algorithm"
-    lexeme ru # language
-      surface seed-surface-81a366608961
+    lexeme ru
+      surface
         text "алгоритм сортировки"
-    lexeme hi # language
-      surface seed-surface-39e7b5ffad76
+    lexeme hi
+      surface
         text "सॉर्टिंग एल्गोरिदम"
-    lexeme zh # language
-      surface seed-surface-3a03b9c0b646
+    lexeme zh
+      surface
         text 排序算法
   wikidata_item_water:
-    grounded-in Q283 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-1e646692834e
+    grounded-in Q283
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text water
-    lexeme ru # language
-      surface seed-surface-f5208c5ffc5c
+    lexeme ru
+      surface
         text вода
-    lexeme hi # language
-      surface seed-surface-5b91bd1f6602
+    lexeme hi
+      surface
         text पानी
-    lexeme zh # language
-      surface seed-surface-d8910989404e
+    lexeme zh
+      surface
         text 水
   wikidata_item_bread:
-    grounded-in Q7802 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-42a206c3f4e8
+    grounded-in Q7802
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text bread
-    lexeme ru # language
-      surface seed-surface-82b92892ab0f
+    lexeme ru
+      surface
         text хлеб
-    lexeme hi # language
-      surface seed-surface-418eb2db338c
+    lexeme hi
+      surface
         text रोटी
-    lexeme zh # language
-      surface seed-surface-04c4509c8a48
+    lexeme zh
+      surface
         text 面包
-      surface seed-surface-ab94839019ca
+      surface
         text 麵包
   wikidata_item_carrot:
-    grounded-in Q81 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-595fdc79200a
+    grounded-in Q81
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text carrot
-      surface seed-surface-f2a3e2b408b7
+      surface
         text carrots
-    lexeme ru # language
-      surface seed-surface-c1bd62edf48c
+    lexeme ru
+      surface
         text морковь
-    lexeme hi # language
-      surface seed-surface-a4dd8fccc0ff
+    lexeme hi
+      surface
         text गाजर
-    lexeme zh # language
-      surface seed-surface-fec7cbf97521
+    lexeme zh
+      surface
         text 胡萝卜
-      surface seed-surface-7b8b89ab2b30
+      surface
         text 胡蘿蔔
   wikidata_item_wikidata:
-    grounded-in Q2013 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-9d333fa91e98
+    grounded-in Q2013
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text Wikidata
-    lexeme ru # language
-      surface seed-surface-97a169d2aadb
+    lexeme ru
+      surface
         text викидата
-    lexeme hi # language
-      surface seed-surface-a7cbffc8d466
+    lexeme hi
+      surface
         text विकिडेटा
-    lexeme zh # language
-      surface seed-surface-800674093a4b
+    lexeme zh
+      surface
         text 维基数据
-      surface seed-surface-578327539805
+      surface
         text 維基數據
   wikidata_item_wikipedia:
-    grounded-in Q52 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-0dc4ce3fae94
+    grounded-in Q52
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text Wikipedia
-    lexeme ru # language
-      surface seed-surface-9112283b0085
+    lexeme ru
+      surface
         text википедия
-    lexeme hi # language
-      surface seed-surface-c90e2bd3320a
+    lexeme hi
+      surface
         text विकिपीडिया
-    lexeme zh # language
-      surface seed-surface-3aa0fefefa07
+    lexeme zh
+      surface
         text 维基百科
-      surface seed-surface-723b3bbc99a9
+      surface
         text 維基百科
   wikidata_item_wiktionary:
-    grounded-in Q151 # source-id
-    defined-by entity # definition-link
-    role wikidata_entity_anchor # semantic-role
-    lexeme en # language
-      surface seed-surface-05574cb57a14
+    grounded-in Q151
+    defined-by entity
+    role wikidata_entity_anchor
+    lexeme en
+      surface
         text Wiktionary
-    lexeme ru # language
-      surface seed-surface-67d87c79664b
+    lexeme ru
+      surface
         text викисловарь
-    lexeme hi # language
-      surface seed-surface-559384fe7064
+    lexeme hi
+      surface
         text विक्षनरी
-    lexeme zh # language
-      surface seed-surface-f167c182127f
+    lexeme zh
+      surface
         text 维基词典
-      surface seed-surface-0bf9d4010341
+      surface
         text 維基辭典
   wikidata_property_subclass_of:
-    grounded-in P279 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-4f4d5c76a136
+    grounded-in P279
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "subclass of"
-      surface seed-surface-e7db8a579a9e
+      surface
         text "is a kind of"
-      surface seed-surface-0a3773240f1f
+      surface
         text "is a type of"
-      surface seed-surface-b48488b57cbc
+      surface
         text "is subclass of"
-      surface seed-surface-808a16e89f75
+      surface
         text "kind of"
-      surface seed-surface-ea2c12a4da0a
+      surface
         text "type of"
-    lexeme ru # language
-      surface seed-surface-d9271054c995
+    lexeme ru
+      surface
         text род
-      surface seed-surface-58bfa4d6f61d
+      surface
         text тип
-    lexeme hi # language
-      surface seed-surface-e670e078ced7
+    lexeme hi
+      surface
         text उपवर्ग
-    lexeme zh # language
-      surface seed-surface-7565c7eb96c4
+    lexeme zh
+      surface
         text 子类
   wikidata_property_instance_of:
-    grounded-in P31 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-7f9b6c579862
+    grounded-in P31
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "instance of"
-      surface seed-surface-d5696bc29031
+      surface
         text "is a"
-        action wikidata_property_subclass_of # action
-      surface seed-surface-e2d7a65f4887
+        action wikidata_property_subclass_of
+      surface
         text "is an"
-        action wikidata_property_subclass_of # action
-      surface seed-surface-03b8f43ebd42
+        action wikidata_property_subclass_of
+      surface
         text "is the"
-      surface seed-surface-89e5f156e8e7
+      surface
         text "are a"
-        action wikidata_property_subclass_of # action
-      surface seed-surface-49f1c84dda07
+        action wikidata_property_subclass_of
+      surface
         text "are an"
-        action wikidata_property_subclass_of # action
-    lexeme ru # language
-      surface seed-surface-385560816c03
+        action wikidata_property_subclass_of
+    lexeme ru
+      surface
         text является
-      surface seed-surface-7f03997288df
+      surface
         text это
-    lexeme hi # language
-      surface seed-surface-7feb40973541
+    lexeme hi
+      surface
         text है
-    lexeme zh # language
-      surface seed-surface-4296a556aa86
+    lexeme zh
+      surface
         text 是
   wikidata_property_part_of:
-    grounded-in P361 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-7dff86316c3f
+    grounded-in P361
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "part of"
-      surface seed-surface-5e9af2d2fbec
+      surface
         text "is part of"
-      surface seed-surface-1c9159875c88
+      surface
         text "belongs to"
-    lexeme ru # language
-      surface seed-surface-c01be404f956
+    lexeme ru
+      surface
         text "является частью"
-      surface seed-surface-6d789a7e6d4a
+      surface
         text часть
-    lexeme hi # language
-      surface seed-surface-7ea35c05b961
+    lexeme hi
+      surface
         text "का हिस्सा"
-    lexeme zh # language
-      surface seed-surface-908c5d163d0b
+    lexeme zh
+      surface
         text 属于
   wikidata_property_has_part:
-    grounded-in P527 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-20914c948ac1
+    grounded-in P527
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "has part"
-      surface seed-surface-bda19cf69e99
+      surface
         text "has a part"
-      surface seed-surface-67736ce02a67
+      surface
         text contains
-      surface seed-surface-3922a00534b6
+      surface
         text includes
-    lexeme ru # language
-      surface seed-surface-2c9c4c353e43
+    lexeme ru
+      surface
         text содержит
-    lexeme hi # language
-      surface seed-surface-2284cef32690
+    lexeme hi
+      surface
         text "शामिल है"
-    lexeme zh # language
-      surface seed-surface-eb43a6424b1a
+    lexeme zh
+      surface
         text 包含
   wikidata_property_capital:
-    grounded-in P36 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-b72749752eee
+    grounded-in P36
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text capital
-      surface seed-surface-a558664e1286
+      surface
         text "is the capital of"
-      surface seed-surface-f01df2fe5119
+      surface
         text "is capital of"
-      surface seed-surface-90ed3f013613
+      surface
         text "capital of"
-    lexeme ru # language
-      surface seed-surface-7e50e6bc9f49
+    lexeme ru
+      surface
         text столица
-    lexeme hi # language
-      surface seed-surface-422114b91eb6
+    lexeme hi
+      surface
         text राजधानी
-    lexeme zh # language
-      surface seed-surface-fe86f2269d27
+    lexeme zh
+      surface
         text 首都
   wikidata_property_named_after:
-    grounded-in P138 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-655bcea24417
+    grounded-in P138
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "named after"
-      surface seed-surface-16777c7973a4
+      surface
         text "is named after"
-    lexeme ru # language
-      surface seed-surface-7587fa6a8b17
+    lexeme ru
+      surface
         text "назван в честь"
-    lexeme hi # language
-      surface seed-surface-1d0f568132ac
+    lexeme hi
+      surface
         text "के नाम पर"
-    lexeme zh # language
-      surface seed-surface-41c3a99193a4
+    lexeme zh
+      surface
         text 命名自
   wikidata_property_translation:
-    grounded-in P5972 # source-id
-    defined-by relation # definition-link
-    role translation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-4f066fbe07ce
+    grounded-in P5972
+    defined-by relation
+    role translation_property
+    lexeme en
+      surface
         text translation
-      surface seed-surface-82b92ab60014
+      surface
         text translate
-      surface seed-surface-a1430216dbc9
+      surface
         text translates
-    lexeme ru # language
-      surface seed-surface-94cfadd30f82
+    lexeme ru
+      surface
         text переведи
-      surface seed-surface-317944c5bc74
+      surface
         text перевести
-    lexeme hi # language
-      surface seed-surface-8fe959e95cd9
+    lexeme hi
+      surface
         text अनुवाद
-    lexeme zh # language
-      surface seed-surface-8f739d2b4ea4
+    lexeme zh
+      surface
         text 翻译
-      surface seed-surface-c0ea72ca0197
+      surface
         text 翻譯
   wikidata_property_item_for_this_sense:
-    grounded-in P5137 # source-id
-    defined-by relation # definition-link
-    role binary_relation_property # semantic-role
-    lexeme en # language
-      surface seed-surface-8b4fd11da9ce
+    grounded-in P5137
+    defined-by relation
+    role binary_relation_property
+    lexeme en
+      surface
         text "item for this sense"
-      surface seed-surface-6ec62c5d1109
+      surface
         text means
-      surface seed-surface-7b349a583956
+      surface
         text "meaning of"
-      surface seed-surface-4db64ecc73f0
+      surface
         text "meaning item"
-      surface seed-surface-d5fcdc49c80e
+      surface
         text "sense item"
-    lexeme ru # language
-      surface seed-surface-8b708b95e8fe
+    lexeme ru
+      surface
         text означает
-    lexeme hi # language
-      surface seed-surface-42a52e72376e
+    lexeme hi
+      surface
         text अर्थ
-    lexeme zh # language
-      surface seed-surface-3db40d4d22c6
+    lexeme zh
+      surface
         text 意思

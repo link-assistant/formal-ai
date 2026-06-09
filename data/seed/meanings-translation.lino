@@ -1,841 +1,841 @@
 meanings
   human_language:
-    defined-by concept # definition-link
-    role translation_language_genus # semantic-role
-    lexeme en # language
-      surface seed-surface-20c50544751d
+    defined-by concept
+    role translation_language_genus
+    lexeme en
+      surface
         text language
-    lexeme ru # language
-      surface seed-surface-2eeef65397b5
+    lexeme ru
+      surface
         text язык
-    lexeme hi # language
-      surface seed-surface-694adbb6e1b5
+    lexeme hi
+      surface
         text भाषा
-    lexeme zh # language
-      surface seed-surface-90f6b9c2ffe9
+    lexeme zh
+      surface
         text 语言
   language_english:
-    defined-by human_language # definition-link
-    role translation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-4a1171ab8b23
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
         text english
-    lexeme ru # language
-      surface seed-surface-1cad75892e72
+    lexeme ru
+      surface
         text английский
-    lexeme hi # language
-      surface seed-surface-1c7904e5fda8
+    lexeme hi
+      surface
         text अंग्रेज़ी
-      surface seed-surface-d93eef0c4b1f
+      surface
         text अंग्रेजी
-    lexeme zh # language
-      surface seed-surface-ecd35008db3a
+    lexeme zh
+      surface
         text 英语
-      surface seed-surface-de267a229536
+      surface
         text 英文
   language_russian:
-    defined-by human_language # definition-link
-    role translation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-8513df1ba01f
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
         text russian
-    lexeme ru # language
-      surface seed-surface-96ff7fb4d2ae
+    lexeme ru
+      surface
         text русский
-    lexeme hi # language
-      surface seed-surface-e01bf29f624a
+    lexeme hi
+      surface
         text रूसी
-    lexeme zh # language
-      surface seed-surface-cab5fd6745e6
+    lexeme zh
+      surface
         text 俄语
   language_hindi:
-    defined-by human_language # definition-link
-    role translation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-3b0c41ab926d
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
         text hindi
-    lexeme ru # language
-      surface seed-surface-1ef580f65990
+    lexeme ru
+      surface
         text хинди
-    lexeme hi # language
-      surface seed-surface-7dacc00e912f
+    lexeme hi
+      surface
         text हिंदी
-      surface seed-surface-a223e6a26f4e
+      surface
         text हिन्दी
-    lexeme zh # language
-      surface seed-surface-9c41f532f3d2
+    lexeme zh
+      surface
         text 印地语
   language_chinese:
-    defined-by human_language # definition-link
-    role translation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-d78328c97f8c
+    defined-by human_language
+    role translation_language
+    lexeme en
+      surface
         text chinese
-    lexeme ru # language
-      surface seed-surface-4399b4ac4e1f
+    lexeme ru
+      surface
         text китайский
-    lexeme hi # language
-      surface seed-surface-89f6738ccdaf
+    lexeme hi
+      surface
         text चीनी
-    lexeme zh # language
-      surface seed-surface-361d430631c1
+    lexeme zh
+      surface
         text 中文
-      surface seed-surface-ea8f7020aabd
+      surface
         text 汉语
-      surface seed-surface-c5474cd023dd
+      surface
         text 漢語
   translate:
-    defined-by action # definition-link
-    role translation_action # semantic-role
-    lexeme en # language
-      surface seed-surface-3c45c6944269
+    defined-by action
+    role translation_action
+    lexeme en
+      surface
         text translate
-    lexeme ru # language
-      surface seed-surface-3aa7af444222
+    lexeme ru
+      surface
         text перевести
-      surface seed-surface-d2105892730d
+      surface
         text переведи
-      surface seed-surface-743a21610517
+      surface
         text опиши
-    lexeme hi # language
-      surface seed-surface-c1fb42de81b6
+    lexeme hi
+      surface
         text अनुवाद
-    lexeme zh # language
-      surface seed-surface-fc84411fcee7
+    lexeme zh
+      surface
         text 翻译
-      surface seed-surface-9f9e56330129
+      surface
         text 翻譯
   translation_direction_source:
-    defined-by relation # definition-link
-    role translation_source_direction # semantic-role
-    lexeme en # language
-      surface seed-surface-1a352e119026
+    defined-by relation
+    role translation_source_direction
+    lexeme en
+      surface
         text from
-    lexeme ru # language
-      surface seed-surface-08c700fc5a94
+    lexeme ru
+      surface
         text с
-    lexeme hi # language
-      surface seed-surface-ec84648bc795
+    lexeme hi
+      surface
         text से
-    lexeme zh # language
-      surface seed-surface-121ccb090929
+    lexeme zh
+      surface
         text 从
   translation_direction_target:
-    defined-by relation # definition-link
-    role translation_target_direction # semantic-role
-    lexeme en # language
-      surface seed-surface-726a452265b3
+    defined-by relation
+    role translation_target_direction
+    lexeme en
+      surface
         text to
-    lexeme ru # language
-      surface seed-surface-0ae228477c88
+    lexeme ru
+      surface
         text на
-    lexeme hi # language
-      surface seed-surface-b49a4241f284
+    lexeme hi
+      surface
         text में
-    lexeme zh # language
-      surface seed-surface-22e664d0e5bd
+    lexeme zh
+      surface
         text 成
-      surface seed-surface-1a3949c4ae10
+      surface
         text 为
-      surface seed-surface-6d68e9c5a2d7
+      surface
         text 為
-      surface seed-surface-65d2a44f9473
+      surface
         text 到
   translate_from_english:
-    defined-by language_english # definition-link
-    defined-by translation_direction_source # definition-link
-    role translation_source_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-d4a3a8be8b7b
+    defined-by language_english
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
         text "from english"
-    lexeme ru # language
-      surface seed-surface-0525e33147d7
+    lexeme ru
+      surface
         text "с английского"
-    lexeme hi # language
-      surface seed-surface-08df8d1a4256
+    lexeme hi
+      surface
         text "अंग्रेजी से"
-      surface seed-surface-7284c286c84c
+      surface
         text "अंग्रेज़ी से"
-    lexeme zh # language
-      surface seed-surface-42ea8dbd8c30
+    lexeme zh
+      surface
         text 从英语
-      surface seed-surface-fca9a3db4033
+      surface
         text 从英文
   translate_from_russian:
-    defined-by language_russian # definition-link
-    defined-by translation_direction_source # definition-link
-    role translation_source_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-1bc797af2db3
+    defined-by language_russian
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
         text "from russian"
-    lexeme ru # language
-      surface seed-surface-95499356dfe3
+    lexeme ru
+      surface
         text "с русского"
-    lexeme hi # language
-      surface seed-surface-cacf9e43a5c3
+    lexeme hi
+      surface
         text "रूसी से"
-    lexeme zh # language
-      surface seed-surface-b1d469e5a62d
+    lexeme zh
+      surface
         text 从俄语
   translate_from_hindi:
-    defined-by language_hindi # definition-link
-    defined-by translation_direction_source # definition-link
-    role translation_source_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-704275abc5b7
+    defined-by language_hindi
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
         text "from hindi"
-    lexeme ru # language
-      surface seed-surface-f6ea55af6ee9
+    lexeme ru
+      surface
         text "с хинди"
-    lexeme hi # language
-      surface seed-surface-831855b56e89
+    lexeme hi
+      surface
         text "हिंदी से"
-      surface seed-surface-f9e59a0dacef
+      surface
         text "हिन्दी से"
-    lexeme zh # language
-      surface seed-surface-cb9ac0a204ee
+    lexeme zh
+      surface
         text 从印地语
-      surface seed-surface-ef9b8ae0cccc
+      surface
         text 从印地文
   translate_from_chinese:
-    defined-by language_chinese # definition-link
-    defined-by translation_direction_source # definition-link
-    role translation_source_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-816488973f0d
+    defined-by language_chinese
+    defined-by translation_direction_source
+    role translation_source_marker
+    lexeme en
+      surface
         text "from chinese"
-    lexeme ru # language
-      surface seed-surface-5d87e06ea2f4
+    lexeme ru
+      surface
         text "с китайского"
-    lexeme hi # language
-      surface seed-surface-e2699659bd4a
+    lexeme hi
+      surface
         text "चीनी से"
-    lexeme zh # language
-      surface seed-surface-445ed3ecdb39
+    lexeme zh
+      surface
         text 从中文
-      surface seed-surface-0228d8733b1a
+      surface
         text 从汉语
-      surface seed-surface-38a2d26b2c34
+      surface
         text 从漢語
   translate_into_english:
-    defined-by language_english # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_target_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-52d37844b845
+    defined-by language_english
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
         text "to english"
-    lexeme ru # language
-      surface seed-surface-f1833c61e8ee
+    lexeme ru
+      surface
         text "на английский"
-      surface seed-surface-b71285fb0005
+      surface
         text "на английском"
-    lexeme hi # language
-      surface seed-surface-b2c6dac6723e
+    lexeme hi
+      surface
         text "अंग्रेजी में"
-      surface seed-surface-37e89cd2c65d
+      surface
         text "अंग्रेज़ी में"
-    lexeme zh # language
-      surface seed-surface-d3ae98b2cb8d
+    lexeme zh
+      surface
         text 成英文
-      surface seed-surface-adde9a6ef3d0
+      surface
         text 成英语
-      surface seed-surface-cdc09fc3af42
+      surface
         text 为英文
-      surface seed-surface-10c519c7ea1e
+      surface
         text 为英语
-      surface seed-surface-af34c307e3ff
+      surface
         text 為英文
-      surface seed-surface-8ced3a4c955c
+      surface
         text 為英语
-      surface seed-surface-f55dbd9aa053
+      surface
         text 到英文
-      surface seed-surface-c95f9d85b7b8
+      surface
         text 到英语
   translate_into_russian:
-    defined-by language_russian # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_target_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-31c78175e98b
+    defined-by language_russian
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
         text "to russian"
-    lexeme ru # language
-      surface seed-surface-a736ac32f127
+    lexeme ru
+      surface
         text "на русский"
-    lexeme hi # language
-      surface seed-surface-f5d0567f6618
+    lexeme hi
+      surface
         text "रूसी में"
-    lexeme zh # language
-      surface seed-surface-bdce942f8046
+    lexeme zh
+      surface
         text 成俄语
-      surface seed-surface-873645af65e9
+      surface
         text 成俄語
-      surface seed-surface-cd12a3db7f80
+      surface
         text 为俄语
-      surface seed-surface-d8a189528eaf
+      surface
         text 为俄語
-      surface seed-surface-0fbfa4002e24
+      surface
         text 為俄语
-      surface seed-surface-bc595d6c61d0
+      surface
         text 為俄語
-      surface seed-surface-fc44db0bc1b0
+      surface
         text 到俄语
-      surface seed-surface-e936262d96e2
+      surface
         text 到俄語
   translate_into_hindi:
-    defined-by language_hindi # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_target_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-2adf54b379d3
+    defined-by language_hindi
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
         text "to hindi"
-    lexeme ru # language
-      surface seed-surface-29e3b48f391e
+    lexeme ru
+      surface
         text "на хинди"
-    lexeme hi # language
-      surface seed-surface-3fd3759cf4df
+    lexeme hi
+      surface
         text "हिंदी में"
-      surface seed-surface-684c2a6b72f6
+      surface
         text "हिन्दी में"
-    lexeme zh # language
-      surface seed-surface-f560a4ca4901
+    lexeme zh
+      surface
         text 成印地语
-      surface seed-surface-2cb5343c375b
+      surface
         text 成印地文
-      surface seed-surface-95190f0dd0d7
+      surface
         text 为印地语
-      surface seed-surface-2f4900272821
+      surface
         text 为印地文
-      surface seed-surface-ac9975e95eaf
+      surface
         text 為印地语
-      surface seed-surface-515ff310474e
+      surface
         text 為印地文
-      surface seed-surface-3cf8be99b368
+      surface
         text 到印地语
-      surface seed-surface-49a2cb1f7eff
+      surface
         text 到印地文
   translate_into_chinese:
-    defined-by language_chinese # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_target_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-4ddbb72f41c3
+    defined-by language_chinese
+    defined-by translation_direction_target
+    role translation_target_marker
+    lexeme en
+      surface
         text "to chinese"
-    lexeme ru # language
-      surface seed-surface-400d9a8d9e9a
+    lexeme ru
+      surface
         text "на китайский"
-    lexeme hi # language
-      surface seed-surface-3cfdcd3719e1
+    lexeme hi
+      surface
         text "चीनी में"
-    lexeme zh # language
-      surface seed-surface-ee12d42640e7
+    lexeme zh
+      surface
         text 成中文
-      surface seed-surface-1650fe119174
+      surface
         text 成汉语
-      surface seed-surface-c674b9ef7fe0
+      surface
         text 成漢語
-      surface seed-surface-4bae327a559f
+      surface
         text 为中文
-      surface seed-surface-bcfda4613402
+      surface
         text 为汉语
-      surface seed-surface-179401b80c0f
+      surface
         text 为漢語
-      surface seed-surface-640d4ba01dc5
+      surface
         text 為中文
-      surface seed-surface-e679716e7cdb
+      surface
         text 為汉语
-      surface seed-surface-23e3a1381a44
+      surface
         text 為漢語
-      surface seed-surface-6e9cb74e76d8
+      surface
         text 到中文
-      surface seed-surface-4a9feb721009
+      surface
         text 到汉语
-      surface seed-surface-abb9e0119882
+      surface
         text 到漢語
   translation_unquoted_frame:
-    defined-by translate # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_unquoted_frame # semantic-role
-    lexeme en # language
-      surface seed-surface-5cc1499a210d
+    defined-by translate
+    defined-by translation_direction_target
+    role translation_unquoted_frame
+    lexeme en
+      surface
         text "translate … to "
-    lexeme ru # language
-      surface seed-surface-ba4045a5d79f
+    lexeme ru
+      surface
         text "переведи … на "
-    lexeme hi # language
-      surface seed-surface-0fc53298ef03
+    lexeme hi
+      surface
         text अनुवाद
-    lexeme zh # language
-      surface seed-surface-be7dab9ddd88
+    lexeme zh
+      surface
         text 翻译
-      surface seed-surface-bc4b9234fad2
+      surface
         text 翻譯
   translation_into_marker:
-    defined-by translate # definition-link
-    defined-by translation_direction_target # definition-link
-    role translation_into_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-7d851a6a97d9
+    defined-by translate
+    defined-by translation_direction_target
+    role translation_into_marker
+    lexeme en
+      surface
         text "translate into"
-    lexeme ru # language
-      surface seed-surface-45b0f373a5cd
+    lexeme ru
+      surface
         text "перевести на"
-    lexeme hi # language
-      surface seed-surface-d5ce5e7e7201
+    lexeme hi
+      surface
         text " में अनुवाद"
-      surface seed-surface-f0b9a07c41da
+      surface
         text " मे अनुवाद"
-    lexeme zh # language
-      surface seed-surface-f8d1a2f25128
+    lexeme zh
+      surface
         text 翻译成
-      surface seed-surface-e80cee582e2f
+      surface
         text 翻译为
-      surface seed-surface-b67a1651ada0
+      surface
         text 翻译到
-      surface seed-surface-9e3a6c7ce07e
+      surface
         text 翻譯成
-      surface seed-surface-b40222b8b37f
+      surface
         text 翻譯為
-      surface seed-surface-0e40f739e4a2
+      surface
         text 翻譯到
   translation_object_marker:
-    defined-by relation # definition-link
-    role translation_object_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-3f1586b067fd
+    defined-by relation
+    role translation_object_marker
+    lexeme en
+      surface
         text of
-    lexeme ru # language
-      surface seed-surface-7a4fa03daea9
+    lexeme ru
+      surface
         text слова
-    lexeme hi # language
-      surface seed-surface-7442abd81285
+    lexeme hi
+      surface
         text " का "
-      surface seed-surface-f0e529f3275e
+      surface
         text " को "
-    lexeme zh # language
-      surface seed-surface-759847db54c8
+    lexeme zh
+      surface
         text 把
-      surface seed-surface-cbeda6ee8dea
+      surface
         text 将
   definition_command:
-    defined-by action # definition-link
-    role definition_command # semantic-role
-    lexeme en # language
-      surface seed-surface-fd7f6f363826
+    defined-by action
+    role definition_command
+    lexeme en
+      surface
         text define
-    lexeme ru # language
-      surface seed-surface-625a725fca3b
+    lexeme ru
+      surface
         text определи
-    lexeme hi # language
-      surface seed-surface-6d44f2aeb00d
+    lexeme hi
+      surface
         text "परिभाषित करें"
-    lexeme zh # language
-      surface seed-surface-e77643498d26
+    lexeme zh
+      surface
         text 定义
   links_notation_format:
-    defined-by concept # definition-link
-    role links_notation_format # semantic-role
-    lexeme en # language
-      surface seed-surface-1a8cf67db17f
+    defined-by concept
+    role links_notation_format
+    lexeme en
+      surface
         text "links notation"
-    lexeme ru # language
-      surface seed-surface-3df65b971176
+    lexeme ru
+      surface
         text "в links"
-    lexeme hi # language
-      surface seed-surface-8cec5effad76
+    lexeme hi
+      surface
         text "लिंक्स नोटेशन"
-    lexeme zh # language
-      surface seed-surface-200013f0a293
+    lexeme zh
+      surface
         text 链接表示法
   apple:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-903aab6d62ab
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text apple
-    lexeme ru # language
-      surface seed-surface-4e83b7baeb8e
+    lexeme ru
+      surface
         text яблоко
-      surface seed-surface-bbdd1185865d
+      surface
         text яблока
-      surface seed-surface-54298013d18c
+      surface
         text яблоку
-      surface seed-surface-9bb829a6e178
+      surface
         text яблоком
-      surface seed-surface-f514df02b468
+      surface
         text яблоке
-      surface seed-surface-e77452447acc
+      surface
         text яблоки
-      surface seed-surface-c003ac1358a3
+      surface
         text яблок
-      surface seed-surface-1e06f21b947b
+      surface
         text яблокам
-      surface seed-surface-3b76cffe1340
+      surface
         text яблоками
-      surface seed-surface-fbd555f5622b
+      surface
         text яблоках
-    lexeme hi # language
-      surface seed-surface-3aa4adc90d28
+    lexeme hi
+      surface
         text सेब
-    lexeme zh # language
-      surface seed-surface-12722046baca
+    lexeme zh
+      surface
         text 苹果
   greeting_hello:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-f7bcdd48e5b4
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text hello
-    lexeme ru # language
-      surface seed-surface-1e68b2e3b457
+    lexeme ru
+      surface
         text привет
-      surface seed-surface-b6b8de22e929
+      surface
         text здравствуйте
-    lexeme hi # language
-      surface seed-surface-78c993dc79f7
+    lexeme hi
+      surface
         text नमस्ते
-    lexeme zh # language
-      surface seed-surface-3003922d3d19
+    lexeme zh
+      surface
         text 你好
   gratitude_thank_you:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-32004ebd742a
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text "thank you"
-      surface seed-surface-6a9478240bfc
+      surface
         text thanks
-    lexeme ru # language
-      surface seed-surface-8c8973043289
+    lexeme ru
+      surface
         text спасибо
-    lexeme hi # language
-      surface seed-surface-dea501775d5c
+    lexeme hi
+      surface
         text धन्यवाद
-    lexeme zh # language
-      surface seed-surface-17a7494b7ade
+    lexeme zh
+      surface
         text 谢谢
-      surface seed-surface-dc17b5bb524d
+      surface
         text 謝謝
   affirmation_yes:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-33b04558fdd0
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text yes
-    lexeme ru # language
-      surface seed-surface-b92b2736943b
+    lexeme ru
+      surface
         text да
-    lexeme hi # language
-      surface seed-surface-6eb32d6fb64a
+    lexeme hi
+      surface
         text हाँ
-    lexeme zh # language
-      surface seed-surface-ed48db161116
+    lexeme zh
+      surface
         text 是
   negation_no:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-a3f0b0c922ab
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text no
-    lexeme ru # language
-      surface seed-surface-41513f3164ab
+    lexeme ru
+      surface
         text нет
-    lexeme hi # language
-      surface seed-surface-bf944d004c1e
+    lexeme hi
+      surface
         text नहीं
-    lexeme zh # language
-      surface seed-surface-532272c1473b
+    lexeme zh
+      surface
         text 不
   tomato:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-5c764aab7ad0
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text tomato
-    lexeme ru # language
-      surface seed-surface-cbcd78d6df6d
+    lexeme ru
+      surface
         text помидор
-      surface seed-surface-dd539683ed10
+      surface
         text томат
-    lexeme hi # language
-      surface seed-surface-625d93bb6672
+    lexeme hi
+      surface
         text टमाटर
-    lexeme zh # language
-      surface seed-surface-086e6cef4f15
+    lexeme zh
+      surface
         text 番茄
-      surface seed-surface-46938fb1fc92
+      surface
         text 西红柿
   cucumber:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-3dabed6952b4
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text cucumber
-    lexeme ru # language
-      surface seed-surface-cc09afd968f5
+    lexeme ru
+      surface
         text огурец
-    lexeme hi # language
-      surface seed-surface-cd56c0029abe
+    lexeme hi
+      surface
         text खीरा
-    lexeme zh # language
-      surface seed-surface-2a59a58ba691
+    lexeme zh
+      surface
         text 黄瓜
   potato:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-9748a4f0755d
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text potato
-    lexeme ru # language
-      surface seed-surface-cba16c426bf8
+    lexeme ru
+      surface
         text картофель
-      surface seed-surface-cf72051e3965
+      surface
         text картошка
-    lexeme hi # language
-      surface seed-surface-5d4815b3849e
+    lexeme hi
+      surface
         text आलू
-    lexeme zh # language
-      surface seed-surface-bc79646a756b
+    lexeme zh
+      surface
         text 土豆
-      surface seed-surface-8f612219f897
+      surface
         text 马铃薯
   carrot:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-57ada1049189
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text carrot
-    lexeme ru # language
-      surface seed-surface-3127d9bf5599
+    lexeme ru
+      surface
         text морковь
-    lexeme hi # language
-      surface seed-surface-ea6a8cb38610
+    lexeme hi
+      surface
         text गाजर
-    lexeme zh # language
-      surface seed-surface-141d4f291241
+    lexeme zh
+      surface
         text 胡萝卜
   bread:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-563796a630a8
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text bread
-    lexeme ru # language
-      surface seed-surface-3f5f9eb0875f
+    lexeme ru
+      surface
         text хлеб
-    lexeme hi # language
-      surface seed-surface-ef136b9f6735
+    lexeme hi
+      surface
         text रोटी
-    lexeme zh # language
-      surface seed-surface-96c0c4bc8c4f
+    lexeme zh
+      surface
         text 面包
   water:
-    defined-by entity # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-976cd327f943
+    defined-by entity
+    role compositional_lemma
+    lexeme en
+      surface
         text water
-    lexeme ru # language
-      surface seed-surface-a1635796ccd0
+    lexeme ru
+      surface
         text вода
-    lexeme hi # language
-      surface seed-surface-1a0e44787262
+    lexeme hi
+      surface
         text पानी
-    lexeme zh # language
-      surface seed-surface-7934b630eb20
+    lexeme zh
+      surface
         text 水
   good:
-    defined-by property # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-7e15a47587db
+    defined-by property
+    role compositional_lemma
+    lexeme en
+      surface
         text good
-    lexeme ru # language
-      surface seed-surface-8d46a864db79
+    lexeme ru
+      surface
         text доброе
-      surface seed-surface-772b34e8bf68
+      surface
         text добрый
-      surface seed-surface-d964c30d03a9
+      surface
         text добрая
-      surface seed-surface-515b9b7770e0
+      surface
         text добрые
-      surface seed-surface-ea3afa655ed6
+      surface
         text доброго
-      surface seed-surface-e22d5258ee13
+      surface
         text добрую
-      surface seed-surface-940d3b71463e
+      surface
         text добрым
-      surface seed-surface-420d380d6292
+      surface
         text хорошее
-      surface seed-surface-3d6d3fa59ccd
+      surface
         text хороший
-      surface seed-surface-ac4229bca8bb
+      surface
         text хорошая
-      surface seed-surface-2006e2c77769
+      surface
         text хорошие
-      surface seed-surface-1456f6545b01
+      surface
         text хорошего
-      surface seed-surface-ab8e4979075b
+      surface
         text хорошую
-      surface seed-surface-d6014109d7a8
+      surface
         text хорошим
-    lexeme hi # language
-      surface seed-surface-78f5458637b2
+    lexeme hi
+      surface
         text अच्छा
-    lexeme zh # language
-      surface seed-surface-d9c879eca571
+    lexeme zh
+      surface
         text 好
   find:
-    defined-by action # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-0fe921335684
+    defined-by action
+    role compositional_lemma
+    lexeme en
+      surface
         text find
-    lexeme ru # language
-      surface seed-surface-b054db1ace09
+    lexeme ru
+      surface
         text найди
-      surface seed-surface-7778feb7bc7a
+      surface
         text найдите
-      surface seed-surface-6298588c12bd
+      surface
         text найти
-    lexeme hi # language
-      surface seed-surface-76fd09ccc24a
+    lexeme hi
+      surface
         text खोजें
-    lexeme zh # language
-      surface seed-surface-094301868038
+    lexeme zh
+      surface
         text 查找
   synonym:
-    defined-by concept # definition-link
-    role compositional_lemma # semantic-role
-    role compositional_genitive_head # semantic-role
-    lexeme en # language
-      surface seed-surface-c1c51791d306
+    defined-by concept
+    role compositional_lemma
+    role compositional_genitive_head
+    lexeme en
+      surface
         text synonyms
-    lexeme ru # language
-      surface seed-surface-afd44885998c
+    lexeme ru
+      surface
         text синоним
-      surface seed-surface-910352379cee
+      surface
         text синонимы
-      surface seed-surface-c80b55b0f7f9
+      surface
         text синонимов
-    lexeme hi # language
-      surface seed-surface-77d93c82ec11
+    lexeme hi
+      surface
         text पर्यायवाची
-    lexeme zh # language
-      surface seed-surface-199216137aff
+    lexeme zh
+      surface
         text 同义词
   example:
-    defined-by concept # definition-link
-    role compositional_lemma # semantic-role
-    role compositional_genitive_head # semantic-role
-    lexeme en # language
-      surface seed-surface-cf0ac5ccc5d3
+    defined-by concept
+    role compositional_lemma
+    role compositional_genitive_head
+    lexeme en
+      surface
         text examples
-    lexeme ru # language
-      surface seed-surface-a6395a82435b
+    lexeme ru
+      surface
         text пример
-      surface seed-surface-cdf817210288
+      surface
         text примеры
-      surface seed-surface-f3273632571c
+      surface
         text примеров
-    lexeme hi # language
-      surface seed-surface-552b4563d5bc
+    lexeme hi
+      surface
         text उदाहरण
-    lexeme zh # language
-      surface seed-surface-bc8edee76164
+    lexeme zh
+      surface
         text 例子
   agreement:
-    defined-by concept # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-fcf07acf0bd3
+    defined-by concept
+    role compositional_lemma
+    lexeme en
+      surface
         text agreement
-    lexeme ru # language
-      surface seed-surface-2aac972fa2ec
+    lexeme ru
+      surface
         text согласование
-      surface seed-surface-5288ea9ba819
+      surface
         text согласования
-        action genitive # action
-      surface seed-surface-001a618123ce
+        action genitive
+      surface
         text согласованию
-      surface seed-surface-7054583d6cd4
+      surface
         text согласованием
-      surface seed-surface-d71d05048bff
+      surface
         text согласовании
-    lexeme hi # language
-      surface seed-surface-375a7b8e5373
+    lexeme hi
+      surface
         text सहमति
-    lexeme zh # language
-      surface seed-surface-e19b69cb653f
+    lexeme zh
+      surface
         text 一致
   conjunction_or:
-    defined-by relation # definition-link
-    role compositional_lemma # semantic-role
-    lexeme en # language
-      surface seed-surface-2ff7a2bfe7e4
+    defined-by relation
+    role compositional_lemma
+    lexeme en
+      surface
         text or
-    lexeme ru # language
-      surface seed-surface-bbceb5b2d417
+    lexeme ru
+      surface
         text или
-    lexeme hi # language
-      surface seed-surface-81887852fed0
+    lexeme hi
+      surface
         text या
-    lexeme zh # language
-      surface seed-surface-5fcc4ede8c75
+    lexeme zh
+      surface
         text 或
   who_are_you:
-    defined-by concept # definition-link
-    role compositional_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-c0695ab7686c
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
         text "Who are you?"
-    lexeme ru # language
-      surface seed-surface-c6e6cb30a718
+    lexeme ru
+      surface
         text "кто ты"
-      surface seed-surface-986441a49f7e
+      surface
         text "кто ты такой"
-      surface seed-surface-32b8d827ef2a
+      surface
         text "кто ты такая"
-      surface seed-surface-5e38c9dbdafd
+      surface
         text "кто вы"
-      surface seed-surface-64caae4d4c11
+      surface
         text "кто вы такой"
-      surface seed-surface-15bc0d5e5707
+      surface
         text "кто вы такая"
-    lexeme hi # language
-      surface seed-surface-3d616a3cb9cc
+    lexeme hi
+      surface
         text "आप कौन हैं"
-    lexeme zh # language
-      surface seed-surface-356edc73f7f1
+    lexeme zh
+      surface
         text 你是谁
   what_is_this:
-    defined-by concept # definition-link
-    role compositional_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-786154003d89
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
         text "What is this?"
-    lexeme ru # language
-      surface seed-surface-1bb1637d2e3f
+    lexeme ru
+      surface
         text "что это"
-      surface seed-surface-35c9ace7e87b
+      surface
         text "что это такое"
-    lexeme hi # language
-      surface seed-surface-145a2d01f409
+    lexeme hi
+      surface
         text "यह क्या है"
-    lexeme zh # language
-      surface seed-surface-1848fc81d91f
+    lexeme zh
+      surface
         text 这是什么
   how_are_you:
-    defined-by concept # definition-link
-    role compositional_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-ff9809b88b8b
+    defined-by concept
+    role compositional_phrase
+    lexeme en
+      surface
         text "how are you"
-    lexeme ru # language
-      surface seed-surface-c498522b77c8
+    lexeme ru
+      surface
         text "как дела"
-    lexeme hi # language
-      surface seed-surface-163106265103
+    lexeme hi
+      surface
         text "आप कैसे हैं"
-    lexeme zh # language
-      surface seed-surface-7b1cf5e2da99
+    lexeme zh
+      surface
         text 你好吗

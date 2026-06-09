@@ -1,792 +1,792 @@
 meanings
   feature_capability_web_search:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-7259d6a1c159
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "web search"
-      surface seed-surface-3d570d2783a1
+      surface
         text "internet search"
-      surface seed-surface-0d51428e0463
+      surface
         text "search engines"
-      surface seed-surface-5181a246e8f2
+      surface
         text "can you search the internet"
-      surface seed-surface-c9e678a25484
+      surface
         text "can you search internet"
-      surface seed-surface-141a989dfda2
+      surface
         text "can you search the web"
-      surface seed-surface-56162d406337
+      surface
         text "can you search web"
-      surface seed-surface-0ad39a92858e
+      surface
         text "can you search online"
-      surface seed-surface-7cc7df039f4c
+      surface
         text "do you have internet search"
-      surface seed-surface-5eaa791d3fc3
+      surface
         text "do you have web search"
-      surface seed-surface-42e7228c4668
+      surface
         text "do you have internet access"
-      surface seed-surface-6a4c990e0663
+      surface
         text "are you connected to search engines"
-      surface seed-surface-07c15a2dc54a
+      surface
         text "can you use search engines"
-      surface seed-surface-fb1a1d9525b9
+      surface
         text "can you browse the web"
-    lexeme ru # language
-      surface seed-surface-b58f6d8e8805
+    lexeme ru
+      surface
         text веб-поиск
-      surface seed-surface-2263faa674ba
+      surface
         text "веб поиск"
-      surface seed-surface-243d15b199dc
+      surface
         text "поиск в интернете"
-      surface seed-surface-2a62a33c99fd
+      surface
         text поисковик
-      surface seed-surface-a7d66068981f
+      surface
         text "поисковые системы"
-      surface seed-surface-36ce734ca325
+      surface
         text "можешь искать в интернете"
-      surface seed-surface-94cdd16d6614
+      surface
         text "можешь искать интернет"
-      surface seed-surface-2ca73dee7c3d
+      surface
         text "умеешь искать в интернете"
-      surface seed-surface-91b5f5ea7666
+      surface
         text "умеешь искать интернет"
-      surface seed-surface-f150c58ded5c
+      surface
         text "можешь искать онлайн"
-      surface seed-surface-8af256524445
+      surface
         text "умеешь искать онлайн"
-      surface seed-surface-ecf96508f338
+      surface
         text "у тебя есть веб-поиск"
-      surface seed-surface-ef42c24c8390
+      surface
         text "у тебя есть веб поиск"
-      surface seed-surface-e4eb17d468ab
+      surface
         text "у тебя есть поиск в интернете"
-      surface seed-surface-102077af5fa7
+      surface
         text "есть доступ к интернету"
-      surface seed-surface-61469e6305e6
+      surface
         text "подключен к поисковикам"
-      surface seed-surface-b446bc0b8771
+      surface
         text "подключена к поисковикам"
-      surface seed-surface-116ea80d3ecc
+      surface
         text "подключен к поисковым системам"
-      surface seed-surface-3eda95ed1ebd
+      surface
         text "можешь пользоваться интернетом"
-    lexeme hi # language
-      surface seed-surface-105e7c307240
+    lexeme hi
+      surface
         text "web search"
-      surface seed-surface-1d6044d5bc7a
+      surface
         text "internet search"
-      surface seed-surface-c13450769b24
+      surface
         text "search engine"
-      surface seed-surface-38e9f2cd8237
+      surface
         text "इंटरनेट पर खोज सकते"
-      surface seed-surface-b78357378317
+      surface
         text "ऑनलाइन खोज सकते"
-      surface seed-surface-b4e7d0c6b043
+      surface
         text "इंटरनेट खोज है"
-      surface seed-surface-e103d5fa3bb5
+      surface
         text "वेब खोज है"
-      surface seed-surface-0a78bee0cb61
+      surface
         text "सर्च इंजन से जुड़े"
-      surface seed-surface-39f649751de3
+      surface
         text "खोज इंजन से जुड़े"
-    lexeme zh # language
-      surface seed-surface-72a1a6c88717
+    lexeme zh
+      surface
         text "web search"
-      surface seed-surface-20493e05672b
+      surface
         text 搜索引擎
-      surface seed-surface-76e88532fa09
+      surface
         text 上网搜索
-      surface seed-surface-0ba75d57d922
+      surface
         text 搜索互联网
-      surface seed-surface-c61b569289b5
+      surface
         text 搜索网络
-      surface seed-surface-2a3c5748dfbb
+      surface
         text 联网搜索
-      surface seed-surface-294175b42e01
+      surface
         text 用搜索引擎
-      surface seed-surface-09527c03deb7
+      surface
         text 使用搜索引擎
-      surface seed-surface-f97390f7b910
+      surface
         text 网络搜索
   feature_capability_diagnostics:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-0147216676b1
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text diagnostics
-      surface seed-surface-a4e9b61c06c7
+      surface
         text diagnostic
-      surface seed-surface-3d0a57aea189
+      surface
         text trace
-      surface seed-surface-eb38f9adefa8
+      surface
         text "reasoning trace"
-      surface seed-surface-77ef3fd1df47
+      surface
         text "show diagnostics"
-    lexeme ru # language
-      surface seed-surface-f3d039fedbb9
+    lexeme ru
+      surface
         text диагностика
-      surface seed-surface-9f9c2ba361e0
+      surface
         text диагност
-      surface seed-surface-ef49349a87d2
+      surface
         text трассировка
-      surface seed-surface-e784eb7e5731
+      surface
         text trace
-    lexeme hi # language
-      surface seed-surface-c37b33a36d85
+    lexeme hi
+      surface
         text diagnostics
-      surface seed-surface-fc5843dbf80e
+      surface
         text निदान
-      surface seed-surface-a5e8af16154a
+      surface
         text trace
-    lexeme zh # language
-      surface seed-surface-5a27ad4c1217
+    lexeme zh
+      surface
         text 诊断
-      surface seed-surface-7587e19ba7ba
+      surface
         text trace
-      surface seed-surface-911981685580
+      surface
         text 推理跟踪
   feature_capability_agent_mode:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-201e7ef44179
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "agent mode"
-      surface seed-surface-b340dc426560
+      surface
         text agent
-      surface seed-surface-62d43c02aa35
+      surface
         text multi-step
-      surface seed-surface-7f54b396aa36
+      surface
         text autonomous
-    lexeme ru # language
-      surface seed-surface-f4ca0bf22948
+    lexeme ru
+      surface
         text "agent mode"
-      surface seed-surface-5807c2818bc2
+      surface
         text агент
-      surface seed-surface-4704d2c0f143
+      surface
         text многошаг
-      surface seed-surface-5238516b3d4a
+      surface
         text автоном
-    lexeme hi # language
-      surface seed-surface-076de4448dc6
+    lexeme hi
+      surface
         text "agent mode"
-      surface seed-surface-8352d652a89a
+      surface
         text एजेंट
-      surface seed-surface-2c8304724645
+      surface
         text multi-step
-    lexeme zh # language
-      surface seed-surface-e6bb272718fa
+    lexeme zh
+      surface
         text "agent mode"
-      surface seed-surface-8317a2ddde67
+      surface
         text 代理
-      surface seed-surface-19952f64038a
+      surface
         text 多步骤
   feature_capability_definition_fusion:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-3ec622b6bd8d
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "definition fusion"
-      surface seed-surface-c9aca3d4b7e4
+      surface
         text "merge definitions"
-      surface seed-surface-72dd68f8be49
+      surface
         text "automatic definition"
-    lexeme ru # language
-      surface seed-surface-1f519c92da9d
+    lexeme ru
+      surface
         text "слияние определений"
-      surface seed-surface-ba176c35b3fa
+      surface
         text "объединение определений"
-    lexeme hi # language
-      surface seed-surface-e67660c6b6e7
+    lexeme hi
+      surface
         text "definition fusion"
-      surface seed-surface-aad780143cc7
+      surface
         text "merge definitions"
-      surface seed-surface-c139ef58d319
+      surface
         text "परिभाषा विलय"
-    lexeme zh # language
-      surface seed-surface-554e77f8a00b
+    lexeme zh
+      surface
         text "definition fusion"
-      surface seed-surface-a2b8330a9ee1
+      surface
         text 合并定义
   feature_capability_configuration:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-66fcba73ca17
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text settings
-      surface seed-surface-254dac970fe9
+      surface
         text configuration
-      surface seed-surface-27eca760a0fd
+      surface
         text "configure settings"
-      surface seed-surface-92e2e3333b16
+      surface
         text theme
-      surface seed-surface-2fd35492871a
+      surface
         text language
-      surface seed-surface-54934ca8b2b8
+      surface
         text "chat style"
-      surface seed-surface-2edb161c942f
+      surface
         text configure
-      surface seed-surface-b831f309a633
+      surface
         text preferences
-      surface seed-surface-cbb5fa7b6f59
+      surface
         text "composer style"
-      surface seed-surface-f7379abcef32
+      surface
         text "ui skin"
-    lexeme ru # language
-      surface seed-surface-75bac58b692f
+    lexeme ru
+      surface
         text настройки
-      surface seed-surface-c521b360212d
+      surface
         text настройка
-      surface seed-surface-ab2f2fc13df1
+      surface
         text конфигурация
-      surface seed-surface-f2a008f87102
+      surface
         text тема
-      surface seed-surface-055052f32365
+      surface
         text язык
-      surface seed-surface-35d05fe54a1e
+      surface
         text "стиль чата"
-      surface seed-surface-4985e9420e31
+      surface
         text оформление
-      surface seed-surface-73fef1898e2f
+      surface
         text настрой
-      surface seed-surface-bf5d6da6539e
+      surface
         text конфигурац
-      surface seed-surface-46f0418ca8df
+      surface
         text параметр
-    lexeme hi # language
-      surface seed-surface-31052774992d
+    lexeme hi
+      surface
         text settings
-      surface seed-surface-914b94335223
+      surface
         text configuration
-      surface seed-surface-2a2caa6aa0a9
+      surface
         text theme
-      surface seed-surface-0f7aea2d0df4
+      surface
         text language
-      surface seed-surface-a684b4cce48c
+      surface
         text सेटिंग
-    lexeme zh # language
-      surface seed-surface-8ef8a6d037ae
+    lexeme zh
+      surface
         text 设置
-      surface seed-surface-b5992cf90d2e
+      surface
         text 配置
-      surface seed-surface-f5cc775542c6
+      surface
         text 主题
-      surface seed-surface-e85bac1bb3b3
+      surface
         text 语言
-      surface seed-surface-4477a1fb5bb4
+      surface
         text 聊天样式
   feature_capability_memory_actions:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-2517f8d01c7f
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "export memory"
-      surface seed-surface-014d0f609fce
+      surface
         text "import memory"
-      surface seed-surface-06822a779b22
+      surface
         text "memory export"
-      surface seed-surface-472325522cef
+      surface
         text "memory import"
-    lexeme ru # language
-      surface seed-surface-ecfd764f2508
+    lexeme ru
+      surface
         text "экспорт памяти"
-      surface seed-surface-1c85371775b2
+      surface
         text "импорт памяти"
-      surface seed-surface-5c0e03422508
+      surface
         text "память экспорт"
-      surface seed-surface-58faeb66e875
+      surface
         text "память импорт"
-    lexeme hi # language
-      surface seed-surface-3ebb4940cc8f
+    lexeme hi
+      surface
         text "memory export"
-      surface seed-surface-92892758ebb2
+      surface
         text "memory import"
-      surface seed-surface-b4216ea9a6db
+      surface
         text "स्मृति निर्यात"
-      surface seed-surface-1755b493ca4a
+      surface
         text "स्मृति आयात"
-    lexeme zh # language
-      surface seed-surface-04a4afc60798
+    lexeme zh
+      surface
         text 导出记忆
-      surface seed-surface-4e3efb8affa2
+      surface
         text 导入记忆
-      surface seed-surface-ce608fc7cefe
+      surface
         text "memory export"
-      surface seed-surface-c9b00046d945
+      surface
         text "memory import"
   feature_capability_greeting:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-3b8a1dd1ea73
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text greeting
-      surface seed-surface-8bfed3338c1a
+      surface
         text greetings
-      surface seed-surface-82e355dd739a
+      surface
         text "say hello"
-      surface seed-surface-d58bd63253c0
+      surface
         text "respond to hello"
-    lexeme ru # language
-      surface seed-surface-3570a513c9e3
+    lexeme ru
+      surface
         text приветствие
-      surface seed-surface-d3ba0321ced3
+      surface
         text приветствия
-      surface seed-surface-d8701e080639
+      surface
         text здороваться
-      surface seed-surface-38b8a3392d9a
+      surface
         text привет
-    lexeme hi # language
-      surface seed-surface-041fcfb52262
+    lexeme hi
+      surface
         text अभिवादन
-      surface seed-surface-cd71c470d60a
+      surface
         text नमस्ते
-      surface seed-surface-ccff044e17ab
+      surface
         text hello
-    lexeme zh # language
-      surface seed-surface-cd54a42bb25d
+    lexeme zh
+      surface
         text 问候
-      surface seed-surface-155406730ad2
+      surface
         text 打招呼
-      surface seed-surface-6d8080f548ba
+      surface
         text 你好
   feature_capability_write_program:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-cce7d6e96bca
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "hello world"
-      surface seed-surface-d53cdd0a36d6
+      surface
         text "write code"
-      surface seed-surface-2ebbad1fe67a
+      surface
         text "generate code"
-      surface seed-surface-559580cc91bd
+      surface
         text "write program"
-      surface seed-surface-8986a0d06916
+      surface
         text program
-    lexeme ru # language
-      surface seed-surface-defdb13ad7bf
+    lexeme ru
+      surface
         text "hello world"
-      surface seed-surface-36853c32a314
+      surface
         text код
-      surface seed-surface-893454c864ec
+      surface
         text программу
-      surface seed-surface-506d386abbc0
+      surface
         text программа
-    lexeme hi # language
-      surface seed-surface-79e2c48de660
+    lexeme hi
+      surface
         text "hello world"
-      surface seed-surface-0a50a18f628c
+      surface
         text code
-      surface seed-surface-8c2511b446fa
+      surface
         text program
-      surface seed-surface-15facd765249
+      surface
         text प्रोग्राम
-    lexeme zh # language
-      surface seed-surface-059af3243c4e
+    lexeme zh
+      surface
         text "hello world"
-      surface seed-surface-437d303058fa
+      surface
         text 代码
-      surface seed-surface-5b39352ab99e
+      surface
         text 程序
   feature_capability_concept_lookup:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-1fa532fa7d1d
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "concept lookup"
-      surface seed-surface-bd173e90343f
+      surface
         text concept
-      surface seed-surface-dae41cdb195d
+      surface
         text "wikipedia lookup"
-    lexeme ru # language
-      surface seed-surface-5b51bfe433ac
+    lexeme ru
+      surface
         text "поиск понятий"
-      surface seed-surface-943dfc57221b
+      surface
         text понятие
-    lexeme hi # language
-      surface seed-surface-612d21301362
+    lexeme hi
+      surface
         text concept
-      surface seed-surface-7ca27fb07362
+      surface
         text अवधारणा
-    lexeme zh # language
-      surface seed-surface-7f9f8a25e5c6
+    lexeme zh
+      surface
         text 概念
   feature_capability_arithmetic:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-68571e2dc3f6
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text arithmetic
-      surface seed-surface-5067fa1256a6
+      surface
         text calculate
-      surface seed-surface-bca81884ee7e
+      surface
         text math
-      surface seed-surface-17f4c7f0157c
+      surface
         text "2 + 2"
-    lexeme ru # language
-      surface seed-surface-3b808a305b5e
+    lexeme ru
+      surface
         text арифмет
-      surface seed-surface-e1d5c777f836
+      surface
         text считать
-      surface seed-surface-b721610accab
+      surface
         text посчитать
-      surface seed-surface-9488927e2a0a
+      surface
         text "2 + 2"
-    lexeme hi # language
-      surface seed-surface-3226b7a56a5f
+    lexeme hi
+      surface
         text अंकगणित
-      surface seed-surface-bbc321754b12
+      surface
         text गणना
-      surface seed-surface-8e6c90a6e59d
+      surface
         text math
-      surface seed-surface-cb547f22a21b
+      surface
         text "2 + 2"
-    lexeme zh # language
-      surface seed-surface-3909de75ef79
+    lexeme zh
+      surface
         text 算术
-      surface seed-surface-c5568419b798
+      surface
         text 计算
-      surface seed-surface-755a18b9e383
+      surface
         text 数学
-      surface seed-surface-a597bcab12c5
+      surface
         text "2 + 2"
   feature_capability_translation:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-c974999f01f0
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text translation
-      surface seed-surface-502a69ae1676
+      surface
         text translate
-      surface seed-surface-71024a985e46
+      surface
         text "language translation"
-    lexeme ru # language
-      surface seed-surface-2e5865c617a8
+    lexeme ru
+      surface
         text перевод
-      surface seed-surface-9a31119e2edd
+      surface
         text переводить
-      surface seed-surface-5ba92c1db3b5
+      surface
         text перевести
-    lexeme hi # language
-      surface seed-surface-16ed4b523b73
+    lexeme hi
+      surface
         text अनुवाद
-      surface seed-surface-1fd024c63991
+      surface
         text translate
-      surface seed-surface-7f4dd38149e8
+      surface
         text translation
-    lexeme zh # language
-      surface seed-surface-41814cc2ad62
+    lexeme zh
+      surface
         text 翻译
-      surface seed-surface-8a31c602a581
+      surface
         text translation
-      surface seed-surface-2a921dc95688
+      surface
         text translate
   feature_capability_memory:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-26946eb8b9d3
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text memory
-      surface seed-surface-5003fec1a6fa
+      surface
         text remember
-      surface seed-surface-f4f06e869f4a
+      surface
         text recall
-      surface seed-surface-c1c5c38cec79
+      surface
         text "conversation context"
-    lexeme ru # language
-      surface seed-surface-872ecc2a7d49
+    lexeme ru
+      surface
         text память
-      surface seed-surface-4776a3f5f6fa
+      surface
         text помнить
-      surface seed-surface-581ab4dfaf48
+      surface
         text запомнить
-      surface seed-surface-d35e9439c5ae
+      surface
         text контекст
-    lexeme hi # language
-      surface seed-surface-6cb65a11d046
+    lexeme hi
+      surface
         text स्मृति
-      surface seed-surface-f7bdc215d4f5
+      surface
         text याद
-      surface seed-surface-e29c59c51098
+      surface
         text memory
-      surface seed-surface-0c3c96de95ac
+      surface
         text context
-    lexeme zh # language
-      surface seed-surface-ebccf240c18d
+    lexeme zh
+      surface
         text 记忆
-      surface seed-surface-f694ad1af391
+      surface
         text 记住
-      surface seed-surface-d2d8fc30ec1d
+      surface
         text 回忆
-      surface seed-surface-97eb4542a1f5
+      surface
         text 上下文
   feature_capability_demo_mode:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-170c45ac33e9
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "demo mode"
-      surface seed-surface-c9f8440cd271
+      surface
         text demo
-      surface seed-surface-159eb679426c
+      surface
         text "scripted demo"
-    lexeme ru # language
-      surface seed-surface-78f5ed989ad4
+    lexeme ru
+      surface
         text демо
-      surface seed-surface-545cd5cd5a07
+      surface
         text демо-режим
-      surface seed-surface-d2fbaf7c8e5a
+      surface
         text "сценарный демо"
-    lexeme hi # language
-      surface seed-surface-52b729feaeb8
+    lexeme hi
+      surface
         text demo
-      surface seed-surface-40f028f31827
+      surface
         text डेमो
-    lexeme zh # language
-      surface seed-surface-46ef80b0ef58
+    lexeme zh
+      surface
         text demo
-      surface seed-surface-7cb4a0f23163
+      surface
         text 演示
   feature_capability_http_url:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-84e207168dfb
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text "http fetch"
-      surface seed-surface-cfa19b94bdcd
+      surface
         text "fetch url"
-      surface seed-surface-95d23cc04f24
+      surface
         text "open url"
-      surface seed-surface-89630867b6cc
+      surface
         text "navigate to url"
-      surface seed-surface-41a7e5ac48e3
+      surface
         text "visit url"
-      surface seed-surface-dd27407e9567
+      surface
         text "url navigation"
-    lexeme ru # language
-      surface seed-surface-a9cf30308f91
+    lexeme ru
+      surface
         text "http запрос"
-      surface seed-surface-873149862744
+      surface
         text "открыть url"
-      surface seed-surface-69c8a00be983
+      surface
         text "перейти на"
-      surface seed-surface-3d12f2e4f986
+      surface
         text "сделать запрос"
-      surface seed-surface-75dc1102479a
+      surface
         text url-навигация
-      surface seed-surface-c96d2137953b
+      surface
         text "url навигация"
-    lexeme hi # language
-      surface seed-surface-a4ab563cde5d
+    lexeme hi
+      surface
         text "http fetch"
-      surface seed-surface-c21b71a4db67
+      surface
         text url
-      surface seed-surface-e0ba8e122966
+      surface
         text navigate
-      surface seed-surface-2d5758e4e486
+      surface
         text लिंक
-      surface seed-surface-9c1994071c6e
+      surface
         text यूआरएल
-    lexeme zh # language
-      surface seed-surface-448a6bed1780
+    lexeme zh
+      surface
         text "http fetch"
-      surface seed-surface-1a39162c0c4e
+      surface
         text url
-      surface seed-surface-8c3dd764c888
+      surface
         text 打开链接
-      surface seed-surface-0625eed845c4
+      surface
         text 访问链接
   feature_capability_javascript_execution:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-503560b51043
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text javascript
-      surface seed-surface-625585b9c449
+      surface
         text "run javascript"
-      surface seed-surface-afeab9b25729
+      surface
         text "execute javascript"
-      surface seed-surface-9990ad400169
+      surface
         text js
-    lexeme ru # language
-      surface seed-surface-7563b81b8df2
+    lexeme ru
+      surface
         text javascript
-      surface seed-surface-8abb6ef2837d
+      surface
         text js
-      surface seed-surface-9ebd6aa994b7
+      surface
         text "выполнить javascript"
-    lexeme hi # language
-      surface seed-surface-dfb9871b0dc3
+    lexeme hi
+      surface
         text javascript
-      surface seed-surface-f38b2b854876
+      surface
         text js
-      surface seed-surface-71a48bacf8d0
+      surface
         text स्क्रिप्ट
-    lexeme zh # language
-      surface seed-surface-d77baf3006c2
+    lexeme zh
+      surface
         text javascript
-      surface seed-surface-ba44b46e215c
+      surface
         text js
-      surface seed-surface-44e67029e7bb
+      surface
         text 脚本执行
-      surface seed-surface-2ff685d7d8e0
+      surface
         text 执行脚本
   feature_capability_planning:
-    defined-by concept # definition-link
-    role feature_capability_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-f0179f1b2f9c
+    defined-by concept
+    role feature_capability_alias
+    lexeme en
+      surface
         text summarize
-      surface seed-surface-ea2b97fd3a27
+      surface
         text brainstorm
-      surface seed-surface-408c1bc83690
+      surface
         text roleplay
-      surface seed-surface-76f19225a05f
+      surface
         text "software project"
-      surface seed-surface-e88847261d15
+      surface
         text "project plan"
-    lexeme ru # language
-      surface seed-surface-bb9fb27903f9
+    lexeme ru
+      surface
         text резюмировать
-      surface seed-surface-ed73c99fe5c4
+      surface
         text брейншторм
-      surface seed-surface-2ea659cd2d1e
+      surface
         text роль
-      surface seed-surface-d4cb250a96cc
+      surface
         text проект
-      surface seed-surface-ab66d8de8978
+      surface
         text "план проекта"
-    lexeme hi # language
-      surface seed-surface-e63b4df4bb55
+    lexeme hi
+      surface
         text summary
-      surface seed-surface-2bef4f6254ab
+      surface
         text brainstorm
-      surface seed-surface-52d5f9c12a65
+      surface
         text roleplay
-      surface seed-surface-34c8fa098ff0
+      surface
         text "project plan"
-      surface seed-surface-d05ea3fa5cfb
+      surface
         text "परियोजना योजना"
-    lexeme zh # language
-      surface seed-surface-011bb2286ad2
+    lexeme zh
+      surface
         text 总结
-      surface seed-surface-77b8ce437db1
+      surface
         text 头脑风暴
-      surface seed-surface-c34291ed1267
+      surface
         text 角色扮演
-      surface seed-surface-e8e8e7e801e5
+      surface
         text 项目计划
   feature_capability_question:
-    defined-by action # definition-link
-    role feature_capability_question # semantic-role
-    lexeme en # language
-      surface seed-surface-5487d7a10daa
+    defined-by action
+    role feature_capability_question
+    lexeme en
+      surface
         text "can you"
-      surface seed-surface-40be4276162d
+      surface
         text "can formal-ai"
-      surface seed-surface-b8ed14f42213
+      surface
         text "are you able"
-      surface seed-surface-5a296d90e9df
+      surface
         text "are you connected"
-      surface seed-surface-858f2eea42e3
+      surface
         text "do you support"
-      surface seed-surface-5381138dc566
+      surface
         text "do you have"
-      surface seed-surface-9c05358e7331
+      surface
         text "can i"
-    lexeme ru # language
-      surface seed-surface-df8d030fe4ca
+    lexeme ru
+      surface
         text можешь
-      surface seed-surface-dc493215dd07
+      surface
         text умеешь
-      surface seed-surface-5f84093eaf65
+      surface
         text поддерживаешь
-      surface seed-surface-fc4aeb75cc48
+      surface
         text "у тебя есть"
-      surface seed-surface-639548626449
+      surface
         text "есть ли"
-      surface seed-surface-2e1e61db7ff5
+      surface
         text доступен
-      surface seed-surface-fb5c4af53bb1
+      surface
         text доступна
-      surface seed-surface-508fba3fd33d
+      surface
         text включен
-      surface seed-surface-81c06b45951d
+      surface
         text включена
-      surface seed-surface-889840b408d8
+      surface
         text подключен
-      surface seed-surface-28873dd45be7
+      surface
         text подключена
-      surface seed-surface-c6b6e951949a
+      surface
         text "можно ли"
-    lexeme hi # language
-      surface seed-surface-6b3c3bfe3a6b
+    lexeme hi
+      surface
         text क्या
-      surface seed-surface-eb8071a9ca69
+      surface
         text सकते
-      surface seed-surface-f7173f839b95
+      surface
         text सकती
-      surface seed-surface-c456cf603537
+      surface
         text समर्थन
-      surface seed-surface-52feac1d0edb
+      surface
         text उपलब्ध
-    lexeme zh # language
-      surface seed-surface-89fce2b14bf7
+    lexeme zh
+      surface
         text 能
-      surface seed-surface-49c40a992d3d
+      surface
         text 可以
-      surface seed-surface-fa439d6079c5
+      surface
         text 支持
-      surface seed-surface-8503f103c277
+      surface
         text 你有
-      surface seed-surface-6561f12761cd
+      surface
         text 您有
-      surface seed-surface-6ad7d82a3aae
+      surface
         text 有没有
-      surface seed-surface-bf3653269f5d
+      surface
         text 是否有
-      surface seed-surface-a926c9a01273
+      surface
         text 启用
-      surface seed-surface-00942c79cd87
+      surface
         text 可用
   feature_action_arithmetic:
-    defined-by action # definition-link
-    role feature_action_arithmetic # semantic-role
-    lexeme en # language
-      surface seed-surface-382cacbf4be7
+    defined-by action
+    role feature_action_arithmetic
+    lexeme en
+      surface
         text "can you calculate"
-      surface seed-surface-04b61e855bff
+      surface
         text "can you compute"
-    lexeme ru # language
-      surface seed-surface-187d9f48fa53
+    lexeme ru
+      surface
         text "можешь вычислить"
-      surface seed-surface-fccdc30083de
+      surface
         text "можешь посчитать"
-    lexeme hi # language
-      surface seed-surface-70f18bfc5ee7
+    lexeme hi
+      surface
         text "क्या आप गणना कर सकते"
-    lexeme zh # language
-      surface seed-surface-fc4b2ee5eab3
+    lexeme zh
+      surface
         text 你能计算
   feature_action_planning:
-    defined-by action # definition-link
-    role feature_action_planning # semantic-role
-    lexeme en # language
-      surface seed-surface-518b1a30a5c0
+    defined-by action
+    role feature_action_planning
+    lexeme en
+      surface
         text "can you summarize"
-      surface seed-surface-968abb25793b
+      surface
         text "can you brainstorm"
-      surface seed-surface-08e8b060ea1f
+      surface
         text "can you roleplay"
-    lexeme ru # language
-      surface seed-surface-bb695598c66e
+    lexeme ru
+      surface
         text "можешь резюмировать"
-      surface seed-surface-b538ba510daf
+      surface
         text "можешь провести мозговой штурм"
-      surface seed-surface-62b1e42deb1b
+      surface
         text "можешь сыграть роль"
-    lexeme hi # language
-      surface seed-surface-91fe2eed1c39
+    lexeme hi
+      surface
         text "क्या आप सारांश कर सकते"
-    lexeme zh # language
-      surface seed-surface-3e21a7bbb6bc
+    lexeme zh
+      surface
         text 你能总结

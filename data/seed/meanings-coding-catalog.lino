@@ -1,596 +1,596 @@
 meanings
   program_language:
-    defined-by software_language # definition-link
-    role program_language # semantic-role
-    lexeme en # language
-      surface seed-surface-5e5d0ed5fd1b
+    defined-by software_language
+    role program_language
+    lexeme en
+      surface
         text "programming language"
-    lexeme ru # language
-      surface seed-surface-96d4986e9572
+    lexeme ru
+      surface
         text "язык программирования"
-    lexeme hi # language
-      surface seed-surface-050cb355c8e8
+    lexeme hi
+      surface
         text "प्रोग्रामिंग भाषा"
-    lexeme zh # language
-      surface seed-surface-4c9254a04e02
+    lexeme zh
+      surface
         text 编程语言
   program_language_rust:
-    defined-by program_language # definition-link
-    defined-by language_rust # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-f05d1f14e9d6
+    defined-by program_language
+    defined-by language_rust
+    role program_language_alias
+    lexeme en
+      surface
         text rust
-      surface seed-surface-927846435a88
+      surface
         text rs
-    lexeme ru # language
-      surface seed-surface-916ff1a92021
+    lexeme ru
+      surface
         text раст
-      surface seed-surface-d837ee88f5d3
+      surface
         text расте
-    lexeme hi # language
-      surface seed-surface-5b9407610653
+    lexeme hi
+      surface
         text रस्ट
-    lexeme zh # language
-      surface seed-surface-24d0bfa73a34
+    lexeme zh
+      surface
         text rust
   program_language_python:
-    defined-by program_language # definition-link
-    defined-by language_python # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-dd9298468a25
+    defined-by program_language
+    defined-by language_python
+    role program_language_alias
+    lexeme en
+      surface
         text python
-      surface seed-surface-656995b394d8
+      surface
         text py
-    lexeme ru # language
-      surface seed-surface-313f36364bcb
+    lexeme ru
+      surface
         text питон
-      surface seed-surface-db4f522ef9bd
+      surface
         text питоне
-    lexeme hi # language
-      surface seed-surface-531fbc0b9773
+    lexeme hi
+      surface
         text पायथन
-    lexeme zh # language
-      surface seed-surface-07cb378a8478
+    lexeme zh
+      surface
         text python
   program_language_javascript:
-    defined-by program_language # definition-link
-    defined-by language_javascript # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-7c3c9f6261c2
+    defined-by program_language
+    defined-by language_javascript
+    role program_language_alias
+    lexeme en
+      surface
         text javascript
-      surface seed-surface-a91a766234da
+      surface
         text js
-      surface seed-surface-8d1a7e6089a7
+      surface
         text node
-    lexeme ru # language
-      surface seed-surface-615e66c39c6b
+    lexeme ru
+      surface
         text джаваскрипт
-    lexeme hi # language
-      surface seed-surface-f2b3a9b295ab
+    lexeme hi
+      surface
         text जावास्क्रिप्ट
-    lexeme zh # language
-      surface seed-surface-4ff352bbf47f
+    lexeme zh
+      surface
         text javascript
   program_language_typescript:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-5297b98a9b73
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text typescript
-      surface seed-surface-acedd33c9174
+      surface
         text ts
-    lexeme ru # language
-      surface seed-surface-1a50d5232eef
+    lexeme ru
+      surface
         text тайпскрипт
-    lexeme hi # language
-      surface seed-surface-93137b24be6b
+    lexeme hi
+      surface
         text टाइपस्क्रिप्ट
-    lexeme zh # language
-      surface seed-surface-e7e6fddb3d66
+    lexeme zh
+      surface
         text typescript
   program_language_go:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-e36a9b113621
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text go
-      surface seed-surface-f889efabf71e
+      surface
         text golang
-    lexeme ru # language
-      surface seed-surface-eafca9e4933f
+    lexeme ru
+      surface
         text го
-    lexeme hi # language
-      surface seed-surface-fc3d183250dd
+    lexeme hi
+      surface
         text गो
-    lexeme zh # language
-      surface seed-surface-ddb9e4143a4f
+    lexeme zh
+      surface
         text go
   program_language_c:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-c43b4d30a459
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text c
-    lexeme ru # language
-      surface seed-surface-a85a4f164ab6
+    lexeme ru
+      surface
         text си
-    lexeme hi # language
-      surface seed-surface-7a807f14f4f5
+    lexeme hi
+      surface
         text सी
-    lexeme zh # language
-      surface seed-surface-08f7aa1a4855
+    lexeme zh
+      surface
         text c
   program_language_cpp:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-62aec80ca9cd
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text cpp
-      surface seed-surface-3e1a635f62fc
+      surface
         text c++
-      surface seed-surface-b319982db5b9
+      surface
         text cplusplus
-    lexeme ru # language
-      surface seed-surface-dd428662f441
+    lexeme ru
+      surface
         text сиплюсплюс
-    lexeme hi # language
-      surface seed-surface-ff6499f6f654
+    lexeme hi
+      surface
         text सीपीपी
-    lexeme zh # language
-      surface seed-surface-0041483086cf
+    lexeme zh
+      surface
         text c++
   program_language_java:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-03965da2d917
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text java
-    lexeme ru # language
-      surface seed-surface-f112bab59317
+    lexeme ru
+      surface
         text джава
-    lexeme hi # language
-      surface seed-surface-e943e9ce9b2d
+    lexeme hi
+      surface
         text जावा
-    lexeme zh # language
-      surface seed-surface-1108cda60c1d
+    lexeme zh
+      surface
         text java
   program_language_csharp:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-6d6443533c56
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text csharp
-      surface seed-surface-d35317b70b24
+      surface
         text "c#"
-      surface seed-surface-c9ed92d510e1
+      surface
         text cs
-      surface seed-surface-a601178ca489
+      surface
         text dotnet
-    lexeme ru # language
-      surface seed-surface-d2cc95cc089f
+    lexeme ru
+      surface
         text сишарп
-    lexeme hi # language
-      surface seed-surface-81b7b2d3932a
+    lexeme hi
+      surface
         text सीशार्प
-    lexeme zh # language
-      surface seed-surface-7537afc8ddd6
+    lexeme zh
+      surface
         text "c#"
   program_language_ruby:
-    defined-by program_language # definition-link
-    role program_language_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-f6b95826614a
+    defined-by program_language
+    role program_language_alias
+    lexeme en
+      surface
         text ruby
-      surface seed-surface-e470362511ad
+      surface
         text rb
-    lexeme ru # language
-      surface seed-surface-ef38339fba2e
+    lexeme ru
+      surface
         text руби
-    lexeme hi # language
-      surface seed-surface-2a8a32ead731
+    lexeme hi
+      surface
         text रूबी
-    lexeme zh # language
-      surface seed-surface-63078e9233b5
+    lexeme zh
+      surface
         text ruby
   program_task:
-    defined-by program # definition-link
-    role program_task # semantic-role
-    lexeme en # language
-      surface seed-surface-9ce0c1a56310
+    defined-by program
+    role program_task
+    lexeme en
+      surface
         text "coding task"
-    lexeme ru # language
-      surface seed-surface-f35432b47320
+    lexeme ru
+      surface
         text "задача программирования"
-    lexeme hi # language
-      surface seed-surface-a169487793e8
+    lexeme hi
+      surface
         text "प्रोग्रामिंग कार्य"
-    lexeme zh # language
-      surface seed-surface-d8370691ecc5
+    lexeme zh
+      surface
         text 编程任务
   program_task_hello_world:
-    defined-by program_task # definition-link
-    defined-by hello_world # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-6167241334ae
+    defined-by program_task
+    defined-by hello_world
+    role program_task_alias
+    lexeme en
+      surface
         text "hello world"
-    lexeme ru # language
-      surface seed-surface-9c947e98ead6
+    lexeme ru
+      surface
         text "хелло ворлд"
-    lexeme hi # language
-      surface seed-surface-4ea98ca430dd
+    lexeme hi
+      surface
         text "हैलो वर्ल्ड"
-    lexeme zh # language
-      surface seed-surface-9644f65803e6
+    lexeme zh
+      surface
         text 你好世界
   program_task_count_to_three:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-98809740bc7d
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "count to three"
-      surface seed-surface-452bde4e0cdc
+      surface
         text "count to 3"
-      surface seed-surface-eeff6e9fa3cd
+      surface
         text "counts to three"
-      surface seed-surface-c73675ae4d2b
+      surface
         text "counts to 3"
-    lexeme ru # language
-      surface seed-surface-8694a433d43c
+    lexeme ru
+      surface
         text "посчитай до трёх"
-      surface seed-surface-c8612a3ab681
+      surface
         text "посчитай до 3"
-    lexeme hi # language
-      surface seed-surface-324203f90e9d
+    lexeme hi
+      surface
         text "तीन तक गिनें"
-      surface seed-surface-27c92825266e
+      surface
         text "3 तक गिनें"
-    lexeme zh # language
-      surface seed-surface-db477d8b272f
+    lexeme zh
+      surface
         text 数到三
-      surface seed-surface-0bf03a7b18f3
+      surface
         text 数到3
   program_task_list_files:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-6a1a9cf256c1
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "list files in the current directory"
-      surface seed-surface-61fdc0a055f9
+      surface
         text "list files in current directory"
-      surface seed-surface-f4cbf66164b7
+      surface
         text "list files in the directory"
-      surface seed-surface-9f52577e9a71
+      surface
         text "list the files in the current directory"
-      surface seed-surface-4f9b0000f0e1
+      surface
         text "lists files in the current directory"
-      surface seed-surface-dae031965cb8
+      surface
         text "lists the files in the current directory"
-      surface seed-surface-58a165a21a05
+      surface
         text "list files in a directory"
-      surface seed-surface-edc8b245a143
+      surface
         text "list directory files"
-      surface seed-surface-090979158ec7
+      surface
         text "list files"
-      surface seed-surface-d18fe82c9f02
+      surface
         text "lists files"
-      surface seed-surface-9627b223b88e
+      surface
         text "files in the current directory"
-      surface seed-surface-41ddf18cf1d4
+      surface
         text "files in current directory"
-    lexeme ru # language
-      surface seed-surface-81dc2daecc48
+    lexeme ru
+      surface
         text "список файлов в текущей директории"
-      surface seed-surface-a299a6660635
+      surface
         text "список файлов в текущем каталоге"
-      surface seed-surface-2b4e4912efd1
+      surface
         text "список файлов в директории"
-      surface seed-surface-9c2d5adffc49
+      surface
         text "список файлов в каталоге"
-      surface seed-surface-d5a34452c714
+      surface
         text "выдаёт список файлов"
-      surface seed-surface-d1ff52064ce5
+      surface
         text "выдает список файлов"
-      surface seed-surface-c340afad6410
+      surface
         text "выводит список файлов"
-      surface seed-surface-7f511a6e06a6
+      surface
         text "вывести список файлов"
-      surface seed-surface-3dd151f9a7bf
+      surface
         text "вывод списка файлов"
-      surface seed-surface-e10a8990783a
+      surface
         text "список файлов"
-      surface seed-surface-49a3a20dbb22
+      surface
         text "файлы в текущей директории"
-      surface seed-surface-13a66a6958fe
+      surface
         text "файлы в текущем каталоге"
-    lexeme hi # language
-      surface seed-surface-5de9a67aae76
+    lexeme hi
+      surface
         text "फ़ाइलों की सूची"
-      surface seed-surface-53c2fe845fcc
+      surface
         text "फाइलों की सूची"
-      surface seed-surface-2ff447812607
+      surface
         text "वर्तमान निर्देशिका की फ़ाइलें"
-      surface seed-surface-e7853dc1e814
+      surface
         text "वर्तमान निर्देशिका की फाइलें"
-      surface seed-surface-ea09dfc8aed2
+      surface
         text "निर्देशिका की फ़ाइलें"
-    lexeme zh # language
-      surface seed-surface-c6b984520d56
+    lexeme zh
+      surface
         text 列出当前目录中的文件
-      surface seed-surface-3bc54d16a09d
+      surface
         text 列出当前目录中文件
-      surface seed-surface-388c5cd16e55
+      surface
         text 列出当前目录的文件
-      surface seed-surface-2d119f7adbcb
+      surface
         text 列出当前目录文件
-      surface seed-surface-36e8ef8e6c0a
+      surface
         text 列出目录中的文件
-      surface seed-surface-27283cedd793
+      surface
         text 列出文件
   program_task_list_files_arg:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-acbd64c141ec
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "list files in the directory given as a path argument"
-      surface seed-surface-67a9842b8288
+      surface
         text "list files in a directory given as an argument"
-      surface seed-surface-d58615c62dc4
+      surface
         text "list files in the directory passed as an argument"
-      surface seed-surface-a7b77dfeca9f
+      surface
         text "list files in a path argument"
-      surface seed-surface-3767a4812abd
+      surface
         text "list files with a path argument"
-      surface seed-surface-5bbc75de258b
+      surface
         text "list files accepting a path argument"
-    lexeme ru # language
-      surface seed-surface-f0dab08e6cac
+    lexeme ru
+      surface
         text "список файлов в каталоге переданном как аргумент"
-      surface seed-surface-0e725f426ede
+      surface
         text "список файлов в директории переданной как аргумент"
-      surface seed-surface-85faa09fc937
+      surface
         text "список файлов по пути из аргумента"
-    lexeme hi # language
-      surface seed-surface-6038ff731352
+    lexeme hi
+      surface
         text "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"
-    lexeme zh # language
-      surface seed-surface-cb34574c455d
+    lexeme zh
+      surface
         text 列出作为路径参数给出的目录中的文件
-      surface seed-surface-7ab29e4bf568
+      surface
         text 列出路径参数指定目录中的文件
   program_task_list_files_reverse_sort:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-0ed38b08b9be
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "list files in reverse order"
-      surface seed-surface-186ed5ef25aa
+      surface
         text "list files sorted in reverse order"
-      surface seed-surface-6843b305cfd6
+      surface
         text "list files in descending order"
-      surface seed-surface-3a0968a1756c
+      surface
         text "reverse sorted list files"
-    lexeme ru # language
-      surface seed-surface-44465f99d4d4
+    lexeme ru
+      surface
         text "список файлов в обратном порядке"
-      surface seed-surface-ff813309be86
+      surface
         text "список файлов с обратной сортировкой"
-    lexeme hi # language
-      surface seed-surface-0a348cf8f1ad
+    lexeme hi
+      surface
         text "फ़ाइलों की सूची उल्टे क्रम में"
-      surface seed-surface-10d0fa09c7b6
+      surface
         text "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
-    lexeme zh # language
-      surface seed-surface-2a13f4f06016
+    lexeme zh
+      surface
         text 按相反顺序列出文件
-      surface seed-surface-a2096491e3ff
+      surface
         text 倒序列出文件
   program_task_list_files_arg_reverse_sort:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-8ebb33499a85
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "list files from a path argument in reverse order"
-      surface seed-surface-50edaae5291d
+      surface
         text "list files with a path argument in reverse order"
-      surface seed-surface-db814927fd73
+      surface
         text "list files with a path argument sorted descending"
-      surface seed-surface-e5d31597e078
+      surface
         text "reverse sorted list files with a path argument"
-    lexeme ru # language
-      surface seed-surface-f5610c4b141d
+    lexeme ru
+      surface
         text "список файлов по пути из аргумента в обратном порядке"
-      surface seed-surface-73aa513be2aa
+      surface
         text "список файлов из аргумента с обратной сортировкой"
-    lexeme hi # language
-      surface seed-surface-5f028c46e412
+    lexeme hi
+      surface
         text "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में"
-      surface seed-surface-f20762d9af05
+      surface
         text "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"
-    lexeme zh # language
-      surface seed-surface-75936ffa0411
+    lexeme zh
+      surface
         text 按相反顺序列出路径参数中的文件
-      surface seed-surface-e0f164fcb9d1
+      surface
         text 倒序列出路径参数指定目录中的文件
   program_task_fizzbuzz:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-73d4ce8a7be3
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text fizzbuzz
-      surface seed-surface-16a85839707f
+      surface
         text "fizz buzz"
-    lexeme ru # language
-      surface seed-surface-322d32b41cfd
+    lexeme ru
+      surface
         text физзбазз
-      surface seed-surface-9a52f22e2fe5
+      surface
         text "физз базз"
-      surface seed-surface-c7643649fd1e
+      surface
         text физбаз
-    lexeme hi # language
-      surface seed-surface-d9f3a5109db0
+    lexeme hi
+      surface
         text फ़िज़बज़
-      surface seed-surface-e62cd17c8cec
+      surface
         text फिज़बज़
-    lexeme zh # language
-      surface seed-surface-aa4f5083fb30
+    lexeme zh
+      surface
         text 菲茨巴兹
   program_task_factorial:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-4864575b0b60
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "factorial of 5"
-      surface seed-surface-5eb3230f14d7
+      surface
         text "factorial of five"
-      surface seed-surface-3bb0ec93a6d2
+      surface
         text "5 factorial"
-      surface seed-surface-c67f10577dde
+      surface
         text "five factorial"
-    lexeme ru # language
-      surface seed-surface-f8293ba74a4d
+    lexeme ru
+      surface
         text "факториал 5"
-      surface seed-surface-de0cda4e0cf0
+      surface
         text "факториал пяти"
-      surface seed-surface-6b5e55a25d05
+      surface
         text "факториал числа 5"
-    lexeme hi # language
-      surface seed-surface-5686809ebb76
+    lexeme hi
+      surface
         text "5 का फैक्टोरियल"
-      surface seed-surface-a773e1ea18f4
+      surface
         text "पाँच का फैक्टोरियल"
-    lexeme zh # language
-      surface seed-surface-5e01b971494b
+    lexeme zh
+      surface
         text 5的阶乘
-      surface seed-surface-9c8313427c3d
+      surface
         text 五的阶乘
   program_task_reverse_string:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-cc8955d92b7a
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "reverse a string"
-      surface seed-surface-e9750a4c9667
+      surface
         text "reverse the string hello"
-      surface seed-surface-403bf388609b
+      surface
         text "reverse hello"
-      surface seed-surface-a749930b3d39
+      surface
         text "reverse string hello"
-      surface seed-surface-c995e66ba4f5
+      surface
         text "reverse the word hello"
-    lexeme ru # language
-      surface seed-surface-223fc94f2e6b
+    lexeme ru
+      surface
         text "перевернуть строку"
-      surface seed-surface-c725ce9663ca
+      surface
         text "перевернуть строку hello"
-      surface seed-surface-253e4053153d
+      surface
         text "развернуть строку"
-    lexeme hi # language
-      surface seed-surface-73c30373c484
+    lexeme hi
+      surface
         text "स्ट्रिंग को उलटें"
-      surface seed-surface-b432b24a57df
+      surface
         text "स्ट्रिंग पलटें"
-    lexeme zh # language
-      surface seed-surface-7864006e68e6
+    lexeme zh
+      surface
         text 反转字符串
-      surface seed-surface-0dfbc2da141d
+      surface
         text 翻转字符串
-      surface seed-surface-d0416fa7f2da
+      surface
         text 反转hello
   program_task_sum_to_ten:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-d37af77f0248
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "sum of 1 to 10"
-      surface seed-surface-1a17506e6d82
+      surface
         text "sum from 1 to 10"
-      surface seed-surface-097daa653ca5
+      surface
         text "sum the numbers 1 to 10"
-      surface seed-surface-647902d0c5f6
+      surface
         text "sum of numbers from 1 to 10"
-      surface seed-surface-6af30678b7eb
+      surface
         text "sum 1 to 10"
-      surface seed-surface-bb665b0b9577
+      surface
         text "sum to ten"
-    lexeme ru # language
-      surface seed-surface-108ffcc20a3d
+    lexeme ru
+      surface
         text "сумма от 1 до 10"
-      surface seed-surface-4dd820daf089
+      surface
         text "сумма чисел от 1 до 10"
-      surface seed-surface-697722f777dc
+      surface
         text "сумма чисел от одного до десяти"
-    lexeme hi # language
-      surface seed-surface-8eea1b25d79e
+    lexeme hi
+      surface
         text "1 से 10 तक का योग"
-      surface seed-surface-ab876f573d4e
+      surface
         text "1 से 10 तक योग"
-    lexeme zh # language
-      surface seed-surface-29aeff2a5134
+    lexeme zh
+      surface
         text 1到10的和
-      surface seed-surface-86fc5e6729a9
+      surface
         text 1到10求和
-      surface seed-surface-87164580e52a
+      surface
         text 求1到10的和
   program_task_fibonacci:
-    defined-by program_task # definition-link
-    role program_task_alias # semantic-role
-    lexeme en # language
-      surface seed-surface-e96ea48c508d
+    defined-by program_task
+    role program_task_alias
+    lexeme en
+      surface
         text "fibonacci sequence recursively"
-      surface seed-surface-133a97749814
+      surface
         text "fibonacci sequence"
-      surface seed-surface-ebe7b667914e
+      surface
         text "recursive fibonacci"
-      surface seed-surface-957da895f435
+      surface
         text "fibonacci recursively"
-      surface seed-surface-cce1f4ba0341
+      surface
         text "fibonacci function"
-      surface seed-surface-4051f5dce182
+      surface
         text "fibonacci numbers"
-      surface seed-surface-e589e1f17689
+      surface
         text "fibonacci number"
-      surface seed-surface-5d27881e1ecf
+      surface
         text "10th fibonacci number"
-      surface seed-surface-135195340470
+      surface
         text "the 10th fibonacci number"
-      surface seed-surface-c8b61061011a
+      surface
         text "tenth fibonacci number"
-      surface seed-surface-a19e92802f04
+      surface
         text "nth fibonacci number"
-    lexeme ru # language
-      surface seed-surface-fcd799d20767
+    lexeme ru
+      surface
         text "последовательность фибоначчи"
-      surface seed-surface-3aa9e6794fea
+      surface
         text "числа фибоначчи"
-      surface seed-surface-f42ca5d12a9e
+      surface
         text "число фибоначчи"
-      surface seed-surface-f87a62caeb29
+      surface
         text "рекурсивный фибоначчи"
-      surface seed-surface-ccdca924d209
+      surface
         text "фибоначчи рекурсивно"
-      surface seed-surface-fc2d17cb8821
+      surface
         text "10-е число фибоначчи"
-      surface seed-surface-5d39441a06c1
+      surface
         text "десятое число фибоначчи"
-    lexeme hi # language
-      surface seed-surface-d565aad215b3
+    lexeme hi
+      surface
         text "फ़िबोनाची अनुक्रम"
-      surface seed-surface-dd00e347a678
+      surface
         text "फिबोनाची अनुक्रम"
-      surface seed-surface-9c1a5089c8f4
+      surface
         text "फ़िबोनाची संख्या"
-      surface seed-surface-e44e07a1c8f5
+      surface
         text "फिबोनाची संख्या"
-    lexeme zh # language
-      surface seed-surface-adf102e0a476
+    lexeme zh
+      surface
         text 斐波那契数列
-      surface seed-surface-cf9d4055fe85
+      surface
         text 斐波那契序列
-      surface seed-surface-fffa951b0b92
+      surface
         text 斐波那契数
-      surface seed-surface-0f7c88f7a14c
+      surface
         text 递归斐波那契

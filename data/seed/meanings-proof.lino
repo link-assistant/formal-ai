@@ -1,208 +1,208 @@
 meanings
   prove:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role proof_directive # semantic-role
-    role proof_claim_scaffold # semantic-role
-    lexeme en # language
-      surface seed-surface-ecfe3945b24a
+    defined-by inquiry
+    defined-by action
+    role proof_directive
+    role proof_claim_scaffold
+    lexeme en
+      surface
         text prove
-      surface seed-surface-0efd40242637
+      surface
         text proof
-      surface seed-surface-58a2c3b5dfba
+      surface
         text "prove that …"
-      surface seed-surface-a3fba3067b29
+      surface
         text "prove …"
-      surface seed-surface-ad2553ecc0fe
+      surface
         text "proof of …"
-      surface seed-surface-9c2cce2d776c
+      surface
         text "proof that …"
-      surface seed-surface-c90f2c1d32a4
+      surface
         text "show that …"
-      surface seed-surface-67b4de215085
+      surface
         text "demonstrate that …"
-      surface seed-surface-cac664b35f31
+      surface
         text "demonstrate …"
-      surface seed-surface-fa2a2ef2ab07
+      surface
         text "can you prove that …"
-      surface seed-surface-d9c665db43a4
+      surface
         text "can you prove …"
-      surface seed-surface-d3268df2d093
+      surface
         text "could you prove that …"
-      surface seed-surface-dcd9f657bc2a
+      surface
         text "could you prove …"
-      surface seed-surface-53e496d36020
+      surface
         text "please prove that …"
-      surface seed-surface-12a040a67ef8
+      surface
         text "please prove …"
-      surface seed-surface-112782605bd6
+      surface
         text "give me a proof of …"
-      surface seed-surface-9d6874660de8
+      surface
         text "give me a proof that …"
-      surface seed-surface-c7dd923c8a66
+      surface
         text "give a proof of …"
-      surface seed-surface-e4126a9907b4
+      surface
         text "give a proof that …"
-    lexeme ru # language
-      surface seed-surface-061ca4be2a0c
+    lexeme ru
+      surface
         text докажи
-      surface seed-surface-b27b43cd1c80
+      surface
         text докажите
-      surface seed-surface-ea8e53b387ee
+      surface
         text доказать
-      surface seed-surface-7d79862b08b7
+      surface
         text доказательство
-      surface seed-surface-c386979e2392
+      surface
         text "докажи что …"
-      surface seed-surface-de646229faf2
+      surface
         text "докажите что …"
-      surface seed-surface-f84bd62ea44b
+      surface
         text "доказать что …"
-      surface seed-surface-2aee89612deb
+      surface
         text "докажите …"
-      surface seed-surface-effa72f542fa
+      surface
         text "докажи …"
-      surface seed-surface-bbbffac8a1df
+      surface
         text "доказать …"
-      surface seed-surface-a9200b93043b
+      surface
         text "доказательство …"
-    lexeme hi # language
-      surface seed-surface-ea0fcb261c3d
+    lexeme hi
+      surface
         text "साबित करो कि …"
-      surface seed-surface-839199cc4947
+      surface
         text "साबित कीजिए कि …"
-      surface seed-surface-e769d971c659
+      surface
         text "साबित कर …"
-      surface seed-surface-e48114770a2a
+      surface
         text "सिद्ध कीजिए कि …"
-      surface seed-surface-2cb19260e809
+      surface
         text "सिद्ध करो कि …"
-    lexeme zh # language
-      surface seed-surface-a831491b6170
+    lexeme zh
+      surface
         text 证明…
-      surface seed-surface-67d323d6a587
+      surface
         text 證明…
   proof_request_frame:
-    defined-by inquiry # definition-link
-    defined-by prove # definition-link
-    role proof_request_lead # semantic-role
-    lexeme en # language
-      surface seed-surface-9fd02ab255be
+    defined-by inquiry
+    defined-by prove
+    role proof_request_lead
+    lexeme en
+      surface
         text "can you prove…"
-      surface seed-surface-3a468204f9b2
+      surface
         text "could you prove…"
-      surface seed-surface-9613f907382e
+      surface
         text "please prove…"
-      surface seed-surface-2a484e065c4a
+      surface
         text "give me a proof…"
-      surface seed-surface-bc4616ad4bf3
+      surface
         text "give a proof…"
-      surface seed-surface-25297c9d131e
+      surface
         text "show that …"
-      surface seed-surface-7855d525f96f
+      surface
         text "demonstrate that …"
-    lexeme ru # language
-      surface seed-surface-65da93150115
+    lexeme ru
+      surface
         text "можешь доказать…"
-      surface seed-surface-c25f638ebcd6
+      surface
         text "можете доказать…"
-      surface seed-surface-521e392a7b00
+      surface
         text "сможешь доказать…"
-      surface seed-surface-de5e71cda9a2
+      surface
         text "пожалуйста докажи…"
-      surface seed-surface-2bf2911b7fde
+      surface
         text "пожалуйста докажите…"
-    lexeme hi # language
-      surface seed-surface-dd79e0019b7b
+    lexeme hi
+      surface
         text "क्या आप साबित कर सकते हैं…"
-      surface seed-surface-aa1bfc678568
+      surface
         text "क्या आप सिद्ध कर सकते हैं…"
-      surface seed-surface-b2ff44b78ca9
+      surface
         text "कृपया सिद्ध कीजिए…"
-      surface seed-surface-0a78e2893ec0
+      surface
         text "कृपया साबित कीजिए…"
-    lexeme zh # language
-      surface seed-surface-1da0a925d01f
+    lexeme zh
+      surface
         text 你能证明…
-      surface seed-surface-269e6df30c11
+      surface
         text 你能證明…
-      surface seed-surface-ba4069113226
+      surface
         text 请证明…
-      surface seed-surface-40451ea84dd9
+      surface
         text 請證明…
   proof_assertion:
-    defined-by inquiry # definition-link
-    defined-by prove # definition-link
-    role proof_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-e98448e4ba63
+    defined-by inquiry
+    defined-by prove
+    role proof_marker
+    lexeme en
+      surface
         text " prove that "
-      surface seed-surface-f484f1f50791
+      surface
         text " proof of "
-    lexeme ru # language
-      surface seed-surface-e9171156d051
+    lexeme ru
+      surface
         text " докажи "
-      surface seed-surface-f436354dbe0c
+      surface
         text " докажите "
-      surface seed-surface-e65885570249
+      surface
         text " доказать "
-      surface seed-surface-f1f681123be8
+      surface
         text " доказательство "
-    lexeme hi # language
-      surface seed-surface-8034c1bcc193
+    lexeme hi
+      surface
         text "साबित कर"
-      surface seed-surface-e4b29a8f68b3
+      surface
         text "साबित कीजिए"
-      surface seed-surface-acbcb96d62da
+      surface
         text "साबित कीजिये"
-      surface seed-surface-46cf72aaca5b
+      surface
         text "सिद्ध कर"
-      surface seed-surface-538439b21f10
+      surface
         text "सिद्ध कीजिए"
-      surface seed-surface-85551ac29ad5
+      surface
         text "सिद्ध कीजिये"
-      surface seed-surface-9d178fa4034e
+      surface
         text प्रमाण
-    lexeme zh # language
-      surface seed-surface-18fcdc0ad30e
+    lexeme zh
+      surface
         text 证明
-      surface seed-surface-b21afdf8d660
+      surface
         text 證明
   godel:
-    defined-by concept # definition-link
-    role proof_concept_godel # semantic-role
-    lexeme en # language
-      surface seed-surface-86087f8d2b6f
+    defined-by concept
+    role proof_concept_godel
+    lexeme en
+      surface
         text godel
-      surface seed-surface-72d3bbf328a2
+      surface
         text gödel
-    lexeme ru # language
-      surface seed-surface-0ca11dec19f6
+    lexeme ru
+      surface
         text гёдел
-      surface seed-surface-46dd030d6506
+      surface
         text гёделя
-      surface seed-surface-2938816e1f36
+      surface
         text гедел
-    lexeme hi # language
-      surface seed-surface-5d58232d37fe
+    lexeme hi
+      surface
         text गोडेल
-    lexeme zh # language
-      surface seed-surface-828978faab61
+    lexeme zh
+      surface
         text 哥德尔
   determinism:
-    defined-by concept # definition-link
-    role proof_concept_determinism # semantic-role
-    lexeme en # language
-      surface seed-surface-efcd91b7e202
+    defined-by concept
+    role proof_concept_determinism
+    lexeme en
+      surface
         text determinism
-      surface seed-surface-1da2cce1db6f
+      surface
         text deterministic
-    lexeme ru # language
-      surface seed-surface-5691c1dc5975
+    lexeme ru
+      surface
         text детерминизм
-    lexeme hi # language
-      surface seed-surface-d2ab3965ca8d
+    lexeme hi
+      surface
         text निर्धारणवाद
-    lexeme zh # language
-      surface seed-surface-18ead0abba53
+    lexeme zh
+      surface
         text 决定论

@@ -1,175 +1,175 @@
 meanings
   behavior_rule:
-    defined-by relation # definition-link
-    defined-by knowledge # definition-link
-    role rule_listing_subject # semantic-role
-    lexeme en # language
-      surface seed-surface-9fcde52cae3b
+    defined-by relation
+    defined-by knowledge
+    role rule_listing_subject
+    lexeme en
+      surface
         text rules
-      surface seed-surface-40b7265431dc
+      surface
         text "rule list"
-      surface seed-surface-ef3c3fb03b66
+      surface
         text "rules list"
-    lexeme ru # language
-      surface seed-surface-c4d591d6ec8b
+    lexeme ru
+      surface
         text правил
-      surface seed-surface-35ee59af1a47
+      surface
         text правила
-    lexeme hi # language
-      surface seed-surface-39a4b92aa003
+    lexeme hi
+      surface
         text नियम
-      surface seed-surface-d1b78a71d285
+      surface
         text नियमों
-    lexeme zh # language
-      surface seed-surface-34c211f61569
+    lexeme zh
+      surface
         text 规则
-      surface seed-surface-00485e1181bb
+      surface
         text 規則
   rule_enumeration_request:
-    defined-by action # definition-link
-    defined-by inquiry # definition-link
-    role rule_listing_request # semantic-role
-    lexeme en # language
-      surface seed-surface-9e5276953342
+    defined-by action
+    defined-by inquiry
+    role rule_listing_request
+    lexeme en
+      surface
         text list
-      surface seed-surface-0906974555c3
+      surface
         text show
-      surface seed-surface-5c7642384296
+      surface
         text what
-      surface seed-surface-eb9f879cfdce
+      surface
         text which
-    lexeme ru # language
-      surface seed-surface-7ce41bac5c8a
+    lexeme ru
+      surface
         text список
-      surface seed-surface-1073eb590d51
+      surface
         text перечисли
-      surface seed-surface-9d5ae33e9d66
+      surface
         text покажи
-      surface seed-surface-39038aa633f9
+      surface
         text какие
-    lexeme hi # language
-      surface seed-surface-508fa10f3976
+    lexeme hi
+      surface
         text सूची
-      surface seed-surface-9d9ccbff3ef7
+      surface
         text सूचीबद्ध
-      surface seed-surface-67f1e3601386
+      surface
         text दिखाओ
-      surface seed-surface-fa532d88603f
+      surface
         text दिखाएं
-      surface seed-surface-73bb246f2436
+      surface
         text बताओ
-      surface seed-surface-bf55c5a3e11c
+      surface
         text गिनाओ
-      surface seed-surface-78aa74391d87
+      surface
         text कौन
-    lexeme zh # language
-      surface seed-surface-b17c3d33fd70
+    lexeme zh
+      surface
         text 列出
-      surface seed-surface-dad5b8e783d1
+      surface
         text 显示
-      surface seed-surface-780a0f1bc60f
+      surface
         text 顯示
-      surface seed-surface-46d8e926b1f5
+      surface
         text 展示
-      surface seed-surface-a7d7d4370e84
+      surface
         text 哪些
-      surface seed-surface-3d830bbe1de3
+      surface
         text 什么
   behavior_domain:
-    defined-by self_reference # definition-link
-    defined-by concept # definition-link
-    role rule_listing_scope # semantic-role
-    lexeme en # language
-      surface seed-surface-8423307c9b11
+    defined-by self_reference
+    defined-by concept
+    role rule_listing_scope
+    lexeme en
+      surface
         text behavior
-    lexeme ru # language
-      surface seed-surface-da89a6eac227
+    lexeme ru
+      surface
         text поведения
-    lexeme hi # language
-      surface seed-surface-4705fca49803
+    lexeme hi
+      surface
         text व्यवहार
-    lexeme zh # language
-      surface seed-surface-ea95b7f3f157
+    lexeme zh
+      surface
         text 行为
-      surface seed-surface-be65dbbf314e
+      surface
         text 行為
   assistant_own_ruleset:
-    defined-by self_reference # definition-link
-    defined-by knowledge # definition-link
-    role rule_listing_scope # semantic-role
-    lexeme en # language
-      surface seed-surface-288c5c253178
+    defined-by self_reference
+    defined-by knowledge
+    role rule_listing_scope
+    lexeme en
+      surface
         text your
-      surface seed-surface-6a87250bf533
+      surface
         text own
-      surface seed-surface-876802910f79
+      surface
         text current
-      surface seed-surface-da36f0b4adaf
+      surface
         text existing
-    lexeme ru # language
-      surface seed-surface-67971de57403
+    lexeme ru
+      surface
         text свои
-      surface seed-surface-1838f4cc56e2
+      surface
         text своих
-      surface seed-surface-13dd98573ed7
+      surface
         text твои
-      surface seed-surface-104180fa5c5a
+      surface
         text твоих
-      surface seed-surface-8f127382780c
+      surface
         text собственные
-      surface seed-surface-5ec09c820f9a
+      surface
         text "список правил"
-    lexeme hi # language
-      surface seed-surface-47058efdbb61
+    lexeme hi
+      surface
         text अपने
-      surface seed-surface-643511afc85b
+      surface
         text तुम्हारे
-      surface seed-surface-475ec333b35c
+      surface
         text आपके
-      surface seed-surface-44680d09a459
+      surface
         text "नियमों की सूची"
-    lexeme zh # language
-      surface seed-surface-5959354e4234
+    lexeme zh
+      surface
         text 你的
-      surface seed-surface-55c0bf8a42f6
+      surface
         text 您的
-      surface seed-surface-76601524afdb
+      surface
         text 自己
-      surface seed-surface-6e81ea02f591
+      surface
         text 规则列表
-      surface seed-surface-29a0cc3556d7
+      surface
         text 規則列表
   behavior_rule_set_phrase:
-    defined-by inquiry # definition-link
-    defined-by knowledge # definition-link
-    role rule_listing_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-6b82ec2d28f2
+    defined-by inquiry
+    defined-by knowledge
+    role rule_listing_phrase
+    lexeme en
+      surface
         text "list behavior rules"
-      surface seed-surface-efe50fd13459
+      surface
         text "list all behavior rules"
-      surface seed-surface-88d13ee74739
+      surface
         text "show behavior rules"
-      surface seed-surface-6e659d51ca68
+      surface
         text "show all behavior rules"
-      surface seed-surface-30bae4e4808d
+      surface
         text "what behavior rules"
-      surface seed-surface-440303060ec9
+      surface
         text "existing behavior rules"
-    lexeme ru # language
-      surface seed-surface-15a920e0931e
+    lexeme ru
+      surface
         text "список правил поведения"
-      surface seed-surface-b0f3f002cf8f
+      surface
         text "покажи правила поведения"
-      surface seed-surface-87f7b78e3f5c
+      surface
         text "какие правила поведения"
-    lexeme hi # language
-      surface seed-surface-5644c29bae1c
+    lexeme hi
+      surface
         text "व्यवहार के नियम"
-      surface seed-surface-cb53ed43c980
+      surface
         text "व्यवहार नियम सूचीबद्ध करें"
-    lexeme zh # language
-      surface seed-surface-013033855bee
+    lexeme zh
+      surface
         text 行为规则
-      surface seed-surface-902862333512
+      surface
         text 列出行为规则

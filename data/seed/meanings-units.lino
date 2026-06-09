@@ -1,824 +1,824 @@
 meanings
   quantity:
-    defined-by unit # definition-link
-    defined-by property # definition-link
-    defined-by amount # definition-link
-    defined-by size # definition-link
-    role measurement_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-e5eea6f6f319
+    defined-by unit
+    defined-by property
+    defined-by amount
+    defined-by size
+    role measurement_concept
+    lexeme en
+      surface
         text quantity
-    lexeme ru # language
-      surface seed-surface-793d78eb76a0
+    lexeme ru
+      surface
         text количество
-    lexeme hi # language
-      surface seed-surface-ee7b6a797d59
+    lexeme hi
+      surface
         text मात्रा
-    lexeme zh # language
-      surface seed-surface-9f242789df0e
+    lexeme zh
+      surface
         text 数量
   unit:
-    defined-by quantity # definition-link
-    role measurement_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-a5ead0f56066
+    defined-by quantity
+    role measurement_concept
+    lexeme en
+      surface
         text unit
-    lexeme ru # language
-      surface seed-surface-07fc96f15559
+    lexeme ru
+      surface
         text единица
-    lexeme hi # language
-      surface seed-surface-078cf8ab716f
+    lexeme hi
+      surface
         text इकाई
-    lexeme zh # language
-      surface seed-surface-ade130c7c173
+    lexeme zh
+      surface
         text 单位
   cardinal_number:
-    defined-by quantity # definition-link
-    role numeric_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-35ff6af05b70
+    defined-by quantity
+    role numeric_concept
+    lexeme en
+      surface
         text "cardinal number"
-      surface seed-surface-6dfec81315d2
+      surface
         text number
-    lexeme ru # language
-      surface seed-surface-cc2023d806cc
+    lexeme ru
+      surface
         text "количественное число"
-    lexeme hi # language
-      surface seed-surface-52ff47a63f18
+    lexeme hi
+      surface
         text "गणन संख्या"
-    lexeme zh # language
-      surface seed-surface-e8eb446f4a4d
+    lexeme zh
+      surface
         text 基数
   zero:
-    defined-by cardinal_number # definition-link
-    defined-by empty # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-05f8f9811abf
+    defined-by cardinal_number
+    defined-by empty
+    role cardinal_number_word
+    lexeme en
+      surface
         text zero
-      surface seed-surface-989edea11c01
+      surface
         text 0
-    lexeme ru # language
-      surface seed-surface-d7ae0eb26ee3
+    lexeme ru
+      surface
         text ноль
-      surface seed-surface-63993ba22015
+      surface
         text нуль
-    lexeme hi # language
-      surface seed-surface-3f9d95537884
+    lexeme hi
+      surface
         text शून्य
-    lexeme zh # language
-      surface seed-surface-0633007c1397
+    lexeme zh
+      surface
         text 零
   one:
-    defined-by cardinal_number # definition-link
-    defined-by single # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-6507f53a48ef
+    defined-by cardinal_number
+    defined-by single
+    role cardinal_number_word
+    lexeme en
+      surface
         text one
-      surface seed-surface-2b683277f197
+      surface
         text 1
-    lexeme ru # language
-      surface seed-surface-3df174355358
+    lexeme ru
+      surface
         text один
-      surface seed-surface-4c5bafa67929
+      surface
         text одна
-      surface seed-surface-fd6c306fbfa2
+      surface
         text одно
-    lexeme hi # language
-      surface seed-surface-66401107c98c
+    lexeme hi
+      surface
         text एक
-    lexeme zh # language
-      surface seed-surface-2a69118803d8
+    lexeme zh
+      surface
         text 一
   two:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-494532ec9121
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text two
-      surface seed-surface-c9262495989d
+      surface
         text 2
-    lexeme ru # language
-      surface seed-surface-b1976887bede
+    lexeme ru
+      surface
         text два
-      surface seed-surface-3901ef342b74
+      surface
         text две
-    lexeme hi # language
-      surface seed-surface-c38e17b8ca32
+    lexeme hi
+      surface
         text दो
-    lexeme zh # language
-      surface seed-surface-8e4229242731
+    lexeme zh
+      surface
         text 二
   three:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-d325e3617c34
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text three
-      surface seed-surface-15e51d25a3d6
+      surface
         text 3
-    lexeme ru # language
-      surface seed-surface-14416cc55297
+    lexeme ru
+      surface
         text три
-    lexeme hi # language
-      surface seed-surface-8656b7dfbed2
+    lexeme hi
+      surface
         text तीन
-    lexeme zh # language
-      surface seed-surface-289cf99ebe95
+    lexeme zh
+      surface
         text 三
   four:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-0f8b3d2497bf
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text four
-      surface seed-surface-5884ad66a1fa
+      surface
         text 4
-    lexeme ru # language
-      surface seed-surface-9704f6ba9f46
+    lexeme ru
+      surface
         text четыре
-    lexeme hi # language
-      surface seed-surface-778a48eeadb2
+    lexeme hi
+      surface
         text चार
-    lexeme zh # language
-      surface seed-surface-b23a91d79973
+    lexeme zh
+      surface
         text 四
   five:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-cdf728852c7d
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text five
-      surface seed-surface-c93c0e4c61ec
+      surface
         text 5
-    lexeme ru # language
-      surface seed-surface-d61880cd4463
+    lexeme ru
+      surface
         text пять
-    lexeme hi # language
-      surface seed-surface-a713f81f5bfd
+    lexeme hi
+      surface
         text पाँच
-    lexeme zh # language
-      surface seed-surface-0d4318541e0c
+    lexeme zh
+      surface
         text 五
   six:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-e9b2d3aa2559
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text six
-      surface seed-surface-0a1437bef615
+      surface
         text 6
-    lexeme ru # language
-      surface seed-surface-b80c59ea7d69
+    lexeme ru
+      surface
         text шесть
-    lexeme hi # language
-      surface seed-surface-2a3428465557
+    lexeme hi
+      surface
         text छह
-    lexeme zh # language
-      surface seed-surface-f0dbd61f2600
+    lexeme zh
+      surface
         text 六
   seven:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-1cf9edd8e73f
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text seven
-      surface seed-surface-e38e752b6042
+      surface
         text 7
-    lexeme ru # language
-      surface seed-surface-3e1f3facdf97
+    lexeme ru
+      surface
         text семь
-    lexeme hi # language
-      surface seed-surface-3612443ba468
+    lexeme hi
+      surface
         text सात
-    lexeme zh # language
-      surface seed-surface-1c70152fb8da
+    lexeme zh
+      surface
         text 七
   eight:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-668056f20a93
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text eight
-      surface seed-surface-d4119fa6e9ec
+      surface
         text 8
-    lexeme ru # language
-      surface seed-surface-bda62715dd43
+    lexeme ru
+      surface
         text восемь
-    lexeme hi # language
-      surface seed-surface-fc82dcd66a70
+    lexeme hi
+      surface
         text आठ
-    lexeme zh # language
-      surface seed-surface-9196d602cb0b
+    lexeme zh
+      surface
         text 八
   nine:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-7f949a10e7db
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text nine
-      surface seed-surface-041c5e29d605
+      surface
         text 9
-    lexeme ru # language
-      surface seed-surface-553fe8ee5341
+    lexeme ru
+      surface
         text девять
-    lexeme hi # language
-      surface seed-surface-3ab83a6cc695
+    lexeme hi
+      surface
         text नौ
-    lexeme zh # language
-      surface seed-surface-bacfeb5ff0e2
+    lexeme zh
+      surface
         text 九
   ten:
-    defined-by cardinal_number # definition-link
-    role cardinal_number_word # semantic-role
-    lexeme en # language
-      surface seed-surface-41c7ad3822bc
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
         text ten
-      surface seed-surface-3fe1f7425da6
+      surface
         text 10
-    lexeme ru # language
-      surface seed-surface-9088ed6044ee
+    lexeme ru
+      surface
         text десять
-    lexeme hi # language
-      surface seed-surface-53a46b551451
+    lexeme hi
+      surface
         text दस
-    lexeme zh # language
-      surface seed-surface-54298ab10c98
+    lexeme zh
+      surface
         text 十
   length:
-    defined-by quantity # definition-link
-    role physical_dimension # semantic-role
-    lexeme en # language
-      surface seed-surface-f57a61f64c92
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
         text length
-    lexeme ru # language
-      surface seed-surface-441cf1a94c80
+    lexeme ru
+      surface
         text длина
-    lexeme hi # language
-      surface seed-surface-0cb16ce48cd5
+    lexeme hi
+      surface
         text लंबाई
-    lexeme zh # language
-      surface seed-surface-62583b5e7e25
+    lexeme zh
+      surface
         text 长度
   data_storage:
-    defined-by quantity # definition-link
-    role physical_dimension # semantic-role
-    lexeme en # language
-      surface seed-surface-19f06b870f36
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
         text "data storage"
-    lexeme ru # language
-      surface seed-surface-207eec4695b9
+    lexeme ru
+      surface
         text "хранение данных"
-    lexeme hi # language
-      surface seed-surface-adfc53a33bf6
+    lexeme hi
+      surface
         text "डेटा भंडारण"
-    lexeme zh # language
-      surface seed-surface-3b0891a635bf
+    lexeme zh
+      surface
         text 数据存储
   mass:
-    defined-by quantity # definition-link
-    role physical_dimension # semantic-role
-    lexeme en # language
-      surface seed-surface-add622a35c05
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
         text mass
-    lexeme ru # language
-      surface seed-surface-37c7e9a8a79d
+    lexeme ru
+      surface
         text масса
-    lexeme hi # language
-      surface seed-surface-6f6da0374b04
+    lexeme hi
+      surface
         text द्रव्यमान
-    lexeme zh # language
-      surface seed-surface-f864f89d7af2
+    lexeme zh
+      surface
         text 质量
   time:
-    defined-by quantity # definition-link
-    role physical_dimension # semantic-role
-    lexeme en # language
-      surface seed-surface-72f36d50026b
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
         text time
-    lexeme ru # language
-      surface seed-surface-c2adfd33bd0a
+    lexeme ru
+      surface
         text время
-    lexeme hi # language
-      surface seed-surface-647534f6ded7
+    lexeme hi
+      surface
         text समय
-    lexeme zh # language
-      surface seed-surface-19b1b6234dfc
+    lexeme zh
+      surface
         text 时间
   temperature:
-    defined-by quantity # definition-link
-    role physical_dimension # semantic-role
-    lexeme en # language
-      surface seed-surface-120c6cf463bc
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
         text temperature
-    lexeme ru # language
-      surface seed-surface-7a771c594752
+    lexeme ru
+      surface
         text температура
-    lexeme hi # language
-      surface seed-surface-4511ec4e3c8b
+    lexeme hi
+      surface
         text तापमान
-    lexeme zh # language
-      surface seed-surface-0db0dd9f361f
+    lexeme zh
+      surface
         text 温度
   meter:
-    defined-by length # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-39f1d380a4f8
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text meter
-      surface seed-surface-c70c39e4596b
+      surface
         text metre
-      surface seed-surface-ce3049b9a530
+      surface
         text meters
-      surface seed-surface-a4e56eea8f2d
+      surface
         text metres
-    lexeme ru # language
-      surface seed-surface-ecc27b8a985b
+    lexeme ru
+      surface
         text метр
-      surface seed-surface-759c0e425eaf
+      surface
         text метра
-      surface seed-surface-ca1bd6e6f279
+      surface
         text метров
-    lexeme hi # language
-      surface seed-surface-ab5e9af09974
+    lexeme hi
+      surface
         text मीटर
-    lexeme zh # language
-      surface seed-surface-b238edd9fb93
+    lexeme zh
+      surface
         text 米
   kilometer:
-    defined-by length # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-e17e59d91c91
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text km
-      surface seed-surface-a371deea77ae
+      surface
         text kilometer
-      surface seed-surface-49124ce67034
+      surface
         text kilometre
-      surface seed-surface-27314aa436e1
+      surface
         text kilometers
-      surface seed-surface-d97107c14d7e
+      surface
         text kilometres
-    lexeme ru # language
-      surface seed-surface-4cfa9cb373db
+    lexeme ru
+      surface
         text километр
-      surface seed-surface-363439f0478a
+      surface
         text километра
-      surface seed-surface-e701b2561b70
+      surface
         text километров
-    lexeme hi # language
-      surface seed-surface-610da715a5e7
+    lexeme hi
+      surface
         text किलोमीटर
-    lexeme zh # language
-      surface seed-surface-ee12b8ece7c9
+    lexeme zh
+      surface
         text 千米
-      surface seed-surface-45364be79d06
+      surface
         text 公里
   centimeter:
-    defined-by length # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-ff431574bb00
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text cm
-      surface seed-surface-867f82bc114d
+      surface
         text centimeter
-      surface seed-surface-b394e1e51722
+      surface
         text centimetre
-    lexeme ru # language
-      surface seed-surface-6089ea351e12
+    lexeme ru
+      surface
         text сантиметр
-    lexeme hi # language
-      surface seed-surface-8d44be546db4
+    lexeme hi
+      surface
         text सेंटीमीटर
-    lexeme zh # language
-      surface seed-surface-7420ad390bd7
+    lexeme zh
+      surface
         text 厘米
   millimeter:
-    defined-by length # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-0e67aeb87ad0
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text mm
-      surface seed-surface-47b04bfbb5de
+      surface
         text millimeter
-      surface seed-surface-6a530ce8be49
+      surface
         text millimetre
-    lexeme ru # language
-      surface seed-surface-f099cf46192b
+    lexeme ru
+      surface
         text миллиметр
-    lexeme hi # language
-      surface seed-surface-e74df176ff76
+    lexeme hi
+      surface
         text मिलीमीटर
-    lexeme zh # language
-      surface seed-surface-c744c0a14288
+    lexeme zh
+      surface
         text 毫米
   byte:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-6b78e08a73fd
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text byte
-      surface seed-surface-01f5ec7135a9
+      surface
         text bytes
-    lexeme ru # language
-      surface seed-surface-90f937006530
+    lexeme ru
+      surface
         text байт
-      surface seed-surface-70cf1e7fac33
+      surface
         text байта
-      surface seed-surface-63c9d5244e01
+      surface
         text байтов
-    lexeme hi # language
-      surface seed-surface-861217a7a3bb
+    lexeme hi
+      surface
         text बाइट
-    lexeme zh # language
-      surface seed-surface-3f5d3bb8a5a6
+    lexeme zh
+      surface
         text 字节
   kilobyte:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-19d7c0bc3617
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text kb
-      surface seed-surface-ae4230cb2c07
+      surface
         text kilobyte
-      surface seed-surface-5958bb053a4a
+      surface
         text kilobytes
-    lexeme ru # language
-      surface seed-surface-d54432ded508
+    lexeme ru
+      surface
         text килобайт
-    lexeme hi # language
-      surface seed-surface-ca54f077f9af
+    lexeme hi
+      surface
         text किलोबाइट
-    lexeme zh # language
-      surface seed-surface-8a3a99934ff9
+    lexeme zh
+      surface
         text 千字节
   megabyte:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-84164536101b
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text mb
-      surface seed-surface-de076d5b37ae
+      surface
         text megabyte
-      surface seed-surface-44d1c1fad0a1
+      surface
         text megabytes
-    lexeme ru # language
-      surface seed-surface-fbe98edc3100
+    lexeme ru
+      surface
         text мегабайт
-    lexeme hi # language
-      surface seed-surface-a580362a03cf
+    lexeme hi
+      surface
         text मेगाबाइट
-    lexeme zh # language
-      surface seed-surface-d30cc2d1a9d7
+    lexeme zh
+      surface
         text 兆字节
   gigabyte:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-d80b9141b63e
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text gb
-      surface seed-surface-82bc6e7aa3e6
+      surface
         text gigabyte
-      surface seed-surface-4a03ac6edfbe
+      surface
         text gigabytes
-    lexeme ru # language
-      surface seed-surface-26787b2d9d8c
+    lexeme ru
+      surface
         text гигабайт
-    lexeme hi # language
-      surface seed-surface-cb9480bbc4ba
+    lexeme hi
+      surface
         text गीगाबाइट
-    lexeme zh # language
-      surface seed-surface-3bef505a9b85
+    lexeme zh
+      surface
         text 吉字节
   terabyte:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-3371321a1356
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text tb
-      surface seed-surface-c1b6e56cd738
+      surface
         text terabyte
-      surface seed-surface-31c8912d6196
+      surface
         text terabytes
-    lexeme ru # language
-      surface seed-surface-96f47b60807a
+    lexeme ru
+      surface
         text терабайт
-    lexeme hi # language
-      surface seed-surface-ac6e3b9ae946
+    lexeme hi
+      surface
         text टेराबाइट
-    lexeme zh # language
-      surface seed-surface-603d729776dc
+    lexeme zh
+      surface
         text 太字节
   bit:
-    defined-by data_storage # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-f984db129f19
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text bit
-      surface seed-surface-7ee8e9efa02a
+      surface
         text bits
-    lexeme ru # language
-      surface seed-surface-b8a29ddb2e14
+    lexeme ru
+      surface
         text бит
-      surface seed-surface-2bf9da7387af
+      surface
         text бита
-      surface seed-surface-c43a4891cc11
+      surface
         text битов
-    lexeme hi # language
-      surface seed-surface-b14bfbf5f1e4
+    lexeme hi
+      surface
         text बिट
-    lexeme zh # language
-      surface seed-surface-2f6f78dd22c1
+    lexeme zh
+      surface
         text 比特
   kilogram:
-    defined-by mass # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-780a019d35d9
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text kg
-      surface seed-surface-ebff17f8d79a
+      surface
         text kilogram
-      surface seed-surface-de25e1628517
+      surface
         text kilograms
-    lexeme ru # language
-      surface seed-surface-ffcc7a06c858
+    lexeme ru
+      surface
         text кг
-      surface seed-surface-2fe5d540998b
+      surface
         text килограмм
-    lexeme hi # language
-      surface seed-surface-289f0f6840ca
+    lexeme hi
+      surface
         text किलोग्राम
-    lexeme zh # language
-      surface seed-surface-c902fea24d0d
+    lexeme zh
+      surface
         text 千克
-      surface seed-surface-697bb33f71d5
+      surface
         text 公斤
   gram:
-    defined-by mass # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-d469cdea7f3f
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text gram
-      surface seed-surface-cd39b8e2d750
+      surface
         text grams
-    lexeme ru # language
-      surface seed-surface-fb0fb6427cfa
+    lexeme ru
+      surface
         text грамм
-    lexeme hi # language
-      surface seed-surface-a4458166e8ad
+    lexeme hi
+      surface
         text ग्राम
-    lexeme zh # language
-      surface seed-surface-7af7121c97ef
+    lexeme zh
+      surface
         text 克
   pound:
-    defined-by mass # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-4e1ee8c10459
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text pound
-      surface seed-surface-4dddc83163a6
+      surface
         text pounds
-    lexeme ru # language
-      surface seed-surface-8f423c9d3b17
+    lexeme ru
+      surface
         text фунт
-    lexeme hi # language
-      surface seed-surface-2a44793775ed
+    lexeme hi
+      surface
         text पाउंड
-    lexeme zh # language
-      surface seed-surface-3b3f0ade6b9f
+    lexeme zh
+      surface
         text 磅
   ton:
-    defined-by mass # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-d474a8ce04e1
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text ton
-      surface seed-surface-405d953d7413
+      surface
         text tons
-      surface seed-surface-d5a33727c072
+      surface
         text tonne
-    lexeme ru # language
-      surface seed-surface-119b13a7e21d
+    lexeme ru
+      surface
         text тонна
-      surface seed-surface-59a92a9274df
+      surface
         text тонны
-      surface seed-surface-eb592c5fed94
+      surface
         text тонн
-    lexeme hi # language
-      surface seed-surface-333dda8be347
+    lexeme hi
+      surface
         text टन
-    lexeme zh # language
-      surface seed-surface-c69880f9f5f5
+    lexeme zh
+      surface
         text 吨
   second:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-3db6360df7b9
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text second
-      surface seed-surface-fdb749cdfb3b
+      surface
         text seconds
-    lexeme ru # language
-      surface seed-surface-c6253a8ffb90
+    lexeme ru
+      surface
         text секунда
-      surface seed-surface-d93283752161
+      surface
         text секунды
-      surface seed-surface-7895bb0a9c60
+      surface
         text секунд
-    lexeme hi # language
-      surface seed-surface-b328f80aa5fe
+    lexeme hi
+      surface
         text सेकंड
-    lexeme zh # language
-      surface seed-surface-43ed0365e317
+    lexeme zh
+      surface
         text 秒
   minute:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-7dcacaac8369
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text minute
-      surface seed-surface-4236217f4964
+      surface
         text minutes
-    lexeme ru # language
-      surface seed-surface-ed0185c4df5b
+    lexeme ru
+      surface
         text минута
-      surface seed-surface-313a2434da49
+      surface
         text минуты
-      surface seed-surface-48dbc4bd35ac
+      surface
         text минут
-    lexeme hi # language
-      surface seed-surface-40f18a456780
+    lexeme hi
+      surface
         text मिनट
-    lexeme zh # language
-      surface seed-surface-e1e541534966
+    lexeme zh
+      surface
         text 分钟
   hour:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-7deacc6314b1
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text hour
-      surface seed-surface-7459d8c874a0
+      surface
         text hours
-    lexeme ru # language
-      surface seed-surface-9bd95c79b80b
+    lexeme ru
+      surface
         text час
-      surface seed-surface-4909464d65d3
+      surface
         text часа
-      surface seed-surface-5b9c083b0663
+      surface
         text часов
-    lexeme hi # language
-      surface seed-surface-117513a2ad98
+    lexeme hi
+      surface
         text घंटा
-    lexeme zh # language
-      surface seed-surface-6519975ca1a6
+    lexeme zh
+      surface
         text 小时
   millisecond:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-03f37f3fb39c
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text ms
-      surface seed-surface-33086ff55b39
+      surface
         text millisecond
-      surface seed-surface-a13bd5548dc0
+      surface
         text milliseconds
-    lexeme ru # language
-      surface seed-surface-ba91b75f1600
+    lexeme ru
+      surface
         text миллисекунда
-      surface seed-surface-abc0b829040e
+      surface
         text миллисекунд
-    lexeme hi # language
-      surface seed-surface-fc7083763d27
+    lexeme hi
+      surface
         text मिलीसेकंड
-    lexeme zh # language
-      surface seed-surface-d5220a9be1c0
+    lexeme zh
+      surface
         text 毫秒
   day:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-5d52246b8a87
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text day
-      surface seed-surface-63bf3b407313
+      surface
         text days
-    lexeme ru # language
-      surface seed-surface-e44cbc981b98
+    lexeme ru
+      surface
         text день
-      surface seed-surface-1c1f2e52eb0b
+      surface
         text дня
-      surface seed-surface-764b88e1af7f
+      surface
         text дней
-    lexeme hi # language
-      surface seed-surface-e0951328d712
+    lexeme hi
+      surface
         text दिन
-    lexeme zh # language
-      surface seed-surface-bd68e4867aaf
+    lexeme zh
+      surface
         text 天
-      surface seed-surface-1a428b7d3ce1
+      surface
         text 日
   month:
-    defined-by time # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    role calculation_domain_term # semantic-role
-    lexeme en # language
-      surface seed-surface-d6da55bfe496
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
         text month
-      surface seed-surface-442b27879b3d
+      surface
         text months
-    lexeme ru # language
-      surface seed-surface-4b4faba1839b
+    lexeme ru
+      surface
         text месяц
-      surface seed-surface-9059cd0b55ff
+      surface
         text месяца
-      surface seed-surface-c189543fcd1a
+      surface
         text месяцев
-    lexeme hi # language
-      surface seed-surface-a4c34841b794
+    lexeme hi
+      surface
         text महीना
-      surface seed-surface-94fbae4bcf70
+      surface
         text महीने
-    lexeme zh # language
-      surface seed-surface-91b35f691781
+    lexeme zh
+      surface
         text 月
-      surface seed-surface-ba17ff02b23a
+      surface
         text 个月
   celsius:
-    defined-by temperature # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-5baa1cb84b94
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text celsius
-    lexeme ru # language
-      surface seed-surface-b9cbaaefbc72
+    lexeme ru
+      surface
         text цельсий
-    lexeme hi # language
-      surface seed-surface-d1bdf2156a0a
+    lexeme hi
+      surface
         text सेल्सियस
-    lexeme zh # language
-      surface seed-surface-068efb9a020c
+    lexeme zh
+      surface
         text 摄氏度
   fahrenheit:
-    defined-by temperature # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-fd7137f2be1a
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text fahrenheit
-    lexeme ru # language
-      surface seed-surface-1b745d545082
+    lexeme ru
+      surface
         text фаренгейт
-    lexeme hi # language
-      surface seed-surface-327a6a87bdc9
+    lexeme hi
+      surface
         text फ़ारेनहाइट
-    lexeme zh # language
-      surface seed-surface-64333ba22abd
+    lexeme zh
+      surface
         text 华氏度
   kelvin:
-    defined-by temperature # definition-link
-    defined-by unit # definition-link
-    role measurement_unit # semantic-role
-    lexeme en # language
-      surface seed-surface-dc808c32437c
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
         text kelvin
-    lexeme ru # language
-      surface seed-surface-07c7a916d0f1
+    lexeme ru
+      surface
         text кельвин
-    lexeme hi # language
-      surface seed-surface-b343a0873dae
+    lexeme hi
+      surface
         text केल्विन
-    lexeme zh # language
-      surface seed-surface-79ac06265c20
+    lexeme zh
+      surface
         text 开尔文

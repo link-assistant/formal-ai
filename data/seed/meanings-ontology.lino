@@ -1,111 +1,111 @@
 meanings
   link:
-    defined-by link # definition-link
-    defined-by link-action # definition-link
-    defined-by any-of-reference # definition-link
-    role ontology_root # semantic-role
-    facet notation # facet
+    defined-by link
+    defined-by link-action
+    defined-by any-of-reference
+    role ontology_root
+    facet notation
       links_notation_format:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       relation:
-    facet connotation # facet
+    facet connotation
       concept:
-    lexeme en # language
-      surface seed-surface-260a96960383
+    lexeme en
+      surface
         text link
-      surface seed-surface-09734e3f0b57
+      surface
         text connection
-    lexeme ru # language
-      surface seed-surface-41071f2f524c
+    lexeme ru
+      surface
         text связь
-      surface seed-surface-e7044db92af4
+      surface
         text ссылка
-    lexeme hi # language
-      surface seed-surface-d613b93b566a
+    lexeme hi
+      surface
         text लिंक
-      surface seed-surface-ccdef8195355
+      surface
         text कड़ी
-    lexeme zh # language
-      surface seed-surface-37eb7a0b6979
+    lexeme zh
+      surface
         text 链接
-      surface seed-surface-a81ea5d553f7
+      surface
         text 连接
   type:
-    defined-by link # definition-link
-    defined-by type # definition-link
-    role ontology_type # semantic-role
-    facet self-equation # facet
+    defined-by link
+    defined-by type
+    role ontology_type
+    facet self-equation
       type:
-    lexeme en # language
-      surface seed-surface-599d32939e26
+    lexeme en
+      surface
         text type
-      surface seed-surface-1bc05ba47633
+      surface
         text kind
-    lexeme ru # language
-      surface seed-surface-fc18e3c1d871
+    lexeme ru
+      surface
         text тип
-      surface seed-surface-f0f9bc9c02b5
+      surface
         text вид
-    lexeme hi # language
-      surface seed-surface-675f89189c3f
+    lexeme hi
+      surface
         text प्रकार
-      surface seed-surface-48d02a3896b5
+      surface
         text क़िस्म
-    lexeme zh # language
-      surface seed-surface-807244baf50e
+    lexeme zh
+      surface
         text 类型
-      surface seed-surface-470bf3620340
+      surface
         text 种类
   entity:
-    defined-by type # definition-link
-    role ontology_category # semantic-role
-    lexeme en # language
-      surface seed-surface-f2a568c15beb
+    defined-by type
+    role ontology_category
+    lexeme en
+      surface
         text entity
-      surface seed-surface-e7e83134696c
+      surface
         text thing
-    lexeme ru # language
-      surface seed-surface-0e858097df48
+    lexeme ru
+      surface
         text сущность
-      surface seed-surface-95cdd6eccae8
+      surface
         text объект
-    lexeme hi # language
-      surface seed-surface-144c2c732b45
+    lexeme hi
+      surface
         text इकाई
-      surface seed-surface-68b5a78ceeea
+      surface
         text वस्तु
-    lexeme zh # language
-      surface seed-surface-7048d7b8231f
+    lexeme zh
+      surface
         text 实体
-      surface seed-surface-4abd727bc9cc
+      surface
         text 事物
   concept:
-    defined-by type # definition-link
-    role ontology_category # semantic-role
-    lexeme en # language
-      surface seed-surface-ca28d52a27d4
+    defined-by type
+    role ontology_category
+    lexeme en
+      surface
         text concept
-      surface seed-surface-403e81fc81ad
+      surface
         text notion
-    lexeme ru # language
-      surface seed-surface-e071da8d417f
+    lexeme ru
+      surface
         text понятие
-      surface seed-surface-bd8b46be1def
+      surface
         text концепция
-    lexeme hi # language
-      surface seed-surface-fab5152fccdf
+    lexeme hi
+      surface
         text अवधारणा
-      surface seed-surface-43b8b5138293
+      surface
         text संकल्पना
-    lexeme zh # language
-      surface seed-surface-c87a78412a1d
+    lexeme zh
+      surface
         text 概念
-      surface seed-surface-dca563265f52
+      surface
         text 观念
   relation:
-    defined-by link # definition-link
+    defined-by link
     source-lexeme L3743 # wikidata english noun relation
       language Q1860 # wikidata language english
       lexical-category Q1084 # wikidata category noun
@@ -126,78 +126,78 @@ meanings
       language Q1860 # wikidata language english
       lexical-category Q1084 # wikidata category noun
       sense L5848-S1 # wikidata thing sense
-    role ontology_category # semantic-role
+    role ontology_category
     surface L3743-F1 # wikidata english singular surface
       text relation
-      language en # language
+      language en
       sense L3743-S1 # wikidata relation sense
     surface L3744-F1 # wikidata english singular surface
       text relationship
-      language en # language
+      language en
       sense L3744-S1 # wikidata relationship sense
-    lexeme en # language
-      surface seed-surface-7b4e99f904a2
+    lexeme en
+      surface
         text relation
-      surface seed-surface-7a71979a71c6
+      surface
         text relationship
-    lexeme ru # language
-      surface seed-surface-7d7d06d7545a
+    lexeme ru
+      surface
         text отношение
-      surface seed-surface-7efbe8bfa3d1
+      surface
         text соотношение
-    lexeme hi # language
-      surface seed-surface-74fbfbfc89a2
+    lexeme hi
+      surface
         text संबंध
-      surface seed-surface-a09e71c4a1b6
+      surface
         text रिश्ता
-    lexeme zh # language
-      surface seed-surface-83e23236b407
+    lexeme zh
+      surface
         text 关系
-      surface seed-surface-c2d453b80c87
+      surface
         text 联系
   action:
-    defined-by concept # definition-link
-    role ontology_category # semantic-role
-    lexeme en # language
-      surface seed-surface-4dd92e59d778
+    defined-by concept
+    role ontology_category
+    lexeme en
+      surface
         text action
-      surface seed-surface-0d83312f417d
+      surface
         text act
-    lexeme ru # language
-      surface seed-surface-a8a00386e5b4
+    lexeme ru
+      surface
         text действие
-      surface seed-surface-a126736761ba
+      surface
         text операция
-    lexeme hi # language
-      surface seed-surface-1df481b6f7fa
+    lexeme hi
+      surface
         text क्रिया
-      surface seed-surface-78d41cf118c1
+      surface
         text कार्य
-    lexeme zh # language
-      surface seed-surface-826237424479
+    lexeme zh
+      surface
         text 动作
-      surface seed-surface-540db1cbad7a
+      surface
         text 操作
   property:
-    defined-by concept # definition-link
-    role ontology_category # semantic-role
-    lexeme en # language
-      surface seed-surface-637d53de623d
+    defined-by concept
+    role ontology_category
+    lexeme en
+      surface
         text property
-      surface seed-surface-c01d04e1b7a3
+      surface
         text attribute
-    lexeme ru # language
-      surface seed-surface-1e7f100507b5
+    lexeme ru
+      surface
         text свойство
-      surface seed-surface-06c029279932
+      surface
         text атрибут
-    lexeme hi # language
-      surface seed-surface-0e5d3060659f
+    lexeme hi
+      surface
         text गुण
-      surface seed-surface-94a791b2442f
+      surface
         text विशेषता
-    lexeme zh # language
-      surface seed-surface-44c946eb3e91
+    lexeme zh
+      surface
         text 属性
-      surface seed-surface-26a6dce3cdc4
+      surface
         text 特性

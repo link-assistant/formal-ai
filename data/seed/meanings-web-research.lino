@@ -1,524 +1,524 @@
 meanings
   research_question_opener:
-    defined-by inquiry # definition-link
-    role research_question_opener # semantic-role
-    lexeme en # language
-      surface seed-surface-5201d43736cd
+    defined-by inquiry
+    role research_question_opener
+    lexeme en
+      surface
         text "what is the …"
-      surface seed-surface-e8247299bdc6
+      surface
         text "what is a …"
-      surface seed-surface-d39d9a59cccd
+      surface
         text "what is an …"
-      surface seed-surface-00a481f30e67
+      surface
         text "what is …"
-      surface seed-surface-36e34fb9b1c3
+      surface
         text "what are the …"
-      surface seed-surface-266f13995d3c
+      surface
         text "what are …"
-      surface seed-surface-39fd28ee36dd
+      surface
         text "what s the …"
-      surface seed-surface-ee7309dee97f
+      surface
         text "what s a …"
-      surface seed-surface-29b3de18639a
+      surface
         text "what s an …"
-      surface seed-surface-688fe65b146b
+      surface
         text "what s …"
-      surface seed-surface-f6761eaa562a
+      surface
         text "which is the …"
-      surface seed-surface-143d2939ff4a
+      surface
         text "which is a …"
-      surface seed-surface-9c272cffeb4a
+      surface
         text "which is an …"
-      surface seed-surface-94ae1257fa97
+      surface
         text "which are the …"
-      surface seed-surface-8d863af9e95f
+      surface
         text "which are …"
-      surface seed-surface-5047a430f452
+      surface
         text "which …"
-      surface seed-surface-cfab1b901694
+      surface
         text "who is the …"
-      surface seed-surface-5e15e156f365
+      surface
         text "who are the …"
-      surface seed-surface-a28dfbac108f
+      surface
         text "who …"
-      surface seed-surface-528c7bb44bc4
+      surface
         text "where is the …"
-      surface seed-surface-938ba3ed3c3d
+      surface
         text "where are the …"
-      surface seed-surface-79f5cdbcc42d
+      surface
         text "where …"
-      surface seed-surface-47cc82019345
+      surface
         text "when is the …"
-      surface seed-surface-14556e48aec1
+      surface
         text "when are the …"
-      surface seed-surface-61d077fbe984
+      surface
         text "when …"
-      surface seed-surface-0c99ca25fe41
+      surface
         text "why is the …"
-      surface seed-surface-0accf0ca2559
+      surface
         text "why are the …"
-      surface seed-surface-04a97c9ccb23
+      surface
         text "why …"
-      surface seed-surface-6c2a5b0665e0
+      surface
         text "how is the …"
-      surface seed-surface-2e1523877ce0
+      surface
         text "how are the …"
-      surface seed-surface-6b8ff5bc1dd2
+      surface
         text "how …"
-      surface seed-surface-8ca48f1f7337
+      surface
         text "can you tell me …"
-      surface seed-surface-d3e5ef60196f
+      surface
         text "could you tell me …"
-      surface seed-surface-9d2805b5a52c
+      surface
         text "do you know …"
-    lexeme ru # language
-      surface seed-surface-25c17ac7d327
+    lexeme ru
+      surface
         text "что такое …"
-      surface seed-surface-4055c7f65684
+      surface
         text "что за …"
-      surface seed-surface-35583ba13d63
+      surface
         text "какие …"
-      surface seed-surface-2e406c976d45
+      surface
         text "какой …"
-      surface seed-surface-baf841aaa6e3
+      surface
         text "какая …"
-      surface seed-surface-4220a3fd2785
+      surface
         text "какое …"
-      surface seed-surface-2b0073a6ccb4
+      surface
         text "кто такой …"
-      surface seed-surface-25d6794d29d3
+      surface
         text "кто такая …"
-      surface seed-surface-c5fe472976fe
+      surface
         text "кто …"
-      surface seed-surface-04acd4e01653
+      surface
         text "где …"
-      surface seed-surface-0bcb344fbb74
+      surface
         text "когда …"
-      surface seed-surface-404e8b48025f
+      surface
         text "почему …"
-      surface seed-surface-4b6f42811585
+      surface
         text "зачем …"
-      surface seed-surface-780911c49b38
+      surface
         text "как …"
-      surface seed-surface-f23b2c91cdf7
+      surface
         text "расскажи мне …"
-      surface seed-surface-bfa847d486cf
+      surface
         text "ты знаешь …"
-    lexeme hi # language
-      surface seed-surface-e85dfabb710f
+    lexeme hi
+      surface
         text "क्या होता है …"
-      surface seed-surface-de120ddfe11a
+      surface
         text "क्या है …"
-      surface seed-surface-2c99d272d220
+      surface
         text "कौन है …"
-      surface seed-surface-ca23312a55d7
+      surface
         text "कौन …"
-      surface seed-surface-b329c4e7eb7b
+      surface
         text "कहाँ है …"
-      surface seed-surface-7659d8622d7f
+      surface
         text "कहाँ …"
-      surface seed-surface-607b2f44a4de
+      surface
         text "कब …"
-      surface seed-surface-088f184bbe2a
+      surface
         text "क्यों …"
-      surface seed-surface-c3d3c36f9641
+      surface
         text "कैसे …"
-      surface seed-surface-45882e2eedc7
+      surface
         text "बताओ …"
-    lexeme zh # language
-      surface seed-surface-3f33b13f5e47
+    lexeme zh
+      surface
         text 什么是…
-      surface seed-surface-94879188968d
+      surface
         text 谁是…
-      surface seed-surface-709788f23b4e
+      surface
         text 哪里是…
-      surface seed-surface-ed475704912f
+      surface
         text 哪里…
-      surface seed-surface-eaf54a8e2ed9
+      surface
         text 哪个…
-      surface seed-surface-604c2492a642
+      surface
         text 什么时候…
-      surface seed-surface-024f8ff52f2c
+      surface
         text 为什么…
-      surface seed-surface-2bab2615dab7
+      surface
         text 怎么…
-      surface seed-surface-38abc451d4ca
+      surface
         text 如何…
-      surface seed-surface-94d6335f731a
+      surface
         text 告诉我…
-      surface seed-surface-62720d1390e9
+      surface
         text 你知道…
   research_superlative_modifier:
-    defined-by property # definition-link
-    role research_superlative_modifier # semantic-role
-    lexeme en # language
-      surface seed-surface-0982e3a7b6a5
+    defined-by property
+    role research_superlative_modifier
+    lexeme en
+      surface
         text " most "
-      surface seed-surface-433d9b40ee8a
+      surface
         text " best "
-      surface seed-surface-3275656cf88c
+      surface
         text " top "
-      surface seed-surface-505ddaeedece
+      surface
         text " leading "
-      surface seed-surface-d3397cd27750
+      surface
         text " standard "
-      surface seed-surface-bf1d1cfbf2af
+      surface
         text " de facto "
-      surface seed-surface-1b965372f7c6
+      surface
         text " widely used "
-      surface seed-surface-f20ec848fb5b
+      surface
         text " commonly used "
-      surface seed-surface-bd544ba68144
+      surface
         text " popular "
-      surface seed-surface-17db901e166f
+      surface
         text " recommended "
-      surface seed-surface-ed2c06a5612a
+      surface
         text " current "
-      surface seed-surface-592deab3a294
+      surface
         text " latest "
-      surface seed-surface-290602e7e939
+      surface
         text " recent "
-      surface seed-surface-e40dc4603e31
+      surface
         text " state of the art "
-      surface seed-surface-c30d7a0bc608
+      surface
         text " sota "
-      surface seed-surface-923e3e43a7c4
+      surface
         text " should i use "
-      surface seed-surface-f5fba808a964
+      surface
         text " should we use "
-      surface seed-surface-0ce93fa331ad
+      surface
         text " should be used "
-    lexeme ru # language
-      surface seed-surface-7d1b51c836c0
+    lexeme ru
+      surface
         text " лучший "
-      surface seed-surface-113201ac0b4e
+      surface
         text " лучшая "
-      surface seed-surface-6066c38c4e76
+      surface
         text " лучшие "
-      surface seed-surface-218f0893c5b2
+      surface
         text " самый "
-      surface seed-surface-d7fe53b35c3c
+      surface
         text " самые "
-      surface seed-surface-82033d091ae3
+      surface
         text " топ "
-      surface seed-surface-a6b277ebe7de
+      surface
         text " ведущий "
-      surface seed-surface-8400d09b4167
+      surface
         text " популярный "
-      surface seed-surface-41a7ba1d9e6c
+      surface
         text " стандартный "
-      surface seed-surface-3fe6d6d9a4f5
+      surface
         text " рекомендуемый "
-      surface seed-surface-4a2543b846dd
+      surface
         text " текущий "
-      surface seed-surface-4380d1e3a03f
+      surface
         text " последний "
-      surface seed-surface-8b765bf2adea
+      surface
         text " недавний "
-    lexeme hi # language
-      surface seed-surface-c61968e15acb
+    lexeme hi
+      surface
         text " सबसे अच्छा "
-      surface seed-surface-fd6e8b5a4a33
+      surface
         text " सर्वश्रेष्ठ "
-      surface seed-surface-6ac3085702e3
+      surface
         text " शीर्ष "
-      surface seed-surface-0632ee17774b
+      surface
         text " प्रमुख "
-      surface seed-surface-e42b35ab3a6e
+      surface
         text " मानक "
-      surface seed-surface-27bc35b6392c
+      surface
         text " लोकप्रिय "
-      surface seed-surface-b3c998dd4d04
+      surface
         text " अनुशंसित "
-      surface seed-surface-59540dba5422
+      surface
         text " वर्तमान "
-      surface seed-surface-4134985984bb
+      surface
         text " नवीनतम "
-      surface seed-surface-799d64cec838
+      surface
         text " हाल ही का "
-    lexeme zh # language
-      surface seed-surface-560232fed92e
+    lexeme zh
+      surface
         text 最好
-      surface seed-surface-0be9d4c907b9
+      surface
         text 最佳
-      surface seed-surface-c3fc4148d9ae
+      surface
         text 顶级
-      surface seed-surface-9ee47eb2ac1e
+      surface
         text 领先
-      surface seed-surface-360535f28fc1
+      surface
         text 标准
-      surface seed-surface-6f8068d61b7b
+      surface
         text 流行
-      surface seed-surface-f39a53ae427e
+      surface
         text 推荐
-      surface seed-surface-95130cd218f4
+      surface
         text 当前
-      surface seed-surface-8122a4613953
+      surface
         text 最新
-      surface seed-surface-f4c43c099449
+      surface
         text 最近
   research_evidence_domain:
-    defined-by entity # definition-link
-    role research_evidence_domain # semantic-role
-    lexeme en # language
-      surface seed-surface-c0f1da53c72a
+    defined-by entity
+    role research_evidence_domain
+    lexeme en
+      surface
         text " dataset "
-      surface seed-surface-7d4ec6fd5249
+      surface
         text " datasets "
-      surface seed-surface-15089ae6e1d3
+      surface
         text " benchmark "
-      surface seed-surface-c78a959bada4
+      surface
         text " benchmarks "
-      surface seed-surface-630fba6f1868
+      surface
         text " corpus "
-      surface seed-surface-981e7a586733
+      surface
         text " corpora "
-      surface seed-surface-05afc3185aee
+      surface
         text " metric "
-      surface seed-surface-43e3edbc5563
+      surface
         text " metrics "
-      surface seed-surface-0a836792f0ba
+      surface
         text " framework "
-      surface seed-surface-eccd9cd77dd8
+      surface
         text " frameworks "
-      surface seed-surface-28c0d8ba2990
+      surface
         text " paper "
-      surface seed-surface-30a27ed7c158
+      surface
         text " papers "
-      surface seed-surface-c14d6753f74f
+      surface
         text " study "
-      surface seed-surface-3d51c289ee99
+      surface
         text " studies "
-    lexeme ru # language
-      surface seed-surface-5c10353bd5c3
+    lexeme ru
+      surface
         text " датасет "
-      surface seed-surface-7ba46fc1e5e3
+      surface
         text " набор данных "
-      surface seed-surface-7a85a061ed83
+      surface
         text " бенчмарк "
-      surface seed-surface-91fb9e072f7e
+      surface
         text " корпус "
-      surface seed-surface-059d27debae0
+      surface
         text " метрика "
-      surface seed-surface-ef26b83cf636
+      surface
         text " фреймворк "
-      surface seed-surface-b9c32bfe44de
+      surface
         text " статья "
-      surface seed-surface-ef7b9239d88e
+      surface
         text " исследование "
-    lexeme hi # language
-      surface seed-surface-8034d413e784
+    lexeme hi
+      surface
         text " डेटासेट "
-      surface seed-surface-8f84b1f863ba
+      surface
         text " बेंचमार्क "
-      surface seed-surface-6d7525cf2f90
+      surface
         text " कॉर्पस "
-      surface seed-surface-3850d5713166
+      surface
         text " मीट्रिक "
-      surface seed-surface-3e92eb9a2a34
+      surface
         text " फ्रेमवर्क "
-      surface seed-surface-8aa911d54472
+      surface
         text " पेपर "
-      surface seed-surface-084749786002
+      surface
         text " अध्ययन "
-    lexeme zh # language
-      surface seed-surface-0d273732320e
+    lexeme zh
+      surface
         text 数据集
-      surface seed-surface-e0f5fbe1d508
+      surface
         text 基准
-      surface seed-surface-3eb50d2d5ebd
+      surface
         text 语料库
-      surface seed-surface-f317aec509bf
+      surface
         text 指标
-      surface seed-surface-8d1a5c5e1c7f
+      surface
         text 框架
-      surface seed-surface-4e7ef5ea00e5
+      surface
         text 论文
-      surface seed-surface-77c205087ae0
+      surface
         text 研究
   research_evaluation_domain:
-    defined-by concept # definition-link
-    role research_evaluation_domain # semantic-role
-    lexeme en # language
-      surface seed-surface-315562975077
+    defined-by concept
+    role research_evaluation_domain
+    lexeme en
+      surface
         text " evaluation "
-      surface seed-surface-b9dbedddde9b
+      surface
         text " evaluate "
-      surface seed-surface-39e42535b246
+      surface
         text " validation "
-      surface seed-surface-9fbeb6ae182b
+      surface
         text " validate "
-      surface seed-surface-b7080083fb43
+      surface
         text " quality "
-      surface seed-surface-abcf82186067
+      surface
         text " translation "
-      surface seed-surface-c160614bf3d9
+      surface
         text " compare "
-      surface seed-surface-f054df03bb79
+      surface
         text " comparison "
-    lexeme ru # language
-      surface seed-surface-cde39cab26f0
+    lexeme ru
+      surface
         text " оценка "
-      surface seed-surface-43af1472239a
+      surface
         text " оценить "
-      surface seed-surface-d5344bd481be
+      surface
         text " валидация "
-      surface seed-surface-2f0ded6f0fc4
+      surface
         text " проверка "
-      surface seed-surface-97c172fbde62
+      surface
         text " качество "
-      surface seed-surface-220b4b369ecb
+      surface
         text " перевод "
-      surface seed-surface-4bfc898e8fd6
+      surface
         text " сравнить "
-      surface seed-surface-3af46c60f25b
+      surface
         text " сравнение "
-    lexeme hi # language
-      surface seed-surface-c97b8ed4a2a2
+    lexeme hi
+      surface
         text " मूल्यांकन "
-      surface seed-surface-8ddab6e42d0a
+      surface
         text " सत्यापन "
-      surface seed-surface-75f4cfda9340
+      surface
         text " गुणवत्ता "
-      surface seed-surface-a82f1006c98d
+      surface
         text " अनुवाद "
-      surface seed-surface-b3f1e910495e
+      surface
         text " तुलना "
-    lexeme zh # language
-      surface seed-surface-40ee5299b587
+    lexeme zh
+      surface
         text 评估
-      surface seed-surface-19c629262b00
+      surface
         text 评价
-      surface seed-surface-4c3a5295fd97
+      surface
         text 验证
-      surface seed-surface-993589fb2f79
+      surface
         text 质量
-      surface seed-surface-52de5f0d7f3d
+      surface
         text 翻译
-      surface seed-surface-f5d1e24036be
+      surface
         text 比较
   enumeration_request_opener:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role enumeration_request_opener # semantic-role
-    lexeme en # language
-      surface seed-surface-4194902a67d1
+    defined-by inquiry
+    defined-by action
+    role enumeration_request_opener
+    lexeme en
+      surface
         text "list all …"
-      surface seed-surface-a758fe8d96b9
+      surface
         text "list every …"
-      surface seed-surface-9e540766b866
+      surface
         text "list the …"
-      surface seed-surface-aeba6e97f0f3
+      surface
         text "show all …"
-      surface seed-surface-522912b6e91f
+      surface
         text "show me all …"
-      surface seed-surface-14b74df8fbc3
+      surface
         text "show me the …"
-      surface seed-surface-09fb1a22c49e
+      surface
         text "give me all …"
-      surface seed-surface-150fe352ee3e
+      surface
         text "name all …"
-      surface seed-surface-62dd63bd3d2c
+      surface
         text "enumerate all …"
-    lexeme ru # language
-      surface seed-surface-0d5121bea8af
+    lexeme ru
+      surface
         text "перечисли всех …"
-      surface seed-surface-4ed66f7be8b9
+      surface
         text "перечисли все …"
-      surface seed-surface-e71543c8d7ae
+      surface
         text "список всех …"
-      surface seed-surface-97b87bf20005
+      surface
         text "назови всех …"
-    lexeme hi # language
-      surface seed-surface-6231ee66bda2
+    lexeme hi
+      surface
         text "सभी …"
-      surface seed-surface-e6b1e6a80462
+      surface
         text "हर …"
-    lexeme zh # language
-      surface seed-surface-8b11a403ae68
+    lexeme zh
+      surface
         text "列出所有 …"
-      surface seed-surface-dfe7edafde4e
+      surface
         text "列出全部 …"
-      surface seed-surface-8ae63ace5d7f
+      surface
         text "显示所有 …"
-      surface seed-surface-7878eac55496
+      surface
         text "枚举所有 …"
   enumeration_constraint:
-    defined-by relation # definition-link
-    role enumeration_constraint # semantic-role
-    lexeme en # language
-      surface seed-surface-13e2fcb77095
+    defined-by relation
+    role enumeration_constraint
+    lexeme en
+      surface
         text " with "
-      surface seed-surface-fc994e8adabb
+      surface
         text " that "
-      surface seed-surface-d98aa42c68a9
+      surface
         text " who "
-      surface seed-surface-09b453a084a1
+      surface
         text " whose "
-      surface seed-surface-6c9c1579bf93
+      surface
         text " where "
-      surface seed-surface-6274e9fab60e
+      surface
         text " which "
-      surface seed-surface-fe4fd5dc5579
+      surface
         text " having "
-      surface seed-surface-1102f9192363
+      surface
         text " have "
-      surface seed-surface-67d562da9286
+      surface
         text " has "
-      surface seed-surface-7932e90f3b7f
+      surface
         text " featuring "
-      surface seed-surface-da1a09d92812
+      surface
         text " capable of "
-      surface seed-surface-0edeb5ac362f
+      surface
         text " can "
-      surface seed-surface-317539169e94
+      surface
         text " for "
-      surface seed-surface-f196c8e98230
+      surface
         text " by "
-      surface seed-surface-64ed28014189
+      surface
         text " in "
-    lexeme ru # language
-      surface seed-surface-80a5b88f80af
+    lexeme ru
+      surface
         text " с "
-      surface seed-surface-0f87a7163045
+      surface
         text " у которых "
-      surface seed-surface-682d0ea81e3a
+      surface
         text " которые "
-      surface seed-surface-5b3f9cea3e5a
+      surface
         text " имеющие "
-      surface seed-surface-42ac44ad18e2
+      surface
         text " имеющих "
-      surface seed-surface-45573f68c499
+      surface
         text " для "
-      surface seed-surface-d5a409f39903
+      surface
         text " в "
-    lexeme hi # language
-      surface seed-surface-21cc4b590d6c
+    lexeme hi
+      surface
         text " जिनके "
-      surface seed-surface-f9f3263343f0
+      surface
         text " जिनमें "
-      surface seed-surface-0742cf7020c5
+      surface
         text " जिसमें "
-      surface seed-surface-1374c665d6bb
+      surface
         text " वाले "
-      surface seed-surface-5e5c899d5aba
+      surface
         text " के साथ "
-      surface seed-surface-8238ed3e3560
+      surface
         text " के लिए "
-      surface seed-surface-8d72ab2a6ffe
+      surface
         text " में "
-    lexeme zh # language
-      surface seed-surface-1cb34614de1a
+    lexeme zh
+      surface
         text " 具有 "
-      surface seed-surface-908058e00cd7
+      surface
         text " 有 "
-      surface seed-surface-f17d954a6797
+      surface
         text " 带有 "
-      surface seed-surface-66a6f180155c
+      surface
         text " 可以 "
-      surface seed-surface-2a57fa2c5820
+      surface
         text " 能 "
-      surface seed-surface-535e033c6923
+      surface
         text " 在 "
-      surface seed-surface-879489d922f5
+      surface
         text " 用于 "

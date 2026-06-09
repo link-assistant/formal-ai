@@ -1,896 +1,896 @@
 meanings
   assistant:
-    defined-by answer # definition-link
-    defined-by self_reference # definition-link
-    defined-by entity # definition-link
-    role conversational_entity # semantic-role
-    lexeme en # language
-      surface seed-surface-98c5a8b3ec67
+    defined-by answer
+    defined-by self_reference
+    defined-by entity
+    role conversational_entity
+    lexeme en
+      surface
         text assistant
-      surface seed-surface-f49e5cc141e4
+      surface
         text "ai assistant"
-    lexeme ru # language
-      surface seed-surface-e9646e6b4503
+    lexeme ru
+      surface
         text ассистент
-      surface seed-surface-fe2558399298
+      surface
         text помощник
-    lexeme hi # language
-      surface seed-surface-e8167662645d
+    lexeme hi
+      surface
         text सहायक
-    lexeme zh # language
-      surface seed-surface-9172949190c1
+    lexeme zh
+      surface
         text 助手
-      surface seed-surface-7641a431519f
+      surface
         text 助理
   user:
-    defined-by inquiry # definition-link
-    defined-by entity # definition-link
-    role conversational_entity # semantic-role
-    lexeme en # language
-      surface seed-surface-d88a4a2b6bb8
+    defined-by inquiry
+    defined-by entity
+    role conversational_entity
+    lexeme en
+      surface
         text user
-    lexeme ru # language
-      surface seed-surface-c8c8c5142600
+    lexeme ru
+      surface
         text пользователь
-    lexeme hi # language
-      surface seed-surface-500a34475dcb
+    lexeme hi
+      surface
         text उपयोगकर्ता
-    lexeme zh # language
-      surface seed-surface-e955f81a4419
+    lexeme zh
+      surface
         text 用户
   inquiry:
-    defined-by answer # definition-link
-    defined-by user # definition-link
-    role conversational_act # semantic-role
-    lexeme en # language
-      surface seed-surface-b809fb57bed3
+    defined-by answer
+    defined-by user
+    role conversational_act
+    lexeme en
+      surface
         text inquiry
-      surface seed-surface-3cd440caeb2f
+      surface
         text question
-      surface seed-surface-e7167cfa86bb
+      surface
         text request
-    lexeme ru # language
-      surface seed-surface-eb735705c038
+    lexeme ru
+      surface
         text вопрос
-      surface seed-surface-d3ed31388552
+      surface
         text запрос
-    lexeme hi # language
-      surface seed-surface-1e1032572647
+    lexeme hi
+      surface
         text प्रश्न
-      surface seed-surface-5a6488a0474c
+      surface
         text अनुरोध
-    lexeme zh # language
-      surface seed-surface-ce374b88ebe9
+    lexeme zh
+      surface
         text 询问
-      surface seed-surface-3a8db5693cbd
+      surface
         text 请求
   answer:
-    defined-by inquiry # definition-link
-    defined-by assistant # definition-link
-    role conversational_act # semantic-role
-    lexeme en # language
-      surface seed-surface-b91dd3e71cd5
+    defined-by inquiry
+    defined-by assistant
+    role conversational_act
+    lexeme en
+      surface
         text answer
-      surface seed-surface-082b34c29f3d
+      surface
         text response
-      surface seed-surface-2e6ccd1c1426
+      surface
         text reply
-    lexeme ru # language
-      surface seed-surface-93eb68fe17c9
+    lexeme ru
+      surface
         text ответ
-    lexeme hi # language
-      surface seed-surface-a08521dab1c8
+    lexeme hi
+      surface
         text उत्तर
-      surface seed-surface-1d1fac621443
+      surface
         text जवाब
-    lexeme zh # language
-      surface seed-surface-5c64a76f57dc
+    lexeme zh
+      surface
         text 回答
-      surface seed-surface-8fc7a85847e8
+      surface
         text 答复
   self_reference:
-    defined-by assistant # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-924c6282f434
+    defined-by assistant
+    role conversational_concept
+    lexeme en
+      surface
         text yourself
-      surface seed-surface-d868f393780a
+      surface
         text myself
-    lexeme ru # language
-      surface seed-surface-630f41d7401a
+    lexeme ru
+      surface
         text себе
-      surface seed-surface-e6e7c6c58ad4
+      surface
         text себя
-    lexeme hi # language
-      surface seed-surface-4747f12379b5
+    lexeme hi
+      surface
         text स्वयं
-      surface seed-surface-6a218e28d17d
+      surface
         text खुद
-    lexeme zh # language
-      surface seed-surface-32c6a3f56484
+    lexeme zh
+      surface
         text 自己
   capability:
-    defined-by assistant # definition-link
-    defined-by answer # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-d0cdc2840de5
+    defined-by assistant
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
         text capability
-      surface seed-surface-a92a9e069f5b
+      surface
         text ability
-    lexeme ru # language
-      surface seed-surface-0d73e0008617
+    lexeme ru
+      surface
         text возможность
-      surface seed-surface-ae7446de0f04
+      surface
         text умение
-    lexeme hi # language
-      surface seed-surface-38807e03a858
+    lexeme hi
+      surface
         text क्षमता
-    lexeme zh # language
-      surface seed-surface-bc3fcf30ba82
+    lexeme zh
+      surface
         text 能力
-      surface seed-surface-fc0a1b29899d
+      surface
         text 功能
   knowledge:
-    defined-by assistant # definition-link
-    defined-by fact # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-bb392ba99406
+    defined-by assistant
+    defined-by fact
+    role conversational_concept
+    lexeme en
+      surface
         text knowledge
-    lexeme ru # language
-      surface seed-surface-a440cdb9554e
+    lexeme ru
+      surface
         text знание
-    lexeme hi # language
-      surface seed-surface-46f8bd148415
+    lexeme hi
+      surface
         text ज्ञान
-    lexeme zh # language
-      surface seed-surface-4c04d98b0f46
+    lexeme zh
+      surface
         text 知识
   fact:
-    defined-by knowledge # definition-link
-    role conversational_concept # semantic-role
-    role knowledge_inventory_noun # semantic-role
-    lexeme en # language
-      surface seed-surface-2c278af39bad
+    defined-by knowledge
+    role conversational_concept
+    role knowledge_inventory_noun
+    lexeme en
+      surface
         text fact
-      surface seed-surface-0081aacec945
+      surface
         text facts
-    lexeme ru # language
-      surface seed-surface-904af04424ce
+    lexeme ru
+      surface
         text факт
-      surface seed-surface-e9ae79530f26
+      surface
         text факты
-    lexeme hi # language
-      surface seed-surface-a8ff6c57a65b
+    lexeme hi
+      surface
         text तथ्य
-    lexeme zh # language
-      surface seed-surface-4f2aba4ffea0
+    lexeme zh
+      surface
         text 事实
-      surface seed-surface-7d2f99c299a5
+      surface
         text 事實
   knowledge_inventory_probe:
-    defined-by inquiry # definition-link
-    role knowledge_inventory_interrogative # semantic-role
-    lexeme en # language
-      surface seed-surface-8c980b3fd0f0
+    defined-by inquiry
+    role knowledge_inventory_interrogative
+    lexeme en
+      surface
         text what
-      surface seed-surface-d4fc91b6edf6
+      surface
         text which
-      surface seed-surface-1b0f0a477dff
+      surface
         text list
-      surface seed-surface-f212835d3923
+      surface
         text show
-    lexeme ru # language
-      surface seed-surface-35977f02dabd
+    lexeme ru
+      surface
         text какие
-      surface seed-surface-5b5f71b044c6
+      surface
         text что
-      surface seed-surface-08efad2b9c33
+      surface
         text перечисли
-      surface seed-surface-86f0e7880e70
+      surface
         text покажи
-      surface seed-surface-ee0960951313
+      surface
         text назови
-    lexeme hi # language
-      surface seed-surface-e5dd68886241
+    lexeme hi
+      surface
         text कौन
-      surface seed-surface-e229190fba2b
+      surface
         text क्या
-      surface seed-surface-cd2178f1c5f3
+      surface
         text सूची
-      surface seed-surface-7dc91eadbf41
+      surface
         text सूचीबद्ध
-      surface seed-surface-a00c58ee49bc
+      surface
         text बताओ
-      surface seed-surface-61bff08ca501
+      surface
         text दिखाओ
-    lexeme zh # language
-      surface seed-surface-f247062fa1bf
+    lexeme zh
+      surface
         text 哪些
-      surface seed-surface-0b5563cb6860
+      surface
         text 什么
-      surface seed-surface-97c5bc321f93
+      surface
         text 什麼
-      surface seed-surface-3e59bcc236a0
+      surface
         text 你知道
-      surface seed-surface-7a8585411cf2
+      surface
         text 您知道
-      surface seed-surface-b7c283cc0dae
+      surface
         text 你有
-      surface seed-surface-6f9588ae4e2a
+      surface
         text 您有
   assistant_knowing:
-    defined-by knowledge # definition-link
-    defined-by assistant # definition-link
-    role knowledge_possession # semantic-role
-    lexeme en # language
-      surface seed-surface-2f2d8d23bcdc
+    defined-by knowledge
+    defined-by assistant
+    role knowledge_possession
+    lexeme en
+      surface
         text "you know"
-      surface seed-surface-ce7da99d4814
+      surface
         text "do you know"
-      surface seed-surface-7dce8264c85f
+      surface
         text "you have"
-      surface seed-surface-637ba215fab2
+      surface
         text "available to you"
-      surface seed-surface-ba7366a466af
+      surface
         text "in your knowledge"
-      surface seed-surface-578a29f786d1
+      surface
         text "known to you"
-    lexeme ru # language
-      surface seed-surface-c96af2c31480
+    lexeme ru
+      surface
         text "ты знаешь"
-      surface seed-surface-c1493120c1aa
+      surface
         text знаешь
-      surface seed-surface-d26ae78a3d00
+      surface
         text "тебе известно"
-      surface seed-surface-740a2069c3da
+      surface
         text "тебе известны"
-      surface seed-surface-7e983d2f2ca4
+      surface
         text "тебе известен"
-      surface seed-surface-6ccd40a7c25b
+      surface
         text "у тебя есть"
-      surface seed-surface-414ea3bce737
+      surface
         text "твои знания"
-      surface seed-surface-34b540d7c411
+      surface
         text "что ты знаешь"
-    lexeme hi # language
-      surface seed-surface-763210c583b8
+    lexeme hi
+      surface
         text तुम
-      surface seed-surface-32b3439664eb
+      surface
         text आप
-      surface seed-surface-3d827b4df0b9
+      surface
         text जानते
-      surface seed-surface-2227f2f8bdde
+      surface
         text जानती
-      surface seed-surface-04a6b0f2c367
+      surface
         text आपके
-      surface seed-surface-9d386da65078
+      surface
         text तुम्हारे
-    lexeme zh # language
-      surface seed-surface-b544065d67e3
+    lexeme zh
+      surface
         text 你知道
-      surface seed-surface-12b9aea3c1fe
+      surface
         text 您知道
-      surface seed-surface-33f925444912
+      surface
         text 你有
-      surface seed-surface-8de0a450abcf
+      surface
         text 您有
   knowledge_inventory_query:
-    defined-by knowledge # definition-link
-    defined-by fact # definition-link
-    role knowledge_inventory_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-304adaebbb5a
+    defined-by knowledge
+    defined-by fact
+    role knowledge_inventory_phrase
+    lexeme en
+      surface
         text "what do you know in general"
-      surface seed-surface-4054e09379b9
+      surface
         text "what do you know about the world"
-      surface seed-surface-9913beccf660
+      surface
         text "what is known to you"
-      surface seed-surface-8c0fd97d4876
+      surface
         text "what knowledge do you have"
-    lexeme ru # language
-      surface seed-surface-b77645a132f6
+    lexeme ru
+      surface
         text "что тебе вообще известно"
-      surface seed-surface-73e384ed4af1
+      surface
         text "что тебе известно"
-      surface seed-surface-5862deda0a09
+      surface
         text "что ты вообще знаешь"
-      surface seed-surface-2ac115e9da3f
+      surface
         text "что ты знаешь об окружающем мире"
-      surface seed-surface-5eff281613bc
+      surface
         text "известно об окружающем мире"
-      surface seed-surface-b3f33e45b8a9
+      surface
         text "знаешь про окружающий мир"
-      surface seed-surface-4aba396bbf9d
+      surface
         text "знаешь об окружающем мире"
-    lexeme hi # language
-      surface seed-surface-35b9b478da79
+    lexeme hi
+      surface
         text "आप क्या जानते हैं"
-      surface seed-surface-2fc10cad43b7
+      surface
         text "तुम क्या जानते हो"
-      surface seed-surface-7692fd37932d
+      surface
         text "आपको क्या पता है"
-    lexeme zh # language
-      surface seed-surface-4a2a08d1e0dc
+    lexeme zh
+      surface
         text 你知道什么
-      surface seed-surface-737e55faea24
+      surface
         text 您知道什么
-      surface seed-surface-b55b5b09d89c
+      surface
         text 你知道哪些
   introduction:
-    defined-by self_reference # definition-link
-    defined-by answer # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-b9e021e0961a
+    defined-by self_reference
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
         text introduction
-    lexeme ru # language
-      surface seed-surface-48a6822b2372
+    lexeme ru
+      surface
         text знакомство
-    lexeme hi # language
-      surface seed-surface-744ce0b6a8b7
+    lexeme hi
+      surface
         text परिचय
-    lexeme zh # language
-      surface seed-surface-32a2fa543c6e
+    lexeme zh
+      surface
         text 介绍
   clarification:
-    defined-by inquiry # definition-link
-    defined-by answer # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-e63e37ac92ab
+    defined-by inquiry
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
         text clarification
-    lexeme ru # language
-      surface seed-surface-0939ea8d98a0
+    lexeme ru
+      surface
         text разъяснение
-    lexeme hi # language
-      surface seed-surface-59ccd020cc52
+    lexeme hi
+      surface
         text स्पष्टीकरण
-    lexeme zh # language
-      surface seed-surface-ea3c10681fb0
+    lexeme zh
+      surface
         text 澄清
   understanding:
-    defined-by clarification # definition-link
-    defined-by knowledge # definition-link
-    role conversational_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-f3b898d3fcc8
+    defined-by clarification
+    defined-by knowledge
+    role conversational_concept
+    lexeme en
+      surface
         text understanding
-    lexeme ru # language
-      surface seed-surface-8b13a1c17eab
+    lexeme ru
+      surface
         text понимание
-    lexeme hi # language
-      surface seed-surface-b973da54885e
+    lexeme hi
+      surface
         text समझ
-    lexeme zh # language
-      surface seed-surface-cf766d19908c
+    lexeme zh
+      surface
         text 理解
   clarification_request:
-    defined-by clarification # definition-link
-    defined-by understanding # definition-link
-    defined-by inquiry # definition-link
-    role clarification_request # semantic-role
-    lexeme en # language
-      surface seed-surface-0ddcc6dbe167
+    defined-by clarification
+    defined-by understanding
+    defined-by inquiry
+    role clarification_request
+    lexeme en
+      surface
         text "i don t understand"
-      surface seed-surface-58e4559bc22c
+      surface
         text "i dont understand"
-      surface seed-surface-5a91540629dc
+      surface
         text "i didn t understand"
-      surface seed-surface-538377592179
+      surface
         text "i didnt understand"
-      surface seed-surface-b62a52efaf70
+      surface
         text "don t understand"
-      surface seed-surface-1749fc66e05f
+      surface
         text "dont understand"
-      surface seed-surface-a2b9cf0b2329
+      surface
         text "didn t understand"
-      surface seed-surface-103916314f2e
+      surface
         text "didnt understand"
-      surface seed-surface-80ac4d5adb5d
+      surface
         text "what do you mean"
-      surface seed-surface-457ec75d7a21
+      surface
         text "i m confused"
-      surface seed-surface-594f860ec650
+      surface
         text "im confused"
-      surface seed-surface-8665e5843164
+      surface
         text "i am confused"
-    lexeme ru # language
-      surface seed-surface-550a6b6666ae
+    lexeme ru
+      surface
         text "не понял"
-      surface seed-surface-1074db72a94a
+      surface
         text "не понимаю"
-      surface seed-surface-2f507aac979f
+      surface
         text "не поняла"
-      surface seed-surface-58c888a39da1
+      surface
         text "не понятно"
-      surface seed-surface-b8c437f86f30
+      surface
         text непонятно
-    lexeme hi # language
-      surface seed-surface-84ae0dc27292
+    lexeme hi
+      surface
         text "समझ नहीं आया"
-      surface seed-surface-059293a9fd50
+      surface
         text "समझ नहीं आई"
-    lexeme zh # language
-      surface seed-surface-8bed5523fb80
+    lexeme zh
+      surface
         text 我不明白
-      surface seed-surface-6cdc5bf409b6
+      surface
         text 我不懂
-      surface seed-surface-2bd3c8f95ddd
+      surface
         text 听不懂
   capability_query:
-    defined-by capability # definition-link
-    defined-by inquiry # definition-link
-    role capability_query # semantic-role
-    lexeme en # language
-      surface seed-surface-f0c1bd6738af
+    defined-by capability
+    defined-by inquiry
+    role capability_query
+    lexeme en
+      surface
         text "what can you do"
-      surface seed-surface-f0aa59b9fe16
+      surface
         text "what you can do"
-      surface seed-surface-b334f902b78b
+      surface
         text "what are your capabilities"
-      surface seed-surface-bf1b9f61dc85
+      surface
         text "what are you capable of"
-      surface seed-surface-b6a2611f2478
+      surface
         text "what do you do"
-      surface seed-surface-833d1441f4db
+      surface
         text "show me what you can do"
-      surface seed-surface-89b154ae69c9
+      surface
         text "what features do you have"
-      surface seed-surface-588ab9319545
+      surface
         text "how can you help"
-      surface seed-surface-0ca2dbd2bcf5
+      surface
         text "what are your features"
-    lexeme ru # language
-      surface seed-surface-f99999fa97cc
+    lexeme ru
+      surface
         text "что ты умеешь"
-      surface seed-surface-bb57a3d8c06b
+      surface
         text "чем ты можешь"
-      surface seed-surface-ae53be2f0d46
+      surface
         text "чём ты можешь"
-      surface seed-surface-d5caf633e3ad
+      surface
         text "что ты можешь"
-      surface seed-surface-156cb994ccea
+      surface
         text "что умеет"
-      surface seed-surface-ba01fcb384d5
+      surface
         text "что можешь"
-      surface seed-surface-68c2be7ce124
+      surface
         text "в чем ты можешь быть полезен"
-      surface seed-surface-7abc3c596d45
+      surface
         text "в чём ты можешь быть полезен"
-      surface seed-surface-5c02eeb23ee5
+      surface
         text "твои возможности"
-      surface seed-surface-2a392f4bd746
+      surface
         text "что за дичь"
-      surface seed-surface-eb5bdbb74c32
+      surface
         text "что это такое"
-      surface seed-surface-502ab82ae081
+      surface
         text "что происходит"
-      surface seed-surface-08717efcf07a
+      surface
         text "что ты делаешь"
-    lexeme hi # language
-      surface seed-surface-54301462acf8
+    lexeme hi
+      surface
         text "आप क्या कर सकते"
-      surface seed-surface-c02437b1f4bd
+      surface
         text "तुम क्या कर सकते"
-      surface seed-surface-e0ceaa6dc75b
+      surface
         text "क्या क्या कर सकते"
-    lexeme zh # language
-      surface seed-surface-2a4384e3100b
+    lexeme zh
+      surface
         text 你能做什么
-      surface seed-surface-2e21b731cc08
+      surface
         text 你会做什么
-      surface seed-surface-16bdb814bf2e
+      surface
         text 你有什么功能
-      surface seed-surface-a5955d2bb9fb
+      surface
         text 你能干什么
   capability_query_more:
-    defined-by capability_query # definition-link
-    defined-by capability # definition-link
-    role capability_query_more # semantic-role
-    lexeme en # language
-      surface seed-surface-5b478e315390
+    defined-by capability_query
+    defined-by capability
+    role capability_query_more
+    lexeme en
+      surface
         text "what else can you do"
-      surface seed-surface-96429bccc143
+      surface
         text "what else do you do"
-      surface seed-surface-ca7e892aa0b7
+      surface
         text "what other things can you do"
-    lexeme ru # language
-      surface seed-surface-19c64d7d91e2
+    lexeme ru
+      surface
         text "что ещё ты умеешь"
-      surface seed-surface-9215c670e68b
+      surface
         text "что еще ты умеешь"
-      surface seed-surface-b6bab665c04b
+      surface
         text "что ещё можешь"
-      surface seed-surface-c059bf55fc20
+      surface
         text "что еще можешь"
-      surface seed-surface-8915b8345d0e
+      surface
         text "что ты ещё умеешь"
-      surface seed-surface-8c8062c0d938
+      surface
         text "что ты еще умеешь"
-    lexeme hi # language
-      surface seed-surface-50659828de43
+    lexeme hi
+      surface
         text "और आप क्या कर सकते"
-      surface seed-surface-4a46834552c9
+      surface
         text "और क्या कर सकते"
-    lexeme zh # language
-      surface seed-surface-c113cf9036e1
+    lexeme zh
+      surface
         text 你还能做什么
-      surface seed-surface-ec9ae9de6e55
+      surface
         text 你还会做什么
   self_fact_query:
-    defined-by fact # definition-link
-    defined-by self_reference # definition-link
-    defined-by inquiry # definition-link
-    role self_fact_query # semantic-role
-    lexeme en # language
-      surface seed-surface-f8499c379f51
+    defined-by fact
+    defined-by self_reference
+    defined-by inquiry
+    role self_fact_query
+    lexeme en
+      surface
         text "facts you know about yourself"
-      surface seed-surface-80b149aeec23
+      surface
         text "facts about yourself"
-      surface seed-surface-abbd08f32759
+      surface
         text "self facts"
-      surface seed-surface-d14404a061d6
+      surface
         text "list all facts you know about yourself"
-    lexeme ru # language
-      surface seed-surface-351ab35ce4d2
+    lexeme ru
+      surface
         text "какие факты ты знаешь о себе"
-      surface seed-surface-846ce584cbb4
+      surface
         text "факты о себе"
-    lexeme hi # language
-      surface seed-surface-0fff3e62dbd6
+    lexeme hi
+      surface
         text "अपने बारे में तथ्य"
-      surface seed-surface-a5598a3efd0b
+      surface
         text "स्वयं के बारे में तथ्य"
-    lexeme zh # language
-      surface seed-surface-702e19754a07
+    lexeme zh
+      surface
         text 关于你自己的事实
-      surface seed-surface-26287fd51220
+      surface
         text 自我事实
   self_introduction_request:
-    defined-by introduction # definition-link
-    defined-by self_reference # definition-link
-    defined-by inquiry # definition-link
-    role self_introduction_request # semantic-role
-    lexeme en # language
-      surface seed-surface-67912788dea9
+    defined-by introduction
+    defined-by self_reference
+    defined-by inquiry
+    role self_introduction_request
+    lexeme en
+      surface
         text "tell me about yourself"
-      surface seed-surface-3b53b1d99cd7
+      surface
         text "introduce yourself"
-      surface seed-surface-f7f379101849
+      surface
         text "let s get acquainted"
-      surface seed-surface-9a6e17b47a4e
+      surface
         text "lets get acquainted"
-      surface seed-surface-990693601c88
+      surface
         text "let us get acquainted"
-      surface seed-surface-18cc7a257e5f
+      surface
         text "let s get to know each other"
-    lexeme ru # language
-      surface seed-surface-20f4af8e5e8d
+    lexeme ru
+      surface
         text "расскажи о себе"
-      surface seed-surface-6e0ccf3f3df0
+      surface
         text "расскажи мне о себе"
-      surface seed-surface-72ffc8ddb37a
+      surface
         text "расскажи про себя"
-      surface seed-surface-09d7bb05be19
+      surface
         text "опиши себя"
-      surface seed-surface-791da0323ffe
+      surface
         text представься
-      surface seed-surface-a8b5c2ccb961
+      surface
         text "давай знакомиться"
-      surface seed-surface-6568cab0f41f
+      surface
         text "давай познакомимся"
-      surface seed-surface-71e2ebf24e03
+      surface
         text "давайте познакомимся"
-    lexeme hi # language
-      surface seed-surface-bac79d96c25e
+    lexeme hi
+      surface
         text "अपने बारे में बताओ"
-      surface seed-surface-f8587d55658a
+      surface
         text "अपना परिचय दो"
-      surface seed-surface-61276b52d631
+      surface
         text "चलो परिचय करते हैं"
-      surface seed-surface-c06773afb2de
+      surface
         text "आइए परिचय करें"
-      surface seed-surface-f8d60e6a6d5e
+      surface
         text "चलो एक दूसरे को जानें"
-    lexeme zh # language
-      surface seed-surface-ded85e7b590a
+    lexeme zh
+      surface
         text 介绍一下你自己
-      surface seed-surface-cc1fee20084f
+      surface
         text 告诉我你自己
-      surface seed-surface-bae00d4e2746
+      surface
         text 介紹一下你自己
-      surface seed-surface-9681a2e8822a
+      surface
         text 告訴我你自己
-      surface seed-surface-372ee0547136
+      surface
         text 我们认识一下
-      surface seed-surface-389f44164081
+      surface
         text 认识一下吧
-      surface seed-surface-260efaeb5be7
+      surface
         text 让我们认识一下
   conversation_summary_directive:
-    defined-by inquiry # definition-link
-    defined-by answer # definition-link
-    role conversation_summary_directive # semantic-role
-    lexeme en # language
-      surface seed-surface-c52e1b978099
+    defined-by inquiry
+    defined-by answer
+    role conversation_summary_directive
+    lexeme en
+      surface
         text summarize
-      surface seed-surface-d5608a4823d5
+      surface
         text summarise
-      surface seed-surface-5ffe124d206f
+      surface
         text summary
-    lexeme ru # language
-      surface seed-surface-6b8b46a14731
+    lexeme ru
+      surface
         text суммируй
-      surface seed-surface-b99ad6fbb126
+      surface
         text суммируйте
-      surface seed-surface-9f4bfadb91ae
+      surface
         text резюмируй
-      surface seed-surface-7bc330dd1461
+      surface
         text резюмируйте
-      surface seed-surface-a84a0c80b1e2
+      surface
         text резюме
-    lexeme hi # language
-      surface seed-surface-0b91ff799069
+    lexeme hi
+      surface
         text सारांश
-      surface seed-surface-568d99d79e26
+      surface
         text संक्षेप
-      surface seed-surface-aef4fb638ec9
+      surface
         text सारांशित
-    lexeme zh # language
-      surface seed-surface-22820b8d6913
+    lexeme zh
+      surface
         text 总结
-      surface seed-surface-e7f5a3118776
+      surface
         text 總結
-      surface seed-surface-f0e5030eee94
+      surface
         text 概括
-      surface seed-surface-70064a7797ef
+      surface
         text 摘要
-      surface seed-surface-b7f1f15c62db
+      surface
         text 归纳
-      surface seed-surface-c0e6837d477f
+      surface
         text 歸納
   conversation_reference:
-    defined-by inquiry # definition-link
-    defined-by answer # definition-link
-    role conversation_reference # semantic-role
-    lexeme en # language
-      surface seed-surface-3c87d8031178
+    defined-by inquiry
+    defined-by answer
+    role conversation_reference
+    lexeme en
+      surface
         text conversation
-      surface seed-surface-0e58e5f71ea2
+      surface
         text chat
-      surface seed-surface-2cf70eddf291
+      surface
         text dialogue
-      surface seed-surface-30acacff5a13
+      surface
         text dialog
-      surface seed-surface-7b4235d8762f
+      surface
         text discussion
-    lexeme ru # language
-      surface seed-surface-6bab51ee413e
+    lexeme ru
+      surface
         text беседа
-      surface seed-surface-bfeb5321a138
+      surface
         text беседы
-      surface seed-surface-56a5d208b9dd
+      surface
         text беседу
-      surface seed-surface-773490bdc905
+      surface
         text беседе
-      surface seed-surface-90c29b0c347d
+      surface
         text разговор
-      surface seed-surface-10686dc57652
+      surface
         text разговора
-      surface seed-surface-46b09bb06e79
+      surface
         text разговоре
-      surface seed-surface-c754f49965e6
+      surface
         text разговором
-      surface seed-surface-64c429f7732a
+      surface
         text чат
-      surface seed-surface-e2f0c314f88d
+      surface
         text чата
-      surface seed-surface-6df66d80c07a
+      surface
         text чате
-      surface seed-surface-9fb9af636614
+      surface
         text диалог
-      surface seed-surface-bc68a97e55b5
+      surface
         text диалога
-    lexeme hi # language
-      surface seed-surface-f0e45b81ae95
+    lexeme hi
+      surface
         text बातचीत
-      surface seed-surface-87a31b12bd1d
+      surface
         text संवाद
-      surface seed-surface-e0cb24004758
+      surface
         text वार्तालाप
-    lexeme zh # language
-      surface seed-surface-c5820c808cee
+    lexeme zh
+      surface
         text 对话
-      surface seed-surface-22629aef0e78
+      surface
         text 對話
-      surface seed-surface-22cad1e4b5fb
+      surface
         text 聊天
-      surface seed-surface-6ed8f4b3007e
+      surface
         text 会话
-      surface seed-surface-cc58b2682496
+      surface
         text 會話
-      surface seed-surface-a552a087cb7c
+      surface
         text 谈话
-      surface seed-surface-b4bdc31f96d9
+      surface
         text 談話
   conversation_summary_phrase:
-    defined-by inquiry # definition-link
-    defined-by conversation_reference # definition-link
-    role conversation_summary_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-14d82e1542b7
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_summary_phrase
+    lexeme en
+      surface
         text "what have we talked about"
-      surface seed-surface-63f9b2ed2130
+      surface
         text "what did we talk about"
-      surface seed-surface-daee839dc069
+      surface
         text "what have we discussed"
-      surface seed-surface-530aadd782af
+      surface
         text "summary of our chat"
-      surface seed-surface-8d99fe77a0c9
+      surface
         text "summary of our conversation"
-      surface seed-surface-4f775ee6d47c
+      surface
         text "summarize so far"
-      surface seed-surface-5b5803b3b380
+      surface
         text "summarise so far"
-    lexeme ru # language
-      surface seed-surface-f64bfcee4f25
+    lexeme ru
+      surface
         text "о чём мы разговаривали"
-      surface seed-surface-2100648a6661
+      surface
         text "о чем мы разговаривали"
-      surface seed-surface-d8e9abd7624a
+      surface
         text "о чём мы говорили"
-      surface seed-surface-985b516e8d1f
+      surface
         text "о чем мы говорили"
-    lexeme hi # language
-      surface seed-surface-dc81a0e6c1cc
+    lexeme hi
+      surface
         text "हमने किस बारे में बात की"
-      surface seed-surface-94d55bd30bb2
+      surface
         text "हमने क्या बात की"
-    lexeme zh # language
-      surface seed-surface-b8a8395e2dd7
+    lexeme zh
+      surface
         text 我们聊了什么
-      surface seed-surface-71ec9ba20d31
+      surface
         text 我们谈了什么
-      surface seed-surface-29ab62717270
+      surface
         text 我们说了什么
-      surface seed-surface-702bb8c64287
+      surface
         text 我們聊了什麼
   conversation_summary_courtesy:
-    defined-by inquiry # definition-link
-    defined-by conversation_summary_directive # definition-link
-    role conversation_summary_courtesy # semantic-role
-    lexeme en # language
-      surface seed-surface-46ff95dd6b04
+    defined-by inquiry
+    defined-by conversation_summary_directive
+    role conversation_summary_courtesy
+    lexeme en
+      surface
         text "give me a summary"
-      surface seed-surface-e90f2c4067d8
+      surface
         text "can you summarize"
-      surface seed-surface-c0501dfff638
+      surface
         text "can you summarise"
-      surface seed-surface-3f42ba12573b
+      surface
         text "please summarize"
-      surface seed-surface-6c73ac9ef655
+      surface
         text "please summarise"
-    lexeme ru # language
-      surface seed-surface-0a2fc3af6922
+    lexeme ru
+      surface
         text "подведи итог"
-      surface seed-surface-712cfaa444d1
+      surface
         text "подведи итоги"
-      surface seed-surface-fe06e956ece8
+      surface
         text "краткое резюме"
-      surface seed-surface-6dfe69cd3c8f
+      surface
         text "сделай резюме"
-      surface seed-surface-c431b047d4ff
+      surface
         text "краткое содержание"
-    lexeme hi # language
-      surface seed-surface-bbdc0f3e8754
+    lexeme hi
+      surface
         text "सार दो"
-      surface seed-surface-0929ca7ec472
+      surface
         text "सारांश दो"
-      surface seed-surface-3ed8567f2488
+      surface
         text "संक्षेप में बताओ"
-    lexeme zh # language
-      surface seed-surface-d9fa1092df2e
+    lexeme zh
+      surface
         text 帮我总结
-      surface seed-surface-37cb3013a35a
+      surface
         text 帮我概括
-      surface seed-surface-b9e271645e20
+      surface
         text 请总结
-      surface seed-surface-7525a62b9098
+      surface
         text 请概括
-      surface seed-surface-c56ad603be81
+      surface
         text 总结一下
-      surface seed-surface-1f2fd682a67e
+      surface
         text 概括一下
   who_is_question:
-    defined-by inquiry # definition-link
-    role who_question_lead # semantic-role
-    role who_question_tail # semantic-role
-    lexeme en # language
-      surface seed-surface-f7637a2ede7d
+    defined-by inquiry
+    role who_question_lead
+    role who_question_tail
+    lexeme en
+      surface
         text "who is …"
-      surface seed-surface-2595d6e4c0c0
+      surface
         text "who was …"
-      surface seed-surface-eab91a0b9af5
+      surface
         text "who are …"
-    lexeme ru # language
-      surface seed-surface-ddd88bd1fbd7
+    lexeme ru
+      surface
         text "кто такой …"
-      surface seed-surface-6e6077db3b16
+      surface
         text "кто такая …"
-      surface seed-surface-bd80c66737ac
+      surface
         text "кто это …"
-      surface seed-surface-2f3b1bc0ad90
+      surface
         text "кто …"
-    lexeme hi # language
-      surface seed-surface-9cf06fee336c
+    lexeme hi
+      surface
         text "… कौन है"
-      surface seed-surface-03c1b3f09510
+      surface
         text "… कौन हैं"
-    lexeme zh # language
-      surface seed-surface-65e67810e78e
+    lexeme zh
+      surface
         text …是谁
-      surface seed-surface-db7aec916320
+      surface
         text …是誰
   interrogative_opener:
-    defined-by inquiry # definition-link
-    role interrogative_opener # semantic-role
-    lexeme en # language
-      surface seed-surface-17b1d2c62447
+    defined-by inquiry
+    role interrogative_opener
+    lexeme en
+      surface
         text what
-      surface seed-surface-ea042cbd18c1
+      surface
         text who
-      surface seed-surface-c468ecf3b41b
+      surface
         text why
-      surface seed-surface-bc28543f3167
+      surface
         text where
-      surface seed-surface-a411008d0dc5
+      surface
         text when
-      surface seed-surface-7d0ba345c78f
+      surface
         text how
-      surface seed-surface-dd88cc5d742a
+      surface
         text which
-    lexeme ru # language
-      surface seed-surface-afc77dc3c6ce
+    lexeme ru
+      surface
         text что
-      surface seed-surface-648786a0dd22
+      surface
         text кто
-      surface seed-surface-f7671b0a9c8c
+      surface
         text почему
-      surface seed-surface-80c62d15f721
+      surface
         text где
-      surface seed-surface-ed18144838ef
+      surface
         text когда
-      surface seed-surface-cff0a21144d8
+      surface
         text как
-    lexeme hi # language
-      surface seed-surface-78b31fc8b54c
+    lexeme hi
+      surface
         text क्या
-      surface seed-surface-d5aec2e3d544
+      surface
         text कौन
-      surface seed-surface-e34966e5a96f
+      surface
         text क्यों
-      surface seed-surface-da7b64a57e35
+      surface
         text कहाँ
-      surface seed-surface-1ad4377a501c
+      surface
         text कब
-      surface seed-surface-4133b323a055
+      surface
         text कैसे
-      surface seed-surface-54480904a314
+      surface
         text कौनसा
-    lexeme zh # language
-      surface seed-surface-9e51c6e0865c
+    lexeme zh
+      surface
         text 什么
-      surface seed-surface-c93123abaf11
+      surface
         text 谁
-      surface seed-surface-ca54e35dff2f
+      surface
         text 为什么
-      surface seed-surface-c65566308096
+      surface
         text 哪里
-      surface seed-surface-38e25831013c
+      surface
         text 何时
-      surface seed-surface-91fd41faf294
+      surface
         text 如何
-      surface seed-surface-9d57459bef29
+      surface
         text 哪个

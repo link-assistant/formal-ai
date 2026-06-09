@@ -1,147 +1,147 @@
 meanings
   definition_merge_action:
-    defined-by action # definition-link
-    role definition_merge_action # semantic-role
-    lexeme en # language
-      surface seed-surface-3fc7e7da202d
+    defined-by action
+    role definition_merge_action
+    lexeme en
+      surface
         text merge
-      surface seed-surface-a03f33550bcd
+      surface
         text merged
-      surface seed-surface-63a322069c4d
+      surface
         text combine
-      surface seed-surface-dc5a50ba1d18
+      surface
         text combined
-      surface seed-surface-070cedc142d2
+      surface
         text fuse
-      surface seed-surface-a3795c548d3a
+      surface
         text fusion
-    lexeme ru # language
-      surface seed-surface-dbdf6aa7b696
+    lexeme ru
+      surface
         text объедин
-      surface seed-surface-343a297dd46f
+      surface
         text слия
-    lexeme hi # language
-      surface seed-surface-99775f9a9d07
+    lexeme hi
+      surface
         text विलय
-      surface seed-surface-732bf2ea9076
+      surface
         text संयोजन
-    lexeme zh # language
-      surface seed-surface-283f07eff42d
+    lexeme zh
+      surface
         text 合并
-      surface seed-surface-15cf809a7f8b
+      surface
         text 融合
   definition_artifact_request:
-    defined-by inquiry # definition-link
-    role definition_artifact_request # semantic-role
-    lexeme en # language
-      surface seed-surface-53efc2c3c5e3
+    defined-by inquiry
+    role definition_artifact_request
+    lexeme en
+      surface
         text definition
-      surface seed-surface-5d7357b1d012
+      surface
         text definitions
-      surface seed-surface-d3a4d834c6c2
+      surface
         text translation
-      surface seed-surface-50cc909933ee
+      surface
         text translations
-      surface seed-surface-4aea49feb107
+      surface
         text translated
-      surface seed-surface-7105e0fe75b5
+      surface
         text wikipedia
-    lexeme ru # language
-      surface seed-surface-b7e18a4082d6
+    lexeme ru
+      surface
         text определени
-      surface seed-surface-9fc91f810acc
+      surface
         text перевод
-      surface seed-surface-65b46fbffeee
+      surface
         text википеди
-    lexeme hi # language
-      surface seed-surface-b1f8d643bc42
+    lexeme hi
+      surface
         text परिभाषा
-      surface seed-surface-0f6c834b071e
+      surface
         text अनुवाद
-    lexeme zh # language
-      surface seed-surface-ff0560568c0c
+    lexeme zh
+      surface
         text 定义
-      surface seed-surface-260b68b9c4fd
+      surface
         text 翻译
   definition_merge_marker:
-    defined-by inquiry # definition-link
-    role definition_merge_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-15bf50a7199c
+    defined-by inquiry
+    role definition_merge_marker
+    lexeme en
+      surface
         text "translated definitions for …"
-      surface seed-surface-d85d3112f908
+      surface
         text "translated definitions of …"
-      surface seed-surface-5cee71909589
+      surface
         text "wikipedia definitions for …"
-      surface seed-surface-d639d9dc71f2
+      surface
         text "wikipedia definitions of …"
-      surface seed-surface-34c5b63f3211
+      surface
         text "definitions for …"
-      surface seed-surface-d28a567d9582
+      surface
         text "definitions of …"
-      surface seed-surface-2e4f45c784ee
+      surface
         text "definition for …"
-      surface seed-surface-2bc2bea03d6a
+      surface
         text "definition of …"
-      surface seed-surface-2f53fa8d0dc4
+      surface
         text "translations for …"
-      surface seed-surface-d3265d9053ca
+      surface
         text "translations of …"
-      surface seed-surface-4420166c1cf1
+      surface
         text "translation for …"
-      surface seed-surface-edbe050414d2
+      surface
         text "translation of …"
-    lexeme ru # language
-      surface seed-surface-e805b7155eef
+    lexeme ru
+      surface
         text "переведенные определения для …"
-      surface seed-surface-02442c1fd244
+      surface
         text "определения для …"
-      surface seed-surface-5d708c743090
+      surface
         text "определение …"
-      surface seed-surface-4c76829eb18e
+      surface
         text "перевод …"
-    lexeme hi # language
-      surface seed-surface-10e9c8c712ba
+    lexeme hi
+      surface
         text "की परिभाषाएँ …"
-      surface seed-surface-0a313c05edfc
+      surface
         text "का अनुवाद …"
-    lexeme zh # language
-      surface seed-surface-c04eb69fc8c3
+    lexeme zh
+      surface
         text "的定义 …"
-      surface seed-surface-e466a1ba01b2
+      surface
         text "的翻译 …"
   definition_merge_tail_boundary:
-    defined-by relation # definition-link
-    role definition_merge_tail_boundary # semantic-role
-    lexeme en # language
-      surface seed-surface-703caf99b765
+    defined-by relation
+    role definition_merge_tail_boundary
+    lexeme en
+      surface
         text from
-      surface seed-surface-d05655048e0f
+      surface
         text using
-      surface seed-surface-0eea0a431d00
+      surface
         text with
-      surface seed-surface-2a3ec54953d4
+      surface
         text by
-      surface seed-surface-eca7de28e678
+      surface
         text into
-      surface seed-surface-4a8598b172ce
+      surface
         text across
-    lexeme ru # language
-      surface seed-surface-a67359198e4a
+    lexeme ru
+      surface
         text из
-      surface seed-surface-cde56960a374
+      surface
         text с
-      surface seed-surface-f13394363385
+      surface
         text по
-      surface seed-surface-440c3fba4b23
+      surface
         text в
-    lexeme hi # language
-      surface seed-surface-a2ab72a20674
+    lexeme hi
+      surface
         text से
-      surface seed-surface-48f14c72bd15
+      surface
         text "के साथ"
-    lexeme zh # language
-      surface seed-surface-29ccd10a3917
+    lexeme zh
+      surface
         text 从
-      surface seed-surface-4bcbda66c4fd
+      surface
         text 使用

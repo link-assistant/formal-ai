@@ -1,422 +1,422 @@
 meanings
   explicit_web_search_command:
-    defined-by web_search # definition-link
-    defined-by action # definition-link
-    role web_search_explicit_prefix # semantic-role
-    lexeme en # language
-      surface seed-surface-f6b864bc7537
+    defined-by web_search
+    defined-by action
+    role web_search_explicit_prefix
+    lexeme en
+      surface
         text "search the web for …"
-      surface seed-surface-360ef51eec9f
+      surface
         text "search web for …"
-      surface seed-surface-c2cc74048f97
+      surface
         text "search the internet for …"
-      surface seed-surface-586d0a413cc8
+      surface
         text "search internet for …"
-      surface seed-surface-7e4f587319d0
+      surface
         text "search online for …"
-      surface seed-surface-9b0c31366225
+      surface
         text "search wikipedia for …"
-      surface seed-surface-faa26fb1591c
+      surface
         text "search wikidata for …"
-      surface seed-surface-ee9bf03a648d
+      surface
         text "search wiktionary for …"
-      surface seed-surface-937d63cfed73
+      surface
         text "search for information about …"
-      surface seed-surface-4e9fca957396
+      surface
         text "search for information on …"
-      surface seed-surface-b23ba698f491
+      surface
         text "web search for …"
-      surface seed-surface-5de715d2724c
+      surface
         text "find on the internet …"
-      surface seed-surface-bc77f90c80cc
+      surface
         text "find online …"
-      surface seed-surface-b71af2a8f348
+      surface
         text "find information about …"
-      surface seed-surface-652b4ea4eee4
+      surface
         text "find information on …"
-      surface seed-surface-1a0040ae9a31
+      surface
         text "find detailed information about …"
-      surface seed-surface-a018ccbda5b9
+      surface
         text "find detailed information on …"
-      surface seed-surface-6b6130cc0da0
+      surface
         text "find info about …"
-      surface seed-surface-9e2e90c198a3
+      surface
         text "find info on …"
-      surface seed-surface-6efe9c205695
+      surface
         text "look up information about …"
-      surface seed-surface-8dd53a0a123b
+      surface
         text "look up information on …"
-      surface seed-surface-c5c04a17d99b
+      surface
         text "look up info about …"
-      surface seed-surface-343dee0d5275
+      surface
         text "look up info on …"
-      surface seed-surface-7437492e41af
+      surface
         text "look up online …"
-    lexeme ru # language
-      surface seed-surface-28935eb22774
+    lexeme ru
+      surface
         text "найди в интернете …"
-      surface seed-surface-fd19fcff8fe5
+      surface
         text "поищи в интернете …"
-      surface seed-surface-ae5e7f8aada2
+      surface
         text "поиск в интернете …"
-      surface seed-surface-0e1eb82aaa5b
+      surface
         text "найди онлайн …"
-      surface seed-surface-5c8f59c69208
+      surface
         text "поищи онлайн …"
-      surface seed-surface-81bdfbeb3e59
+      surface
         text "найди в сети …"
-      surface seed-surface-150b7cd9b609
+      surface
         text "поищи в сети …"
-      surface seed-surface-04599db45d33
+      surface
         text "найди информацию в интернете о …"
-      surface seed-surface-0341569e4402
+      surface
         text "найди информацию в интернете об …"
-      surface seed-surface-145f273fd3c3
+      surface
         text "поищи информацию в интернете о …"
-      surface seed-surface-6794cee2fc92
+      surface
         text "поищи информацию в интернете об …"
-      surface seed-surface-d0285cfa01dc
+      surface
         text "найди информацию о …"
-      surface seed-surface-4fd44ad032db
+      surface
         text "найди информацию об …"
-      surface seed-surface-74a7d81f1a74
+      surface
         text "найди информацию про …"
-      surface seed-surface-6633dfc34556
+      surface
         text "найди информацию по …"
-      surface seed-surface-d26db9c320cd
+      surface
         text "найти информацию о …"
-      surface seed-surface-018ea46f7567
+      surface
         text "найти информацию об …"
-      surface seed-surface-a14049efa2cd
+      surface
         text "поищи информацию о …"
-      surface seed-surface-73bf3a16422e
+      surface
         text "поищи информацию об …"
-      surface seed-surface-76e0f2e15f30
+      surface
         text "поищи информацию про …"
-      surface seed-surface-8446f656e912
+      surface
         text "поищи информацию по …"
-      surface seed-surface-f838c5cea9b4
+      surface
         text "найди инфу о …"
-      surface seed-surface-bf87ce452d89
+      surface
         text "найди инфу об …"
-      surface seed-surface-57cb64466ac7
+      surface
         text "поищи инфу о …"
-      surface seed-surface-e9c76f8f1501
+      surface
         text "поищи инфу об …"
-      surface seed-surface-0da9622ea89b
+      surface
         text "найди сведения о …"
-      surface seed-surface-23a7a241fdeb
+      surface
         text "найди сведения об …"
-      surface seed-surface-1b4c1121b4e3
+      surface
         text "поищи сведения о …"
-      surface seed-surface-69db3d7e7d80
+      surface
         text "поищи сведения об …"
-      surface seed-surface-33422a5ec423
+      surface
         text "найди материалы о …"
-      surface seed-surface-7255f1218a5e
+      surface
         text "найди материалы об …"
-      surface seed-surface-90fb5a454d22
+      surface
         text "поищи материалы о …"
-      surface seed-surface-8636cd5e47a2
+      surface
         text "поищи материалы об …"
-    lexeme hi # language
-      surface seed-surface-184640ed9932
+    lexeme hi
+      surface
         text "इंटरनेट पर खोजें …"
-      surface seed-surface-6100239c8991
+      surface
         text "वेब पर खोजें …"
-      surface seed-surface-f781578b31d1
+      surface
         text "ऑनलाइन खोजें …"
-      surface seed-surface-91cb2d7ec637
+      surface
         text "विकिपीडिया पर खोजें …"
-    lexeme zh # language
-      surface seed-surface-d0103b3019be
+    lexeme zh
+      surface
         text 在网上搜索…
-      surface seed-surface-6ba29c2a3ee7
+      surface
         text 在互联网上搜索…
-      surface seed-surface-59a2918fafb7
+      surface
         text 在维基百科上搜索…
-      surface seed-surface-6e990d48b09c
+      surface
         text 上网查找…
   topic_connective:
-    defined-by relation # definition-link
-    role web_search_topic_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-e016e2c3801f
+    defined-by relation
+    role web_search_topic_marker
+    lexeme en
+      surface
         text " about …"
-      surface seed-surface-df7196ed830d
+      surface
         text " on …"
-      surface seed-surface-6058cc58ec98
+      surface
         text " regarding …"
-      surface seed-surface-3df353644c27
+      surface
         text " concerning …"
-      surface seed-surface-5194974227b6
+      surface
         text " for …"
-    lexeme ru # language
-      surface seed-surface-9ab2e8286cae
+    lexeme ru
+      surface
         text " о …"
-      surface seed-surface-10c32654e73d
+      surface
         text " об …"
-      surface seed-surface-6b3d2ff20342
+      surface
         text " про …"
-      surface seed-surface-fe5fe556ce5b
+      surface
         text " по …"
-      surface seed-surface-6433b4ae5c26
+      surface
         text " насчет …"
-      surface seed-surface-6099c35657dd
+      surface
         text " относительно …"
-    lexeme hi # language
-      surface seed-surface-929a7dddfca0
+    lexeme hi
+      surface
         text "… के बारे में"
-      surface seed-surface-83f3ad784e7a
+      surface
         text "… के विषय में"
-      surface seed-surface-650e79db06a4
+      surface
         text "… से संबंधित"
-      surface seed-surface-07527829415e
+      surface
         text "… पर"
-      surface seed-surface-6cb2f2696110
+      surface
         text "… की जानकारी"
-      surface seed-surface-182875bc66dc
+      surface
         text "… की सूचना"
-    lexeme zh # language
-      surface seed-surface-0a6efc74e2eb
+    lexeme zh
+      surface
         text 关于…
-      surface seed-surface-f4da1f7b6c37
+      surface
         text 關於…
-      surface seed-surface-7cee72161b83
+      surface
         text 有关…
-      surface seed-surface-492040f73a07
+      surface
         text 有關…
   query_leading_noise:
-    defined-by concept # definition-link
-    role web_search_query_leading_noise # semantic-role
-    lexeme en # language
-      surface seed-surface-d2e31529f79a
+    defined-by concept
+    role web_search_query_leading_noise
+    lexeme en
+      surface
         text "please …"
-      surface seed-surface-f66cc2bd27ed
+      surface
         text "can you …"
-      surface seed-surface-ff858c3e4f1a
+      surface
         text "could you …"
-      surface seed-surface-d88583f7caca
+      surface
         text "would you …"
-      surface seed-surface-0e44980fcaab
+      surface
         text "me …"
-      surface seed-surface-6913d9b3305f
+      surface
         text "the …"
-      surface seed-surface-fdcc531f31a0
+      surface
         text "some …"
-      surface seed-surface-afb1eebd4ac3
+      surface
         text "detailed …"
-      surface seed-surface-1f8048d10b03
+      surface
         text "more …"
-      surface seed-surface-db9c50293d3e
+      surface
         text "current …"
-      surface seed-surface-b7278f5d5dc9
+      surface
         text "latest …"
-      surface seed-surface-543eac50d359
+      surface
         text "information about …"
-      surface seed-surface-22b846cf9671
+      surface
         text "information on …"
-      surface seed-surface-8aafb013ffbf
+      surface
         text "info about …"
-      surface seed-surface-5a6353ddc424
+      surface
         text "info on …"
-      surface seed-surface-3394adfba810
+      surface
         text "details about …"
-      surface seed-surface-efcf7034424b
+      surface
         text "details on …"
-      surface seed-surface-cc6478e77aab
+      surface
         text "data about …"
-      surface seed-surface-c1e9d26ebd4c
+      surface
         text "data on …"
-    lexeme ru # language
-      surface seed-surface-41c5967469cb
+    lexeme ru
+      surface
         text "подробные …"
-      surface seed-surface-05fc9e0d4152
+      surface
         text "информацию о …"
-      surface seed-surface-2b3f5d251764
+      surface
         text "информацию об …"
-      surface seed-surface-a42db720a9a5
+      surface
         text "инфу о …"
-      surface seed-surface-b50ce0a69cb8
+      surface
         text "инфу об …"
-      surface seed-surface-3db118f54ead
+      surface
         text "сведения о …"
-      surface seed-surface-a406fe89ebd4
+      surface
         text "сведения об …"
-      surface seed-surface-75f1fc834104
+      surface
         text "материалы о …"
-      surface seed-surface-b7608b3e8ecd
+      surface
         text "материалы об …"
-      surface seed-surface-f2c980ea1d41
+      surface
         text "материалы по …"
-      surface seed-surface-0a0edfc050bb
+      surface
         text "данные о …"
-      surface seed-surface-d4a24876db09
+      surface
         text "данные об …"
-      surface seed-surface-5c8ddc2ec59c
+      surface
         text "о …"
-      surface seed-surface-f1f80661be1e
+      surface
         text "об …"
-      surface seed-surface-9bb14ee3586a
+      surface
         text "про …"
-      surface seed-surface-224bcf2b781c
+      surface
         text "по …"
-    lexeme hi # language
-      surface seed-surface-6c0ddbffd293
+    lexeme hi
+      surface
         text "कृपया …"
-      surface seed-surface-b4e8500abf05
+      surface
         text "जानकारी …"
-      surface seed-surface-c8cde356faec
+      surface
         text "सूचना …"
-      surface seed-surface-6e709003f3fc
+      surface
         text "विवरण …"
-      surface seed-surface-a9aba16cf068
+      surface
         text "सामग्री …"
-    lexeme zh # language
-      surface seed-surface-bb91817c2675
+    lexeme zh
+      surface
         text 关于…
-      surface seed-surface-997a2a41501f
+      surface
         text 關於…
-      surface seed-surface-960ac3829928
+      surface
         text 有关…
-      surface seed-surface-a928eecb6644
+      surface
         text 有關…
   query_trailing_noise:
-    defined-by concept # definition-link
-    role web_search_query_trailing_noise # semantic-role
-    lexeme en # language
-      surface seed-surface-2ef4b95a6104
+    defined-by concept
+    role web_search_query_trailing_noise
+    lexeme en
+      surface
         text "… online"
-      surface seed-surface-9fc68d0b96e4
+      surface
         text "… on the internet"
-      surface seed-surface-ca2e9c3f4136
+      surface
         text "… on the web"
-      surface seed-surface-e592abb3ba9b
+      surface
         text "… on wikipedia"
-      surface seed-surface-e27f0fb80f3f
+      surface
         text "… in wikipedia"
-      surface seed-surface-b257304518ff
+      surface
         text "… from wikipedia"
-      surface seed-surface-064879f3c6c7
+      surface
         text "… information"
-      surface seed-surface-6b5c0ff84d09
+      surface
         text "… info"
-      surface seed-surface-0a200416c131
+      surface
         text "… details"
-      surface seed-surface-ea74ba16615b
+      surface
         text "… data"
-      surface seed-surface-acf402de4757
+      surface
         text "… material"
-      surface seed-surface-cc3e5bacbecf
+      surface
         text "… materials"
-      surface seed-surface-c8db4bbd722e
+      surface
         text "… resources"
-      surface seed-surface-add5e6d19eb2
+      surface
         text "… sources"
-      surface seed-surface-605c1c99f24f
+      surface
         text "… articles"
-      surface seed-surface-640f801168e8
+      surface
         text "… facts"
-    lexeme ru # language
-      surface seed-surface-a1f6ec20787b
+    lexeme ru
+      surface
         text "… в интернете"
-      surface seed-surface-434bedb9b8b1
+      surface
         text "… онлайн"
-      surface seed-surface-da59334ea214
+      surface
         text "… в сети"
-      surface seed-surface-c0016f1f4b27
+      surface
         text "… в википедии"
-      surface seed-surface-87285a31448d
+      surface
         text "… википедии"
-      surface seed-surface-de4eba670d1d
+      surface
         text "… информация"
-      surface seed-surface-f7ff33e9ee96
+      surface
         text "… сведения"
-      surface seed-surface-9d3442487493
+      surface
         text "… материалы"
-      surface seed-surface-51efb95e098b
+      surface
         text "… данные"
-    lexeme hi # language
-      surface seed-surface-9102cd48f254
+    lexeme hi
+      surface
         text "… के बारे में"
-      surface seed-surface-39bd7e0bc742
+      surface
         text "… के विषय में"
-      surface seed-surface-e982a2f2fa45
+      surface
         text "… से संबंधित"
-      surface seed-surface-98de5b2ed5fe
+      surface
         text "… पर"
-      surface seed-surface-0a38bd04ac91
+      surface
         text "… की जानकारी"
-      surface seed-surface-3b89217bdfd5
+      surface
         text "… की सूचना"
-      surface seed-surface-1f3ff8580f37
+      surface
         text "… जानकारी"
-      surface seed-surface-1f8ca64ebecd
+      surface
         text "… सूचना"
-      surface seed-surface-48494d3ef0ad
+      surface
         text "… विवरण"
-      surface seed-surface-cd7939ea8cf5
+      surface
         text "… सामग्री"
-      surface seed-surface-4f9e9e49c87e
+      surface
         text "… स्रोत"
-      surface seed-surface-d90e08881ca2
+      surface
         text "… विकिपीडिया में"
-      surface seed-surface-fcb438f1d587
+      surface
         text "… ऑनलाइन"
-      surface seed-surface-ce54499f1a59
+      surface
         text "… इंटरनेट पर"
-      surface seed-surface-d08eade9166c
+      surface
         text "… खोजो"
-      surface seed-surface-80544090530a
+      surface
         text "… खोजें"
-      surface seed-surface-79af9a87ef20
+      surface
         text "… खोजिए"
-      surface seed-surface-81fc7801884f
+      surface
         text "… ढूंढो"
-      surface seed-surface-1609dbf4a650
+      surface
         text "… ढूँढो"
-      surface seed-surface-8e43ff25061e
+      surface
         text "… ढूंढें"
-      surface seed-surface-52b9daefb8df
+      surface
         text "… ढूँढें"
-    lexeme zh # language
-      surface seed-surface-641df15ebcd1
+    lexeme zh
+      surface
         text …的信息
-      surface seed-surface-38b161822e72
+      surface
         text …的資料
-      surface seed-surface-85a8c49852ce
+      surface
         text …的资料
-      surface seed-surface-dadf22dbbf05
+      surface
         text …信息
-      surface seed-surface-1c3c2c9eda79
+      surface
         text …資料
-      surface seed-surface-19e4fcac3a4a
+      surface
         text …资料
-      surface seed-surface-9b759c6a44f4
+      surface
         text …内容
-      surface seed-surface-a47a2e710e7f
+      surface
         text …文章
-      surface seed-surface-91cd160ee9fc
+      surface
         text …在维基百科上
-      surface seed-surface-41937d6432b4
+      surface
         text …在維基百科上
-      surface seed-surface-aefc034db398
+      surface
         text …维基百科
-      surface seed-surface-3900e621a363
+      surface
         text …維基百科
-      surface seed-surface-1a8eaf7d6cea
+      surface
         text …网上
-      surface seed-surface-d1b178deec83
+      surface
         text …網上
-      surface seed-surface-487501916b09
+      surface
         text …在线
-      surface seed-surface-6a467065adc9
+      surface
         text …在線
-      surface seed-surface-1cca05caf51b
+      surface
         text …搜索
-      surface seed-surface-b444ecb9654f
+      surface
         text …查找
-      surface seed-surface-8b2af3faa084
+      surface
         text …查一下
-      surface seed-surface-5206cd62c671
+      surface
         text …搜一下

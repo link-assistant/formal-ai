@@ -1,189 +1,189 @@
 meanings
   compare:
-    defined-by action # definition-link
-    role comparison_table_trigger # semantic-role
-    lexeme en # language
-      surface seed-surface-2c3c3503ab95
+    defined-by action
+    role comparison_table_trigger
+    lexeme en
+      surface
         text "comparison table"
-      surface seed-surface-ed639ad96e29
+      surface
         text compare
-      surface seed-surface-e6b803fd56a5
+      surface
         text comparing
-    lexeme ru # language
-      surface seed-surface-d71f4167f6ac
+    lexeme ru
+      surface
         text "сравнительная таблица"
-      surface seed-surface-908f6a46883d
+      surface
         text сравнить
-      surface seed-surface-7f1197470034
+      surface
         text сравнение
-    lexeme hi # language
-      surface seed-surface-431a09473cba
+    lexeme hi
+      surface
         text "तुलना तालिका"
-      surface seed-surface-a0264343e2c3
+      surface
         text तुलना
-    lexeme zh # language
-      surface seed-surface-980821885250
+    lexeme zh
+      surface
         text 比较表
-      surface seed-surface-8413ef16e9a8
+      surface
         text 比较
-      surface seed-surface-b3c96b1a6fe0
+      surface
         text 对比
   table:
-    defined-by concept # definition-link
-    role comparison_table_noun # semantic-role
-    lexeme en # language
-      surface seed-surface-75a12977f148
+    defined-by concept
+    role comparison_table_noun
+    lexeme en
+      surface
         text table
-    lexeme ru # language
-      surface seed-surface-f9004208312a
+    lexeme ru
+      surface
         text таблица
-    lexeme hi # language
-      surface seed-surface-82ff87fd59e1
+    lexeme hi
+      surface
         text तालिका
-    lexeme zh # language
-      surface seed-surface-fe49aad14db5
+    lexeme zh
+      surface
         text 表格
   differences:
-    defined-by relation # definition-link
-    role comparison_difference_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-3ce750320e88
+    defined-by relation
+    role comparison_difference_cue
+    lexeme en
+      surface
         text differences
-    lexeme ru # language
-      surface seed-surface-e78130b0c3b9
+    lexeme ru
+      surface
         text различия
-      surface seed-surface-20d959a45525
+      surface
         text отличия
-    lexeme hi # language
-      surface seed-surface-76cc3b30a855
+    lexeme hi
+      surface
         text अंतर
-    lexeme zh # language
-      surface seed-surface-a8b382eb38a5
+    lexeme zh
+      surface
         text 差异
-      surface seed-surface-f6d599905f35
+      surface
         text 区别
   research_prompt_signal:
-    defined-by concept # definition-link
-    role research_prompt_signal # semantic-role
-    lexeme en # language
-      surface seed-surface-4d76f6bf379a
+    defined-by concept
+    role research_prompt_signal
+    lexeme en
+      surface
         text "search …"
-      surface seed-surface-70c96936da2f
+      surface
         text "find information …"
-      surface seed-surface-1667c1af2dd6
+      surface
         text "look up information …"
-      surface seed-surface-1aa4d225a5c1
+      surface
         text "search for information"
-      surface seed-surface-ebfadb19d201
+      surface
         text "web search"
-      surface seed-surface-9159b8317683
+      surface
         text research
-    lexeme ru # language
-      surface seed-surface-eb2d78501dfe
+    lexeme ru
+      surface
         text поиск
-      surface seed-surface-63dec12525de
+      surface
         text исследование
-      surface seed-surface-d7d27c155619
+      surface
         text веб-поиск
-    lexeme hi # language
-      surface seed-surface-f00cc90140e2
+    lexeme hi
+      surface
         text खोज
-      surface seed-surface-573ff8f45242
+      surface
         text अनुसंधान
-    lexeme zh # language
-      surface seed-surface-4b0c7d211172
+    lexeme zh
+      surface
         text 搜索
-      surface seed-surface-7242e9f5b4b5
+      surface
         text 研究
   key_differences:
-    defined-by relation # definition-link
-    role research_criterion # semantic-role
-    lexeme en # language
-      surface seed-surface-c5ba51143fd8
+    defined-by relation
+    role research_criterion
+    lexeme en
+      surface
         text "key difference"
-      surface seed-surface-e81bdd8a6cfc
+      surface
         text difference
-    lexeme ru # language
-      surface seed-surface-7729d8b6290a
+    lexeme ru
+      surface
         text "ключевые различия"
-      surface seed-surface-c8fba79d0dce
+      surface
         text различия
-    lexeme hi # language
-      surface seed-surface-c183f8e0e43f
+    lexeme hi
+      surface
         text "मुख्य अंतर"
-      surface seed-surface-8615a7af0bc7
+      surface
         text अंतर
-    lexeme zh # language
-      surface seed-surface-52f9681635ee
+    lexeme zh
+      surface
         text 主要区别
-      surface seed-surface-5efd30dd721d
+      surface
         text 区别
   use_cases:
-    defined-by concept # definition-link
-    role research_criterion # semantic-role
-    lexeme en # language
-      surface seed-surface-712cd2b0a70f
+    defined-by concept
+    role research_criterion
+    lexeme en
+      surface
         text "use case"
-      surface seed-surface-d644047dbf1d
+      surface
         text application
-    lexeme ru # language
-      surface seed-surface-ca3a18f50585
+    lexeme ru
+      surface
         text "сценарии использования"
-      surface seed-surface-25fed7760f52
+      surface
         text применение
-    lexeme hi # language
-      surface seed-surface-5653a6d2cb7e
+    lexeme hi
+      surface
         text "उपयोग के मामले"
-      surface seed-surface-ffe4334be3d8
+      surface
         text अनुप्रयोग
-    lexeme zh # language
-      surface seed-surface-7dd7eb251354
+    lexeme zh
+      surface
         text 用例
-      surface seed-surface-1a820cd25cf7
+      surface
         text 应用
   advantages:
-    defined-by property # definition-link
-    role research_criterion # semantic-role
-    lexeme en # language
-      surface seed-surface-257fe359293b
+    defined-by property
+    role research_criterion
+    lexeme en
+      surface
         text advantage
-      surface seed-surface-0260a6e42d0e
+      surface
         text "pro "
-    lexeme ru # language
-      surface seed-surface-8ad9b6fdd6e3
+    lexeme ru
+      surface
         text преимущества
-      surface seed-surface-19d62315b92c
+      surface
         text плюсы
-    lexeme hi # language
-      surface seed-surface-4f1c547bb434
+    lexeme hi
+      surface
         text फायदे
-      surface seed-surface-4e8a87b4d63a
+      surface
         text लाभ
-    lexeme zh # language
-      surface seed-surface-226f341f610a
+    lexeme zh
+      surface
         text 优点
-      surface seed-surface-3c44e0f56a1d
+      surface
         text 优势
   disadvantages:
-    defined-by property # definition-link
-    role research_criterion # semantic-role
-    lexeme en # language
-      surface seed-surface-573e099b0746
+    defined-by property
+    role research_criterion
+    lexeme en
+      surface
         text disadvantage
-      surface seed-surface-e4224fbd9a4a
+      surface
         text " con "
-    lexeme ru # language
-      surface seed-surface-18577216b3dc
+    lexeme ru
+      surface
         text недостатки
-      surface seed-surface-64e63f355b9a
+      surface
         text минусы
-    lexeme hi # language
-      surface seed-surface-c3702eec6601
+    lexeme hi
+      surface
         text नुकसान
-      surface seed-surface-a6960729f2e7
+      surface
         text हानि
-    lexeme zh # language
-      surface seed-surface-8fa04c120bcc
+    lexeme zh
+      surface
         text 缺点
-      surface seed-surface-fc07b5e8a7b2
+      surface
         text 劣势

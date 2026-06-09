@@ -1,124 +1,124 @@
 meanings
   physical_action_query:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role physical_action_trigger # semantic-role
-    lexeme en # language
-      surface seed-surface-86d5a28bb9df
+    defined-by inquiry
+    defined-by action
+    role physical_action_trigger
+    lexeme en
+      surface
         text "did you suck"
-    lexeme ru # language
-      surface seed-surface-cb7466cc61f2
+    lexeme ru
+      surface
         text сосал
-      surface seed-surface-b3f28a0c7afb
+      surface
         text сосала
-      surface seed-surface-3059676def3d
+      surface
         text сосёшь
-      surface seed-surface-fd726c2f2b79
+      surface
         text соси
-      surface seed-surface-dfee78c43db4
+      surface
         text сосать
-    lexeme hi # language
-      surface seed-surface-dc1c1f5aaa55
+    lexeme hi
+      surface
         text "क्या तुमने चूसा"
-    lexeme zh # language
-      surface seed-surface-5a3b889e2df3
+    lexeme zh
+      surface
         text 你吸了吗
   circular_joke_idiom:
-    defined-by inquiry # definition-link
-    defined-by concept # definition-link
-    role circular_joke_phrase # semantic-role
-    lexeme en # language
-      surface seed-surface-7a4649d35818
+    defined-by inquiry
+    defined-by concept
+    role circular_joke_phrase
+    lexeme en
+      surface
         text "buy an elephant"
-    lexeme ru # language
-      surface seed-surface-3aa9a00ebb76
+    lexeme ru
+      surface
         text "купи слона"
-    lexeme hi # language
-      surface seed-surface-cc573f87600c
+    lexeme hi
+      surface
         text "हाथी खरीदो"
-    lexeme zh # language
-      surface seed-surface-5a15ece5c333
+    lexeme zh
+      surface
         text 买大象
   vulgar_content:
-    defined-by concept # definition-link
-    role vulgar_content_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-a0816b18e661
+    defined-by concept
+    role vulgar_content_marker
+    lexeme en
+      surface
         text "fuck you"
-      surface seed-surface-f860eac3ab46
+      surface
         text fuckyou
-      surface seed-surface-fa4b5b195f7b
+      surface
         text "suck my"
-      surface seed-surface-cada7c1ce12f
+      surface
         text "suck my dick"
-      surface seed-surface-9b556c2a68e7
+      surface
         text "suck my cock"
-      surface seed-surface-7764e0a297ca
+      surface
         text "you suck"
-      surface seed-surface-e5f7264918fa
+      surface
         text "eat shit"
-      surface seed-surface-decabd5bd0e2
+      surface
         text "go to hell"
-      surface seed-surface-f5e3f1584906
+      surface
         text asshole
-      surface seed-surface-30e743852ade
+      surface
         text motherfucker
-      surface seed-surface-bdab7ea56b6a
+      surface
         text "you fucking"
-      surface seed-surface-7357c0b09176
+      surface
         text "piece of shit"
-    lexeme ru # language
-      surface seed-surface-9d7a6bd1c4df
+    lexeme ru
+      surface
         text ебать
-      surface seed-surface-b7488146fb50
+      surface
         text ебёт
-      surface seed-surface-adabf4b4a776
+      surface
         text ебал
-      surface seed-surface-1545d348ffae
+      surface
         text ёб
-      surface seed-surface-bd20c8e7f3ac
+      surface
         text еблан
-      surface seed-surface-767cc6b85034
+      surface
         text пизда
-      surface seed-surface-e3d599fa90d3
+      surface
         text пиздец
-      surface seed-surface-5e727e84d83b
+      surface
         text пиздёж
-      surface seed-surface-d6ac8fc62a6a
+      surface
         text хуй
-      surface seed-surface-cb2d6cbddcda
+      surface
         text хуёв
-      surface seed-surface-22e05298bc33
+      surface
         text хуйня
-      surface seed-surface-1dfc663000f1
+      surface
         text блядь
-      surface seed-surface-044de60347bb
+      surface
         text блядство
-      surface seed-surface-996738b09d5e
+      surface
         text залупа
-      surface seed-surface-fc3d563a9a80
+      surface
         text мудак
-      surface seed-surface-13789b4751ed
+      surface
         text мудила
-      surface seed-surface-ed7a23a50140
+      surface
         text шлюха
-      surface seed-surface-e7b2c77b0044
+      surface
         text проститутка
-      surface seed-surface-29ee60072e0c
+      surface
         text ублюдок
-      surface seed-surface-6cb175a16284
+      surface
         text сука
-      surface seed-surface-aeec6ac82013
+      surface
         text пидор
-      surface seed-surface-62f1d4808914
+      surface
         text пидорас
-    lexeme hi # language
-      surface seed-surface-7ebf4f08de4d
+    lexeme hi
+      surface
         text मादरचोद
-      surface seed-surface-be442784810b
+      surface
         text बहनचोद
-    lexeme zh # language
-      surface seed-surface-1b5e8ff62e62
+    lexeme zh
+      surface
         text 操你妈
-      surface seed-surface-270db411d39e
+      surface
         text 傻逼

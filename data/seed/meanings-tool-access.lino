@@ -1,134 +1,134 @@
 meanings
   tool_invocation_cue:
-    defined-by action # definition-link
-    role tool_invocation_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-7466a8918768
+    defined-by action
+    role tool_invocation_cue
+    lexeme en
+      surface
         text call
-      surface seed-surface-02583e146506
+      surface
         text invoke
-      surface seed-surface-6691a02cae50
+      surface
         text run
-      surface seed-surface-530af7229a43
+      surface
         text api
-      surface seed-surface-28594bd04432
+      surface
         text tool
-    lexeme ru # language
-      surface seed-surface-797a0a0545e5
+    lexeme ru
+      surface
         text вызови
-      surface seed-surface-b44ca6376cd8
+      surface
         text вызвать
-      surface seed-surface-1045f62a17a8
+      surface
         text запусти
-      surface seed-surface-c4bb8f26d950
+      surface
         text инструмент
-    lexeme hi # language
-      surface seed-surface-43b409988079
+    lexeme hi
+      surface
         text कॉल
-      surface seed-surface-6ddc89a51d64
+      surface
         text चलाओ
-      surface seed-surface-bb90e13c087e
+      surface
         text उपकरण
-    lexeme zh # language
-      surface seed-surface-6cc578a90e74
+    lexeme zh
+      surface
         text 调用
-      surface seed-surface-2ec44f6d3976
+      surface
         text 运行
-      surface seed-surface-49f2104a12d9
+      surface
         text 工具
   calculator_tool:
-    defined-by entity # definition-link
-    role calculator_tool_name # semantic-role
-    lexeme en # language
-      surface seed-surface-36a3ecdb5353
+    defined-by entity
+    role calculator_tool_name
+    lexeme en
+      surface
         text calculator
-    lexeme ru # language
-      surface seed-surface-497252476872
+    lexeme ru
+      surface
         text калькулятор
-    lexeme hi # language
-      surface seed-surface-8bd0ca865e90
+    lexeme hi
+      surface
         text कैलकुलेटर
-    lexeme zh # language
-      surface seed-surface-9435d29fb6b7
+    lexeme zh
+      surface
         text 计算器
   web_search_tool:
-    defined-by entity # definition-link
-    role web_search_tool_name # semantic-role
-    lexeme en # language
-      surface seed-surface-dc339f5bcd18
+    defined-by entity
+    role web_search_tool_name
+    lexeme en
+      surface
         text web_search
-      surface seed-surface-157f96531228
+      surface
         text "web search"
-      surface seed-surface-75bc90c9dc33
+      surface
         text web-search
-    lexeme ru # language
-      surface seed-surface-ce8df92d3b29
+    lexeme ru
+      surface
         text веб-поиск
-      surface seed-surface-d73d039ac271
+      surface
         text "поиск в интернете"
-    lexeme hi # language
-      surface seed-surface-fd37d339d7b2
+    lexeme hi
+      surface
         text "वेब खोज"
-      surface seed-surface-14045d0f18b1
+      surface
         text "इंटरनेट खोज"
-    lexeme zh # language
-      surface seed-surface-19e160d21adf
+    lexeme zh
+      surface
         text 网络搜索
-      surface seed-surface-65b8ff0cf609
+      surface
         text 网页搜索
   local_shell_tool:
-    defined-by entity # definition-link
-    role local_shell_request_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-72b1a590e3cd
+    defined-by entity
+    role local_shell_request_cue
+    lexeme en
+      surface
         text local_shell
-      surface seed-surface-6f4d062e34c3
+      surface
         text "local shell tool"
-      surface seed-surface-15b7066ec547
+      surface
         text "local shell api"
-      surface seed-surface-3ba0f0b8af33
+      surface
         text "call the shell tool"
-      surface seed-surface-66d207ec7eba
+      surface
         text "invoke the shell tool"
-    lexeme ru # language
-      surface seed-surface-e9c908336f93
+    lexeme ru
+      surface
         text "локальная оболочка"
-      surface seed-surface-b9663d3d44d8
+      surface
         text "вызови оболочку"
-    lexeme hi # language
-      surface seed-surface-899c3454dcb3
+    lexeme hi
+      surface
         text "लोकल शेल"
-      surface seed-surface-e65bac185790
+      surface
         text "शेल टूल चलाओ"
-    lexeme zh # language
-      surface seed-surface-17dade3d7a9c
+    lexeme zh
+      surface
         text 本地外壳
-      surface seed-surface-1bdc4e36a7a4
+      surface
         text 调用外壳工具
   tool_argument_marker:
-    defined-by relation # definition-link
-    role tool_argument_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-46cc69491a50
+    defined-by relation
+    role tool_argument_marker
+    lexeme en
+      surface
         text "with query"
-      surface seed-surface-2b120946a4d5
+      surface
         text query
-      surface seed-surface-7b3443611da9
+      surface
         text with
-      surface seed-surface-bd7d80433b73
+      surface
         text for
-    lexeme ru # language
-      surface seed-surface-72ca19725d8d
+    lexeme ru
+      surface
         text "с запросом"
-      surface seed-surface-d3827d760244
+      surface
         text для
-    lexeme hi # language
-      surface seed-surface-5bd9ded4ab33
+    lexeme hi
+      surface
         text "क्वेरी के साथ"
-      surface seed-surface-58145eed5943
+      surface
         text "के लिए"
-    lexeme zh # language
-      surface seed-surface-3e26d2c00188
+    lexeme zh
+      surface
         text 查询
-      surface seed-surface-0ea703c38354
+      surface
         text 用于

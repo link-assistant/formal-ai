@@ -138,6 +138,61 @@ fn seed_lino_files_have_no_codepoint_byte_dumps() {
 }
 
 #[test]
+fn seed_lino_files_have_no_synthetic_surface_ids() {
+    // Issue #398 review (comment 4660584608): a surface is the text (and facets)
+    // recorded under a language; opaque hashed `seed-surface-<hash>` ids carried
+    // no meaning and existed only to give the node an id. They are banned so the
+    // seed stays legible. `scripts/clean-seed-readability.rs` performs the
+    // migration that removes them.
+    for path in seed_lino_paths() {
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        for (index, line) in content.lines().enumerate() {
+            let skeleton = strip_quoted_spans(strip_lino_comment(line));
+            assert!(
+                !skeleton.contains("seed-surface-"),
+                "{}:{} reintroduces a synthetic surface id; a surface is the text \
+                 under a language, not a minted `seed-surface-<hash>` id: {line}",
+                path.display(),
+                index + 1,
+            );
+        }
+    }
+}
+
+#[test]
+fn seed_lino_files_have_no_keyword_restating_comments() {
+    // Issue #398 review (comment 4660584608): a comment must add information (the
+    // human meaning of an opaque id like `Q146786 # plural`), never restate the
+    // keyword already on the line. These trailing comments only repeat the
+    // keyword and are banned. `scripts/clean-seed-readability.rs` strips them.
+    const NOISE_COMMENTS: &[&str] = &[
+        "language",
+        "definition-link",
+        "semantic-role",
+        "facet",
+        "seed lexical surface",
+        "source-id",
+        "action",
+    ];
+    for path in seed_lino_paths() {
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        for (index, line) in content.lines().enumerate() {
+            let Some(comment) = lino_comment_body(line) else {
+                continue;
+            };
+            assert!(
+                !NOISE_COMMENTS.contains(&comment.trim()),
+                "{}:{} has a keyword-restating noise comment `# {}`; \
+                 drop it or replace it with the human meaning of an opaque id: {line}",
+                path.display(),
+                index + 1,
+                comment.trim(),
+            );
+        }
+    }
+}
+
+#[test]
 fn wikidata_cache_uses_compact_native_lino() {
     let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
     let encoded_text = Regex::new(r"\bu-[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2})+\b")
@@ -367,6 +422,49 @@ fn strip_lino_comment(line: &str) -> &str {
         previous_was_space = character.is_whitespace();
     }
     line
+}
+
+/// The body of a line's trailing `#` comment (everything after the `#`), or
+/// `None` when the line has no comment. Mirrors [`strip_lino_comment`]'s
+/// quote-aware boundary detection.
+fn lino_comment_body(line: &str) -> Option<&str> {
+    let mut quote = None;
+    let mut escaped = false;
+    let mut previous_was_space = true;
+    let mut characters = line.char_indices().peekable();
+    while let Some((index, character)) = characters.next() {
+        if let Some(quote_character) = quote {
+            if escaped {
+                escaped = false;
+                continue;
+            }
+            if quote_character == '"' && character == '\\' {
+                escaped = true;
+                continue;
+            }
+            if quote_character == '\''
+                && character == '\''
+                && characters.peek().is_some_and(|(_, next)| *next == '\'')
+            {
+                characters.next();
+                continue;
+            }
+            if character == quote_character {
+                quote = None;
+            }
+            continue;
+        }
+        if matches!(character, '"' | '\'') {
+            quote = Some(character);
+            previous_was_space = false;
+            continue;
+        }
+        if character == '#' && previous_was_space {
+            return Some(&line[index + 1..]);
+        }
+        previous_was_space = character.is_whitespace();
+    }
+    None
 }
 
 /// Remove quoted scalar spans (`"..."`, `'...'`, `` `...` ``) from a line so

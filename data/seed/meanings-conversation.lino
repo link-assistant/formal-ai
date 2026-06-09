@@ -1,40 +1,40 @@
 meanings
   conversation_topic_opener:
-    defined-by inquiry # definition-link
-    defined-by action # definition-link
-    role conversation_topic_opener # semantic-role
-    lexeme en # language
-      surface seed-surface-0c10ebfdd213
+    defined-by inquiry
+    defined-by action
+    role conversation_topic_opener
+    lexeme en
+      surface
         text "let's talk about …"
-      surface seed-surface-4a79dafb7b32
+      surface
         text "lets talk about …"
-      surface seed-surface-c3e31259a47c
+      surface
         text "can we talk about …"
-      surface seed-surface-ecf0b76830b8
+      surface
         text "talk about …"
-    lexeme ru # language
-      surface seed-surface-0f94515a0cb1
+    lexeme ru
+      surface
         text "давай поговорим о …"
-      surface seed-surface-615e017db140
+      surface
         text "давай поговорим об …"
-      surface seed-surface-64fe47675557
+      surface
         text "давайте поговорим о …"
-      surface seed-surface-a5ba43533b66
+      surface
         text "давайте поговорим об …"
-      surface seed-surface-9746d25c458e
+      surface
         text "поговорим о …"
-        action scan # action
-      surface seed-surface-7b59db49c1e0
+        action scan
+      surface
         text "поговорим об …"
-      surface seed-surface-ca70be300b52
+      surface
         text "обсудим …"
-    lexeme hi # language
-      surface seed-surface-bb62ef0bc448
+    lexeme hi
+      surface
         text "चलो बात करें …"
-      surface seed-surface-d99ffc3cbe56
+      surface
         text "बात करें …"
-    lexeme zh # language
-      surface seed-surface-cc66b755acf3
+    lexeme zh
+      surface
         text 聊聊…
-      surface seed-surface-d370d5053ea7
+      surface
         text 谈谈…

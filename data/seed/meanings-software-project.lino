@@ -1,1285 +1,1285 @@
 meanings
   software_followup:
-    defined-by software_followup_verification # definition-link
-    defined-by software_followup_execution # definition-link
-    defined-by software_followup_demonstration # definition-link
-    defined-by action # definition-link
-    role software_followup # semantic-role
-    lexeme en # language
-      surface seed-surface-3c64bcba0c41
+    defined-by software_followup_verification
+    defined-by software_followup_execution
+    defined-by software_followup_demonstration
+    defined-by action
+    role software_followup
+    lexeme en
+      surface
         text follow-up
-      surface seed-surface-ff9db8c7ea12
+      surface
         text exercise
-    lexeme ru # language
-      surface seed-surface-dc4b2f458f55
+    lexeme ru
+      surface
         text продолжение
-      surface seed-surface-b60e65f66d36
+      surface
         text отработка
-    lexeme hi # language
-      surface seed-surface-ffe18e428365
+    lexeme hi
+      surface
         text अनुवर्ती
-      surface seed-surface-cd1d84137dfe
+      surface
         text अभ्यास
-    lexeme zh # language
-      surface seed-surface-da118ac1a74c
+    lexeme zh
+      surface
         text 后续
-      surface seed-surface-30147a1b2186
+      surface
         text 演练
   software_followup_verification:
-    defined-by software_followup # definition-link
-    role software_followup_verification # semantic-role
-    lexeme en # language
-      surface seed-surface-9534f4fa80bb
+    defined-by software_followup
+    role software_followup_verification
+    lexeme en
+      surface
         text "test it"
-      surface seed-surface-410ec8b71ab5
+      surface
         text "test the"
-      surface seed-surface-72fe8277fb23
+      surface
         text "test this"
-      surface seed-surface-c5170e7a7f24
+      surface
         text verify
-      surface seed-surface-47dc456edc59
+      surface
         text "check it"
-      surface seed-surface-08b700b2e89c
+      surface
         text "check that"
-      surface seed-surface-978d6d8b8457
+      surface
         text "run the tests"
-    lexeme ru # language
-      surface seed-surface-92701259922c
+    lexeme ru
+      surface
         text протестируй
-      surface seed-surface-8ec7c479e572
+      surface
         text протестировать
-      surface seed-surface-14098cc2365e
+      surface
         text проверь
-      surface seed-surface-b0998f801536
+      surface
         text тестируй
-    lexeme hi # language
-      surface seed-surface-23587044e7ac
+    lexeme hi
+      surface
         text परीक्षण
-      surface seed-surface-b3b0771b0bbb
+      surface
         text जाँच
-      surface seed-surface-d480da7d8108
+      surface
         text जांच
-    lexeme zh # language
-      surface seed-surface-5a87c45a426d
+    lexeme zh
+      surface
         text 测试
-      surface seed-surface-04cd6e4b7898
+      surface
         text 检验
-      surface seed-surface-4a47159970b1
+      surface
         text 检查
   software_followup_execution:
-    defined-by software_followup # definition-link
-    role software_followup_execution # semantic-role
-    lexeme en # language
-      surface seed-surface-113c11146fc6
+    defined-by software_followup
+    role software_followup_execution
+    lexeme en
+      surface
         text "run it"
-      surface seed-surface-be0abe2ffdb5
+      surface
         text "run this"
-      surface seed-surface-e0427f85876b
+      surface
         text "run the"
-      surface seed-surface-41a3b4c03aae
+      surface
         text "execute it"
-      surface seed-surface-20ad949bc315
+      surface
         text "execute the"
-      surface seed-surface-188173fb613d
+      surface
         text "try it"
-    lexeme ru # language
-      surface seed-surface-fcea33dcefa9
+    lexeme ru
+      surface
         text запусти
-      surface seed-surface-9f16346ebcc4
+      surface
         text выполни
-    lexeme hi # language
-      surface seed-surface-dbfa87080534
+    lexeme hi
+      surface
         text चलाओ
-      surface seed-surface-730354a2c206
+      surface
         text निष्पादित
-    lexeme zh # language
-      surface seed-surface-2436b18680bd
+    lexeme zh
+      surface
         text 运行
-      surface seed-surface-50999c58402e
+      surface
         text 执行
   software_followup_demonstration:
-    defined-by software_followup # definition-link
-    role software_followup_demonstration # semantic-role
-    lexeme en # language
-      surface seed-surface-197b7822171d
+    defined-by software_followup
+    role software_followup_demonstration
+    lexeme en
+      surface
         text "demo it"
-      surface seed-surface-9a86e4c0ae17
+      surface
         text "show me"
-      surface seed-surface-a3ddd17425d4
+      surface
         text "show the"
-      surface seed-surface-47c78ee9d3c1
+      surface
         text "print the"
-    lexeme ru # language
-      surface seed-surface-32cbeed10837
+    lexeme ru
+      surface
         text покажи
-    lexeme hi # language
-      surface seed-surface-c423786cca81
+    lexeme hi
+      surface
         text दिखाओ
-    lexeme zh # language
-      surface seed-surface-c235b3ab7f11
+    lexeme zh
+      surface
         text 显示
-      surface seed-surface-83baae1266b1
+      surface
         text 展示
   output_display_request:
-    defined-by software_followup # definition-link
-    defined-by action # definition-link
-    role output_display_request # semantic-role
-    lexeme en # language
-      surface seed-surface-00ef269fa4a0
+    defined-by software_followup
+    defined-by action
+    role output_display_request
+    lexeme en
+      surface
         text "show me …"
-      surface seed-surface-93731837ed8b
+      surface
         text "show …"
-      surface seed-surface-7f085ff4c6ba
+      surface
         text "print …"
-      surface seed-surface-efb3a2522c4d
+      surface
         text "display …"
-    lexeme ru # language
-      surface seed-surface-14ef46761784
+    lexeme ru
+      surface
         text "покажи мне …"
-      surface seed-surface-d008e1271c3a
+      surface
         text "покажи …"
-      surface seed-surface-a1a3db936d94
+      surface
         text "выведи …"
-    lexeme hi # language
-      surface seed-surface-6705f90926d7
+    lexeme hi
+      surface
         text "मुझे दिखाओ …"
-      surface seed-surface-d29bc024038f
+      surface
         text "दिखाओ …"
-    lexeme zh # language
-      surface seed-surface-1c94dea41276
+    lexeme zh
+      surface
         text 给我看…
-      surface seed-surface-d782628232b2
+      surface
         text 显示…
   implement:
-    defined-by code # definition-link
-    defined-by program # definition-link
-    role software_authoring_action # semantic-role
-    lexeme en # language
-      surface seed-surface-fd1849dbefe7
+    defined-by code
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
         text implement
-    lexeme ru # language
-      surface seed-surface-edabe9f067a4
+    lexeme ru
+      surface
         text реализуй
-      surface seed-surface-988fc2c33ae9
+      surface
         text реализовать
-    lexeme hi # language
-      surface seed-surface-3527bcd01c84
+    lexeme hi
+      surface
         text लागू
-    lexeme zh # language
-      surface seed-surface-90662dcd7487
+    lexeme zh
+      surface
         text 实现
   develop:
-    defined-by program # definition-link
-    role software_authoring_action # semantic-role
-    lexeme en # language
-      surface seed-surface-ae07f5706848
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
         text develop
-    lexeme ru # language
-      surface seed-surface-49290a9a64c5
+    lexeme ru
+      surface
         text разработай
-      surface seed-surface-9892e5222b9b
+      surface
         text разработать
-    lexeme hi # language
-      surface seed-surface-be1e0cd8c90b
+    lexeme hi
+      surface
         text विकसित
-    lexeme zh # language
-      surface seed-surface-65c906ed5866
+    lexeme zh
+      surface
         text 开发
   design:
-    defined-by program # definition-link
-    role software_authoring_action # semantic-role
-    lexeme en # language
-      surface seed-surface-3ca697b0ceb9
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
         text design
-    lexeme ru # language
-      surface seed-surface-3fa389ac92ff
+    lexeme ru
+      surface
         text спроектируй
-      surface seed-surface-fb8cccfd50e5
+      surface
         text "создай дизайн"
-    lexeme hi # language
-      surface seed-surface-1203622b5daa
+    lexeme hi
+      surface
         text डिज़ाइन
-    lexeme zh # language
-      surface seed-surface-4686ee465706
+    lexeme zh
+      surface
         text 设计
   scaffold:
-    defined-by code # definition-link
-    defined-by program # definition-link
-    role software_authoring_action # semantic-role
-    lexeme en # language
-      surface seed-surface-2bfe70c6afa7
+    defined-by code
+    defined-by program
+    role software_authoring_action
+    lexeme en
+      surface
         text scaffold
-    lexeme ru # language
-      surface seed-surface-505b050552d4
+    lexeme ru
+      surface
         text "создай каркас"
-      surface seed-surface-fdc5b403b377
+      surface
         text "сгенерируй каркас"
-    lexeme hi # language
-      surface seed-surface-733e649de679
+    lexeme hi
+      surface
         text "ढाँचा बनाओ"
-    lexeme zh # language
-      surface seed-surface-10a71adbeb72
+    lexeme zh
+      surface
         text 搭建
   software_artifact:
-    defined-by artifact_application # definition-link
-    defined-by artifact_tool # definition-link
-    defined-by entity # definition-link
-    role software_artifact # semantic-role
-    lexeme en # language
-      surface seed-surface-47e75314a7f0
+    defined-by artifact_application
+    defined-by artifact_tool
+    defined-by entity
+    role software_artifact
+    lexeme en
+      surface
         text "software artifact"
-      surface seed-surface-6efd5dca4792
+      surface
         text deliverable
-    lexeme ru # language
-      surface seed-surface-dcec8b0cb15a
+    lexeme ru
+      surface
         text "программный продукт"
-      surface seed-surface-1da23861e17b
+      surface
         text артефакт
-    lexeme hi # language
-      surface seed-surface-f3187ac95efe
+    lexeme hi
+      surface
         text "सॉफ़्टवेयर कलाकृति"
-    lexeme zh # language
-      surface seed-surface-7b66880efa2d
+    lexeme zh
+      surface
         text 软件制品
   artifact_browser_extension:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-60ef45a6c4ef
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text "browser extension"
-    lexeme ru # language
-      surface seed-surface-ef36cfa70186
+    lexeme ru
+      surface
         text "расширение браузера"
-    lexeme hi # language
-      surface seed-surface-63149418dc32
+    lexeme hi
+      surface
         text "ब्राउज़र एक्सटेंशन"
-    lexeme zh # language
-      surface seed-surface-fe5c7df9502b
+    lexeme zh
+      surface
         text 浏览器扩展
   artifact_command_line_tool:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-b17d8a078149
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text "command line tool"
-      surface seed-surface-0b746e22b38e
+      surface
         text "cli tool"
-    lexeme ru # language
-      surface seed-surface-58786334025d
+    lexeme ru
+      surface
         text "консольная утилита"
-      surface seed-surface-3501363ab50d
+      surface
         text "утилита командной строки"
-    lexeme hi # language
-      surface seed-surface-603c568c65d2
+    lexeme hi
+      surface
         text "कमांड लाइन टूल"
-    lexeme zh # language
-      surface seed-surface-7d10be995956
+    lexeme zh
+      surface
         text 命令行工具
   artifact_github_action:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-3680cf6aa3fa
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text "github action"
-    lexeme ru # language
-      surface seed-surface-027bf3e1c32f
+    lexeme ru
+      surface
         text "действие github"
-    lexeme hi # language
-      surface seed-surface-e2068540fd2e
+    lexeme hi
+      surface
         text "गिटहब एक्शन"
-    lexeme zh # language
-      surface seed-surface-04cdefbb0e81
+    lexeme zh
+      surface
         text "github 操作"
   artifact_mobile_app:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-69cb263d5c85
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text "mobile app"
-    lexeme ru # language
-      surface seed-surface-a681e0a52ccd
+    lexeme ru
+      surface
         text "мобильное приложение"
-    lexeme hi # language
-      surface seed-surface-cc841dce963b
+    lexeme hi
+      surface
         text "मोबाइल ऐप"
-    lexeme zh # language
-      surface seed-surface-571a0c075077
+    lexeme zh
+      surface
         text 移动应用
   artifact_web_app:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-b5f14d88d851
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text "web app"
-    lexeme ru # language
-      surface seed-surface-12d297e6f44c
+    lexeme ru
+      surface
         text "веб приложение"
-    lexeme hi # language
-      surface seed-surface-742ab6ed055a
+    lexeme hi
+      surface
         text "वेब ऐप"
-    lexeme zh # language
-      surface seed-surface-2d80ab3ffe09
+    lexeme zh
+      surface
         text 网页应用
   artifact_application:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-718d0c095dad
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text application
-    lexeme ru # language
-      surface seed-surface-2bbc93223c92
+    lexeme ru
+      surface
         text приложение
-    lexeme hi # language
-      surface seed-surface-181a9788e6fd
+    lexeme hi
+      surface
         text एप्लिकेशन
-    lexeme zh # language
-      surface seed-surface-c307628fab18
+    lexeme zh
+      surface
         text 应用程序
   artifact_extension:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-9b9bec419bf2
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text extension
-      surface seed-surface-55c7e507aece
+      surface
         text "add on"
-      surface seed-surface-aeef4f9dda10
+      surface
         text addon
-    lexeme ru # language
-      surface seed-surface-e008d1a68a1b
+    lexeme ru
+      surface
         text расширение
-      surface seed-surface-0ef7694d6884
+      surface
         text дополнение
-    lexeme hi # language
-      surface seed-surface-3390a05a7d17
+    lexeme hi
+      surface
         text एक्सटेंशन
-      surface seed-surface-9884c8139f63
+      surface
         text ऐड-ऑन
-    lexeme zh # language
-      surface seed-surface-8fc528d0f3e9
+    lexeme zh
+      surface
         text 扩展
-      surface seed-surface-8c0b90b68cc4
+      surface
         text 扩展程序
   artifact_dashboard:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-4a475bf5c4f0
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text dashboard
-    lexeme ru # language
-      surface seed-surface-cb10ec3438b5
+    lexeme ru
+      surface
         text "панель управления"
-      surface seed-surface-15ff3b0fb72b
+      surface
         text дашборд
-    lexeme hi # language
-      surface seed-surface-865cfb378055
+    lexeme hi
+      surface
         text डैशबोर्ड
-    lexeme zh # language
-      surface seed-surface-2750ccc67929
+    lexeme zh
+      surface
         text 仪表板
   artifact_scraper:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-d47ccf138887
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text scraper
-    lexeme ru # language
-      surface seed-surface-b0de97794965
+    lexeme ru
+      surface
         text скрапер
-      surface seed-surface-c1292dc38677
+      surface
         text парсер
-    lexeme hi # language
-      surface seed-surface-922cdee48eec
+    lexeme hi
+      surface
         text स्क्रैपर
-    lexeme zh # language
-      surface seed-surface-2e940e506dfb
+    lexeme zh
+      surface
         text 爬虫
   artifact_library:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-8b30c316d930
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text library
-    lexeme ru # language
-      surface seed-surface-087cc28be230
+    lexeme ru
+      surface
         text библиотека
-      surface seed-surface-c10e2668db87
+      surface
         text библиотеку
-    lexeme hi # language
-      surface seed-surface-d26bfc897571
+    lexeme hi
+      surface
         text लाइब्रेरी
-    lexeme zh # language
-      surface seed-surface-ca4a0ecbbf2d
+    lexeme zh
+      surface
         text 库
   artifact_website:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-63a8082127c3
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text website
-    lexeme ru # language
-      surface seed-surface-4ba80773d1f6
+    lexeme ru
+      surface
         text сайт
-      surface seed-surface-ca645c277e43
+      surface
         text "веб сайт"
-    lexeme hi # language
-      surface seed-surface-2e23b485f1fc
+    lexeme hi
+      surface
         text वेबसाइट
-    lexeme zh # language
-      surface seed-surface-8af2840a3f73
+    lexeme zh
+      surface
         text 网站
   artifact_plugin:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-8b297c498ecc
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text plugin
-    lexeme ru # language
-      surface seed-surface-ef481292748e
+    lexeme ru
+      surface
         text плагин
-    lexeme hi # language
-      surface seed-surface-479db26325c3
+    lexeme hi
+      surface
         text प्लगइन
-    lexeme zh # language
-      surface seed-surface-ebe6be967fb9
+    lexeme zh
+      surface
         text 插件
   artifact_service:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-38078206731b
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text service
-    lexeme ru # language
-      surface seed-surface-7bc873bd8645
+    lexeme ru
+      surface
         text сервис
-      surface seed-surface-65c2cb7b6801
+      surface
         text служба
-      surface seed-surface-f47283e1dbd2
+      surface
         text службу
-    lexeme hi # language
-      surface seed-surface-9c30b8c650d6
+    lexeme hi
+      surface
         text सेवा
-    lexeme zh # language
-      surface seed-surface-fa5c8d906922
+    lexeme zh
+      surface
         text 服务
   artifact_bot:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-99d78317235c
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text bot
-    lexeme ru # language
-      surface seed-surface-6318e2acafe9
+    lexeme ru
+      surface
         text бот
-    lexeme hi # language
-      surface seed-surface-5703bbb22e29
+    lexeme hi
+      surface
         text बॉट
-    lexeme zh # language
-      surface seed-surface-7e8717c72fe6
+    lexeme zh
+      surface
         text 机器人
   artifact_app:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-771ac92c41e9
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text app
-    lexeme ru # language
-      surface seed-surface-89166b44e5d4
+    lexeme ru
+      surface
         text приложение
-    lexeme hi # language
-      surface seed-surface-114f94e31d33
+    lexeme hi
+      surface
         text ऐप
-    lexeme zh # language
-      surface seed-surface-592a5ed9310f
+    lexeme zh
+      surface
         text 应用
   artifact_api:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-6c4ffdcabb8b
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text api
-    lexeme ru # language
-      surface seed-surface-396bc36b1df7
+    lexeme ru
+      surface
         text апи
-    lexeme hi # language
-      surface seed-surface-804d0ad84cb6
+    lexeme hi
+      surface
         text एपीआई
-    lexeme zh # language
-      surface seed-surface-c3ef7bb83d81
+    lexeme zh
+      surface
         text 接口
   artifact_sdk:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-f0b9a5548f05
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text sdk
-    lexeme ru # language
-      surface seed-surface-e7cf257c5b16
+    lexeme ru
+      surface
         text сдк
-    lexeme hi # language
-      surface seed-surface-91b9ebf6201a
+    lexeme hi
+      surface
         text एसडीके
-    lexeme zh # language
-      surface seed-surface-dda306cd961b
+    lexeme zh
+      surface
         text 开发包
   artifact_tool:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-3bde6616b26c
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text tool
-    lexeme ru # language
-      surface seed-surface-fe16fca86074
+    lexeme ru
+      surface
         text инструмент
-    lexeme hi # language
-      surface seed-surface-01d23c47082f
+    lexeme hi
+      surface
         text टूल
-      surface seed-surface-1efc5b02a8fb
+      surface
         text उपकरण
-    lexeme zh # language
-      surface seed-surface-8b4a4feb432d
+    lexeme zh
+      surface
         text 工具
   artifact_mod:
-    defined-by software_artifact # definition-link
-    role software_artifact_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-69f3d254c45e
+    defined-by software_artifact
+    role software_artifact_kind
+    lexeme en
+      surface
         text mod
-    lexeme ru # language
-      surface seed-surface-7ab0ac4108a1
+    lexeme ru
+      surface
         text мод
-    lexeme hi # language
-      surface seed-surface-82266f1357b9
+    lexeme hi
+      surface
         text मॉड
-    lexeme zh # language
-      surface seed-surface-2aaa94f41ce6
+    lexeme zh
+      surface
         text 模组
   software_feature:
-    defined-by requirement_state_tracking # definition-link
-    defined-by requirement_project_behavior # definition-link
-    defined-by property # definition-link
-    role software_feature # semantic-role
-    lexeme en # language
-      surface seed-surface-3b8cbb2d42c6
+    defined-by requirement_state_tracking
+    defined-by requirement_project_behavior
+    defined-by property
+    role software_feature
+    lexeme en
+      surface
         text feature
-      surface seed-surface-38876a44e19b
+      surface
         text features
-      surface seed-surface-c1d3549b121c
+      surface
         text requirement
-      surface seed-surface-32163ce864dc
+      surface
         text requirements
-    lexeme ru # language
-      surface seed-surface-189dd6a5cc13
+    lexeme ru
+      surface
         text функция
-      surface seed-surface-0d7c941bc73a
+      surface
         text требование
-    lexeme hi # language
-      surface seed-surface-fd9548defe1e
+    lexeme hi
+      surface
         text सुविधा
-      surface seed-surface-a434bfcf131b
+      surface
         text आवश्यकता
-    lexeme zh # language
-      surface seed-surface-cc1d135ab7e7
+    lexeme zh
+      surface
         text 功能
-      surface seed-surface-fa27f3e63aa2
+      surface
         text 需求
   requirement_state_tracking:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-3822355696fc
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text track
-      surface seed-surface-97d7181d9e89
+      surface
         text hp
-      surface seed-surface-45e41c1b3065
+      surface
         text status
-      surface seed-surface-b8c284170af4
+      surface
         text damage
-      surface seed-surface-0cf29de053b8
+      surface
         text cooldown
-    lexeme ru # language
-      surface seed-surface-67aedc8872b4
+    lexeme ru
+      surface
         text состояние
-      surface seed-surface-c7a724f42d72
+      surface
         text урон
-      surface seed-surface-641a865c09eb
+      surface
         text откат
-    lexeme hi # language
-      surface seed-surface-51b6c65acc36
+    lexeme hi
+      surface
         text स्थिति
-      surface seed-surface-25e62b834aaf
+      surface
         text क्षति
-    lexeme zh # language
-      surface seed-surface-e78c0818f9bd
+    lexeme zh
+      surface
         text 状态
-      surface seed-surface-a8a145093b82
+      surface
         text 伤害
-      surface seed-surface-d39bde809fe9
+      surface
         text 冷却
   requirement_data_exchange:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-cd913bb97b4b
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text import
-      surface seed-surface-568e1d2f9a5d
+      surface
         text export
-      surface seed-surface-368602c337f2
+      surface
         text csv
-      surface seed-surface-e78c46a3d435
+      surface
         text backup
-      surface seed-surface-0da1370058de
+      surface
         text report
-      surface seed-surface-99e9506f2460
+      surface
         text calendar
-    lexeme ru # language
-      surface seed-surface-acb2e4c0e784
+    lexeme ru
+      surface
         text импорт
-      surface seed-surface-f56fedcc492d
+      surface
         text экспорт
-      surface seed-surface-b1c14d176e73
+      surface
         text "резервная копия"
-      surface seed-surface-3de6b890e065
+      surface
         text отчёт
-    lexeme hi # language
-      surface seed-surface-75c978a45c4b
+    lexeme hi
+      surface
         text आयात
-      surface seed-surface-55244e86e226
+      surface
         text निर्यात
-      surface seed-surface-1b5f0abbf41a
+      surface
         text रिपोर्ट
-    lexeme zh # language
-      surface seed-surface-51a09cc26272
+    lexeme zh
+      surface
         text 导入
-      surface seed-surface-e35ed7520ecd
+      surface
         text 导出
-      surface seed-surface-6e7ca62c6203
+      surface
         text 备份
-      surface seed-surface-5e2306e20f93
+      surface
         text 报告
   requirement_automation:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-d5aa7acad1e1
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text reminder
-      surface seed-surface-1ae3acdd8ca5
+      surface
         text notification
-      surface seed-surface-cfe11c0ac2d8
+      surface
         text schedule
-      surface seed-surface-73e1ea9f2794
+      surface
         text weekly
-    lexeme ru # language
-      surface seed-surface-126f7c8f480a
+    lexeme ru
+      surface
         text напоминание
-      surface seed-surface-f7a807625136
+      surface
         text уведомление
-      surface seed-surface-32bd2e4504d6
+      surface
         text расписание
-    lexeme hi # language
-      surface seed-surface-8f203c978d42
+    lexeme hi
+      surface
         text अनुस्मारक
-      surface seed-surface-018d9034f6db
+      surface
         text सूचना
-    lexeme zh # language
-      surface seed-surface-b001723e6b4c
+    lexeme zh
+      surface
         text 提醒
-      surface seed-surface-b8708949ea59
+      surface
         text 通知
-      surface seed-surface-4782de3c89b6
+      surface
         text 计划
   requirement_validation:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-0a7627fa4ecb
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text validate
-      surface seed-surface-f8a056b64190
+      surface
         text check
-      surface seed-surface-d44b11c8f28d
+      surface
         text conflict
-      surface seed-surface-6af0e043fabb
+      surface
         text audit
-    lexeme ru # language
-      surface seed-surface-2218edad9d43
+    lexeme ru
+      surface
         text проверка
-      surface seed-surface-4455f2418676
+      surface
         text проверь
-      surface seed-surface-47dc121907af
+      surface
         text аудит
-    lexeme hi # language
-      surface seed-surface-3e39c05a9305
+    lexeme hi
+      surface
         text सत्यापन
-      surface seed-surface-215f63b443c0
+      surface
         text जाँच
-    lexeme zh # language
-      surface seed-surface-033a287a1bf1
+    lexeme zh
+      surface
         text 验证
-      surface seed-surface-6f95303928c5
+      surface
         text 检查
-      surface seed-surface-4aeff0db4222
+      surface
         text 审计
   requirement_integration:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-22d1146709a4
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text api
-      surface seed-surface-3fce907fd5fb
+      surface
         text discord
-      surface seed-surface-bbb01bc25f15
+      surface
         text telegram
-      surface seed-surface-704ee91569d8
+      surface
         text github
-      surface seed-surface-42d972257c4d
+      surface
         text browser
-    lexeme ru # language
-      surface seed-surface-8bbc55cad0a2
+    lexeme ru
+      surface
         text интеграция
-      surface seed-surface-a06a2846a4b0
+      surface
         text апи
-      surface seed-surface-1c1ebc776c59
+      surface
         text браузер
-    lexeme hi # language
-      surface seed-surface-ecbb8f0d5be5
+    lexeme hi
+      surface
         text एकीकरण
-      surface seed-surface-5db1383afa23
+      surface
         text एपीआई
-    lexeme zh # language
-      surface seed-surface-f267ba290ab1
+    lexeme zh
+      surface
         text 集成
-      surface seed-surface-b8ac440f7d9f
+      surface
         text 接口
-      surface seed-surface-837b116e637f
+      surface
         text 浏览器
   requirement_user_interface:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-e7918b08d383
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text dashboard
-      surface seed-surface-b74a7d85d790
+      surface
         text chart
-      surface seed-surface-fea0f0f581e0
+      surface
         text filter
-      surface seed-surface-95b488e12b0e
+      surface
         text progress
-    lexeme ru # language
-      surface seed-surface-f76e19b11634
+    lexeme ru
+      surface
         text панель
-      surface seed-surface-8ef963692229
+      surface
         text график
-      surface seed-surface-749e5da549d7
+      surface
         text фильтр
-    lexeme hi # language
-      surface seed-surface-6d15864202d0
+    lexeme hi
+      surface
         text डैशबोर्ड
-      surface seed-surface-fb0aeff17a92
+      surface
         text चार्ट
-    lexeme zh # language
-      surface seed-surface-8ce92f5c2c7e
+    lexeme zh
+      surface
         text 仪表板
-      surface seed-surface-d017526fd8c0
+      surface
         text 图表
-      surface seed-surface-743db3c8c3bb
+      surface
         text 筛选
   requirement_project_behavior:
-    defined-by software_feature # definition-link
-    role software_requirement_category # semantic-role
-    lexeme en # language
-      surface seed-surface-dfd8d4bd613c
+    defined-by software_feature
+    role software_requirement_category
+    lexeme en
+      surface
         text add
-      surface seed-surface-241caad27532
+      surface
         text admin
-      surface seed-surface-4bc3a3930a58
+      surface
         text customer
-      surface seed-surface-58c8a1b45ee9
+      surface
         text date
-      surface seed-surface-d4f31f00d865
+      surface
         text email
-      surface seed-surface-3ae897d02c6d
+      surface
         text expense
-      surface seed-surface-97d590a6a577
+      surface
         text file
-      surface seed-surface-c60a3d6bdb3c
+      surface
         text history
-      surface seed-surface-83ade6f8ea90
+      surface
         text invoice
-      surface seed-surface-5d2f2a0705ce
+      surface
         text log
-      surface seed-surface-001047d15df3
+      surface
         text maintenance
-      surface seed-surface-865719fb1bf6
+      surface
         text payment
-      surface seed-surface-68f716dfc399
+      surface
         text protection
-      surface seed-surface-9be0e5cf923d
+      surface
         text record
-      surface seed-surface-a1de8296f0cc
+      surface
         text rename
-      surface seed-surface-bdc238e25ae1
+      surface
         text resistance
-      surface seed-surface-e8be2ca4b29c
+      surface
         text retry
-      surface seed-surface-c3deb5595284
+      surface
         text scrape
-      surface seed-surface-6c301091fcad
+      surface
         text stack
-      surface seed-surface-8b4886b2fe10
+      surface
         text sync
-      surface seed-surface-13c8402286c2
+      surface
         text tracking
-      surface seed-surface-9ae1871ecb1b
+      surface
         text upload
-    lexeme ru # language
-      surface seed-surface-f9262a02367f
+    lexeme ru
+      surface
         text добавить
-      surface seed-surface-63490eee7f92
+      surface
         text клиент
-      surface seed-surface-16586a04414d
+      surface
         text файл
-      surface seed-surface-c79400de73ed
+      surface
         text загрузка
-    lexeme hi # language
-      surface seed-surface-d18257184166
+    lexeme hi
+      surface
         text जोड़ें
-      surface seed-surface-03a04ec1b3e4
+      surface
         text फ़ाइल
-    lexeme zh # language
-      surface seed-surface-23fb126dfc1f
+    lexeme zh
+      surface
         text 添加
-      surface seed-surface-dcf634f1a4a6
+      surface
         text 文件
-      surface seed-surface-9dbaf8d01855
+      surface
         text 上传
   software_delivery:
-    defined-by software_artifact # definition-link
-    defined-by delivery_manual_instructions # definition-link
-    role software_delivery # semantic-role
-    lexeme en # language
-      surface seed-surface-541e1e593c24
+    defined-by software_artifact
+    defined-by delivery_manual_instructions
+    role software_delivery
+    lexeme en
+      surface
         text delivery
-    lexeme ru # language
-      surface seed-surface-794d761cc143
+    lexeme ru
+      surface
         text доставка
-    lexeme hi # language
-      surface seed-surface-aa7c891e4b75
+    lexeme hi
+      surface
         text वितरण
-    lexeme zh # language
-      surface seed-surface-dda09e7f58be
+    lexeme zh
+      surface
         text 交付
   delivery_manual_instructions:
-    defined-by software_delivery # definition-link
-    role software_delivery_mode # semantic-role
-    lexeme en # language
-      surface seed-surface-d6277a92c0e1
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
         text "manual instruction"
-      surface seed-surface-9f814ee950f2
+      surface
         text "manual instructions"
-      surface seed-surface-80f719e42a00
+      surface
         text instruction
-      surface seed-surface-ed236787df6e
+      surface
         text instructions
-      surface seed-surface-82f41228fbd7
+      surface
         text "no code"
-    lexeme ru # language
-      surface seed-surface-2d6b9924b872
+    lexeme ru
+      surface
         text инструкция
-      surface seed-surface-b97340e70d5d
+      surface
         text инструкции
-      surface seed-surface-2d4ea49ad06d
+      surface
         text вручную
-    lexeme hi # language
-      surface seed-surface-d0bcee79d474
+    lexeme hi
+      surface
         text निर्देश
-      surface seed-surface-da3485136470
+      surface
         text मैनुअल
-    lexeme zh # language
-      surface seed-surface-9a2fa91a2702
+    lexeme zh
+      surface
         text 手动说明
-      surface seed-surface-f4a1b72ee73f
+      surface
         text 说明
   delivery_immediate_execution:
-    defined-by software_delivery # definition-link
-    role software_delivery_mode # semantic-role
-    lexeme en # language
-      surface seed-surface-207d38fcdcbb
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
         text execute
-      surface seed-surface-888d84b73924
+      surface
         text "run command"
-      surface seed-surface-368555693324
+      surface
         text "run commands"
-      surface seed-surface-5bb20f130e03
+      surface
         text "run it"
-      surface seed-surface-6005f0aa5ca2
+      surface
         text webvm
-    lexeme ru # language
-      surface seed-surface-34e21e94c57f
+    lexeme ru
+      surface
         text выполни
-      surface seed-surface-817d09d38938
+      surface
         text "запусти команду"
-    lexeme hi # language
-      surface seed-surface-9f8b4e2c7242
+    lexeme hi
+      surface
         text "निष्पादित करें"
-      surface seed-surface-e6932715e85a
+      surface
         text चलाएँ
-    lexeme zh # language
-      surface seed-surface-40eae4ac7451
+    lexeme zh
+      surface
         text 立即运行
-      surface seed-surface-7fcd8e62699a
+      surface
         text 执行
   delivery_script_generation:
-    defined-by software_delivery # definition-link
-    role software_delivery_mode # semantic-role
-    lexeme en # language
-      surface seed-surface-04dd892d9d52
+    defined-by software_delivery
+    role software_delivery_mode
+    lexeme en
+      surface
         text bash
-      surface seed-surface-4b1a364685fc
+      surface
         text shell
-      surface seed-surface-1c463beb9a8d
+      surface
         text script
-      surface seed-surface-40b723dcdfa3
+      surface
         text scripts
-      surface seed-surface-032f63882113
+      surface
         text commands
-    lexeme ru # language
-      surface seed-surface-a8183d568946
+    lexeme ru
+      surface
         text скрипт
-      surface seed-surface-d3a8853a55ef
+      surface
         text оболочка
-      surface seed-surface-9a09f0ded0dc
+      surface
         text команды
-    lexeme hi # language
-      surface seed-surface-70230c3c60c7
+    lexeme hi
+      surface
         text स्क्रिप्ट
-      surface seed-surface-546220a7fbf5
+      surface
         text शेल
-    lexeme zh # language
-      surface seed-surface-ddca0d341e89
+    lexeme zh
+      surface
         text 脚本
-      surface seed-surface-37a38099aeef
+      surface
         text 外壳脚本
   software_language:
-    defined-by software_artifact # definition-link
-    defined-by language_python # definition-link
-    role software_language # semantic-role
-    lexeme en # language
-      surface seed-surface-254b7e667602
+    defined-by software_artifact
+    defined-by language_python
+    role software_language
+    lexeme en
+      surface
         text "programming language"
-    lexeme ru # language
-      surface seed-surface-e15a78502405
+    lexeme ru
+      surface
         text "язык программирования"
-    lexeme hi # language
-      surface seed-surface-d341a7770804
+    lexeme hi
+      surface
         text "प्रोग्रामिंग भाषा"
-    lexeme zh # language
-      surface seed-surface-8416691a8b9d
+    lexeme zh
+      surface
         text 编程语言
   language_python:
-    defined-by software_language # definition-link
-    role software_implementation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-13d0906b2a41
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
         text python
-      surface seed-surface-a586066d1e4c
+      surface
         text django
-      surface seed-surface-c225637d50e3
+      surface
         text fastapi
-    lexeme ru # language
-      surface seed-surface-9b48f9e5d765
+    lexeme ru
+      surface
         text питон
-      surface seed-surface-61f89f12ca37
+      surface
         text пайтон
-    lexeme hi # language
-      surface seed-surface-ce62b32e78e1
+    lexeme hi
+      surface
         text पायथन
-    lexeme zh # language
-      surface seed-surface-088ac802e6c8
+    lexeme zh
+      surface
         text python
   language_rust:
-    defined-by software_language # definition-link
-    role software_implementation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-27c76f238326
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
         text rust
-      surface seed-surface-f20def6b7009
+      surface
         text cargo
-    lexeme ru # language
-      surface seed-surface-796135d6085e
+    lexeme ru
+      surface
         text раст
-    lexeme hi # language
-      surface seed-surface-9574d86b96e4
+    lexeme hi
+      surface
         text रस्ट
-    lexeme zh # language
-      surface seed-surface-3daff187025b
+    lexeme zh
+      surface
         text rust
   language_javascript:
-    defined-by software_language # definition-link
-    role software_implementation_language # semantic-role
-    lexeme en # language
-      surface seed-surface-cf31ca54bae0
+    defined-by software_language
+    role software_implementation_language
+    lexeme en
+      surface
         text javascript
-      surface seed-surface-a703526fe4ac
+      surface
         text node
-    lexeme ru # language
-      surface seed-surface-e919609d637c
+    lexeme ru
+      surface
         text джаваскрипт
-    lexeme hi # language
-      surface seed-surface-a286a4aa6e5c
+    lexeme hi
+      surface
         text जावास्क्रिप्ट
-    lexeme zh # language
-      surface seed-surface-ce8d910a2175
+    lexeme zh
+      surface
         text javascript
   implementation_language_preposition:
-    defined-by software_language # definition-link
-    role implementation_language_preposition # semantic-role
-    lexeme en # language
-      surface seed-surface-17f473b1ed94
+    defined-by software_language
+    role implementation_language_preposition
+    lexeme en
+      surface
         text in
-    lexeme ru # language
-      surface seed-surface-2ff32f976246
+    lexeme ru
+      surface
         text на
-    lexeme hi # language
-      surface seed-surface-76b80a86882a
+    lexeme hi
+      surface
         text में
-    lexeme zh # language
-      surface seed-surface-f13773dc260d
+    lexeme zh
+      surface
         text 用
   implementation_language_noun:
-    defined-by software_language # definition-link
-    role implementation_language_noun # semantic-role
-    lexeme en # language
-      surface seed-surface-a269a97b2107
+    defined-by software_language
+    role implementation_language_noun
+    lexeme en
+      surface
         text language
-    lexeme ru # language
-      surface seed-surface-b3f39926cd63
+    lexeme ru
+      surface
         text языке
-    lexeme hi # language
-      surface seed-surface-1e995ccfe718
+    lexeme hi
+      surface
         text भाषा
-    lexeme zh # language
-      surface seed-surface-714701e57af7
+    lexeme zh
+      surface
         text 语言
   tabletop_game_tracker:
-    defined-by game_tracker_domain # definition-link
-    defined-by game_tracker_mechanic # definition-link
-    role tabletop_game_tracker # semantic-role
-    lexeme en # language
-      surface seed-surface-5a4966ce06f3
+    defined-by game_tracker_domain
+    defined-by game_tracker_mechanic
+    role tabletop_game_tracker
+    lexeme en
+      surface
         text "tabletop game tracker"
-    lexeme ru # language
-      surface seed-surface-82552f9a6e35
+    lexeme ru
+      surface
         text "трекер настольной игры"
-    lexeme hi # language
-      surface seed-surface-9422c725121b
+    lexeme hi
+      surface
         text "टेबलटॉप गेम ट्रैकर"
-    lexeme zh # language
-      surface seed-surface-7cdfcf81f9b7
+    lexeme zh
+      surface
         text 桌游追踪器
   game_tracker_domain:
-    defined-by tabletop_game_tracker # definition-link
-    role game_tracker_domain # semantic-role
-    lexeme en # language
-      surface seed-surface-256a62a93bf5
+    defined-by tabletop_game_tracker
+    role game_tracker_domain
+    lexeme en
+      surface
         text dnd
-      surface seed-surface-04f07e80a3a0
+      surface
         text wargame
-      surface seed-surface-c616bc109290
+      surface
         text tabletop
-      surface seed-surface-889b3b832e24
+      surface
         text unit
-      surface seed-surface-bbad9e09f24f
+      surface
         text token
-      surface seed-surface-b1c462ee5588
+      surface
         text owlbear
-    lexeme ru # language
-      surface seed-surface-cd373d7dafff
+    lexeme ru
+      surface
         text "настольная игра"
-      surface seed-surface-9e0745fb5208
+      surface
         text фишка
-      surface seed-surface-7c155299afb4
+      surface
         text жетон
-    lexeme hi # language
-      surface seed-surface-8785e210804f
+    lexeme hi
+      surface
         text टेबलटॉप
-      surface seed-surface-d0561723fe62
+      surface
         text मोहरा
-    lexeme zh # language
-      surface seed-surface-c130d062de14
+    lexeme zh
+      surface
         text 桌游
-      surface seed-surface-630353d915ed
+      surface
         text 棋子
-      surface seed-surface-8b64048244dd
+      surface
         text 战棋
   game_tracker_mechanic:
-    defined-by tabletop_game_tracker # definition-link
-    defined-by requirement_state_tracking # definition-link
-    role game_tracker_mechanic # semantic-role
-    lexeme en # language
-      surface seed-surface-e7ad9bf5d2ff
+    defined-by tabletop_game_tracker
+    defined-by requirement_state_tracking
+    role game_tracker_mechanic
+    lexeme en
+      surface
         text hp
-      surface seed-surface-2e28279174b0
+      surface
         text damage
-      surface seed-surface-939c3c16a3a6
+      surface
         text protection
-      surface seed-surface-55c3d7e9160e
+      surface
         text resistance
-      surface seed-surface-f139b94321bd
+      surface
         text cooldown
-      surface seed-surface-7d1a48c227ba
+      surface
         text cooldowns
-    lexeme ru # language
-      surface seed-surface-7d31ef319c8a
+    lexeme ru
+      surface
         text хп
-      surface seed-surface-2e20e75d343d
+      surface
         text урон
-      surface seed-surface-c1dc0b095f52
+      surface
         text защита
-      surface seed-surface-1c20d95a1969
+      surface
         text сопротивление
-      surface seed-surface-43e1a8681b2d
+      surface
         text откат
-    lexeme hi # language
-      surface seed-surface-f91b89c62283
+    lexeme hi
+      surface
         text एचपी
-      surface seed-surface-9a17b1fe25cc
+      surface
         text क्षति
-      surface seed-surface-3d30aa1ddeab
+      surface
         text रक्षा
-    lexeme zh # language
-      surface seed-surface-24b34eb73803
+    lexeme zh
+      surface
         text 生命值
-      surface seed-surface-13f0b22c10d8
+      surface
         text 伤害
-      surface seed-surface-2d89e8489906
+      surface
         text 防护
-      surface seed-surface-4ec867cf3edf
+      surface
         text 抗性
-      surface seed-surface-649b71eb4089
+      surface
         text 冷却
   software_approval:
-    defined-by software_approval_trigger # definition-link
-    defined-by software_step_granularity # definition-link
-    defined-by concept # definition-link
-    role software_approval # semantic-role
-    lexeme en # language
-      surface seed-surface-7a3654096563
+    defined-by software_approval_trigger
+    defined-by software_step_granularity
+    defined-by concept
+    role software_approval
+    lexeme en
+      surface
         text approval
-    lexeme ru # language
-      surface seed-surface-10dc6249e09e
+    lexeme ru
+      surface
         text одобрение
-    lexeme hi # language
-      surface seed-surface-4d76a025b4d3
+    lexeme hi
+      surface
         text अनुमोदन
-    lexeme zh # language
-      surface seed-surface-d651ff8b068b
+    lexeme zh
+      surface
         text 批准
   software_approval_trigger:
-    defined-by software_approval # definition-link
-    role software_approval_trigger # semantic-role
-    lexeme en # language
-      surface seed-surface-32d0d9892ee8
+    defined-by software_approval
+    role software_approval_trigger
+    lexeme en
+      surface
         text approve
-      surface seed-surface-0aeff2de6ccd
+      surface
         text approved
-      surface seed-surface-5c12e9166dc8
+      surface
         text "approve plan"
-      surface seed-surface-bf6e84cfad3d
+      surface
         text yes
-      surface seed-surface-d4ff7be4afe4
+      surface
         text "yes proceed"
-      surface seed-surface-65f510b1c2c9
+      surface
         text proceed
-      surface seed-surface-f55604fd9554
+      surface
         text "go ahead"
-      surface seed-surface-91b9f9622bf0
+      surface
         text "looks good"
-      surface seed-surface-91fcc4bece5d
+      surface
         text "do it"
-      surface seed-surface-b2a3a4658960
+      surface
         text "start implementation"
-      surface seed-surface-fa0516d919b4
+      surface
         text "generate code"
-      surface seed-surface-c0717759b39d
+      surface
         text "convert to code"
-    lexeme ru # language
-      surface seed-surface-1847afe15a14
+    lexeme ru
+      surface
         text одобряю
-      surface seed-surface-bdd43d57645e
+      surface
         text да
-      surface seed-surface-05c08775fd5b
+      surface
         text приступай
-      surface seed-surface-02a75d0897ec
+      surface
         text поехали
-    lexeme hi # language
-      surface seed-surface-969bbe76ded3
+    lexeme hi
+      surface
         text स्वीकृत
-      surface seed-surface-40434d6ab3f7
+      surface
         text हाँ
-      surface seed-surface-1bccd66952a5
+      surface
         text "आगे बढ़ो"
-    lexeme zh # language
-      surface seed-surface-23fa1a0e1adb
+    lexeme zh
+      surface
         text 批准
-      surface seed-surface-20bfbd6d1443
+      surface
         text 同意
-      surface seed-surface-7071ca0b73ae
+      surface
         text 开始
   software_step_granularity:
-    defined-by software_approval # definition-link
-    role software_step_granularity # semantic-role
-    lexeme en # language
-      surface seed-surface-cad747d51428
+    defined-by software_approval
+    role software_step_granularity
+    lexeme en
+      surface
         text "each step"
-      surface seed-surface-9bf5e358868b
+      surface
         text "step by step"
-    lexeme ru # language
-      surface seed-surface-62c016fc3c83
+    lexeme ru
+      surface
         text "каждый шаг"
-      surface seed-surface-fe8e5c41e29d
+      surface
         text пошагово
-    lexeme hi # language
-      surface seed-surface-425f661b2496
+    lexeme hi
+      surface
         text "हर चरण"
-      surface seed-surface-851230076fe2
+      surface
         text "चरण दर चरण"
-    lexeme zh # language
-      surface seed-surface-a00bf91ae9e9
+    lexeme zh
+      surface
         text 每一步
-      surface seed-surface-cb59441f007d
+      surface
         text 逐步
   software_bash_command:
-    defined-by software_delivery # definition-link
-    role software_bash_command # semantic-role
-    lexeme en # language
-      surface seed-surface-48ce2e4ee476
+    defined-by software_delivery
+    role software_bash_command
+    lexeme en
+      surface
         text shell
-      surface seed-surface-f4516b646e55
+      surface
         text bash
-      surface seed-surface-1ce87ecf4978
+      surface
         text command
-      surface seed-surface-85547301bbd9
+      surface
         text commands
-      surface seed-surface-1ba1126c5ee4
+      surface
         text docker
-      surface seed-surface-806a1aa047fe
+      surface
         text webvm
-    lexeme ru # language
-      surface seed-surface-4601c147227d
+    lexeme ru
+      surface
         text оболочка
-      surface seed-surface-e17424e32c60
+      surface
         text команда
-      surface seed-surface-16555bf0c821
+      surface
         text команды
-    lexeme hi # language
-      surface seed-surface-2d7ba5bab5c0
+    lexeme hi
+      surface
         text शेल
-      surface seed-surface-8c9ad7da6362
+      surface
         text कमांड
-    lexeme zh # language
-      surface seed-surface-a625dce3b504
+    lexeme zh
+      surface
         text 外壳
-      surface seed-surface-40290f96199d
+      surface
         text 命令
-      surface seed-surface-3c2ff6befe3d
+      surface
         text docker

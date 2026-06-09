@@ -1,217 +1,217 @@
 meanings
   skill_teaching_trigger:
-    defined-by relation # definition-link
-    defined-by inquiry # definition-link
-    role skill_teaching_trigger_lead # semantic-role
-    lexeme en # language
-      surface seed-surface-8a20858e25c3
+    defined-by relation
+    defined-by inquiry
+    role skill_teaching_trigger_lead
+    lexeme en
+      surface
         text "when i say"
-      surface seed-surface-98dfaffeb7d3
+      surface
         text "when the user says"
-      surface seed-surface-9f2ddea64e4a
+      surface
         text "when the user asks"
-      surface seed-surface-74736be40b09
+      surface
         text "if i ask"
-    lexeme ru # language
-      surface seed-surface-ed01ee84ba87
+    lexeme ru
+      surface
         text "когда я скажу"
-      surface seed-surface-5299104a26dd
+      surface
         text "если я спрошу"
-    lexeme hi # language
-      surface seed-surface-240dc54bdae1
+    lexeme hi
+      surface
         text "जब मैं कहूँ"
-      surface seed-surface-79ee31568301
+      surface
         text "अगर मैं पूछूँ"
-    lexeme zh # language
-      surface seed-surface-31c4341aca55
+    lexeme zh
+      surface
         text 当我说
-      surface seed-surface-1e11fc5a473b
+      surface
         text 当用户说
-      surface seed-surface-3622647e3864
+      surface
         text 当用户问
   skill_teaching_response:
-    defined-by action # definition-link
-    defined-by answer # definition-link
-    role skill_teaching_response_verb # semantic-role
-    lexeme en # language
-      surface seed-surface-5608afe91047
+    defined-by action
+    defined-by answer
+    role skill_teaching_response_verb
+    lexeme en
+      surface
         text answer
-      surface seed-surface-b5d7129e49df
+      surface
         text reply
-      surface seed-surface-1a31d77a111f
+      surface
         text respond
-    lexeme ru # language
-      surface seed-surface-b0ca6e09dd84
+    lexeme ru
+      surface
         text ответ
-    lexeme hi # language
-      surface seed-surface-1919f22f4821
+    lexeme hi
+      surface
         text उत्तर
-      surface seed-surface-8b4e99a3d7ef
+      surface
         text जवाब
-    lexeme zh # language
-      surface seed-surface-0370bbfbb5b0
+    lexeme zh
+      surface
         text 回答
-      surface seed-surface-ba156d881a6f
+      surface
         text 回复
   behavior_rule_edit:
-    defined-by action # definition-link
-    defined-by knowledge # definition-link
-    role behavior_rule_edit_directive # semantic-role
-    lexeme en # language
-      surface seed-surface-60dc83fa7118
+    defined-by action
+    defined-by knowledge
+    role behavior_rule_edit_directive
+    lexeme en
+      surface
         text "add behavior rule"
-      surface seed-surface-5f421b4af277
+      surface
         text "update behavior rule"
-    lexeme ru # language
-      surface seed-surface-8b96dacd3741
+    lexeme ru
+      surface
         text "добавь правило поведения"
-      surface seed-surface-90c3cea7dd2c
+      surface
         text "обнови правило поведения"
-    lexeme hi # language
-      surface seed-surface-0564dc465a35
+    lexeme hi
+      surface
         text "व्यवहार नियम जोड़ो"
-      surface seed-surface-084bbb29da8b
+      surface
         text "व्यवहार नियम अपडेट करो"
-    lexeme zh # language
-      surface seed-surface-062e43169b93
+    lexeme zh
+      surface
         text 添加行为规则
-      surface seed-surface-9e6015439af8
+      surface
         text 更新行为规则
   skill_when_then:
-    defined-by relation # definition-link
-    defined-by concept # definition-link
-    role skill_when_then_pair # semantic-role
-    lexeme en # language
-      surface seed-surface-b10cb9bf7cb9
+    defined-by relation
+    defined-by concept
+    role skill_when_then_pair
+    lexeme en
+      surface
         text "when … then "
-      surface seed-surface-41605a231fc8
+      surface
         text "when … do "
-    lexeme ru # language
-      surface seed-surface-c827cb4c1ea9
+    lexeme ru
+      surface
         text "когда … тогда "
-      surface seed-surface-f8b453b383a2
+      surface
         text "когда … делай "
-      surface seed-surface-11605ac6748e
+      surface
         text "когда … сделай "
-      surface seed-surface-5896dd9d830e
+      surface
         text "когда … отвечай "
-      surface seed-surface-9efce72b93e2
+      surface
         text "когда … отвечать "
-      surface seed-surface-28d5508e9440
+      surface
         text "если … то "
-    lexeme hi # language
-      surface seed-surface-7623afec4464
+    lexeme hi
+      surface
         text "जब … तब "
-      surface seed-surface-b73b2fac6d57
+      surface
         text "जब … तो "
-    lexeme zh # language
-      surface seed-surface-91c684e2c7c2
+    lexeme zh
+      surface
         text "当 … 时 "
-      surface seed-surface-83b73b5e10f7
+      surface
         text "当 … 则 "
-      surface seed-surface-641560e22b78
+      surface
         text "当 … 回答 "
-      surface seed-surface-c52d3f797eec
+      surface
         text "当 …时回答 "
-      surface seed-surface-c6fc272c4d05
+      surface
         text "当 …则回答 "
   nondeterministic_step:
-    defined-by property # definition-link
-    defined-by concept # definition-link
-    role nondeterministic_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-2bdd2e1d6c91
+    defined-by property
+    defined-by concept
+    role nondeterministic_marker
+    lexeme en
+      surface
         text random
-      surface seed-surface-5e72be62776f
+      surface
         text nondeterministic
-      surface seed-surface-c293b076f72c
+      surface
         text non-deterministic
-      surface seed-surface-88681d250eac
+      surface
         text "arbitrary code"
-    lexeme ru # language
-      surface seed-surface-faa1e77c0e16
+    lexeme ru
+      surface
         text случайный
-      surface seed-surface-9baad1abe4a4
+      surface
         text недетерминированный
-    lexeme hi # language
-      surface seed-surface-7eb189a94a71
+    lexeme hi
+      surface
         text यादृच्छिक
-      surface seed-surface-22a0551d5ca7
+      surface
         text अनिश्चित
-    lexeme zh # language
-      surface seed-surface-4e51b1de5d13
+    lexeme zh
+      surface
         text 随机
-      surface seed-surface-eb3a39cfc367
+      surface
         text 不确定
   shell_capability_need:
-    defined-by capability # definition-link
-    defined-by action # definition-link
-    role shell_capability_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-f9af44d5115c
+    defined-by capability
+    defined-by action
+    role shell_capability_cue
+    lexeme en
+      surface
         text local_shell
-      surface seed-surface-248131bb6a42
+      surface
         text shell
-      surface seed-surface-8df4d499052b
+      surface
         text filesystem
-      surface seed-surface-4ffd718098de
+      surface
         text "file system"
-      surface seed-surface-e889947ca476
+      surface
         text "list files"
-      surface seed-surface-9c4017956b8e
+      surface
         text "write file"
-      surface seed-surface-d5a290479947
+      surface
         text "delete file"
-    lexeme ru # language
-      surface seed-surface-ccd96ec63dac
+    lexeme ru
+      surface
         text оболочка
-      surface seed-surface-fe9ff476cbd9
+      surface
         text "файловая система"
-      surface seed-surface-ded0a10960e5
+      surface
         text "список файлов"
-    lexeme hi # language
-      surface seed-surface-a27893ba08b9
+    lexeme hi
+      surface
         text शेल
-      surface seed-surface-7892ed348df8
+      surface
         text "फाइल सिस्टम"
-      surface seed-surface-a4f90a7c6848
+      surface
         text "फाइलें सूचीबद्ध"
-    lexeme zh # language
-      surface seed-surface-7b997361822f
+    lexeme zh
+      surface
         text 外壳
-      surface seed-surface-fc3a069e79f7
+      surface
         text 文件系统
-      surface seed-surface-8bd7685f8e6f
+      surface
         text 列出文件
   network_capability_need:
-    defined-by capability # definition-link
-    defined-by action # definition-link
-    role network_capability_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-64facccb3cbb
+    defined-by capability
+    defined-by action
+    role network_capability_cue
+    lexeme en
+      surface
         text http
-      surface seed-surface-90ce3bc4fcad
+      surface
         text network
-      surface seed-surface-4c00750140ff
+      surface
         text fetch
-      surface seed-surface-c064edc56b69
+      surface
         text "web request"
-    lexeme ru # language
-      surface seed-surface-430f50db9902
+    lexeme ru
+      surface
         text сеть
-      surface seed-surface-f41c58612ae9
+      surface
         text веб-запрос
-      surface seed-surface-8f350f98e956
+      surface
         text "сетевой запрос"
-    lexeme hi # language
-      surface seed-surface-5b1664a8cce9
+    lexeme hi
+      surface
         text नेटवर्क
-      surface seed-surface-9f7b0295f42c
+      surface
         text "वेब अनुरोध"
-    lexeme zh # language
-      surface seed-surface-6222d05152d0
+    lexeme zh
+      surface
         text 网络
-      surface seed-surface-330dc3016a86
+      surface
         text 网络请求
-      surface seed-surface-811dad116317
+      surface
         text 获取

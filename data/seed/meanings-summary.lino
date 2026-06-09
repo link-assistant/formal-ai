@@ -1,241 +1,241 @@
 meanings
   summary_statement_kind:
-    defined-by concept # definition-link
-    role summary_statement_kind # semantic-role
-    lexeme en # language
-      surface seed-surface-76b3d6ba39cd
+    defined-by concept
+    role summary_statement_kind
+    lexeme en
+      surface
         text "statement kind"
-      surface seed-surface-e5302f5b51d2
+      surface
         text "sentence kind"
-    lexeme ru # language
-      surface seed-surface-69ff78c0ec9e
+    lexeme ru
+      surface
         text "вид утверждения"
-      surface seed-surface-197db2fc21d2
+      surface
         text "тип предложения"
-    lexeme hi # language
-      surface seed-surface-15c10b209391
+    lexeme hi
+      surface
         text "कथन का प्रकार"
-      surface seed-surface-5cd2ba19ffbb
+      surface
         text "वाक्य का प्रकार"
-    lexeme zh # language
-      surface seed-surface-3879d5b640f1
+    lexeme zh
+      surface
         text 陈述类型
-      surface seed-surface-95054526b926
+      surface
         text 句子类型
   summary_kind_install:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-6b12f11cf90b
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text "to install"
-      surface seed-surface-f86620e9b5bf
+      surface
         text "install with"
-      surface seed-surface-2b71cc4ca4e2
+      surface
         text installation
-      surface seed-surface-53e4f03bb05e
+      surface
         text "npm install"
-      surface seed-surface-3cb48789de11
+      surface
         text "cargo install"
-      surface seed-surface-c67814fbc1e9
+      surface
         text "pip install"
-    lexeme ru # language
-      surface seed-surface-4a5e53094b69
+    lexeme ru
+      surface
         text установить
-      surface seed-surface-7c4434fcb1f5
+      surface
         text установка
-      surface seed-surface-57edcee324d7
+      surface
         text установите
-    lexeme hi # language
-      surface seed-surface-cac86ad33d46
+    lexeme hi
+      surface
         text "इंस्टॉल करें"
-      surface seed-surface-7bd6cb9418a9
+      surface
         text स्थापना
-    lexeme zh # language
-      surface seed-surface-95711b4c4e22
+    lexeme zh
+      surface
         text 安装
-      surface seed-surface-c7fa1c0aa9b9
+      surface
         text 安装方法
   summary_kind_example:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-154133be4a7c
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text "for example"
-      surface seed-surface-f6ec30e5fdbf
+      surface
         text "example:"
-      surface seed-surface-4978263b86af
+      surface
         text e.g.
-      surface seed-surface-05c2e373b4a7
+      surface
         text "run --"
-      surface seed-surface-5bf65499a62f
+      surface
         text "$ "
-      surface seed-surface-8f5d263a7d36
+      surface
         text "```"
-    lexeme ru # language
-      surface seed-surface-b5365a41e9b6
+    lexeme ru
+      surface
         text выполни
-      surface seed-surface-6dcea08eb6b7
+      surface
         text например
-    lexeme hi # language
-      surface seed-surface-d333dd8ba15f
+    lexeme hi
+      surface
         text "उदाहरण के लिए"
-      surface seed-surface-5b959b1f219e
+      surface
         text "उदाहरण:"
-    lexeme zh # language
-      surface seed-surface-d63823b4d125
+    lexeme zh
+      surface
         text 例如
-      surface seed-surface-b358aecbdc98
+      surface
         text 比如
   summary_kind_language:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-925af9ba7efe
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text "written in "
-      surface seed-surface-47eb2d96ff60
+      surface
         text "language:"
-      surface seed-surface-108f77ff4cb7
+      surface
         text "is a "
-      surface seed-surface-c742e2777886
+      surface
         text "build with "
-    lexeme ru # language
-      surface seed-surface-62d2fba583f6
+    lexeme ru
+      surface
         text "написан на "
-      surface seed-surface-c5a998e0f925
+      surface
         text "на языке "
-    lexeme hi # language
-      surface seed-surface-e4267b561928
+    lexeme hi
+      surface
         text "में लिखा"
-      surface seed-surface-a0cbef05f27c
+      surface
         text "भाषा:"
-    lexeme zh # language
-      surface seed-surface-3aa554bf2683
+    lexeme zh
+      surface
         text 语言
-      surface seed-surface-3f71f415e3a5
+      surface
         text 编写
   summary_kind_stars:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-7fc1273d3d44
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text " stars"
-      surface seed-surface-50a9a585fb4d
+      surface
         text "github stars"
-      surface seed-surface-f3b9aae23959
+      surface
         text ★
-      surface seed-surface-6358ee6ef7c5
+      surface
         text stargazers
-    lexeme ru # language
-      surface seed-surface-1724879a4a10
+    lexeme ru
+      surface
         text звёзды
-      surface seed-surface-dd61aa200c48
+      surface
         text звезд
-    lexeme hi # language
-      surface seed-surface-47edd1064e1a
+    lexeme hi
+      surface
         text सितारे
-      surface seed-surface-7602aaf123c5
+      surface
         text तारे
-    lexeme zh # language
-      surface seed-surface-f32910274968
+    lexeme zh
+      surface
         text 星标
-      surface seed-surface-533752c9cc89
+      surface
         text 星数
   summary_kind_purpose:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-bf66b6201460
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text "is for "
-      surface seed-surface-55c10f8abd46
+      surface
         text "is the ai"
-      surface seed-surface-0adc24a8517a
+      surface
         text "is an ai"
-      surface seed-surface-93c5852542cd
+      surface
         text "is used to"
-      surface seed-surface-1e79d251bfb3
+      surface
         text "is meant to"
-      surface seed-surface-bc864c8d1898
+      surface
         text "is designed to"
-      surface seed-surface-218c4b105b40
+      surface
         text "helps you"
-      surface seed-surface-c9495a6d3b82
+      surface
         text "lets you"
-    lexeme ru # language
-      surface seed-surface-2a75cd785f75
+    lexeme ru
+      surface
         text "это ии"
-      surface seed-surface-51e189809dc7
+      surface
         text предназнач
-    lexeme hi # language
-      surface seed-surface-50170b094fa3
+    lexeme hi
+      surface
         text "के लिए है"
-      surface seed-surface-83f9bb935073
+      surface
         text "मदद करता है"
-    lexeme zh # language
-      surface seed-surface-e0f2fc1671af
+    lexeme zh
+      surface
         text 用于
-      surface seed-surface-c4b18e8f5fe0
+      surface
         text 旨在
-      surface seed-surface-58a73fcd43d2
+      surface
         text 帮助你
   summary_kind_use_case:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-75c3caf8e60a
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text "use it when"
-      surface seed-surface-e772c1b08bab
+      surface
         text "use this when"
-      surface seed-surface-4210a635d0c6
+      surface
         text "when you need"
-      surface seed-surface-26de21b19816
+      surface
         text "ideal for"
-      surface seed-surface-549725ee3fc3
+      surface
         text "useful when"
-    lexeme ru # language
-      surface seed-surface-9837e01aaa5c
+    lexeme ru
+      surface
         text "используйте когда"
-      surface seed-surface-074e3353bc90
+      surface
         text "когда нужно"
-      surface seed-surface-654e67300986
+      surface
         text "идеально для"
-    lexeme hi # language
-      surface seed-surface-5ff84df6e988
+    lexeme hi
+      surface
         text "जब आपको चाहिए"
-      surface seed-surface-0d3e5a4452e4
+      surface
         text "के लिए आदर्श"
-    lexeme zh # language
-      surface seed-surface-b5f93cf25162
+    lexeme zh
+      surface
         text 当你需要
-      surface seed-surface-711e8850223a
+      surface
         text 适用于
   summary_kind_feature:
-    defined-by summary_statement_kind # definition-link
-    role summary_classification_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-ea5abd1907bc
+    defined-by summary_statement_kind
+    role summary_classification_cue
+    lexeme en
+      surface
         text " supports "
-      surface seed-surface-4a3a8a94f05a
+      surface
         text " provides "
-      surface seed-surface-4be1df681261
+      surface
         text " offers "
-      surface seed-surface-b9d92bafe133
+      surface
         text " exposes "
-      surface seed-surface-fa0b44e61396
+      surface
         text " ships "
-      surface seed-surface-5ae37b2c837c
+      surface
         text " orchestrates "
-    lexeme ru # language
-      surface seed-surface-0693c99ec65a
+    lexeme ru
+      surface
         text " предоставляет "
-      surface seed-surface-4fa1f5a1c7d9
+      surface
         text " поддерживает "
-    lexeme hi # language
-      surface seed-surface-ea68f2191ef0
+    lexeme hi
+      surface
         text "समर्थन करता है"
-      surface seed-surface-5f7a6aa608a1
+      surface
         text "प्रदान करता है"
-    lexeme zh # language
-      surface seed-surface-f195eecbdf9a
+    lexeme zh
+      surface
         text 支持
-      surface seed-surface-b1e7c89420ef
+      surface
         text 提供

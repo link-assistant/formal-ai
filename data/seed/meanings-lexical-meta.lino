@@ -1,289 +1,289 @@
 meanings
   lexical_form:
-    defined-by notation # definition-link
-    defined-by word_surface # definition-link
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by notation
+    defined-by word_surface
+    role lexical_meta
+    facet notation
       word_surface:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       lexical_sense:
-    facet connotation # facet
+    facet connotation
       part_of_speech:
-    lexeme en # language
-      surface seed-surface-d827c02ccc88
+    lexeme en
+      surface
         text "lexical form"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_form:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme ru # language
-      surface seed-surface-b6840fd4a372
+    lexeme ru
+      surface
         text "лексическая форма"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_form:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme hi # language
-      surface seed-surface-aa35908bcfe0
+    lexeme hi
+      surface
         text "शाब्दिक रूप"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_form:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme zh # language
-      surface seed-surface-dd3ee21f2dfd
+    lexeme zh
+      surface
         text 词形
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_form:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
   word_surface:
-    defined-by lexical_form # definition-link
-    defined-by notation # definition-link
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by lexical_form
+    defined-by notation
+    role lexical_meta
+    facet notation
       links_notation_format:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       lexical_form:
-    facet connotation # facet
+    facet connotation
       lexical_sense:
-    lexeme en # language
-      surface seed-surface-d135969c0f90
+    lexeme en
+      surface
         text "word surface"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           word_surface:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme ru # language
-      surface seed-surface-9edd525c19cf
+    lexeme ru
+      surface
         text "словесная форма"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           word_surface:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme hi # language
-      surface seed-surface-6bb273d81077
+    lexeme hi
+      surface
         text "शब्द सतह"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           word_surface:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme zh # language
-      surface seed-surface-beb73b25e558
+    lexeme zh
+      surface
         text 词面
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           word_surface:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
   lexical_sense:
-    defined-by denotation # definition-link
-    defined-by concept # definition-link
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by denotation
+    defined-by concept
+    role lexical_meta
+    facet notation
       word_surface:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       concept:
-    facet connotation # facet
+    facet connotation
       lexical_form:
-    lexeme en # language
-      surface seed-surface-8f80a4c534ce
+    lexeme en
+      surface
         text "lexical sense"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_sense:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme ru # language
-      surface seed-surface-098bf701cdbb
+    lexeme ru
+      surface
         text "лексическое значение"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_sense:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme hi # language
-      surface seed-surface-7e3f3481d27b
+    lexeme hi
+      surface
         text "शाब्दिक अर्थ"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_sense:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme zh # language
-      surface seed-surface-e5379fe74b1e
+    lexeme zh
+      surface
         text 词义
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           lexical_sense:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
   part_of_speech:
-    defined-by semantic_facet # definition-link
-    defined-by lexical_form # definition-link
-    role semantic_facet_kind # semantic-role
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by semantic_facet
+    defined-by lexical_form
+    role semantic_facet_kind
+    role lexical_meta
+    facet notation
       word_surface:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       semantic_facet:
-    facet connotation # facet
+    facet connotation
       lexical_form:
-    lexeme en # language
-      surface seed-surface-2db016e8121a
+    lexeme en
+      surface
         text "part of speech"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           part_of_speech:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme ru # language
-      surface seed-surface-9e7979a82cf2
+    lexeme ru
+      surface
         text "часть речи"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           part_of_speech:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme hi # language
-      surface seed-surface-9629c809cc79
+    lexeme hi
+      surface
         text "शब्द भेद"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           part_of_speech:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme zh # language
-      surface seed-surface-97ac68803f2b
+    lexeme zh
+      surface
         text 词类
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           part_of_speech:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
   noun:
-    defined-by part_of_speech # definition-link
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by part_of_speech
+    role lexical_meta
+    facet notation
       word_surface:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       part_of_speech:
-    facet connotation # facet
+    facet connotation
       lexical_form:
-    lexeme en # language
-      surface seed-surface-a17d8bac18ca
+    lexeme en
+      surface
         text noun
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
-    lexeme ru # language
-      surface seed-surface-1b9b2dd57e58
+    lexeme ru
+      surface
         text существительное
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
-    lexeme hi # language
-      surface seed-surface-5efe47b4a2e5
+    lexeme hi
+      surface
         text संज्ञा
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
-    lexeme zh # language
-      surface seed-surface-bfeb079707b8
+    lexeme zh
+      surface
         text 名词
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun:
   noun_phrase:
-    defined-by noun # definition-link
-    defined-by lexical_form # definition-link
-    role lexical_meta # semantic-role
-    facet notation # facet
+    defined-by noun
+    defined-by lexical_form
+    role lexical_meta
+    facet notation
       word_surface:
-    facet annotation # facet
+    facet annotation
       semantic_gloss:
-    facet denotation # facet
+    facet denotation
       part_of_speech:
-    facet connotation # facet
+    facet connotation
       noun:
-    lexeme en # language
-      surface seed-surface-2892609ff7f7
+    lexeme en
+      surface
         text "noun phrase"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun_phrase:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme ru # language
-      surface seed-surface-ae7e09d7a09d
+    lexeme ru
+      surface
         text "именная группа"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun_phrase:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme hi # language
-      surface seed-surface-ae72c48720cd
+    lexeme hi
+      surface
         text "संज्ञा पद"
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun_phrase:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:
-    lexeme zh # language
-      surface seed-surface-38cf91f43c74
+    lexeme zh
+      surface
         text 名词短语
-        facet notation # facet
+        facet notation
           word_surface:
-        facet denotation # facet
+        facet denotation
           noun_phrase:
-        facet part_of_speech # facet
+        facet part_of_speech
           noun_phrase:

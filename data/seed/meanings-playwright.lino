@@ -1,88 +1,88 @@
 meanings
   playwright:
-    defined-by entity # definition-link
-    role playwright_tool_name # semantic-role
-    lexeme en # language
-      surface seed-surface-fe1c1b3dbcea
+    defined-by entity
+    role playwright_tool_name
+    lexeme en
+      surface
         text playwright
-      surface seed-surface-a98bea0357a3
+      surface
         text playright
-        action playwright # action
-    lexeme ru # language
-      surface seed-surface-a55f4bc96f3a
+        action playwright
+    lexeme ru
+      surface
         text плейврайт
-      surface seed-surface-437b8a3199ee
+      surface
         text плейрайт
-    lexeme hi # language
-      surface seed-surface-7cfe59d95110
+    lexeme hi
+      surface
         text प्लेराइट
-    lexeme zh # language
-      surface seed-surface-03d918c64747
+    lexeme zh
+      surface
         text 普莱赖特
   playwright_script_request_cue:
-    defined-by concept # definition-link
-    role playwright_script_cue # semantic-role
-    lexeme en # language
-      surface seed-surface-6c545c145c75
+    defined-by concept
+    role playwright_script_cue
+    lexeme en
+      surface
         text script
-      surface seed-surface-61d0b7aaec52
+      surface
         text test
-      surface seed-surface-b0780756bf1c
+      surface
         text spec
-      surface seed-surface-2bc9fb1b9851
+      surface
         text code
-      surface seed-surface-cbebf47add14
+      surface
         text write
-      surface seed-surface-cdbe3fa4a9f5
+      surface
         text create
-      surface seed-surface-e0dfa82fe0d0
+      surface
         text generate
-      surface seed-surface-23b4edcdf347
+      surface
         text make
-      surface seed-surface-0f091d3f9efe
+      surface
         text build
-      surface seed-surface-41f1197e5270
+      surface
         text "can you"
-      surface seed-surface-631c8420eb97
+      surface
         text "could you"
-    lexeme ru # language
-      surface seed-surface-52f9dfba7bc4
+    lexeme ru
+      surface
         text скрипт
-      surface seed-surface-de27ec25fdd6
+      surface
         text сценар
-      surface seed-surface-691ed2dfd296
+      surface
         text тест
-      surface seed-surface-cfff0af35539
+      surface
         text код
-      surface seed-surface-8ff6a6ecce2f
+      surface
         text напиши
-      surface seed-surface-8a4145d80548
+      surface
         text написать
-      surface seed-surface-1aca6fdddc5f
+      surface
         text можешь
-      surface seed-surface-51cda388dc03
+      surface
         text сделай
-      surface seed-surface-c8bc975ca04a
+      surface
         text создай
-    lexeme hi # language
-      surface seed-surface-0c324d3b01b4
+    lexeme hi
+      surface
         text स्क्रिप्ट
-      surface seed-surface-8edd51813a80
+      surface
         text टेस्ट
-      surface seed-surface-3a00bd1fbbed
+      surface
         text कोड
-      surface seed-surface-d601cc36d1b0
+      surface
         text लिखो
-      surface seed-surface-dc1b2d13ca6d
+      surface
         text बनाओ
-    lexeme zh # language
-      surface seed-surface-d633e1c49e16
+    lexeme zh
+      surface
         text 脚本
-      surface seed-surface-b4fe3ec34f2b
+      surface
         text 测试
-      surface seed-surface-f605db3e2180
+      surface
         text 代码
-      surface seed-surface-87b6acb01c8f
+      surface
         text 写
-      surface seed-surface-a85f8b9456b1
+      surface
         text 生成

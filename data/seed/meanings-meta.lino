@@ -1,226 +1,226 @@
 meanings
   causal_interrogative:
-    defined-by inquiry # definition-link
-    role causal_interrogative # semantic-role
-    lexeme en # language
-      surface seed-surface-b08f4f95512f
+    defined-by inquiry
+    role causal_interrogative
+    lexeme en
+      surface
         text why
-    lexeme ru # language
-      surface seed-surface-cdf7df856a75
+    lexeme ru
+      surface
         text почему
-    lexeme hi # language
-      surface seed-surface-5d30128165ac
+    lexeme hi
+      surface
         text क्यों
-    lexeme zh # language
-      surface seed-surface-b0a96c4c958c
+    lexeme zh
+      surface
         text 为什么
   prior_answer_reference:
-    defined-by answer # definition-link
-    role prior_answer_reference # semantic-role
-    lexeme en # language
-      surface seed-surface-a5577ccd8b8c
+    defined-by answer
+    role prior_answer_reference
+    lexeme en
+      surface
         text answer
-    lexeme ru # language
-      surface seed-surface-50eb0e7761ba
+    lexeme ru
+      surface
         text ответ
-    lexeme hi # language
-      surface seed-surface-6f063a12a1c3
+    lexeme hi
+      surface
         text जवाब
-      surface seed-surface-d23abfdc2ec3
+      surface
         text उत्तर
-    lexeme zh # language
-      surface seed-surface-f907d148bf93
+    lexeme zh
+      surface
         text 回答
   answer_rationale_inquiry:
-    defined-by causal_interrogative # definition-link
-    defined-by prior_answer_reference # definition-link
-    defined-by inquiry # definition-link
-    role answer_rationale_lead # semantic-role
-    lexeme en # language
-      surface seed-surface-643a98ddb17e
+    defined-by causal_interrogative
+    defined-by prior_answer_reference
+    defined-by inquiry
+    role answer_rationale_lead
+    lexeme en
+      surface
         text "why …"
-      surface seed-surface-53b0a54b12f4
+      surface
         text "why did you answer"
-    lexeme ru # language
-      surface seed-surface-2fb6cf64a459
+    lexeme ru
+      surface
         text "почему …"
-      surface seed-surface-a3b487dac80f
+      surface
         text "почему ты ответил"
-      surface seed-surface-3438df928080
+      surface
         text "почему ты так ответил"
-      surface seed-surface-199775b50b9d
+      surface
         text "почему вы ответили"
-    lexeme hi # language
-      surface seed-surface-5779fb2b1b05
+    lexeme hi
+      surface
         text "ऐसा जवाब क्यों दिया"
-    lexeme zh # language
-      surface seed-surface-505b1fad6b8b
+    lexeme zh
+      surface
         text 为什么这样回答
   assistant_self_reference:
-    defined-by assistant # definition-link
-    defined-by self_reference # definition-link
-    role assistant_self_reference # semantic-role
-    lexeme en # language
-      surface seed-surface-da1bd6912199
+    defined-by assistant
+    defined-by self_reference
+    role assistant_self_reference
+    lexeme en
+      surface
         text you
-      surface seed-surface-ef3bc593d9b4
+      surface
         text your
-      surface seed-surface-4e25ff2ae494
+      surface
         text "formal ai"
-    lexeme ru # language
-      surface seed-surface-f3feb0d040a4
+    lexeme ru
+      surface
         text ты
-      surface seed-surface-a1fdff68efbe
+      surface
         text теб
-      surface seed-surface-59b244e6eb8c
+      surface
         text твоя
-      surface seed-surface-c1aa6d3768af
+      surface
         text твой
-      surface seed-surface-131803b7b0c8
+      surface
         text тво
-      surface seed-surface-9f8033727e52
+      surface
         text вы
-    lexeme hi # language
-      surface seed-surface-d3cff4db1a08
+    lexeme hi
+      surface
         text आप
-      surface seed-surface-ac9933ac1d14
+      surface
         text तुम
-    lexeme zh # language
-      surface seed-surface-a499375e788e
+    lexeme zh
+      surface
         text 你
-      surface seed-surface-da3466162bee
+      surface
         text 您
   assistant_mechanism_inquiry:
-    defined-by mechanism_inquiry # definition-link
-    defined-by assistant # definition-link
-    role assistant_mechanism_inquiry # semantic-role
-    lexeme en # language
-      surface seed-surface-6e732abb3718
+    defined-by mechanism_inquiry
+    defined-by assistant
+    role assistant_mechanism_inquiry
+    lexeme en
+      surface
         text "how do you work"
-      surface seed-surface-152f7dcea502
+      surface
         text "how does this work"
-      surface seed-surface-a18657461e2e
+      surface
         text "how does it work"
-      surface seed-surface-1cd6257ed5d8
+      surface
         text "show me how you work"
-      surface seed-surface-f36560e083e3
+      surface
         text "explain how you work"
-    lexeme ru # language
-      surface seed-surface-828e87437c6b
+    lexeme ru
+      surface
         text "как ты работаешь"
-      surface seed-surface-3cafb7cb7272
+      surface
         text "покажи как ты работаешь"
-      surface seed-surface-f88a02b2267f
+      surface
         text "расскажи как ты работаешь"
-      surface seed-surface-bbc4dbfdff09
+      surface
         text "объясни как ты работаешь"
-      surface seed-surface-a40962a2f002
+      surface
         text "как ты устроен"
-      surface seed-surface-e2008f70f42e
+      surface
         text "покажи как ты устроен"
-      surface seed-surface-07865d1a248e
+      surface
         text "какая у тебя модель окружающего мира"
-      surface seed-surface-1919036b508d
+      surface
         text "модель окружающего мира"
-      surface seed-surface-e87ba62aa72f
+      surface
         text "идея твоей разработки"
-      surface seed-surface-5e98260ac34e
+      surface
         text "идея твоего проекта"
-      surface seed-surface-09d226746305
+      surface
         text "зачем тебя разработ"
-    lexeme hi # language
-      surface seed-surface-2c61f161b5ce
+    lexeme hi
+      surface
         text "तुम कैसे काम करते हो"
-      surface seed-surface-20f3373045f3
+      surface
         text "आप कैसे काम करते हैं"
-    lexeme zh # language
-      surface seed-surface-85bb85833b09
+    lexeme zh
+      surface
         text 你是怎么工作的
-      surface seed-surface-5ff0906f50e6
+      surface
         text 你怎么运作
   operating_principle:
-    defined-by concept # definition-link
-    defined-by action # definition-link
-    role operating_principle # semantic-role
-    lexeme en # language
-      surface seed-surface-87cd6839b25f
+    defined-by concept
+    defined-by action
+    role operating_principle
+    lexeme en
+      surface
         text "operating principle"
-    lexeme ru # language
-      surface seed-surface-dca76705b667
+    lexeme ru
+      surface
         text "принцип работы"
-    lexeme hi # language
-      surface seed-surface-9cf449e31b76
+    lexeme hi
+      surface
         text "कार्य सिद्धांत"
-    lexeme zh # language
-      surface seed-surface-14c0a5f2ea64
+    lexeme zh
+      surface
         text 工作原理
   architecture_concept:
-    defined-by concept # definition-link
-    defined-by assistant # definition-link
-    role architecture_concept # semantic-role
-    lexeme en # language
-      surface seed-surface-b512c90c9907
+    defined-by concept
+    defined-by assistant
+    role architecture_concept
+    lexeme en
+      surface
         text llm
-      surface seed-surface-fcc38f17fa50
+      surface
         text "large language model"
-      surface seed-surface-65810aa7096b
+      surface
         text "language model"
-      surface seed-surface-57136a97d4ff
+      surface
         text "openai api"
-      surface seed-surface-ab7a57942ec4
+      surface
         text openai
-      surface seed-surface-7caee3b0bf93
+      surface
         text "neural inference"
-      surface seed-surface-bb255f47d053
+      surface
         text "neural network"
-      surface seed-surface-1bdfe37dbeaf
+      surface
         text "links notation rules"
-      surface seed-surface-eda3a4d5e0c5
+      surface
         text "local rules"
-      surface seed-surface-16a65cbb565d
+      surface
         text "world model"
-      surface seed-surface-86b74d5c81fb
+      surface
         text "model of the world"
-    lexeme ru # language
-      surface seed-surface-bf7f76d7227a
+    lexeme ru
+      surface
         text бям
-      surface seed-surface-44d0e6f3e801
+      surface
         text "языковая модель"
-      surface seed-surface-404373f8783a
+      surface
         text "языковой моделью"
-      surface seed-surface-0e27a54b80e9
+      surface
         text нейросет
-      surface seed-surface-760473f672c6
+      surface
         text нейрон
-      surface seed-surface-a3bae53a1d3a
+      surface
         text "локальных правил"
-      surface seed-surface-7504cac553e8
+      surface
         text "локальных правилах"
-      surface seed-surface-0c5c16b05682
+      surface
         text "область знаний"
-      surface seed-surface-87aa3b1b3fc8
+      surface
         text "модель окружающего мира"
-      surface seed-surface-aa19992dad80
+      surface
         text "модель мира"
-      surface seed-surface-fe2c923f4d1f
+      surface
         text "принцип работы"
-      surface seed-surface-5ea7f233f748
+      surface
         text "идея твоей разработки"
-      surface seed-surface-7678e5b465d3
+      surface
         text "идея твоего проекта"
-      surface seed-surface-cd0b6cd7076c
+      surface
         text "зачем тебя разработ"
-      surface seed-surface-ea6199fe4b69
+      surface
         text ссылк
-    lexeme hi # language
-      surface seed-surface-76ba09124a69
+    lexeme hi
+      surface
         text न्यूरल
-      surface seed-surface-e1f220789985
+      surface
         text "भाषा मॉडल"
-    lexeme zh # language
-      surface seed-surface-81b976aea04f
+    lexeme zh
+      surface
         text 神经
-      surface seed-surface-a870067a206c
+      surface
         text 語言模型
-      surface seed-surface-4307496c7b2a
+      surface
         text 语言模型

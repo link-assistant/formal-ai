@@ -1,91 +1,91 @@
 meanings
   followup_instruction_verb:
-    defined-by action # definition-link
-    role followup_instruction_verb # semantic-role
-    lexeme en # language
-      surface seed-surface-a9731d39fd0d
+    defined-by action
+    role followup_instruction_verb
+    lexeme en
+      surface
         text compare
-      surface seed-surface-2aa78c914190
+      surface
         text summarize
-      surface seed-surface-948089a6c3e7
+      surface
         text summarise
-      surface seed-surface-067f105c3167
+      surface
         text explain
-      surface seed-surface-2bc19340d2ec
+      surface
         text describe
-      surface seed-surface-8eef96eebb40
+      surface
         text show
-      surface seed-surface-f974025386cb
+      surface
         text tell
-    lexeme ru # language
-      surface seed-surface-60a65f8e3739
+    lexeme ru
+      surface
         text сравни
-      surface seed-surface-611a598b35f0
+      surface
         text обобщи
-      surface seed-surface-0c32657ddbda
+      surface
         text резюмируй
-      surface seed-surface-954a5d6ac72c
+      surface
         text объясни
-      surface seed-surface-7815d1ffd87c
+      surface
         text опиши
-      surface seed-surface-97b770d76fb8
+      surface
         text покажи
-      surface seed-surface-4ef0a2f811c0
+      surface
         text расскажи
-    lexeme hi # language
-      surface seed-surface-6bc685331dfe
+    lexeme hi
+      surface
         text "तुलना करो"
-      surface seed-surface-b37a8e13ea51
+      surface
         text "सारांश दो"
-      surface seed-surface-c9a4f94e5595
+      surface
         text समझाओ
-      surface seed-surface-17c75b503747
+      surface
         text "वर्णन करो"
-      surface seed-surface-d6c76a628b91
+      surface
         text दिखाओ
-      surface seed-surface-e51a71c178cd
+      surface
         text बताओ
-    lexeme zh # language
-      surface seed-surface-bbc010d1bfbe
+    lexeme zh
+      surface
         text 比较
-      surface seed-surface-d0b7118056ce
+      surface
         text 总结
-      surface seed-surface-fa62e90075e4
+      surface
         text 概括
-      surface seed-surface-18777a2ddf8d
+      surface
         text 解释
-      surface seed-surface-521de9c9afb5
+      surface
         text 描述
-      surface seed-surface-4c1f4a84100c
+      surface
         text 显示
-      surface seed-surface-0f8b37846f7b
+      surface
         text 告诉
   clause_continuation_marker:
-    defined-by relation # definition-link
-    role clause_continuation_marker # semantic-role
-    lexeme en # language
-      surface seed-surface-874c7638503f
+    defined-by relation
+    role clause_continuation_marker
+    lexeme en
+      surface
         text and
-      surface seed-surface-a2d6defde9cc
+      surface
         text then
-    lexeme ru # language
-      surface seed-surface-867a0d350d1a
+    lexeme ru
+      surface
         text и
-      surface seed-surface-e418abbed80a
+      surface
         text затем
-      surface seed-surface-7305494c5ac9
+      surface
         text потом
-    lexeme hi # language
-      surface seed-surface-65605fd0ffc7
+    lexeme hi
+      surface
         text और
-      surface seed-surface-51ce5d2c063d
+      surface
         text फिर
-      surface seed-surface-928e8c41257b
+      surface
         text तब
-    lexeme zh # language
-      surface seed-surface-98c2c2ea3299
+    lexeme zh
+      surface
         text 并
-      surface seed-surface-381d9977a42b
+      surface
         text 然后
-      surface seed-surface-10891fc55341
+      surface
         text 接着
