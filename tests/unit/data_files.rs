@@ -240,8 +240,7 @@ fn seed_lino_files_have_no_empty_redefinition_fields() {
     // real definition header (`result:` followed by indented `defined-by …`) has
     // a body and passes; only the valueless redefinition fails.
     // `scripts/migrate-empty-facet-fields.rs` performs the migration.
-    let empty_colon =
-        Regex::new(r"^[A-Za-z0-9_.-]+:$").expect("empty colon regex should compile");
+    let empty_colon = Regex::new(r"^[A-Za-z0-9_.-]+:$").expect("empty colon regex should compile");
     for path in seed_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
         let lines: Vec<&str> = content.lines().collect();
@@ -251,14 +250,20 @@ fn seed_lino_files_have_no_empty_redefinition_fields() {
             if !empty_colon.is_match(body) {
                 continue;
             }
-            let indent = line.chars().take_while(|character| *character == ' ').count();
+            let indent = line
+                .chars()
+                .take_while(|character| *character == ' ')
+                .count();
             // A genuine block header is followed by a deeper-indented child; an
             // empty redefinition is not.
             let has_child = lines[index + 1..]
                 .iter()
                 .find(|next| !strip_lino_comment(next).trim().is_empty())
                 .is_some_and(|next| {
-                    next.chars().take_while(|character| *character == ' ').count() > indent
+                    next.chars()
+                        .take_while(|character| *character == ' ')
+                        .count()
+                        > indent
                 });
             assert!(
                 has_child,

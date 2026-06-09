@@ -9,6 +9,7 @@ mod issue_337;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;
+mod overrides;
 mod playwright_script;
 mod proof_request;
 mod proof_request_config;

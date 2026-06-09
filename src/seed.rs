@@ -25,6 +25,7 @@ mod brainstorm;
 mod coreference;
 mod embedded;
 mod facts;
+mod grounding_overrides;
 mod meanings;
 mod operation_vocabulary;
 pub(crate) mod parser;
@@ -53,6 +54,9 @@ pub use embedded::{
     SUMMARY_TOPICS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
+pub use grounding_overrides::{
+    cache_contains, override_facts, override_reason, parse_record, resolve, OverrideFact,
+};
 pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
