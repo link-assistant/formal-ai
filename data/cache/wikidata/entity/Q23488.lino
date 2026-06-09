@@ -1,0 +1,15 @@
+Q23488
+  aliases
+    en (six "the number 6" "number six" "number 6")
+    ru ("шесть")
+    zh ("〦" "六")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q23488
+  labels
+    hi "६"
+  type item
+success 1

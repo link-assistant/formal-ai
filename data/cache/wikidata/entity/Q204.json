@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "Q204": {
+      "type": "item",
+      "id": "Q204",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "zero"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ноль"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शून्य"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "integer number zero; neutral element for the addition"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "целое число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूरे नंबरों की पहली संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "整數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "o"
+          },
+          {
+            "language": "en",
+            "value": "oh"
+          },
+          {
+            "language": "en",
+            "value": "nought"
+          },
+          {
+            "language": "en",
+            "value": "additive identity"
+          },
+          {
+            "language": "en",
+            "value": "nil"
+          },
+          {
+            "language": "en",
+            "value": "naught"
+          },
+          {
+            "language": "en",
+            "value": "zilch"
+          },
+          {
+            "language": "en",
+            "value": "zip"
+          },
+          {
+            "language": "en",
+            "value": "scratch"
+          },
+          {
+            "language": "en",
+            "value": "love"
+          },
+          {
+            "language": "en",
+            "value": "null"
+          },
+          {
+            "language": "en",
+            "value": "duck"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "нуль"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "ज़ीरो"
+          },
+          {
+            "language": "hi",
+            "value": "ज़ेरो"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

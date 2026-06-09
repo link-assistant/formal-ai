@@ -1,5 +1,6 @@
 meanings
   human_language
+    grounded-in Q33742
     defined-by concept
     role translation_language_genus
     lexeme en
@@ -15,6 +16,7 @@ meanings
       surface
         text 语言
   language_english
+    grounded-in Q1860
     defined-by human_language
     role translation_language
     lexeme en
@@ -34,6 +36,7 @@ meanings
       surface
         text 英文
   language_russian
+    grounded-in Q7737
     defined-by human_language
     role translation_language
     lexeme en
@@ -49,6 +52,7 @@ meanings
       surface
         text 俄语
   language_hindi
+    grounded-in Q1568
     defined-by human_language
     role translation_language
     lexeme en
@@ -66,6 +70,7 @@ meanings
       surface
         text 印地语
   language_chinese
+    grounded-in Q7850
     defined-by human_language
     role translation_language
     lexeme en
@@ -447,6 +452,7 @@ meanings
       surface
         text 链接表示法
   apple
+    grounded-in Q89
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -546,6 +552,7 @@ meanings
       surface
         text 不
   tomato
+    grounded-in Q23501
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -565,6 +572,7 @@ meanings
       surface
         text 西红柿
   cucumber
+    grounded-in Q2735883
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -580,6 +588,7 @@ meanings
       surface
         text 黄瓜
   potato
+    grounded-in Q10998
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -599,6 +608,7 @@ meanings
       surface
         text 马铃薯
   carrot
+    grounded-in Q81
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -614,6 +624,7 @@ meanings
       surface
         text 胡萝卜
   bread
+    grounded-in Q7802
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -629,6 +640,7 @@ meanings
       surface
         text 面包
   water
+    grounded-in Q283
     defined-by entity
     role compositional_lemma
     lexeme en

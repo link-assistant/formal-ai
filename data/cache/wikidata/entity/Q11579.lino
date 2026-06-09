@@ -1,0 +1,17 @@
+Q11579
+  aliases
+    en (K "Kelvin degrees" "degrees Kelvin" "°K")
+    ru ("шкала Кельвина" "градус Кельвина" "К")
+    zh ("開氏" K "克耳文" "開爾文")
+  descriptions
+    en "SI unit of thermodynamic temperature"
+    ru "единица температуры, одна из семи основных в СИ"
+    zh "國際單位制中量度温度的基本單位"
+  id Q11579
+  labels
+    en kelvin
+    hi "कैल्विन"
+    ru "кельвин"
+    zh "开尔文"
+  type item
+success 1

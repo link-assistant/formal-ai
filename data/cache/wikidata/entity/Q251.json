@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q251": {
+      "type": "item",
+      "id": "Q251",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Java"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जावा"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "object-oriented programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वस्तु-उन्मुख प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "面向对象型高极程式语言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "java programming language"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Джава"
+          },
+          {
+            "language": "ru",
+            "value": "Ява"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "爪哇"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

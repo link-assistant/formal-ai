@@ -75,6 +75,7 @@ meanings
       surface
         text 答案
   capital
+    grounded-in P36
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -94,6 +95,7 @@ meanings
       surface
         text 首都
   population
+    grounded-in P1082
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -113,6 +115,7 @@ meanings
       surface
         text 人口
   currency
+    grounded-in P38
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -130,6 +133,7 @@ meanings
       surface
         text 貨幣
   official_language
+    grounded-in P37
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -153,6 +157,7 @@ meanings
       surface
         text 官方語言
   continent
+    grounded-in P30
     defined-by knowledge_relation
     role fact_relation
     lexeme en

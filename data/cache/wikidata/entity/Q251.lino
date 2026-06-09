@@ -1,0 +1,16 @@
+Q251
+  aliases
+    en ("java programming language")
+    ru ("Джава" "Ява")
+    zh ("爪哇")
+  descriptions
+    en "object-oriented programming language"
+    hi "वस्तु-उन्मुख प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "面向对象型高极程式语言"
+  id Q251
+  labels
+    en Java
+    hi "जावा"
+  type item
+success 1

@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q79726": {
+      "type": "item",
+      "id": "Q79726",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "kilobyte"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "килобайт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किलोबाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "千字节"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of digital information equal to one thousand bytes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения количества информации, равная 1 024 байт"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "kB"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "КБ"
+          },
+          {
+            "language": "ru",
+            "value": "Кбайт"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

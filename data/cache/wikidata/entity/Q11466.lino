@@ -1,0 +1,15 @@
+Q11466
+  aliases
+    en (temp)
+  descriptions
+    en "physical property of matter that quantitatively expresses the common notions of hot and cold"
+    ru "физическая величина, мера молекулярного движения"
+    zh "表示物體冷熱程度的物理量"
+  id Q11466
+  labels
+    en temperature
+    hi "तापमान"
+    ru "температура"
+    zh "溫度"
+  type item
+success 1

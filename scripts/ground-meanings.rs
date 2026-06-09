@@ -90,6 +90,78 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     // core quantities
     ("money", "Q1368", "money"),
     ("quantity", "Q309314", "quantity"),
+    // cardinal numbers. Several Wikidata number items carry only a
+    // Hindi-numeral label, so the verification token is the surface the item
+    // actually exposes in one of the cached languages (en digit where present,
+    // otherwise the Devanagari numeral).
+    ("zero", "Q204", "zero"),
+    ("one", "Q199", "1"),
+    ("two", "Q200", "2"),
+    ("three", "Q201", "3"),
+    ("four", "Q202", "4"),
+    ("five", "Q203", "\u{096B}"),
+    ("six", "Q23488", "\u{096C}"),
+    ("seven", "Q23350", "\u{096D}"),
+    ("eight", "Q23355", "\u{096E}"),
+    ("nine", "Q19108", "\u{096F}"),
+    ("ten", "Q23806", "10"),
+    ("cardinal_number", "Q1329258", "cardinal"),
+    // physical dimensions and the unit-of-measurement concept
+    ("unit", "Q47574", "unit"),
+    ("length", "Q36253", "length"),
+    ("mass", "Q11423", "mass"),
+    ("time", "Q11471", "time"),
+    ("temperature", "Q11466", "temperature"),
+    ("data_storage", "Q105666562", "data size"),
+    // additional measurement units
+    ("kilobyte", "Q79726", "kilobyte"),
+    ("megabyte", "Q79735", "megabyte"),
+    ("gigabyte", "Q79738", "gigabyte"),
+    ("ton", "Q191118", "tonne"),
+    ("fahrenheit", "Q42289", "fahrenheit"),
+    ("kelvin", "Q11579", "kelvin"),
+    // additional mathematical functions and operations
+    ("cosine", "Q1256164", "cosine"),
+    ("tangent", "Q1129196", "tangent"),
+    ("modulo", "Q1799665", "modulo"),
+    ("arithmetic_operation", "Q12170668", "arithmetic"),
+    ("mathematical_function", "Q11348", "function"),
+    // programming languages
+    ("program_language", "Q9143", "programming language"),
+    ("program_language_rust", "Q575650", "rust"),
+    ("program_language_python", "Q28865", "python"),
+    ("program_language_javascript", "Q2005", "javascript"),
+    ("program_language_typescript", "Q978185", "typescript"),
+    ("program_language_go", "Q37227", "go"),
+    ("program_language_c", "Q15777", "c"),
+    ("program_language_cpp", "Q2407", "c++"),
+    ("program_language_java", "Q251", "java"),
+    ("program_language_csharp", "Q2370", "c#"),
+    ("program_language_ruby", "Q161053", "ruby"),
+    // natural languages
+    ("human_language", "Q33742", "natural language"),
+    ("language_english", "Q1860", "english"),
+    ("language_russian", "Q7737", "russian"),
+    ("language_hindi", "Q1568", "hindi"),
+    ("language_chinese", "Q7850", "chinese"),
+    // concrete nouns used by the translation vocabulary
+    ("apple", "Q89", "apple"),
+    ("tomato", "Q23501", "tomato"),
+    ("cucumber", "Q2735883", "cucumber"),
+    ("potato", "Q10998", "potato"),
+    ("carrot", "Q81", "carrot"),
+    ("bread", "Q7802", "bread"),
+    ("water", "Q283", "water"),
+    // fact relations ground to Wikidata properties (P-ids), not Q-items
+    ("capital", "P36", "capital"),
+    ("population", "P1082", "population"),
+    ("continent", "P30", "continent"),
+    ("currency", "P38", "currency"),
+    ("official_language", "P37", "official language"),
+    // lexical-meta concepts
+    ("part_of_speech", "Q82042", "part of speech"),
+    ("noun", "Q1084", "noun"),
+    ("noun_phrase", "Q1401131", "noun phrase"),
 ];
 
 /// Meaning seed files mirrored into the browser worker fallback, in load order.
@@ -170,16 +242,26 @@ with open(out_path, "w", encoding="utf-8") as handle:
 "#;
 
 fn main() -> io::Result<()> {
-    let entity_dir = Path::new("data/cache/wikidata/entity");
-    fs::create_dir_all(entity_dir)?;
+    let cache_root = Path::new("data/cache/wikidata");
     let seed_files = collect_seed_files(Path::new("data/seed"))?;
 
     let mut grounded = 0usize;
     let mut skipped: Vec<String> = Vec::new();
 
     for (slug, qid, token) in GROUNDINGS {
-        let json_path = entity_dir.join(format!("{qid}.json"));
-        let lino_path = entity_dir.join(format!("{qid}.lino"));
+        // Wikidata ids are sharded by kind: `P…` are properties, `L…` are
+        // lexemes, and everything else (`Q…`) is an item. The grounding-closure
+        // test resolves cache paths the same way, so a fact relation grounded to
+        // a property (e.g. `capital` -> `P36`) must land under `property/`.
+        let kind = match qid.chars().next() {
+            Some('P') => "property",
+            Some('L') => "lexeme",
+            _ => "entity",
+        };
+        let cache_dir = cache_root.join(kind);
+        fs::create_dir_all(&cache_dir)?;
+        let json_path = cache_dir.join(format!("{qid}.json"));
+        let lino_path = cache_dir.join(format!("{qid}.lino"));
 
         if !json_path.exists() {
             if let Err(reason) = fetch_and_trim(qid, token, &json_path) {

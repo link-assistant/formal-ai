@@ -1,0 +1,15 @@
+Q200
+  aliases
+    en (two "number 2" "number two" "the number 2" "2 (number)")
+    ru ("два" "двойка" "диада" "дво́ица")
+    zh ("二")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+  id Q200
+  labels
+    en "2"
+    hi "२"
+  type item
+success 1

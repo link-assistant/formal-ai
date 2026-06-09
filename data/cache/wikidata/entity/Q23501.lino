@@ -1,0 +1,18 @@
+Q23501
+  aliases
+    en ("Solanum lycopersicum" "garden tomato" "love apple" "tomato plant")
+    ru ("Lycopersicon esculentum" "Lycopersicon lycopersicum" "Solanum lycopersicum" "помидор" "томаты" "помидоры")
+    zh ("西红柿" "蕃茄" "圣女果" "西紅柿" "臭柿仔" "柑仔蜜" "柑仔得")
+  descriptions
+    en "type of plant species with edible, often red, berry fruit"
+    hi "विश्व में सबसे ज्यादा प्रयोग होने वाली सब्जी"
+    ru "овощное травянистое растение семейства Паслёновых"
+    zh "原产于南美洲的一年或二年生草本植物，常作蔬菜食用，俗称西红柿"
+  id Q23501
+  labels
+    en tomato
+    hi "टमाटर"
+    ru "томат"
+    zh "番茄"
+  type item
+success 1

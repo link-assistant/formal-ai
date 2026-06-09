@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q36253": {
+      "type": "item",
+      "id": "Q36253",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "length"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "длина"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लंबाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "长度"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "measured dimension of an object in a physical space"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "линейная характеристика объекта"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी वास्तु की लम्बाई"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "протяженность"
+          },
+          {
+            "language": "ru",
+            "value": "длиной"
+          },
+          {
+            "language": "ru",
+            "value": "ширина"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "長度"
+          },
+          {
+            "language": "zh",
+            "value": "長度單位"
+          },
+          {
+            "language": "zh",
+            "value": "寬度"
+          },
+          {
+            "language": "zh",
+            "value": "長"
+          },
+          {
+            "language": "zh",
+            "value": "宽"
+          },
+          {
+            "language": "zh",
+            "value": "长度单位"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

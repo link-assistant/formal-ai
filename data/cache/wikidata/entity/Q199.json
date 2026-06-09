@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q199": {
+      "type": "item",
+      "id": "Q199",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "1"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number one"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या रेखा की पहली सकारात्मक संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "number 1"
+          },
+          {
+            "language": "en",
+            "value": "number one"
+          },
+          {
+            "language": "en",
+            "value": "unity"
+          },
+          {
+            "language": "en",
+            "value": "unit"
+          },
+          {
+            "language": "en",
+            "value": "multiplicative identity"
+          },
+          {
+            "language": "en",
+            "value": "unit one"
+          },
+          {
+            "language": "en",
+            "value": "one"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "один"
+          },
+          {
+            "language": "ru",
+            "value": "единица"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "प्रथम"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

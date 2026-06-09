@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q79738": {
+      "type": "item",
+      "id": "Q79738",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "gigabyte"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "гигабайт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गिगाबाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "吉字节"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of digital information equal to one billion bytes or 1,000 megabytes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения количества информации, равная 1 073 741 824 байт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "单位字节的倍数"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Gbyte"
+          },
+          {
+            "language": "en",
+            "value": "GB"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Гбайт"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "十億位元組"
+          },
+          {
+            "language": "zh",
+            "value": "吉咖字节"
+          },
+          {
+            "language": "zh",
+            "value": "京字节"
+          },
+          {
+            "language": "zh",
+            "value": "戟"
+          },
+          {
+            "language": "zh",
+            "value": "吉位元組"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

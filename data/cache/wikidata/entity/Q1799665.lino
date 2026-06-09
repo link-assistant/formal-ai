@@ -1,0 +1,14 @@
+Q1799665
+  aliases
+    en (modulo modulus)
+    ru ("деление с остастком" "неполное частное" "деление по модулю")
+    zh ("取模運算" "取模操作" "模数" "取模运算" "模运算" "取余运算" "求余运算" "取餘運算")
+  descriptions
+    en "computational operation"
+  id Q1799665
+  labels
+    en "modulo operation"
+    ru "деление с остатком"
+    zh "模除"
+  type item
+success 1

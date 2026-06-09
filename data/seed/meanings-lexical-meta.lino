@@ -96,6 +96,7 @@ meanings
         denotation lexical_sense
         part_of_speech noun
   part_of_speech
+    grounded-in Q82042
     defined-by semantic_facet
     defined-by lexical_form
     role semantic_facet_kind
@@ -129,6 +130,7 @@ meanings
         denotation part_of_speech
         part_of_speech noun
   noun
+    grounded-in Q1084
     defined-by part_of_speech
     role lexical_meta
     notation word_surface
@@ -160,6 +162,7 @@ meanings
         denotation noun
         part_of_speech noun
   noun_phrase
+    grounded-in Q1401131
     defined-by noun
     defined-by lexical_form
     role lexical_meta

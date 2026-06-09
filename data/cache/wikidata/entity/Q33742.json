@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q33742": {
+      "type": "item",
+      "id": "Q33742",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "natural language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "естественный язык"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्राकृतिक भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然语言"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "language naturally spoken by humans, as opposed to \"constructed\" and \"formal\" languages"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык используемый для общения людей и не созданный целенаправленно"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ऐसी भाषा जिसका जन्म और विकास स्वत: हुआ हो"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "人类自然使用的语言，与“人工构造”和“形式”语言相对"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ordinary language"
+          },
+          {
+            "language": "en",
+            "value": "natlang"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "自然語言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

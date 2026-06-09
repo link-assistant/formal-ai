@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "P38": {
+      "type": "property",
+      "id": "P38",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "currency"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "денежная единица"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मुद्रा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "货币"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "currency used by item"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "валюта, используемая в стране"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इस आइटम द्वारा इस्तेमाल की जाने वाली मुद्रा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "项目使用的货币"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "base currency"
+          },
+          {
+            "language": "en",
+            "value": "used money"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "деньги"
+          },
+          {
+            "language": "ru",
+            "value": "денежная единица"
+          },
+          {
+            "language": "ru",
+            "value": "валюта"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "P37": {
+      "type": "property",
+      "id": "P37",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "official language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "официальный язык"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आधिकारिक भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "官方语言"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "language designated as official by this item"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык, определённый как официальный для этого элемента"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इस आइटम द्वारा निर्दिष्ट आधिकारिक भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "本项目指定的官方语言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "language official"
+          },
+          {
+            "language": "en",
+            "value": "spoken in"
+          },
+          {
+            "language": "en",
+            "value": "speaking"
+          },
+          {
+            "language": "en",
+            "value": "language spoken"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "государственный язык"
+          },
+          {
+            "language": "ru",
+            "value": "язык (официальный)"
+          },
+          {
+            "language": "ru",
+            "value": "язык (государственный)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "法定语文"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q105666562": {
+      "type": "item",
+      "id": "Q105666562",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "data size"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "размер данных"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "資料大小"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "quantity of computer data storage or memory capacity occupied by a file, program, dataset, etc."
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "computer data size"
+          },
+          {
+            "language": "en",
+            "value": "computer storage size"
+          },
+          {
+            "language": "en",
+            "value": "quantity of data"
+          },
+          {
+            "language": "en",
+            "value": "data quantity"
+          },
+          {
+            "language": "en",
+            "value": "computer data quantity"
+          },
+          {
+            "language": "en",
+            "value": "quantity of information"
+          },
+          {
+            "language": "en",
+            "value": "amount of data"
+          },
+          {
+            "language": "en",
+            "value": "amount of information"
+          },
+          {
+            "language": "en",
+            "value": "byte size"
+          },
+          {
+            "language": "en",
+            "value": "data length"
+          },
+          {
+            "language": "en",
+            "value": "byte length"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

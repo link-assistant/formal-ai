@@ -1,5 +1,6 @@
 meanings
   program_language
+    grounded-in Q9143
     defined-by software_language
     role program_language
     lexeme en
@@ -15,6 +16,7 @@ meanings
       surface
         text 编程语言
   program_language_rust
+    grounded-in Q575650
     defined-by program_language
     defined-by language_rust
     role program_language_alias
@@ -35,6 +37,7 @@ meanings
       surface
         text rust
   program_language_python
+    grounded-in Q28865
     defined-by program_language
     defined-by language_python
     role program_language_alias
@@ -55,6 +58,7 @@ meanings
       surface
         text python
   program_language_javascript
+    grounded-in Q2005
     defined-by program_language
     defined-by language_javascript
     role program_language_alias
@@ -75,6 +79,7 @@ meanings
       surface
         text javascript
   program_language_typescript
+    grounded-in Q978185
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -92,6 +97,7 @@ meanings
       surface
         text typescript
   program_language_go
+    grounded-in Q37227
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -109,6 +115,7 @@ meanings
       surface
         text go
   program_language_c
+    grounded-in Q15777
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -124,6 +131,7 @@ meanings
       surface
         text c
   program_language_cpp
+    grounded-in Q2407
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -143,6 +151,7 @@ meanings
       surface
         text c++
   program_language_java
+    grounded-in Q251
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -158,6 +167,7 @@ meanings
       surface
         text java
   program_language_csharp
+    grounded-in Q2370
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -179,6 +189,7 @@ meanings
       surface
         text "c#"
   program_language_ruby
+    grounded-in Q161053
     defined-by program_language
     role program_language_alias
     lexeme en

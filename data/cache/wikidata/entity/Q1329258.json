@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q1329258": {
+      "type": "item",
+      "id": "Q1329258",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cardinal numeral"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "количественное числительное"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गणन संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "基数词"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "subtype of word class numeral; word describing an integer quantity (zero, three, twenty-seven, ...)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть речи"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शब्द भेद"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "表示事物數量的數詞"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cardinal number"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

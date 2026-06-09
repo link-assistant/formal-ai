@@ -1,0 +1,19 @@
+P1082
+  aliases
+    en (inhabitants "human population")
+    hi ("आबादी")
+    ru ("население" "жителей")
+    zh ("人口數" "人口数")
+  descriptions
+    en "number of people inhabiting the place; number of people of subject"
+    hi "किसी स्थान पर निवास करने वाले लोगों की संख्या"
+    ru "количество людей, населяющих место"
+    zh "某地居住的人數；某個主體中的人數"
+  id P1082
+  labels
+    en population
+    hi "जनसंख्या"
+    ru "численность населения"
+    zh "人口"
+  type property
+success 1

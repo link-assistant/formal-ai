@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q191118": {
+      "type": "item",
+      "id": "Q191118",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tonne"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тонна"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "टन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公噸"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "metric unit of mass equivalent to 1000 kilograms"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения массы, равная тысяче килограмм"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "重量单位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "t"
+          },
+          {
+            "language": "en",
+            "value": "metric ton"
+          },
+          {
+            "language": "en",
+            "value": "ton"
+          },
+          {
+            "language": "en",
+            "value": "metric tonne"
+          },
+          {
+            "language": "en",
+            "value": "MT"
+          },
+          {
+            "language": "en",
+            "value": "T"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "т"
+          },
+          {
+            "language": "ru",
+            "value": "метрическая тонна"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "公吨"
+          },
+          {
+            "language": "zh",
+            "value": "頓"
+          },
+          {
+            "language": "zh",
+            "value": "公頓"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

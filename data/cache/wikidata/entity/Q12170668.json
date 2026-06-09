@@ -1,0 +1,16 @@
+{
+  "entities": {
+    "Q12170668": {
+      "type": "item",
+      "id": "Q12170668",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "arithmetic operation"
+        }
+      },
+      "descriptions": {}
+    }
+  },
+  "success": 1
+}

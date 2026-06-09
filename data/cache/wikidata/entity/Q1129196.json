@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q1129196": {
+      "type": "item",
+      "id": "Q1129196",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tangent"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тангенс"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "正切"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "ratio of lengths of opposite side and the adjacent side of a right angled triangle; a trigonometric function"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тригонометрическая функция"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "三角函数的一种"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "tan"
+          },
+          {
+            "language": "en",
+            "value": "tangent function"
+          },
+          {
+            "language": "en",
+            "value": "tan function"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "tg"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

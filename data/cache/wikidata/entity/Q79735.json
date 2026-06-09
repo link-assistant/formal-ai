@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q79735": {
+      "type": "item",
+      "id": "Q79735",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "megabyte"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мегабайт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मैगाबाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "百万字节"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of digital information equal to one million bytes or 1,000 kilobytes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения количества информации"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一種容量計量單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Mbyte"
+          },
+          {
+            "language": "en",
+            "value": "MB"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "МБ"
+          },
+          {
+            "language": "ru",
+            "value": "Мбайт"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "兆位元組"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

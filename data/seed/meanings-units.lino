@@ -19,6 +19,7 @@ meanings
       surface
         text 数量
   unit
+    grounded-in Q47574
     defined-by quantity
     role measurement_concept
     lexeme en
@@ -34,6 +35,7 @@ meanings
       surface
         text 单位
   cardinal_number
+    grounded-in Q1329258
     defined-by quantity
     role numeric_concept
     lexeme en
@@ -51,6 +53,7 @@ meanings
       surface
         text 基数
   zero
+    grounded-in Q204
     defined-by cardinal_number
     defined-by empty
     role cardinal_number_word
@@ -71,6 +74,7 @@ meanings
       surface
         text 零
   one
+    grounded-in Q199
     defined-by cardinal_number
     defined-by single
     role cardinal_number_word
@@ -93,6 +97,7 @@ meanings
       surface
         text 一
   two
+    grounded-in Q200
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -112,6 +117,7 @@ meanings
       surface
         text 二
   three
+    grounded-in Q201
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -129,6 +135,7 @@ meanings
       surface
         text 三
   four
+    grounded-in Q202
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -146,6 +153,7 @@ meanings
       surface
         text 四
   five
+    grounded-in Q203
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -163,6 +171,7 @@ meanings
       surface
         text 五
   six
+    grounded-in Q23488
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -180,6 +189,7 @@ meanings
       surface
         text 六
   seven
+    grounded-in Q23350
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -197,6 +207,7 @@ meanings
       surface
         text 七
   eight
+    grounded-in Q23355
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -214,6 +225,7 @@ meanings
       surface
         text 八
   nine
+    grounded-in Q19108
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -231,6 +243,7 @@ meanings
       surface
         text 九
   ten
+    grounded-in Q23806
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -248,6 +261,7 @@ meanings
       surface
         text 十
   length
+    grounded-in Q36253
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -263,6 +277,7 @@ meanings
       surface
         text 长度
   data_storage
+    grounded-in Q105666562
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -278,6 +293,7 @@ meanings
       surface
         text 数据存储
   mass
+    grounded-in Q11423
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -293,6 +309,7 @@ meanings
       surface
         text 质量
   time
+    grounded-in Q11471
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -308,6 +325,7 @@ meanings
       surface
         text 时间
   temperature
+    grounded-in Q11466
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -446,6 +464,7 @@ meanings
       surface
         text 字节
   kilobyte
+    grounded-in Q79726
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -467,6 +486,7 @@ meanings
       surface
         text 千字节
   megabyte
+    grounded-in Q79735
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -488,6 +508,7 @@ meanings
       surface
         text 兆字节
   gigabyte
+    grounded-in Q79738
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -617,6 +638,7 @@ meanings
       surface
         text 磅
   ton
+    grounded-in Q191118
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -809,6 +831,7 @@ meanings
       surface
         text 摄氏度
   fahrenheit
+    grounded-in Q42289
     defined-by temperature
     defined-by unit
     role measurement_unit
@@ -825,6 +848,7 @@ meanings
       surface
         text 华氏度
   kelvin
+    grounded-in Q11579
     defined-by temperature
     defined-by unit
     role measurement_unit

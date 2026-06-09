@@ -161,6 +161,7 @@ meanings
       surface
         text 使用
   arithmetic_operation
+    grounded-in Q12170668
     defined-by action
     role numeric_concept
     lexeme en
@@ -258,6 +259,7 @@ meanings
       surface
         text 除以
   modulo
+    grounded-in Q1799665
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -416,6 +418,7 @@ meanings
       surface
         text 换成
   mathematical_function
+    grounded-in Q11348
     defined-by function
     role numeric_concept
     lexeme en
@@ -469,6 +472,7 @@ meanings
       surface
         text 正弦
   cosine
+    grounded-in Q1256164
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -486,6 +490,7 @@ meanings
       surface
         text 余弦
   tangent
+    grounded-in Q1129196
     defined-by mathematical_function
     role math_function_name
     lexeme en
