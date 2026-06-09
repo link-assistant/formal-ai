@@ -213,14 +213,31 @@ This round restores readability for scalar values:
   walks `src/**/*.rs` and fails if a real `#[test]`, `#[cfg(test)]`, or
   `mod tests` appears (string-literal occurrences are ignored by anchoring at
   line start). Tests belong under `tests/`.
+- **Rule 3 — no pipe-packed multi-values in seed:**
+  `tests/unit/data_files.rs::seed_lino_values_never_pipe_pack_multi_values`
+  fails on *any* `|` in a seed value except the exempt `code` field, so a
+  multi-value can never again be packed as `"a|b|c"` instead of a real link
+  list `("a" "b c" d)`.
+
+### Defect 2 — pipe-packed multi-values (resolved this round)
+
+`|`-separated values now use the canonical reference-list form
+`keyword ("a" "b c" d)` everywhere in `data/seed/*.lino` (`supported_languages`,
+`tasks`, `languages`, `inputs`, `outputs`, aliases, …). `code` listings — which
+legitimately contain `|` (Rust closures `|x|`, shell pipes) — are the sole
+exemption. All four LiNo parsers were taught to tokenize quoted scalars that may
+contain spaces (`split_reference_tokens` in `src/seed/parser.rs`,
+`splitReferenceList` in the web and e2e parsers, and the migration tooling). A
+new `formal_ai::supported_languages()` accessor reads the `agent-info.lino`
+reference list, replacing ad-hoc `split('|')` calls across the test suite. The
+data mutation is reproducible by algorithm via `scripts/migrate-pipe-lists.rs`
+(std-only). CI rule 3 (above) guards against regressions.
 
 ### Deferred to follow-up issues
 
 The remaining defects from the PR review are intentionally out of scope for this
 round and tracked below:
 
-- **Defect 2 — pipe-packed multi-values:** `|`-separated values should become
-  real link lists `(a b c)`. Deferred; corresponding CI rule 3 not yet added.
 - **Defect 3 — own-slug naming:** internal slugs should be hyphenated full
   English words (`links-root`, not `links_root`); external `Q…/L…/P…` ids are
   fine. Deferred; CI rule 4 not yet added.
