@@ -1,5 +1,5 @@
 meanings
-  money:
+  money
     defined-by concept
     role monetary_concept
     lexeme en
@@ -22,7 +22,7 @@ meanings
         text 货币
       surface
         text 钱
-  exchange_rate:
+  exchange_rate
     defined-by money
     defined-by relation
     role exchange_rate_reference
@@ -40,7 +40,7 @@ meanings
     lexeme zh
       surface
         text 汇率
-  us_dollar:
+  us_dollar
     defined-by money
     role currency_usd_reference
     role calculation_domain_term
@@ -64,7 +64,7 @@ meanings
     lexeme zh
       surface
         text 美元
-  euro:
+  euro
     defined-by money
     role currency_eur_reference
     role calculation_domain_term
@@ -84,7 +84,7 @@ meanings
     lexeme zh
       surface
         text 欧元
-  ruble:
+  ruble
     defined-by money
     role currency_rub_reference
     role calculation_domain_term
@@ -108,7 +108,7 @@ meanings
     lexeme zh
       surface
         text 卢布
-  calculation_basis:
+  calculation_basis
     defined-by action
     defined-by inquiry
     role calculation_basis_reference
@@ -156,7 +156,7 @@ meanings
         text 计算
       surface
         text 使用
-  arithmetic_operation:
+  arithmetic_operation
     defined-by action
     role numeric_concept
     lexeme en
@@ -173,7 +173,7 @@ meanings
     lexeme zh
       surface
         text 算术运算
-  addition:
+  addition
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -190,7 +190,7 @@ meanings
     lexeme zh
       surface
         text 加上
-  subtraction:
+  subtraction
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -207,7 +207,7 @@ meanings
     lexeme zh
       surface
         text 减去
-  multiplication:
+  multiplication
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -230,7 +230,7 @@ meanings
     lexeme zh
       surface
         text 乘以
-  division:
+  division
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -249,7 +249,7 @@ meanings
     lexeme zh
       surface
         text 除以
-  modulo:
+  modulo
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -268,7 +268,7 @@ meanings
     lexeme zh
       surface
         text 取模
-  calculation_request:
+  calculation_request
     defined-by action
     defined-by inquiry
     role calculation_request_cue
@@ -332,7 +332,7 @@ meanings
         text "कृपया गणना करें"
       surface
         text "गणना करें"
-  politeness:
+  politeness
     defined-by property
     role politeness_cue
     lexeme en
@@ -349,7 +349,7 @@ meanings
     lexeme zh
       surface
         text 请
-  calculation_result_query:
+  calculation_result_query
     defined-by action
     defined-by inquiry
     role calculation_result_query_cue
@@ -377,7 +377,7 @@ meanings
         text "क्या है"
       surface
         text "की गणना करें"
-  quantity_conversion:
+  quantity_conversion
     defined-by action
     defined-by relation
     role quantity_conversion_cue
@@ -407,7 +407,7 @@ meanings
         text 兑换
       surface
         text 换成
-  mathematical_function:
+  mathematical_function
     defined-by function
     role numeric_concept
     lexeme en
@@ -422,7 +422,7 @@ meanings
     lexeme zh
       surface
         text 数学函数
-  square_root:
+  square_root
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -441,7 +441,7 @@ meanings
     lexeme zh
       surface
         text 平方根
-  sine:
+  sine
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -458,7 +458,7 @@ meanings
     lexeme zh
       surface
         text 正弦
-  cosine:
+  cosine
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -475,7 +475,7 @@ meanings
     lexeme zh
       surface
         text 余弦
-  tangent:
+  tangent
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -492,7 +492,7 @@ meanings
     lexeme zh
       surface
         text 正切
-  logarithm:
+  logarithm
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -509,7 +509,7 @@ meanings
     lexeme zh
       surface
         text 对数
-  natural_logarithm:
+  natural_logarithm
     defined-by mathematical_function
     role math_function_name
     lexeme en

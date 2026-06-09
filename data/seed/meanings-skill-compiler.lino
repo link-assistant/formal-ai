@@ -1,5 +1,5 @@
 meanings
-  skill_teaching_trigger:
+  skill_teaching_trigger
     defined-by relation
     defined-by inquiry
     role skill_teaching_trigger_lead
@@ -29,7 +29,7 @@ meanings
         text 当用户说
       surface
         text 当用户问
-  skill_teaching_response:
+  skill_teaching_response
     defined-by action
     defined-by answer
     role skill_teaching_response_verb
@@ -53,7 +53,7 @@ meanings
         text 回答
       surface
         text 回复
-  behavior_rule_edit:
+  behavior_rule_edit
     defined-by action
     defined-by knowledge
     role behavior_rule_edit_directive
@@ -77,7 +77,7 @@ meanings
         text 添加行为规则
       surface
         text 更新行为规则
-  skill_when_then:
+  skill_when_then
     defined-by relation
     defined-by concept
     role skill_when_then_pair
@@ -115,7 +115,7 @@ meanings
         text "当 …时回答 "
       surface
         text "当 …则回答 "
-  nondeterministic_step:
+  nondeterministic_step
     defined-by property
     defined-by concept
     role nondeterministic_marker
@@ -143,7 +143,7 @@ meanings
         text 随机
       surface
         text 不确定
-  shell_capability_need:
+  shell_capability_need
     defined-by capability
     defined-by action
     role shell_capability_cue
@@ -183,7 +183,7 @@ meanings
         text 文件系统
       surface
         text 列出文件
-  network_capability_need:
+  network_capability_need
     defined-by capability
     defined-by action
     role network_capability_cue

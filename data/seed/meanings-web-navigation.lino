@@ -1,5 +1,5 @@
 meanings
-  web_resource:
+  web_resource
     defined-by entity
     role web_navigation_concept
     lexeme en
@@ -32,7 +32,7 @@ meanings
         text 网页
       surface
         text 网站
-  http_fetch:
+  http_fetch
     defined-by inquiry
     defined-by action
     defined-by web_resource
@@ -123,7 +123,7 @@ meanings
         text 发送请求
       surface
         text 获取
-  url_navigate:
+  url_navigate
     defined-by inquiry
     defined-by action
     defined-by web_resource

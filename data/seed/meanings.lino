@@ -1,5 +1,5 @@
 meanings
-  result:
+  result
     defined-by output
     role program_artifact
     lexeme en
@@ -28,7 +28,7 @@ meanings
     lexeme zh
       surface
         text 结果
-  output:
+  output
     defined-by result
     defined-by program
     role program_artifact
@@ -44,7 +44,7 @@ meanings
     lexeme zh
       surface
         text 输出
-  program:
+  program
     defined-by code
     defined-by entity
     role program_artifact
@@ -72,7 +72,7 @@ meanings
     lexeme zh
       surface
         text 程序
-  script:
+  script
     defined-by program
     defined-by code
     role program_artifact
@@ -90,7 +90,7 @@ meanings
     lexeme zh
       surface
         text 脚本
-  code:
+  code
     defined-by program
     role program_artifact
     role program_kind
@@ -111,7 +111,7 @@ meanings
     lexeme zh
       surface
         text 代码
-  hello_world:
+  hello_world
     defined-by program
     defined-by code
     role hello_world_reference
@@ -133,7 +133,7 @@ meanings
         text 你好世界
       surface
         text 你好，世界
-  sort:
+  sort
     defined-by order
     defined-by action
     role program_artifact
@@ -174,7 +174,7 @@ meanings
     lexeme zh
       surface
         text 排序
-  order:
+  order
     defined-by sort
     role program_artifact
     role program_modification
@@ -196,7 +196,7 @@ meanings
     lexeme zh
       surface
         text 顺序
-  reverse:
+  reverse
     defined-by order
     role program_modification
     lexeme en
@@ -225,7 +225,7 @@ meanings
         text 相反
       surface
         text 倒序
-  cancel:
+  cancel
     defined-by reverse
     defined-by modify
     role program_modification
@@ -269,7 +269,7 @@ meanings
         text 去掉
       surface
         text 去除
-  modify:
+  modify
     defined-by update
     defined-by action
     role program_modification
@@ -297,7 +297,7 @@ meanings
         text 修改
       surface
         text 改
-  update:
+  update
     defined-by modify
     role program_modification
     lexeme en
@@ -316,7 +316,7 @@ meanings
     lexeme zh
       surface
         text 更新
-  make:
+  make
     defined-by program
     defined-by output
     role program_modification
@@ -340,7 +340,7 @@ meanings
     lexeme zh
       surface
         text 制作
-  function:
+  function
     defined-by code
     defined-by program
     role program_artifact
@@ -363,7 +363,7 @@ meanings
     lexeme zh
       surface
         text 函数
-  write:
+  write
     defined-by code
     defined-by program
     role program_request
@@ -389,7 +389,7 @@ meanings
         text 编写
       surface
         text 写
-  create:
+  create
     defined-by make
     defined-by program
     role program_request
@@ -410,7 +410,7 @@ meanings
     lexeme zh
       surface
         text 创建
-  show:
+  show
     defined-by output
     defined-by result
     role program_request
@@ -430,7 +430,7 @@ meanings
     lexeme zh
       surface
         text 显示
-  generate:
+  generate
     defined-by output
     defined-by program
     role program_request
@@ -451,7 +451,7 @@ meanings
     lexeme zh
       surface
         text 生成
-  build:
+  build
     defined-by make
     defined-by program
     role program_request

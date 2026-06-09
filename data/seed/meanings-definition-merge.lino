@@ -1,5 +1,5 @@
 meanings
-  definition_merge_action:
+  definition_merge_action
     defined-by action
     role definition_merge_action
     lexeme en
@@ -30,7 +30,7 @@ meanings
         text 合并
       surface
         text 融合
-  definition_artifact_request:
+  definition_artifact_request
     defined-by inquiry
     role definition_artifact_request
     lexeme en
@@ -63,7 +63,7 @@ meanings
         text 定义
       surface
         text 翻译
-  definition_merge_marker:
+  definition_merge_marker
     defined-by inquiry
     role definition_merge_marker
     lexeme en
@@ -110,7 +110,7 @@ meanings
         text "的定义 …"
       surface
         text "的翻译 …"
-  definition_merge_tail_boundary:
+  definition_merge_tail_boundary
     defined-by relation
     role definition_merge_tail_boundary
     lexeme en

@@ -1,5 +1,5 @@
 meanings
-  research_question_opener:
+  research_question_opener
     defined-by inquiry
     role research_question_opener
     lexeme en
@@ -148,7 +148,7 @@ meanings
         text 告诉我…
       surface
         text 你知道…
-  research_superlative_modifier:
+  research_superlative_modifier
     defined-by property
     role research_superlative_modifier
     lexeme en
@@ -257,7 +257,7 @@ meanings
         text 最新
       surface
         text 最近
-  research_evidence_domain:
+  research_evidence_domain
     defined-by entity
     role research_evidence_domain
     lexeme en
@@ -336,7 +336,7 @@ meanings
         text 论文
       surface
         text 研究
-  research_evaluation_domain:
+  research_evaluation_domain
     defined-by concept
     role research_evaluation_domain
     lexeme en
@@ -397,7 +397,7 @@ meanings
         text 翻译
       surface
         text 比较
-  enumeration_request_opener:
+  enumeration_request_opener
     defined-by inquiry
     defined-by action
     role enumeration_request_opener
@@ -443,7 +443,7 @@ meanings
         text "显示所有 …"
       surface
         text "枚举所有 …"
-  enumeration_constraint:
+  enumeration_constraint
     defined-by relation
     role enumeration_constraint
     lexeme en

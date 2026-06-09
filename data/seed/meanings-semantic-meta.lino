@@ -1,5 +1,5 @@
 meanings
-  semantic_facet:
+  semantic_facet
     defined-by relation
     role ontology_category
     notation links_notation_format
@@ -30,7 +30,7 @@ meanings
         notation word_surface
         denotation semantic_facet
         part_of_speech noun_phrase
-  notation:
+  notation
     defined-by semantic_facet
     role semantic_facet_kind
     notation links_notation_format
@@ -61,7 +61,7 @@ meanings
         notation word_surface
         denotation notation
         part_of_speech noun
-  annotation:
+  annotation
     defined-by semantic_facet
     role semantic_facet_kind
     notation links_notation_format
@@ -92,7 +92,7 @@ meanings
         notation word_surface
         denotation annotation
         part_of_speech noun
-  denotation:
+  denotation
     defined-by semantic_facet
     role semantic_facet_kind
     notation links_notation_format
@@ -123,7 +123,7 @@ meanings
         notation word_surface
         denotation denotation
         part_of_speech noun
-  connotation:
+  connotation
     defined-by semantic_facet
     role semantic_facet_kind
     notation links_notation_format
@@ -154,7 +154,7 @@ meanings
         notation word_surface
         denotation connotation
         part_of_speech noun
-  semantic_gloss:
+  semantic_gloss
     defined-by annotation
     role semantic_annotation_artifact
     lexeme en
@@ -181,7 +181,7 @@ meanings
         notation word_surface
         denotation semantic_gloss
         part_of_speech noun
-  external_knowledge_source:
+  external_knowledge_source
     defined-by entity
     defined-by annotation
     role semantic_grounding_artifact
@@ -209,7 +209,7 @@ meanings
         notation word_surface
         denotation external_knowledge_source
         part_of_speech noun_phrase
-  cached_source_response:
+  cached_source_response
     defined-by external_knowledge_source
     defined-by annotation
     role semantic_grounding_artifact

@@ -1,5 +1,5 @@
 meanings
-  behavior_rule:
+  behavior_rule
     defined-by relation
     defined-by knowledge
     role rule_listing_subject
@@ -25,7 +25,7 @@ meanings
         text 规则
       surface
         text 規則
-  rule_enumeration_request:
+  rule_enumeration_request
     defined-by action
     defined-by inquiry
     role rule_listing_request
@@ -75,7 +75,7 @@ meanings
         text 哪些
       surface
         text 什么
-  behavior_domain:
+  behavior_domain
     defined-by self_reference
     defined-by concept
     role rule_listing_scope
@@ -93,7 +93,7 @@ meanings
         text 行为
       surface
         text 行為
-  assistant_own_ruleset:
+  assistant_own_ruleset
     defined-by self_reference
     defined-by knowledge
     role rule_listing_scope
@@ -139,7 +139,7 @@ meanings
         text 规则列表
       surface
         text 規則列表
-  behavior_rule_set_phrase:
+  behavior_rule_set_phrase
     defined-by inquiry
     defined-by knowledge
     role rule_listing_phrase

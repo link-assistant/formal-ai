@@ -1,5 +1,5 @@
 meanings
-  human_language:
+  human_language
     defined-by concept
     role translation_language_genus
     lexeme en
@@ -14,7 +14,7 @@ meanings
     lexeme zh
       surface
         text 语言
-  language_english:
+  language_english
     defined-by human_language
     role translation_language
     lexeme en
@@ -33,7 +33,7 @@ meanings
         text 英语
       surface
         text 英文
-  language_russian:
+  language_russian
     defined-by human_language
     role translation_language
     lexeme en
@@ -48,7 +48,7 @@ meanings
     lexeme zh
       surface
         text 俄语
-  language_hindi:
+  language_hindi
     defined-by human_language
     role translation_language
     lexeme en
@@ -65,7 +65,7 @@ meanings
     lexeme zh
       surface
         text 印地语
-  language_chinese:
+  language_chinese
     defined-by human_language
     role translation_language
     lexeme en
@@ -84,7 +84,7 @@ meanings
         text 汉语
       surface
         text 漢語
-  translate:
+  translate
     defined-by action
     role translation_action
     lexeme en
@@ -105,7 +105,7 @@ meanings
         text 翻译
       surface
         text 翻譯
-  translation_direction_source:
+  translation_direction_source
     defined-by relation
     role translation_source_direction
     lexeme en
@@ -120,7 +120,7 @@ meanings
     lexeme zh
       surface
         text 从
-  translation_direction_target:
+  translation_direction_target
     defined-by relation
     role translation_target_direction
     lexeme en
@@ -141,7 +141,7 @@ meanings
         text 為
       surface
         text 到
-  translate_from_english:
+  translate_from_english
     defined-by language_english
     defined-by translation_direction_source
     role translation_source_marker
@@ -161,7 +161,7 @@ meanings
         text 从英语
       surface
         text 从英文
-  translate_from_russian:
+  translate_from_russian
     defined-by language_russian
     defined-by translation_direction_source
     role translation_source_marker
@@ -177,7 +177,7 @@ meanings
     lexeme zh
       surface
         text 从俄语
-  translate_from_hindi:
+  translate_from_hindi
     defined-by language_hindi
     defined-by translation_direction_source
     role translation_source_marker
@@ -197,7 +197,7 @@ meanings
         text 从印地语
       surface
         text 从印地文
-  translate_from_chinese:
+  translate_from_chinese
     defined-by language_chinese
     defined-by translation_direction_source
     role translation_source_marker
@@ -217,7 +217,7 @@ meanings
         text 从汉语
       surface
         text 从漢語
-  translate_into_english:
+  translate_into_english
     defined-by language_english
     defined-by translation_direction_target
     role translation_target_marker
@@ -251,7 +251,7 @@ meanings
         text 到英文
       surface
         text 到英语
-  translate_into_russian:
+  translate_into_russian
     defined-by language_russian
     defined-by translation_direction_target
     role translation_target_marker
@@ -281,7 +281,7 @@ meanings
         text 到俄语
       surface
         text 到俄語
-  translate_into_hindi:
+  translate_into_hindi
     defined-by language_hindi
     defined-by translation_direction_target
     role translation_target_marker
@@ -313,7 +313,7 @@ meanings
         text 到印地语
       surface
         text 到印地文
-  translate_into_chinese:
+  translate_into_chinese
     defined-by language_chinese
     defined-by translation_direction_target
     role translation_target_marker
@@ -351,7 +351,7 @@ meanings
         text 到汉语
       surface
         text 到漢語
-  translation_unquoted_frame:
+  translation_unquoted_frame
     defined-by translate
     defined-by translation_direction_target
     role translation_unquoted_frame
@@ -369,7 +369,7 @@ meanings
         text 翻译
       surface
         text 翻譯
-  translation_into_marker:
+  translation_into_marker
     defined-by translate
     defined-by translation_direction_target
     role translation_into_marker
@@ -397,7 +397,7 @@ meanings
         text 翻譯為
       surface
         text 翻譯到
-  translation_object_marker:
+  translation_object_marker
     defined-by relation
     role translation_object_marker
     lexeme en
@@ -416,7 +416,7 @@ meanings
         text 把
       surface
         text 将
-  definition_command:
+  definition_command
     defined-by action
     role definition_command
     lexeme en
@@ -431,7 +431,7 @@ meanings
     lexeme zh
       surface
         text 定义
-  links_notation_format:
+  links_notation_format
     defined-by concept
     role links_notation_format
     lexeme en
@@ -446,7 +446,7 @@ meanings
     lexeme zh
       surface
         text 链接表示法
-  apple:
+  apple
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -479,7 +479,7 @@ meanings
     lexeme zh
       surface
         text 苹果
-  greeting_hello:
+  greeting_hello
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -496,7 +496,7 @@ meanings
     lexeme zh
       surface
         text 你好
-  gratitude_thank_you:
+  gratitude_thank_you
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -515,7 +515,7 @@ meanings
         text 谢谢
       surface
         text 謝謝
-  affirmation_yes:
+  affirmation_yes
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -530,7 +530,7 @@ meanings
     lexeme zh
       surface
         text 是
-  negation_no:
+  negation_no
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -545,7 +545,7 @@ meanings
     lexeme zh
       surface
         text 不
-  tomato:
+  tomato
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -564,7 +564,7 @@ meanings
         text 番茄
       surface
         text 西红柿
-  cucumber:
+  cucumber
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -579,7 +579,7 @@ meanings
     lexeme zh
       surface
         text 黄瓜
-  potato:
+  potato
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -598,7 +598,7 @@ meanings
         text 土豆
       surface
         text 马铃薯
-  carrot:
+  carrot
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -613,7 +613,7 @@ meanings
     lexeme zh
       surface
         text 胡萝卜
-  bread:
+  bread
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -628,7 +628,7 @@ meanings
     lexeme zh
       surface
         text 面包
-  water:
+  water
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -643,7 +643,7 @@ meanings
     lexeme zh
       surface
         text 水
-  good:
+  good
     defined-by property
     role compositional_lemma
     lexeme en
@@ -684,7 +684,7 @@ meanings
     lexeme zh
       surface
         text 好
-  find:
+  find
     defined-by action
     role compositional_lemma
     lexeme en
@@ -703,7 +703,7 @@ meanings
     lexeme zh
       surface
         text 查找
-  synonym:
+  synonym
     defined-by concept
     role compositional_lemma
     role compositional_genitive_head
@@ -723,7 +723,7 @@ meanings
     lexeme zh
       surface
         text 同义词
-  example:
+  example
     defined-by concept
     role compositional_lemma
     role compositional_genitive_head
@@ -743,7 +743,7 @@ meanings
     lexeme zh
       surface
         text 例子
-  agreement:
+  agreement
     defined-by concept
     role compositional_lemma
     lexeme en
@@ -767,7 +767,7 @@ meanings
     lexeme zh
       surface
         text 一致
-  conjunction_or:
+  conjunction_or
     defined-by relation
     role compositional_lemma
     lexeme en
@@ -782,7 +782,7 @@ meanings
     lexeme zh
       surface
         text 或
-  who_are_you:
+  who_are_you
     defined-by concept
     role compositional_phrase
     lexeme en
@@ -807,7 +807,7 @@ meanings
     lexeme zh
       surface
         text 你是谁
-  what_is_this:
+  what_is_this
     defined-by concept
     role compositional_phrase
     lexeme en
@@ -824,7 +824,7 @@ meanings
     lexeme zh
       surface
         text 这是什么
-  how_are_you:
+  how_are_you
     defined-by concept
     role compositional_phrase
     lexeme en

@@ -1,5 +1,5 @@
 meanings
-  summary_statement_kind:
+  summary_statement_kind
     defined-by concept
     role summary_statement_kind
     lexeme en
@@ -22,7 +22,7 @@ meanings
         text 陈述类型
       surface
         text 句子类型
-  summary_kind_install:
+  summary_kind_install
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -55,7 +55,7 @@ meanings
         text 安装
       surface
         text 安装方法
-  summary_kind_example:
+  summary_kind_example
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -86,7 +86,7 @@ meanings
         text 例如
       surface
         text 比如
-  summary_kind_language:
+  summary_kind_language
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -113,7 +113,7 @@ meanings
         text 语言
       surface
         text 编写
-  summary_kind_stars:
+  summary_kind_stars
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -140,7 +140,7 @@ meanings
         text 星标
       surface
         text 星数
-  summary_kind_purpose:
+  summary_kind_purpose
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -177,7 +177,7 @@ meanings
         text 旨在
       surface
         text 帮助你
-  summary_kind_use_case:
+  summary_kind_use_case
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en
@@ -208,7 +208,7 @@ meanings
         text 当你需要
       surface
         text 适用于
-  summary_kind_feature:
+  summary_kind_feature
     defined-by summary_statement_kind
     role summary_classification_cue
     lexeme en

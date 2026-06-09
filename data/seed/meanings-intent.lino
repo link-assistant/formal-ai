@@ -1,5 +1,5 @@
 meanings
-  assistant:
+  assistant
     defined-by answer
     defined-by self_reference
     defined-by entity
@@ -22,7 +22,7 @@ meanings
         text 助手
       surface
         text 助理
-  user:
+  user
     defined-by inquiry
     defined-by entity
     role conversational_entity
@@ -38,7 +38,7 @@ meanings
     lexeme zh
       surface
         text 用户
-  inquiry:
+  inquiry
     defined-by answer
     defined-by user
     role conversational_act
@@ -64,7 +64,7 @@ meanings
         text 询问
       surface
         text 请求
-  answer:
+  answer
     defined-by inquiry
     defined-by assistant
     role conversational_act
@@ -88,7 +88,7 @@ meanings
         text 回答
       surface
         text 答复
-  self_reference:
+  self_reference
     defined-by assistant
     role conversational_concept
     lexeme en
@@ -109,7 +109,7 @@ meanings
     lexeme zh
       surface
         text 自己
-  capability:
+  capability
     defined-by assistant
     defined-by answer
     role conversational_concept
@@ -131,7 +131,7 @@ meanings
         text 能力
       surface
         text 功能
-  knowledge:
+  knowledge
     defined-by assistant
     defined-by fact
     role conversational_concept
@@ -147,7 +147,7 @@ meanings
     lexeme zh
       surface
         text 知识
-  fact:
+  fact
     defined-by knowledge
     role conversational_concept
     role knowledge_inventory_noun
@@ -169,7 +169,7 @@ meanings
         text 事实
       surface
         text 事實
-  knowledge_inventory_probe:
+  knowledge_inventory_probe
     defined-by inquiry
     role knowledge_inventory_interrogative
     lexeme en
@@ -220,7 +220,7 @@ meanings
         text 你有
       surface
         text 您有
-  assistant_knowing:
+  assistant_knowing
     defined-by knowledge
     defined-by assistant
     role knowledge_possession
@@ -276,7 +276,7 @@ meanings
         text 你有
       surface
         text 您有
-  knowledge_inventory_query:
+  knowledge_inventory_query
     defined-by knowledge
     defined-by fact
     role knowledge_inventory_phrase
@@ -318,7 +318,7 @@ meanings
         text 您知道什么
       surface
         text 你知道哪些
-  introduction:
+  introduction
     defined-by self_reference
     defined-by answer
     role conversational_concept
@@ -334,7 +334,7 @@ meanings
     lexeme zh
       surface
         text 介绍
-  clarification:
+  clarification
     defined-by inquiry
     defined-by answer
     role conversational_concept
@@ -350,7 +350,7 @@ meanings
     lexeme zh
       surface
         text 澄清
-  understanding:
+  understanding
     defined-by clarification
     defined-by knowledge
     role conversational_concept
@@ -366,7 +366,7 @@ meanings
     lexeme zh
       surface
         text 理解
-  clarification_request:
+  clarification_request
     defined-by clarification
     defined-by understanding
     defined-by inquiry
@@ -419,7 +419,7 @@ meanings
         text 我不懂
       surface
         text 听不懂
-  capability_query:
+  capability_query
     defined-by capability
     defined-by inquiry
     role capability_query
@@ -485,7 +485,7 @@ meanings
         text 你有什么功能
       surface
         text 你能干什么
-  capability_query_more:
+  capability_query_more
     defined-by capability_query
     defined-by capability
     role capability_query_more
@@ -519,7 +519,7 @@ meanings
         text 你还能做什么
       surface
         text 你还会做什么
-  self_fact_query:
+  self_fact_query
     defined-by fact
     defined-by self_reference
     defined-by inquiry
@@ -548,7 +548,7 @@ meanings
         text 关于你自己的事实
       surface
         text 自我事实
-  self_introduction_request:
+  self_introduction_request
     defined-by introduction
     defined-by self_reference
     defined-by inquiry
@@ -609,7 +609,7 @@ meanings
         text 认识一下吧
       surface
         text 让我们认识一下
-  conversation_summary_directive:
+  conversation_summary_directive
     defined-by inquiry
     defined-by answer
     role conversation_summary_directive
@@ -651,7 +651,7 @@ meanings
         text 归纳
       surface
         text 歸納
-  conversation_reference:
+  conversation_reference
     defined-by inquiry
     defined-by answer
     role conversation_reference
@@ -715,7 +715,7 @@ meanings
         text 谈话
       surface
         text 談話
-  conversation_summary_phrase:
+  conversation_summary_phrase
     defined-by inquiry
     defined-by conversation_reference
     role conversation_summary_phrase
@@ -757,7 +757,7 @@ meanings
         text 我们说了什么
       surface
         text 我們聊了什麼
-  conversation_summary_courtesy:
+  conversation_summary_courtesy
     defined-by inquiry
     defined-by conversation_summary_directive
     role conversation_summary_courtesy
@@ -803,7 +803,7 @@ meanings
         text 总结一下
       surface
         text 概括一下
-  who_is_question:
+  who_is_question
     defined-by inquiry
     role who_question_lead
     role who_question_tail
@@ -833,7 +833,7 @@ meanings
         text …是谁
       surface
         text …是誰
-  interrogative_opener:
+  interrogative_opener
     defined-by inquiry
     role interrogative_opener
     lexeme en

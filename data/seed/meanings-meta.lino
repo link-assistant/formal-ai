@@ -1,5 +1,5 @@
 meanings
-  causal_interrogative:
+  causal_interrogative
     defined-by inquiry
     role causal_interrogative
     lexeme en
@@ -14,7 +14,7 @@ meanings
     lexeme zh
       surface
         text 为什么
-  prior_answer_reference:
+  prior_answer_reference
     defined-by answer
     role prior_answer_reference
     lexeme en
@@ -31,7 +31,7 @@ meanings
     lexeme zh
       surface
         text 回答
-  answer_rationale_inquiry:
+  answer_rationale_inquiry
     defined-by causal_interrogative
     defined-by prior_answer_reference
     defined-by inquiry
@@ -56,7 +56,7 @@ meanings
     lexeme zh
       surface
         text 为什么这样回答
-  assistant_self_reference:
+  assistant_self_reference
     defined-by assistant
     defined-by self_reference
     role assistant_self_reference
@@ -90,7 +90,7 @@ meanings
         text 你
       surface
         text 您
-  assistant_mechanism_inquiry:
+  assistant_mechanism_inquiry
     defined-by mechanism_inquiry
     defined-by assistant
     role assistant_mechanism_inquiry
@@ -138,7 +138,7 @@ meanings
         text 你是怎么工作的
       surface
         text 你怎么运作
-  operating_principle:
+  operating_principle
     defined-by concept
     defined-by action
     role operating_principle
@@ -154,7 +154,7 @@ meanings
     lexeme zh
       surface
         text 工作原理
-  architecture_concept:
+  architecture_concept
     defined-by concept
     defined-by assistant
     role architecture_concept

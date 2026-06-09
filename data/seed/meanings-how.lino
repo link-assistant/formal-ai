@@ -1,5 +1,5 @@
 meanings
-  mechanism_inquiry:
+  mechanism_inquiry
     defined-by inquiry
     defined-by action
     role mechanism_inquiry
@@ -97,7 +97,7 @@ meanings
         text "… 的工作原理是什么"
       surface
         text …的工作原理是什么
-  procedural_request:
+  procedural_request
     defined-by inquiry
     defined-by action
     role procedural_request
@@ -204,7 +204,7 @@ meanings
       surface
         text "怎么写 …"
         action write
-  mechanism_predicate:
+  mechanism_predicate
     defined-by action
     defined-by mechanism_inquiry
     role mechanism_predicate
@@ -236,7 +236,7 @@ meanings
         text …工作
       surface
         text …构建
-  detail_modifier:
+  detail_modifier
     defined-by property
     defined-by mechanism_inquiry
     role detail_modifier
@@ -266,7 +266,7 @@ meanings
         text …详细
       surface
         text …请
-  non_referential_subject:
+  non_referential_subject
     defined-by entity
     defined-by mechanism_inquiry
     role non_referential_subject
@@ -320,7 +320,7 @@ meanings
         text 这个
       surface
         text 它
-  procedural_task_modifier:
+  procedural_task_modifier
     defined-by property
     defined-by procedural_request
     role procedural_task_modifier
@@ -362,7 +362,7 @@ meanings
         text "… 一步一步写"
       surface
         text "… 请"
-  common_typo:
+  common_typo
     defined-by relation
     role common_typo
     lexeme en
@@ -381,7 +381,7 @@ meanings
       surface
         text 登陆
         action 登录
-  topic_scan_stop_word:
+  topic_scan_stop_word
     defined-by concept
     role topic_scan_stop_word
     lexeme en

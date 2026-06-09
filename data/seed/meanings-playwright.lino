@@ -1,5 +1,5 @@
 meanings
-  playwright:
+  playwright
     defined-by entity
     role playwright_tool_name
     lexeme en
@@ -19,7 +19,7 @@ meanings
     lexeme zh
       surface
         text 普莱赖特
-  playwright_script_request_cue:
+  playwright_script_request_cue
     defined-by concept
     role playwright_script_cue
     lexeme en

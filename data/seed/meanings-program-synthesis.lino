@@ -1,5 +1,5 @@
 meanings
-  program_synthesis:
+  program_synthesis
     defined-by function
     defined-by code
     defined-by implement
@@ -20,7 +20,7 @@ meanings
     lexeme zh
       surface
         text 程序合成
-  synthesis_subject_function:
+  synthesis_subject_function
     defined-by program_synthesis
     defined-by function
     role program_synthesis_subject
@@ -42,7 +42,7 @@ meanings
     lexeme zh
       surface
         text 函数
-  synthesis_domain_python:
+  synthesis_domain_python
     defined-by program_synthesis
     defined-by language_python
     role program_synthesis_domain
@@ -60,7 +60,7 @@ meanings
     lexeme zh
       surface
         text python
-  synthesis_domain_tuple:
+  synthesis_domain_tuple
     defined-by program_synthesis
     defined-by code
     role program_synthesis_domain
@@ -80,7 +80,7 @@ meanings
     lexeme zh
       surface
         text 元组
-  synthesis_domain_numbers:
+  synthesis_domain_numbers
     defined-by program_synthesis
     defined-by result
     role program_synthesis_domain
@@ -100,7 +100,7 @@ meanings
     lexeme zh
       surface
         text 数字
-  synthesis_domain_vowels:
+  synthesis_domain_vowels
     defined-by program_synthesis
     defined-by result
     role program_synthesis_domain
@@ -122,7 +122,7 @@ meanings
     lexeme zh
       surface
         text 元音
-  synthesis_action_implement:
+  synthesis_action_implement
     defined-by program_synthesis
     defined-by implement
     role program_synthesis_action
@@ -140,7 +140,7 @@ meanings
     lexeme zh
       surface
         text 实现
-  synthesis_action_write:
+  synthesis_action_write
     defined-by program_synthesis
     defined-by write
     role program_synthesis_action
@@ -162,7 +162,7 @@ meanings
         text 编写
       surface
         text 写
-  synthesis_action_return:
+  synthesis_action_return
     defined-by program_synthesis
     defined-by output
     defined-by result
@@ -189,7 +189,7 @@ meanings
     lexeme zh
       surface
         text 返回
-  signal_distinct_numbers:
+  signal_distinct_numbers
     defined-by program_synthesis
     defined-by synthesis_domain_numbers
     role program_synthesis_signal
@@ -207,7 +207,7 @@ meanings
     lexeme zh
       surface
         text 不同的数字
-  signal_difference:
+  signal_difference
     defined-by program_synthesis
     role program_synthesis_signal
     lexeme en
@@ -234,7 +234,7 @@ meanings
         text 不同
       surface
         text 差异
-  signal_threshold:
+  signal_threshold
     defined-by program_synthesis
     role program_synthesis_signal
     lexeme en
@@ -255,7 +255,7 @@ meanings
     lexeme zh
       surface
         text 阈值
-  signal_similar_elements:
+  signal_similar_elements
     defined-by program_synthesis
     defined-by synthesis_subject_function
     role program_synthesis_signal
@@ -273,7 +273,7 @@ meanings
     lexeme zh
       surface
         text 相似元素
-  signal_count_vowels:
+  signal_count_vowels
     defined-by program_synthesis
     defined-by synthesis_domain_vowels
     role program_synthesis_signal
@@ -295,7 +295,7 @@ meanings
         text 元音数量
       surface
         text 元音的数量
-  has_close_elements:
+  has_close_elements
     defined-by signal_distinct_numbers
     defined-by signal_difference
     defined-by signal_threshold
@@ -312,7 +312,7 @@ meanings
     lexeme zh
       surface
         text has_close_elements
-  similar_elements:
+  similar_elements
     defined-by signal_similar_elements
     role program_synthesis_task
     lexeme en
@@ -327,7 +327,7 @@ meanings
     lexeme zh
       surface
         text similar_elements
-  count_vowels:
+  count_vowels
     defined-by signal_count_vowels
     role program_synthesis_task
     lexeme en

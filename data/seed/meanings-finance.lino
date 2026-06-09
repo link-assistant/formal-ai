@@ -1,5 +1,5 @@
 meanings
-  investment:
+  investment
     defined-by money
     defined-by action
     role investment_cue
@@ -19,7 +19,7 @@ meanings
     lexeme zh
       surface
         text 投资
-  interest_finance:
+  interest_finance
     defined-by money
     role interest_cue
     lexeme en
@@ -34,7 +34,7 @@ meanings
     lexeme zh
       surface
         text 利息
-  compounding:
+  compounding
     defined-by action
     defined-by money
     role compounding_action_cue
@@ -52,7 +52,7 @@ meanings
     lexeme zh
       surface
         text 复利
-  compounding_monthly:
+  compounding_monthly
     defined-by compounding
     role compounding_frequency_cue
     lexeme en
@@ -67,7 +67,7 @@ meanings
     lexeme zh
       surface
         text 每月
-  compounding_quarterly:
+  compounding_quarterly
     defined-by compounding
     role compounding_frequency_cue
     lexeme en
@@ -82,7 +82,7 @@ meanings
     lexeme zh
       surface
         text 每季度
-  compounding_weekly:
+  compounding_weekly
     defined-by compounding
     role compounding_frequency_cue
     lexeme en
@@ -97,7 +97,7 @@ meanings
     lexeme zh
       surface
         text 每周
-  compounding_daily:
+  compounding_daily
     defined-by compounding
     role compounding_frequency_cue
     lexeme en
@@ -112,7 +112,7 @@ meanings
     lexeme zh
       surface
         text 每日
-  compounding_annual:
+  compounding_annual
     defined-by compounding
     role compounding_frequency_cue
     lexeme en
@@ -129,7 +129,7 @@ meanings
     lexeme zh
       surface
         text 每年
-  live_rate_freshness:
+  live_rate_freshness
     defined-by exchange_rate
     defined-by concept
     role live_rate_freshness_cue
@@ -153,7 +153,7 @@ meanings
     lexeme zh
       surface
         text 实时汇率
-  year_period:
+  year_period
     defined-by concept
     role year_unit_cue
     lexeme en
@@ -170,7 +170,7 @@ meanings
     lexeme zh
       surface
         text 年
-  conversion_action:
+  conversion_action
     defined-by action
     defined-by money
     role conversion_action_cue
@@ -186,7 +186,7 @@ meanings
     lexeme zh
       surface
         text 转换
-  final_amount:
+  final_amount
     defined-by money
     role final_amount_reference
     lexeme en

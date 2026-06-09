@@ -1,5 +1,5 @@
 meanings
-  physical_action_query:
+  physical_action_query
     defined-by inquiry
     defined-by action
     role physical_action_trigger
@@ -23,7 +23,7 @@ meanings
     lexeme zh
       surface
         text 你吸了吗
-  circular_joke_idiom:
+  circular_joke_idiom
     defined-by inquiry
     defined-by concept
     role circular_joke_phrase
@@ -39,7 +39,7 @@ meanings
     lexeme zh
       surface
         text 买大象
-  vulgar_content:
+  vulgar_content
     defined-by concept
     role vulgar_content_marker
     lexeme en

@@ -1,5 +1,5 @@
 meanings
-  tool_invocation_cue:
+  tool_invocation_cue
     defined-by action
     role tool_invocation_cue
     lexeme en
@@ -36,7 +36,7 @@ meanings
         text 运行
       surface
         text 工具
-  calculator_tool:
+  calculator_tool
     defined-by entity
     role calculator_tool_name
     lexeme en
@@ -51,7 +51,7 @@ meanings
     lexeme zh
       surface
         text 计算器
-  web_search_tool:
+  web_search_tool
     defined-by entity
     role web_search_tool_name
     lexeme en
@@ -76,7 +76,7 @@ meanings
         text 网络搜索
       surface
         text 网页搜索
-  local_shell_tool:
+  local_shell_tool
     defined-by entity
     role local_shell_request_cue
     lexeme en
@@ -105,7 +105,7 @@ meanings
         text 本地外壳
       surface
         text 调用外壳工具
-  tool_argument_marker:
+  tool_argument_marker
     defined-by relation
     role tool_argument_marker
     lexeme en

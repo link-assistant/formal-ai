@@ -1,5 +1,5 @@
 meanings
-  prove:
+  prove
     defined-by inquiry
     defined-by action
     role proof_directive
@@ -82,7 +82,7 @@ meanings
         text 证明…
       surface
         text 證明…
-  proof_request_frame:
+  proof_request_frame
     defined-by inquiry
     defined-by prove
     role proof_request_lead
@@ -130,7 +130,7 @@ meanings
         text 请证明…
       surface
         text 請證明…
-  proof_assertion:
+  proof_assertion
     defined-by inquiry
     defined-by prove
     role proof_marker
@@ -168,7 +168,7 @@ meanings
         text 证明
       surface
         text 證明
-  godel:
+  godel
     defined-by concept
     role proof_concept_godel
     lexeme en
@@ -189,7 +189,7 @@ meanings
     lexeme zh
       surface
         text 哥德尔
-  determinism:
+  determinism
     defined-by concept
     role proof_concept_determinism
     lexeme en

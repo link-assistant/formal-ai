@@ -1,5 +1,5 @@
 meanings
-  explanation_request:
+  explanation_request
     defined-by inquiry
     defined-by action
     role explanation_request_lead
@@ -47,7 +47,7 @@ meanings
         text 解释…
       surface
         text 是什么
-  code_method:
+  code_method
     defined-by action
     defined-by concept
     role code_method_noun

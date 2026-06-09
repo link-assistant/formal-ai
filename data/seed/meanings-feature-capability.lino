@@ -1,5 +1,5 @@
 meanings
-  feature_capability_web_search:
+  feature_capability_web_search
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -108,7 +108,7 @@ meanings
         text 使用搜索引擎
       surface
         text 网络搜索
-  feature_capability_diagnostics:
+  feature_capability_diagnostics
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -145,7 +145,7 @@ meanings
         text trace
       surface
         text 推理跟踪
-  feature_capability_agent_mode:
+  feature_capability_agent_mode
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -180,7 +180,7 @@ meanings
         text 代理
       surface
         text 多步骤
-  feature_capability_definition_fusion:
+  feature_capability_definition_fusion
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -207,7 +207,7 @@ meanings
         text "definition fusion"
       surface
         text 合并定义
-  feature_capability_configuration:
+  feature_capability_configuration
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -274,7 +274,7 @@ meanings
         text 语言
       surface
         text 聊天样式
-  feature_capability_memory_actions:
+  feature_capability_memory_actions
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -313,7 +313,7 @@ meanings
         text "memory export"
       surface
         text "memory import"
-  feature_capability_greeting:
+  feature_capability_greeting
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -348,7 +348,7 @@ meanings
         text 打招呼
       surface
         text 你好
-  feature_capability_write_program:
+  feature_capability_write_program
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -387,7 +387,7 @@ meanings
         text 代码
       surface
         text 程序
-  feature_capability_concept_lookup:
+  feature_capability_concept_lookup
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -410,7 +410,7 @@ meanings
     lexeme zh
       surface
         text 概念
-  feature_capability_arithmetic:
+  feature_capability_arithmetic
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -449,7 +449,7 @@ meanings
         text 数学
       surface
         text "2 + 2"
-  feature_capability_translation:
+  feature_capability_translation
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -480,7 +480,7 @@ meanings
         text translation
       surface
         text translate
-  feature_capability_memory:
+  feature_capability_memory
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -519,7 +519,7 @@ meanings
         text 回忆
       surface
         text 上下文
-  feature_capability_demo_mode:
+  feature_capability_demo_mode
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -546,7 +546,7 @@ meanings
         text demo
       surface
         text 演示
-  feature_capability_http_url:
+  feature_capability_http_url
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -595,7 +595,7 @@ meanings
         text 打开链接
       surface
         text 访问链接
-  feature_capability_javascript_execution:
+  feature_capability_javascript_execution
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -630,7 +630,7 @@ meanings
         text 脚本执行
       surface
         text 执行脚本
-  feature_capability_planning:
+  feature_capability_planning
     defined-by concept
     role feature_capability_alias
     lexeme en
@@ -675,7 +675,7 @@ meanings
         text 角色扮演
       surface
         text 项目计划
-  feature_capability_question:
+  feature_capability_question
     defined-by action
     role feature_capability_question
     lexeme en
@@ -748,7 +748,7 @@ meanings
         text 启用
       surface
         text 可用
-  feature_action_arithmetic:
+  feature_action_arithmetic
     defined-by action
     role feature_action_arithmetic
     lexeme en
@@ -767,7 +767,7 @@ meanings
     lexeme zh
       surface
         text 你能计算
-  feature_action_planning:
+  feature_action_planning
     defined-by action
     role feature_action_planning
     lexeme en

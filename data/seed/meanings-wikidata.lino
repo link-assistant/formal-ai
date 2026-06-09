@@ -1,5 +1,5 @@
 meanings
-  wikidata_item_apple:
+  wikidata_item_apple
     grounded-in Q89
     defined-by entity
     role wikidata_entity_anchor
@@ -21,7 +21,7 @@ meanings
         text 苹果
       surface
         text 蘋果
-  wikidata_item_fruit:
+  wikidata_item_fruit
     grounded-in Q3314483
     defined-by concept
     role wikidata_entity_anchor
@@ -47,7 +47,7 @@ meanings
         text 水果
       surface
         text 水果类
-  wikidata_item_sorting_algorithm:
+  wikidata_item_sorting_algorithm
     grounded-in Q181593
     defined-by concept
     role wikidata_entity_anchor
@@ -67,7 +67,7 @@ meanings
     lexeme zh
       surface
         text 排序算法
-  wikidata_item_water:
+  wikidata_item_water
     grounded-in Q283
     defined-by entity
     role wikidata_entity_anchor
@@ -83,7 +83,7 @@ meanings
     lexeme zh
       surface
         text 水
-  wikidata_item_bread:
+  wikidata_item_bread
     grounded-in Q7802
     defined-by entity
     role wikidata_entity_anchor
@@ -101,7 +101,7 @@ meanings
         text 面包
       surface
         text 麵包
-  wikidata_item_carrot:
+  wikidata_item_carrot
     grounded-in Q81
     defined-by entity
     role wikidata_entity_anchor
@@ -121,7 +121,7 @@ meanings
         text 胡萝卜
       surface
         text 胡蘿蔔
-  wikidata_item_wikidata:
+  wikidata_item_wikidata
     grounded-in Q2013
     defined-by entity
     role wikidata_entity_anchor
@@ -139,7 +139,7 @@ meanings
         text 维基数据
       surface
         text 維基數據
-  wikidata_item_wikipedia:
+  wikidata_item_wikipedia
     grounded-in Q52
     defined-by entity
     role wikidata_entity_anchor
@@ -157,7 +157,7 @@ meanings
         text 维基百科
       surface
         text 維基百科
-  wikidata_item_wiktionary:
+  wikidata_item_wiktionary
     grounded-in Q151
     defined-by entity
     role wikidata_entity_anchor
@@ -175,7 +175,7 @@ meanings
         text 维基词典
       surface
         text 維基辭典
-  wikidata_property_subclass_of:
+  wikidata_property_subclass_of
     grounded-in P279
     defined-by relation
     role binary_relation_property
@@ -203,7 +203,7 @@ meanings
     lexeme zh
       surface
         text 子类
-  wikidata_property_instance_of:
+  wikidata_property_instance_of
     grounded-in P31
     defined-by relation
     role binary_relation_property
@@ -235,7 +235,7 @@ meanings
     lexeme zh
       surface
         text 是
-  wikidata_property_part_of:
+  wikidata_property_part_of
     grounded-in P361
     defined-by relation
     role binary_relation_property
@@ -257,7 +257,7 @@ meanings
     lexeme zh
       surface
         text 属于
-  wikidata_property_has_part:
+  wikidata_property_has_part
     grounded-in P527
     defined-by relation
     role binary_relation_property
@@ -279,7 +279,7 @@ meanings
     lexeme zh
       surface
         text 包含
-  wikidata_property_capital:
+  wikidata_property_capital
     grounded-in P36
     defined-by relation
     role binary_relation_property
@@ -301,7 +301,7 @@ meanings
     lexeme zh
       surface
         text 首都
-  wikidata_property_named_after:
+  wikidata_property_named_after
     grounded-in P138
     defined-by relation
     role binary_relation_property
@@ -319,7 +319,7 @@ meanings
     lexeme zh
       surface
         text 命名自
-  wikidata_property_translation:
+  wikidata_property_translation
     grounded-in P5972
     defined-by relation
     role translation_property
@@ -343,7 +343,7 @@ meanings
         text 翻译
       surface
         text 翻譯
-  wikidata_property_item_for_this_sense:
+  wikidata_property_item_for_this_sense
     grounded-in P5137
     defined-by relation
     role binary_relation_property

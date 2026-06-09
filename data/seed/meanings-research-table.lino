@@ -1,5 +1,5 @@
 meanings
-  compare:
+  compare
     defined-by action
     role comparison_table_trigger
     lexeme en
@@ -28,7 +28,7 @@ meanings
         text 比较
       surface
         text 对比
-  table:
+  table
     defined-by concept
     role comparison_table_noun
     lexeme en
@@ -43,7 +43,7 @@ meanings
     lexeme zh
       surface
         text 表格
-  differences:
+  differences
     defined-by relation
     role comparison_difference_cue
     lexeme en
@@ -62,7 +62,7 @@ meanings
         text 差异
       surface
         text 区别
-  research_prompt_signal:
+  research_prompt_signal
     defined-by concept
     role research_prompt_signal
     lexeme en
@@ -95,7 +95,7 @@ meanings
         text 搜索
       surface
         text 研究
-  key_differences:
+  key_differences
     defined-by relation
     role research_criterion
     lexeme en
@@ -118,7 +118,7 @@ meanings
         text 主要区别
       surface
         text 区别
-  use_cases:
+  use_cases
     defined-by concept
     role research_criterion
     lexeme en
@@ -141,7 +141,7 @@ meanings
         text 用例
       surface
         text 应用
-  advantages:
+  advantages
     defined-by property
     role research_criterion
     lexeme en
@@ -164,7 +164,7 @@ meanings
         text 优点
       surface
         text 优势
-  disadvantages:
+  disadvantages
     defined-by property
     role research_criterion
     lexeme en

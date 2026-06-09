@@ -1,5 +1,5 @@
 meanings
-  program_language:
+  program_language
     defined-by software_language
     role program_language
     lexeme en
@@ -14,7 +14,7 @@ meanings
     lexeme zh
       surface
         text 编程语言
-  program_language_rust:
+  program_language_rust
     defined-by program_language
     defined-by language_rust
     role program_language_alias
@@ -34,7 +34,7 @@ meanings
     lexeme zh
       surface
         text rust
-  program_language_python:
+  program_language_python
     defined-by program_language
     defined-by language_python
     role program_language_alias
@@ -54,7 +54,7 @@ meanings
     lexeme zh
       surface
         text python
-  program_language_javascript:
+  program_language_javascript
     defined-by program_language
     defined-by language_javascript
     role program_language_alias
@@ -74,7 +74,7 @@ meanings
     lexeme zh
       surface
         text javascript
-  program_language_typescript:
+  program_language_typescript
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -91,7 +91,7 @@ meanings
     lexeme zh
       surface
         text typescript
-  program_language_go:
+  program_language_go
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -108,7 +108,7 @@ meanings
     lexeme zh
       surface
         text go
-  program_language_c:
+  program_language_c
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -123,7 +123,7 @@ meanings
     lexeme zh
       surface
         text c
-  program_language_cpp:
+  program_language_cpp
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -142,7 +142,7 @@ meanings
     lexeme zh
       surface
         text c++
-  program_language_java:
+  program_language_java
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -157,7 +157,7 @@ meanings
     lexeme zh
       surface
         text java
-  program_language_csharp:
+  program_language_csharp
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -178,7 +178,7 @@ meanings
     lexeme zh
       surface
         text "c#"
-  program_language_ruby:
+  program_language_ruby
     defined-by program_language
     role program_language_alias
     lexeme en
@@ -195,7 +195,7 @@ meanings
     lexeme zh
       surface
         text ruby
-  program_task:
+  program_task
     defined-by program
     role program_task
     lexeme en
@@ -210,7 +210,7 @@ meanings
     lexeme zh
       surface
         text 编程任务
-  program_task_hello_world:
+  program_task_hello_world
     defined-by program_task
     defined-by hello_world
     role program_task_alias
@@ -226,7 +226,7 @@ meanings
     lexeme zh
       surface
         text 你好世界
-  program_task_count_to_three:
+  program_task_count_to_three
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -253,7 +253,7 @@ meanings
         text 数到三
       surface
         text 数到3
-  program_task_list_files:
+  program_task_list_files
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -330,7 +330,7 @@ meanings
         text 列出目录中的文件
       surface
         text 列出文件
-  program_task_list_files_arg:
+  program_task_list_files_arg
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -361,7 +361,7 @@ meanings
         text 列出作为路径参数给出的目录中的文件
       surface
         text 列出路径参数指定目录中的文件
-  program_task_list_files_reverse_sort:
+  program_task_list_files_reverse_sort
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -388,7 +388,7 @@ meanings
         text 按相反顺序列出文件
       surface
         text 倒序列出文件
-  program_task_list_files_arg_reverse_sort:
+  program_task_list_files_arg_reverse_sort
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -415,7 +415,7 @@ meanings
         text 按相反顺序列出路径参数中的文件
       surface
         text 倒序列出路径参数指定目录中的文件
-  program_task_fizzbuzz:
+  program_task_fizzbuzz
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -438,7 +438,7 @@ meanings
     lexeme zh
       surface
         text 菲茨巴兹
-  program_task_factorial:
+  program_task_factorial
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -467,7 +467,7 @@ meanings
         text 5的阶乘
       surface
         text 五的阶乘
-  program_task_reverse_string:
+  program_task_reverse_string
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -500,7 +500,7 @@ meanings
         text 翻转字符串
       surface
         text 反转hello
-  program_task_sum_to_ten:
+  program_task_sum_to_ten
     defined-by program_task
     role program_task_alias
     lexeme en
@@ -535,7 +535,7 @@ meanings
         text 1到10求和
       surface
         text 求1到10的和
-  program_task_fibonacci:
+  program_task_fibonacci
     defined-by program_task
     role program_task_alias
     lexeme en

@@ -1,5 +1,5 @@
 meanings
-  explicit_web_search_command:
+  explicit_web_search_command
     defined-by web_search
     defined-by action
     role web_search_explicit_prefix
@@ -137,7 +137,7 @@ meanings
         text 在维基百科上搜索…
       surface
         text 上网查找…
-  topic_connective:
+  topic_connective
     defined-by relation
     role web_search_topic_marker
     lexeme en
@@ -186,7 +186,7 @@ meanings
         text 有关…
       surface
         text 有關…
-  query_leading_noise:
+  query_leading_noise
     defined-by concept
     role web_search_query_leading_noise
     lexeme en
@@ -281,7 +281,7 @@ meanings
         text 有关…
       surface
         text 有關…
-  query_trailing_noise:
+  query_trailing_noise
     defined-by concept
     role web_search_query_trailing_noise
     lexeme en

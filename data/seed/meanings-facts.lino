@@ -1,5 +1,5 @@
 meanings
-  knowledge_relation:
+  knowledge_relation
     defined-by knowledge_subject
     defined-by knowledge_value
     defined-by relation
@@ -24,7 +24,7 @@ meanings
         text 关系
       surface
         text 属性
-  knowledge_subject:
+  knowledge_subject
     defined-by knowledge_relation
     role knowledge_subject
     lexeme en
@@ -51,7 +51,7 @@ meanings
         text 主体
       surface
         text 实体
-  knowledge_value:
+  knowledge_value
     defined-by knowledge_relation
     role knowledge_value
     lexeme en
@@ -74,7 +74,7 @@ meanings
         text 值
       surface
         text 答案
-  capital:
+  capital
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -93,7 +93,7 @@ meanings
     lexeme zh
       surface
         text 首都
-  population:
+  population
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -112,7 +112,7 @@ meanings
     lexeme zh
       surface
         text 人口
-  currency:
+  currency
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -129,7 +129,7 @@ meanings
         text 货币
       surface
         text 貨幣
-  official_language:
+  official_language
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -152,7 +152,7 @@ meanings
         text 官方语言
       surface
         text 官方語言
-  continent:
+  continent
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -167,7 +167,7 @@ meanings
     lexeme zh
       surface
         text 大洲
-  author_of_book:
+  author_of_book
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -196,7 +196,7 @@ meanings
         text 是谁写的
       surface
         text 作者
-  painter_of_painting:
+  painter_of_painting
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -227,7 +227,7 @@ meanings
         text 谁画的
       surface
         text 画家
-  built_year:
+  built_year
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -258,7 +258,7 @@ meanings
         text 建于
       surface
         text 建造
-  physical_constant:
+  physical_constant
     defined-by knowledge_relation
     role fact_relation
     lexeme en

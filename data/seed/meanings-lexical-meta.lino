@@ -1,5 +1,5 @@
 meanings
-  lexical_form:
+  lexical_form
     defined-by notation
     defined-by word_surface
     role lexical_meta
@@ -31,7 +31,7 @@ meanings
         notation word_surface
         denotation lexical_form
         part_of_speech noun
-  word_surface:
+  word_surface
     defined-by lexical_form
     defined-by notation
     role lexical_meta
@@ -63,7 +63,7 @@ meanings
         notation word_surface
         denotation word_surface
         part_of_speech noun
-  lexical_sense:
+  lexical_sense
     defined-by denotation
     defined-by concept
     role lexical_meta
@@ -95,7 +95,7 @@ meanings
         notation word_surface
         denotation lexical_sense
         part_of_speech noun
-  part_of_speech:
+  part_of_speech
     defined-by semantic_facet
     defined-by lexical_form
     role semantic_facet_kind
@@ -128,7 +128,7 @@ meanings
         notation word_surface
         denotation part_of_speech
         part_of_speech noun
-  noun:
+  noun
     defined-by part_of_speech
     role lexical_meta
     notation word_surface
@@ -159,7 +159,7 @@ meanings
         notation word_surface
         denotation noun
         part_of_speech noun
-  noun_phrase:
+  noun_phrase
     defined-by noun
     defined-by lexical_form
     role lexical_meta

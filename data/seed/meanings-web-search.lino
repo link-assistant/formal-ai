@@ -1,5 +1,5 @@
 meanings
-  web_search:
+  web_search
     defined-by inquiry
     defined-by action
     defined-by web_resource
@@ -24,7 +24,7 @@ meanings
         text 网络搜索
       surface
         text 在网上搜索
-  reference_internet:
+  reference_internet
     defined-by web_resource
     defined-by entity
     role web_search_signal
@@ -68,7 +68,7 @@ meanings
         text 網路
       surface
         text 网络
-  reference_encyclopedia:
+  reference_encyclopedia
     defined-by web_resource
     defined-by entity
     role web_search_signal
@@ -103,7 +103,7 @@ meanings
         text 维基数据
       surface
         text 維基數據
-  reference_information:
+  reference_information
     defined-by concept
     role web_search_signal
     lexeme en
@@ -180,7 +180,7 @@ meanings
         text 資源
       surface
         text 文章
-  reference_news:
+  reference_news
     defined-by web_resource
     defined-by concept
     role web_search_signal
@@ -207,7 +207,7 @@ meanings
         text 头条
       surface
         text 頭條
-  news_recency_request:
+  news_recency_request
     defined-by time
     role web_search_news_recency
     lexeme en
@@ -244,7 +244,7 @@ meanings
         text 今日
       surface
         text 今天
-  act_search_strong:
+  act_search_strong
     defined-by inquiry
     defined-by action
     role web_search_action
@@ -338,7 +338,7 @@ meanings
         text 搜一下…
       surface
         text 查一下…
-  act_find_weak:
+  act_find_weak
     defined-by inquiry
     defined-by action
     role web_search_action
@@ -375,7 +375,7 @@ meanings
         text 找到
       surface
         text 找到…
-  web_search_mention:
+  web_search_mention
     defined-by web_search
     role web_search_history_signal
     lexeme en

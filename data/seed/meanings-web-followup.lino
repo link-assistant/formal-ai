@@ -1,5 +1,5 @@
 meanings
-  followup_instruction_verb:
+  followup_instruction_verb
     defined-by action
     role followup_instruction_verb
     lexeme en
@@ -60,7 +60,7 @@ meanings
         text 显示
       surface
         text 告诉
-  clause_continuation_marker:
+  clause_continuation_marker
     defined-by relation
     role clause_continuation_marker
     lexeme en

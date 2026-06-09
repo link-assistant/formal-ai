@@ -1,5 +1,5 @@
 meanings
-  quantity:
+  quantity
     defined-by unit
     defined-by property
     defined-by amount
@@ -17,7 +17,7 @@ meanings
     lexeme zh
       surface
         text 数量
-  unit:
+  unit
     defined-by quantity
     role measurement_concept
     lexeme en
@@ -32,7 +32,7 @@ meanings
     lexeme zh
       surface
         text 单位
-  cardinal_number:
+  cardinal_number
     defined-by quantity
     role numeric_concept
     lexeme en
@@ -49,7 +49,7 @@ meanings
     lexeme zh
       surface
         text 基数
-  zero:
+  zero
     defined-by cardinal_number
     defined-by empty
     role cardinal_number_word
@@ -69,7 +69,7 @@ meanings
     lexeme zh
       surface
         text 零
-  one:
+  one
     defined-by cardinal_number
     defined-by single
     role cardinal_number_word
@@ -91,7 +91,7 @@ meanings
     lexeme zh
       surface
         text 一
-  two:
+  two
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -110,7 +110,7 @@ meanings
     lexeme zh
       surface
         text 二
-  three:
+  three
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -127,7 +127,7 @@ meanings
     lexeme zh
       surface
         text 三
-  four:
+  four
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -144,7 +144,7 @@ meanings
     lexeme zh
       surface
         text 四
-  five:
+  five
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -161,7 +161,7 @@ meanings
     lexeme zh
       surface
         text 五
-  six:
+  six
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -178,7 +178,7 @@ meanings
     lexeme zh
       surface
         text 六
-  seven:
+  seven
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -195,7 +195,7 @@ meanings
     lexeme zh
       surface
         text 七
-  eight:
+  eight
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -212,7 +212,7 @@ meanings
     lexeme zh
       surface
         text 八
-  nine:
+  nine
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -229,7 +229,7 @@ meanings
     lexeme zh
       surface
         text 九
-  ten:
+  ten
     defined-by cardinal_number
     role cardinal_number_word
     lexeme en
@@ -246,7 +246,7 @@ meanings
     lexeme zh
       surface
         text 十
-  length:
+  length
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -261,7 +261,7 @@ meanings
     lexeme zh
       surface
         text 长度
-  data_storage:
+  data_storage
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -276,7 +276,7 @@ meanings
     lexeme zh
       surface
         text 数据存储
-  mass:
+  mass
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -291,7 +291,7 @@ meanings
     lexeme zh
       surface
         text 质量
-  time:
+  time
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -306,7 +306,7 @@ meanings
     lexeme zh
       surface
         text 时间
-  temperature:
+  temperature
     defined-by quantity
     role physical_dimension
     lexeme en
@@ -321,7 +321,7 @@ meanings
     lexeme zh
       surface
         text 温度
-  meter:
+  meter
     defined-by length
     defined-by unit
     role measurement_unit
@@ -347,7 +347,7 @@ meanings
     lexeme zh
       surface
         text 米
-  kilometer:
+  kilometer
     defined-by length
     defined-by unit
     role measurement_unit
@@ -377,7 +377,7 @@ meanings
         text 千米
       surface
         text 公里
-  centimeter:
+  centimeter
     defined-by length
     defined-by unit
     role measurement_unit
@@ -397,7 +397,7 @@ meanings
     lexeme zh
       surface
         text 厘米
-  millimeter:
+  millimeter
     defined-by length
     defined-by unit
     role measurement_unit
@@ -417,7 +417,7 @@ meanings
     lexeme zh
       surface
         text 毫米
-  byte:
+  byte
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -439,7 +439,7 @@ meanings
     lexeme zh
       surface
         text 字节
-  kilobyte:
+  kilobyte
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -460,7 +460,7 @@ meanings
     lexeme zh
       surface
         text 千字节
-  megabyte:
+  megabyte
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -481,7 +481,7 @@ meanings
     lexeme zh
       surface
         text 兆字节
-  gigabyte:
+  gigabyte
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -501,7 +501,7 @@ meanings
     lexeme zh
       surface
         text 吉字节
-  terabyte:
+  terabyte
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -521,7 +521,7 @@ meanings
     lexeme zh
       surface
         text 太字节
-  bit:
+  bit
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -543,7 +543,7 @@ meanings
     lexeme zh
       surface
         text 比特
-  kilogram:
+  kilogram
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -568,7 +568,7 @@ meanings
         text 千克
       surface
         text 公斤
-  gram:
+  gram
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -587,7 +587,7 @@ meanings
     lexeme zh
       surface
         text 克
-  pound:
+  pound
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -605,7 +605,7 @@ meanings
     lexeme zh
       surface
         text 磅
-  ton:
+  ton
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -630,7 +630,7 @@ meanings
     lexeme zh
       surface
         text 吨
-  second:
+  second
     defined-by time
     defined-by unit
     role measurement_unit
@@ -653,7 +653,7 @@ meanings
     lexeme zh
       surface
         text 秒
-  minute:
+  minute
     defined-by time
     defined-by unit
     role measurement_unit
@@ -676,7 +676,7 @@ meanings
     lexeme zh
       surface
         text 分钟
-  hour:
+  hour
     defined-by time
     defined-by unit
     role measurement_unit
@@ -699,7 +699,7 @@ meanings
     lexeme zh
       surface
         text 小时
-  millisecond:
+  millisecond
     defined-by time
     defined-by unit
     role measurement_unit
@@ -722,7 +722,7 @@ meanings
     lexeme zh
       surface
         text 毫秒
-  day:
+  day
     defined-by time
     defined-by unit
     role measurement_unit
@@ -747,7 +747,7 @@ meanings
         text 天
       surface
         text 日
-  month:
+  month
     defined-by time
     defined-by unit
     role measurement_unit
@@ -774,7 +774,7 @@ meanings
         text 月
       surface
         text 个月
-  celsius:
+  celsius
     defined-by temperature
     defined-by unit
     role measurement_unit
@@ -790,7 +790,7 @@ meanings
     lexeme zh
       surface
         text 摄氏度
-  fahrenheit:
+  fahrenheit
     defined-by temperature
     defined-by unit
     role measurement_unit
@@ -806,7 +806,7 @@ meanings
     lexeme zh
       surface
         text 华氏度
-  kelvin:
+  kelvin
     defined-by temperature
     defined-by unit
     role measurement_unit

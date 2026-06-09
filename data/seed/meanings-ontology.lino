@@ -1,5 +1,5 @@
 meanings
-  link:
+  link
     defined-by link
     defined-by link-action
     defined-by any-of-reference
@@ -28,7 +28,7 @@ meanings
         text 链接
       surface
         text 连接
-  type:
+  type
     defined-by link
     defined-by type
     role ontology_type
@@ -53,7 +53,7 @@ meanings
         text 类型
       surface
         text 种类
-  entity:
+  entity
     defined-by type
     role ontology_category
     lexeme en
@@ -76,7 +76,7 @@ meanings
         text 实体
       surface
         text 事物
-  concept:
+  concept
     defined-by type
     role ontology_category
     lexeme en
@@ -99,7 +99,7 @@ meanings
         text 概念
       surface
         text 观念
-  relation:
+  relation
     defined-by link
     source-lexeme L3743 # wikidata english noun relation
       language Q1860 # wikidata language english
@@ -150,7 +150,7 @@ meanings
         text 关系
       surface
         text 联系
-  action:
+  action
     defined-by concept
     role ontology_category
     lexeme en
@@ -173,7 +173,7 @@ meanings
         text 动作
       surface
         text 操作
-  property:
+  property
     defined-by concept
     role ontology_category
     lexeme en

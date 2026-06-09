@@ -1,5 +1,5 @@
 meanings
-  monday:
+  monday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -26,7 +26,7 @@ meanings
         text 星期一
       surface
         text 周一
-  tuesday:
+  tuesday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -55,7 +55,7 @@ meanings
         text 星期二
       surface
         text 周二
-  wednesday:
+  wednesday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -82,7 +82,7 @@ meanings
         text 星期三
       surface
         text 周三
-  thursday:
+  thursday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -113,7 +113,7 @@ meanings
         text 星期四
       surface
         text 周四
-  friday:
+  friday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -140,7 +140,7 @@ meanings
         text 星期五
       surface
         text 周五
-  saturday:
+  saturday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -167,7 +167,7 @@ meanings
         text 星期六
       surface
         text 周六
-  sunday:
+  sunday
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -194,7 +194,7 @@ meanings
         text 星期天
       surface
         text 周日
-  calendar_day:
+  calendar_day
     defined-by calendar_week
     defined-by calendar_date
     defined-by concept
@@ -223,7 +223,7 @@ meanings
         text 星期几
       surface
         text 日子
-  calendar_date:
+  calendar_date
     defined-by calendar_day
     role calendar_day_reference
     lexeme en
@@ -246,7 +246,7 @@ meanings
         text 日期
       surface
         text 几号
-  calendar_week:
+  calendar_week
     defined-by calendar_day
     role calendar_day_reference
     lexeme en
@@ -273,7 +273,7 @@ meanings
         text 星期
       surface
         text 周
-  calendar_following:
+  calendar_following
     defined-by calendar_day
     role calendar_direction_next
     lexeme en
@@ -320,7 +320,7 @@ meanings
         text 下一个
       surface
         text 下一天
-  calendar_preceding:
+  calendar_preceding
     defined-by calendar_day
     role calendar_direction_previous
     lexeme en
@@ -363,7 +363,7 @@ meanings
         text 上一个
       surface
         text 上一天
-  calendar_today:
+  calendar_today
     defined-by calendar_day
     role calendar_today
     lexeme en
@@ -378,7 +378,7 @@ meanings
     lexeme zh
       surface
         text 今天
-  calendar_interrogative:
+  calendar_interrogative
     defined-by calendar_day
     role calendar_question
     lexeme en

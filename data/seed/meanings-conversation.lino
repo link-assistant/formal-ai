@@ -1,5 +1,5 @@
 meanings
-  conversation_topic_opener:
+  conversation_topic_opener
     defined-by inquiry
     defined-by action
     role conversation_topic_opener

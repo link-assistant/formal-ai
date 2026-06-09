@@ -1,5 +1,5 @@
 meanings
-  software_followup:
+  software_followup
     defined-by software_followup_verification
     defined-by software_followup_execution
     defined-by software_followup_demonstration
@@ -25,7 +25,7 @@ meanings
         text 后续
       surface
         text 演练
-  software_followup_verification:
+  software_followup_verification
     defined-by software_followup
     role software_followup_verification
     lexeme en
@@ -66,7 +66,7 @@ meanings
         text 检验
       surface
         text 检查
-  software_followup_execution:
+  software_followup_execution
     defined-by software_followup
     role software_followup_execution
     lexeme en
@@ -97,7 +97,7 @@ meanings
         text 运行
       surface
         text 执行
-  software_followup_demonstration:
+  software_followup_demonstration
     defined-by software_followup
     role software_followup_demonstration
     lexeme en
@@ -120,7 +120,7 @@ meanings
         text 显示
       surface
         text 展示
-  output_display_request:
+  output_display_request
     defined-by software_followup
     defined-by action
     role output_display_request
@@ -150,7 +150,7 @@ meanings
         text 给我看…
       surface
         text 显示…
-  implement:
+  implement
     defined-by code
     defined-by program
     role software_authoring_action
@@ -168,7 +168,7 @@ meanings
     lexeme zh
       surface
         text 实现
-  develop:
+  develop
     defined-by program
     role software_authoring_action
     lexeme en
@@ -185,7 +185,7 @@ meanings
     lexeme zh
       surface
         text 开发
-  design:
+  design
     defined-by program
     role software_authoring_action
     lexeme en
@@ -202,7 +202,7 @@ meanings
     lexeme zh
       surface
         text 设计
-  scaffold:
+  scaffold
     defined-by code
     defined-by program
     role software_authoring_action
@@ -220,7 +220,7 @@ meanings
     lexeme zh
       surface
         text 搭建
-  software_artifact:
+  software_artifact
     defined-by artifact_application
     defined-by artifact_tool
     defined-by entity
@@ -241,7 +241,7 @@ meanings
     lexeme zh
       surface
         text 软件制品
-  artifact_browser_extension:
+  artifact_browser_extension
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -256,7 +256,7 @@ meanings
     lexeme zh
       surface
         text 浏览器扩展
-  artifact_command_line_tool:
+  artifact_command_line_tool
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -275,7 +275,7 @@ meanings
     lexeme zh
       surface
         text 命令行工具
-  artifact_github_action:
+  artifact_github_action
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -290,7 +290,7 @@ meanings
     lexeme zh
       surface
         text "github 操作"
-  artifact_mobile_app:
+  artifact_mobile_app
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -305,7 +305,7 @@ meanings
     lexeme zh
       surface
         text 移动应用
-  artifact_web_app:
+  artifact_web_app
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -320,7 +320,7 @@ meanings
     lexeme zh
       surface
         text 网页应用
-  artifact_application:
+  artifact_application
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -335,7 +335,7 @@ meanings
     lexeme zh
       surface
         text 应用程序
-  artifact_extension:
+  artifact_extension
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -360,7 +360,7 @@ meanings
         text 扩展
       surface
         text 扩展程序
-  artifact_dashboard:
+  artifact_dashboard
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -377,7 +377,7 @@ meanings
     lexeme zh
       surface
         text 仪表板
-  artifact_scraper:
+  artifact_scraper
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -394,7 +394,7 @@ meanings
     lexeme zh
       surface
         text 爬虫
-  artifact_library:
+  artifact_library
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -411,7 +411,7 @@ meanings
     lexeme zh
       surface
         text 库
-  artifact_website:
+  artifact_website
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -428,7 +428,7 @@ meanings
     lexeme zh
       surface
         text 网站
-  artifact_plugin:
+  artifact_plugin
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -443,7 +443,7 @@ meanings
     lexeme zh
       surface
         text 插件
-  artifact_service:
+  artifact_service
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -462,7 +462,7 @@ meanings
     lexeme zh
       surface
         text 服务
-  artifact_bot:
+  artifact_bot
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -477,7 +477,7 @@ meanings
     lexeme zh
       surface
         text 机器人
-  artifact_app:
+  artifact_app
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -492,7 +492,7 @@ meanings
     lexeme zh
       surface
         text 应用
-  artifact_api:
+  artifact_api
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -507,7 +507,7 @@ meanings
     lexeme zh
       surface
         text 接口
-  artifact_sdk:
+  artifact_sdk
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -522,7 +522,7 @@ meanings
     lexeme zh
       surface
         text 开发包
-  artifact_tool:
+  artifact_tool
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -539,7 +539,7 @@ meanings
     lexeme zh
       surface
         text 工具
-  artifact_mod:
+  artifact_mod
     defined-by software_artifact
     role software_artifact_kind
     lexeme en
@@ -554,7 +554,7 @@ meanings
     lexeme zh
       surface
         text 模组
-  software_feature:
+  software_feature
     defined-by requirement_state_tracking
     defined-by requirement_project_behavior
     defined-by property
@@ -583,7 +583,7 @@ meanings
         text 功能
       surface
         text 需求
-  requirement_state_tracking:
+  requirement_state_tracking
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -616,7 +616,7 @@ meanings
         text 伤害
       surface
         text 冷却
-  requirement_data_exchange:
+  requirement_data_exchange
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -657,7 +657,7 @@ meanings
         text 备份
       surface
         text 报告
-  requirement_automation:
+  requirement_automation
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -688,7 +688,7 @@ meanings
         text 通知
       surface
         text 计划
-  requirement_validation:
+  requirement_validation
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -719,7 +719,7 @@ meanings
         text 检查
       surface
         text 审计
-  requirement_integration:
+  requirement_integration
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -752,7 +752,7 @@ meanings
         text 接口
       surface
         text 浏览器
-  requirement_user_interface:
+  requirement_user_interface
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -783,7 +783,7 @@ meanings
         text 图表
       surface
         text 筛选
-  requirement_project_behavior:
+  requirement_project_behavior
     defined-by software_feature
     role software_requirement_category
     lexeme en
@@ -852,7 +852,7 @@ meanings
         text 文件
       surface
         text 上传
-  software_delivery:
+  software_delivery
     defined-by software_artifact
     defined-by delivery_manual_instructions
     role software_delivery
@@ -868,7 +868,7 @@ meanings
     lexeme zh
       surface
         text 交付
-  delivery_manual_instructions:
+  delivery_manual_instructions
     defined-by software_delivery
     role software_delivery_mode
     lexeme en
@@ -899,7 +899,7 @@ meanings
         text 手动说明
       surface
         text 说明
-  delivery_immediate_execution:
+  delivery_immediate_execution
     defined-by software_delivery
     role software_delivery_mode
     lexeme en
@@ -928,7 +928,7 @@ meanings
         text 立即运行
       surface
         text 执行
-  delivery_script_generation:
+  delivery_script_generation
     defined-by software_delivery
     role software_delivery_mode
     lexeme en
@@ -959,7 +959,7 @@ meanings
         text 脚本
       surface
         text 外壳脚本
-  software_language:
+  software_language
     defined-by software_artifact
     defined-by language_python
     role software_language
@@ -975,7 +975,7 @@ meanings
     lexeme zh
       surface
         text 编程语言
-  language_python:
+  language_python
     defined-by software_language
     role software_implementation_language
     lexeme en
@@ -996,7 +996,7 @@ meanings
     lexeme zh
       surface
         text python
-  language_rust:
+  language_rust
     defined-by software_language
     role software_implementation_language
     lexeme en
@@ -1013,7 +1013,7 @@ meanings
     lexeme zh
       surface
         text rust
-  language_javascript:
+  language_javascript
     defined-by software_language
     role software_implementation_language
     lexeme en
@@ -1030,7 +1030,7 @@ meanings
     lexeme zh
       surface
         text javascript
-  implementation_language_preposition:
+  implementation_language_preposition
     defined-by software_language
     role implementation_language_preposition
     lexeme en
@@ -1045,7 +1045,7 @@ meanings
     lexeme zh
       surface
         text 用
-  implementation_language_noun:
+  implementation_language_noun
     defined-by software_language
     role implementation_language_noun
     lexeme en
@@ -1060,7 +1060,7 @@ meanings
     lexeme zh
       surface
         text 语言
-  tabletop_game_tracker:
+  tabletop_game_tracker
     defined-by game_tracker_domain
     defined-by game_tracker_mechanic
     role tabletop_game_tracker
@@ -1076,7 +1076,7 @@ meanings
     lexeme zh
       surface
         text 桌游追踪器
-  game_tracker_domain:
+  game_tracker_domain
     defined-by tabletop_game_tracker
     role game_tracker_domain
     lexeme en
@@ -1111,7 +1111,7 @@ meanings
         text 棋子
       surface
         text 战棋
-  game_tracker_mechanic:
+  game_tracker_mechanic
     defined-by tabletop_game_tracker
     defined-by requirement_state_tracking
     role game_tracker_mechanic
@@ -1157,7 +1157,7 @@ meanings
         text 抗性
       surface
         text 冷却
-  software_approval:
+  software_approval
     defined-by software_approval_trigger
     defined-by software_step_granularity
     defined-by concept
@@ -1174,7 +1174,7 @@ meanings
     lexeme zh
       surface
         text 批准
-  software_approval_trigger:
+  software_approval_trigger
     defined-by software_approval
     role software_approval_trigger
     lexeme en
@@ -1225,7 +1225,7 @@ meanings
         text 同意
       surface
         text 开始
-  software_step_granularity:
+  software_step_granularity
     defined-by software_approval
     role software_step_granularity
     lexeme en
@@ -1248,7 +1248,7 @@ meanings
         text 每一步
       surface
         text 逐步
-  software_bash_command:
+  software_bash_command
     defined-by software_delivery
     role software_bash_command
     lexeme en

@@ -228,50 +228,33 @@ fn seed_lino_values_never_pipe_pack_multi_values() {
 
 #[test]
 fn seed_lino_files_have_no_empty_redefinition_fields() {
-    // Issue #398 review (comment 4663407299), defect #1: a semantic facet (or any
-    // field) must use the native `subject predicate` form — two references on one
-    // line, e.g. `notation word_surface`, `denotation lexical_sense`. The banned
-    // shape is an *empty* colon redefinition: `word_surface:` with no body, which
-    // merely restates a concept already defined elsewhere.
+    // Issue #398 review (comment 4664274427, defect 4 / CI check 4): every
+    // `^\s*[\w-]+:\s*$` line is an empty colon redefinition — a YAML-style
+    // header (`monday:`) whose trailing colon restates the slug as a valueless
+    // key. Links Notation has no such form: a node is just an indented name,
+    // exactly like its own `surface` / `lexeme en` children, which already carry
+    // no colon. The native definition header drops the colon (`monday`), with
+    // the definition living in the deeper-indented children.
     //
-    // The earlier guard (`lino_data_files_avoid_jsonish_and_unresolved_tokens`)
-    // only caught `key: # comment`; it missed a bare `word_surface:`. This check
-    // is the broad version: it walks the *entire* seed tree and fails on any
-    // colon line whose body is empty — i.e. it has no deeper-indented child. A
-    // real definition header (`result:` followed by indented `defined-by …`) has
-    // a body and passes; only the valueless redefinition fails.
-    // `scripts/migrate-empty-facet-fields.rs` performs the migration.
+    // This is the reviewer's exact regex applied tree-wide: it fails on *any*
+    // bare-identifier line that ends in a colon, whether or not it has a body.
+    // Stripping the colon is parse-equivalent — `parse_colon_definition`
+    // (`src/seed/parser.rs`) turns `monday:` into `(name = "monday", id = "")`,
+    // identical to the bare node `monday`. `scripts/migrate-empty-redefinition-fields.rs`
+    // performs the whole-tree migration and regenerates the browser worker embed.
     let empty_colon = Regex::new(r"^[A-Za-z0-9_.-]+:$").expect("empty colon regex should compile");
     for path in seed_lino_paths() {
         let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
-        let lines: Vec<&str> = content.lines().collect();
-        for (index, line) in lines.iter().enumerate() {
-            let skeleton = strip_quoted_spans(strip_lino_comment(line));
-            let body = skeleton.trim();
-            if !empty_colon.is_match(body) {
-                continue;
-            }
-            let indent = line
-                .chars()
-                .take_while(|character| *character == ' ')
-                .count();
-            // A genuine block header is followed by a deeper-indented child; an
-            // empty redefinition is not.
-            let has_child = lines[index + 1..]
-                .iter()
-                .find(|next| !strip_lino_comment(next).trim().is_empty())
-                .is_some_and(|next| {
-                    next.chars()
-                        .take_while(|character| *character == ' ')
-                        .count()
-                        > indent
-                });
+        for (index, line) in content.lines().enumerate() {
+            let body = strip_quoted_spans(strip_lino_comment(line));
+            let body = body.trim();
             assert!(
-                has_child,
-                "{}:{} is an empty colon redefinition `{body}`; use the native \
-                 `subject predicate` form (two references on one line) instead: {line}",
+                !empty_colon.is_match(body),
+                "{}:{} is an empty colon redefinition `{body}`; drop the trailing \
+                 colon so it is a native Links Notation node (`{}`): {line}",
                 path.display(),
                 index + 1,
+                body.trim_end_matches(':'),
             );
         }
     }
