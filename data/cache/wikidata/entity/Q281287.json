@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Q281287": {
+      "type": "item",
+      "id": "Q281287",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "politeness"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вежливость"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भद्रता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "礼貌"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "practical application of good manners or etiquette so as not to offend others"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "умение уважительно и тактично общаться с людьми"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "polite"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "учтивость"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

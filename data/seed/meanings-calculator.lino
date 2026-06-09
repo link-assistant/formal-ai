@@ -344,6 +344,7 @@ meanings
       surface
         text "गणना करें"
   politeness
+    grounded-in Q281287
     defined-by property
     role politeness_cue
     lexeme en

@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q3151690": {
+      "type": "item",
+      "id": "Q3151690",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "today"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сегодня"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "今天"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "current day"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "текущий, настоящий день"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "目前的這天"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "今日"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

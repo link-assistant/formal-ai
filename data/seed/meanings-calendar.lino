@@ -374,6 +374,7 @@ meanings
       surface
         text 上一天
   calendar_today
+    grounded-in Q3151690
     defined-by calendar_day
     role calendar_today
     lexeme en
