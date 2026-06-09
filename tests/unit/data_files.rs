@@ -630,6 +630,34 @@ fn cache_source_json_is_pretty_printed() {
     assert!(checked > 0, "expected checked-in cache JSON snapshots");
 }
 
+/// The number of meanings carrying a `grounded-in <id>` anchor must never
+/// regress below this floor. Issue #398 (review comment 4664274427, CI check 3)
+/// wants *every* meaning grounded to a real Wikidata/Wiktionary id; this ratchet
+/// records progress toward that goal so each batch can only raise it. Bump it
+/// (and never lower it) whenever `scripts/ground-meanings.rs` grounds more
+/// meanings. The matching `data/cache` snapshots keep the closure checked in.
+const GROUNDED_MEANING_FLOOR: usize = 54;
+
+#[test]
+fn grounded_meaning_coverage_does_not_regress() {
+    let definitions = meaning_definitions();
+    let total = definitions.len();
+    let grounded = definitions
+        .iter()
+        .filter(|(_, _, body)| {
+            body.lines()
+                .any(|line| line.trim().starts_with("grounded-in "))
+        })
+        .count();
+
+    assert!(
+        grounded >= GROUNDED_MEANING_FLOOR,
+        "grounded-meaning coverage regressed: {grounded}/{total} grounded, \
+         floor is {GROUNDED_MEANING_FLOOR}. Grounding is append-only — re-run \
+         scripts/ground-meanings.rs rather than removing grounded-in anchors."
+    );
+}
+
 /// Every top-level meaning across the `data/seed/meanings*.lino` tree as
 /// `(file, slug, full-definition-body)`. The body is the verbatim block of
 /// deeper-indented child lines (comments stripped), used for uniqueness checks.

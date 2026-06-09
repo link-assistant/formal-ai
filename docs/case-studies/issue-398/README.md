@@ -284,17 +284,49 @@ one*. Resolutions this round:
   (`scripts/migrate-empty-facet-fields.rs`, `scripts/clean-seed-readability.rs`)
   rather than hand-edited.
 
-- **External grounding (R282) — partial, expansion ongoing.** Source-grounded
-  meanings carry `grounded-in <Qid>` links whose recursive closure is verified
-  against checked-in cache records (`wikidata_cache_records_cover_recursive_grounding_closure`,
-  `seed_and_source_wikidata_ids_have_checked_in_cache_records`). Grounding every
-  remaining meaning to an external source — and sourcing per-language surfaces
-  from those records instead of hand-typing them — is a corpus-import effort
-  larger than one PR; it remains the primary follow-up below. A grounding-floor
-  CI check is intentionally held back until the data is grounded, because adding
-  it before the backfill would only make CI red without protecting any
-  invariant. The override layer (R279) is the sanctioned way to record a source
-  gap in the meantime.
+- **Lossless cache codec and native-node migration (R283, R284).** The
+  JSON ↔ Links Notation cache codec (`formal_ai::json_lino`) now losslessly
+  round-trips the *entire* source snapshot (`forms`, `senses`, `claims`, every
+  key), and the circular round-trip test was replaced by one that rebuilds the
+  full original JSON from the lino and asserts key-for-key equality with the raw
+  `.json` (`wikidata_lino_cache_rebuilds_full_json_losslessly`). Empty
+  arrays/objects/nulls are never emitted, and Wiktionary snapshots are
+  pretty-printed multi-line. Separately, every meaning header migrated from the
+  YAML-style trailing-colon form (`monday:`) to a native Links Notation node
+  (`monday`) tree-wide via `scripts/migrate-empty-redefinition-fields.rs`,
+  removing all 428 empty colon redefinition fields; the transform is
+  parse-equivalent and `seed_lino_files_have_no_empty_redefinition_fields`
+  enforces the reviewer's exact `^\s*[\w-]+:\s*$` regex.
+
+- **External grounding (R282) — verified pipeline, monotonic backfill.**
+  Source-grounded meanings carry `grounded-in <Qid>` links whose recursive
+  closure is verified against checked-in cache records
+  (`wikidata_cache_records_cover_recursive_grounding_closure`,
+  `seed_and_source_wikidata_ids_have_checked_in_cache_records`). The backfill is
+  now driven by `scripts/ground-meanings.rs`, a re-runnable, **self-verifying**
+  pipeline: for each curated `(slug, id, expected-label-token)` it fetches
+  `Special:EntityData/<id>.json`, trims it to the cache convention, and grounds
+  the meaning **only if** the fetched entity's labels actually contain the
+  expected concept token. That guard is essential — a hand-assigned id is wrong
+  more often than not (`Q206` resolves to "Stephen Harper", not "seven";
+  `Q170043` to "perfect number", not "modulo"), and the verifier refuses every
+  such mismatch rather than injecting a plausible-but-wrong anchor. The first
+  batch grounded 37 common-vocabulary meanings (weekdays, arithmetic operations,
+  currencies, length/mass/time/data units, temperature, math functions, core
+  quantities), raising checked-in coverage from 18 to 55 `grounded-in` anchors,
+  each with its source snapshot under `data/cache/wikidata/entity/`.
+
+  Rather than a fail-until-complete grounding gate (which would only turn CI red
+  without protecting an invariant while the corpus import proceeds), coverage is
+  protected by a **monotonic ratchet**, `grounded_meaning_coverage_does_not_regress`
+  (`tests/unit/data_files.rs`), matching the repo's established benchmark-ratchet
+  pattern: the grounded-meaning floor (54) can only rise, so grounding is
+  append-only and every batch is locked in. Grounding the long tail of
+  domain-composite meanings (e.g. `program_task_fizzbuzz`,
+  `feature_capability_web_search`) — which have no single Wikidata entity and
+  must be anchored through the override layer (R279) — and sourcing full
+  per-language word forms from Wikidata lexemes remain the primary follow-up
+  below.
 
 ## Follow-up issues worth opening
 
