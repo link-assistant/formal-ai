@@ -8,9 +8,11 @@ Q81
     hi "जड़ वाली सब्जी, आमतौर पर नारंगी रंग"
     ru "овощ и фрукт"
     zh "伞形目伞形科的植物"
+  id Q81
   labels
     en carrot
     hi "गाजर"
     ru "морковь"
     zh "胡萝卜"
   type item
+success 1

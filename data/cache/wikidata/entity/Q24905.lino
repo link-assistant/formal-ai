@@ -1,15 +1,17 @@
 Q24905
   aliases
-    en ("v." "vb.")
+    en (v. vb.)
     ru ("глаголы")
     zh ("動詞")
   descriptions
     en "class of words that semantically convey actions, processes, or states, and syntactically serve as the central element of the sentence predicate"
     hi "विकारी शब्द ,अक्षर सम्बन्धित कार्यवाई"
     ru "часть речи, означающая действие"
+  id Q24905
   labels
     en verb
     hi "क्रिया"
     ru "глагол"
     zh "动词"
   type item
+success 1

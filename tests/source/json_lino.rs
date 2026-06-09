@@ -1,219 +1,249 @@
-//! JSON-to-LiNo cache encoding.
+//! Lossless JSON ↔ Links Notation cache codec (issue #398).
 //!
-//! The cache format maps JSON object keys to native Links Notation ids and keeps
-//! source strings as scalar references. Checked-in Wikidata cache files are a
-//! canonical projection of the raw JSON snapshot stored next to each `.lino`
-//! file: the `LiNo` side keeps source labels, descriptions, aliases, lexeme
-//! lemmas, and entity metadata without dragging the full transitive claim graph
-//! into seed grounding.
+//! Checked-in Wikidata / Wiktionary cache files store the *entire* upstream
+//! JSON snapshot as compact, native Links Notation — every key (labels,
+//! descriptions, aliases, lemmas, lexical category, language, **and** the full
+//! `forms`, `senses` and `claims` graph) survives the round trip. The earlier
+//! codec kept only an eight-key projection, silently dropping forms / senses /
+//! claims; this one is provably lossless:
+//!
+//! * [`json_cache_file`] encodes the whole document. Wikidata entity snapshots
+//!   keep their readable *entity-rooted* shape — the `Q…` / `L…` / `P…` id is
+//!   the top-level node, its fields are indented under it, and sibling
+//!   top-level keys such as `success` stay at the root. `labels`,
+//!   `descriptions`, `lemmas` and `aliases` keep the compact `lang value`
+//!   form because the per-language `{language, value}` wrapper is fully
+//!   reconstructible (the inner `language` always equals the map key).
+//! * [`lino_to_json`] rebuilds the original JSON `Value` from the Links
+//!   Notation text,
+//!   re-expanding the language wrappers, so `lino_to_json(json_cache_file(v))`
+//!   equals `v` for every cached document — modulo empty collections.
+//! * Empty arrays / objects and JSON `null` are **never emitted**: an empty
+//!   collection is an absent default (issue #398 review, defect #5).
+//!   [`json_cache_projection`] returns the same empties-stripped normal form,
+//!   which is exactly what `lino_to_json` reconstructs.
+//!
+//! The decoder uses its own quote-preserving tokenizer (not the seed
+//! [`parse_lino`](crate::seed::parser::parse_lino), which decodes quotes
+//! eagerly) so a string that *looks* like a number — e.g. the external-id
+//! value `"146"` — is never silently retyped: ambiguous strings are quoted on
+//! encode and recognised as strings on decode.
 
 use serde_json::{Map, Number, Value};
 
-use crate::seed::parser::{parse_lino, LinoNode};
-
-const LEGACY_ARRAY_MARKER: &str = "[]";
-const LEGACY_EMPTY_OBJECT_MARKER: &str = "{}";
-const LEGACY_ROOT_OBJECT: &str = "json-object";
-const LEGACY_ROOT_ARRAY: &str = "json-array";
-const LEGACY_ARRAY_ITEM_PREFIX: &str = "at-";
 const ARRAY_ENTRY: &str = "entry";
-const STRING_MARKER: &str = "string";
+const ENTITIES_KEY: &str = "entities";
+
+// ---------------------------------------------------------------------------
+// Empty-collection normalization (defect #5)
+// ---------------------------------------------------------------------------
+
+/// Recursively drop JSON `null`, empty arrays and empty objects.
+///
+/// An empty collection is an absent default, so it never reaches the Links
+/// Notation encoding and is normalised away on both sides of the round-trip
+/// comparison.
+#[must_use]
+pub fn strip_empty(value: &Value) -> Option<Value> {
+    match value {
+        Value::Null => None,
+        Value::Array(items) => {
+            let kept: Vec<Value> = items.iter().filter_map(strip_empty).collect();
+            (!kept.is_empty()).then_some(Value::Array(kept))
+        }
+        Value::Object(object) => {
+            let mut kept = Map::new();
+            for (key, value) in object {
+                if let Some(value) = strip_empty(value) {
+                    kept.insert(key.clone(), value);
+                }
+            }
+            (!kept.is_empty()).then_some(Value::Object(kept))
+        }
+        scalar => Some(scalar.clone()),
+    }
+}
+
+fn normal_form(value: &Value) -> Value {
+    strip_empty(value).unwrap_or_else(|| Value::Object(Map::new()))
+}
+
+// ---------------------------------------------------------------------------
+// Encoding
+// ---------------------------------------------------------------------------
 
 #[must_use]
 pub fn json_to_lino(value: &Value) -> String {
+    let value = normal_form(value);
     let mut out = String::new();
-    match value {
-        Value::Object(object) => write_object_entries(&mut out, 0, object, None),
-        _ => write_named_value(&mut out, 0, "value", value),
-    }
+    write_document(&mut out, &value);
     out
 }
 
+/// Encode a cached source document.
+///
+/// Wikidata entity snapshots (`{entities: {<id>: …}, success: 1}`) keep their
+/// entity-rooted form; any other document (e.g. the Wiktionary array) uses the
+/// generic encoding.
 #[must_use]
 pub fn json_cache_file(root_id: &str, value: &Value) -> String {
+    let value = normal_form(value);
     let mut out = String::new();
-    if let Some(entity) = wikidata_entity_projection(value, root_id) {
-        write_entity_cache_file(&mut out, root_id, &entity);
+    if let Some((entity_id, entity)) = single_entity(&value, root_id) {
+        write_line(&mut out, 0, entity_id, None);
+        write_entity_fields(&mut out, 2, entity);
+        if let Value::Object(object) = &value {
+            for (key, field) in object {
+                if key != ENTITIES_KEY {
+                    write_named_value(&mut out, 0, key, field);
+                }
+            }
+        }
     } else {
-        write_line(&mut out, 0, root_id, None, None);
-        write_named_value(&mut out, 2, "value", value);
+        write_document(&mut out, &value);
     }
     out
 }
 
+/// The empties-stripped JSON that [`lino_to_json`] reconstructs from
+/// [`json_cache_file`]'s output.
+///
+/// Comparing a decoded cache file against this proves the codec is lossless up
+/// to the empty-collection normal form.
 #[must_use]
-pub fn json_cache_projection(root_id: &str, value: &Value) -> Value {
-    if let Some(entity) = wikidata_entity_projection(value, root_id) {
-        let mut entities = Map::new();
-        entities.insert(root_id.to_string(), Value::Object(entity));
-        let mut root = Map::new();
-        root.insert(String::from("entities"), Value::Object(entities));
-        return Value::Object(root);
-    }
-    value.clone()
+pub fn json_cache_projection(_root_id: &str, value: &Value) -> Value {
+    normal_form(value)
 }
 
-pub fn lino_to_json(text: &str) -> Result<Value, String> {
-    let tree = parse_lino(text);
-    if let Some(node) = find_legacy_json_node(&tree) {
-        return parse_legacy_json_value(node);
-    }
-    parse_compact_document(&tree)
+fn single_entity<'a>(
+    value: &'a Value,
+    root_id: &'a str,
+) -> Option<(&'a str, &'a Map<String, Value>)> {
+    let entities = value.as_object()?.get(ENTITIES_KEY)?.as_object()?;
+    let entity = entities.get(root_id)?.as_object()?;
+    Some((root_id, entity))
 }
 
-fn wikidata_entity_projection(value: &Value, root_id: &str) -> Option<Map<String, Value>> {
-    let entity = single_entity(value, root_id)?;
-    let mut projected = Map::new();
-    for key in [
-        "type",
-        "datatype",
-        "labels",
-        "descriptions",
-        "aliases",
-        "lemmas",
-        "lexicalCategory",
-        "language",
-    ] {
-        let Some(value) = entity.get(key) else {
+fn write_document(out: &mut String, value: &Value) {
+    match value {
+        Value::Object(object) => write_object_entries(out, 0, object),
+        Value::Array(items) => {
+            for item in items {
+                write_array_element(out, 0, item);
+            }
+        }
+        scalar => write_line(out, 0, "value", Some(&scalar_token(scalar))),
+    }
+}
+
+/// Write the fields of a Wikidata entity, keeping the readable compact form for
+/// the per-language sections whose `{language, value}` wrapper is fully
+/// reconstructible from the map key.
+fn write_entity_fields(out: &mut String, indent: usize, entity: &Map<String, Value>) {
+    for (key, value) in entity {
+        match key.as_str() {
+            "labels" | "descriptions" | "lemmas" => {
+                write_language_strings(out, indent, key, value);
+            }
+            "aliases" => write_language_aliases(out, indent, key, value),
+            _ => write_named_value(out, indent, key, value),
+        }
+    }
+}
+
+fn write_language_strings(out: &mut String, indent: usize, name: &str, value: &Value) {
+    let Some(object) = value.as_object() else {
+        write_named_value(out, indent, name, value);
+        return;
+    };
+    write_line(out, indent, name, None);
+    for (language, entry) in object {
+        if let Some(text) = language_text(entry) {
+            write_line(out, indent + 2, language, Some(&string_token(text)));
+        }
+    }
+}
+
+fn write_language_aliases(out: &mut String, indent: usize, name: &str, value: &Value) {
+    let Some(object) = value.as_object() else {
+        write_named_value(out, indent, name, value);
+        return;
+    };
+    write_line(out, indent, name, None);
+    for (language, entries) in object {
+        let Some(entries) = entries.as_array() else {
             continue;
         };
-        projected.insert(key.to_string(), project_entity_field(key, value));
-    }
-    Some(projected)
-}
-
-fn single_entity<'a>(value: &'a Value, root_id: &str) -> Option<&'a Map<String, Value>> {
-    let object = value.as_object()?;
-    let entities = object.get("entities")?.as_object()?;
-    entities.get(root_id)?.as_object()
-}
-
-fn project_entity_field(key: &str, value: &Value) -> Value {
-    match key {
-        "labels" | "descriptions" | "lemmas" => {
-            let Some(object) = value.as_object() else {
-                return value.clone();
-            };
-            let mut projected = Map::new();
-            for (language, entry) in object {
-                if let Some(text) = language_value(entry, language) {
-                    projected.insert(language.clone(), Value::String(text.to_string()));
-                }
-            }
-            Value::Object(projected)
+        let tokens: Vec<String> = entries
+            .iter()
+            .filter_map(language_text)
+            .map(string_token)
+            .collect();
+        if !tokens.is_empty() {
+            write_line(
+                out,
+                indent + 2,
+                language,
+                Some(&format!("({})", tokens.join(" "))),
+            );
         }
-        "aliases" => {
-            let Some(object) = value.as_object() else {
-                return value.clone();
-            };
-            let mut projected = Map::new();
-            for (language, entries) in object {
-                let Value::Array(entries) = entries else {
-                    continue;
-                };
-                let aliases: Vec<Value> = entries
-                    .iter()
-                    .filter_map(|entry| language_value(entry, language))
-                    .map(|text| Value::String(text.to_string()))
-                    .collect();
-                if !aliases.is_empty() {
-                    projected.insert(language.clone(), Value::Array(aliases));
-                }
-            }
-            Value::Object(projected)
-        }
-        _ => value.clone(),
     }
 }
 
-fn language_value<'a>(value: &'a Value, expected_language: &str) -> Option<&'a str> {
-    let object = value.as_object()?;
-    let language = object.get("language")?.as_str()?;
-    if language != expected_language {
-        return None;
-    }
-    object.get("value")?.as_str()
+fn language_text(entry: &Value) -> Option<&str> {
+    entry.as_object()?.get("value")?.as_str()
 }
 
-fn write_entity_cache_file(out: &mut String, root_id: &str, entity: &Map<String, Value>) {
-    write_line(out, 0, root_id, None, None);
-    write_object_entries(out, 2, entity, None);
-}
-
-fn write_object_entries(
-    out: &mut String,
-    indent: usize,
-    object: &Map<String, Value>,
-    skip_key: Option<&str>,
-) {
+fn write_object_entries(out: &mut String, indent: usize, object: &Map<String, Value>) {
     for (key, value) in object {
-        if skip_key.is_some_and(|skip_key| skip_key == key) {
-            continue;
-        }
         write_named_value(out, indent, key, value);
     }
 }
 
 fn write_named_value(out: &mut String, indent: usize, name: &str, value: &Value) {
     match value {
-        Value::Null | Value::Bool(_) | Value::Number(_) | Value::String(_) => {
-            let token = scalar_value_token(value);
-            write_line(out, indent, name, Some(&token), None);
+        Value::Array(items) if items.iter().all(is_scalar) => {
+            write_line(out, indent, name, Some(&scalar_array_token(items)));
         }
-        Value::Array(values) => {
-            if values.iter().all(is_scalar) {
-                let token = scalar_array_token(values);
-                write_line(out, indent, name, Some(&token), None);
-            } else {
-                write_line(out, indent, name, None, None);
-                for value in values {
-                    write_array_value(out, indent + 2, value);
-                }
+        Value::Array(items) => {
+            write_line(out, indent, name, None);
+            for item in items {
+                write_array_element(out, indent + 2, item);
             }
         }
-        Value::Object(object) if object.is_empty() => {
-            write_line(out, indent, name, None, None);
+        Value::Object(object) => {
+            write_line(out, indent, name, None);
+            write_object_entries(out, indent + 2, object);
+        }
+        scalar => write_line(out, indent, name, Some(&scalar_token(scalar))),
+    }
+}
+
+fn write_array_element(out: &mut String, indent: usize, value: &Value) {
+    match value {
+        Value::Array(items) if items.iter().all(is_scalar) => {
+            write_line(out, indent, ARRAY_ENTRY, Some(&scalar_array_token(items)));
+        }
+        Value::Array(items) => {
+            write_line(out, indent, ARRAY_ENTRY, None);
+            for item in items {
+                write_array_element(out, indent + 2, item);
+            }
         }
         Value::Object(object) => {
-            write_line(out, indent, name, None, None);
-            write_object_entries(out, indent + 2, object, None);
+            write_line(out, indent, ARRAY_ENTRY, None);
+            write_object_entries(out, indent + 2, object);
         }
+        scalar => write_line(out, indent, ARRAY_ENTRY, Some(&scalar_token(scalar))),
     }
 }
 
-fn write_array_value(out: &mut String, indent: usize, value: &Value) {
-    if let Value::String(value) = value {
-        let token = quoted_string(value);
-        write_line(out, indent, ARRAY_ENTRY, Some(&token), None);
-    } else if is_scalar(value) {
-        let token = scalar_value_token(value);
-        write_line(out, indent, &token, None, None);
-    } else if let Value::Object(object) = value {
-        write_line(out, indent, ARRAY_ENTRY, None, None);
-        if !object.is_empty() {
-            write_object_entries(out, indent + 2, object, None);
-        }
-    } else {
-        write_named_value(out, indent, ARRAY_ENTRY, value);
-    }
-}
-
-fn write_line(
-    out: &mut String,
-    indent: usize,
-    name: &str,
-    value: Option<&str>,
-    comment: Option<&str>,
-) {
+fn write_line(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
     out.extend(std::iter::repeat(' ').take(indent));
     out.push_str(name);
     if let Some(value) = value {
         out.push(' ');
         out.push_str(value);
-    }
-    if let Some(comment) = comment {
-        out.push_str(" # ");
-        out.push_str(comment);
     }
     out.push('\n');
 }
@@ -225,7 +255,7 @@ const fn is_scalar(value: &Value) -> bool {
     )
 }
 
-fn scalar_value_token(value: &Value) -> String {
+fn scalar_token(value: &Value) -> String {
     match value {
         Value::Null => String::from("null"),
         Value::Bool(value) => value.to_string(),
@@ -236,18 +266,24 @@ fn scalar_value_token(value: &Value) -> String {
 }
 
 fn scalar_array_token(values: &[Value]) -> String {
-    let tokens: Vec<String> = values.iter().map(scalar_array_item_token).collect();
+    let tokens: Vec<String> = values.iter().map(scalar_token).collect();
     format!("({})", tokens.join(" "))
 }
 
-fn scalar_array_item_token(value: &Value) -> String {
-    match value {
-        Value::Null => String::from("null"),
-        Value::Bool(value) => value.to_string(),
-        Value::Number(value) => value.to_string(),
-        Value::String(value) => quoted_string(value),
-        Value::Array(_) | Value::Object(_) => String::new(),
+/// A bare token for an unambiguous reference, or a quoted scalar otherwise.
+/// Strings that *look* like a JSON literal (`true`, `42`, …) are always quoted
+/// so the decoder never retypes them.
+fn string_token(value: impl AsRef<str>) -> String {
+    let value = value.as_ref();
+    if is_bare_reference(value) && !is_scalar_literal(value) {
+        value.to_string()
+    } else {
+        quoted_string(value)
     }
+}
+
+fn is_scalar_literal(value: &str) -> bool {
+    matches!(value, "null" | "true" | "false") || serde_json::from_str::<Number>(value).is_ok()
 }
 
 fn quoted_string(value: &str) -> String {
@@ -263,14 +299,6 @@ fn quoted_string(value: &str) -> String {
     serde_json::to_string(value).unwrap_or_else(|_| String::from("\"\""))
 }
 
-fn string_token(value: &str) -> String {
-    if is_bare_reference(value) {
-        value.to_string()
-    } else {
-        quoted_string(value)
-    }
-}
-
 fn is_bare_reference(value: &str) -> bool {
     !value.is_empty()
         && value.chars().all(|character| {
@@ -278,153 +306,222 @@ fn is_bare_reference(value: &str) -> bool {
         })
 }
 
-fn find_legacy_json_node(node: &LinoNode) -> Option<&LinoNode> {
-    if is_legacy_json_node(node) {
-        return Some(node);
-    }
-    node.children.iter().find_map(find_legacy_json_node)
+// ---------------------------------------------------------------------------
+// Decoding
+// ---------------------------------------------------------------------------
+
+/// A raw, quote-preserving Links Notation node: the value token is kept exactly
+/// as written so the decoder can tell a quoted string from a bare reference.
+#[derive(Debug, Default)]
+struct RawNode {
+    name: String,
+    value: Option<String>,
+    children: Vec<Self>,
 }
 
-fn is_legacy_json_node(node: &LinoNode) -> bool {
-    matches!(
-        node.name.as_str(),
-        LEGACY_ROOT_OBJECT
-            | LEGACY_ROOT_ARRAY
-            | "json-null"
-            | "json-boolean"
-            | "json-number"
-            | "json-string"
+pub fn lino_to_json(text: &str) -> Result<Value, String> {
+    let root = parse_raw_tree(text);
+    let tops = &root.children;
+    if !tops.is_empty() && tops.iter().all(|node| node.name == ARRAY_ENTRY) {
+        let mut items = Vec::new();
+        for node in tops {
+            items.push(value_of(node)?);
+        }
+        return Ok(Value::Array(items));
+    }
+
+    let mut root_object = Map::new();
+    let mut entities = Map::new();
+    for node in tops {
+        if is_entity_id(&node.name) {
+            entities.insert(node.name.clone(), entity_value(node)?);
+        } else {
+            root_object.insert(node.name.clone(), value_of(node)?);
+        }
+    }
+    if !entities.is_empty() {
+        root_object.insert(String::from(ENTITIES_KEY), Value::Object(entities));
+    }
+    Ok(Value::Object(root_object))
+}
+
+fn parse_raw_tree(text: &str) -> RawNode {
+    let mut root = RawNode::default();
+    let mut stack: Vec<(Option<usize>, Vec<usize>)> = vec![(None, Vec::new())];
+    for line in text.lines() {
+        if line.trim().is_empty() {
+            continue;
+        }
+        let indent = line
+            .chars()
+            .take_while(|character| *character == ' ')
+            .count();
+        let content = line[indent..].trim_end();
+        if content.is_empty() {
+            continue;
+        }
+        let node = parse_raw_line(content);
+        while stack.len() > 1
+            && stack
+                .last()
+                .and_then(|frame| frame.0)
+                .is_some_and(|top| top >= indent)
+        {
+            stack.pop();
+        }
+        let parent_path = stack
+            .last()
+            .map(|frame| frame.1.clone())
+            .unwrap_or_default();
+        let parent = navigate_mut(&mut root, &parent_path);
+        parent.children.push(node);
+        let new_index = parent.children.len() - 1;
+        let mut new_path = parent_path;
+        new_path.push(new_index);
+        stack.push((Some(indent), new_path));
+    }
+    root
+}
+
+fn parse_raw_line(content: &str) -> RawNode {
+    content.find(char::is_whitespace).map_or_else(
+        || RawNode {
+            name: content.to_string(),
+            value: None,
+            children: Vec::new(),
+        },
+        |pos| RawNode {
+            name: content[..pos].to_string(),
+            value: Some(content[pos..].trim().to_string()),
+            children: Vec::new(),
+        },
     )
 }
 
-fn parse_legacy_json_value(node: &LinoNode) -> Result<Value, String> {
-    match node.name.as_str() {
-        "json-null" => Ok(Value::Null),
-        "json-boolean" => match node.id.as_str() {
-            "true" => Ok(Value::Bool(true)),
-            "false" => Ok(Value::Bool(false)),
-            other => Err(format!("invalid json boolean `{other}`")),
-        },
-        "json-number" => {
-            let number: Number = serde_json::from_str(&node.id)
-                .map_err(|error| format!("invalid json number `{}`: {error}", node.id))?;
-            Ok(Value::Number(number))
-        }
-        "json-string" => Ok(Value::String(decode_text(&node.id)?)),
-        LEGACY_ROOT_ARRAY => parse_legacy_array(node),
-        LEGACY_ROOT_OBJECT => parse_legacy_object(node),
-        other => Err(format!("unknown json node `{other}`")),
+fn navigate_mut<'a>(root: &'a mut RawNode, path: &[usize]) -> &'a mut RawNode {
+    let mut current = root;
+    for &index in path {
+        current = &mut current.children[index];
     }
+    current
 }
 
-fn parse_legacy_array(node: &LinoNode) -> Result<Value, String> {
-    let mut items = Vec::new();
-    for child in &node.children {
-        if child.name != "item" {
-            continue;
-        }
-        let value_node = child
-            .children
-            .iter()
-            .find(|candidate| is_legacy_json_node(candidate))
-            .ok_or_else(|| format!("array item `{}` has no json value", child.id))?;
-        items.push(parse_legacy_json_value(value_node)?);
-    }
-    Ok(Value::Array(items))
-}
-
-fn parse_legacy_object(node: &LinoNode) -> Result<Value, String> {
-    let mut object = Map::new();
-    for child in &node.children {
-        if child.name != "member" {
-            continue;
-        }
-        let key = decode_text(&child.id)?;
-        let value_node = child
-            .children
-            .iter()
-            .find(|candidate| is_legacy_json_node(candidate))
-            .ok_or_else(|| format!("object member `{key}` has no json value"))?;
-        object.insert(key, parse_legacy_json_value(value_node)?);
-    }
-    Ok(Value::Object(object))
-}
-
-fn parse_compact_document(tree: &LinoNode) -> Result<Value, String> {
-    if tree.children.len() == 1 {
-        let node = &tree.children[0];
-        if is_entity_cache_root(node) {
-            let mut entity = parse_object_children(&node.children)?;
-            if !node.id.is_empty() {
-                entity.insert(String::from("type"), parse_scalar_token(&node.id)?);
+fn value_of(node: &RawNode) -> Result<Value, String> {
+    if !node.children.is_empty() {
+        if node.children.iter().all(|child| child.name == ARRAY_ENTRY) {
+            let mut items = Vec::new();
+            for child in &node.children {
+                items.push(value_of(child)?);
             }
-            let mut entities = Map::new();
-            entities.insert(node.name.clone(), Value::Object(entity));
-            let mut root = Map::new();
-            root.insert(String::from("entities"), Value::Object(entities));
-            return Ok(Value::Object(root));
+            return Ok(Value::Array(items));
         }
+        return Ok(Value::Object(object_of(&node.children)?));
     }
-    Ok(Value::Object(parse_object_children(&tree.children)?))
+    node.value
+        .as_ref()
+        .map_or_else(|| Ok(Value::Object(Map::new())), |token| parse_token(token))
 }
 
-fn is_entity_cache_root(node: &LinoNode) -> bool {
-    let mut characters = node.name.chars();
-    let Some(prefix) = characters.next() else {
-        return false;
-    };
-    matches!(prefix, 'L' | 'P' | 'Q') && characters.all(|character| character.is_ascii_digit())
-}
-
-fn parse_compact_value(node: &LinoNode) -> Result<Value, String> {
-    match node.id.trim() {
-        LEGACY_EMPTY_OBJECT_MARKER if node.children.is_empty() => Ok(Value::Object(Map::new())),
-        LEGACY_ARRAY_MARKER => parse_compact_array(node),
-        id if is_array_item_link(id, &node.children) => parse_compact_array(node),
-        id if is_parenthesized(id) => parse_scalar_array(id),
-        "" if is_compact_array(&node.children) => parse_compact_array(node),
-        "" if !node.children.is_empty() => {
-            Ok(Value::Object(parse_object_children(&node.children)?))
-        }
-        "" => Ok(Value::Object(Map::new())),
-        id => parse_scalar_token(id),
-    }
-}
-
-fn parse_object_children(children: &[LinoNode]) -> Result<Map<String, Value>, String> {
+fn object_of(children: &[RawNode]) -> Result<Map<String, Value>, String> {
     let mut object = Map::new();
     for child in children {
-        object.insert(child.name.clone(), parse_compact_value(child)?);
+        object.insert(child.name.clone(), value_of(child)?);
     }
     Ok(object)
 }
 
-fn parse_compact_array(node: &LinoNode) -> Result<Value, String> {
-    let mut values = Vec::new();
+/// Decode a Wikidata entity node, re-expanding the compact per-language
+/// sections back into their `{language, value}` JSON wrappers.
+fn entity_value(node: &RawNode) -> Result<Value, String> {
+    let mut entity = Map::new();
     for child in &node.children {
-        let value =
-            if child.name == ARRAY_ENTRY && !child.id.is_empty() && child.children.is_empty() {
-                Value::String(child.id.clone())
-            } else if child.id.is_empty() && child.children.is_empty() {
-                parse_scalar_token(&child.name)?
-            } else {
-                parse_compact_value(child)?
-            };
-        values.push(value);
+        let value = match child.name.as_str() {
+            "labels" | "descriptions" | "lemmas" => reexpand_language_strings(child)?,
+            "aliases" => reexpand_language_aliases(child)?,
+            _ => value_of(child)?,
+        };
+        entity.insert(child.name.clone(), value);
     }
-    Ok(Value::Array(values))
+    Ok(Value::Object(entity))
+}
+
+fn reexpand_language_strings(node: &RawNode) -> Result<Value, String> {
+    let mut object = Map::new();
+    for language in &node.children {
+        let text = value_of(language)?;
+        let text = text
+            .as_str()
+            .ok_or_else(|| format!("language `{}` value is not a string", language.name))?;
+        object.insert(language.name.clone(), language_entry(&language.name, text));
+    }
+    Ok(Value::Object(object))
+}
+
+fn reexpand_language_aliases(node: &RawNode) -> Result<Value, String> {
+    let mut object = Map::new();
+    for language in &node.children {
+        let values = value_of(language)?;
+        let values = values
+            .as_array()
+            .ok_or_else(|| format!("aliases `{}` is not a list", language.name))?;
+        let entries: Vec<Value> = values
+            .iter()
+            .filter_map(Value::as_str)
+            .map(|text| language_entry(&language.name, text))
+            .collect();
+        object.insert(language.name.clone(), Value::Array(entries));
+    }
+    Ok(Value::Object(object))
+}
+
+fn language_entry(language: &str, value: &str) -> Value {
+    let mut entry = Map::new();
+    entry.insert(
+        String::from("language"),
+        Value::String(language.to_string()),
+    );
+    entry.insert(String::from("value"), Value::String(value.to_string()));
+    Value::Object(entry)
+}
+
+fn is_entity_id(name: &str) -> bool {
+    let mut characters = name.chars();
+    matches!(characters.next(), Some('L' | 'P' | 'Q'))
+        && name.len() > 1
+        && characters.all(|character| character.is_ascii_digit())
+}
+
+fn parse_token(raw: &str) -> Result<Value, String> {
+    let raw = raw.trim();
+    if is_parenthesized(raw) {
+        return parse_scalar_array(raw);
+    }
+    if raw.starts_with('"') {
+        let value: String = serde_json::from_str(raw)
+            .map_err(|error| format!("invalid quoted string `{raw}`: {error}"))?;
+        return Ok(Value::String(value));
+    }
+    if raw.starts_with('\'') {
+        return parse_single_quoted_string(raw).map(Value::String);
+    }
+    match raw {
+        "null" => Ok(Value::Null),
+        "true" => Ok(Value::Bool(true)),
+        "false" => Ok(Value::Bool(false)),
+        _ => serde_json::from_str::<Number>(raw)
+            .map(Value::Number)
+            .or_else(|_| Ok(Value::String(raw.to_string()))),
+    }
 }
 
 fn parse_scalar_array(raw: &str) -> Result<Value, String> {
     let body = raw
-        .trim()
         .strip_prefix('(')
         .and_then(|value| value.strip_suffix(')'))
         .ok_or_else(|| format!("invalid scalar array `{raw}`"))?;
-    let tokens = split_scalar_tokens(body)?;
     let mut values = Vec::new();
-    for token in tokens {
-        values.push(parse_scalar_token(&token)?);
+    for token in split_scalar_tokens(body)? {
+        values.push(parse_token(&token)?);
     }
     Ok(Value::Array(values))
 }
@@ -480,33 +577,6 @@ fn split_scalar_tokens(raw: &str) -> Result<Vec<String>, String> {
     Ok(tokens)
 }
 
-fn parse_scalar_token(raw: &str) -> Result<Value, String> {
-    let raw = raw.trim();
-    if let Some(string) = raw.strip_prefix(STRING_MARKER) {
-        let string = string.trim_start();
-        return parse_scalar_token(string).and_then(|value| match value {
-            Value::String(_) => Ok(value),
-            other => Err(format!("invalid string scalar `{other:?}`")),
-        });
-    }
-    if raw.starts_with('"') {
-        let value: String = serde_json::from_str(raw)
-            .map_err(|error| format!("invalid quoted string `{raw}`: {error}"))?;
-        return Ok(Value::String(value));
-    }
-    if raw.starts_with('\'') {
-        return parse_single_quoted_string(raw).map(Value::String);
-    }
-    match raw {
-        "null" => Ok(Value::Null),
-        "true" => Ok(Value::Bool(true)),
-        "false" => Ok(Value::Bool(false)),
-        _ => serde_json::from_str::<Number>(raw)
-            .map(Value::Number)
-            .or_else(|_| Ok(Value::String(raw.to_string()))),
-    }
-}
-
 fn parse_single_quoted_string(raw: &str) -> Result<String, String> {
     let body = raw
         .strip_prefix('\'')
@@ -541,55 +611,4 @@ fn parse_single_quoted_string(raw: &str) -> Result<String, String> {
 
 fn is_parenthesized(raw: &str) -> bool {
     raw.starts_with('(') && raw.ends_with(')')
-}
-
-fn is_array_item_link(raw: &str, children: &[LinoNode]) -> bool {
-    let Some(body) = raw
-        .trim()
-        .strip_prefix('(')
-        .and_then(|value| value.strip_suffix(')'))
-    else {
-        return false;
-    };
-    if children.is_empty() {
-        return false;
-    }
-    let ids: Vec<&str> = body.split_whitespace().collect();
-    ids.len() == children.len()
-        && ids.iter().zip(children).all(|(id, child)| {
-            (child.name == ARRAY_ENTRY || child.name.starts_with(LEGACY_ARRAY_ITEM_PREFIX))
-                && *id == child.name
-        })
-}
-
-fn is_compact_array(children: &[LinoNode]) -> bool {
-    !children.is_empty()
-        && children
-            .iter()
-            .all(|child| child.name == ARRAY_ENTRY || is_non_string_scalar_node(child))
-}
-
-fn is_non_string_scalar_node(node: &LinoNode) -> bool {
-    node.id.is_empty()
-        && node.children.is_empty()
-        && (matches!(node.name.as_str(), "null" | "true" | "false")
-            || serde_json::from_str::<Number>(&node.name).is_ok())
-}
-
-fn decode_text(value: &str) -> Result<String, String> {
-    let encoded = value
-        .strip_prefix('u')
-        .ok_or_else(|| format!("encoded text `{value}` does not start with u"))?;
-    if encoded.is_empty() {
-        return Ok(String::new());
-    }
-    let mut out = String::new();
-    for chunk in encoded.split('-').filter(|chunk| !chunk.is_empty()) {
-        let codepoint = u32::from_str_radix(chunk, 16)
-            .map_err(|error| format!("invalid codepoint `{chunk}`: {error}"))?;
-        let character =
-            char::from_u32(codepoint).ok_or_else(|| format!("invalid unicode scalar `{chunk}`"))?;
-        out.push(character);
-    }
-    Ok(out)
 }

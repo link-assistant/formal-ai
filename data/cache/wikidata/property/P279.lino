@@ -8,9 +8,11 @@ P279
     en "this item is a subclass (subset) of that item; ALL instances of this item are instances of that item; different from P31 (instance of), e.g.: volcano is a subclass of mountain; Everest is an instance of mountain"
     ru 'каждый экземпляр данного класса является также экземпляром следующего(-их) класса(-ов). Не путать с P31 ("это частный случай понятия")'
     zh "此项目为彼项目的子类（子集），即所有属于此项目的事物皆属于彼项目；与P31（属于）不同，例：火山包含於山、珠穆朗玛峰属于山"
+  id P279
   labels
     en "subclass of"
     hi "का उपवर्ग"
     ru "подкласс от"
     zh "上级分类"
   type property
+success 1

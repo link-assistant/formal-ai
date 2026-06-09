@@ -1,6 +1,6 @@
 Q1490
   aliases
-    en ("Tōkyō" "Tôkyô" "Tokyo-to" "Tokyo Metropolitan prefecture" "Tōkyō-to" "Tôkyô-to" "Tokyo Metropolis" "Tokio" "Tokyo Prefecture" "Tokyo, Japan" "Tokei" "Tokyo (Japan)" "Edo" "Jedo" "Yedo")
+    en ("Tōkyō" "Tôkyô" Tokyo-to "Tokyo Metropolitan prefecture" "Tōkyō-to" "Tôkyô-to" "Tokyo Metropolis" Tokio "Tokyo Prefecture" "Tokyo, Japan" Tokei "Tokyo (Japan)" Edo Jedo Yedo)
     ru ("Токио-то" "Токё" "Токё-то")
     zh ("东京都" "东京" "東京" "日本东京" "日本東京")
   descriptions
@@ -8,9 +8,11 @@ Q1490
     hi "जापान की राजधानी और सबसे बड़ा शहर"
     ru "столица Японии, одна из 47 префектур Японии, самый населённый город в мире"
     zh "日本一級行政區及中央政府所在地"
+  id Q1490
   labels
     en Tokyo
     hi "टोक्यो"
     ru "Токио"
     zh "東京都"
   type item
+success 1

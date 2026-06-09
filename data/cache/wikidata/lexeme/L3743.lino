@@ -1,6 +1,390 @@
 L3743
+  claims
+    P12573
+      entry
+        id L3743$1872B085-A66A-4842-8156-791ACD301F95
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "7941"
+          hash 16718ec06dbfbebc090769b0f656e989eb4cb1aa
+          property P12573
+          snaktype value
+        rank normal
+        type statement
+    P12690
+      entry
+        id L3743$F69A1572-72BA-4626-8B46-44A9ACC76208
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1284061"
+          hash b3d14b588dd016f9b523395c0f3161bae8576579
+          property P12690
+          snaktype value
+        rank normal
+        type statement
+    P12718
+      entry
+        id L3743$3F63DE8C-9EC7-4A00-B6B5-D95834946EE0
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0046241
+          hash ae69aff710d62fc079e210bda56812d36fcc5952
+          property P12718
+          snaktype value
+        rank normal
+        type statement
+    P12724
+      entry
+        id L3743$DBEC01F8-75E2-4602-AAF4-3D4F495E3E6A
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0044924
+          hash 5fc5eddde51a1a11152419f7c1713ddc986acb0e
+          property P12724
+          snaktype value
+        rank normal
+        type statement
+    P12726
+      entry
+        id L3743$76FA8ADE-F353-42C3-A652-A63431B9FAE1
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0057980
+          hash 27d15b648e4dd9d840f86c35232449d6a366d4b4
+          property P12726
+          snaktype value
+        rank normal
+        type statement
+    P12739
+      entry
+        id L3743$6F34637F-4C37-4057-9268-C11F10F3939A
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0698920
+          hash ed7c6a22aa644f573779698bf4652a43dfcf9eb2
+          property P12739
+          snaktype value
+        rank normal
+        type statement
+    P13258
+      entry
+        id L3743$B6D9A7F5-BDD3-4ED1-B74C-94E83EF178F8
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8100856"
+          hash deae566bc9f405e4368550bf3e57b9a3b26c0edc
+          property P13258
+          snaktype value
+        rank normal
+        type statement
+    P5238
+      entry
+        id L3743$EC8EB889-0B88-4D85-AAC7-8B387B42B39A
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L3740
+              numeric-id 3740
+          hash 3c87f23d50bccf82e5c03ee3cc77029c0d44324a
+          property P5238
+          snaktype value
+        qualifiers
+          P1545
+            entry
+              datatype string
+              datavalue
+                type string
+                value "1"
+              hash 2a1ced1dca90648ea7e306acbadd74fc81a10722
+              property P1545
+              snaktype value
+        qualifiers-order (P1545)
+        rank normal
+        type statement
+      entry
+        id L3743$39D739C7-A7C7-4AA3-BD77-C37E894B88E6
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L35036
+              numeric-id 35036
+          hash 682d8d367e01a29cf598b03c449f61860aa0361f
+          property P5238
+          snaktype value
+        qualifiers
+          P1545
+            entry
+              datatype string
+              datavalue
+                type string
+                value "2"
+              hash 7241753c62a310cf84895620ea82250dcea65835
+              property P1545
+              snaktype value
+        qualifiers-order (P1545)
+        rank normal
+        type statement
+    P5275
+      entry
+        id L3743$D0D0202B-9A56-4BE5-BADB-3AE569524AB3
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "161810"
+          hash 2866b1529c732c2824bcd17ece0951cd9cc25105
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5912
+      entry
+        id L3743$A5BFC88E-3D72-4010-909A-F0816452E2FD
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "130403"
+          hash f92788a792fe8274ee2464b642971c540b9a7f8c
+          property P5912
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3743-F1$53EADB78-0F56-408C-9DDF-7B2D1C0490CB
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-relation.ogg
+              hash b61a3fc9af9d8738aecaeac21974ef6316733988
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786)
+      id L3743-F1
+      representations
+        en
+          language en
+          value relation
+    entry
+      claims
+        P443
+          entry
+            id L3743-F2$23adf0ee-40fa-f179-ae41-bade4eb6abf1
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-relations.ogg
+              hash 070e701bd08df7ac99f148870d293a873c700230
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+      grammaticalFeatures (Q146786)
+      id L3743-F2
+      representations
+        en
+          language en
+          value relations
+  id L3743
   language Q1860
+  lastrevid 2429219644
   lemmas
     en relation
   lexicalCategory Q1084
+  modified "2025-11-13T21:08:06Z"
+  ns 146
+  pageid 55188378
+  senses
+    entry
+      claims
+        P2888
+          entry
+            id L3743-S1$DCD53B68-B137-449D-93D3-EEC875C2B94F
+            mainsnak
+              datatype url
+              datavalue
+                type string
+                value "http://premon.fbk.eu/resource/pb31-relate.01"
+              hash 591d2d1218d9276be662c4adbedcc4300281403e
+              property P2888
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3743-S1$CAF6921E-9712-4869-814D-78673B79985A
+            mainsnak
+              datatype url
+              datavalue
+                type string
+                value "https://w3id.org/framester/data/propbank-3.4.0/RoleSet/relate-01"
+              hash 001ef8413c608a0e11239674ec7df4cae8c4d0a7
+              property P2888
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3743-S1$e9c172de-4bb3-1f99-6354-8426612b9948
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q930933
+                  numeric-id 930933
+              hash bf85d990bf3cfdd2060bc76ee55102ab2e40faaf
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+        P5972
+          entry
+            id L3743-S1$6281867e-4eaa-f697-3782-21d342924613
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1414876-S1
+              hash 9c0cdb8229bb536523f0efd58dfa8bc41489640d
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "manner in which different things may be related"
+      id L3743-S1
+    entry
+      claims
+        P5137
+          entry
+            id L3743-S2$7D8131D5-8CA5-4320-B391-F2941C0DD43E
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q3424020
+                  numeric-id 3424020
+              hash febb933525cc670a8bd3613910f939f1d514ffdf
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "concept in a metadata schema"
+      id L3743-S2
+    entry
+      claims
+        P2888
+          entry
+            id L3743-S3$43B18954-F0C0-4C19-88DD-8D26D27EFCFF
+            mainsnak
+              datatype url
+              datavalue
+                type string
+                value "http://premon.fbk.eu/resource/pb31-relation.04"
+              hash 1c0f0b92e1d6a5e20439802f2644d60aac6dd795
+              property P2888
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3743-S3$E8113A00-AF65-442A-9E49-2B63D194A024
+            mainsnak
+              datatype url
+              datavalue
+                type string
+                value "https://w3id.org/framester/data/propbank-3.4.0/RoleSet/relation-04"
+              hash 26c1111efb6315e5ff6cb39ba3348ef794004cb5
+              property P2888
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3743-S3$D3555C47-C70A-4A7A-AB6A-92B935868EE1
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q1199677
+                  numeric-id 1199677
+              hash c359133abab51d07d1a689bb48ba0ade3b89f933
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "act or process of being related familially"
+      id L3743-S3
+  title "Lexeme:L3743"
   type lexeme
+success 1

@@ -295,12 +295,37 @@ fn wikidata_references_from_paths(paths: Vec<PathBuf>) -> BTreeMap<String, Vec<S
     references
 }
 
+/// Structural grounding ids referenced by a cache record — the lexical-category
+/// and language anchors a meaning needs to be *understood*. The `claims`,
+/// `forms` and `senses` subtrees are deliberately skipped: following every
+/// statement reference would force memoizing the entire transitive Wikidata
+/// graph, which issue #398 explicitly rejects in favour of a minimal core with
+/// load-on-demand expansion. Those subtrees are still stored verbatim and
+/// proven lossless by `wikidata_lino_cache_rebuilds_full_json_losslessly`; they
+/// are simply not part of the *closure* a checked-in core must pre-cache.
+const ON_DEMAND_SUBTREES: [&str; 3] = ["claims", "forms", "senses"];
+
 fn wikidata_ids_outside_quotes(content: &str) -> BTreeSet<String> {
     let source_id = Regex::new(r"\b[QLP][0-9]+\b").expect("source id regex should compile");
     let mut references = BTreeSet::new();
+    let mut skip_indent: Option<usize> = None;
 
     for line in content.lines() {
+        let indent = line
+            .chars()
+            .take_while(|character| *character == ' ')
+            .count();
+        if let Some(boundary) = skip_indent {
+            if line.trim().is_empty() || indent > boundary {
+                continue;
+            }
+            skip_indent = None;
+        }
         let stripped = strip_comment(line);
+        if ON_DEMAND_SUBTREES.contains(&stripped.trim()) {
+            skip_indent = Some(indent);
+            continue;
+        }
         let unquoted = remove_quoted_segments(stripped);
         for id in source_id
             .find_iter(&unquoted)

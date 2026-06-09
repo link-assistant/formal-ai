@@ -1,6 +1,6 @@
 P361
   aliases
-    en ("meronym of" "section of" "system of" "subsystem of" "subassembly of" "contained within" "assembly of" "part of-property" "component of" "in" "within" "is part of" "subgroup of" "collateral branch of" "branch of" "element of" "chain" "contained in" "of")
+    en ("meronym of" "section of" "system of" "subsystem of" "subassembly of" "contained within" "assembly of" "part of-property" "component of" in within "is part of" "subgroup of" "collateral branch of" "branch of" "element of" chain "contained in" of)
     ru ("это часть" "мероним" "входит в" "дополнение к" "является частью следующего" "холоним" "относится как часть к" "часть от")
     zh ("构成" "包含于此之内" "父系统" "组件属于" "包含于" "部分" "从属于" "母实体" "所在實體" "所屬實體" "组件" "要素" "置于其内" "所属体系")
   datatype wikibase-item
@@ -9,9 +9,11 @@ P361
     hi "विषय उस वस्तु का एक भाग है"
     ru "объект, частью которого является предмет описания (если он является частью А, который сам часть объекта Б, то указывается связь только с объектом А), обратное свойство «состоит из» (P527, см. также свойство (P2670) «состоит из представителей класса»)"
     zh "将主体视为其中一部分的客体（如果该主体已经是客体A的一部分，而客体A又是客体B的一部分，则请只将主体设为客体A的一部分），是“可分为”（P527）的逆属性（另见“拥有此类别的一部分”（P2670））"
+  id P361
   labels
     en "part of"
     hi "का भाग"
     ru "является частью"
     zh "所属实体"
   type property
+success 1

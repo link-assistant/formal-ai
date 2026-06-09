@@ -1,6 +1,6 @@
 Q668
   aliases
-    en ("Republic of India" "Bharat" "Bharatvarsh" "Hindustan" "Bharata" "Hindoostan" "Indostan" "Bharat Ganarajya" "Al Hind" "Tianzhu" "Tenjiku")
+    en ("Republic of India" Bharat Bharatvarsh Hindustan Bharata Hindoostan Indostan "Bharat Ganarajya" "Al Hind" Tianzhu Tenjiku)
     hi ("हिंदुस्तान" "भारतवर्ष" "इंडिया" "भारत गणराज्य" "इण्डिया" "हिन्दोस्तान" "हिन्दुस्तान" "आर्यवर्त")
     ru ("Республика Индия" "Бхарат")
     zh ("印度共和国" "印度共和國" "印" "天竺" "身毒" "贤督" "賢豆" "神督")
@@ -9,9 +9,11 @@ Q668
     hi "दक्षिण एशिया का देश"
     ru "страна в Южной Азии"
     zh "南亞國家"
+  id Q668
   labels
     en India
     hi "भारत"
     ru "Индия"
     zh "印度"
   type item
+success 1

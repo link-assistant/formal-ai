@@ -1,6 +1,6 @@
 P527
   aliases
-    en ("formed from" "formed out of" "assembled from" "assembled out of" "created from" "created out of" "amalgamation of" "set of" "consists of" "holonym of" "parts" "comprised of" "includes part" "has as part" "has component" "have part" "composed of" "has ingredient" "has ingredients" "ingredients" "contain" "contains" "has member" "has branch" "divided by" "incorporates" "had part" "has parts" "has part" "has part or parts" "made up of" "includes")
+    en ("formed from" "formed out of" "assembled from" "assembled out of" "created from" "created out of" "amalgamation of" "set of" "consists of" "holonym of" parts "comprised of" "includes part" "has as part" "has component" "have part" "composed of" "has ingredient" "has ingredients" ingredients contain contains "has member" "has branch" "divided by" incorporates "had part" "has parts" "has part" "has part or parts" "made up of" includes)
     hi ("में भाग है")
     ru ("имеет частью" "включает в себя" "имеет дополнение" "части" "компоненты" "имеет части" "включает части" "включает компоненты" "включает компонент" "имеет компоненты" "составляющие" "из" "содержит в себе" "содержит внутри себя")
     zh ("子类" "子類" "拥有部分" "擁有部分" "可分爲" "子实体" "可分為" "包含")
@@ -9,9 +9,11 @@ P527
     en 'part of this subject; inverse property of "part of" (P361). See also "has parts of the class" (P2670).'
     ru "объект, являющийся частью предмета описания"
     zh "此主體的一部分，是所屬實體（P361）的逆屬性，另見“拥有此类别的一部分”（P2670）"
+  id P527
   labels
     en "has part(s)"
     hi "इसके हिस्से हैं"
     ru "состоит из"
     zh "擁有的部分有"
   type property
+success 1

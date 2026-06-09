@@ -1,14 +1,16 @@
 Q1075
   aliases
-    en ("coloration" "colorful" "colouration" "colourful")
+    en (coloration colorful colouration colourful)
     zh ("色彩科学" "彩")
   descriptions
     en "characteristic of visual perception"
     ru "качественная субъективная характеристика электромагнитного излучения оптического диапазона"
     zh "眼對不同波長的光的視覺效應"
+  id Q1075
   labels
     en color
     hi "रंग"
     ru "цвет"
     zh "顏色"
   type item
+success 1

@@ -1,14 +1,16 @@
 P218
   aliases
-    en ("iso 639-1" "ISO639-1" "iso639-1" "ISO language code (2 letter)")
+    en ("iso 639-1" ISO639-1 iso639-1 "ISO language code (2 letter)")
     ru ("ISO 639-1")
   datatype external-id
   descriptions
     en "2-letter identifier for language or family of languages defined in ISO 639-1 standard"
     ru "двухбуквенный код языка"
     zh "一个语言的ISO 639-1码"
+  id P218
   labels
     en "ISO 639-1 code"
     ru "код ISO 639-1"
     zh "ISO 639-1代码"
   type property
+success 1

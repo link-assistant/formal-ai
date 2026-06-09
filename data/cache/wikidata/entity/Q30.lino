@@ -1,6 +1,6 @@
 Q30
   aliases
-    en ("the States" "the United States of America" "US of America" "the US" "the U.S." "the US of A" "U.S. of America" "the US of America" "the USA" "the U.S.A." "the U.S. of A" "US of A" "the U.S. of America" "the United States" "Merica" "Murica" "U. S." "U. S. A.")
+    en ("the States" "the United States of America" "US of America" "the US" "the U.S." "the US of A" "U.S. of America" "the US of America" "the USA" "the U.S.A." "the U.S. of A" "US of A" "the U.S. of America" "the United States" Merica Murica "U. S." "U. S. A.")
     hi ("संयुक्त राज्य" "यू एस" "अमेरिका" "यू० एस०" "यू एस ए" "यू० एस० ए०")
     ru ("Соединённые Штаты Америки" "Соединённые Штаты" "Штаты" "Соединённые Государства Америки" "САСШ" "Северо-Американские Соединённые Штаты")
     zh ("美利坚合众国" "美利堅合眾國" "花旗国" "美国")
@@ -9,9 +9,11 @@ Q30
     hi "उत्तरी अमेरिका में स्थित एक देश"
     ru "федеративное государство в Северной Америке"
     zh "北美洲國家"
+  id Q30
   labels
     en "United States"
     hi "संयुक्त राज्य अमेरिका"
     ru "США"
     zh "美國"
   type item
+success 1

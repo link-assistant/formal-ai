@@ -1,6 +1,6 @@
 Q17
   aliases
-    en ("State of Japan" "Land of the Rising Sun" "Nippon-koku" "Nihon-koku" "Iapan" "Iapon" "Land of Rising Sun")
+    en ("State of Japan" "Land of the Rising Sun" Nippon-koku Nihon-koku Iapan Iapon "Land of Rising Sun")
     hi ("निप्पोन" "निहोन" "उगते सूरज की भूमि" "उदयवर्ष")
     ru ("Страна восходящего солнца" "Ниппон")
     zh ("扶桑" "扶桑國" "日")
@@ -9,9 +9,11 @@ Q17
     hi "पूर्वी एशिया का देश"
     ru "островное государство в Восточной Азии"
     zh "東亞國家"
+  id Q17
   labels
     en Japan
     hi "जापान"
     ru "Япония"
     zh "日本"
   type item
+success 1

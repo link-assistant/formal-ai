@@ -1,9 +1,10 @@
 use std::fs;
 use std::path::Path;
 
-use formal_ai::json_lino::{json_cache_file, json_cache_projection, lino_to_json};
+use formal_ai::json_lino::{json_cache_file, lino_to_json};
 use links_notation::parse_lino as parse_canonical_lino;
 use regex::Regex;
+use serde_json::{Map, Value};
 use walkdir::WalkDir;
 
 const MAX_LINO_LINES: usize = 1_500;
@@ -383,8 +384,35 @@ fn meaning_seed_uses_id_fact_format() {
     }
 }
 
+/// Independent empty-collection normalization (issue #398 review, defect #5):
+/// drop JSON `null`, empty arrays and empty objects. Defined here in the test
+/// — *not* reused from the codec under test — so the round-trip assertion below
+/// can never be circular. An empty collection is an absent default that the
+/// Links Notation cache never stores, so the only difference allowed between
+/// the raw JSON and the JSON rebuilt from Links Notation is the absence of
+/// these empties.
+fn strip_json_empties(value: &Value) -> Option<Value> {
+    match value {
+        Value::Null => None,
+        Value::Array(items) => {
+            let kept: Vec<Value> = items.iter().filter_map(strip_json_empties).collect();
+            (!kept.is_empty()).then_some(Value::Array(kept))
+        }
+        Value::Object(object) => {
+            let mut kept = Map::new();
+            for (key, value) in object {
+                if let Some(value) = strip_json_empties(value) {
+                    kept.insert(key.clone(), value);
+                }
+            }
+            (!kept.is_empty()).then_some(Value::Object(kept))
+        }
+        scalar => Some(scalar.clone()),
+    }
+}
+
 #[test]
-fn wikidata_lino_cache_roundtrips_json_values() {
+fn wikidata_lino_cache_rebuilds_full_json_losslessly() {
     let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
     let required = [
         "Q121769", "L5785", "L41576", "L166084", "L166085", "Q1084", "Q24905", "Q1860", "Q110786",
@@ -405,6 +433,7 @@ fn wikidata_lino_cache_roundtrips_json_values() {
         );
     }
 
+    let mut checked = 0;
     for path in WalkDir::new(&cache_dir)
         .into_iter()
         .filter_map(Result::ok)
@@ -422,28 +451,117 @@ fn wikidata_lino_cache_roundtrips_json_values() {
             "{} must have a raw JSON snapshot beside it",
             path.display()
         );
-        let raw_json: serde_json::Value = serde_json::from_str(
+        let raw_json: Value = serde_json::from_str(
             &fs::read_to_string(&json_path).expect("raw json cache file should be UTF-8"),
         )
         .unwrap_or_else(|error| panic!("{} contains invalid JSON: {error}", json_path.display()));
 
         let content = fs::read_to_string(&path).expect("cache file should be UTF-8");
+
+        // The checked-in LiNo is the canonical encoding of the raw JSON, so the
+        // file stays byte-stable under regeneration.
         assert_eq!(
             content,
             json_cache_file(id, &raw_json),
-            "{} is not the canonical LiNo projection of {}",
+            "{} is not the canonical LiNo encoding of {}",
             path.display(),
             json_path.display()
         );
-        let json = lino_to_json(&content)
+
+        // The headline guarantee (defect #1): rebuild the *entire* original
+        // JSON — every form, sense, claim and key — from the LiNo alone, and
+        // assert it equals the raw `.json` (modulo the empty defaults that are
+        // never stored). The expected value is normalized by this test's own
+        // `strip_json_empties`, never by the codec, so the assertion proves a
+        // real round-trip rather than comparing the codec against itself.
+        let rebuilt = lino_to_json(&content)
             .unwrap_or_else(|error| panic!("{} failed to decode: {error}", path.display()));
+        let expected = strip_json_empties(&raw_json).unwrap_or_else(|| Value::Object(Map::new()));
         assert_eq!(
-            json_cache_projection(id, &raw_json),
-            json,
-            "{} decoded projection does not match raw JSON source fields",
-            path.display()
+            rebuilt,
+            expected,
+            "{} does not rebuild the full raw JSON {}",
+            path.display(),
+            json_path.display()
+        );
+        checked += 1;
+    }
+
+    assert!(
+        checked >= required.len(),
+        "expected to round-trip every cached Wikidata file, only checked {checked}"
+    );
+
+    // Guard the specific snapshot the review called out: L3412's raw JSON keeps
+    // forms, senses and claims, and all three must survive the round-trip.
+    let l3412_lino = fs::read_to_string(wikidata_cache_path(&cache_dir, "L3412", "lino"))
+        .expect("L3412 cache should be UTF-8");
+    let l3412 = lino_to_json(&l3412_lino).expect("L3412 should decode");
+    let entity = l3412
+        .get("entities")
+        .and_then(|entities| entities.get("L3412"))
+        .expect("L3412 entity should be present");
+    for key in ["forms", "senses", "claims"] {
+        let value = entity
+            .get(key)
+            .unwrap_or_else(|| panic!("L3412 lost `{key}`"));
+        assert!(
+            !value.as_array().is_some_and(Vec::is_empty)
+                && !value.as_object().is_some_and(Map::is_empty),
+            "L3412 `{key}` round-tripped empty"
         );
     }
+}
+
+#[test]
+fn wiktionary_cache_is_pretty_printed_and_rebuilds_full_json() {
+    let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wiktionary");
+    let mut checked = 0;
+    for path in WalkDir::new(&cache_dir)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+        .map(walkdir::DirEntry::into_path)
+        .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("lino"))
+    {
+        let json_path = path.with_extension("json");
+        assert!(
+            json_path.is_file(),
+            "{} must have a raw JSON snapshot beside it",
+            path.display()
+        );
+        let raw_text = fs::read_to_string(&json_path).expect("wiktionary json should be UTF-8");
+        let raw_json: Value = serde_json::from_str(&raw_text)
+            .unwrap_or_else(|error| panic!("{} is invalid JSON: {error}", json_path.display()));
+
+        // Defect #2: the snapshot must be pretty-printed (multi-line), one entry
+        // per grounded surface — never the original single-line blob.
+        assert!(
+            raw_text.lines().count() > 1,
+            "{} must be pretty-printed multi-line, not a single-line blob",
+            json_path.display()
+        );
+
+        // The LiNo rebuilds the full Wiktionary JSON (every meaning, definition,
+        // phonetic and license) modulo the empty defaults that are never stored.
+        let content = fs::read_to_string(&path).expect("wiktionary cache should be UTF-8");
+        let rebuilt = lino_to_json(&content)
+            .unwrap_or_else(|error| panic!("{} failed to decode: {error}", path.display()));
+        let expected = strip_json_empties(&raw_json).unwrap_or_else(|| Value::Object(Map::new()));
+        assert_eq!(
+            rebuilt,
+            expected,
+            "{} does not rebuild the full raw JSON {}",
+            path.display(),
+            json_path.display()
+        );
+        checked += 1;
+    }
+
+    assert!(
+        checked > 0,
+        "expected at least one Wiktionary cache record to round-trip"
+    );
 }
 
 fn seed_lino_paths() -> Vec<std::path::PathBuf> {

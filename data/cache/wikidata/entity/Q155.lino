@@ -1,15 +1,17 @@
 Q155
   aliases
-    en ("Federative Republic of Brazil" "Brasil")
-    ru ("Estados Unidos del Brazil" "Brasil" "Федеративная Республика Бразилия")
+    en ("Federative Republic of Brazil" Brasil)
+    ru ("Estados Unidos del Brazil" Brasil "Федеративная Республика Бразилия")
   descriptions
     en "country in South America"
     hi "दक्षिण अमेरिका महाद्वीप में स्थित देश"
     ru "страна в Южной Америке"
     zh "南美洲國家"
+  id Q155
   labels
     en Brazil
     hi "ब्राज़ील"
     ru "Бразилия"
     zh "巴西"
   type item
+success 1

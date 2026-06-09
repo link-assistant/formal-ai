@@ -1,6 +1,6 @@
 Q192776
   aliases
-    en ("ANN" "neural network" "connectionist system" "connectionist systems" "deep nets" "Simulated Neural Network" "Static Neural Network" "SNN" "Synergetic Neural Network" "Neural Networks, Computer" "neural net" "artificial neural networks" "NN")
+    en (ANN "neural network" "connectionist system" "connectionist systems" "deep nets" "Simulated Neural Network" "Static Neural Network" SNN "Synergetic Neural Network" "Neural Networks, Computer" "neural net" "artificial neural networks" NN)
     hi ("न्यूरल नेटवर्क")
     ru ("искусственные нейронные сети" "нейросеть" "искусственная нейросеть" "ИНС" "нейронная сеть")
     zh ("人工智慧网路" "類神經網路" "协同神经网络" "神经网络" "人工神经网络")
@@ -8,9 +8,11 @@ Q192776
     en "computational model used in machine learning, based on connected, hierarchical functions"
     ru "математическая модель, построенная по принципу организации и функционирования биологических нейронных сетей"
     zh "模仿生物神經網路結構和功能的數學模型或計算模型"
+  id Q192776
   labels
     en "artificial neural network"
     hi "कृत्रिम तंत्रिका नेटवर्क"
     ru "искусственная нейронная сеть"
     zh "人工神經網絡"
   type item
+success 1

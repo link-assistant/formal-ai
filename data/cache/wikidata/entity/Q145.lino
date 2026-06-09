@@ -8,9 +8,11 @@ Q145
     hi "पश्चिमोत्तरी यूरोप का देश"
     ru "государство в Европе"
     zh "歐洲西部的島國"
+  id Q145
   labels
     en "United Kingdom"
     hi "यूनाइटेड किंगडम"
     ru "Великобритания"
     zh "英国"
   type item
+success 1

@@ -1,6 +1,6 @@
 Q110786
   aliases
-    en ("singulars" "sg" "sing.")
+    en (singulars sg sing.)
     hi ("वाहिद")
     ru ("ед.ч." "ед. ч." "сингуляр")
     zh ("单数")
@@ -8,9 +8,11 @@ Q110786
     en "grammatical number"
     ru "грамматическое число, используемое для обозначения одного предмета"
     zh "語言學數"
+  id Q110786
   labels
     en singular
     hi "एकवचन"
     ru "единственное число"
     zh "單數"
   type item
+success 1

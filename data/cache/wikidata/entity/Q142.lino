@@ -9,9 +9,11 @@ Q142
     hi "पश्चिम यूरोप का देश"
     ru "государство в Западной Европе"
     zh "西歐國家"
+  id Q142
   labels
     en France
     hi "फ़्रान्स"
     ru "Франция"
     zh "法國"
   type item
+success 1
