@@ -547,6 +547,141 @@ fn wiktionary_cache_is_pretty_printed_and_rebuilds_full_json() {
     );
 }
 
+#[test]
+fn meaning_definitions_are_unique() {
+    // Issue #398 review (comment 4664274427, CI check 7): no two meanings may
+    // share an identical definition. If two definitions are byte-for-byte the
+    // same they are the same meaning (and must be merged); if they are meant to
+    // be distinct they must be differentiated (a different genus, role, facet,
+    // grounding, or surface set). The signature is the *full* definition body —
+    // including the per-language `lexeme` surfaces — so genuinely distinct
+    // siblings that share a genus (`monday` and `tuesday`, both
+    // `defined-by calendar_day`) stay distinct via their surfaces.
+    let mut by_signature: std::collections::HashMap<String, Vec<String>> =
+        std::collections::HashMap::new();
+    for (path, slug, body) in meaning_definitions() {
+        by_signature
+            .entry(body)
+            .or_default()
+            .push(format!("{}:{slug}", path.display()));
+    }
+    let mut clashes: Vec<(String, Vec<String>)> = by_signature
+        .into_iter()
+        .filter(|(_, owners)| owners.len() > 1)
+        .collect();
+    clashes.sort();
+    assert!(
+        clashes.is_empty(),
+        "meanings with byte-identical definitions must be merged or differentiated: {:?}",
+        clashes
+            .iter()
+            .map(|(_, owners)| owners.clone())
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn meaning_slugs_are_globally_unique() {
+    // A meaning slug names exactly one meaning. The same slug defined twice (in
+    // one file or across files) is a cross-reference hazard: `defined-by foo`
+    // becomes ambiguous. This guards the dataset's referential integrity.
+    let mut owners: std::collections::HashMap<String, Vec<String>> =
+        std::collections::HashMap::new();
+    for (path, slug, _body) in meaning_definitions() {
+        owners
+            .entry(slug)
+            .or_default()
+            .push(path.display().to_string());
+    }
+    let mut duplicates: Vec<(String, Vec<String>)> = owners
+        .into_iter()
+        .filter(|(_, files)| files.len() > 1)
+        .collect();
+    duplicates.sort();
+    assert!(
+        duplicates.is_empty(),
+        "meaning slugs must be globally unique; duplicated: {duplicates:?}"
+    );
+}
+
+#[test]
+fn cache_source_json_is_pretty_printed() {
+    // Issue #398 review (comment 4664274427, CI check 2): every cached source
+    // snapshot is pretty-printed (multi-line) so diffs are reviewable. A
+    // single-line blob is the placeholder shape the review rejects. This guards
+    // the whole `data/cache` tree, not just Wiktionary.
+    let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache");
+    let mut checked = 0;
+    for path in WalkDir::new(&cache_dir)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+        .map(walkdir::DirEntry::into_path)
+        .filter(|path| path.extension().and_then(|extension| extension.to_str()) == Some("json"))
+    {
+        let text = fs::read_to_string(&path).expect("cache json should be UTF-8");
+        assert!(
+            text.lines().count() > 1,
+            "{} must be pretty-printed multi-line, not a single-line blob",
+            path.display()
+        );
+        checked += 1;
+    }
+    assert!(checked > 0, "expected checked-in cache JSON snapshots");
+}
+
+/// Every top-level meaning across the `data/seed/meanings*.lino` tree as
+/// `(file, slug, full-definition-body)`. The body is the verbatim block of
+/// deeper-indented child lines (comments stripped), used for uniqueness checks.
+fn meaning_definitions() -> Vec<(std::path::PathBuf, String, String)> {
+    let mut out = Vec::new();
+    for path in seed_lino_paths() {
+        let is_meaning_file = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.starts_with("meanings"));
+        if !is_meaning_file {
+            continue;
+        }
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        let lines: Vec<&str> = content.lines().collect();
+        let mut index = 0;
+        while index < lines.len() {
+            let line = lines[index];
+            let indent = line.chars().take_while(|c| *c == ' ').count();
+            let trimmed = strip_lino_comment(line).trim();
+            // A top-level meaning header sits at indent 2, is a bare slug (no
+            // value on the line), and is not the `meanings` container itself.
+            let is_header = indent == 2
+                && !trimmed.is_empty()
+                && trimmed != "meanings"
+                && !trimmed.contains(char::is_whitespace);
+            if !is_header {
+                index += 1;
+                continue;
+            }
+            let mut body = Vec::new();
+            let mut cursor = index + 1;
+            while cursor < lines.len() {
+                let next = lines[cursor];
+                if next.trim().is_empty() {
+                    cursor += 1;
+                    continue;
+                }
+                let next_indent = next.chars().take_while(|c| *c == ' ').count();
+                if next_indent <= indent {
+                    break;
+                }
+                body.push(strip_lino_comment(next).trim_end().to_string());
+                cursor += 1;
+            }
+            out.push((path.clone(), trimmed.to_string(), body.join("\n")));
+            index = cursor;
+        }
+    }
+    out
+}
+
 fn seed_lino_paths() -> Vec<std::path::PathBuf> {
     let seed_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/seed");
     WalkDir::new(seed_dir)
