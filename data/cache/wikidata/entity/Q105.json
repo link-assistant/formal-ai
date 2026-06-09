@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q105": {
+      "type": "item",
+      "id": "Q105",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Monday"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "понедельник"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सोमवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期一"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day of the week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день недели между воскресеньем и вторником"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सप्ताह का दिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期中的日子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Mon"
+          },
+          {
+            "language": "en",
+            "value": "Mo"
+          },
+          {
+            "language": "en",
+            "value": "Mon."
+          },
+          {
+            "language": "en",
+            "value": "M"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "пн"
+          },
+          {
+            "language": "ru",
+            "value": "пнд"
+          },
+          {
+            "language": "ru",
+            "value": "понед"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सोम"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "禮拜一"
+          },
+          {
+            "language": "zh",
+            "value": "礼拜一"
+          },
+          {
+            "language": "zh",
+            "value": "週一"
+          },
+          {
+            "language": "zh",
+            "value": "周一"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

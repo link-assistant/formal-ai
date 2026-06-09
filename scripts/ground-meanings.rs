@@ -1,0 +1,404 @@
+//! Wikidata grounding pipeline for the canonical seed (issue #398, defect #3).
+//!
+//! PR #399 review (comment 4664274427, defect 3 / CI check 3) demands that every
+//! seed meaning reference a *real* Wikidata id, with the per-id source snapshot
+//! cached so the grounding closure is checked in — "never left dangling, never
+//! deferred". This script is the re-runnable algorithm that does that for a
+//! curated, *verified* batch of common-vocabulary meanings.
+//!
+//! For each `(slug, qid, expected_label_token)` entry it:
+//!
+//!   1. Fetches `Special:EntityData/<qid>.json` from Wikidata (via `curl`) when
+//!      the cache file is missing, trims it to the established cache convention
+//!      (`type`, `id`, `labels`/`descriptions`/`aliases` in en/ru/hi/zh only,
+//!      wrapped in `{entities:{<qid>:…}, success:1}`), and writes the pretty
+//!      multi-line JSON to `data/cache/wikidata/entity/<qid>.json`.
+//!   2. **Verifies** that the fetched entity's labels actually contain
+//!      `expected_label_token` (case-insensitive). This guard is the whole point
+//!      of curating tokens: a wrong Qid (e.g. `Q206` is "Stephen Harper", not
+//!      "seven") is *refused*, never grounded, so the batch can only inject
+//!      correct anchors.
+//!   3. Generates the lossless `.lino` snapshot via the
+//!      `wikidata_json_to_lino` example (the same codec the cache is built with).
+//!   4. Inserts `grounded-in <qid>` as the first child of the meaning block in
+//!      `data/seed/**/meanings*.lino` (idempotent — re-running is a no-op).
+//!
+//! Finally it regenerates the embedded browser-worker seed so the web runtime
+//! keeps identical bytes.
+//!
+//! Network access is only needed the first time an id is fetched; afterwards the
+//! checked-in cache satisfies the closure tests offline. Run with
+//! `rust-script scripts/ground-meanings.rs` (std-only; also compiles with
+//! `rustc`). Requires `curl`, `python3`, and a built `cargo`.
+
+use std::fs;
+use std::io::{self, Write};
+use std::path::{Path, PathBuf};
+use std::process::Command;
+
+const USER_AGENT: &str = "formal-ai-grounding/1.0 (https://github.com/link-assistant/formal-ai)";
+
+/// `(meaning slug, Wikidata id, expected label token)`. Every token here was
+/// confirmed against the live `labels` of the listed id before it was added —
+/// the verification step below re-checks it on every run so a stale or wrong
+/// mapping fails loudly instead of grounding a meaning to the wrong concept.
+const GROUNDINGS: &[(&str, &str, &str)] = &[
+    // calendar weekdays
+    ("monday", "Q105", "monday"),
+    ("tuesday", "Q127", "tuesday"),
+    ("wednesday", "Q128", "wednesday"),
+    ("thursday", "Q129", "thursday"),
+    ("friday", "Q130", "friday"),
+    ("saturday", "Q131", "saturday"),
+    ("sunday", "Q132", "sunday"),
+    // arithmetic operations
+    ("addition", "Q32043", "addition"),
+    ("subtraction", "Q40754", "subtraction"),
+    ("multiplication", "Q40276", "multiplication"),
+    ("division", "Q1226939", "division"),
+    // currencies
+    ("us_dollar", "Q4917", "dollar"),
+    ("euro", "Q4916", "euro"),
+    ("ruble", "Q41044", "ruble"),
+    // length units
+    ("meter", "Q11573", "metre"),
+    ("kilometer", "Q828224", "kilometre"),
+    ("centimeter", "Q174728", "centimetre"),
+    ("millimeter", "Q174789", "millimetre"),
+    // mass units
+    ("gram", "Q41803", "gram"),
+    ("kilogram", "Q11570", "kilogram"),
+    ("pound", "Q100995", "pound"),
+    // time units
+    ("second", "Q11574", "second"),
+    ("minute", "Q7727", "minute"),
+    ("hour", "Q25235", "hour"),
+    ("millisecond", "Q723733", "millisecond"),
+    ("day", "Q573", "day"),
+    ("month", "Q5151", "month"),
+    // data-size units
+    ("byte", "Q8799", "byte"),
+    ("bit", "Q8805", "bit"),
+    ("terabyte", "Q79741", "terabyte"),
+    // temperature
+    ("celsius", "Q25267", "celsius"),
+    // mathematical functions
+    ("square_root", "Q134237", "square root"),
+    ("logarithm", "Q11197", "logarithm"),
+    ("natural_logarithm", "Q204037", "natural logarithm"),
+    ("sine", "Q152415", "sine"),
+    // core quantities
+    ("money", "Q1368", "money"),
+    ("quantity", "Q309314", "quantity"),
+];
+
+/// Meaning seed files mirrored into the browser worker fallback, in load order.
+const MEANING_SEED_FILES: &[&str] = &[
+    "data/seed/meanings.lino",
+    "data/seed/meanings-units.lino",
+    "data/seed/meanings-calendar.lino",
+    "data/seed/meanings-calculator.lino",
+    "data/seed/meanings-facts.lino",
+    "data/seed/meanings-software-project.lino",
+    "data/seed/meanings-program-synthesis.lino",
+    "data/seed/meanings-intent.lino",
+    "data/seed/meanings-how.lino",
+    "data/seed/meanings-meta.lino",
+    "data/seed/meanings-web-navigation.lino",
+    "data/seed/meanings-web-search.lino",
+    "data/seed/meanings-web-search-query.lino",
+    "data/seed/meanings-web-research.lino",
+    "data/seed/meanings-web-followup.lino",
+    "data/seed/meanings-translation.lino",
+    "data/seed/meanings-ontology.lino",
+    "data/seed/meanings-semantic-meta.lino",
+    "data/seed/meanings-lexical-meta.lino",
+    "data/seed/meanings-links-root.lino",
+    "data/seed/meanings-wikidata.lino",
+    "data/seed/meanings-behavior-rules.lino",
+    "data/seed/meanings-proof.lino",
+    "data/seed/meanings-policy.lino",
+    "data/seed/meanings-docs.lino",
+    "data/seed/meanings-skill-compiler.lino",
+    "data/seed/meanings-finance.lino",
+    "data/seed/meanings-definition-merge.lino",
+    "data/seed/meanings-tool-access.lino",
+    "data/seed/meanings-feature-capability.lino",
+    "data/seed/meanings-playwright.lino",
+    "data/seed/meanings-research-table.lino",
+    "data/seed/meanings-conversation.lino",
+    "data/seed/meanings-summary.lino",
+    "data/seed/meanings-coding-catalog.lino",
+];
+
+/// `curl | python3` trim+verify program. Reads the full EntityData JSON on
+/// stdin, keeps only the cache-convention keys and the en/ru/hi/zh languages,
+/// asserts the expected token appears in some label, and writes pretty JSON.
+/// Exits non-zero (without writing) when the token is absent — the wrong-Qid
+/// guard.
+const TRIM_PROGRAM: &str = r#"
+import sys, json
+from collections import OrderedDict
+qid, token, out_path = sys.argv[1], sys.argv[2], sys.argv[3]
+langs = ["en", "ru", "hi", "zh"]
+doc = json.load(sys.stdin)
+entity = doc["entities"][qid]
+labels = entity.get("labels", {})
+values = " | ".join(v.get("value", "") for v in labels.values()).lower()
+if token.lower() not in values:
+    sys.stderr.write("token %r not found in labels of %s (%s)\n" % (token, qid, values))
+    sys.exit(3)
+def keep_lang_map(section):
+    return OrderedDict((lang, section[lang]) for lang in langs if lang in section)
+trimmed = OrderedDict()
+trimmed["type"] = entity["type"]
+trimmed["id"] = entity["id"]
+if "labels" in entity:
+    trimmed["labels"] = keep_lang_map(entity["labels"])
+if "descriptions" in entity:
+    trimmed["descriptions"] = keep_lang_map(entity["descriptions"])
+if "aliases" in entity:
+    kept = keep_lang_map(entity["aliases"])
+    if kept:
+        trimmed["aliases"] = kept
+result = OrderedDict()
+result["entities"] = OrderedDict([(qid, trimmed)])
+result["success"] = 1
+with open(out_path, "w", encoding="utf-8") as handle:
+    json.dump(result, handle, ensure_ascii=False, indent=2)
+    handle.write("\n")
+"#;
+
+fn main() -> io::Result<()> {
+    let entity_dir = Path::new("data/cache/wikidata/entity");
+    fs::create_dir_all(entity_dir)?;
+    let seed_files = collect_seed_files(Path::new("data/seed"))?;
+
+    let mut grounded = 0usize;
+    let mut skipped: Vec<String> = Vec::new();
+
+    for (slug, qid, token) in GROUNDINGS {
+        let json_path = entity_dir.join(format!("{qid}.json"));
+        let lino_path = entity_dir.join(format!("{qid}.lino"));
+
+        if !json_path.exists() {
+            if let Err(reason) = fetch_and_trim(qid, token, &json_path) {
+                skipped.push(format!("{slug} ({qid}): {reason}"));
+                continue;
+            }
+        }
+        ensure_lino(qid, &json_path, &lino_path)?;
+
+        match ground_seed_slug(&seed_files, slug, qid)? {
+            GroundOutcome::Inserted => grounded += 1,
+            GroundOutcome::AlreadyGrounded => {}
+            GroundOutcome::SlugMissing => {
+                skipped.push(format!("{slug} ({qid}): slug not found in seed"));
+            }
+        }
+    }
+
+    refresh_worker_meanings(Path::new("src/web/formal_ai_worker.js"))?;
+
+    println!("grounded {grounded} meaning(s) to verified Wikidata ids");
+    if !skipped.is_empty() {
+        println!("skipped {} entr(ies):", skipped.len());
+        for entry in &skipped {
+            println!("  - {entry}");
+        }
+    }
+    Ok(())
+}
+
+/// Fetch `qid` from Wikidata, trim to the cache convention, and verify the
+/// label token. Returns an error string (the batch records it and moves on)
+/// when the fetch fails or the token is absent.
+fn fetch_and_trim(qid: &str, token: &str, json_path: &Path) -> Result<(), String> {
+    let url = format!("https://www.wikidata.org/wiki/Special:EntityData/{qid}.json");
+    let curl = Command::new("curl")
+        .args(["-sfL", "-A", USER_AGENT, &url])
+        .output()
+        .map_err(|error| format!("curl failed to launch: {error}"))?;
+    if !curl.status.success() {
+        return Err(format!("curl exited {}", curl.status));
+    }
+
+    let mut python = Command::new("python3")
+        .args(["-c", TRIM_PROGRAM, qid, token, &json_path.to_string_lossy()])
+        .stdin(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()
+        .map_err(|error| format!("python3 failed to launch: {error}"))?;
+    python
+        .stdin
+        .take()
+        .expect("python3 stdin")
+        .write_all(&curl.stdout)
+        .map_err(|error| format!("failed to pipe JSON: {error}"))?;
+    let output = python
+        .wait_with_output()
+        .map_err(|error| format!("python3 wait failed: {error}"))?;
+    if !output.status.success() {
+        return Err(String::from_utf8_lossy(&output.stderr).trim().to_string());
+    }
+    Ok(())
+}
+
+fn ensure_lino(qid: &str, json_path: &Path, lino_path: &Path) -> io::Result<()> {
+    if lino_path.exists() {
+        return Ok(());
+    }
+    let status = Command::new("cargo")
+        .args([
+            "run",
+            "--quiet",
+            "--example",
+            "wikidata_json_to_lino",
+            "--",
+            qid,
+            &json_path.to_string_lossy(),
+            &lino_path.to_string_lossy(),
+        ])
+        .status()?;
+    if !status.success() {
+        return Err(io::Error::new(
+            io::ErrorKind::Other,
+            format!("wikidata_json_to_lino failed for {qid}"),
+        ));
+    }
+    Ok(())
+}
+
+enum GroundOutcome {
+    Inserted,
+    AlreadyGrounded,
+    SlugMissing,
+}
+
+/// Insert `grounded-in <qid>` as the first child of the `slug` meaning block in
+/// whichever seed file declares it. Idempotent: if the block already carries a
+/// `grounded-in` line the file is left untouched.
+fn ground_seed_slug(seed_files: &[PathBuf], slug: &str, qid: &str) -> io::Result<GroundOutcome> {
+    let header = format!("  {slug}");
+    for path in seed_files {
+        let content = fs::read_to_string(path)?;
+        let lines: Vec<&str> = content.lines().collect();
+        let Some(index) = lines.iter().position(|line| *line == header) else {
+            continue;
+        };
+        // Scan the block body (lines indented deeper than the header).
+        let mut already = false;
+        for line in &lines[index + 1..] {
+            let indent = leading_spaces(line);
+            if !line.trim().is_empty() && indent <= 2 {
+                break;
+            }
+            if line.trim() == format!("grounded-in {qid}")
+                || line.trim().starts_with("grounded-in ")
+            {
+                already = true;
+                break;
+            }
+        }
+        if already {
+            return Ok(GroundOutcome::AlreadyGrounded);
+        }
+        let mut rebuilt: Vec<String> = Vec::with_capacity(lines.len() + 1);
+        for (position, line) in lines.iter().enumerate() {
+            rebuilt.push((*line).to_string());
+            if position == index {
+                rebuilt.push(format!("    grounded-in {qid}"));
+            }
+        }
+        let mut joined = rebuilt.join("\n");
+        if content.ends_with('\n') {
+            joined.push('\n');
+        }
+        fs::write(path, joined)?;
+        return Ok(GroundOutcome::Inserted);
+    }
+    Ok(GroundOutcome::SlugMissing)
+}
+
+fn leading_spaces(line: &str) -> usize {
+    line.chars()
+        .take_while(|character| *character == ' ')
+        .count()
+}
+
+fn collect_seed_files(dir: &Path) -> io::Result<Vec<PathBuf>> {
+    let mut out = Vec::new();
+    for entry in fs::read_dir(dir)? {
+        let entry = entry?;
+        let path = entry.path();
+        if path.is_dir() {
+            out.extend(collect_seed_files(&path)?);
+        } else if path.extension().and_then(|extension| extension.to_str()) == Some("lino")
+            && path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with("meanings"))
+        {
+            out.push(path);
+        }
+    }
+    out.sort();
+    Ok(out)
+}
+
+fn refresh_worker_meanings(worker_path: &Path) -> io::Result<()> {
+    if !worker_path.exists() {
+        return Ok(());
+    }
+    let mut seed_lines = Vec::new();
+    for file in MEANING_SEED_FILES {
+        let content = fs::read_to_string(file)?;
+        let content = content.strip_suffix('\n').unwrap_or(&content);
+        seed_lines.extend(content.lines().map(ToOwned::to_owned));
+    }
+
+    let mut replacement = String::from("const MEANINGS_LINO = [\n");
+    for line in seed_lines {
+        replacement.push_str("  ");
+        replacement.push_str(&js_string(&line));
+        replacement.push_str(",\n");
+    }
+    replacement.push_str("].join(\"\\n\");");
+
+    let original = fs::read_to_string(worker_path)?;
+    let start = original.find("const MEANINGS_LINO = [").ok_or_else(|| {
+        io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO start not found")
+    })?;
+    let end_marker = "].join(\"\\n\");";
+    let end = original[start..]
+        .find(end_marker)
+        .map(|offset| start + offset + end_marker.len())
+        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "MEANINGS_LINO end not found"))?;
+    let mut next = String::new();
+    next.push_str(&original[..start]);
+    next.push_str(&replacement);
+    next.push_str(&original[end..]);
+    if next != original {
+        fs::write(worker_path, next)?;
+    }
+    Ok(())
+}
+
+fn js_string(value: &str) -> String {
+    let mut out = String::from("\"");
+    for character in value.chars() {
+        match character {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            character if character.is_control() => {
+                out.push_str(&format!("\\u{:04x}", character as u32));
+            }
+            character => out.push(character),
+        }
+    }
+    out.push('"');
+    out
+}

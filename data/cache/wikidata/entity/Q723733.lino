@@ -1,0 +1,15 @@
+Q723733
+  aliases
+    en (ms milliseconds)
+    ru ("мс")
+    zh ("毫秒")
+  descriptions
+    en "SI unit of time equal to one thousandth of a second"
+    ru "тысячная доля секунды"
+  id Q723733
+  labels
+    en millisecond
+    ru "миллисекунда"
+    zh "微秒"
+  type item
+success 1

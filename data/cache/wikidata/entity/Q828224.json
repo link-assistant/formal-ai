@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Q828224": {
+      "type": "item",
+      "id": "Q828224",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "kilometre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "километр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सहस्रमान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公里"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of length equal to one thousand metres"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кратная единица измерения расстояния"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "km"
+          },
+          {
+            "language": "en",
+            "value": "kilometres"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "км"
+          },
+          {
+            "language": "ru",
+            "value": "км."
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "किलोमीटर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "粁"
+          },
+          {
+            "language": "zh",
+            "value": "千米"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

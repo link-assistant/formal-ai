@@ -1,0 +1,19 @@
+Q105
+  aliases
+    en (Mon Mo Mon. M)
+    hi ("सोम")
+    ru ("пн" "пнд" "понед")
+    zh ("禮拜一" "礼拜一" "週一" "周一")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между воскресеньем и вторником"
+    zh "星期中的日子"
+  id Q105
+  labels
+    en Monday
+    hi "सोमवार"
+    ru "понедельник"
+    zh "星期一"
+  type item
+success 1

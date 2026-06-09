@@ -1,0 +1,17 @@
+Q40754
+  aliases
+    en (subtract decrease "take away" deduct minus)
+    ru ("вычитаемое" "уменьшаемое" "минус (бинарная операция)" "- (операция)")
+    zh ("减" "减法")
+  descriptions
+    en "process of subtracting a number from another (minuend−subtrahend=difference); mathematical operation that represents the operation of removing objects from a collection"
+    hi "चार बुनियादी अंकगणित संचालनों में से एक।"
+    zh "二元運算"
+  id Q40754
+  labels
+    en subtraction
+    hi "घटाना"
+    ru "вычитание"
+    zh "減法"
+  type item
+success 1

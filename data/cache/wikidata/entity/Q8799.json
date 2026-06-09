@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q8799": {
+      "type": "item",
+      "id": "Q8799",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "byte"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "байт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "字节"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of digital information equal to 8 bits"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "основная единица информации в компьютере, равна 8 бит"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "电脑、手机及智能手表等设备上的信息计量单位，代表八个比特"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "B"
+          },
+          {
+            "language": "en",
+            "value": "u8"
+          },
+          {
+            "language": "en",
+            "value": "octet"
+          },
+          {
+            "language": "en",
+            "value": "eight-bit byte"
+          },
+          {
+            "language": "en",
+            "value": "8-bit byte"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

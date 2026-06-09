@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q11570": {
+      "type": "item",
+      "id": "Q11570",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "kilogram"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "килограмм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किलोग्राम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "千克"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "metric unit of mass"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения массы"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "國際單位制中質量的基本單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "kg"
+          },
+          {
+            "language": "en",
+            "value": "kilogramme"
+          },
+          {
+            "language": "en",
+            "value": "kilo"
+          },
+          {
+            "language": "en",
+            "value": "kilograms"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кг"
+          },
+          {
+            "language": "ru",
+            "value": "kg"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "公斤"
+          },
+          {
+            "language": "zh",
+            "value": "兛"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q573": {
+      "type": "item",
+      "id": "Q573",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "day"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сутки"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "日"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of time lasting 24 hours, derived from the period of Earth's rotation about its axis"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения времени, приблизительно равная периоду обращения Земли вокруг своей оси (24 часа)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "24 घंटे तक चलने वाली समय की इकाई, जो पृथ्वी के अपने अक्ष पर घूमने की अवधि से व्युत्पन्न होती है"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "時間單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "days"
+          },
+          {
+            "language": "en",
+            "value": "Earth day"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "суток"
+          },
+          {
+            "language": "ru",
+            "value": "дня"
+          },
+          {
+            "language": "ru",
+            "value": "дней"
+          },
+          {
+            "language": "ru",
+            "value": "день"
+          },
+          {
+            "language": "ru",
+            "value": "д."
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "दिवस"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "天"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

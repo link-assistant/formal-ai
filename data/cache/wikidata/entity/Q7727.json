@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q7727": {
+      "type": "item",
+      "id": "Q7727",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "minute"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "минута"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मिनट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "分钟"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения времени"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "時間單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "min"
+          },
+          {
+            "language": "en",
+            "value": "mins"
+          },
+          {
+            "language": "en",
+            "value": "minutes"
+          },
+          {
+            "language": "en",
+            "value": "minuit"
+          },
+          {
+            "language": "en",
+            "value": "minuits"
+          },
+          {
+            "language": "en",
+            "value": "min."
+          },
+          {
+            "language": "en",
+            "value": "mins."
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мин"
+          },
+          {
+            "language": "ru",
+            "value": "min"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "分"
+          },
+          {
+            "language": "zh",
+            "value": "分鐘"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

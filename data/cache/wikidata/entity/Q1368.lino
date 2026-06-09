@@ -1,0 +1,18 @@
+Q1368
+  aliases
+    en (cash dough monies moolah simoleon)
+    ru ("плата" "денежные средства")
+    zh ("货币")
+  descriptions
+    en "object or record accepted as payment"
+    hi "भुगतान के रूप में स्वीकार की गई वस्तु या रिकॉर्ड"
+    ru "общепринятая мера стоимости товаров и услуг"
+    zh "替代實物的交易媒介"
+  id Q1368
+  labels
+    en money
+    hi "पैसा"
+    ru "деньги"
+    zh "貨幣"
+  type item
+success 1

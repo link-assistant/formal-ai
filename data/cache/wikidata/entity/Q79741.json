@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q79741": {
+      "type": "item",
+      "id": "Q79741",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "terabyte"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "терабайт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "太字節"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of digital information equal to one trillion bytes or 1,000 gigabytes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения количества информации, равная 2^40 байт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "單位字節的倍數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "TByte"
+          },
+          {
+            "language": "en",
+            "value": "TB"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Тбайт"
+          },
+          {
+            "language": "ru",
+            "value": "ТБ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "太位元組"
+          },
+          {
+            "language": "zh",
+            "value": "太拉位元組"
+          },
+          {
+            "language": "zh",
+            "value": "太字节"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

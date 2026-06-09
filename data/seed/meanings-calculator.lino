@@ -1,5 +1,6 @@
 meanings
   money
+    grounded-in Q1368
     defined-by concept
     role monetary_concept
     lexeme en
@@ -41,6 +42,7 @@ meanings
       surface
         text 汇率
   us_dollar
+    grounded-in Q4917
     defined-by money
     role currency_usd_reference
     role calculation_domain_term
@@ -65,6 +67,7 @@ meanings
       surface
         text 美元
   euro
+    grounded-in Q4916
     defined-by money
     role currency_eur_reference
     role calculation_domain_term
@@ -85,6 +88,7 @@ meanings
       surface
         text 欧元
   ruble
+    grounded-in Q41044
     defined-by money
     role currency_rub_reference
     role calculation_domain_term
@@ -174,6 +178,7 @@ meanings
       surface
         text 算术运算
   addition
+    grounded-in Q32043
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -191,6 +196,7 @@ meanings
       surface
         text 加上
   subtraction
+    grounded-in Q40754
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -208,6 +214,7 @@ meanings
       surface
         text 减去
   multiplication
+    grounded-in Q40276
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -231,6 +238,7 @@ meanings
       surface
         text 乘以
   division
+    grounded-in Q1226939
     defined-by arithmetic_operation
     role arithmetic_operator_word
     lexeme en
@@ -423,6 +431,7 @@ meanings
       surface
         text 数学函数
   square_root
+    grounded-in Q134237
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -442,6 +451,7 @@ meanings
       surface
         text 平方根
   sine
+    grounded-in Q152415
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -493,6 +503,7 @@ meanings
       surface
         text 正切
   logarithm
+    grounded-in Q11197
     defined-by mathematical_function
     role math_function_name
     lexeme en
@@ -510,6 +521,7 @@ meanings
       surface
         text 对数
   natural_logarithm
+    grounded-in Q204037
     defined-by mathematical_function
     role math_function_name
     lexeme en

@@ -1,0 +1,17 @@
+Q7727
+  aliases
+    en (min mins minutes minuit minuits min. mins.)
+    ru ("мин" min)
+    zh ("分" "分鐘")
+  descriptions
+    en "unit of time"
+    ru "единица измерения времени"
+    zh "時間單位"
+  id Q7727
+  labels
+    en minute
+    hi "मिनट"
+    ru "минута"
+    zh "分钟"
+  type item
+success 1

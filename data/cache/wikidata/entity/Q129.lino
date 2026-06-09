@@ -1,0 +1,19 @@
+Q129
+  aliases
+    en (Thu Thurs Thur Th R)
+    hi ("वृहस्पतिवार" "गुरु" "वृहस्पति" "वृह")
+    ru ("чт")
+    zh ("禮拜四" "礼拜四" "週四" "周四")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между средой и пятницей"
+    zh "星期中的日子"
+  id Q129
+  labels
+    en Thursday
+    hi "गुरुवार"
+    ru "четверг"
+    zh "星期四"
+  type item
+success 1

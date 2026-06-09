@@ -1,0 +1,19 @@
+Q127
+  aliases
+    en (Tue Tu T Tues)
+    hi ("मंगल")
+    ru ("вт")
+    zh ("禮拜二" "礼拜二" "週二" "周二")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между понедельником и средой"
+    zh "星期中的日子"
+  id Q127
+  labels
+    en Tuesday
+    hi "मंगलवार"
+    ru "вторник"
+    zh "星期二"
+  type item
+success 1

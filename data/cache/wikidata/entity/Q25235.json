@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q25235": {
+      "type": "item",
+      "id": "Q25235",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hour"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "час"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घंटा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "小时"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица времени"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "समय मापने की इकाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "時間單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "hours"
+          },
+          {
+            "language": "en",
+            "value": "60 minutes"
+          },
+          {
+            "language": "en",
+            "value": "sixty minutes"
+          },
+          {
+            "language": "en",
+            "value": "h"
+          },
+          {
+            "language": "en",
+            "value": "hr"
+          },
+          {
+            "language": "en",
+            "value": "hrs"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "часа"
+          },
+          {
+            "language": "ru",
+            "value": "часов"
+          },
+          {
+            "language": "ru",
+            "value": "ч"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "鐘點"
+          },
+          {
+            "language": "zh",
+            "value": "鐘頭"
+          },
+          {
+            "language": "zh",
+            "value": "小時"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q4916": {
+      "type": "item",
+      "id": "Q4916",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "euro"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "евро"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूरो"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歐元"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "currency of most countries in the European Union"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "официальная валюта большинства стран еврозоны (Евросоюза)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूरोपीय संघ में अधिकांश देशों की मुद्रा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "歐洲部分國家的共同貨幣"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "евро (валюта)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "歐羅"
+          },
+          {
+            "language": "zh",
+            "value": "欧元"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

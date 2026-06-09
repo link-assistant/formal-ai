@@ -1,0 +1,165 @@
+{
+  "entities": {
+    "Q4917": {
+      "type": "item",
+      "id": "Q4917",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "United States dollar"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "доллар США"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अमेरिकी डॉलर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美元"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "official currency of the United States"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "денежная единица США и ряда других стран"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अमेरिका की मुद्रा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美國官方貨幣"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "USD"
+          },
+          {
+            "language": "en",
+            "value": "$"
+          },
+          {
+            "language": "en",
+            "value": "US$"
+          },
+          {
+            "language": "en",
+            "value": "American dollar"
+          },
+          {
+            "language": "en",
+            "value": "US $"
+          },
+          {
+            "language": "en",
+            "value": "U.S. Dollar"
+          },
+          {
+            "language": "en",
+            "value": "U. S. Dollar"
+          },
+          {
+            "language": "en",
+            "value": "US-$"
+          },
+          {
+            "language": "en",
+            "value": "dollar"
+          },
+          {
+            "language": "en",
+            "value": "dollars"
+          },
+          {
+            "language": "en",
+            "value": "US dollar"
+          },
+          {
+            "language": "en",
+            "value": "buck"
+          },
+          {
+            "language": "en",
+            "value": "greenback"
+          },
+          {
+            "language": "en",
+            "value": "$USD"
+          },
+          {
+            "language": "en",
+            "value": "USD$"
+          },
+          {
+            "language": "en",
+            "value": "US dollars"
+          },
+          {
+            "language": "en",
+            "value": "United States dollars"
+          },
+          {
+            "language": "en",
+            "value": "American dollars"
+          },
+          {
+            "language": "en",
+            "value": "USA dollar"
+          },
+          {
+            "language": "en",
+            "value": "USA dollars"
+          },
+          {
+            "language": "en",
+            "value": "American money"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "USD"
+          },
+          {
+            "language": "ru",
+            "value": "$ США"
+          },
+          {
+            "language": "ru",
+            "value": "доллар"
+          },
+          {
+            "language": "ru",
+            "value": "американский доллар"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "美金"
+          },
+          {
+            "language": "zh",
+            "value": "USD"
+          },
+          {
+            "language": "zh",
+            "value": "$"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

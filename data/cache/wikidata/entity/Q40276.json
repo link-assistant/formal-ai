@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Q40276": {
+      "type": "item",
+      "id": "Q40276",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "multiplication"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "умножение"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गुणा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "乘法"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "mathematical operation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "математическая операция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गुड़ा की परिभाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "二元運算"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "×"
+          },
+          {
+            "language": "en",
+            "value": "times"
+          },
+          {
+            "language": "en",
+            "value": "multiply"
+          },
+          {
+            "language": "en",
+            "value": "product"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "операция умножения"
+          },
+          {
+            "language": "ru",
+            "value": "×"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "×"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "乘"
+          },
+          {
+            "language": "zh",
+            "value": "乘以"
+          },
+          {
+            "language": "zh",
+            "value": "相乘"
+          },
+          {
+            "language": "zh",
+            "value": "×"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

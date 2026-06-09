@@ -1,0 +1,18 @@
+Q41044
+  aliases
+    en (RUB ruble)
+    ru ("РР" RUB RUR "валюта Южной Осетии" "рубль России" "рубль российский" "валюта России" "Рубль" "руб" "валюта Абхазии" "валюта ДНР" "валюта ЛНР" "₽")
+    zh ("俄國盧布" "俄羅斯盧布")
+  descriptions
+    en "currency of the Russian Federation"
+    hi "रूस की आधिकारिक मुद्रा"
+    ru "основная валюта России"
+    zh "货币"
+  id Q41044
+  labels
+    en "Russian ruble"
+    hi "रूसी रूबल"
+    ru "российский рубль"
+    zh "俄罗斯卢布"
+  type item
+success 1

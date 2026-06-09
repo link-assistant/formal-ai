@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q41803": {
+      "type": "item",
+      "id": "Q41803",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "gram"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ग्राम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "克"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of mass equal to 1/1000th of a kilogram"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения массы, одна из основных в СГС"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "重量单位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "g"
+          },
+          {
+            "language": "en",
+            "value": "gm"
+          },
+          {
+            "language": "en",
+            "value": "gramme"
+          },
+          {
+            "language": "en",
+            "value": "grams"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "г"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "公克"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

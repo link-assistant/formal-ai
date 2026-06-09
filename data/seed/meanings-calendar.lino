@@ -1,5 +1,6 @@
 meanings
   monday
+    grounded-in Q105
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -27,6 +28,7 @@ meanings
       surface
         text 周一
   tuesday
+    grounded-in Q127
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -56,6 +58,7 @@ meanings
       surface
         text 周二
   wednesday
+    grounded-in Q128
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -83,6 +86,7 @@ meanings
       surface
         text 周三
   thursday
+    grounded-in Q129
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -114,6 +118,7 @@ meanings
       surface
         text 周四
   friday
+    grounded-in Q130
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -141,6 +146,7 @@ meanings
       surface
         text 周五
   saturday
+    grounded-in Q131
     defined-by calendar_day
     role calendar_weekday
     lexeme en
@@ -168,6 +174,7 @@ meanings
       surface
         text 周六
   sunday
+    grounded-in Q132
     defined-by calendar_day
     role calendar_weekday
     lexeme en

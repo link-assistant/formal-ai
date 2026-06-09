@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q723733": {
+      "type": "item",
+      "id": "Q723733",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "millisecond"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "миллисекунда"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "微秒"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of time equal to one thousandth of a second"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тысячная доля секунды"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ms"
+          },
+          {
+            "language": "en",
+            "value": "milliseconds"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мс"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "毫秒"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

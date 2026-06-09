@@ -1,0 +1,17 @@
+Q11197
+  aliases
+    en (log "logarithmic function" "logarithm function" logarithms)
+    ru ("логарифмическая функция")
+    zh ("对数")
+  descriptions
+    en "inverse of the exponential function, which maps products to sums"
+    ru "функция, обратная к показательной"
+    zh "冪運算的逆運算"
+  id Q11197
+  labels
+    en logarithm
+    hi "लघुगणक"
+    ru "логарифм"
+    zh "對數"
+  type item
+success 1

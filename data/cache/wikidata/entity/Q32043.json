@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q32043": {
+      "type": "item",
+      "id": "Q32043",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "addition"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сложение"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जोड़"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "加法"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "arithmetic operation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "математическая операция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंकगणितीय संक्रिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "二元運算"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "adding"
+          },
+          {
+            "language": "en",
+            "value": "collecting"
+          },
+          {
+            "language": "en",
+            "value": "summing"
+          },
+          {
+            "language": "en",
+            "value": "summation"
+          },
+          {
+            "language": "en",
+            "value": "plus"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "加"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

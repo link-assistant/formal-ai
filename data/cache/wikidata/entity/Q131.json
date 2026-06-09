@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q131": {
+      "type": "item",
+      "id": "Q131",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Saturday"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "суббота"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शनिवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期六"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day of the week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день недели между пятницей и воскресеньем"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期中的日子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Sat"
+          },
+          {
+            "language": "en",
+            "value": "Sa"
+          },
+          {
+            "language": "en",
+            "value": "S"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "сб"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "禮拜六"
+          },
+          {
+            "language": "zh",
+            "value": "礼拜六"
+          },
+          {
+            "language": "zh",
+            "value": "週六"
+          },
+          {
+            "language": "zh",
+            "value": "周六"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

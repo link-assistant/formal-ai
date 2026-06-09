@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q174789": {
+      "type": "item",
+      "id": "Q174789",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "millimetre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "миллиметр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सहस्रिमान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "毫米"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of length equal to one thousandth of a metre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения расстояния"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mil"
+          },
+          {
+            "language": "en",
+            "value": "millimetres"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "мм"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मिलिमीटर"
+          },
+          {
+            "language": "hi",
+            "value": "मिलीमीटर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "糎"
+          },
+          {
+            "language": "zh",
+            "value": "公厘"
+          },
+          {
+            "language": "zh",
+            "value": "亳米"
+          },
+          {
+            "language": "zh",
+            "value": "公釐"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

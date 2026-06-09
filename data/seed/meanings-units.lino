@@ -1,5 +1,6 @@
 meanings
   quantity
+    grounded-in Q309314
     defined-by unit
     defined-by property
     defined-by amount
@@ -322,6 +323,7 @@ meanings
       surface
         text 温度
   meter
+    grounded-in Q11573
     defined-by length
     defined-by unit
     role measurement_unit
@@ -348,6 +350,7 @@ meanings
       surface
         text 米
   kilometer
+    grounded-in Q828224
     defined-by length
     defined-by unit
     role measurement_unit
@@ -378,6 +381,7 @@ meanings
       surface
         text 公里
   centimeter
+    grounded-in Q174728
     defined-by length
     defined-by unit
     role measurement_unit
@@ -398,6 +402,7 @@ meanings
       surface
         text 厘米
   millimeter
+    grounded-in Q174789
     defined-by length
     defined-by unit
     role measurement_unit
@@ -418,6 +423,7 @@ meanings
       surface
         text 毫米
   byte
+    grounded-in Q8799
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -502,6 +508,7 @@ meanings
       surface
         text 吉字节
   terabyte
+    grounded-in Q79741
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -522,6 +529,7 @@ meanings
       surface
         text 太字节
   bit
+    grounded-in Q8805
     defined-by data_storage
     defined-by unit
     role measurement_unit
@@ -544,6 +552,7 @@ meanings
       surface
         text 比特
   kilogram
+    grounded-in Q11570
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -569,6 +578,7 @@ meanings
       surface
         text 公斤
   gram
+    grounded-in Q41803
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -588,6 +598,7 @@ meanings
       surface
         text 克
   pound
+    grounded-in Q100995
     defined-by mass
     defined-by unit
     role measurement_unit
@@ -631,6 +642,7 @@ meanings
       surface
         text 吨
   second
+    grounded-in Q11574
     defined-by time
     defined-by unit
     role measurement_unit
@@ -654,6 +666,7 @@ meanings
       surface
         text 秒
   minute
+    grounded-in Q7727
     defined-by time
     defined-by unit
     role measurement_unit
@@ -677,6 +690,7 @@ meanings
       surface
         text 分钟
   hour
+    grounded-in Q25235
     defined-by time
     defined-by unit
     role measurement_unit
@@ -700,6 +714,7 @@ meanings
       surface
         text 小时
   millisecond
+    grounded-in Q723733
     defined-by time
     defined-by unit
     role measurement_unit
@@ -723,6 +738,7 @@ meanings
       surface
         text 毫秒
   day
+    grounded-in Q573
     defined-by time
     defined-by unit
     role measurement_unit
@@ -748,6 +764,7 @@ meanings
       surface
         text 日
   month
+    grounded-in Q5151
     defined-by time
     defined-by unit
     role measurement_unit
@@ -775,6 +792,7 @@ meanings
       surface
         text 个月
   celsius
+    grounded-in Q25267
     defined-by temperature
     defined-by unit
     role measurement_unit
