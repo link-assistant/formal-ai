@@ -856,22 +856,55 @@ fn ensure_semantic_facet_target(facets: &mut Vec<SemanticFacet>, kind: &str, tar
     });
 }
 
+/// The closed facet vocabulary. A semantic facet is written either as the
+/// native `subject predicate` line (`notation word_surface`) or, for backward
+/// compatibility, as a `facet <kind>` wrapper. The two forms are equivalent;
+/// `scripts/migrate-empty-facet-fields.rs` rewrites the wrapper into the line
+/// form so the seed never carries an empty `word_surface:` colon redefinition.
+const FACET_KINDS: &[&str] = &[
+    "notation",
+    "annotation",
+    "denotation",
+    "connotation",
+    "part_of_speech",
+    "self-equation",
+];
+
 fn parse_semantic_facets(node: &LinoNode) -> Vec<SemanticFacet> {
-    node.children
-        .iter()
-        .filter(|child| child.name == "facet")
-        .map(|child| {
-            let meanings = child
-                .children
-                .iter()
-                .filter_map(semantic_facet_target)
-                .collect();
-            SemanticFacet {
-                kind: child.id.clone(),
-                meanings,
-            }
-        })
-        .collect()
+    let mut facets: Vec<SemanticFacet> = Vec::new();
+    for child in &node.children {
+        if child.name == "facet" {
+            // Legacy wrapper: `facet <kind>` with nested target children.
+            let targets = child.children.iter().filter_map(semantic_facet_target);
+            merge_facet_targets(&mut facets, &child.id, targets);
+        } else if FACET_KINDS.contains(&child.name.as_str()) && !child.id.is_empty() {
+            // Native subject-predicate line: `<kind> <target>`.
+            merge_facet_targets(&mut facets, &child.name, std::iter::once(child.id.clone()));
+        }
+    }
+    facets
+}
+
+/// Append `targets` under the `kind` facet, creating it if absent and skipping
+/// duplicates so the wrapper and line forms collapse to one facet.
+fn merge_facet_targets(
+    facets: &mut Vec<SemanticFacet>,
+    kind: &str,
+    targets: impl Iterator<Item = String>,
+) {
+    let position = facets.iter().position(|facet| facet.kind == kind);
+    let index = position.unwrap_or_else(|| {
+        facets.push(SemanticFacet {
+            kind: kind.to_string(),
+            meanings: Vec::new(),
+        });
+        facets.len() - 1
+    });
+    for target in targets {
+        if !facets[index].meanings.contains(&target) {
+            facets[index].meanings.push(target);
+        }
+    }
 }
 
 fn meaning_slug(node: &LinoNode) -> String {

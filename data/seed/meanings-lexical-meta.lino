@@ -3,287 +3,191 @@ meanings
     defined-by notation
     defined-by word_surface
     role lexical_meta
-    facet notation
-      word_surface:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      lexical_sense:
-    facet connotation
-      part_of_speech:
+    notation word_surface
+    annotation semantic_gloss
+    denotation lexical_sense
+    connotation part_of_speech
     lexeme en
       surface
         text "lexical form"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_form:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
     lexeme ru
       surface
         text "лексическая форма"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_form:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
     lexeme hi
       surface
         text "शाब्दिक रूप"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_form:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
     lexeme zh
       surface
         text 词形
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_form:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun
   word_surface:
     defined-by lexical_form
     defined-by notation
     role lexical_meta
-    facet notation
-      links_notation_format:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      lexical_form:
-    facet connotation
-      lexical_sense:
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation lexical_form
+    connotation lexical_sense
     lexeme en
       surface
         text "word surface"
-        facet notation
-          word_surface:
-        facet denotation
-          word_surface:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
     lexeme ru
       surface
         text "словесная форма"
-        facet notation
-          word_surface:
-        facet denotation
-          word_surface:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
     lexeme hi
       surface
         text "शब्द सतह"
-        facet notation
-          word_surface:
-        facet denotation
-          word_surface:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
     lexeme zh
       surface
         text 词面
-        facet notation
-          word_surface:
-        facet denotation
-          word_surface:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun
   lexical_sense:
     defined-by denotation
     defined-by concept
     role lexical_meta
-    facet notation
-      word_surface:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      concept:
-    facet connotation
-      lexical_form:
+    notation word_surface
+    annotation semantic_gloss
+    denotation concept
+    connotation lexical_form
     lexeme en
       surface
         text "lexical sense"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_sense:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
     lexeme ru
       surface
         text "лексическое значение"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_sense:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
     lexeme hi
       surface
         text "शाब्दिक अर्थ"
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_sense:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
     lexeme zh
       surface
         text 词义
-        facet notation
-          word_surface:
-        facet denotation
-          lexical_sense:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun
   part_of_speech:
     defined-by semantic_facet
     defined-by lexical_form
     role semantic_facet_kind
     role lexical_meta
-    facet notation
-      word_surface:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      semantic_facet:
-    facet connotation
-      lexical_form:
+    notation word_surface
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation lexical_form
     lexeme en
       surface
         text "part of speech"
-        facet notation
-          word_surface:
-        facet denotation
-          part_of_speech:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
     lexeme ru
       surface
         text "часть речи"
-        facet notation
-          word_surface:
-        facet denotation
-          part_of_speech:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
     lexeme hi
       surface
         text "शब्द भेद"
-        facet notation
-          word_surface:
-        facet denotation
-          part_of_speech:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
     lexeme zh
       surface
         text 词类
-        facet notation
-          word_surface:
-        facet denotation
-          part_of_speech:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun
   noun:
     defined-by part_of_speech
     role lexical_meta
-    facet notation
-      word_surface:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      part_of_speech:
-    facet connotation
-      lexical_form:
+    notation word_surface
+    annotation semantic_gloss
+    denotation part_of_speech
+    connotation lexical_form
     lexeme en
       surface
         text noun
-        facet notation
-          word_surface:
-        facet denotation
-          noun:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation noun
+        part_of_speech noun
     lexeme ru
       surface
         text существительное
-        facet notation
-          word_surface:
-        facet denotation
-          noun:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation noun
+        part_of_speech noun
     lexeme hi
       surface
         text संज्ञा
-        facet notation
-          word_surface:
-        facet denotation
-          noun:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation noun
+        part_of_speech noun
     lexeme zh
       surface
         text 名词
-        facet notation
-          word_surface:
-        facet denotation
-          noun:
-        facet part_of_speech
-          noun:
+        notation word_surface
+        denotation noun
+        part_of_speech noun
   noun_phrase:
     defined-by noun
     defined-by lexical_form
     role lexical_meta
-    facet notation
-      word_surface:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      part_of_speech:
-    facet connotation
-      noun:
+    notation word_surface
+    annotation semantic_gloss
+    denotation part_of_speech
+    connotation noun
     lexeme en
       surface
         text "noun phrase"
-        facet notation
-          word_surface:
-        facet denotation
-          noun_phrase:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
     lexeme ru
       surface
         text "именная группа"
-        facet notation
-          word_surface:
-        facet denotation
-          noun_phrase:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
     lexeme hi
       surface
         text "संज्ञा पद"
-        facet notation
-          word_surface:
-        facet denotation
-          noun_phrase:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
     lexeme zh
       surface
         text 名词短语
-        facet notation
-          word_surface:
-        facet denotation
-          noun_phrase:
-        facet part_of_speech
-          noun_phrase:
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase

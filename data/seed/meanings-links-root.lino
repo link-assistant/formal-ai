@@ -208,8 +208,7 @@ meanings
       surface
         text 和
   not: not (not not) # concept not
-    facet self-equation
-      not:
+    self-equation not
     role links_root
     lexeme en
       surface
@@ -224,8 +223,7 @@ meanings
       surface
         text 非
   same: not (not same) link # concept same
-    facet self-equation
-      same:
+    self-equation same
     role links_root
     lexeme en
       surface

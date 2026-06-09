@@ -226,6 +226,52 @@ fn seed_lino_values_never_pipe_pack_multi_values() {
 }
 
 #[test]
+fn seed_lino_files_have_no_empty_redefinition_fields() {
+    // Issue #398 review (comment 4663407299), defect #1: a semantic facet (or any
+    // field) must use the native `subject predicate` form — two references on one
+    // line, e.g. `notation word_surface`, `denotation lexical_sense`. The banned
+    // shape is an *empty* colon redefinition: `word_surface:` with no body, which
+    // merely restates a concept already defined elsewhere.
+    //
+    // The earlier guard (`lino_data_files_avoid_jsonish_and_unresolved_tokens`)
+    // only caught `key: # comment`; it missed a bare `word_surface:`. This check
+    // is the broad version: it walks the *entire* seed tree and fails on any
+    // colon line whose body is empty — i.e. it has no deeper-indented child. A
+    // real definition header (`result:` followed by indented `defined-by …`) has
+    // a body and passes; only the valueless redefinition fails.
+    // `scripts/migrate-empty-facet-fields.rs` performs the migration.
+    let empty_colon =
+        Regex::new(r"^[A-Za-z0-9_.-]+:$").expect("empty colon regex should compile");
+    for path in seed_lino_paths() {
+        let content = fs::read_to_string(&path).expect("lino file should be UTF-8 text");
+        let lines: Vec<&str> = content.lines().collect();
+        for (index, line) in lines.iter().enumerate() {
+            let skeleton = strip_quoted_spans(strip_lino_comment(line));
+            let body = skeleton.trim();
+            if !empty_colon.is_match(body) {
+                continue;
+            }
+            let indent = line.chars().take_while(|character| *character == ' ').count();
+            // A genuine block header is followed by a deeper-indented child; an
+            // empty redefinition is not.
+            let has_child = lines[index + 1..]
+                .iter()
+                .find(|next| !strip_lino_comment(next).trim().is_empty())
+                .is_some_and(|next| {
+                    next.chars().take_while(|character| *character == ' ').count() > indent
+                });
+            assert!(
+                has_child,
+                "{}:{} is an empty colon redefinition `{body}`; use the native \
+                 `subject predicate` form (two references on one line) instead: {line}",
+                path.display(),
+                index + 1,
+            );
+        }
+    }
+}
+
+#[test]
 fn wikidata_cache_uses_compact_native_lino() {
     let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
     let encoded_text = Regex::new(r"\bu-[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2})+\b")

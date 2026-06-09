@@ -4,14 +4,10 @@ meanings
     defined-by link-action
     defined-by any-of-reference
     role ontology_root
-    facet notation
-      links_notation_format:
-    facet annotation
-      semantic_gloss:
-    facet denotation
-      relation:
-    facet connotation
-      concept:
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation relation
+    connotation concept
     lexeme en
       surface
         text link
@@ -36,8 +32,7 @@ meanings
     defined-by link
     defined-by type
     role ontology_type
-    facet self-equation
-      type:
+    self-equation type
     lexeme en
       surface
         text type
