@@ -658,6 +658,58 @@ fn grounded_meaning_coverage_does_not_regress() {
     );
 }
 
+/// The number of meanings carrying full lexical detail — a `source-lexeme`
+/// reference with its part of speech (`lexical-category`) and at least one
+/// `form` + `feature` sourced from the lexeme — must never regress. Issue #398
+/// (deep review of `f1f78dc`, defect 6 / CI check 6) wants *every* grounded word
+/// to expose its parts of speech and all forms from Wikidata/Wiktionary rather
+/// than hand-authored surfaces; this ratchet records progress toward that goal.
+/// Bump it (and never lower it) whenever `scripts/ground-lexemes.py` enriches
+/// more words.
+const LEXICAL_COMPLETENESS_FLOOR: usize = 6;
+
+#[test]
+fn lexical_completeness_does_not_regress() {
+    let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wikidata");
+    let mut complete = 0;
+    for (path, slug, body) in meaning_definitions() {
+        let has_source_lexeme = body
+            .lines()
+            .any(|line| line.trim().starts_with("source-lexeme "));
+        let has_category = body
+            .lines()
+            .any(|line| line.trim().starts_with("lexical-category "));
+        let has_form = body.lines().any(|line| line.trim().starts_with("form "));
+        let has_feature = body.lines().any(|line| line.trim().starts_with("feature "));
+        if !(has_source_lexeme && has_category && has_form && has_feature) {
+            continue;
+        }
+        // Every referenced source lexeme must resolve to a checked-in cache file
+        // so the part of speech and forms are actually sourced, not invented.
+        for line in body.lines() {
+            let trimmed = line.trim();
+            if let Some(rest) = trimmed.strip_prefix("source-lexeme ") {
+                let lid = rest.split_whitespace().next().unwrap_or_default();
+                let lexeme_path = wikidata_cache_path(&cache_dir, lid, "lino");
+                assert!(
+                    lexeme_path.is_file(),
+                    "{slug} in {} references uncached lexeme {lid}",
+                    path.display()
+                );
+            }
+        }
+        complete += 1;
+    }
+
+    assert!(
+        complete >= LEXICAL_COMPLETENESS_FLOOR,
+        "lexical-completeness coverage regressed: {complete} meanings carry sourced \
+         part-of-speech + forms, floor is {LEXICAL_COMPLETENESS_FLOOR}. Lexical \
+         grounding is append-only — re-run scripts/ground-lexemes.py rather than \
+         removing source-lexeme detail."
+    );
+}
+
 /// Every top-level meaning across the `data/seed/meanings*.lino` tree as
 /// `(file, slug, full-definition-body)`. The body is the verbatim block of
 /// deeper-indented child lines (comments stripped), used for uniqueness checks.

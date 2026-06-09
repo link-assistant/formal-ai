@@ -342,9 +342,27 @@ one*. Resolutions this round:
   append-only and every batch is locked in. Grounding the long tail of
   domain-composite meanings (e.g. `program_task_fizzbuzz`,
   `feature_capability_web_search`) — which have no single Wikidata entity and
-  must be anchored through the override layer (R279) — and sourcing full
-  per-language word forms from Wikidata lexemes remain the primary follow-up
-  below.
+  must be anchored through the override layer (R279) — remains the primary
+  follow-up below.
+
+  Lexical completeness (defect #6 — every grounded word exposing its parts of
+  speech and all its forms, sourced from Wikidata rather than hand-authored) has
+  its down-payment in place. `scripts/ground-lexemes.py` is a re-runnable,
+  self-verifying lexeme pipeline: for each curated `(slug, lexeme-id, lemma,
+  sense-id)` it fetches the full untrimmed `Special:EntityData/<L-id>.json`
+  (lexemes keep their claims, forms and senses), caches it pretty-printed under
+  `data/cache/wikidata/lexeme/`, generates the lossless `.lino` snapshot,
+  **verifies** the entry is the expected English noun (lemma, `language` Q1860,
+  `lexicalCategory` Q1084, named sense) — refusing on any mismatch — and
+  rewrites the meaning's plain `lexeme en` surface into the rich `source-lexeme`
+  notation, sourcing the part of speech (`lexical-category`), every form
+  (`form` + grammatical `feature`) and the grounded `sense` directly from the
+  lexeme. The concrete nouns `apple`, `water`, `bread`, `potato` and `tomato`
+  (`L3257`, `L3302`, `L3865`, `L3784`, `L7993`) now carry their full lexical
+  detail, and the `lexical_completeness_does_not_regress` ratchet (floor 6)
+  locks this in so lexical grounding, like meaning grounding, is append-only.
+  Extending it to the rest of the grounded vocabulary and to the ru/hi/zh
+  surfaces is the remaining follow-up.
 
 ## Follow-up issues worth opening
 
