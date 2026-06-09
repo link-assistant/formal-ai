@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q577": {
+      "type": "item",
+      "id": "Q577",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "year"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "год"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वर्ष"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "年"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "the orbital period of the Earth: the estimated period of time for the Earth's orbit around the Sun and observed at a fixed geographic point (averaging 365.24 days); base later modified to define or adjust various calendars"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения времени, приблизительно равная периоду обращения Земли вокруг Солнца"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "地球圍繞太陽公轉一圈的時間"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "anno"
+          },
+          {
+            "language": "en",
+            "value": "annum"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "лет"
+          },
+          {
+            "language": "ru",
+            "value": "годы"
+          },
+          {
+            "language": "ru",
+            "value": "года"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "साल (समय)"
+          },
+          {
+            "language": "hi",
+            "value": "साल"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "年份"
+          },
+          {
+            "language": "zh",
+            "value": "地球年"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

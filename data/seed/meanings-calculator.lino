@@ -24,6 +24,7 @@ meanings
       surface
         text 钱
   exchange_rate
+    grounded-in Q66100
     defined-by money
     defined-by relation
     role exchange_rate_reference
@@ -388,6 +389,7 @@ meanings
       surface
         text "की गणना करें"
   quantity_conversion
+    grounded-in Q618655
     defined-by action
     defined-by relation
     role quantity_conversion_cue

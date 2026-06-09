@@ -173,6 +173,7 @@ meanings
       surface
         text 大洲
   author_of_book
+    grounded-in P50
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -202,6 +203,7 @@ meanings
       surface
         text 作者
   painter_of_painting
+    grounded-in P170
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -233,6 +235,7 @@ meanings
       surface
         text 画家
   built_year
+    grounded-in P571
     defined-by knowledge_relation
     role fact_relation
     lexeme en
@@ -264,6 +267,7 @@ meanings
       surface
         text 建造
   physical_constant
+    grounded-in Q173227
     defined-by knowledge_relation
     role fact_relation
     lexeme en

@@ -202,6 +202,7 @@ meanings
       surface
         text 周日
   calendar_day
+    grounded-in Q573
     defined-by calendar_week
     defined-by calendar_date
     defined-by concept
@@ -231,6 +232,7 @@ meanings
       surface
         text 日子
   calendar_date
+    grounded-in Q205892
     defined-by calendar_day
     role calendar_day_reference
     lexeme en
@@ -254,6 +256,7 @@ meanings
       surface
         text 几号
   calendar_week
+    grounded-in Q23387
     defined-by calendar_day
     role calendar_day_reference
     lexeme en

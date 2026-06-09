@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q170924": {
+      "type": "item",
+      "id": "Q170924",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "interest"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "процентный доход"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्याज"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "利息"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fee paid by a debtor to a creditor for borrowed capital"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "債務人就暫時藉入的資本向債權人支付的費用"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ссудный процент"
+          },
+          {
+            "language": "ru",
+            "value": "интерес"
+          },
+          {
+            "language": "ru",
+            "value": "финансовый интерес"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "息"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

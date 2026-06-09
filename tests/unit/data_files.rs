@@ -636,7 +636,7 @@ fn cache_source_json_is_pretty_printed() {
 /// records progress toward that goal so each batch can only raise it. Bump it
 /// (and never lower it) whenever `scripts/ground-meanings.rs` grounds more
 /// meanings. The matching `data/cache` snapshots keep the closure checked in.
-const GROUNDED_MEANING_FLOOR: usize = 114;
+const GROUNDED_MEANING_FLOOR: usize = 131;
 
 #[test]
 fn grounded_meaning_coverage_does_not_regress() {

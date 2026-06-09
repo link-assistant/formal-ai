@@ -1,5 +1,6 @@
 meanings
   lexical_form
+    grounded-in Q4147654
     defined-by notation
     defined-by word_surface
     role lexical_meta
@@ -64,6 +65,7 @@ meanings
         denotation word_surface
         part_of_speech noun
   lexical_sense
+    grounded-in Q1570700
     defined-by denotation
     defined-by concept
     role lexical_meta

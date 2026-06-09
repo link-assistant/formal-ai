@@ -1,0 +1,15 @@
+Q959606
+  aliases
+    ru ("Капитализация процентов")
+    zh ("复息" "複息" "複利" "利滚利" "複利息")
+  descriptions
+    en "when interest is added to the principal of a deposit or loan, so that, from that moment on, the interest that has been added also earns interest"
+    zh "當將利息添加到存款或貸款的本金中時，從那時起，已添加的利息也將獲得利息"
+  id Q959606
+  labels
+    en "compound interest"
+    hi "चक्रवृद्धि ब्याज"
+    ru "Сложные проценты"
+    zh "复利"
+  type item
+success 1

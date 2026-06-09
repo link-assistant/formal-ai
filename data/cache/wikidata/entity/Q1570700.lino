@@ -1,0 +1,13 @@
+Q1570700
+  aliases
+    en ("word meaning")
+    ru ("осмысление" "осмысленность" "значение" "толкование")
+  descriptions
+    en "one of the meanings of a word"
+  id Q1570700
+  labels
+    en "word sense"
+    ru "смысл слова"
+    zh "词义"
+  type item
+success 1

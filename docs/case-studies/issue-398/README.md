@@ -315,17 +315,22 @@ one*. Resolutions this round:
   (`wbsearchentities`) and disambiguated by description before they are curated
   into the pipeline — which is how the verifier corrected an earlier
   hand-assigned `cosine` → `Q189325` (NASA's Jet Propulsion Laboratory) to the
-  trigonometric function `Q1256164`. To date the pipeline has grounded 97
-  common-vocabulary meanings, raising checked-in coverage from 18 to 114
-  `grounded-in` anchors: calendar weekdays; arithmetic operations and
-  mathematical functions; cardinal numbers 0–10; currencies;
-  length/mass/time/temperature/data-size units and their physical dimensions;
-  the eleven catalogued programming languages; the four supported natural
-  languages; the concrete-noun translation vocabulary; the lexical-meta concepts
-  (`noun`, `part_of_speech`, `noun_phrase`); and core quantities. Fact relations
+  trigonometric function `Q1256164`. To date the pipeline has grounded 114
+  common-vocabulary meanings, raising checked-in coverage from 18 to 131
+  `grounded-in` anchors (30.6% of the 428 seed meanings): calendar weekdays,
+  days, dates and weeks; arithmetic operations and mathematical functions;
+  cardinal numbers 0–10; currencies and exchange rate;
+  length/mass/time/temperature/data-size units, their physical dimensions and
+  unit conversion; the eleven catalogued programming languages; the four
+  supported natural languages; the concrete-noun translation vocabulary plus
+  `translate` and `synonym`; the lexical-meta concepts (`noun`,
+  `part_of_speech`, `noun_phrase`, `grammatical form`, `word sense`); finance
+  concepts (`investment`, `interest`, `compound interest`, `year`); and core
+  quantities and the `physical constant`. Fact relations
   ground to Wikidata **properties** rather than items (`capital` → `P36`,
   `population` → `P1082`, `continent` → `P30`, `currency` → `P38`,
-  `official_language` → `P37`); the pipeline shards every snapshot by id kind, so
+  `official_language` → `P37`, `author_of_book` → `P50`,
+  `painter_of_painting` → `P170`, `built_year` → `P571`); the pipeline shards every snapshot by id kind, so
   items land under `data/cache/wikidata/entity/`, properties under `property/`,
   and lexemes under `lexeme/`, exactly where the closure test resolves them.
 
@@ -333,7 +338,7 @@ one*. Resolutions this round:
   without protecting an invariant while the corpus import proceeds), coverage is
   protected by a **monotonic ratchet**, `grounded_meaning_coverage_does_not_regress`
   (`tests/unit/data_files.rs`), matching the repo's established benchmark-ratchet
-  pattern: the grounded-meaning floor (114) can only rise, so grounding is
+  pattern: the grounded-meaning floor (131) can only rise, so grounding is
   append-only and every batch is locked in. Grounding the long tail of
   domain-composite meanings (e.g. `program_task_fizzbuzz`,
   `feature_capability_web_search`) — which have no single Wikidata entity and

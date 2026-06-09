@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q42106": {
+      "type": "item",
+      "id": "Q42106",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "synonym"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "синонимы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पर्यायवाची"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "同义词"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "word or phrase that means exactly or nearly the same as another word or phrase in the same language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "слова, различные по звучанию и написанию, но имеющие похожее лексическое значение"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ऐसे शब्द जिनके अर्थ समान हों"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "與其他詞語表達相同或相近意思的詞語"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "synonyms"
+          },
+          {
+            "language": "en",
+            "value": "synonymum"
+          },
+          {
+            "language": "en",
+            "value": "synonymous"
+          },
+          {
+            "language": "en",
+            "value": "poecilonym"
+          },
+          {
+            "language": "en",
+            "value": "word with the same meaning"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "синоним"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पर्याय"
+          },
+          {
+            "language": "hi",
+            "value": "समानार्थी शब्द"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "同义字"
+          },
+          {
+            "language": "zh",
+            "value": "同义语"
+          },
+          {
+            "language": "zh",
+            "value": "同意词"
+          },
+          {
+            "language": "zh",
+            "value": "同义异形"
+          },
+          {
+            "language": "zh",
+            "value": "同義異形"
+          },
+          {
+            "language": "zh",
+            "value": "同義詞"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

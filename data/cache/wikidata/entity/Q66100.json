@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q66100": {
+      "type": "item",
+      "id": "Q66100",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "exchange rate"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "валютный курс"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विनिमय दर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "汇率"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "rate at which one currency will be exchanged for another"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "цена (котировка) денежной единицы одной страны, выраженная в денежной единице другой страны, драгоценных металлах, ценных бумагах"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "foreign-exchange rate"
+          },
+          {
+            "language": "en",
+            "value": "forex rate"
+          },
+          {
+            "language": "en",
+            "value": "FX rate"
+          },
+          {
+            "language": "en",
+            "value": "foreign currency transactions"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "обменный курс"
+          },
+          {
+            "language": "ru",
+            "value": "курс валюты"
+          },
+          {
+            "language": "ru",
+            "value": "курс валют"
+          },
+          {
+            "language": "ru",
+            "value": "валютные курсы"
+          },
+          {
+            "language": "ru",
+            "value": "кросс-курс"
+          },
+          {
+            "language": "ru",
+            "value": "курс обмена"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

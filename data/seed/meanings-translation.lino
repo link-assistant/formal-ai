@@ -90,6 +90,7 @@ meanings
       surface
         text 漢語
   translate
+    grounded-in Q7553
     defined-by action
     role translation_action
     lexeme en
@@ -716,6 +717,7 @@ meanings
       surface
         text 查找
   synonym
+    grounded-in Q42106
     defined-by concept
     role compositional_lemma
     role compositional_genitive_head

@@ -1,0 +1,18 @@
+P170
+  aliases
+    en ("artist (non-musical)" "created by" painter sculptor "made by" "painted by" "sculpted by" "visual artist" "art by" "artwork by" "art work by" "realized by" "realised by" drawer "drawn by" by "original author" photographer)
+    ru ("создатель объекта" "создатель произведения" "автор" "создательница" "автор произведения")
+    zh ("创作主体" "创作者" "建立者" "创造者" "作者")
+  descriptions
+    en "maker of this creative work or other object (where no more specific property exists)"
+    hi "रचनात्मक कार्य या अन्य वस्तु (जहां कोई अधिक विशिष्ट प्रोपर्टी मौजूद नहीं है) का निर्माता"
+    ru "создатель творческого произведения или иного объекта"
+    zh "藝術創作或其他類型的創作的作者（適用於該創作不帶有其他更精切屬性的情況）"
+  id P170
+  labels
+    en creator
+    hi "रचयिता"
+    ru "создатель"
+    zh "創作者"
+  type property
+success 1

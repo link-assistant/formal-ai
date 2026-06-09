@@ -1,5 +1,6 @@
 meanings
   investment
+    grounded-in Q4290
     defined-by money
     defined-by action
     role investment_cue
@@ -20,6 +21,7 @@ meanings
       surface
         text 投资
   interest_finance
+    grounded-in Q170924
     defined-by money
     role interest_cue
     lexeme en
@@ -35,6 +37,7 @@ meanings
       surface
         text 利息
   compounding
+    grounded-in Q959606
     defined-by action
     defined-by money
     role compounding_action_cue
@@ -154,6 +157,7 @@ meanings
       surface
         text 实时汇率
   year_period
+    grounded-in Q577
     defined-by concept
     role year_unit_cue
     lexeme en

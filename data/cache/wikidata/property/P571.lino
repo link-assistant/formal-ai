@@ -1,0 +1,19 @@
+P571
+  aliases
+    en (built "commenced on date" "commencement date" completed composed constructed "construction end date" created "created in" "created in year" "created on" "created on date" "creation date" "creation year" "date commenced" "date constructed" "date created" "date first created" "date formed" "date founded" "date of commencement" "date of creation" "date of establishment" "date of foundation" "date of foundation or creation" "date of founding" "date of inception" "date of origin" "day of inception" "dedication date" established "established on date" "establishment date" "first created on" "first issue" formation "formation date" "formed at" "formed in" "formed in year" "formed on" "formed on date" foundation "foundation date" "foundation / creation date" founded "founded in" "founded on" "founded on date" "founding date" "inception date" "initial release date" initiated "installated in" "installated on" "installation date" "instantiation date" introduced introduction "launch date" "made in year" "made on" "start date" "starting date" "time of foundation or creation" "time of inception" "written on date" "year commenced" "year created" "year established" "year founded" "year of creation" "year of inception" "year written" "release date" released "released in" "date of release" "year of release")
+    hi ("स्थापित")
+    ru ("время создания" "выпуск" "год основания" "дата изготовления" "дата основания" "дата постройки" "дата появления" "дата происхождения" "дата создания" "дата сочинения" "дата учреждения" "день создания" "запущено" "издано" "написано" "начало" "основан в" "основана" "основано в" "пуск" "пущено" "рождение" "сдано в эксплуатацию" "создан в" "создано в" "старт" "учрежден в" "учреждена в" "учреждено в")
+    zh ("创立于" "建立于" "创建于" "创始于" "开工日期" "開工日期" "發佈日期" "發表日期" "成立或創建時間" "創作年代" "创作年份" "始创时间" "创建日期" "成立于" "建校日" "创刊号" "始建日期" "竣工时间" "安装日期" "首发日期" "启动日期" "上线时间")
+  descriptions
+    en "time when an entity begins to exist; for date of official opening use P1619"
+    hi "विषय के निर्माण की तारीख"
+    ru "дата, когда организация или объект были основаны/созданы"
+    zh "某个实体开始存在的时间；正式开业日期请用 P1619"
+  id P571
+  labels
+    en inception
+    hi "स्थापना"
+    ru "дата возникновения"
+    zh "创建时间"
+  type property
+success 1

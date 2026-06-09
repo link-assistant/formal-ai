@@ -162,6 +162,28 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("part_of_speech", "Q82042", "part of speech"),
     ("noun", "Q1084", "noun"),
     ("noun_phrase", "Q1401131", "noun phrase"),
+    ("lexical_form", "Q4147654", "grammatical form"),
+    ("lexical_sense", "Q1570700", "word sense"),
+    // translation vocabulary and common concepts
+    ("translate", "Q7553", "translation"),
+    ("synonym", "Q42106", "synonym"),
+    // finance concepts
+    ("investment", "Q4290", "investment"),
+    ("interest_finance", "Q170924", "interest"),
+    ("compounding", "Q959606", "compound interest"),
+    ("year_period", "Q577", "year"),
+    // calculator concepts
+    ("exchange_rate", "Q66100", "exchange rate"),
+    ("quantity_conversion", "Q618655", "conversion of units"),
+    // calendar concepts
+    ("calendar_day", "Q573", "day"),
+    ("calendar_date", "Q205892", "date"),
+    ("calendar_week", "Q23387", "week"),
+    // fact concepts and relations (relations ground to properties)
+    ("physical_constant", "Q173227", "physical constant"),
+    ("author_of_book", "P50", "author"),
+    ("painter_of_painting", "P170", "creator"),
+    ("built_year", "P571", "inception"),
 ];
 
 /// Meaning seed files mirrored into the browser worker fallback, in load order.

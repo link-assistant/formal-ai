@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Q618655": {
+      "type": "item",
+      "id": "Q618655",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "conversion of units"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Преобразование единиц"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मापन मात्रकों का रूपान्तरण"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "單位轉換"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "comparison of various scales"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "unit conversion"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "單位換算"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}
