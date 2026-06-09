@@ -184,6 +184,12 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     ("author_of_book", "P50", "author"),
     ("painter_of_painting", "P170", "creator"),
     ("built_year", "P571", "inception"),
+    // common conversational and discourse vocabulary
+    ("greeting_hello", "Q98815142", "hello"),
+    ("gratitude_thank_you", "Q2728730", "gratitude"),
+    ("affirmation_yes", "Q6452715", "yes"),
+    ("example", "Q14944328", "example"),
+    ("conjunction_or", "Q1651704", "disjunction"),
 ];
 
 /// Meaning seed files mirrored into the browser worker fallback, in load order.

@@ -496,6 +496,7 @@ meanings
       surface
         text 苹果
   greeting_hello
+    grounded-in Q98815142
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -513,6 +514,7 @@ meanings
       surface
         text 你好
   gratitude_thank_you
+    grounded-in Q2728730
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -532,6 +534,7 @@ meanings
       surface
         text 謝謝
   affirmation_yes
+    grounded-in Q6452715
     defined-by entity
     role compositional_lemma
     lexeme en
@@ -783,6 +786,7 @@ meanings
       surface
         text 同义词
   example
+    grounded-in Q14944328
     defined-by concept
     role compositional_lemma
     role compositional_genitive_head
@@ -827,6 +831,7 @@ meanings
       surface
         text 一致
   conjunction_or
+    grounded-in Q1651704
     defined-by relation
     role compositional_lemma
     lexeme en
