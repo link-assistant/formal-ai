@@ -174,6 +174,60 @@ because meanings such as `reference`, `link_action`, `self_equation`,
 `bank_river`, and `bank_money` were absent. The final focused run passes those
 tests and the whole seed-meaning invariant suite.
 
+## Scalar readability fix (codepoint de-obfuscation)
+
+Commit `b1e1bc6` had made the seed parse-valid the wrong way: human-readable
+scalar values were replaced with codepoint byte-dumps such as
+`answer codepoints 72 105 44 ...` (the integers spell "Hi, how may I help
+you?"). That satisfied the parser but destroyed the meaning of the data — the
+opposite of issue #398's goal that every value be readable and grounded.
+
+This round restores readability for scalar values:
+
+- All 57 `data/seed/*.lino` files had their codepoint byte-dumps converted back
+  to readable quoted scalars (e.g. `text "Hi, how may I help you?"`). Zero
+  byte-dumps remain in the seed.
+- Each quoted value selects a delimiter (`"`, `'`, or backtick) that does not
+  occur in its own text, so the inner quote never needs escaping. This works
+  around a quirk in the canonical `links_notation` parser while keeping the
+  surface text exactly as written.
+- Space-significant translation markers stay quoted so leading/trailing
+  whitespace is preserved (for example `text "translate … to "`,
+  `text " का "`, `text " में अनुवाद"`).
+- All five parsers were updated to decode the three delimiters in sync: the
+  Rust runtime (`src/seed/parser.rs`), the web runtime
+  (`src/web/seed_loader.js`), the e2e parser
+  (`tests/e2e/scripts/lino-seed-parser.mjs`), the embedded worker fallback in
+  `src/web/formal_ai_worker.js`, and the hand-maintained `tests/source` mirror.
+- `surface_text` in `src/seed/meanings.rs` now reads the readable `text` child
+  first and only falls back to decoding `codepoints` for legacy data.
+
+### CI guards added this round
+
+- **Rule 1 — no codepoint byte-dumps in seed:**
+  `tests/unit/data_files.rs::seed_lino_files_have_no_codepoint_byte_dumps`
+  fails the build if any seed file reintroduces a `codepoints` or
+  `unformalized-raw` byte-dump (bare integer runs outside quoted spans).
+- **Rule 7 — no inline unit tests in `src/`:**
+  `tests/unit/ci-cd/source_test_placement.rs::src_has_no_inline_unit_tests`
+  walks `src/**/*.rs` and fails if a real `#[test]`, `#[cfg(test)]`, or
+  `mod tests` appears (string-literal occurrences are ignored by anchoring at
+  line start). Tests belong under `tests/`.
+
+### Deferred to follow-up issues
+
+The remaining defects from the PR review are intentionally out of scope for this
+round and tracked below:
+
+- **Defect 2 — pipe-packed multi-values:** `|`-separated values should become
+  real link lists `(a b c)`. Deferred; corresponding CI rule 3 not yet added.
+- **Defect 3 — own-slug naming:** internal slugs should be hyphenated full
+  English words (`links-root`, not `links_root`); external `Q…/L…/P…` ids are
+  fine. Deferred; CI rule 4 not yet added.
+- **Defect 4 — full recursive grounding closure:** every core meaning should be
+  recursively defined/grounded to closure. Deferred; CI rule 5 not yet added.
+- **Rule 6 — no hardcoded domain-data string literals in `src/`:** deferred.
+
 ## Follow-up issues worth opening
 
 1. Backfill semantic facets for all existing ontology and domain meanings.
