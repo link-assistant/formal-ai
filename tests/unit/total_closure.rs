@@ -8,7 +8,7 @@
 //!      in `data/seed/**.lino` must resolve to a defined meaning, a grounded
 //!      source id with a cache record, or an override. Not just the structured
 //!      `defined-by`/facet/role backbone.
-//!   2. **The multi-source `view`** — WordNet cached and used, `data/view/`
+//!   2. **The multi-source `view`** — `WordNet` cached and used, `data/view/`
 //!      present with deterministic `M-…` ids, per-field provenance, a working
 //!      merge, and a `sources-registry.lino` listing every ingested source with
 //!      an API endpoint and a permissive license.
@@ -33,9 +33,7 @@ fn run_python(args: &[&str]) -> (String, String, bool) {
         .args(args)
         .current_dir(repo_root())
         .output()
-        .unwrap_or_else(|err| {
-            panic!("failed to run `python3 {}`: {err}", args.join(" "))
-        });
+        .unwrap_or_else(|err| panic!("failed to run `python3 {}`: {err}", args.join(" ")));
     (
         String::from_utf8_lossy(&output.stdout).into_owned(),
         String::from_utf8_lossy(&output.stderr).into_owned(),
@@ -47,15 +45,17 @@ fn run_python(args: &[&str]) -> (String, String, bool) {
 /// name the offending tokens so the gap is actionable — never a bare count.
 #[test]
 fn seed_has_total_reference_closure() {
-    let (stdout, stderr, _) =
-        run_python(&["scripts/audit-total-closure.py", "--json", "."]);
+    let (stdout, stderr, _) = run_python(&["scripts/audit-total-closure.py", "--json", "."]);
     let report: Value = serde_json::from_str(&stdout).unwrap_or_else(|err| {
         panic!("audit did not emit JSON ({err}); stderr: {stderr}\nstdout: {stdout}")
     });
 
     let distinct = report["unresolved_distinct"].as_u64().unwrap_or(u64::MAX);
     if distinct != 0 {
-        let unresolved = report["unresolved"].as_object().cloned().unwrap_or_default();
+        let unresolved = report["unresolved"]
+            .as_object()
+            .cloned()
+            .unwrap_or_default();
         let sample: Vec<String> = unresolved.keys().take(40).cloned().collect();
         panic!(
             "total reference-closure is not at zero: {distinct} distinct tokens \
@@ -72,8 +72,7 @@ fn seed_has_total_reference_closure() {
 /// has hundreds of defined meanings and a populated set of grounded sources.
 #[test]
 fn closure_resolver_sees_a_populated_seed() {
-    let (stdout, stderr, _) =
-        run_python(&["scripts/audit-total-closure.py", "--json", "."]);
+    let (stdout, stderr, _) = run_python(&["scripts/audit-total-closure.py", "--json", "."]);
     let report: Value = serde_json::from_str(&stdout)
         .unwrap_or_else(|err| panic!("audit did not emit JSON ({err}); stderr: {stderr}"));
     assert!(
@@ -88,7 +87,7 @@ fn closure_resolver_sees_a_populated_seed() {
     );
 }
 
-/// WordNet must be present and used: the OEWN 2024 per-lemma cache is the
+/// `WordNet` must be present and used: the OEWN 2024 per-lemma cache is the
 /// keystone source for English content words.
 #[test]
 fn wordnet_cache_is_present_and_used() {
@@ -137,9 +136,7 @@ fn sources_registry_lists_every_ingested_source() {
                 continue;
             }
             let name = entry.file_name().to_string_lossy().into_owned();
-            let populated = std::fs::read_dir(entry.path())
-                .map(|mut it| it.any(|_| true))
-                .unwrap_or(false);
+            let populated = std::fs::read_dir(entry.path()).is_ok_and(|mut it| it.any(|_| true));
             if populated {
                 assert!(
                     registry.contains(&format!("source {name}")),
@@ -167,7 +164,10 @@ fn multi_source_view_is_present_and_consistent() {
         .filter_map(Result::ok)
         .filter(|e| e.path().extension().and_then(|x| x.to_str()) == Some("lino"))
         .count();
-    assert!(entities >= 100, "expected a populated view layer, got {entities}");
+    assert!(
+        entities >= 100,
+        "expected a populated view layer, got {entities}"
+    );
 
     let (stdout, stderr, ok) = run_python(&["scripts/build-views.py", "--check"]);
     assert!(
