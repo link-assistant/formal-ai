@@ -35,8 +35,16 @@ fn lino_data_files_are_parseable_human_readable_and_bounded() {
                 path.display()
             );
         }
+        // The typed-object-encoding guard targets the Links Notation skeleton,
+        // not quoted prose: a cached definition may legitimately read
+        // `"(object pronoun) …"`. Strip quoted scalar spans first so the check
+        // only inspects structure, matching the sibling jsonish guard below.
+        let skeleton: String = content
+            .lines()
+            .map(|line| strip_quoted_spans(line) + "\n")
+            .collect();
         assert!(
-            !content.contains("(str ") && !content.contains("(object "),
+            !skeleton.contains("(str ") && !skeleton.contains("(object "),
             "{} should use indented human-readable Links Notation, not typed object encoding",
             path.display()
         );
