@@ -216,6 +216,7 @@ pub fn try_program_synthesis(
         format!("language=python function={function_name}"),
     );
     log.append("synthesis:syntax_tree", candidate.function.links_notation());
+    log.append("synthesis:cst_engine", source_cst.engine().to_owned());
     log.append("synthesis:cst_tree", source_cst.links_notation());
     for fragment in &candidate.fragments {
         log.append("composition:code_fragment", (*fragment).to_owned());

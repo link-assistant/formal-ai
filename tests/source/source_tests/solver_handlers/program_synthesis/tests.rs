@@ -19,10 +19,13 @@ fn program_synthesis_accepts_hindi_count_vowels_operation_verbs() {
         .contains("synthesis:syntax_tree python_function_syntax_tree"));
     assert!(response
         .links_notation
-        .contains("synthesis:cst_tree tree_sitter_cst_tree"));
+        .contains("synthesis:cst_tree cst_tree"));
     assert!(response
         .links_notation
-        .contains("grammar_crate tree-sitter-python"));
+        .contains("synthesis:cst_engine meta_language"));
+    assert!(response
+        .links_notation
+        .contains("component meta-language"));
     assert!(response
         .links_notation
         .contains("semantic_node matching_character_count_return"));

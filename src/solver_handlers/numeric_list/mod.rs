@@ -133,8 +133,12 @@ pub struct NumericListSolution {
     pub result: Vec<String>,
     /// Structural program tree used to render `code`.
     pub syntax_tree: String,
-    /// Real Tree-sitter CST parsed from the rendered source.
+    /// CST/AST parsed from the rendered source by the meta-language links
+    /// network (the primary engine) or the tree-sitter bridge.
     pub cst_tree: String,
+    /// Which engine validated the source: `meta_language` or
+    /// `tree_sitter_bridge`.
+    pub cst_engine: String,
     pub code: String,
 }
 
@@ -162,6 +166,7 @@ pub fn try_numeric_list(
     log.append("synthesis:given", solution.given.join(", "));
     log.append("synthesis:syntax_tree", solution.syntax_tree.clone());
     log.append("composition:code_fragment", solution.code.clone());
+    log.append("synthesis:cst_engine", solution.cst_engine.clone());
     log.append("synthesis:cst_tree", solution.cst_tree.clone());
     // The result is computed by the solver, not a sandbox: every operation is a
     // pure, total function over the parsed values, so the answer is verified by
@@ -241,7 +246,9 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
     let program = codegen::build(language, &items, operation, is_float);
     let syntax_tree = program.links_notation();
     let code = program.render();
-    let cst_tree = crate::coding::validated_program_cst(language.slug, &code)?.links_notation();
+    let cst = crate::coding::validated_program_cst(language.slug, &code)?;
+    let cst_engine = cst.engine().to_owned();
+    let cst_tree = cst.links_notation();
     let result_kind = result_kind_for(operation.canonical()).to_owned();
 
     Some(NumericListSolution {
@@ -255,6 +262,7 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
         result,
         syntax_tree,
         cst_tree,
+        cst_engine,
         code,
     })
 }
@@ -753,7 +761,9 @@ mod tests {
         assert_eq!(reversed.result_kind, "list");
         assert!(reversed.syntax_tree.contains("program_syntax_tree"));
         assert!(reversed.syntax_tree.contains("semantic_node reverse_list"));
-        assert!(reversed.cst_tree.contains("tree_sitter_cst_tree"));
+        assert!(reversed.cst_tree.contains("cst_tree"));
+        assert!(reversed.cst_tree.contains("engine meta_language"));
+        assert_eq!(reversed.cst_engine, "meta_language");
     }
 
     #[test]
@@ -770,7 +780,8 @@ mod tests {
             .contains(r#"const numbers = ["pear", "apple", "banana"];"#));
         assert!(sorted.code.contains("[...numbers].sort()"));
         assert!(sorted.syntax_tree.contains("value_type string"));
-        assert!(sorted.cst_tree.contains("tree_sitter_cst_tree"));
+        assert!(sorted.cst_tree.contains("cst_tree"));
+        assert!(sorted.cst_tree.contains("engine meta_language"));
     }
 
     #[test]
@@ -787,7 +798,7 @@ mod tests {
             let cst =
                 crate::coding::validated_program_cst(language.slug, &code).unwrap_or_else(|| {
                     panic!(
-                        "{} string-list source must parse as a valid Tree-sitter CST:\n{}",
+                        "{} string-list source must parse as a valid CST:\n{}",
                         language.slug, code
                     )
                 });

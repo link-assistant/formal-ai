@@ -72,20 +72,25 @@ fn issue_395_english_javascript_computes_sorted_result() {
     assert!(
         response
             .links_notation
-            .contains("synthesis:cst_tree tree_sitter_cst_tree"),
-        "trace must expose the real Tree-sitter CST, got: {}",
+            .contains("synthesis:cst_tree cst_tree"),
+        "trace must expose the CST produced by the meta-language engine, got: {}",
         response.links_notation
     );
     assert!(
         response
             .links_notation
-            .contains("grammar_crate tree-sitter-javascript"),
-        "CST trace must identify the JavaScript grammar crate, got: {}",
+            .contains("synthesis:cst_engine meta_language"),
+        "trace must record the primary meta-language CST/AST engine, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.links_notation.contains("component meta-language"),
+        "CST trace must identify the meta-language component, got: {}",
         response.links_notation
     );
     assert!(
         response.links_notation.contains("has_error false"),
-        "Tree-sitter must parse generated code without errors, got: {}",
+        "meta-language must parse generated code without errors, got: {}",
         response.links_notation
     );
 }
@@ -93,9 +98,9 @@ fn issue_395_english_javascript_computes_sorted_result() {
 /// The same list coding path must also handle quoted text list data: the
 /// operation remains a semantic list transform, but the value domain is
 /// `string`, the JavaScript renderer must not use a numeric comparator, and the
-/// rendered code must still be validated by the real Tree-sitter Rust binding.
+/// rendered code must still be validated by the meta-language links network.
 #[test]
-fn issue_395_string_list_sort_uses_tree_sitter_validated_code_path() {
+fn issue_395_string_list_sort_uses_cst_validated_code_path() {
     let solver = UniversalSolver::default();
     let response = solver.solve(
         "Sort the strings \"pear\", \"apple\", \"banana\" in JavaScript, give me the code and result",
@@ -126,15 +131,13 @@ fn issue_395_string_list_sort_uses_tree_sitter_validated_code_path() {
         response.links_notation
     );
     assert!(
-        response
-            .links_notation
-            .contains("binding tree-sitter/lib/binding_rust"),
-        "CST trace must identify the real Tree-sitter Rust binding, got: {}",
+        response.links_notation.contains("component meta-language"),
+        "CST trace must identify the meta-language component, got: {}",
         response.links_notation
     );
     assert!(
         response.links_notation.contains("has_error false"),
-        "Tree-sitter must parse generated code without errors, got: {}",
+        "meta-language must parse generated code without errors, got: {}",
         response.links_notation
     );
 }
