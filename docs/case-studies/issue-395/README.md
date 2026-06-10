@@ -98,9 +98,19 @@ program_syntax_tree
   semantic_node print_joined source=sorted separator=", "
 ```
 
-Renderers for JavaScript, TypeScript, Python, Rust, Go, Ruby, Java, C#, C, and
-C++ project that tree into source code. The same tree is logged as
-`synthesis:syntax_tree` before the rendered `composition:code_fragment`.
+Code generation itself is seed data, not code. `data/seed/coding-idioms.lino`
+declares, for each of JavaScript, TypeScript, Python, Rust, Go, Ruby, Java, C#,
+C, and C++, a scaffold per operation family plus named idioms — code fragments
+whose cases are selected by operation and value class — inherited through
+`extends` (TypeScript extends JavaScript). The composer in
+`src/solver_handlers/numeric_list/codegen.rs` discovers the composition at
+execution time: it walks the language's inheritance chain, picks the scaffold
+for the program's operation family, and recursively expands `{idiom}` slots,
+so there are no per-language renderer functions and covering a new language or
+coding task is a seed-data change. When the knowledge base has no matching
+case, composition fails explicitly (`None`) rather than falling back silently.
+The program tree is logged as `synthesis:syntax_tree` before the rendered
+`composition:code_fragment`.
 
 The same tree shape is used for quoted text lists:
 
@@ -116,8 +126,15 @@ program_syntax_tree
 ```
 
 `src/web/formal_ai_worker.js` mirrors the same `numericListBuildProgram`,
-`numericListProgramLinks`, and renderer flow so browser evidence and Rust
-evidence describe the same program shape.
+`numericListProgramLinks`, and composer flow — it embeds the same
+`coding-idioms.lino` knowledge base (regenerated with
+`experiments/generate-coding-idioms-embed.mjs`) and expands it with the same
+algorithm — so browser evidence and Rust evidence describe the same program
+shape and the generated code is byte-identical.
+`experiments/issue-395-cross-runtime-codegen-parity.mjs` proves this
+exhaustively: it replays all 170 (operation × language × value class) prompts
+dumped by `examples/numeric_list_matrix.rs` through the worker and requires
+every answer to match the Rust engine's answer byte for byte.
 
 ### Meta-language CST/AST Validation
 
@@ -196,8 +213,14 @@ Focused checks used for this issue:
 - `cargo test cst -- --nocapture`
 - `cargo test program_synthesis -- --nocapture`
 - `cargo test --example numeric_list_execution`
+- `cargo run --example numeric_list_execution` — compiles and runs every
+  generated program with the real toolchains and asserts stdout equals the
+  solver's computed result
 - `node --check src/web/formal_ai_worker.js`
 - `node experiments/issue-395-js-numeric-list.mjs`
+- `node experiments/issue-395-cross-runtime-codegen-parity.mjs` — byte-compares
+  all 170 (operation × language × value class) answers between the Rust engine
+  and the worker mirror
 
 The reproducing tests assert that the exact Russian issue prompt routes to
 `write_program`, that an unsorted English JavaScript prompt computes the sorted
