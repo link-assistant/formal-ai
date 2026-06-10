@@ -27,6 +27,7 @@ pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../data/seed/numeric-list-operations.lino");
+pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../data/seed/program-cst-grammars.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
@@ -121,6 +122,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/numeric-list-operations.lino",
             NUMERIC_LIST_OPERATIONS_LINO,
         ),
+        ("data/seed/coding-idioms.lino", CODING_IDIOMS_LINO),
         (
             "data/seed/program-cst-grammars.lino",
             PROGRAM_CST_GRAMMARS_LINO,

@@ -22,6 +22,10 @@
 //! * **Computation is generic.** A single reducer/transformer folds the parsed
 //!   values; adding an operation is seed data plus one arithmetic clause, not a
 //!   new handler.
+//! * **Code generation is seed data.** `data/seed/coding-idioms.lino` declares
+//!   per-language scaffolds and idioms; `codegen` discovers the composition at
+//!   execution time by walking the language's inheritance chain and recursively
+//!   expanding idiom slots — there are no per-language renderer functions.
 //!
 //! The handler only fires when three independent signals coincide — an operation
 //! verb, a known programming language, and at least two numbers — so it never
@@ -244,7 +248,7 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
     let result = compute(operation, &items, is_float);
     let program = codegen::build(language, &items, operation, is_float);
     let syntax_tree = program.links_notation();
-    let code = program.render();
+    let code = program.render()?;
     let cst = crate::coding::validated_program_cst(language.slug, &code)?;
     let cst_engine = cst.engine().to_owned();
     let cst_tree = cst.links_notation();
@@ -590,6 +594,20 @@ fn family_for(canonical: &str) -> &'static str {
         }
     }
     "list_transformation"
+}
+
+/// Look up a transformation's declared `direction` from the seed ontology.
+/// The token feeds the program trace so the semantic tree stays inspectable.
+fn direction_for(canonical: &str) -> String {
+    let tree = ontology();
+    if let Some(root) = tree.children.first() {
+        for op in root.children.iter().filter(|c| c.name == "operation") {
+            if op.id == canonical {
+                return op.find_child_value("direction").to_owned();
+            }
+        }
+    }
+    String::new()
 }
 
 fn parse_list_items(prompt: &str, operation: Operation) -> Vec<ParsedListItem> {

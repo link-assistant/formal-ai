@@ -9,21 +9,86 @@
 //! * `sort_list` / `reverse_list` / `reduce_list` — the semantic operation.
 //! * `print_joined` / `print_scalar` — the requested result projection.
 //!
-//! Language renderers then project that tree into source code. The renderers
-//! still emit textual tokens because source code is text, but they no longer own
-//! final-program templates; the tree is logged in Links Notation so the solver's
-//! reasoning can be inspected independently from the printed code.
+//! The projection from that tree into source code is *discovered at execution
+//! time* from the `data/seed/coding-idioms.lino` knowledge base rather than
+//! owned by per-language renderer functions. Each language section there
+//! declares scaffolds (one per operation family) and idioms (named code
+//! fragments whose cases are selected by the requested operation and the value
+//! class of the list items). [`NumericProgram::render`] walks the language's
+//! inheritance chain, picks the scaffold for the operation's ontology family,
+//! and recursively expands every `{slot}` placeholder — so adding a language or
+//! an operation idiom is seed data, not Rust code. The tree itself is logged in
+//! Links Notation so the solver's reasoning can be inspected independently from
+//! the printed code.
 
+use std::collections::BTreeMap;
 use std::fmt::Write as _;
+use std::sync::OnceLock;
 
 use crate::coding::catalog::ProgramLanguage;
+use crate::seed::parser::{parse_lino, LinoNode};
+use crate::seed::CODING_IDIOMS_LINO;
 
-use super::{ListValue, Operation, ParsedListItem, Reduce, Transform};
+use super::{ListValue, Operation, ParsedListItem};
 
-const NUMBERS: &str = "numbers";
-const SORTED: &str = "sorted";
-const SORTED_NUMBERS: &str = "sorted_numbers";
-const RESULT: &str = "result";
+/// Safety cap on recursive `{slot}` expansion. The deepest legitimate chain is
+/// scaffold → idiom → nested idiom; anything past this depth is a definition
+/// cycle in the seed data and must fail composition instead of spinning.
+const MAX_EXPANSION_DEPTH: usize = 8;
+
+/// Safety cap on the `extends` inheritance chain length.
+const MAX_INHERITANCE_DEPTH: usize = 4;
+
+/// Parsed root of the coding-idioms knowledge base, loaded once per process.
+fn idiom_catalog() -> Option<&'static LinoNode> {
+    static TREE: OnceLock<LinoNode> = OnceLock::new();
+    TREE.get_or_init(|| parse_lino(CODING_IDIOMS_LINO))
+        .children
+        .first()
+}
+
+/// The `language "<slug>"` node followed by its transitive `extends` parents,
+/// nearest first. Empty when the catalog does not know the slug.
+fn language_chain(catalog: &'static LinoNode, slug: &str) -> Vec<&'static LinoNode> {
+    let mut chain = Vec::new();
+    let mut current = slug.to_owned();
+    while chain.len() < MAX_INHERITANCE_DEPTH {
+        let Some(node) = catalog
+            .children
+            .iter()
+            .find(|child| child.name == "language" && child.id == current)
+        else {
+            break;
+        };
+        chain.push(node);
+        let parent = node.find_child_value("extends");
+        if parent.is_empty() {
+            break;
+        }
+        parent.clone_into(&mut current);
+    }
+    chain
+}
+
+/// The canonical semantic-tree variable name for `key` (`list` / `transformed`
+/// / `reduced`), read from the catalog's `defaults` node.
+fn default_name(key: &str) -> String {
+    idiom_catalog()
+        .and_then(|catalog| {
+            catalog
+                .children
+                .iter()
+                .find(|child| child.name == "defaults")
+        })
+        .and_then(|defaults| {
+            defaults
+                .children
+                .iter()
+                .find(|child| child.name == key)
+                .map(|child| child.id.clone())
+        })
+        .unwrap_or_default()
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ValueType {
@@ -46,62 +111,8 @@ impl ValueType {
         }
     }
 
-    const fn rust(self) -> &'static str {
-        match self {
-            Self::Integer => "i64",
-            Self::Float => "f64",
-            Self::Text => "&str",
-        }
-    }
-
-    const fn go(self) -> &'static str {
-        match self {
-            Self::Integer => "int",
-            Self::Float => "float64",
-            Self::Text => "string",
-        }
-    }
-
-    const fn c_family(self) -> &'static str {
-        match self {
-            Self::Integer => "int",
-            Self::Float => "double",
-            Self::Text => "string",
-        }
-    }
-
-    const fn java_boxed(self) -> &'static str {
-        match self {
-            Self::Integer => "Integer",
-            Self::Float => "Double",
-            Self::Text => "String",
-        }
-    }
-
-    const fn c_printf(self) -> &'static str {
-        match self {
-            Self::Integer => "%d",
-            Self::Float => "%g",
-            Self::Text => "%s",
-        }
-    }
-
-    const fn scalar_zero(self) -> &'static str {
-        match self {
-            Self::Integer => "0",
-            Self::Float => "0.0",
-            Self::Text => "",
-        }
-    }
-
-    const fn scalar_one(self) -> &'static str {
-        match self {
-            Self::Integer => "1",
-            Self::Float => "1.0",
-            Self::Text => "",
-        }
-    }
-
+    /// The value-class token used both in the Links Notation trace and as the
+    /// `on` selector in `coding-idioms.lino` cases.
     const fn links_label(self) -> &'static str {
         match self {
             Self::Integer => "integer",
@@ -109,52 +120,31 @@ impl ValueType {
             Self::Text => "string",
         }
     }
-
-    const fn typed_array(self) -> &'static str {
-        match self {
-            Self::Text => "string",
-            Self::Integer | Self::Float => "number",
-        }
-    }
-
-    const fn cpp(self) -> &'static str {
-        match self {
-            Self::Text => "std::string",
-            Self::Integer | Self::Float => self.c_family(),
-        }
-    }
-
-    const fn c_storage(self) -> &'static str {
-        match self {
-            Self::Text => "char *",
-            Self::Integer | Self::Float => self.c_family(),
-        }
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum ProgramStatement {
     LiteralList {
-        name: &'static str,
+        name: String,
         mutable: bool,
     },
     TransformList {
         semantic_node: &'static str,
-        source: &'static str,
-        target: &'static str,
-        transform: Transform,
+        source: String,
+        target: String,
+        direction: String,
     },
     ReduceList {
-        source: &'static str,
-        target: &'static str,
-        reduce: Reduce,
+        source: String,
+        target: String,
+        reducer: &'static str,
     },
     PrintJoined {
-        source: &'static str,
+        source: String,
         separator: &'static str,
     },
     PrintScalar {
-        source: &'static str,
+        source: String,
     },
 }
 
@@ -171,23 +161,21 @@ impl ProgramStatement {
                 semantic_node,
                 source,
                 target,
-                transform,
+                direction,
             } => {
                 let _ = writeln!(
                     out,
-                    "  semantic_node {semantic_node} source={source} target={target} direction={}",
-                    transform.direction_label()
+                    "  semantic_node {semantic_node} source={source} target={target} direction={direction}"
                 );
             }
             Self::ReduceList {
                 source,
                 target,
-                reduce,
+                reducer,
             } => {
                 let _ = writeln!(
                     out,
-                    "  semantic_node reduce_list source={source} target={target} reducer={}",
-                    reduce.label()
+                    "  semantic_node reduce_list source={source} target={target} reducer={reducer}"
                 );
             }
             Self::PrintJoined { source, separator } => {
@@ -199,34 +187,6 @@ impl ProgramStatement {
             Self::PrintScalar { source } => {
                 let _ = writeln!(out, "  semantic_node print_scalar source={source}");
             }
-        }
-    }
-}
-
-impl Transform {
-    const fn direction_label(self) -> &'static str {
-        match self {
-            Self::SortAscending => "ascending",
-            Self::SortDescending => "descending",
-            Self::Reverse => "given_order_reversed",
-        }
-    }
-
-    const fn semantic_node(self) -> &'static str {
-        match self {
-            Self::SortAscending | Self::SortDescending => "sort_list",
-            Self::Reverse => "reverse_list",
-        }
-    }
-}
-
-impl Reduce {
-    const fn label(self) -> &'static str {
-        match self {
-            Self::Sum => "sum",
-            Self::Product => "product",
-            Self::Minimum => "minimum",
-            Self::Maximum => "maximum",
         }
     }
 }
@@ -243,21 +203,22 @@ pub struct NumericProgram {
 }
 
 impl NumericProgram {
-    /// Render the program tree into the requested target language.
+    /// Render the program tree into the requested target language by composing
+    /// the scaffold and idioms discovered in `coding-idioms.lino`. Returns
+    /// `None` when the knowledge base has no language section, no scaffold for
+    /// the operation's family, or no idiom case matching the operation and
+    /// value class — composition failures are explicit, never silent fallbacks.
     #[must_use]
-    pub fn render(&self) -> String {
-        match self.language.slug {
-            "javascript" => render_js(self, false),
-            "typescript" => render_js(self, true),
-            "rust" => render_rust(self),
-            "go" => render_go(self),
-            "ruby" => render_ruby(self),
-            "java" => render_java(self),
-            "csharp" => render_csharp(self),
-            "c" => render_c(self),
-            "cpp" => render_cpp(self),
-            _ => render_python(self),
+    pub fn render(&self) -> Option<String> {
+        let catalog = idiom_catalog()?;
+        let chain = language_chain(catalog, self.language.slug);
+        if chain.is_empty() {
+            return None;
         }
+        let composer = Composer::new(self, chain);
+        let family = super::family_for(self.operation.canonical());
+        let scaffold = composer.scaffold(family)?;
+        composer.expand(scaffold, 0)
     }
 
     /// Trace-friendly Links Notation view of the program tree.
@@ -277,24 +238,199 @@ impl NumericProgram {
     fn literal(&self) -> String {
         self.literals.join(", ")
     }
+}
 
-    fn transform(&self) -> Option<Transform> {
-        self.statements
-            .iter()
-            .find_map(|statement| match statement {
-                ProgramStatement::TransformList { transform, .. } => Some(*transform),
-                _ => None,
-            })
+/// One rendering pass: the resolved language chain plus the computed slot
+/// bindings for the program being rendered.
+struct Composer<'p> {
+    program: &'p NumericProgram,
+    chain: Vec<&'static LinoNode>,
+    bindings: BTreeMap<&'static str, String>,
+}
+
+impl<'p> Composer<'p> {
+    fn new(program: &'p NumericProgram, chain: Vec<&'static LinoNode>) -> Self {
+        let mut composer = Self {
+            program,
+            chain,
+            bindings: BTreeMap::new(),
+        };
+        for key in ["list", "transformed", "reduced"] {
+            if let Some(name) = composer.resolved_name(key) {
+                composer.bindings.insert(key, name);
+            }
+        }
+        if let Some(type_name) = composer.resolved_type() {
+            composer.bindings.insert("type", type_name);
+        }
+        composer.bindings.insert("literal", program.literal());
+        composer
+            .bindings
+            .insert("count", program.literals.len().to_string());
+        // Links Notation values cannot encode a raw tab, so templates spell it
+        // as a computed slot.
+        composer.bindings.insert("tab", "\t".to_owned());
+        composer
     }
 
-    fn reduce(&self) -> Option<Reduce> {
-        self.statements
-            .iter()
-            .find_map(|statement| match statement {
-                ProgramStatement::ReduceList { reduce, .. } => Some(*reduce),
-                _ => None,
-            })
+    /// Per-language variable name for `key`: the nearest `names` override in
+    /// the inheritance chain, else the catalog-wide `defaults` entry.
+    fn resolved_name(&self, key: &str) -> Option<String> {
+        for language in &self.chain {
+            if let Some(names) = language.children.iter().find(|child| child.name == "names") {
+                if let Some(entry) = names.children.iter().find(|child| child.name == key) {
+                    return Some(entry.id.clone());
+                }
+            }
+        }
+        let name = default_name(key);
+        if name.is_empty() {
+            None
+        } else {
+            Some(name)
+        }
     }
+
+    /// The language's storage type for the program's value class, from the
+    /// nearest `types` table in the inheritance chain that declares it.
+    fn resolved_type(&self) -> Option<String> {
+        let class = self.program.value_type.links_label();
+        for language in &self.chain {
+            if let Some(types) = language.children.iter().find(|child| child.name == "types") {
+                if let Some(entry) = types.children.iter().find(|child| child.name == class) {
+                    return Some(entry.id.clone());
+                }
+            }
+        }
+        None
+    }
+
+    /// The scaffold template for the operation family, from the nearest
+    /// language in the chain that declares one.
+    fn scaffold(&self, family: &str) -> Option<&'static str> {
+        for language in &self.chain {
+            if let Some(scaffold) = language
+                .children
+                .iter()
+                .find(|child| child.name == "scaffold" && child.id == family)
+            {
+                return Some(scaffold.find_child_value("code"));
+            }
+        }
+        None
+    }
+
+    /// The idiom definition for `slot`, from the nearest language in the chain
+    /// that declares it. Idioms are not merged across the chain: the nearest
+    /// definition fully shadows inherited ones.
+    fn idiom(&self, slot: &str) -> Option<&'static LinoNode> {
+        for language in &self.chain {
+            if let Some(idiom) = language
+                .children
+                .iter()
+                .find(|child| child.name == "idiom" && child.id == slot)
+            {
+                return Some(idiom);
+            }
+        }
+        None
+    }
+
+    /// Pick the idiom case that best matches the requested operation and value
+    /// class. A case applies when its `for` tokens contain the operation (or
+    /// `any`) and its `on` tokens, when present, contain the value class.
+    /// Specific matches outrank generic ones: an exact operation token scores
+    /// over `any`, and a value-class constraint scores over none. The first
+    /// case with the highest score wins, so declaration order breaks ties.
+    fn select_case(&self, idiom: &'static LinoNode) -> Option<&'static str> {
+        let operation = self.program.operation.canonical();
+        let class = self.program.value_type.links_label();
+        let mut best: Option<(&'static str, u32)> = None;
+        for case in idiom.children.iter().filter(|child| child.name == "case") {
+            let mut for_tokens = case.find_child_value("for").split_whitespace();
+            let operation_exact = for_tokens.clone().any(|token| token == operation);
+            if !operation_exact && !for_tokens.any(|token| token == "any") {
+                continue;
+            }
+            let on = case.children.iter().find(|child| child.name == "on");
+            if let Some(on) = on {
+                if !on.id.split_whitespace().any(|token| token == class) {
+                    continue;
+                }
+            }
+            let score = u32::from(operation_exact) * 2 + u32::from(on.is_some());
+            if best.map_or(true, |(_, current)| score > current) {
+                best = Some((case.find_child_value("code"), score));
+            }
+        }
+        best.map(|(code, _)| code)
+    }
+
+    /// Recursively expand `{slot}` placeholders. Computed bindings are inserted
+    /// verbatim (never rescanned, so user-provided literals cannot inject
+    /// further slots); idiom slots expand their selected case recursively; any
+    /// other brace sequence — `{}`, `{ return`, `{{literal}}` — is ordinary
+    /// target-language syntax and passes through unchanged.
+    fn expand(&self, template: &str, depth: usize) -> Option<String> {
+        if depth > MAX_EXPANSION_DEPTH {
+            return None;
+        }
+        let chars: Vec<char> = template.chars().collect();
+        let mut out = String::new();
+        let mut index = 0;
+        while index < chars.len() {
+            if chars[index] != '{' {
+                out.push(chars[index]);
+                index += 1;
+                continue;
+            }
+            let mut end = index + 1;
+            while end < chars.len() && is_slot_char(chars[end]) {
+                end += 1;
+            }
+            if end >= chars.len() || chars[end] != '}' || end == index + 1 {
+                out.push('{');
+                index += 1;
+                continue;
+            }
+            let name: String = chars[index + 1..end].iter().collect();
+            if let Some(value) = self.bindings.get(name.as_str()) {
+                out.push_str(value);
+            } else if let Some(idiom) = self.idiom(&name) {
+                let code = self.select_case(idiom)?;
+                out.push_str(&self.expand(code, depth + 1)?);
+            } else {
+                out.push('{');
+                out.push_str(&name);
+                out.push('}');
+            }
+            index = end + 1;
+        }
+        Some(out)
+    }
+}
+
+const fn is_slot_char(ch: char) -> bool {
+    ch.is_ascii_lowercase() || ch.is_ascii_digit() || ch == '_'
+}
+
+/// Whether the language declares (in `coding-idioms.lino`) that its list
+/// transformations mutate the literal list in place rather than building a new
+/// collection.
+fn mutates_list_in_place(slug: &str) -> bool {
+    let Some(catalog) = idiom_catalog() else {
+        return false;
+    };
+    for language in language_chain(catalog, slug) {
+        if let Some(node) = language
+            .children
+            .iter()
+            .find(|child| child.name == "mutable_list")
+        {
+            return node.id == "true";
+        }
+    }
+    false
 }
 
 /// Build a semantic program tree for `operation` over `numbers` in `language`.
@@ -308,31 +444,39 @@ pub fn build(
     let value_type = ValueType::from_items(items, is_float);
     let literals = item_literals(items, value_type);
     let display_values = items.iter().map(|item| item.text.clone()).collect();
+    let canonical = operation.canonical();
+    let list = default_name("list");
     let mut statements = vec![ProgramStatement::LiteralList {
-        name: NUMBERS,
-        mutable: matches!(language.slug, "rust" | "go" | "java" | "c" | "cpp"),
+        name: list.clone(),
+        mutable: mutates_list_in_place(language.slug),
     }];
 
     match operation {
-        Operation::Transform(transform) => {
+        Operation::Transform(_) => {
+            let target = default_name("transformed");
             statements.push(ProgramStatement::TransformList {
-                semantic_node: transform.semantic_node(),
-                source: NUMBERS,
-                target: SORTED,
-                transform,
+                semantic_node: if canonical == "reverse" {
+                    "reverse_list"
+                } else {
+                    "sort_list"
+                },
+                source: list,
+                target: target.clone(),
+                direction: super::direction_for(canonical),
             });
             statements.push(ProgramStatement::PrintJoined {
-                source: SORTED,
+                source: target,
                 separator: ", ",
             });
         }
-        Operation::Reduce(reduce) => {
+        Operation::Reduce(_) => {
+            let target = default_name("reduced");
             statements.push(ProgramStatement::ReduceList {
-                source: NUMBERS,
-                target: RESULT,
-                reduce,
+                source: list,
+                target: target.clone(),
+                reducer: canonical,
             });
-            statements.push(ProgramStatement::PrintScalar { source: RESULT });
+            statements.push(ProgramStatement::PrintScalar { source: target });
         }
     }
 
@@ -379,361 +523,4 @@ fn quoted_string_literal(value: &str) -> String {
     }
     out.push('"');
     out
-}
-
-fn render_js(program: &NumericProgram, typed: bool) -> String {
-    let literal = program.literal();
-    let decl = if typed {
-        format!(
-            "const {NUMBERS}: {}[] = [{literal}];",
-            program.value_type.typed_array()
-        )
-    } else {
-        format!("const {NUMBERS} = [{literal}];")
-    };
-    if let Some(transform) = program.transform() {
-        let expr = match (transform, program.value_type) {
-            (Transform::SortAscending, ValueType::Text) => "[...numbers].sort()",
-            (Transform::SortDescending, ValueType::Text) => "[...numbers].sort().reverse()",
-            (Transform::SortAscending, _) => "[...numbers].sort((a, b) => a - b)",
-            (Transform::SortDescending, _) => "[...numbers].sort((a, b) => b - a)",
-            (Transform::Reverse, _) => "[...numbers].reverse()",
-        };
-        return format!("{decl}\nconst {SORTED} = {expr};\nconsole.log({SORTED}.join(\", \"));");
-    }
-    let reduce = program.reduce().expect("reduction program has reducer");
-    let expr = match reduce {
-        Reduce::Sum => "numbers.reduce((a, b) => a + b, 0)",
-        Reduce::Product => "numbers.reduce((a, b) => a * b, 1)",
-        Reduce::Minimum => "Math.min(...numbers)",
-        Reduce::Maximum => "Math.max(...numbers)",
-    };
-    format!("{decl}\nconst {RESULT} = {expr};\nconsole.log({RESULT});")
-}
-
-fn render_python(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    if let Some(transform) = program.transform() {
-        let action = match transform {
-            Transform::SortAscending => "sorted(numbers)",
-            Transform::SortDescending => "sorted(numbers, reverse=True)",
-            Transform::Reverse => "list(reversed(numbers))",
-        };
-        return format!(
-            "{NUMBERS} = [{literal}]\n{SORTED_NUMBERS} = {action}\nprint(\", \".join(str(n) for n in {SORTED_NUMBERS}))"
-        );
-    }
-    match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => {
-            format!("{NUMBERS} = [{literal}]\n{RESULT} = sum({NUMBERS})\nprint({RESULT})")
-        }
-        Reduce::Product => format!(
-            "import math\n\n{NUMBERS} = [{literal}]\n{RESULT} = math.prod({NUMBERS})\nprint({RESULT})"
-        ),
-        Reduce::Minimum => {
-            format!("{NUMBERS} = [{literal}]\n{RESULT} = min({NUMBERS})\nprint({RESULT})")
-        }
-        Reduce::Maximum => {
-            format!("{NUMBERS} = [{literal}]\n{RESULT} = max({NUMBERS})\nprint({RESULT})")
-        }
-    }
-}
-
-fn render_rust(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let ty = program.value_type.rust();
-    if let Some(transform) = program.transform() {
-        let action = match (transform, program.value_type) {
-            (Transform::SortAscending, ValueType::Integer | ValueType::Text) => {
-                "numbers.sort();".to_owned()
-            }
-            (Transform::SortDescending, ValueType::Integer | ValueType::Text) => {
-                "numbers.sort_by(|a, b| b.cmp(a));".to_owned()
-            }
-            (Transform::SortAscending, ValueType::Float) => {
-                "numbers.sort_by(|a, b| a.partial_cmp(b).unwrap());".to_owned()
-            }
-            (Transform::SortDescending, ValueType::Float) => {
-                "numbers.sort_by(|a, b| b.partial_cmp(a).unwrap());".to_owned()
-            }
-            (Transform::Reverse, _) => "numbers.reverse();".to_owned(),
-        };
-        return format!(
-            "fn main() {{\n    let mut {NUMBERS}: Vec<{ty}> = vec![{literal}];\n    {action}\n    let rendered: Vec<String> = {NUMBERS}.iter().map(|n| n.to_string()).collect();\n    println!(\"{{}}\", rendered.join(\", \"));\n}}"
-        );
-    }
-    let compute = match (
-        program.reduce().expect("reduction program has reducer"),
-        program.value_type,
-    ) {
-        (Reduce::Sum, _) => format!("{NUMBERS}.iter().copied().sum::<{ty}>()"),
-        (Reduce::Product, _) => format!("{NUMBERS}.iter().copied().product::<{ty}>()"),
-        (Reduce::Minimum, ValueType::Integer) => format!("*{NUMBERS}.iter().min().unwrap()"),
-        (Reduce::Maximum, ValueType::Integer) => format!("*{NUMBERS}.iter().max().unwrap()"),
-        (Reduce::Minimum, ValueType::Float) => {
-            format!("{NUMBERS}.iter().copied().fold(f64::INFINITY, f64::min)")
-        }
-        (Reduce::Maximum, ValueType::Float) => {
-            format!("{NUMBERS}.iter().copied().fold(f64::NEG_INFINITY, f64::max)")
-        }
-        (_, ValueType::Text) => unreachable!("text lists do not support reductions"),
-    };
-    format!(
-        "fn main() {{\n    let {NUMBERS}: Vec<{ty}> = vec![{literal}];\n    let {RESULT} = {compute};\n    println!(\"{{}}\", {RESULT});\n}}"
-    )
-}
-
-fn render_go(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let ty = program.value_type.go();
-    if let Some(transform) = program.transform() {
-        let format_item = match program.value_type {
-            ValueType::Integer => "strconv.Itoa(n)",
-            ValueType::Float => "strconv.FormatFloat(n, 'g', -1, 64)",
-            ValueType::Text => "n",
-        };
-        let (imports, action) = match (transform, program.value_type) {
-            (Transform::SortAscending, ValueType::Text) => (
-                "\t\"fmt\"\n\t\"sort\"\n\t\"strings\"",
-                format!("sort.Strings({NUMBERS})"),
-            ),
-            (Transform::SortDescending, ValueType::Text) => (
-                "\t\"fmt\"\n\t\"sort\"\n\t\"strings\"",
-                format!("sort.Sort(sort.Reverse(sort.StringSlice({NUMBERS})))"),
-            ),
-            (Transform::SortAscending, _) => (
-                "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
-                format!("sort.Slice({NUMBERS}, func(i, j int) bool {{ return {NUMBERS}[i] < {NUMBERS}[j] }})"),
-            ),
-            (Transform::SortDescending, _) => (
-                "\t\"fmt\"\n\t\"sort\"\n\t\"strconv\"\n\t\"strings\"",
-                format!("sort.Slice({NUMBERS}, func(i, j int) bool {{ return {NUMBERS}[i] > {NUMBERS}[j] }})"),
-            ),
-            (Transform::Reverse, ValueType::Text) => (
-                "\t\"fmt\"\n\t\"strings\"",
-                format!("for i, j := 0, len({NUMBERS})-1; i < j; i, j = i+1, j-1 {{\n\t\t{NUMBERS}[i], {NUMBERS}[j] = {NUMBERS}[j], {NUMBERS}[i]\n\t}}"),
-            ),
-            (Transform::Reverse, _) => (
-                "\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"",
-                format!("for i, j := 0, len({NUMBERS})-1; i < j; i, j = i+1, j-1 {{\n\t\t{NUMBERS}[i], {NUMBERS}[j] = {NUMBERS}[j], {NUMBERS}[i]\n\t}}"),
-            ),
-        };
-        return format!(
-            "package main\n\nimport (\n{imports}\n)\n\nfunc main() {{\n\t{NUMBERS} := []{ty}{{{literal}}}\n\t{action}\n\tparts := make([]string, len({NUMBERS}))\n\tfor i, n := range {NUMBERS} {{\n\t\tparts[i] = {format_item}\n\t}}\n\tfmt.Println(strings.Join(parts, \", \"))\n}}"
-        );
-    }
-    let body = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => {
-            format!(
-                "var {RESULT} {ty} = 0\n\tfor _, n := range {NUMBERS} {{\n\t\t{RESULT} += n\n\t}}"
-            )
-        }
-        Reduce::Product => {
-            format!(
-                "var {RESULT} {ty} = 1\n\tfor _, n := range {NUMBERS} {{\n\t\t{RESULT} *= n\n\t}}"
-            )
-        }
-        Reduce::Minimum => {
-            format!("{RESULT} := {NUMBERS}[0]\n\tfor _, n := range {NUMBERS}[1:] {{\n\t\tif n < {RESULT} {{\n\t\t\t{RESULT} = n\n\t\t}}\n\t}}")
-        }
-        Reduce::Maximum => {
-            format!("{RESULT} := {NUMBERS}[0]\n\tfor _, n := range {NUMBERS}[1:] {{\n\t\tif n > {RESULT} {{\n\t\t\t{RESULT} = n\n\t\t}}\n\t}}")
-        }
-    };
-    format!(
-        "package main\n\nimport \"fmt\"\n\nfunc main() {{\n\t{NUMBERS} := []{ty}{{{literal}}}\n\t{body}\n\tfmt.Println({RESULT})\n}}"
-    )
-}
-
-fn render_ruby(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    if let Some(transform) = program.transform() {
-        let action = match transform {
-            Transform::SortAscending => "numbers.sort",
-            Transform::SortDescending => "numbers.sort.reverse",
-            Transform::Reverse => "numbers.reverse",
-        };
-        return format!("{NUMBERS} = [{literal}]\n{SORTED} = {action}\nputs {SORTED}.join(\", \")");
-    }
-    let expr = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => "numbers.sum",
-        Reduce::Product => "numbers.inject(1, :*)",
-        Reduce::Minimum => "numbers.min",
-        Reduce::Maximum => "numbers.max",
-    };
-    format!("{NUMBERS} = [{literal}]\n{RESULT} = {expr}\nputs {RESULT}")
-}
-
-fn render_java(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let ty = match program.value_type {
-        ValueType::Text => "String",
-        _ => program.value_type.c_family(),
-    };
-    if let Some(transform) = program.transform() {
-        let boxed = program.value_type.java_boxed();
-        let action = match transform {
-            Transform::SortAscending => "Arrays.sort(numbers);".to_owned(),
-            Transform::SortDescending if program.value_type == ValueType::Text => {
-                "Arrays.sort(numbers, Collections.reverseOrder());".to_owned()
-            }
-            Transform::SortDescending => {
-                format!(
-                    "{boxed}[] boxed = Arrays.stream({NUMBERS}).boxed().toArray({boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < {NUMBERS}.length; i++) {NUMBERS}[i] = boxed[i];"
-                )
-            }
-            Transform::Reverse => format!(
-                "for (int i = 0, j = {NUMBERS}.length - 1; i < j; i++, j--) {{\n            {ty} tmp = {NUMBERS}[i];\n            {NUMBERS}[i] = {NUMBERS}[j];\n            {NUMBERS}[j] = tmp;\n        }}"
-            ),
-        };
-        return format!(
-            "import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {{\n    public static void main(String[] args) {{\n        {ty}[] {NUMBERS} = {{{literal}}};\n        {action}\n        StringJoiner joiner = new StringJoiner(\", \");\n        for ({ty} n : {NUMBERS}) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }}\n}}"
-        );
-    }
-    let body = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => {
-            format!("{ty} {RESULT} = 0;\n        for ({ty} n : {NUMBERS}) {RESULT} += n;")
-        }
-        Reduce::Product => {
-            format!("{ty} {RESULT} = 1;\n        for ({ty} n : {NUMBERS}) {RESULT} *= n;")
-        }
-        Reduce::Minimum => {
-            format!("{ty} {RESULT} = {NUMBERS}[0];\n        for ({ty} n : {NUMBERS}) {RESULT} = Math.min({RESULT}, n);")
-        }
-        Reduce::Maximum => {
-            format!("{ty} {RESULT} = {NUMBERS}[0];\n        for ({ty} n : {NUMBERS}) {RESULT} = Math.max({RESULT}, n);")
-        }
-    };
-    format!(
-        "public class Main {{\n    public static void main(String[] args) {{\n        {ty}[] {NUMBERS} = {{{literal}}};\n        {body}\n        System.out.println({RESULT});\n    }}\n}}"
-    )
-}
-
-fn render_csharp(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let ty = program.value_type.c_family();
-    if let Some(transform) = program.transform() {
-        let action = match transform {
-            Transform::SortAscending => "numbers.OrderBy(n => n)",
-            Transform::SortDescending => "numbers.OrderByDescending(n => n)",
-            Transform::Reverse => "numbers.Reverse()",
-        };
-        return format!(
-            "using System;\nusing System.Linq;\n\nclass Program {{\n    static void Main() {{\n        {ty}[] {NUMBERS} = {{{literal}}};\n        var {SORTED} = {action};\n        Console.WriteLine(string.Join(\", \", {SORTED}));\n    }}\n}}"
-        );
-    }
-    let expr = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => "numbers.Sum()".to_owned(),
-        Reduce::Product => format!("{NUMBERS}.Aggregate(({ty})1, (a, b) => a * b)"),
-        Reduce::Minimum => "numbers.Min()".to_owned(),
-        Reduce::Maximum => "numbers.Max()".to_owned(),
-    };
-    format!(
-        "using System;\nusing System.Linq;\n\nclass Program {{\n    static void Main() {{\n        {ty}[] {NUMBERS} = {{{literal}}};\n        var {RESULT} = {expr};\n        Console.WriteLine({RESULT});\n    }}\n}}"
-    )
-}
-
-fn render_cpp(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let ty = program.value_type.cpp();
-    let string_include = if program.value_type == ValueType::Text {
-        "#include <string>\n"
-    } else {
-        ""
-    };
-    if let Some(transform) = program.transform() {
-        let action = match transform {
-            Transform::SortAscending => "std::sort(numbers.begin(), numbers.end());",
-            Transform::SortDescending => {
-                "std::sort(numbers.begin(), numbers.end(), std::greater<>());"
-            }
-            Transform::Reverse => "std::reverse(numbers.begin(), numbers.end());",
-        };
-        return format!(
-            "#include <algorithm>\n#include <iostream>\n{string_include}#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {action}\n    for (size_t i = 0; i < {NUMBERS}.size(); ++i) {{\n        if (i) std::cout << \", \";\n        std::cout << {NUMBERS}[i];\n    }}\n    std::cout << std::endl;\n    return 0;\n}}"
-        );
-    }
-    let expr = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => format!("std::accumulate({NUMBERS}.begin(), {NUMBERS}.end(), ({ty})0)"),
-        Reduce::Product => format!(
-            "std::accumulate({NUMBERS}.begin(), {NUMBERS}.end(), ({ty})1, std::multiplies<{ty}>())"
-        ),
-        Reduce::Minimum => format!("*std::min_element({NUMBERS}.begin(), {NUMBERS}.end())"),
-        Reduce::Maximum => format!("*std::max_element({NUMBERS}.begin(), {NUMBERS}.end())"),
-    };
-    format!(
-        "#include <algorithm>\n#include <iostream>\n#include <numeric>\n{string_include}#include <vector>\n\nint main() {{\n    std::vector<{ty}> {NUMBERS} = {{{literal}}};\n    {ty} {RESULT} = {expr};\n    std::cout << {RESULT} << std::endl;\n    return 0;\n}}"
-    )
-}
-
-fn render_c(program: &NumericProgram) -> String {
-    let literal = program.literal();
-    let count = program.literals.len();
-    let ty = program.value_type.c_storage();
-    let element_size_ty = if program.value_type == ValueType::Text {
-        "char *"
-    } else {
-        ty
-    };
-    let fmt = program.value_type.c_printf();
-    if let Some(transform) = program.transform() {
-        let body = match transform {
-            Transform::Reverse => format!(
-                "    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {{\n        {ty} tmp = {NUMBERS}[i];\n        {NUMBERS}[i] = {NUMBERS}[j];\n        {NUMBERS}[j] = tmp;\n    }}"
-            ),
-            Transform::SortAscending | Transform::SortDescending => format!(
-                "    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    qsort({NUMBERS}, count, sizeof({element_size_ty}), compare);"
-            ),
-        };
-        let comparator = c_comparator(transform, program.value_type);
-        let string_include = if program.value_type == ValueType::Text {
-            "#include <string.h>\n"
-        } else {
-            ""
-        };
-        return format!(
-            "#include <stdio.h>\n#include <stdlib.h>\n{string_include}\n{comparator}int main(void) {{\n{body}\n    for (size_t i = 0; i < count; ++i) {{\n        if (i) printf(\", \");\n        printf(\"{fmt}\", {NUMBERS}[i]);\n    }}\n    printf(\"\\n\");\n    return 0;\n}}"
-        );
-    }
-    let init = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => program.value_type.scalar_zero().to_owned(),
-        Reduce::Product => program.value_type.scalar_one().to_owned(),
-        Reduce::Minimum | Reduce::Maximum => format!("{NUMBERS}[0]"),
-    };
-    let step = match program.reduce().expect("reduction program has reducer") {
-        Reduce::Sum => format!("        {RESULT} += {NUMBERS}[i];"),
-        Reduce::Product => format!("        {RESULT} *= {NUMBERS}[i];"),
-        Reduce::Minimum => format!("        if ({NUMBERS}[i] < {RESULT}) {RESULT} = {NUMBERS}[i];"),
-        Reduce::Maximum => format!("        if ({NUMBERS}[i] > {RESULT}) {RESULT} = {NUMBERS}[i];"),
-    };
-    format!(
-        "#include <stdio.h>\n\nint main(void) {{\n    {ty} {NUMBERS}[] = {{{literal}}};\n    size_t count = {count};\n    {ty} {RESULT} = {init};\n    for (size_t i = 0; i < count; ++i) {{\n{step}\n    }}\n    printf(\"{fmt}\\n\", {RESULT});\n    return 0;\n}}"
-    )
-}
-
-fn c_comparator(transform: Transform, value_type: ValueType) -> String {
-    match transform {
-        Transform::Reverse => String::new(),
-        Transform::SortAscending | Transform::SortDescending => {
-            let cmp_body = match (transform, value_type) {
-                (Transform::SortDescending, ValueType::Float) => {
-                    "    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);"
-                }
-                (_, ValueType::Float) => {
-                    "    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);"
-                }
-                (Transform::SortDescending, ValueType::Integer) => {
-                    "    return (*(const int *)b - *(const int *)a);"
-                }
-                (_, ValueType::Integer) => "    return (*(const int *)a - *(const int *)b);",
-                (Transform::SortDescending, ValueType::Text) => {
-                    "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(right, left);"
-                }
-                (_, ValueType::Text) => {
-                    "    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(left, right);"
-                }
-            };
-            format!("static int compare(const void *a, const void *b) {{\n{cmp_body}\n}}\n\n")
-        }
-    }
 }

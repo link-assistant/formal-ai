@@ -20,6 +20,7 @@ numeric_list_operations
   operation "reverse"
     family "list_transformation"
     result_kind "list"
+    direction "given_order_reversed"
   operation "sum"
     family "list_reduction"
     result_kind "scalar"

@@ -78,7 +78,9 @@ fn quoted_string_lists_render_valid_cst_for_every_language() {
 
     for language in crate::coding::PROGRAM_LANGUAGES {
         let program = codegen::build(language, &items, operation, false);
-        let code = program.render();
+        let code = program
+            .render()
+            .unwrap_or_else(|| panic!("{} must compose from coding idioms", language.slug));
         let cst = crate::coding::validated_program_cst(language.slug, &code).unwrap_or_else(|| {
             panic!(
                 "{} string-list source must parse as a valid CST:\n{}",
