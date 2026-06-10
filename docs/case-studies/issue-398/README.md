@@ -111,6 +111,7 @@ does not sit beside the ontology; it is part of the same closed graph.
 | R398-11 | Represent the concrete Links-Theory root draft from PR feedback as seed data. | Existing `Meaning` records, `defined_by` closure tests, and semantic facets. | Added `data/seed/meanings-links-root.lino` and embedded it in runtime/source-test seed registries. | Expand the cluster toward typed holon/reified-statement records after compatibility APIs exist. |
 | R398-12 | Keep self-referential primitives as structured self-equations, not prose synonyms. | The facet parser can attach arbitrary meaning-backed facet kinds. | Added `self_equation` as a facet kind and tests for `type`, `not`, and `same`. | Later proof work can check these fixed points with relative-meta-logic instead of only asserting seed shape. |
 | R398-13 | Enforce one-symbol-one-meaning sense splitting for ambiguous words. | Existing multilingual lexical forms and word-form facets. | Seeded `one_symbol_one_meaning`, `sense_split`, `bank_river`, and `bank_money`; tests assert there is no ambiguous bare `bank` meaning. | Add migration scripts that detect ambiguous surfaces and propose split symbols with source evidence. |
+| R398-14 | Prove full reference closure and reconcile structural predicates with meaning links. | `semantic_definition_graph_is_closed` only checked `defined_by`; role values were undeclared. | Added `meaning_definition_references_resolve_to_defined_meanings` (every defined-by and facet reference resolves to a defined meaning, 0 dangling) and the canonical `data/seed/roles.lino` registry of all 207 roles with two lockstep tests. | Fold roles into the meaning graph as first-class predicate meanings, then extend closure to the multi-source `view` once per-source caches land. |
 
 ## Root cause
 
@@ -384,6 +385,37 @@ one*. Resolutions this round:
   extending beyond English, and pulling forms/senses/translations from
   Wiktionary directly remain the next steps toward the review's multi-source
   `view` plan.
+
+  Full reference closure (open item #1 of the latest review — the claim that
+  most referenced links were undefined) was measured directly with
+  `experiments/closure_audit.py`: once colon-head definitions (`slug:
+  expression`) are recognized alongside the nested-under-`meanings` form, the
+  meaning layer is already **100% closed** — every `defined-by` target and every
+  semantic-facet reference (`notation`/`annotation`/`denotation`/`connotation`)
+  resolves to a meaning defined exactly once, with zero dangling references. The
+  new `meaning_definition_references_resolve_to_defined_meanings` test walks the
+  whole lexicon and makes that property regression-proof across all 35 meaning
+  files, so a reference to an undefined meaning now fails CI.
+
+  The genuine gap the audit surfaced was not in the meaning graph but in the
+  **role namespace**: a `role <name>` value is a reserved predicate over
+  meanings (point #2 of the review — structural predicates versus meaning
+  links), yet roles were never declared anywhere, so a typo or a silent
+  collision with a meaning slug went unnoticed. `data/seed/roles.lino` is now
+  the single canonical registry: it declares all 207 distinct roles exactly
+  once, classifying each as `kind meaning` (the name is also a defined meaning
+  slug — 76 of them, e.g. a category meaning that doubles as the role it
+  confers) or `kind predicate` (a role-only reserved identifier — 131 of them).
+  `scripts/generate-role-registry.py` mines the roles from the seed and
+  regenerates the file deterministically and idempotently (re-running it
+  reproduces it byte-for-byte), and two tests keep it honest:
+  `every_role_value_is_declared_in_the_registry` (no role may be used without a
+  declaration) and `role_registry_is_in_lockstep_with_usage` (no stale entry,
+  and each role's `kind` matches whether the name is also a defined meaning).
+  The remaining review items — the multi-source `view` with per-source caches
+  and `M-…` ids, the provable 1:1 meaning↔type mapping via relative-meta-logic,
+  and the minimal-seed/on-demand-expansion split — stay as the data-migration
+  and architecture follow-ups listed below.
 
 ## Follow-up issues worth opening
 
