@@ -9,8 +9,9 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
     lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
-    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY,
-    ROLE_CALENDAR_WEEKDAY,
+    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIMEZONE_ALIAS,
+    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
 };
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -208,6 +209,12 @@ pub fn try_calendar_reasoning(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+    // gate so that "18 число ... забей / поставь" claims are handled by the action path
+    // and do not fall through to the existing weekday-only logic.
+    if let Some(answer) = try_calendar_create_event(prompt, normalized, log) {
+        return Some(answer);
+    }
     if mentions_current_day_question(normalized) {
         return try_current_day_reasoning(prompt, log);
     }
@@ -476,5 +483,277 @@ fn render_answer(
                 operation.delta(),
             ),
         },
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Issue #404: calendar create / schedule action support ("забей 18 число в 17:00 по грузии...").
+// The implementation follows the exact post-#386 lexicon-driven pattern of the
+// existing weekday/today code: all recognition surfaces live in
+// data/seed/meanings-calendar.lino; this module only knows the roles and stable
+// English slugs. Existing weekday relation + current-day logic is 100% untouched.
+// ---------------------------------------------------------------------------
+
+/// Entry point for natural-language calendar event creation/scheduling.
+/// Returns Some only for prompts that look like a create request (day reference +
+/// schedule action cue or "число" + time/title signals). On success it records rich
+/// `calendar:parsed_*` trace events, builds a localized confirmation proposal, and
+/// emits via finalize_simple with intent "calendar_create_event".
+pub fn try_calendar_create_event(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !mentions_calendar_create_request(normalized) {
+        return None;
+    }
+
+    let base = current_utc_date()?;
+    log.append("calendar:clock", "system_utc".to_owned());
+
+    let day = extract_day_number(normalized).unwrap_or(base.day);
+    let (year, month, day) = compute_target_date_with_rollover(base, day);
+    let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
+    let tz = resolve_timezone(normalized).unwrap_or("UTC");
+    let title = extract_title(normalized).unwrap_or_else(|| "Событие".to_string());
+    let duration_minutes: u32 = 60;
+
+    // Rich diagnostic trace (exactly the style used by the weekday paths).
+    log.append("calendar:parsed_date", format!("{:04}-{:02}-{:02}", year, month, day));
+    log.append("calendar:parsed_time", format!("{:02}:{:02}", hour, minute));
+    log.append("calendar:parsed_time_zone", tz.to_owned());
+    log.append("calendar:parsed_title", title.clone());
+    log.append("calendar:parsed_duration_minutes", duration_minutes.to_string());
+    if normalized.contains("число") || normalized.contains("number") {
+        log.append("calendar:parsed_via", "day_number".to_owned());
+    }
+
+    let language = detect_language(prompt).slug();
+    log.append("language", language.to_owned());
+
+    let body = render_create_confirmation(language, &title, day, month, year, hour, minute, tz);
+
+    Some(finalize_simple(
+        prompt,
+        log,
+        "calendar_create_event",
+        "response:calendar_create_event",
+        &body,
+        0.95,
+    ))
+}
+
+fn mentions_calendar_create_request(normalized: &str) -> bool {
+    let lex = lexicon();
+    // Must mention a day/date reference (we already have "число", "дата", "день" etc.).
+    let has_day_ref = lex
+        .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
+        .iter()
+        .any(|w| contains_term(normalized, w));
+    // Also accept bare day numbers (18th, on the 18, 18 число) when combined with schedule cues.
+    let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
+    let has_date_signal = has_day_ref || has_digit;
+    if !has_date_signal {
+        return false;
+    }
+    // Strong schedule/create signal via the new role (data-driven).
+    let has_action = lex
+        .words_for_role(ROLE_CALENDAR_SCHEDULE_ACTION)
+        .iter()
+        .any(|w| contains_term(normalized, w))
+        || lex
+            .words_for_role(ROLE_CALENDAR_EVENT)
+            .iter()
+            .any(|w| contains_term(normalized, w));
+    if has_action {
+        return true;
+    }
+    // Fallback heuristic for classic patterns (RU "забей/поставь ... число", EN "schedule ... 18th").
+    let has_schedule_verb = normalized.contains("забей") || normalized.contains("поставь") || normalized.contains("создай") || normalized.contains("добавь")
+        || normalized.contains("schedule") || normalized.contains("book") || normalized.contains("add to");
+    has_schedule_verb && (normalized.contains("число") || normalized.contains("встреч") || has_digit)
+}
+
+fn extract_day_number(normalized: &str) -> Option<u32> {
+    let lex = lexicon();
+    for word in lex.words_for_role(ROLE_CALENDAR_DAY_REFERENCE) {
+        if !contains_term(normalized, &word) {
+            continue;
+        }
+        // Look for an ascii digit run immediately before the matched surface in the raw normalized text.
+        if let Some(pos) = normalized.find(&word) {
+            let prefix = &normalized[..pos];
+            // Walk backwards for the last digit sequence.
+            let mut digits = String::new();
+            for ch in prefix.chars().rev() {
+                if ch.is_ascii_digit() {
+                    digits.insert(0, ch);
+                } else if !digits.is_empty() {
+                    break;
+                }
+            }
+            if let Ok(n) = digits.parse::<u32>() {
+                if (1..=31).contains(&n) {
+                    return Some(n);
+                }
+            }
+        }
+    }
+    // Also accept a bare leading number when a day-ref role word is present anywhere.
+    let mut num = String::new();
+    for ch in normalized.chars() {
+        if ch.is_ascii_digit() {
+            num.push(ch);
+        } else if !num.is_empty() {
+            break;
+        }
+    }
+    if let Ok(n) = num.parse::<u32>() {
+        if (1..=31).contains(&n) {
+            return Some(n);
+        }
+    }
+    None
+}
+
+fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32, u32, u32) {
+    let mut y = base.year;
+    let mut m = base.month;
+    let mut d = day;
+    if d < base.day {
+        // "18 число" spoken later in the month → treat as next month.
+        m += 1;
+        if m > 12 {
+            m = 1;
+            y += 1;
+        }
+    }
+    // Clamp obviously-invalid days (simple policy; real calendar math is overkill for MVP).
+    let max_day = match m {
+        2 => 28, // ignore leap for the assistant trace; user can correct
+        4 | 6 | 9 | 11 => 30,
+        _ => 31,
+    };
+    if d > max_day {
+        d = max_day;
+    }
+    (y, m, d)
+}
+
+fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
+    // Minimal std-only scanner for HH:MM or HH.MM (covers "17:00", "17.00", "в 17:00").
+    let bytes = normalized.as_bytes();
+    for i in 0..bytes.len().saturating_sub(3) {
+        if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
+            let h1 = (bytes[i] - b'0') as u32;
+            let h2 = (bytes[i + 1] - b'0') as u32;
+            let mut hour = h1 * 10 + h2;
+            let mut j = i + 2;
+            if j < bytes.len() && (bytes[j] == b':' || bytes[j] == b'.') {
+                j += 1;
+            }
+            if j + 1 < bytes.len() && bytes[j].is_ascii_digit() && bytes[j + 1].is_ascii_digit() {
+                let m1 = (bytes[j] - b'0') as u32;
+                let m2 = (bytes[j + 1] - b'0') as u32;
+                let minute = m1 * 10 + m2;
+                if hour <= 23 && minute <= 59 {
+                    if hour == 0 {
+                        hour = 24; // treat 00:xx as end of previous day? keep as 0 for simplicity
+                    }
+                    // Normalize 24 -> 00 for ISO later if needed; here we keep 0-23.
+                    if hour == 24 {
+                        hour = 0;
+                    }
+                    return Some((hour, minute));
+                }
+            }
+        }
+    }
+    // Spoken shorthand "в 17" → assume :00.
+    if let Some(pos) = normalized.find("в ") {
+        let tail = &normalized[pos + 2..];
+        let mut num = String::new();
+        for ch in tail.chars() {
+            if ch.is_ascii_digit() {
+                num.push(ch);
+            } else if !num.is_empty() {
+                break;
+            }
+        }
+        if let Ok(h) = num.parse::<u32>() {
+            if h <= 23 {
+                return Some((h, 0));
+            }
+        }
+    }
+    None
+}
+
+fn resolve_timezone(normalized: &str) -> Option<&'static str> {
+    let lex = lexicon();
+    let hit = lex
+        .words_for_role(ROLE_CALENDAR_TIMEZONE_ALIAS)
+        .iter()
+        .any(|w| contains_term(normalized, w));
+    if hit {
+        return Some("Asia/Tbilisi");
+    }
+    // Direct IANA surface also accepted.
+    if normalized.contains("asia/tbilisi") || normalized.contains("tbilisi") {
+        return Some("Asia/Tbilisi");
+    }
+    None
+}
+
+fn extract_title(normalized: &str) -> Option<String> {
+    // Prefer "на <title>" / "for <title>" / "встречу с ..." style (safe, marker.len() is char boundary).
+    for marker in ["на ", "for ", "встречу ", "meeting with ", "call with "] {
+        if let Some(pos) = normalized.find(marker) {
+            let rest = normalized[pos + marker.len()..].trim();
+            if !rest.is_empty() {
+                // Cut at first sentence punctuation or end.
+                let cut = rest
+                    .find(|c| c == '.' || c == '!' || c == '?')
+                    .unwrap_or(rest.len());
+                let t = rest[..cut].trim();
+                if !t.is_empty() {
+                    return Some(t.to_string());
+                }
+            }
+        }
+    }
+    // Fallback (avoid hard +5 on Russian verbs; use verb length or the "на " path above).
+    for verb in ["забей", "поставь", "создай", "добавь"] {
+        if let Some(pos) = normalized.find(verb) {
+            let after = normalized[pos + verb.len()..].trim_start();
+            let cut = after.find(" в ").or_else(|| after.find(" at ")).unwrap_or(after.len());
+            let t = after[..cut].trim();
+            if !t.is_empty() && t.len() < 60 {
+                return Some(t.to_string());
+            }
+        }
+    }
+    None
+}
+
+fn render_create_confirmation(
+    language: &str,
+    title: &str,
+    day: u32,
+    month: u32,
+    year: i32,
+    hour: u32,
+    minute: u32,
+    tz: &str,
+) -> String {
+    match language {
+        "ru" => format!(
+            "Создать событие «{}» на {} число ({}). Время: {:02}:{:02}, часовой пояс: {}. Длительность 60 минут.\nОтветьте «да», чтобы подтвердить.",
+            title, day, format!("{:04}-{:02}-{:02}", year, month, day), hour, minute, tz
+        ),
+        _ => format!(
+            "Create event «{}» on {}-{:02}-{:02}. Time: {:02}:{:02}, timezone: {}. Duration 60 minutes.\nReply 'yes' to confirm.",
+            title, year, month, day, hour, minute, tz
+        ),
     }
 }

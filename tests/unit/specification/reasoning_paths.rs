@@ -616,6 +616,69 @@ fn russian_how_known_concept_works_resolves_concept_lookup() {
 }
 
 // ---------------------------------------------------------------------------
+// Issue #404: natural language calendar create/schedule ("забей 18 число...").
+// The prompt must not fall to unknown; it must produce a structured
+// calendar_create_event with rich parsed_* evidence and a confirmation body.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn calendar_create_event_russian_day_number_with_time_and_tz() {
+    // Exact prompt from https://github.com/link-assistant/formal-ai/issues/404
+    let response = answer("Забей мне 18 число в 17:00 по грузии на встречу с Леваном");
+    assert_ne!(
+        response.intent,
+        "unknown",
+        "calendar scheduling prompt must not return unknown; got intent={}, answer={}",
+        response.intent,
+        response.answer
+    );
+    assert!(
+        response.intent == "calendar_create_event" || response.intent.contains("calendar"),
+        "expected calendar_create_event intent, got {}",
+        response.intent
+    );
+    // Rich trace evidence for the parsed fields (the heart of the feature).
+    // Evidence links use generated ids after the key (e.g. calendar:parsed_date:calendar:parsed_date_xxx).
+    // We assert the presence of the parsed keys (recorded by the handler) + correct intent.
+    let parsed_keys = response.evidence_links.iter().filter(|l| l.starts_with("calendar:parsed_")).count();
+    assert!(
+        parsed_keys >= 4,
+        "must emit multiple calendar:parsed_* evidence keys; links={:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|l| l.contains("parsed_time_zone") || l.contains("Asia/Tbilisi") || l.contains("грузии")),
+        "must capture timezone in evidence; links={:?}",
+        response.evidence_links
+    );
+    // Confirmation-style answer (MVP does not auto-create).
+    let a = response.answer.to_lowercase();
+    assert!(
+        a.contains("создать") || a.contains("событие") || a.contains("да"),
+        "answer should propose the event and invite confirmation; got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn calendar_create_event_fallback_english() {
+    let response = answer("schedule meeting with Levan on the 18th at 5pm Georgia time");
+    assert_ne!(response.intent, "unknown");
+    assert!(
+        response.intent.contains("calendar"),
+        "english scheduling must also hit calendar path; intent={}",
+        response.intent
+    );
+}
+
+// Coverage notes for hi/zh (calendarCreateEventCases in check-multilingual-intent-coverage.mjs):
+// '18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें'
+// '18号下午5点和Levan安排会议'
+
+// ---------------------------------------------------------------------------
 // Issue #223: project-method documentation prompts should answer from the
 // project's own docs, scoped to the named method.
 // ---------------------------------------------------------------------------

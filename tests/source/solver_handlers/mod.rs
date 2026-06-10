@@ -33,7 +33,7 @@ pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
-pub use calendar::try_calendar_reasoning;
+pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};

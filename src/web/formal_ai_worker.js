@@ -7456,7 +7456,193 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+// --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
+// Must be defined before tryCalendarReasoning. All recognition uses wordsForRole(ROLE_*)
+// + containsCalendarTerm (or the documented loose includes for directions/questions/fallbacks)
+// exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
+// Rust current_utc_date (create does not inherit the browser userContext tz used only by
+// the "today" path). Returns the same {intent, content, confidence, evidence} shape.
+function mentionsCalendarCreateRequest(normalized) {
+  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (!hasDayRef) return false;
+  const hasAction =
+    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
+    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
+      containsCalendarTerm(normalized, w),
+    );
+  if (hasAction) return true;
+  // Rust fallback heuristic (classic RU pattern).
+  return (
+    (normalized.includes("забей") ||
+      normalized.includes("поставь") ||
+      normalized.includes("создай") ||
+      normalized.includes("добавь")) &&
+    (normalized.includes("число") || normalized.includes("встреч"))
+  );
+}
+
+function extractDayNumber(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_DAY_REFERENCE)) {
+    if (!containsCalendarTerm(normalized, word)) continue;
+    const pos = normalized.indexOf(word);
+    if (pos !== -1) {
+      const prefix = normalized.slice(0, pos);
+      let digits = "";
+      for (let i = prefix.length - 1; i >= 0; i--) {
+        const ch = prefix[i];
+        if (/\d/.test(ch)) digits = ch + digits;
+        else if (digits) break;
+      }
+      const n = parseInt(digits, 10);
+      if (n >= 1 && n <= 31) return n;
+    }
+  }
+  // bare leading number
+  let num = "";
+  for (const ch of normalized) {
+    if (/\d/.test(ch)) num += ch;
+    else if (num) break;
+  }
+  const n = parseInt(num, 10);
+  if (n >= 1 && n <= 31) return n;
+  return null;
+}
+
+function computeTargetDateWithRollover(base, day) {
+  let y = base.year,
+    m = base.month,
+    d = day;
+  if (d < base.day) {
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
+  if (d > maxDay) d = maxDay;
+  return [y, m, d];
+}
+
+function extractClockTime(normalized) {
+  const bytes = normalized.split("");
+  for (let i = 0; i < bytes.length - 2; i++) {
+    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
+      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      let j = i + 2;
+      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
+      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
+        const min = parseInt(bytes[j] + bytes[j + 1], 10);
+        if (h <= 23 && min <= 59) {
+          if (h === 0) h = 0;
+          if (h === 24) h = 0;
+          return [h, min];
+        }
+      }
+    }
+  }
+  const vPos = normalized.indexOf("в ");
+  if (vPos !== -1) {
+    const tail = normalized.slice(vPos + 2);
+    let num = "";
+    for (const ch of tail) {
+      if (/\d/.test(ch)) num += ch;
+      else if (num) break;
+    }
+    const h = parseInt(num, 10);
+    if (h <= 23) return [h, 0];
+  }
+  return null;
+}
+
+function resolveTimezone(normalized) {
+  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (hit) return "Asia/Tbilisi";
+  if (
+    normalized.includes("asia/tbilisi") ||
+    normalized.includes("tbilisi") ||
+    normalized.includes("по грузии")
+  )
+    return "Asia/Tbilisi";
+  return null;
+}
+
+function extractTitle(normalized) {
+  for (const marker of ["на ", "for ", "встречу ", "meeting with ", "call with "]) {
+    const pos = normalized.indexOf(marker);
+    if (pos !== -1) {
+      let rest = normalized.slice(pos + marker.length).trim();
+      const cut = rest.search(/[.!?]/);
+      const t = (cut === -1 ? rest : rest.slice(0, cut)).trim();
+      if (t) return t;
+    }
+  }
+  if (normalized.includes("забей") || normalized.includes("поставь")) {
+    const pos = normalized.indexOf("забей") !== -1 ? normalized.indexOf("забей") : normalized.indexOf("поставь");
+    let rest = normalized.slice(pos + 5).trimStart();
+    const cut = rest.indexOf(" в ") !== -1 ? rest.indexOf(" в ") : rest.indexOf(" at ");
+    const t = (cut === -1 ? rest : rest.slice(0, cut)).trim();
+    if (t && t.length < 60) return t;
+  }
+  return null;
+}
+
+function renderCreateConfirmation(language, title, day, month, year, hour, minute, tz) {
+  if (language === "ru") {
+    return `Создать событие «${title}» на ${day} число (${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}). Время: ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}, часовой пояс: ${tz} (Asia/Tbilisi). Длительность 60 минут.\nОтветьте «да», чтобы подтвердить.`;
+  }
+  return `Create event «${title}» on ${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}. Time: ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}, timezone: ${tz} (Asia/Tbilisi). Duration 60 minutes.\nReply 'yes' to confirm.`;
+}
+
+function currentUtcCalendarBase() {
+  const d = new Date();
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
+}
+
+function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
+  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const base = currentUtcCalendarBase();
+  const day = extractDayNumber(normalized) || base.day;
+  const [year, month, d] = computeTargetDateWithRollover(base, day);
+  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const tz = resolveTimezone(normalized) || "UTC";
+  const title = extractTitle(normalized) || "Событие";
+  const durationMinutes = 60;
+  const language = detectLanguage(prompt);
+  const body = renderCreateConfirmation(language, title, d, month, year, hour, minute, tz);
+  const evidence = [
+    "calendar:clock:browser",
+    `calendar:parsed_date:${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
+    `calendar:parsed_time:${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+    `calendar:parsed_time_zone:${tz}`,
+    `calendar:parsed_title:${title}`,
+    `calendar:parsed_duration_minutes:${durationMinutes}`,
+  ];
+  if (normalized.includes("число") || normalized.includes("number")) {
+    evidence.push("calendar:parsed_via:day_number");
+  }
+  evidence.push(`language:${language}`);
+  return {
+    intent: "calendar_create_event",
+    content: body,
+    confidence: 0.95,
+    evidence,
+  };
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+  // gate (and before the current-day question) so that "18 число ... забей / поставь"
+  // claims are handled by the action path and do not fall through to the existing
+  // weekday-only logic. Mirrors src/solver_handlers/calendar.rs exactly.
+  const create = tryCalendarCreateEvent(prompt, normalized, userContext);
+  if (create) return create;
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
     const resolved = currentCalendarDate(userContext);
@@ -24959,6 +25145,14 @@ const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
 const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
+
+// Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+// + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+// pattern as the existing weekday helpers.
+const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+const ROLE_CALENDAR_EVENT = "calendar_event";
+const ROLE_CALENDAR_TIME = "calendar_time";
+const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.

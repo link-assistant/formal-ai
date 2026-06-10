@@ -443,6 +443,38 @@ test.describe('multilingual chat surface', () => {
     }
   });
 
+  test('calendar create event from natural language (issue #404)', async ({ page }) => {
+    // Russian exact prompt from the bug report + English fallback.
+    // The worker (edited for parity) should now return non-unknown calendar_create_event
+    // with a confirmation-style proposal instead of falling through.
+    const cases = [
+      {
+        prompt: 'Забей мне 18 число в 17:00 по грузии на встречу с Леваном',
+        locale: 'ru-RU',
+        mustContain: ['Событие', '18', '17:00', 'грузии', 'да'],
+      },
+      {
+        prompt: 'schedule meeting with Levan on the 18th at 5pm Georgia time',
+        locale: 'en-US',
+        mustContain: ['Create event', '18', '17:00', 'yes'],
+      },
+    ];
+
+    for (const { prompt, locale, mustContain } of cases) {
+      // Force a specific locale if the demo supports it; sendPrompt will still work.
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      for (const needle of mustContain) {
+        await expect(last).toContainText(needle);
+      }
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
+  // Coverage notes for hi/zh (calendarCreateEventCases):
+  // '18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें'
+  // '18号下午5点和Levan安排会议'
+
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
     let wikipediaRequests = 0;
     await page.route('https://en.wikipedia.org/**', async (route) => {
