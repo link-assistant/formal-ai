@@ -1,0 +1,34 @@
+sources_registry
+  source wikidata
+    name "Wikidata"
+    kind structured_knowledge
+    api "https://www.wikidata.org/wiki/Special:EntityData/{id}.json"
+    license_name "CC0 1.0"
+    license_url "https://creativecommons.org/publicdomain/zero/1.0/"
+    cache_path data/cache/wikidata/
+    id_pattern ("Q" "P" "L")
+    note "Entities (Q), properties (P), and lexemes (L). Public-domain dump and EntityData API; one raw .json plus a compact .lino projection per id under entity/property/lexeme folders."
+  source wiktionary
+    name "Wiktionary"
+    kind dictionary
+    api "https://api.dictionaryapi.dev/api/v2/entries/en/{lemma}"
+    license_name "CC BY-SA 3.0"
+    license_url "https://creativecommons.org/licenses/by-sa/3.0/"
+    cache_path data/cache/wiktionary/
+    note "Free Dictionary API serving Wiktionary content; one verified entry per English lemma as .json plus a lossless .lino projection."
+  source wordnet
+    name "Open English WordNet 2024"
+    kind lexical_database
+    api "https://en-word.net/"
+    license_name "CC BY 4.0"
+    license_url "https://creativecommons.org/licenses/by/4.0/"
+    cache_path data/cache/wordnet/
+    note "OEWN 2024 lexicon imported offline via the wn library; one compact per-lemma synset projection (.json + .lino) under en/. Source database is fetched on demand and stays out of git per the small-seed principle."
+  source wikipedia
+    name "Wikipedia"
+    kind encyclopedia
+    api "https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikipedia/
+    note "Article summaries cross-referenced from Wikidata sitelinks; cached per title when an article anchors a meaning."
