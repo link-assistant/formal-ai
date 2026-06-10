@@ -13,6 +13,7 @@ mod overrides;
 mod playwright_script;
 mod proof_request;
 mod proof_request_config;
+mod reference_closure;
 mod semantic_facets;
 mod semantic_grounding;
 mod semantic_root;
