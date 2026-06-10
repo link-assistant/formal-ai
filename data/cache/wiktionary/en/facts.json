@@ -1,0 +1,91 @@
+[
+  {
+    "word": "facts",
+    "phonetic": "/fæks/",
+    "phonetics": [
+      {
+        "text": "/fæks/",
+        "audio": ""
+      },
+      {
+        "text": "/fæks/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/facts-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1446739",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Something actual as opposed to invented.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In this story, the Gettysburg Address is a fact, but the rest is fiction."
+          },
+          {
+            "definition": "Something which is real.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Gravity is a fact, not a theory."
+          },
+          {
+            "definition": "Something concrete used as a basis for further interpretation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let's look at the facts of the case before deciding."
+          },
+          {
+            "definition": "An objective consensus on a fundamental reality that has been agreed upon by a substantial number of experts.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There is no doubting the fact that the Earth orbits the Sun."
+          },
+          {
+            "definition": "Information about a particular subject, especially actual conditions and/or circumstances.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The facts about space travel."
+          },
+          {
+            "definition": "An individual value or measurement at the lowest level of granularity in a data warehouse.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Action; the realm of action.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A wrongful or criminal deed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He had become an accessory after the fact."
+          },
+          {
+            "definition": "A feat or meritorious deed.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "fiction"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/fact",
+      "https://en.wiktionary.org/wiki/facts"
+    ]
+  }
+]

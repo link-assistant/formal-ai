@@ -1,0 +1,65 @@
+[
+  {
+    "word": "thresholds",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The bottom-most part of a doorway that one crosses to enter; a sill.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) An entrance; the door or gate of a house.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) Any end or boundary.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The outset of something; the point of entry, or the beginning of an action.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The start of the landing area of a runway.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The quantitative point at which an action is triggered, especially a lower limit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The wage or salary at which income tax becomes due.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The point where one mentally or physically is vulnerable in response to provocation or to particular things in general. As in emotions, stress, or pain.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "lintel"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/threshold",
+      "https://en.wiktionary.org/wiki/thresholds"
+    ]
+  }
+]

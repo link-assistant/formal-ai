@@ -1,0 +1,47 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (fiction)
+      definitions
+        entry
+          definition "Something actual as opposed to invented."
+          example "In this story, the Gettysburg Address is a fact, but the rest is fiction."
+        entry
+          definition "Something which is real."
+          example "Gravity is a fact, not a theory."
+        entry
+          definition "Something concrete used as a basis for further interpretation."
+          example "Let's look at the facts of the case before deciding."
+        entry
+          definition "An objective consensus on a fundamental reality that has been agreed upon by a substantial number of experts."
+          example "There is no doubting the fact that the Earth orbits the Sun."
+        entry
+          definition "Information about a particular subject, especially actual conditions and/or circumstances."
+          example "The facts about space travel."
+        entry
+          definition "An individual value or measurement at the lowest level of granularity in a data warehouse."
+        entry
+          definition "Action; the realm of action."
+        entry
+          definition "A wrongful or criminal deed."
+          example "He had become an accessory after the fact."
+        entry
+          definition "A feat or meritorious deed."
+      partOfSpeech noun
+  phonetic "/fæks/"
+  phonetics
+    entry
+      audio ""
+      text "/fæks/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/facts-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1446739"
+      text "/fæks/"
+  sourceUrls ("https://en.wiktionary.org/wiki/fact" "https://en.wiktionary.org/wiki/facts")
+  word facts

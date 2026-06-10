@@ -1,0 +1,43 @@
+[
+  {
+    "word": "precedes",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To go before, go in front of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Cultural genocide precedes physical genocide."
+          },
+          {
+            "definition": "To cause to be preceded; to preface; to introduce.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have higher rank than (someone or something else).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "forego"
+        ],
+        "antonyms": [
+          "succeed"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/precede",
+      "https://en.wiktionary.org/wiki/precedes"
+    ]
+  }
+]

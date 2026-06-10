@@ -1,0 +1,12 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The power or ability to generate an outcome"
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/capabilities" "https://en.wiktionary.org/wiki/capability")
+  word capabilities

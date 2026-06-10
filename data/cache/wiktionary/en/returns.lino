@@ -1,0 +1,121 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The act of returning."
+          example "I expect the house to be spotless upon my return."
+        entry
+          definition "A return ticket."
+          example "Do you want a one-way or a return?"
+        entry
+          definition "An item that is returned, e.g. due to a defect, or the act of returning it."
+          example "Last year there were 250 returns of this product, an improvement on the 500 returns the year before."
+        entry
+          definition "An answer."
+          example "a return to one's question"
+        entry
+          definition "An account, or formal report, of an action performed, of a duty discharged, of facts or statistics, etc.; especially, in the plural, a set of tabulated statistics prepared for general information."
+          example "election returns; a return of the amount of goods produced or sold"
+        entry
+          definition "Gain or loss from an investment."
+          example "It yielded a return of 5%."
+        entry
+          definition ": A report of income submitted to a government for purposes of specifying exact tax payment amounts. A tax return."
+          example "Hand in your return by the end of the tax year."
+        entry
+          definition "A carriage return character."
+        entry
+          definition "The act of relinquishing control to the calling procedure."
+        entry
+          definition "A return value: the data passed back from a called procedure."
+        entry
+          definition "A return pipe, returning fluid to a boiler or other central plant (compare with flow pipe, which carries liquid away from central plant)."
+          example "The boiler technician had to cut out the heating return to access the safety valve."
+        entry
+          definition "A short perpendicular extension of a desk, usually slightly lower."
+        entry
+          definition "Catching a ball after a punt and running it back towards the opposing team."
+        entry
+          definition "A throw from a fielder to the wicket-keeper or to another fielder at the wicket."
+        entry
+          definition "The continuation in a different direction, most often at a right angle, of a building, face of a building, or any member, such as a moulding; applied to the shorter in contradistinction to the longer."
+          example "A facade of sixty feet east and west has a return of twenty feet north and south."
+      partOfSpeech noun
+      synonyms (gaincoming)
+    entry
+      definitions
+        entry
+          definition "To come or go back (to a place or person)."
+          example "Although the birds fly north for the summer, they return here in winter."
+        entry
+          definition "To go back in thought, narration, or argument."
+          example "To return to my story [...]"
+        entry
+          definition "To turn back, retreat."
+        entry
+          definition "To turn (something) round."
+        entry
+          definition "To place or put back something where it had been."
+          example "Please return your hands to your lap."
+        entry
+          definition "To give something back to its original holder or owner."
+          example "You should return the library book within one month."
+        entry
+          definition "To take back something to a vendor for a refund."
+          example "If the goods don't work, you can return them."
+        entry
+          definition "To give in requital or recompense; to requite."
+        entry
+          definition "To bat the ball back over the net in response to a serve."
+          example "The player couldn't return the serve because it was so fast."
+        entry
+          definition "To play a card as a result of another player's lead."
+          example "If one players plays a trump, the others must return a trump."
+        entry
+          definition "To throw a ball back to the wicket-keeper (or a fielder at that position) from somewhere in the field."
+        entry
+          definition "To say in reply; to respond."
+          example 'to return an answer;  to return thanks;  "Do it yourself!" she returned.'
+        entry
+          definition "To relinquish control to the calling procedure."
+        entry
+          definition "To pass (data) back to the calling procedure."
+          example "This function returns the number of files in the directory."
+        entry
+          definition "To retort; to throw back."
+          example "to return the lie"
+        entry
+          definition "To report, or bring back and make known."
+          example "to return the result of an election"
+        entry
+          definition "(by extension) To elect according to the official report of the election officers."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Merchandise returned to the retailer, wholesaler or supplier."
+        entry
+          definition "A mild, light-coloured kind of tobacco."
+        entry
+          definition "The rendering back of a writ to the proper officer."
+        entry
+          definition "The return of the soldiers fit for duty."
+      partOfSpeech noun
+  phonetic "/ɹɪˈtɜːnz/"
+  phonetics
+    entry
+      audio ""
+      text "/ɹɪˈtɜːnz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/returns-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100518"
+      text "/ɹɪˈtɝnz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/return" "https://en.wiktionary.org/wiki/returns")
+  word returns

@@ -1,0 +1,57 @@
+[
+  {
+    "word": "requirements",
+    "phonetic": "/ɹɪˈkwaɪɹmənts/",
+    "phonetics": [
+      {
+        "text": "/ɹɪˈkwaɪɹmənts/",
+        "audio": ""
+      },
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/requirements-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=443089",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A necessity or prerequisite; something required or obligatory. Its adpositions are generally of in relation to who or what has given it, on in relation to whom or what it is given to, and for in relation to what is required.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There was a requirement of the government on citizens for paying taxes."
+          },
+          {
+            "definition": "Something asked.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A statement (in domain specific terms) which specifies a verifiable constraint on an implementation that it shall undeniably meet or (a) be deemed unacceptable, or (b) result in implementation failure, or (c) result in system failure.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "condition",
+          "necessity",
+          "prerequisite"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/requirement",
+      "https://en.wiktionary.org/wiki/requirements"
+    ]
+  }
+]

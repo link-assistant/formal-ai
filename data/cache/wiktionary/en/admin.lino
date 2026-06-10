@@ -1,0 +1,29 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Administration, or administrative work."
+          example "There's a lot of admin involved in the birth of a child."
+        entry
+          definition "A systems administrator; one who maintains a computer system or network."
+          example "Our admin has upgraded the server in our office, so we can exchange files faster."
+        entry
+          definition "A user of a discussion forum, web site, etc. with privileges allowing them to control or restrict the activity of other uses."
+          example "The admin changed the forum settings to enable the use of emoticons."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To serve as an administrator for or of."
+      partOfSpeech verb
+  phonetic "/ədˈmɪn/"
+  phonetics
+    entry
+      audio ""
+      text "/ədˈmɪn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/admin")
+  word admin

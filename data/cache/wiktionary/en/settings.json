@@ -1,0 +1,82 @@
+[
+  {
+    "word": "settings",
+    "phonetic": "/ˈsɛtɪŋz/",
+    "phonetics": [
+      {
+        "text": "/ˈsɛtɪŋz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The time, place and circumstance in which something (such as a story or picture) is set; context; scenario.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of setting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the setting of the sun"
+          },
+          {
+            "definition": "A piece of metal in which a precious stone or gem is fixed to form a piece of jewelry.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A level or placement that a knob or control is set to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the volume setting on a television"
+          },
+          {
+            "definition": "The act of marking the position of game, as a setter does.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Hunting with a setter.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Something set in, or inserted.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A piece of vocal or choral music composed for particular words (set to music).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Bach's setting of the Magnificat"
+          },
+          {
+            "definition": "The mounting of a play, etc., for the stage.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The direction of a current of wind.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/setting",
+      "https://en.wiktionary.org/wiki/settings"
+    ]
+  }
+]

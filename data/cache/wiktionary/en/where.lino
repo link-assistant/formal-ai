@@ -1,0 +1,61 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The place in which something happens."
+          example "A good article will cover the who, the what, the when, the where, the why and the how."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Interrogative adverb, used in either a direct or indirect question: at what place; to what place; what place."
+          example "He asked where I grew up."
+        entry
+          definition "In what situation."
+          example "Where would we be without our parents?"
+        entry
+          definition "(relative) At which, on which."
+          example "That is the place where we first met."
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition "The place in which."
+          example "He lives within five miles of where he was born."
+      partOfSpeech pronoun
+    entry
+      definitions
+        entry
+          definition "While on the contrary; although; whereas."
+          example "Where Susy has trouble coloring inside the lines, Johnny has already mastered shading."
+        entry
+          definition "At or in which place or situation."
+          example "He is looking for a house where he can have a complete office."
+        entry
+          definition "To which place or situation."
+          example "The snowbirds travel where it is warm."
+        entry
+          definition Wherever.
+          example "Their job is to go where they are called."
+        entry
+          definition "In a position, case, etc., in which."
+          example "Where no provision under this Act is applicable, the case shall be decided in accordance with the customary practices."
+      partOfSpeech conjunction
+  phonetic "/wɛə(ɹ)/"
+  phonetics
+    entry
+      audio ""
+      text "/wɛə(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/where-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=37583027"
+      text "/wɛəɹ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/where")
+  word where

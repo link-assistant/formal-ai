@@ -1,0 +1,37 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(interrogative) What one or ones (of those mentioned or implied)."
+          example "By now, you must surely know which is which."
+        entry
+          definition "The/Any ones that; whichever."
+          example "Please take which you please."
+        entry
+          definition "(relative) Introduces a relative clause giving further information about something previously mentioned."
+          example "He had to leave, which was very difficult."
+        entry
+          definition "(relative) Used of people (now generally who, whom or that)."
+      partOfSpeech pronoun
+  phonetic "/wɪt͡ʃ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/which-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028965"
+      text "/wɪt͡ʃ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/which-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718831"
+      text "/wɪt͡ʃ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/which")
+  word which

@@ -1,0 +1,95 @@
+[
+  {
+    "word": "equals",
+    "phonetic": "/ˈiːkwəlz/",
+    "phonetics": [
+      {
+        "text": "/ˈiːkwəlz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/equals-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2650918",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A person or thing of equal status to others.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This beer has no equal."
+          },
+          {
+            "definition": "State of being equal; equality.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "peer"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To be equal to, to have the same value as; to correspond to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Two plus two equals four."
+          },
+          {
+            "definition": "To make equivalent to; to cause to match.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "David equaled the water levels of the bottles, so they now both contain exactly 1 liter."
+          },
+          {
+            "definition": "To have as its consequence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Losing this deal equals losing your job."
+          }
+        ],
+        "synonyms": [
+          "entail",
+          "imply",
+          "lead",
+          "mean",
+          "result in",
+          "spell",
+          "be",
+          "is"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The symbol =",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "equals sign"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/equal",
+      "https://en.wiktionary.org/wiki/equals"
+    ]
+  }
+]

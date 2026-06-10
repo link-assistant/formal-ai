@@ -1,0 +1,89 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives."
+          example "It looks weaker and weaker, the more I think about it."
+        entry
+          definition "With a comparative, and often with for it, indicates a result more like said comparative. This can be negated with none. See none the."
+          example "I'm much the wiser for having had a difficult time like that."
+      partOfSpeech adverb
+  phonetic "/ði/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-ca-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=584109"
+      text "/ði/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-uk-unstressed.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79896385"
+      text "/ði/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718786"
+      text "/ˈðiː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718787"
+      text "/ði/"
+  sourceUrls ("https://en.wiktionary.org/wiki/the")
+  word the
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "For each; per."
+          example "valued at half a pound the bushel; paying seven dollars the year interest"
+      partOfSpeech preposition
+  phonetic "/ði/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-ca-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=584109"
+      text "/ði/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-uk-unstressed.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79896385"
+      text "/ði/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718786"
+      text "/ˈðiː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718787"
+      text "/ði/"
+  sourceUrls ("https://en.wiktionary.org/wiki/the")
+  word the

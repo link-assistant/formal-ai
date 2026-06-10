@@ -1,0 +1,57 @@
+[
+  {
+    "word": "keyword",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Any word used as the key to a code.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any word used in a reference work to link to other words or other information.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A reserved word used to identify a specific command, function etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any word that occurs in a text more often than normal.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "operative word",
+          "workword"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To tag with keywords, as for example to facilitate searching.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/keyword"
+    ]
+  }
+]

@@ -1,0 +1,118 @@
+[
+  {
+    "word": "where",
+    "phonetic": "/wɛə(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/wɛə(ɹ)/",
+        "audio": ""
+      },
+      {
+        "text": "/wɛəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/where-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=37583027",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The place in which something happens.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A good article will cover the who, the what, the when, the where, the why and the how."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Interrogative adverb, used in either a direct or indirect question: at what place; to what place; what place.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He asked where I grew up."
+          },
+          {
+            "definition": "In what situation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Where would we be without our parents?"
+          },
+          {
+            "definition": "(relative) At which, on which.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "That is the place where we first met."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "The place in which.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He lives within five miles of where he was born."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "While on the contrary; although; whereas.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Where Susy has trouble coloring inside the lines, Johnny has already mastered shading."
+          },
+          {
+            "definition": "At or in which place or situation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He is looking for a house where he can have a complete office."
+          },
+          {
+            "definition": "To which place or situation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The snowbirds travel where it is warm."
+          },
+          {
+            "definition": "Wherever.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Their job is to go where they are called."
+          },
+          {
+            "definition": "In a position, case, etc., in which.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Where no provision under this Act is applicable, the case shall be decided in accordance with the customary practices."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/where"
+    ]
+  }
+]

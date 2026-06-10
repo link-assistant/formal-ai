@@ -1,0 +1,58 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The allowing of possession of a property etc. in exchange for rent."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To allow to, not to prevent (+ infinitive, but usually without to)."
+          example "After he knocked for hours, I decided to let him come in."
+        entry
+          definition "To leave."
+          example "Let me alone!"
+        entry
+          definition "To allow the release of (a fluid)."
+          example "The physicians let about a pint of his blood, but to no avail."
+        entry
+          definition "To allow possession of (a property etc.) in exchange for rent."
+          example "I decided to let the farmhouse to a couple while I was working abroad."
+        entry
+          definition "To give, grant, or assign, as a work, privilege, or contract; often with out."
+          example "to let the building of a bridge;  to let out the lathing and the plastering"
+        entry
+          definition "Used to introduce an imperative in the first or third person."
+          example "Let P be the point where AB and OX intersect."
+        entry
+          definition "To cause (+ bare infinitive)."
+          example "Can you let me know what time you'll be arriving?"
+      partOfSpeech verb
+      synonyms (allow permit)
+    entry
+      definitions
+        entry
+          definition "An obstacle or hindrance."
+        entry
+          definition "The hindrance caused by the net during serve, only if the ball falls legally."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To hinder, prevent, impede, hamper, cumber; to obstruct (someone or something)."
+        entry
+          definition "To prevent someone from doing something; also to prevent something from happening."
+        entry
+          definition "To tarry or delay."
+      partOfSpeech verb
+  phonetic "/lɛts/"
+  phonetics
+    entry
+      audio ""
+      text "/lɛts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/let" "https://en.wiktionary.org/wiki/lets")
+  word lets

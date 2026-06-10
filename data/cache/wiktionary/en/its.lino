@@ -1,0 +1,39 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One who is neither a he nor a she; a creature; a dehumanized being."
+        entry
+          definition "The person who chases and tries to catch the other players in the playground game of tag."
+          example "In the next game, Adam and Tom will be it…"
+        entry
+          definition "The game of tag."
+          example "Let's play it at breaktime."
+        entry
+          definition "Sex appeal, especially that which goes beyond beauty."
+        entry
+          definition "Sexual activity."
+          example "caught them doing it"
+        entry
+          definition "A biological force that inhabits living beings, according to the vitalist approach of Georg Groddeck."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "The one (or ones) belonging to it."
+      partOfSpeech pronoun
+  phonetic "/ɪts/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/its-us.ogg"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=112430026"
+      text "/ɪts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/it" "https://en.wiktionary.org/wiki/its")
+  word its

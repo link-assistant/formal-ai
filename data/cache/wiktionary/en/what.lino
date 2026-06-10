@@ -1,0 +1,105 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(Singlish) Used to contradict an underlying assumption held by the interlocutor."
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition "Something; thing; stuff."
+        entry
+          definition "The identity of a thing, as an answer to a question of what."
+        entry
+          definition "Something that is addressed by what, as opposed to a person, addressed by who."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition '(usually followed by "with," but also sometimes "would" or "might," especially in finance) In some manner or degree; in part; partly. See also what with'
+          example "The market will calculate these higher risks in their funding costs what might result in higher lending rates."
+        entry
+          definition Such.
+          example "What a beautiful day!"
+        entry
+          definition Why.
+        entry
+          definition "Used to introduce each of two coordinate phrases or concepts; both…and."
+      partOfSpeech adverb
+      synonyms (such)
+    entry
+      definitions
+        entry
+          definition "(interrogative) Which thing, event, circumstance, etc.: used interrogatively in asking for the specification of an identity, quantity, quality, etc."
+        entry
+          definition "That which; those that; the thing that."
+          example "He knows what he wants."
+        entry
+          definition "(relative) That; which; who."
+        entry
+          definition Whatever.
+          example "I will do what I can to help you."
+      partOfSpeech pronoun
+    entry
+      definitions
+        entry
+          definition "An expression of surprise or disbelief."
+        entry
+          definition "What do you want? An abrupt, usually unfriendly enquiry as to what a person desires."
+          example "What? I'm busy."
+        entry
+          definition "Clipping of what do you say?"
+        entry
+          definition "What did you say? I beg your pardon?"
+        entry
+          definition "(typically with a) An intensifier to an adjective phrase; used to begin a sentence."
+          example "What a nice car."
+      partOfSpeech interjection
+      synonyms (what-what wot "come again" pardon)
+  phonetic "/wɔt/"
+  phonetics
+    entry
+      audio ""
+      text "/wɔt/"
+    entry
+      audio ""
+      text "/wʌt/"
+    entry
+      audio ""
+      text "[wʌɾ]"
+    entry
+      audio ""
+      text "/wɒt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/what-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028960"
+      text "/wɒt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/what-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=84903339"
+      text "/wɒt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/what-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=37582860"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/what-us-unstressed.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=78441524"
+      text "[wʌɾ]"
+  sourceUrls ("https://en.wiktionary.org/wiki/wat" "https://en.wiktionary.org/wiki/what")
+  word what
