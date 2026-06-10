@@ -20,6 +20,7 @@ mod semantic_root;
 mod software_project;
 mod specification;
 mod test_status;
+mod total_closure;
 mod web_requests;
 
 #[path = "ci-cd/mod.rs"]
