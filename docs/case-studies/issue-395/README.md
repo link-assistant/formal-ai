@@ -16,13 +16,15 @@ The prompt asks for a program and for the computed result. The fix now routes
 that request to `write_program`, resolves the operation and target language from
 seed meanings, builds a semantic syntax tree, renders code from that tree, and
 computes the deterministic result in both Rust and the browser worker. Native
-Rust handlers now also validate the rendered source with real Tree-sitter
-grammars through `tree-sitter/lib/binding_rust` before accepting the program.
+Rust handlers now also validate the rendered source through the
+[link-foundation/meta-language](https://github.com/link-foundation/meta-language)
+links network (`meta_language::LinkNetwork`) — a single, mutable CST/AST
+representation — before accepting the program.
 
 This PR also updates the related Python program-synthesis handler so it no
 longer stores a completed Python function as the candidate. It now stores a
 `PythonFunctionTree` with statement nodes, renders source from that tree, and
-records the Tree-sitter CST for the generated Python source.
+records the meta-language CST for the generated Python source.
 
 ## Requirements
 
@@ -36,8 +38,10 @@ records the Tree-sitter CST for the generated Python source.
   list data.
 - Code generation must manipulate a CST/AST-like representation, not memorize
   final source strings.
-- Generated code for supported programming languages must be parsed by real
-  Tree-sitter language bindings rather than a hand-built parser.
+- Generated code for supported programming languages must be parsed by the
+  meta-language links network (the primary CST/AST engine) rather than a
+  hand-built parser. Languages meta-language does not cover yet keep a thin
+  direct tree-sitter bridge, with the gap tracked upstream.
 - Related code-writing handlers should expose the same structural synthesis
   trace when they build code.
 
@@ -47,12 +51,16 @@ The implementation now uses the same split as common syntax tooling: semantic
 meaning trees are projected into source, and concrete source is validated by a
 language parser:
 
+- [link-foundation/meta-language](https://github.com/link-foundation/meta-language):
+  "a language about languages" — parses source into a single mutable
+  links-network CST/AST and ships real tree-sitter grammars for most targets.
 - [Tree-sitter basic parsing](https://tree-sitter.github.io/tree-sitter/using-parsers/2-basic-parsing.html):
   concrete syntax trees keep token-level structure, while named-node traversal
   can behave like an AST.
-- Tree-sitter Rust bindings are loaded from grammar crates listed in
+- The engine for each language is declared in
   `data/seed/meanings-program-cst.lino`; the trace records
-  `binding tree-sitter/lib/binding_rust` and the grammar crate used.
+  `component meta-language` (or, for a bridged language, the tree-sitter
+  `grammar_crate` and the upstream grammar request).
 - [ESTree](https://github.com/estree/estree): JavaScript tooling standardizes
   source manipulation around typed `Program` and statement nodes.
 - [Babel parser output](https://babeljs.io/docs/babel-parser): Babel parses to a
@@ -111,24 +119,36 @@ program_syntax_tree
 `numericListProgramLinks`, and renderer flow so browser evidence and Rust
 evidence describe the same program shape.
 
-### Tree-sitter CST Validation
+### Meta-language CST/AST Validation
 
-`src/coding/cst.rs` loads grammar metadata from
-`data/seed/meanings-program-cst.lino` and maps each supported language to its
-real Tree-sitter Rust grammar crate. After a handler renders source, it parses
-that source and only proceeds when the CST root kind matches the expected
-language root and `has_error` is false.
+`src/coding/cst.rs` reads engine metadata from
+`data/seed/meanings-program-cst.lino` and validates each supported language
+through the meta-language links network (the primary CST/AST engine). After a
+handler renders source, meta-language parses it; a real grammar parse populates
+`LinkType::Syntax` links, so the handler only proceeds when those syntax links
+are present, the text round-trips, and `has_error` is false. meta-language
+already ships grammars for JavaScript, Python, Rust, Java, C, C++, and C#.
 
-The trace records the concrete parser path:
+For TypeScript, Go, and Ruby — which meta-language does not cover yet — a thin
+direct tree-sitter bridge validates the source, and the gap is tracked upstream
+([#41](https://github.com/link-foundation/meta-language/issues/41),
+[#42](https://github.com/link-foundation/meta-language/issues/42),
+[#43](https://github.com/link-foundation/meta-language/issues/43)).
+
+The trace records the engine and the CST evidence:
 
 ```text
-synthesis:cst_tree tree_sitter_cst_tree
+synthesis:cst_engine meta_language
+synthesis:cst_tree cst_tree
   language javascript
-  parser tree_sitter
-  binding tree-sitter/lib/binding_rust
-  grammar_crate tree-sitter-javascript
-  expected_root_kind program
+  engine meta_language
+  component meta-language
+  source_repository https://github.com/link-foundation/meta-language
+  language_label javascript
+  projection concrete_syntax
+  syntax_link_count 45
   has_error false
+  text_preserved true
 ```
 
 ### Related Program Synthesis
@@ -150,8 +170,9 @@ synthesis:syntax_tree python_function_syntax_tree
 ```
 
 The final Python code is still shown to the user, but it is now a projection of
-the function tree. Native Rust also logs a `synthesis:cst_tree` entry for the
-rendered Python function.
+the function tree. Native Rust also logs a `synthesis:cst_engine` and a
+`synthesis:cst_tree` entry for the rendered Python function, validated through
+meta-language.
 
 ### Meaning-Driven Recognition
 
@@ -178,4 +199,4 @@ The reproducing tests assert that the exact Russian issue prompt routes to
 `write_program`, that an unsorted English JavaScript prompt computes the sorted
 result, that a quoted-string JavaScript sort uses `value_type string`, and that
 the Links Notation trace includes both `program_syntax_tree` semantic nodes and
-the real Tree-sitter CST with `has_error false`.
+the meta-language CST (`component meta-language`, `has_error false`).
