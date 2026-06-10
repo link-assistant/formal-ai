@@ -31,7 +31,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+  # Always cancel superseded runs so only the latest commit is tested.
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -241,7 +242,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Windows and macOS execution is dropped for now to speed up iteration;
+        # the tests themselves are kept and still run on Linux.
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
 

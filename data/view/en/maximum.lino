@@ -1,0 +1,21 @@
+view
+  id M-8361dbe4e8ab
+  lemma maximum
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "the greatest or most complete or best possible"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the largest possible quantity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the greatest possible degree"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the point on a curve where the tangent changes from positive on the left to negative on the right"
+    provenance (wordnet)

@@ -39,6 +39,13 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         "distinct_numbers",
         "differ",
         "threshold",
+        "sort",
+        "reverse",
+        "sum",
+        "product",
+        "minimum",
+        "maximum",
+        "code_request",
     ] {
         assert!(
             canonicals.contains(expected),

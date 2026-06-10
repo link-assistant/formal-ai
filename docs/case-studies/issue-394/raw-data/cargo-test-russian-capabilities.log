@@ -29,4 +29,3 @@ test specification::multilingual::russian_capabilities_answer_is_in_russian ... 
 test specification::multilingual::russian_capabilities_question_does_not_return_unknown ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 767 filtered out; finished in 0.07s
-

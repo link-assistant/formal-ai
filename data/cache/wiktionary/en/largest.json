@@ -1,0 +1,83 @@
+[
+  {
+    "word": "largest",
+    "phonetic": "/ˈlɑːd͡ʒɪst/",
+    "phonetics": [
+      {
+        "text": "/ˈlɑːd͡ʒɪst/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈlɑɹd͡ʒɪst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/largest-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2101005",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of considerable or relatively great size or extent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Russia is a large country.   The fruit-fly has large eyes for its body size.   He has a large collection of stamps."
+          },
+          {
+            "definition": "Abundant; ample.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Full in statement; diffuse; profuse.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Free; unencumbered.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Unrestrained by decorum; said of language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Crossing the line of a ship's course in a favorable direction; said of the wind when it is abeam, or between the beam and the quarter.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "big",
+          "enormous",
+          "giant",
+          "gigantic",
+          "great",
+          "huge",
+          "largeish",
+          "mickle",
+          "stour"
+        ],
+        "antonyms": [
+          "minuscule",
+          "small",
+          "tiny"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/large",
+      "https://en.wiktionary.org/wiki/largest"
+    ]
+  }
+]

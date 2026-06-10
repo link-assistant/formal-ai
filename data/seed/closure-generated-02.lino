@@ -1,4 +1,19 @@
 meanings
+  pattern_courtesy_phrase_horosho_spasibo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase horosho spasibo"
+  pattern_courtesy_phrase_thank_you
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase thank you"
+  pattern_courtesy_phrase_theek_dhanyavad
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase theek dhanyavad"
   pattern_courtesy_phrase_wo_hen_hao_xiexie
     defined-by prompt_pattern
     lexeme en
@@ -949,6 +964,11 @@ meanings
     lexeme en
       surface
         text "signal processing"
+  smallest
+    defined-by phrase
+    lexeme en
+      surface
+        text "smallest"
   software-design
     defined-by category
     lexeme en

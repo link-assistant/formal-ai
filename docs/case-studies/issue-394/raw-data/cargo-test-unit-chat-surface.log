@@ -166,4 +166,3 @@ test specification::chat_surface::unknown_answer_opener_is_deterministic_for_the
 test specification::chat_surface::identity_examples_cover_known_phrasings ... ok
 
 test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 702 filtered out; finished in 0.28s
-

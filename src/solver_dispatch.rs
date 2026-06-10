@@ -15,8 +15,8 @@ use crate::solver_handlers::{
     try_capabilities, try_clarification, try_compound_interest, try_concept_lookup,
     try_conversation_memory, try_conversation_topic_request, try_coreference_request,
     try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_network_query, try_opinion_question,
-    try_program_synthesis, try_proof_request, try_punctuation_only_prompt,
+    try_javascript_execution, try_meta_explanation, try_network_query, try_numeric_list,
+    try_opinion_question, try_program_synthesis, try_proof_request, try_punctuation_only_prompt,
     try_research_comparison_table, try_roleplay_request, try_shell_refusal,
     try_software_project_followup, try_software_project_request, try_source_conflict,
     try_source_refresh, try_summarization_request, try_text_manipulation, try_translation,
@@ -87,6 +87,13 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
     ("compound_interest", try_compound_interest),
+    // Issue #395: a concrete "<operation> these numbers in <language>, give me
+    // the code and the result" request must produce generated code plus the
+    // deterministically-computed result. The universal numeric-list engine
+    // covers sort/reverse_sort/reverse and the sum/product/minimum/maximum
+    // reductions. It runs before `arithmetic` (which would otherwise claim the
+    // numeric prompt) and before the generic, result-less `algorithm` handler.
+    ("numeric_list", try_numeric_list),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", try_definition_merge),

@@ -14,6 +14,21 @@ fn program_synthesis_accepts_hindi_count_vowels_operation_verbs() {
     assert!(response
         .links_notation
         .contains("synthesis:verification tests_passed"));
+    assert!(response
+        .links_notation
+        .contains("synthesis:syntax_tree python_function_syntax_tree"));
+    assert!(response
+        .links_notation
+        .contains("synthesis:cst_tree cst_tree"));
+    assert!(response
+        .links_notation
+        .contains("synthesis:cst_engine meta_language"));
+    assert!(response
+        .links_notation
+        .contains("component meta-language"));
+    assert!(response
+        .links_notation
+        .contains("semantic_node matching_character_count_return"));
 }
 
 #[test]

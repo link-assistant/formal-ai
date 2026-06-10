@@ -6171,12 +6171,34 @@ const PYTHON_SYNTHESIS_CANDIDATES = {
     id: "pairwise_threshold_distance",
     defaultSignature:
       "has_close_elements(numbers: list[float], threshold: float) -> bool",
-    bodyLines: [
-      "for left_index, left in enumerate(numbers):",
-      "    for right in numbers[left_index + 1:]:",
-      "        if abs(left - right) < threshold:",
-      "            return True",
-      "return False",
+    body: [
+      {
+        kind: "for_loop",
+        semanticNode: "pairwise_outer_loop",
+        target: "left_index, left",
+        iterator: "enumerate(numbers)",
+        body: [
+          {
+            kind: "for_loop",
+            semanticNode: "pairwise_inner_loop",
+            target: "right",
+            iterator: "numbers[left_index + 1:]",
+            body: [
+              {
+                kind: "if_return",
+                semanticNode: "threshold_match_return",
+                condition: "abs(left - right) < threshold",
+                value: "True",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        kind: "return",
+        semanticNode: "no_pair_matches_return",
+        expression: "False",
+      },
     ],
     tests: [
       "assert has_close_elements([1.0, 2.0, 3.0], 0.5) is False",
@@ -6194,7 +6216,13 @@ const PYTHON_SYNTHESIS_CANDIDATES = {
   similar_elements: {
     id: "tuple_intersection_set",
     defaultSignature: "similar_elements(test_tup1, test_tup2)",
-    bodyLines: ["return tuple(sorted(set(test_tup1) & set(test_tup2)))"],
+    body: [
+      {
+        kind: "return",
+        semanticNode: "deterministic_tuple_intersection_return",
+        expression: "tuple(sorted(set(test_tup1) & set(test_tup2)))",
+      },
+    ],
     tests: [
       "assert similar_elements((3, 4, 5, 6), (5, 7, 4, 10)) == (4, 5)",
       "assert similar_elements((1, 2), (3, 4)) == ()",
@@ -6209,9 +6237,18 @@ const PYTHON_SYNTHESIS_CANDIDATES = {
   count_vowels: {
     id: "count_matching_characters",
     defaultSignature: "count_vowels(text: str) -> int",
-    bodyLines: [
-      "vowels = set(\"aeiouAEIOU\")",
-      "return sum(1 for character in text if character in vowels)",
+    body: [
+      {
+        kind: "assign",
+        semanticNode: "vowel_membership_set_assignment",
+        target: "vowels",
+        expression: 'set("aeiouAEIOU")',
+      },
+      {
+        kind: "return",
+        semanticNode: "matching_character_count_return",
+        expression: "sum(1 for character in text if character in vowels)",
+      },
     ],
     tests: [
       "assert count_vowels('hello') == 2",
@@ -6676,17 +6713,74 @@ function declaredPythonSignature(prompt, functionName) {
   return text.slice(start, end).trim().replace(/\.+$/, "");
 }
 
-function renderPythonFunction(signature, bodyLines) {
-  let code = `def ${signature}:\n`;
-  for (const line of bodyLines) {
-    code += line ? `    ${line}\n` : "\n";
+function renderPythonStatement(statement, indentLevel) {
+  const indent = "    ".repeat(indentLevel);
+  if (statement.kind === "assign") {
+    return `${indent}${statement.target} = ${statement.expression}\n`;
+  }
+  if (statement.kind === "return") {
+    return `${indent}return ${statement.expression}\n`;
+  }
+  if (statement.kind === "if_return") {
+    return `${indent}if ${statement.condition}:\n${indent}    return ${statement.value}\n`;
+  }
+  if (statement.kind === "for_loop") {
+    return (
+      `${indent}for ${statement.target} in ${statement.iterator}:\n` +
+      statement.body
+        .map((child) => renderPythonStatement(child, indentLevel + 1))
+        .join("")
+    );
+  }
+  return "";
+}
+
+function renderPythonFunction(functionTree) {
+  let code = `def ${functionTree.signature}:\n`;
+  for (const statement of functionTree.body) {
+    code += renderPythonStatement(statement, 1);
   }
   return code;
 }
 
+function pythonStatementLinks(lines, statement, depth) {
+  const indent = "  ".repeat(depth + 1);
+  if (statement.kind === "assign") {
+    lines.push(
+      `${indent}semantic_node ${statement.semanticNode} target=${JSON.stringify(statement.target)} expression=${JSON.stringify(statement.expression)}`,
+    );
+  } else if (statement.kind === "return") {
+    lines.push(
+      `${indent}semantic_node ${statement.semanticNode} expression=${JSON.stringify(statement.expression)}`,
+    );
+  } else if (statement.kind === "if_return") {
+    lines.push(
+      `${indent}semantic_node ${statement.semanticNode} condition=${JSON.stringify(statement.condition)} value=${JSON.stringify(statement.value)}`,
+    );
+  } else if (statement.kind === "for_loop") {
+    lines.push(
+      `${indent}semantic_node ${statement.semanticNode} target=${JSON.stringify(statement.target)} iterator=${JSON.stringify(statement.iterator)}`,
+    );
+    for (const child of statement.body) {
+      pythonStatementLinks(lines, child, depth + 1);
+    }
+  }
+}
+
+function pythonFunctionLinks(functionTree) {
+  const lines = [
+    "python_function_syntax_tree",
+    `  semantic_node function_definition signature=${JSON.stringify(functionTree.signature)}`,
+  ];
+  for (const statement of functionTree.body) {
+    pythonStatementLinks(lines, statement, 1);
+  }
+  return lines.join("\n");
+}
+
 // Build the Python candidate for whichever synthesis task the prompt names or
 // evidences. The task slug keys both the meaning lexicon and the verbatim
-// PYTHON_SYNTHESIS_CANDIDATES blueprint (function body, tests, fragments).
+// PYTHON_SYNTHESIS_CANDIDATES blueprint (function tree, tests, fragments).
 // Mirrors synthesize_python_candidate in
 // src/solver_handlers/program_synthesis.rs.
 function synthesizePythonCandidate(prompt, normalized, functionName) {
@@ -6699,10 +6793,1202 @@ function synthesizePythonCandidate(prompt, normalized, functionName) {
   if (!definition) return null;
   const signature =
     declaredPythonSignature(prompt, functionName) || definition.defaultSignature;
+  const functionTree = { signature, body: definition.body };
   return Object.assign({}, definition, {
     functionName: task.slug,
-    code: renderPythonFunction(signature, definition.bodyLines),
+    functionTree,
   });
+}
+
+// Issue #395: does the prompt evidence the operation with this canonical slug,
+// in any supported language? Mirrors OperationVocabulary::matches in
+// src/seed/operation_vocabulary.rs (substring match per phrase/combo).
+function operationMatchesSlug(slug, normalized) {
+  for (const operation of operationVocabulary()) {
+    if (operation.slug === slug && operationFormMatches(normalized, operation)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Issue #395: type ontology for the universal list coding algorithm.
+// Byte mirror of data/seed/numeric-list-operations.lino — each operation maps to a
+// family (list_transformation / list_reduction) and a result kind
+// (list / scalar), so the worker reasons about the task from data instead of a
+// per-case handler. Transformations support numeric lists and quoted text lists;
+// reductions remain numeric.
+const NUMERIC_LIST_OPERATIONS_LINO = [
+  "numeric_list_operations",
+  '  operation "sort"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '    direction "ascending"',
+  '  operation "reverse_sort"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '    direction "descending"',
+  '  operation "reverse"',
+  '    family "list_transformation"',
+  '    result_kind "list"',
+  '    direction "given_order_reversed"',
+  '  operation "sum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    identity "0"',
+  '  operation "product"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    identity "1"',
+  '  operation "minimum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    selects "extreme"',
+  '  operation "maximum"',
+  '    family "list_reduction"',
+  '    result_kind "scalar"',
+  '    selects "extreme"',
+].join("\n");
+
+let cachedNumericListOntology = null;
+// Parse the numeric-list ontology into
+// { canonical: { family, resultKind, direction } }. Mirrors result_kind_for /
+// family_for / direction_for in src/solver_handlers/numeric_list/mod.rs.
+function numericListOntology() {
+  if (cachedNumericListOntology) return cachedNumericListOntology;
+  const root = parseLinoTree(NUMERIC_LIST_OPERATIONS_LINO);
+  const container =
+    root.children.find((child) => child.name === "numeric_list_operations") ||
+    root;
+  const map = {};
+  for (const node of container.children) {
+    if (node.name !== "operation") continue;
+    const familyNode = node.children.find((c) => c.name === "family");
+    const kindNode = node.children.find((c) => c.name === "result_kind");
+    const directionNode = node.children.find((c) => c.name === "direction");
+    map[node.value] = {
+      family: familyNode ? familyNode.value : "list_transformation",
+      resultKind: kindNode ? kindNode.value : "list",
+      direction: directionNode ? directionNode.value : "",
+    };
+  }
+  cachedNumericListOntology = map;
+  return cachedNumericListOntology;
+}
+
+function numericListResultKind(canonical) {
+  const entry = numericListOntology()[canonical];
+  return entry && entry.resultKind === "scalar" ? "scalar" : "list";
+}
+
+function numericListFamily(canonical) {
+  const entry = numericListOntology()[canonical];
+  return entry && entry.family === "list_reduction"
+    ? "list_reduction"
+    : "list_transformation";
+}
+
+// Issue #395: lift every number token (signed / decimal) from the prompt, in
+// order. Mirrors parse_numbers in src/solver_handlers/numeric_list/mod.rs: a
+// leading sign only starts a literal when it is not glued to a preceding letter
+// or digit, and the surface text is preserved verbatim for echoing and codegen.
+function parseNumericListNumbers(prompt) {
+  const chars = Array.from(String(prompt || ""));
+  const isDigit = (ch) => ch >= "0" && ch <= "9";
+  const isAlnum = (ch) => /[\p{L}\p{N}]/u.test(ch);
+  const numbers = [];
+  let index = 0;
+  while (index < chars.length) {
+    const ch = chars[index];
+    let sign = "";
+    if (
+      (ch === "-" || ch === "+") &&
+      index + 1 < chars.length &&
+      isDigit(chars[index + 1]) &&
+      !(index > 0 && isAlnum(chars[index - 1]))
+    ) {
+      sign = ch;
+      index += 1;
+    } else if (!isDigit(ch)) {
+      index += 1;
+      continue;
+    }
+    const start = index;
+    while (index < chars.length && isDigit(chars[index])) index += 1;
+    if (
+      index < chars.length &&
+      chars[index] === "." &&
+      index + 1 < chars.length &&
+      isDigit(chars[index + 1])
+    ) {
+      index += 1;
+      while (index < chars.length && isDigit(chars[index])) index += 1;
+    }
+    if (start === index) continue;
+    const text = sign + chars.slice(start, index).join("");
+    const value = Number(text);
+    if (!Number.isNaN(value)) numbers.push({ text, value, kind: "number" });
+  }
+  return numbers;
+}
+
+function parseNumericListQuotedStrings(prompt) {
+  const chars = Array.from(String(prompt || ""));
+  const items = [];
+  let index = 0;
+  while (index < chars.length) {
+    const quote = chars[index];
+    if (quote !== '"' && quote !== "'") {
+      index += 1;
+      continue;
+    }
+    index += 1;
+    let text = "";
+    while (index < chars.length) {
+      const ch = chars[index];
+      if (ch === "\\" && index + 1 < chars.length) {
+        text += chars[index + 1];
+        index += 2;
+        continue;
+      }
+      if (ch === quote) break;
+      text += ch;
+      index += 1;
+    }
+    if (index < chars.length && chars[index] === quote) {
+      index += 1;
+      if (text.length) items.push({ text, value: text, kind: "string" });
+    }
+  }
+  return items;
+}
+
+function parseNumericListItems(prompt, canonical) {
+  const quoted = parseNumericListQuotedStrings(prompt);
+  if (numericListFamily(canonical) === "list_transformation" && quoted.length >= 2) {
+    return quoted;
+  }
+  return parseNumericListNumbers(prompt);
+}
+
+// Issue #395: render the array literal nodes. When projected to source, callers
+// join these surfaces with ", ". Keeping them as an array first lets the worker
+// build and trace a CST/AST-like program tree before source rendering.
+// When the list mixes integers and decimals, integer surfaces gain a `.0` suffix
+// so statically-typed targets keep a single element type. Mirrors number_literals.
+function numericListStringLiteral(value) {
+  return `"${String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n")
+    .replace(/\r/g, "\\r")
+    .replace(/\t/g, "\\t")}"`;
+}
+
+function numericListLiterals(items, valueType) {
+  return items.map((item) => {
+    if (item.kind === "string") return numericListStringLiteral(item.text);
+    return valueType.label === "float" && !item.text.includes(".")
+      ? `${item.text}.0`
+      : item.text;
+  });
+}
+
+// Issue #395: localized phrasing for the four supported UI languages. The
+// numbers, code, and result are language-independent; only the surrounding prose
+// differs. Mirrors Localization in src/solver_handlers/numeric_list/mod.rs; the
+// `sort` / `reverse_sort` sentences are byte-identical to the original handler so
+// existing golden assertions stay green.
+const NUMERIC_LIST_LOCALIZATION = {
+  ru: {
+    resultLabel: "Результат:",
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `Вот код на ${lang}, который сортирует числа ${given} по возрастанию:`,
+        reverse_sort: `Вот код на ${lang}, который сортирует числа ${given} по убыванию:`,
+        reverse: `Вот код на ${lang}, который переворачивает числа ${given}:`,
+        sum: `Вот код на ${lang}, который суммирует числа ${given}:`,
+        product: `Вот код на ${lang}, который перемножает числа ${given}:`,
+        minimum: `Вот код на ${lang}, который находит наименьшее из чисел ${given}:`,
+        maximum: `Вот код на ${lang}, который находит наибольшее из чисел ${given}:`,
+      })[canonical],
+  },
+  hi: {
+    resultLabel: "परिणाम:",
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `यह ${lang} कोड है जो संख्याओं ${given} को आरोही क्रम में क्रमबद्ध करता है:`,
+        reverse_sort: `यह ${lang} कोड है जो संख्याओं ${given} को अवरोही क्रम में क्रमबद्ध करता है:`,
+        reverse: `यह ${lang} कोड है जो संख्याओं ${given} को उलट देता है:`,
+        sum: `यह ${lang} कोड है जो संख्याओं ${given} का योग करता है:`,
+        product: `यह ${lang} कोड है जो संख्याओं ${given} का गुणनफल निकालता है:`,
+        minimum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे छोटी ढूँढता है:`,
+        maximum: `यह ${lang} कोड है जो संख्याओं ${given} में से सबसे बड़ी ढूँढता है:`,
+      })[canonical],
+  },
+  zh: {
+    resultLabel: "结果:",
+    intro: (canonical, lang, given) =>
+      ({
+        sort: `这是用 ${lang} 编写的将数字 ${given} 按升序排序的代码:`,
+        reverse_sort: `这是用 ${lang} 编写的将数字 ${given} 按降序排序的代码:`,
+        reverse: `这是用 ${lang} 编写的将数字 ${given} 反转的代码:`,
+        sum: `这是用 ${lang} 编写的对数字 ${given} 求和的代码:`,
+        product: `这是用 ${lang} 编写的计算数字 ${given} 乘积的代码:`,
+        minimum: `这是用 ${lang} 编写的求数字 ${given} 最小值的代码:`,
+        maximum: `这是用 ${lang} 编写的求数字 ${given} 最大值的代码:`,
+      })[canonical],
+  },
+  en: {
+    resultLabel: "Result:",
+    intro: (canonical, lang, given, valueTypeLabel) => {
+      const noun = valueTypeLabel === "string" ? "strings" : "numbers";
+      return ({
+        sort: `Here is ${lang} code that sorts the ${noun} ${given} in ascending order:`,
+        reverse_sort: `Here is ${lang} code that sorts the ${noun} ${given} in descending order:`,
+        reverse: `Here is ${lang} code that reverses the ${noun} ${given}:`,
+        sum: `Here is ${lang} code that sums the ${noun} ${given}:`,
+        product: `Here is ${lang} code that multiplies the ${noun} ${given}:`,
+        minimum: `Here is ${lang} code that finds the smallest of the ${noun} ${given}:`,
+        maximum: `Here is ${lang} code that finds the largest of the ${noun} ${given}:`,
+      })[canonical];
+    },
+  },
+};
+
+// Issue #395: recognize which numeric-list operation the prompt asks for, in
+// priority order. Sort phrasings are checked first because "sort in reverse
+// order" legitimately contains the bare `reverse` verb; the descending variant
+// wins whenever the `reverse_sort` phrasing is present. Mirrors detect_operation.
+function detectNumericListOperation(normalized) {
+  if (
+    operationMatchesSlug("sort", normalized) ||
+    operationMatchesSlug("reverse_sort", normalized)
+  ) {
+    return operationMatchesSlug("reverse_sort", normalized) ? "reverse_sort" : "sort";
+  }
+  if (operationMatchesSlug("reverse", normalized)) return "reverse";
+  for (const canonical of ["sum", "product", "minimum", "maximum"]) {
+    if (operationMatchesSlug(canonical, normalized)) return canonical;
+  }
+  return null;
+}
+
+// Issue #395: format a computed scalar so its textual form matches the runnable
+// code's stdout: an integer with no decimal point when every input was an
+// integer. Mirrors format_scalar.
+function numericListFormatScalar(value, isFloat) {
+  return isFloat ? String(value) : String(Math.round(value));
+}
+
+// Issue #395: apply the operation to the parsed numbers and return the surface
+// tokens to display — the reordered list for a transformation, or a single
+// computed scalar for a reduction. Mirrors compute.
+function numericListCompare(left, right) {
+  if (left.kind === "number" && right.kind === "number") {
+    return left.value < right.value ? -1 : left.value > right.value ? 1 : 0;
+  }
+  return left.text < right.text ? -1 : left.text > right.text ? 1 : 0;
+}
+
+function computeNumericList(canonical, items, isFloat) {
+  if (numericListFamily(canonical) === "list_transformation") {
+    const ordered = items.slice();
+    if (canonical === "sort") {
+      ordered.sort(numericListCompare);
+    } else if (canonical === "reverse_sort") {
+      ordered.sort((a, b) => numericListCompare(b, a));
+    } else {
+      ordered.reverse();
+    }
+    return ordered.map((n) => n.text);
+  }
+  const numbers = items.filter((item) => item.kind === "number");
+  let value;
+  if (canonical === "sum") value = numbers.reduce((acc, n) => acc + n.value, 0);
+  else if (canonical === "product") value = numbers.reduce((acc, n) => acc * n.value, 1);
+  else if (canonical === "minimum") value = numbers.reduce((acc, n) => Math.min(acc, n.value), Infinity);
+  else value = numbers.reduce((acc, n) => Math.max(acc, n.value), -Infinity);
+  return [numericListFormatScalar(value, isFloat)];
+}
+
+// Issue #395: structural numeric-list program tree. The worker mirrors the
+// Rust `NumericProgram`: source code is a projection of these semantic nodes,
+// and the tree is preserved in evidence/trace for inspection. The value-class
+// label doubles as the `on` selector for coding-idiom cases; per-language
+// storage types live in CODING_IDIOMS_LINO, not in this record.
+function numericListValueType(items, isFloat) {
+  if (items.some((item) => item.kind === "string")) {
+    return { label: "string" };
+  }
+  return { label: isFloat ? "float" : "integer" };
+}
+
+function numericListBuildProgram(slug, items, canonical, isFloat) {
+  const family = numericListFamily(canonical);
+  const valueType = numericListValueType(items, isFloat);
+  const list = codingDefaultName("list");
+  const statements = [
+    {
+      kind: "literal_list",
+      name: list,
+      mutable: codingMutatesListInPlace(slug),
+    },
+  ];
+  if (family === "list_transformation") {
+    const target = codingDefaultName("transformed");
+    statements.push({
+      kind: canonical === "reverse" ? "reverse_list" : "sort_list",
+      source: list,
+      target,
+      canonical,
+      direction: numericListDirection(canonical),
+    });
+    statements.push({
+      kind: "print_joined",
+      source: target,
+      separator: ", ",
+    });
+  } else {
+    const target = codingDefaultName("reduced");
+    statements.push({
+      kind: "reduce_list",
+      source: list,
+      target,
+      reducer: canonical,
+    });
+    statements.push({ kind: "print_scalar", source: target });
+  }
+  return {
+    languageSlug: slug,
+    canonical,
+    valueType,
+    literals: numericListLiterals(items, valueType),
+    displayValues: items.map((item) => item.text),
+    statements,
+  };
+}
+
+// Transformation direction token, read from the numeric-list ontology instead
+// of a hardcoded match. Mirrors direction_for in
+// src/solver_handlers/numeric_list/mod.rs.
+function numericListDirection(canonical) {
+  const entry = numericListOntology()[canonical];
+  return entry ? entry.direction : "";
+}
+
+function numericListProgramLinks(program) {
+  const lines = [
+    "program_syntax_tree",
+    `  language ${program.languageSlug}`,
+    `  value_type ${program.valueType.label}`,
+    `  operation ${program.canonical}`,
+    `  literal_values ${(program.displayValues || program.literals).join("|")}`,
+  ];
+  for (const statement of program.statements) {
+    if (statement.kind === "literal_list") {
+      lines.push(
+        `  semantic_node literal_list name=${statement.name} mutable=${statement.mutable}`,
+      );
+    } else if (statement.kind === "sort_list" || statement.kind === "reverse_list") {
+      lines.push(
+        `  semantic_node ${statement.kind} source=${statement.source} target=${statement.target} direction=${statement.direction}`,
+      );
+    } else if (statement.kind === "reduce_list") {
+      lines.push(
+        `  semantic_node reduce_list source=${statement.source} target=${statement.target} reducer=${statement.reducer}`,
+      );
+    } else if (statement.kind === "print_joined") {
+      lines.push(
+        `  semantic_node print_joined source=${statement.source} separator="${statement.separator}"`,
+      );
+    } else if (statement.kind === "print_scalar") {
+      lines.push(`  semantic_node print_scalar source=${statement.source}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+// Issue #395: code-idioms knowledge base for the universal list coding
+// algorithm. Byte mirror of data/seed/coding-idioms.lino (regenerate with
+// experiments/generate-coding-idioms-embed.mjs) — each language declares
+// scaffolds (one per operation family) and idioms (named code fragments with
+// cases selected by operation and value class), inheriting through extends.
+// The composer below discovers the code composition from this data at
+// execution time; there are no per-language renderer functions. Mirrors
+// src/solver_handlers/numeric_list/codegen.rs.
+const CODING_IDIOMS_LINO = [
+  "coding_idioms",
+  "  description \"Per-language code composition knowledge for the universal list coding algorithm (issue #395). Each language defines scaffolds (one per operation family) and idioms (named fragments with cases selected by operation and value class). The composer discovers the coding algorithm at execution time: it picks the scaffold for the operation family, then recursively expands {slot} placeholders by matching idiom cases against the requested operation and the value class of the list items. Computed slots (literal, count, tab, list, transformed, reduced, type) are resolved from the program data; every other slot names an idiom defined here. Languages inherit scaffolds, types, names, and idioms through extends, nearest definition wins.\"",
+  "  defaults",
+  "    list \"numbers\"",
+  "    transformed \"sorted\"",
+  "    reduced \"result\"",
+  "  language \"javascript\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'const {list} = [{literal}];\\nconst {transformed} = {action};\\nconsole.log({transformed}.join(\", \"));'",
+  "    scaffold \"list_reduction\"",
+  "      code \"const {list} = [{literal}];\\nconst {reduced} = {expression};\\nconsole.log({reduced});\"",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        on \"string\"",
+  "        code \"[...{list}].sort()\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"string\"",
+  "        code \"[...{list}].sort().reverse()\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"[...{list}].sort((a, b) => a - b)\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"[...{list}].sort((a, b) => b - a)\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"[...{list}].reverse()\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"{list}.reduce((a, b) => a + b, 0)\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"{list}.reduce((a, b) => a * b, 1)\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"Math.min(...{list})\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"Math.max(...{list})\"",
+  "  language \"typescript\"",
+  "    extends \"javascript\"",
+  "    types",
+  "      integer \"number\"",
+  "      float \"number\"",
+  "      string \"string\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'const {list}: {type}[] = [{literal}];\\nconst {transformed} = {action};\\nconsole.log({transformed}.join(\", \"));'",
+  "    scaffold \"list_reduction\"",
+  "      code \"const {list}: {type}[] = [{literal}];\\nconst {reduced} = {expression};\\nconsole.log({reduced});\"",
+  "  language \"python\"",
+  "    names",
+  "      transformed \"sorted_numbers\"",
+  "    scaffold \"list_transformation\"",
+  "      code '{list} = [{literal}]\\n{transformed} = {action}\\nprint(\", \".join(str(n) for n in {transformed}))'",
+  "    scaffold \"list_reduction\"",
+  "      code \"{imports}{list} = [{literal}]\\n{reduced} = {expression}\\nprint({reduced})\"",
+  "    idiom \"imports\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"import math\\n\\n\"",
+  "      case",
+  "        for \"any\"",
+  "        code \"\"",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"sorted({list})\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"sorted({list}, reverse=True)\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"list(reversed({list}))\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"sum({list})\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"math.prod({list})\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"min({list})\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"max({list})\"",
+  "  language \"rust\"",
+  "    mutable_list \"true\"",
+  "    types",
+  "      integer \"i64\"",
+  "      float \"f64\"",
+  "      string \"&str\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'fn main() {\\n    let mut {list}: Vec<{type}> = vec![{literal}];\\n    {action}\\n    let rendered: Vec<String> = {list}.iter().map(|n| n.to_string()).collect();\\n    println!(\"{}\", rendered.join(\", \"));\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code 'fn main() {\\n    let {list}: Vec<{type}> = vec![{literal}];\\n    let {reduced} = {expression};\\n    println!(\"{}\", {reduced});\\n}'",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        on \"integer string\"",
+  "        code \"{list}.sort();\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"integer string\"",
+  "        code \"{list}.sort_by(|a, b| b.cmp(a));\"",
+  "      case",
+  "        for \"sort\"",
+  "        on \"float\"",
+  "        code \"{list}.sort_by(|a, b| a.partial_cmp(b).unwrap());\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"float\"",
+  "        code \"{list}.sort_by(|a, b| b.partial_cmp(a).unwrap());\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"{list}.reverse();\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"{list}.iter().copied().sum::<{type}>()\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"{list}.iter().copied().product::<{type}>()\"",
+  "      case",
+  "        for \"minimum\"",
+  "        on \"integer\"",
+  "        code \"*{list}.iter().min().unwrap()\"",
+  "      case",
+  "        for \"maximum\"",
+  "        on \"integer\"",
+  "        code \"*{list}.iter().max().unwrap()\"",
+  "      case",
+  "        for \"minimum\"",
+  "        on \"float\"",
+  "        code \"{list}.iter().copied().fold(f64::INFINITY, f64::min)\"",
+  "      case",
+  "        for \"maximum\"",
+  "        on \"float\"",
+  "        code \"{list}.iter().copied().fold(f64::NEG_INFINITY, f64::max)\"",
+  "  language \"go\"",
+  "    mutable_list \"true\"",
+  "    types",
+  "      integer \"int\"",
+  "      float \"float64\"",
+  "      string \"string\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'package main\\n\\nimport (\\n{imports}\\n)\\n\\nfunc main() {\\n{tab}{list} := []{type}{{literal}}\\n{tab}{action}\\n{tab}parts := make([]string, len({list}))\\n{tab}for i, n := range {list} {\\n{tab}{tab}parts[i] = {format_item}\\n{tab}}\\n{tab}fmt.Println(strings.Join(parts, \", \"))\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code 'package main\\n\\nimport \"fmt\"\\n\\nfunc main() {\\n{tab}{list} := []{type}{{literal}}\\n{tab}{body}\\n{tab}fmt.Println({reduced})\\n}'",
+  "    idiom \"imports\"",
+  "      case",
+  "        for \"sort reverse_sort\"",
+  "        on \"string\"",
+  "        code '{tab}\"fmt\"\\n{tab}\"sort\"\\n{tab}\"strings\"'",
+  "      case",
+  "        for \"sort reverse_sort\"",
+  "        code '{tab}\"fmt\"\\n{tab}\"sort\"\\n{tab}\"strconv\"\\n{tab}\"strings\"'",
+  "      case",
+  "        for \"reverse\"",
+  "        on \"string\"",
+  "        code '{tab}\"fmt\"\\n{tab}\"strings\"'",
+  "      case",
+  "        for \"reverse\"",
+  "        code '{tab}\"fmt\"\\n{tab}\"strconv\"\\n{tab}\"strings\"'",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        on \"string\"",
+  "        code \"sort.Strings({list})\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"string\"",
+  "        code \"sort.Sort(sort.Reverse(sort.StringSlice({list})))\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"sort.Slice({list}, func(i, j int) bool { return {list}[i] < {list}[j] })\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"sort.Slice({list}, func(i, j int) bool { return {list}[i] > {list}[j] })\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"for i, j := 0, len({list})-1; i < j; i, j = i+1, j-1 {\\n{tab}{tab}{list}[i], {list}[j] = {list}[j], {list}[i]\\n{tab}}\"",
+  "    idiom \"format_item\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"integer\"",
+  "        code \"strconv.Itoa(n)\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"float\"",
+  "        code \"strconv.FormatFloat(n, 'g', -1, 64)\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"string\"",
+  "        code \"n\"",
+  "    idiom \"body\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"var {reduced} {type} = 0\\n{tab}for _, n := range {list} {\\n{tab}{tab}{reduced} += n\\n{tab}}\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"var {reduced} {type} = 1\\n{tab}for _, n := range {list} {\\n{tab}{tab}{reduced} *= n\\n{tab}}\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"{reduced} := {list}[0]\\n{tab}for _, n := range {list}[1:] {\\n{tab}{tab}if n < {reduced} {\\n{tab}{tab}{tab}{reduced} = n\\n{tab}{tab}}\\n{tab}}\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"{reduced} := {list}[0]\\n{tab}for _, n := range {list}[1:] {\\n{tab}{tab}if n > {reduced} {\\n{tab}{tab}{tab}{reduced} = n\\n{tab}{tab}}\\n{tab}}\"",
+  "  language \"ruby\"",
+  "    scaffold \"list_transformation\"",
+  "      code '{list} = [{literal}]\\n{transformed} = {action}\\nputs {transformed}.join(\", \")'",
+  "    scaffold \"list_reduction\"",
+  "      code \"{list} = [{literal}]\\n{reduced} = {expression}\\nputs {reduced}\"",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"{list}.sort\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"{list}.sort.reverse\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"{list}.reverse\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"{list}.sum\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"{list}.inject(1, :*)\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"{list}.min\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"{list}.max\"",
+  "  language \"java\"",
+  "    mutable_list \"true\"",
+  "    types",
+  "      integer \"int\"",
+  "      float \"double\"",
+  "      string \"String\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'import java.util.Arrays;\\nimport java.util.Collections;\\nimport java.util.StringJoiner;\\n\\npublic class Main {\\n    public static void main(String[] args) {\\n        {type}[] {list} = {{literal}};\\n        {action}\\n        StringJoiner joiner = new StringJoiner(\", \");\\n        for ({type} n : {list}) joiner.add(String.valueOf(n));\\n        System.out.println(joiner.toString());\\n    }\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code 'public class Main {\\n    public static void main(String[] args) {\\n        {type}[] {list} = {{literal}};\\n        {body}\\n        System.out.println({reduced});\\n    }\\n}'",
+  "    idiom \"boxed\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"integer\"",
+  "        code \"Integer\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"float\"",
+  "        code \"Double\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"string\"",
+  "        code \"String\"",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"Arrays.sort({list});\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"string\"",
+  "        code \"Arrays.sort({list}, Collections.reverseOrder());\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code '{boxed}[] boxed = Arrays.stream({list}).boxed().toArray({boxed}[]::new);\\n        Arrays.sort(boxed, Collections.reverseOrder());\\n        for (int i = 0; i < {list}.length; i++) {list}[i] = boxed[i];'",
+  "      case",
+  "        for \"reverse\"",
+  "        code 'for (int i = 0, j = {list}.length - 1; i < j; i++, j--) {\\n            {type} tmp = {list}[i];\\n            {list}[i] = {list}[j];\\n            {list}[j] = tmp;\\n        }'",
+  "    idiom \"body\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"{type} {reduced} = 0;\\n        for ({type} n : {list}) {reduced} += n;\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"{type} {reduced} = 1;\\n        for ({type} n : {list}) {reduced} *= n;\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"{type} {reduced} = {list}[0];\\n        for ({type} n : {list}) {reduced} = Math.min({reduced}, n);\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"{type} {reduced} = {list}[0];\\n        for ({type} n : {list}) {reduced} = Math.max({reduced}, n);\"",
+  "  language \"csharp\"",
+  "    types",
+  "      integer \"int\"",
+  "      float \"double\"",
+  "      string \"string\"",
+  "    scaffold \"list_transformation\"",
+  "      code 'using System;\\nusing System.Linq;\\n\\nclass Program {\\n    static void Main() {\\n        {type}[] {list} = {{literal}};\\n        var {transformed} = {action};\\n        Console.WriteLine(string.Join(\", \", {transformed}));\\n    }\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code 'using System;\\nusing System.Linq;\\n\\nclass Program {\\n    static void Main() {\\n        {type}[] {list} = {{literal}};\\n        var {reduced} = {expression};\\n        Console.WriteLine({reduced});\\n    }\\n}'",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"{list}.OrderBy(n => n)\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"{list}.OrderByDescending(n => n)\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"{list}.Reverse()\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"{list}.Sum()\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"{list}.Aggregate(({type})1, (a, b) => a * b)\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"{list}.Min()\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"{list}.Max()\"",
+  "  language \"cpp\"",
+  "    mutable_list \"true\"",
+  "    types",
+  "      integer \"int\"",
+  "      float \"double\"",
+  "      string \"std::string\"",
+  "    scaffold \"list_transformation\"",
+  "      code '#include <algorithm>\\n#include <iostream>\\n{string_include}#include <vector>\\n\\nint main() {\\n    std::vector<{type}> {list} = {{literal}};\\n    {action}\\n    for (size_t i = 0; i < {list}.size(); ++i) {\\n        if (i) std::cout << \", \";\\n        std::cout << {list}[i];\\n    }\\n    std::cout << std::endl;\\n    return 0;\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code '#include <algorithm>\\n#include <iostream>\\n#include <numeric>\\n{string_include}#include <vector>\\n\\nint main() {\\n    std::vector<{type}> {list} = {{literal}};\\n    {type} {reduced} = {expression};\\n    std::cout << {reduced} << std::endl;\\n    return 0;\\n}'",
+  "    idiom \"string_include\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"string\"",
+  "        code \"#include <string>\\n\"",
+  "      case",
+  "        for \"any\"",
+  "        code \"\"",
+  "    idiom \"action\"",
+  "      case",
+  "        for \"sort\"",
+  "        code \"std::sort({list}.begin(), {list}.end());\"",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        code \"std::sort({list}.begin(), {list}.end(), std::greater<>());\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"std::reverse({list}.begin(), {list}.end());\"",
+  "    idiom \"expression\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"std::accumulate({list}.begin(), {list}.end(), ({type})0)\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"std::accumulate({list}.begin(), {list}.end(), ({type})1, std::multiplies<{type}>())\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"*std::min_element({list}.begin(), {list}.end())\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"*std::max_element({list}.begin(), {list}.end())\"",
+  "  language \"c\"",
+  "    mutable_list \"true\"",
+  "    types",
+  "      integer \"int\"",
+  "      float \"double\"",
+  "      string \"char *\"",
+  "    scaffold \"list_transformation\"",
+  "      code '#include <stdio.h>\\n#include <stdlib.h>\\n{string_include}\\n{comparator}int main(void) {\\n{body}\\n    for (size_t i = 0; i < count; ++i) {\\n        if (i) printf(\", \");\\n        printf(\"{printf_format}\", {list}[i]);\\n    }\\n    printf(\"\\\\n\");\\n    return 0;\\n}'",
+  "    scaffold \"list_reduction\"",
+  "      code '#include <stdio.h>\\n\\nint main(void) {\\n    {type} {list}[] = {{literal}};\\n    size_t count = {count};\\n    {type} {reduced} = {init};\\n    for (size_t i = 0; i < count; ++i) {\\n{step}\\n    }\\n    printf(\"{printf_format}\\\\n\", {reduced});\\n    return 0;\\n}'",
+  "    idiom \"string_include\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"string\"",
+  "        code \"#include <string.h>\\n\"",
+  "      case",
+  "        for \"any\"",
+  "        code \"\"",
+  "    idiom \"printf_format\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"integer\"",
+  "        code \"%d\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"float\"",
+  "        code \"%g\"",
+  "      case",
+  "        for \"any\"",
+  "        on \"string\"",
+  "        code \"%s\"",
+  "    idiom \"body\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code '    {type} {list}[] = {{literal}};\\n    size_t count = {count};\\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {\\n        {type} tmp = {list}[i];\\n        {list}[i] = {list}[j];\\n        {list}[j] = tmp;\\n    }'",
+  "      case",
+  "        for \"sort reverse_sort\"",
+  "        code '    {type} {list}[] = {{literal}};\\n    size_t count = {count};\\n    qsort({list}, count, sizeof({type}), compare);'",
+  "    idiom \"comparator\"",
+  "      case",
+  "        for \"reverse\"",
+  "        code \"\"",
+  "      case",
+  "        for \"sort\"",
+  "        on \"integer\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    return (*(const int *)a - *(const int *)b);\\n}\\n\\n'",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"integer\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    return (*(const int *)b - *(const int *)a);\\n}\\n\\n'",
+  "      case",
+  "        for \"sort\"",
+  "        on \"float\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    double diff = *(const double *)a - *(const double *)b;\\n    return (diff > 0) - (diff < 0);\\n}\\n\\n'",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"float\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    double diff = *(const double *)b - *(const double *)a;\\n    return (diff > 0) - (diff < 0);\\n}\\n\\n'",
+  "      case",
+  "        for \"sort\"",
+  "        on \"string\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    const char *left = *(const char * const *)a;\\n    const char *right = *(const char * const *)b;\\n    return strcmp(left, right);\\n}\\n\\n'",
+  "      case",
+  "        for \"reverse_sort\"",
+  "        on \"string\"",
+  "        code 'static int compare(const void *a, const void *b) {\\n    const char *left = *(const char * const *)a;\\n    const char *right = *(const char * const *)b;\\n    return strcmp(right, left);\\n}\\n\\n'",
+  "    idiom \"init\"",
+  "      case",
+  "        for \"sum\"",
+  "        on \"integer\"",
+  "        code \"0\"",
+  "      case",
+  "        for \"sum\"",
+  "        on \"float\"",
+  "        code \"0.0\"",
+  "      case",
+  "        for \"product\"",
+  "        on \"integer\"",
+  "        code \"1\"",
+  "      case",
+  "        for \"product\"",
+  "        on \"float\"",
+  "        code \"1.0\"",
+  "      case",
+  "        for \"minimum maximum\"",
+  "        code \"{list}[0]\"",
+  "    idiom \"step\"",
+  "      case",
+  "        for \"sum\"",
+  "        code \"        {reduced} += {list}[i];\"",
+  "      case",
+  "        for \"product\"",
+  "        code \"        {reduced} *= {list}[i];\"",
+  "      case",
+  "        for \"minimum\"",
+  "        code \"        if ({list}[i] < {reduced}) {reduced} = {list}[i];\"",
+  "      case",
+  "        for \"maximum\"",
+  "        code \"        if ({list}[i] > {reduced}) {reduced} = {list}[i];\"",
+].join("\n");
+
+// Safety caps mirroring MAX_EXPANSION_DEPTH / MAX_INHERITANCE_DEPTH in
+// src/solver_handlers/numeric_list/codegen.rs: anything deeper is a
+// definition cycle in the seed data and must fail composition.
+const CODING_IDIOMS_MAX_EXPANSION_DEPTH = 8;
+const CODING_IDIOMS_MAX_INHERITANCE_DEPTH = 4;
+
+let cachedCodingIdiomCatalog;
+// Parsed root of the coding-idioms knowledge base, loaded once per worker.
+// Mirrors idiom_catalog in src/solver_handlers/numeric_list/codegen.rs.
+function codingIdiomCatalog() {
+  if (cachedCodingIdiomCatalog === undefined) {
+    const root = parseLinoTree(CODING_IDIOMS_LINO);
+    cachedCodingIdiomCatalog =
+      root.children.find((child) => child.name === "coding_idioms") || null;
+  }
+  return cachedCodingIdiomCatalog;
+}
+
+function codingFindChild(node, name) {
+  return node.children.find((child) => child.name === name) || null;
+}
+
+function codingChildValue(node, name) {
+  const child = codingFindChild(node, name);
+  return child ? child.value : "";
+}
+
+// The `language "<slug>"` node followed by its transitive `extends` parents,
+// nearest first. Empty when the catalog does not know the slug. Mirrors
+// language_chain.
+function codingLanguageChain(catalog, slug) {
+  const chain = [];
+  let current = slug;
+  while (chain.length < CODING_IDIOMS_MAX_INHERITANCE_DEPTH) {
+    const node = catalog.children.find(
+      (child) => child.name === "language" && child.value === current,
+    );
+    if (!node) break;
+    chain.push(node);
+    const parent = codingChildValue(node, "extends");
+    if (!parent) break;
+    current = parent;
+  }
+  return chain;
+}
+
+// The canonical semantic-tree variable name for `key` (list / transformed /
+// reduced), read from the catalog's `defaults` node. Mirrors default_name.
+function codingDefaultName(key) {
+  const catalog = codingIdiomCatalog();
+  if (!catalog) return "";
+  const defaults = codingFindChild(catalog, "defaults");
+  if (!defaults) return "";
+  return codingChildValue(defaults, key);
+}
+
+// Whether the language declares (in the knowledge base) that its list
+// transformations mutate the literal list in place rather than building a new
+// collection. Mirrors mutates_list_in_place.
+function codingMutatesListInPlace(slug) {
+  const catalog = codingIdiomCatalog();
+  if (!catalog) return false;
+  for (const language of codingLanguageChain(catalog, slug)) {
+    const node = codingFindChild(language, "mutable_list");
+    if (node) return node.value === "true";
+  }
+  return false;
+}
+
+// One rendering pass: the resolved language chain plus the computed slot
+// bindings for the program being rendered. Mirrors Composer::new.
+function codingComposer(program, chain) {
+  const bindings = new Map();
+  // Per-language variable names: the nearest `names` override in the
+  // inheritance chain, else the catalog-wide `defaults` entry.
+  for (const key of ["list", "transformed", "reduced"]) {
+    let name = "";
+    for (const language of chain) {
+      const names = codingFindChild(language, "names");
+      if (names) {
+        const entry = codingFindChild(names, key);
+        if (entry) {
+          name = entry.value;
+          break;
+        }
+      }
+    }
+    if (!name) name = codingDefaultName(key);
+    if (name) bindings.set(key, name);
+  }
+  // The language's storage type for the program's value class, from the
+  // nearest `types` table in the inheritance chain that declares it.
+  for (const language of chain) {
+    const types = codingFindChild(language, "types");
+    if (types) {
+      const entry = codingFindChild(types, program.valueType.label);
+      if (entry) {
+        bindings.set("type", entry.value);
+        break;
+      }
+    }
+  }
+  bindings.set("literal", program.literals.join(", "));
+  bindings.set("count", String(program.literals.length));
+  // Links Notation values cannot encode a raw tab, so templates spell it as a
+  // computed slot.
+  bindings.set("tab", "\t");
+  return { program, chain, bindings };
+}
+
+// The scaffold template for the operation family, from the nearest language
+// in the chain that declares one. Mirrors Composer::scaffold.
+function codingScaffold(chain, family) {
+  for (const language of chain) {
+    const scaffold = language.children.find(
+      (child) => child.name === "scaffold" && child.value === family,
+    );
+    if (scaffold) return codingChildValue(scaffold, "code");
+  }
+  return null;
+}
+
+// The idiom definition for `slot`, from the nearest language in the chain
+// that declares it. Idioms are not merged across the chain: the nearest
+// definition fully shadows inherited ones. Mirrors Composer::idiom.
+function codingIdiom(chain, slot) {
+  for (const language of chain) {
+    const idiom = language.children.find(
+      (child) => child.name === "idiom" && child.value === slot,
+    );
+    if (idiom) return idiom;
+  }
+  return null;
+}
+
+// Pick the idiom case that best matches the requested operation and value
+// class. A case applies when its `for` tokens contain the operation (or
+// `any`) and its `on` tokens, when present, contain the value class. Specific
+// matches outrank generic ones: an exact operation token scores over `any`,
+// and a value-class constraint scores over none. The first case with the
+// highest score wins, so declaration order breaks ties. Mirrors
+// Composer::select_case.
+function codingSelectCase(composer, idiom) {
+  const operation = composer.program.canonical;
+  const valueClass = composer.program.valueType.label;
+  let best = null;
+  for (const candidate of idiom.children) {
+    if (candidate.name !== "case") continue;
+    const forTokens = codingChildValue(candidate, "for")
+      .split(/\s+/)
+      .filter(Boolean);
+    const operationExact = forTokens.includes(operation);
+    if (!operationExact && !forTokens.includes("any")) continue;
+    const on = codingFindChild(candidate, "on");
+    if (on && !on.value.split(/\s+/).filter(Boolean).includes(valueClass)) {
+      continue;
+    }
+    const score = (operationExact ? 2 : 0) + (on ? 1 : 0);
+    if (!best || score > best.score) {
+      best = { code: codingChildValue(candidate, "code"), score };
+    }
+  }
+  return best ? best.code : null;
+}
+
+// Recursively expand `{slot}` placeholders. Computed bindings are inserted
+// verbatim (never rescanned, so user-provided literals cannot inject further
+// slots); idiom slots expand their selected case recursively; any other brace
+// sequence — `{}`, `{ return`, `{{literal}}` — is ordinary target-language
+// syntax and passes through unchanged. Mirrors Composer::expand.
+function codingExpand(composer, template, depth) {
+  if (depth > CODING_IDIOMS_MAX_EXPANSION_DEPTH) return null;
+  const chars = Array.from(template);
+  let out = "";
+  let index = 0;
+  while (index < chars.length) {
+    if (chars[index] !== "{") {
+      out += chars[index];
+      index += 1;
+      continue;
+    }
+    let end = index + 1;
+    while (end < chars.length && /[a-z0-9_]/.test(chars[end])) end += 1;
+    if (end >= chars.length || chars[end] !== "}" || end === index + 1) {
+      out += "{";
+      index += 1;
+      continue;
+    }
+    const name = chars.slice(index + 1, end).join("");
+    if (composer.bindings.has(name)) {
+      out += composer.bindings.get(name);
+    } else {
+      const idiom = codingIdiom(composer.chain, name);
+      if (idiom) {
+        const code = codingSelectCase(composer, idiom);
+        if (code === null) return null;
+        const expanded = codingExpand(composer, code, depth + 1);
+        if (expanded === null) return null;
+        out += expanded;
+      } else {
+        out += `{${name}}`;
+      }
+    }
+    index = end + 1;
+  }
+  return out;
+}
+
+// Render the program tree into the requested target language by composing the
+// scaffold and idioms discovered in the coding-idioms knowledge base. Returns
+// null when the knowledge base has no language section, no scaffold for the
+// operation's family, or no idiom case matching the operation and value class
+// — composition failures are explicit, never silent fallbacks. Mirrors
+// NumericProgram::render.
+function numericListProgramSource(program) {
+  const catalog = codingIdiomCatalog();
+  if (!catalog) return null;
+  const chain = codingLanguageChain(catalog, program.languageSlug);
+  if (!chain.length) return null;
+  const composer = codingComposer(program, chain);
+  const scaffold = codingScaffold(chain, numericListFamily(program.canonical));
+  if (scaffold === null) return null;
+  return codingExpand(composer, scaffold, 0);
+}
+
+// Issue #395: universal numeric-list coding algorithm. "<operation> these
+// numbers in <language>, give me the code and the result" produces generated
+// code plus the deterministically-computed result. Mirrors try_numeric_list /
+// solve_numeric_list in src/solver_handlers/numeric_list/mod.rs. The result is
+// computed in-solver (every operation is a pure, total function over the parsed
+// values) — no runtime is embedded.
+function tryNumericList(prompt) {
+  const normalized = normalizePrompt(prompt);
+
+  // Defer genuine function-synthesis prompts ("write a function that returns the
+  // sum of 3 and 5") to the dedicated program-synthesis handler.
+  if (operationMatchesSlug("function", normalized) || prompt.includes("def ")) {
+    return null;
+  }
+
+  const canonical = detectNumericListOperation(normalized);
+  if (!canonical) return null;
+
+  // Reductions phrase-overlap with ordinary prose far more than the imperative
+  // transform verbs do, so they only fire when the prompt explicitly asks for
+  // code (the `code_request` operation) — exactly the issue #395 contract.
+  if (
+    numericListFamily(canonical) === "list_reduction" &&
+    !operationMatchesSlug("code_request", normalized)
+  ) {
+    return null;
+  }
+
+  const slug = programLanguageFromPrompt(normalized);
+  if (!slug) return null;
+  const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
+  if (!languageInfo) return null;
+
+  const items = parseNumericListItems(prompt, canonical);
+  if (items.length < 2) return null;
+  if (
+    numericListFamily(canonical) === "list_reduction" &&
+    items.some((item) => item.kind === "string")
+  ) {
+    return null;
+  }
+
+  const isFloat = items.some(
+    (item) => item.kind === "number" && !Number.isInteger(item.value),
+  );
+  const given = items.map((n) => n.text);
+  const result = computeNumericList(canonical, items, isFloat);
+  const program = numericListBuildProgram(slug, items, canonical, isFloat);
+  const syntaxTree = numericListProgramLinks(program);
+  const code = numericListProgramSource(program);
+  if (code === null) return null;
+  const resultKind = numericListResultKind(canonical);
+  const family = numericListFamily(canonical);
+
+  const responseLanguage = detectLanguage(prompt);
+  const parts =
+    NUMERIC_LIST_LOCALIZATION[responseLanguage] || NUMERIC_LIST_LOCALIZATION.en;
+  const givenText = given.join(", ");
+  const shown = resultKind === "scalar" ? result[0] : result.join(", ");
+  const resultText = result.join(", ");
+  const body = `${parts.intro(canonical, languageInfo.name, givenText, program.valueType.label)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
+
+  return {
+    intent: "write_program",
+    content: body,
+    confidence: 1.0,
+    evidence: [
+      `response:write_program:numeric_list:${canonical}:${slug}`,
+      `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
+      `synthesis:given:${givenText}`,
+      `synthesis:syntax_tree:${syntaxTree}`,
+      `composition:code_fragment:${code}`,
+      "execution_status:computed deterministically",
+      "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
+      `execution_result:${resultText}`,
+    ],
+    trace: [
+      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
+      `synthesis:syntax_tree:${syntaxTree}`,
+      `execution_result:${resultText}`,
+    ],
+  };
 }
 
 function tryProgramSynthesis(prompt, normalized) {
@@ -6716,9 +8002,12 @@ function tryProgramSynthesis(prompt, normalized) {
   const candidate = synthesizePythonCandidate(prompt, canonical, functionName);
   if (!candidate) return null;
   const assertionCount = candidate.tests.length;
+  const syntaxTree = pythonFunctionLinks(candidate.functionTree);
+  const code = renderPythonFunction(candidate.functionTree);
   const evidence = [
     `response:write_program:synthesized:python:${candidate.id}`,
     `synthesis:spec:language=python function=${candidate.functionName}`,
+    `synthesis:syntax_tree:${syntaxTree}`,
     ...candidate.fragments.map((fragment) => `composition:code_fragment:${fragment}`),
     `synthesis:candidate:${candidate.id}`,
     "synthesis:workspace:browser-worker-deterministic-verifier",
@@ -6733,7 +8022,7 @@ function tryProgramSynthesis(prompt, normalized) {
     "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:",
     "",
     "```python",
-    candidate.code + "```",
+    code + "```",
     "",
     "Execution status: tests passed in isolated bounded agent workspace.",
     "Check command: `python3 solution.py`",
@@ -6747,6 +8036,7 @@ function tryProgramSynthesis(prompt, normalized) {
     evidence,
     trace: [
       `synthesis:candidate:${candidate.id}`,
+      `synthesis:syntax_tree:${syntaxTree}`,
       `synthesis:verification:tests_passed assertion_count=${assertionCount}`,
     ],
   };
@@ -11671,6 +12961,19 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "去重行"',
   '      phrase "行去重"',
   '      phrase "删除重复行"',
+  '  operation "sort"',
+  '    language "en"',
+  '      phrase "sort"',
+  '    language "ru"',
+  '      phrase "сортир"',
+  '      phrase "упорядоч"',
+  '    language "hi"',
+  '      phrase "क्रमबद्ध"',
+  '      phrase "क्रमित"',
+  '      phrase "सॉर्ट"',
+  '    language "zh"',
+  '      phrase "排序"',
+  '      phrase "排列"',
   '  operation "sort_lines"',
   '    language "en"',
   '      phrase "sort lines"',
@@ -11914,6 +13217,109 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "सीमा"',
   '    language "zh"',
   '      phrase "阈值"',
+  '  operation "reverse"',
+  '    language "en"',
+  '      phrase "reverse"',
+  '      phrase "flip"',
+  '    language "ru"',
+  '      phrase "переверни"',
+  '      phrase "перевернуть"',
+  '      phrase "разверни"',
+  '      phrase "развернуть"',
+  '      phrase "задом наперёд"',
+  '    language "hi"',
+  '      phrase "उलट"',
+  '      phrase "पलट"',
+  '    language "zh"',
+  '      phrase "反转"',
+  '      phrase "倒转"',
+  '      phrase "颠倒"',
+  '  operation "sum"',
+  '    language "en"',
+  '      phrase "sum of"',
+  '      phrase "sum the"',
+  '      phrase "sum up"',
+  '      phrase "total of"',
+  '      combo "add+up"',
+  '    language "ru"',
+  '      phrase "сумм"',
+  '      phrase "сложи"',
+  '      phrase "складыва"',
+  '      phrase "суммируй"',
+  '    language "hi"',
+  '      phrase "योग"',
+  '      phrase "जोड़"',
+  '    language "zh"',
+  '      phrase "求和"',
+  '      phrase "总和"',
+  '      phrase "相加"',
+  '      phrase "之和"',
+  '  operation "product"',
+  '    language "en"',
+  '      phrase "product of"',
+  '      phrase "multiply"',
+  '      combo "multiply+together"',
+  '    language "ru"',
+  '      phrase "произведение"',
+  '      phrase "перемнож"',
+  '      phrase "умнож"',
+  '    language "hi"',
+  '      phrase "गुणनफल"',
+  '      phrase "गुणा"',
+  '    language "zh"',
+  '      phrase "乘积"',
+  '      phrase "相乘"',
+  '      phrase "之积"',
+  '  operation "minimum"',
+  '    language "en"',
+  '      phrase "minimum"',
+  '      phrase "smallest"',
+  '      phrase "lowest"',
+  '    language "ru"',
+  '      phrase "минимум"',
+  '      phrase "минимальн"',
+  '      phrase "наименьш"',
+  '    language "hi"',
+  '      phrase "न्यूनतम"',
+  '      phrase "सबसे छोटी"',
+  '      phrase "सबसे छोटा"',
+  '    language "zh"',
+  '      phrase "最小"',
+  '  operation "maximum"',
+  '    language "en"',
+  '      phrase "maximum"',
+  '      phrase "largest"',
+  '      phrase "biggest"',
+  '      phrase "highest"',
+  '    language "ru"',
+  '      phrase "максимум"',
+  '      phrase "максимальн"',
+  '      phrase "наибольш"',
+  '    language "hi"',
+  '      phrase "अधिकतम"',
+  '      phrase "सबसे बड़ी"',
+  '      phrase "सबसे बड़ा"',
+  '    language "zh"',
+  '      phrase "最大"',
+  '  operation "code_request"',
+  '    language "en"',
+  '      phrase "code"',
+  '      phrase "program"',
+  '      phrase "script"',
+  '      phrase "snippet"',
+  '    language "ru"',
+  '      phrase "код"',
+  '      phrase "программ"',
+  '      phrase "скрипт"',
+  '    language "hi"',
+  '      phrase "कोड"',
+  '      phrase "प्रोग्राम"',
+  '      phrase "स्क्रिप्ट"',
+  '    language "zh"',
+  '      phrase "代码"',
+  '      phrase "代碼"',
+  '      phrase "程序"',
+  '      phrase "程式"',
 ].join("\n");
 
 let cachedOperationVocabulary = null;
@@ -32578,6 +33984,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
+    // Issue #395: a concrete "<operation> these numbers in <language>, give me
+    // the code and the result" must produce generated code plus the
+    // deterministically-computed result. It runs before program synthesis and
+    // arithmetic (either of which would otherwise claim the numeric prompt),
+    // mirroring the Rust dispatch where numeric_list precedes arithmetic and
+    // program_synthesis.
+    { name: "tryNumericList", run: () => tryNumericList(prompt) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
     {
       name: "tryCompoundInterest",

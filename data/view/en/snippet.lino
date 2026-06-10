@@ -1,0 +1,9 @@
+view
+  id M-714350be4dc6
+  lemma snippet
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small piece of anything (especially a piece that has been snipped off)"
+    provenance (wordnet)

@@ -1,0 +1,20 @@
+{
+  "lemma": "snippet",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04257136-n",
+      "partOfSpeech": "n",
+      "definition": "a small piece of anything (especially a piece that has been snipped off)",
+      "synonyms": [
+        "snip",
+        "snipping"
+      ]
+    }
+  ]
+}

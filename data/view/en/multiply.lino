@@ -1,0 +1,29 @@
+view
+  id M-b775d8396abc
+  lemma multiply
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in several ways; in a multiple manner"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "combine by multiplication"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "combine or increase by multiplication"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make multiple copies of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have young (animals) or reproduce (organisms)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have offspring or produce more individuals of a given animal or plant"
+    provenance (wordnet)

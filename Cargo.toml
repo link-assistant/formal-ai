@@ -36,6 +36,11 @@ lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
 links-notation = "0.13.0"
 link-calculator = "0.17.2"
+# CST/AST engine: the link-foundation meta-language links network. It ships
+# real tree-sitter grammars for every language we target and exposes a single
+# mutable links-network representation, so it is the sole CST/AST engine here
+# (https://github.com/link-foundation/meta-language).
+meta-language = "0.39"
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }

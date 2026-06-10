@@ -214,6 +214,11 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  code_request
+    defined-by operation
+    lexeme en
+      surface
+        text "code request"
   command-stream
     defined-by name
     lexeme en
@@ -519,6 +524,11 @@ meanings
     lexeme en
       surface
         text "grammar context"
+  highest
+    defined-by phrase
+    lexeme en
+      surface
+        text "highest"
   hive-mind
     defined-by name
     lexeme en
@@ -684,6 +694,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  largest
+    defined-by phrase
+    lexeme en
+      surface
+        text "largest"
   lexical_database
     defined-by kind
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern courtesy phrase fine thank you"
-  pattern_courtesy_phrase_horosho_spasibo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase horosho spasibo"
-  pattern_courtesy_phrase_thank_you
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase thank you"
-  pattern_courtesy_phrase_theek_dhanyavad
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase theek dhanyavad"
