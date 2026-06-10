@@ -156,6 +156,17 @@ were reported upstream and resolved
 [#43](https://github.com/link-foundation/meta-language/issues/43)), and the
 bridge has since been removed.
 
+One missing upstream feature still keeps code *generation* outside the links
+network: meta-language 0.39 can parse and round-trip existing source
+(`reconstruct_text` renders only token links that carry byte spans from a prior
+parse), but a programmatically constructed syntax network cannot be unparsed
+into target-language source text. Until that exists, the composer renders text
+from the coding-idioms seed and meta-language validates it after the fact —
+reported upstream as
+[#64](https://github.com/link-foundation/meta-language/issues/64) (render
+source from a constructed syntax network), which would make generated code
+syntactically valid by construction.
+
 The trace records the engine and the CST evidence:
 
 ```text
