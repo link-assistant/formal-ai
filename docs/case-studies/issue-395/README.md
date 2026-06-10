@@ -39,9 +39,9 @@ records the meta-language CST for the generated Python source.
 - Code generation must manipulate a CST/AST-like representation, not memorize
   final source strings.
 - Generated code for supported programming languages must be parsed by the
-  meta-language links network (the primary CST/AST engine) rather than a
-  hand-built parser. Languages meta-language does not cover yet keep a thin
-  direct tree-sitter bridge, with the gap tracked upstream.
+  meta-language links network (the sole CST/AST engine) rather than a
+  hand-built parser. meta-language ships real tree-sitter grammars for every
+  language we target, so all of them go through the same links network.
 - Related code-writing handlers should expose the same structural synthesis
   trace when they build code.
 
@@ -53,14 +53,14 @@ language parser:
 
 - [link-foundation/meta-language](https://github.com/link-foundation/meta-language):
   "a language about languages" — parses source into a single mutable
-  links-network CST/AST and ships real tree-sitter grammars for most targets.
+  links-network CST/AST and ships real tree-sitter grammars for every language
+  we target.
 - [Tree-sitter basic parsing](https://tree-sitter.github.io/tree-sitter/using-parsers/2-basic-parsing.html):
   concrete syntax trees keep token-level structure, while named-node traversal
   can behave like an AST.
 - The engine for each language is declared in
   `data/seed/program-cst-grammars.lino`; the trace records
-  `component meta-language` (or, for a bridged language, the tree-sitter
-  `grammar_crate` and the upstream grammar request).
+  `component meta-language` and the meta-language label used for the parse.
 - [ESTree](https://github.com/estree/estree): JavaScript tooling standardizes
   source manipulation around typed `Program` and statement nodes.
 - [Babel parser output](https://babeljs.io/docs/babel-parser): Babel parses to a
@@ -126,14 +126,18 @@ evidence describe the same program shape.
 through the meta-language links network (the primary CST/AST engine). After a
 handler renders source, meta-language parses it; a real grammar parse populates
 `LinkType::Syntax` links, so the handler only proceeds when those syntax links
-are present, the text round-trips, and `has_error` is false. meta-language
-already ships grammars for JavaScript, Python, Rust, Java, C, C++, and C#.
+are present, the text round-trips, and `has_error` is false. meta-language 0.39
+ships grammars for every language we target — JavaScript, Python, Rust, Java, C,
+C++, C#, TypeScript, Go, and Ruby — so all of them go through the same links
+network.
 
-For TypeScript, Go, and Ruby — which meta-language does not cover yet — a thin
-direct tree-sitter bridge validates the source, and the gap is tracked upstream
+TypeScript, Go, and Ruby were validated through a thin direct tree-sitter bridge
+in earlier revisions of this PR while meta-language gained coverage. Those gaps
+were reported upstream and resolved
 ([#41](https://github.com/link-foundation/meta-language/issues/41),
 [#42](https://github.com/link-foundation/meta-language/issues/42),
-[#43](https://github.com/link-foundation/meta-language/issues/43)).
+[#43](https://github.com/link-foundation/meta-language/issues/43)), and the
+bridge has since been removed.
 
 The trace records the engine and the CST evidence:
 

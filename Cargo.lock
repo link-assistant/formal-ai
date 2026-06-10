@@ -729,10 +729,6 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "tree-sitter",
- "tree-sitter-go",
- "tree-sitter-ruby",
- "tree-sitter-typescript",
  "walkdir",
 ]
 
@@ -1598,9 +1594,9 @@ dependencies = [
 
 [[package]]
 name = "meta-language"
-version = "0.38.0"
+version = "0.39.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "903ae6bb3fb658b46e536354d5d0d23c4e8a7549fcf868240b5967f57566eabe"
+checksum = "269abc72b08f986b2fd546414e4302eadf924e203b929138bd94b158213f5831"
 dependencies = [
  "clap",
  "lindera",
@@ -1611,14 +1607,17 @@ dependencies = [
  "tree-sitter-c-sharp",
  "tree-sitter-cpp",
  "tree-sitter-css",
+ "tree-sitter-go",
  "tree-sitter-html",
  "tree-sitter-java",
  "tree-sitter-javascript",
  "tree-sitter-pascal",
  "tree-sitter-python",
  "tree-sitter-r",
+ "tree-sitter-ruby",
  "tree-sitter-rust",
  "tree-sitter-sequel",
+ "tree-sitter-typescript",
  "tree-sitter-vb-dotnet",
  "unicode-bidi",
  "unicode-normalization",
@@ -2942,9 +2941,9 @@ dependencies = [
 
 [[package]]
 name = "tree-sitter-go"
-version = "0.23.4"
+version = "0.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b13d476345220dbe600147dd444165c5791bf85ef53e28acbedd46112ee18431"
+checksum = "c8560a4d2f835cc0d4d2c2e03cbd0dde2f6114b43bc491164238d333e28b16ea"
 dependencies = [
  "cc",
  "tree-sitter-language",

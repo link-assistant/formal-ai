@@ -36,22 +36,15 @@ lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
 links-notation = "0.13.0"
 link-calculator = "0.17.2"
-# Primary CST/AST engine: the link-foundation meta-language links network.
-# It ships real tree-sitter grammars for most of our targets and exposes a
-# single mutable links-network representation (https://github.com/link-foundation/meta-language).
-meta-language = "0.38"
+# CST/AST engine: the link-foundation meta-language links network. It ships
+# real tree-sitter grammars for every language we target and exposes a single
+# mutable links-network representation, so it is the sole CST/AST engine here
+# (https://github.com/link-foundation/meta-language).
+meta-language = "0.39"
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-# Bridge grammars for the languages meta-language does not yet cover
-# (TypeScript, Go, Ruby). Tracked upstream; see data/seed/program-cst-grammars.lino.
-# Pinned to the same tree-sitter 0.25.x line meta-language depends on so the
-# whole dependency tree resolves to a single tree-sitter build.
-tree-sitter = "0.25"
-tree-sitter-go = "0.23.4"
-tree-sitter-ruby = "0.23.1"
-tree-sitter-typescript = "0.23.2"
 
 [features]
 default = ["doublets-native"]

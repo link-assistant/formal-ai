@@ -134,10 +134,9 @@ pub struct NumericListSolution {
     /// Structural program tree used to render `code`.
     pub syntax_tree: String,
     /// CST/AST parsed from the rendered source by the meta-language links
-    /// network (the primary engine) or the tree-sitter bridge.
+    /// network — the sole CST/AST engine.
     pub cst_tree: String,
-    /// Which engine validated the source: `meta_language` or
-    /// `tree_sitter_bridge`.
+    /// Which engine validated the source (always `meta_language`).
     pub cst_engine: String,
     pub code: String,
 }
