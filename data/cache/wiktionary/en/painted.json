@@ -1,0 +1,112 @@
+[
+  {
+    "word": "painted",
+    "phonetic": "/ˈpeɪntɪd/",
+    "phonetics": [
+      {
+        "text": "/ˈpeɪntɪd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/painted-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1684685",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To apply paint to.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To apply in the manner that paint is applied.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To cover (something) with spots of colour, like paint.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To create (an image) with paints.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to paint a portrait or a landscape"
+          },
+          {
+            "definition": "To practise the art of painting pictures.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I've been painting since I was a young child."
+          },
+          {
+            "definition": "To draw an element in a graphical user interface.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To depict or portray.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She sued the author of the biography, claiming it painted her as a duplicitous fraud."
+          },
+          {
+            "definition": "To color one's face by way of beautifying it.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To direct a radar beam toward.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"We'll paint the target for the flyboys,\" the JTAC said."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Coated with paint.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Depicted in paint.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Colorful, as if painted",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The painted desert, painted turtle"
+          },
+          {
+            "definition": "Wearing makeup",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A painted lady"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/paint",
+      "https://en.wiktionary.org/wiki/painted"
+    ]
+  }
+]

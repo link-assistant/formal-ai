@@ -1,0 +1,37 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The operation or function that returns the remainder of one number divided by another."
+          synonyms (modulus)
+      partOfSpeech noun
+      synonyms (modulus)
+    entry
+      definitions
+        entry
+          definition "Given a specified modulus of."
+          example "21 and 84 are congruent to each other modulo 9, since both numbers leave the same remainder, 3, when divided by 9."
+        entry
+          definition "Except for differences accounted for by."
+          example '"A is the same as B modulo C" means A is the same as B except for differences accounted for by C.'
+          synonyms ("up to")
+        entry
+          definition "(extended use) With due allowance for (a specified exception or particular detail)."
+          example "All mammals, modulo the monotremes, give birth to live young."
+          synonyms (barring "except for" "save for")
+      partOfSpeech preposition
+      synonyms (barring "except for" "save for" "up to")
+  phonetic "/ˈmɒdjʊləʊ/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈmɒdjʊləʊ/"
+    entry
+      audio ""
+      text "/ˈmɒdʒəloʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/modulo")
+  word modulo

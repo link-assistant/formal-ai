@@ -1,0 +1,149 @@
+[
+  {
+    "word": "ton",
+    "phonetic": "/tʌn/",
+    "phonetics": [
+      {
+        "text": "/tʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ton-1-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75900274",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/tʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ton-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1212387",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of weight (mass) equal to 2240 pounds (a long ton) or 2000 pounds (a short ton) or 1000 kilograms (a metric ton).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A unit of volume; register ton.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In refrigeration and air conditioning, a unit of thermal power defined as 12,000 BTU/h (about 3.514 kW or 3024 kcal/h), originally the rate of cooling provided by uniform isothermal melting of one short ton of ice per day at 32 °F (0 °C).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A large amount.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I've got tons of work to do."
+          },
+          {
+            "definition": "A speed of 100 mph.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One hundred pounds sterling.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One hundred runs.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(etc.) One hundred points scored.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "heap",
+          "load",
+          "pile",
+          "century"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ton"
+    ]
+  },
+  {
+    "word": "ton",
+    "phonetic": "/tɒn/",
+    "phonetics": [
+      {
+        "text": "/tɒn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Fashion, the current style, the vogue.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Fashionable society; those in style.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ton"
+    ]
+  },
+  {
+    "word": "ton",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The common tunny, or horse mackerel.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ton"
+    ]
+  }
+]

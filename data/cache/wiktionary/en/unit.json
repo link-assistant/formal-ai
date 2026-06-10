@@ -1,0 +1,185 @@
+[
+  {
+    "word": "unit",
+    "phonetic": "/ˈjuː.nɪt/",
+    "phonetics": [
+      {
+        "text": "/ˈjuː.nɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/unit-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75701805",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈjuː.nɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/unit-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1197665",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A particular, minute unit of mass, defined differently for different substances, but so that varying substances of the same general type have the property that one international unit of the one has the same effect on the human body as one international unit of the other.",
+            "synonyms": [
+              "IU"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "IU"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Oneness, singularity, seen as a component of a whole number; a magnitude of one.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A standard measure of a quantity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The centimetre is a unit of length."
+          },
+          {
+            "definition": "The number one.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An organized group comprising people and/or equipment.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He was a member of a special police unit."
+          },
+          {
+            "definition": "A member of a military organization.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The fifth tank brigade moved in with 20 units. (i.e., 20 tanks)"
+          },
+          {
+            "definition": "Any military element whose structure is prescribed by competent authority, such as a table of organization and equipment; specifically, part of an organization.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An organization title of a subdivision of a group in a task force.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A standard or basic quantity into which an item of supply is divided, issued or detailed. In this meaning, also called unit of issue.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "With regard to Reserve Components of the Armed Forces, denotes a Selected Reserve unit organized, equipped, and trained for mobilization to serve on active duty as a unit or to augment or be augmented by another unit. Headquarters and support functions without wartime missions are not considered units.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The identity element, neutral element.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An element having an inverse, an invertible element; an associate of the unity.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In an adjunction, a natural transformation from the identity functor of the domain of the left adjoint functor to the composition of the right adjoint functor with the left adjoint functor.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A volume of rock or ice of identifiable origin and age range that is defined by the distinctive and dominant, easily mapped and recognizable petrographic, lithologic or paleontologic features (facies) that characterize it.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An item which may be sold singly.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We shipped nearly twice as many units this month as last month."
+          },
+          {
+            "definition": "A unit of alcohol.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One kilowatt-hour (as recorded on an electricity meter).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A measure of housing equivalent to the living quarters of one household; an apartment where a group of apartments is contained in one or more multi-storied buildings or a group of dwellings is in one or more single storey buildings, usually arranged around a driveway.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A gold coin of the reign of James I, worth twenty shillings.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A work unit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A physically large person.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "identity element",
+          "unit element",
+          "unity"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "For each unit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We have to keep our unit costs down if we want to make a profit."
+          },
+          {
+            "definition": "Having a size or magnitude of one.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/international%20unit",
+      "https://en.wiktionary.org/wiki/unit"
+    ]
+  }
+]

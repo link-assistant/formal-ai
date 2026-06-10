@@ -1,0 +1,146 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A yellowish-brown colour."
+        entry
+          definition "A darkening of the skin resulting from exposure to sunlight or similar light sources."
+          example "She still has a tan from her vacation in Mexico."
+        entry
+          definition "The bark of an oak or other tree from which tannic acid is obtained."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Of a yellowish-brown."
+          example "Mine is the white car parked next to the tan pickup truck."
+        entry
+          definition "Having dark skin as a result of exposure to the sun."
+          example "You’re looking very tan this week."
+      partOfSpeech adjective
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tan")
+  word tan
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To change to a tan colour due to exposure to the sun."
+          example "No matter how long I stay out in the sun, I never tan. though I do burn."
+        entry
+          definition "To change an animal hide into leather by soaking it in tannic acid. To work as a tanner."
+        entry
+          definition "To spank or beat."
+      partOfSpeech verb
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tan")
+  word tan
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The second cardinal number two, formerly used in Celtic areas, especially Cumbria and parts of Yorkshire, for counting sheep, and stitches in knitting."
+      partOfSpeech numeral
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tan")
+  word tan
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An Armenian drink made of yoghurt and water similar to airan and doogh"
+      partOfSpeech noun
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tan")
+  word tan
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A traditional South and East Asian unit of weight, based upon the load of a shoulder pole and varying by place and over time but usually standardized at about 60 kg."
+      partOfSpeech noun
+      synonyms (dan tam tan pingo)
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/picul" "https://en.wiktionary.org/wiki/tan")
+  word tan
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A twig or small switch."
+      partOfSpeech noun
+  phonetic "/tæn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tan-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88681525"
+      text "/tæn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tan")
+  word tan

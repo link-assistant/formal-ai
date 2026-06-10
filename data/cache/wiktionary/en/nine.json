@@ -1,0 +1,83 @@
+[
+  {
+    "word": "nine",
+    "phonetic": "/naɪn/",
+    "phonetics": [
+      {
+        "text": "/naɪn/",
+        "audio": ""
+      },
+      {
+        "text": "/naɪn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/nine-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=867546",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit or figure 9.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A playing card with nine pips.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A nine-millimeter semi-automatic pistol.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(usually in the plural) A statistical unit of proportion (of reliability, purity, etc.).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They guaranteed that our Web site would have 99.99% uptime, or four nines."
+          },
+          {
+            "definition": "A baseball club, team, or lineup (composed of nine players).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "IX"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value equal to 9; the number following eight and preceding ten.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a group or set with nine elements.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A cat has nine lives."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/nine"
+    ]
+  }
+]

@@ -1,0 +1,253 @@
+[
+  {
+    "word": "water",
+    "phonetic": "/ˈwoːtə/",
+    "phonetics": [
+      {
+        "text": "/ˈwoːtə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwɑtəɹ/",
+        "audio": ""
+      },
+      {
+        "text": "[woːʔɐ]",
+        "audio": ""
+      },
+      {
+        "text": "[ˈwaːʈər]",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwoːtɘ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwɔːtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/water-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9028948",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/ˈwɔtəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/water-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718817",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈwɑtəɹ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A substance (of molecular formula H₂O) found at room temperature and pressure as a clear liquid; it is present naturally as rain, and found in rivers, lakes and seas; its solid form is ice and its gaseous form is steam.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "By the action of electricity, the water was resolved into its two parts, oxygen and hydrogen."
+          },
+          {
+            "definition": "The aforementioned liquid, considered one of the Classical elements or basic elements of alchemy.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "And God said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so."
+          },
+          {
+            "definition": "Water in a body; an area of open water.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The boat was found within the territorial waters."
+          },
+          {
+            "definition": "A body of water, almost always a river.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A combination of water and other substance(s).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(in the plural or in the singular) A state of affairs; conditions; usually with an adjective indicating an adverse condition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The rough waters of change will bring about the calm after the storm."
+          },
+          {
+            "definition": "A person's intuition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I know he'll succeed. I feel it in my waters."
+          },
+          {
+            "definition": "Excess valuation of securities.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The limpidity and lustre of a precious stone, especially a diamond.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a diamond of the first water is perfectly pure and transparent"
+          },
+          {
+            "definition": "A wavy, lustrous pattern or decoration such as is imparted to linen, silk, metals, etc.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "air",
+          "earth",
+          "ether",
+          "fire",
+          "metal",
+          "void",
+          "wind",
+          "wood",
+          "ice",
+          "steam",
+          "water vapor",
+          "water vapour"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/water"
+    ]
+  },
+  {
+    "word": "water",
+    "phonetic": "/ˈwoːtə/",
+    "phonetics": [
+      {
+        "text": "/ˈwoːtə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwɑtəɹ/",
+        "audio": ""
+      },
+      {
+        "text": "[woːʔɐ]",
+        "audio": ""
+      },
+      {
+        "text": "[ˈwaːʈər]",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwoːtɘ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈwɔːtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/water-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9028948",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/ˈwɔtəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/water-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718817",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈwɑtəɹ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To pour water into the soil surrounding (plants).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To wet or supply with water; to moisten; to overflow with water; to irrigate.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To provide (animals) with water for drinking.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I need to go water the cattle."
+          },
+          {
+            "definition": "To get or take in water.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The ship put into port to water."
+          },
+          {
+            "definition": "To urinate onto.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To dilute.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Can you water the whisky, please?"
+          },
+          {
+            "definition": "To overvalue (securities), especially through deceptive accounting.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To fill with or secrete water.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Chopping onions makes my eyes water."
+          },
+          {
+            "definition": "To wet and calender, as cloth, so as to impart to it a lustrous appearance in wavy lines; to diversify with wavelike lines.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to water silk"
+          }
+        ],
+        "synonyms": [
+          "water down"
+        ],
+        "antonyms": [
+          "refine"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/water"
+    ]
+  }
+]

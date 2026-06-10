@@ -1,0 +1,32 @@
+[
+  {
+    "word": "terabyte",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One trillion (1012, or 1,000,000,000,000) bytes. SI symbol: TB.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Imprecisely, a tebibyte or 10244 (1,099,511,627,776) bytes. SI symbol: TiB, computing symbol: TB.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/terabyte"
+    ]
+  }
+]

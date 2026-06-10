@@ -1,0 +1,53 @@
+[
+  {
+    "word": "kelvin",
+    "phonetic": "/ˈkɛlvən/",
+    "phonetics": [
+      {
+        "text": "/ˈkɛlvən/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "In the International System of Units, the base unit of thermodynamic temperature; 1/273.16 of the thermodynamic temperature of the triple point of water. Shown as \"K\".",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A unit interval on the Kelvin scale.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The interval between the freezing and boiling points of water is 100 kelvins."
+          },
+          {
+            "definition": "(usually as postpositioned adjective) A unit for a specific temperature on the Kelvin scale.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Ice melts above 273.15 kelvin."
+          }
+        ],
+        "synonyms": [
+          "degree Kelvin",
+          "degree absolute",
+          "degree kelvin",
+          "degree Celsius",
+          "degree Kelvin",
+          "degree absolute",
+          "degree kelvin"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/kelvin"
+    ]
+  }
+]

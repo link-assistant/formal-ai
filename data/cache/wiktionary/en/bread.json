@@ -1,0 +1,244 @@
+[
+  {
+    "word": "bread",
+    "phonetic": "/bɹeːd/",
+    "phonetics": [
+      {
+        "text": "/bɹeːd/",
+        "audio": ""
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014291",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=502023",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A foodstuff made by baking dough made from cereals.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any variety of bread.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Money.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Food; sustenance; support of life, in general.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "dough",
+          "folding stuff",
+          "lolly",
+          "paper",
+          "spondulicks",
+          "wonga"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To coat with breadcrumbs",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bread"
+    ]
+  },
+  {
+    "word": "bread",
+    "phonetic": "/bɹeːd/",
+    "phonetics": [
+      {
+        "text": "/bɹeːd/",
+        "audio": ""
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014291",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=502023",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Breadth.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bread"
+    ]
+  },
+  {
+    "word": "bread",
+    "phonetic": "/bɹeːd/",
+    "phonetics": [
+      {
+        "text": "/bɹeːd/",
+        "audio": ""
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014291",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=502023",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To make broad; spread.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bread"
+    ]
+  },
+  {
+    "word": "bread",
+    "phonetic": "/bɹeːd/",
+    "phonetics": [
+      {
+        "text": "/bɹeːd/",
+        "audio": ""
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014291",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/bɹɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=502023",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A piece of embroidery; a braid.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To form in meshes; net.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bread"
+    ]
+  }
+]

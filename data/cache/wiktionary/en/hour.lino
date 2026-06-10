@@ -1,0 +1,45 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A time period of sixty minutes; one twenty-fourth of a day."
+          example "I spent an hour at lunch."
+        entry
+          definition "A season, moment, or time."
+        entry
+          definition "The time."
+          example "The hour grows late and I must go home."
+        entry
+          definition "(in the plural) Used after a two-digit hour and a two-digit minute to indicate time."
+        entry
+          definition "(in the plural) The set times of prayer, the canonical hours, the offices or services prescribed for these, or a book containing them."
+        entry
+          definition "A distance that can be traveled in one hour."
+          example "This place is an hour away from where I live."
+      partOfSpeech noun
+      synonyms (stound h hr h hrs)
+  phonetic "/ˈaʊɚ/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈaʊɚ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hour-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014251"
+      text "/ˈaʊə(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hour-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=862202"
+      text "/ˈaʊɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/hour")
+  word hour

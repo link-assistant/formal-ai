@@ -1,0 +1,179 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A piece of metal placed in a horse's mouth and connected to the reins to direct the animal."
+          example "A horse hates having a bit put in its mouth."
+        entry
+          definition "A rotary cutting tool fitted to a drill, used to bore holes."
+        entry
+          definition "A coin of a specified value."
+          example "a threepenny bit"
+        entry
+          definition "A ten-cent piece, dime."
+        entry
+          definition "A unit of currency or coin in the Americas worth a fraction of a Spanish dollar; now specifically, an eighth of a US dollar."
+          example "A quarter is two bits."
+        entry
+          definition "In the southern and southwestern states, a small silver coin (such as the real) formerly current; commonly, one worth about 12½ cents; also, the sum of 12½ cents."
+        entry
+          definition "A small amount of something."
+          example "There were bits of paper all over the floor.   Does your leg still hurt? / Just a bit now.   I've done my bit; I expect you to do yours."
+        entry
+          definition "Specifically, a small amount of time."
+          example "I'll be there in a bit; I need to take care of something first.   He was here just a bit ago, but it looks like he's stepped out."
+        entry
+          definition "(plural) Fractions of a second."
+          example "The 400 metres race was won in 47 seconds and bits."
+        entry
+          definition "A portion of something."
+          example "I'd like a big bit of cake, please."
+        entry
+          definition "Somewhat; something, but not very great; also used like jot and whit to express the smallest degree. See also a bit."
+          example "Am I bored? Not a bit of it!"
+        entry
+          definition "A prison sentence, especially a short one."
+        entry
+          definition "An excerpt of material making up part of a show, comedy routine, etc."
+          example "His bit about video games was not nearly as entertaining as the other segments of his show."
+        entry
+          definition "A small part or role, sometimes with spoken lines, in a theatrical performance."
+          example "She acted her bit in the opening scene."
+        entry
+          definition "The part of a key which enters the lock and acts upon the bolt and tumblers."
+        entry
+          definition "The cutting iron of a plane."
+        entry
+          definition "The bevelled front edge of an axehead along which the cutting edge runs."
+      partOfSpeech noun
+      synonyms (coin piece kimberwicke pelham snaffle portion segment share bid morsel piece scrap)
+    entry
+      definitions
+        entry
+          definition "To put a bridle upon; to put the bit in the mouth of (a horse)."
+      partOfSpeech verb
+  phonetic "/bɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=545618"
+      text "/bɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bit")
+  word bit
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Bitten.
+          example "Even though he's bit, of course the zombies would still chase him."
+        entry
+          definition "(only in combination) Having been bitten."
+      partOfSpeech adjective
+    entry
+      definitions
+        entry
+          definition "To cut into something by clamping the teeth."
+          example "As soon as you bite that sandwich, you'll know how good it is."
+        entry
+          definition "To hold something by clamping one's teeth."
+        entry
+          definition "To attack with the teeth."
+          example "That dog is about to bite!"
+        entry
+          definition "To behave aggressively; to reject advances."
+          example "If you see me, come and say hello. I don't bite."
+        entry
+          definition "To take hold; to establish firm contact with."
+          example "I needed snow chains to make the tires bite."
+        entry
+          definition "To have significant effect, often negative."
+          example "For homeowners with adjustable rate mortgages, rising interest will really bite."
+        entry
+          definition "(of a fish) To bite a baited hook or other lure and thus be caught."
+          example "Are the fish biting today?"
+        entry
+          definition "To accept something offered, often secretly or deceptively, to cause some action by the acceptor."
+          example "I've planted the story. Do you think they'll bite?"
+        entry
+          definition "(of an insect) To sting."
+          example "These mosquitoes are really biting today!"
+        entry
+          definition "To cause a smarting sensation; to have a property which causes such a sensation; to be pungent."
+          example "It bites like pepper or mustard."
+        entry
+          definition "(sometimes figurative) To cause sharp pain or damage to; to hurt or injure."
+          example "Pepper bites the mouth."
+        entry
+          definition "To cause sharp pain; to produce anguish; to hurt or injure; to have the property of so doing."
+        entry
+          definition "To take or keep a firm hold."
+          example "The anchor bites."
+        entry
+          definition "To take hold of; to hold fast; to adhere to."
+          example "The anchor bites the ground."
+        entry
+          definition "To lack quality; to be worthy of derision; to suck."
+          example "This music really bites."
+        entry
+          definition "To perform oral sex on. Used in invective."
+          example "You don't like that I sat on your car? Bite me."
+        entry
+          definition "To plagiarize, to imitate."
+          example "He always be biting my moves."
+        entry
+          definition "To deceive or defraud; to take in."
+      partOfSpeech verb
+  phonetic "/bɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=545618"
+      text "/bɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bit" "https://en.wiktionary.org/wiki/bite")
+  word bit
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A binary digit, generally represented as a 1 or 0."
+        entry
+          definition "The smallest unit of storage in a digital computer, consisting of a binary digit."
+          synonyms (b)
+        entry
+          definition "Any datum that may take on one of exactly two values."
+          example "permission bits in a file system"
+        entry
+          definition "A unit of measure for information entropy."
+        entry
+          definition "A microbitcoin, or a millionth of a bitcoin (0.000001 BTC)."
+      partOfSpeech noun
+      synonyms (b)
+  phonetic "/bɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=545618"
+      text "/bɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bit")
+  word bit

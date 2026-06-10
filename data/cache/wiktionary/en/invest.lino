@@ -1,0 +1,84 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (divest disinvest divest divest)
+      definitions
+        entry
+          definition "To spend money, time, or energy on something, especially for some benefit or purpose; used with in."
+          example "We'd like to thank all the contributors who have invested countless hours into this event."
+        entry
+          definition "To clothe or wrap (with garments)."
+        entry
+          definition "To put on (clothing)."
+        entry
+          definition "To envelop, wrap, cover."
+        entry
+          definition "To commit money or capital in the hope of financial gain."
+        entry
+          definition "To ceremonially install someone in some office."
+        entry
+          definition "To formally give (someone) some power or authority."
+        entry
+          definition "To formally give (power or authority)."
+        entry
+          definition "To surround, accompany, or attend."
+        entry
+          definition "To lay siege to."
+          example "to invest a town"
+        entry
+          definition "To make investments."
+        entry
+          definition "To prepare for lost wax casting by creating an investment mold (a mixture of a silica sand and plaster)."
+        entry
+          definition "To be involved in; to form strong attachments to."
+      partOfSpeech verb
+      synonyms (besiege beclothe don dress)
+  phonetic "/ɪnˈvɛst/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/invest-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88517632"
+      text "/ɪnˈvɛst/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/invest-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755167"
+      text "/ɪnˈvɛst/"
+  sourceUrls ("https://en.wiktionary.org/wiki/invest")
+  word invest
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition 'An unnamed tropical weather pattern "to investigate" for development into a significant (named) system.'
+      partOfSpeech noun
+  phonetic "/ɪnˈvɛst/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/invest-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88517632"
+      text "/ɪnˈvɛst/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/invest-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755167"
+      text "/ɪnˈvɛst/"
+  sourceUrls ("https://en.wiktionary.org/wiki/invest")
+  word invest

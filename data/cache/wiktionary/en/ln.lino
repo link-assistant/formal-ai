@@ -1,0 +1,34 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(used in street names) A road, street, or similar thoroughfare."
+        entry
+          definition "A narrow passageway between fences, walls, hedges or trees."
+        entry
+          definition "A narrow road, as in the country."
+        entry
+          definition "A lengthwise division of roadway intended for a single line of vehicles."
+        entry
+          definition "A similar division of a racetrack to keep runners apart."
+        entry
+          definition "A course designated for ships or aircrafts."
+        entry
+          definition "An elongated wooden strip of floor along which a bowling ball is rolled."
+        entry
+          definition "An empty space in the tableau, formed by the removal of an entire row of cards."
+        entry
+          definition "Any of the parallel slots in which values can be stored in a SIMD architecture."
+        entry
+          definition "In MOBA (multiplayer online battle arena) games, a particular path on the map that may be traversed by enemy characters."
+        entry
+          definition "The homestretch."
+          example "And it's Uncle Mo in front by two as they come to the top of the lane."
+      partOfSpeech noun
+      synonyms (carriageway direction roadway side)
+  sourceUrls ("https://en.wiktionary.org/wiki/lane" "https://en.wiktionary.org/wiki/ln")
+  word ln

@@ -1,0 +1,63 @@
+[
+  {
+    "word": "investment",
+    "phonetic": "/ɪnˈvɛsmənt/",
+    "phonetics": [
+      {
+        "text": "/ɪnˈvɛsmənt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/investment-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2453558",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The act of investing, or state of being invested.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Giving your children a good education is a wise long-term investment."
+          },
+          {
+            "definition": "A placement of capital in expectation of deriving income or profit from its use or appreciation.",
+            "synonyms": [],
+            "antonyms": [
+              "divestment"
+            ]
+          },
+          {
+            "definition": "A vestment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of surrounding, blocking up, or besieging by an armed force, or the state of being so surrounded.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A mixture of silica sand and plaster which, by surrounding a wax pattern, creates a negative mold of the form used for casting, among other metals, bronze.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "divestment"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/investment"
+    ]
+  }
+]

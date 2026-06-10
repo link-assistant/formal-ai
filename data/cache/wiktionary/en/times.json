@@ -1,0 +1,172 @@
+[
+  {
+    "word": "times",
+    "phonetic": "/tɑemz/",
+    "phonetics": [
+      {
+        "text": "/tɑemz/",
+        "audio": ""
+      },
+      {
+        "text": "/taɪmz/",
+        "audio": ""
+      },
+      {
+        "text": "/taɪmz/",
+        "audio": ""
+      },
+      {
+        "text": "/taɪmz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/times-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227453",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The inevitable progression into the future with the passing of present and past events.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Time stops for nobody.   the ebb and flow of time"
+          },
+          {
+            "definition": "A duration of time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An instant of time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The measurement under some system of region of day or moment.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let's synchronize our watches so we're not on different time."
+          },
+          {
+            "definition": "Ratio of comparison.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "your car runs three times faster than mine;  that is four times as heavy as this"
+          },
+          {
+            "definition": "(grammar) Tense.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the time of a verb"
+          },
+          {
+            "definition": "The measured duration of sounds; measure; tempo; rate of movement; rhythmical division.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "common or triple time;   the musician keeps good time."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To measure or record the time, duration, or rate of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I used a stopwatch to time myself running around the block."
+          },
+          {
+            "definition": "To choose when something begins or how long it lasts.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The President timed his speech badly, coinciding with the Super Bowl."
+          },
+          {
+            "definition": "To keep or beat time; to proceed or move in time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To pass time; to delay.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To regulate as to time; to accompany, or agree with, in time of movement.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To measure, as in music or harmony.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "set",
+          "clock"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The circumstances of a certain time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Modern times are so very different from the past."
+          },
+          {
+            "definition": "A person's experiences or biography.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The Life and Times of Rosie the Riveter."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To multiply.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Multiplied by",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Four times five is twenty."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/time",
+      "https://en.wiktionary.org/wiki/times"
+    ]
+  }
+]

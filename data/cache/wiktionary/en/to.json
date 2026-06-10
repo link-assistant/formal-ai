@@ -1,0 +1,136 @@
+[
+  {
+    "word": "to",
+    "phonetic": "/tʉː/",
+    "phonetics": [
+      {
+        "text": "/tʉː/",
+        "audio": ""
+      },
+      {
+        "text": "/tʉː/",
+        "audio": ""
+      },
+      {
+        "text": "/tuː/",
+        "audio": ""
+      },
+      {
+        "text": "/tu/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Toward a closed, touching or engaging position.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Please push the door to."
+          },
+          {
+            "definition": "Into the wind.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "closed",
+          "shut"
+        ],
+        "antonyms": [
+          "ajar",
+          "open"
+        ]
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Indicating destination: In the direction of, and arriving at.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We are walking to the shop."
+          },
+          {
+            "definition": "Used to indicate the target or recipient of an action.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He devoted himself to education."
+          },
+          {
+            "definition": "Used to indicate result of action.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "His face was beaten to a pulp."
+          },
+          {
+            "definition": "Used to indicate a resulting feeling or emotion.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "To everyone's great relief, the tuneless carol singers finally ceased their warbling."
+          },
+          {
+            "definition": "Used after an adjective to indicate its application.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "similar to ..., relevant to ..., pertinent to ..., I was nice to him, he was cruel to her, I am used to walking."
+          },
+          {
+            "definition": "Denotes the end of a range.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It takes 2 to 4 weeks to process typical applications."
+          },
+          {
+            "definition": "As a.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "With God to friend (with God as a friend);   with The Devil to fiend (with the Devil as a foe);   lambs slaughtered to lake (lambs slaughtered as a sacrifice);   took her to wife (took her as a wife);   was sold to slave (was sold as a slave)."
+          },
+          {
+            "definition": "Used to indicate a ratio or comparison.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I have ten dollars to your four."
+          },
+          {
+            "definition": "Used to indicate that the preceding term is to be raised to the power of the following value; indicates exponentiation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Three squared or three to the second power is nine."
+          },
+          {
+            "definition": "(time) Preceding.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "ten to ten = 9:50; We're going to leave at ten to (the hour)."
+          },
+          {
+            "definition": "Used to describe what something consists of or contains.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Anyone could do this job; there's nothing to it."
+          },
+          {
+            "definition": "At.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Stay where you're to and I'll come find you, b'y."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/to"
+    ]
+  }
+]

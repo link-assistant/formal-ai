@@ -547,6 +547,35 @@ fn wiktionary_cache_is_pretty_printed_and_rebuilds_full_json() {
     );
 }
 
+/// The number of cached Wiktionary entries must never regress below this floor.
+/// Issue #398 (deep review of `92a29b0`, open item #1) flags that the Wiktionary
+/// cache was a single placeholder entry while the seed grounds 140+ meanings:
+/// "Wiktionary should be used heavily … per grounded surface, in every language
+/// we claim." This ratchet records progress toward that goal so each batch can
+/// only raise it. Bump it (and never lower it) whenever
+/// `scripts/ground-wiktionary.py` caches more grounded surfaces. The matching
+/// lossless `.lino`/`.json` snapshots keep every entry checked in and verified
+/// by `wiktionary_cache_is_pretty_printed_and_rebuilds_full_json`.
+const WIKTIONARY_ENTRY_FLOOR: usize = 156;
+
+#[test]
+fn wiktionary_cache_breadth_does_not_regress() {
+    let cache_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data/cache/wiktionary");
+    let entries = WalkDir::new(&cache_dir)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|entry| entry.file_type().is_file())
+        .filter(|entry| entry.path().extension().and_then(|ext| ext.to_str()) == Some("lino"))
+        .count();
+
+    assert!(
+        entries >= WIKTIONARY_ENTRY_FLOOR,
+        "Wiktionary cache breadth regressed: {entries} entries cached, floor is \
+         {WIKTIONARY_ENTRY_FLOOR}. Wiktionary grounding is append-only — re-run \
+         scripts/ground-wiktionary.py rather than removing cached entries."
+    );
+}
+
 #[test]
 fn meaning_definitions_are_unique() {
     // Issue #398 review (comment 4664274427, CI check 7): no two meanings may

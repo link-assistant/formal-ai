@@ -1,0 +1,28 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Person living or originating from Europe"
+        entry
+          definition "Person who resides within the European Union"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "The currency unit of the European Monetary Union. Symbol: €"
+          synonyms (EUR)
+        entry
+          definition "A coin with a face value of 1 euro."
+      partOfSpeech noun
+      synonyms (EUR)
+    entry
+      definitions
+        entry
+          definition "Macropus robustus, a wallaroo (macropod species)."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/European" "https://en.wiktionary.org/wiki/euro" "https://en.wiktionary.org/wiki/euros")
+  word euros

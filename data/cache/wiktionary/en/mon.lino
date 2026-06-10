@@ -1,0 +1,61 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The former currency of Japan until 1870, before the yen."
+        entry
+          definition "The badge or emblem a Japanese family, especially a family of the ancient feudal nobility; typically circular and consists of conventionalized forms from nature."
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79241616"
+  sourceUrls ("https://en.wiktionary.org/wiki/mon")
+  word mon
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(used in the vocative) A colloquial means of address of man in places such as Jamaica and Shropshire in England."
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79241616"
+  sourceUrls ("https://en.wiktionary.org/wiki/mon")
+  word mon
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A creature in a video game, usually one which is captured, trained up and used in battles."
+        entry
+          definition "A video game or anime in which catching and battling creatures is an important element."
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79241616"
+  sourceUrls ("https://en.wiktionary.org/wiki/mon")
+  word mon

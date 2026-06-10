@@ -1,0 +1,45 @@
+[
+  {
+    "word": "py",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A phonetic script or romanization system for a language spoken in the People's Republic of China.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(smoking) A unit for measuring the number of cigarettes a person has smoked previously; it is calculated by multiplying the average number of packs of cigarettes the person smokes per day by the number of years the person has smoked.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "PY",
+          "py"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/Pinyin",
+      "https://en.wiktionary.org/wiki/pack-year",
+      "https://en.wiktionary.org/wiki/pinyin",
+      "https://en.wiktionary.org/wiki/py"
+    ]
+  }
+]

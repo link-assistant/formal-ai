@@ -1,0 +1,37 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A knot, knob, protuberance or swelling."
+        entry
+          definition "The point where the orbit of a planet, as viewed from the Sun, intersects the ecliptic. The ascending and descending nodes refer respectively to the points where the planet moves from South to North and N to S; their respective symbols are ☊ and ☋."
+        entry
+          definition "A leaf node."
+        entry
+          definition "A computer or other device attached to a network."
+        entry
+          definition "The point at which the lines of a funicular machine meet from different angular directions; — called also knot."
+        entry
+          definition "The point at which a curve crosses itself, being a double point of the curve. See crunode and acnode."
+        entry
+          definition "A similar point on a surface, where there is more than one tangent-plane."
+        entry
+          definition "A vertex or a leaf in a graph of a network, or other element in a data structure."
+        entry
+          definition "A hard concretion or incrustation which forms upon bones attacked with rheumatism, gout, or syphilis; sometimes also, a swelling in the neighborhood of a joint."
+        entry
+          definition "A point along a standing wave where the wave has minimal amplitude."
+        entry
+          definition "The knot, intrigue, or plot of a dramatic work."
+        entry
+          definition "A hole in the gnomon of a sundial, through which passes the ray of light which marks the hour of the day, the parallels of the Sun's declination, his place in the ecliptic, etc."
+        entry
+          definition "The word of interest in a KWIC, surrounded by left and right cotexts."
+      partOfSpeech noun
+      synonyms (host vertex)
+  sourceUrls ("https://en.wiktionary.org/wiki/node")
+  word node

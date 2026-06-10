@@ -1,0 +1,75 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A body of words, and set of methods of combining them (called a grammar), understood by a community and used as a form of communication."
+          example "Deaf and mute people communicate using languages like ASL."
+        entry
+          definition "The ability to communicate using words."
+          example "the gift of language"
+        entry
+          definition "A sublanguage: the slang of a particular community or jargon of a particular specialist field."
+          example "legal language;   the language of chemistry"
+        entry
+          definition "The expression of thought (the communication of meaning) in a specified way; that which communicates something, as language does."
+          example "body language;   the language of the eyes"
+        entry
+          definition "A body of sounds, signs and/or signals by which animals communicate, and by which plants are sometimes also thought to communicate."
+        entry
+          definition "A computer language; a machine language."
+        entry
+          definition "Manner of expression."
+        entry
+          definition "The particular words used in a speech or a passage of text."
+          example "The language he used to talk to me was obscene."
+        entry
+          definition Profanity.
+      partOfSpeech noun
+      synonyms ("computer language" "machine language" "programming language")
+    entry
+      definitions
+        entry
+          definition "To communicate by language; to express in language."
+      partOfSpeech verb
+  phonetic "[ˈleɪŋɡwɪd͡ʒ]"
+  phonetics
+    entry
+      audio ""
+      text "[ˈleɪŋɡwɪd͡ʒ]"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/language-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=825502"
+      text "[ˈleɪŋɡwɪd͡ʒ]"
+  sourceUrls ("https://en.wiktionary.org/wiki/language")
+  word language
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A languet, a flat plate in or below the flue pipe of an organ."
+      partOfSpeech noun
+  phonetic "[ˈleɪŋɡwɪd͡ʒ]"
+  phonetics
+    entry
+      audio ""
+      text "[ˈleɪŋɡwɪd͡ʒ]"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/language-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=825502"
+      text "[ˈleɪŋɡwɪd͡ʒ]"
+  sourceUrls ("https://en.wiktionary.org/wiki/language")
+  word language

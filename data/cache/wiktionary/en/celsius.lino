@@ -1,0 +1,14 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Related to a metric temperature scale, originally defined as having the freezing point of water as 0 degrees and its boiling point as 100 degrees, at standard atmospheric pressure. The standardized definition has 0.01 °C as the triple point of water, and a difference in temperature of 1 °C corresponds to 1/273.16 of the difference in temperature between the triple point and the absolute zero."
+          synonyms (centesimal centigrade)
+      partOfSpeech adjective
+      synonyms (centesimal centigrade)
+  sourceUrls ("https://en.wiktionary.org/wiki/Celsius" "https://en.wiktionary.org/wiki/celsius")
+  word celsius

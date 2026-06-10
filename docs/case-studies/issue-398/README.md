@@ -364,6 +364,27 @@ one*. Resolutions this round:
   Extending it to the rest of the grounded vocabulary and to the ru/hi/zh
   surfaces is the remaining follow-up.
 
+  Wiktionary depth (open item #1 of the `92a29b0` review — the cache held a
+  single placeholder entry while the seed grounds 140+ meanings) now has its
+  pipeline and first breadth batch in place. `scripts/ground-wiktionary.py` is
+  re-runnable and self-verifying: it **discovers** candidate lemmas from the
+  data (every single-word English `surface / text` of a `grounded-in` meaning,
+  never a hardcoded list), fetches each from the Wiktionary-backed Free
+  Dictionary API (CC BY-SA 3.0, the same source and schema as the existing
+  `en/reference.json`), **verifies** the response actually describes the
+  requested lemma (a non-empty list whose first `word` matches, carrying at
+  least one definition) — skipping 404s, redirects and empty bodies — and caches
+  the entry as pretty multi-line JSON plus the lossless `.lino` snapshot via the
+  `wikidata_json_to_lino` codec. The Wiktionary cache rose from 1 to 156 entries
+  (155 grounded surfaces such as `water`, `apple`, `bread`, `money`, `number`,
+  `language`, `temperature`), each round-tripping its full JSON through
+  `wiktionary_cache_is_pretty_printed_and_rebuilds_full_json`, and the
+  `wiktionary_cache_breadth_does_not_regress` ratchet (floor 156) keeps coverage
+  append-only. Wiring each grounded surface to reference its Wiktionary entry,
+  extending beyond English, and pulling forms/senses/translations from
+  Wiktionary directly remain the next steps toward the review's multi-source
+  `view` plan.
+
 ## Follow-up issues worth opening
 
 1. Backfill semantic facets for all existing ontology and domain meanings.

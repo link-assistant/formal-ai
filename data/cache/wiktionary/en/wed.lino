@@ -1,0 +1,36 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To perform the marriage ceremony for; to join in matrimony."
+          example "The priest wed the couple."
+        entry
+          definition "To take as one's spouse."
+          example "She wed her first love."
+        entry
+          definition "To take a spouse."
+        entry
+          definition "To join or commit to, more or less permanently, as if in marriage."
+          example "I'm not wedded to this proposal; suggest an alternative."
+        entry
+          definition "To take to oneself and support; to espouse."
+        entry
+          definition "To wager, stake, bet, place a bet, make a wager."
+          example "I'd wed my head on that."
+      partOfSpeech verb
+      synonyms (marry)
+  phonetic "/ˈwɛd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/wed-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=424781"
+      text "/ˈwɛd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/wed")
+  word wed

@@ -1,0 +1,64 @@
+[
+  {
+    "word": "carrot",
+    "phonetic": "/ˈkæɹ.ət/",
+    "phonetics": [
+      {
+        "text": "/ˈkæɹ.ət/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈkæɹ.ət/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/carrot-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=89955831",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A vegetable with a nutritious, juicy, sweet root that is often orange in colour, Daucus carota, especially the subspecies sativus in the family Apiaceae.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A shade of orange similar to the flesh of most carrots (also called carrot orange).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any motivational tool.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To treat (an animal pelt) with a solution of mercuric nitrate as part of felt manufacture.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/carrot"
+    ]
+  }
+]

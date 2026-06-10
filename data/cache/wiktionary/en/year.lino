@@ -1,0 +1,70 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A solar year, the time it takes the Earth to complete one revolution of the Sun (between 365.24 and 365.26 days depending on the point of reference)."
+          example "we moved to this town a year ago;  I quit smoking exactly one year ago"
+        entry
+          definition "(by extension) The time it takes for any astronomical object (such as a planet, dwarf planet, small Solar System body, or comet) in direct orbit around a star (such as the Sun) to make one revolution around the star."
+          example "Mars goes around the sun once in a Martian year, or 1.88 Earth years."
+        entry
+          definition "A period between set dates that mark a year, from January 1 to December 31 by the Gregorian calendar, from Tishiri 1 to Elul 29 by the Jewish calendar, and from Muharram 1 to Dhu al-Hijjah 29 or 30 by the Islamic calendar."
+          example "A normal year has 365 full days, but there are 366 days in a leap year."
+        entry
+          definition "A scheduled part of a calendar year spent in a specific activity."
+          example "During this school year I have to get up at 6:30 to catch the bus."
+        entry
+          definition 'A Julian year, exactly 365.25 days, represented by "a".'
+        entry
+          definition "A level or grade in school or college."
+          example "Every second-year student must select an area of specialization."
+        entry
+          definition "The proportion of a creature's lifespan equivalent to one year of an average human lifespan (see also dog year)."
+          example "Geneticists have created baker's yeast that can live to 800 in yeast years."
+      partOfSpeech noun
+      synonyms (twelvemonth "calendar year" "civil year" "legal year" "fiscal year" "liturgical year" "school year" "Gaussian year" "anomalistic year" "sidereal year" "tropical year")
+  phonetic "/jɪə/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/year-1-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014234"
+      text "/jɪə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/year-1-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1197736"
+      text "/jɪɹ/"
+    entry
+      audio ""
+      text "/jɜː/"
+  sourceUrls ("https://en.wiktionary.org/wiki/year")
+  word year
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(abstract) This place; this location."
+          example "An Alzheimer patient's here may in his mind be anywhere he called home in the time he presently re-lives."
+        entry
+          definition "(abstract) This time, the present situation."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Eye dialect spelling of hear"
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/here" "https://en.wiktionary.org/wiki/year")
+  word year

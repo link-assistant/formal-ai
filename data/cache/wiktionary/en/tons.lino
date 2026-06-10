@@ -1,0 +1,49 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A unit of weight (mass) equal to 2240 pounds (a long ton) or 2000 pounds (a short ton) or 1000 kilograms (a metric ton)."
+        entry
+          definition "A unit of volume; register ton."
+        entry
+          definition "In refrigeration and air conditioning, a unit of thermal power defined as 12,000 BTU/h (about 3.514 kW or 3024 kcal/h), originally the rate of cooling provided by uniform isothermal melting of one short ton of ice per day at 32 °F (0 °C)."
+        entry
+          definition "A large amount."
+          example "I've got tons of work to do."
+        entry
+          definition "A speed of 100 mph."
+        entry
+          definition "One hundred pounds sterling."
+        entry
+          definition "One hundred runs."
+        entry
+          definition "(etc.) One hundred points scored."
+      partOfSpeech noun
+      synonyms (heap load pile century)
+    entry
+      definitions
+        entry
+          definition "The common tunny, or horse mackerel."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Lots; large quantities or numbers (of people or things)."
+          example "I have tons of pens, but none of them work."
+      partOfSpeech noun
+      synonyms ("a lot" "a thing or two" loads)
+  phonetic "/tʌnz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tons-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2651622"
+      text "/tʌnz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/ton" "https://en.wiktionary.org/wiki/tons")
+  word tons

@@ -1,0 +1,308 @@
+[
+  {
+    "word": "or",
+    "phonetic": "/ɔː(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/ɔː(ɹ)/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      },
+      {
+        "text": "/ɔɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711593",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "Connects at least two alternative words, phrases, clauses, sentences, etc. each of which could make a passage true. In English, this is the \"inclusive or.\" The \"exclusive or\" is formed by \"either [...] or\".",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He might get cancer, or be hit by a bus, or God knows what."
+          },
+          {
+            "definition": "An operator denoting the disjunction of two propositions or truth values. There are two forms, the inclusive or and the exclusive or.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Counts the elements before and after as two possibilities.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Otherwise (a consequence of the condition that the previous is false).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It's raining! Come inside or you'll catch a cold!"
+          },
+          {
+            "definition": "Connects two equivalent names.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The country Myanmar, or Burma"
+          }
+        ],
+        "synonyms": [
+          "and/or"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/or"
+    ]
+  },
+  {
+    "word": "or",
+    "phonetic": "/ɔː(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/ɔː(ɹ)/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      },
+      {
+        "text": "/ɔɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711593",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The binary operator inclusive or, true if one at least one of two inputs is true. In infix notation.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "∨"
+        ],
+        "antonyms": [
+          "NOR"
+        ]
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Initialism of Olympic Record.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Initialism of odorant receptor.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Initialism of olfactory receptor.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(Wiktionary and WMF jargon) Initialism of original research.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "∨"
+        ],
+        "antonyms": [
+          "NOR"
+        ]
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A room in a hospital used for performing surgical operations.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "operating theatre"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(operations) The application of scientific methods and techniques to problems of decision making, especially in business management and government administration.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "OR",
+          "operational research"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/OR",
+      "https://en.wiktionary.org/wiki/operating%20room",
+      "https://en.wiktionary.org/wiki/operations%20research",
+      "https://en.wiktionary.org/wiki/or"
+    ]
+  },
+  {
+    "word": "or",
+    "phonetic": "/ɔː(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/ɔː(ɹ)/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      },
+      {
+        "text": "/ɔɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711593",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The gold or yellow tincture on a coat of arms.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "Or",
+          "o."
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of gold or yellow tincture on a coat of arms.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "gold"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/or"
+    ]
+  },
+  {
+    "word": "or",
+    "phonetic": "/ɔː(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/ɔː(ɹ)/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      },
+      {
+        "text": "/ɔɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711593",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Early (on).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Earlier, previously.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Before; ere. Followed by \"ever\" or \"ere\".",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/or"
+    ]
+  }
+]

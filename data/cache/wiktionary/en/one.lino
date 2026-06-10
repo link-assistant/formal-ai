@@ -1,0 +1,106 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit or figure 1."
+        entry
+          definition "The neutral element with respect to multiplication in a ring."
+        entry
+          definition "A one-dollar bill."
+        entry
+          definition "One run scored by hitting the ball and running between the wickets; a single."
+        entry
+          definition "A joke or amusing anecdote."
+        entry
+          definition "A particularly special or compatible person or thing."
+          example "I knew as soon I met him that John was the one for me and we were married within a month."
+        entry
+          definition '(leet) Used instead of ! to amplify an exclamation, parodying unskilled typists who forget to press the shift key while typing exclamation points, thus typing "1".'
+          example '2003 September 26, "DEAL WITH IT!!!!11one!!", in alt.games.video.nintendo.gamecube, Usenet'
+      partOfSpeech noun
+      synonyms (single unity "1" eleven)
+    entry
+      definitions
+        entry
+          definition "To cause to become one; to gather into a single whole; to unite."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Of a period of time, being particular."
+          example "One day the prince set forth to kill the dragon that had brought terror to his father’s kingdom for centuries."
+        entry
+          definition "Being a single, unspecified thing; a; any."
+          example 'My aunt used to say, "One day is just like the other."'
+        entry
+          definition "Sole, only."
+          example "He is the one man who can help you."
+        entry
+          definition "Whole, entire."
+          example "Body and soul are not separate; they are one."
+        entry
+          definition "In agreement."
+          example "We are one on the importance of learning."
+        entry
+          definition "The same."
+          example "The two types look very different, but are one species."
+        entry
+          definition "Being a preeminent example."
+          example "He is one hell of a guy."
+        entry
+          definition 'Being an unknown person with the specified name; see also "a certain".'
+          example "The town records from 1843 showed the overnight incarceration of one “A. Lincoln”."
+      partOfSpeech adjective
+    entry
+      definitions
+        entry
+          definition "The number represented by the Arabic numeral 1; the numerical value equal to that cardinal number."
+          example "In many cultures, a baby turns one year old a year after its birth."
+        entry
+          definition "The first positive number in the set of natural numbers."
+        entry
+          definition "The cardinality of the smallest nonempty set."
+        entry
+          definition "The ordinality of an element which has no predecessor, usually called first or number one."
+      partOfSpeech numeral
+    entry
+      definitions
+        entry
+          definition "(impersonal pronoun, indefinite) One thing (among a group of others); one member of a group."
+          example "Any one of the boys.  The big one looks good.  I want the green one.  A good driver is one who drives carefully."
+        entry
+          definition '(impersonal pronoun, sometimes with "the") The first mentioned of two things or people, as opposed to the other.'
+          example "She offered him an apple and an orange; he took one and left the other."
+        entry
+          definition "(indefinite personal pronoun) Any person (applying to people in general)."
+          example "One’s guilt may trouble one, but it is best not to let oneself be troubled by things which cannot be changed.  One shouldn’t be too quick to judge."
+        entry
+          definition "(pronoun) Any person, entity or thing."
+          example '"driver", noun: one who drives.'
+      partOfSpeech pronoun
+      synonyms (they you)
+  phonetic "/wan/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/one-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75900253"
+      text "/wan/"
+    entry
+      audio ""
+      text "/wɒn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/one-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711587"
+      text "/wʌn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/one")
+  word one

@@ -1,0 +1,75 @@
+[
+  {
+    "word": "examples",
+    "phonetic": "/ɪɡˈzɑːmpl̩z/",
+    "phonetics": [
+      {
+        "text": "/ɪɡˈzɑːmpl̩z/",
+        "audio": ""
+      },
+      {
+        "text": "/ɪɡˈzæmpl̩z/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Something that is representative of all such things in a group.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Something that serves to illustrate or explain a rule.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Something that serves as a pattern of behaviour to be imitated (a good example) or not to be imitated (a bad example).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A person punished as a warning to others.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A parallel or closely similar case, especially when serving as a precedent or model.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An instance (as a problem to be solved) serving to illustrate the rule or precept or to act as an exercise in the application of the rule.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To be illustrated or exemplified (by).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/example",
+      "https://en.wiktionary.org/wiki/examples"
+    ]
+  }
+]

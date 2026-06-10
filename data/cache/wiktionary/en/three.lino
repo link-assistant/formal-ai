@@ -1,0 +1,54 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit/figure 3."
+        entry
+          definition "Anything measuring three units, as length."
+          example "Put all the threes in a separate container."
+        entry
+          definition "A person who is three years old."
+          example "All the threes will go in Mrs. Smith's class, while I'll take the fours and fives."
+        entry
+          definition "The playing card featuring three pips."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value after two and before four. Represented in Arabic digits as 3; this many dots (•••)."
+        entry
+          definition "Describing a set or group with three elements."
+      partOfSpeech numeral
+      synonyms (leash tether)
+    entry
+      definitions
+        entry
+          definition "A goal or other means of scoring worth three points."
+        entry
+          definition "A three-point shot; a basket made from beyond the three-point line."
+        entry
+          definition "A three-point landing; an airplane landing in which all three wheels touch the ground simultaneously."
+        entry
+          definition "A deer or other animal whose antlers feature three points or tines."
+      partOfSpeech noun
+  phonetic "/θɹiː/"
+  phonetics
+    entry
+      audio ""
+      text "/θɹiː/"
+    entry
+      audio ""
+      text "/fɹiː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/three-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711330"
+      text "/θɹiː/"
+  sourceUrls ("https://en.wiktionary.org/wiki/three" "https://en.wiktionary.org/wiki/three-pointer")
+  word three

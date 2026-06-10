@@ -1,0 +1,84 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (night)
+      definitions
+        entry
+          definition "Any period of 24 hours."
+          example "I've been here for two days and a bit."
+        entry
+          definition "A period from midnight to the following midnight."
+          example "The day begins at midnight."
+        entry
+          definition "Rotational period of a planet (especially Earth)."
+          example "A day on Mars is slightly over 24 hours."
+        entry
+          definition "The part of a day period which one spends at one’s job, school, etc."
+          example "I worked two days last week."
+        entry
+          antonyms (night)
+          definition "Part of a day period between sunrise and sunset where one enjoys daylight; daytime."
+          example "day and night;  I work at night and sleep during the day."
+          synonyms (daylight upsun)
+        entry
+          definition "A specified time or period; time, considered with reference to the existence or prominence of a person or thing; age; time."
+          example "Every dog has its day."
+          synonyms (epoch era)
+        entry
+          definition "A period of contention of a day or less."
+          example "The day belonged to the Allies."
+        entry
+          definition "A 24-hour period beginning at 6am or sunrise."
+          example "Your 8am forecast: The high for the day will be 30 and the low, before dawn, will be 10."
+      partOfSpeech noun
+      synonyms (daylight upsun epoch era)
+    entry
+      definitions
+        entry
+          definition "To spend a day (in a place)."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "A particular time or period of vague extent."
+          example "Things were more relaxed in Grandpa's days."
+        entry
+          definition Life.
+          example "That's how he ended his days."
+      partOfSpeech noun
+  phonetic "/ˈdeɪz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/days-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1224300"
+      text "/ˈdeɪz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/day" "https://en.wiktionary.org/wiki/days")
+  word days
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "During the day."
+          example "She works days at the garage."
+      partOfSpeech adverb
+  phonetic "/ˈdeɪz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/days-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1224300"
+      text "/ˈdeɪz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/days")
+  word days

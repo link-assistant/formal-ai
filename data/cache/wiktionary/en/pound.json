@@ -1,0 +1,271 @@
+[
+  {
+    "word": "pound",
+    "phonetic": "/paʊnd/",
+    "phonetics": [
+      {
+        "text": "/paʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755195",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of mass equal to 16 avoirdupois ounces (= 453.592 37 g). Today this value is the most common meaning of \"pound\" as a unit of weight.",
+            "synonyms": [
+              "lb"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A unit of mass equal to 12 troy ounces (≈ 373.242 g). Today, this is a common unit of weight when measuring precious metals, and is little used elsewhere.",
+            "synonyms": [
+              "lb t"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "The symbol # (octothorpe, hash)",
+            "synonyms": [
+              "hash",
+              "sharp"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "The unit of currency used in the United Kingdom and its dependencies. It is divided into 100 pence.",
+            "synonyms": [
+              "GBP",
+              "nicker",
+              "pound sterling",
+              "quid",
+              "£"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of various units of currency used in Egypt and Lebanon, and formerly in the Republic of Ireland, Cyprus and Israel.",
+            "synonyms": [
+              "punt"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of various units of currency formerly used in the United States.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the Rhode Island pound; the New Hampshire pound"
+          },
+          {
+            "definition": "Abbreviation for pound-force, a unit of force/weight. Using this abbreviation to describe pound-force is inaccurate and unscientific.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "GBP",
+          "nicker",
+          "pound sterling",
+          "quid",
+          "£",
+          "hash",
+          "sharp",
+          "lb",
+          "lb t",
+          "punt"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/pound"
+    ]
+  },
+  {
+    "word": "pound",
+    "phonetic": "/paʊnd/",
+    "phonetics": [
+      {
+        "text": "/paʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755195",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A place for the detention of stray or wandering animals. An animal shelter.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A place for the detention of automobiles that have been illegally parked, abandoned, etc. Short form of impound.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A section of a canal between two adjacent locks.",
+            "synonyms": [
+              "reach"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A kind of fishing net, having a large enclosure with a narrow entrance into which fish are directed by wings spreading outward.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "reach"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To confine in, or as in, a pound; to impound.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/pound"
+    ]
+  },
+  {
+    "word": "pound",
+    "phonetic": "/paʊnd/",
+    "phonetics": [
+      {
+        "text": "/paʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755195",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A hard blow.",
+            "synonyms": [
+              "pounding"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "pounding"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To strike hard, usually repeatedly.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To crush to pieces; to pulverize.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To eat or drink very quickly.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You really pounded that beer!"
+          },
+          {
+            "definition": "To pitch consistently to a certain location.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The pitcher has been pounding the outside corner all night."
+          },
+          {
+            "definition": "(of a body part, generally heart, blood, or head) To beat strongly or throb.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "As I tiptoed past the sleeping dog, my heart was pounding but I remained silent."
+          },
+          {
+            "definition": "To penetrate sexually, with vigour.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I was pounding her all night!"
+          },
+          {
+            "definition": "To advance heavily with measured steps.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To make a jarring noise, as when running.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The engine pounds."
+          },
+          {
+            "definition": "To wager a pound on.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "pulverate",
+          "triturate",
+          "bolt",
+          "chug",
+          "down",
+          "drill",
+          "get up in",
+          "nail",
+          "poke",
+          "hammer",
+          "pelt"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/pound"
+    ]
+  }
+]

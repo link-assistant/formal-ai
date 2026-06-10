@@ -1,0 +1,62 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (minuscule)
+      definitions
+        entry
+          definition "Already-produced durable goods available for use as a factor of production, such as steam shovels (equipment) and office buildings (structures)."
+        entry
+          definition "Money and wealth. The means to acquire goods and services, especially in a non-barter system."
+          example "He does not have enough capital to start a business."
+        entry
+          definition "A city designated as a legislative seat by the government or some other authority, often the city in which the government is located; otherwise the most important city within a country or a subdivision of it."
+          example "The Welsh government claims that Cardiff is Europe’s youngest capital."
+        entry
+          definition "The most important city in the field specified."
+        entry
+          definition "An uppercase letter."
+        entry
+          definition "The uppermost part of a column."
+        entry
+          definition "Knowledge; awareness; proficiency."
+          example "Interpreters need a good amount of cultural capital in order to function efficiently in the profession."
+        entry
+          definition "(by extension) The chief or most important thing."
+      partOfSpeech noun
+      synonyms (caps majuscule)
+    entry
+      antonyms (lower-case)
+      definitions
+        entry
+          definition "Of prime importance."
+        entry
+          definition "Chief, in a political sense, as being the seat of the general government of a state or nation."
+          example "London and Paris are capital cities."
+        entry
+          definition Excellent.
+          example "That is a capital idea!"
+        entry
+          definition "Involving punishment by death."
+        entry
+          antonyms (lower-case)
+          definition Uppercase.
+          example "One begins a sentence with a capital letter."
+        entry
+          definition "Of or relating to the head."
+      partOfSpeech adjective
+  phonetic "/ˈkæp.ɪ.təl/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkæp.ɪ.təl/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/capital-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1648213"
+  sourceUrls ("https://en.wiktionary.org/wiki/capital")
+  word capital

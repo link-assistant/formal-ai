@@ -1,0 +1,97 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An abstract entity used to describe quantity."
+          example "Zero, one, −1, 2.5, and pi are all numbers."
+        entry
+          definition "A numeral: a symbol for a non-negative integer."
+          example "The number 8 is usually made with a single stroke."
+        entry
+          definition "An element of one of several sets: natural numbers, integers, rational numbers, real numbers, complex numbers, and sometimes extensions such as hypercomplex numbers, etc."
+          example "The equation e^{i\\pi}+1=0 includes the most important numbers: 1, 0, \\pi, i, and e."
+        entry
+          definition '(Followed by a numeral; used attributively) Indicating the position of something in a list or sequence. Abbreviations: No or No., no or no. (in each case, sometimes written with a superscript "o", like Nº or №). The symbol "#" is also used in this manner.'
+          example "Horse number 5 won the race."
+        entry
+          definition Quantity.
+          example "Any number of people can be reading from a given repository at a time."
+        entry
+          definition "A sequence of digits and letters used to register people, automobiles, and various other items."
+          example "Her passport number is C01X864TN."
+        entry
+          definition "A telephone number."
+        entry
+          definition "(grammar) Of a word or phrase, the state of being singular, dual or plural, shown by inflection."
+          example "Adjectives and nouns should agree in gender, number, and case."
+        entry
+          definition "(in the plural) Poetic metres; verses, rhymes."
+        entry
+          definition "A performance; especially, a single song or song and dance routine within a larger show."
+          example 'For his second number, he sang "The Moon Shines Bright".'
+        entry
+          definition "A person."
+        entry
+          definition "An item of clothing, particularly a stylish one."
+        entry
+          definition "A marijuana cigarette, or joint; also, a quantity of marijuana bought form a dealer."
+        entry
+          definition "An issue of a periodical publication."
+          example "the latest number of a magazine"
+        entry
+          definition "A large amount, in contrast to a smaller amount; numerical preponderance."
+      partOfSpeech noun
+      synonyms (numeral rime scalar)
+    entry
+      definitions
+        entry
+          definition "To label (items) with numbers; to assign numbers to (items)."
+          example "Number the baskets so that we can find them easily."
+        entry
+          definition "To total or count; to amount to."
+          example "I don’t know how many books are in the library, but they must number in the thousands."
+      partOfSpeech verb
+  phonetic "/ˈnʌmbə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈnʌmbə/"
+    entry
+      audio ""
+      text "/ˈnʌmbɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/number")
+  word number
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (sensible sensitive)
+      definitions
+        entry
+          definition "Physically unable to feel, not having the power of sensation."
+          example "fingers numb with cold"
+          synonyms (deadened insensible)
+        entry
+          definition "Emotionally unable to feel or respond in a normal way."
+          example "numb with shock; numb with boredom"
+          synonyms (stunned)
+        entry
+          definition "Causing numbness."
+      partOfSpeech adjective
+      synonyms (deadened insensible stunned)
+  phonetic "/ˈnʌmə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈnʌmə/"
+    entry
+      audio ""
+      text "/ˈnʌmɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/numb" "https://en.wiktionary.org/wiki/number")
+  word number

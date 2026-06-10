@@ -1,0 +1,164 @@
+[
+  {
+    "word": "invest",
+    "phonetic": "/ɪnˈvɛst/",
+    "phonetics": [
+      {
+        "text": "/ɪnˈvɛst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/invest-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88517632",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ɪnˈvɛst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/invest-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755167",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To spend money, time, or energy on something, especially for some benefit or purpose; used with in.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We'd like to thank all the contributors who have invested countless hours into this event."
+          },
+          {
+            "definition": "To clothe or wrap (with garments).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To put on (clothing).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To envelop, wrap, cover.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To commit money or capital in the hope of financial gain.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To ceremonially install someone in some office.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To formally give (someone) some power or authority.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To formally give (power or authority).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To surround, accompany, or attend.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To lay siege to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to invest a town"
+          },
+          {
+            "definition": "To make investments.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To prepare for lost wax casting by creating an investment mold (a mixture of a silica sand and plaster).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be involved in; to form strong attachments to.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "besiege",
+          "beclothe",
+          "don",
+          "dress"
+        ],
+        "antonyms": [
+          "divest",
+          "disinvest",
+          "divest",
+          "divest"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/invest"
+    ]
+  },
+  {
+    "word": "invest",
+    "phonetic": "/ɪnˈvɛst/",
+    "phonetics": [
+      {
+        "text": "/ɪnˈvɛst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/invest-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88517632",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ɪnˈvɛst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/invest-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755167",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An unnamed tropical weather pattern \"to investigate\" for development into a significant (named) system.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/invest"
+    ]
+  }
+]

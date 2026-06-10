@@ -1,0 +1,136 @@
+[
+  {
+    "word": "ruby",
+    "phonetic": "[ˈɹuːbi]",
+    "phonetics": [
+      {
+        "text": "[ˈɹuːbi]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ruby-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=87241182",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A clear, deep, red variety of corundum, valued as a precious stone.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A red spinel.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A deep red colour.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The tincture red or gules.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The size of type between pearl and nonpareil, standardized as 5½-point.",
+            "synonyms": [
+              "agate"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A ruby hummer, a South American hummingbird, Clytolaema rubricauda.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A red bird-of-paradise, Paradisaea rubra.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "agate"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To make red; to redden.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of a deep red colour.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ruby"
+    ]
+  },
+  {
+    "word": "ruby",
+    "phonetic": "[ˈɹuːbi]",
+    "phonetics": [
+      {
+        "text": "[ˈɹuːbi]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ruby-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=87241182",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A pronunciation guide written above or beside Chinese or Japanese characters.",
+            "synonyms": [
+              "rubi"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "rubi"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ruby"
+    ]
+  }
+]

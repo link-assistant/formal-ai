@@ -1,0 +1,82 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A variety of lettuce with long, crisp leaves."
+      partOfSpeech noun
+  phonetic "/kɒs/"
+  phonetics
+    entry
+      audio ""
+      text "/kɒs/"
+    entry
+      audio ""
+      text "/kɑs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/cos")
+  word cos
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Because
+      partOfSpeech conjunction
+  phonetic "/kɒz/"
+  phonetics
+    entry
+      audio ""
+      text "/kɒz/"
+    entry
+      audio ""
+      text "/kəz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/cos")
+  word cos
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A cousin, cuz."
+      partOfSpeech noun
+  phonetic "/kʌz/"
+  phonetics
+    entry
+      audio ""
+      text "/kʌz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/cos")
+  word cos
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A team; a group of people who work together professionally."
+        entry
+          definition "A small group of birds or animals."
+        entry
+          definition "An entity having legal personality, and thus able to own property and to sue and be sued in its own name; a corporation."
+        entry
+          definition "Any business, whether incorporated or not, that manufactures or sells products (also known as goods), or provides services as a commercial venture."
+        entry
+          definition "Social visitors or companions."
+          example "Keep the house clean; I have company coming."
+        entry
+          definition Companionship.
+          example "I treasure your company."
+      partOfSpeech noun
+      synonyms (fellowship friendship mateship association companionship fellowship organization society corporation)
+  sourceUrls ("https://en.wiktionary.org/wiki/co" "https://en.wiktionary.org/wiki/company" "https://en.wiktionary.org/wiki/cos")
+  word cos

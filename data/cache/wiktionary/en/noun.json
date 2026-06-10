@@ -1,0 +1,61 @@
+[
+  {
+    "word": "noun",
+    "phonetic": "/naʊn/",
+    "phonetics": [
+      {
+        "text": "/naʊn/",
+        "audio": ""
+      },
+      {
+        "text": "/naʊn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(grammar, narrow sense) A word that can be used to refer to a person, animal, place, thing, phenomenon, substance, quality, or idea; one of the basic parts of speech in many languages, including English.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(grammar, now rare, broad sense) Either a word that can be used to refer to a person, animal, place, thing, phenomenon, substance, quality or idea, or a word that modifies or describes a previous word or its referent; a substantive or adjective, sometimes also including other parts of speech such as numeral or pronoun.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "name",
+          "nameword",
+          "naming word",
+          "noun substantive",
+          "substantive",
+          "substantive noun"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To convert a word to a noun.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/noun"
+    ]
+  }
+]

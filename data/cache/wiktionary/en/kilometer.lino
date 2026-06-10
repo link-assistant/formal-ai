@@ -1,0 +1,25 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(official BIPM spelling, Australian, New Zealand, Irish, Indian and South African spelling) An SI unit of length equal to 103 metres. Symbol: km"
+      partOfSpeech noun
+      synonyms (SI km klick)
+  phonetic "/kɪˈlɒmɪtə/"
+  phonetics
+    entry
+      audio ""
+      text "/kɪˈlɒmɪtə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/kilometer-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762971"
+      text "/kəˈlɑmɪtəɹ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/kilometer" "https://en.wiktionary.org/wiki/kilometre")
+  word kilometer

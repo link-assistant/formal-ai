@@ -1,0 +1,51 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (nay nay no)
+      definitions
+        entry
+          antonyms (nay no)
+          definition "An affirmative expression; an answer that shows agreement or acceptance."
+          example "Was that a yes?"
+          synonyms (aye nod yea)
+        entry
+          antonyms (nay)
+          definition "A vote of support or in favor/favour of something."
+          example 'The workers voted on whether to strike, and there were thirty "yeses" and one "no".'
+          synonyms (aye yea)
+      partOfSpeech noun
+      synonyms (aye nod yea aye yea)
+    entry
+      definitions
+        entry
+          definition "To agree with, affirm, approve."
+          example "Did he yes the veto?"
+          synonyms (agree consent nod)
+        entry
+          definition "To attempt to flatter someone by habitually agreeing"
+      partOfSpeech verb
+      synonyms (agree consent nod)
+    entry
+      antonyms (no)
+      definitions
+        entry
+          antonyms (no)
+          definition "Used to express pleasure, joy, or great excitement."
+          example "Our second goal of the match! Yes!"
+        entry
+          definition "Response that confirms that the user is paying attention."
+      partOfSpeech interjection
+  phonetic "/jɛs/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/yes.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718836"
+      text "/jɛs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/yes")
+  word yes

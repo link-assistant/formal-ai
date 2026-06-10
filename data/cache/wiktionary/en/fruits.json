@@ -1,0 +1,84 @@
+[
+  {
+    "word": "fruits",
+    "phonetic": "/fɹuːts/",
+    "phonetics": [
+      {
+        "text": "/fɹuːts/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/fruits-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100429",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(often in the plural) In general, a product of plant growth useful to man or animals.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Specifically, a sweet, edible part of a plant that resembles seed-bearing fruit (see next sense), even if it does not develop from a floral ovary; also used in a technically imprecise sense for some sweet or sweetish vegetables, such as the petioles of rhubarb, that resemble a true fruit or are used in cookery as if they were a fruit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A product of fertilization in a plant, specifically:",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An end result, effect, or consequence; advantageous or disadvantageous result.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "His long nights in the office eventually bore fruit when his business boomed and he was given a raise."
+          },
+          {
+            "definition": "Of, belonging to, related to, or having fruit or its characteristics; (of living things) producing or consuming fruit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the fresh-squeezed fruit juice; a fruit salad; an artificial fruit flavor; a fruit tree; a fruit bat"
+          },
+          {
+            "definition": "A homosexual man; an effeminate man.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Offspring from a sexual union.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Blessed art thou amongst women and blessed is the fruit of thy womb."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To produce fruit, seeds, or spores.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/fruit",
+      "https://en.wiktionary.org/wiki/fruits"
+    ]
+  }
+]

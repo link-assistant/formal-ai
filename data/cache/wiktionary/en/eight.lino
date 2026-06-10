@@ -1,0 +1,59 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit/figure 8."
+        entry
+          definition "Any of the four cards in a normal deck with the value eight."
+        entry
+          definition "A light, narrow rowing boat, especially one used in competitive rowing, steered by a cox, in which eight rowers each have two oars."
+        entry
+          definition "(especially in plural) A race in which such craft participate."
+        entry
+          definition "The eight people who crew a rowing-boat."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value equal to 8; the number occurring after seven and before nine."
+        entry
+          definition "Describing a group or set with eight elements."
+          example "He works eight hours a day."
+      partOfSpeech numeral
+    entry
+      definitions
+        entry
+          definition "The ordinal form of the number eight."
+      partOfSpeech adjective
+      synonyms (8th VIII VIIIth)
+  phonetic "/eɪt/"
+  phonetics
+    entry
+      audio ""
+      text "/eɪt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/eight-1-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=867490"
+      text "/eɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/eight" "https://en.wiktionary.org/wiki/eighth")
+  word eight
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An island in a river, especially the River Thames in England."
+      partOfSpeech noun
+      synonyms (eyot)
+  sourceUrls ("https://en.wiktionary.org/wiki/ait" "https://en.wiktionary.org/wiki/eight")
+  word eight
