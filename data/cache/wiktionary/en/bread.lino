@@ -1,0 +1,141 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A foodstuff made by baking dough made from cereals."
+        entry
+          definition "Any variety of bread."
+        entry
+          definition Money.
+        entry
+          definition "Food; sustenance; support of life, in general."
+      partOfSpeech noun
+      synonyms (dough "folding stuff" lolly paper spondulicks wonga)
+    entry
+      definitions
+        entry
+          definition "To coat with breadcrumbs"
+      partOfSpeech verb
+  phonetic "/bɹeːd/"
+  phonetics
+    entry
+      audio ""
+      text "/bɹeːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014291"
+      text "/bɹɛd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=502023"
+      text "/bɹɛd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bread")
+  word bread
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Breadth.
+      partOfSpeech noun
+  phonetic "/bɹeːd/"
+  phonetics
+    entry
+      audio ""
+      text "/bɹeːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014291"
+      text "/bɹɛd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=502023"
+      text "/bɹɛd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bread")
+  word bread
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To make broad; spread."
+      partOfSpeech verb
+  phonetic "/bɹeːd/"
+  phonetics
+    entry
+      audio ""
+      text "/bɹeːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014291"
+      text "/bɹɛd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=502023"
+      text "/bɹɛd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bread")
+  word bread
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A piece of embroidery; a braid."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To form in meshes; net."
+      partOfSpeech verb
+  phonetic "/bɹeːd/"
+  phonetics
+    entry
+      audio ""
+      text "/bɹeːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9014291"
+      text "/bɹɛd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/bread-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=502023"
+      text "/bɹɛd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/bread")
+  word bread

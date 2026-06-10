@@ -1,0 +1,25 @@
+view
+  id M-b59cda06553f
+  lemma backup
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an accumulation caused by clogging or a stoppage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone who takes the place of another (as when things get dangerous or difficult)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a musical part (vocal or instrumental) that supports or provides background for other musical parts"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a copy of a file or directory on a separate storage device"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of providing approval and support"
+    provenance (wordnet)

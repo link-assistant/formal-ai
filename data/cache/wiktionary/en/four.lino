@@ -1,0 +1,65 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit or figure 4; an occurrence thereof."
+        entry
+          definition "Anything measuring four units, as length."
+          example "Do you have any more fours? I want to make this a little taller."
+        entry
+          definition "A person who is four years old."
+          example "I'll take the threes, fours and fives and go to the playground."
+        entry
+          definition "An event in which the batsmen run four times between the wickets or, more often, a batsman hits a ball which bounces on the ground before passing over a boundary, resulting in an award of 4 runs for the batting team. If the ball does not bounce before passing over the boundary, a six is awarded instead."
+        entry
+          definition "A power forward."
+        entry
+          definition "Four-man sweep racing shell, with or without a coxswain."
+        entry
+          definition "A four-pennyworth of spirits."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value equal to 4; the number after three and before five; two plus two. This many dots (••••)"
+          example "There are four seasons: winter, spring, summer and autumn."
+        entry
+          definition "Describing a set or group with four elements."
+      partOfSpeech numeral
+  phonetic "/foː/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/four-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75899456"
+      text "/foː/"
+    entry
+      audio ""
+      text "/foː/"
+    entry
+      audio ""
+      text "/fo(ː)ɹ/"
+    entry
+      audio ""
+      text "/fo(ː)ɹ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/four-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=26829452"
+      text "/fɔɹ/"
+    entry
+      audio ""
+      text "/foə/"
+    entry
+      audio ""
+      text "/fo(ː)ɹ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/four")
+  word four

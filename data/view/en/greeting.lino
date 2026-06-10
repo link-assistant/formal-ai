@@ -1,0 +1,9 @@
+view
+  id M-9d150084edb4
+  lemma greeting
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) an acknowledgment or expression of good will (especially on meeting)"
+    provenance (wordnet)

@@ -1,0 +1,16 @@
+language en
+lemma brainstorm
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the clear (and often sudden) understanding of a complex situation"
+    id oewn-05815314-n
+    partOfSpeech n
+    synonyms (insight brainwave)
+  entry
+    definition "try to solve a problem by thinking intensely about it"
+    id oewn-00631885-v
+    partOfSpeech v
+source "oewn:2024"

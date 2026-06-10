@@ -1,0 +1,24 @@
+language en
+lemma explain
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make plain and comprehensible"
+    examples ("He explained the laws of physics to his students")
+    id oewn-00941308-v
+    partOfSpeech v
+    synonyms (explicate)
+  entry
+    definition define
+    examples ("The committee explained their plan for fund-raising to the Dean")
+    id oewn-01067478-v
+    partOfSpeech v
+  entry
+    definition "serve as a reason or cause or justification of"
+    examples ("Your need to sleep late does not excuse your late arrival at work" "Her recent divorce may explain her reluctance to date again")
+    id oewn-00894956-v
+    partOfSpeech v
+    synonyms (excuse)
+source "oewn:2024"

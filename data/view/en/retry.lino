@@ -1,0 +1,9 @@
+view
+  id M-110467075525
+  lemma retry
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hear or try a court case anew"
+    provenance (wordnet)

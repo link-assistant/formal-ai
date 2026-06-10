@@ -1,0 +1,60 @@
+{
+  "lemma": "request",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06525357-n",
+      "partOfSpeech": "n",
+      "definition": "a formal message requesting something that is submitted to an authority",
+      "synonyms": [
+        "petition",
+        "postulation"
+      ]
+    },
+    {
+      "id": "oewn-07199985-n",
+      "partOfSpeech": "n",
+      "definition": "the verbal act of requesting",
+      "synonyms": [
+        "asking"
+      ]
+    },
+    {
+      "id": "oewn-00754770-v",
+      "partOfSpeech": "v",
+      "definition": "express the need or desire for",
+      "examples": [
+        "She requested an extra bed in her room",
+        "She called for room service",
+        "when you call, always ask for Mary"
+      ],
+      "synonyms": [
+        "ask for",
+        "bespeak",
+        "call for",
+        "quest"
+      ]
+    },
+    {
+      "id": "oewn-00755473-v",
+      "partOfSpeech": "v",
+      "definition": "ask (a person) to do something",
+      "examples": [
+        "I requested that she type the entire manuscript"
+      ]
+    },
+    {
+      "id": "oewn-01071831-v",
+      "partOfSpeech": "v",
+      "definition": "inquire for (information)",
+      "examples": [
+        "I requested information from the secretary"
+      ]
+    }
+  ]
+}

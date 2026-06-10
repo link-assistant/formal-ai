@@ -1,0 +1,21 @@
+view
+  id M-449a815afbcf
+  lemma verify
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "confirm the truth of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "check or regulate (a scientific experiment) by conducting a parallel experiment or comparing with another standard"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attach or append a legal verification to (a pleading or petition)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to declare or affirm solemnly and formally as true"
+    provenance (wordnet)

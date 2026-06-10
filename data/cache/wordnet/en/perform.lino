@@ -1,0 +1,29 @@
+language en
+lemma perform
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "carry out or perform an action"
+    examples ("John did the painting, the weeding, and he cleaned out the gutters" "the skater executed a triple pirouette" "she did a little dance")
+    id oewn-01716563-v
+    partOfSpeech v
+    synonyms (execute do)
+  entry
+    definition "perform a function"
+    examples ("Who will perform the wedding?")
+    id oewn-02379855-v
+    partOfSpeech v
+  entry
+    definition "give a performance (of something)"
+    examples ("Horowitz is performing at Carnegie Hall tonight" "We performed a popular Gilbert and Sullivan opera")
+    id oewn-01718067-v
+    partOfSpeech v
+  entry
+    definition "get (something) done"
+    examples ("I did my job")
+    id oewn-02567910-v
+    partOfSpeech v
+    synonyms (do)
+source "oewn:2024"

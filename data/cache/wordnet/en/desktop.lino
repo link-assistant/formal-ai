@@ -1,0 +1,16 @@
+language en
+lemma desktop
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the top of a desk"
+    id oewn-08681441-n
+    partOfSpeech n
+  entry
+    definition "(computer science) the area of the screen in graphical user interfaces against which icons and windows appear"
+    id oewn-02772080-n
+    partOfSpeech n
+    synonyms (background "screen background")
+source "oewn:2024"

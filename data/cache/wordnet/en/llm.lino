@@ -1,0 +1,12 @@
+language en
+lemma llm
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an advanced law degree"
+    id oewn-06717753-n
+    partOfSpeech n
+    synonyms ("Master of Laws")
+source "oewn:2024"

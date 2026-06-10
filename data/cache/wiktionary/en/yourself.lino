@@ -1,0 +1,28 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(reflexive pronoun) Your own self (singular)."
+          example "Be careful with that fire or you'll burn yourself."
+        entry
+          definition "You (singular); used emphatically, especially to indicate exclusiveness of the referent's participation in the predicate, i.e., that no one else is involved."
+          example "After a good night's sleep you'll feel like yourself again."
+      partOfSpeech pronoun
+  phonetic "/jɔːˈsɛlf/"
+  phonetics
+    entry
+      audio ""
+      text "/jɔːˈsɛlf/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/yourself-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1222245"
+      text "/jɔɹˈsɛlf/"
+  sourceUrls ("https://en.wiktionary.org/wiki/yourself")
+  word yourself

@@ -1,0 +1,23 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Anything that plugs into something."
+        entry
+          definition "A module or device that interacts with another to add a specific feature or function."
+        entry
+          definition "An electric vehicle that can be recharged from an external power source."
+          synonyms (PEV)
+      partOfSpeech noun
+      synonyms (PEV add-in add-on snap-in)
+  phonetic "/ˈplʌɡɪn/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈplʌɡɪn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/plug-in" "https://en.wiktionary.org/wiki/plugin")
+  word plugin

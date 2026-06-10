@@ -1,0 +1,17 @@
+view
+  id M-c738a36d6e3e
+  lemma concept
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "An abstract and general idea; an abstraction."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Understanding retained in the mind, from experience, reasoning and imagination; a generalization (generic, basic form), or abstraction (mental impression), of a particular set of instances or occurrences (specific, though different, recorded manifestations of the concept)."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "In generic programming, a description of supported operations on a type, including their syntax and semantics."
+    provenance (wiktionary)

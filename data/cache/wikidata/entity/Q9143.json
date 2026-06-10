@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q9143": {
+      "type": "item",
+      "id": "Q9143",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "编程语言"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "language for communicating instructions to a machine"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык для записи и хранения компьютерных программ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用於將指令傳達給機器的語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "computer language"
+          },
+          {
+            "language": "en",
+            "value": "computer programming language"
+          },
+          {
+            "language": "en",
+            "value": "coding language"
+          },
+          {
+            "language": "en",
+            "value": "computer programming"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "編程語言"
+          },
+          {
+            "language": "zh",
+            "value": "程式語言"
+          },
+          {
+            "language": "zh",
+            "value": "程序设计语言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

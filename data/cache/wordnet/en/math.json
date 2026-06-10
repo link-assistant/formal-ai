@@ -1,0 +1,20 @@
+{
+  "lemma": "math",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06009822-n",
+      "partOfSpeech": "n",
+      "definition": "a science (or group of related sciences) dealing with the logic of quantity and shape and arrangement",
+      "synonyms": [
+        "mathematics",
+        "maths"
+      ]
+    }
+  ]
+}

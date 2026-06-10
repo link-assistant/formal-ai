@@ -1,0 +1,21 @@
+view
+  id M-0322d97ec937
+  lemma role
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the actions and activities assigned to or required or expected of a person or group"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an actor's portrayal of someone in a play"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "what something is used for"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "normal or customary activity of a person in a particular social setting"
+    provenance (wordnet)

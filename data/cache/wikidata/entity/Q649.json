@@ -1,0 +1,151 @@
+{
+  "entities": {
+    "Q649": {
+      "type": "item",
+      "id": "Q649",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Moscow"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मास्को"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "莫斯科"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Москва"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital and most populous city of Russia"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूस देश की राजधानी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄羅斯聯邦的首都"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "cтолица и крупнейший город России, город федерального значения РФ"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Moscow, Russia"
+          },
+          {
+            "language": "en",
+            "value": "Moskva Federal City, Russia"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, USSR"
+          },
+          {
+            "language": "en",
+            "value": "Moskva, Russia"
+          },
+          {
+            "language": "en",
+            "value": "City of Moscow"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Russian Federation"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Soviet Union"
+          },
+          {
+            "language": "en",
+            "value": "Moscow, Russian SFSR"
+          },
+          {
+            "language": "en",
+            "value": "Москва"
+          },
+          {
+            "language": "en",
+            "value": "Moskva, Rossiya"
+          },
+          {
+            "language": "en",
+            "value": "Mosky"
+          },
+          {
+            "language": "en",
+            "value": "Moskovĭ"
+          },
+          {
+            "language": "en",
+            "value": "Moskvi"
+          },
+          {
+            "language": "en",
+            "value": "Moskve"
+          },
+          {
+            "language": "en",
+            "value": "Moskvë"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Первопрестольная"
+          },
+          {
+            "language": "ru",
+            "value": "Порт пяти морей"
+          },
+          {
+            "language": "ru",
+            "value": "Москва (город)"
+          },
+          {
+            "language": "ru",
+            "value": "Москва, Россия"
+          },
+          {
+            "language": "ru",
+            "value": "Москва (Россия)"
+          },
+          {
+            "language": "ru",
+            "value": "Третий Рим"
+          },
+          {
+            "language": "ru",
+            "value": "Нерезиновая"
+          },
+          {
+            "language": "ru",
+            "value": "МСК"
+          },
+          {
+            "language": "ru",
+            "value": "Златоглавая"
+          },
+          {
+            "language": "ru",
+            "value": "Белокаменная"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

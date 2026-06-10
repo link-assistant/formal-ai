@@ -1,0 +1,21 @@
+view
+  id M-26f6949f3799
+  lemma chat
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an informal conversation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "birds having a chattering call"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "songbirds having a chattering call"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "talk socially without exchanging too much information"
+    provenance (wordnet)

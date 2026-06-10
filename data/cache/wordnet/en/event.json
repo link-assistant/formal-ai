@@ -1,0 +1,51 @@
+{
+  "lemma": "event",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00029677-n",
+      "partOfSpeech": "n",
+      "definition": "something that happens at a given place and time"
+    },
+    {
+      "id": "oewn-13966452-n",
+      "partOfSpeech": "n",
+      "definition": "a special set of circumstances",
+      "examples": [
+        "in that event, the first possibility is excluded",
+        "it may rain in which case the picnic will be canceled"
+      ],
+      "synonyms": [
+        "case"
+      ]
+    },
+    {
+      "id": "oewn-11474277-n",
+      "partOfSpeech": "n",
+      "definition": "a phenomenon located at a single point in space-time; the fundamental observational entity in relativity theory"
+    },
+    {
+      "id": "oewn-11430739-n",
+      "partOfSpeech": "n",
+      "definition": "a phenomenon that follows and is caused by some previous phenomenon",
+      "examples": [
+        "the magnetic effect was greater when the rod was lengthwise",
+        "his decision had depressing consequences for business",
+        "he acted very wise after the event"
+      ],
+      "synonyms": [
+        "consequence",
+        "effect",
+        "outcome",
+        "result",
+        "issue",
+        "upshot"
+      ]
+    }
+  ]
+}

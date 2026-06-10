@@ -1,0 +1,18 @@
+Q10998
+  aliases
+    en ("potato plant" tater tattie spud "Solanum tuberosum")
+    ru ("картошка" "Паслён клубненосный" "Solanum tuberosum" "картофель европейский" "картофель клубненосный" "картофель чилийский")
+    zh ("土豆" "土豆植物" "馬鈴薯" "阳芋" "荷兰薯" "洋芋" "山药豆" "山药蛋" "地蛋" "阳芋（马铃薯）" "薯仔" "蕳砃" "甘丹" "蕳砃薯")
+  descriptions
+    en "species of plant (for the food, use Q16587531)"
+    hi "सबज़ी"
+    ru "вид растений семейства Паслёновые (Solanaceae)"
+    zh "茄科茄属植物"
+  id Q10998
+  labels
+    en potato
+    hi "आलू"
+    ru "картофель"
+    zh "马铃薯"
+  type item
+success 1

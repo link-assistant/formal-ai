@@ -1,0 +1,15 @@
+Q37227
+  aliases
+    en ("Go programming language")
+    zh ("Go語言" "Go语言")
+  descriptions
+    en "programming language developed by Google and the open-source community"
+    hi "प्रोग्रामिंग भाषा"
+    ru "компилируемый многопоточный язык программирования"
+    zh "編程語言"
+  id Q37227
+  labels
+    en Go
+    ru Go
+  type item
+success 1

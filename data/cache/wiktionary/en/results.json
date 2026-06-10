@@ -1,0 +1,96 @@
+[
+  {
+    "word": "results",
+    "phonetic": "/ɹɪˈzʌlts/",
+    "phonetics": [
+      {
+        "text": "/ɹɪˈzʌlts/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/results-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1669343",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "That which results; the conclusion or end to which any course or condition of things leads, or which is obtained by any process or operation; consequence or effect.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the result of a course of action;  the result of a mathematical operation"
+          },
+          {
+            "definition": "The fruit, beneficial or tangible effect(s) achieved by effort.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The decision or determination of a council or deliberative assembly; a resolve; a decree.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A flying back; resilience.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The final score in a game.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) A positive or favourable outcome for someone.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To proceed, spring up or rise, as a consequence, from facts, arguments, premises, combination of circumstances, consultation, thought or endeavor.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(followed by \"in\") To have as a consequence; to lead to; to bring about",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This measure will result in good or in evil."
+          },
+          {
+            "definition": "To return to the proprietor (or heirs) after a reversion.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To leap back; to rebound.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "arise",
+          "follow"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/result",
+      "https://en.wiktionary.org/wiki/results"
+    ]
+  }
+]

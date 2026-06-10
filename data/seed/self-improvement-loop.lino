@@ -1,8 +1,8 @@
 self_improvement_loop_issue_364
-  record_type "self_improvement_loop"
-  id "issue_364_unknown_trace_learning"
+  record_type self_improvement_loop
+  id issue_364_unknown_trace_learning
   title "White-box learning from accumulated unknown traces"
-  trigger "periodic_or_manual"
+  trigger periodic_or_manual
   input "unknown_trace event logs from diagnostics and memory export"
   synthesis_source "rule_synthesis_candidate events produced by unknown-path construction"
   verification_gate "rule_verification status passed"
@@ -10,4 +10,4 @@ self_improvement_loop_issue_364
   adoption_policy "propose human-readable Links Notation seed rules; append to seed only after verification and benchmark gates pass"
   learned_rule_format "program-plan substitution_rules with event learned"
   review_surface "self_improvement_run links_notation"
-  default_state "proposal_only"
+  default_state proposal_only

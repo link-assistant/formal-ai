@@ -1,0 +1,17 @@
+view
+  id M-d63a5c18dcc8
+  lemma merge
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become one"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mix together different elements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "join or combine"
+    provenance (wordnet)

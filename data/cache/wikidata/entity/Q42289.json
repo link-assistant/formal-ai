@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "Q42289": {
+      "type": "item",
+      "id": "Q42289",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "degree Fahrenheit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "градус Фаренгейта"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फॉरेन्हाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "华氏温标"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of temperature"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения температуры в англоязычных странах"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Fahrenheit"
+          },
+          {
+            "language": "en",
+            "value": "°F"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "°F"
+          },
+          {
+            "language": "ru",
+            "value": "Фаренгейт"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फारनहाइट"
+          },
+          {
+            "language": "hi",
+            "value": "फैरनहाइट"
+          },
+          {
+            "language": "hi",
+            "value": "फैरेनहाइट"
+          },
+          {
+            "language": "hi",
+            "value": "Fahrenheit"
+          },
+          {
+            "language": "hi",
+            "value": "फ़ैरनहाइट"
+          },
+          {
+            "language": "hi",
+            "value": "फ़ैरन्हाइट"
+          },
+          {
+            "language": "hi",
+            "value": "फारेनहाइट"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "华氏度"
+          },
+          {
+            "language": "zh",
+            "value": "°F"
+          },
+          {
+            "language": "zh",
+            "value": "華氏寒暑表"
+          },
+          {
+            "language": "zh",
+            "value": "華氏"
+          },
+          {
+            "language": "zh",
+            "value": "℉"
+          },
+          {
+            "language": "zh",
+            "value": "華氏度"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,61 @@
+[
+  {
+    "word": "dollar",
+    "phonetic": "/dɔlɚ/",
+    "phonetics": [
+      {
+        "text": "/dɔlɚ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈdɒlə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈdɑlɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/dollar-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100698",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Official designation for currency in some parts of the world, including Canada, the United States, Australia, New Zealand, Hong Kong, and elsewhere. Its symbol is $.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) Money generally.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A quarter of a pound or one crown, historically minted as a coin of approximately the same size and composition as a then-contemporary dollar coin of the United States, and worth slightly more.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Imported from the United States, and paid for in U.S. dollars. (Note: distinguish \"dollar wheat\", North American farmers' slogan, meaning a market price of one dollar per bushel.)",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/dollar"
+    ]
+  }
+]

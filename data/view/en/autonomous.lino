@@ -1,0 +1,17 @@
+view
+  id M-dd6a37c63e28
+  lemma autonomous
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of political bodies) not controlled by outside forces"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "existing as an independent entity"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of persons) free from external control and constraint in e.g. action and judgment"
+    provenance (wordnet)

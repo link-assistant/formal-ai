@@ -1,0 +1,46 @@
+{
+  "lemma": "library",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03666235-n",
+      "partOfSpeech": "n",
+      "definition": "a room where books are kept",
+      "examples": [
+        "they had brandy in the library"
+      ]
+    },
+    {
+      "id": "oewn-07994293-n",
+      "partOfSpeech": "n",
+      "definition": "a collection of literary documents or records kept for reference or borrowing"
+    },
+    {
+      "id": "oewn-03665990-n",
+      "partOfSpeech": "n",
+      "definition": "a depository built to contain books and other materials for reading and study",
+      "synonyms": [
+        "depository library"
+      ]
+    },
+    {
+      "id": "oewn-07994015-n",
+      "partOfSpeech": "n",
+      "definition": "(computing) a collection of standard programs and subroutines that are stored and available for immediate use",
+      "synonyms": [
+        "program library",
+        "subroutine library"
+      ]
+    },
+    {
+      "id": "oewn-03666369-n",
+      "partOfSpeech": "n",
+      "definition": "a building that houses a collection of books and other materials"
+    }
+  ]
+}

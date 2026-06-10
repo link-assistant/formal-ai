@@ -1,0 +1,12 @@
+language en
+lemma geography
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "study of the earth's surface; includes people's responses to topography and climate and soil and vegetation"
+    id oewn-06131785-n
+    partOfSpeech n
+    synonyms (geographics)
+source "oewn:2024"

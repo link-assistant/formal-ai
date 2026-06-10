@@ -1,0 +1,9 @@
+view
+  id M-e3cf3ec204c9
+  lemma deduplicate
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To eliminate redundant duplicate data from."
+    provenance (wiktionary)

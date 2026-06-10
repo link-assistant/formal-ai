@@ -1,0 +1,62 @@
+{
+  "lemma": "role",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00721817-n",
+      "partOfSpeech": "n",
+      "definition": "the actions and activities assigned to or required or expected of a person or group",
+      "examples": [
+        "the function of a teacher",
+        "the government must do its part",
+        "play its role"
+      ],
+      "synonyms": [
+        "function",
+        "office",
+        "part"
+      ]
+    },
+    {
+      "id": "oewn-05937794-n",
+      "partOfSpeech": "n",
+      "definition": "an actor's portrayal of someone in a play",
+      "examples": [
+        "she played the part of Desdemona"
+      ],
+      "synonyms": [
+        "character",
+        "theatrical role",
+        "part",
+        "persona"
+      ]
+    },
+    {
+      "id": "oewn-05156572-n",
+      "partOfSpeech": "n",
+      "definition": "what something is used for",
+      "examples": [
+        "the function of an auger is to bore holes",
+        "ballet is beautiful but what use is it?"
+      ],
+      "synonyms": [
+        "function",
+        "purpose",
+        "use"
+      ]
+    },
+    {
+      "id": "oewn-00723312-n",
+      "partOfSpeech": "n",
+      "definition": "normal or customary activity of a person in a particular social setting",
+      "examples": [
+        "what is your role on the team?"
+      ]
+    }
+  ]
+}

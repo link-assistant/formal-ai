@@ -1,0 +1,33 @@
+[
+  {
+    "word": "ruble",
+    "phonetic": "/ɹuːbəl/",
+    "phonetics": [
+      {
+        "text": "/ɹuːbəl/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The monetary unit of Russia, Belarus and Transnistria equal to 100 kopeks (Russian: копе́йка, Belarusian: капе́йка). The Russian ruble's symbol is ₽.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ruble"
+    ]
+  }
+]

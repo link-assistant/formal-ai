@@ -1,0 +1,13 @@
+view
+  id M-30856c06ae95
+  lemma differ
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be different"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be of different opinions"
+    provenance (wordnet)

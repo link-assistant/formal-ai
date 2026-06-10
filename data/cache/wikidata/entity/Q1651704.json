@@ -1,0 +1,113 @@
+{
+  "entities": {
+    "Q1651704": {
+      "type": "item",
+      "id": "Q1651704",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "logical disjunction"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дизъюнкция"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "逻辑或"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "logical connective OR"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "логическая связка ИЛИ"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "∨"
+          },
+          {
+            "language": "en",
+            "value": "logical OR"
+          },
+          {
+            "language": "en",
+            "value": "disjunction"
+          },
+          {
+            "language": "en",
+            "value": "OR operation"
+          },
+          {
+            "language": "en",
+            "value": "or"
+          },
+          {
+            "language": "en",
+            "value": "OR"
+          },
+          {
+            "language": "en",
+            "value": "+"
+          },
+          {
+            "language": "en",
+            "value": "inclusive or"
+          },
+          {
+            "language": "en",
+            "value": "disjunct"
+          },
+          {
+            "language": "en",
+            "value": "logical addition"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "логическое ИЛИ"
+          },
+          {
+            "language": "ru",
+            "value": "OR"
+          },
+          {
+            "language": "ru",
+            "value": "логическая дизъюнкция"
+          },
+          {
+            "language": "ru",
+            "value": "ИЛИ"
+          },
+          {
+            "language": "ru",
+            "value": "логическое сложение"
+          },
+          {
+            "language": "ru",
+            "value": "сложение"
+          },
+          {
+            "language": "ru",
+            "value": "включающее ИЛИ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "短路或"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

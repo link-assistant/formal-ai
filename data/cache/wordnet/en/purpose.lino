@@ -1,0 +1,37 @@
+language en
+lemma purpose
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an anticipated outcome that is intended or that guides your planned actions"
+    examples ("his intent was to provide a new translation" "good intentions are not enough" "it was created with the conscious aim of answering immediate needs" "he made no secret of his designs")
+    id oewn-05991037-n
+    partOfSpeech n
+    synonyms (intent intention aim design)
+  entry
+    definition "what something is used for"
+    examples ("the function of an auger is to bore holes" "ballet is beautiful but what use is it?")
+    id oewn-05156572-n
+    partOfSpeech n
+    synonyms (function role use)
+  entry
+    definition "the quality of being determined to do or achieve something; firmness of purpose"
+    examples ("his determination showed in his every movement" "he is a man of purpose")
+    id oewn-04871431-n
+    partOfSpeech n
+    synonyms (determination)
+  entry
+    definition "propose or intend"
+    examples ("I aim to arrive at noon")
+    id oewn-00710809-v
+    partOfSpeech v
+    synonyms (aim purport propose)
+  entry
+    definition "reach a decision"
+    examples ("he resolved never to drink again")
+    id oewn-00701392-v
+    partOfSpeech v
+    synonyms (resolve)
+source "oewn:2024"

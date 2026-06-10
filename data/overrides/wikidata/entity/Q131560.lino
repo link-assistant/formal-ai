@@ -1,0 +1,4 @@
+Q131560
+  reason "Wikidata carries no Hindi (hi) label for the KISS principle (Q131560); the acronym is kept in Latin script, matching the existing en and ru labels, so every supported language resolves a label."
+  labels
+    hi KISS

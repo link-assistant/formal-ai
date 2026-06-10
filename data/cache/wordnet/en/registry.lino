@@ -1,0 +1,12 @@
+language en
+lemma registry
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an official written record of names or events or transactions"
+    id oewn-06519032-n
+    partOfSpeech n
+    synonyms (register)
+source "oewn:2024"

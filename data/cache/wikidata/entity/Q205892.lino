@@ -1,0 +1,15 @@
+Q205892
+  aliases
+    en (date "day of the year")
+    ru ("день в году" "дата")
+  descriptions
+    en "particular day represented within a calendar system"
+    hi "दिनांक"
+    ru "конкретный день, представленный в календарной системе"
+  id Q205892
+  labels
+    en "calendar date"
+    ru "календарная дата"
+    zh "日期"
+  type item
+success 1

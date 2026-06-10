@@ -1,0 +1,18 @@
+Q152415
+  aliases
+    en (sin "sine function" "sin function" sinus)
+    ru ("синус угла" "функция синуса")
+    zh ("正弦比" "正弦函数")
+  descriptions
+    en "type of trigonometric function; ratio between the lengths of the opposite side and the hypotenuse in a right triangle"
+    hi "गणित में ज्या (Sine), एक त्रिकोणमितीय फलन का नाम है। समकोण त्रिभुज में समकोण के अलावा एक कोण x है तो, ज्या (x) = कोण x के सामने की भुजा की माप / कर्ण की माप￼"
+    ru "тригонометрическая функция"
+    zh "數學專用名詞"
+  id Q152415
+  labels
+    en sine
+    hi "ज्या"
+    ru "синус"
+    zh "正弦"
+  type item
+success 1

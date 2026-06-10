@@ -1,0 +1,19 @@
+language en
+lemma status
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the relative position or standing of things or especially persons in a society"
+    examples ("he had the status of a minor" "the novel attained the status of a classic" "atheists do not enjoy a favorable position in American life")
+    id oewn-13968971-n
+    partOfSpeech n
+    synonyms (position)
+  entry
+    definition "a state at a particular time"
+    examples ("a condition (or state) of disrepair" "the current status of the arms negotiations")
+    id oewn-13943868-n
+    partOfSpeech n
+    synonyms (condition)
+source "oewn:2024"

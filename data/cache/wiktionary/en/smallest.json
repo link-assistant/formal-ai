@@ -1,0 +1,117 @@
+[
+  {
+    "word": "smallest",
+    "phonetic": "/ˈsmɔːlɪst/",
+    "phonetics": [
+      {
+        "text": "/ˈsmɔːlɪst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/smallest-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2707601",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Not large or big; insignificant; few in number.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A small group."
+          },
+          {
+            "definition": "Young, as a child.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Remember when the children were small?"
+          },
+          {
+            "definition": "(writing, incomparable) Minuscule or lowercase, referring to written or printed letters.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Envincing little worth or ability; not large-minded; paltry; mean.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Not prolonged in duration; not extended in time; short.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a small space of time"
+          },
+          {
+            "definition": "Slender, gracefully slim.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "little",
+          "microscopic",
+          "minuscule",
+          "minute",
+          "tiny",
+          "lowercase",
+          "minuscule",
+          "little",
+          "wee",
+          "young"
+        ],
+        "antonyms": [
+          "big",
+          "capital",
+          "generous",
+          "large",
+          "big",
+          "capital",
+          "majuscule",
+          "uppercase",
+          "adult",
+          "grown-up",
+          "old"
+        ]
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "In a small fashion.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In or into small pieces.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To a small extent.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In a low tone; softly.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/small",
+      "https://en.wiktionary.org/wiki/smallest"
+    ]
+  }
+]

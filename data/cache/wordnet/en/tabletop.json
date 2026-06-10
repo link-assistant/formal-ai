@@ -1,0 +1,16 @@
+{
+  "lemma": "tabletop",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04388947-n",
+      "partOfSpeech": "n",
+      "definition": "the top horizontal work surface of a table"
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+language en
+lemma track
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a line or route along which something travels or moves"
+    examples ("the hurricane demolished houses in its path" "the track of an animal" "the course of the river")
+    id oewn-09410115-n
+    partOfSpeech n
+    synonyms (path course)
+  entry
+    definition "evidence pointing to a possible solution"
+    examples ("the police are following a promising lead" "the trail led straight to the perpetrator")
+    id oewn-05835238-n
+    partOfSpeech n
+    synonyms (lead trail)
+  entry
+    definition "a pair of parallel rails providing a runway for wheels"
+    id oewn-04471218-n
+    partOfSpeech n
+  entry
+    definition "a course over which races are run"
+    id oewn-04044101-n
+    partOfSpeech n
+    synonyms (racetrack racecourse raceway)
+  entry
+    definition "a distinct selection of music from a recording or a compact disc"
+    examples ("he played the first cut on the cd" "the title track of the album")
+    id oewn-06625218-n
+    partOfSpeech n
+    synonyms (cut)
+  entry
+    definition "an endless metal belt on which tracked vehicles move over the ground"
+    id oewn-04471653-n
+    partOfSpeech n
+    synonyms ("caterpillar track" "caterpillar tread")
+  entry
+    definition "(computer science) one of the circular magnetic paths on a magnetic disk that serve as a guide for writing and reading data"
+    id oewn-04471446-n
+    partOfSpeech n
+    synonyms ("data track")
+  entry
+    definition "a groove on a phonograph recording"
+    id oewn-04471360-n
+    partOfSpeech n
+  entry
+    definition "a bar or pair of parallel bars of rolled steel making the railway along which railroad cars or other vehicles can roll"
+    id oewn-04470914-n
+    partOfSpeech n
+    synonyms (rail rails runway)
+  entry
+    definition "any road or path affording passage especially a rough one"
+    id oewn-04470745-n
+    partOfSpeech n
+    synonyms ("cart track" cartroad)
+  entry
+    definition "the act of participating in an athletic competition involving running on a track"
+    id oewn-00440979-n
+    partOfSpeech n
+    synonyms (running)
+  entry
+    definition "carry on the feet and deposit"
+    examples ("track mud into the house")
+    id oewn-02082700-v
+    partOfSpeech v
+  entry
+    definition "observe or plot the moving path of something"
+    examples ("track a missile")
+    id oewn-02202143-v
+    partOfSpeech v
+  entry
+    definition "go after with the intent to catch"
+    examples ("The policeman chased the mugger down the alley" "the fox chased the rabbit")
+    id oewn-02005890-v
+    partOfSpeech v
+    synonyms (chase "chase after" trail tail tag "give chase" dog "go after")
+  entry
+    definition "travel across or pass over"
+    examples ("The caravan covered almost 100 miles each day")
+    id oewn-01916152-v
+    partOfSpeech v
+    synonyms (traverse cover cross "pass over" "get over" "get across" "cut through" "cut across")
+  entry
+    definition "make tracks upon"
+    id oewn-01621487-v
+    partOfSpeech v
+source "oewn:2024"

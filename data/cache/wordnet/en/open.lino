@@ -1,0 +1,200 @@
+language en
+lemma open
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "affording unobstructed entrance and exit; not shut or closed"
+    examples ("an open door" "they left the door open")
+    id oewn-01656822-a
+    partOfSpeech a
+    synonyms (unfastened)
+  entry
+    definition "affording free passage or access"
+    examples ("open drains" "the road is open to traffic" "open ranks")
+    id oewn-01657344-a
+    partOfSpeech a
+  entry
+    definition "used of mouth or eyes"
+    examples ("keep your eyes open" "his mouth slightly opened")
+    id oewn-01658803-a
+    partOfSpeech a
+    synonyms (opened)
+  entry
+    definition "(set theory) of an interval that contains neither of its endpoints"
+    id oewn-01664425-a
+    partOfSpeech a
+  entry
+    definition "ready or willing to receive favorably"
+    examples ("receptive to the proposals")
+    id oewn-01992330-a
+    partOfSpeech a
+    synonyms (receptive)
+  entry
+    definition "open and observable; not secret or hidden"
+    examples ("an overt lie" "overt hostility" "overt intelligence gathering" "open ballots")
+    id oewn-01709214-a
+    partOfSpeech a
+    synonyms (overt)
+  entry
+    definition "a clear or unobstructed space or expanse of land or water"
+    examples ("finally broke out of the forest into the open")
+    id oewn-08649998-n
+    partOfSpeech n
+    synonyms (clear)
+  entry
+    definition "where the air is unconfined"
+    examples ("he wanted to get outdoors a little" "the concert was held in the open air" "camping in the open")
+    id oewn-08631308-n
+    partOfSpeech n
+    synonyms (outdoors out-of-doors "open air")
+  entry
+    definition "a tournament in which both professionals and amateurs may play"
+    id oewn-07480116-n
+    partOfSpeech n
+  entry
+    definition "information that has become public"
+    examples ("all the reports were out in the open" "the facts had been brought to the surface")
+    id oewn-05620592-n
+    partOfSpeech n
+    synonyms (surface)
+  entry
+    definition "with no protection or shield"
+    examples ("the exposed northeast frontier" "open to the weather" "an open wound")
+    id oewn-01892719-s
+    partOfSpeech s
+    synonyms (exposed)
+  entry
+    definition "open to or in view of all"
+    examples ("an open protest" "an open letter to the editor")
+    id oewn-01867850-s
+    partOfSpeech s
+  entry
+    definition "not having been filled"
+    examples ("the job is still open")
+    id oewn-00186809-s
+    partOfSpeech s
+  entry
+    definition "accessible to all"
+    examples ("open season" "an open economy")
+    id oewn-02010453-s
+    partOfSpeech s
+  entry
+    definition "not defended or capable of being defended"
+    examples ("an open city" "open to attack")
+    id oewn-02533823-s
+    partOfSpeech s
+    synonyms (assailable undefendable undefended)
+  entry
+    definition "(of textures) full of small openings or gaps"
+    examples ("an open texture" "a loose weave")
+    id oewn-02239857-s
+    partOfSpeech s
+    synonyms (loose)
+  entry
+    definition "having no protecting cover or enclosure"
+    examples ("an open boat" "an open fire" "open sports cars")
+    id oewn-01663543-s
+    partOfSpeech s
+  entry
+    definition "not brought to a conclusion; subject to further thought"
+    examples ("an open question" "our position on this bill is still undecided" "our lawsuit is still undetermined")
+    id oewn-02138201-s
+    partOfSpeech s
+    synonyms (undecided undetermined unresolved)
+  entry
+    definition "not sealed or having been unsealed"
+    examples ("the letter was already open" "the opened package lay on the table")
+    id oewn-02094323-s
+    partOfSpeech s
+    synonyms (opened)
+  entry
+    definition "without undue constriction as from e.g. tenseness or inhibition"
+    examples ("the clarity and resonance of an open tone" "her natural and open response")
+    id oewn-01452245-s
+    partOfSpeech s
+  entry
+    definition "not requiring union membership"
+    examples ("an open shop employs nonunion workers")
+    id oewn-02484351-s
+    partOfSpeech s
+  entry
+    definition "possibly accepting or permitting"
+    examples ("a passage capable of misinterpretation" "open to interpretation" "an issue open to question" "the time is fixed by the director and players and therefore subject to much variation")
+    id oewn-02370095-s
+    partOfSpeech s
+    synonyms (capable subject)
+  entry
+    definition "affording free passage or view"
+    examples ("a clear view" "a clear path to victory" "open waters" "the open countryside")
+    id oewn-01626686-s
+    partOfSpeech s
+    synonyms (clear)
+  entry
+    definition "openly straightforward and direct without reserve or secretiveness"
+    examples ("his candid eyes" "an open and trusting nature" "a heart-to-heart talk")
+    id oewn-01313228-s
+    partOfSpeech s
+    synonyms (candid heart-to-heart)
+  entry
+    definition "ready for business"
+    examples ("the stores are open")
+    id oewn-00036367-s
+    partOfSpeech s
+  entry
+    definition "cause to open or to become open"
+    examples ("Mary opened the car door")
+    id oewn-01348685-v
+    partOfSpeech v
+    synonyms ("open up")
+  entry
+    definition "start to operate or function or cause to start operating or functioning"
+    examples ("open a business")
+    id oewn-02431018-v
+    partOfSpeech v
+    synonyms ("open up")
+  entry
+    definition "become open"
+    examples ("The door opened")
+    id oewn-01349486-v
+    partOfSpeech v
+    synonyms ("open up")
+  entry
+    definition "begin or set in action, of meetings, speeches, recitals, etc."
+    examples ("He opened the meeting with a long speech")
+    id oewn-02430309-v
+    partOfSpeech v
+  entry
+    definition "spread out or open from a closed or folded state"
+    examples ("open the map" "spread your arms")
+    id oewn-01582662-v
+    partOfSpeech v
+    synonyms (unfold spread "spread out")
+  entry
+    definition "make available"
+    examples ("This opens up new possibilities")
+    id oewn-00541016-v
+    partOfSpeech v
+    synonyms ("open up")
+  entry
+    definition "become available"
+    examples ("an opportunity opened up")
+    id oewn-00541181-v
+    partOfSpeech v
+    synonyms ("open up")
+  entry
+    definition "have an opening or passage or outlet"
+    examples ("The bedrooms open into the hall")
+    id oewn-02750526-v
+    partOfSpeech v
+  entry
+    definition "make the opening move"
+    examples ("Kasparov opened with a standard opening")
+    id oewn-01080280-v
+    partOfSpeech v
+  entry
+    definition "display the contents of a file or start an application as on a computer"
+    id oewn-02145103-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,12 @@
+language en
+lemma cargo
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "goods carried by a large vehicle"
+    id oewn-02967841-n
+    partOfSpeech n
+    synonyms (lading freight load loading payload shipment consignment)
+source "oewn:2024"

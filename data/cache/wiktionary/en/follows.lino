@@ -1,0 +1,57 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(sometimes attributive) In billiards and similar games, a stroke causing a ball to follow another ball after hitting it."
+          example "a follow shot"
+        entry
+          definition "The act of following another user's online activity."
+      partOfSpeech noun
+    entry
+      antonyms (guide lead precede unfollow)
+      definitions
+        entry
+          definition "To go after; to pursue; to move behind in the same path or direction."
+          example "Follow that car!"
+        entry
+          definition "To go or come after in a sequence."
+          example "B follows A in the alphabet."
+        entry
+          definition "To carry out (orders, instructions, etc.)."
+          example "Follow these instructions to the letter."
+        entry
+          definition "To live one's life according to (religion, teachings, etc)."
+        entry
+          definition "To understand, to pay attention to."
+          example "Do you follow me?"
+        entry
+          definition "To watch, to keep track of (reports of) some event or person."
+          example "I followed the incumbent throughout the election."
+        entry
+          definition "To subscribe to see content from an account on a social media platform."
+          example "If you want to see more of our articles, follow us on Twitter."
+        entry
+          definition "To be a logical consequence of something."
+          example "If you don't practise proper hygiene, illness is sure to follow."
+        entry
+          definition "To walk in, as a road or course; to attend upon closely, as a profession or calling."
+      partOfSpeech verb
+      synonyms (ensue pursue tail trail succeed)
+  phonetic "/ˈfɒləʊz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈfɒləʊz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/follows-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1661656"
+      text "/ˈfɑloʊz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/follow" "https://en.wiktionary.org/wiki/follows")
+  word follows

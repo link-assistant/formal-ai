@@ -1,0 +1,17 @@
+view
+  id M-cd07c59ddcf4
+  lemma id
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state in the Rocky Mountains"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(psychoanalysis) primitive instincts and energies underlying all psychic activity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a card or badge used to identify the bearer"
+    provenance (wordnet)

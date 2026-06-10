@@ -1,0 +1,46 @@
+[
+  {
+    "word": "kilometre",
+    "phonetic": "/kɪˈlɒmɪtə/",
+    "phonetics": [
+      {
+        "text": "/kɪˈlɒmɪtə/",
+        "audio": ""
+      },
+      {
+        "text": "/kəˈlɑmɪtəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/kilometre-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762974",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(official BIPM spelling, Australian, New Zealand, Irish, Indian and South African spelling) An SI unit of length equal to 103 metres. Symbol: km",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "SI",
+          "km",
+          "klick"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/kilometre"
+    ]
+  }
+]

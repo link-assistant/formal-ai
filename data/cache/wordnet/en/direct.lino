@@ -1,0 +1,135 @@
+language en
+lemma direct
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "direct in spatial dimensions; proceeding without deviation or interruption; straight and short"
+    examples ("a direct route" "a direct flight" "a direct hit")
+    id oewn-00764460-a
+    partOfSpeech a
+  entry
+    definition "straightforward in means or manner or behavior or language or action"
+    examples ("a direct question" "a direct response" "a direct approach")
+    id oewn-00767444-a
+    partOfSpeech a
+  entry
+    definition "in a straight unbroken line of descent from parent to child"
+    examples ("lineal ancestors" "lineal heirs" "a direct descendant of the king" "direct heredity")
+    id oewn-01419359-a
+    partOfSpeech a
+    synonyms (lineal)
+  entry
+    definition "moving from west to east on the celestial sphere; or — for planets — around the sun in the same direction as the Earth"
+    id oewn-00773485-a
+    partOfSpeech a
+  entry
+    definition "similar in nature or effect or relation to another quantity"
+    examples ("a term is in direct proportion to another term if it increases (or decreases) as the other increases (or decreases)")
+    id oewn-00772799-a
+    partOfSpeech a
+  entry
+    definition "(of a current) flowing in one direction only"
+    examples ("direct current")
+    id oewn-00767176-a
+    partOfSpeech a
+  entry
+    definition "without deviation"
+    examples ("the path leads directly to the lake" "went direct to the office")
+    id oewn-00052386-r
+    partOfSpeech r
+    synonyms (directly straight)
+  entry
+    definition "having no intervening persons, agents, conditions"
+    examples ("in direct sunlight" "in direct contact with the voters" "direct exposure to the disease" "a direct link" "the direct cause of the accident" "direct vote")
+    id oewn-00774039-s
+    partOfSpeech s
+    synonyms (unmediated)
+  entry
+    definition "being an immediate result or consequence"
+    examples ("a direct result of the accident")
+    id oewn-01858594-s
+    partOfSpeech s
+  entry
+    definition "in precisely the same words used by a writer or speaker"
+    examples ("a direct quotation" "repeated their dialog verbatim")
+    id oewn-00917922-s
+    partOfSpeech s
+    synonyms (verbatim)
+  entry
+    definition "lacking compromising or mitigating elements"
+    examples ("the direct opposite")
+    id oewn-00005472-s
+    partOfSpeech s
+    synonyms (exact)
+  entry
+    definition "command with authority"
+    examples ("He directed the children to do their homework")
+    id oewn-00751211-v
+    partOfSpeech v
+  entry
+    definition "intend (something) to move towards a certain goal"
+    examples ("He aimed his fists towards his opponent's face" "criticism directed at her superior" "direct your anger towards others, not towards yourself")
+    id oewn-01153025-v
+    partOfSpeech v
+    synonyms (target aim place point)
+  entry
+    definition "guide the actors in (plays and films)"
+    id oewn-01714176-v
+    partOfSpeech v
+  entry
+    definition "govern or manage"
+    id oewn-02444366-v
+    partOfSpeech v
+  entry
+    definition "take somebody somewhere"
+    examples ("we led him to our chief" "can you take me to the main entrance?" "He conducted us to the palace")
+    id oewn-02003830-v
+    partOfSpeech v
+    synonyms (lead take conduct guide)
+  entry
+    definition "cause to go somewhere"
+    examples ("The explosion sent the car flying in the air" "She sent her children to camp" "He directed all his energies into his dissertation")
+    id oewn-01955339-v
+    partOfSpeech v
+    synonyms (send)
+  entry
+    definition "point or cause to go (blows, weapons, or objects such as photographic equipment) towards"
+    examples ("Please don't aim at your little brother!" "He trained his gun on the burglar" "Don't train your camera on the women" "Take a swipe at one's opponent")
+    id oewn-01153576-v
+    partOfSpeech v
+    synonyms (aim take train "take aim")
+  entry
+    definition "lead, as in the performance of a composition"
+    examples ("conduct an orchestra" "Barenboim conducted the Chicago symphony for years")
+    id oewn-01736802-v
+    partOfSpeech v
+    synonyms (conduct lead)
+  entry
+    definition "give directions to; point somebody into a certain direction"
+    examples ("I directed them towards the town hall")
+    id oewn-00751382-v
+    partOfSpeech v
+  entry
+    definition "specifically design a product, event, or activity for a certain public"
+    id oewn-00714920-v
+    partOfSpeech v
+    synonyms (calculate aim)
+  entry
+    definition "direct the course; determine the direction of travelling"
+    id oewn-01935739-v
+    partOfSpeech v
+    synonyms (steer maneuver manoeuver manoeuvre point head guide channelize channelise)
+  entry
+    definition "put an address on (an envelope)"
+    id oewn-00992844-v
+    partOfSpeech v
+    synonyms (address)
+  entry
+    definition "plan and direct (a complex undertaking)"
+    examples ("he masterminded the robbery")
+    id oewn-00711834-v
+    partOfSpeech v
+    synonyms (mastermind engineer organize organise orchestrate)
+source "oewn:2024"

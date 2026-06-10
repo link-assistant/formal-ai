@@ -1,0 +1,13 @@
+view
+  id M-2358a1bac14b
+  lemma lowest
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in the lowest position; nearest the ground"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lowest in rank or importance"
+    provenance (wordnet)

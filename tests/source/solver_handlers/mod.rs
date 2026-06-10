@@ -14,6 +14,7 @@ mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
 mod natural_language_tools;
+mod numeric_list;
 mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
@@ -39,6 +40,7 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
+pub use numeric_list::try_numeric_list;
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
@@ -649,7 +651,8 @@ pub fn try_translation(
                 .iter()
                 .any(|marker| normalized.contains(format!(" {marker}").as_str()))
     };
-    let is_translation_request = head_initial_command || head_final_command || is_define_in_links();
+    let define_in_links = is_define_in_links();
+    let is_translation_request = head_initial_command || head_final_command || define_in_links;
     if !is_translation_request {
         return None;
     }
@@ -709,7 +712,15 @@ pub fn try_translation(
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
         let target_surface = translation.primary_surface().map(str::to_owned);
         let gap = target_surface.is_none();
-        (target_surface, translation.meaning.slug(), gap)
+        let mut meaning_id = translation.meaning.slug();
+        if define_in_links && !translation.meaning.is_wikidata_backed() {
+            if let Some(seed_meaning) =
+                crate::translation::seed_meaning_for_surface(&surface, source_slug)
+            {
+                meaning_id = seed_meaning.slug();
+            }
+        }
+        (target_surface, meaning_id, gap)
     } else {
         // Fallback: hash the surface fragment so the trace still has a
         // stable id. The pipeline error itself is not propagated to the

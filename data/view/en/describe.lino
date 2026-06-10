@@ -1,0 +1,21 @@
+view
+  id M-e2d2c5b4ded0
+  lemma describe
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a description of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to give an account or representation of in words"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a mark or lines on a surface"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "identify as in botany or biology, for example"
+    provenance (wordnet)

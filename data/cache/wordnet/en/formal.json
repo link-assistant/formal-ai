@@ -1,0 +1,87 @@
+{
+  "lemma": "formal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01045598-a",
+      "partOfSpeech": "a",
+      "definition": "being in accord with established forms and conventions and requirements (as e.g. of formal dress)",
+      "examples": [
+        "pay one's formal respects",
+        "formal dress",
+        "a formal ball",
+        "the requirement was only formal and often ignored",
+        "a formal education"
+      ]
+    },
+    {
+      "id": "oewn-01048915-a",
+      "partOfSpeech": "a",
+      "definition": "(of spoken and written language) adhering to traditional standards of correctness and without casual, contracted, and colloquial forms",
+      "examples": [
+        "the paper was written in formal English"
+      ]
+    },
+    {
+      "id": "oewn-07463485-n",
+      "partOfSpeech": "n",
+      "definition": "a lavish dance requiring formal attire",
+      "synonyms": [
+        "ball"
+      ]
+    },
+    {
+      "id": "oewn-03206322-n",
+      "partOfSpeech": "n",
+      "definition": "a gown for evening wear",
+      "synonyms": [
+        "dinner dress",
+        "dinner gown",
+        "evening gown"
+      ]
+    },
+    {
+      "id": "oewn-01637196-s",
+      "partOfSpeech": "s",
+      "definition": "characteristic of or befitting a person in authority",
+      "examples": [
+        "formal duties",
+        "a formal banquet"
+      ]
+    },
+    {
+      "id": "oewn-01987861-s",
+      "partOfSpeech": "s",
+      "definition": "represented in simplified or symbolic form",
+      "synonyms": [
+        "conventional",
+        "schematic"
+      ]
+    },
+    {
+      "id": "oewn-01433501-s",
+      "partOfSpeech": "s",
+      "definition": "logically deductive",
+      "examples": [
+        "formal proof"
+      ]
+    },
+    {
+      "id": "oewn-00755359-s",
+      "partOfSpeech": "s",
+      "definition": "refined or imposing in manner or appearance; befitting a royal court",
+      "examples": [
+        "a courtly gentleman"
+      ],
+      "synonyms": [
+        "courtly",
+        "stately"
+      ]
+    }
+  ]
+}

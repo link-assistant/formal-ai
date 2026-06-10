@@ -133,7 +133,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
             prompt: "Merge Wikipedia definitions of KISS principle",
             merged_title: "KISS principle",
             source_languages: &["en", "ru", "hi", "zh"],
-            wikidata: Some("Q649540"),
+            wikidata: Some("Q131560"),
             expected_facts: &[
                 ("en", "simplicity as a primary goal"),
                 ("ru", "Не усложняй без необходимости"),
@@ -150,7 +150,7 @@ fn definition_merge_examples_show_exact_behavior_across_terms_and_concepts() {
             prompt: "Combine translated definitions for keep it simple, stupid",
             merged_title: "KISS principle",
             source_languages: &["en", "ru", "hi", "zh"],
-            wikidata: Some("Q649540"),
+            wikidata: Some("Q131560"),
             expected_facts: &[("en", "cornerstone of software engineering")],
             expected_sources: &[("en", "https://en.wikipedia.org/wiki/KISS_principle")],
         },

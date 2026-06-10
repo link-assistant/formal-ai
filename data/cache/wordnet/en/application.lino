@@ -1,0 +1,47 @@
+language en
+lemma application
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of bringing something to bear; using it for a particular purpose"
+    examples ("he advocated the application of statistics to the problem" "a novel application of electronics to medical diagnosis")
+    id oewn-00950950-n
+    partOfSpeech n
+    synonyms ("practical application")
+  entry
+    definition "a verbal or written request for assistance or employment or admission to a school"
+    examples ("December 31 is the deadline for applications")
+    id oewn-06524571-n
+    partOfSpeech n
+  entry
+    definition "the work of applying something"
+    examples ("the doctor prescribed a topical application of iodine" "a complete bleach requires several applications" "the surface was ready for a coating of paint")
+    id oewn-00713478-n
+    partOfSpeech n
+    synonyms (coating covering)
+  entry
+    definition "a program that gives a computer instructions that provide the user with tools to accomplish a task"
+    examples ("he has tried several different word processing applications")
+    id oewn-06582286-n
+    partOfSpeech n
+    synonyms ("application program" "applications programme")
+  entry
+    definition "liquid preparation having a soothing or antiseptic or medicinal action when applied to the skin"
+    examples ("a lotion for dry skin")
+    id oewn-03696454-n
+    partOfSpeech n
+    synonyms (lotion)
+  entry
+    definition "a diligent effort"
+    examples ("it is a job requiring serious application")
+    id oewn-00634572-n
+    partOfSpeech n
+    synonyms (diligence)
+  entry
+    definition "the action of putting something into operation"
+    examples ("the application of maximum thrust" "massage has far-reaching medical applications" "the application of indexes to tables of data")
+    id oewn-00036782-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,64 @@
+[
+  {
+    "word": "runtime",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The stage during which a program is executing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The amount of time during which a program is executing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A software component designed to support the execution of computer programs.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You need to install the .NET runtime before you can run this application."
+          },
+          {
+            "definition": "The length of a film, television program or audio track in minutes, usually with end credits included",
+            "synonyms": [
+              "running time"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "running time"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of, relating to, or happening during run time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a run-time error"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "compile-time"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/run%20time",
+      "https://en.wiktionary.org/wiki/run-time",
+      "https://en.wiktionary.org/wiki/runtime"
+    ]
+  }
+]

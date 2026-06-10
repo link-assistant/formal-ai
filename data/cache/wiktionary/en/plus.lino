@@ -1,0 +1,80 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (minus "minus sign" liability minus)
+      definitions
+        entry
+          definition "A positive quantity."
+        entry
+          definition "An asset or useful addition."
+          example "He is a real plus to the team."
+        entry
+          definition "A plus sign: +."
+      partOfSpeech noun
+      synonyms ("plus sign" asset)
+    entry
+      definitions
+        entry
+          definition "To add; to subject to addition."
+        entry
+          definition "(often followed by 'up') To increase in magnitude."
+        entry
+          definition "To improve."
+        entry
+          definition "To provide critical feedback by giving suggestions for improvement rather than criticisms."
+        entry
+          definition "(sales) To sell additional related items with an original purchase."
+        entry
+          definition "To frame in a positive light; to provide a sympathetic interpretation."
+        entry
+          definition "(social media) To give a mark of approval on Google+."
+        entry
+          definition "To increase the potency of a remedy by diluting it in water and stirring."
+        entry
+          definition "(optometry) To increase a correction."
+      partOfSpeech verb
+    entry
+      antonyms (minus negative bad disadvantageous minus negative)
+      definitions
+        entry
+          definition "Being positive rather than negative or zero."
+          example '−2 * −2 = +4 ("minus 2 times minus 2 equals plus four")'
+        entry
+          definition "Positive, or involving advantage."
+          example "He is a plus factor."
+        entry
+          definition "Electrically positive."
+          example "A battery has both a plus pole and a minus pole."
+        entry
+          definition "(Of a quantity) Equal to or greater than; or more; upwards."
+          example "The bus can fit 60 plus kids, but we only get 48."
+      partOfSpeech adjective
+      synonyms (positive advantageous good positive)
+    entry
+      antonyms (minus)
+      definitions
+        entry
+          definition "And; sum of the previous one and the following one."
+          example "A water molecule is made up of two hydrogen atoms plus one of oxygen."
+        entry
+          definition "With; having in addition."
+          example "I've won a holiday to France plus five hundred euros in spending money!"
+        entry
+          definition "And also; in addition; besides (which)."
+          example "Let's go home now. It's late, plus I'm not feeling too well."
+      partOfSpeech preposition
+      synonyms (and)
+  phonetic "/plʌs/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/plus-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2454204"
+      text "/plʌs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/plus")
+  word plus

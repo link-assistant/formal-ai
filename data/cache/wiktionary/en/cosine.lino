@@ -1,0 +1,24 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "In a right triangle, the ratio of the length of the side adjacent to an acute angle to the length of the hypotenuse. Symbol: cos"
+      partOfSpeech noun
+  phonetic "/ˈkəʊ.saɪn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/cosine-uk.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=31972304"
+      text "/ˈkəʊ.saɪn/"
+    entry
+      audio ""
+      text "/ˈkoʊ.saɪn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/cosine")
+  word cosine

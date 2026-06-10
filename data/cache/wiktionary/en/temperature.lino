@@ -1,0 +1,31 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A measure of cold or heat, often measurable with a thermometer."
+          example "The temperature in the room dropped nearly 20 degrees; it went from hot to cold."
+        entry
+          definition "An elevated body temperature, as present in fever and many illnesses."
+          example "You have a temperature. I think you should stay home today. You’re sick."
+        entry
+          definition "A property of macroscopic amounts of matter that serves to gauge the average intensity of the random actual motions of the individually mobile particulate constituents. http//arxiv.org/pdf/physics/0004055"
+        entry
+          definition "The state or condition of being tempered or moderated."
+        entry
+          definition "The balance of humours in the body, or one's character or outlook as considered determined from this; temperament."
+      partOfSpeech noun
+  phonetic "/ˈtɛmp(ə)ɹətʃə(ɹ)/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/temperature-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755229"
+      text "/ˈtɛmp(ə)ɹətʃə(ɹ)/"
+  sourceUrls ("https://en.wiktionary.org/wiki/temperature")
+  word temperature

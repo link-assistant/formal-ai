@@ -1,0 +1,28 @@
+language en
+lemma behavior
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "manner of acting or controlling yourself"
+    id oewn-01223473-n
+    partOfSpeech n
+    synonyms (behaviour conduct doings)
+  entry
+    definition "the action or reaction of something (as a machine or substance) under specified circumstances"
+    examples ("the behavior of small particles can be studied in experiments")
+    id oewn-14031827-n
+    partOfSpeech n
+    synonyms (behaviour)
+  entry
+    definition "(behavioral attributes) the way a person behaves toward other people"
+    id oewn-04904939-n
+    partOfSpeech n
+    synonyms (demeanor demeanour behaviour conduct deportment)
+  entry
+    definition "(psychology) the aggregate of the responses or reactions or movements made by an organism in any situation"
+    id oewn-01223743-n
+    partOfSpeech n
+    synonyms (behaviour)
+source "oewn:2024"

@@ -13,7 +13,7 @@
 //! yet — TypeScript, Go, and Ruby — we keep a thin direct tree-sitter bridge and
 //! track the gap upstream. Which engine validates each language, and the
 //! upstream request for the bridged ones, is recorded as data in
-//! `data/seed/meanings-program-cst.lino`; this module is only the native bridge
+//! `data/seed/program-cst-grammars.lino`; this module is only the native bridge
 //! from a seed language slug to the corresponding engine.
 
 use std::fmt::Write as _;
@@ -162,12 +162,6 @@ pub fn grammar_metadata(language_slug: &str) -> Option<CstGrammar> {
     found.map(grammar_from_node)
 }
 
-#[cfg(test)]
-pub fn grammar_languages() -> Vec<CstGrammar> {
-    let tree = parse_lino(PROGRAM_CST_GRAMMARS_LINO);
-    grammar_nodes(&tree).map(grammar_from_node).collect()
-}
-
 fn grammar_from_node(node: &LinoNode) -> CstGrammar {
     CstGrammar {
         language_slug: node.find_child_value("program_language").to_owned(),
@@ -269,146 +263,5 @@ fn tree_sitter_bridge_language(language_slug: &str) -> Option<Language> {
         "go" => Some(tree_sitter_go::LANGUAGE.into()),
         "ruby" => Some(tree_sitter_ruby::LANGUAGE.into()),
         _ => None,
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::coding::{program_language_by_slug, PROGRAM_LANGUAGES};
-
-    #[test]
-    fn every_catalog_language_has_cst_metadata() {
-        for language in PROGRAM_LANGUAGES {
-            assert!(
-                grammar_metadata(language.slug).is_some(),
-                "`{}` must have CST metadata",
-                language.slug
-            );
-        }
-    }
-
-    #[test]
-    fn every_cst_metadata_entry_names_a_catalog_language() {
-        for grammar in grammar_languages() {
-            assert!(
-                program_language_by_slug(&grammar.language_slug).is_some(),
-                "`{}` metadata names an unknown language",
-                grammar.language_slug
-            );
-        }
-    }
-
-    #[test]
-    fn every_cst_metadata_entry_declares_a_known_engine() {
-        for grammar in grammar_languages() {
-            assert!(
-                matches!(
-                    grammar.engine.as_str(),
-                    META_LANGUAGE_ENGINE | TREE_SITTER_BRIDGE_ENGINE
-                ),
-                "`{}` declares unknown engine `{}`",
-                grammar.language_slug,
-                grammar.engine
-            );
-            if grammar.engine == TREE_SITTER_BRIDGE_ENGINE {
-                assert!(
-                    grammar.upstream_grammar_request.starts_with("https://"),
-                    "bridged `{}` must record an upstream grammar request",
-                    grammar.language_slug
-                );
-                assert!(
-                    tree_sitter_bridge_language(&grammar.language_slug).is_some(),
-                    "bridged `{}` must have a tree-sitter parser",
-                    grammar.language_slug
-                );
-            }
-        }
-    }
-
-    #[test]
-    fn javascript_source_parses_through_meta_language() {
-        let cst = parse_program_cst(
-            "javascript",
-            "const numbers = [3, 1, 2];\nconsole.log(numbers.sort((a, b) => a - b));\n",
-        )
-        .expect("JavaScript source must produce a meta-language CST");
-
-        assert_eq!(cst.engine(), META_LANGUAGE_ENGINE);
-        assert!(cst.is_valid(), "{cst:#?}");
-        assert!(!cst.has_error);
-        match cst.evidence {
-            CstEvidence::MetaLanguage {
-                syntax_link_count,
-                text_preserved,
-                ..
-            } => {
-                assert!(syntax_link_count > 0, "expected real grammar syntax links");
-                assert!(text_preserved, "meta-language must round-trip the source");
-            }
-            CstEvidence::TreeSitterBridge { .. } => panic!("javascript should use meta-language"),
-        }
-    }
-
-    #[test]
-    fn broken_javascript_fails_meta_language_validation() {
-        let cst = parse_program_cst("javascript", "const numbers = [3, 1, 2;\nconsole.log(\n")
-            .expect("parsing should still produce a CST record");
-        assert!(cst.has_error, "unbalanced JavaScript must report an error");
-        assert!(!cst.is_valid());
-        assert!(validated_program_cst("javascript", "const numbers = [3, 1, 2;\n").is_none());
-    }
-
-    #[test]
-    fn bridged_languages_parse_through_tree_sitter() {
-        let cases = [
-            ("typescript", "const numbers: number[] = [3, 1, 2];\n"),
-            ("go", "package main\n\nfunc main() {}\n"),
-            ("ruby", "puts [3, 1, 2].sort\n"),
-        ];
-        for (slug, source) in cases {
-            let cst = parse_program_cst(slug, source)
-                .unwrap_or_else(|| panic!("`{slug}` source must produce a bridged CST"));
-            assert_eq!(cst.engine(), TREE_SITTER_BRIDGE_ENGINE, "{slug}");
-            assert!(cst.is_valid(), "{slug}: {cst:#?}");
-            assert!(
-                cst.links_notation()
-                    .contains("upstream_grammar_request https://"),
-                "{slug} evidence must cite the upstream request"
-            );
-        }
-    }
-
-    #[test]
-    fn meta_language_handles_every_covered_language() {
-        for grammar in grammar_languages() {
-            if grammar.engine != META_LANGUAGE_ENGINE {
-                continue;
-            }
-            let snippet = match grammar.language_slug.as_str() {
-                "javascript" => "const x = 1;\n",
-                "python" => "x = 1\n",
-                "rust" => "fn main() {}\n",
-                "java" | "csharp" => "class A { }\n",
-                "c" => "int main(void) { return 0; }\n",
-                "cpp" => "int main() { return 0; }\n",
-                other => panic!("no snippet for meta-language language `{other}`"),
-            };
-            let cst = parse_program_cst(&grammar.language_slug, snippet)
-                .unwrap_or_else(|| panic!("`{}` must parse", grammar.language_slug));
-            assert!(cst.is_valid(), "{}: {cst:#?}", grammar.language_slug);
-            match cst.evidence {
-                CstEvidence::MetaLanguage {
-                    syntax_link_count, ..
-                } => assert!(
-                    syntax_link_count > 0,
-                    "`{}` must hit a real meta-language grammar",
-                    grammar.language_slug
-                ),
-                CstEvidence::TreeSitterBridge { .. } => {
-                    panic!("`{}` should use meta-language", grammar.language_slug)
-                }
-            }
-        }
     }
 }

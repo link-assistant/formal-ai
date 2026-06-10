@@ -1,0 +1,25 @@
+view
+  id M-d410aa63de92
+  lemma define
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the essential quality of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a definition for the meaning of a word"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the nature of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show the form or outline of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decide upon or fix definitely"
+    provenance (wordnet)

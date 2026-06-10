@@ -1,0 +1,18 @@
+Q25235
+  aliases
+    en (hours "60 minutes" "sixty minutes" h hr hrs)
+    ru ("часа" "часов" "ч")
+    zh ("鐘點" "鐘頭" "小時")
+  descriptions
+    en "unit of time"
+    hi "समय मापने की इकाई"
+    ru "единица времени"
+    zh "時間單位"
+  id Q25235
+  labels
+    en hour
+    hi "घंटा"
+    ru "час"
+    zh "小时"
+  type item
+success 1

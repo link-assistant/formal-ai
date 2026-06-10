@@ -1,0 +1,95 @@
+{
+  "lemma": "import",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03569847-n",
+      "partOfSpeech": "n",
+      "definition": "commodities (goods or services) bought from a foreign country",
+      "synonyms": [
+        "importation"
+      ]
+    },
+    {
+      "id": "oewn-10220150-n",
+      "partOfSpeech": "n",
+      "definition": "an imported person brought from a foreign country",
+      "examples": [
+        "the lead role was played by an import from Sweden",
+        "they are descendants of indentured importees"
+      ],
+      "synonyms": [
+        "importee"
+      ]
+    },
+    {
+      "id": "oewn-06613680-n",
+      "partOfSpeech": "n",
+      "definition": "the message that is intended or expressed or signified",
+      "examples": [
+        "what is the meaning of this sentence?",
+        "the significance of a red traffic light",
+        "the signification of Chinese characters",
+        "the import of his announcement was ambiguous"
+      ],
+      "synonyms": [
+        "meaning",
+        "significance",
+        "signification"
+      ]
+    },
+    {
+      "id": "oewn-05929385-n",
+      "partOfSpeech": "n",
+      "definition": "a meaning that is not expressly stated but can be inferred",
+      "examples": [
+        "the significance of his remark became clear only later",
+        "the expectation was spread both by word and by implication"
+      ],
+      "synonyms": [
+        "significance",
+        "implication"
+      ]
+    },
+    {
+      "id": "oewn-05178101-n",
+      "partOfSpeech": "n",
+      "definition": "having important effects or influence",
+      "examples": [
+        "decisions of great consequence are made by the president himself",
+        "virtue is of more moment than security",
+        "that result is of no consequence"
+      ],
+      "synonyms": [
+        "consequence",
+        "moment"
+      ]
+    },
+    {
+      "id": "oewn-02351132-v",
+      "partOfSpeech": "v",
+      "definition": "bring in from abroad"
+    },
+    {
+      "id": "oewn-02237504-v",
+      "partOfSpeech": "v",
+      "definition": "transfer (electronic data) into a database or document"
+    },
+    {
+      "id": "oewn-00934598-v",
+      "partOfSpeech": "v",
+      "definition": "indicate or signify",
+      "examples": [
+        "I'm afraid this spells trouble!"
+      ],
+      "synonyms": [
+        "spell"
+      ]
+    }
+  ]
+}

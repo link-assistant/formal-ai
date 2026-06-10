@@ -58,7 +58,7 @@ language parser:
   concrete syntax trees keep token-level structure, while named-node traversal
   can behave like an AST.
 - The engine for each language is declared in
-  `data/seed/meanings-program-cst.lino`; the trace records
+  `data/seed/program-cst-grammars.lino`; the trace records
   `component meta-language` (or, for a bridged language, the tree-sitter
   `grammar_crate` and the upstream grammar request).
 - [ESTree](https://github.com/estree/estree): JavaScript tooling standardizes
@@ -122,7 +122,7 @@ evidence describe the same program shape.
 ### Meta-language CST/AST Validation
 
 `src/coding/cst.rs` reads engine metadata from
-`data/seed/meanings-program-cst.lino` and validates each supported language
+`data/seed/program-cst-grammars.lino` and validates each supported language
 through the meta-language links network (the primary CST/AST engine). After a
 handler renders source, meta-language parses it; a real grammar parse populates
 `LinkType::Syntax` links, so the handler only proceeds when those syntax links
@@ -177,7 +177,7 @@ meta-language.
 ### Meaning-Driven Recognition
 
 The numeric-list handler reads operation meanings from
-`data/seed/meanings-numeric-list.lino` and operation surface forms from the seed
+`data/seed/numeric-list-operations.lino` and operation surface forms from the seed
 operation vocabulary. Language aliases continue to use the existing
 `program_language_*` meanings. Reductions are gated behind a `code_request`
 meaning so ordinary arithmetic prose is not stolen by code generation. The

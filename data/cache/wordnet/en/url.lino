@@ -1,0 +1,12 @@
+language en
+lemma url
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the address of a web page on the world wide web"
+    id oewn-06370154-n
+    partOfSpeech n
+    synonyms ("uniform resource locator" "universal resource locator")
+source "oewn:2024"

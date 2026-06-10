@@ -1,0 +1,9 @@
+view
+  id M-d38e1af16e11
+  lemma geography
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "study of the earth's surface; includes people's responses to topography and climate and soil and vegetation"
+    provenance (wordnet)

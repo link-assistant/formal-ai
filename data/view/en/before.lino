@@ -1,0 +1,13 @@
+view
+  id M-446665a43b40
+  lemma before
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "earlier in time; previously"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at or in the front"
+    provenance (wordnet)

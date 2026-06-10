@@ -1,0 +1,113 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A star, especially when seen as the centre of any single solar system."
+        entry
+          definition "The light and warmth which is received from the sun."
+        entry
+          definition "Something like the sun in brightness or splendor."
+        entry
+          definition "Sunrise or sunset."
+        entry
+          definition "The nineteenth trump/major arcana card of the Tarot."
+        entry
+          definition "The thirty-first Lenormand card."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To expose to the warmth and radiation of the sun."
+          example "Beautiful bodies lying on the beach, sunning their bronzed limbs."
+          synonyms (apricate)
+        entry
+          definition "To warm or dry in the sunshine."
+        entry
+          definition "To be exposed to the sun."
+        entry
+          definition "To expose the eyes to the sun as part of the Bates method."
+      partOfSpeech verb
+      synonyms (apricate)
+    entry
+      definitions
+        entry
+          definition "The star that the Earth revolves around and from which it receives light and warmth."
+      partOfSpeech "proper noun"
+  phonetic "/sʌn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9027502"
+      text "/sʌn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1194290"
+      text "/sʌn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sun")
+  word sun
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A traditional Japanese unit of length, approximately 30.3 millimetres (1.193 inches)."
+      partOfSpeech noun
+  phonetic "/sʌn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9027502"
+      text "/sʌn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1194290"
+      text "/sʌn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sun")
+  word sun
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Crotalaria juncea, an East Indian leguminous plant yielding a fiber."
+      partOfSpeech noun
+  phonetic "/sʌn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9027502"
+      text "/sʌn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1194290"
+      text "/sʌn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sun" "https://en.wiktionary.org/wiki/sunn")
+  word sun

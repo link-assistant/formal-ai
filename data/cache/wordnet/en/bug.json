@@ -1,0 +1,76 @@
+{
+  "lemma": "bug",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02239007-n",
+      "partOfSpeech": "n",
+      "definition": "general term for any insect or similar creeping or crawling invertebrate"
+    },
+    {
+      "id": "oewn-14488259-n",
+      "partOfSpeech": "n",
+      "definition": "a fault or defect in a computer program, system, or machine",
+      "synonyms": [
+        "glitch"
+      ]
+    },
+    {
+      "id": "oewn-02915786-n",
+      "partOfSpeech": "n",
+      "definition": "a small hidden microphone; for listening secretly"
+    },
+    {
+      "id": "oewn-02239548-n",
+      "partOfSpeech": "n",
+      "definition": "insects with sucking mouthparts and forewings thickened and leathery at the base; usually show incomplete metamorphosis",
+      "synonyms": [
+        "hemipterous insect",
+        "hemipteran",
+        "hemipteron"
+      ]
+    },
+    {
+      "id": "oewn-01387132-n",
+      "partOfSpeech": "n",
+      "definition": "a minute life form (especially a disease-causing bacterium); the term is not in technical use",
+      "synonyms": [
+        "microbe",
+        "germ"
+      ]
+    },
+    {
+      "id": "oewn-01807344-v",
+      "partOfSpeech": "v",
+      "definition": "annoy persistently",
+      "examples": [
+        "The children teased the boy because of his stammer"
+      ],
+      "synonyms": [
+        "tease",
+        "badger",
+        "pester",
+        "beleaguer"
+      ]
+    },
+    {
+      "id": "oewn-02193294-v",
+      "partOfSpeech": "v",
+      "definition": "tap a telephone or telegraph wire to get information",
+      "examples": [
+        "The FBI was tapping the phone line of the suspected spy",
+        "Is this hotel room bugged?"
+      ],
+      "synonyms": [
+        "wiretap",
+        "tap",
+        "intercept"
+      ]
+    }
+  ]
+}

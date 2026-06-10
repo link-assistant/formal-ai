@@ -1,0 +1,30 @@
+language en
+lemma kind
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "having or showing a tender and considerate and helpful nature; used especially of persons and their behavior"
+    examples ("kind to sick patients" "a kind master" "kind words showing understanding and sympathy" "thanked her for her kind letter")
+    id oewn-01374976-a
+    partOfSpeech a
+  entry
+    definition "a category of things distinguished by some common characteristic or quality"
+    examples ("sculpture is a form of art" "what kinds of desserts are there?")
+    id oewn-05847533-n
+    partOfSpeech n
+    synonyms (sort form variety)
+  entry
+    definition "agreeable, conducive to comfort"
+    examples ("a dry climate kind to asthmatics" "the genial sunshine" "hot summer pavements are anything but kind to the feet")
+    id oewn-01245155-s
+    partOfSpeech s
+    synonyms (genial)
+  entry
+    definition "tolerant and forgiving under provocation"
+    examples ("our neighbor was very kind about the window our son broke")
+    id oewn-01044891-s
+    partOfSpeech s
+    synonyms (tolerant)
+source "oewn:2024"

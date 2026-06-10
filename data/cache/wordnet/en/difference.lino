@@ -1,0 +1,34 @@
+language en
+lemma difference
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of being unlike or dissimilar"
+    examples ("there are many differences between jazz and rock")
+    id oewn-04756076-n
+    partOfSpeech n
+  entry
+    definition "a variation that deviates from the standard or norm"
+    examples ("the deviation from the mean")
+    id oewn-07380889-n
+    partOfSpeech n
+    synonyms (deviation divergence departure)
+  entry
+    definition "a disagreement or argument about something important"
+    examples ("he had a dispute with his wife" "there were irreconcilable differences" "the familiar conflict between Republicans and Democrats")
+    id oewn-07196595-n
+    partOfSpeech n
+    synonyms (dispute "difference of opinion" conflict)
+  entry
+    definition "a significant change"
+    examples ("the difference in her is amazing" "his support made a real difference")
+    id oewn-13881504-n
+    partOfSpeech n
+  entry
+    definition "the number that remains after subtraction; the number that when added to the subtrahend gives the minuend"
+    id oewn-13751346-n
+    partOfSpeech n
+    synonyms (remainder)
+source "oewn:2024"

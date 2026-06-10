@@ -1,0 +1,37 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(reflexive pronoun) Me, as direct or indirect object the speaker as the object of a verb or preposition, when the speaker is also the subject."
+          example "I taught myself."
+        entry
+          definition "Personally, for my part; used in apposition to I, sometimes for simple emphasis and sometimes with implicit exclusion of any others performing the activity described."
+        entry
+          definition "In my normal state of body or mind."
+        entry
+          definition "Me (as the object of a verb or preposition)."
+          example "I feel like myself."
+        entry
+          definition "I (as the subject of a verb)."
+        entry
+          definition "My name is..."
+          example "Myself John."
+      partOfSpeech pronoun
+      synonyms (me)
+  phonetic "/maɪˈsɛlf/"
+  phonetics
+    entry
+      audio ""
+      text "/maɪˈsɛlf/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/myself-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1224088"
+  sourceUrls ("https://en.wiktionary.org/wiki/myself")
+  word myself

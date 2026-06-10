@@ -1,0 +1,13 @@
+view
+  id M-2e6eaf27c496
+  lemma own
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "belonging to or on behalf of a specified person (especially yourself); preceded by a possessive"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have ownership or possession of"
+    provenance (wordnet)

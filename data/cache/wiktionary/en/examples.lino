@@ -1,0 +1,35 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Something that is representative of all such things in a group."
+        entry
+          definition "Something that serves to illustrate or explain a rule."
+        entry
+          definition "Something that serves as a pattern of behaviour to be imitated (a good example) or not to be imitated (a bad example)."
+        entry
+          definition "A person punished as a warning to others."
+        entry
+          definition "A parallel or closely similar case, especially when serving as a precedent or model."
+        entry
+          definition "An instance (as a problem to be solved) serving to illustrate the rule or precept or to act as an exercise in the application of the rule."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To be illustrated or exemplified (by)."
+      partOfSpeech verb
+  phonetic "/ɪɡˈzɑːmpl̩z/"
+  phonetics
+    entry
+      audio ""
+      text "/ɪɡˈzɑːmpl̩z/"
+    entry
+      audio ""
+      text "/ɪɡˈzæmpl̩z/"
+  sourceUrls ("https://en.wiktionary.org/wiki/example" "https://en.wiktionary.org/wiki/examples")
+  word examples

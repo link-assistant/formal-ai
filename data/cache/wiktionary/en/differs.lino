@@ -1,0 +1,18 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Not to have the same traits or characteristics; to be unalike or distinct."
+          example "These shoes only differ from those ones in having slightly longer laces."
+        entry
+          definition "(people, groups, etc.) To have diverging opinions, disagree."
+        entry
+          definition "To be separated in quantity."
+          example "The numbers 3 and 21 differ by 18."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/differ" "https://en.wiktionary.org/wiki/differs")
+  word differs

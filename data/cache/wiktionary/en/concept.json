@@ -1,0 +1,47 @@
+[
+  {
+    "word": "concept",
+    "phonetic": "/ˈkɒn.sɛpt/",
+    "phonetics": [
+      {
+        "text": "/ˈkɒn.sɛpt/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An abstract and general idea; an abstraction.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Understanding retained in the mind, from experience, reasoning and imagination; a generalization (generic, basic form), or abstraction (mental impression), of a particular set of instances or occurrences (specific, though different, recorded manifestations of the concept).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In generic programming, a description of supported operations on a type, including their syntax and semantics.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "abstraction",
+          "conception",
+          "notion"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/concept"
+    ]
+  }
+]

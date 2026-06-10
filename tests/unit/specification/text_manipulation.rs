@@ -17,12 +17,7 @@ fn text_solver() -> UniversalSolver {
 }
 
 fn supported_languages() -> BTreeSet<String> {
-    formal_ai::seed::agent_info()
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages")
-        .split('|')
-        .map(ToOwned::to_owned)
-        .collect()
+    formal_ai::supported_languages().into_iter().collect()
 }
 
 #[test]

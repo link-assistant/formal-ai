@@ -1,0 +1,58 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Each of the main continuous land-masses on the earth's surface, now generally regarded as seven in number, including their related islands, continental shelves etc."
+        entry
+          definition "A large contiguous landmass considered independent of its islands, peninsulas etc. Specifically, the Old World continent of Europe–Asia–Africa. See the Continent."
+        entry
+          definition "Land (as opposed to the water)."
+      partOfSpeech noun
+  phonetic "/ˈkɒntɪnənt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkɒntɪnənt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/continent-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762649"
+      text "/ˈkɑntɪnənt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/continent")
+  word continent
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (incontinent)
+      definitions
+        entry
+          definition "Exercising self-restraint; controlled, temperate with respect to one's bodily needs or passions, especially sex, urination and/or defecation."
+        entry
+          definition "Not interrupted; connected; continuous."
+          example "a continent fever"
+        entry
+          definition "Serving to restrain or limit; restraining; opposing."
+      partOfSpeech adjective
+  phonetic "/ˈkɒntɪnənt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkɒntɪnənt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/continent-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762649"
+      text "/ˈkɑntɪnənt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/continent")
+  word continent

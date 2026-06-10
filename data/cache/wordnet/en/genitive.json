@@ -1,0 +1,33 @@
+{
+  "lemma": "genitive",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02873533-a",
+      "partOfSpeech": "a",
+      "definition": "serving to express or indicate possession",
+      "examples": [
+        "possessive pronouns",
+        "the genitive endings"
+      ],
+      "synonyms": [
+        "possessive"
+      ]
+    },
+    {
+      "id": "oewn-06322842-n",
+      "partOfSpeech": "n",
+      "definition": "the case expressing ownership",
+      "synonyms": [
+        "genitive case",
+        "possessive",
+        "possessive case"
+      ]
+    }
+  ]
+}

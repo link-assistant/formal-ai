@@ -1,0 +1,54 @@
+{
+  "lemma": "agent",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09213796-n",
+      "partOfSpeech": "n",
+      "definition": "an active and efficient cause; capable of producing a certain effect",
+      "examples": [
+        "their research uncovered new disease agents"
+      ]
+    },
+    {
+      "id": "oewn-09796794-n",
+      "partOfSpeech": "n",
+      "definition": "a representative who acts on behalf of other persons or organizations"
+    },
+    {
+      "id": "oewn-14802595-n",
+      "partOfSpeech": "n",
+      "definition": "a substance that exerts some force or effect"
+    },
+    {
+      "id": "oewn-09796453-n",
+      "partOfSpeech": "n",
+      "definition": "a businessman who buys or sells for another in exchange for a commission",
+      "synonyms": [
+        "factor",
+        "broker"
+      ]
+    },
+    {
+      "id": "oewn-10393500-n",
+      "partOfSpeech": "n",
+      "definition": "any agent or representative of a federal agency or bureau",
+      "synonyms": [
+        "federal agent"
+      ]
+    },
+    {
+      "id": "oewn-06343357-n",
+      "partOfSpeech": "n",
+      "definition": "the semantic role of the animate entity that instigates or causes the happening denoted by the verb in the clause",
+      "synonyms": [
+        "agentive role"
+      ]
+    }
+  ]
+}

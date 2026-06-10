@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q42": {
+      "type": "item",
+      "id": "Q42",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "डग्लस अ‍डम्स"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Дуглас Адамс"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "道格拉斯·亞當斯"
+        },
+        "en": {
+          "language": "en",
+          "value": "Douglas Adams"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "British science fiction writer and humorist (1952–2001)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "английский писатель, драматург и сценарист и юморист (1952—2001)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英國文學家、幽默作家 (1952–2001)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेजी लेखक"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Адамс, Дуглас"
+          },
+          {
+            "language": "ru",
+            "value": "Дуглас Ноэль Адамс"
+          },
+          {
+            "language": "ru",
+            "value": "Адамс, Дуглас Ноэль"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "亞當斯"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

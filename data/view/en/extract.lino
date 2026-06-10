@@ -1,0 +1,45 @@
+view
+  id M-82b4a1b8b6dc
+  lemma extract
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a solution obtained by steeping or soaking a substance (usually in water)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a passage selected from a larger work"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove, usually with some force or effort; also used in an abstract sense"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get despite difficulties or obstacles"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deduce (a principle) or construe (a meaning)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "extract by the process of distillation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "separate (a metal) from an ore"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "obtain from a substance, as by mechanical action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take out of a literary work in order to cite or copy"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "calculate the root of a number"
+    provenance (wordnet)

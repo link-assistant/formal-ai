@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q1568": {
+      "type": "item",
+      "id": "Q1568",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Hindi"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "хинди"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हिन्दी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印地語"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Indo-Aryan language spoken in India"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "индоарийский язык, государственный язык Индии"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हिन्द-आर्य भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Hindi language"
+          },
+          {
+            "language": "en",
+            "value": "Modern Standard Hindi"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हिंदी भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "हिन्दी भाषा"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

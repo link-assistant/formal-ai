@@ -1,0 +1,20 @@
+{
+  "lemma": "url",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06370154-n",
+      "partOfSpeech": "n",
+      "definition": "the address of a web page on the world wide web",
+      "synonyms": [
+        "uniform resource locator",
+        "universal resource locator"
+      ]
+    }
+  ]
+}

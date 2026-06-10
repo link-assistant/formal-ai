@@ -1,0 +1,68 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A clear, deep, red variety of corundum, valued as a precious stone."
+        entry
+          definition "A red spinel."
+        entry
+          definition "A deep red colour."
+        entry
+          definition "The tincture red or gules."
+        entry
+          definition "The size of type between pearl and nonpareil, standardized as 5½-point."
+          synonyms (agate)
+        entry
+          definition "A ruby hummer, a South American hummingbird, Clytolaema rubricauda."
+        entry
+          definition "A red bird-of-paradise, Paradisaea rubra."
+      partOfSpeech noun
+      synonyms (agate)
+    entry
+      definitions
+        entry
+          definition "To make red; to redden."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Of a deep red colour."
+      partOfSpeech adjective
+  phonetic "[ˈɹuːbi]"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/ruby-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=87241182"
+      text "[ˈɹuːbi]"
+  sourceUrls ("https://en.wiktionary.org/wiki/ruby")
+  word ruby
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A pronunciation guide written above or beside Chinese or Japanese characters."
+          synonyms (rubi)
+      partOfSpeech noun
+      synonyms (rubi)
+  phonetic "[ˈɹuːbi]"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/ruby-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=87241182"
+      text "[ˈɹuːbi]"
+  sourceUrls ("https://en.wiktionary.org/wiki/ruby")
+  word ruby

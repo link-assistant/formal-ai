@@ -1,0 +1,33 @@
+view
+  id M-f4e3f260e6d1
+  lemma execute
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "kill as a means of socially sanctioned punishment"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "murder in a planned fashion"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put in effect"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "carry out the legalities of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "carry out a process or program, as on a computer or a machine"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "carry out or perform an action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "sign in the presence of witnesses"
+    provenance (wordnet)

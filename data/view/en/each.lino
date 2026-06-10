@@ -1,0 +1,13 @@
+view
+  id M-7580e28ff14f
+  lemma each
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "to or from every one of two or more (considered individually)"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(used of count nouns) every one considered individually; quantifier, singular, universal pronoun; quantifier, singular, universal"
+    provenance (wordnet)

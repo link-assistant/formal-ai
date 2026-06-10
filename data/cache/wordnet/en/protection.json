@@ -1,0 +1,90 @@
+{
+  "lemma": "protection",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00819341-n",
+      "partOfSpeech": "n",
+      "definition": "the activity of protecting someone or something",
+      "examples": [
+        "the witnesses demanded police protection"
+      ]
+    },
+    {
+      "id": "oewn-04020673-n",
+      "partOfSpeech": "n",
+      "definition": "a covering that is intend to protect from damage or injury",
+      "examples": [
+        "they had no protection from the fallout",
+        "wax provided protection for the floors"
+      ],
+      "synonyms": [
+        "protective covering",
+        "protective cover"
+      ]
+    },
+    {
+      "id": "oewn-13365086-n",
+      "partOfSpeech": "n",
+      "definition": "defense against financial failure; financial independence",
+      "examples": [
+        "his pension gave him security in his old age",
+        "insurance provided protection against loss of wages due to illness"
+      ],
+      "synonyms": [
+        "security"
+      ]
+    },
+    {
+      "id": "oewn-14563562-n",
+      "partOfSpeech": "n",
+      "definition": "the condition of being protected",
+      "examples": [
+        "they were huddled together for protection",
+        "he enjoyed a sense of peace and protection in his new home"
+      ],
+      "synonyms": [
+        "shelter"
+      ]
+    },
+    {
+      "id": "oewn-01217353-n",
+      "partOfSpeech": "n",
+      "definition": "kindly endorsement and guidance",
+      "examples": [
+        "the tournament was held under the auspices of the city council"
+      ],
+      "synonyms": [
+        "auspices",
+        "aegis"
+      ]
+    },
+    {
+      "id": "oewn-01130195-n",
+      "partOfSpeech": "n",
+      "definition": "the imposition of duties or quotas on imports in order to protect domestic industry against foreign competition",
+      "examples": [
+        "he made trade protection a plank in the party platform"
+      ],
+      "synonyms": [
+        "trade protection"
+      ]
+    },
+    {
+      "id": "oewn-00786409-n",
+      "partOfSpeech": "n",
+      "definition": "payment extorted by gangsters on threat of violence",
+      "examples": [
+        "every store in the neighborhood had to pay him protection"
+      ],
+      "synonyms": [
+        "tribute"
+      ]
+    }
+  ]
+}

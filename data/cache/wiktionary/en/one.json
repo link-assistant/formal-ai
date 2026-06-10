@@ -1,0 +1,217 @@
+[
+  {
+    "word": "one",
+    "phonetic": "/wan/",
+    "phonetics": [
+      {
+        "text": "/wan/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/one-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75900253",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/wɒn/",
+        "audio": ""
+      },
+      {
+        "text": "/wʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/one-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711587",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit or figure 1.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The neutral element with respect to multiplication in a ring.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A one-dollar bill.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One run scored by hitting the ball and running between the wickets; a single.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A joke or amusing anecdote.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A particularly special or compatible person or thing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I knew as soon I met him that John was the one for me and we were married within a month."
+          },
+          {
+            "definition": "(leet) Used instead of ! to amplify an exclamation, parodying unskilled typists who forget to press the shift key while typing exclamation points, thus typing \"1\".",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "2003 September 26, \"DEAL WITH IT!!!!11one!!\", in alt.games.video.nintendo.gamecube, Usenet"
+          }
+        ],
+        "synonyms": [
+          "single",
+          "unity",
+          "1",
+          "eleven"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To cause to become one; to gather into a single whole; to unite.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of a period of time, being particular.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "One day the prince set forth to kill the dragon that had brought terror to his father’s kingdom for centuries."
+          },
+          {
+            "definition": "Being a single, unspecified thing; a; any.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "My aunt used to say, \"One day is just like the other.\""
+          },
+          {
+            "definition": "Sole, only.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He is the one man who can help you."
+          },
+          {
+            "definition": "Whole, entire.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Body and soul are not separate; they are one."
+          },
+          {
+            "definition": "In agreement.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We are one on the importance of learning."
+          },
+          {
+            "definition": "The same.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The two types look very different, but are one species."
+          },
+          {
+            "definition": "Being a preeminent example.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He is one hell of a guy."
+          },
+          {
+            "definition": "Being an unknown person with the specified name; see also \"a certain\".",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The town records from 1843 showed the overnight incarceration of one “A. Lincoln”."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "The number represented by the Arabic numeral 1; the numerical value equal to that cardinal number.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In many cultures, a baby turns one year old a year after its birth."
+          },
+          {
+            "definition": "The first positive number in the set of natural numbers.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The cardinality of the smallest nonempty set.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The ordinality of an element which has no predecessor, usually called first or number one.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "(impersonal pronoun, indefinite) One thing (among a group of others); one member of a group.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Any one of the boys.  The big one looks good.  I want the green one.  A good driver is one who drives carefully."
+          },
+          {
+            "definition": "(impersonal pronoun, sometimes with \"the\") The first mentioned of two things or people, as opposed to the other.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She offered him an apple and an orange; he took one and left the other."
+          },
+          {
+            "definition": "(indefinite personal pronoun) Any person (applying to people in general).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "One’s guilt may trouble one, but it is best not to let oneself be troubled by things which cannot be changed.  One shouldn’t be too quick to judge."
+          },
+          {
+            "definition": "(pronoun) Any person, entity or thing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"driver\", noun: one who drives."
+          }
+        ],
+        "synonyms": [
+          "they",
+          "you"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/one"
+    ]
+  }
+]

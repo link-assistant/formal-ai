@@ -1,0 +1,42 @@
+language en
+lemma ping
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a river in western Thailand; a major tributary of the Chao Phraya"
+    id oewn-09415400-n
+    partOfSpeech n
+    synonyms ("Ping River")
+  entry
+    definition "a sharp high-pitched resonant sound (as of a sonar echo or a bullet striking metal)"
+    id oewn-07404169-n
+    partOfSpeech n
+  entry
+    definition "hit with a pinging noise"
+    examples ("The bugs pinged the lamp shade")
+    id oewn-01239359-v
+    partOfSpeech v
+  entry
+    definition "sound like a car engine that is firing too early"
+    examples ("the car pinged when I put in low-octane gasoline" "The car pinked when the ignition was too far retarded")
+    id oewn-02183310-v
+    partOfSpeech v
+    synonyms (pink knock)
+  entry
+    definition "make a short high-pitched sound"
+    examples ("the bullet pinged when they struck the car")
+    id oewn-02183153-v
+    partOfSpeech v
+  entry
+    definition "contact, usually in order to remind of something"
+    examples ("I'll ping my accountant — April 15 is nearing")
+    id oewn-00745897-v
+    partOfSpeech v
+  entry
+    definition "send a message from one computer to another to check whether it is reachable and active"
+    examples ("ping your machine in the office")
+    id oewn-00745678-v
+    partOfSpeech v
+source "oewn:2024"

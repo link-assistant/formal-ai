@@ -1,0 +1,17 @@
+language en
+lemma declared
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "made known or openly avowed"
+    examples ("their declared and their covert objectives" "a declared liberal")
+    id oewn-00690633-a
+    partOfSpeech a
+  entry
+    definition "declared as fact; explicitly stated"
+    id oewn-00944139-s
+    partOfSpeech s
+    synonyms (stated)
+source "oewn:2024"

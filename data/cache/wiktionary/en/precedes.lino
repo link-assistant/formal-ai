@@ -1,0 +1,19 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (succeed)
+      definitions
+        entry
+          definition "To go before, go in front of."
+          example "Cultural genocide precedes physical genocide."
+        entry
+          definition "To cause to be preceded; to preface; to introduce."
+        entry
+          definition "To have higher rank than (someone or something else)."
+      partOfSpeech verb
+      synonyms (forego)
+  sourceUrls ("https://en.wiktionary.org/wiki/precede" "https://en.wiktionary.org/wiki/precedes")
+  word precedes

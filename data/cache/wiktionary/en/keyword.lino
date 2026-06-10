@@ -1,0 +1,24 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Any word used as the key to a code."
+        entry
+          definition "Any word used in a reference work to link to other words or other information."
+        entry
+          definition "A reserved word used to identify a specific command, function etc."
+        entry
+          definition "Any word that occurs in a text more often than normal."
+      partOfSpeech noun
+      synonyms ("operative word" workword)
+    entry
+      definitions
+        entry
+          definition "To tag with keywords, as for example to facilitate searching."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/keyword")
+  word keyword

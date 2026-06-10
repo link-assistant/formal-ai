@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { parseSupportedLanguagesFromAgentInfo } from './lino-seed-parser.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
@@ -49,11 +50,7 @@ function readRepoFile(relativePath) {
 
 function parseSupportedLanguages() {
   const agentInfo = readRepoFile('data/seed/agent-info.lino');
-  const match = agentInfo.match(/field "supported_languages"\s*\n\s+value "([^"]+)"/);
-  if (!match) {
-    throw new Error('data/seed/agent-info.lino is missing supported_languages');
-  }
-  return match[1].split('|').filter(Boolean);
+  return parseSupportedLanguagesFromAgentInfo(agentInfo);
 }
 
 function runGit(args) {

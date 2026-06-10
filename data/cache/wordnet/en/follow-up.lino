@@ -1,0 +1,23 @@
+language en
+lemma follow-up
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a piece of work that exploits or builds on earlier work"
+    examples ("his new software is a follow-up to the programs they started with")
+    id oewn-03382428-n
+    partOfSpeech n
+    synonyms (followup)
+  entry
+    definition "an activity that continues something that has already begun or that repeats something that has already been done"
+    id oewn-00456372-n
+    partOfSpeech n
+    synonyms (followup)
+  entry
+    definition "a subsequent examination of a patient for the purpose of monitoring earlier treatment"
+    id oewn-00144071-n
+    partOfSpeech n
+    synonyms (followup reexamination review)
+source "oewn:2024"

@@ -1,0 +1,57 @@
+language en
+lemma expression
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the feelings expressed on a person's face"
+    examples ("a sad expression" "a look of triumph" "an angry face")
+    id oewn-04687095-n
+    partOfSpeech n
+    synonyms (look aspect "facial expression" face)
+  entry
+    definition "expression without words"
+    examples ("tears are an expression of grief" "the pulse is a reflection of the heart's condition")
+    id oewn-06893299-n
+    partOfSpeech n
+    synonyms (manifestation reflection reflexion)
+  entry
+    definition "the communication (in speech or writing) of your beliefs or opinions"
+    examples ("expressions of good will" "he helped me find verbal expression for my ideas" "the idea was immediate but the verbalism took hours")
+    id oewn-07154581-n
+    partOfSpeech n
+    synonyms ("verbal expression" verbalism)
+  entry
+    definition "a word or phrase that particular people use in particular situations"
+    examples ("pardon the expression")
+    id oewn-07166088-n
+    partOfSpeech n
+    synonyms (saying locution)
+  entry
+    definition "the style of expressing yourself"
+    examples ("he suggested a better formulation" "his manner of expression showed how much he cared")
+    id oewn-07083988-n
+    partOfSpeech n
+    synonyms (formulation)
+  entry
+    definition "a group of symbols that make a mathematical statement"
+    id oewn-06744551-n
+    partOfSpeech n
+    synonyms (formula)
+  entry
+    definition "(genetics) the process of expressing a gene"
+    id oewn-13499408-n
+    partOfSpeech n
+  entry
+    definition "a group of words that form a constituent of a sentence and are considered as a single unit"
+    examples ("I concluded from his awkward constructions that he was a foreigner")
+    id oewn-06324641-n
+    partOfSpeech n
+    synonyms (construction "grammatical construction")
+  entry
+    definition "the act of forcing something out by squeezing or pressing"
+    examples ("the expression of milk from her breast")
+    id oewn-00359354-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,30 @@
+language en
+lemma role
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the actions and activities assigned to or required or expected of a person or group"
+    examples ("the function of a teacher" "the government must do its part" "play its role")
+    id oewn-00721817-n
+    partOfSpeech n
+    synonyms (function office part)
+  entry
+    definition "an actor's portrayal of someone in a play"
+    examples ("she played the part of Desdemona")
+    id oewn-05937794-n
+    partOfSpeech n
+    synonyms (character "theatrical role" part persona)
+  entry
+    definition "what something is used for"
+    examples ("the function of an auger is to bore holes" "ballet is beautiful but what use is it?")
+    id oewn-05156572-n
+    partOfSpeech n
+    synonyms (function purpose use)
+  entry
+    definition "normal or customary activity of a person in a particular social setting"
+    examples ("what is your role on the team?")
+    id oewn-00723312-n
+    partOfSpeech n
+source "oewn:2024"

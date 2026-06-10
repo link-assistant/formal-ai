@@ -1,0 +1,17 @@
+Q33742
+  aliases
+    en ("ordinary language" natlang)
+    zh ("自然語言")
+  descriptions
+    en 'language naturally spoken by humans, as opposed to "constructed" and "formal" languages'
+    hi "ऐसी भाषा जिसका जन्म और विकास स्वत: हुआ हो"
+    ru "язык используемый для общения людей и не созданный целенаправленно"
+    zh "人类自然使用的语言，与“人工构造”和“形式”语言相对"
+  id Q33742
+  labels
+    en "natural language"
+    hi "प्राकृतिक भाषा"
+    ru "естественный язык"
+    zh "自然语言"
+  type item
+success 1

@@ -1,0 +1,32 @@
+{
+  "lemma": "reorder",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06542246-n",
+      "partOfSpeech": "n",
+      "definition": "a repeated order for the same merchandise",
+      "examples": [
+        "he's the one who sends out all the new orders and reorders"
+      ]
+    },
+    {
+      "id": "oewn-00660783-v",
+      "partOfSpeech": "v",
+      "definition": "assign a new order to"
+    },
+    {
+      "id": "oewn-00747796-v",
+      "partOfSpeech": "v",
+      "definition": "make a new request to be supplied with",
+      "examples": [
+        "The store had to reorder the popular CD several times"
+      ]
+    }
+  ]
+}

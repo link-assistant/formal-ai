@@ -1,69 +1,60 @@
 dialog_rust
-  greeting "Hi"
+  greeting Hi
   request "Write me hello world program in Rust"
-  language "Rust"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language Rust
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_python
-  greeting "Hello"
+  greeting Hello
   request "Create a hello world example in Python"
-  language "Python"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language Python
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_javascript
-  greeting "Hi"
+  greeting Hi
   request "Write hello world in JavaScript"
-  language "JavaScript"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language JavaScript
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_go
-  greeting "Hello"
+  greeting Hello
   request "Show hello world in Go"
-  language "Go"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language Go
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_typescript
-  greeting "Hi"
+  greeting Hi
   request "Write hello world in TypeScript"
-  language "TypeScript"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language TypeScript
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_c
-  greeting "Hello"
+  greeting Hello
   request "Show hello world in C"
-  language "C"
-  expected_intent "write_program"
-  cycle_wait_seconds "10-20"
-
+  language C
+  expected_intent write_program
+  cycle_wait_seconds 10-20
 dialog_calculator_english
-  greeting "Hi"
+  greeting Hi
   request "What is 8 * (5 + 3)?"
-  language "English"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
-
+  language English
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 dialog_calculator_russian
-  greeting "Привет"
+  greeting Привет
   request "Сколько будет 2 + 2?"
-  language "Russian"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
-
+  language Russian
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 dialog_calculator_chinese
-  greeting "你好"
+  greeting 你好
   request "计算 2 + 2"
-  language "Chinese"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
-
+  language Chinese
+  expected_intent calculation
+  cycle_wait_seconds 10-20
 dialog_calculator_hindi
-  greeting "नमस्ते"
+  greeting नमस्ते
   request "2 + 2 कितना है?"
-  language "Hindi"
-  expected_intent "calculation"
-  cycle_wait_seconds "10-20"
+  language Hindi
+  expected_intent calculation
+  cycle_wait_seconds 10-20

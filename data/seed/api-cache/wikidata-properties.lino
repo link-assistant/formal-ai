@@ -1,8 +1,0 @@
-seed_metadata
-  bucket "wikidata-properties"
-  format "Links Notation; one `response_<short_id>` record per fetched URL"
-  populated_by "examples/refresh_translation_cache.rs"
-  max_records "128"
-  max_lines "1500"
-  split_marker "wikidata-properties-partN.lino"
-  body_format "raw response text; concatenate `body` chunks; values escape one literal quote as two consecutive quotes per Links Notation"

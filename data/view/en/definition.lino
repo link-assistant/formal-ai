@@ -1,0 +1,13 @@
+view
+  id M-7a2a68afb149
+  lemma definition
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a concise explanation of the meaning of a word or phrase or symbol"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "clarity of outline"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-43a10b915b64
+  lemma declared
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "made known or openly avowed"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "declared as fact; explicitly stated"
+    provenance (wordnet)

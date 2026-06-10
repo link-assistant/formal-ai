@@ -1,0 +1,16 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A term for a marijuana cigarette ('joint')."
+        entry
+          definition "An alternative version of i, the positive square root of -1; used in the context of electronics."
+        entry
+          definition "The second unit vector, after i"
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/j" "https://en.wiktionary.org/wiki/js")
+  word js

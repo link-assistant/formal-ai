@@ -1,0 +1,84 @@
+[
+  {
+    "word": "ten",
+    "phonetic": "/tɛn/",
+    "phonetics": [
+      {
+        "text": "/tɛn/",
+        "audio": ""
+      },
+      {
+        "text": "/tɛn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ten-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=867593",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A set or group with ten elements.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We divided the chocolates into tens to hand out to Hallowe'en visitors."
+          },
+          {
+            "definition": "A card in a given suit with a value of ten.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A denomination of currency, such as a banknote, with a value of ten units. See also tenner.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Can you give me two tens for this twenty?"
+          },
+          {
+            "definition": "A perfect specimen, a physically attractive person.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A high level of intensity.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of rowing ten strokes flat out.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "tenner",
+          "X"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "The number occurring after nine and before eleven, represented in Arabic numerals (base ten) as 10 and in Roman numerals as X.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ten"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+Q145
+  aliases
+    en ("United Kingdom of Great Britain and Northern Ireland" "U K" "G B" "Great Britain" "Great Britain and Northern Ireland" "the United Kingdom of Great Britain and Northern Ireland" "the UK" "the United Kingdom")
+    ru ("Соединённое Королевство Великобритании и Северной Ирландии" "Соединённое Королевство" "Британия" "Туманный Альбион")
+    zh ("联合王国" "大不列颠及北爱尔兰联合王国" "不列颠")
+  descriptions
+    en "island country in north-west Europe"
+    hi "पश्चिमोत्तरी यूरोप का देश"
+    ru "государство в Европе"
+    zh "歐洲西部的島國"
+  id Q145
+  labels
+    en "United Kingdom"
+    hi "यूनाइटेड किंगडम"
+    ru "Великобритания"
+    zh "英国"
+  type item
+success 1

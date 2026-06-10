@@ -11,12 +11,13 @@
 //! `source → formalize → meaning → deformalize → target` pipeline against
 //! a curated set of source surfaces, populates the gitignored on-disk
 //! accelerator under `data/wikidata-cache/` and `data/wiktionary-cache/`
-//! with the verbatim API bodies, then bundles those bodies into the
-//! committed `.lino` seed files at `data/seed/api-cache/*.lino`.
+//! with the verbatim API bodies, then bundles those bodies into the legacy
+//! `.lino` replay files at `data/seed/api-cache/*.lino`.
 //!
-//! The bundle is what ships in git. The on-disk accelerator is a local
-//! convenience only (gitignored). The seed bundle is what CI and the
-//! browser worker consult for offline operation.
+//! Issue #398 removed those replay files from the committed seed data in favor
+//! of explicit source snapshots under `data/cache/wikidata/`. This example is
+//! still useful for local cache refresh experiments or older checkouts, but its
+//! output is not the current reviewed seed source.
 //!
 //! Caps (issue #221):
 //! - At most [`MAX_SEED_RECORDS_PER_BUCKET`] records per bucket.

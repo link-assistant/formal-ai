@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q14944328": {
+      "type": "item",
+      "id": "Q14944328",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "example"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пример"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "उदाहरण"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "例子"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "thing which acts as a typical representative of a set of things"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вещь или предмет, выступающий в качестве типичного представителя множества вещей или предметов"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "範例"
+          },
+          {
+            "language": "zh",
+            "value": "范例"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

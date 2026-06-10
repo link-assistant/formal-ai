@@ -1,0 +1,17 @@
+view
+  id M-ee23f42c8abe
+  lemma payment
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a sum of money paid or a claim discharged"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of paying money"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an act of requiting; returning in kind"
+    provenance (wordnet)

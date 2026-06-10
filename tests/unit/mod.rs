@@ -9,12 +9,18 @@ mod issue_337;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;
+mod overrides;
 mod playwright_script;
 mod proof_request;
 mod proof_request_config;
+mod reference_closure;
+mod semantic_facets;
+mod semantic_grounding;
+mod semantic_root;
 mod software_project;
 mod specification;
 mod test_status;
+mod total_closure;
 mod web_requests;
 
 #[path = "ci-cd/mod.rs"]

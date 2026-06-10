@@ -1,0 +1,95 @@
+{
+  "lemma": "progress",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00250368-n",
+      "partOfSpeech": "n",
+      "definition": "gradual improvement or growth or development",
+      "examples": [
+        "advancement of knowledge",
+        "great progress in the arts"
+      ],
+      "synonyms": [
+        "advancement"
+      ]
+    },
+    {
+      "id": "oewn-00282894-n",
+      "partOfSpeech": "n",
+      "definition": "the act of moving forward (as toward a goal)",
+      "synonyms": [
+        "progression",
+        "procession",
+        "advance",
+        "advancement",
+        "forward motion",
+        "onward motion"
+      ]
+    },
+    {
+      "id": "oewn-07459865-n",
+      "partOfSpeech": "n",
+      "definition": "a movement forward",
+      "examples": [
+        "he listened for the progress of the troops"
+      ],
+      "synonyms": [
+        "progression",
+        "advance"
+      ]
+    },
+    {
+      "id": "oewn-00249545-v",
+      "partOfSpeech": "v",
+      "definition": "develop in a positive way",
+      "examples": [
+        "He progressed well in school",
+        "My plants are coming along",
+        "Plans are shaping up"
+      ],
+      "synonyms": [
+        "come on",
+        "come along",
+        "advance",
+        "get on",
+        "get along",
+        "shape up"
+      ]
+    },
+    {
+      "id": "oewn-01996535-v",
+      "partOfSpeech": "v",
+      "definition": "move forward, also in the metaphorical sense",
+      "examples": [
+        "Time marches on"
+      ],
+      "synonyms": [
+        "advance",
+        "pass on",
+        "move on",
+        "march on",
+        "go on"
+      ]
+    },
+    {
+      "id": "oewn-00253876-v",
+      "partOfSpeech": "v",
+      "definition": "form or accumulate steadily",
+      "examples": [
+        "Resistance to the manager's plan built up quickly",
+        "Pressure is building up at the Indian-Pakistani border"
+      ],
+      "synonyms": [
+        "build up",
+        "work up",
+        "build"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+view
+  id M-462cd6999f26
+  lemma hindi
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or supporting Hinduism"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the most widely spoken of modern Indic vernaculars; spoken mostly in the north of India; along with English it is one of the main official languages of India; usually written in Devanagari script"
+    provenance (wordnet)

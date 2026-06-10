@@ -1,0 +1,149 @@
+[
+  {
+    "word": "commands",
+    "phonetic": "/kəˈmɑːndz/",
+    "phonetics": [
+      {
+        "text": "/kəˈmɑːndz/",
+        "audio": ""
+      },
+      {
+        "text": "/kəˈmændz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/commands-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100939",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An order to do something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I was given a command to cease shooting."
+          },
+          {
+            "definition": "The right or authority to order, control or dispose of; the right to be obeyed or to compel obedience.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to have command of an army"
+          },
+          {
+            "definition": "Power of control, direction or disposal; mastery.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "England has long held command of the sea"
+          },
+          {
+            "definition": "A position of chief authority; a position involving the right or power to order or control.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "General Smith was placed in command."
+          },
+          {
+            "definition": "The act of commanding; exercise or authority of influence.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A body or troops, or any naval or military force, under the control of a particular officer; by extension, any object or body in someone's charge.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Dominating situation; range or control or oversight; extent of view or outlook.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A directive to a computer program acting as an interpreter of some kind, in order to perform a specific task.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The degree of control a pitcher has over his pitches.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He's got good command tonight."
+          },
+          {
+            "definition": "A command performance.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To order, give orders; to compel or direct with authority.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The king commanded his servant to bring him dinner."
+          },
+          {
+            "definition": "To have or exercise supreme power, control or authority over, especially military; to have under direction or control.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to command an army or a ship"
+          },
+          {
+            "definition": "To require with authority; to demand, order, enjoin.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "he commanded silence"
+          },
+          {
+            "definition": "To dominate through ability, resources, position etc.; to overlook.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Bridges commanded by a fortified house. (Motley.)"
+          },
+          {
+            "definition": "To exact, compel or secure by influence; to deserve, claim.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A good magistrate commands the respect and affections of the people."
+          },
+          {
+            "definition": "To hold, to control the use of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The fort commanded the bay."
+          },
+          {
+            "definition": "To have a view, as from a superior position.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To direct to come; to bestow.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "decree",
+          "order"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/command",
+      "https://en.wiktionary.org/wiki/commands"
+    ]
+  }
+]

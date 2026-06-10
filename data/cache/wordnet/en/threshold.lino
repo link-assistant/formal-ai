@@ -1,0 +1,33 @@
+language en
+lemma threshold
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the starting point for a new state or experience"
+    examples ("on the threshold of manhood")
+    id oewn-15293950-n
+    partOfSpeech n
+  entry
+    definition "the smallest detectable sensation"
+    id oewn-05720373-n
+    partOfSpeech n
+    synonyms (limen)
+  entry
+    definition "the entrance (the space in a wall) through which you enter or leave a room or building; the space that a door can close"
+    examples ("he stuck his head in the doorway")
+    id oewn-03228735-n
+    partOfSpeech n
+    synonyms (doorway door "room access")
+  entry
+    definition "the sill of a door; a horizontal piece of wood or stone that forms the bottom of a doorway and offers support when passing through a doorway"
+    id oewn-03228389-n
+    partOfSpeech n
+    synonyms (doorsill doorstep)
+  entry
+    definition "a region marking a boundary"
+    id oewn-13926744-n
+    partOfSpeech n
+    synonyms (brink verge)
+source "oewn:2024"

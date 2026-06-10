@@ -1,0 +1,19 @@
+language en
+lemma demo
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a visual presentation showing how something works"
+    examples ("the lecture was accompanied by dramatic demonstrations" "the lecturer shot off a pistol as a demonstration of the startle response")
+    id oewn-06892230-n
+    partOfSpeech n
+    synonyms (demonstration)
+  entry
+    definition "give an exhibition of to an interested audience"
+    examples ("She shows her dogs frequently" "We will demo the new software in Washington")
+    id oewn-02153218-v
+    partOfSpeech v
+    synonyms (show exhibit present demonstrate)
+source "oewn:2024"

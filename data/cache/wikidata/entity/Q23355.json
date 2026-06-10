@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q23355": {
+      "type": "item",
+      "id": "Q23355",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "८"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ⅷ"
+          },
+          {
+            "language": "en",
+            "value": "The number 8"
+          },
+          {
+            "language": "en",
+            "value": "៨"
+          },
+          {
+            "language": "en",
+            "value": "eight"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "восемь"
+          },
+          {
+            "language": "ru",
+            "value": "8 (число)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "捌"
+          },
+          {
+            "language": "zh",
+            "value": "〨"
+          },
+          {
+            "language": "zh",
+            "value": "八"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

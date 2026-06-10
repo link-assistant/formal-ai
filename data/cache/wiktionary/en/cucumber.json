@@ -1,0 +1,49 @@
+[
+  {
+    "word": "cucumber",
+    "phonetic": "/ˈkjuːˌkʌmbə/",
+    "phonetics": [
+      {
+        "text": "/ˈkjuːˌkʌmbə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈkjuːˌkʌmbɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/cucumber-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1769363",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A vine in the gourd family, Cucumis sativus.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The edible fruit of this plant, having a green rind and crisp white flesh.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "cuke"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/cucumber"
+    ]
+  }
+]

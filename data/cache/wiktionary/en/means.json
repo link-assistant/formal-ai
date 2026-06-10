@@ -1,0 +1,157 @@
+[
+  {
+    "word": "means",
+    "phonetic": "/miːnz/",
+    "phonetics": [
+      {
+        "text": "/miːnz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/means-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1224279",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To lament.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To intend.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To convey (a meaning).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have conviction in (something said or expressed); to be sincere in (what one says).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Does she really mean what she said to him last night?"
+          },
+          {
+            "definition": "To cause or produce (a given result); to bring about (a given result).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "One faltering step means certain death."
+          },
+          {
+            "definition": "(usually with to) To be of some level of importance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Formality and titles mean nothing in their circle."
+          }
+        ],
+        "synonyms": [
+          "bring about",
+          "cause",
+          "lead to",
+          "result in",
+          "convey",
+          "indicate",
+          "signify",
+          "imply",
+          "intend",
+          "serious"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(now chiefly in the plural) A method or course of action used to achieve some result.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(in the singular) An intermediate step or intermediate steps.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Something which is intermediate or in the middle; an intermediate value or range of values; a medium.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The middle part of three-part polyphonic music; now specifically, the alto part in polyphonic music; an alto instrument.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The average of a set of values, calculated by summing them together and dividing by the number of terms; the arithmetic mean.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any function of multiple variables that satisfies certain properties and yields a number representative of its arguments; or, the number so yielded; a measure of central tendency.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Either of the two numbers in the middle of a conventionally presented proportion, as 2 and 3 in 1:2=3:6.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Resources; riches.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He was living beyond his means."
+          }
+        ],
+        "synonyms": [
+          "wherewithal"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An instrument or condition for attaining a purpose.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A car is a means of transport."
+          }
+        ],
+        "synonyms": [
+          "wherewithal"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mean",
+      "https://en.wiktionary.org/wiki/means"
+    ]
+  }
+]

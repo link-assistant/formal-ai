@@ -1,0 +1,25 @@
+view
+  id M-9035525d2554
+  lemma maintenance
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "activity involved in maintaining something in good working order"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "means of maintenance of a family or group"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "court-ordered support paid by one spouse to another after they are separated"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of sustaining life by food or providing a means of subsistence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the unauthorized interference in a legal action by a person having no interest in it (as by helping one party with money or otherwise to continue the action) so as to obstruct justice or promote unnecessary litigation or unsettle the peace of the community"
+    provenance (wordnet)

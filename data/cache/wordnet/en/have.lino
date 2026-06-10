@@ -1,0 +1,117 @@
+language en
+lemma have
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a person who possesses great material wealth"
+    id oewn-10548806-n
+    partOfSpeech n
+    synonyms ("rich person" "wealthy person")
+  entry
+    definition "have or possess, either in a concrete or an abstract sense"
+    examples ("She has $1,000 in the bank" "He has got two beautiful daughters" "She holds a Master's degree from Harvard" "I have two years left" "I don't have any money left" "They have two more years before they retire")
+    id oewn-02208144-v
+    partOfSpeech v
+    synonyms ("have got" hold)
+  entry
+    definition "have as a feature"
+    examples ("This restaurant features the most famous chefs in France")
+    id oewn-02636270-v
+    partOfSpeech v
+    synonyms (feature)
+  entry
+    definition "go through (mental or physical states or experiences)"
+    examples ("get an idea" "experience vertigo" "get nauseous" "receive injuries" "have a feeling")
+    id oewn-02112480-v
+    partOfSpeech v
+    synonyms (experience receive get)
+  entry
+    definition "have ownership or possession of"
+    examples ("He owns three houses in Florida" "How many cars does she have?")
+    id oewn-02209474-v
+    partOfSpeech v
+    synonyms (own possess)
+  entry
+    definition "cause to move; cause to be in a certain position or condition"
+    examples ("He got his squad on the ball" "This let me in for a big surprise" "He got a girl into trouble")
+    id oewn-00120604-v
+    partOfSpeech v
+    synonyms (get let)
+  entry
+    definition "serve oneself to, or consume regularly"
+    examples ("Have another bowl of chicken soup!" "I don't take sugar in my coffee")
+    id oewn-01159300-v
+    partOfSpeech v
+    synonyms (consume ingest "take in" take)
+  entry
+    definition "have a personal or business relationship with someone"
+    examples ("have a postdoc" "have an assistant" "have a lover")
+    id oewn-02383544-v
+    partOfSpeech v
+  entry
+    definition "organize or be responsible for"
+    examples ("hold a reception" "have, throw, or make a party" "give a course")
+    id oewn-01737358-v
+    partOfSpeech v
+    synonyms (hold throw make give)
+  entry
+    definition "be confronted with"
+    examples ("What do we have here?" "Now we have a fine mess")
+    id oewn-02746620-v
+    partOfSpeech v
+  entry
+    definition undergo
+    examples ("The stocks had a fast run-up")
+    id oewn-00120854-v
+    partOfSpeech v
+    synonyms (experience)
+  entry
+    definition "suffer from; be ill with"
+    examples ("She has arthritis")
+    id oewn-00065141-v
+    partOfSpeech v
+  entry
+    definition "cause to do; cause to act in a specified manner"
+    examples ("The ads induced me to buy a VCR" "My children finally got me to buy a computer" "My wife made me buy a new sofa")
+    id oewn-00772482-v
+    partOfSpeech v
+    synonyms (induce stimulate cause get make)
+  entry
+    definition "receive willingly something given or offered"
+    examples ("The only girl who would have him was the miller's daughter" "I won't have this dog in my house!" "Please accept my present")
+    id oewn-02240906-v
+    partOfSpeech v
+    synonyms (accept take)
+  entry
+    definition "get something; come into possession of"
+    examples ("receive payment" "receive a gift" "receive letters from the front")
+    id oewn-02214901-v
+    partOfSpeech v
+    synonyms (receive)
+  entry
+    definition "undergo (as of injuries and illnesses)"
+    examples ("She suffered a fracture in the accident" "He had an insulin shock after eating three candy bars" "She got a bruise on her leg" "He got his arm broken in the scuffle")
+    id oewn-00065410-v
+    partOfSpeech v
+    synonyms (suffer sustain get)
+  entry
+    definition "achieve a point or goal"
+    examples ("Nicklaus had a 70" "The Brazilian team got 4 goals" "She made 29 points that day")
+    id oewn-02360592-v
+    partOfSpeech v
+    synonyms (get make)
+  entry
+    definition "cause to be born"
+    examples ("My wife had twins yesterday!")
+    id oewn-00056644-v
+    partOfSpeech v
+    synonyms ("give birth" deliver bear birth)
+  entry
+    definition "have sex with; archaic use"
+    examples ("He had taken this woman when she was most vulnerable")
+    id oewn-01429760-v
+    partOfSpeech v
+    synonyms (take)
+source "oewn:2024"

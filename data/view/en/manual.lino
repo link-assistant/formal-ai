@@ -1,0 +1,25 @@
+view
+  id M-022922bb49ae
+  lemma manual
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to the hands"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "requiring human effort"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small handbook"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(military) a prescribed drill in handling a rifle"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "doing or requiring physical work"
+    provenance (wordnet)

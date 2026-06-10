@@ -1,0 +1,21 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A blend of coffee imported from the island of Java."
+        entry
+          definition "Coffee in general."
+        entry
+          definition "A dance popular in France in the early 20th century."
+      partOfSpeech noun
+  phonetic "/ˈdʒɑː.və/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈdʒɑː.və/"
+  sourceUrls ("https://en.wiktionary.org/wiki/java")
+  word java

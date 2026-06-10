@@ -1,0 +1,16 @@
+language en
+lemma reserved
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "set aside for the use of a particular person or party"
+    id oewn-01995406-a
+    partOfSpeech a
+  entry
+    definition "marked by self-restraint and reticence"
+    examples ("was habitually reserved in speech, withholding her opinion")
+    id oewn-01994423-a
+    partOfSpeech a
+source "oewn:2024"

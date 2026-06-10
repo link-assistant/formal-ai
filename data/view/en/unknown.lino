@@ -1,0 +1,37 @@
+view
+  id M-064a74f1d4e7
+  lemma unknown
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not known"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an unknown and unexplored region"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "anyone who does not belong in the environment in which they are found"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a variable whose values are solutions of an equation"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being or having an unknown or unnamed source"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not known to exist"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not famous or acclaimed"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not known before"
+    provenance (wordnet)

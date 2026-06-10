@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q19108": {
+      "type": "item",
+      "id": "Q19108",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "९"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "nine"
+          },
+          {
+            "language": "en",
+            "value": "Ⅸ"
+          },
+          {
+            "language": "en",
+            "value": "ⅸ"
+          },
+          {
+            "language": "en",
+            "value": "9*1"
+          },
+          {
+            "language": "en",
+            "value": "number 9"
+          },
+          {
+            "language": "en",
+            "value": "the number 9"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "девять"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "九"
+          },
+          {
+            "language": "zh",
+            "value": "❾"
+          },
+          {
+            "language": "zh",
+            "value": "〩"
+          },
+          {
+            "language": "zh",
+            "value": "９"
+          },
+          {
+            "language": "zh",
+            "value": "玖"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

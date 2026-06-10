@@ -1,0 +1,38 @@
+language en
+lemma calculate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make a mathematical calculation or computation"
+    id oewn-00638921-v
+    partOfSpeech v
+    synonyms (cipher cypher compute "work out" reckon figure)
+  entry
+    definition "judge to be probable"
+    id oewn-00713964-v
+    partOfSpeech v
+    synonyms (estimate reckon "count on" figure forecast)
+  entry
+    definition "keep an account of"
+    id oewn-02270039-v
+    partOfSpeech v
+    synonyms (account)
+  entry
+    definition "predict in advance"
+    id oewn-00928443-v
+    partOfSpeech v
+    synonyms (forecast)
+  entry
+    definition "specifically design a product, event, or activity for a certain public"
+    id oewn-00714920-v
+    partOfSpeech v
+    synonyms (aim direct)
+  entry
+    definition "have faith or confidence in"
+    examples ("you can count on me to help you any time" "Look to your friends for support" "You can bet on that!" "Depend on your family in times of crisis")
+    id oewn-00714537-v
+    partOfSpeech v
+    synonyms (count bet depend swear rely bank look reckon)
+source "oewn:2024"

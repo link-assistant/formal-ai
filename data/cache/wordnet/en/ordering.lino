@@ -1,0 +1,19 @@
+language en
+lemma ordering
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "logical or comprehensible arrangement of separate elements"
+    examples ("we shall consider these questions in the inverse order of their presentation")
+    id oewn-08474004-n
+    partOfSpeech n
+    synonyms (order ordination)
+  entry
+    definition "the act of putting things in a sequential arrangement"
+    examples ("there were mistakes in the ordering of items on the list")
+    id oewn-01011813-n
+    partOfSpeech n
+    synonyms (order)
+source "oewn:2024"

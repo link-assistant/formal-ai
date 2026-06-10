@@ -1,0 +1,16 @@
+Q11573
+  aliases
+    en (metres "mètre" meter meters)
+    zh ("公尺")
+  descriptions
+    en "SI unit of length"
+    ru "единица измерения длины и расстояния"
+    zh "国际单位制基本长度单位"
+  id Q11573
+  labels
+    en metre
+    hi "मान"
+    ru "метр"
+    zh "米"
+  type item
+success 1

@@ -1,0 +1,63 @@
+{
+  "lemma": "fusion",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07388202-n",
+      "partOfSpeech": "n",
+      "definition": "an occurrence that involves the production of a union",
+      "synonyms": [
+        "merger",
+        "unification"
+      ]
+    },
+    {
+      "id": "oewn-14442066-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being combined into one body",
+      "synonyms": [
+        "coalition"
+      ]
+    },
+    {
+      "id": "oewn-13506970-n",
+      "partOfSpeech": "n",
+      "definition": "the merging of adjacent sounds or syllables or words"
+    },
+    {
+      "id": "oewn-13506728-n",
+      "partOfSpeech": "n",
+      "definition": "a nuclear reaction in which nuclei combine to form more massive nuclei with the simultaneous release of energy",
+      "synonyms": [
+        "nuclear fusion",
+        "nuclear fusion reaction"
+      ]
+    },
+    {
+      "id": "oewn-05945279-n",
+      "partOfSpeech": "n",
+      "definition": "the combining of images from the two eyes to form a single visual percept",
+      "synonyms": [
+        "optical fusion"
+      ]
+    },
+    {
+      "id": "oewn-00700770-n",
+      "partOfSpeech": "n",
+      "definition": "correction of an unstable part of the spine by joining two or more vertebrae; usually done surgically but sometimes done by traction or immobilization",
+      "synonyms": [
+        "spinal fusion"
+      ]
+    },
+    {
+      "id": "oewn-00381376-n",
+      "partOfSpeech": "n",
+      "definition": "the act of fusing (or melting) together"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+[
+  {
+    "word": "exchange",
+    "phonetic": "/ɛksˈtʃeɪndʒ/",
+    "phonetics": [
+      {
+        "text": "/ɛksˈtʃeɪndʒ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/exchange-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=454015",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An act of exchanging or trading.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "All in all, it was an even exchange."
+          },
+          {
+            "definition": "A place for conducting trading.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The stock exchange is open for trading."
+          },
+          {
+            "definition": "A telephone exchange.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The fourth through sixth digits of a ten-digit phone number (the first three before the introduction of area codes).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "NPA-NXX-1234 is standard format, where NPA is the area code and NXX is the exchange."
+          },
+          {
+            "definition": "A conversation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After an exchange with the manager, we were no wiser."
+          },
+          {
+            "definition": "The loss of one piece and associated capture of another",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The thing given or received in return; especially, a publication exchanged for another.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The transfer of substances or elements like gas, amino-acids, ions etc. sometimes through a surface like a membrane.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The difference between the values of money in different places.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/exchange"
+    ]
+  },
+  {
+    "word": "exchange",
+    "phonetic": "/ɛksˈtʃeɪndʒ/",
+    "phonetics": [
+      {
+        "text": "/ɛksˈtʃeɪndʒ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/exchange-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=454015",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To trade or barter.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll gladly exchange my place for yours."
+          },
+          {
+            "definition": "To replace with, as a substitute.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'd like to exchange this shirt for one in a larger size."
+          }
+        ],
+        "synonyms": [
+          "interchange",
+          "swap",
+          "truck",
+          "wrixle"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/exchange"
+    ]
+  }
+]

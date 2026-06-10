@@ -1,0 +1,31 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A period into which a year is divided, historically based on the phases of the moon."
+          example "July is my favourite month."
+        entry
+          definition "A period of 30 days, 31 days, or some alternation thereof."
+          example "We went on holiday for two months."
+        entry
+          definition "(in the plural) A woman's period; menstrual discharge."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A woman's period; menstrual discharge."
+      partOfSpeech noun
+  phonetic "/mʌnθs/"
+  phonetics
+    entry
+      audio ""
+      text "/mʌnθs/"
+    entry
+      audio ""
+      text "/mʌnθs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/month" "https://en.wiktionary.org/wiki/months")
+  word months

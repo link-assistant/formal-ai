@@ -1,0 +1,21 @@
+view
+  id M-880bab7e8cb5
+  lemma instruction
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a message describing how something is to be done"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the activities of educating or instructing; activities that impart knowledge or skill"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the profession of a teacher"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a line of code written as part of a computer program"
+    provenance (wordnet)

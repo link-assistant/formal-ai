@@ -1,0 +1,167 @@
+[
+  {
+    "word": "cos",
+    "phonetic": "/kɒs/",
+    "phonetics": [
+      {
+        "text": "/kɒs/",
+        "audio": ""
+      },
+      {
+        "text": "/kɑs/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A variety of lettuce with long, crisp leaves.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/cos"
+    ]
+  },
+  {
+    "word": "cos",
+    "phonetic": "/kɒz/",
+    "phonetics": [
+      {
+        "text": "/kɒz/",
+        "audio": ""
+      },
+      {
+        "text": "/kəz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "Because",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/cos"
+    ]
+  },
+  {
+    "word": "cos",
+    "phonetic": "/kʌz/",
+    "phonetics": [
+      {
+        "text": "/kʌz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A cousin, cuz.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/cos"
+    ]
+  },
+  {
+    "word": "cos",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A team; a group of people who work together professionally.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A small group of birds or animals.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An entity having legal personality, and thus able to own property and to sue and be sued in its own name; a corporation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any business, whether incorporated or not, that manufactures or sells products (also known as goods), or provides services as a commercial venture.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Social visitors or companions.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Keep the house clean; I have company coming."
+          },
+          {
+            "definition": "Companionship.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I treasure your company."
+          }
+        ],
+        "synonyms": [
+          "fellowship",
+          "friendship",
+          "mateship",
+          "association",
+          "companionship",
+          "fellowship",
+          "organization",
+          "society",
+          "corporation"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/co",
+      "https://en.wiktionary.org/wiki/company",
+      "https://en.wiktionary.org/wiki/cos"
+    ]
+  }
+]

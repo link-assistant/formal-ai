@@ -1,0 +1,54 @@
+language en
+lemma file
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a set of related records (either written or electronic) kept together"
+    id oewn-06520807-n
+    partOfSpeech n
+    synonyms ("data file")
+  entry
+    definition "a line of persons or things ranged one behind the other"
+    id oewn-08445713-n
+    partOfSpeech n
+    synonyms ("single file" "Indian file")
+  entry
+    definition "office furniture consisting of a container for keeping papers in order"
+    id oewn-03342085-n
+    partOfSpeech n
+    synonyms ("file cabinet" "filing cabinet")
+  entry
+    definition "a steel hand tool with small sharp teeth on some or all of its surfaces; used for smoothing wood or metal"
+    id oewn-03341784-n
+    partOfSpeech n
+  entry
+    definition "record in a public office or in a court of law"
+    examples ("file for divorce" "file a complaint")
+    id oewn-01003902-v
+    partOfSpeech v
+    synonyms (register)
+  entry
+    definition "smooth with a file"
+    examples ("file one's fingernails")
+    id oewn-01389676-v
+    partOfSpeech v
+  entry
+    definition "proceed in line"
+    examples ("The students filed into the classroom")
+    id oewn-01924041-v
+    partOfSpeech v
+  entry
+    definition "file a formal charge against"
+    examples ("The suspect was charged with murdering his wife")
+    id oewn-00871595-v
+    partOfSpeech v
+    synonyms (charge lodge)
+  entry
+    definition "place in a container for keeping records"
+    examples ("File these bills, please")
+    id oewn-01003688-v
+    partOfSpeech v
+    synonyms ("file away")
+source "oewn:2024"

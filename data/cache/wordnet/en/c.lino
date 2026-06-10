@@ -1,0 +1,69 @@
+language en
+lemma c
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a degree on the centigrade scale of temperature"
+    id oewn-13736596-n
+    partOfSpeech n
+    synonyms ("degree centigrade" "degree Celsius")
+  entry
+    definition "the speed at which light travels in a vacuum; the constancy and universality of the speed of light is recognized by defining it to be exactly 299,792,458 meters per second"
+    id oewn-15309503-n
+    partOfSpeech n
+    synonyms ("speed of light" "light speed")
+  entry
+    definition "a vitamin found in fresh fruits (especially citrus fruits) and vegetables; prevents scurvy"
+    id oewn-15117865-n
+    partOfSpeech n
+    synonyms ("vitamin C" "ascorbic acid")
+  entry
+    definition "one of the four nucleotides used in building DNA, also known as also known as deoxycytidylate, or dCMP; all four nucleotides have a common phosphate group and a sugar (ribose)"
+    id oewn-14853935-n
+    partOfSpeech n
+    synonyms ("deoxycytidine monophosphate")
+  entry
+    definition "a base found in DNA and RNA and derived from pyrimidine; pairs with guanine"
+    id oewn-14852681-n
+    partOfSpeech n
+    synonyms (cytosine)
+  entry
+    definition "an abundant nonmetallic tetravalent element occurring in three allotropic forms: amorphous carbon and graphite and diamond; occurs in all organic compounds"
+    id oewn-14657384-n
+    partOfSpeech n
+    synonyms (carbon "atomic number 6")
+  entry
+    definition "ten 10s"
+    id oewn-13772555-n
+    partOfSpeech n
+    synonyms (hundred "100" century "one C")
+  entry
+    definition "a unit of electrical charge equal to the amount of charge transferred by a current of 1 ampere in 1 second"
+    id oewn-13658127-n
+    partOfSpeech n
+    synonyms (coulomb ampere-second)
+  entry
+    definition "a general-purpose programing language closely associated with the UNIX operating system"
+    id oewn-06915472-n
+    partOfSpeech n
+  entry
+    definition "(music) the keynote of the scale of C major"
+    id oewn-06879382-n
+    partOfSpeech n
+  entry
+    definition "the 3rd letter of the Roman alphabet"
+    id oewn-06844441-n
+    partOfSpeech n
+  entry
+    definition "street names for cocaine"
+    id oewn-03070747-n
+    partOfSpeech n
+    synonyms (coke blow "nose candy" snow)
+  entry
+    definition "being ten more than ninety"
+    id oewn-02203776-s
+    partOfSpeech s
+    synonyms (hundred "one hundred" "100")
+source "oewn:2024"

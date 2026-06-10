@@ -1,0 +1,74 @@
+{
+  "lemma": "together",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00117698-r",
+      "partOfSpeech": "r",
+      "definition": "in contact with each other or in proximity",
+      "examples": [
+        "the leaves stuck together"
+      ]
+    },
+    {
+      "id": "oewn-00117901-r",
+      "partOfSpeech": "r",
+      "definition": "assembled in one place",
+      "examples": [
+        "we were gathered together"
+      ]
+    },
+    {
+      "id": "oewn-00510460-r",
+      "partOfSpeech": "r",
+      "definition": "in each other's company",
+      "examples": [
+        "we went to the movies together",
+        "the family that prays together stays together"
+      ]
+    },
+    {
+      "id": "oewn-00117417-r",
+      "partOfSpeech": "r",
+      "definition": "at the same time",
+      "examples": [
+        "we graduated together"
+      ]
+    },
+    {
+      "id": "oewn-00117495-r",
+      "partOfSpeech": "r",
+      "definition": "with cooperation and interchange",
+      "examples": [
+        "we worked together on the project"
+      ],
+      "synonyms": [
+        "unitedly"
+      ]
+    },
+    {
+      "id": "oewn-00117612-r",
+      "partOfSpeech": "r",
+      "definition": "with a common plan",
+      "examples": [
+        "act in concert"
+      ],
+      "synonyms": [
+        "in concert"
+      ]
+    },
+    {
+      "id": "oewn-01590602-s",
+      "partOfSpeech": "s",
+      "definition": "mentally and emotionally stable",
+      "examples": [
+        "she's really together"
+      ]
+    }
+  ]
+}

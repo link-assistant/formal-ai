@@ -1,0 +1,23 @@
+language en
+lemma calculation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the procedure of calculating; determining something by mathematical or logical methods"
+    id oewn-00870588-n
+    partOfSpeech n
+    synonyms (computation computing)
+  entry
+    definition "problem solving that involves numbers or quantities"
+    id oewn-05810193-n
+    partOfSpeech n
+    synonyms (computation figuring reckoning)
+  entry
+    definition "planning something carefully and intentionally"
+    examples ("it was the deliberation of his act that was insulting")
+    id oewn-05804431-n
+    partOfSpeech n
+    synonyms (deliberation)
+source "oewn:2024"

@@ -1,0 +1,13 @@
+view
+  id M-5587638886c2
+  lemma revert
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go back to a previous state"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "undergo reversion, as in a mutation"
+    provenance (wordnet)

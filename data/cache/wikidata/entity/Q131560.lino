@@ -1,0 +1,14 @@
+Q131560
+  aliases
+    en ("KISS principle" "keep it simple, stupid" "keep it simple stupid" "Keep it simple, silly" "keep it short and simple" "keep it simple and straightforward" "keep it small and simple" "keep it stupid simple" "Keep It Simple Sailor" K.I.S.S.)
+    ru ("Принцип KISS" "Keep It Simple, Stupid")
+  descriptions
+    en 'acronym for "Keep it simple, stupid"; design principle'
+    ru "принцип проектирования, при котором простота является основной целью или ценностью"
+  id Q131560
+  labels
+    en KISS
+    ru KISS
+    zh "KISS原则"
+  type item
+success 1

@@ -1,0 +1,21 @@
+view
+  id M-48e761110642
+  lemma runtime
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The stage during which a program is executing."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A software component designed to support the execution of computer programs."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The length of a film, television program or audio track in minutes, usually with end credits included"
+    provenance (wiktionary)
+  sense
+    part_of_speech adjective
+    gloss "Of, relating to, or happening during run time."
+    provenance (wiktionary)

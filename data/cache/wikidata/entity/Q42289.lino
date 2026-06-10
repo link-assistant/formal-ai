@@ -1,0 +1,17 @@
+Q42289
+  aliases
+    en (Fahrenheit "°F")
+    hi ("फारनहाइट" "फैरनहाइट" "फैरेनहाइट" Fahrenheit "फ़ैरनहाइट" "फ़ैरन्हाइट" "फारेनहाइट")
+    ru ("°F" "Фаренгейт")
+    zh ("华氏度" "°F" "華氏寒暑表" "華氏" "℉" "華氏度")
+  descriptions
+    en "unit of temperature"
+    ru "единица измерения температуры в англоязычных странах"
+  id Q42289
+  labels
+    en "degree Fahrenheit"
+    hi "फॉरेन्हाइट"
+    ru "градус Фаренгейта"
+    zh "华氏温标"
+  type item
+success 1

@@ -1,0 +1,62 @@
+{
+  "lemma": "current",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00669281-a",
+      "partOfSpeech": "a",
+      "definition": "occurring in or belonging to the present time",
+      "examples": [
+        "current events",
+        "the current topic",
+        "current negotiations",
+        "current psychoanalytic theories",
+        "the ship's current position"
+      ]
+    },
+    {
+      "id": "oewn-11463628-n",
+      "partOfSpeech": "n",
+      "definition": "a flow of electricity through a conductor",
+      "examples": [
+        "the current was measured in amperes"
+      ],
+      "synonyms": [
+        "electric current"
+      ]
+    },
+    {
+      "id": "oewn-07421365-n",
+      "partOfSpeech": "n",
+      "definition": "a steady flow of a fluid (usually from natural causes)",
+      "examples": [
+        "the raft floated downstream on the current",
+        "he felt a stream of air",
+        "the hose ejected a stream of water"
+      ],
+      "synonyms": [
+        "stream"
+      ]
+    },
+    {
+      "id": "oewn-08478606-n",
+      "partOfSpeech": "n",
+      "definition": "dominant course (suggestive of running water) of successive events or ideas",
+      "examples": [
+        "two streams of development run through American history",
+        "stream of consciousness",
+        "the flow of thought",
+        "the current of history"
+      ],
+      "synonyms": [
+        "stream",
+        "flow"
+      ]
+    }
+  ]
+}

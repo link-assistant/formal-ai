@@ -1,0 +1,73 @@
+{
+  "lemma": "fuse",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03412279-n",
+      "partOfSpeech": "n",
+      "definition": "an electrical device that can interrupt the flow of electrical current when it is overloaded",
+      "synonyms": [
+        "electrical fuse",
+        "safety fuse"
+      ]
+    },
+    {
+      "id": "oewn-03412032-n",
+      "partOfSpeech": "n",
+      "definition": "any igniter that is used to initiate the burning of a propellant",
+      "synonyms": [
+        "fuze",
+        "fusee",
+        "fuzee",
+        "primer",
+        "priming"
+      ]
+    },
+    {
+      "id": "oewn-00395719-v",
+      "partOfSpeech": "v",
+      "definition": "mix together different elements",
+      "examples": [
+        "The colors blend well"
+      ],
+      "synonyms": [
+        "blend",
+        "flux",
+        "mix",
+        "conflate",
+        "commingle",
+        "immix",
+        "coalesce",
+        "meld",
+        "combine",
+        "merge"
+      ]
+    },
+    {
+      "id": "oewn-00398098-v",
+      "partOfSpeech": "v",
+      "definition": "become plastic or fluid or liquefied from heat",
+      "examples": [
+        "The substances fused at a very high temperature"
+      ]
+    },
+    {
+      "id": "oewn-01140255-v",
+      "partOfSpeech": "v",
+      "definition": "equip with a fuse; provide with a fuse"
+    },
+    {
+      "id": "oewn-00397903-v",
+      "partOfSpeech": "v",
+      "definition": "make liquid or plastic by heating",
+      "examples": [
+        "The storm fused the electric mains"
+      ]
+    }
+  ]
+}

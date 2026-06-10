@@ -1,0 +1,12 @@
+Q575650
+  aliases
+    en ("Rust language" "Rust programming language")
+    zh ("Rust language")
+  descriptions
+    en "memory-safe programming language without garbage collection"
+    hi "प्रोग्रामिंग भाषा"
+    ru "мультипарадигменный компилируемый язык программирования общего назначения"
+    zh "重視記憶體安全性與並行處理的程式語言"
+  id Q575650
+  type item
+success 1

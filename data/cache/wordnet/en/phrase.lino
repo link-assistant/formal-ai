@@ -1,0 +1,36 @@
+language en
+lemma phrase
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an expression consisting of one or more words forming a grammatical constituent of a sentence"
+    id oewn-06327041-n
+    partOfSpeech n
+  entry
+    definition "a short musical passage"
+    id oewn-07059411-n
+    partOfSpeech n
+    synonyms ("musical phrase")
+  entry
+    definition "an expression whose meanings cannot be inferred from the meanings of the words that make it up"
+    id oewn-07169038-n
+    partOfSpeech n
+    synonyms (idiom "idiomatic expression" "phrasal idiom" "set phrase")
+  entry
+    definition "dance movements that are linked in a single choreographic sequence"
+    id oewn-00528098-n
+    partOfSpeech n
+  entry
+    definition "put into words or an expression"
+    examples ("He formulated his concerns to the board of trustees")
+    id oewn-00982485-v
+    partOfSpeech v
+    synonyms ("give voice" formulate word articulate)
+  entry
+    definition "divide, combine, or mark into phrases"
+    examples ("phrase a musical passage")
+    id oewn-00963146-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,19 @@
+Q128
+  aliases
+    en (Wed We W)
+    hi ("बुध")
+    ru ("ср")
+    zh ("禮拜三" "礼拜三" "週三" "周三")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между вторником и четвергом"
+    zh "星期中的日子"
+  id Q128
+  labels
+    en Wednesday
+    hi "बुधवार"
+    ru "среда"
+    zh "星期三"
+  type item
+success 1

@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q23387": {
+      "type": "item",
+      "id": "Q23387",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "неделя"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सप्ताह"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица времени, равная 7 (семи) дням"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "weeks"
+          },
+          {
+            "language": "en",
+            "value": "weekly"
+          },
+          {
+            "language": "en",
+            "value": "week duration"
+          },
+          {
+            "language": "en",
+            "value": "7 days"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "седьмица"
+          },
+          {
+            "language": "ru",
+            "value": "седмица"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हफ्ता"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "一週"
+          },
+          {
+            "language": "zh",
+            "value": "週"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

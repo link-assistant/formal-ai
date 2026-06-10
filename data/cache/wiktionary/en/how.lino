@@ -1,0 +1,128 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The means by which something is accomplished."
+          example "I am not interested in the why, but in the how."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To what degree."
+          example "How often do you practice?"
+        entry
+          definition "In what manner."
+          example "How do you solve this puzzle?"
+        entry
+          definition "In what state."
+          example "How are you?"
+        entry
+          definition "Used as a modifier to indicate surprise, delight, or other strong feelings in an exclamation."
+          example "How very interesting!"
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition "The manner or way that."
+          example "I remember how I solved this puzzle."
+        entry
+          definition "That, the fact that, the way that."
+      partOfSpeech conjunction
+  phonetic "/hæŏ/"
+  phonetics
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9022019"
+      text "/haʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1217911"
+      text "/haʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/how")
+  word how
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An artificial barrow or tumulus."
+        entry
+          definition "A small hill in northern England. (Usage preserved mainly in place names.)"
+      partOfSpeech noun
+  phonetic "/hæŏ/"
+  phonetics
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9022019"
+      text "/haʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1217911"
+      text "/haʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/how")
+  word how
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A greeting, used in representations of Native American speech."
+      partOfSpeech interjection
+  phonetic "/hæŏ/"
+  phonetics
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio ""
+      text "/hæŏ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9022019"
+      text "/haʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/how-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1217911"
+      text "/haʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/how")
+  word how

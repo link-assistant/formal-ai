@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q200": {
+      "type": "item",
+      "id": "Q200",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "2"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "२"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "two"
+          },
+          {
+            "language": "en",
+            "value": "number 2"
+          },
+          {
+            "language": "en",
+            "value": "number two"
+          },
+          {
+            "language": "en",
+            "value": "the number 2"
+          },
+          {
+            "language": "en",
+            "value": "2 (number)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "два"
+          },
+          {
+            "language": "ru",
+            "value": "двойка"
+          },
+          {
+            "language": "ru",
+            "value": "диада"
+          },
+          {
+            "language": "ru",
+            "value": "дво́ица"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "二"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

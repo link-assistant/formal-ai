@@ -1,0 +1,45 @@
+{
+  "lemma": "used",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02504601-a",
+      "partOfSpeech": "a",
+      "definition": "employed in accomplishing something",
+      "examples": [
+        "the principle of surprise is the most used and misused of all the principles of war"
+      ]
+    },
+    {
+      "id": "oewn-02505376-s",
+      "partOfSpeech": "s",
+      "definition": "(of persons) taken advantage of",
+      "examples": [
+        "after going out of his way to help his friend get the job he felt not appreciated but used"
+      ],
+      "synonyms": [
+        "exploited",
+        "ill-used",
+        "put-upon",
+        "victimized",
+        "victimised"
+      ]
+    },
+    {
+      "id": "oewn-01644709-s",
+      "partOfSpeech": "s",
+      "definition": "previously used or owned by another",
+      "examples": [
+        "bought a secondhand (or used) car"
+      ],
+      "synonyms": [
+        "secondhand"
+      ]
+    }
+  ]
+}

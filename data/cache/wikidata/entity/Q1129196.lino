@@ -1,0 +1,15 @@
+Q1129196
+  aliases
+    en (tan "tangent function" "tan function")
+    ru (tg)
+  descriptions
+    en "ratio of lengths of opposite side and the adjacent side of a right angled triangle; a trigonometric function"
+    ru "тригонометрическая функция"
+    zh "三角函数的一种"
+  id Q1129196
+  labels
+    en tangent
+    ru "тангенс"
+    zh "正切"
+  type item
+success 1

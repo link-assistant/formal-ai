@@ -1,0 +1,16 @@
+Q9143
+  aliases
+    en ("computer language" "computer programming language" "coding language" "computer programming")
+    zh ("編程語言" "程式語言" "程序设计语言")
+  descriptions
+    en "language for communicating instructions to a machine"
+    ru "язык для записи и хранения компьютерных программ"
+    zh "用於將指令傳達給機器的語言"
+  id Q9143
+  labels
+    en "programming language"
+    hi "प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "编程语言"
+  type item
+success 1

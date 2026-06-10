@@ -1,0 +1,65 @@
+view
+  id M-a0a112b61212
+  lemma logic
+  language en
+  sources (wiktionary wordnet)
+  sense
+    part_of_speech noun
+    gloss "the branch of philosophy that analyzes inference"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "reasoned and reasonable judgment"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the principles that guide reasoning within a given field or situation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the system of operations performed by a computer that underlies the machine's representation of logical operations"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a system of reasoning"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "A method of human thought that involves thinking in a linear, step-by-step manner about how a problem can be solved. Logic is the basis of many principles including the scientific method."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The study of the principles and criteria of valid inference and demonstration."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The mathematical study of relationships between rigorously defined concepts and of mathematical proof of statements."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A formal or informal language together with a deductive system or a model-theoretic semantics."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any system of thought, whether rigorous and productive or not, especially one associated with a particular person."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The part of a system (usually electronic) that performs the boolean logic operations, short for logic gates or logic circuit."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To engage in excessive or inappropriate application of logic."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To apply logical reasoning to."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To overcome by logical argument."
+    provenance (wiktionary)
+  sense
+    part_of_speech adjective
+    gloss "Logical"
+    provenance (wiktionary)

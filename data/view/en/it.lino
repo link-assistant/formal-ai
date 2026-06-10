@@ -1,0 +1,9 @@
+view
+  id M-9409c041d62c
+  lemma it
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the branch of engineering that deals with the use of computers and telecommunications to retrieve and store and transmit information"
+    provenance (wordnet)

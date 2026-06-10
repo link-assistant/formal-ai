@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q11471": {
+      "type": "item",
+      "id": "Q11471",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "время"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "काल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "时间"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "dimension in which events can be ordered from the past through the present into the future"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "форма протекания физических и психических процессов"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भूतकाल, वर्तमानकाल एवं भविष्यकाल का रेखीय आयाम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "關於事件先後順序、過去與未來的物理量"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "количество времени"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "時間"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

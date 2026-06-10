@@ -1,574 +1,548 @@
 meanings
-  meaning "money"
-    gloss "money or currency in general — a medium of exchange. This genus groups the currency-related meanings (the us_dollar currency and the exchange_rate between currencies) so they are built from a shared concept rather than listed independently. The monetary_concept role is structural: no handler queries it directly; it exists so the ontology records that these meanings are kinds of money."
-    wiktionary "money"
-    defined_by "concept"
-    role "monetary_concept"
-    lexeme "en"
-      word "money"
-        description "English noun for the medium of exchange; the monetary_concept genus lexicalized in English."
-      word "currency"
-        description "English noun for a system of money in circulation; the monetary_concept genus lexicalized in English."
-    lexeme "ru"
-      word "деньги"
-        description "Russian noun (romanized dengi, money); the monetary_concept genus lexicalized in Russian."
-      word "валюта"
-        description "Russian noun (romanized valyuta, currency); the monetary_concept genus lexicalized in Russian."
-    lexeme "hi"
-      word "पैसा"
-        description "Hindi noun (romanized paisa, money); the monetary_concept genus lexicalized in Hindi."
-      word "मुद्रा"
-        description "Hindi noun (romanized mudra, currency); the monetary_concept genus lexicalized in Hindi."
-    lexeme "zh"
-      word "货币"
-        description "Chinese noun (pinyin huobi, currency); the monetary_concept genus lexicalized in Chinese."
-      word "钱"
-        description "Chinese noun (pinyin qian, money); the monetary_concept genus lexicalized in Chinese."
-  meaning "exchange_rate"
-    gloss "the exchange rate between two currencies — the price of one currency expressed in another, also called a currency rate. The exchange_rate_reference role marks the surface forms that signal a prompt is talking about a currency conversion rate; the calculator rate-basis handler requires this together with a us_dollar reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected and compound forms are caught in every supported language."
-    wiktionary "exchange rate"
-    defined_by "money"
-    defined_by "relation"
-    role "exchange_rate_reference"
-    lexeme "en"
-      word "exchange rate"
-        description "English compound noun for the price of one currency in another; an exchange_rate_reference matched as a raw substring."
-      word "currency rate"
-        description "English synonym for an exchange rate; an exchange_rate_reference matched as a raw substring."
-    lexeme "ru"
-      word "курс"
-        description "Russian noun (romanized kurs, rate or exchange rate); an exchange_rate_reference matched as a raw substring so курс, курса and курсе are all caught."
-    lexeme "hi"
-      word "विनिमय दर"
-        description "Hindi compound (romanized vinimay dar, exchange rate); an exchange_rate_reference matched as a raw substring."
-    lexeme "zh"
-      word "汇率"
-        description "Chinese noun (pinyin huilu, exchange rate); an exchange_rate_reference matched as a raw substring."
-  meaning "us_dollar"
-    gloss "the United States dollar, the currency abbreviated USD. The currency_usd_reference role marks the surface forms — including two common Russian misspellings — that signal a prompt mentions US dollars; the calculator rate-basis handler requires this together with an exchange_rate reference and a calculation_basis phrase before it answers with the rate the calculator uses for USD to RUB. Matched as raw substrings so inflected forms are caught in every supported language. Also a calculation_domain_term, so a dollar reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "dollar"
-    defined_by "money"
-    role "currency_usd_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "usd"
-        description "English ISO 4217 code for the United States dollar; a currency_usd_reference matched as a raw substring."
-      word "dollar"
-        description "English noun for the United States dollar; a currency_usd_reference matched as a raw substring so dollars is also caught."
-      word "dollars"
-        description "English plural of dollar; a currency_usd_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's USD markers."
-    lexeme "ru"
-      word "доллар"
-        description "Russian noun (romanized dollar); a currency_usd_reference matched as a raw substring so доллара and долларах are caught."
-      word "долар"
-        description "Russian misspelling with one l (romanized dolar) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."
-      word "долор"
-        description "Russian misspelling (romanized dolor) of доллар; a currency_usd_reference matched as a raw substring so the typo is still recognised."
-    lexeme "hi"
-      word "डॉलर"
-        description "Hindi noun (romanized dolar, dollar); a currency_usd_reference matched as a raw substring."
-    lexeme "zh"
-      word "美元"
-        description "Chinese noun (pinyin meiyuan, US dollar); a currency_usd_reference matched as a raw substring."
-  meaning "euro"
-    gloss "the euro, the currency abbreviated EUR. The currency_eur_reference role marks the surface forms that name the euro; the compound-interest handler reads it as a whole token to decide whether to convert a final amount into euros, and the calculation rate handlers read it to recognise a euro currency code. Defined as a kind of money. Also a calculation_domain_term, so a euro reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "euro"
-    defined_by "money"
-    role "currency_eur_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "eur"
-        description "English ISO 4217 code for the euro; a currency_eur_reference matched as a token-bounded word."
-      word "euro"
-        description "English noun for the euro; a currency_eur_reference matched as a token-bounded word."
-      word "euros"
-        description "English plural of euro; a currency_eur_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."
-    lexeme "ru"
-      word "евро"
-        description "Russian noun (romanized evro, euro), indeclinable; a currency_eur_reference matched as a token-bounded word."
-    lexeme "hi"
-      word "यूरो"
-        description "Hindi noun (romanized yuro, euro); a currency_eur_reference matched as a token-bounded word."
-    lexeme "zh"
-      word "欧元"
-        description "Chinese noun (pinyin ouyuan, euro); a currency_eur_reference matched as a token-bounded word."
-  meaning "ruble"
-    gloss "the Russian ruble, the currency abbreviated RUB. The currency_rub_reference role marks the surface forms that name the ruble; the calculation rate handlers and the compound-interest worker read it as a whole token to recognise a ruble currency code. Defined as a kind of money. Also a calculation_domain_term, so a ruble reference beside a number signals a calculation to the calculator router (ASCII codes whole-token, other scripts as raw substrings)."
-    wiktionary "ruble"
-    defined_by "money"
-    role "currency_rub_reference"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "rub"
-        description "English ISO 4217 code for the Russian ruble; a currency_rub_reference matched as a token-bounded word."
-      word "ruble"
-        description "English noun for the Russian ruble; a currency_rub_reference matched as a token-bounded word."
-      word "rubles"
-        description "English plural of ruble; a currency_rub_reference matched as a token-bounded word, kept explicitly because token-bounded matching does not derive the plural from the singular."
-    lexeme "ru"
-      word "рубль"
-        description "Russian noun (romanized rubl, ruble); a currency_rub_reference matched as a token-bounded word."
-      word "рублей"
-        description "Russian genitive-plural noun (romanized rubley, rubles), the form used after most numbers; a currency_rub_reference matched as a token-bounded word."
-      word "руб"
-        description "Russian abbreviation (romanized rub) of рубль; a currency_rub_reference matched as a token-bounded word."
-    lexeme "hi"
-      word "रूबल"
-        description "Hindi noun (romanized rubal, ruble); a currency_rub_reference matched as a token-bounded word."
-    lexeme "zh"
-      word "卢布"
-        description "Chinese noun (pinyin lubu, ruble); a currency_rub_reference matched as a token-bounded word."
-  meaning "calculation_basis"
-    gloss "a phrase asking which value, rate, or method the assistant uses, applies, or takes as the basis when it calculates — the question side of a prompt like which rate do you use for calculations. The calculation_basis_reference role marks these surface forms; the calculator rate-basis handler requires this together with an exchange_rate reference and a us_dollar reference before it answers with the rate the calculator uses for USD to RUB. The forms are inflectable stems and fixed phrases matched as raw substrings, so they are caught regardless of surrounding inflection in every supported language."
-    wiktionary "calculation"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_basis_reference"
-    lexeme "en"
-      word "calculation"
-        description "English noun for the act of computing; a calculation_basis_reference matched as a raw substring so calculations is also caught."
-      word "calculations"
-        description "English plural of calculation; a calculation_basis_reference matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer."
-      word "do you use"
-        description "English interrogative fragment asking which value the assistant uses; a calculation_basis_reference matched as a raw substring."
-      word "used for"
-        description "English fragment asking what a rate is used for; a calculation_basis_reference matched as a raw substring."
-      word "your rate"
-        description "English fragment asking about the assistant's own rate; a calculation_basis_reference matched as a raw substring."
-    lexeme "ru"
-      word "при расчет"
-        description "Russian fragment (romanized pri raschet, during calculation) without the ё; a calculation_basis_reference matched as a raw substring so при расчете and при расчетах are caught."
-      word "при расчёт"
-        description "Russian fragment (romanized pri raschyot, during calculation) with the ё; a calculation_basis_reference matched as a raw substring so при расчёте and при расчётах are caught."
-      word "в расчет"
-        description "Russian fragment (romanized v raschet, into the calculation) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "в расчёт"
-        description "Russian fragment (romanized v raschyot, into the calculation) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "для расчет"
-        description "Russian fragment (romanized dlya raschet, for the calculation) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "для расчёт"
-        description "Russian fragment (romanized dlya raschyot, for the calculation) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "у тебя"
-        description "Russian fragment (romanized u tebya, that you have or that you use); a calculation_basis_reference matched as a raw substring."
-      word "использ"
-        description "Russian verb stem (romanized ispolz, of использовать, to use); a calculation_basis_reference matched as a raw substring so используешь and используете are caught."
-      word "берешь"
-        description "Russian second-person verb (romanized beresh, you take) without the ё; a calculation_basis_reference matched as a raw substring."
-      word "берёшь"
-        description "Russian second-person verb (romanized beryosh, you take) with the ё; a calculation_basis_reference matched as a raw substring."
-      word "примен"
-        description "Russian verb stem (romanized primen, of применять, to apply); a calculation_basis_reference matched as a raw substring so применяешь and применяете are caught."
-    lexeme "hi"
-      word "गणना"
-        description "Hindi noun (romanized ganana, calculation); a calculation_basis_reference matched as a raw substring."
-      word "उपयोग"
-        description "Hindi noun (romanized upayog, use); a calculation_basis_reference matched as a raw substring."
-    lexeme "zh"
-      word "计算"
-        description "Chinese verb (pinyin jisuan, to calculate); a calculation_basis_reference matched as a raw substring."
-      word "使用"
-        description "Chinese verb (pinyin shiyong, to use); a calculation_basis_reference matched as a raw substring."
-  meaning "arithmetic_operation"
-    gloss "an arithmetic operation that combines numbers into a result: addition, subtraction, multiplication, division, modulo. The genus of the individual spelled operators, each defined as a kind of arithmetic operation rather than listed in code. The numeric_concept role is structural: no handler queries the genus directly; it exists so the ontology records that these operators are kinds of arithmetic operation."
-    wiktionary "arithmetic operation"
-    defined_by "action"
-    role "numeric_concept"
-    lexeme "en"
-      word "arithmetic operation"
-        description "English term for an operation that combines numbers into a result; the genus of the individual spelled operators."
-      word "operator"
-        description "English noun for the symbol or word naming an arithmetic operation; the everyday surface for the operation concept."
-    lexeme "ru"
-      word "арифметическая операция"
-        description "Russian term (romanized arifmeticheskaya operatsiya) for an arithmetic operation; the Russian surface for the arithmetic-operation concept."
-    lexeme "hi"
-      word "अंकगणितीय संक्रिया"
-        description "Hindi term (romanized ankaganitiya sankriya) for an arithmetic operation; the Hindi surface for the arithmetic-operation concept."
-    lexeme "zh"
-      word "算术运算"
-        description "Chinese term (pinyin suanshu yunsuan) for an arithmetic operation; the Chinese surface for the arithmetic-operation concept."
-  meaning "addition"
-    gloss "the arithmetic operation of adding two numbers, written with the plus sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "addition"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "plus"
-        description "English spelled form of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "+"
-        description "ASCII plus sign for the addition operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "плюс"
-        description "Russian spelled form (romanized plyus) of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "hi"
-      word "जोड़"
-        description "Hindi spelled form (romanized jod, add) of the addition operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "加上"
-        description "Chinese spelled form (pinyin jiashang, add) of the addition operator; an arithmetic_operator_word matched as a substring."
-  meaning "subtraction"
-    gloss "the arithmetic operation of subtracting one number from another, written with the minus sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "subtraction"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "minus"
-        description "English spelled form of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "-"
-        description "ASCII hyphen-minus for the subtraction operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "минус"
-        description "Russian spelled form (romanized minus) of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "hi"
-      word "घटा"
-        description "Hindi spelled form (romanized ghata, subtract) of the subtraction operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "减去"
-        description "Chinese spelled form (pinyin jianqu, subtract) of the subtraction operator; an arithmetic_operator_word matched as a substring."
-  meaning "multiplication"
-    gloss "the arithmetic operation of multiplying two numbers, written with the times sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "multiplication"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "times"
-        description "English spelled form of the multiplication operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "multiplied by"
-        description "English spelled phrase for the multiplication operator; an arithmetic_operator_word matched as a token-bounded phrase."
-      word "*"
-        description "ASCII asterisk for the multiplication operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "умножить"
-        description "Russian verb (romanized umnozhit, multiply); an arithmetic_operator_word matched as a token-bounded word."
-      word "умножь"
-        description "Russian imperative (romanized umnozh, multiply); an arithmetic_operator_word matched as a token-bounded word."
-      word "умножить на"
-        description "Russian phrase (romanized umnozhit na, multiply by); an arithmetic_operator_word matched as a token-bounded phrase, kept explicitly to mirror the original recognizer."
-    lexeme "hi"
-      word "गुणा"
-        description "Hindi spelled form (romanized guna, multiply) of the multiplication operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "乘以"
-        description "Chinese spelled form (pinyin chengyi, multiply by) of the multiplication operator; an arithmetic_operator_word matched as a substring."
-  meaning "division"
-    gloss "the arithmetic operation of dividing one number by another, written with the division sign. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "division"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "divided by"
-        description "English spelled phrase for the division operator; an arithmetic_operator_word matched as a token-bounded phrase."
-      word "/"
-        description "ASCII slash for the division operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read."
-    lexeme "ru"
-      word "разделить на"
-        description "Russian phrase (romanized razdelit na, divide by); an arithmetic_operator_word matched as a token-bounded phrase."
-      word "делить на"
-        description "Russian phrase (romanized delit na, divide by); an arithmetic_operator_word matched as a token-bounded phrase."
-    lexeme "hi"
-      word "भाग"
-        description "Hindi spelled form (romanized bhag, divide) of the division operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "除以"
-        description "Chinese spelled form (pinyin chuyi, divide by) of the division operator; an arithmetic_operator_word matched as a substring."
-  meaning "modulo"
-    gloss "the arithmetic operation that yields the remainder of a division, written with the percent sign in the evaluator. The arithmetic_operator_word role marks the spelled operator surfaces; contains_word_operator reads them to decide whether a prompt names an arithmetic operator in words rather than symbols. Matched as a token-bounded word, with CJK surfaces matched as a substring because those scripts have no inter-word spaces."
-    wiktionary "modulo"
-    defined_by "arithmetic_operation"
-    role "arithmetic_operator_word"
-    lexeme "en"
-      word "modulo"
-        description "English spelled form of the modulo operator; an arithmetic_operator_word matched as a token-bounded word."
-      word "mod"
-        description "English abbreviation of modulo; an arithmetic_operator_word matched as a token-bounded word."
-      word "%"
-        description "ASCII percent sign for the modulo operator; the script-independent operator surface the arithmetic evaluator consumes, from which the operation's machine symbol is read. The evaluator writes modulo as percent, matching rewrite_percent_of which leaves a bare percent not followed by of as the modulo operator."
-    lexeme "ru"
-      word "по модулю"
-        description "Russian phrase (romanized po modulyu, modulo) of the modulo operator; an arithmetic_operator_word matched as a token-bounded phrase."
-    lexeme "hi"
-      word "मॉड्यूलो"
-        description "Hindi spelled form (romanized modyulo) of the modulo operator; an arithmetic_operator_word matched as a token-bounded word."
-    lexeme "zh"
-      word "取模"
-        description "Chinese spelled form (pinyin qumo, take modulo) of the modulo operator; an arithmetic_operator_word matched as a substring."
-  meaning "calculation_request"
-    gloss "a natural-language cue that asks for an arithmetic calculation, whether an imperative ('calculate', 'посчитай') or a question opener ('what is', 'сколько будет'). strip_calculation_wrappers removes these cues from the front of a prompt so the bare expression remains, and the explicit flag it sets lets even a digit-only expression count as a calculation. Each surface is rebuilt into a strip prefix: space-delimited scripts gain a trailing space so the cue strips only on a word boundary (calculate never eats the start of calculated), while CJK surfaces strip as-is because those scripts have no inter-word spaces. The Chinese surfaces are listed longest first so a more specific cue strips before a shorter one it contains."
-    wiktionary "calculation"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_request_cue"
-    lexeme "en"
-      word "please calculate"
-        description "English polite imperative asking for a calculation; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "please compute"
-        description "English polite imperative asking to compute a value; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "can you calculate"
-        description "English polite question asking the assistant to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "can you compute"
-        description "English polite question asking the assistant to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "could you calculate"
-        description "English deferential question asking the assistant to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "could you compute"
-        description "English deferential question asking the assistant to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what is"
-        description "English question opener asking for the value of an expression; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what's"
-        description "English contracted question opener (what is); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "what does"
-        description "English question opener leading 'what does X equal'; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "calculate"
-        description "English bare imperative to calculate; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "compute"
-        description "English bare imperative to compute; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "evaluate"
-        description "English bare imperative to evaluate an expression; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "how much is"
-        description "English quantity question opener; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "solve"
-        description "English bare imperative to solve an expression or equation; a calculation_request_cue stripped from the front of a prompt on a word boundary."
-    lexeme "ru"
-      word "сколько будет"
-        description "Russian question opener (romanized skolko budet, how much will it be); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "посчитай"
-        description "Russian informal imperative (romanized poschitay, count it up); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "посчитайте"
-        description "Russian polite-plural imperative (romanized poschitayte, count it up); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "вычисли"
-        description "Russian informal imperative (romanized vychisli, compute it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "вычислите"
-        description "Russian polite-plural imperative (romanized vychislite, compute it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "рассчитай"
-        description "Russian informal imperative (romanized rasschitay, calculate it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "рассчитайте"
-        description "Russian polite-plural imperative (romanized rasschitayte, calculate it); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-    lexeme "zh"
-      word "请计算"
-        description "Chinese polite imperative (pinyin qing jisuan, please calculate); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "请算一下"
-        description "Chinese polite imperative (pinyin qing suan yixia, please do a calculation); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "计算一下"
-        description "Chinese imperative (pinyin jisuan yixia, do a calculation); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "算一下"
-        description "Chinese imperative (pinyin suan yixia, work it out); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-      word "计算"
-        description "Chinese verb (pinyin jisuan, calculate); a calculation_request_cue stripped from the front as a substring since Chinese has no inter-word spaces."
-    lexeme "hi"
-      word "कृपया गणना करें"
-        description "Hindi polite imperative (romanized kripya ganana karen, please calculate); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-      word "गणना करें"
-        description "Hindi imperative (romanized ganana karen, do the calculation); a calculation_request_cue stripped from the front of a prompt on a word boundary."
-  meaning "politeness"
-    gloss "a politeness or courtesy marker that softens a request without adding any task content, such as please, for me, пожалуйста, कृपया, or 请. strip_calculation_wrappers removes these markers from the end of a calculation prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, while CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as a property of a request — a quality it carries rather than its content."
-    wiktionary "politeness"
-    defined_by "property"
-    role "politeness_cue"
-    lexeme "en"
-      word "please"
-        description "English courtesy word that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."
-      word "for me"
-        description "English courtesy phrase (do this for me) that softens a request; a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "ru"
-      word "пожалуйста"
-        description "Russian courtesy word (romanized pozhaluysta, please); a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "hi"
-      word "कृपया"
-        description "Hindi courtesy word (romanized kripya, please); a politeness_cue stripped from the end of a prompt on a word boundary."
-    lexeme "zh"
-      word "请"
-        description "Chinese courtesy word (pinyin qing, please); a politeness_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-  meaning "calculation_result_query"
-    gloss "a trailing cue that asks for the computed result of the preceding arithmetic expression, whether an equals word or sign (equal, equals, =, равно), a how-much-is-it question (是多少, 等于多少, कितना है, क्या है), or a head-final do-the-calculation imperative (की गणना करें). strip_calculation_wrappers removes these cues from the end of a prompt so the bare expression remains. Each surface is rebuilt into a strip suffix: space-delimited scripts gain a leading space so the cue strips only on a word boundary, the bare equals sign also strips with no leading space so a compact 2*2+2= is recognised, and CJK surfaces strip as-is because those scripts have no inter-word spaces. Defined as both an action and an inquiry — it both invokes the calculation and asks for its value."
-    wiktionary "equal"
-    defined_by "action"
-    defined_by "inquiry"
-    role "calculation_result_query_cue"
-    lexeme "en"
-      word "equal"
-        description "English equals word asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "equals"
-        description "English equals word (third person) asking for the value of the preceding expression; a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "="
-        description "The equals sign; the script-independent symbol surface that asks for the value of the preceding expression, a calculation_result_query_cue stripped from the end of a prompt both bare (so a compact 2*2+2= is recognised) and on a word boundary."
-    lexeme "ru"
-      word "равно"
-        description "Russian equals word (romanized ravno, equals); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-    lexeme "zh"
-      word "是多少"
-        description "Chinese question tail (pinyin shi duoshao, is how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-      word "等于多少"
-        description "Chinese question tail (pinyin dengyu duoshao, equals how much); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-      word "等于几"
-        description "Chinese question tail (pinyin dengyu ji, equals how many); a calculation_result_query_cue stripped from the end as a substring since Chinese has no inter-word spaces."
-    lexeme "hi"
-      word "कितना है"
-        description "Hindi question tail (romanized kitna hai, how much is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "क्या है"
-        description "Hindi question tail (romanized kya hai, what is it); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-      word "की गणना करें"
-        description "Hindi head-final imperative (romanized ki ganana karen, do the calculation of); a calculation_result_query_cue stripped from the end of a prompt on a word boundary."
-  meaning "quantity_conversion"
-    gloss "a cue that a prompt is converting one quantity into another — a currency or unit conversion (convert dollars to euros, 100 km into miles). has_calculation_signal otherwise rejects a prompt that pairs a currency symbol with letters and is not an explicit calculate command, treating it as prose that merely mentions money; a quantity_conversion_cue exempts it, because a conversion is itself a calculation. Each surface is matched whole-token through mentions_role: in space-delimited scripts the cue must stand on a word boundary (so to and into match the marker, never a substring of another word), while Chinese surfaces match as a substring since that script has no inter-word spaces. Distinct from conversion_action, the money-specific verb the compound-interest handler matches as a raw substring: this meaning is the calculator router's general conversion signal and includes the bare target markers to and into, so it must stay whole-token. Defined as an action that establishes a relation between a source and a target quantity."
-    wiktionary "conversion"
-    defined_by "action"
-    defined_by "relation"
-    role "quantity_conversion_cue"
-    lexeme "en"
-      word "to"
-        description "English target marker (convert dollars to euros); a quantity_conversion_cue matched whole-token so it signals a conversion only on a word boundary, never inside another word."
-      word "into"
-        description "English target marker (convert 100 km into miles); a quantity_conversion_cue matched whole-token so it signals a conversion only on a word boundary."
-      word "convert"
-        description "English verb to change one quantity into another; a quantity_conversion_cue matched whole-token."
-      word "exchange"
-        description "English verb to trade one currency for another; a quantity_conversion_cue matched whole-token."
-    lexeme "ru"
-      word "конвертировать"
-        description "Russian verb (romanized konvertirovat, to convert); a quantity_conversion_cue matched whole-token on a word boundary."
-      word "обмен"
-        description "Russian noun (romanized obmen, exchange); a quantity_conversion_cue matched whole-token on a word boundary."
-    lexeme "hi"
-      word "बदलें"
-        description "Hindi verb (romanized badlen, change or convert); a quantity_conversion_cue matched whole-token on a word boundary."
-      word "परिवर्तित"
-        description "Hindi adjective (romanized parivartit, converted); a quantity_conversion_cue matched whole-token on a word boundary."
-    lexeme "zh"
-      word "转换"
-        description "Chinese verb (pinyin zhuanhuan, to convert); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-      word "兑换"
-        description "Chinese verb (pinyin duihuan, to exchange currency); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-      word "换成"
-        description "Chinese verb phrase (pinyin huancheng, to change into); a quantity_conversion_cue matched as a substring since Chinese has no inter-word spaces."
-  meaning "mathematical_function"
-    gloss "a named mathematical operation that maps one or more input numbers to a result, such as a square root, a trigonometric function, or a logarithm. The genus of the individual function names, each defined as a kind of mathematical function rather than listed in code. The numeric_concept role is structural: no handler queries the genus directly; it records that these names are kinds of mathematical function."
-    wiktionary "function"
-    defined_by "function"
-    role "numeric_concept"
-    lexeme "en"
-      word "mathematical function"
-        description "English term for a named operation that maps input numbers to a result; the genus of the individual function names."
-    lexeme "ru"
-      word "математическая функция"
-        description "Russian term (romanized matematicheskaya funktsiya) for a mathematical function; the Russian surface for the mathematical-function concept."
-    lexeme "hi"
-      word "गणितीय फलन"
-        description "Hindi term (romanized ganitiya phalan) for a mathematical function; the Hindi surface for the mathematical-function concept."
-    lexeme "zh"
-      word "数学函数"
-        description "Chinese term (pinyin shuxue hanshu) for a mathematical function; the Chinese surface for the mathematical-function concept."
-  meaning "square_root"
-    gloss "the square-root function, which returns the non-negative number whose square is the input. A math_function_name: the calculator router treats its name beside a number, as in sqrt(16), as a calculation signal. ASCII names are matched on a leading word boundary so they are recognised even when they abut a parenthesis; other scripts are matched as raw substrings."
-    wiktionary "square root"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "sqrt"
-        description "English abbreviation for the square-root function; a math_function_name matched on a leading word boundary so sqrt(16) is recognised."
-      word "square root"
-        description "English name for the function returning the number whose square is the input; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "квадратный корень"
-        description "Russian term (romanized kvadratnyy koren, square root); a math_function_name matched as a raw substring."
-      word "корень"
-        description "Russian noun (romanized koren, root), the short name of the square-root function; a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "वर्गमूल"
-        description "Hindi noun (romanized vargamul, square root); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "平方根"
-        description "Chinese noun (pinyin pingfanggen, square root); a math_function_name matched as a raw substring."
-  meaning "sine"
-    gloss "the sine trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "sine"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "sin"
-        description "English abbreviation for the sine function; a math_function_name matched on a leading word boundary."
-      word "sine"
-        description "English name for the sine trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "синус"
-        description "Russian noun (romanized sinus, sine); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "ज्या"
-        description "Hindi noun (romanized jya, sine); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "正弦"
-        description "Chinese noun (pinyin zhengxian, sine); a math_function_name matched as a raw substring."
-  meaning "cosine"
-    gloss "the cosine trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "cosine"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "cos"
-        description "English abbreviation for the cosine function; a math_function_name matched on a leading word boundary."
-      word "cosine"
-        description "English name for the cosine trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "косинус"
-        description "Russian noun (romanized kosinus, cosine); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "कोज्या"
-        description "Hindi noun (romanized kojya, cosine); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "余弦"
-        description "Chinese noun (pinyin yuxian, cosine); a math_function_name matched as a raw substring."
-  meaning "tangent"
-    gloss "the tangent trigonometric function. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "tangent"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "tan"
-        description "English abbreviation for the tangent function; a math_function_name matched on a leading word boundary."
-      word "tangent"
-        description "English name for the tangent trigonometric function; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "тангенс"
-        description "Russian noun (romanized tangens, tangent); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "स्पर्शज्या"
-        description "Hindi noun (romanized sparshajya, tangent); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "正切"
-        description "Chinese noun (pinyin zhengqie, tangent); a math_function_name matched as a raw substring."
-  meaning "logarithm"
-    gloss "the logarithm function, the inverse of exponentiation. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "logarithm"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "log"
-        description "English abbreviation for the logarithm function; a math_function_name matched on a leading word boundary."
-      word "logarithm"
-        description "English name for the logarithm function, the inverse of exponentiation; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "логарифм"
-        description "Russian noun (romanized logarifm, logarithm); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "लघुगणक"
-        description "Hindi noun (romanized laghuganak, logarithm); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "对数"
-        description "Chinese noun (pinyin duishu, logarithm); a math_function_name matched as a raw substring."
-  meaning "natural_logarithm"
-    gloss "the natural logarithm function, the logarithm to base e. A math_function_name: the calculator router treats its name beside a number as a calculation signal. ASCII names are matched on a leading word boundary; other scripts as raw substrings."
-    wiktionary "natural logarithm"
-    defined_by "mathematical_function"
-    role "math_function_name"
-    lexeme "en"
-      word "ln"
-        description "English abbreviation for the natural logarithm, the logarithm to base e; a math_function_name matched on a leading word boundary."
-      word "natural logarithm"
-        description "English name for the logarithm to base e; a math_function_name matched on a leading word boundary."
-    lexeme "ru"
-      word "натуральный логарифм"
-        description "Russian term (romanized naturalnyy logarifm, natural logarithm); a math_function_name matched as a raw substring."
-    lexeme "hi"
-      word "प्राकृतिक लघुगणक"
-        description "Hindi term (romanized prakritik laghuganak, natural logarithm); a math_function_name matched as a raw substring."
-    lexeme "zh"
-      word "自然对数"
-        description "Chinese term (pinyin ziran duishu, natural logarithm); a math_function_name matched as a raw substring."
+  money
+    grounded-in Q1368
+    defined-by concept
+    role monetary_concept
+    lexeme en
+      surface
+        text money
+      surface
+        text currency
+    lexeme ru
+      surface
+        text деньги
+      surface
+        text валюта
+    lexeme hi
+      surface
+        text पैसा
+      surface
+        text मुद्रा
+    lexeme zh
+      surface
+        text 货币
+      surface
+        text 钱
+  exchange_rate
+    grounded-in Q66100
+    defined-by money
+    defined-by relation
+    role exchange_rate_reference
+    lexeme en
+      surface
+        text "exchange rate"
+      surface
+        text "currency rate"
+    lexeme ru
+      surface
+        text курс
+    lexeme hi
+      surface
+        text "विनिमय दर"
+    lexeme zh
+      surface
+        text 汇率
+  us_dollar
+    grounded-in Q4917
+    defined-by money
+    role currency_usd_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text usd
+      surface
+        text dollar
+      surface
+        text dollars
+    lexeme ru
+      surface
+        text доллар
+      surface
+        text долар
+      surface
+        text долор
+    lexeme hi
+      surface
+        text डॉलर
+    lexeme zh
+      surface
+        text 美元
+  euro
+    grounded-in Q4916
+    defined-by money
+    role currency_eur_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text eur
+      surface
+        text euro
+      surface
+        text euros
+    lexeme ru
+      surface
+        text евро
+    lexeme hi
+      surface
+        text यूरो
+    lexeme zh
+      surface
+        text 欧元
+  ruble
+    grounded-in Q41044
+    defined-by money
+    role currency_rub_reference
+    role calculation_domain_term
+    lexeme en
+      surface
+        text rub
+      surface
+        text ruble
+      surface
+        text rubles
+    lexeme ru
+      surface
+        text рубль
+      surface
+        text рублей
+      surface
+        text руб
+    lexeme hi
+      surface
+        text रूबल
+    lexeme zh
+      surface
+        text 卢布
+  calculation_basis
+    defined-by action
+    defined-by inquiry
+    role calculation_basis_reference
+    lexeme en
+      surface
+        text calculation
+      surface
+        text calculations
+      surface
+        text "do you use"
+      surface
+        text "used for"
+      surface
+        text "your rate"
+    lexeme ru
+      surface
+        text "при расчет"
+      surface
+        text "при расчёт"
+      surface
+        text "в расчет"
+      surface
+        text "в расчёт"
+      surface
+        text "для расчет"
+      surface
+        text "для расчёт"
+      surface
+        text "у тебя"
+      surface
+        text использ
+      surface
+        text берешь
+      surface
+        text берёшь
+      surface
+        text примен
+    lexeme hi
+      surface
+        text गणना
+      surface
+        text उपयोग
+    lexeme zh
+      surface
+        text 计算
+      surface
+        text 使用
+  arithmetic_operation
+    grounded-in Q12170668
+    defined-by action
+    role numeric_concept
+    lexeme en
+      surface
+        text "arithmetic operation"
+      surface
+        text operator
+    lexeme ru
+      surface
+        text "арифметическая операция"
+    lexeme hi
+      surface
+        text "अंकगणितीय संक्रिया"
+    lexeme zh
+      surface
+        text 算术运算
+  addition
+    grounded-in Q32043
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text plus
+      surface
+        text +
+    lexeme ru
+      surface
+        text плюс
+    lexeme hi
+      surface
+        text जोड़
+    lexeme zh
+      surface
+        text 加上
+  subtraction
+    grounded-in Q40754
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text minus
+      surface
+        text -
+    lexeme ru
+      surface
+        text минус
+    lexeme hi
+      surface
+        text घटा
+    lexeme zh
+      surface
+        text 减去
+  multiplication
+    grounded-in Q40276
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text times
+      surface
+        text "multiplied by"
+      surface
+        text *
+    lexeme ru
+      surface
+        text умножить
+      surface
+        text умножь
+      surface
+        text "умножить на"
+    lexeme hi
+      surface
+        text गुणा
+    lexeme zh
+      surface
+        text 乘以
+  division
+    grounded-in Q1226939
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text "divided by"
+      surface
+        text /
+    lexeme ru
+      surface
+        text "разделить на"
+      surface
+        text "делить на"
+    lexeme hi
+      surface
+        text भाग
+    lexeme zh
+      surface
+        text 除以
+  modulo
+    grounded-in Q1799665
+    defined-by arithmetic_operation
+    role arithmetic_operator_word
+    lexeme en
+      surface
+        text modulo
+      surface
+        text mod
+      surface
+        text %
+    lexeme ru
+      surface
+        text "по модулю"
+    lexeme hi
+      surface
+        text मॉड्यूलो
+    lexeme zh
+      surface
+        text 取模
+  calculation_request
+    defined-by action
+    defined-by inquiry
+    role calculation_request_cue
+    lexeme en
+      surface
+        text "please calculate"
+      surface
+        text "please compute"
+      surface
+        text "can you calculate"
+      surface
+        text "can you compute"
+      surface
+        text "could you calculate"
+      surface
+        text "could you compute"
+      surface
+        text "what is"
+      surface
+        text "what's"
+      surface
+        text "what does"
+      surface
+        text calculate
+      surface
+        text compute
+      surface
+        text evaluate
+      surface
+        text "how much is"
+      surface
+        text solve
+    lexeme ru
+      surface
+        text "сколько будет"
+      surface
+        text посчитай
+      surface
+        text посчитайте
+      surface
+        text вычисли
+      surface
+        text вычислите
+      surface
+        text рассчитай
+      surface
+        text рассчитайте
+    lexeme zh
+      surface
+        text 请计算
+      surface
+        text 请算一下
+      surface
+        text 计算一下
+      surface
+        text 算一下
+      surface
+        text 计算
+    lexeme hi
+      surface
+        text "कृपया गणना करें"
+      surface
+        text "गणना करें"
+  politeness
+    grounded-in Q281287
+    defined-by property
+    role politeness_cue
+    lexeme en
+      surface
+        text please
+      surface
+        text "for me"
+    lexeme ru
+      surface
+        text пожалуйста
+    lexeme hi
+      surface
+        text कृपया
+    lexeme zh
+      surface
+        text 请
+  calculation_result_query
+    defined-by action
+    defined-by inquiry
+    role calculation_result_query_cue
+    lexeme en
+      surface
+        text equal
+      surface
+        text equals
+      surface
+        text =
+    lexeme ru
+      surface
+        text равно
+    lexeme zh
+      surface
+        text 是多少
+      surface
+        text 等于多少
+      surface
+        text 等于几
+    lexeme hi
+      surface
+        text "कितना है"
+      surface
+        text "क्या है"
+      surface
+        text "की गणना करें"
+  quantity_conversion
+    grounded-in Q618655
+    defined-by action
+    defined-by relation
+    role quantity_conversion_cue
+    lexeme en
+      surface
+        text to
+      surface
+        text into
+      surface
+        text convert
+      surface
+        text exchange
+    lexeme ru
+      surface
+        text конвертировать
+      surface
+        text обмен
+    lexeme hi
+      surface
+        text बदलें
+      surface
+        text परिवर्तित
+    lexeme zh
+      surface
+        text 转换
+      surface
+        text 兑换
+      surface
+        text 换成
+  mathematical_function
+    grounded-in Q11348
+    defined-by function
+    role numeric_concept
+    lexeme en
+      surface
+        text "mathematical function"
+    lexeme ru
+      surface
+        text "математическая функция"
+    lexeme hi
+      surface
+        text "गणितीय फलन"
+    lexeme zh
+      surface
+        text 数学函数
+  square_root
+    grounded-in Q134237
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text sqrt
+      surface
+        text "square root"
+    lexeme ru
+      surface
+        text "квадратный корень"
+      surface
+        text корень
+    lexeme hi
+      surface
+        text वर्गमूल
+    lexeme zh
+      surface
+        text 平方根
+  sine
+    grounded-in Q152415
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text sin
+      surface
+        text sine
+    lexeme ru
+      surface
+        text синус
+    lexeme hi
+      surface
+        text ज्या
+    lexeme zh
+      surface
+        text 正弦
+  cosine
+    grounded-in Q1256164
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text cos
+      surface
+        text cosine
+    lexeme ru
+      surface
+        text косинус
+    lexeme hi
+      surface
+        text कोज्या
+    lexeme zh
+      surface
+        text 余弦
+  tangent
+    grounded-in Q1129196
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text tan
+      surface
+        text tangent
+    lexeme ru
+      surface
+        text тангенс
+    lexeme hi
+      surface
+        text स्पर्शज्या
+    lexeme zh
+      surface
+        text 正切
+  logarithm
+    grounded-in Q11197
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text log
+      surface
+        text logarithm
+    lexeme ru
+      surface
+        text логарифм
+    lexeme hi
+      surface
+        text लघुगणक
+    lexeme zh
+      surface
+        text 对数
+  natural_logarithm
+    grounded-in Q204037
+    defined-by mathematical_function
+    role math_function_name
+    lexeme en
+      surface
+        text ln
+      surface
+        text "natural logarithm"
+    lexeme ru
+      surface
+        text "натуральный логарифм"
+    lexeme hi
+      surface
+        text "प्राकृतिक लघुगणक"
+    lexeme zh
+      surface
+        text 自然对数

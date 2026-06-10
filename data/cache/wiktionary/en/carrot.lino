@@ -1,0 +1,33 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A vegetable with a nutritious, juicy, sweet root that is often orange in colour, Daucus carota, especially the subspecies sativus in the family Apiaceae."
+        entry
+          definition "A shade of orange similar to the flesh of most carrots (also called carrot orange)."
+        entry
+          definition "Any motivational tool."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To treat (an animal pelt) with a solution of mercuric nitrate as part of felt manufacture."
+      partOfSpeech verb
+  phonetic "/ˈkæɹ.ət/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkæɹ.ət/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/carrot-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=89955831"
+      text "/ˈkæɹ.ət/"
+  sourceUrls ("https://en.wiktionary.org/wiki/carrot")
+  word carrot

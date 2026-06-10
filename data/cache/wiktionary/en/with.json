@@ -1,0 +1,158 @@
+[
+  {
+    "word": "with",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Along, together with others, in a group, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you want to come with?"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Against.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He picked a fight with the class bully."
+          },
+          {
+            "definition": "In the company of; alongside, close to; near to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He went with his friends."
+          },
+          {
+            "definition": "In addition to; as an accessory to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She owns a motorcycle with a sidecar."
+          },
+          {
+            "definition": "Used to indicate simultaneous happening, or immediate succession or consequence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Jim was listening to Bach with his eyes closed."
+          },
+          {
+            "definition": "In support of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We are with you all the way."
+          },
+          {
+            "definition": "In regard to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He was pleased with the outcome."
+          },
+          {
+            "definition": "To denote the accomplishment of cause, means, instrument, etc; – sometimes equivalent to by.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "slain with robbers"
+          },
+          {
+            "definition": "Using as an instrument; by means of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Find what you want instantly with our search engine."
+          },
+          {
+            "definition": "Using as nourishment; more recently replaced by on.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Having, owning.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It was small and bumpy, with a tinge of orange."
+          },
+          {
+            "definition": "Affected by (a certain emotion or condition).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He spoke with sadness in his voice."
+          },
+          {
+            "definition": "Prompted by (a certain emotion).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "green with envy; flushed with success"
+          }
+        ],
+        "synonyms": [
+          "c̄",
+          "w/"
+        ],
+        "antonyms": [
+          "against",
+          "without"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/with"
+    ]
+  },
+  {
+    "word": "with",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A flexible, slender twig or shoot, especially when used as a band or for binding; a withy.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A band of twisted twigs.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An elastic handle to a tool to save the hand from the shock of blows.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An iron attachment on one end of a mast or boom, with a ring, through which another mast or boom is rigged out and secured.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A partition between flues in a chimney.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/with",
+      "https://en.wiktionary.org/wiki/withe"
+    ]
+  }
+]

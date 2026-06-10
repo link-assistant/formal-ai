@@ -1,0 +1,17 @@
+Q204
+  aliases
+    en (o oh nought "additive identity" nil naught zilch zip scratch love "null" duck)
+    hi ("ज़ीरो" "ज़ेरो")
+    ru ("нуль")
+  descriptions
+    en "integer number zero; neutral element for the addition"
+    hi "पूरे नंबरों की पहली संख्या"
+    ru "целое число"
+    zh "整數"
+  id Q204
+  labels
+    en zero
+    hi "शून्य"
+    ru "ноль"
+  type item
+success 1

@@ -1,0 +1,86 @@
+{
+  "lemma": "gloss",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06756695-n",
+      "partOfSpeech": "n",
+      "definition": "an explanation or definition of an obscure word in a text",
+      "synonyms": [
+        "rubric"
+      ]
+    },
+    {
+      "id": "oewn-06432424-n",
+      "partOfSpeech": "n",
+      "definition": "an alphabetical list of technical terms in some specialized field of knowledge; usually published as an appendix to a text on that field",
+      "synonyms": [
+        "glossary"
+      ]
+    },
+    {
+      "id": "oewn-04962337-n",
+      "partOfSpeech": "n",
+      "definition": "the property of being smooth and shiny",
+      "synonyms": [
+        "polish",
+        "glossiness",
+        "burnish"
+      ]
+    },
+    {
+      "id": "oewn-04685309-n",
+      "partOfSpeech": "n",
+      "definition": "an outward or token appearance or form that is deliberately misleading",
+      "examples": [
+        "he hoped his claims would have a semblance of authenticity",
+        "he tried to give his falsehood the gloss of moral sanction",
+        "the situation soon took on a different color"
+      ],
+      "synonyms": [
+        "semblance",
+        "color",
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-01686477-v",
+      "partOfSpeech": "v",
+      "definition": "give a shine or gloss to, usually by rubbing"
+    },
+    {
+      "id": "oewn-00963361-v",
+      "partOfSpeech": "v",
+      "definition": "provide interlinear explanations for words or phrases",
+      "examples": [
+        "He annotated on what his teacher had written"
+      ],
+      "synonyms": [
+        "comment",
+        "annotate"
+      ]
+    },
+    {
+      "id": "oewn-00962993-v",
+      "partOfSpeech": "v",
+      "definition": "provide an interlinear translation of a word or phrase"
+    },
+    {
+      "id": "oewn-00838812-v",
+      "partOfSpeech": "v",
+      "definition": "give a deceptive explanation or excuse for",
+      "examples": [
+        "color a lie"
+      ],
+      "synonyms": [
+        "color",
+        "colour"
+      ]
+    }
+  ]
+}

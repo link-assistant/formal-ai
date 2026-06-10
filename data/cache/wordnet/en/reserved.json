@@ -1,0 +1,24 @@
+{
+  "lemma": "reserved",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01995406-a",
+      "partOfSpeech": "a",
+      "definition": "set aside for the use of a particular person or party"
+    },
+    {
+      "id": "oewn-01994423-a",
+      "partOfSpeech": "a",
+      "definition": "marked by self-restraint and reticence",
+      "examples": [
+        "was habitually reserved in speech, withholding her opinion"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+language en
+lemma browse
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "vegetation (such as young shoots, twigs, and leaves) that is suitable for animals to eat"
+    examples ("a deer needs to eat twenty pounds of browse every day")
+    id oewn-08454309-n
+    partOfSpeech n
+  entry
+    definition "reading superficially or at random"
+    id oewn-06611001-n
+    partOfSpeech n
+    synonyms (browsing)
+  entry
+    definition "the act of feeding by continual nibbling"
+    id oewn-00840684-n
+    partOfSpeech n
+    synonyms (browsing)
+  entry
+    definition "shop around; not necessarily buying"
+    examples ("I don't need help, I'm just browsing")
+    id oewn-02331351-v
+    partOfSpeech v
+    synonyms (shop)
+  entry
+    definition "feed as in a meadow or pasture"
+    examples ("the herd was grazing")
+    id oewn-01578996-v
+    partOfSpeech v
+    synonyms (crop graze range pasture)
+  entry
+    definition "look around casually and randomly, without seeking anything in particular"
+    examples ("browse a computer directory" "surf the internet or the world wide web")
+    id oewn-01317993-v
+    partOfSpeech v
+    synonyms (surf)
+  entry
+    definition "eat lightly, try different dishes"
+    examples ("There was so much food at the party that we quickly got sated just by browsing")
+    id oewn-01177039-v
+    partOfSpeech v
+    synonyms (graze)
+source "oewn:2024"

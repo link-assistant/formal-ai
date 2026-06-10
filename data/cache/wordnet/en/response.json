@@ -1,0 +1,76 @@
+{
+  "lemma": "response",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11437102-n",
+      "partOfSpeech": "n",
+      "definition": "a result",
+      "examples": [
+        "this situation developed in response to events in Africa"
+      ]
+    },
+    {
+      "id": "oewn-00860679-n",
+      "partOfSpeech": "n",
+      "definition": "a bodily process occurring due to the effect of some antecedent stimulus or agent",
+      "examples": [
+        "a bad reaction to the medicine",
+        "his responses have slowed with age"
+      ],
+      "synonyms": [
+        "reaction"
+      ]
+    },
+    {
+      "id": "oewn-06758700-n",
+      "partOfSpeech": "n",
+      "definition": "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation",
+      "examples": [
+        "I waited several days for his answer",
+        "he wrote replies to several of his critics"
+      ],
+      "synonyms": [
+        "answer",
+        "reply"
+      ]
+    },
+    {
+      "id": "oewn-06643359-n",
+      "partOfSpeech": "n",
+      "definition": "the manner in which something is greeted",
+      "examples": [
+        "she did not expect the cold reception she received from her superiors"
+      ],
+      "synonyms": [
+        "reception"
+      ]
+    },
+    {
+      "id": "oewn-06397225-n",
+      "partOfSpeech": "n",
+      "definition": "a phrase recited or sung by the congregation following a versicle by the priest or minister"
+    },
+    {
+      "id": "oewn-07214225-n",
+      "partOfSpeech": "n",
+      "definition": "the speech act of continuing a conversational exchange",
+      "examples": [
+        "he growled his reply"
+      ],
+      "synonyms": [
+        "reply"
+      ]
+    },
+    {
+      "id": "oewn-05220076-n",
+      "partOfSpeech": "n",
+      "definition": "the manner in which an electrical or mechanical device responds to an input signal or a range of input signals"
+    }
+  ]
+}

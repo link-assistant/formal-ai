@@ -1,0 +1,28 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A metric unit of mass equal to 1000 kilograms. Symbol: t"
+          synonyms (megagram "metric ton")
+        entry
+          definition "A score of 100."
+      partOfSpeech noun
+      synonyms (megagram "metric ton")
+  phonetic "/tɒn/"
+  phonetics
+    entry
+      audio ""
+      text "/tɒn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tonne-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1769540"
+      text "/tʊn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tonne")
+  word tonne

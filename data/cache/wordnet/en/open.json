@@ -1,0 +1,386 @@
+{
+  "lemma": "open",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01656822-a",
+      "partOfSpeech": "a",
+      "definition": "affording unobstructed entrance and exit; not shut or closed",
+      "examples": [
+        "an open door",
+        "they left the door open"
+      ],
+      "synonyms": [
+        "unfastened"
+      ]
+    },
+    {
+      "id": "oewn-01657344-a",
+      "partOfSpeech": "a",
+      "definition": "affording free passage or access",
+      "examples": [
+        "open drains",
+        "the road is open to traffic",
+        "open ranks"
+      ]
+    },
+    {
+      "id": "oewn-01658803-a",
+      "partOfSpeech": "a",
+      "definition": "used of mouth or eyes",
+      "examples": [
+        "keep your eyes open",
+        "his mouth slightly opened"
+      ],
+      "synonyms": [
+        "opened"
+      ]
+    },
+    {
+      "id": "oewn-01664425-a",
+      "partOfSpeech": "a",
+      "definition": "(set theory) of an interval that contains neither of its endpoints"
+    },
+    {
+      "id": "oewn-01992330-a",
+      "partOfSpeech": "a",
+      "definition": "ready or willing to receive favorably",
+      "examples": [
+        "receptive to the proposals"
+      ],
+      "synonyms": [
+        "receptive"
+      ]
+    },
+    {
+      "id": "oewn-01709214-a",
+      "partOfSpeech": "a",
+      "definition": "open and observable; not secret or hidden",
+      "examples": [
+        "an overt lie",
+        "overt hostility",
+        "overt intelligence gathering",
+        "open ballots"
+      ],
+      "synonyms": [
+        "overt"
+      ]
+    },
+    {
+      "id": "oewn-08649998-n",
+      "partOfSpeech": "n",
+      "definition": "a clear or unobstructed space or expanse of land or water",
+      "examples": [
+        "finally broke out of the forest into the open"
+      ],
+      "synonyms": [
+        "clear"
+      ]
+    },
+    {
+      "id": "oewn-08631308-n",
+      "partOfSpeech": "n",
+      "definition": "where the air is unconfined",
+      "examples": [
+        "he wanted to get outdoors a little",
+        "the concert was held in the open air",
+        "camping in the open"
+      ],
+      "synonyms": [
+        "outdoors",
+        "out-of-doors",
+        "open air"
+      ]
+    },
+    {
+      "id": "oewn-07480116-n",
+      "partOfSpeech": "n",
+      "definition": "a tournament in which both professionals and amateurs may play"
+    },
+    {
+      "id": "oewn-05620592-n",
+      "partOfSpeech": "n",
+      "definition": "information that has become public",
+      "examples": [
+        "all the reports were out in the open",
+        "the facts had been brought to the surface"
+      ],
+      "synonyms": [
+        "surface"
+      ]
+    },
+    {
+      "id": "oewn-01892719-s",
+      "partOfSpeech": "s",
+      "definition": "with no protection or shield",
+      "examples": [
+        "the exposed northeast frontier",
+        "open to the weather",
+        "an open wound"
+      ],
+      "synonyms": [
+        "exposed"
+      ]
+    },
+    {
+      "id": "oewn-01867850-s",
+      "partOfSpeech": "s",
+      "definition": "open to or in view of all",
+      "examples": [
+        "an open protest",
+        "an open letter to the editor"
+      ]
+    },
+    {
+      "id": "oewn-00186809-s",
+      "partOfSpeech": "s",
+      "definition": "not having been filled",
+      "examples": [
+        "the job is still open"
+      ]
+    },
+    {
+      "id": "oewn-02010453-s",
+      "partOfSpeech": "s",
+      "definition": "accessible to all",
+      "examples": [
+        "open season",
+        "an open economy"
+      ]
+    },
+    {
+      "id": "oewn-02533823-s",
+      "partOfSpeech": "s",
+      "definition": "not defended or capable of being defended",
+      "examples": [
+        "an open city",
+        "open to attack"
+      ],
+      "synonyms": [
+        "assailable",
+        "undefendable",
+        "undefended"
+      ]
+    },
+    {
+      "id": "oewn-02239857-s",
+      "partOfSpeech": "s",
+      "definition": "(of textures) full of small openings or gaps",
+      "examples": [
+        "an open texture",
+        "a loose weave"
+      ],
+      "synonyms": [
+        "loose"
+      ]
+    },
+    {
+      "id": "oewn-01663543-s",
+      "partOfSpeech": "s",
+      "definition": "having no protecting cover or enclosure",
+      "examples": [
+        "an open boat",
+        "an open fire",
+        "open sports cars"
+      ]
+    },
+    {
+      "id": "oewn-02138201-s",
+      "partOfSpeech": "s",
+      "definition": "not brought to a conclusion; subject to further thought",
+      "examples": [
+        "an open question",
+        "our position on this bill is still undecided",
+        "our lawsuit is still undetermined"
+      ],
+      "synonyms": [
+        "undecided",
+        "undetermined",
+        "unresolved"
+      ]
+    },
+    {
+      "id": "oewn-02094323-s",
+      "partOfSpeech": "s",
+      "definition": "not sealed or having been unsealed",
+      "examples": [
+        "the letter was already open",
+        "the opened package lay on the table"
+      ],
+      "synonyms": [
+        "opened"
+      ]
+    },
+    {
+      "id": "oewn-01452245-s",
+      "partOfSpeech": "s",
+      "definition": "without undue constriction as from e.g. tenseness or inhibition",
+      "examples": [
+        "the clarity and resonance of an open tone",
+        "her natural and open response"
+      ]
+    },
+    {
+      "id": "oewn-02484351-s",
+      "partOfSpeech": "s",
+      "definition": "not requiring union membership",
+      "examples": [
+        "an open shop employs nonunion workers"
+      ]
+    },
+    {
+      "id": "oewn-02370095-s",
+      "partOfSpeech": "s",
+      "definition": "possibly accepting or permitting",
+      "examples": [
+        "a passage capable of misinterpretation",
+        "open to interpretation",
+        "an issue open to question",
+        "the time is fixed by the director and players and therefore subject to much variation"
+      ],
+      "synonyms": [
+        "capable",
+        "subject"
+      ]
+    },
+    {
+      "id": "oewn-01626686-s",
+      "partOfSpeech": "s",
+      "definition": "affording free passage or view",
+      "examples": [
+        "a clear view",
+        "a clear path to victory",
+        "open waters",
+        "the open countryside"
+      ],
+      "synonyms": [
+        "clear"
+      ]
+    },
+    {
+      "id": "oewn-01313228-s",
+      "partOfSpeech": "s",
+      "definition": "openly straightforward and direct without reserve or secretiveness",
+      "examples": [
+        "his candid eyes",
+        "an open and trusting nature",
+        "a heart-to-heart talk"
+      ],
+      "synonyms": [
+        "candid",
+        "heart-to-heart"
+      ]
+    },
+    {
+      "id": "oewn-00036367-s",
+      "partOfSpeech": "s",
+      "definition": "ready for business",
+      "examples": [
+        "the stores are open"
+      ]
+    },
+    {
+      "id": "oewn-01348685-v",
+      "partOfSpeech": "v",
+      "definition": "cause to open or to become open",
+      "examples": [
+        "Mary opened the car door"
+      ],
+      "synonyms": [
+        "open up"
+      ]
+    },
+    {
+      "id": "oewn-02431018-v",
+      "partOfSpeech": "v",
+      "definition": "start to operate or function or cause to start operating or functioning",
+      "examples": [
+        "open a business"
+      ],
+      "synonyms": [
+        "open up"
+      ]
+    },
+    {
+      "id": "oewn-01349486-v",
+      "partOfSpeech": "v",
+      "definition": "become open",
+      "examples": [
+        "The door opened"
+      ],
+      "synonyms": [
+        "open up"
+      ]
+    },
+    {
+      "id": "oewn-02430309-v",
+      "partOfSpeech": "v",
+      "definition": "begin or set in action, of meetings, speeches, recitals, etc.",
+      "examples": [
+        "He opened the meeting with a long speech"
+      ]
+    },
+    {
+      "id": "oewn-01582662-v",
+      "partOfSpeech": "v",
+      "definition": "spread out or open from a closed or folded state",
+      "examples": [
+        "open the map",
+        "spread your arms"
+      ],
+      "synonyms": [
+        "unfold",
+        "spread",
+        "spread out"
+      ]
+    },
+    {
+      "id": "oewn-00541016-v",
+      "partOfSpeech": "v",
+      "definition": "make available",
+      "examples": [
+        "This opens up new possibilities"
+      ],
+      "synonyms": [
+        "open up"
+      ]
+    },
+    {
+      "id": "oewn-00541181-v",
+      "partOfSpeech": "v",
+      "definition": "become available",
+      "examples": [
+        "an opportunity opened up"
+      ],
+      "synonyms": [
+        "open up"
+      ]
+    },
+    {
+      "id": "oewn-02750526-v",
+      "partOfSpeech": "v",
+      "definition": "have an opening or passage or outlet",
+      "examples": [
+        "The bedrooms open into the hall"
+      ]
+    },
+    {
+      "id": "oewn-01080280-v",
+      "partOfSpeech": "v",
+      "definition": "make the opening move",
+      "examples": [
+        "Kasparov opened with a standard opening"
+      ]
+    },
+    {
+      "id": "oewn-02145103-v",
+      "partOfSpeech": "v",
+      "definition": "display the contents of a file or start an application as on a computer"
+    }
+  ]
+}

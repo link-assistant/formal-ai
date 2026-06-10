@@ -1,0 +1,207 @@
+[
+  {
+    "word": "sun",
+    "phonetic": "/sʌn/",
+    "phonetics": [
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9027502",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1194290",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A star, especially when seen as the centre of any single solar system.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The light and warmth which is received from the sun.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Something like the sun in brightness or splendor.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Sunrise or sunset.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The nineteenth trump/major arcana card of the Tarot.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The thirty-first Lenormand card.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To expose to the warmth and radiation of the sun.",
+            "synonyms": [
+              "apricate"
+            ],
+            "antonyms": [],
+            "example": "Beautiful bodies lying on the beach, sunning their bronzed limbs."
+          },
+          {
+            "definition": "To warm or dry in the sunshine.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be exposed to the sun.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To expose the eyes to the sun as part of the Bates method.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "apricate"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "proper noun",
+        "definitions": [
+          {
+            "definition": "The star that the Earth revolves around and from which it receives light and warmth.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sun"
+    ]
+  },
+  {
+    "word": "sun",
+    "phonetic": "/sʌn/",
+    "phonetics": [
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9027502",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1194290",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A traditional Japanese unit of length, approximately 30.3 millimetres (1.193 inches).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sun"
+    ]
+  },
+  {
+    "word": "sun",
+    "phonetic": "/sʌn/",
+    "phonetics": [
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9027502",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/sʌn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sun-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1194290",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Crotalaria juncea, an East Indian leguminous plant yielding a fiber.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sun",
+      "https://en.wiktionary.org/wiki/sunn"
+    ]
+  }
+]

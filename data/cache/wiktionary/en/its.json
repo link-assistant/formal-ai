@@ -1,0 +1,79 @@
+[
+  {
+    "word": "its",
+    "phonetic": "/ɪts/",
+    "phonetics": [
+      {
+        "text": "/ɪts/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/its-us.ogg",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=112430026",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One who is neither a he nor a she; a creature; a dehumanized being.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The person who chases and tries to catch the other players in the playground game of tag.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In the next game, Adam and Tom will be it…"
+          },
+          {
+            "definition": "The game of tag.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let's play it at breaktime."
+          },
+          {
+            "definition": "Sex appeal, especially that which goes beyond beauty.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Sexual activity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "caught them doing it"
+          },
+          {
+            "definition": "A biological force that inhabits living beings, according to the vitalist approach of Georg Groddeck.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "The one (or ones) belonging to it.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/it",
+      "https://en.wiktionary.org/wiki/its"
+    ]
+  }
+]

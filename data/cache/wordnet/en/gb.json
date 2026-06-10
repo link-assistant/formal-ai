@@ -1,0 +1,65 @@
+{
+  "lemma": "gb",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14985514-n",
+      "partOfSpeech": "n",
+      "definition": "a highly toxic chemical nerve agent that inhibits the activity of cholinesterase",
+      "synonyms": [
+        "sarin"
+      ]
+    },
+    {
+      "id": "oewn-13663479-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of magnetomotive force equal to 0.7958 ampere-turns",
+      "synonyms": [
+        "gilbert",
+        "Gi"
+      ]
+    },
+    {
+      "id": "oewn-13650416-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1000 megabytes or 10^9 (1,000,000,000) bytes",
+      "synonyms": [
+        "gigabyte",
+        "G"
+      ]
+    },
+    {
+      "id": "oewn-13650593-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1000 megabits or 10^9 (1,000,000,000) bits",
+      "synonyms": [
+        "gigabit",
+        "Gbit"
+      ]
+    },
+    {
+      "id": "oewn-13650222-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1024 mebibytes or 2^30 (1,073,741,824) bytes",
+      "synonyms": [
+        "gigabyte",
+        "gibibyte",
+        "G",
+        "GiB"
+      ]
+    },
+    {
+      "id": "oewn-08877934-n",
+      "partOfSpeech": "n",
+      "definition": "an island comprising England and Scotland and Wales",
+      "synonyms": [
+        "Great Britain"
+      ]
+    }
+  ]
+}

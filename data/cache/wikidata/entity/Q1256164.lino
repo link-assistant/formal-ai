@@ -1,0 +1,13 @@
+Q1256164
+  aliases
+    en (cos "cosine function" "cos function")
+  descriptions
+    en "trigonometric function; ratio between the lengths of the adjacent side and the hypotenuse in a right triangle"
+    ru "тригонометрическая функция"
+  id Q1256164
+  labels
+    en cosine
+    ru "косинус"
+    zh "餘弦"
+  type item
+success 1

@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q159": {
+      "type": "item",
+      "id": "Q159",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Russia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Россия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄罗斯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "country in Eastern Europe and Northern Asia, the largest in the world by area"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Восточной Европе и Северной Азии, крупнейшее по площади в мире"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "東歐及北亞國家"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूरोप और एशिया में फैले एक देश"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Russian Federation"
+          },
+          {
+            "language": "en",
+            "value": "Federation of Russia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Российская Федерация"
+          },
+          {
+            "language": "ru",
+            "value": "РФ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "俄羅斯"
+          },
+          {
+            "language": "zh",
+            "value": "俄国"
+          },
+          {
+            "language": "zh",
+            "value": "俄國"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

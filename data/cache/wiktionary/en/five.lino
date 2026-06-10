@@ -1,0 +1,52 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit/figure 5."
+          example "He wrote a five followed by four zeroes."
+        entry
+          definition "A banknote with a denomination of five units of currency. See also fiver."
+          example "Can anyone here change a five?"
+        entry
+          definition "Anything measuring five units, as length."
+          example "All the fives are over there in the corner, next to the fours."
+        entry
+          definition "A person who is five years old."
+          example "The fives and sixes will have a snack first, then the older kids."
+        entry
+          definition "Five o'clock."
+          example "See you at five."
+        entry
+          definition "A short rest, especially one of five minutes."
+          example "Take five, soldier."
+        entry
+          definition "A basketball team, club or lineup."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value equal to 5; the number following four and preceding six."
+        entry
+          definition "Describing a group or set with five elements."
+      partOfSpeech numeral
+  phonetic "/fɑev/"
+  phonetics
+    entry
+      audio ""
+      text "/fɑev/"
+    entry
+      audio ""
+      text "/fɑev/"
+    entry
+      audio ""
+      text "/faɪv/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/five-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=268388"
+      text "/faɪv/"
+  sourceUrls ("https://en.wiktionary.org/wiki/five")
+  word five

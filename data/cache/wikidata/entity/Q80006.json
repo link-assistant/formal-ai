@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q80006": {
+      "type": "item",
+      "id": "Q80006",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "计算机程序设计"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "программирование"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क्रमानुदेशन"
+        },
+        "en": {
+          "language": "en",
+          "value": "computer programming"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "создание программного обеспечения компьютера"
+        },
+        "en": {
+          "language": "en",
+          "value": "the process of designing and building an executable computer program to accomplish a specific computing result or to perform a specific task"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "软件开发步骤"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विशिष्ट संगणकीय परिणाम की प्राप्ति अथवा किसी विशिष्ट कार्य के निष्पादन हेतु क्रियान्वयन योग्य संगणक कार्यविधि की रूपरेखा का निर्माण और सृजन करने की प्रक्रिया"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "编程"
+          },
+          {
+            "language": "zh",
+            "value": "电脑编程"
+          },
+          {
+            "language": "zh",
+            "value": "程序設計"
+          },
+          {
+            "language": "zh",
+            "value": "计算机编程"
+          },
+          {
+            "language": "zh",
+            "value": "編程"
+          },
+          {
+            "language": "zh",
+            "value": "程式設計"
+          },
+          {
+            "language": "zh",
+            "value": "電腦程式設計"
+          },
+          {
+            "language": "zh",
+            "value": "計算機程式設計"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "компьютерное программирование"
+          },
+          {
+            "language": "ru",
+            "value": "programming"
+          },
+          {
+            "language": "ru",
+            "value": "программирование компьютера"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "प्रोग्रामिंग"
+          },
+          {
+            "language": "hi",
+            "value": "कोडिंग"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "programming"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

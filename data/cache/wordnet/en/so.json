@@ -1,0 +1,138 @@
+{
+  "lemma": "so",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06881894-n",
+      "partOfSpeech": "n",
+      "definition": "the syllable naming the fifth (dominant) note of any musical scale in solmization",
+      "synonyms": [
+        "sol",
+        "soh"
+      ]
+    },
+    {
+      "id": "oewn-00147630-r",
+      "partOfSpeech": "r",
+      "definition": "to a very great extent or degree",
+      "examples": [
+        "the idea is so obvious",
+        "never been so happy",
+        "I love you so",
+        "my head aches so!"
+      ]
+    },
+    {
+      "id": "oewn-00119259-r",
+      "partOfSpeech": "r",
+      "definition": "in a manner that facilitates",
+      "examples": [
+        "he observed the snakes so he could describe their behavior",
+        "he stooped down so he could pick up his hat"
+      ]
+    },
+    {
+      "id": "oewn-00147962-r",
+      "partOfSpeech": "r",
+      "definition": "in such a condition or manner, especially as expressed or implied",
+      "examples": [
+        "They're happy and I hope they will remain so",
+        "so live your life that old age will bring no regrets"
+      ]
+    },
+    {
+      "id": "oewn-00148162-r",
+      "partOfSpeech": "r",
+      "definition": "to a certain unspecified extent or degree",
+      "examples": [
+        "I can only go so far with this student",
+        "can do only so much in a day"
+      ]
+    },
+    {
+      "id": "oewn-00148308-r",
+      "partOfSpeech": "r",
+      "definition": "in the same way; also",
+      "examples": [
+        "I was offended and so was he",
+        "worked hard and so did she"
+      ]
+    },
+    {
+      "id": "oewn-00122019-r",
+      "partOfSpeech": "r",
+      "definition": "in the way indicated",
+      "examples": [
+        "hold the brush so",
+        "set up the pieces thus"
+      ],
+      "synonyms": [
+        "thus",
+        "thusly"
+      ]
+    },
+    {
+      "id": "oewn-00147799-r",
+      "partOfSpeech": "r",
+      "definition": "(usually followed by ‘that’) to an extent or degree as expressed",
+      "examples": [
+        "he was so tired he could hardly stand",
+        "so dirty that it smells"
+      ]
+    },
+    {
+      "id": "oewn-00118527-r",
+      "partOfSpeech": "r",
+      "definition": "subsequently or soon afterward (often used as sentence connectors)",
+      "examples": [
+        "then he left",
+        "go left first, then right",
+        "first came lightning, then thunder",
+        "we watched the late movie and then went to bed",
+        "and so home and to bed"
+      ],
+      "synonyms": [
+        "then",
+        "and so"
+      ]
+    },
+    {
+      "id": "oewn-00043413-r",
+      "partOfSpeech": "r",
+      "definition": "(used to introduce a logical conclusion) from that fact or reason or as a result",
+      "examples": [
+        "therefore X must be true",
+        "the eggs were fresh and hence satisfactory",
+        "we were young and thence optimistic",
+        "it is late and thus we must go",
+        "the witness is biased and so cannot be trusted"
+      ],
+      "synonyms": [
+        "therefore",
+        "hence",
+        "thence",
+        "thus"
+      ]
+    },
+    {
+      "id": "oewn-00038035-r",
+      "partOfSpeech": "r",
+      "definition": "in truth (often tends to intensify)",
+      "examples": [
+        "they said the car would break down and indeed it did",
+        "it is very cold indeed",
+        "was indeed grateful",
+        "indeed, the rain may still come",
+        "he did so do it!"
+      ],
+      "synonyms": [
+        "indeed"
+      ]
+    }
+  ]
+}

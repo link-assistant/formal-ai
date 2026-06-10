@@ -1,0 +1,28 @@
+language en
+lemma path
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a course of conduct"
+    examples ("the path of virtue" "we went our separate ways" "our paths in life led us apart" "genius usually follows a revolutionary path")
+    id oewn-00416689-n
+    partOfSpeech n
+    synonyms (way "way of life")
+  entry
+    definition "a way especially designed for a particular use"
+    id oewn-03905025-n
+    partOfSpeech n
+  entry
+    definition "an established line of travel or access"
+    id oewn-08633886-n
+    partOfSpeech n
+    synonyms (route itinerary)
+  entry
+    definition "a line or route along which something travels or moves"
+    examples ("the hurricane demolished houses in its path" "the track of an animal" "the course of the river")
+    id oewn-09410115-n
+    partOfSpeech n
+    synonyms (track course)
+source "oewn:2024"

@@ -1,0 +1,9 @@
+view
+  id M-d89be61bcd1d
+  lemma bot
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "botfly larva; typically develops inside the body of a horse or sheep or human"
+    provenance (wordnet)

@@ -1,0 +1,19 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An SI/MKS unit of measure, the length of 1/1000 of a meter. Symbol: mm"
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/millimeter-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762995"
+  sourceUrls ("https://en.wiktionary.org/wiki/millimeter")
+  word millimeter

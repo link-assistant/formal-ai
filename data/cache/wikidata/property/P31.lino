@@ -1,0 +1,19 @@
+P31
+  aliases
+    en ("is a" "is an" "is a[n]" "unique individual of" "unitary element of class" type "example of" "is of type" "has type" "item of type" "was a[n]" "will be a[n] (use 'nature of statement' = 'expected')")
+    ru ("представляет собой" "частный случай для" "является одним из экземпляров" "принадлежит классу" "является одним из" "экземпляр от" "класс объекта:" "вид сущности" "это" "один из" "это пример" "пример" "является" "есть")
+    zh ("屬於" "是一个" "性質" "属于" "類別" "所属的类" "隸屬於" "是" "是...的一个实例" "性质" "实例" "示例" "是一個")
+  datatype wikibase-item
+  descriptions
+    en "type to which this subject corresponds/belongs. Different from P279 (subclass of); for example: K2 is an instance of mountain; volcano is a subclass of mountain"
+    hi "एक विषय का दूसरे विषय के उदाहरण के रूप में होना"
+    ru 'данный элемент представляет собой конкретный объект (экземпляр / частный случай) класса, категории. Не путать с Property:P279 ("подкласс от")'
+    zh "该项目所属的类别；与父类（P279）不同，例：富士山隶属于山、火山父类是山"
+  id P31
+  labels
+    en "instance of"
+    hi "प्रकार"
+    ru "это частный случай понятия"
+    zh "隶属于"
+  type property
+success 1

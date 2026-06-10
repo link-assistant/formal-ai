@@ -1,0 +1,49 @@
+[
+  {
+    "word": "yourself",
+    "phonetic": "/jɔːˈsɛlf/",
+    "phonetics": [
+      {
+        "text": "/jɔːˈsɛlf/",
+        "audio": ""
+      },
+      {
+        "text": "/jɔɹˈsɛlf/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/yourself-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1222245",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "(reflexive pronoun) Your own self (singular).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Be careful with that fire or you'll burn yourself."
+          },
+          {
+            "definition": "You (singular); used emphatically, especially to indicate exclusiveness of the referent's participation in the predicate, i.e., that no one else is involved.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After a good night's sleep you'll feel like yourself again."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/yourself"
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+Q23350
+  aliases
+    en ("N°7" "the number 7" seven "number seven" "number 7")
+    ru ("семь" "семёрка")
+    zh ("➆" "➐" "〧" "柒" "７" "❼" "七" "⓻")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число, расположенное между числами 6 и 8"
+    zh "自然數"
+  id Q23350
+  labels
+    hi "७"
+  type item
+success 1

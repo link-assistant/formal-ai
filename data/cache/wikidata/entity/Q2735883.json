@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q2735883": {
+      "type": "item",
+      "id": "Q2735883",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cucumber"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "огурец"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "黄瓜"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "fruit used as vegetable"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "овощ, плод огурца обыкновенного (Cucumis sativus)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cucumbers"
+          },
+          {
+            "language": "en",
+            "value": "cuke"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "огурцы"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "拍黄瓜"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q134237": {
+      "type": "item",
+      "id": "Q134237",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "square root"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "квадратный корень"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वर्गमूल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "平方根"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "inverse operation of square for finding the original base number; that base number itself"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "операция, обратная к возведению в квадрат"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "乘二次方的逆运算"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "2nd root"
+          },
+          {
+            "language": "en",
+            "value": "second root"
+          },
+          {
+            "language": "en",
+            "value": "square root function"
+          },
+          {
+            "language": "en",
+            "value": "second root function"
+          },
+          {
+            "language": "en",
+            "value": "2nd root function"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "√"
+          },
+          {
+            "language": "ru",
+            "value": "арифметический квадратный корень"
+          },
+          {
+            "language": "ru",
+            "value": "корень квадратный"
+          },
+          {
+            "language": "ru",
+            "value": "sqrt"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "開平方"
+          },
+          {
+            "language": "zh",
+            "value": "^1/2"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

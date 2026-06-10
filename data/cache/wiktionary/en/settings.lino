@@ -1,0 +1,38 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The time, place and circumstance in which something (such as a story or picture) is set; context; scenario."
+        entry
+          definition "The act of setting."
+          example "the setting of the sun"
+        entry
+          definition "A piece of metal in which a precious stone or gem is fixed to form a piece of jewelry."
+        entry
+          definition "A level or placement that a knob or control is set to."
+          example "the volume setting on a television"
+        entry
+          definition "The act of marking the position of game, as a setter does."
+        entry
+          definition "Hunting with a setter."
+        entry
+          definition "Something set in, or inserted."
+        entry
+          definition "A piece of vocal or choral music composed for particular words (set to music)."
+          example "Bach's setting of the Magnificat"
+        entry
+          definition "The mounting of a play, etc., for the stage."
+        entry
+          definition "The direction of a current of wind."
+      partOfSpeech noun
+  phonetic "/ˈsɛtɪŋz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈsɛtɪŋz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/setting" "https://en.wiktionary.org/wiki/settings")
+  word settings

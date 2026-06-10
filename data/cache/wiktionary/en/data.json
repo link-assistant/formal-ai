@@ -1,0 +1,99 @@
+[
+  {
+    "word": "data",
+    "phonetic": "/ˈdaetə/",
+    "phonetics": [
+      {
+        "text": "/ˈdaetə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-au-nz.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=35316551",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈdætə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-ca-ie-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=197143",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈdeɪtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-ie-uk-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=197144",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈdaetə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-au-nz.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=35316551",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈdeɪtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-ie-uk-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=197144",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈdeɪtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/data-ie-uk-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=197144",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(plural: data) A measurement of something on a scale understood by both the recorder (a person or device) and the reader (another person or device). The scale is arbitrarily defined, such as from 1 to 10 by ones, 1 to 100 by 0.1, or simply true or false, on or off, yes, no, or maybe, etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(plural: data) A fact known from direct observation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(plural: data) A premise from which conclusions are drawn.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(plural: datums) A fixed reference point, or a coordinate system.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/data",
+      "https://en.wiktionary.org/wiki/datum"
+    ]
+  }
+]

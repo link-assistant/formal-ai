@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q34264": {
+      "type": "item",
+      "id": "Q34264",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Berkeley Software Distribution"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "BSD"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "BSD"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "free, open-source reimplementation of the AT&T UNIX operating system"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "операционная система"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रचालन तन्त्र"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "BSD"
+          },
+          {
+            "language": "en",
+            "value": "Berkeley Unix"
+          },
+          {
+            "language": "en",
+            "value": "BSD UNIX"
+          },
+          {
+            "language": "en",
+            "value": "4.4BSD"
+          },
+          {
+            "language": "en",
+            "value": "Berkeley System Distribution"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,16 @@
+Q309314
+  aliases
+    en (amount number quantulum qty)
+    zh ("數量" "数量")
+  descriptions
+    en "property that exists in a range of magnitudes or multitudes; property that can exist as a magnitude or multitude"
+    ru "огрубление отношения между сущностями до скалярной величины"
+    zh "中存在财产范围的大小或众多;属性,可以作为一个大小或存在许多"
+  id Q309314
+  labels
+    en quantity
+    hi "मात्रा"
+    ru "количество"
+    zh "量"
+  type item
+success 1

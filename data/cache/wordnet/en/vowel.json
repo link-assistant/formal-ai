@@ -1,0 +1,24 @@
+{
+  "lemma": "vowel",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07127258-n",
+      "partOfSpeech": "n",
+      "definition": "a speech sound made with the vocal tract open",
+      "synonyms": [
+        "vowel sound"
+      ]
+    },
+    {
+      "id": "oewn-07129420-n",
+      "partOfSpeech": "n",
+      "definition": "a letter of the alphabet standing for a spoken vowel"
+    }
+  ]
+}

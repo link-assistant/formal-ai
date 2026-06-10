@@ -1,0 +1,29 @@
+{
+  "lemma": "approve",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00808164-v",
+      "partOfSpeech": "v",
+      "definition": "give sanction to",
+      "examples": [
+        "I approve of his educational policies"
+      ],
+      "synonyms": [
+        "O.K.",
+        "okay",
+        "sanction"
+      ]
+    },
+    {
+      "id": "oewn-00675902-v",
+      "partOfSpeech": "v",
+      "definition": "judge to be right or commendable; think well of"
+    }
+  ]
+}

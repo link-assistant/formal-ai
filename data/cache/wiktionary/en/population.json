@@ -1,0 +1,72 @@
+[
+  {
+    "word": "population",
+    "phonetic": "/ˌpɒpjʊˈleɪʃən/",
+    "phonetics": [
+      {
+        "text": "/ˌpɒpjʊˈleɪʃən/",
+        "audio": ""
+      },
+      {
+        "text": "/pɒpjuːˈleɪʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/population-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1661685",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The people living within a political or geographical boundary.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The population of New Jersey will not stand for this!"
+          },
+          {
+            "definition": "(by extension) The people with a given characteristic.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "India has the third-largest population of English-speakers in the world."
+          },
+          {
+            "definition": "A count of the number of residents within a political or geographical boundary such as a town, a nation or the world.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The town’s population is only 243."
+          },
+          {
+            "definition": "A collection of organisms of a particular species, sharing a particular characteristic of interest, most often that of living in a given area.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A seasonal migration annually changes the populations in two or more biotopes drastically, many twice in opposite senses."
+          },
+          {
+            "definition": "A group of units (persons, objects, or other items) enumerated in a census or from which a sample is drawn.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of filling initially empty items in a collection.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "John clicked the Search button and waited for the population of the list to complete."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/population"
+    ]
+  }
+]

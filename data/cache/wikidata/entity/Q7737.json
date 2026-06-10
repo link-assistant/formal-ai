@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q7737": {
+      "type": "item",
+      "id": "Q7737",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "रूसी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄語"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "русский язык"
+        },
+        "en": {
+          "language": "en",
+          "value": "Russian"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "восточнославянский язык"
+        },
+        "en": {
+          "language": "en",
+          "value": "East Slavic language"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印歐語系東斯拉夫語族語言"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूर्व स्लावी भाषा"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Russian language"
+          },
+          {
+            "language": "en",
+            "value": "Russkiy"
+          },
+          {
+            "language": "en",
+            "value": "Russkiy yazyk"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "рус. яз."
+          },
+          {
+            "language": "ru",
+            "value": "русский"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "俄文"
+          },
+          {
+            "language": "zh",
+            "value": "俄罗斯语"
+          },
+          {
+            "language": "zh",
+            "value": "俄罗斯文"
+          },
+          {
+            "language": "zh",
+            "value": "俄国语"
+          },
+          {
+            "language": "zh",
+            "value": "俄语"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

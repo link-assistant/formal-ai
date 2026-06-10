@@ -1,0 +1,17 @@
+view
+  id M-dd4297566c9b
+  lemma documentation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "confirmation that some fact or statement is true through the use of documentary evidence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "program listings or technical manuals describing the operation and use of programs"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "documentary validation"
+    provenance (wordnet)

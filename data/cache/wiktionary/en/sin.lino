@@ -1,0 +1,65 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A violation of God's will or religious law."
+          example "As a Christian, I think this is a sin against God."
+        entry
+          definition "A misdeed."
+        entry
+          definition "A sin offering; a sacrifice for sin."
+        entry
+          definition "An embodiment of sin; a very wicked person."
+        entry
+          definition "A flaw."
+          example "No movie is without sin."
+      partOfSpeech noun
+      synonyms (offence)
+    entry
+      definitions
+        entry
+          definition "To commit a sin."
+      partOfSpeech verb
+  phonetic "/sɪn/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sin-1-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=252397"
+      text "/sɪn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sin")
+  word sin
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A letter of the Hebrew alphabet; שׂ"
+        entry
+          definition "A letter of the Arabic alphabet; س"
+      partOfSpeech noun
+  phonetic "/siːn/"
+  phonetics
+    entry
+      audio ""
+      text "/siːn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sin")
+  word sin
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A traditional tube skirt worn by Lao and Thai women, particularly northern Thai and northeastern Thai women."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/sin")
+  word sin

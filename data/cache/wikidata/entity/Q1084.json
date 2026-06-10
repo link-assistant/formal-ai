@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q1084": {
+      "type": "item",
+      "id": "Q1084",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "noun"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "имя существительное"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संज्ञा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "名詞"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "word that functions as the name of a specific object or set of objects"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "самостоятельная часть речи, обозначает объект или понятие"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "詞性的一種"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकारी शब्द, जिससे किसी व्यक्ति, वस्तु ,स्थान आदि का बोध हो"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "существительное"
+          },
+          {
+            "language": "ru",
+            "value": "существительные"
+          },
+          {
+            "language": "ru",
+            "value": "имена существительные"
+          },
+          {
+            "language": "ru",
+            "value": "субстантив"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "substantive"
+          },
+          {
+            "language": "en",
+            "value": "common noun"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

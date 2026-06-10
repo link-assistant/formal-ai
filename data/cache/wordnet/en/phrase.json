@@ -1,0 +1,62 @@
+{
+  "lemma": "phrase",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06327041-n",
+      "partOfSpeech": "n",
+      "definition": "an expression consisting of one or more words forming a grammatical constituent of a sentence"
+    },
+    {
+      "id": "oewn-07059411-n",
+      "partOfSpeech": "n",
+      "definition": "a short musical passage",
+      "synonyms": [
+        "musical phrase"
+      ]
+    },
+    {
+      "id": "oewn-07169038-n",
+      "partOfSpeech": "n",
+      "definition": "an expression whose meanings cannot be inferred from the meanings of the words that make it up",
+      "synonyms": [
+        "idiom",
+        "idiomatic expression",
+        "phrasal idiom",
+        "set phrase"
+      ]
+    },
+    {
+      "id": "oewn-00528098-n",
+      "partOfSpeech": "n",
+      "definition": "dance movements that are linked in a single choreographic sequence"
+    },
+    {
+      "id": "oewn-00982485-v",
+      "partOfSpeech": "v",
+      "definition": "put into words or an expression",
+      "examples": [
+        "He formulated his concerns to the board of trustees"
+      ],
+      "synonyms": [
+        "give voice",
+        "formulate",
+        "word",
+        "articulate"
+      ]
+    },
+    {
+      "id": "oewn-00963146-v",
+      "partOfSpeech": "v",
+      "definition": "divide, combine, or mark into phrases",
+      "examples": [
+        "phrase a musical passage"
+      ]
+    }
+  ]
+}

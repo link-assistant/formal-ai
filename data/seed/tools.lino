@@ -1,324 +1,324 @@
 tools_registry
-  tool "tool_http_fetch"
-    name "http_fetch"
-    description "Issue an HTTP GET request from the current environment and return body, status, and headers; when CORS blocks the response, check frame-policy metadata before using an iframe preview."
-    mode "thinking"
-    inputs "url"
-    outputs "status|body|headers|iframe|external_link|frame_policy"
-    isolation "network"
-    sources "browser:fetch|rust:reqwest|browser:iframe|microlink:headers|direct_link"
-    localized "ru"
-      name "http_fetch"
-      description "Выполняет HTTP GET в текущей среде и возвращает тело, статус и заголовки; при блокировке CORS проверяет frame-policy перед iframe-превью."
-    localized "zh"
-      name "http_fetch"
-      description "在当前环境中执行 HTTP GET，并返回正文、状态和标头；当 CORS 阻止响应时先检查 frame-policy 元数据，再决定是否使用 iframe 预览。"
-    localized "hi"
-      name "http_fetch"
-      description "मौजूदा वातावरण से HTTP GET चलाता है और body, status, headers लौटाता है; CORS रोकने पर iframe preview से पहले frame-policy metadata जांचता है।"
-  tool "tool_url_navigate"
-    name "url_navigate"
-    description "Normalize a requested URL, check CORS-readable frame-policy metadata, and return either an iframe preview or a direct external HTTPS link."
-    mode "thinking"
-    inputs "url"
-    outputs "url|iframe|external_link|frame_policy"
-    isolation "browser-frame-policy"
-    sources "microlink:headers|browser:iframe|direct_link|browser:new_tab"
-    localized "ru"
-      name "url_navigate"
-      description "Нормализует запрошенный URL, проверяет CORS-доступные frame-policy данные и возвращает iframe-превью или прямую внешнюю HTTPS-ссылку."
-    localized "zh"
-      name "url_navigate"
-      description "规范化请求的 URL，检查可通过 CORS 读取的 frame-policy 元数据，并返回 iframe 预览或直接外部 HTTPS 链接。"
-    localized "hi"
-      name "url_navigate"
-      description "मांगे गए URL को normalize करता है, CORS-readable frame-policy metadata जांचता है, और iframe preview या सीधा external HTTPS link लौटाता है।"
-  tool "tool_web_search"
-    name "web_search"
-    description "Search the open web through the configured search provider and return ranked result links."
-    mode "thinking"
-    inputs "query"
-    outputs "results"
-    isolation "network"
-    sources "browser:fetch|wikipedia"
-    localized "ru"
-      name "web_search"
-      description "Ищет в открытом вебе через настроенный поисковый источник и возвращает ранжированные ссылки."
-    localized "zh"
-      name "web_search"
-      description "通过配置的搜索提供方检索开放网络，并返回排序后的结果链接。"
-    localized "hi"
-      name "web_search"
-      description "कॉन्फिगर किए गए search provider से खुले वेब में खोजता है और ranked links लौटाता है।"
-  tool "tool_wikipedia_lookup"
-    name "wikipedia_lookup"
-    description "Fetch a structured Wikipedia REST summary for the given title in the detected language, falling back to English."
-    mode "thinking"
-    inputs "term|language"
-    outputs "title|extract|url|language"
-    isolation "network"
-    sources "wikipedia"
-    localized "ru"
-      name "wikipedia_lookup"
-      description "Получает структурированное резюме Wikipedia REST для указанного названия на найденном языке с запасным английским."
-    localized "zh"
-      name "wikipedia_lookup"
-      description "按检测到的语言获取指定标题的 Wikipedia REST 结构化摘要，并可回退到英文。"
-    localized "hi"
-      name "wikipedia_lookup"
-      description "दिए गए title के लिए detected भाषा में Wikipedia REST summary लाता है, जरूरत पर English fallback करता है।"
-  tool "tool_calculator"
-    name "calculator"
-    description "Evaluate calculator-parsable math, unit, currency, percentage, and datetime expressions through link-calculator."
-    mode "thinking"
-    inputs "expression"
-    outputs "result|lino|steps|engine"
-    isolation "local-library"
+  tool tool_http_fetch
+    name http_fetch
+    note "Issue an HTTP GET request from the current environment and return body, status, and headers; when CORS blocks the response, check frame-policy metadata before using an iframe preview."
+    mode thinking
+    inputs url
+    outputs ("status" "body" "headers" "iframe" "external_link" "frame_policy")
+    isolation network
+    sources ("browser:fetch" "rust:reqwest" "browser:iframe" "microlink:headers" "direct_link")
+    localized ru
+      name http_fetch
+      note "Выполняет HTTP GET в текущей среде и возвращает тело, статус и заголовки; при блокировке CORS проверяет frame-policy перед iframe-превью."
+    localized zh
+      name http_fetch
+      note "在当前环境中执行 HTTP GET，并返回正文、状态和标头；当 CORS 阻止响应时先检查 frame-policy 元数据，再决定是否使用 iframe 预览。"
+    localized hi
+      name http_fetch
+      note "मौजूदा वातावरण से HTTP GET चलाता है और body, status, headers लौटाता है; CORS रोकने पर iframe preview से पहले frame-policy metadata जांचता है।"
+  tool tool_url_navigate
+    name url_navigate
+    note "Normalize a requested URL, check CORS-readable frame-policy metadata, and return either an iframe preview or a direct external HTTPS link."
+    mode thinking
+    inputs url
+    outputs ("url" "iframe" "external_link" "frame_policy")
+    isolation browser-frame-policy
+    sources ("microlink:headers" "browser:iframe" "direct_link" "browser:new_tab")
+    localized ru
+      name url_navigate
+      note "Нормализует запрошенный URL, проверяет CORS-доступные frame-policy данные и возвращает iframe-превью или прямую внешнюю HTTPS-ссылку."
+    localized zh
+      name url_navigate
+      note "规范化请求的 URL，检查可通过 CORS 读取的 frame-policy 元数据，并返回 iframe 预览或直接外部 HTTPS 链接。"
+    localized hi
+      name url_navigate
+      note "मांगे गए URL को normalize करता है, CORS-readable frame-policy metadata जांचता है, और iframe preview या सीधा external HTTPS link लौटाता है।"
+  tool tool_web_search
+    name web_search
+    note "Search the open web through the configured search provider and return ranked result links."
+    mode thinking
+    inputs query
+    outputs results
+    isolation network
+    sources ("browser:fetch" "wikipedia")
+    localized ru
+      name web_search
+      note "Ищет в открытом вебе через настроенный поисковый источник и возвращает ранжированные ссылки."
+    localized zh
+      name web_search
+      note 通过配置的搜索提供方检索开放网络，并返回排序后的结果链接。
+    localized hi
+      name web_search
+      note "कॉन्फिगर किए गए search provider से खुले वेब में खोजता है और ranked links लौटाता है।"
+  tool tool_wikipedia_lookup
+    name wikipedia_lookup
+    note "Fetch a structured Wikipedia REST summary for the given title in the detected language, falling back to English."
+    mode thinking
+    inputs ("term" "language")
+    outputs ("title" "extract" "url" "language")
+    isolation network
+    sources wikipedia
+    localized ru
+      name wikipedia_lookup
+      note "Получает структурированное резюме Wikipedia REST для указанного названия на найденном языке с запасным английским."
+    localized zh
+      name wikipedia_lookup
+      note "按检测到的语言获取指定标题的 Wikipedia REST 结构化摘要，并可回退到英文。"
+    localized hi
+      name wikipedia_lookup
+      note "दिए गए title के लिए detected भाषा में Wikipedia REST summary लाता है, जरूरत पर English fallback करता है।"
+  tool tool_calculator
+    name calculator
+    note "Evaluate calculator-parsable math, unit, currency, percentage, and datetime expressions through link-calculator."
+    mode thinking
+    inputs expression
+    outputs ("result" "lino" "steps" "engine")
+    isolation local-library
     sources "rust:link-calculator"
-    localized "ru"
-      name "calculator"
-      description "Вычисляет математические, единичные, валютные, процентные и временные выражения через link-calculator."
-    localized "zh"
-      name "calculator"
-      description "通过 link-calculator 计算数学、单位、货币、百分比和日期时间表达式。"
-    localized "hi"
-      name "calculator"
-      description "link-calculator से math, unit, currency, percentage, और datetime expressions का मूल्य निकालता है।"
-  tool "tool_eval_js"
-    name "eval_js"
-    description "Evaluate a JavaScript snippet inside the browser worker sandbox with no DOM and no network."
-    mode "agent"
-    inputs "program"
-    outputs "stdout|returned|error"
-    isolation "browser-worker"
+    localized ru
+      name calculator
+      note "Вычисляет математические, единичные, валютные, процентные и временные выражения через link-calculator."
+    localized zh
+      name calculator
+      note "通过 link-calculator 计算数学、单位、货币、百分比和日期时间表达式。"
+    localized hi
+      name calculator
+      note "link-calculator से math, unit, currency, percentage, और datetime expressions का मूल्य निकालता है।"
+  tool tool_eval_js
+    name eval_js
+    note "Evaluate a JavaScript snippet inside the browser worker sandbox with no DOM and no network."
+    mode agent
+    inputs program
+    outputs ("stdout" "returned" "error")
+    isolation browser-worker
     sources "browser:Function"
-    localized "ru"
-      name "eval_js"
-      description "Выполняет JavaScript-фрагмент в sandbox браузерного worker без DOM и сети."
-    localized "zh"
-      name "eval_js"
-      description "在浏览器 worker 沙箱中执行 JavaScript 片段，不提供 DOM 或网络。"
-    localized "hi"
-      name "eval_js"
-      description "browser worker sandbox में JavaScript snippet चलाता है, DOM और network उपलब्ध नहीं होते।"
-  tool "tool_read_local_file"
-    name "read_local_file"
-    description "Read a file the user selected through the browser file picker without touching the host filesystem."
-    mode "thinking"
-    inputs "file_handle"
-    outputs "text"
-    isolation "browser-user-selected"
+    localized ru
+      name eval_js
+      note "Выполняет JavaScript-фрагмент в sandbox браузерного worker без DOM и сети."
+    localized zh
+      name eval_js
+      note "在浏览器 worker 沙箱中执行 JavaScript 片段，不提供 DOM 或网络。"
+    localized hi
+      name eval_js
+      note "browser worker sandbox में JavaScript snippet चलाता है, DOM और network उपलब्ध नहीं होते।"
+  tool tool_read_local_file
+    name read_local_file
+    note "Read a file the user selected through the browser file picker without touching the host filesystem."
+    mode thinking
+    inputs file_handle
+    outputs text
+    isolation browser-user-selected
     sources "browser:FileReader"
-    localized "ru"
-      name "read_local_file"
-      description "Читает выбранный пользователем файл через браузерный выбор файла, не обращаясь к файловой системе хоста."
-    localized "zh"
-      name "read_local_file"
-      description "读取用户通过浏览器文件选择器选中的文件，不访问主机文件系统。"
-    localized "hi"
-      name "read_local_file"
-      description "browser file picker से चुनी गई file पढ़ता है और host filesystem को नहीं छूता।"
-  tool "tool_append_memory"
-    name "append_memory"
-    description "Append a single event to the AI append-only memory log in Links Notation."
-    mode "agent"
-    inputs "event"
-    outputs "id"
-    isolation "browser-indexeddb"
+    localized ru
+      name read_local_file
+      note "Читает выбранный пользователем файл через браузерный выбор файла, не обращаясь к файловой системе хоста."
+    localized zh
+      name read_local_file
+      note 读取用户通过浏览器文件选择器选中的文件，不访问主机文件系统。
+    localized hi
+      name read_local_file
+      note "browser file picker से चुनी गई file पढ़ता है और host filesystem को नहीं छूता।"
+  tool tool_append_memory
+    name append_memory
+    note "Append a single event to the AI append-only memory log in Links Notation."
+    mode agent
+    inputs event
+    outputs id
+    isolation browser-indexeddb
     sources "browser:IndexedDB"
-    localized "ru"
-      name "append_memory"
-      description "Добавляет одно событие в append-only журнал памяти AI в формате Links Notation."
-    localized "zh"
-      name "append_memory"
-      description "向 AI 的 Links Notation 追加式记忆日志添加单个事件。"
-    localized "hi"
-      name "append_memory"
-      description "AI के append-only Links Notation memory log में एक event जोड़ता है।"
-  tool "tool_export_memory"
-    name "export_memory"
-    description "Serialize the full memory bundle as Links Notation text for download or migration."
-    mode "thinking"
-    inputs ""
-    outputs "lino_text"
-    isolation "browser-indexeddb"
+    localized ru
+      name append_memory
+      note "Добавляет одно событие в append-only журнал памяти AI в формате Links Notation."
+    localized zh
+      name append_memory
+      note "向 AI 的 Links Notation 追加式记忆日志添加单个事件。"
+    localized hi
+      name append_memory
+      note "AI के append-only Links Notation memory log में एक event जोड़ता है।"
+  tool tool_export_memory
+    name export_memory
+    note "Serialize the full memory bundle as Links Notation text for download or migration."
+    mode thinking
+    inputs
+    outputs lino_text
+    isolation browser-indexeddb
     sources "browser:IndexedDB"
-    localized "ru"
-      name "export_memory"
-      description "Сериализует полный bundle памяти как Links Notation для скачивания или миграции."
-    localized "zh"
-      name "export_memory"
-      description "将完整记忆 bundle 序列化为 Links Notation 文本，用于下载或迁移。"
-    localized "hi"
-      name "export_memory"
-      description "पूरे memory bundle को download या migration के लिए Links Notation text में बदलता है।"
-  tool "tool_import_memory"
-    name "import_memory"
-    description "Import a demo_memory log or full formal_ai_bundle from a user-selected .lino file."
-    mode "thinking"
-    inputs "lino_text"
-    outputs "inserted_events|migration_hints"
-    isolation "browser-indexeddb"
+    localized ru
+      name export_memory
+      note "Сериализует полный bundle памяти как Links Notation для скачивания или миграции."
+    localized zh
+      name export_memory
+      note "将完整记忆 bundle 序列化为 Links Notation 文本，用于下载或迁移。"
+    localized hi
+      name export_memory
+      note "पूरे memory bundle को download या migration के लिए Links Notation text में बदलता है।"
+  tool tool_import_memory
+    name import_memory
+    note "Import a demo_memory log or full formal_ai_bundle from a user-selected .lino file."
+    mode thinking
+    inputs lino_text
+    outputs ("inserted_events" "migration_hints")
+    isolation browser-indexeddb
     sources "browser:IndexedDB"
-    localized "ru"
-      name "import_memory"
-      description "Импортирует demo_memory журнал или полный formal_ai_bundle из выбранного пользователем .lino файла."
-    localized "zh"
-      name "import_memory"
-      description "从用户选择的 .lino 文件导入 demo_memory 日志或完整 formal_ai_bundle。"
-    localized "hi"
-      name "import_memory"
-      description "user-selected .lino file से demo_memory log या पूरा formal_ai_bundle import करता है।"
-  tool "tool_conversation_recall"
-    name "conversation_recall"
-    description "Search the append-only memory log for prior mentions and group matches by conversation."
-    mode "thinking"
-    inputs "term|scope|current_conversation"
-    outputs "matches|conversation_report"
-    isolation "browser-indexeddb"
+    localized ru
+      name import_memory
+      note "Импортирует demo_memory журнал или полный formal_ai_bundle из выбранного пользователем .lino файла."
+    localized zh
+      name import_memory
+      note "从用户选择的 .lino 文件导入 demo_memory 日志或完整 formal_ai_bundle。"
+    localized hi
+      name import_memory
+      note "user-selected .lino file से demo_memory log या पूरा formal_ai_bundle import करता है।"
+  tool tool_conversation_recall
+    name conversation_recall
+    note "Search the append-only memory log for prior mentions and group matches by conversation."
+    mode thinking
+    inputs ("term" "scope" "current_conversation")
+    outputs ("matches" "conversation_report")
+    isolation browser-indexeddb
     sources "browser:IndexedDB"
-    localized "ru"
-      name "conversation_recall"
-      description "Ищет прошлые упоминания в append-only памяти и группирует совпадения по разговорам."
-    localized "zh"
-      name "conversation_recall"
-      description "在追加式记忆日志中搜索过去提及，并按对话分组匹配结果。"
-    localized "hi"
-      name "conversation_recall"
-      description "append-only memory log में पुराने mentions खोजता है और matches को conversation से group करता है।"
-  tool "tool_concept_lookup"
-    name "concept_lookup"
-    description "Resolve a seeded concept, alias, or Wikidata-backed entity to a grounded summary."
-    mode "thinking"
-    inputs "term|language|context"
-    outputs "summary|source|wikidata"
-    isolation "seed"
-    sources "data/seed/concepts.lino|data/seed/concept-contexts.lino"
-    localized "ru"
-      name "concept_lookup"
-      description "Сопоставляет seed-понятие, псевдоним или Wikidata-сущность с проверяемым резюме."
-    localized "zh"
-      name "concept_lookup"
-      description "将 seed 概念、别名或 Wikidata 实体解析为有依据的摘要。"
-    localized "hi"
-      name "concept_lookup"
-      description "seed concept, alias, या Wikidata-backed entity को grounded summary से resolve करता है।"
-  tool "tool_write_program"
-    name "write_program"
-    description "Render seeded programs from language and task parameters."
-    mode "thinking"
-    inputs "language|task"
-    outputs "code_block|intent"
-    isolation "seed"
-    sources "data/seed/hello-world-programs.lino"
-    localized "ru"
-      name "write_program"
-      description "Выводит seed-программы по параметрам языка и задачи."
-    localized "zh"
-      name "write_program"
-      description "根据语言和任务参数渲染种子程序。"
-    localized "hi"
-      name "write_program"
-      description "language और task parameters से seeded programs दिखाता है।"
-  tool "tool_intent_routing"
-    name "intent_routing"
-    description "Route normalized prompts through seeded multilingual keywords, phrases, tokens, and combos."
-    mode "thinking"
-    inputs "prompt|language"
-    outputs "intent|confidence|evidence"
-    isolation "seed"
-    sources "data/seed/intent-routing.lino|data/seed/prompt-patterns.lino"
-    localized "ru"
-      name "intent_routing"
-      description "Маршрутизирует нормализованные запросы через seed-ключи, фразы, токены и комбинации на разных языках."
-    localized "zh"
-      name "intent_routing"
-      description "通过 seed 多语言关键词、短语、标记和组合路由规范化提示。"
-    localized "hi"
-      name "intent_routing"
-      description "normalized prompts को seeded multilingual keywords, phrases, tokens, और combos से route करता है।"
-  tool "tool_fact_lookup"
-    name "fact_lookup"
-    description "Answer seeded factual questions with localized text and Wikidata evidence anchors."
-    mode "thinking"
-    inputs "question|language"
-    outputs "answer|wikidata|source"
-    isolation "seed"
-    sources "data/seed/facts.lino"
-    localized "ru"
-      name "fact_lookup"
-      description "Отвечает на seed-фактические вопросы с локализованным текстом и ссылками-доказательствами Wikidata."
-    localized "zh"
-      name "fact_lookup"
-      description "用本地化文本和 Wikidata 证据锚点回答 seed 事实问题。"
-    localized "hi"
-      name "fact_lookup"
-      description "localized text और Wikidata evidence anchors के साथ seeded factual questions का जवाब देता है।"
-  tool "tool_summarize_conversation"
-    name "summarize_conversation"
-    description "Summarize the current conversation from recorded user and assistant turns."
-    mode "thinking"
-    inputs "history"
-    outputs "summary|topics|counts"
-    isolation "conversation-history"
-    sources "data/seed/summary-topics.lino"
-    localized "ru"
-      name "summarize_conversation"
-      description "Создает резюме текущего разговора из записанных реплик пользователя и ассистента."
-    localized "zh"
-      name "summarize_conversation"
-      description "根据记录的用户和助手轮次总结当前对话。"
-    localized "hi"
-      name "summarize_conversation"
-      description "recorded user और assistant turns से current conversation का summary बनाता है।"
-  tool "tool_brainstorm"
-    name "brainstorm"
-    description "Generate seeded idea lists and names for common brainstorming prompts."
-    mode "thinking"
-    inputs "topic|count"
-    outputs "ideas"
-    isolation "seed"
-    sources "data/seed/brainstorm-seeds.lino"
-    localized "ru"
-      name "brainstorm"
-      description "Генерирует seed-списки идей и названий для типичных brainstorming-запросов."
-    localized "zh"
-      name "brainstorm"
-      description "为常见头脑风暴提示生成 seed 想法列表和名称。"
-    localized "hi"
-      name "brainstorm"
-      description "common brainstorming prompts के लिए seeded idea lists और names बनाता है।"
-  tool "tool_coreference"
-    name "coreference"
-    description "Resolve follow-up pronouns against previous conversation turns before answering."
-    mode "thinking"
-    inputs "prompt|history"
-    outputs "resolved_subject|answer|evidence"
-    isolation "conversation-history"
-    sources "data/seed/coreference.lino"
-    localized "ru"
-      name "coreference"
-      description "Разрешает местоимения в последующих вопросах по предыдущим репликам перед ответом."
-    localized "zh"
-      name "coreference"
-      description "在回答前根据先前对话轮次解析后续问题中的代词指代。"
-    localized "hi"
-      name "coreference"
-      description "answer देने से पहले previous conversation turns से follow-up pronouns resolve करता है।"
-  tool "tool_roleplay"
-    name "roleplay"
-    description "Respond from grounded persona templates while preserving deterministic symbolic behavior."
-    mode "thinking"
-    inputs "persona|topic|prompt"
-    outputs "persona_answer|evidence"
-    isolation "seed"
-    sources "data/seed/personas.lino"
-    localized "ru"
-      name "roleplay"
-      description "Отвечает по grounded persona-шаблонам, сохраняя детерминированное символьное поведение."
-    localized "zh"
-      name "roleplay"
-      description "根据有依据的人设模板回复，同时保持确定性的符号行为。"
-    localized "hi"
-      name "roleplay"
-      description "deterministic symbolic behavior रखते हुए grounded persona templates से जवाब देता है।"
+    localized ru
+      name conversation_recall
+      note "Ищет прошлые упоминания в append-only памяти и группирует совпадения по разговорам."
+    localized zh
+      name conversation_recall
+      note 在追加式记忆日志中搜索过去提及，并按对话分组匹配结果。
+    localized hi
+      name conversation_recall
+      note "append-only memory log में पुराने mentions खोजता है और matches को conversation से group करता है।"
+  tool tool_concept_lookup
+    name concept_lookup
+    note "Resolve a seeded concept, alias, or Wikidata-backed entity to a grounded summary."
+    mode thinking
+    inputs ("term" "language" "context")
+    outputs ("summary" "source" "wikidata")
+    isolation seed
+    sources ("data/seed/concepts.lino" "data/seed/concept-contexts.lino")
+    localized ru
+      name concept_lookup
+      note "Сопоставляет seed-понятие, псевдоним или Wikidata-сущность с проверяемым резюме."
+    localized zh
+      name concept_lookup
+      note "将 seed 概念、别名或 Wikidata 实体解析为有依据的摘要。"
+    localized hi
+      name concept_lookup
+      note "seed concept, alias, या Wikidata-backed entity को grounded summary से resolve करता है।"
+  tool tool_write_program
+    name write_program
+    note "Render seeded programs from language and task parameters."
+    mode thinking
+    inputs ("language" "task")
+    outputs ("code_block" "intent")
+    isolation seed
+    sources data/seed/hello-world-programs.lino
+    localized ru
+      name write_program
+      note "Выводит seed-программы по параметрам языка и задачи."
+    localized zh
+      name write_program
+      note 根据语言和任务参数渲染种子程序。
+    localized hi
+      name write_program
+      note "language और task parameters से seeded programs दिखाता है।"
+  tool tool_intent_routing
+    name intent_routing
+    note "Route normalized prompts through seeded multilingual keywords, phrases, tokens, and combos."
+    mode thinking
+    inputs ("prompt" "language")
+    outputs ("intent" "confidence" "evidence")
+    isolation seed
+    sources ("data/seed/intent-routing.lino" "data/seed/prompt-patterns.lino")
+    localized ru
+      name intent_routing
+      note "Маршрутизирует нормализованные запросы через seed-ключи, фразы, токены и комбинации на разных языках."
+    localized zh
+      name intent_routing
+      note "通过 seed 多语言关键词、短语、标记和组合路由规范化提示。"
+    localized hi
+      name intent_routing
+      note "normalized prompts को seeded multilingual keywords, phrases, tokens, और combos से route करता है।"
+  tool tool_fact_lookup
+    name fact_lookup
+    note "Answer seeded factual questions with localized text and Wikidata evidence anchors."
+    mode thinking
+    inputs ("question" "language")
+    outputs ("answer" "wikidata" "source")
+    isolation seed
+    sources data/seed/facts.lino
+    localized ru
+      name fact_lookup
+      note "Отвечает на seed-фактические вопросы с локализованным текстом и ссылками-доказательствами Wikidata."
+    localized zh
+      name fact_lookup
+      note "用本地化文本和 Wikidata 证据锚点回答 seed 事实问题。"
+    localized hi
+      name fact_lookup
+      note "localized text और Wikidata evidence anchors के साथ seeded factual questions का जवाब देता है।"
+  tool tool_summarize_conversation
+    name summarize_conversation
+    note "Summarize the current conversation from recorded user and assistant turns."
+    mode thinking
+    inputs history
+    outputs ("summary" "topics" "counts")
+    isolation conversation-history
+    sources data/seed/summary-topics.lino
+    localized ru
+      name summarize_conversation
+      note "Создает резюме текущего разговора из записанных реплик пользователя и ассистента."
+    localized zh
+      name summarize_conversation
+      note 根据记录的用户和助手轮次总结当前对话。
+    localized hi
+      name summarize_conversation
+      note "recorded user और assistant turns से current conversation का summary बनाता है।"
+  tool tool_brainstorm
+    name brainstorm
+    note "Generate seeded idea lists and names for common brainstorming prompts."
+    mode thinking
+    inputs ("topic" "count")
+    outputs ideas
+    isolation seed
+    sources data/seed/brainstorm-seeds.lino
+    localized ru
+      name brainstorm
+      note "Генерирует seed-списки идей и названий для типичных brainstorming-запросов."
+    localized zh
+      name brainstorm
+      note "为常见头脑风暴提示生成 seed 想法列表和名称。"
+    localized hi
+      name brainstorm
+      note "common brainstorming prompts के लिए seeded idea lists और names बनाता है।"
+  tool tool_coreference
+    name coreference
+    note "Resolve follow-up pronouns against previous conversation turns before answering."
+    mode thinking
+    inputs ("prompt" "history")
+    outputs ("resolved_subject" "answer" "evidence")
+    isolation conversation-history
+    sources data/seed/coreference.lino
+    localized ru
+      name coreference
+      note "Разрешает местоимения в последующих вопросах по предыдущим репликам перед ответом."
+    localized zh
+      name coreference
+      note 在回答前根据先前对话轮次解析后续问题中的代词指代。
+    localized hi
+      name coreference
+      note "answer देने से पहले previous conversation turns से follow-up pronouns resolve करता है।"
+  tool tool_roleplay
+    name roleplay
+    note "Respond from grounded persona templates while preserving deterministic symbolic behavior."
+    mode thinking
+    inputs ("persona" "topic" "prompt")
+    outputs ("persona_answer" "evidence")
+    isolation seed
+    sources data/seed/personas.lino
+    localized ru
+      name roleplay
+      note "Отвечает по grounded persona-шаблонам, сохраняя детерминированное символьное поведение."
+    localized zh
+      name roleplay
+      note 根据有依据的人设模板回复，同时保持确定性的符号行为。
+    localized hi
+      name roleplay
+      note "deterministic symbolic behavior रखते हुए grounded persona templates से जवाब देता है।"

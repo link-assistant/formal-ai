@@ -1,0 +1,33 @@
+view
+  id M-4f191d70f69f
+  lemma together
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in contact with each other or in proximity"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "assembled in one place"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in each other's company"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at the same time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "with cooperation and interchange"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "with a common plan"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "mentally and emotionally stable"
+    provenance (wordnet)

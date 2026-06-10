@@ -1,0 +1,28 @@
+language en
+lemma programming
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "setting an order and time for planned events"
+    id oewn-01146868-n
+    partOfSpeech n
+    synonyms (scheduling programing)
+  entry
+    definition "creating a sequence of instructions to enable the computer to do something"
+    id oewn-00930762-n
+    partOfSpeech n
+    synonyms (programing "computer programming" "computer programing")
+  entry
+    definition "arrange a program of or for"
+    examples ("program the 80th birthday party")
+    id oewn-00796926-v
+    partOfSpeech v
+    synonyms (program programme)
+  entry
+    definition "write a computer program"
+    id oewn-01751525-v
+    partOfSpeech v
+    synonyms (program programme)
+source "oewn:2024"

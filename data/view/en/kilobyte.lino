@@ -1,0 +1,13 @@
+view
+  id M-9e9b1c0fff96
+  lemma kilobyte
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(especially RAM) A unit of storage capacity, equal to 1024 (210) bytes : a kibibyte. Frequently abbreviated KB."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "1000 (103) bytes. SI Symbol: kB"
+    provenance (wiktionary)

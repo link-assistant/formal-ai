@@ -1,0 +1,133 @@
+{
+  "entities": {
+    "Q28865": {
+      "type": "item",
+      "id": "Q28865",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Python"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पाइथन"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "высокоуровневый, интерпретируемый, объектно-ориентированный язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "通用高級編程語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Python programming language"
+          },
+          {
+            "language": "en",
+            "value": "Python language"
+          },
+          {
+            "language": "en",
+            "value": "Python (language)"
+          },
+          {
+            "language": "en",
+            "value": "Python computer language"
+          },
+          {
+            "language": "en",
+            "value": "Python Programming Language"
+          },
+          {
+            "language": "en",
+            "value": "Python (scripting language)"
+          },
+          {
+            "language": "en",
+            "value": "Python (lang)"
+          },
+          {
+            "language": "en",
+            "value": "Python (programming)"
+          },
+          {
+            "language": "en",
+            "value": "Python (computer language)"
+          },
+          {
+            "language": "en",
+            "value": "Python (software)"
+          },
+          {
+            "language": "en",
+            "value": "Python (Programming Language)"
+          },
+          {
+            "language": "en",
+            "value": "Python (computing)"
+          },
+          {
+            "language": "en",
+            "value": "Python.org"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Пайтон"
+          },
+          {
+            "language": "ru",
+            "value": "Питон"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "派森编程语言"
+          },
+          {
+            "language": "zh",
+            "value": "派森语言"
+          },
+          {
+            "language": "zh",
+            "value": "派森程序设计语言"
+          },
+          {
+            "language": "zh",
+            "value": "派森"
+          },
+          {
+            "language": "zh",
+            "value": "Python语言"
+          },
+          {
+            "language": "zh",
+            "value": "Python编程语言"
+          },
+          {
+            "language": "zh",
+            "value": "Python程序设计语言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

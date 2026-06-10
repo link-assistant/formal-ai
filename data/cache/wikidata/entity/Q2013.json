@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q2013": {
+      "type": "item",
+      "id": "Q2013",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Викиданные"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "维基数据"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकिडेटा"
+        },
+        "en": {
+          "language": "en",
+          "value": "Wikidata"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "free multilingual online knowledge graph"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "проект Фонда Викимедиа; свободная база знаний, которую может редактировать каждый"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由維基媒體營運的人人可編輯的自由知識資料庫，並且由志工編輯維護"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकिमीडिया संस्थान द्वारा होस्ट किया जाने वाला मुक्त ज्ञान आधार"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Викидата"
+          },
+          {
+            "language": "ru",
+            "value": "ВД"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "विकिडाटा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "維基資料"
+          },
+          {
+            "language": "zh",
+            "value": "維基數據"
+          },
+          {
+            "language": "zh",
+            "value": "维基资料"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Q2013"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

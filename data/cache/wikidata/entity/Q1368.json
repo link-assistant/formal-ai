@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q1368": {
+      "type": "item",
+      "id": "Q1368",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "money"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деньги"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पैसा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "貨幣"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "object or record accepted as payment"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "общепринятая мера стоимости товаров и услуг"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भुगतान के रूप में स्वीकार की गई वस्तु या रिकॉर्ड"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "替代實物的交易媒介"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cash"
+          },
+          {
+            "language": "en",
+            "value": "dough"
+          },
+          {
+            "language": "en",
+            "value": "monies"
+          },
+          {
+            "language": "en",
+            "value": "moolah"
+          },
+          {
+            "language": "en",
+            "value": "simoleon"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "плата"
+          },
+          {
+            "language": "ru",
+            "value": "денежные средства"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "货币"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

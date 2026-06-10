@@ -1,0 +1,65 @@
+view
+  id M-590d8b2c10fe
+  lemma name
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a language unit by which a person or thing is known"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person's reputation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "family based on male descent"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a well-known or notable person"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "by the sanction or authority of"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a defamatory or abusive word or phrase"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign a specified (usually proper) name to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give the name or identifying characteristics of; refer to by name or some other identifying characteristic property"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "charge with a function; charge to be"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "create and charge with a task or function"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mention and identify by name"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make reference to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "identify as in botany or biology, for example"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give or make a list of; name individually; give the names of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine or distinguish the nature of a problem or an illness through a diagnostic analysis"
+    provenance (wordnet)

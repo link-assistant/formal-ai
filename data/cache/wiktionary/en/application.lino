@@ -1,0 +1,50 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The act of applying or laying on, in a literal sense"
+          example "The application of this cream should reduce the swelling."
+        entry
+          definition "The substance applied."
+        entry
+          definition "The act of applying as a means; the employment of means to accomplish an end; specific use."
+        entry
+          definition "The act of directing or referring something to a particular case, to discover or illustrate agreement or disagreement, fitness, or correspondence."
+          example "I make the remark, and leave you to make the application."
+        entry
+          definition "A computer program or the set of software that the end user perceives as a single entity as a tool for a well-defined purpose. (Also called: application program; application software.)"
+          example "This iPhone application can connect to most social networks."
+        entry
+          definition "A verbal or written request for assistance or employment or admission to a school, course or similar."
+          example "December 31 is the deadline for MBA applications."
+        entry
+          definition "(bureaucracy) A petition, entreaty, or other request, with the adposition for denoting the subject matter."
+          example "Their application for a deferral of the hearing was granted."
+        entry
+          definition "The act of requesting, claiming, or petitioning something."
+        entry
+          definition "Diligence; close thought or attention."
+        entry
+          definition "A kind of needlework; appliqué."
+        entry
+          definition Compliance.
+      partOfSpeech noun
+      synonyms (app program software)
+  phonetic "/aplɪˈkeɪʃ(ə)n/"
+  phonetics
+    entry
+      audio ""
+      text "/aplɪˈkeɪʃ(ə)n/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/application-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2079661"
+      text "/ˌæpləˈkeɪʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/application")
+  word application

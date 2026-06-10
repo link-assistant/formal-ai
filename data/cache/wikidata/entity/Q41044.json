@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "Q41044": {
+      "type": "item",
+      "id": "Q41044",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Russian ruble"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "российский рубль"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूसी रूबल"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "俄罗斯卢布"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "currency of the Russian Federation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "основная валюта России"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रूस की आधिकारिक मुद्रा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "货币"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "RUB"
+          },
+          {
+            "language": "en",
+            "value": "ruble"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "РР"
+          },
+          {
+            "language": "ru",
+            "value": "RUB"
+          },
+          {
+            "language": "ru",
+            "value": "RUR"
+          },
+          {
+            "language": "ru",
+            "value": "валюта Южной Осетии"
+          },
+          {
+            "language": "ru",
+            "value": "рубль России"
+          },
+          {
+            "language": "ru",
+            "value": "рубль российский"
+          },
+          {
+            "language": "ru",
+            "value": "валюта России"
+          },
+          {
+            "language": "ru",
+            "value": "Рубль"
+          },
+          {
+            "language": "ru",
+            "value": "руб"
+          },
+          {
+            "language": "ru",
+            "value": "валюта Абхазии"
+          },
+          {
+            "language": "ru",
+            "value": "валюта ДНР"
+          },
+          {
+            "language": "ru",
+            "value": "валюта ЛНР"
+          },
+          {
+            "language": "ru",
+            "value": "₽"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "俄國盧布"
+          },
+          {
+            "language": "zh",
+            "value": "俄羅斯盧布"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

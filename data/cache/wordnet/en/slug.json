@@ -1,0 +1,99 @@
+{
+  "lemma": "slug",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02919696-n",
+      "partOfSpeech": "n",
+      "definition": "a projectile that is fired from a gun",
+      "synonyms": [
+        "bullet"
+      ]
+    },
+    {
+      "id": "oewn-13741207-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of mass equal to the mass that accelerates at 1 foot/sec/sec when acted upon by a force of 1 pound; approximately 14.5939 kilograms"
+    },
+    {
+      "id": "oewn-13411961-n",
+      "partOfSpeech": "n",
+      "definition": "a counterfeit coin"
+    },
+    {
+      "id": "oewn-10632447-n",
+      "partOfSpeech": "n",
+      "definition": "an idle slothful person",
+      "synonyms": [
+        "sluggard"
+      ]
+    },
+    {
+      "id": "oewn-07938847-n",
+      "partOfSpeech": "n",
+      "definition": "an amount of an alcoholic drink (usually liquor) that is poured or gulped",
+      "examples": [
+        "he took a slug of hard liquor"
+      ]
+    },
+    {
+      "id": "oewn-04512230-n",
+      "partOfSpeech": "n",
+      "definition": "a strip of type metal used for spacing",
+      "synonyms": [
+        "type slug"
+      ]
+    },
+    {
+      "id": "oewn-01948326-n",
+      "partOfSpeech": "n",
+      "definition": "any of various terrestrial gastropods having an elongated slimy body and no external shell"
+    },
+    {
+      "id": "oewn-00135600-n",
+      "partOfSpeech": "n",
+      "definition": "(boxing) a blow with the fist",
+      "examples": [
+        "I gave him a clout on his nose"
+      ],
+      "synonyms": [
+        "punch",
+        "clout",
+        "poke",
+        "lick",
+        "biff"
+      ]
+    },
+    {
+      "id": "oewn-01418239-v",
+      "partOfSpeech": "v",
+      "definition": "strike heavily, especially with the fist or a bat",
+      "examples": [
+        "He slugged me so hard that I passed out"
+      ],
+      "synonyms": [
+        "slog",
+        "swig"
+      ]
+    },
+    {
+      "id": "oewn-02422604-v",
+      "partOfSpeech": "v",
+      "definition": "be idle; exist in a changeless situation",
+      "examples": [
+        "The old man sat and stagnated on his porch",
+        "He slugged in bed all morning"
+      ],
+      "synonyms": [
+        "idle",
+        "laze",
+        "stagnate"
+      ]
+    }
+  ]
+}

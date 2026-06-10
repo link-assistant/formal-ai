@@ -1,0 +1,17 @@
+Q131
+  aliases
+    en (Sat Sa S)
+    ru ("сб")
+    zh ("禮拜六" "礼拜六" "週六" "周六")
+  descriptions
+    en "day of the week"
+    ru "день недели между пятницей и воскресеньем"
+    zh "星期中的日子"
+  id Q131
+  labels
+    en Saturday
+    hi "शनिवार"
+    ru "суббота"
+    zh "星期六"
+  type item
+success 1

@@ -1,0 +1,112 @@
+[
+  {
+    "word": "interest",
+    "phonetic": "/ˈɪntəɹɪst/",
+    "phonetics": [
+      {
+        "text": "/ˈɪntəɹɪst/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɪntəɹst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/interest-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=268453"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The price paid for obtaining, or price received for providing, money or goods in a credit transaction, calculated as a fraction of the amount or value of what was borrowed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Our bank offers borrowers an annual interest of 5%."
+          },
+          {
+            "definition": "Any excess over and above an exact equivalent",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A great attention and concern from someone or something; intellectual curiosity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He has a lot of interest in vintage cars."
+          },
+          {
+            "definition": "Attention that is given to or received from someone or something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An involvement, claim, right, share, stake in or link with a financial, business, or other undertaking or endeavor.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I have business interests in South Africa."
+          },
+          {
+            "definition": "Something or someone one is interested in.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Lexicography is one of my interests."
+          },
+          {
+            "definition": "Condition or quality of exciting concern or being of importance",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Injury, or compensation for injury; damages.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(usually in the plural) The persons interested in any particular business or measure, taken collectively.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the iron interest;  the cotton interest"
+          }
+        ],
+        "synonyms": [
+          "cost of money",
+          "oker"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To engage the attention of; to awaken interest in; to excite emotion or passion in, in behalf of a person or thing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Action films don't really interest me."
+          },
+          {
+            "definition": "To be concerned with or engaged in; to affect; to concern; to excite.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To cause or permit to share.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "bore",
+          "disinterest"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/interest"
+    ]
+  }
+]

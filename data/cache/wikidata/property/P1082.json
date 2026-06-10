@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "P1082": {
+      "type": "property",
+      "id": "P1082",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "population"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "численность населения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जनसंख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "人口"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "number of people inhabiting the place; number of people of subject"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "количество людей, населяющих место"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी स्थान पर निवास करने वाले लोगों की संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "某地居住的人數；某個主體中的人數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "inhabitants"
+          },
+          {
+            "language": "en",
+            "value": "human population"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "население"
+          },
+          {
+            "language": "ru",
+            "value": "жителей"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "आबादी"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "人口數"
+          },
+          {
+            "language": "zh",
+            "value": "人口数"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

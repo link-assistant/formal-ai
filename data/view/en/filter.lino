@@ -1,0 +1,25 @@
+view
+  id M-db59eaa8948e
+  lemma filter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "device that removes something from whatever passes through it"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an electrical device that alters the frequency spectrum of signals passing through it"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove by passing through a filter"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pass through"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "run or flow slowly, as in drops or in an unsteady stream"
+    provenance (wordnet)

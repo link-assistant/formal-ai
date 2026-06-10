@@ -1,0 +1,56 @@
+{
+  "lemma": "merge",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00368338-v",
+      "partOfSpeech": "v",
+      "definition": "become one",
+      "examples": [
+        "Germany unified officially in 1990",
+        "the cells merge"
+      ],
+      "synonyms": [
+        "unify",
+        "unite"
+      ]
+    },
+    {
+      "id": "oewn-00395719-v",
+      "partOfSpeech": "v",
+      "definition": "mix together different elements",
+      "examples": [
+        "The colors blend well"
+      ],
+      "synonyms": [
+        "blend",
+        "flux",
+        "mix",
+        "conflate",
+        "commingle",
+        "immix",
+        "fuse",
+        "coalesce",
+        "meld",
+        "combine"
+      ]
+    },
+    {
+      "id": "oewn-00244010-v",
+      "partOfSpeech": "v",
+      "definition": "join or combine",
+      "examples": [
+        "We merged our resources"
+      ],
+      "synonyms": [
+        "unite",
+        "unify"
+      ]
+    }
+  ]
+}

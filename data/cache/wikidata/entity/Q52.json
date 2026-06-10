@@ -1,0 +1,167 @@
+{
+  "entities": {
+    "Q52": {
+      "type": "item",
+      "id": "Q52",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Википедия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकिपीडिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "維基百科"
+        },
+        "en": {
+          "language": "en",
+          "value": "Wikipedia"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "free multilingual online encyclopedia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "многоязычная интернет-энциклопедия со свободным контентом"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "人人可編輯的自由線上百科全書，2001年於美國創立"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "निःशुल्क बहुभाषी ऑनलाइन विश्वकोश"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "维基百科全书"
+          },
+          {
+            "language": "zh",
+            "value": "维基大典"
+          },
+          {
+            "language": "zh",
+            "value": "維基百科全書"
+          },
+          {
+            "language": "zh",
+            "value": "維基大典"
+          },
+          {
+            "language": "zh",
+            "value": "自由的百科全书"
+          },
+          {
+            "language": "zh",
+            "value": "自由的百科全書"
+          },
+          {
+            "language": "zh",
+            "value": "维基百科，自由的百科全书"
+          },
+          {
+            "language": "zh",
+            "value": "維基百科 自由的百科全書"
+          },
+          {
+            "language": "zh",
+            "value": "维基百科 自由的百科全书"
+          },
+          {
+            "language": "zh",
+            "value": "Wikipedia"
+          },
+          {
+            "language": "zh",
+            "value": "维基百科"
+          },
+          {
+            "language": "zh",
+            "value": "維基百科，自由的百科全書"
+          },
+          {
+            "language": "zh",
+            "value": "Wiki"
+          },
+          {
+            "language": "zh",
+            "value": "WP"
+          },
+          {
+            "language": "zh",
+            "value": "維基"
+          },
+          {
+            "language": "zh",
+            "value": "维基"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Wikipedia, the free encyclopedia"
+          },
+          {
+            "language": "en",
+            "value": "The free encyclopedia"
+          },
+          {
+            "language": "en",
+            "value": "Wikipedia, the free encyclopedia that anyone can edit"
+          },
+          {
+            "language": "en",
+            "value": "Q52"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "विकीपीडिया"
+          },
+          {
+            "language": "hi",
+            "value": "विकि"
+          },
+          {
+            "language": "hi",
+            "value": "विकिविश्वकोश"
+          },
+          {
+            "language": "hi",
+            "value": "मुक्त विश्वकोश"
+          },
+          {
+            "language": "hi",
+            "value": "विश्वकोश"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ВП"
+          },
+          {
+            "language": "ru",
+            "value": "Вики"
+          },
+          {
+            "language": "ru",
+            "value": "Википедия, свободная энциклопедия"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

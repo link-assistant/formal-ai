@@ -1,0 +1,164 @@
+[
+  {
+    "word": "model",
+    "phonetic": "/ˈmɒdl̩/",
+    "phonetics": [
+      {
+        "text": "/ˈmɒdl̩/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈmɑdl̩/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/model-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100796",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A person who serves as a subject for artwork or fashion, usually in the medium of photography but also for painting or drawing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The beautiful model had her face on the cover of almost every fashion magazine imaginable."
+          },
+          {
+            "definition": "A person, usually an attractive female, hired to show items or goods to the public, such as items given away as prizes on a TV game show.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A representation of a physical object, usually in miniature.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The boy played with a model of a World War II fighter plane."
+          },
+          {
+            "definition": "A simplified representation used to explain the workings of a real world system or event.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The computer weather model did not correctly predict the path of the hurricane."
+          },
+          {
+            "definition": "A style, type, or design.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He decided to buy the turbo engine model of the sports car."
+          },
+          {
+            "definition": "The structural design of a complex system.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The team developed a sound business model."
+          },
+          {
+            "definition": "A successful example to be copied, with or without modifications.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "British parliamentary democracy was seen as a model for other countries to follow."
+          },
+          {
+            "definition": "An interpretation function which assigns a truth value to each atomic proposition.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An interpretation which makes a set of sentences true, in which case that interpretation is called a model of that set.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An animal that is used to study a human disease or pathology.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any copy, or resemblance, more or less exact.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In software applications using the model-view-controller design pattern, the part or parts of the application that manage the data.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To display for others to see, especially in regard to wearing clothing while performing the role of a fashion model",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She modelled the shoes for her friends to see."
+          },
+          {
+            "definition": "To use as an object in the creation of a forecast or model",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They modelled the data with a computer to analyze the experiment’s results."
+          },
+          {
+            "definition": "To make a miniature model of",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He takes great pride in his skill at modeling airplanes."
+          },
+          {
+            "definition": "To create from a substance such as clay",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The sculptor modelled the clay into the form of a dolphin."
+          },
+          {
+            "definition": "To make a model or models",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be a model of any kind",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The actress used to model before being discovered by Hollywood."
+          }
+        ],
+        "synonyms": [
+          "modelise",
+          "modelize"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Worthy of being a model; exemplary.",
+            "synonyms": [
+              "ideal"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "ideal"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/model"
+    ]
+  }
+]

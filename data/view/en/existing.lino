@@ -1,0 +1,17 @@
+view
+  id M-cf6ee61ea3cf
+  lemma existing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having existence or being or actuality"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "presently existing"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "existing in something specified"
+    provenance (wordnet)

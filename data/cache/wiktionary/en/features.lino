@@ -1,0 +1,56 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One's structure or make-up: form, shape, bodily proportions."
+        entry
+          definition "An important or main item."
+        entry
+          definition "A long, prominent article or item in the media, or the department that creates them; frequently used technically to distinguish content from news."
+        entry
+          definition "Any of the physical constituents of the face (eyes, nose, etc.)."
+        entry
+          definition "A beneficial capability of a piece of software."
+        entry
+          definition "The cast or structure of anything, or of any part of a thing, as of a landscape, a picture, a treaty, or an essay; any marked peculiarity or characteristic."
+          example "one of the features of the landscape"
+        entry
+          definition "Something discerned from physical evidence that helps define, identify, characterize, and interpret an archeological site."
+        entry
+          definition "Characteristic forms or shapes of parts. For example, a hole, boss, slot, cut, chamfer, or fillet."
+        entry
+          definition "(machine learning) An individual measurable property or characteristic of a phenomenon being observed."
+        entry
+          definition "The act of being featured in a piece of music."
+        entry
+          definition "The elements into which linguistic units can be broken down."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To ascribe the greatest importance to something within a certain context."
+        entry
+          definition "To star, to contain."
+        entry
+          definition "To appear, to make an appearance."
+        entry
+          definition "To have features resembling."
+      partOfSpeech verb
+  phonetic "/ˈfiːtʃəz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈfiːtʃəz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/features-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1669306"
+      text "/ˈfitʃɚz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/feature" "https://en.wiktionary.org/wiki/features")
+  word features

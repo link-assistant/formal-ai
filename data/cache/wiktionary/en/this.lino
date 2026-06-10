@@ -1,0 +1,38 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Something being indicated that is here; one of these."
+        entry
+          definition "Referring to the current context in a programming environment in C-like languages."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To the degree or extent indicated."
+          example "Do we need this many recommendations?"
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition "The thing, item, etc. being indicated."
+          example "This isn't the item that I ordered."
+      partOfSpeech pronoun
+    entry
+      definitions
+        entry
+          definition "Indicates the speaker's strong approval or agreement with the previous material."
+      partOfSpeech interjection
+      synonyms ("+1" IAWTP QFT)
+  phonetic "/ðəs/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/this-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=252396"
+      text "/ðəs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/this")
+  word this

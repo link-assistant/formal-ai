@@ -1,0 +1,64 @@
+[
+  {
+    "word": "artist",
+    "phonetic": "/ˈɑːtɪst/",
+    "phonetics": [
+      {
+        "text": "/ˈɑːtɪst/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɑɹ.tɪst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/artist-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1317848",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A person who creates art.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A person who is skilled at some activity.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A recording artist.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Artistic.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/artist"
+    ]
+  }
+]

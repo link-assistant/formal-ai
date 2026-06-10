@@ -1,0 +1,110 @@
+language en
+lemma flip
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a suite of internet protocols, which provide Security transparency, security and network management."
+    examples ("FLIP is a connectionless protocol designed to support transparency, group communication, secure communication and easy network management.")
+    id oewn-92448268-n
+    partOfSpeech n
+    synonyms ("fast local internet protocol")
+  entry
+    definition "an acrobatic feat in which the feet roll over the head (either forward or backward) and return"
+    id oewn-00440424-n
+    partOfSpeech n
+    synonyms (somersault somerset summersault summerset somersaulting)
+  entry
+    definition "hot or cold alcoholic mixed drink containing a beaten egg"
+    id oewn-07931127-n
+    partOfSpeech n
+  entry
+    definition "a sudden, quick movement"
+    examples ("with a flip of the wrist" "the fish flipped over")
+    id oewn-01248753-n
+    partOfSpeech n
+  entry
+    definition "the act of flipping a coin"
+    id oewn-01248633-n
+    partOfSpeech n
+    synonyms (toss)
+  entry
+    definition "a dive in which the diver somersaults before entering the water"
+    id oewn-00444788-n
+    partOfSpeech n
+  entry
+    definition "(sports) the act of throwing the ball to another member of your team"
+    examples ("the pass was fumbled")
+    id oewn-00106640-n
+    partOfSpeech n
+    synonyms (pass toss)
+  entry
+    definition "marked by casual disrespect"
+    examples ("a flip answer to serious question" "the student was kept in for impudent behavior")
+    id oewn-02003151-s
+    partOfSpeech s
+    synonyms (impudent insolent snotty-nosed)
+  entry
+    definition "lightly throw to see which side comes up"
+    examples ("I don't know what to do — I may as well flip a coin!")
+    id oewn-01897072-v
+    partOfSpeech v
+    synonyms (toss)
+  entry
+    definition "cause to go on or to be engaged or set in operation"
+    examples ("switch on the light" "throw the lever")
+    id oewn-01512805-v
+    partOfSpeech v
+    synonyms (throw switch)
+  entry
+    definition "look through a book or other written material"
+    examples ("He thumbed through the report" "She leafed through the volume")
+    id oewn-02157453-v
+    partOfSpeech v
+    synonyms (flick thumb riffle leaf riff)
+  entry
+    definition "toss with a sharp movement so as to cause to turn over in the air"
+    id oewn-01897594-v
+    partOfSpeech v
+    synonyms (twitch)
+  entry
+    definition "cause to move with a flick"
+    examples ("he flicked his Bic")
+    id oewn-01897458-v
+    partOfSpeech v
+    synonyms (flick)
+  entry
+    definition "throw or toss with a light motion"
+    examples ("flip me the beachball" "toss me newspaper")
+    id oewn-01515257-v
+    partOfSpeech v
+    synonyms (toss sky pitch)
+  entry
+    definition "move with a flick or light motion"
+    id oewn-01244178-v
+    partOfSpeech v
+  entry
+    definition "turn upside down, or throw so as to reverse"
+    examples ("flip over the pork chop" "turn over the pancakes")
+    id oewn-01225522-v
+    partOfSpeech v
+    synonyms ("flip over" "turn over")
+  entry
+    definition "react in an excited, delighted, or surprised way"
+    examples ("he flipped when he heard that he was accepted into Princeton University")
+    id oewn-00719845-v
+    partOfSpeech v
+    synonyms ("flip out")
+  entry
+    definition "go mad, go crazy"
+    examples ("He flipped when he heard that he was being laid off")
+    id oewn-00585887-v
+    partOfSpeech v
+    synonyms ("flip out")
+  entry
+    definition "reverse (a direction, attitude, or course of action)"
+    id oewn-00121486-v
+    partOfSpeech v
+    synonyms (interchange tack switch alternate flip-flop)
+source "oewn:2024"

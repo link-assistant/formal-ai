@@ -1,0 +1,58 @@
+{
+  "lemma": "invoke",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01633150-v",
+      "partOfSpeech": "v",
+      "definition": "summon into action or bring into existence, often as if by magic",
+      "examples": [
+        "raise the specter of unemployment",
+        "he conjured wild birds in the air",
+        "call down the spirits from the mountain"
+      ],
+      "synonyms": [
+        "raise",
+        "conjure",
+        "conjure up",
+        "evoke",
+        "stir",
+        "call down",
+        "arouse",
+        "bring up",
+        "put forward",
+        "call forth"
+      ]
+    },
+    {
+      "id": "oewn-01026873-v",
+      "partOfSpeech": "v",
+      "definition": "cite as an authority; resort to",
+      "examples": [
+        "He invoked the law that would save him",
+        "I appealed to the law of 1900",
+        "She invoked an ancient law"
+      ],
+      "synonyms": [
+        "appeal"
+      ]
+    },
+    {
+      "id": "oewn-00757492-v",
+      "partOfSpeech": "v",
+      "definition": "request earnestly (something from somebody); ask for aid or protection",
+      "examples": [
+        "appeal to somebody for help",
+        "Invoke God in times of trouble"
+      ],
+      "synonyms": [
+        "appeal"
+      ]
+    }
+  ]
+}

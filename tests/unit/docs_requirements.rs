@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
 #[test]
@@ -598,22 +599,25 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ],
     );
 
-    let environments = read(root.join("data/seed/environments.lino"));
-    assert_contains_all(
-        "data/seed/environments.lino",
-        &environments,
-        &[
-            "default native doublets-rs link store",
-            "default_native_link_store()?.import_memory_links_notation",
-        ],
+    let rust_library = environment_records()
+        .into_iter()
+        .find(|environment| environment.id == "rust_library")
+        .expect("rust library environment should be declared in seed directory");
+    assert!(
+        rust_library
+            .memory_store
+            .contains("default native doublets-rs link store"),
+        "rust_library environment should describe the native doublets store"
+    );
+    assert!(
+        rust_library
+            .bundle_import_command
+            .contains("default_native_link_store()?.import_memory_links_notation"),
+        "rust_library environment should trace native bundle import"
     );
 
-    let agent_info = read(root.join("data/seed/agent-info.lino"));
-    assert_contains_all(
-        "data/seed/agent-info.lino",
-        &agent_info,
-        &["field \"supported_languages\"", "value \"en|ru|hi|zh\""],
-    );
+    let supported_languages = supported_languages();
+    assert_eq!(supported_languages, ["en", "ru", "hi", "zh"]);
     for (language_marker, code) in [
         ("language: \"en\" English", "en"),
         ("language: \"ru\" Russian", "ru"),
@@ -621,7 +625,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ("language: \"zh\" Chinese", "zh"),
     ] {
         assert!(
-            agent_info.contains(code),
+            supported_languages.iter().any(|language| language == code),
             "missing issue #278 coverage for {language_marker}"
         );
     }
@@ -707,6 +711,45 @@ fn issue_368_readme_documents_agentic_cli_setup() {
     assert!(
         !server_api.contains("export OPENAI_BASE_URL=\"http://127.0.0.1:8080/v1\""),
         "agent docs should use the supported OpenCode-style provider config"
+    );
+}
+
+#[test]
+fn issue_398_pr_review_standards_are_recorded_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #398 PR Review Standards",
+            "latest requirement overrides any earlier one",
+            "| R278 ",
+            "| R279 ",
+            "| R280 ",
+            "| R281 ",
+            "| R282 ",
+            "| R283 ",
+            "data/overrides/",
+            "(cache or live API) then overrides",
+            "seed_lino_files_have_no_empty_redefinition_fields",
+            "overrides_are_disciplined_and_non_redundant",
+            "scripts/migrate-empty-facet-fields.rs",
+        ],
+    );
+
+    let overrides_readme = read(root.join("data/overrides/README.md"));
+    assert_contains_all(
+        "data/overrides/README.md",
+        &overrides_readme,
+        &[
+            "grounding override layer",
+            "then",
+            "overrides",
+            "Recorded reason",
+            "Never redundant",
+        ],
     );
 }
 

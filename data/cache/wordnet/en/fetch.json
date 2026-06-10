@@ -1,0 +1,52 @@
+{
+  "lemma": "fetch",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00040654-n",
+      "partOfSpeech": "n",
+      "definition": "the action of fetching"
+    },
+    {
+      "id": "oewn-01435927-v",
+      "partOfSpeech": "v",
+      "definition": "go or come after and bring or take back",
+      "examples": [
+        "Get me those books over there, please",
+        "Could you bring the wine?",
+        "The dog fetched the hat"
+      ],
+      "synonyms": [
+        "bring",
+        "get",
+        "convey"
+      ]
+    },
+    {
+      "id": "oewn-02252172-v",
+      "partOfSpeech": "v",
+      "definition": "be sold for a certain price",
+      "examples": [
+        "The painting brought $10,000",
+        "The old print fetched a high price at the auction"
+      ],
+      "synonyms": [
+        "bring in",
+        "bring"
+      ]
+    },
+    {
+      "id": "oewn-01436307-v",
+      "partOfSpeech": "v",
+      "definition": "remove",
+      "examples": [
+        "The devil will fetch you!"
+      ]
+    }
+  ]
+}

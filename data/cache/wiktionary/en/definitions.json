@@ -1,0 +1,97 @@
+[
+  {
+    "word": "definitions",
+    "phonetic": "/ˌdɛfɪˈnɪʃ(ə)nz/",
+    "phonetics": [
+      {
+        "text": "/ˌdɛfɪˈnɪʃ(ə)nz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A statement of the meaning of a word or word group or a sign or symbol (dictionary definitions).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(usually with the definite article the) A clear instance conforming to the dictionary or textbook definition.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A statement expressing the essential nature of something; formulation",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The action or process of defining.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of defining; determination of the limits.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A product of defining.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The action or power of describing, explaining, or making definite and clear.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her comic genius is beyond definition."
+          },
+          {
+            "definition": "Clarity of visual presentation, distinctness of outline or detail.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Improve the definition of an image."
+          },
+          {
+            "definition": "Clarity, especially of musical sound in reproduction.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Sharp demarcation of outlines or limits.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A jacket with distinct waist definition."
+          },
+          {
+            "definition": "The degree to which individual muscles are distinct on the body.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A statement which provides a previous declaration with a value or body of a subroutine (in the case of function).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A statement that establishes the referent of a term or notation.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/definition",
+      "https://en.wiktionary.org/wiki/definitions"
+    ]
+  }
+]

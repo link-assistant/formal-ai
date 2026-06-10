@@ -1,0 +1,106 @@
+[
+  {
+    "word": "scripts",
+    "phonetic": "/skɹɪpts/",
+    "phonetics": [
+      {
+        "text": "/skɹɪpts/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A writing; a written document.",
+            "synonyms": [
+              "cursive",
+              "hand",
+              "handwriting",
+              "manuscript"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Written characters; style of writing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Type made in imitation of handwriting.",
+            "synonyms": [
+              "cursive"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "An original instrument or document.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The written document containing the dialogue and action for a drama; the text of a stage play, movie, or other performance. Especially, the final form used for the performance itself.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A file containing a list of user commands, allowing them to be invoked once to execute in sequence.",
+            "synonyms": [
+              "batch file",
+              "macro",
+              "shell script"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A system of writing adapted to a particular language or set of languages.",
+            "synonyms": [
+              "language script",
+              "writing system"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Short for prescription.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "batch file",
+          "macro",
+          "shell script",
+          "cursive",
+          "cursive",
+          "hand",
+          "handwriting",
+          "manuscript",
+          "language script",
+          "writing system"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To make or write a script.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/script",
+      "https://en.wiktionary.org/wiki/scripts"
+    ]
+  }
+]

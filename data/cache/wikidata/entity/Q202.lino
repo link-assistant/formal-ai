@@ -1,0 +1,16 @@
+Q202
+  aliases
+    en (four "Ⅳ" "ⅳ" "number 4" "number four" "the number 4" "4 (number)")
+    ru ("четыре" "4 (число)")
+    zh ("四")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q202
+  labels
+    en "4"
+    hi "४"
+  type item
+success 1

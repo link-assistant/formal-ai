@@ -1,0 +1,34 @@
+language en
+lemma predicate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(logic) what is predicated of the subject of a proposition; the second term in a proposition is predicated of the first term by means of the copula"
+    examples ("‘Socrates is a man’ predicates manhood of Socrates")
+    id oewn-06327806-n
+    partOfSpeech n
+  entry
+    definition "one of the two main constituents of a sentence; the predicate contains the verb and its complements"
+    id oewn-06327619-n
+    partOfSpeech n
+    synonyms ("verb phrase")
+  entry
+    definition "make the (grammatical) predicate in a proposition"
+    examples ("The predicate ‘dog’ is predicated of the subject ‘Fido’ in the sentence ‘Fido is a dog’")
+    id oewn-01019231-v
+    partOfSpeech v
+  entry
+    definition "affirm or declare as an attribute or quality of"
+    examples ("The speech predicated the fitness of the candidate to be President")
+    id oewn-01019010-v
+    partOfSpeech v
+    synonyms (proclaim)
+  entry
+    definition "involve as a necessary condition of consequence; as in logic"
+    examples ("solving the problem is predicated on understanding it well")
+    id oewn-00933194-v
+    partOfSpeech v
+    synonyms (connote)
+source "oewn:2024"

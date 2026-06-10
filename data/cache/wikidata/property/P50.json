@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "P50": {
+      "type": "property",
+      "id": "P50",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "author"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "автор"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लेखक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "作者"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "main creator(s) of a written work (use on works, not humans); use P2093 (author name string) when Wikidata item is unknown or does not exist"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "создатель произведения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिखित कार्य का मुख्य रचियता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "书面作品的主要创作者（用于作品项目，而不是人类项目）；当维基数据项目未知或不存在时使用P2093（作者名字符串）"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "written by"
+          },
+          {
+            "language": "en",
+            "value": "writer"
+          },
+          {
+            "language": "en",
+            "value": "creator"
+          },
+          {
+            "language": "en",
+            "value": "playwright"
+          },
+          {
+            "language": "en",
+            "value": "poet"
+          },
+          {
+            "language": "en",
+            "value": "maker"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "кто автор"
+          },
+          {
+            "language": "ru",
+            "value": "писатель"
+          },
+          {
+            "language": "ru",
+            "value": "создатель"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "著作者"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

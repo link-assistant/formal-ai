@@ -1,0 +1,108 @@
+{
+  "lemma": "connection",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13813601-n",
+      "partOfSpeech": "n",
+      "definition": "a relation between things or events (as in the case of one causing the other or sharing features with it)",
+      "examples": [
+        "there was a connection between eating that pickle and having that nightmare"
+      ],
+      "synonyms": [
+        "connexion",
+        "connectedness"
+      ]
+    },
+    {
+      "id": "oewn-14442568-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being connected",
+      "examples": [
+        "the connection between church and state is inescapable"
+      ],
+      "synonyms": [
+        "link",
+        "connectedness"
+      ]
+    },
+    {
+      "id": "oewn-03095830-n",
+      "partOfSpeech": "n",
+      "definition": "an instrumentality that connects",
+      "examples": [
+        "he soldered the connection",
+        "he didn't have the right connector between the amplifier and the speakers"
+      ],
+      "synonyms": [
+        "connexion",
+        "connector",
+        "connecter",
+        "connective"
+      ]
+    },
+    {
+      "id": "oewn-09975626-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) a person who is influential and to whom you are connected in some way (as by family or friendship)",
+      "examples": [
+        "he has powerful connections"
+      ]
+    },
+    {
+      "id": "oewn-05771913-n",
+      "partOfSpeech": "n",
+      "definition": "the process of bringing ideas or events together in memory or imagination",
+      "examples": [
+        "conditioning is a form of learning by association"
+      ],
+      "synonyms": [
+        "association",
+        "connexion"
+      ]
+    },
+    {
+      "id": "oewn-13893444-n",
+      "partOfSpeech": "n",
+      "definition": "a connecting shape",
+      "synonyms": [
+        "connexion",
+        "link"
+      ]
+    },
+    {
+      "id": "oewn-09975514-n",
+      "partOfSpeech": "n",
+      "definition": "a supplier (especially of narcotics)"
+    },
+    {
+      "id": "oewn-00317815-n",
+      "partOfSpeech": "n",
+      "definition": "shifting from one form of transportation to another",
+      "examples": [
+        "the plane was late and he missed his connection in Atlanta"
+      ],
+      "synonyms": [
+        "connexion"
+      ]
+    },
+    {
+      "id": "oewn-00146038-n",
+      "partOfSpeech": "n",
+      "definition": "the act of bringing two things into contact (especially for communication)",
+      "examples": [
+        "the joining of hands around the table",
+        "there was a connection via the internet"
+      ],
+      "synonyms": [
+        "joining",
+        "connexion"
+      ]
+    }
+  ]
+}

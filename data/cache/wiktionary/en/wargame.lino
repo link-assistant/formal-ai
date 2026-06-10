@@ -1,0 +1,20 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A simulation, by whatever means, of a military operation involving two or more opposing forces using rules, data, and procedures designed to depict an actual or assumed real-life situation."
+        entry
+          definition "A game that simulates or represents a military operation."
+      partOfSpeech noun
+      synonyms ("military exercise" "training exercise")
+    entry
+      definitions
+        entry
+          definition "To run a military simulation of this kind."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/war%20game" "https://en.wiktionary.org/wiki/wargame")
+  word wargame

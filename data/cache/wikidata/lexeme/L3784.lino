@@ -1,0 +1,518 @@
+L3784
+  claims
+    P11481
+      entry
+        id L3784$43FC19DD-8CFA-430C-B2EA-BE80802F8431
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value l7hmpry
+          hash 22d304f724cce3ab2d18ac3bb9a8ee109fda5598
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+    P12448
+      entry
+        id L3784$B168E9E4-AC37-4C4E-AC95-B8A020D06614
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value ID_00045177
+          hash 3243b64bc2b08455590e689a8ff4c3e918eb68a0
+          property P12448
+          snaktype value
+        rank normal
+        type statement
+    P12510
+      entry
+        id L3784$E701932C-8F23-4D98-8FE3-39015D9723B6
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "9322852745"
+          hash e749c23e06ae7670186a883cdc8f55a9a8face8a
+          property P12510
+          snaktype value
+        rank normal
+        type statement
+    P12573
+      entry
+        id L3784$5C453E44-643F-4C53-B6D6-A51E57C3D03C
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "7412"
+          hash ffb38fb2b548deeb9291fa0f8ab2aa8896573a15
+          property P12573
+          snaktype value
+        rank normal
+        type statement
+    P12675
+      entry
+        id L3784$21E23BDE-756D-4FEE-9D80-980C59D7AD9A
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "5617"
+          hash eada4e4146fb43bc879efac59cf05d722dbfcb55
+          property P12675
+          snaktype value
+        rank normal
+        type statement
+    P12690
+      entry
+        id L3784$9CA6ABC0-30C4-4094-A237-A9AC45A2A9A7
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1279851"
+          hash 2f834137d49998e667304e0d0f0b4cb4a43dcc3c
+          property P12690
+          snaktype value
+        rank normal
+        type statement
+    P12718
+      entry
+        id L3784$B3B48F0D-069C-44FC-85BC-E306E35F1317
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0043164
+          hash 085c37613d79439f4cd7761f9802724bfbf9518f
+          property P12718
+          snaktype value
+        rank normal
+        type statement
+    P12724
+      entry
+        id L3784$330DC5C4-3F1E-422D-990E-698FC6DB2566
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0041921
+          hash da6522146fa55571c0793d9cfd3bd7367a74ccc8
+          property P12724
+          snaktype value
+        rank normal
+        type statement
+    P12726
+      entry
+        id L3784$C1791FCF-C270-4649-A366-0FB613D77EAE
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0054235
+          hash a1098c33ce24f57e8032ab56dd6881fa61cf5f24
+          property P12726
+          snaktype value
+        rank normal
+        type statement
+    P12739
+      entry
+        id L3784$9A8BF9DB-64D2-4AE5-817B-99CB6C889717
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0652460
+          hash 6c3da695d8c03bcb4b34a22015f961e217655a7c
+          property P12739
+          snaktype value
+        rank normal
+        type statement
+    P12868
+      entry
+        id L3784$D14281C0-2230-467C-8583-B8B9328CFC15
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 1201_2
+          hash 86e25cd2318d1c87695542b9968487422d9d0275
+          property P12868
+          snaktype value
+        rank normal
+        type statement
+    P13258
+      entry
+        id L3784$D9788857-77A7-46BC-AC29-95C85E7143AB
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8096888"
+          hash 8a5dbf8398179db0d205852dfbfe876b37952b5b
+          property P13258
+          snaktype value
+        rank normal
+        type statement
+    P5191
+      entry
+        id L3784$0f0dd372-41b4-3e13-6ca5-d83d03e15836
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L346269
+              numeric-id 346269
+          hash 99eb22977ad0815f99e5d0e148d80b89c7515d99
+          property P5191
+          snaktype value
+        rank normal
+        references
+          entry
+            hash df41f863d3b489d15426bad2a73c163c2ecf4abc
+            snaks
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q1188617
+                      numeric-id 1188617
+                  hash 6ac7b4f3e9baba5637de5f4459551b29e2fc96e7
+                  property P248
+                  snaktype value
+              P407
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q1860
+                      numeric-id 1860
+                  hash daf1c4fcb58181b02dff9cc89deb084004ddae4b
+                  property P407
+                  snaktype value
+              P813
+                entry
+                  datatype time
+                  datavalue
+                    type time
+                    value
+                      after 0
+                      before 0
+                      calendarmodel "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time "+2022-04-17T00:00:00Z"
+                      timezone 0
+                  hash 6a90de6101fdafc54818b607665a84b682925f58
+                  property P813
+                  snaktype value
+              P854
+                entry
+                  datatype url
+                  datavalue
+                    type string
+                    value "https://www.etymonline.com/word/potato#etymonline_v_18563"
+                  hash 39d9878616dbd2f51f18279431df93e051fd1671
+                  property P854
+                  snaktype value
+            snaks-order (P248 P854 P407 P813)
+        type statement
+    P5275
+      entry
+        id L3784$11E37CAF-7A47-4F6A-850F-672B208373C6
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "148765"
+          hash 507f09e771299aaafb51daddbb90804bf5b71aae
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5912
+      entry
+        id L3784$1AA439BE-9F14-4D69-BA8C-7291DFA60850
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "123694"
+          hash 75e8a573622bdbbb1e22fbf0d52f3cc750455b13
+          property P5912
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3784-F1$1C82AB46-32F0-43A3-A076-1C1CAE8829D3
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-uk-potato.ogg
+              hash 71915df5aac674cf0c23506126b80fac262b3926
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3784-F1$3D153DC9-E2EA-44D9-A913-1B1C95959E6E
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-potato.ogg
+              hash 31c88e500605053143d900b585b2f827b4d7653c
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+        P898
+          entry
+            id L3784-F1$f9bbaf97-4fc9-c4a7-4b05-bb4a969fd936
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "/pəˈteɪ.toʊ/"
+              hash 7665c66b3bad329a0fbeb4247b97d7a61c2c2f45
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3784-F1$9355755f-4754-92e1-8dfe-f17a3c83a924
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "[pə̥ˈtʰeɪɾoʊ]"
+              hash 0609e6bfd36dcd6eee0469c904dc4e2d56a542aa
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3784-F1$205614c1-45cf-b1ea-9b43-89932f229277
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "[pə̥ˈtʰeɪɾə]"
+              hash df4de3cbed8ed587eb662bec82ad072c90945323
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3784-F1$4d35bd38-4f9f-29fc-4d6c-9e315e6fab71
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "/pəˈteɪ.təʊ/"
+              hash caa85738606e6530ec6b9d277cd56e39379efc98
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3784-F1$ead75e1d-44b3-2c80-13f7-557316a78975
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "[pə̥ˈtʰeɪtʰəʊ]"
+              hash e8b6c87a9a162b31c8a525dc797ecd5aa47a8a5e
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786)
+      id L3784-F1
+      representations
+        en
+          language en
+          value potato
+    entry
+      grammaticalFeatures (Q146786)
+      id L3784-F2
+      representations
+        en
+          language en
+          value potatoes
+  id L3784
+  language Q1860
+  lastrevid 2346201804
+  lemmas
+    en potato
+  lexicalCategory Q1084
+  modified "2025-05-08T20:22:03Z"
+  ns 146
+  pageid 55190366
+  senses
+    entry
+      claims
+        P5137
+          entry
+            id L3784-S1$52080B19-55DE-4395-9854-39DC77089932
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q16587531
+                  numeric-id 16587531
+              hash 5f9683551cfa8f006dc2030a83f282c94f7125cc
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "staple food"
+        pa
+          language pa
+          value "ਮੁੱਖ ਭੋਜਨ"
+      id L3784-S1
+    entry
+      claims
+        P5137
+          entry
+            id L3784-S2$0553FE7F-06AF-43CB-9285-707660FA33EA
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q10998
+                  numeric-id 10998
+              hash 74913a283a6a52a98b68155c79dab966d0ab4cec
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "species of plant"
+        pa
+          language pa
+          value "ਪੌਦੇ ਦੀਆਂ ਕਿਸਮਾਂ"
+      id L3784-S2
+  title "Lexeme:L3784"
+  type lexeme
+success 1

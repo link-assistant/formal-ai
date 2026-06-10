@@ -1,0 +1,16 @@
+Q1401131
+  aliases
+    en (NP "nominal phrase" "noun or noun phrase" "noun (word or phrase)")
+    ru ("ИГ")
+    zh ("名詞片語")
+  descriptions
+    en "phrase the head of which is a noun"
+    ru "тип фразы, не содержащей глагола"
+  id Q1401131
+  labels
+    en "noun phrase"
+    hi "संज्ञा वाक्यांश"
+    ru "именная группа"
+    zh "名词短语"
+  type item
+success 1

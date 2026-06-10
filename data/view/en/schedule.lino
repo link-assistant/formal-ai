@@ -1,0 +1,21 @@
+view
+  id M-0f8942111f92
+  lemma schedule
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a temporally organized plan for matters to be attended to"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an ordered list of times at which things are planned to occur"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "plan for an activity or event"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a schedule; plan the time and place for events"
+    provenance (wordnet)

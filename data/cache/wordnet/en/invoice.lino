@@ -1,0 +1,18 @@
+language en
+lemma invoice
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an itemized statement of money owed for goods shipped or services rendered"
+    examples ("he paid his bill and left" "send me an account of what I owe")
+    id oewn-06528946-n
+    partOfSpeech n
+    synonyms (bill account)
+  entry
+    definition "send a bill to"
+    examples ("She invoiced the company for her expenses")
+    id oewn-02325883-v
+    partOfSpeech v
+source "oewn:2024"

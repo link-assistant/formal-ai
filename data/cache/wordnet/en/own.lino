@@ -1,0 +1,19 @@
+language en
+lemma own
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "belonging to or on behalf of a specified person (especially yourself); preceded by a possessive"
+    examples ("for your own use" "do your own thing" "she makes her own clothes" "‘ain’ is Scottish")
+    id oewn-01773236-s
+    partOfSpeech s
+    synonyms (ain)
+  entry
+    definition "have ownership or possession of"
+    examples ("He owns three houses in Florida" "How many cars does she have?")
+    id oewn-02209474-v
+    partOfSpeech v
+    synonyms (have possess)
+source "oewn:2024"

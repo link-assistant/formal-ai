@@ -1,0 +1,64 @@
+language en
+lemma introduce
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "cause to come to know personally"
+    examples ("permit me to acquaint you with my son" "introduce the new neighbors to the community")
+    id oewn-00902866-v
+    partOfSpeech v
+    synonyms (present acquaint)
+  entry
+    definition "bring something new to an environment"
+    examples ("A new word processor was introduced")
+    id oewn-01645979-v
+    partOfSpeech v
+    synonyms (innovate)
+  entry
+    definition "place, fit, or thrust (something) into another thing"
+    examples ("Insert your ticket here")
+    id oewn-00187671-v
+    partOfSpeech v
+    synonyms (insert enclose inclose "stick in" "put in")
+  entry
+    definition "bring in a new person or object into a familiar environment"
+    examples ("He brought in a new judge" "The new secretary introduced a nasty rumor")
+    id oewn-02082838-v
+    partOfSpeech v
+    synonyms ("bring in")
+  entry
+    definition "bring in or establish in a new place or environment"
+    examples ("introduce a rule" "introduce exotic fruits")
+    id oewn-01621712-v
+    partOfSpeech v
+  entry
+    definition "put or introduce into something"
+    examples ("insert a picture into the text")
+    id oewn-01424276-v
+    partOfSpeech v
+    synonyms (insert infix enter)
+  entry
+    definition "bring before the public for the first time, as of an actor, song, etc."
+    id oewn-01067137-v
+    partOfSpeech v
+    synonyms ("bring out")
+  entry
+    definition "put before (a body)"
+    examples ("introduce legislation")
+    id oewn-00708522-v
+    partOfSpeech v
+  entry
+    definition "furnish with a preface or introduction"
+    examples ("She always precedes her lectures with a joke" "He prefaced his lecture with a critical remark about the institution")
+    id oewn-00903562-v
+    partOfSpeech v
+    synonyms (precede preface premise)
+  entry
+    definition "be a precursor of"
+    examples ("The fall of the Berlin Wall ushered in the post-Cold War period")
+    id oewn-00350246-v
+    partOfSpeech v
+    synonyms (inaugurate "usher in")
+source "oewn:2024"

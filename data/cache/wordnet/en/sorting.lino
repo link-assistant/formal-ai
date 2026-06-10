@@ -1,0 +1,22 @@
+language en
+lemma sorting
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an operation that segregates items into groups according to a specified criterion"
+    examples ("the bottleneck in mail delivery is the process of sorting")
+    id oewn-13579899-n
+    partOfSpeech n
+    synonyms (sort)
+  entry
+    definition "the basic cognitive process of arranging into classes or categories"
+    id oewn-05740701-n
+    partOfSpeech n
+    synonyms (classification categorization categorisation)
+  entry
+    definition "grouping by class or kind or size"
+    id oewn-01018774-n
+    partOfSpeech n
+source "oewn:2024"

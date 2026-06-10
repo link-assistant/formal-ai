@@ -1,0 +1,165 @@
+[
+  {
+    "word": "days",
+    "phonetic": "/ˈdeɪz/",
+    "phonetics": [
+      {
+        "text": "/ˈdeɪz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/days-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1224300",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Any period of 24 hours.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I've been here for two days and a bit."
+          },
+          {
+            "definition": "A period from midnight to the following midnight.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The day begins at midnight."
+          },
+          {
+            "definition": "Rotational period of a planet (especially Earth).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A day on Mars is slightly over 24 hours."
+          },
+          {
+            "definition": "The part of a day period which one spends at one’s job, school, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I worked two days last week."
+          },
+          {
+            "definition": "Part of a day period between sunrise and sunset where one enjoys daylight; daytime.",
+            "synonyms": [
+              "daylight",
+              "upsun"
+            ],
+            "antonyms": [
+              "night"
+            ],
+            "example": "day and night;  I work at night and sleep during the day."
+          },
+          {
+            "definition": "A specified time or period; time, considered with reference to the existence or prominence of a person or thing; age; time.",
+            "synonyms": [
+              "epoch",
+              "era"
+            ],
+            "antonyms": [],
+            "example": "Every dog has its day."
+          },
+          {
+            "definition": "A period of contention of a day or less.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The day belonged to the Allies."
+          },
+          {
+            "definition": "A 24-hour period beginning at 6am or sunrise.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Your 8am forecast: The high for the day will be 30 and the low, before dawn, will be 10."
+          }
+        ],
+        "synonyms": [
+          "daylight",
+          "upsun",
+          "epoch",
+          "era"
+        ],
+        "antonyms": [
+          "night"
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To spend a day (in a place).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A particular time or period of vague extent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Things were more relaxed in Grandpa's days."
+          },
+          {
+            "definition": "Life.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "That's how he ended his days."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/day",
+      "https://en.wiktionary.org/wiki/days"
+    ]
+  },
+  {
+    "word": "days",
+    "phonetic": "/ˈdeɪz/",
+    "phonetics": [
+      {
+        "text": "/ˈdeɪz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/days-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1224300",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "During the day.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She works days at the garage."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/days"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+view
+  id M-7f5c060ac1aa
+  lemma russian
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or pertaining to or characteristic of Russia or its people or culture or language"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a native or inhabitant of Russia"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the Slavic language that is the official language of Russia"
+    provenance (wordnet)

@@ -1,0 +1,15 @@
+Q79726
+  aliases
+    en (kB)
+    ru ("КБ" "Кбайт")
+  descriptions
+    en "unit of digital information equal to one thousand bytes"
+    ru "единица измерения количества информации, равная 1 024 байт"
+  id Q79726
+  labels
+    en kilobyte
+    hi "किलोबाइट"
+    ru "килобайт"
+    zh "千字节"
+  type item
+success 1

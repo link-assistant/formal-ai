@@ -1,0 +1,17 @@
+Q15777
+  aliases
+    en ("C programming language")
+    ru ("C (язык программирования)" .c "С (язык программирования)" "C (язык)" "язык программирования C" "язык C" "язык Си" "язык С" "язык программирования Си")
+    zh ("丙語言" "C語言")
+  descriptions
+    en "general-purpose programming language"
+    hi "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "通用編程語言"
+  id Q15777
+  labels
+    hi "सी"
+    ru "Си"
+    zh "C语言"
+  type item
+success 1

@@ -1,0 +1,41 @@
+view
+  id M-bfa8c637429e
+  lemma world
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "everything that exists anywhere"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "people in general; especially a distinctive group of people with some shared interest"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "all of your experiences that determine how things appear to you"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the 3rd planet from the sun; the planet we live on"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "people in general considered as a whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a part of the earth that can be considered separately"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the concerns of this life as distinguished from heaven and the afterlife"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "all of the living human inhabitants of the earth"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "involving the entire earth; not limited or provincial in scope"
+    provenance (wordnet)

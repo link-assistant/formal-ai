@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q90": {
+      "type": "item",
+      "id": "Q90",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "पैरिस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴黎"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Париж"
+        },
+        "en": {
+          "language": "en",
+          "value": "Paris"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "法國首都及最大都市"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица Франции"
+        },
+        "en": {
+          "language": "en",
+          "value": "capital and most populous city in France"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फ़्रांस की राजधानी और सबसे बड़ा शहर"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "City of Light"
+          },
+          {
+            "language": "en",
+            "value": "City of Love"
+          },
+          {
+            "language": "en",
+            "value": "Lutetia"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "巴黎省"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "पेरिस"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Париж (Франция)"
+          },
+          {
+            "language": "ru",
+            "value": "Париж, Франция"
+          },
+          {
+            "language": "ru",
+            "value": "Париж (столица)"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

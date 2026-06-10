@@ -1,0 +1,41 @@
+view
+  id M-d4b08f6b3c81
+  lemma remove
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "degree of figurative distance or separation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove something concrete, as by lifting, pushing, or taking off, or remove something abstract"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove from a position or an office"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "dispose of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to leave"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "shift the position or location of, as for business, legal, educational, or military purposes"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "stay away or leave"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "kill intentionally and with premeditation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get rid of something abstract"
+    provenance (wordnet)

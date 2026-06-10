@@ -1,0 +1,49 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (demolish destroy ruin wreck decrease dissipate weaken)
+      definitions
+        entry
+          definition "To form (something) by combining materials or parts."
+        entry
+          definition "To develop or give form to (something) according to a plan or process."
+        entry
+          definition "To increase or strengthen (something) by adding gradually to."
+        entry
+          definition "To establish a basis for (something)."
+        entry
+          definition "To form by combining materials or parts."
+        entry
+          definition "To develop in magnitude or extent."
+        entry
+          definition "To construct (software) by compiling its source code."
+        entry
+          definition "(of source code) To be converted into software by compilation, usually with minimal human intervention."
+          example "This code won't build any more. Have you made any changes?"
+      partOfSpeech verb
+      synonyms (create base found ground construct erect "build up" enlarge increase strengthen)
+    entry
+      definitions
+        entry
+          definition "Shape; build; form of structure."
+          example "the built of a ship"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Well-built, muscular or toned."
+      partOfSpeech adjective
+  phonetic "/ˈbɪlt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/built-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1243861"
+      text "/ˈbɪlt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/build" "https://en.wiktionary.org/wiki/built")
+  word built

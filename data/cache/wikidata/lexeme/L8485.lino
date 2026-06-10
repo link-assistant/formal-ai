@@ -1,0 +1,54 @@
+L8485
+  claims
+    P5191
+      entry
+        id L8485$19978377-450e-ab22-a3ee-b84674cf3595
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L8161
+              numeric-id 8161
+          hash f53bc01b3d69deb382e999383e568fd1b8013b17
+          property P5191
+          snaktype value
+        rank normal
+        type statement
+  id L8485
+  language Q9067
+  lastrevid 781271087
+  lemmas
+    hu "február"
+  lexicalCategory Q1084
+  modified "2018-11-03T22:12:33Z"
+  ns 146
+  pageid 55811968
+  senses
+    entry
+      claims
+        P5137
+          entry
+            id L8485-S1$9db17d83-4b76-fb56-e76a-f0615c6e96da
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q109
+                  numeric-id 109
+              hash 991ee139cb1a0b1621325e1495bb4991d09be172
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        de
+          language de
+          value Monat
+      id L8485-S1
+  title "Lexeme:L8485"
+  type lexeme
+success 1

@@ -1,0 +1,41 @@
+{
+  "lemma": "landmark",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08642466-n",
+      "partOfSpeech": "n",
+      "definition": "the position of a prominent or well-known object in a particular landscape",
+      "examples": [
+        "the church steeple provided a convenient landmark"
+      ]
+    },
+    {
+      "id": "oewn-07432451-n",
+      "partOfSpeech": "n",
+      "definition": "an event marking a unique or important historical change of course or one on which important developments depend",
+      "examples": [
+        "the agreement was a watershed in the history of both nations"
+      ],
+      "synonyms": [
+        "turning point",
+        "watershed"
+      ]
+    },
+    {
+      "id": "oewn-07273987-n",
+      "partOfSpeech": "n",
+      "definition": "a mark showing the boundary of a piece of land"
+    },
+    {
+      "id": "oewn-05237687-n",
+      "partOfSpeech": "n",
+      "definition": "an anatomical structure used as a point of origin in locating other anatomical structures (as in surgery) or as point from which measurements can be taken"
+    }
+  ]
+}

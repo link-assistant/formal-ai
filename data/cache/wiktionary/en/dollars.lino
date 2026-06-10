@@ -1,0 +1,30 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Official designation for currency in some parts of the world, including Canada, the United States, Australia, New Zealand, Hong Kong, and elsewhere. Its symbol is $."
+        entry
+          definition "(by extension) Money generally."
+        entry
+          definition "A quarter of a pound or one crown, historically minted as a coin of approximately the same size and composition as a then-contemporary dollar coin of the United States, and worth slightly more."
+        entry
+          definition 'Imported from the United States, and paid for in U.S. dollars. (Note: distinguish "dollar wheat", North American farmers'' slogan, meaning a market price of one dollar per bushel.)'
+      partOfSpeech noun
+  phonetic "/ˈdɒləz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈdɒləz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/dollars-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1231918"
+      text "/ˈdɑlɚz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/dollar" "https://en.wiktionary.org/wiki/dollars")
+  word dollars

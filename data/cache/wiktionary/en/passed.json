@@ -1,0 +1,100 @@
+[
+  {
+    "word": "passed",
+    "phonetic": "/pɑːst/",
+    "phonetics": [
+      {
+        "text": "/pɑːst/",
+        "audio": ""
+      },
+      {
+        "text": "/pæst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/passed-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227436",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To change place.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To change in state or status",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To move through time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be accepted.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In any game, to decline to play in one's turn.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To do or be better.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To take heed.",
+            "synonyms": [
+              "take heed",
+              "take notice"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "spend",
+          "pledge",
+          "promise",
+          "vow",
+          "take heed",
+          "take notice"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "That has passed beyond a certain point (chiefly in set collocations).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "That has passed a given qualification or examination; qualified.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/pass",
+      "https://en.wiktionary.org/wiki/passed"
+    ]
+  }
+]

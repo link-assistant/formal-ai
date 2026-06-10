@@ -1,0 +1,25 @@
+view
+  id M-081b47c86658
+  lemma history
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the aggregate of past events"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a record or narrative description of past events"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the discipline that records and interprets past events involving human beings"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the continuum of events occurring in succession leading from the past to the present and even into the future"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "all that is remembered of the past as preserved in writing; a body of knowledge"
+    provenance (wordnet)

@@ -1,0 +1,21 @@
+view
+  id M-eac0269c5f68
+  lemma mb
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1000 kilobytes or 10^6 (1,000,000) bytes"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1000 kilobits or 10^6 (1,000,000) bits"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1024 kibibytes or 2^20 (1,048,576) bytes"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(a British degree) a bachelor's degree in medicine"
+    provenance (wordnet)

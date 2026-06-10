@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q183": {
+      "type": "item",
+      "id": "Q183",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "德國"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Германия"
+        },
+        "en": {
+          "language": "en",
+          "value": "Germany"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "歐洲國家"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Центральной Европе"
+        },
+        "en": {
+          "language": "en",
+          "value": "country in Central Europe"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मध्य यूरोप का देश"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Федеративная Республика Германия"
+          },
+          {
+            "language": "ru",
+            "value": "ФРГ"
+          },
+          {
+            "language": "ru",
+            "value": "Дойчланд"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "德意志"
+          },
+          {
+            "language": "zh",
+            "value": "德意志联邦"
+          },
+          {
+            "language": "zh",
+            "value": "德意志联邦共和国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志聯邦"
+          },
+          {
+            "language": "zh",
+            "value": "德意志聯邦共和國"
+          },
+          {
+            "language": "zh",
+            "value": "德国"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Federal Republic of Germany"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

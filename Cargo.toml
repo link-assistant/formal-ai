@@ -34,6 +34,7 @@ clap = { version = "4.4", features = ["derive", "env"] }
 doublets = { version = "0.3.0", optional = true }
 lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
+links-notation = "0.13.0"
 link-calculator = "0.17.2"
 # Primary CST/AST engine: the link-foundation meta-language links network.
 # It ships real tree-sitter grammars for most of our targets and exposes a
@@ -44,7 +45,7 @@ nom = "8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 # Bridge grammars for the languages meta-language does not yet cover
-# (TypeScript, Go, Ruby). Tracked upstream; see data/seed/meanings-program-cst.lino.
+# (TypeScript, Go, Ruby). Tracked upstream; see data/seed/program-cst-grammars.lino.
 # Pinned to the same tree-sitter 0.25.x line meta-language depends on so the
 # whole dependency tree resolves to a single tree-sitter build.
 tree-sitter = "0.25"

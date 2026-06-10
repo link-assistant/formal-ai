@@ -1,0 +1,25 @@
+view
+  id M-ad13278b4b85
+  lemma threshold
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the starting point for a new state or experience"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the smallest detectable sensation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the entrance (the space in a wall) through which you enter or leave a room or building; the space that a door can close"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the sill of a door; a horizontal piece of wood or stone that forms the bottom of a doorway and offers support when passing through a doorway"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a region marking a boundary"
+    provenance (wordnet)

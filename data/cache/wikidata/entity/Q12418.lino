@@ -1,0 +1,17 @@
+Q12418
+  aliases
+    en ("La Gioconda" "Monna Lisa" "The Mona Lisa")
+    ru ("Джоконда")
+  descriptions
+    en "oil painting by Leonardo da Vinci in the Louvre, Paris"
+    hi "लिओनार्दो दा विंची के द्वारा कृत एक चित्र (1517)"
+    ru "картина Леонардо да Винчи"
+    zh "达·芬奇画作"
+  id Q12418
+  labels
+    en "Mona Lisa"
+    hi "मॉना लिसा"
+    ru "Мона Лиза"
+    zh "蒙娜丽莎"
+  type item
+success 1

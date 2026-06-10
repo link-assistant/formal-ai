@@ -1,0 +1,17 @@
+P30
+  aliases
+    ru ("часть света" "материк")
+    zh ("洲" "大陆" "大陸")
+  descriptions
+    en "continent of which the subject is a part"
+    hi "यह आइटम किस महाद्वीप में है?"
+    ru "континент, на котором находится элемент"
+    zh "主体所属的大洲"
+  id P30
+  labels
+    en continent
+    hi "महाद्वीप"
+    ru "континент"
+    zh "大洲"
+  type property
+success 1

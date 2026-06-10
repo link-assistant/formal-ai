@@ -1,0 +1,46 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (disadvantage drawback)
+      definitions
+        entry
+          definition "Any condition, circumstance, opportunity or means, particularly favorable to success, or to any desired end."
+          example "The enemy had the advantage of a more elevated position."
+        entry
+          definition "Superiority; mastery; — used with of to specify its nature or with over to specify the other party."
+        entry
+          definition "Superiority of state, or that which gives it; benefit; gain; profit"
+          example "Having the faster car is of little advantage."
+        entry
+          definition "The score where one player wins a point after deuce but needs the next to carry the game."
+        entry
+          definition "The continuation of the game after a foul against the attacking team, because the attacking team are in an advantageous position."
+        entry
+          definition "Interest of money; increase; overplus (as the thirteenth in the baker's dozen)."
+      partOfSpeech noun
+      synonyms (benefit edge foredeal value vantage)
+    entry
+      definitions
+        entry
+          definition "To provide (someone) with an advantage, to give an edge to"
+        entry
+          definition "To do something for one's own benefit; to take advantage of"
+      partOfSpeech verb
+      synonyms (benefit favor favorise)
+  phonetic "/ədˈvɑːn.tɪdʒ/"
+  phonetics
+    entry
+      audio ""
+      text "/ədˈvɑːn.tɪdʒ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/advantage-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1244113"
+      text "/ədˈvæn.tɪdʒ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/advantage")
+  word advantage

@@ -1,0 +1,27 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (lintel)
+      definitions
+        entry
+          definition "The bottom-most part of a doorway that one crosses to enter; a sill."
+        entry
+          definition "(by extension) An entrance; the door or gate of a house."
+        entry
+          definition "(by extension) Any end or boundary."
+        entry
+          definition "The outset of something; the point of entry, or the beginning of an action."
+        entry
+          definition "The start of the landing area of a runway."
+        entry
+          definition "The quantitative point at which an action is triggered, especially a lower limit."
+        entry
+          definition "The wage or salary at which income tax becomes due."
+        entry
+          definition "The point where one mentally or physically is vulnerable in response to provocation or to particular things in general. As in emotions, stress, or pain."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/threshold" "https://en.wiktionary.org/wiki/thresholds")
+  word thresholds

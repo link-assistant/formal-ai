@@ -1,0 +1,145 @@
+[
+  {
+    "word": "action",
+    "phonetic": "/ˈæk.ʃən/",
+    "phonetics": [
+      {
+        "text": "/ˈæk.ʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/action-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227724",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Something done so as to accomplish a purpose.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A way of motion or functioning.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Knead bread with a rocking action."
+          },
+          {
+            "definition": "Fast-paced activity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a movie full of exciting action"
+          },
+          {
+            "definition": "A mechanism; a moving part or assembly.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a rifle action"
+          },
+          {
+            "definition": "The mechanism, that is the set of moving mechanical parts, of a keyboard instrument, like a piano, which transfers the motion of the key to the sound-making device.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The distance separating the strings and the fretboard on a guitar.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Sexual intercourse.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She gave him some action."
+          },
+          {
+            "definition": "Combat.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He saw some action in the Korean War."
+          },
+          {
+            "definition": "A charge or other process in a law court (also called lawsuit and actio).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A mapping from a pairing of mathematical objects to one of them, respecting their individual structures. The pairing is typically a Cartesian product or a tensor product. The object that is not part of the output is said to act on the other object. In any given context, action is used as an abbreviation for a more fully named notion, like group action or left group action.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The product of energy and time, especially the product of the Lagrangian and time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The event or connected series of events, either real or imaginary, forming the subject of a play, poem, or other composition; the unfolding of the drama of events.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(painting and sculpture) The attitude or position of the several parts of the body as expressive of the sentiment or passion depicted.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Spin put on the bowling ball.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A share in the capital stock of a joint-stock company, or in the public funds.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "deed"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To act on a request etc, in order to put it into effect.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To initiate a legal action against someone.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "Demanding or signifying the start of something, usually an act or scene of a theatric performance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The director yelled ‘Action!’ before the camera started rolling."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/action"
+    ]
+  }
+]

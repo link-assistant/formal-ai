@@ -1,0 +1,13 @@
+view
+  id M-6f240f91522b
+  lemma prefix
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an affix that is added in front of the word"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attach a prefix to"
+    provenance (wordnet)

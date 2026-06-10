@@ -1,0 +1,17 @@
+view
+  id M-ce14aba7aeee
+  lemma used
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "employed in accomplishing something"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of persons) taken advantage of"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "previously used or owned by another"
+    provenance (wordnet)

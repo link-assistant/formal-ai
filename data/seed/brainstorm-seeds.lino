@@ -1,21 +1,21 @@
 brainstorm_seeds
-  trigger "brainstorm|give me five ideas|give me 5 ideas|give me ten ideas|give me 10 ideas|suggest five|suggest 5|suggest ten|suggest 10|five names|5 names|ten names|10 names|пять идей|5 идей|десять идей|10 идей|पाँच विचार|5 विचार|दस विचार|10 विचार|五个想法|5 个想法|十个想法|10 个想法|五个名字|十个名字"
-  category "names"
-    intent "brainstorm_names"
-    detection_keywords "name|names|имя|имена|названи|नाम|名字|名称"
-    item "TraceLint"
-    item "ReviewLink"
-    item "PatchSignal"
-    item "DiffAnchor"
-    item "CodeLedger"
-    item "SymbolScribe"
-    item "RuleBeacon"
-    item "LinkHarbor"
-    item "TraceForge"
-    item "PromptLedger"
-  category "project_ideas"
-    intent "brainstorm_project_ideas"
-    detection_keywords ""
+  trigger ("brainstorm" "give me five ideas" "give me 5 ideas" "give me ten ideas" "give me 10 ideas" "suggest five" "suggest 5" "suggest ten" "suggest 10" "five names" "5 names" "ten names" "10 names" "пять идей" "5 идей" "десять идей" "10 идей" "पाँच विचार" "5 विचार" "दस विचार" "10 विचार" "五个想法" "5 个想法" "十个想法" "10 个想法" "五个名字" "十个名字")
+  category names
+    intent brainstorm_names
+    detection_keywords ("name" "names" "имя" "имена" "названи" "नाम" "名字" "名称")
+    item TraceLint
+    item ReviewLink
+    item PatchSignal
+    item DiffAnchor
+    item CodeLedger
+    item SymbolScribe
+    item RuleBeacon
+    item LinkHarbor
+    item TraceForge
+    item PromptLedger
+  category project_ideas
+    intent brainstorm_project_ideas
+    detection_keywords
     item "A local Links Notation notebook with searchable traces."
     item "A deterministic code-review checklist generator."
     item "A multilingual prompt-variation test corpus."

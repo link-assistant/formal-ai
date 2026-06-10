@@ -1,0 +1,749 @@
+L3257
+  claims
+    P11055
+      entry
+        id L3257$d318d820-42d6-16cd-8d95-9f05fe1fbccf
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "75307"
+          hash 1926876587568e3c37e08e803afa7ec0bb8b09a8
+          property P11055
+          snaktype value
+        rank normal
+        type statement
+    P11130
+      entry
+        id L3257$394907d2-4cdf-363c-4107-1b8210518982
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value apple
+          hash 763cf4e363a07e1f2c4e5751e3b55e1c8077f4eb
+          property P11130
+          snaktype value
+        rank normal
+        type statement
+    P11138
+      entry
+        id L3257$6145FD25-6252-4567-B2DC-51E62403E3F0
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "831253"
+          hash 0da8f7fc032a85bce06d5553fa60c36699767055
+          property P11138
+          snaktype value
+        rank normal
+        type statement
+    P11481
+      entry
+        id L3257$8F256B83-9DD3-440D-9C33-66FE63CC5BEC
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value bsktm6q
+          hash abfa2f3a9dea76ac97fbc7c2edce3edf4ad7f1ec
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+      entry
+        id L3257$9FDE3274-8904-45BA-AF00-5062C4E1963F
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 5k4ms3a
+          hash f9e80f7204b21a0663fac98215b16c460b6968f2
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+      entry
+        id L3257$07434A3D-C919-4DF7-A79F-A0AA01DD0625
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value edw674i
+          hash dff07d7a0373c1c5647fc6e5200cc71506debc41
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+    P12056
+      entry
+        id L3257$ce3f6848-48bb-3cf5-f51b-b251fd6d07af
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "apple#etymonline_v_15505"
+          hash 362c4b0c3cf9fa9c8b8d274e6c08754ab2fc4bda
+          property P12056
+          snaktype value
+        rank normal
+        type statement
+    P12448
+      entry
+        id L3257$00D23C9B-2F69-4875-9589-499B95734EFA
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value ID_00001216
+          hash f2097d6359c31756ab15b943e304b28d68de28cc
+          property P12448
+          snaktype value
+        rank normal
+        type statement
+    P12510
+      entry
+        id L3257$46ED7D2A-CF86-49A8-ACF0-F1F319A0D83F
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8075151589"
+          hash cd5848eed542b4fa051a06f321a29582909d7a8b
+          property P12510
+          snaktype value
+        rank normal
+        type statement
+    P12573
+      entry
+        id L3257$597261A7-D5B4-44A6-B008-956DA547178B
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "982"
+          hash 50dc79e5845703c2c4e7ee603d142bca512b6a84
+          property P12573
+          snaktype value
+        rank normal
+        type statement
+    P12675
+      entry
+        id L3257$0B78F89A-5C4B-4EB9-9C18-AEA666F08E8E
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "342"
+          hash 4bb4cc37c4cfeacd68c6ddb3bf4f3e396842c99e
+          property P12675
+          snaktype value
+        rank normal
+        type statement
+    P12690
+      entry
+        id L3257$DFDC09B2-2822-45A2-A4D7-BC8366331F25
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1222504"
+          hash 7d94bf410949d026fcd2e8538322ae07af1092e9
+          property P12690
+          snaktype value
+        rank normal
+        type statement
+    P12718
+      entry
+        id L3257$14ADCE4A-0A7B-4315-9381-CEEC18A33A89
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0002665
+          hash 9eb91f6a5204c9648ae73cc5e95ec1a1199a5e6c
+          property P12718
+          snaktype value
+        rank normal
+        type statement
+    P12724
+      entry
+        id L3257$E0F898CC-FD48-4232-8057-8BEF077B44F9
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0002480
+          hash c0a33b4b128a6202305a18f0f154a1fc97bc76e8
+          property P12724
+          snaktype value
+        rank normal
+        type statement
+    P12726
+      entry
+        id L3257$3F167DD0-E7C4-4D86-8DE1-21C8B06C0147
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0002970
+          hash 5a18534d5f18c25978c6471a3c9d9e2ffaac80d6
+          property P12726
+          snaktype value
+        rank normal
+        type statement
+    P12739
+      entry
+        id L3257$B7F9F59E-B28B-4890-865E-18E98EEBC479
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0035330
+          hash 0cfb5bf50f5e702a7004151525d4c6c59874566b
+          property P12739
+          snaktype value
+        rank normal
+        type statement
+    P12868
+      entry
+        id L3257$B0045137-E69B-4F4D-87AB-737D9AA8A878
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 598_2
+          hash 83603b820b5b587025816c29c51734a4b68019ad
+          property P12868
+          snaktype value
+        rank normal
+        type statement
+    P13258
+      entry
+        id L3257$EB150F4D-223A-46EB-BD2A-978C8F26D5D4
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8044513"
+          hash 4362c4ffe8d5d0173155dbd3f3a764ee21984918
+          property P13258
+          snaktype value
+        rank normal
+        type statement
+    P5191
+      entry
+        id L3257$40e71d75-4e52-6ae8-f73c-9d36c42b33ee
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L183784
+              numeric-id 183784
+          hash 5bbb4d1439439324d4d369912fad03b96d1c45a3
+          property P5191
+          snaktype value
+        rank normal
+        references
+          entry
+            hash ec9f241720654d48cb1429aa647c77369c732851
+            snaks
+              P12056
+                entry
+                  datatype external-id
+                  datavalue
+                    type string
+                    value "apple#etymonline_v_15505"
+                  hash 362c4b0c3cf9fa9c8b8d274e6c08754ab2fc4bda
+                  property P12056
+                  snaktype value
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q1188617
+                      numeric-id 1188617
+                  hash 6ac7b4f3e9baba5637de5f4459551b29e2fc96e7
+                  property P248
+                  snaktype value
+              P813
+                entry
+                  datatype time
+                  datavalue
+                    type time
+                    value
+                      after 0
+                      before 0
+                      calendarmodel "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time "+2024-09-27T00:00:00Z"
+                      timezone 0
+                  hash 2438d592b0fd80054f0b1d6a01e9c38048dd5d68
+                  property P813
+                  snaktype value
+            snaks-order (P248 P12056 P813)
+        type statement
+    P5275
+      entry
+        id L3257$15AC937A-7421-405C-96A9-590EB6EA673B
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "9678"
+          hash fdb106f6e92b2fee610ced337fee30b128ff1b93
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5912
+      entry
+        id L3257$9A5A5F78-C596-466A-B628-9AE000A543D6
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "129562"
+          hash 8eb605a114f591e96ead94de7030b352e18d79cb
+          property P5912
+          snaktype value
+        rank normal
+        type statement
+    P7575
+      entry
+        id L3257$79b96b42-4479-a538-2809-20b287ef08ad
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value apple
+          hash 3e73ec19152e1c4349e0214d644b4f8df1e72e63
+          property P7575
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3257-F1$0283cc73-4f7f-b1c4-6865-55618f750cd0
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-apple.ogg
+              hash 176f97287ead7e6c07d17b300ef12e31c40979b9
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3257-F1$b098a5c9-43ff-e05a-5bd0-441b9e1b636f
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-uk-apple.ogg
+              hash 63c582b27cd9bf46323099611dce06c941f9853a
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+        P898
+          entry
+            id L3257-F1$6b031033-493d-3667-b9f1-981fbffbdb28
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "ˈæp.əl"
+              hash 18b81c957c5d142fd95c11ad211e0212ef587242
+              property P898
+              snaktype value
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786)
+      id L3257-F1
+      representations
+        en
+          language en
+          value apple
+    entry
+      claims
+        P443
+          entry
+            id L3257-F2$56e97c8f-866c-4e6e-9ddb-81ceb07c846d
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "LL-Q1860 (eng)-Wodencafe-apples.wav"
+              hash 2c163a96057ae117a65c2963da94d2180009f66c
+              property P443
+              snaktype value
+            rank normal
+            references
+              entry
+                hash e59bd317a62d272199a7513bc61ffa4e5e55ac90
+                snaks
+                  P854
+                    entry
+                      datatype url
+                      datavalue
+                        type string
+                        value "https://lingualibre.org/wiki/Q1349305"
+                      hash 947cd2bab6ba63732f717b8714f5e2f1ffae340e
+                      property P854
+                      snaktype value
+                snaks-order (P854)
+            type statement
+      grammaticalFeatures (Q146786)
+      id L3257-F2
+      representations
+        en
+          language en
+          value apples
+  id L3257
+  language Q1860
+  lastrevid 2498964047
+  lemmas
+    en apple
+  lexicalCategory Q1084
+  modified "2026-05-29T01:41:33Z"
+  ns 146
+  pageid 55158049
+  senses
+    entry
+      claims
+        P11774
+          entry
+            id L3257-S1$8d774cab-4c6d-39ec-c358-2689917b7e5e
+            mainsnak
+              datatype external-id
+              datavalue
+                type string
+                value "5059"
+              hash b361a6a338f2eb6376a4a9d77744c6089b217626
+              property P11774
+              snaktype value
+            rank normal
+            type statement
+        P18
+          entry
+            id L3257-S1$596054e0-4a97-526d-143c-48a3c642d7a8
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Apple red delicius flower end.jpg"
+              hash 83e6a02a5ffd9bd2938d68e7eb7dd899dc4e5c19
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3257-S1$35c06f9a-497d-fa10-0cf5-d8f0d7f0b02c
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q89
+                  numeric-id 89
+              hash 959100847a230a3141a536572370332683443f8b
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+        P5972
+          entry
+            id L3257-S1$6c3e7ea2-470d-e8da-71a7-a95df951236c
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L53267-S1
+              hash 22eb88adf31f94a2fc09a473ab2343fe5f7533f9
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$5A9932E1-E3C5-474D-BC9B-1B5568734D3D
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L37724-S1
+              hash d4094fc68ed8a4546f939c42cdb33af1b8b563c0
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$6b5348f0-4e67-6746-2696-8f3dcca69c4b
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L819-S1
+              hash e4d30fd5c77ed588d0fcd2b10cd9f47f32cdf844
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$823a77f9-49fe-e784-f990-09686c0a172e
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L307211-S1
+              hash 9a4599a3a38b50d8e4f33b69bd1d591dfaae6a59
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$8311BEBD-F2F7-4210-A59A-675075F3A19E
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L346351-S1
+              hash d3f55c528dc483fa4c1bac2c7956b23b8237f301
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$f9b18485-40be-f1f8-cfb0-56a8383880e4
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L455955-S1
+              hash d3f40b004b9e7ccaa4b6e431591e97c09adfb141
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$9861f3cd-4c27-958a-2059-5d11eaf197e9
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L60645-S1
+              hash 49bbc87c3db2d81b6b3fcec9b1245dcaca92dd71
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$c651fa2c-4e19-4c6b-fbf6-43a2cb529606
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L944286-S1
+              hash aea8618cf666cc2ed5d7bcc412441e01a22e0c2d
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3257-S1$8871a790-4dee-4eb0-fe08-7772a33b0e3f
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L238419-S1
+              hash 2525235e0d4116f239e667fc35d74915ab6e395a
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        ar
+          language ar
+          value "تفاحة"
+        ba
+          language ba
+          value "алмағас емеше"
+        de
+          language de
+          value "Frucht eines Baums aus der Gattung Malus"
+        el
+          language el
+          value "στρογγυλό φρούτο, καρπός του δέντρου μηλιά"
+        en
+          language en
+          value "a fruit of a tree of the genus Malus"
+        eo
+          language eo
+          value pomo
+        fr
+          language fr
+          value "une pomme"
+        ml
+          language ml
+          value "ആപ്പിൾ"
+        nan
+          language nan
+          value "phōng-kó"
+        ru
+          language ru
+          value "яблоко"
+        ta
+          language ta
+          value "ஆப்பிள்"
+        zh
+          language zh
+          value "蘋果"
+        zh-hans
+          language zh-hans
+          value "苹果"
+        zh-tw
+          language zh-tw
+          value "蘋果"
+      id L3257-S1
+    entry
+      claims
+        P18
+          entry
+            id L3257-S2$5e30f0d1-485e-7d06-1d97-14ab3021df1d
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Tree with red apples in Barkedal 4.jpg"
+              hash 27da125b03428daaa0a9bf72c1405bdab94acee2
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3257-S2$f109fcee-4b72-ab68-3c76-d29f5ca5b088
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q18674606
+                  numeric-id 18674606
+              hash 77ae035b4f5fa41a6c8059aba7d925ac280bc5e9
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "a tree of the genus Malus"
+      id L3257-S2
+    entry
+      claims
+        P5973
+          entry
+            id L3257-S3$504c0bda-4990-6b27-de3d-5a9e2e738541
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L183785-S1
+              hash 207ca3c992943dab67e301be9f74ddb3eedb197b
+              property P5973
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "the wood of a tree of the genus Malus"
+      id L3257-S3
+    entry
+      claims
+        P5137
+          entry
+            id L3257-S4$22AEAD90-99BE-40B7-89ED-75AB8E3F8D8F
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q62474609
+                  numeric-id 62474609
+              hash f08e26e3c4aa08bf056ea1b8a01e8983c8edb8f6
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "type of wood"
+      id L3257-S4
+  title "Lexeme:L3257"
+  type lexeme
+success 1

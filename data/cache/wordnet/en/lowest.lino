@@ -1,0 +1,18 @@
+language en
+lemma lowest
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in the lowest position; nearest the ground"
+    examples ("the branch with the big peaches on it hung lowest")
+    id oewn-00395144-r
+    partOfSpeech r
+  entry
+    definition "lowest in rank or importance"
+    examples ("last prize" "in last place")
+    id oewn-00231668-s
+    partOfSpeech s
+    synonyms (last last-place)
+source "oewn:2024"

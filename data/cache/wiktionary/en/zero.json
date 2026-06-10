@@ -1,0 +1,233 @@
+[
+  {
+    "word": "zero",
+    "phonetic": "/ˈzɪəɹəʊ/",
+    "phonetics": [
+      {
+        "text": "/ˈzɪəɹəʊ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/zero-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75858300",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈzɪəɹəʊ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈzɪəɹəʊ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈzi(ˌ)ɹoʊ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/zero-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=867613",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The numeric symbol that represents the cardinal number zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In unary and k-adic notation in general, zero is the empty string."
+          },
+          {
+            "definition": "The digit 0 in the decimal, binary, and all other base numbering systems.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "One million has six zeroes."
+          },
+          {
+            "definition": "Nothing, or none.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He knows zero about humour."
+          },
+          {
+            "definition": "The value of a magnitude corresponding to the cardinal number zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The electromagnetic field does not drop all of the way to zero before a reversal."
+          },
+          {
+            "definition": "The point on a scale at which numbering or measurement originates.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The temperature outside is ten degrees below zero."
+          },
+          {
+            "definition": "A value of the independent variables of a function, for which the function is equal to zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The derivative of a continuous, differentiable function that twice crosses the axis must have a zero."
+          },
+          {
+            "definition": "The additive identity element of a monoid or greater algebraic structure, particularly a group or ring.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Since a commutative zero is the inverse of any additive identity, it must be unique when it exists."
+          },
+          {
+            "definition": "A person of little or no importance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They rudely treated him like a zero."
+          },
+          {
+            "definition": "A Mitsubishi A6M Zero, a long range fighter aircraft operated by the Japanese Navy Air Service from 1940 to 1945.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A setting of calibrated instruments such as a firearm.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A security which has a zero coupon (paying no periodic interest).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The takeovers were financed by issuing zeroes."
+          }
+        ],
+        "synonyms": [
+          "slashed zero",
+          "additive identity",
+          "nadir",
+          "bugger all",
+          "fuck all",
+          "nada",
+          "naught",
+          "nil",
+          "nothing",
+          "nought",
+          "nowt",
+          "null",
+          "sod all",
+          "sweet FA",
+          "sweet Fanny Adams",
+          "zilch",
+          "zip",
+          "cipher",
+          "cipher",
+          "nobody",
+          "nonentity",
+          "origin",
+          "zero point",
+          "root"
+        ],
+        "antonyms": [
+          "pole"
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To set a measuring instrument to zero; to calibrate instrument scale to valid zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Zero the fluorometer with the same solvent used in extraction."
+          },
+          {
+            "definition": "To change a memory location or range to values of zero; to set a variable in a computer program to zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Results were inconsistent because an array wasn’t zeroed during initialization."
+          },
+          {
+            "definition": "To cause or set some value or amount to be zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They tried to zero the budget by the end of the quarter."
+          },
+          {
+            "definition": "To eliminate; to delete; to overwrite with zeros.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To disappear",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "zero out",
+          "tare"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "No, not any",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She showed zero respect."
+          },
+          {
+            "definition": "Of a cloud ceiling, limiting vision to 50 feet (15 meters) or less.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Of horizontal visibility, limited to 165 feet (50.3 meters) or less.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Present at an abstract level, but not realized in the surface form.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The stem of \"kobieta\" with the zero ending is \"kobiet\"."
+          }
+        ],
+        "synonyms": [
+          "no"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "The cardinal number occurring before one and that denotes no quantity or amount at all, represented in Arabic numerals as 0.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A cheque for zero dollars and zero cents crashed the computers on division by zero."
+          }
+        ],
+        "synonyms": [
+          "0",
+          "cipher",
+          "goose egg",
+          "love",
+          "naught",
+          "nil",
+          "no",
+          "nought",
+          "null"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/zero"
+    ]
+  }
+]

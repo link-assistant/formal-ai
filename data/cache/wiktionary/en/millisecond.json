@@ -1,0 +1,35 @@
+[
+  {
+    "word": "millisecond",
+    "phonetic": "/ˈmɪlɪˌsɛkənd/",
+    "phonetics": [
+      {
+        "text": "/ˈmɪlɪˌsɛkənd/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One one-thousandth of a second. Symbol: ms.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "millisec"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/millisecond"
+    ]
+  }
+]

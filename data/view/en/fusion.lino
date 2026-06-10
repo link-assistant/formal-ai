@@ -1,0 +1,33 @@
+view
+  id M-fce812712a71
+  lemma fusion
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an occurrence that involves the production of a union"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of being combined into one body"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the merging of adjacent sounds or syllables or words"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a nuclear reaction in which nuclei combine to form more massive nuclei with the simultaneous release of energy"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the combining of images from the two eyes to form a single visual percept"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "correction of an unstable part of the spine by joining two or more vertebrae; usually done surgically but sometimes done by traction or immobilization"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of fusing (or melting) together"
+    provenance (wordnet)

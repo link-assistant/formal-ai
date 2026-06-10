@@ -1,0 +1,98 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (annoy disgust displease irritate)
+      definitions
+        entry
+          definition "To make happy or satisfy; to give pleasure to."
+          example "Her presentation pleased the executives."
+        entry
+          definition "To desire; to will; to be pleased by."
+          example "Just do as you please."
+      partOfSpeech verb
+      synonyms (desire will satisfy)
+  phonetic "/pliːz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9023308"
+      text "/pliːz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1118858"
+      text "/pliz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/please")
+  word please
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Used to make a polite request."
+          example "Could you tell me the time, please?"
+        entry
+          definition "Used as an affirmative to an offer."
+          example "—May I help you? —Please."
+        entry
+          definition "An expression of annoyance or impatience."
+          example "Oh, please, do we have to hear that again?"
+      partOfSpeech adverb
+  phonetic "/pliːz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9023308"
+      text "/pliːz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1118858"
+      text "/pliz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/please")
+  word please
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(Cincinnati) Said as a request to repeat information."
+      partOfSpeech adverb
+      synonyms ("come again" "excuse me" "pardon me" what)
+  phonetic "/pliːz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9023308"
+      text "/pliːz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1118858"
+      text "/pliz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/please")
+  word please

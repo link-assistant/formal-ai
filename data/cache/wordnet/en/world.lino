@@ -1,0 +1,60 @@
+language en
+lemma world
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "everything that exists anywhere"
+    examples ("they study the evolution of the universe" "the biggest tree in existence")
+    id oewn-09489410-n
+    partOfSpeech n
+    synonyms (universe existence creation cosmos macrocosm)
+  entry
+    definition "people in general; especially a distinctive group of people with some shared interest"
+    examples ("the Western world")
+    id oewn-07982551-n
+    partOfSpeech n
+    synonyms (domain)
+  entry
+    definition "all of your experiences that determine how things appear to you"
+    examples ("his world was shattered" "we live in different worlds" "for them demons were as much a part of reality as trees were")
+    id oewn-05817904-n
+    partOfSpeech n
+    synonyms (reality)
+  entry
+    definition "the 3rd planet from the sun; the planet we live on"
+    examples ("the Earth moves around the sun" "he sailed around the world")
+    id oewn-09293800-n
+    partOfSpeech n
+    synonyms (Earth earth globe)
+  entry
+    definition "people in general considered as a whole"
+    examples ("he is a hero in the eyes of the public")
+    id oewn-08196607-n
+    partOfSpeech n
+    synonyms (populace public)
+  entry
+    definition "a part of the earth that can be considered separately"
+    examples ("the outdoor world" "the world of insects")
+    id oewn-09503939-n
+    partOfSpeech n
+  entry
+    definition "the concerns of this life as distinguished from heaven and the afterlife"
+    examples ("they consider the church to be independent of the world")
+    id oewn-05678816-n
+    partOfSpeech n
+    synonyms ("worldly concern" "earthly concern" earth)
+  entry
+    definition "all of the living human inhabitants of the earth"
+    examples ("all the world loves a lover" "she always used ‘humankind’ because ‘mankind’ seemed to slight the women")
+    id oewn-02475618-n
+    partOfSpeech n
+    synonyms ("human race" humanity humankind "human beings" humans mankind man)
+  entry
+    definition "involving the entire earth; not limited or provincial in scope"
+    examples ("global war" "global monetary policy" "neither national nor continental but planetary" "a world crisis" "of worldwide significance")
+    id oewn-01573077-s
+    partOfSpeech s
+    synonyms (global planetary worldwide world-wide)
+source "oewn:2024"

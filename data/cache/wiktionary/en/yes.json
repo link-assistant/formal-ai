@@ -1,0 +1,115 @@
+[
+  {
+    "word": "yes",
+    "phonetic": "/jɛs/",
+    "phonetics": [
+      {
+        "text": "/jɛs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/yes.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718836",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An affirmative expression; an answer that shows agreement or acceptance.",
+            "synonyms": [
+              "aye",
+              "nod",
+              "yea"
+            ],
+            "antonyms": [
+              "nay",
+              "no"
+            ],
+            "example": "Was that a yes?"
+          },
+          {
+            "definition": "A vote of support or in favor/favour of something.",
+            "synonyms": [
+              "aye",
+              "yea"
+            ],
+            "antonyms": [
+              "nay"
+            ],
+            "example": "The workers voted on whether to strike, and there were thirty \"yeses\" and one \"no\"."
+          }
+        ],
+        "synonyms": [
+          "aye",
+          "nod",
+          "yea",
+          "aye",
+          "yea"
+        ],
+        "antonyms": [
+          "nay",
+          "nay",
+          "no"
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To agree with, affirm, approve.",
+            "synonyms": [
+              "agree",
+              "consent",
+              "nod"
+            ],
+            "antonyms": [],
+            "example": "Did he yes the veto?"
+          },
+          {
+            "definition": "To attempt to flatter someone by habitually agreeing",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "agree",
+          "consent",
+          "nod"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "Used to express pleasure, joy, or great excitement.",
+            "synonyms": [],
+            "antonyms": [
+              "no"
+            ],
+            "example": "Our second goal of the match! Yes!"
+          },
+          {
+            "definition": "Response that confirms that the user is paying attention.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "no"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/yes"
+    ]
+  }
+]

@@ -1,0 +1,296 @@
+[
+  {
+    "word": "mod",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mod-1-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79241465",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/mɒd/",
+        "audio": ""
+      },
+      {
+        "text": "/mɑd/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An unconventionally modern style of fashionable dress originating in England in the 1960s, characterized by ankle-length black trenchcoats and sunglasses.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A 1960s British person who dressed in such a style and was interested in modernism and the modern music of the time; the opposite of a rocker.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A modification.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An end user-created package containing modifications to the look or behaviour of a video game.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A moderator, for example on a discussion forum.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A module (file containing a tracker music sequence).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A moderately difficult route.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(in the plural, Oxford University) Moderations: university examinations generally taken in the first year.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To modify (an object) from its original condition, typically for the purposes of individualizing and/or enhancing the performance of the object.",
+            "synonyms": [
+              "trick",
+              "trick out"
+            ],
+            "antonyms": [],
+            "example": "His friends were particularly impressed with the way he modded his Ruckus."
+          },
+          {
+            "definition": "To moderate; to silence or punish (a rule-breaking user) on a forum, especially when done by a moderator.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Don't break the rules or you'll be modded."
+          }
+        ],
+        "synonyms": [
+          "trick",
+          "trick out"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One of several ancient Greek scales.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One of several common scales in modern Western music, one of which corresponds to the modern major scale and one to the natural minor scale.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A particular means of accomplishing something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "What was the mode of entry?"
+          },
+          {
+            "definition": "A particular state of being, or frame of mind.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After a series of early setbacks, her political campaign is in crisis mode."
+          },
+          {
+            "definition": "The most frequently occurring value in a distribution",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A state of a system that is represented by an eigenfunction of that system.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One of various related sets of rules for processing data; more generally, any state of the system associated with certain behaviours.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In insert mode, characters typed are directly inserted into the buffer."
+          },
+          {
+            "definition": "A series of settings on a device used for a specific purpose.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "airplane mode; night mode"
+          },
+          {
+            "definition": "A variation in gameplay, such as a difficulty level.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(grammar) A verb form that depends on how its containing clause relates to the speaker’s or writer’s wish, intent, or assertion about reality.",
+            "synonyms": [
+              "grammatical mood",
+              "mood"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "That which exists only as a quality of substance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In lace-making, a small decorative piece inserted into a pattern.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The openwork between the solid parts of a pattern.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A woman's mantle with a hood.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "grammatical mood",
+          "mood"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Style or fashion; popular trend.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her wardrobe is always in mode."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Not excessive; acting in moderation",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a moderate Calvinist"
+          },
+          {
+            "definition": "Mediocre",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Average priced; standard-deal",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Not violent or rigorous; temperate; mild; gentle.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a moderate winter"
+          },
+          {
+            "definition": "Having an intermediate position between liberal and conservative.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The base with respect to which a congruence is computed.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The absolute value of a complex number.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A coefficient that expresses how much of a certain property is possessed by a certain substance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An operator placed between two numbers, to get the remainder of the division of those numbers.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "%",
+          "mod"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mod",
+      "https://en.wiktionary.org/wiki/mode",
+      "https://en.wiktionary.org/wiki/moderate",
+      "https://en.wiktionary.org/wiki/modulus"
+    ]
+  },
+  {
+    "word": "mod",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A festival of Scottish Gaelic song, arts and culture, akin to the Welsh eisteddfod.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mod"
+    ]
+  }
+]

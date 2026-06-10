@@ -1,0 +1,64 @@
+{
+  "lemma": "replace",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00162496-v",
+      "partOfSpeech": "v",
+      "definition": "substitute a person or thing for (another that is broken or inefficient or lost or no longer working or yielding what is expected)",
+      "examples": [
+        "He replaced the old razor blade",
+        "We need to replace the secretary that left a month ago",
+        "the insurance will replace the lost income",
+        "This antique vase can never be replaced"
+      ]
+    },
+    {
+      "id": "oewn-02410532-v",
+      "partOfSpeech": "v",
+      "definition": "take the place or move into the position of",
+      "examples": [
+        "Smith replaced Miller as CEO after Miller left",
+        "the computer has supplanted the slide rule",
+        "Mary replaced Susan as the team's captain and the highest-ranked player in the school"
+      ],
+      "synonyms": [
+        "supplant",
+        "supersede",
+        "supervene upon"
+      ]
+    },
+    {
+      "id": "oewn-01311041-v",
+      "partOfSpeech": "v",
+      "definition": "put something back where it belongs",
+      "examples": [
+        "replace the book on the shelf after you have finished reading it",
+        "please put the clean dishes back in the cabinet when you have washed them"
+      ],
+      "synonyms": [
+        "put back"
+      ]
+    },
+    {
+      "id": "oewn-02262575-v",
+      "partOfSpeech": "v",
+      "definition": "put in the place of another; switch seemingly equivalent items",
+      "examples": [
+        "the con artist replaced the original with a fake Rembrandt",
+        "substitute regular milk for fat-free milk",
+        "synonyms can be interchanged without changing the context's meaning"
+      ],
+      "synonyms": [
+        "substitute",
+        "interchange",
+        "exchange"
+      ]
+    }
+  ]
+}

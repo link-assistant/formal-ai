@@ -1,0 +1,47 @@
+[
+  {
+    "word": "vowels",
+    "phonetic": "/ˈvaʊlz/",
+    "phonetics": [
+      {
+        "text": "/ˈvaʊlz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/vowels-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=80152222",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A sound produced by the vocal cords with relatively little restriction of the oral cavity, forming the prominent sound of a syllable.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A letter representing the sound of vowel; in English, the vowels are a, e, i, o, u, and sometimes y.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "consonant",
+          "consonant"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/vowel",
+      "https://en.wiktionary.org/wiki/vowels"
+    ]
+  }
+]

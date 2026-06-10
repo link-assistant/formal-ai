@@ -1,0 +1,19 @@
+language en
+lemma summarise
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "be a summary of"
+    examples ("The abstract summarizes the main ideas in the paper")
+    id oewn-02758570-v
+    partOfSpeech v
+    synonyms (summarize sum "sum up")
+  entry
+    definition "give a summary (of)"
+    examples ("he summed up his results" "I will now summarize")
+    id oewn-01009951-v
+    partOfSpeech v
+    synonyms ("sum up" summarize resume)
+source "oewn:2024"

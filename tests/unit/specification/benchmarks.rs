@@ -348,11 +348,8 @@ fn issue_326_program_synthesis_accepts_native_operation_verbs() {
         expected_fragment: &'static str,
     }
 
-    let supported = formal_ai::seed::agent_info()
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages")
-        .split('|')
-        .map(ToOwned::to_owned)
+    let supported = formal_ai::supported_languages()
+        .into_iter()
         .collect::<BTreeSet<_>>();
     let cases = [
         Case {
@@ -562,14 +559,15 @@ fn split_records(text: &str) -> Vec<String> {
     let mut records = Vec::new();
     let mut current = Vec::new();
     for line in text.lines() {
+        let line = line.trim_end();
         if line.trim().is_empty() {
-            if !current.is_empty() {
-                records.push(current.join("\n"));
-                current.clear();
-            }
-        } else {
-            current.push(line.trim_end().to_owned());
+            continue;
         }
+        if !line.starts_with(char::is_whitespace) && !current.is_empty() {
+            records.push(current.join("\n"));
+            current.clear();
+        }
+        current.push(line.to_owned());
     }
     if !current.is_empty() {
         records.push(current.join("\n"));

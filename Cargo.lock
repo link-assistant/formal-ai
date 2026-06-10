@@ -720,6 +720,7 @@ dependencies = [
  "clap",
  "doublets",
  "link-calculator",
+ "links-notation",
  "lino-arguments",
  "lino-objects-codec",
  "meta-language",

@@ -1,0 +1,33 @@
+view
+  id M-a311dbd5392b
+  lemma damage
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the occurrence of a change for the worse"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "loss of military equipment"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of damaging something or someone"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the amount of money needed to purchase something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any harm or injury resulting from a violation of a legal right"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "inflict damage upon"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "suffer or be susceptible to damage"
+    provenance (wordnet)

@@ -5,7 +5,6 @@ source_issue_1
   download "gh issue view https://github.com/link-assistant/formal-ai/issues/1 --json number,title,body,comments"
   license "repository-local issue text"
   conversion "store requirement statements and PR feedback as Links Notation records"
-
 source_openai_chat_completions
   title "OpenAI Chat Completions API shape"
   kind "api-reference"
@@ -13,7 +12,6 @@ source_openai_chat_completions
   download "official documentation page"
   license "reference only; do not vendor documentation text"
   conversion "convert field names and compatibility notes into schema records"
-
 source_openai_responses
   title "OpenAI Responses API shape"
   kind "api-reference"
@@ -21,7 +19,6 @@ source_openai_responses
   download "official documentation page"
   license "reference only; do not vendor documentation text"
   conversion "convert field names and compatibility notes into schema records"
-
 source_agent
   title "link-assistant agent"
   kind "agent-integration"
@@ -29,7 +26,6 @@ source_agent
   download "gh repo view link-assistant/agent --json name,description,licenseInfo,url"
   license "own project; verify repository license before copying source text"
   conversion "index integration expectations and HTTP client assumptions"
-
 source_wikidata
   title "Wikidata entity dumps"
   kind "knowledge-graph"
@@ -37,7 +33,6 @@ source_wikidata
   download "https://dumps.wikimedia.org/wikidatawiki/entities/latest-all.json.bz2"
   license "external data; preserve attribution and license metadata"
   conversion "stream entities into chunked entity records with stable Wikidata IDs"
-
 source_wikipedia
   title "Wikipedia dumps"
   kind "corpus"
@@ -45,7 +40,6 @@ source_wikipedia
   download "https://dumps.wikimedia.org/enwiki/latest/"
   license "external data; preserve attribution and license metadata"
   conversion "chunk pages into document, paragraph, sentence, and phrase links"
-
 source_wiktionary
   title "Wiktionary entries"
   kind "dictionary"
@@ -53,7 +47,6 @@ source_wiktionary
   download "https://en.wiktionary.org/w/api.php?action=opensearch&search=digress&limit=3&format=json&origin=*"
   license "external dictionary; preserve attribution and license metadata"
   conversion "use CORS-readable opensearch summaries as live dictionary fallback records"
-
 source_cambridge_dictionary
   title "Cambridge Dictionary"
   kind "dictionary"
@@ -61,7 +54,6 @@ source_cambridge_dictionary
   download "connectivity dashboard page/proxy capture"
   license "external dictionary; preserve attribution; do not vendor page text"
   conversion "use as a dictionary reference source and connectivity target"
-
 source_merriam_webster_dictionary
   title "Merriam-Webster Dictionary"
   kind "dictionary"
@@ -69,7 +61,6 @@ source_merriam_webster_dictionary
   download "connectivity dashboard page/proxy capture"
   license "external dictionary; preserve attribution; do not vendor page text"
   conversion "use as a dictionary reference source and connectivity target"
-
 source_dictionary_com
   title "Dictionary.com"
   kind "dictionary"
@@ -77,7 +68,6 @@ source_dictionary_com
   download "connectivity dashboard page/proxy capture"
   license "external dictionary; preserve attribution; do not vendor page text"
   conversion "use as a dictionary reference source and connectivity target"
-
 source_collins_dictionary
   title "Collins English Dictionary"
   kind "dictionary"
@@ -85,7 +75,6 @@ source_collins_dictionary
   download "connectivity dashboard page/proxy capture"
   license "external dictionary; preserve attribution; do not vendor page text"
   conversion "use as a dictionary reference source and connectivity target"
-
 source_rosetta_code
   title "Rosetta Code tasks"
   kind "code-corpus"
@@ -93,7 +82,6 @@ source_rosetta_code
   download "https://rosettacode.org/wiki/Hello_world/Text"
   license "external data; transform and retain source/license fields"
   conversion "convert task, language, solution, and test intent records"
-
 source_humaneval
   title "HumanEval"
   kind "programming-benchmark"
@@ -101,7 +89,6 @@ source_humaneval
   download "https://raw.githubusercontent.com/openai/human-eval/6d43fb980f9fee3c892a914eda09951f772ad10d/data/HumanEval.jsonl.gz"
   license "MIT; source revision 6d43fb980f9fee3c892a914eda09951f772ad10d"
   conversion "import selected prompt/test expectations as deterministic benchmark_case records"
-
 source_mbpp
   title "Mostly Basic Python Problems"
   kind "programming-benchmark"
@@ -109,7 +96,6 @@ source_mbpp
   download "https://raw.githubusercontent.com/google-research/google-research/1fa17414f56c3703d5adb3818338b6e35e0fd550/mbpp/mbpp.jsonl"
   license "Apache-2.0; source revision 1fa17414f56c3703d5adb3818338b6e35e0fd550"
   conversion "import selected prompt/test expectations as deterministic benchmark_case records"
-
 source_gsm8k
   title "GSM8K"
   kind "problem-solving-benchmark"
@@ -117,7 +103,6 @@ source_gsm8k
   download "https://raw.githubusercontent.com/openai/grade-school-math/3101c7d5072418e28b9008a6636bde82a006892c/grade_school_math/data/test.jsonl"
   license "MIT; source revision 3101c7d5072418e28b9008a6636bde82a006892c"
   conversion "import selected word-problem prompts and numeric answer checks as deterministic benchmark_case records"
-
 source_math_dataset
   title "MATH"
   kind "math-benchmark"
@@ -125,7 +110,6 @@ source_math_dataset
   download "https://huggingface.co/datasets/qwedsacf/competition_math/resolve/e839825f9ec5c6cfa585c654a59610969ec13993/data/train-00000-of-00001-7320a6f3aba8ebd2.parquet"
   license "MIT; Hugging Face revision e839825f9ec5c6cfa585c654a59610969ec13993"
   conversion "import selected competition-math prompt and final-answer check as deterministic benchmark_case records"
-
 source_bigbench_object_counting
   title "BIG-bench object_counting"
   kind "general-problem-solving-benchmark"
@@ -133,7 +117,6 @@ source_bigbench_object_counting
   download "https://raw.githubusercontent.com/google/BIG-bench/092b196c1f8f14a54bbc62f24759d43bde46dd3b/bigbench/benchmark_tasks/object_counting/task.json"
   license "Apache-2.0; source revision 092b196c1f8f14a54bbc62f24759d43bde46dd3b"
   conversion "import selected exact-match target as a deterministic benchmark_case record"
-
 source_canitedit
   title "CanItEdit"
   kind "coding-modification-benchmark"
@@ -141,7 +124,6 @@ source_canitedit
   download "https://huggingface.co/datasets/nuprl/CanItEdit/resolve/main/data/test-00000-of-00001.parquet"
   license "MIT; GitHub revision 74d15ea7e6207cb9fdeeecd761907371d4cc2e26; Hugging Face revision 3c07f38b1f9385f3214fcea94d4664c79df0d36a"
   conversion "download external parquet at test time and use as instructed code-editing benchmark provenance"
-
 source_humanevalfix
   title "HumanEvalFix from HumanEvalPack"
   kind "coding-modification-benchmark"
@@ -149,7 +131,6 @@ source_humanevalfix
   download "https://huggingface.co/datasets/bigcode/humanevalpack/resolve/main/python/test-00000-of-00001.parquet"
   license "MIT; GitHub revision e17a8f6470264286bc6a52eb8263582083bf3bf6; Hugging Face revision 9a41762f73a8cb23bb5811b73d5aab164efcf378"
   conversion "download external parquet at test time and use as program-repair benchmark provenance"
-
 source_editbench
   title "EDIT-Bench"
   kind "coding-modification-benchmark"
@@ -157,7 +138,6 @@ source_editbench
   download "https://huggingface.co/datasets/copilot-arena/editbench/resolve/main/data/test-00000-of-00001.parquet"
   license "Apache-2.0; GitHub revision 2ecd13159711d2d5bbdf36700119b4278f387dc0; Hugging Face revision 0d41afafcfe7c759adcd2eaceabfa486ab6eb0e2"
   conversion "download external parquet at test time and use as real-world instructed code-editing benchmark provenance"
-
 source_edit_but_verify
   title "Edit, But Verify"
   kind "benchmark-audit"
@@ -165,7 +145,6 @@ source_edit_but_verify
   download "https://arxiv.org/html/2604.05100"
   license "CC BY-NC-ND 4.0 arXiv paper; reference only"
   conversion "record audit caveats for code-editing benchmark representativeness and oracle strength"
-
 source_wikifunctions
   title "Wikifunctions"
   kind "function-corpus"
@@ -173,7 +152,6 @@ source_wikifunctions
   download "https://www.wikifunctions.org/wiki/Special:AllPages"
   license "external data; preserve attribution and license metadata"
   conversion "convert functions, implementations, tests, and natural-language labels"
-
 source_hello_world_collection
   title "Hello World Collection"
   kind "hello-world-corpus"
@@ -181,7 +159,6 @@ source_hello_world_collection
   download "http://helloworldcollection.de"
   license "external data; use transformed Links Notation records, not verbatim pages"
   conversion "seed language aliases and self-authored hello-world templates"
-
 source_hive_mind_issues
   title "link-assistant hive-mind issues"
   kind "task-corpus"
@@ -189,7 +166,6 @@ source_hive_mind_issues
   download "gh api repos/link-assistant/hive-mind/issues --paginate"
   license "own project issue data"
   conversion "convert task descriptions and labels into problem-solving traces"
-
 source_hive_mind_pulls
   title "link-assistant hive-mind pull requests"
   kind "review-corpus"
@@ -197,7 +173,6 @@ source_hive_mind_pulls
   download "gh api repos/link-assistant/hive-mind/pulls --paginate"
   license "own project PR data"
   conversion "convert diffs, comments, logs, and outcomes into reasoning traces"
-
 source_calculator
   title "link-assistant calculator"
   kind "related-project"
@@ -205,7 +180,6 @@ source_calculator
   download "gh repo view link-assistant/calculator --json name,description,licenseInfo,url"
   license "own project; verify repository license before copying source text"
   conversion "index symbolic arithmetic patterns and tests"
-
 source_human_language
   title "link-assistant human-language"
   kind "related-project"
@@ -213,7 +187,6 @@ source_human_language
   download "gh repo view link-assistant/human-language --json name,description,licenseInfo,url"
   license "own project; verify repository license before copying source text"
   conversion "index language parsing concepts and examples"
-
 source_meta_expression
   title "link-assistant meta-expression"
   kind "related-project"
@@ -221,7 +194,6 @@ source_meta_expression
   download "gh repo view link-assistant/meta-expression --json name,description,licenseInfo,url"
   license "own project; verify repository license before copying source text"
   conversion "index expression representation and transformation ideas"
-
 source_relative_meta_logic
   title "relative-meta-logic"
   kind "prover"
@@ -229,7 +201,6 @@ source_relative_meta_logic
   download "gh repo view link-foundation/relative-meta-logic --json name,description,licenseInfo,url"
   license "related project; verify repository license before copying source text"
   conversion "index formal statement and prover integration boundaries"
-
 source_command_stream
   title "command-stream"
   kind "dependency"
@@ -237,7 +208,6 @@ source_command_stream
   download "gh repo view link-foundation/command-stream --json name,description,licenseInfo,url"
   license "related project; verify repository license before copying source text"
   conversion "index command protocol concepts for agent tool use"
-
 source_link_cli
   title "link-cli"
   kind "dependency"
@@ -245,7 +215,6 @@ source_link_cli
   download "gh repo view link-foundation/link-cli --json name,description,licenseInfo,url"
   license "related project; verify repository license before copying source text"
   conversion "index import/export CLI expectations for link stores"
-
 source_lino_objects_codec
   title "lino-objects-codec"
   kind "dependency"
@@ -253,7 +222,6 @@ source_lino_objects_codec
   download "https://crates.io/api/v1/crates/lino-objects-codec"
   license "dependency metadata only"
   conversion "use indented untyped formatting helpers for reviewable records"
-
 source_links_notation
   title "links-notation"
   kind "dependency"
@@ -261,7 +229,6 @@ source_links_notation
   download "https://crates.io/api/v1/crates/links-notation"
   license "dependency metadata only"
   conversion "parse and validate Links Notation records"
-
 source_doublets_rs
   title "doublets-rs"
   kind "dependency"
@@ -269,7 +236,6 @@ source_doublets_rs
   download "gh repo view linksplatform/doublets-rs --json name,description,licenseInfo,url"
   license "related project; verify repository license before copying source text"
   conversion "index doublet storage concepts for later native stores"
-
 source_doublets_web
   title "doublets-web"
   kind "dependency"
@@ -277,7 +243,6 @@ source_doublets_web
   download "gh repo view linksplatform/doublets-web --json name,description,licenseInfo,url"
   license "related project; verify repository license before copying source text"
   conversion "index browser-side doublet storage concepts"
-
 source_react_chat_ui
   title "link-assistant react-chat-ui"
   kind "ui-reference"
@@ -285,7 +250,6 @@ source_react_chat_ui
   download "gh repo view link-assistant/react-chat-ui --json name,description,licenseInfo,url"
   license "own Unlicense project"
   conversion "reuse markdown message and markdown composer UX ideas"
-
 source_vk_bot_desktop
   title "vk-bot-desktop"
   kind "desktop-reference"

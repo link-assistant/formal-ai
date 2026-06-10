@@ -1,0 +1,17 @@
+view
+  id M-c2bfa9213f46
+  lemma solve
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "find the solution to (a problem or question) or understand the meaning of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "find the solution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "settle, as of a debt"
+    provenance (wordnet)

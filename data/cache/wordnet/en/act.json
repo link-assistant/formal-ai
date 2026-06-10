@@ -1,0 +1,179 @@
+{
+  "lemma": "act",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06544086-n",
+      "partOfSpeech": "n",
+      "definition": "a legal document codifying the result of deliberations of a committee or society or legislative body",
+      "synonyms": [
+        "enactment"
+      ]
+    },
+    {
+      "id": "oewn-00030657-n",
+      "partOfSpeech": "n",
+      "definition": "something that people do or cause to happen",
+      "synonyms": [
+        "deed",
+        "human action",
+        "human activity"
+      ]
+    },
+    {
+      "id": "oewn-07022756-n",
+      "partOfSpeech": "n",
+      "definition": "a subdivision of a play or opera or ballet"
+    },
+    {
+      "id": "oewn-06905066-n",
+      "partOfSpeech": "n",
+      "definition": "a short performance that is part of a longer program",
+      "examples": [
+        "he did his act three times every evening",
+        "she had a catchy little routine",
+        "it was one of the best numbers he ever did"
+      ],
+      "synonyms": [
+        "routine",
+        "number",
+        "turn",
+        "bit"
+      ]
+    },
+    {
+      "id": "oewn-07027143-n",
+      "partOfSpeech": "n",
+      "definition": "a manifestation of insincerity",
+      "examples": [
+        "he put on quite an act for her benefit"
+      ]
+    },
+    {
+      "id": "oewn-02372362-v",
+      "partOfSpeech": "v",
+      "definition": "perform an action, or work out or perform (an action)",
+      "examples": [
+        "think before you act",
+        "We must move quickly",
+        "The governor should act on the new energy bill",
+        "The nanny acted quickly by grabbing the toddler and covering him with a wet towel"
+      ],
+      "synonyms": [
+        "move"
+      ]
+    },
+    {
+      "id": "oewn-00010428-v",
+      "partOfSpeech": "v",
+      "definition": "behave in a certain manner; show a certain behavior; conduct or comport oneself",
+      "examples": [
+        "You should act like an adult",
+        "Don't behave like a fool",
+        "What makes her do this way?",
+        "The dog acts ferocious, but he is really afraid of people"
+      ],
+      "synonyms": [
+        "behave",
+        "do",
+        "acquit",
+        "bear",
+        "deport",
+        "conduct",
+        "comport",
+        "carry"
+      ]
+    },
+    {
+      "id": "oewn-01723161-v",
+      "partOfSpeech": "v",
+      "definition": "play a role or part",
+      "examples": [
+        "Gielgud played Hamlet",
+        "She wants to act Lady Macbeth, but she is too young for the role",
+        "She played the servant to her husband's master"
+      ],
+      "synonyms": [
+        "play",
+        "represent"
+      ]
+    },
+    {
+      "id": "oewn-01098310-v",
+      "partOfSpeech": "v",
+      "definition": "discharge one's duties",
+      "examples": [
+        "She acts as the chair",
+        "In what capacity are you acting?"
+      ]
+    },
+    {
+      "id": "oewn-00013608-v",
+      "partOfSpeech": "v",
+      "definition": "pretend to have certain qualities or state of mind",
+      "examples": [
+        "He acted the idiot",
+        "She plays deaf when the news are bad"
+      ],
+      "synonyms": [
+        "play",
+        "act as"
+      ]
+    },
+    {
+      "id": "oewn-02750852-v",
+      "partOfSpeech": "v",
+      "definition": "be suitable for theatrical performance",
+      "examples": [
+        "This scene acts well"
+      ]
+    },
+    {
+      "id": "oewn-02531113-v",
+      "partOfSpeech": "v",
+      "definition": "have an effect or outcome; often the one desired or expected",
+      "examples": [
+        "The voting process doesn't work as well as people thought",
+        "How does your idea work in practice?",
+        "This method doesn't work",
+        "The breaks of my new car act quickly",
+        "The medicine works only if you take it with a lot of water"
+      ],
+      "synonyms": [
+        "work"
+      ]
+    },
+    {
+      "id": "oewn-01725433-v",
+      "partOfSpeech": "v",
+      "definition": "behave unnaturally or affectedly",
+      "examples": [
+        "She's just acting"
+      ],
+      "synonyms": [
+        "dissemble",
+        "pretend"
+      ]
+    },
+    {
+      "id": "oewn-01723780-v",
+      "partOfSpeech": "v",
+      "definition": "perform on a stage or theater",
+      "examples": [
+        "She acts in this play",
+        "He acted in ‘Julius Caesar’",
+        "I played in ‘A Christmas Carol’"
+      ],
+      "synonyms": [
+        "play",
+        "roleplay",
+        "playact"
+      ]
+    }
+  ]
+}

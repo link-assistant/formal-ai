@@ -1,0 +1,33 @@
+view
+  id M-516617f97647
+  lemma add
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a condition (mostly in boys) characterized by behavioral and learning disorders"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an addition (to); join or combine or unite with others; increase the quality, quantity, size or scope of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "state or say further"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bestow a quality on"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an addition by combining numbers"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the sum of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "constitute an addition"
+    provenance (wordnet)

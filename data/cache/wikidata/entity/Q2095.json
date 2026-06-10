@@ -1,0 +1,151 @@
+{
+  "entities": {
+    "Q2095": {
+      "type": "item",
+      "id": "Q2095",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "food"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भोजन"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пища"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "食物"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "any substance consumed to provide nutritional support for the body; form of energy stored in chemical"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "то, что употребляют в пищу, чем утоляют голод"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "被生物食用以提供營養的物質"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ऐसा कोइ भी पदार्थ जो शर्करा (कार्बोहाइड्रेट), वसा, जल तथा/अथवा प्रोटीन से बना हो और जीव जगत द्वारा ग्रहण किया जा सके"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "食品"
+          },
+          {
+            "language": "zh",
+            "value": "食"
+          },
+          {
+            "language": "zh",
+            "value": "吃的"
+          },
+          {
+            "language": "zh",
+            "value": "物食"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "foodstuff"
+          },
+          {
+            "language": "en",
+            "value": "edibles"
+          },
+          {
+            "language": "en",
+            "value": "feed"
+          },
+          {
+            "language": "en",
+            "value": "chow"
+          },
+          {
+            "language": "en",
+            "value": "foodstuffs"
+          },
+          {
+            "language": "en",
+            "value": "sustenance"
+          },
+          {
+            "language": "en",
+            "value": "food item"
+          },
+          {
+            "language": "en",
+            "value": "victuals"
+          },
+          {
+            "language": "en",
+            "value": "food material"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "продовольствие"
+          },
+          {
+            "language": "ru",
+            "value": "харчи"
+          },
+          {
+            "language": "ru",
+            "value": "провиант"
+          },
+          {
+            "language": "ru",
+            "value": "еда"
+          },
+          {
+            "language": "ru",
+            "value": "питание"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फ़ूड"
+          },
+          {
+            "language": "hi",
+            "value": "फूड"
+          },
+          {
+            "language": "hi",
+            "value": "खाना"
+          },
+          {
+            "language": "hi",
+            "value": "आहार"
+          },
+          {
+            "language": "hi",
+            "value": "खुराक"
+          },
+          {
+            "language": "hi",
+            "value": "खाना-पीना"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

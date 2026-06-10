@@ -1,0 +1,66 @@
+{
+  "lemma": "define",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02617665-v",
+      "partOfSpeech": "v",
+      "definition": "determine the essential quality of",
+      "synonyms": [
+        "specify",
+        "delineate",
+        "delimit",
+        "delimitate"
+      ]
+    },
+    {
+      "id": "oewn-00959410-v",
+      "partOfSpeech": "v",
+      "definition": "give a definition for the meaning of a word",
+      "examples": [
+        "Define ‘sadness’"
+      ]
+    },
+    {
+      "id": "oewn-02704161-v",
+      "partOfSpeech": "v",
+      "definition": "determine the nature of",
+      "examples": [
+        "What defines a good wine?"
+      ]
+    },
+    {
+      "id": "oewn-02742653-v",
+      "partOfSpeech": "v",
+      "definition": "show the form or outline of",
+      "examples": [
+        "The tree was clearly defined by the light",
+        "The camera could define the smallest object"
+      ],
+      "synonyms": [
+        "delineate"
+      ]
+    },
+    {
+      "id": "oewn-00949109-v",
+      "partOfSpeech": "v",
+      "definition": "decide upon or fix definitely",
+      "examples": [
+        "fix the variables",
+        "specify the parameters"
+      ],
+      "synonyms": [
+        "specify",
+        "set",
+        "determine",
+        "fix",
+        "limit"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+[
+  {
+    "word": "operator",
+    "phonetic": "/ˈɒpəˌɹeɪtə/",
+    "phonetics": [
+      {
+        "text": "/ˈɒpəˌɹeɪtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/operator-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=95142964",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈɑpəˌɹeɪɾɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One who operates.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A telecommunications facilitator whose job is to establish temporary network connections.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A function or other mapping that carries variables defined on a domain into another variable or set of variables in a defined range.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The game of Chinese whispers.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A person who is adept at making deals or getting results, especially one who uses questionable methods.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A member of a military special operations unit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The administrator of a channel or network on IRC.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A symbol that represents a construct in a programming language and differs from a normal function in its syntax.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A kind of expression that enters into an a-bar movement dependency and is said to bind a variable.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In the sentence \"What did Bill say he wants to buy?\", \"what\" is an operator, binding a phonetically empty variable."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/operator"
+    ]
+  }
+]

@@ -1,0 +1,153 @@
+{
+  "lemma": "know",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05813020-n",
+      "partOfSpeech": "n",
+      "definition": "the fact of being aware of information that is known to few people",
+      "examples": [
+        "he is always in the know"
+      ]
+    },
+    {
+      "id": "oewn-00596016-v",
+      "partOfSpeech": "v",
+      "definition": "be cognizant or aware of a fact or a specific piece of information; possess knowledge or information about",
+      "examples": [
+        "I know that the President lied to the people",
+        "I want to know who is winning the game!",
+        "I know it's time"
+      ],
+      "synonyms": [
+        "cognize",
+        "cognise"
+      ]
+    },
+    {
+      "id": "oewn-00597330-v",
+      "partOfSpeech": "v",
+      "definition": "know how to do or perform something",
+      "examples": [
+        "She knows how to knit",
+        "Does your husband know how to cook?"
+      ]
+    },
+    {
+      "id": "oewn-00595732-v",
+      "partOfSpeech": "v",
+      "definition": "be familiar or acquainted with a person or an object",
+      "examples": [
+        "She doesn't know this composer",
+        "Do you know my sister?",
+        "We know this movie",
+        "I know him under a different name",
+        "This flower is known as a Peruvian Lily"
+      ]
+    },
+    {
+      "id": "oewn-00598039-v",
+      "partOfSpeech": "v",
+      "definition": "have firsthand knowledge of states, situations, emotions, or sensations",
+      "examples": [
+        "I know the feeling!",
+        "have you ever known hunger?",
+        "I have lived a kind of hell when I was a drug addict",
+        "The holocaust survivors have lived a nightmare",
+        "I lived through two divorces"
+      ],
+      "synonyms": [
+        "experience",
+        "live"
+      ]
+    },
+    {
+      "id": "oewn-00594278-v",
+      "partOfSpeech": "v",
+      "definition": "accept (someone) to be what is claimed or accept their power and authority",
+      "examples": [
+        "The Crown Prince was acknowledged as the true heir to the throne",
+        "We do not recognize your gods"
+      ],
+      "synonyms": [
+        "acknowledge",
+        "recognize",
+        "recognise"
+      ]
+    },
+    {
+      "id": "oewn-00597527-v",
+      "partOfSpeech": "v",
+      "definition": "have fixed in the mind",
+      "examples": [
+        "I know Latin",
+        "This student knows her irregular verbs",
+        "Do you know the poem well enough to recite it?"
+      ]
+    },
+    {
+      "id": "oewn-01429048-v",
+      "partOfSpeech": "v",
+      "definition": "have sexual intercourse with",
+      "examples": [
+        "Adam knew Eve",
+        "Were you ever intimate with this man?"
+      ],
+      "synonyms": [
+        "sleep together",
+        "roll in the hay",
+        "love",
+        "make out",
+        "make love",
+        "sleep with",
+        "get laid",
+        "have sex",
+        "do it",
+        "be intimate",
+        "have intercourse",
+        "have it away",
+        "have it off",
+        "screw",
+        "fuck",
+        "jazz",
+        "eff",
+        "hump",
+        "lie with",
+        "bed",
+        "have a go at it",
+        "bang",
+        "get it on",
+        "bonk"
+      ]
+    },
+    {
+      "id": "oewn-00610224-v",
+      "partOfSpeech": "v",
+      "definition": "know the nature or character of",
+      "examples": [
+        "we all knew her as a big show-off"
+      ]
+    },
+    {
+      "id": "oewn-00610056-v",
+      "partOfSpeech": "v",
+      "definition": "be able to distinguish, recognize as being different",
+      "examples": [
+        "The child knows right from wrong"
+      ]
+    },
+    {
+      "id": "oewn-00609926-v",
+      "partOfSpeech": "v",
+      "definition": "perceive as familiar",
+      "examples": [
+        "I know this voice!"
+      ]
+    }
+  ]
+}

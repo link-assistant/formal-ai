@@ -1,904 +1,866 @@
 meanings
-  meaning "quantity"
-    gloss "an amount of something that can be measured or counted"
-    wiktionary "quantity"
-    defined_by "unit"
-    defined_by "property"
-    role "measurement_concept"
-    lexeme "en"
-      word "quantity"
-        description "English noun for an amount of something that can be measured or counted; the general measurement concept."
-    lexeme "ru"
-      word "количество"
-        description "Russian noun (romanized kolichestvo) for an amount or quantity; the Russian surface for the quantity concept."
-    lexeme "hi"
-      word "मात्रा"
-        description "Hindi noun (romanized matra) for an amount or quantity; the Hindi surface for the quantity concept."
-    lexeme "zh"
-      word "数量"
-        description "Chinese noun (pinyin shuliang) for an amount or quantity; the Chinese surface for the quantity concept."
-  meaning "unit"
-    gloss "a standard amount used to measure a quantity"
-    wiktionary "unit"
-    defined_by "quantity"
-    role "measurement_concept"
-    lexeme "en"
-      word "unit"
-        description "English noun for a standard amount used to measure a quantity; the general unit concept."
-    lexeme "ru"
-      word "единица"
-        description "Russian noun (romanized edinitsa) for a unit; the Russian surface for the unit concept."
-    lexeme "hi"
-      word "इकाई"
-        description "Hindi noun (romanized ikai) for a unit; the Hindi surface for the unit concept."
-    lexeme "zh"
-      word "单位"
-        description "Chinese noun (pinyin danwei) for a unit; the Chinese surface for the unit concept."
-  meaning "cardinal_number"
-    gloss "a number used to count how many things there are: zero, one, two, three, and so on. The genus of the individual counting numbers, each defined as a kind of cardinal number rather than listed in code."
-    wiktionary "cardinal number"
-    defined_by "quantity"
-    role "numeric_concept"
-    lexeme "en"
-      word "cardinal number"
-        description "English term for a counting number that answers the question 'how many'; the genus of the individual cardinals."
-      word "number"
-        description "English noun for a number used in counting; the everyday surface for the counting-number concept."
-    lexeme "ru"
-      word "количественное число"
-        description "Russian term (romanized kolichestvennoe chislo) for a cardinal counting number; the Russian surface for the cardinal-number concept."
-    lexeme "hi"
-      word "गणन संख्या"
-        description "Hindi term (romanized ganan sankhya) for a cardinal counting number; the Hindi surface for the cardinal-number concept."
-    lexeme "zh"
-      word "基数"
-        description "Chinese term (pinyin jishu) for a cardinal counting number; the Chinese surface for the cardinal-number concept."
-  meaning "zero"
-    gloss "the cardinal number zero (0), the count of an empty collection."
-    wiktionary "zero"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "zero"
-        description "English spelled form of the cardinal number zero."
-      word "0"
-        description "Western Arabic numeral for zero; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "ноль"
-        description "Russian spelled form (romanized nol') of the cardinal number zero."
-      word "нуль"
-        description "Russian spelled form (romanized nul'), a variant spelling, of the cardinal number zero."
-    lexeme "hi"
-      word "शून्य"
-        description "Hindi spelled form (romanized shunya) of the cardinal number zero."
-    lexeme "zh"
-      word "零"
-        description "Chinese spelled form (pinyin ling) of the cardinal number zero."
-  meaning "one"
-    gloss "the cardinal number one (1), one more than zero."
-    wiktionary "one"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "one"
-        description "English spelled form of the cardinal number one."
-      word "1"
-        description "Western Arabic numeral for one; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "один"
-        description "Russian spelled form (romanized odin), masculine, of the cardinal number one."
-      word "одна"
-        description "Russian spelled form (romanized odna), feminine, of the cardinal number one."
-      word "одно"
-        description "Russian spelled form (romanized odno), neuter, of the cardinal number one."
-    lexeme "hi"
-      word "एक"
-        description "Hindi spelled form (romanized ek) of the cardinal number one."
-    lexeme "zh"
-      word "一"
-        description "Chinese spelled form (pinyin yi) of the cardinal number one."
-  meaning "two"
-    gloss "the cardinal number two (2), one more than one."
-    wiktionary "two"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "two"
-        description "English spelled form of the cardinal number two."
-      word "2"
-        description "Western Arabic numeral for two; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "два"
-        description "Russian spelled form (romanized dva), masculine and neuter, of the cardinal number two."
-      word "две"
-        description "Russian spelled form (romanized dve), feminine, of the cardinal number two."
-    lexeme "hi"
-      word "दो"
-        description "Hindi spelled form (romanized do) of the cardinal number two."
-    lexeme "zh"
-      word "二"
-        description "Chinese spelled form (pinyin er) of the cardinal number two."
-  meaning "three"
-    gloss "the cardinal number three (3), one more than two."
-    wiktionary "three"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "three"
-        description "English spelled form of the cardinal number three."
-      word "3"
-        description "Western Arabic numeral for three; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "три"
-        description "Russian spelled form (romanized tri) of the cardinal number three."
-    lexeme "hi"
-      word "तीन"
-        description "Hindi spelled form (romanized teen) of the cardinal number three."
-    lexeme "zh"
-      word "三"
-        description "Chinese spelled form (pinyin san) of the cardinal number three."
-  meaning "four"
-    gloss "the cardinal number four (4), one more than three."
-    wiktionary "four"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "four"
-        description "English spelled form of the cardinal number four."
-      word "4"
-        description "Western Arabic numeral for four; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "четыре"
-        description "Russian spelled form (romanized chetyre) of the cardinal number four."
-    lexeme "hi"
-      word "चार"
-        description "Hindi spelled form (romanized char) of the cardinal number four."
-    lexeme "zh"
-      word "四"
-        description "Chinese spelled form (pinyin si) of the cardinal number four."
-  meaning "five"
-    gloss "the cardinal number five (5), one more than four."
-    wiktionary "five"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "five"
-        description "English spelled form of the cardinal number five."
-      word "5"
-        description "Western Arabic numeral for five; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "пять"
-        description "Russian spelled form (romanized pyat') of the cardinal number five."
-    lexeme "hi"
-      word "पाँच"
-        description "Hindi spelled form (romanized panch) of the cardinal number five."
-    lexeme "zh"
-      word "五"
-        description "Chinese spelled form (pinyin wu) of the cardinal number five."
-  meaning "six"
-    gloss "the cardinal number six (6), one more than five."
-    wiktionary "six"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "six"
-        description "English spelled form of the cardinal number six."
-      word "6"
-        description "Western Arabic numeral for six; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "шесть"
-        description "Russian spelled form (romanized shest') of the cardinal number six."
-    lexeme "hi"
-      word "छह"
-        description "Hindi spelled form (romanized chhah) of the cardinal number six."
-    lexeme "zh"
-      word "六"
-        description "Chinese spelled form (pinyin liu) of the cardinal number six."
-  meaning "seven"
-    gloss "the cardinal number seven (7), one more than six."
-    wiktionary "seven"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "seven"
-        description "English spelled form of the cardinal number seven."
-      word "7"
-        description "Western Arabic numeral for seven; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "семь"
-        description "Russian spelled form (romanized sem') of the cardinal number seven."
-    lexeme "hi"
-      word "सात"
-        description "Hindi spelled form (romanized saat) of the cardinal number seven."
-    lexeme "zh"
-      word "七"
-        description "Chinese spelled form (pinyin qi) of the cardinal number seven."
-  meaning "eight"
-    gloss "the cardinal number eight (8), one more than seven."
-    wiktionary "eight"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "eight"
-        description "English spelled form of the cardinal number eight."
-      word "8"
-        description "Western Arabic numeral for eight; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "восемь"
-        description "Russian spelled form (romanized vosem') of the cardinal number eight."
-    lexeme "hi"
-      word "आठ"
-        description "Hindi spelled form (romanized aath) of the cardinal number eight."
-    lexeme "zh"
-      word "八"
-        description "Chinese spelled form (pinyin ba) of the cardinal number eight."
-  meaning "nine"
-    gloss "the cardinal number nine (9), one more than eight."
-    wiktionary "nine"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "nine"
-        description "English spelled form of the cardinal number nine."
-      word "9"
-        description "Western Arabic numeral for nine; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "девять"
-        description "Russian spelled form (romanized devyat') of the cardinal number nine."
-    lexeme "hi"
-      word "नौ"
-        description "Hindi spelled form (romanized nau) of the cardinal number nine."
-    lexeme "zh"
-      word "九"
-        description "Chinese spelled form (pinyin jiu) of the cardinal number nine."
-  meaning "ten"
-    gloss "the cardinal number ten (10), one more than nine."
-    wiktionary "ten"
-    defined_by "cardinal_number"
-    role "cardinal_number_word"
-    lexeme "en"
-      word "ten"
-        description "English spelled form of the cardinal number ten."
-      word "10"
-        description "Western Arabic numeral for ten; the script-independent numeral surface, from which the cardinal's integer value is read."
-    lexeme "ru"
-      word "десять"
-        description "Russian spelled form (romanized desyat') of the cardinal number ten."
-    lexeme "hi"
-      word "दस"
-        description "Hindi spelled form (romanized das) of the cardinal number ten."
-    lexeme "zh"
-      word "十"
-        description "Chinese spelled form (pinyin shi) of the cardinal number ten."
-  meaning "length"
-    gloss "the physical dimension of distance or extent"
-    wiktionary "length"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "length"
-        description "English noun for the physical dimension of distance or extent; the length dimension."
-    lexeme "ru"
-      word "длина"
-        description "Russian noun (romanized dlina) for length; the Russian surface for the length dimension."
-    lexeme "hi"
-      word "लंबाई"
-        description "Hindi noun (romanized lambai) for length; the Hindi surface for the length dimension."
-    lexeme "zh"
-      word "长度"
-        description "Chinese noun (pinyin changdu) for length; the Chinese surface for the length dimension."
-  meaning "data_storage"
-    gloss "the physical dimension of how much information is stored"
-    wiktionary "data"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "data storage"
-        description "English noun phrase for the dimension of how much information is stored; the data-storage dimension."
-    lexeme "ru"
-      word "хранение данных"
-        description "Russian noun phrase (romanized khranenie dannykh) for data storage; the Russian surface for the data-storage dimension."
-    lexeme "hi"
-      word "डेटा भंडारण"
-        description "Hindi noun phrase (romanized deta bhandaran) for data storage; the Hindi surface for the data-storage dimension."
-    lexeme "zh"
-      word "数据存储"
-        description "Chinese noun phrase (pinyin shuju cunchu) for data storage; the Chinese surface for the data-storage dimension."
-  meaning "mass"
-    gloss "the physical dimension of how much matter an object contains"
-    wiktionary "mass"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "mass"
-        description "English noun for the dimension of how much matter an object contains; the mass dimension."
-    lexeme "ru"
-      word "масса"
-        description "Russian noun (romanized massa) for mass; the Russian surface for the mass dimension."
-    lexeme "hi"
-      word "द्रव्यमान"
-        description "Hindi noun (romanized dravyaman) for mass; the Hindi surface for the mass dimension."
-    lexeme "zh"
-      word "质量"
-        description "Chinese noun (pinyin zhiliang) for mass; the Chinese surface for the mass dimension."
-  meaning "time"
-    gloss "the physical dimension of duration"
-    wiktionary "time"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "time"
-        description "English noun for the physical dimension of duration; the time dimension."
-    lexeme "ru"
-      word "время"
-        description "Russian noun (romanized vremya) for time; the Russian surface for the time dimension."
-    lexeme "hi"
-      word "समय"
-        description "Hindi noun (romanized samay) for time; the Hindi surface for the time dimension."
-    lexeme "zh"
-      word "时间"
-        description "Chinese noun (pinyin shijian) for time; the Chinese surface for the time dimension."
-  meaning "temperature"
-    gloss "the physical dimension of thermal energy"
-    wiktionary "temperature"
-    defined_by "quantity"
-    role "physical_dimension"
-    lexeme "en"
-      word "temperature"
-        description "English noun for the physical dimension of thermal energy; the temperature dimension."
-    lexeme "ru"
-      word "температура"
-        description "Russian noun (romanized temperatura) for temperature; the Russian surface for the temperature dimension."
-    lexeme "hi"
-      word "तापमान"
-        description "Hindi noun (romanized tapman) for temperature; the Hindi surface for the temperature dimension."
-    lexeme "zh"
-      word "温度"
-        description "Chinese noun (pinyin wendu) for temperature; the Chinese surface for the temperature dimension."
-  meaning "meter"
-    gloss "the base unit of length"
-    wiktionary "metre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "meter"
-        description "English noun for the base unit of length (American spelling); a full-word form of the metre."
-      word "metre"
-        description "English noun for the base unit of length (British spelling); a full-word form of the metre."
-      word "meters"
-        description "English noun, the plural of meter; the base unit of length in the length dimension."
-      word "metres"
-        description "English noun, the plural of metre; the base unit of length in the length dimension."
-    lexeme "ru"
-      word "метр"
-        description "Russian noun (romanized metr) for the metre, the base unit of length; the Russian surface for the meter."
-      word "метра"
-        description "Russian noun (romanized metra), an inflected genitive form of metre; a case form of the base unit of length."
-      word "метров"
-        description "Russian noun (romanized metrov), the genitive plural of metre; a case form of the base unit of length."
-    lexeme "hi"
-      word "मीटर"
-        description "Hindi noun (romanized mitar) for the metre, the base unit of length; the Hindi surface for the meter."
-    lexeme "zh"
-      word "米"
-        description "Chinese noun (pinyin mi) for the metre, the base unit of length; the Chinese surface for the meter."
-  meaning "kilometer"
-    gloss "a unit of length equal to one thousand metres"
-    wiktionary "kilometre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "km"
-        description "English abbreviation, the symbol for kilometre, a unit of length equal to one thousand metres."
-      word "kilometer"
-        description "English noun for a unit of length of one thousand metres (American spelling); a full-word form."
-      word "kilometre"
-        description "English noun for a unit of length of one thousand metres (British spelling); a full-word form."
-      word "kilometers"
-        description "English noun, the plural of kilometer; a unit of length equal to one thousand metres."
-      word "kilometres"
-        description "English noun, the plural of kilometre; a unit of length equal to one thousand metres."
-    lexeme "ru"
-      word "километр"
-        description "Russian noun (romanized kilometr) for the kilometre, a unit of length of one thousand metres."
-      word "километра"
-        description "Russian noun (romanized kilometra), an inflected genitive form of kilometre; a case form of the unit of length."
-      word "километров"
-        description "Russian noun (romanized kilometrov), the genitive plural of kilometre; a case form of the unit of length."
-    lexeme "hi"
-      word "किलोमीटर"
-        description "Hindi noun (romanized kilomitar) for the kilometre, a unit of length of one thousand metres."
-    lexeme "zh"
-      word "千米"
-        description "Chinese noun (pinyin qianmi) for the kilometre, a unit of length of one thousand metres."
-      word "公里"
-        description "Chinese noun (pinyin gongli) for the kilometre; a common alternative surface for the unit of length."
-  meaning "centimeter"
-    gloss "a unit of length equal to one hundredth of a metre"
-    wiktionary "centimetre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "cm"
-        description "English abbreviation, the symbol for centimetre, a unit of length equal to one hundredth of a metre."
-      word "centimeter"
-        description "English noun for a unit of length of one hundredth of a metre (American spelling); a full-word form."
-      word "centimetre"
-        description "English noun for a unit of length of one hundredth of a metre (British spelling); a full-word form."
-    lexeme "ru"
-      word "сантиметр"
-        description "Russian noun (romanized santimetr) for the centimetre, a unit of length of one hundredth of a metre."
-    lexeme "hi"
-      word "सेंटीमीटर"
-        description "Hindi noun (romanized sentimitar) for the centimetre, a unit of length of one hundredth of a metre."
-    lexeme "zh"
-      word "厘米"
-        description "Chinese noun (pinyin limi) for the centimetre, a unit of length of one hundredth of a metre."
-  meaning "millimeter"
-    gloss "a unit of length equal to one thousandth of a metre"
-    wiktionary "millimetre"
-    defined_by "length"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "mm"
-        description "English abbreviation, the symbol for millimetre, a unit of length equal to one thousandth of a metre."
-      word "millimeter"
-        description "English noun for a unit of length of one thousandth of a metre (American spelling); a full-word form."
-      word "millimetre"
-        description "English noun for a unit of length of one thousandth of a metre (British spelling); a full-word form."
-    lexeme "ru"
-      word "миллиметр"
-        description "Russian noun (romanized millimetr) for the millimetre, a unit of length of one thousandth of a metre."
-    lexeme "hi"
-      word "मिलीमीटर"
-        description "Hindi noun (romanized millimitar) for the millimetre, a unit of length of one thousandth of a metre."
-    lexeme "zh"
-      word "毫米"
-        description "Chinese noun (pinyin haomi) for the millimetre, a unit of length of one thousandth of a metre."
-  meaning "byte"
-    gloss "a unit of digital information, eight bits"
-    wiktionary "byte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "byte"
-        description "English noun for a unit of digital information of eight bits; the base unit of data storage."
-      word "bytes"
-        description "English noun, the plural of byte; units of digital information of eight bits each."
-    lexeme "ru"
-      word "байт"
-        description "Russian noun (romanized bait) for the byte, a unit of digital information of eight bits."
-      word "байта"
-        description "Russian noun (romanized baita), an inflected genitive form of byte; a case form of the data-storage unit."
-      word "байтов"
-        description "Russian noun (romanized baitov), the genitive plural of byte; a case form of the data-storage unit."
-    lexeme "hi"
-      word "बाइट"
-        description "Hindi noun (romanized bait) for the byte, a unit of digital information of eight bits."
-    lexeme "zh"
-      word "字节"
-        description "Chinese noun (pinyin zijie) for the byte, a unit of digital information of eight bits."
-  meaning "kilobyte"
-    gloss "a unit of digital information of about one thousand bytes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "kilobyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "kb"
-        description "English abbreviation, the symbol for kilobyte, a unit of digital information of about one thousand bytes."
-      word "kilobyte"
-        description "English noun for a unit of digital information of about one thousand bytes; a full-word form."
-      word "kilobytes"
-        description "English noun, the plural of kilobyte; units of digital information of about one thousand bytes each."
-    lexeme "ru"
-      word "килобайт"
-        description "Russian noun (romanized kilobait) for the kilobyte, a unit of digital information of about one thousand bytes."
-    lexeme "hi"
-      word "किलोबाइट"
-        description "Hindi noun (romanized kilobait) for the kilobyte, a unit of digital information of about one thousand bytes."
-    lexeme "zh"
-      word "千字节"
-        description "Chinese noun (pinyin qian zijie) for the kilobyte, a unit of digital information of about one thousand bytes."
-  meaning "megabyte"
-    gloss "a unit of digital information of about one million bytes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "megabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "mb"
-        description "English abbreviation, the symbol for megabyte, a unit of digital information of about one million bytes."
-      word "megabyte"
-        description "English noun for a unit of digital information of about one million bytes; a full-word form."
-      word "megabytes"
-        description "English noun, the plural of megabyte; units of digital information of about one million bytes each."
-    lexeme "ru"
-      word "мегабайт"
-        description "Russian noun (romanized megabait) for the megabyte, a unit of digital information of about one million bytes."
-    lexeme "hi"
-      word "मेगाबाइट"
-        description "Hindi noun (romanized megabait) for the megabyte, a unit of digital information of about one million bytes."
-    lexeme "zh"
-      word "兆字节"
-        description "Chinese noun (pinyin zhao zijie) for the megabyte, a unit of digital information of about one million bytes."
-  meaning "gigabyte"
-    gloss "a unit of digital information of about one billion bytes"
-    wiktionary "gigabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "gb"
-        description "English abbreviation, the symbol for gigabyte, a unit of digital information of about one billion bytes."
-      word "gigabyte"
-        description "English noun for a unit of digital information of about one billion bytes; a full-word form."
-      word "gigabytes"
-        description "English noun, the plural of gigabyte; units of digital information of about one billion bytes each."
-    lexeme "ru"
-      word "гигабайт"
-        description "Russian noun (romanized gigabait) for the gigabyte, a unit of digital information of about one billion bytes."
-    lexeme "hi"
-      word "गीगाबाइट"
-        description "Hindi noun (romanized gigabait) for the gigabyte, a unit of digital information of about one billion bytes."
-    lexeme "zh"
-      word "吉字节"
-        description "Chinese noun (pinyin ji zijie) for the gigabyte, a unit of digital information of about one billion bytes."
-  meaning "terabyte"
-    gloss "a unit of digital information of about one trillion bytes"
-    wiktionary "terabyte"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "tb"
-        description "English abbreviation, the symbol for terabyte, a unit of digital information of about one trillion bytes."
-      word "terabyte"
-        description "English noun for a unit of digital information of about one trillion bytes; a full-word form."
-      word "terabytes"
-        description "English noun, the plural of terabyte; units of digital information of about one trillion bytes each."
-    lexeme "ru"
-      word "терабайт"
-        description "Russian noun (romanized terabait) for the terabyte, a unit of digital information of about one trillion bytes."
-    lexeme "hi"
-      word "टेराबाइट"
-        description "Hindi noun (romanized terabait) for the terabyte, a unit of digital information of about one trillion bytes."
-    lexeme "zh"
-      word "太字节"
-        description "Chinese noun (pinyin tai zijie) for the terabyte, a unit of digital information of about one trillion bytes."
-  meaning "bit"
-    gloss "the smallest unit of digital information"
-    wiktionary "bit"
-    defined_by "data_storage"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "bit"
-        description "English noun for the smallest unit of digital information; the base binary digit of data storage."
-      word "bits"
-        description "English noun, the plural of bit; the smallest units of digital information."
-    lexeme "ru"
-      word "бит"
-        description "Russian noun (romanized bit) for the bit, the smallest unit of digital information."
-      word "бита"
-        description "Russian noun (romanized bita), an inflected genitive form of bit; a case form of the smallest data-storage unit."
-      word "битов"
-        description "Russian noun (romanized bitov), the genitive plural of bit; a case form of the smallest data-storage unit."
-    lexeme "hi"
-      word "बिट"
-        description "Hindi noun (romanized bit) for the bit, the smallest unit of digital information."
-    lexeme "zh"
-      word "比特"
-        description "Chinese noun (pinyin bite) for the bit, the smallest unit of digital information."
-  meaning "kilogram"
-    gloss "the base unit of mass. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "kilogram"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "kg"
-        description "English abbreviation, the symbol for kilogram, the base unit of mass; a calculation_domain_term matched whole-token."
-      word "kilogram"
-        description "English noun for the base unit of mass (American spelling); a full-word form of the kilogram."
-      word "kilograms"
-        description "English noun, the plural of kilogram; the base unit of mass in the mass dimension."
-    lexeme "ru"
-      word "кг"
-        description "Russian abbreviation (romanized kg), the symbol for kilogram, the base unit of mass; a calculation_domain_term matched as a raw substring."
-      word "килограмм"
-        description "Russian noun (romanized kilogramm) for the kilogram, the base unit of mass."
-    lexeme "hi"
-      word "किलोग्राम"
-        description "Hindi noun (romanized kilogram) for the kilogram, the base unit of mass."
-    lexeme "zh"
-      word "千克"
-        description "Chinese noun (pinyin qianke) for the kilogram, the base unit of mass."
-      word "公斤"
-        description "Chinese noun (pinyin gongjin) for the kilogram; a common alternative surface for the base unit of mass."
-  meaning "gram"
-    gloss "a unit of mass equal to one thousandth of a kilogram. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "gram"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "gram"
-        description "English noun for a unit of mass equal to one thousandth of a kilogram; a full-word form."
-      word "grams"
-        description "English noun, the plural of gram; units of mass of one thousandth of a kilogram each."
-    lexeme "ru"
-      word "грамм"
-        description "Russian noun (romanized gramm) for the gram, a unit of mass of one thousandth of a kilogram."
-    lexeme "hi"
-      word "ग्राम"
-        description "Hindi noun (romanized gram) for the gram, a unit of mass of one thousandth of a kilogram."
-    lexeme "zh"
-      word "克"
-        description "Chinese noun (pinyin ke) for the gram, a unit of mass of one thousandth of a kilogram."
-  meaning "pound"
-    gloss "a unit of mass used in imperial measure"
-    wiktionary "pound"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "pound"
-        description "English noun for a unit of mass used in imperial measure; a mass unit in the mass dimension."
-      word "pounds"
-        description "English noun, the plural of pound; units of mass used in imperial measure."
-    lexeme "ru"
-      word "фунт"
-        description "Russian noun (romanized funt) for the pound, a unit of mass used in imperial measure."
-    lexeme "hi"
-      word "पाउंड"
-        description "Hindi noun (romanized paund) for the pound, a unit of mass used in imperial measure."
-    lexeme "zh"
-      word "磅"
-        description "Chinese noun (pinyin bang) for the pound, a unit of mass used in imperial measure."
-  meaning "ton"
-    gloss "a unit of mass equal to one thousand kilograms. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "tonne"
-    defined_by "mass"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "ton"
-        description "English noun for a unit of mass equal to one thousand kilograms; a calculation_domain_term matched whole-token."
-      word "tons"
-        description "English noun, the plural of ton; units of mass of one thousand kilograms each."
-      word "tonne"
-        description "English noun, the metric spelling of ton; a unit of mass of one thousand kilograms."
-    lexeme "ru"
-      word "тонна"
-        description "Russian noun (romanized tonna) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-      word "тонны"
-        description "Russian noun (romanized tonny), an inflected form of ton; a case form of the unit of mass, matched as a raw substring."
-      word "тонн"
-        description "Russian noun (romanized tonn), the genitive plural of ton; a case form of the unit of mass, matched as a raw substring."
-    lexeme "hi"
-      word "टन"
-        description "Hindi noun (romanized tan) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-    lexeme "zh"
-      word "吨"
-        description "Chinese noun (pinyin dun) for the ton, a unit of mass of one thousand kilograms; a calculation_domain_term matched as a raw substring."
-  meaning "second"
-    gloss "the base unit of time. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "second"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "second"
-        description "English noun for the base unit of time; the base unit in the time dimension."
-      word "seconds"
-        description "English noun, the plural of second; the base units of time."
-    lexeme "ru"
-      word "секунда"
-        description "Russian noun (romanized sekunda) for the second, the base unit of time."
-      word "секунды"
-        description "Russian noun (romanized sekundy), an inflected form of second; a case form of the base unit of time."
-      word "секунд"
-        description "Russian noun (romanized sekund), the genitive plural of second; a case form of the base unit of time."
-    lexeme "hi"
-      word "सेकंड"
-        description "Hindi noun (romanized sekand) for the second, the base unit of time."
-    lexeme "zh"
-      word "秒"
-        description "Chinese noun (pinyin miao) for the second, the base unit of time."
-  meaning "minute"
-    gloss "a unit of time equal to sixty seconds. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "minute"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "minute"
-        description "English noun for a unit of time equal to sixty seconds; a time unit in the time dimension."
-      word "minutes"
-        description "English noun, the plural of minute; units of time of sixty seconds each."
-    lexeme "ru"
-      word "минута"
-        description "Russian noun (romanized minuta) for the minute, a unit of time equal to sixty seconds."
-      word "минуты"
-        description "Russian noun (romanized minuty), an inflected form of minute; a case form of the unit of time."
-      word "минут"
-        description "Russian noun (romanized minut), the genitive plural of minute; a case form of the unit of time."
-    lexeme "hi"
-      word "मिनट"
-        description "Hindi noun (romanized minat) for the minute, a unit of time equal to sixty seconds."
-    lexeme "zh"
-      word "分钟"
-        description "Chinese noun (pinyin fenzhong) for the minute, a unit of time equal to sixty seconds."
-  meaning "hour"
-    gloss "a unit of time equal to sixty minutes. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "hour"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "hour"
-        description "English noun for a unit of time equal to sixty minutes; a time unit in the time dimension."
-      word "hours"
-        description "English noun, the plural of hour; units of time of sixty minutes each."
-    lexeme "ru"
-      word "час"
-        description "Russian noun (romanized chas) for the hour, a unit of time equal to sixty minutes."
-      word "часа"
-        description "Russian noun (romanized chasa), an inflected genitive form of hour; a case form of the unit of time."
-      word "часов"
-        description "Russian noun (romanized chasov), the genitive plural of hour; a case form of the unit of time."
-    lexeme "hi"
-      word "घंटा"
-        description "Hindi noun (romanized ghanta) for the hour, a unit of time equal to sixty minutes."
-    lexeme "zh"
-      word "小时"
-        description "Chinese noun (pinyin xiaoshi) for the hour, a unit of time equal to sixty minutes."
-  meaning "millisecond"
-    gloss "a unit of time equal to one thousandth of a second. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "millisecond"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "ms"
-        description "English abbreviation, the symbol for millisecond, a unit of time of one thousandth of a second; a calculation_domain_term matched whole-token."
-      word "millisecond"
-        description "English noun for a unit of time equal to one thousandth of a second; a full-word form."
-      word "milliseconds"
-        description "English noun, the plural of millisecond; units of time of one thousandth of a second each."
-    lexeme "ru"
-      word "миллисекунда"
-        description "Russian noun (romanized millisekunda) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-      word "миллисекунд"
-        description "Russian noun (romanized millisekund), the genitive plural of millisecond; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "मिलीसेकंड"
-        description "Hindi noun (romanized milisekand) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-    lexeme "zh"
-      word "毫秒"
-        description "Chinese noun (pinyin haomiao) for the millisecond, a unit of time of one thousandth of a second; matched as a raw substring."
-  meaning "day"
-    gloss "a unit of time equal to twenty-four hours. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "day"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "day"
-        description "English noun for a unit of time equal to twenty-four hours; a calculation_domain_term matched whole-token."
-      word "days"
-        description "English noun, the plural of day; units of time of twenty-four hours each."
-    lexeme "ru"
-      word "день"
-        description "Russian noun (romanized den) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-      word "дня"
-        description "Russian noun (romanized dnya), an inflected genitive form of day; a case form of the unit of time, matched as a raw substring."
-      word "дней"
-        description "Russian noun (romanized dney), the genitive plural of day; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "दिन"
-        description "Hindi noun (romanized din) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-    lexeme "zh"
-      word "天"
-        description "Chinese noun (pinyin tian) for the day, a unit of time of twenty-four hours; matched as a raw substring."
-      word "日"
-        description "Chinese noun (pinyin ri) for the day, a calendar-day unit of time; matched as a raw substring."
-  meaning "month"
-    gloss "a unit of time of about thirty days, one of the twelve divisions of a year. Also a calculation_domain_term, so it signals a calculation when it appears beside a number."
-    wiktionary "month"
-    defined_by "time"
-    defined_by "unit"
-    role "measurement_unit"
-    role "calculation_domain_term"
-    lexeme "en"
-      word "month"
-        description "English noun for a unit of time of about thirty days; a calculation_domain_term matched whole-token."
-      word "months"
-        description "English noun, the plural of month; units of time of about thirty days each."
-    lexeme "ru"
-      word "месяц"
-        description "Russian noun (romanized mesyats) for the month, a unit of time of about thirty days; matched as a raw substring."
-      word "месяца"
-        description "Russian noun (romanized mesyatsa), an inflected genitive form of month; a case form of the unit of time, matched as a raw substring."
-      word "месяцев"
-        description "Russian noun (romanized mesyatsev), the genitive plural of month; a case form of the unit of time, matched as a raw substring."
-    lexeme "hi"
-      word "महीना"
-        description "Hindi noun (romanized mahina) for the month, a unit of time of about thirty days; matched as a raw substring."
-      word "महीने"
-        description "Hindi noun (romanized mahine), an inflected form of month; a case form of the unit of time, matched as a raw substring."
-    lexeme "zh"
-      word "月"
-        description "Chinese noun (pinyin yue) for the month, a unit of time and one of the twelve divisions of a year; matched as a raw substring."
-      word "个月"
-        description "Chinese measure-word phrase (pinyin ge yue) counting months as a duration; matched as a raw substring."
-  meaning "celsius"
-    gloss "a unit of temperature on the Celsius scale"
-    wiktionary "Celsius"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "celsius"
-        description "English noun for a unit of temperature on the Celsius scale; a temperature unit in the temperature dimension."
-    lexeme "ru"
-      word "цельсий"
-        description "Russian noun (romanized tselsiy) for Celsius, a unit of temperature on the Celsius scale."
-    lexeme "hi"
-      word "सेल्सियस"
-        description "Hindi noun (romanized selsiyas) for Celsius, a unit of temperature on the Celsius scale."
-    lexeme "zh"
-      word "摄氏度"
-        description "Chinese noun (pinyin sheshidu) for degrees Celsius, a unit of temperature on the Celsius scale."
-  meaning "fahrenheit"
-    gloss "a unit of temperature on the Fahrenheit scale"
-    wiktionary "Fahrenheit"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "fahrenheit"
-        description "English noun for a unit of temperature on the Fahrenheit scale; a temperature unit in the temperature dimension."
-    lexeme "ru"
-      word "фаренгейт"
-        description "Russian noun (romanized farengeyt) for Fahrenheit, a unit of temperature on the Fahrenheit scale."
-    lexeme "hi"
-      word "फ़ारेनहाइट"
-        description "Hindi noun (romanized farenhait) for Fahrenheit, a unit of temperature on the Fahrenheit scale."
-    lexeme "zh"
-      word "华氏度"
-        description "Chinese noun (pinyin huashidu) for degrees Fahrenheit, a unit of temperature on the Fahrenheit scale."
-  meaning "kelvin"
-    gloss "the base unit of temperature on the Kelvin scale"
-    wiktionary "kelvin"
-    defined_by "temperature"
-    defined_by "unit"
-    role "measurement_unit"
-    lexeme "en"
-      word "kelvin"
-        description "English noun for the base unit of temperature on the Kelvin scale; the base unit in the temperature dimension."
-    lexeme "ru"
-      word "кельвин"
-        description "Russian noun (romanized kelvin) for the kelvin, the base unit of temperature on the Kelvin scale."
-    lexeme "hi"
-      word "केल्विन"
-        description "Hindi noun (romanized kelvin) for the kelvin, the base unit of temperature on the Kelvin scale."
-    lexeme "zh"
-      word "开尔文"
-        description "Chinese noun (pinyin kaierwen) for the kelvin, the base unit of temperature on the Kelvin scale."
+  quantity
+    grounded-in Q309314
+    defined-by unit
+    defined-by property
+    defined-by amount
+    defined-by size
+    role measurement_concept
+    lexeme en
+      surface
+        text quantity
+    lexeme ru
+      surface
+        text количество
+    lexeme hi
+      surface
+        text मात्रा
+    lexeme zh
+      surface
+        text 数量
+  unit
+    grounded-in Q47574
+    defined-by quantity
+    role measurement_concept
+    lexeme en
+      surface
+        text unit
+    lexeme ru
+      surface
+        text единица
+    lexeme hi
+      surface
+        text इकाई
+    lexeme zh
+      surface
+        text 单位
+  cardinal_number
+    grounded-in Q1329258
+    defined-by quantity
+    role numeric_concept
+    lexeme en
+      surface
+        text "cardinal number"
+      surface
+        text number
+    lexeme ru
+      surface
+        text "количественное число"
+    lexeme hi
+      surface
+        text "गणन संख्या"
+    lexeme zh
+      surface
+        text 基数
+  zero
+    grounded-in Q204
+    defined-by cardinal_number
+    defined-by empty
+    role cardinal_number_word
+    lexeme en
+      surface
+        text zero
+      surface
+        text 0
+    lexeme ru
+      surface
+        text ноль
+      surface
+        text нуль
+    lexeme hi
+      surface
+        text शून्य
+    lexeme zh
+      surface
+        text 零
+  one
+    grounded-in Q199
+    defined-by cardinal_number
+    defined-by single
+    role cardinal_number_word
+    lexeme en
+      surface
+        text one
+      surface
+        text 1
+    lexeme ru
+      surface
+        text один
+      surface
+        text одна
+      surface
+        text одно
+    lexeme hi
+      surface
+        text एक
+    lexeme zh
+      surface
+        text 一
+  two
+    grounded-in Q200
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text two
+      surface
+        text 2
+    lexeme ru
+      surface
+        text два
+      surface
+        text две
+    lexeme hi
+      surface
+        text दो
+    lexeme zh
+      surface
+        text 二
+  three
+    grounded-in Q201
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text three
+      surface
+        text 3
+    lexeme ru
+      surface
+        text три
+    lexeme hi
+      surface
+        text तीन
+    lexeme zh
+      surface
+        text 三
+  four
+    grounded-in Q202
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text four
+      surface
+        text 4
+    lexeme ru
+      surface
+        text четыре
+    lexeme hi
+      surface
+        text चार
+    lexeme zh
+      surface
+        text 四
+  five
+    grounded-in Q203
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text five
+      surface
+        text 5
+    lexeme ru
+      surface
+        text пять
+    lexeme hi
+      surface
+        text पाँच
+    lexeme zh
+      surface
+        text 五
+  six
+    grounded-in Q23488
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text six
+      surface
+        text 6
+    lexeme ru
+      surface
+        text шесть
+    lexeme hi
+      surface
+        text छह
+    lexeme zh
+      surface
+        text 六
+  seven
+    grounded-in Q23350
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text seven
+      surface
+        text 7
+    lexeme ru
+      surface
+        text семь
+    lexeme hi
+      surface
+        text सात
+    lexeme zh
+      surface
+        text 七
+  eight
+    grounded-in Q23355
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text eight
+      surface
+        text 8
+    lexeme ru
+      surface
+        text восемь
+    lexeme hi
+      surface
+        text आठ
+    lexeme zh
+      surface
+        text 八
+  nine
+    grounded-in Q19108
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text nine
+      surface
+        text 9
+    lexeme ru
+      surface
+        text девять
+    lexeme hi
+      surface
+        text नौ
+    lexeme zh
+      surface
+        text 九
+  ten
+    grounded-in Q23806
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text ten
+      surface
+        text 10
+    lexeme ru
+      surface
+        text десять
+    lexeme hi
+      surface
+        text दस
+    lexeme zh
+      surface
+        text 十
+  length
+    grounded-in Q36253
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text length
+    lexeme ru
+      surface
+        text длина
+    lexeme hi
+      surface
+        text लंबाई
+    lexeme zh
+      surface
+        text 长度
+  data_storage
+    grounded-in Q105666562
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text "data storage"
+    lexeme ru
+      surface
+        text "хранение данных"
+    lexeme hi
+      surface
+        text "डेटा भंडारण"
+    lexeme zh
+      surface
+        text 数据存储
+  mass
+    grounded-in Q11423
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text mass
+    lexeme ru
+      surface
+        text масса
+    lexeme hi
+      surface
+        text द्रव्यमान
+    lexeme zh
+      surface
+        text 质量
+  time
+    grounded-in Q11471
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text time
+    lexeme ru
+      surface
+        text время
+    lexeme hi
+      surface
+        text समय
+    lexeme zh
+      surface
+        text 时间
+  temperature
+    grounded-in Q11466
+    defined-by quantity
+    role physical_dimension
+    lexeme en
+      surface
+        text temperature
+    lexeme ru
+      surface
+        text температура
+    lexeme hi
+      surface
+        text तापमान
+    lexeme zh
+      surface
+        text 温度
+  meter
+    grounded-in Q11573
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text meter
+      surface
+        text metre
+      surface
+        text meters
+      surface
+        text metres
+    lexeme ru
+      surface
+        text метр
+      surface
+        text метра
+      surface
+        text метров
+    lexeme hi
+      surface
+        text मीटर
+    lexeme zh
+      surface
+        text 米
+  kilometer
+    grounded-in Q828224
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text km
+      surface
+        text kilometer
+      surface
+        text kilometre
+      surface
+        text kilometers
+      surface
+        text kilometres
+    lexeme ru
+      surface
+        text километр
+      surface
+        text километра
+      surface
+        text километров
+    lexeme hi
+      surface
+        text किलोमीटर
+    lexeme zh
+      surface
+        text 千米
+      surface
+        text 公里
+  centimeter
+    grounded-in Q174728
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text cm
+      surface
+        text centimeter
+      surface
+        text centimetre
+    lexeme ru
+      surface
+        text сантиметр
+    lexeme hi
+      surface
+        text सेंटीमीटर
+    lexeme zh
+      surface
+        text 厘米
+  millimeter
+    grounded-in Q174789
+    defined-by length
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text mm
+      surface
+        text millimeter
+      surface
+        text millimetre
+    lexeme ru
+      surface
+        text миллиметр
+    lexeme hi
+      surface
+        text मिलीमीटर
+    lexeme zh
+      surface
+        text 毫米
+  byte
+    grounded-in Q8799
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text byte
+      surface
+        text bytes
+    lexeme ru
+      surface
+        text байт
+      surface
+        text байта
+      surface
+        text байтов
+    lexeme hi
+      surface
+        text बाइट
+    lexeme zh
+      surface
+        text 字节
+  kilobyte
+    grounded-in Q79726
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text kb
+      surface
+        text kilobyte
+      surface
+        text kilobytes
+    lexeme ru
+      surface
+        text килобайт
+    lexeme hi
+      surface
+        text किलोबाइट
+    lexeme zh
+      surface
+        text 千字节
+  megabyte
+    grounded-in Q79735
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text mb
+      surface
+        text megabyte
+      surface
+        text megabytes
+    lexeme ru
+      surface
+        text мегабайт
+    lexeme hi
+      surface
+        text मेगाबाइट
+    lexeme zh
+      surface
+        text 兆字节
+  gigabyte
+    grounded-in Q79738
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text gb
+      surface
+        text gigabyte
+      surface
+        text gigabytes
+    lexeme ru
+      surface
+        text гигабайт
+    lexeme hi
+      surface
+        text गीगाबाइट
+    lexeme zh
+      surface
+        text 吉字节
+  terabyte
+    grounded-in Q79741
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text tb
+      surface
+        text terabyte
+      surface
+        text terabytes
+    lexeme ru
+      surface
+        text терабайт
+    lexeme hi
+      surface
+        text टेराबाइट
+    lexeme zh
+      surface
+        text 太字节
+  bit
+    grounded-in Q8805
+    defined-by data_storage
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text bit
+      surface
+        text bits
+    lexeme ru
+      surface
+        text бит
+      surface
+        text бита
+      surface
+        text битов
+    lexeme hi
+      surface
+        text बिट
+    lexeme zh
+      surface
+        text 比特
+  kilogram
+    grounded-in Q11570
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text kg
+      surface
+        text kilogram
+      surface
+        text kilograms
+    lexeme ru
+      surface
+        text кг
+      surface
+        text килограмм
+    lexeme hi
+      surface
+        text किलोग्राम
+    lexeme zh
+      surface
+        text 千克
+      surface
+        text 公斤
+  gram
+    grounded-in Q41803
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text gram
+      surface
+        text grams
+    lexeme ru
+      surface
+        text грамм
+    lexeme hi
+      surface
+        text ग्राम
+    lexeme zh
+      surface
+        text 克
+  pound
+    grounded-in Q100995
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text pound
+      surface
+        text pounds
+    lexeme ru
+      surface
+        text фунт
+    lexeme hi
+      surface
+        text पाउंड
+    lexeme zh
+      surface
+        text 磅
+  ton
+    grounded-in Q191118
+    defined-by mass
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text ton
+      surface
+        text tons
+      surface
+        text tonne
+    lexeme ru
+      surface
+        text тонна
+      surface
+        text тонны
+      surface
+        text тонн
+    lexeme hi
+      surface
+        text टन
+    lexeme zh
+      surface
+        text 吨
+  second
+    grounded-in Q11574
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text second
+      surface
+        text seconds
+    lexeme ru
+      surface
+        text секунда
+      surface
+        text секунды
+      surface
+        text секунд
+    lexeme hi
+      surface
+        text सेकंड
+    lexeme zh
+      surface
+        text 秒
+  minute
+    grounded-in Q7727
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text minute
+      surface
+        text minutes
+    lexeme ru
+      surface
+        text минута
+      surface
+        text минуты
+      surface
+        text минут
+    lexeme hi
+      surface
+        text मिनट
+    lexeme zh
+      surface
+        text 分钟
+  hour
+    grounded-in Q25235
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text hour
+      surface
+        text hours
+    lexeme ru
+      surface
+        text час
+      surface
+        text часа
+      surface
+        text часов
+    lexeme hi
+      surface
+        text घंटा
+    lexeme zh
+      surface
+        text 小时
+  millisecond
+    grounded-in Q723733
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text ms
+      surface
+        text millisecond
+      surface
+        text milliseconds
+    lexeme ru
+      surface
+        text миллисекунда
+      surface
+        text миллисекунд
+    lexeme hi
+      surface
+        text मिलीसेकंड
+    lexeme zh
+      surface
+        text 毫秒
+  day
+    grounded-in Q573
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text day
+      surface
+        text days
+    lexeme ru
+      surface
+        text день
+      surface
+        text дня
+      surface
+        text дней
+    lexeme hi
+      surface
+        text दिन
+    lexeme zh
+      surface
+        text 天
+      surface
+        text 日
+  month
+    grounded-in Q5151
+    defined-by time
+    defined-by unit
+    role measurement_unit
+    role calculation_domain_term
+    lexeme en
+      surface
+        text month
+      surface
+        text months
+    lexeme ru
+      surface
+        text месяц
+      surface
+        text месяца
+      surface
+        text месяцев
+    lexeme hi
+      surface
+        text महीना
+      surface
+        text महीने
+    lexeme zh
+      surface
+        text 月
+      surface
+        text 个月
+  celsius
+    grounded-in Q25267
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text celsius
+    lexeme ru
+      surface
+        text цельсий
+    lexeme hi
+      surface
+        text सेल्सियस
+    lexeme zh
+      surface
+        text 摄氏度
+  fahrenheit
+    grounded-in Q42289
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text fahrenheit
+    lexeme ru
+      surface
+        text фаренгейт
+    lexeme hi
+      surface
+        text फ़ारेनहाइट
+    lexeme zh
+      surface
+        text 华氏度
+  kelvin
+    grounded-in Q11579
+    defined-by temperature
+    defined-by unit
+    role measurement_unit
+    lexeme en
+      surface
+        text kelvin
+    lexeme ru
+      surface
+        text кельвин
+    lexeme hi
+      surface
+        text केल्विन
+    lexeme zh
+      surface
+        text 开尔文

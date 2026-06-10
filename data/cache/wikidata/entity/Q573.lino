@@ -1,0 +1,19 @@
+Q573
+  aliases
+    en (days "Earth day")
+    hi ("दिवस")
+    ru ("суток" "дня" "дней" "день" "д.")
+    zh ("天")
+  descriptions
+    en "unit of time lasting 24 hours, derived from the period of Earth's rotation about its axis"
+    hi "24 घंटे तक चलने वाली समय की इकाई, जो पृथ्वी के अपने अक्ष पर घूमने की अवधि से व्युत्पन्न होती है"
+    ru "единица измерения времени, приблизительно равная периоду обращения Земли вокруг своей оси (24 часа)"
+    zh "時間單位"
+  id Q573
+  labels
+    en day
+    hi "दिन"
+    ru "сутки"
+    zh "日"
+  type item
+success 1

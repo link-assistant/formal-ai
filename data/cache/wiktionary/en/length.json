@@ -1,0 +1,93 @@
+[
+  {
+    "word": "length",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/length-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75899916",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/lɛn(t)θ/",
+        "audio": ""
+      },
+      {
+        "text": "/lɛn(t)θ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/length-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227687",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The distance measured along the longest dimension of an object.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Duration.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The length of a horse, used to indicate the distance between horses at the end of a race.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Distance between the two ends of a line segment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The distance down the pitch that the ball bounces on its way to the batsman.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Total extent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the length of a book"
+          },
+          {
+            "definition": "Part of something that is long; a physical piece of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a length of rope"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To lengthen.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/length"
+    ]
+  }
+]

@@ -1,0 +1,87 @@
+[
+  {
+    "word": "six",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/six-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75899973",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/sɪks/",
+        "audio": ""
+      },
+      {
+        "text": "/sɪks/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/six-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=867581",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit or figure 6.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by ellipsis of six o'clock) Rear, behind (rear side of something).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "cover my six"
+          },
+          {
+            "definition": "An event whereby a batsman hits a ball which does not bounce before passing over a boundary in the air, resulting in an award of 6 runs for the batting team.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A touchdown.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Small beer sold at six shillings per barrel.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value equal to 6; the number following five and preceding seven. This many dots: (••••••).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a group or set with six elements.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/six"
+    ]
+  }
+]

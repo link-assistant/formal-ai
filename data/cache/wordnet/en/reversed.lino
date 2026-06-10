@@ -1,0 +1,18 @@
+language en
+lemma reversed
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "turned inside out and resewn"
+    examples ("the reversed collar looked as good as new")
+    id oewn-02477205-s
+    partOfSpeech s
+  entry
+    definition "turned about in order or relation"
+    examples ("transposed letters")
+    id oewn-00203553-s
+    partOfSpeech s
+    synonyms (converse transposed)
+source "oewn:2024"

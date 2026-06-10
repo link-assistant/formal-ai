@@ -1,0 +1,85 @@
+language en
+lemma biggest
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "above average in size or number or quantity or magnitude or extent"
+    examples ("a large city" "set out for the big city" "a large sum" "a big (or large) barn" "a large family" "big businesses" "a big expenditure" "a large number of newspapers" "a big group of scientists" "large areas of the world")
+    id oewn-01385012-a
+    partOfSpeech a
+    synonyms (large big)
+  entry
+    definition significant
+    examples ("graduation was a big day in his life")
+    id oewn-01279982-s
+    partOfSpeech s
+    synonyms (big)
+  entry
+    definition "serious or severe"
+    examples ("a bad headache" "in a big rage" "had a big (or bad) shock" "a bad earthquake" "a bad storm")
+    id oewn-01514159-s
+    partOfSpeech s
+    synonyms (bad big)
+  entry
+    definition "loud and firm"
+    examples ("a big voice" "big bold piano sounds")
+    id oewn-01455863-s
+    partOfSpeech s
+    synonyms (big)
+  entry
+    definition "conspicuous in position or importance"
+    examples ("a big figure in the movement" "big man on campus" "he's very large in financial circles" "a prominent citizen")
+    id oewn-00581973-s
+    partOfSpeech s
+    synonyms (big large prominent)
+  entry
+    definition prodigious
+    examples ("big spender" "big eater" "heavy investor")
+    id oewn-02411163-s
+    partOfSpeech s
+    synonyms (big heavy)
+  entry
+    definition "exhibiting self-importance"
+    examples ("big talk")
+    id oewn-01896819-s
+    partOfSpeech s
+    synonyms (boastful braggart bragging braggy big cock-a-hoop crowing self-aggrandizing self-aggrandising)
+  entry
+    definition "feeling self-importance"
+    examples ("too big for his britches" "had a swelled head" "he was swelled with pride")
+    id oewn-01896254-s
+    partOfSpeech s
+    synonyms (big swelled vainglorious)
+  entry
+    definition "(of animals) fully developed"
+    examples ("an adult animal" "a grown woman")
+    id oewn-01491979-s
+    partOfSpeech s
+    synonyms (adult big full-grown "fully grown" grown grownup)
+  entry
+    definition "marked by intense physical force"
+    examples ("a big wind")
+    id oewn-01195323-s
+    partOfSpeech s
+    synonyms (big)
+  entry
+    definition "generous and understanding and tolerant"
+    examples ("a heart big enough to hold no grudges" "that's very big of you to be so forgiving" "a large and generous spirit" "a large heart" "magnanimous toward his enemies")
+    id oewn-01118400-s
+    partOfSpeech s
+    synonyms (big large magnanimous)
+  entry
+    definition "given or giving freely"
+    examples ("was a big tipper" "the bounteous goodness of God" "bountiful compliments" "a freehanded host" "a handsome allowance" "Saturday's child is loving and giving" "a liberal backer of the arts" "a munificent gift" "her fond and openhanded grandfather")
+    id oewn-01115129-s
+    partOfSpeech s
+    synonyms (big bighearted bounteous bountiful freehanded handsome giving liberal openhanded)
+  entry
+    definition "in an advanced stage of pregnancy"
+    examples ("was big with child" "was great with child")
+    id oewn-00174652-s
+    partOfSpeech s
+    synonyms (big enceinte expectant gravid great large heavy "with child")
+source "oewn:2024"

@@ -1,0 +1,18 @@
+language en
+lemma farewell
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an acknowledgment or expression of goodwill at parting"
+    id oewn-06641899-n
+    partOfSpeech n
+    synonyms ("word of farewell")
+  entry
+    definition "the act of departing politely"
+    examples ("he disliked long farewells" "he took his leave" "parting is such sweet sorrow")
+    id oewn-00053917-n
+    partOfSpeech n
+    synonyms (leave leave-taking parting)
+source "oewn:2024"

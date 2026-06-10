@@ -1,0 +1,22 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A short sequence of bits (binary digits) that can be operated on as a unit by a computer; the smallest usable machine word."
+        entry
+          definition "(most commonly) A unit of computing storage equal to eight bits, which can represent any of 256 distinct values."
+          example "The word “hello” fits into five bytes of ASCII code."
+          synonyms (B octet)
+      partOfSpeech noun
+      synonyms (B octet)
+  phonetic "/baɪts/"
+  phonetics
+    entry
+      audio ""
+      text "/baɪts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/byte" "https://en.wiktionary.org/wiki/bytes")
+  word bytes

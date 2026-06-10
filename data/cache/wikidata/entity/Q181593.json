@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q181593": {
+      "type": "item",
+      "id": "Q181593",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "алгоритм сортировки"
+        },
+        "en": {
+          "language": "en",
+          "value": "sorting algorithm"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अनुक्रमण की कलनविधि"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "排序算法"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "алгоритм для упорядочивания элементов в списке"
+        },
+        "en": {
+          "language": "en",
+          "value": "algorithm that puts elements of a list in a certain order"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "算法,按照一定的顺序列表的元素"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "排序"
+          },
+          {
+            "language": "zh",
+            "value": "升序"
+          },
+          {
+            "language": "zh",
+            "value": "自然顺序"
+          },
+          {
+            "language": "zh",
+            "value": "降序"
+          },
+          {
+            "language": "zh",
+            "value": "反字典顺序"
+          },
+          {
+            "language": "zh",
+            "value": "排序演算法"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "алгоритмы сортировки"
+          },
+          {
+            "language": "ru",
+            "value": "сортировка"
+          },
+          {
+            "language": "ru",
+            "value": "сортировка массива"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "asc"
+          },
+          {
+            "language": "en",
+            "value": "desc"
+          },
+          {
+            "language": "en",
+            "value": "sort"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

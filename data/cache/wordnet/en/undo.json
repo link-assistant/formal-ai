@@ -1,0 +1,61 @@
+{
+  "lemma": "undo",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01522610-v",
+      "partOfSpeech": "v",
+      "definition": "cancel, annul, or reverse an action or its effect",
+      "examples": [
+        "I wish I could undo my actions"
+      ]
+    },
+    {
+      "id": "oewn-01622250-v",
+      "partOfSpeech": "v",
+      "definition": "deprive of certain characteristics",
+      "synonyms": [
+        "unmake"
+      ]
+    },
+    {
+      "id": "oewn-02565025-v",
+      "partOfSpeech": "v",
+      "definition": "cause the ruin or downfall of",
+      "examples": [
+        "A single mistake undid the President and he had to resign"
+      ]
+    },
+    {
+      "id": "oewn-01287511-v",
+      "partOfSpeech": "v",
+      "definition": "cause to become loose",
+      "examples": [
+        "undo the shoelace",
+        "untie the knot",
+        "loosen the necktie"
+      ],
+      "synonyms": [
+        "untie",
+        "loosen"
+      ]
+    },
+    {
+      "id": "oewn-01286874-v",
+      "partOfSpeech": "v",
+      "definition": "remove the outer cover or wrapping of",
+      "examples": [
+        "Let's unwrap the gifts!",
+        "undo the parcel"
+      ],
+      "synonyms": [
+        "unwrap"
+      ]
+    }
+  ]
+}

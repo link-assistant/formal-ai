@@ -1,0 +1,24 @@
+{
+  "lemma": "browser",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09897053-n",
+      "partOfSpeech": "n",
+      "definition": "a viewer who looks around casually without seeking anything in particular"
+    },
+    {
+      "id": "oewn-06583477-n",
+      "partOfSpeech": "n",
+      "definition": "a program used to view HTML documents",
+      "synonyms": [
+        "web browser"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q202": {
+      "type": "item",
+      "id": "Q202",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "4"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "४"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "four"
+          },
+          {
+            "language": "en",
+            "value": "Ⅳ"
+          },
+          {
+            "language": "en",
+            "value": "ⅳ"
+          },
+          {
+            "language": "en",
+            "value": "number 4"
+          },
+          {
+            "language": "en",
+            "value": "number four"
+          },
+          {
+            "language": "en",
+            "value": "the number 4"
+          },
+          {
+            "language": "en",
+            "value": "4 (number)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "четыре"
+          },
+          {
+            "language": "ru",
+            "value": "4 (число)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "四"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

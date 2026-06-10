@@ -1,0 +1,9 @@
+view
+  id M-d18a95bd3ab9
+  lemma identifier
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a symbol that establishes the identity of the one bearing it"
+    provenance (wordnet)

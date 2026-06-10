@@ -1,0 +1,99 @@
+[
+  {
+    "word": "art",
+    "phonetic": "/ɑːt/",
+    "phonetics": [
+      {
+        "text": "/ɑːt/",
+        "audio": ""
+      },
+      {
+        "text": "/ɑɹt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/art-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718886",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The conscious production or arrangement of sounds, colours, forms, movements, or other elements in a manner that affects the senses and emotions, usually specifically the production of the beautiful in a graphic or plastic medium.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There is a debate as to whether graffiti is art or vandalism."
+          },
+          {
+            "definition": "The creative and emotional expression of mental imagery, such as visual, auditory, social, etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Skillful creative activity, usually with an aesthetic focus.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She's mastered the art of programming."
+          },
+          {
+            "definition": "The study and the product of these processes.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He's at university to study art."
+          },
+          {
+            "definition": "Aesthetic value.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her photographs are nice, but there's no art in them."
+          },
+          {
+            "definition": "Artwork.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Sotheby's regularly auctions art for millions."
+          },
+          {
+            "definition": "A field or category of art, such as painting, sculpture, music, ballet, or literature.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'm a great supporter of the arts."
+          },
+          {
+            "definition": "A nonscientific branch of learning; one of the liberal arts.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Skill that is attained by study, practice, or observation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Contrivance, scheming, manipulation.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "craft"
+        ],
+        "antonyms": [
+          "mundacity",
+          "nature",
+          "subsistence"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/art"
+    ]
+  }
+]

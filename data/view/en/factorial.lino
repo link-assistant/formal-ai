@@ -1,0 +1,13 @@
+view
+  id M-1bcb9165f008
+  lemma factorial
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to factorials"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the product of all the integers up to and including a given integer"
+    provenance (wordnet)

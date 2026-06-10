@@ -1,430 +1,422 @@
 meanings
-  meaning "explicit_web_search_command"
-    gloss "an explicit, fully spelled-out web-search command whose topic sits at the very end — search the web for X, find information about X, найди в интернете X. It is a specialisation of web_search in which the source and the act are stated outright, so the recogniser does not have to infer them: it strips the lead-in from the front of the prompt and keeps whatever follows as the query. Every surface is a prefix surface ending with the ellipsis … (U+2026); the literal before the slot is the lead-in to strip (it keeps its trailing space so the boundary is exact), and the remainder is the search topic. The longer, more specific lead-ins are written before the shorter ones so that, for example, find detailed information about … wins over find information about …. English and Russian carry the original lead-ins verbatim; Hindi and Chinese add natural verb-initial commands so the concept is complete in every supported language."
-    wiktionary "search"
-    defined_by "web_search"
-    defined_by "action"
-    role "web_search_explicit_prefix"
-    lexeme "en"
-      word "search the web for …"
-        description "English lead-in naming the web as the source; the query is whatever follows search the web for."
-      word "search web for …"
-        description "English lead-in (article-dropped variant of search the web for); the query follows."
-      word "search the internet for …"
-        description "English lead-in naming the internet as the source; the query follows search the internet for."
-      word "search internet for …"
-        description "English lead-in (article-dropped variant of search the internet for); the query follows."
-      word "search online for …"
-        description "English lead-in naming online search; the query follows search online for."
-      word "search wikipedia for …"
-        description "English lead-in naming Wikipedia as the source; the query follows search wikipedia for."
-      word "search wikidata for …"
-        description "English lead-in naming Wikidata as the source; the query follows search wikidata for."
-      word "search wiktionary for …"
-        description "English lead-in naming Wiktionary as the source; the query follows search wiktionary for."
-      word "search for information about …"
-        description "English lead-in asking for information about a topic; the query follows search for information about."
-      word "search for information on …"
-        description "English lead-in asking for information on a topic; the query follows search for information on."
-      word "web search for …"
-        description "English lead-in naming a web search; the query follows web search for."
-      word "find on the internet …"
-        description "English lead-in asking to find something on the internet; the query follows find on the internet."
-      word "find online …"
-        description "English lead-in asking to find something online; the query follows find online."
-      word "find information about …"
-        description "English lead-in asking to find information about a topic; the query follows find information about."
-      word "find information on …"
-        description "English lead-in asking to find information on a topic; the query follows find information on."
-      word "find detailed information about …"
-        description "English lead-in asking to find detailed information about a topic; listed before find information about so detailed is not kept; the query follows."
-      word "find detailed information on …"
-        description "English lead-in asking to find detailed information on a topic; listed before find information on so detailed is not kept; the query follows."
-      word "find info about …"
-        description "English lead-in (clipped info) asking to find information about a topic; the query follows find info about."
-      word "find info on …"
-        description "English lead-in (clipped info) asking to find information on a topic; the query follows find info on."
-      word "look up information about …"
-        description "English lead-in asking to look up information about a topic; the query follows look up information about."
-      word "look up information on …"
-        description "English lead-in asking to look up information on a topic; the query follows look up information on."
-      word "look up info about …"
-        description "English lead-in (clipped info) asking to look up information about a topic; the query follows look up info about."
-      word "look up info on …"
-        description "English lead-in (clipped info) asking to look up information on a topic; the query follows look up info on."
-      word "look up online …"
-        description "English lead-in asking to look something up online; the query follows look up online."
-    lexeme "ru"
-      word "найди в интернете …"
-        description "Russian lead-in (romanized naidi v internete, find on the internet); the query follows the lead-in."
-      word "поищи в интернете …"
-        description "Russian lead-in (romanized poishchi v internete, search on the internet); the query follows the lead-in."
-      word "поиск в интернете …"
-        description "Russian lead-in (romanized poisk v internete, a search on the internet); the query follows the lead-in."
-      word "найди онлайн …"
-        description "Russian lead-in (romanized naidi onlain, find online); the query follows the lead-in."
-      word "поищи онлайн …"
-        description "Russian lead-in (romanized poishchi onlain, search online); the query follows the lead-in."
-      word "найди в сети …"
-        description "Russian lead-in (romanized naidi v seti, find on the net); the query follows the lead-in."
-      word "поищи в сети …"
-        description "Russian lead-in (romanized poishchi v seti, search on the net); the query follows the lead-in."
-      word "найди информацию в интернете о …"
-        description "Russian lead-in (romanized naidi informaciyu v internete o, find information on the internet about); the query follows."
-      word "найди информацию в интернете об …"
-        description "Russian lead-in (romanized naidi informaciyu v internete ob, the ob variant before a vowel); the query follows."
-      word "поищи информацию в интернете о …"
-        description "Russian lead-in (romanized poishchi informaciyu v internete o, search the internet for information about); the query follows."
-      word "поищи информацию в интернете об …"
-        description "Russian lead-in (romanized poishchi informaciyu v internete ob, the ob variant before a vowel); the query follows."
-      word "найди информацию о …"
-        description "Russian lead-in (romanized naidi informaciyu o, find information about); the query follows."
-      word "найди информацию об …"
-        description "Russian lead-in (romanized naidi informaciyu ob, the ob variant before a vowel); the query follows."
-      word "найди информацию про …"
-        description "Russian lead-in (romanized naidi informaciyu pro, find information about); the query follows."
-      word "найди информацию по …"
-        description "Russian lead-in (romanized naidi informaciyu po, find information on); the query follows."
-      word "найти информацию о …"
-        description "Russian lead-in (romanized naiti informaciyu o, infinitive to find information about); the query follows."
-      word "найти информацию об …"
-        description "Russian lead-in (romanized naiti informaciyu ob, the ob variant before a vowel); the query follows."
-      word "поищи информацию о …"
-        description "Russian lead-in (romanized poishchi informaciyu o, search for information about); the query follows."
-      word "поищи информацию об …"
-        description "Russian lead-in (romanized poishchi informaciyu ob, the ob variant before a vowel); the query follows."
-      word "поищи информацию про …"
-        description "Russian lead-in (romanized poishchi informaciyu pro, search for information about); the query follows."
-      word "поищи информацию по …"
-        description "Russian lead-in (romanized poishchi informaciyu po, search for information on); the query follows."
-      word "найди инфу о …"
-        description "Russian lead-in (romanized naidi infu o, colloquial find info about); the query follows."
-      word "найди инфу об …"
-        description "Russian lead-in (romanized naidi infu ob, the ob variant before a vowel); the query follows."
-      word "поищи инфу о …"
-        description "Russian lead-in (romanized poishchi infu o, colloquial search for info about); the query follows."
-      word "поищи инфу об …"
-        description "Russian lead-in (romanized poishchi infu ob, the ob variant before a vowel); the query follows."
-      word "найди сведения о …"
-        description "Russian lead-in (romanized naidi svedeniya o, find information about); the query follows."
-      word "найди сведения об …"
-        description "Russian lead-in (romanized naidi svedeniya ob, the ob variant before a vowel); the query follows."
-      word "поищи сведения о …"
-        description "Russian lead-in (romanized poishchi svedeniya o, search for information about); the query follows."
-      word "поищи сведения об …"
-        description "Russian lead-in (romanized poishchi svedeniya ob, the ob variant before a vowel); the query follows."
-      word "найди материалы о …"
-        description "Russian lead-in (romanized naidi materialy o, find materials about); the query follows."
-      word "найди материалы об …"
-        description "Russian lead-in (romanized naidi materialy ob, the ob variant before a vowel); the query follows."
-      word "поищи материалы о …"
-        description "Russian lead-in (romanized poishchi materialy o, search for materials about); the query follows."
-      word "поищи материалы об …"
-        description "Russian lead-in (romanized poishchi materialy ob, the ob variant before a vowel); the query follows."
-    lexeme "hi"
-      word "इंटरनेट पर खोजें …"
-        description "Hindi verb-initial command (romanized internet par khojen, search on the internet); the query follows the lead-in."
-      word "वेब पर खोजें …"
-        description "Hindi verb-initial command (romanized veb par khojen, search on the web); the query follows the lead-in."
-      word "ऑनलाइन खोजें …"
-        description "Hindi verb-initial command (romanized onlain khojen, search online); the query follows the lead-in."
-      word "विकिपीडिया पर खोजें …"
-        description "Hindi verb-initial command (romanized vikipidiya par khojen, search on Wikipedia); the query follows the lead-in."
-    lexeme "zh"
-      word "在网上搜索…"
-        description "Chinese verb-initial command (pinyin zai wangshang sousuo, search on the web for); the query follows the lead-in."
-      word "在互联网上搜索…"
-        description "Chinese verb-initial command (pinyin zai hulianwang shang sousuo, search on the internet for); the query follows the lead-in."
-      word "在维基百科上搜索…"
-        description "Chinese verb-initial command (pinyin zai weiji baike shang sousuo, search on Wikipedia for); the query follows the lead-in."
-      word "上网查找…"
-        description "Chinese verb-initial command (pinyin shangwang chazhao, go online and look up); the query follows the lead-in."
-  meaning "topic_connective"
-    gloss "the connective that ties a search verb to the topic it is about — the aboutness relation between a query and its subject. Its surfaces split by word order, and the slot shape records which side the topic falls on. In head-initial languages the connective precedes the topic, so the form is a prefix surface ( about …, о …, 关于…) whose literal before the slot is found in the prompt and the remainder taken as the query. In head-final Hindi the postposition follows the topic, so the form is a suffix surface (… के बारे में) whose literal after the slot is found and the text before it taken as the query. The recogniser reads the slot to decide the direction, trying the prefix (after-topic) connectives before the suffix (before-topic) ones; within each side the order is the declared order, so the specific about/regarding markers are tried before the broad for."
-    wiktionary "about"
-    defined_by "relation"
-    role "web_search_topic_marker"
-    lexeme "en"
-      word " about …"
-        description "English connective (about), space-wrapped before the slot; the topic follows, so the text after about is the query."
-      word " on …"
-        description "English connective (on), space-wrapped before the slot; the topic follows on."
-      word " regarding …"
-        description "English connective (regarding), space-wrapped before the slot; the topic follows regarding."
-      word " concerning …"
-        description "English connective (concerning), space-wrapped before the slot; the topic follows concerning."
-      word " for …"
-        description "English connective (for), the broadest marker so it is tried last; the topic follows for."
-    lexeme "ru"
-      word " о …"
-        description "Russian preposition (romanized o, about), space-wrapped before the slot; the topic follows."
-      word " об …"
-        description "Russian preposition (romanized ob, the variant before a vowel); the topic follows."
-      word " про …"
-        description "Russian preposition (romanized pro, about), space-wrapped before the slot; the topic follows."
-      word " по …"
-        description "Russian preposition (romanized po, on/about), space-wrapped before the slot; the topic follows."
-      word " насчет …"
-        description "Russian preposition (romanized naschet, regarding), space-wrapped before the slot; the topic follows."
-      word " относительно …"
-        description "Russian preposition (romanized otnositelno, concerning), space-wrapped before the slot; the topic follows."
-    lexeme "hi"
-      word "… के बारे में"
-        description "Hindi postposition (romanized ke baare mein, about) after the slot; the topic precedes it, so the text before के बारे में is the query."
-      word "… के विषय में"
-        description "Hindi postposition (romanized ke vishay mein, on the subject of) after the slot; the topic precedes it."
-      word "… से संबंधित"
-        description "Hindi postposition (romanized se sambandhit, related to) after the slot; the topic precedes it."
-      word "… पर"
-        description "Hindi postposition (romanized par, on) after the slot; the topic precedes it."
-      word "… की जानकारी"
-        description "Hindi postposition phrase (romanized ki jankari, information of) after the slot; the topic precedes it."
-      word "… की सूचना"
-        description "Hindi postposition phrase (romanized ki suchna, notice of) after the slot; the topic precedes it."
-    lexeme "zh"
-      word "关于…"
-        description "Chinese coverb (pinyin guanyu, about) before the slot; the topic follows."
-      word "關於…"
-        description "Chinese coverb (pinyin guanyu, about, traditional) before the slot; the topic follows."
-      word "有关…"
-        description "Chinese coverb (pinyin youguan, concerning) before the slot; the topic follows."
-      word "有關…"
-        description "Chinese coverb (pinyin youguan, concerning, traditional) before the slot; the topic follows."
-  meaning "query_leading_noise"
-    gloss "filler that precedes the real search topic and must be trimmed off its front — politeness, articles, quantifiers and information about lead-ins that are not part of the topic. As a leading-noise marker each surface is a prefix surface whose literal before the slot is stripped from the start of an extracted query; the recogniser strips repeatedly until the query stops changing, so the declared order does not matter. The Latin and Cyrillic forms keep their trailing space so they peel off a whole leading word, while the Han forms are bare. These overlap deliberately with the topic connectives ( о  versus o ): here the marker sits at the very front of the query, so only a trailing boundary is needed."
-    wiktionary "please"
-    defined_by "concept"
-    role "web_search_query_leading_noise"
-    lexeme "en"
-      word "please …"
-        description "English politeness particle (please), stripped from the front of a query."
-      word "can you …"
-        description "English request frame (can you), stripped from the front of a query."
-      word "could you …"
-        description "English request frame (could you), stripped from the front of a query."
-      word "would you …"
-        description "English request frame (would you), stripped from the front of a query."
-      word "me …"
-        description "English object pronoun (me) left after show/give me, stripped from the front of a query."
-      word "the …"
-        description "English definite article (the), stripped from the front of a query."
-      word "some …"
-        description "English quantifier (some), stripped from the front of a query."
-      word "detailed …"
-        description "English adjective (detailed), stripped from the front of a query."
-      word "more …"
-        description "English quantifier (more), stripped from the front of a query."
-      word "current …"
-        description "English adjective (current), stripped from the front of a query."
-      word "latest …"
-        description "English adjective (latest), stripped from the front of a query."
-      word "information about …"
-        description "English lead-in (information about) left after a verb, stripped from the front of a query."
-      word "information on …"
-        description "English lead-in (information on), stripped from the front of a query."
-      word "info about …"
-        description "English lead-in (clipped info about), stripped from the front of a query."
-      word "info on …"
-        description "English lead-in (clipped info on), stripped from the front of a query."
-      word "details about …"
-        description "English lead-in (details about), stripped from the front of a query."
-      word "details on …"
-        description "English lead-in (details on), stripped from the front of a query."
-      word "data about …"
-        description "English lead-in (data about), stripped from the front of a query."
-      word "data on …"
-        description "English lead-in (data on), stripped from the front of a query."
-    lexeme "ru"
-      word "подробные …"
-        description "Russian adjective (romanized podrobnye, detailed), stripped from the front of a query."
-      word "информацию о …"
-        description "Russian lead-in (romanized informaciyu o, information about), stripped from the front of a query."
-      word "информацию об …"
-        description "Russian lead-in (romanized informaciyu ob, the ob variant before a vowel), stripped from the front of a query."
-      word "инфу о …"
-        description "Russian colloquial lead-in (romanized infu o, info about), stripped from the front of a query."
-      word "инфу об …"
-        description "Russian colloquial lead-in (romanized infu ob, the ob variant before a vowel), stripped from the front of a query."
-      word "сведения о …"
-        description "Russian lead-in (romanized svedeniya o, information about), stripped from the front of a query."
-      word "сведения об …"
-        description "Russian lead-in (romanized svedeniya ob, the ob variant before a vowel), stripped from the front of a query."
-      word "материалы о …"
-        description "Russian lead-in (romanized materialy o, materials about), stripped from the front of a query."
-      word "материалы об …"
-        description "Russian lead-in (romanized materialy ob, the ob variant before a vowel), stripped from the front of a query."
-      word "материалы по …"
-        description "Russian lead-in (romanized materialy po, materials on), stripped from the front of a query."
-      word "данные о …"
-        description "Russian lead-in (romanized dannye o, data about), stripped from the front of a query."
-      word "данные об …"
-        description "Russian lead-in (romanized dannye ob, the ob variant before a vowel), stripped from the front of a query."
-      word "о …"
-        description "Russian preposition (romanized o, about) at the very front, stripped from the front of a query."
-      word "об …"
-        description "Russian preposition (romanized ob, the variant before a vowel), stripped from the front of a query."
-      word "про …"
-        description "Russian preposition (romanized pro, about), stripped from the front of a query."
-      word "по …"
-        description "Russian preposition (romanized po, on/about), stripped from the front of a query."
-    lexeme "hi"
-      word "कृपया …"
-        description "Hindi politeness particle (romanized kripya, please), stripped from the front of a query."
-      word "जानकारी …"
-        description "Hindi noun (romanized jankari, information) lead-in, stripped from the front of a query."
-      word "सूचना …"
-        description "Hindi noun (romanized suchna, information) lead-in, stripped from the front of a query."
-      word "विवरण …"
-        description "Hindi noun (romanized vivaran, details) lead-in, stripped from the front of a query."
-      word "सामग्री …"
-        description "Hindi noun (romanized samagri, material) lead-in, stripped from the front of a query."
-    lexeme "zh"
-      word "关于…"
-        description "Chinese coverb (pinyin guanyu, about) at the front, stripped from the front of a query."
-      word "關於…"
-        description "Chinese coverb (pinyin guanyu, about, traditional), stripped from the front of a query."
-      word "有关…"
-        description "Chinese coverb (pinyin youguan, concerning), stripped from the front of a query."
-      word "有關…"
-        description "Chinese coverb (pinyin youguan, concerning, traditional), stripped from the front of a query."
-  meaning "query_trailing_noise"
-    gloss "filler that follows the real search topic and must be trimmed off its tail — trailing source phrases, qualifiers and stray search verbs that are not part of the topic ( online, on the internet, в интернете, के बारे में, 的信息). As a trailing-noise marker each surface is a suffix surface whose literal after the slot is stripped from the end of an extracted query; the recogniser strips repeatedly until the query stops changing, so the declared order does not matter. The Latin and Cyrillic forms keep their leading space so they peel off a whole trailing word, while the Han forms are bare."
-    wiktionary "online"
-    defined_by "concept"
-    role "web_search_query_trailing_noise"
-    lexeme "en"
-      word "… online"
-        description "English trailing adverb (online), stripped from the end of a query."
-      word "… on the internet"
-        description "English trailing phrase (on the internet), stripped from the end of a query."
-      word "… on the web"
-        description "English trailing phrase (on the web), stripped from the end of a query."
-      word "… on wikipedia"
-        description "English trailing phrase (on wikipedia), stripped from the end of a query."
-      word "… in wikipedia"
-        description "English trailing phrase (in wikipedia), stripped from the end of a query."
-      word "… from wikipedia"
-        description "English trailing phrase (from wikipedia), stripped from the end of a query."
-      word "… information"
-        description "English trailing noun (information), stripped from the end of a query."
-      word "… info"
-        description "English trailing noun (clipped info), stripped from the end of a query."
-      word "… details"
-        description "English trailing noun (details), stripped from the end of a query."
-      word "… data"
-        description "English trailing noun (data), stripped from the end of a query."
-      word "… material"
-        description "English trailing noun (material), stripped from the end of a query."
-      word "… materials"
-        description "English trailing noun (materials), stripped from the end of a query."
-      word "… resources"
-        description "English trailing noun (resources), stripped from the end of a query."
-      word "… sources"
-        description "English trailing noun (sources), stripped from the end of a query."
-      word "… articles"
-        description "English trailing noun (articles), stripped from the end of a query."
-      word "… facts"
-        description "English trailing noun (facts), stripped from the end of a query."
-    lexeme "ru"
-      word "… в интернете"
-        description "Russian trailing phrase (romanized v internete, on the internet), stripped from the end of a query."
-      word "… онлайн"
-        description "Russian trailing adverb (romanized onlain, online), stripped from the end of a query."
-      word "… в сети"
-        description "Russian trailing phrase (romanized v seti, on the net), stripped from the end of a query."
-      word "… в википедии"
-        description "Russian trailing phrase (romanized v wikipedii, in Wikipedia), stripped from the end of a query."
-      word "… википедии"
-        description "Russian trailing noun (romanized wikipedii, of Wikipedia), stripped from the end of a query."
-      word "… информация"
-        description "Russian trailing noun (romanized informaciya, information), stripped from the end of a query."
-      word "… сведения"
-        description "Russian trailing noun (romanized svedeniya, information), stripped from the end of a query."
-      word "… материалы"
-        description "Russian trailing noun (romanized materialy, materials), stripped from the end of a query."
-      word "… данные"
-        description "Russian trailing noun (romanized dannye, data), stripped from the end of a query."
-    lexeme "hi"
-      word "… के बारे में"
-        description "Hindi trailing postposition (romanized ke baare mein, about), stripped from the end of a query."
-      word "… के विषय में"
-        description "Hindi trailing postposition (romanized ke vishay mein, on the subject of), stripped from the end of a query."
-      word "… से संबंधित"
-        description "Hindi trailing postposition (romanized se sambandhit, related to), stripped from the end of a query."
-      word "… पर"
-        description "Hindi trailing postposition (romanized par, on), stripped from the end of a query."
-      word "… की जानकारी"
-        description "Hindi trailing phrase (romanized ki jankari, information of), stripped from the end of a query."
-      word "… की सूचना"
-        description "Hindi trailing phrase (romanized ki suchna, notice of), stripped from the end of a query."
-      word "… जानकारी"
-        description "Hindi trailing noun (romanized jankari, information), stripped from the end of a query."
-      word "… सूचना"
-        description "Hindi trailing noun (romanized suchna, information), stripped from the end of a query."
-      word "… विवरण"
-        description "Hindi trailing noun (romanized vivaran, details), stripped from the end of a query."
-      word "… सामग्री"
-        description "Hindi trailing noun (romanized samagri, material), stripped from the end of a query."
-      word "… स्रोत"
-        description "Hindi trailing noun (romanized srot, source), stripped from the end of a query."
-      word "… विकिपीडिया में"
-        description "Hindi trailing phrase (romanized vikipidiya mein, in Wikipedia), stripped from the end of a query."
-      word "… ऑनलाइन"
-        description "Hindi trailing adverb (romanized onlain, online), stripped from the end of a query."
-      word "… इंटरनेट पर"
-        description "Hindi trailing phrase (romanized internet par, on the internet), stripped from the end of a query."
-      word "… खोजो"
-        description "Hindi trailing imperative (romanized khojo, search), stripped from the end of a query."
-      word "… खोजें"
-        description "Hindi trailing imperative (romanized khojen, search), stripped from the end of a query."
-      word "… खोजिए"
-        description "Hindi trailing imperative (romanized khojie, search), stripped from the end of a query."
-      word "… ढूंढो"
-        description "Hindi trailing imperative (romanized dhundho, find), stripped from the end of a query."
-      word "… ढूँढो"
-        description "Hindi trailing imperative (romanized dhundho, nasalised), stripped from the end of a query."
-      word "… ढूंढें"
-        description "Hindi trailing imperative (romanized dhundhen, find), stripped from the end of a query."
-      word "… ढूँढें"
-        description "Hindi trailing imperative (romanized dhundhen, nasalised), stripped from the end of a query."
-    lexeme "zh"
-      word "…的信息"
-        description "Chinese trailing phrase (pinyin de xinxi, information of), stripped from the end of a query."
-      word "…的資料"
-        description "Chinese trailing phrase (pinyin de ziliao, data of, traditional), stripped from the end of a query."
-      word "…的资料"
-        description "Chinese trailing phrase (pinyin de ziliao, data of), stripped from the end of a query."
-      word "…信息"
-        description "Chinese trailing noun (pinyin xinxi, information), stripped from the end of a query."
-      word "…資料"
-        description "Chinese trailing noun (pinyin ziliao, data, traditional), stripped from the end of a query."
-      word "…资料"
-        description "Chinese trailing noun (pinyin ziliao, data), stripped from the end of a query."
-      word "…内容"
-        description "Chinese trailing noun (pinyin neirong, content), stripped from the end of a query."
-      word "…文章"
-        description "Chinese trailing noun (pinyin wenzhang, article), stripped from the end of a query."
-      word "…在维基百科上"
-        description "Chinese trailing phrase (pinyin zai weiji baike shang, on Wikipedia), stripped from the end of a query."
-      word "…在維基百科上"
-        description "Chinese trailing phrase (pinyin zai weiji baike shang, on Wikipedia, traditional), stripped from the end of a query."
-      word "…维基百科"
-        description "Chinese trailing noun (pinyin weiji baike, Wikipedia), stripped from the end of a query."
-      word "…維基百科"
-        description "Chinese trailing noun (pinyin weiji baike, Wikipedia, traditional), stripped from the end of a query."
-      word "…网上"
-        description "Chinese trailing phrase (pinyin wangshang, on the web), stripped from the end of a query."
-      word "…網上"
-        description "Chinese trailing phrase (pinyin wangshang, on the web, traditional), stripped from the end of a query."
-      word "…在线"
-        description "Chinese trailing adverb (pinyin zaixian, online), stripped from the end of a query."
-      word "…在線"
-        description "Chinese trailing adverb (pinyin zaixian, online, traditional), stripped from the end of a query."
-      word "…搜索"
-        description "Chinese trailing verb (pinyin sousuo, search), stripped from the end of a query."
-      word "…查找"
-        description "Chinese trailing verb (pinyin chazhao, look up), stripped from the end of a query."
-      word "…查一下"
-        description "Chinese trailing phrase (pinyin cha yixia, have a look), stripped from the end of a query."
-      word "…搜一下"
-        description "Chinese trailing phrase (pinyin sou yixia, have a search), stripped from the end of a query."
+  explicit_web_search_command
+    defined-by web_search
+    defined-by action
+    role web_search_explicit_prefix
+    lexeme en
+      surface
+        text "search the web for …"
+      surface
+        text "search web for …"
+      surface
+        text "search the internet for …"
+      surface
+        text "search internet for …"
+      surface
+        text "search online for …"
+      surface
+        text "search wikipedia for …"
+      surface
+        text "search wikidata for …"
+      surface
+        text "search wiktionary for …"
+      surface
+        text "search for information about …"
+      surface
+        text "search for information on …"
+      surface
+        text "web search for …"
+      surface
+        text "find on the internet …"
+      surface
+        text "find online …"
+      surface
+        text "find information about …"
+      surface
+        text "find information on …"
+      surface
+        text "find detailed information about …"
+      surface
+        text "find detailed information on …"
+      surface
+        text "find info about …"
+      surface
+        text "find info on …"
+      surface
+        text "look up information about …"
+      surface
+        text "look up information on …"
+      surface
+        text "look up info about …"
+      surface
+        text "look up info on …"
+      surface
+        text "look up online …"
+    lexeme ru
+      surface
+        text "найди в интернете …"
+      surface
+        text "поищи в интернете …"
+      surface
+        text "поиск в интернете …"
+      surface
+        text "найди онлайн …"
+      surface
+        text "поищи онлайн …"
+      surface
+        text "найди в сети …"
+      surface
+        text "поищи в сети …"
+      surface
+        text "найди информацию в интернете о …"
+      surface
+        text "найди информацию в интернете об …"
+      surface
+        text "поищи информацию в интернете о …"
+      surface
+        text "поищи информацию в интернете об …"
+      surface
+        text "найди информацию о …"
+      surface
+        text "найди информацию об …"
+      surface
+        text "найди информацию про …"
+      surface
+        text "найди информацию по …"
+      surface
+        text "найти информацию о …"
+      surface
+        text "найти информацию об …"
+      surface
+        text "поищи информацию о …"
+      surface
+        text "поищи информацию об …"
+      surface
+        text "поищи информацию про …"
+      surface
+        text "поищи информацию по …"
+      surface
+        text "найди инфу о …"
+      surface
+        text "найди инфу об …"
+      surface
+        text "поищи инфу о …"
+      surface
+        text "поищи инфу об …"
+      surface
+        text "найди сведения о …"
+      surface
+        text "найди сведения об …"
+      surface
+        text "поищи сведения о …"
+      surface
+        text "поищи сведения об …"
+      surface
+        text "найди материалы о …"
+      surface
+        text "найди материалы об …"
+      surface
+        text "поищи материалы о …"
+      surface
+        text "поищи материалы об …"
+    lexeme hi
+      surface
+        text "इंटरनेट पर खोजें …"
+      surface
+        text "वेब पर खोजें …"
+      surface
+        text "ऑनलाइन खोजें …"
+      surface
+        text "विकिपीडिया पर खोजें …"
+    lexeme zh
+      surface
+        text 在网上搜索…
+      surface
+        text 在互联网上搜索…
+      surface
+        text 在维基百科上搜索…
+      surface
+        text 上网查找…
+  topic_connective
+    defined-by relation
+    role web_search_topic_marker
+    lexeme en
+      surface
+        text " about …"
+      surface
+        text " on …"
+      surface
+        text " regarding …"
+      surface
+        text " concerning …"
+      surface
+        text " for …"
+    lexeme ru
+      surface
+        text " о …"
+      surface
+        text " об …"
+      surface
+        text " про …"
+      surface
+        text " по …"
+      surface
+        text " насчет …"
+      surface
+        text " относительно …"
+    lexeme hi
+      surface
+        text "… के बारे में"
+      surface
+        text "… के विषय में"
+      surface
+        text "… से संबंधित"
+      surface
+        text "… पर"
+      surface
+        text "… की जानकारी"
+      surface
+        text "… की सूचना"
+    lexeme zh
+      surface
+        text 关于…
+      surface
+        text 關於…
+      surface
+        text 有关…
+      surface
+        text 有關…
+  query_leading_noise
+    defined-by concept
+    role web_search_query_leading_noise
+    lexeme en
+      surface
+        text "please …"
+      surface
+        text "can you …"
+      surface
+        text "could you …"
+      surface
+        text "would you …"
+      surface
+        text "me …"
+      surface
+        text "the …"
+      surface
+        text "some …"
+      surface
+        text "detailed …"
+      surface
+        text "more …"
+      surface
+        text "current …"
+      surface
+        text "latest …"
+      surface
+        text "information about …"
+      surface
+        text "information on …"
+      surface
+        text "info about …"
+      surface
+        text "info on …"
+      surface
+        text "details about …"
+      surface
+        text "details on …"
+      surface
+        text "data about …"
+      surface
+        text "data on …"
+    lexeme ru
+      surface
+        text "подробные …"
+      surface
+        text "информацию о …"
+      surface
+        text "информацию об …"
+      surface
+        text "инфу о …"
+      surface
+        text "инфу об …"
+      surface
+        text "сведения о …"
+      surface
+        text "сведения об …"
+      surface
+        text "материалы о …"
+      surface
+        text "материалы об …"
+      surface
+        text "материалы по …"
+      surface
+        text "данные о …"
+      surface
+        text "данные об …"
+      surface
+        text "о …"
+      surface
+        text "об …"
+      surface
+        text "про …"
+      surface
+        text "по …"
+    lexeme hi
+      surface
+        text "कृपया …"
+      surface
+        text "जानकारी …"
+      surface
+        text "सूचना …"
+      surface
+        text "विवरण …"
+      surface
+        text "सामग्री …"
+    lexeme zh
+      surface
+        text 关于…
+      surface
+        text 關於…
+      surface
+        text 有关…
+      surface
+        text 有關…
+  query_trailing_noise
+    defined-by concept
+    role web_search_query_trailing_noise
+    lexeme en
+      surface
+        text "… online"
+      surface
+        text "… on the internet"
+      surface
+        text "… on the web"
+      surface
+        text "… on wikipedia"
+      surface
+        text "… in wikipedia"
+      surface
+        text "… from wikipedia"
+      surface
+        text "… information"
+      surface
+        text "… info"
+      surface
+        text "… details"
+      surface
+        text "… data"
+      surface
+        text "… material"
+      surface
+        text "… materials"
+      surface
+        text "… resources"
+      surface
+        text "… sources"
+      surface
+        text "… articles"
+      surface
+        text "… facts"
+    lexeme ru
+      surface
+        text "… в интернете"
+      surface
+        text "… онлайн"
+      surface
+        text "… в сети"
+      surface
+        text "… в википедии"
+      surface
+        text "… википедии"
+      surface
+        text "… информация"
+      surface
+        text "… сведения"
+      surface
+        text "… материалы"
+      surface
+        text "… данные"
+    lexeme hi
+      surface
+        text "… के बारे में"
+      surface
+        text "… के विषय में"
+      surface
+        text "… से संबंधित"
+      surface
+        text "… पर"
+      surface
+        text "… की जानकारी"
+      surface
+        text "… की सूचना"
+      surface
+        text "… जानकारी"
+      surface
+        text "… सूचना"
+      surface
+        text "… विवरण"
+      surface
+        text "… सामग्री"
+      surface
+        text "… स्रोत"
+      surface
+        text "… विकिपीडिया में"
+      surface
+        text "… ऑनलाइन"
+      surface
+        text "… इंटरनेट पर"
+      surface
+        text "… खोजो"
+      surface
+        text "… खोजें"
+      surface
+        text "… खोजिए"
+      surface
+        text "… ढूंढो"
+      surface
+        text "… ढूँढो"
+      surface
+        text "… ढूंढें"
+      surface
+        text "… ढूँढें"
+    lexeme zh
+      surface
+        text …的信息
+      surface
+        text …的資料
+      surface
+        text …的资料
+      surface
+        text …信息
+      surface
+        text …資料
+      surface
+        text …资料
+      surface
+        text …内容
+      surface
+        text …文章
+      surface
+        text …在维基百科上
+      surface
+        text …在維基百科上
+      surface
+        text …维基百科
+      surface
+        text …維基百科
+      surface
+        text …网上
+      surface
+        text …網上
+      surface
+        text …在线
+      surface
+        text …在線
+      surface
+        text …搜索
+      surface
+        text …查找
+      surface
+        text …查一下
+      surface
+        text …搜一下

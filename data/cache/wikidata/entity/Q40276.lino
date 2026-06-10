@@ -1,0 +1,19 @@
+Q40276
+  aliases
+    en ("×" times multiply product)
+    hi ("×")
+    ru ("операция умножения" "×")
+    zh ("乘" "乘以" "相乘" "×")
+  descriptions
+    en "mathematical operation"
+    hi "गुड़ा की परिभाषा"
+    ru "математическая операция"
+    zh "二元運算"
+  id Q40276
+  labels
+    en multiplication
+    hi "गुणा"
+    ru "умножение"
+    zh "乘法"
+  type item
+success 1

@@ -1,0 +1,127 @@
+{
+  "entities": {
+    "Q61": {
+      "type": "item",
+      "id": "Q61",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Washington, D.C."
+        },
+        "hi": {
+          "language": "hi",
+          "value": "वॉशिंगटन डी॰ सी॰"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Вашингтон"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "華盛頓哥倫比亞特區"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital city of the United States of America"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "город, столица Соединённых Штатов Америки"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "美利堅合眾國的首都"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राज्य अमेरिका की राजधानी"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Washington, District of Columbia"
+          },
+          {
+            "language": "en",
+            "value": "D.C. Washington"
+          },
+          {
+            "language": "en",
+            "value": "The District"
+          },
+          {
+            "language": "en",
+            "value": "District of Columbia"
+          },
+          {
+            "language": "en",
+            "value": "City of Washington, D.C."
+          },
+          {
+            "language": "en",
+            "value": "Washington City, D.C."
+          },
+          {
+            "language": "en",
+            "value": "Nation's Capital (D.C.)"
+          },
+          {
+            "language": "en",
+            "value": "Federal City (D.C.)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "華盛頓特區"
+          },
+          {
+            "language": "zh",
+            "value": "哥倫比亞特區"
+          },
+          {
+            "language": "zh",
+            "value": "華盛頓市"
+          },
+          {
+            "language": "zh",
+            "value": "華盛頓"
+          },
+          {
+            "language": "zh",
+            "value": "華府"
+          },
+          {
+            "language": "zh",
+            "value": "花生屯"
+          },
+          {
+            "language": "zh",
+            "value": "浣洗屯"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वाशिंगटन,डी.सी."
+          },
+          {
+            "language": "hi",
+            "value": "वाशिंगटन डी सी"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Округ Колумбия"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

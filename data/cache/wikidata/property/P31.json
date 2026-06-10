@@ -1,0 +1,210 @@
+{
+  "entities": {
+    "P31": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P31",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "instance of"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "это частный случай понятия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रकार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "隶属于"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "type to which this subject corresponds/belongs. Different from P279 (subclass of); for example: K2 is an instance of mountain; volcano is a subclass of mountain"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "данный элемент представляет собой конкретный объект (экземпляр / частный случай) класса, категории. Не путать с Property:P279 (\"подкласс от\")"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक विषय का दूसरे विषय के उदाहरण के रूप में होना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "该项目所属的类别；与父类（P279）不同，例：富士山隶属于山、火山父类是山"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "is a"
+          },
+          {
+            "language": "en",
+            "value": "is an"
+          },
+          {
+            "language": "en",
+            "value": "is a[n]"
+          },
+          {
+            "language": "en",
+            "value": "unique individual of"
+          },
+          {
+            "language": "en",
+            "value": "unitary element of class"
+          },
+          {
+            "language": "en",
+            "value": "type"
+          },
+          {
+            "language": "en",
+            "value": "example of"
+          },
+          {
+            "language": "en",
+            "value": "is of type"
+          },
+          {
+            "language": "en",
+            "value": "has type"
+          },
+          {
+            "language": "en",
+            "value": "item of type"
+          },
+          {
+            "language": "en",
+            "value": "was a[n]"
+          },
+          {
+            "language": "en",
+            "value": "will be a[n] (use 'nature of statement' = 'expected')"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "представляет собой"
+          },
+          {
+            "language": "ru",
+            "value": "частный случай для"
+          },
+          {
+            "language": "ru",
+            "value": "является одним из экземпляров"
+          },
+          {
+            "language": "ru",
+            "value": "принадлежит классу"
+          },
+          {
+            "language": "ru",
+            "value": "является одним из"
+          },
+          {
+            "language": "ru",
+            "value": "экземпляр от"
+          },
+          {
+            "language": "ru",
+            "value": "класс объекта:"
+          },
+          {
+            "language": "ru",
+            "value": "вид сущности"
+          },
+          {
+            "language": "ru",
+            "value": "это"
+          },
+          {
+            "language": "ru",
+            "value": "один из"
+          },
+          {
+            "language": "ru",
+            "value": "это пример"
+          },
+          {
+            "language": "ru",
+            "value": "пример"
+          },
+          {
+            "language": "ru",
+            "value": "является"
+          },
+          {
+            "language": "ru",
+            "value": "есть"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "屬於"
+          },
+          {
+            "language": "zh",
+            "value": "是一个"
+          },
+          {
+            "language": "zh",
+            "value": "性質"
+          },
+          {
+            "language": "zh",
+            "value": "属于"
+          },
+          {
+            "language": "zh",
+            "value": "類別"
+          },
+          {
+            "language": "zh",
+            "value": "所属的类"
+          },
+          {
+            "language": "zh",
+            "value": "隸屬於"
+          },
+          {
+            "language": "zh",
+            "value": "是"
+          },
+          {
+            "language": "zh",
+            "value": "是...的一个实例"
+          },
+          {
+            "language": "zh",
+            "value": "性质"
+          },
+          {
+            "language": "zh",
+            "value": "实例"
+          },
+          {
+            "language": "zh",
+            "value": "示例"
+          },
+          {
+            "language": "zh",
+            "value": "是一個"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

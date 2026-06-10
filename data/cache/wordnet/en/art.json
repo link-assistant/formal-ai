@@ -1,0 +1,63 @@
+{
+  "lemma": "art",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02746552-n",
+      "partOfSpeech": "n",
+      "definition": "the products of human creativity; works of art collectively",
+      "examples": [
+        "an art exhibition",
+        "a collection of fine art"
+      ],
+      "synonyms": [
+        "fine art"
+      ]
+    },
+    {
+      "id": "oewn-00935235-n",
+      "partOfSpeech": "n",
+      "definition": "the creation of beautiful or significant things",
+      "examples": [
+        "art does not need to be innovative to be good",
+        "I was never any good at art",
+        "he said that architecture is the art of wasting space beautifully"
+      ],
+      "synonyms": [
+        "artistic creation",
+        "artistic production"
+      ]
+    },
+    {
+      "id": "oewn-05646832-n",
+      "partOfSpeech": "n",
+      "definition": "a superior skill that you can learn by study and practice and observation",
+      "examples": [
+        "the art of conversation",
+        "it's quite an art"
+      ],
+      "synonyms": [
+        "artistry",
+        "prowess"
+      ]
+    },
+    {
+      "id": "oewn-07011408-n",
+      "partOfSpeech": "n",
+      "definition": "photographs or other visual representations in a printed publication",
+      "examples": [
+        "the publisher was responsible for all the artwork in the book"
+      ],
+      "synonyms": [
+        "artwork",
+        "graphics",
+        "nontextual matter"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+view
+  id M-4f0dd8cdf18c
+  lemma spec
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a detailed description of design criteria for a piece of work"
+    provenance (wordnet)

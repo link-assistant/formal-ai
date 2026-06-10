@@ -1,0 +1,183 @@
+{
+  "entities": {
+    "Q148": {
+      "type": "item",
+      "id": "Q148",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "People's Republic of China"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Китай"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीनी जनवादी गणराज्य"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "中华人民共和国"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "country in East Asia"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Восточной Азии"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "东亚国家"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पूर्वी एशिया का देश"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "中国"
+          },
+          {
+            "language": "zh",
+            "value": "中"
+          },
+          {
+            "language": "zh",
+            "value": "红色中国"
+          },
+          {
+            "language": "zh",
+            "value": "共产中国"
+          },
+          {
+            "language": "zh",
+            "value": "中国大陆"
+          },
+          {
+            "language": "zh",
+            "value": "大陆"
+          },
+          {
+            "language": "zh",
+            "value": "陆"
+          },
+          {
+            "language": "zh",
+            "value": "新中国"
+          },
+          {
+            "language": "zh",
+            "value": "北京當局"
+          },
+          {
+            "language": "zh",
+            "value": "中華人民共和國"
+          },
+          {
+            "language": "zh",
+            "value": "🇨🇳"
+          },
+          {
+            "language": "zh",
+            "value": "cn"
+          },
+          {
+            "language": "zh",
+            "value": "中华"
+          },
+          {
+            "language": "zh",
+            "value": "共產中國"
+          },
+          {
+            "language": "zh",
+            "value": "中國"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "КНР"
+          },
+          {
+            "language": "ru",
+            "value": "Поднебесная"
+          },
+          {
+            "language": "ru",
+            "value": "Материковый Китай"
+          },
+          {
+            "language": "ru",
+            "value": "Континентальный Китай"
+          },
+          {
+            "language": "ru",
+            "value": "Китайская Народная Республика"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चीन"
+          },
+          {
+            "language": "hi",
+            "value": "मुख्य-भूमि चीन"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Red China"
+          },
+          {
+            "language": "en",
+            "value": "PR China"
+          },
+          {
+            "language": "en",
+            "value": "Communist China"
+          },
+          {
+            "language": "en",
+            "value": "China PR"
+          },
+          {
+            "language": "en",
+            "value": "RPC"
+          },
+          {
+            "language": "en",
+            "value": "cn"
+          },
+          {
+            "language": "en",
+            "value": "The PRC"
+          },
+          {
+            "language": "en",
+            "value": "China"
+          },
+          {
+            "language": "en",
+            "value": "P.R.C."
+          },
+          {
+            "language": "en",
+            "value": "the People's Republic of China"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

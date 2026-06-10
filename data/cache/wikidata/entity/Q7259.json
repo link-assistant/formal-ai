@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q7259": {
+      "type": "item",
+      "id": "Q7259",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Ada Lovelace"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Ада Лавлейс"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "愛達·勒芙蕾絲"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एडा लवलेस"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "English mathematician (1815–1852)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "английский математик"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英国数学家"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेज़ी गणितज्ञ व कंप्यूटर प्रोग्रामिंग के प्रथम अन्वेषक।"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Lady Ada"
+          },
+          {
+            "language": "en",
+            "value": "Augusta Ada Byron"
+          },
+          {
+            "language": "en",
+            "value": "Augusta Ada King, Countess of Lovelace"
+          },
+          {
+            "language": "en",
+            "value": "Ada Byron"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "爱达·勒芙蕾丝"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Лавлейс, Ада"
+          },
+          {
+            "language": "ru",
+            "value": "Лавлейс, Августа Ада"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,42 @@
+{
+  "lemma": "autonomous",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01066082-s",
+      "partOfSpeech": "s",
+      "definition": "(of political bodies) not controlled by outside forces",
+      "examples": [
+        "an autonomous judiciary",
+        "a sovereign state"
+      ],
+      "synonyms": [
+        "independent",
+        "self-governing",
+        "sovereign"
+      ]
+    },
+    {
+      "id": "oewn-00731875-s",
+      "partOfSpeech": "s",
+      "definition": "existing as an independent entity",
+      "examples": [
+        "the partitioning of India created two separate and autonomous jute economies"
+      ]
+    },
+    {
+      "id": "oewn-00731669-s",
+      "partOfSpeech": "s",
+      "definition": "(of persons) free from external control and constraint in e.g. action and judgment",
+      "synonyms": [
+        "self-directed",
+        "self-reliant"
+      ]
+    }
+  ]
+}

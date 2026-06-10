@@ -1,0 +1,19 @@
+P36
+  aliases
+    en ("capital city" "capital town" chef-lieu "principal place" "county seat" "administrative centre" "administrative headquarters" "has capital" "court residence" seat "administrative seat" "seat of government" "administrative capital" "government capital" "county town" "government seat" "administrative center" "location of capital")
+    ru ("главный город" "столица")
+    zh ("首都" "省会" "首府" "治所" "县治" "縣治" "公所所在地" "役場所在地")
+  datatype wikibase-item
+  descriptions
+    en "seat of government of a country, province, state or other type of administrative territorial entity"
+    hi "देश, राज्य या प्रशासनिक उपखंड की शासकीय सीट की नगर पालिका"
+    ru "официальный главный населённый пункт в административной единице"
+    zh "国家、省、州或其他类型行政领土实体的政府所在地"
+  id P36
+  labels
+    en capital
+    hi "राजधानी"
+    ru "административный центр"
+    zh "行政中心"
+  type property
+success 1

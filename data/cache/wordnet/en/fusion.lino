@@ -1,0 +1,40 @@
+language en
+lemma fusion
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an occurrence that involves the production of a union"
+    id oewn-07388202-n
+    partOfSpeech n
+    synonyms (merger unification)
+  entry
+    definition "the state of being combined into one body"
+    id oewn-14442066-n
+    partOfSpeech n
+    synonyms (coalition)
+  entry
+    definition "the merging of adjacent sounds or syllables or words"
+    id oewn-13506970-n
+    partOfSpeech n
+  entry
+    definition "a nuclear reaction in which nuclei combine to form more massive nuclei with the simultaneous release of energy"
+    id oewn-13506728-n
+    partOfSpeech n
+    synonyms ("nuclear fusion" "nuclear fusion reaction")
+  entry
+    definition "the combining of images from the two eyes to form a single visual percept"
+    id oewn-05945279-n
+    partOfSpeech n
+    synonyms ("optical fusion")
+  entry
+    definition "correction of an unstable part of the spine by joining two or more vertebrae; usually done surgically but sometimes done by traction or immobilization"
+    id oewn-00700770-n
+    partOfSpeech n
+    synonyms ("spinal fusion")
+  entry
+    definition "the act of fusing (or melting) together"
+    id oewn-00381376-n
+    partOfSpeech n
+source "oewn:2024"

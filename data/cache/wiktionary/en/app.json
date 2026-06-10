@@ -1,0 +1,120 @@
+[
+  {
+    "word": "app",
+    "phonetic": "[ʔæʔp̚]",
+    "phonetics": [
+      {
+        "text": "[ʔæʔp̚]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=60470597",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An application (program), especially a small one designed for a mobile device.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Application (use, purpose; not a computer program)",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Application (to a college etc.)",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/app"
+    ]
+  },
+  {
+    "word": "app",
+    "phonetic": "[ʔæʔp̚]",
+    "phonetics": [
+      {
+        "text": "[ʔæʔp̚]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=60470597",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Appetizer",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/app"
+    ]
+  },
+  {
+    "word": "app",
+    "phonetic": "[ʔæʔp̚]",
+    "phonetics": [
+      {
+        "text": "[ʔæʔp̚]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=60470597",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An appearance in a game (e.g., a player with 10 apps in a season played 10 times)",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/app"
+    ]
+  }
+]

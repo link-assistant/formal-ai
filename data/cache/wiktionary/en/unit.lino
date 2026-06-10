@@ -1,0 +1,86 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A particular, minute unit of mass, defined differently for different substances, but so that varying substances of the same general type have the property that one international unit of the one has the same effect on the human body as one international unit of the other."
+          synonyms (IU)
+      partOfSpeech noun
+      synonyms (IU)
+    entry
+      definitions
+        entry
+          definition "Oneness, singularity, seen as a component of a whole number; a magnitude of one."
+        entry
+          definition "A standard measure of a quantity."
+          example "The centimetre is a unit of length."
+        entry
+          definition "The number one."
+        entry
+          definition "An organized group comprising people and/or equipment."
+          example "He was a member of a special police unit."
+        entry
+          definition "A member of a military organization."
+          example "The fifth tank brigade moved in with 20 units. (i.e., 20 tanks)"
+        entry
+          definition "Any military element whose structure is prescribed by competent authority, such as a table of organization and equipment; specifically, part of an organization."
+        entry
+          definition "An organization title of a subdivision of a group in a task force."
+        entry
+          definition "A standard or basic quantity into which an item of supply is divided, issued or detailed. In this meaning, also called unit of issue."
+        entry
+          definition "With regard to Reserve Components of the Armed Forces, denotes a Selected Reserve unit organized, equipped, and trained for mobilization to serve on active duty as a unit or to augment or be augmented by another unit. Headquarters and support functions without wartime missions are not considered units."
+        entry
+          definition "The identity element, neutral element."
+        entry
+          definition "An element having an inverse, an invertible element; an associate of the unity."
+        entry
+          definition "In an adjunction, a natural transformation from the identity functor of the domain of the left adjoint functor to the composition of the right adjoint functor with the left adjoint functor."
+        entry
+          definition "A volume of rock or ice of identifiable origin and age range that is defined by the distinctive and dominant, easily mapped and recognizable petrographic, lithologic or paleontologic features (facies) that characterize it."
+        entry
+          definition "An item which may be sold singly."
+          example "We shipped nearly twice as many units this month as last month."
+        entry
+          definition "A unit of alcohol."
+        entry
+          definition "One kilowatt-hour (as recorded on an electricity meter)."
+        entry
+          definition "A measure of housing equivalent to the living quarters of one household; an apartment where a group of apartments is contained in one or more multi-storied buildings or a group of dwellings is in one or more single storey buildings, usually arranged around a driveway."
+        entry
+          definition "A gold coin of the reign of James I, worth twenty shillings."
+        entry
+          definition "A work unit."
+        entry
+          definition "A physically large person."
+      partOfSpeech noun
+      synonyms ("identity element" "unit element" unity)
+    entry
+      definitions
+        entry
+          definition "For each unit."
+          example "We have to keep our unit costs down if we want to make a profit."
+        entry
+          definition "Having a size or magnitude of one."
+      partOfSpeech adjective
+  phonetic "/ˈjuː.nɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/unit-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75701805"
+      text "/ˈjuː.nɪt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/unit-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1197665"
+      text "/ˈjuː.nɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/international%20unit" "https://en.wiktionary.org/wiki/unit")
+  word unit

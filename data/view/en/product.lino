@@ -1,0 +1,29 @@
+view
+  id M-9674785162e5
+  lemma product
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "items for sale to the individual consumer"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an artifact that has been created by someone or some process"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a quantity obtained by multiplication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a chemical substance formed as a result of a chemical reaction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a consequence of someone's efforts or of a particular set of circumstances"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the set of elements common to two or more sets"
+    provenance (wordnet)

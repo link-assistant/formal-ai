@@ -1,0 +1,182 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The trunk of a dead tree, cleared of branches."
+          example "They walked across the stream on a fallen log."
+        entry
+          definition "Any bulky piece as cut from the above, used as timber, fuel etc."
+        entry
+          definition "A unit of length equivalent to 16 feet, used for measuring timber, especially the trunk of a tree."
+        entry
+          definition "Anything shaped like a log; a cylinder."
+        entry
+          definition "A floating device, usually of wood, used in navigation to estimate the speed of a vessel through water."
+        entry
+          definition "A blockhead; a very stupid person."
+        entry
+          definition "A heavy longboard."
+        entry
+          definition "A rolled cake with filling."
+        entry
+          definition "A weight or block near the free end of a hoisting rope to prevent it from being drawn through the sheave."
+        entry
+          definition "A piece of feces."
+        entry
+          definition "A penis."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To cut trees into logs."
+        entry
+          definition "To cut down (trees)."
+        entry
+          definition "To cut down trees in an area, harvesting and transporting the logs as wood."
+      partOfSpeech verb
+  phonetic "/lɑɡ/"
+  phonetics
+    entry
+      audio ""
+      text "/lɑɡ/"
+    entry
+      audio ""
+      text "/lɒɡ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/log-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631206"
+      text "/lɑɡ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/log")
+  word log
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A logbook, or journal of a vessel (or aircraft)'s progress"
+        entry
+          definition "A chronological record of actions, performances, computer/network usage, etc."
+        entry
+          definition "Specifically, an append-only sequence of records written to file."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To make, to add an entry (or more) in a log or logbook."
+          example "to log the miles travelled by a ship"
+        entry
+          definition "To travel (a distance) as shown in a logbook"
+        entry
+          definition "To travel at a specified speed, as ascertained by chip log."
+      partOfSpeech verb
+  phonetic "/lɑɡ/"
+  phonetics
+    entry
+      audio ""
+      text "/lɑɡ/"
+    entry
+      audio ""
+      text "/lɒɡ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/log-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631206"
+      text "/lɑɡ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/log")
+  word log
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To move to and fro; to rock."
+      partOfSpeech verb
+  phonetic "/lɑɡ/"
+  phonetics
+    entry
+      audio ""
+      text "/lɑɡ/"
+    entry
+      audio ""
+      text "/lɒɡ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/log-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631206"
+      text "/lɑɡ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/log")
+  word log
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A Hebrew unit of liquid volume (about 1/3 liter)."
+      partOfSpeech noun
+  phonetic "/lɑɡ/"
+  phonetics
+    entry
+      audio ""
+      text "/lɑɡ/"
+    entry
+      audio ""
+      text "/lɒɡ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/log-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631206"
+      text "/lɑɡ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/log")
+  word log
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Logarithm.
+          example "To multiply two numbers, add their logs."
+        entry
+          definition "A difference of one in the logarithm, usually in base 10."
+      partOfSpeech noun
+  phonetic "/lɑɡ/"
+  phonetics
+    entry
+      audio ""
+      text "/lɑɡ/"
+    entry
+      audio ""
+      text "/lɒɡ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/log-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631206"
+      text "/lɑɡ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/log")
+  word log

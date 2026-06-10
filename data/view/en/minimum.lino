@@ -1,0 +1,17 @@
+view
+  id M-98d271667304
+  lemma minimum
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "the least possible"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the smallest possible quantity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the point on a curve where the tangent changes from negative on the left to positive on the right"
+    provenance (wordnet)

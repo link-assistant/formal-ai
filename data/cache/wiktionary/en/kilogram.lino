@@ -1,0 +1,24 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "In the International System of Units, the base unit of mass; conceived of as the mass of one litre of water, but now defined by taking the fixed numerical value of the Planck constant h to be 6.626 070 15 × 10-34 when expressed in units of kg⋅m2⋅s−1. Symbol: kg"
+        entry
+          definition "The unit of weight such that a one-kilogram mass is also a one-kilogram weight."
+      partOfSpeech noun
+      synonyms (kg kilo)
+  phonetic "/ˈkɪləɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/kilogram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1769983"
+      text "/ˈkɪləɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/kilogram")
+  word kilogram

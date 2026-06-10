@@ -1,0 +1,17 @@
+view
+  id M-880fa3fdbe50
+  lemma install
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "set up for use"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into an office or a position"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "place"
+    provenance (wordnet)

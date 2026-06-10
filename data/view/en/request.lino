@@ -1,0 +1,25 @@
+view
+  id M-dfb345749a13
+  lemma request
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal message requesting something that is submitted to an authority"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the verbal act of requesting"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "express the need or desire for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "ask (a person) to do something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "inquire for (information)"
+    provenance (wordnet)

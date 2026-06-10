@@ -1,0 +1,17 @@
+view
+  id M-61f9dd8e4e72
+  lemma greetings
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A conventional phrase used to start a letter or conversation or otherwise to acknowledge a person's arrival or presence."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The action of the verb to greet."
+    provenance (wiktionary)
+  sense
+    part_of_speech interjection
+    gloss "(sometimes formal, sometimes humorous) hello"
+    provenance (wiktionary)

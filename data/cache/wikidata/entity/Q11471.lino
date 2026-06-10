@@ -1,0 +1,17 @@
+Q11471
+  aliases
+    ru ("количество времени")
+    zh ("時間")
+  descriptions
+    en "dimension in which events can be ordered from the past through the present into the future"
+    hi "भूतकाल, वर्तमानकाल एवं भविष्यकाल का रेखीय आयाम"
+    ru "форма протекания физических и психических процессов"
+    zh "關於事件先後順序、過去與未來的物理量"
+  id Q11471
+  labels
+    en time
+    hi "काल"
+    ru "время"
+    zh "时间"
+  type item
+success 1

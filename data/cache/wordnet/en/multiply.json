@@ -1,0 +1,73 @@
+{
+  "lemma": "multiply",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00084016-r",
+      "partOfSpeech": "r",
+      "definition": "in several ways; in a multiple manner",
+      "examples": [
+        "they were multiply checked for errors"
+      ]
+    },
+    {
+      "id": "oewn-00643334-v",
+      "partOfSpeech": "v",
+      "definition": "combine by multiplication",
+      "examples": [
+        "multiply 10 by 15"
+      ]
+    },
+    {
+      "id": "oewn-00248276-v",
+      "partOfSpeech": "v",
+      "definition": "combine or increase by multiplication",
+      "examples": [
+        "He managed to multiply his profits"
+      ],
+      "synonyms": [
+        "manifold"
+      ]
+    },
+    {
+      "id": "oewn-00248588-v",
+      "partOfSpeech": "v",
+      "definition": "make multiple copies of",
+      "examples": [
+        "multiply a letter"
+      ],
+      "synonyms": [
+        "manifold"
+      ]
+    },
+    {
+      "id": "oewn-00056076-v",
+      "partOfSpeech": "v",
+      "definition": "have young (animals) or reproduce (organisms)",
+      "examples": [
+        "pandas rarely breed in captivity"
+      ],
+      "synonyms": [
+        "breed"
+      ]
+    },
+    {
+      "id": "oewn-00054856-v",
+      "partOfSpeech": "v",
+      "definition": "have offspring or produce more individuals of a given animal or plant",
+      "examples": [
+        "The Bible tells people to procreate",
+        "These bacteria reproduce"
+      ],
+      "synonyms": [
+        "reproduce",
+        "procreate"
+      ]
+    }
+  ]
+}

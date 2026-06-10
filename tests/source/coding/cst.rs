@@ -13,7 +13,7 @@
 //! yet — TypeScript, Go, and Ruby — we keep a thin direct tree-sitter bridge and
 //! track the gap upstream. Which engine validates each language, and the
 //! upstream request for the bridged ones, is recorded as data in
-//! `data/seed/meanings-program-cst.lino`; this module is only the native bridge
+//! `data/seed/program-cst-grammars.lino`; this module is only the native bridge
 //! from a seed language slug to the corresponding engine.
 
 use std::fmt::Write as _;
@@ -162,11 +162,6 @@ pub fn grammar_metadata(language_slug: &str) -> Option<CstGrammar> {
     found.map(grammar_from_node)
 }
 
-pub fn grammar_languages() -> Vec<CstGrammar> {
-    let tree = parse_lino(PROGRAM_CST_GRAMMARS_LINO);
-    grammar_nodes(&tree).map(grammar_from_node).collect()
-}
-
 fn grammar_from_node(node: &LinoNode) -> CstGrammar {
     CstGrammar {
         language_slug: node.find_child_value("program_language").to_owned(),
@@ -270,3 +265,6 @@ fn tree_sitter_bridge_language(language_slug: &str) -> Option<Language> {
         _ => None,
     }
 }
+
+#[path = "../source_tests/coding/cst/tests.rs"]
+mod tests;

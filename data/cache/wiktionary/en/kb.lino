@@ -1,0 +1,38 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(etc.) A set of keys used to operate a typewriter, computer etc."
+        entry
+          definition "A component of many instruments including the piano, organ, and harpsichord consisting of usually black and white keys that cause different tones to be produced when struck."
+        entry
+          definition "A device with keys of a musical keyboard, used to control electronic sound-producing devices which may be built into or separate from the keyboard device."
+      partOfSpeech noun
+      synonyms ("electronic keyboard")
+    entry
+      definitions
+        entry
+          definition "A unit of pressure equal to 1,000 bars (Symbol: kb)"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A length of double-stranded DNA containing two thousand nucleotides, one thousand on each strand"
+        entry
+          definition "A length of single-stranded RNA containing one thousand nucleotides"
+      partOfSpeech noun
+      synonyms (kb kbp "kilobase pair")
+    entry
+      definitions
+        entry
+          definition "1000 bits (binary digits)"
+        entry
+          definition "1024 (210) bits"
+      partOfSpeech noun
+      synonyms (kibibit kb kib)
+  sourceUrls ("https://en.wiktionary.org/wiki/kb" "https://en.wiktionary.org/wiki/keyboard" "https://en.wiktionary.org/wiki/kilobar" "https://en.wiktionary.org/wiki/kilobase" "https://en.wiktionary.org/wiki/kilobit")
+  word kb

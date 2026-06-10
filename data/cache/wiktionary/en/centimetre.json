@@ -1,0 +1,36 @@
+[
+  {
+    "word": "centimetre",
+    "phonetic": "/ˈsɛn.tɪ.miː.tə/",
+    "phonetics": [
+      {
+        "text": "/ˈsɛn.tɪ.miː.tə/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An SI unit of length equal to 10-2 metres. Symbol: cm",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "cm",
+          "㎝"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/centimetre"
+    ]
+  }
+]

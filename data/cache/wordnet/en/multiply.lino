@@ -1,0 +1,41 @@
+language en
+lemma multiply
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in several ways; in a multiple manner"
+    examples ("they were multiply checked for errors")
+    id oewn-00084016-r
+    partOfSpeech r
+  entry
+    definition "combine by multiplication"
+    examples ("multiply 10 by 15")
+    id oewn-00643334-v
+    partOfSpeech v
+  entry
+    definition "combine or increase by multiplication"
+    examples ("He managed to multiply his profits")
+    id oewn-00248276-v
+    partOfSpeech v
+    synonyms (manifold)
+  entry
+    definition "make multiple copies of"
+    examples ("multiply a letter")
+    id oewn-00248588-v
+    partOfSpeech v
+    synonyms (manifold)
+  entry
+    definition "have young (animals) or reproduce (organisms)"
+    examples ("pandas rarely breed in captivity")
+    id oewn-00056076-v
+    partOfSpeech v
+    synonyms (breed)
+  entry
+    definition "have offspring or produce more individuals of a given animal or plant"
+    examples ("The Bible tells people to procreate" "These bacteria reproduce")
+    id oewn-00054856-v
+    partOfSpeech v
+    synonyms (reproduce procreate)
+source "oewn:2024"

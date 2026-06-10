@@ -1,0 +1,61 @@
+{
+  "lemma": "filter",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03344588-n",
+      "partOfSpeech": "n",
+      "definition": "device that removes something from whatever passes through it"
+    },
+    {
+      "id": "oewn-03344954-n",
+      "partOfSpeech": "n",
+      "definition": "an electrical device that alters the frequency spectrum of signals passing through it"
+    },
+    {
+      "id": "oewn-01461293-v",
+      "partOfSpeech": "v",
+      "definition": "remove by passing through a filter",
+      "examples": [
+        "filter out the impurities"
+      ],
+      "synonyms": [
+        "filtrate",
+        "strain",
+        "separate out",
+        "filter out"
+      ]
+    },
+    {
+      "id": "oewn-01460583-v",
+      "partOfSpeech": "v",
+      "definition": "pass through",
+      "examples": [
+        "Water permeates sand easily"
+      ],
+      "synonyms": [
+        "percolate",
+        "sink in",
+        "permeate"
+      ]
+    },
+    {
+      "id": "oewn-02074802-v",
+      "partOfSpeech": "v",
+      "definition": "run or flow slowly, as in drops or in an unsteady stream",
+      "examples": [
+        "water trickled onto the lawn from the broken hose",
+        "reports began to dribble in"
+      ],
+      "synonyms": [
+        "trickle",
+        "dribble"
+      ]
+    }
+  ]
+}

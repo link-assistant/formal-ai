@@ -46,13 +46,15 @@ pub use embedded::{
     seed_files, AGENT_INFO_LINO, BRAINSTORM_SEEDS_LINO, CONCEPTS_LINO, CONCEPT_CONTEXTS_LINO,
     COREFERENCE_LINO, DEMO_DIALOGS_LINO, ENVIRONMENTS_LINO, FACTS_LINO, GREETINGS_LINO,
     HELLO_WORLD_PROGRAMS_LINO, IDENTITY_LINO, INTENT_ROUTING_LINO, LANGUAGE_DETECTION_LINO,
-    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINO, MEANINGS_SOFTWARE_PROJECT_LINO,
-    MEANINGS_UNITS_LINO, MEANING_FILES, MULTILINGUAL_RESPONSES_LINO, OPERATION_VOCABULARY_LINO,
-    PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO, PROJECTS_LINO,
-    PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO, TOOLS_LINO,
+    MEANINGS_CALENDAR_LINO, MEANINGS_FACTS_LINO, MEANINGS_LINKS_ROOT_LINO, MEANINGS_LINO,
+    MEANINGS_SEMANTIC_META_LINO, MEANINGS_SOFTWARE_PROJECT_LINO, MEANINGS_UNITS_LINO,
+    MEANING_FILES, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
+    OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO,
+    PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
+    TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
-pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, Slot, WordForm};
+pub use meanings::{lexicon, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm};
 pub use operation_vocabulary::{
     operation_vocabulary, OperationLanguageForms, OperationTrigger, OperationVocabulary,
 };
@@ -317,6 +319,20 @@ pub fn agent_info() -> BTreeMap<String, String> {
         }
     }
     out
+}
+
+/// The languages the agent answers in, declared by `agent-info.lino`.
+///
+/// Stored as a reference list (`supported_languages ("en" "ru" "hi" "zh")`) so
+/// the multi-value is a sequence of separate references rather than a single
+/// `|`-packed string. This resolves it to the individual language ids in
+/// declaration order.
+#[must_use]
+pub fn supported_languages() -> Vec<String> {
+    agent_info()
+        .get("supported_languages")
+        .map(|value| split_pipe_list(value))
+        .unwrap_or_default()
 }
 
 /// A Unicode-range based language detection rule.
@@ -703,17 +719,7 @@ pub fn environment_directory() -> EnvironmentDirectory {
         match root.name.as_str() {
             "environments" => {
                 for entry in root.children.iter().filter(|c| c.name == "environment") {
-                    let tools_raw = entry.find_child_value("tools").to_string();
-                    let tools = if tools_raw.is_empty() {
-                        Vec::new()
-                    } else {
-                        tools_raw
-                            .split('|')
-                            .map(str::trim)
-                            .filter(|s| !s.is_empty())
-                            .map(ToOwned::to_owned)
-                            .collect()
-                    };
+                    let tools = split_pipe_list(entry.find_child_value("tools"));
                     directory.environments.push(EnvironmentRecord {
                         id: entry.id.clone(),
                         label: entry.find_child_value("label").to_string(),
@@ -736,11 +742,12 @@ pub fn environment_directory() -> EnvironmentDirectory {
                 }
             }
             "migration" => {
-                directory.migration_description = root.find_child_value("description").to_string();
+                directory.migration_description =
+                    child_value_alias(root, "note", "description").to_string();
                 for entry in root.children.iter().filter(|c| c.name == "flow") {
                     directory.flows.push(MigrationFlow {
                         id: entry.id.clone(),
-                        description: entry.find_child_value("description").to_string(),
+                        description: child_value_alias(entry, "note", "description").to_string(),
                         file_format: entry.find_child_value("file_format").to_string(),
                     });
                 }
@@ -749,6 +756,15 @@ pub fn environment_directory() -> EnvironmentDirectory {
         }
     }
     directory
+}
+
+fn child_value_alias<'a>(node: &'a LinoNode, primary: &str, fallback: &str) -> &'a str {
+    let value = node.find_child_value(primary);
+    if value.is_empty() {
+        node.find_child_value(fallback)
+    } else {
+        value
+    }
 }
 
 /// Convenience accessor returning just the environment records (without the

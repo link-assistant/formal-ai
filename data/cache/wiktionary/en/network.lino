@@ -1,0 +1,48 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A fabric or structure of fibrous elements attached to each other at regular intervals."
+        entry
+          definition "Any interconnected group or system"
+          example "A network of roads crisscrossed the country."
+        entry
+          definition "A directory of people maintained for their advancement"
+          example "To get a job in today's economy, it is important to have a strong network."
+        entry
+          definition "A group of affiliated television stations that broadcast common programs from a parent company."
+        entry
+          definition "Multiple computers and other devices connected together to share information"
+          example "The copy machine is connected to the network so it can now serve as a printer."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To interact socially for the purpose of getting connections or personal advancement."
+          example "Many people find it worthwhile to network for jobs and information."
+        entry
+          definition "To connect two or more computers or other computerized devices."
+          example "If we network his machine to the server, he will be able to see all the files."
+        entry
+          definition "To interconnect a group or system."
+        entry
+          definition "To broadcast across an entire network of stations and affiliates at the same time."
+      partOfSpeech verb
+  phonetic "/nɛtwɜːk/"
+  phonetics
+    entry
+      audio ""
+      text "/nɛtwɜːk/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/network-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755178"
+      text "/nɛtwɝk/"
+  sourceUrls ("https://en.wiktionary.org/wiki/network")
+  word network

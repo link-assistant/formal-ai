@@ -1,0 +1,35 @@
+language en
+lemma alter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "cause to change; make different; cause a transformation"
+    examples ("The advent of the automobile may have altered the growth pattern of the city" "The discussion has changed my thinking about the issue")
+    id oewn-00126072-v
+    partOfSpeech v
+    synonyms (change modify)
+  entry
+    definition "become different in some particular way, without permanently losing one's or its former characteristics or essence"
+    examples ("her mood changes in accordance with the weather" "The supermarket's selection of vegetables varies according to the season")
+    id oewn-00122978-v
+    partOfSpeech v
+    synonyms (change vary)
+  entry
+    definition "make an alteration to"
+    examples ("This dress needs to be altered")
+    id oewn-01671027-v
+    partOfSpeech v
+  entry
+    definition "insert words into texts, often falsifying it thereby"
+    id oewn-00201771-v
+    partOfSpeech v
+    synonyms (interpolate falsify)
+  entry
+    definition "remove the ovaries of"
+    examples ("Is your cat spayed?")
+    id oewn-00060248-v
+    partOfSpeech v
+    synonyms (neuter spay castrate)
+source "oewn:2024"

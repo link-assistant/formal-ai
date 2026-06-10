@@ -1,0 +1,112 @@
+{
+  "lemma": "expression",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04687095-n",
+      "partOfSpeech": "n",
+      "definition": "the feelings expressed on a person's face",
+      "examples": [
+        "a sad expression",
+        "a look of triumph",
+        "an angry face"
+      ],
+      "synonyms": [
+        "look",
+        "aspect",
+        "facial expression",
+        "face"
+      ]
+    },
+    {
+      "id": "oewn-06893299-n",
+      "partOfSpeech": "n",
+      "definition": "expression without words",
+      "examples": [
+        "tears are an expression of grief",
+        "the pulse is a reflection of the heart's condition"
+      ],
+      "synonyms": [
+        "manifestation",
+        "reflection",
+        "reflexion"
+      ]
+    },
+    {
+      "id": "oewn-07154581-n",
+      "partOfSpeech": "n",
+      "definition": "the communication (in speech or writing) of your beliefs or opinions",
+      "examples": [
+        "expressions of good will",
+        "he helped me find verbal expression for my ideas",
+        "the idea was immediate but the verbalism took hours"
+      ],
+      "synonyms": [
+        "verbal expression",
+        "verbalism"
+      ]
+    },
+    {
+      "id": "oewn-07166088-n",
+      "partOfSpeech": "n",
+      "definition": "a word or phrase that particular people use in particular situations",
+      "examples": [
+        "pardon the expression"
+      ],
+      "synonyms": [
+        "saying",
+        "locution"
+      ]
+    },
+    {
+      "id": "oewn-07083988-n",
+      "partOfSpeech": "n",
+      "definition": "the style of expressing yourself",
+      "examples": [
+        "he suggested a better formulation",
+        "his manner of expression showed how much he cared"
+      ],
+      "synonyms": [
+        "formulation"
+      ]
+    },
+    {
+      "id": "oewn-06744551-n",
+      "partOfSpeech": "n",
+      "definition": "a group of symbols that make a mathematical statement",
+      "synonyms": [
+        "formula"
+      ]
+    },
+    {
+      "id": "oewn-13499408-n",
+      "partOfSpeech": "n",
+      "definition": "(genetics) the process of expressing a gene"
+    },
+    {
+      "id": "oewn-06324641-n",
+      "partOfSpeech": "n",
+      "definition": "a group of words that form a constituent of a sentence and are considered as a single unit",
+      "examples": [
+        "I concluded from his awkward constructions that he was a foreigner"
+      ],
+      "synonyms": [
+        "construction",
+        "grammatical construction"
+      ]
+    },
+    {
+      "id": "oewn-00359354-n",
+      "partOfSpeech": "n",
+      "definition": "the act of forcing something out by squeezing or pressing",
+      "examples": [
+        "the expression of milk from her breast"
+      ]
+    }
+  ]
+}

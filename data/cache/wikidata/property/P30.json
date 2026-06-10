@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "P30": {
+      "type": "property",
+      "id": "P30",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "continent"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "континент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "महाद्वीप"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "大洲"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "continent of which the subject is a part"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "континент, на котором находится элемент"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यह आइटम किस महाद्वीप में है?"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "主体所属的大洲"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "часть света"
+          },
+          {
+            "language": "ru",
+            "value": "материк"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "洲"
+          },
+          {
+            "language": "zh",
+            "value": "大陆"
+          },
+          {
+            "language": "zh",
+            "value": "大陸"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,12 @@
+language en
+lemma algorithm
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a precise rule (or set of rules) specifying how to solve some problem"
+    id oewn-05855965-n
+    partOfSpeech n
+    synonyms ("algorithmic rule" "algorithmic program")
+source "oewn:2024"

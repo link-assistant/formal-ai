@@ -1,0 +1,41 @@
+view
+  id M-e8c7e8262e06
+  lemma conflict
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an open clash between two opposing groups (or individuals)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "opposition between two simultaneous but incompatible feelings"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a hostile meeting of opposing military forces in the course of a war"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state of opposition between persons or ideas or interests"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an incompatibility of dates or events"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "opposition in a work of drama or fiction between characters or forces (especially an opposition that motivates the development of the plot)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a disagreement or argument about something important"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be in conflict"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go against, as of rules and laws"
+    provenance (wordnet)

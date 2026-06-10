@@ -1,0 +1,40 @@
+{
+  "lemma": "export",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03311152-n",
+      "partOfSpeech": "n",
+      "definition": "commodities (goods or services) sold to a foreign country",
+      "synonyms": [
+        "exportation"
+      ]
+    },
+    {
+      "id": "oewn-02351405-v",
+      "partOfSpeech": "v",
+      "definition": "sell or transfer abroad",
+      "examples": [
+        "we export less than we import and have a negative trade balance"
+      ]
+    },
+    {
+      "id": "oewn-02237659-v",
+      "partOfSpeech": "v",
+      "definition": "transfer (electronic data) out of a database or document in a format that can be used by other programs"
+    },
+    {
+      "id": "oewn-01381762-v",
+      "partOfSpeech": "v",
+      "definition": "cause to spread in another part of the world",
+      "examples": [
+        "The Russians exported Marxism to Africa"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+language en
+lemma ability
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of being able to perform; a quality that permits or facilitates achievement or accomplishment"
+    id oewn-05207437-n
+    partOfSpeech n
+  entry
+    definition "possession of the qualities (especially mental qualities) required to do something or get something done"
+    examples ("danger heightened his powers of discrimination")
+    id oewn-05624029-n
+    partOfSpeech n
+    synonyms (power)
+source "oewn:2024"

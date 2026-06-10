@@ -1,0 +1,43 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit/figure 2."
+          example "The number 2202 contains three twos."
+        entry
+          definition "A two-dollar bill."
+        entry
+          definition "A child aged two."
+          example "This toy is suitable for the twos and threes."
+        entry
+          definition "A playing card featuring two pips."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value equal to 2; this many dots (••)."
+        entry
+          definition "Describing a set or group with two elements."
+      partOfSpeech numeral
+  phonetic "/tuː/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/two-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=77606649"
+      text "/tuː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/two-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718799"
+      text "/tu/"
+  sourceUrls ("https://en.wiktionary.org/wiki/two")
+  word two

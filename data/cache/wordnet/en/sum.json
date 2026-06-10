@@ -1,0 +1,128 @@
+{
+  "lemma": "sum",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13352213-n",
+      "partOfSpeech": "n",
+      "definition": "a quantity of money",
+      "examples": [
+        "he borrowed a large sum",
+        "the amount he had in cash was insufficient"
+      ],
+      "synonyms": [
+        "sum of money",
+        "amount",
+        "amount of money"
+      ]
+    },
+    {
+      "id": "oewn-05869651-n",
+      "partOfSpeech": "n",
+      "definition": "a quantity obtained by the addition of a group of numbers",
+      "synonyms": [
+        "amount",
+        "total"
+      ]
+    },
+    {
+      "id": "oewn-07975630-n",
+      "partOfSpeech": "n",
+      "definition": "the final aggregate",
+      "examples": [
+        "the sum of all our troubles did not equal the misery they suffered"
+      ],
+      "synonyms": [
+        "summation",
+        "sum total"
+      ]
+    },
+    {
+      "id": "oewn-05929717-n",
+      "partOfSpeech": "n",
+      "definition": "the choicest or most essential or most vital part of some idea or experience",
+      "examples": [
+        "the gist of the prosecutor's argument",
+        "the heart and soul of the Republican Party",
+        "the nub of the story"
+      ],
+      "synonyms": [
+        "kernel",
+        "substance",
+        "core",
+        "center",
+        "centre",
+        "essence",
+        "gist",
+        "heart",
+        "heart and soul",
+        "inwardness",
+        "marrow",
+        "meat",
+        "nub",
+        "pith",
+        "nitty-gritty"
+      ]
+    },
+    {
+      "id": "oewn-04360881-n",
+      "partOfSpeech": "n",
+      "definition": "the whole amount",
+      "synonyms": [
+        "total",
+        "totality",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "oewn-08015154-n",
+      "partOfSpeech": "n",
+      "definition": "a set containing all and only the members of two or more given sets",
+      "examples": [
+        "let C be the union of the sets A and B"
+      ],
+      "synonyms": [
+        "union",
+        "join"
+      ]
+    },
+    {
+      "id": "oewn-02758570-v",
+      "partOfSpeech": "v",
+      "definition": "be a summary of",
+      "examples": [
+        "The abstract summarizes the main ideas in the paper"
+      ],
+      "synonyms": [
+        "summarize",
+        "summarise",
+        "sum up"
+      ]
+    },
+    {
+      "id": "oewn-00951320-v",
+      "partOfSpeech": "v",
+      "definition": "determine the sum of",
+      "examples": [
+        "Add all the people in this town to those of the neighboring town"
+      ],
+      "synonyms": [
+        "total",
+        "tot",
+        "tot up",
+        "sum up",
+        "summate",
+        "tote up",
+        "add",
+        "add together",
+        "tally",
+        "add up"
+      ]
+    }
+  ]
+}

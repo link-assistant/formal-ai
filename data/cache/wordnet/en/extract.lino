@@ -1,0 +1,60 @@
+language en
+lemma extract
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a solution obtained by steeping or soaking a substance (usually in water)"
+    id oewn-14872955-n
+    partOfSpeech n
+    synonyms (infusion)
+  entry
+    definition "a passage selected from a larger work"
+    examples ("he presented excerpts from William James' philosophical writings")
+    id oewn-06412153-n
+    partOfSpeech n
+    synonyms (excerpt excerption selection)
+  entry
+    definition "remove, usually with some force or effort; also used in an abstract sense"
+    examples ("pull weeds" "extract a bad tooth" "take out a splinter" "extract information from the telegram")
+    id oewn-01353852-v
+    partOfSpeech v
+    synonyms ("pull out" pull "pull up" "take out" "draw out" "rip out" "tear out")
+  entry
+    definition "get despite difficulties or obstacles"
+    examples ("I extracted a promise from the Dean for two new positions")
+    id oewn-02243880-v
+    partOfSpeech v
+  entry
+    definition "deduce (a principle) or construe (a meaning)"
+    examples ("We drew out some interesting linguistic data from the native informant")
+    id oewn-01634074-v
+    partOfSpeech v
+    synonyms (educe evoke elicit "draw out")
+  entry
+    definition "extract by the process of distillation"
+    examples ("distill the essence of this compound")
+    id oewn-00229706-v
+    partOfSpeech v
+    synonyms (distill distil)
+  entry
+    definition "separate (a metal) from an ore"
+    id oewn-01462021-v
+    partOfSpeech v
+  entry
+    definition "obtain from a substance, as by mechanical action"
+    examples ("Italians express coffee rather than filter it")
+    id oewn-01354457-v
+    partOfSpeech v
+    synonyms ("press out" express)
+  entry
+    definition "take out of a literary work in order to cite or copy"
+    id oewn-00678940-v
+    partOfSpeech v
+    synonyms (excerpt "take out")
+  entry
+    definition "calculate the root of a number"
+    id oewn-00640385-v
+    partOfSpeech v
+source "oewn:2024"

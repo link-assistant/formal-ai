@@ -1,0 +1,21 @@
+language en
+lemma russian
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or pertaining to or characteristic of Russia or its people or culture or language"
+    examples ("Russian dancing")
+    id oewn-02968822-a
+    partOfSpeech a
+  entry
+    definition "a native or inhabitant of Russia"
+    id oewn-09747745-n
+    partOfSpeech n
+  entry
+    definition "the Slavic language that is the official language of Russia"
+    id oewn-06957110-n
+    partOfSpeech n
+    synonyms ("Russian language")
+source "oewn:2024"

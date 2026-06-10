@@ -1,0 +1,9 @@
+view
+  id M-62d0377d5299
+  lemma tabletop
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the top horizontal work surface of a table"
+    provenance (wordnet)

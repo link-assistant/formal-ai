@@ -1,0 +1,109 @@
+{
+  "entities": {
+    "Q11348": {
+      "type": "item",
+      "id": "Q11348",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "function"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "математическая функция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फलन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "函数"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "association of a single output to each input"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "математическое бинарное отношение, такое что для каждого элемента слева существует ровно один соответствующий элемент справа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रत्येक इनपुट के लिए एकल आउटपुट का संयोजन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "数学二元关系，输入值集合中的每项元素皆能对应​​唯一一项输出值集合中的元素"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mathematical function"
+          },
+          {
+            "language": "en",
+            "value": "single-valued function"
+          },
+          {
+            "language": "en",
+            "value": "total function"
+          },
+          {
+            "language": "en",
+            "value": "map"
+          },
+          {
+            "language": "en",
+            "value": "application"
+          },
+          {
+            "language": "en",
+            "value": "mapping"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "отображение"
+          },
+          {
+            "language": "ru",
+            "value": "функциональная зависимость"
+          },
+          {
+            "language": "ru",
+            "value": "преобразование"
+          },
+          {
+            "language": "ru",
+            "value": "морфизм"
+          },
+          {
+            "language": "ru",
+            "value": "функция"
+          },
+          {
+            "language": "ru",
+            "value": "оператор"
+          },
+          {
+            "language": "ru",
+            "value": "однозначная функция"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "函數"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

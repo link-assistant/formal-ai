@@ -1,0 +1,30 @@
+{
+  "lemma": "revert",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00387981-v",
+      "partOfSpeech": "v",
+      "definition": "go back to a previous state",
+      "examples": [
+        "We reverted to the old rules"
+      ],
+      "synonyms": [
+        "return",
+        "retrovert",
+        "regress",
+        "turn back"
+      ]
+    },
+    {
+      "id": "oewn-00120025-v",
+      "partOfSpeech": "v",
+      "definition": "undergo reversion, as in a mutation"
+    }
+  ]
+}

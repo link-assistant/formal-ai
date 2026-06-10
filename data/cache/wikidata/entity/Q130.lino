@@ -1,0 +1,19 @@
+Q130
+  aliases
+    en (Fri Fr F)
+    hi ("शुक्र")
+    ru ("пт")
+    zh ("禮拜五" "礼拜五" "週五" "周五")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между четвергом и субботой"
+    zh "星期中的日子"
+  id Q130
+  labels
+    en Friday
+    hi "शुक्रवार"
+    ru "пятница"
+    zh "星期五"
+  type item
+success 1

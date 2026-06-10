@@ -1,0 +1,121 @@
+[
+  {
+    "word": "features",
+    "phonetic": "/ˈfiːtʃəz/",
+    "phonetics": [
+      {
+        "text": "/ˈfiːtʃəz/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈfitʃɚz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/features-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1669306",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One's structure or make-up: form, shape, bodily proportions.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An important or main item.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A long, prominent article or item in the media, or the department that creates them; frequently used technically to distinguish content from news.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of the physical constituents of the face (eyes, nose, etc.).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A beneficial capability of a piece of software.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The cast or structure of anything, or of any part of a thing, as of a landscape, a picture, a treaty, or an essay; any marked peculiarity or characteristic.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "one of the features of the landscape"
+          },
+          {
+            "definition": "Something discerned from physical evidence that helps define, identify, characterize, and interpret an archeological site.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Characteristic forms or shapes of parts. For example, a hole, boss, slot, cut, chamfer, or fillet.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(machine learning) An individual measurable property or characteristic of a phenomenon being observed.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of being featured in a piece of music.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The elements into which linguistic units can be broken down.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To ascribe the greatest importance to something within a certain context.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To star, to contain.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To appear, to make an appearance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have features resembling.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/feature",
+      "https://en.wiktionary.org/wiki/features"
+    ]
+  }
+]

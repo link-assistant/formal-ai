@@ -1,0 +1,107 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A unit of mass equal to one-thousandth of a kilogram. Symbol: g"
+      partOfSpeech noun
+  phonetic "/ɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/gram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762954"
+      text "/ɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/gram")
+  word gram
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A leguminous plant grown for its seeds, especially the chickpea."
+        entry
+          definition "The seeds of these plants."
+      partOfSpeech noun
+  phonetic "/ɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/gram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762954"
+      text "/ɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/gram")
+  word gram
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Grandmother
+      partOfSpeech noun
+  phonetic "/ɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/gram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762954"
+      text "/ɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/gram")
+  word gram
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Angry
+      partOfSpeech adjective
+  phonetic "/ɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/gram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762954"
+      text "/ɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/gram")
+  word gram
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A photograph or video shared on this service."
+      partOfSpeech noun
+  phonetic "/ɡɹæm/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/gram-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762954"
+      text "/ɡɹæm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/'gram" "https://en.wiktionary.org/wiki/Instagram" "https://en.wiktionary.org/wiki/gram")
+  word gram

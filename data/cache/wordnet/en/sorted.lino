@@ -1,0 +1,16 @@
+language en
+lemma sorted
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "arranged according to size"
+    id oewn-02232367-s
+    partOfSpeech s
+  entry
+    definition "arranged into groups"
+    id oewn-00416438-s
+    partOfSpeech s
+    synonyms (grouped)
+source "oewn:2024"

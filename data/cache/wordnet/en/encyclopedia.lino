@@ -1,0 +1,12 @@
+language en
+lemma encyclopedia
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a reference work (often in several volumes) containing articles on various topics (often arranged in alphabetical order) dealing with the entire range of human knowledge or with some particular specialty"
+    id oewn-06439057-n
+    partOfSpeech n
+    synonyms (cyclopedia encyclopaedia cyclopaedia)
+source "oewn:2024"

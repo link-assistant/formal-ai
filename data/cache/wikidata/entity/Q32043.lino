@@ -1,0 +1,17 @@
+Q32043
+  aliases
+    en (adding collecting summing summation plus)
+    zh ("加")
+  descriptions
+    en "arithmetic operation"
+    hi "अंकगणितीय संक्रिया"
+    ru "математическая операция"
+    zh "二元運算"
+  id Q32043
+  labels
+    en addition
+    hi "जोड़"
+    ru "сложение"
+    zh "加法"
+  type item
+success 1

@@ -1,0 +1,29 @@
+view
+  id M-a0b717de9bdd
+  lemma progress
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "gradual improvement or growth or development"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of moving forward (as toward a goal)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a movement forward"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "develop in a positive way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move forward, also in the metaphorical sense"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "form or accumulate steadily"
+    provenance (wordnet)

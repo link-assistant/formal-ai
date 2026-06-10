@@ -1,0 +1,99 @@
+[
+  {
+    "word": "five",
+    "phonetic": "/fɑev/",
+    "phonetics": [
+      {
+        "text": "/fɑev/",
+        "audio": ""
+      },
+      {
+        "text": "/fɑev/",
+        "audio": ""
+      },
+      {
+        "text": "/faɪv/",
+        "audio": ""
+      },
+      {
+        "text": "/faɪv/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/five-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=268388"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit/figure 5.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He wrote a five followed by four zeroes."
+          },
+          {
+            "definition": "A banknote with a denomination of five units of currency. See also fiver.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Can anyone here change a five?"
+          },
+          {
+            "definition": "Anything measuring five units, as length.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "All the fives are over there in the corner, next to the fours."
+          },
+          {
+            "definition": "A person who is five years old.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The fives and sixes will have a snack first, then the older kids."
+          },
+          {
+            "definition": "Five o'clock.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "See you at five."
+          },
+          {
+            "definition": "A short rest, especially one of five minutes.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Take five, soldier."
+          },
+          {
+            "definition": "A basketball team, club or lineup.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value equal to 5; the number following four and preceding six.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a group or set with five elements.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/five"
+    ]
+  }
+]

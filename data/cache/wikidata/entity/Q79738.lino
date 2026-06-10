@@ -1,0 +1,17 @@
+Q79738
+  aliases
+    en (Gbyte GB)
+    ru ("Гбайт")
+    zh ("十億位元組" "吉咖字节" "京字节" "戟" "吉位元組")
+  descriptions
+    en "unit of digital information equal to one billion bytes or 1,000 megabytes"
+    ru "единица измерения количества информации, равная 1 073 741 824 байт"
+    zh "单位字节的倍数"
+  id Q79738
+  labels
+    en gigabyte
+    hi "गिगाबाइट"
+    ru "гигабайт"
+    zh "吉字节"
+  type item
+success 1

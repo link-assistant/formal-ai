@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q89": {
+      "type": "item",
+      "id": "Q89",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "apple"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "яблоко"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सेब"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "苹果"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "edible fruit of the apple tree"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "плод яблони"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "植物，果实是一种水果"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सेब वृक्ष का फल"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "柰"
+          },
+          {
+            "language": "zh",
+            "value": "蘋果"
+          },
+          {
+            "language": "zh",
+            "value": "píngguǒ"
+          },
+          {
+            "language": "zh",
+            "value": "瓜果"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "apple fruit"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सेवफलम्"
+          },
+          {
+            "language": "hi",
+            "value": "एप्पल"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

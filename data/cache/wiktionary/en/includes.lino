@@ -1,0 +1,38 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A piece of source code or other content that is dynamically retrieved for inclusion in another item."
+      partOfSpeech noun
+    entry
+      antonyms (exclude)
+      definitions
+        entry
+          definition "To bring into a group, class, set, or total as a (new) part or member."
+          example "I will purchase the vacation package if you will include car rental."
+        entry
+          definition "To contain, as parts of a whole; to comprehend."
+          example "Does this volume of Shakespeare include his sonnets?"
+        entry
+          definition "To enclose, confine."
+        entry
+          definition "To conclude; to terminate."
+        entry
+          definition "To use a directive that allows the use of source code from another file."
+          example "You have to include the strings library to use this function."
+      partOfSpeech verb
+  phonetic "/ɪnˈkluːdz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/includes-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2423285"
+      text "/ɪnˈkluːdz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/include" "https://en.wiktionary.org/wiki/includes")
+  word includes

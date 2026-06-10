@@ -1,0 +1,13 @@
+view
+  id M-874ee46081c3
+  lemma diagnostic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "concerned with diagnosis; used for furthering diagnosis"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "characteristic or indicative of a disease"
+    provenance (wordnet)

@@ -1,0 +1,46 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A legally or socially binding conceptual contract of entitlement to wealth, void of intrinsic value, payable for all debts and taxes, and regulated in supply."
+        entry
+          definition "A generally accepted means of exchange and measure of value."
+          example "Before colonial times cowry shells imported from Mauritius were used as money in Western Africa."
+        entry
+          definition "A currency maintained by a state or other entity which can guarantee its value (such as a monetary union)."
+          example "money supply;  money market"
+        entry
+          definition "Hard cash in the form of banknotes and coins, as opposed to cheques/checks, credit cards, or credit more generally."
+        entry
+          definition "The total value of liquid assets available for an individual or other economic unit, such as cash and bank deposits."
+        entry
+          definition "Wealth; a person, family or class that possesses wealth"
+          example "He married money."
+        entry
+          definition "An item of value between two or more parties used for the exchange of goods or services."
+        entry
+          definition "A person who funds an operation."
+      partOfSpeech noun
+      synonyms ("beer ticket" bread bucks cake cash cheddar coin cream currency dinars dosh dough ducats "folding stuff" funds geld gelt greenbacks jack "legal tender" lolly lucre means moolah paper pennies readies sheets shrapnel simoleons spends spondulicks sterling wonga)
+  phonetic "/ˈmʌni/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/money-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9023233"
+      text "/ˈmʌni/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/money-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1113567"
+      text "/ˈmʌni/"
+  sourceUrls ("https://en.wiktionary.org/wiki/money")
+  word money

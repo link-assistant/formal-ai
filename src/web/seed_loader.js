@@ -80,11 +80,102 @@
     );
   }
 
+  // Single left-to-right pass so escape sequences never re-trigger each other
+  // (e.g. `\\n`, an escaped backslash followed by `n`, must stay `\n`, not a
+  // newline). Mirrors `src/seed/parser.rs::unescape_value` and serves every
+  // quote style emitted by the seed migration (`"`, `'`, and backticks).
+  function unescapeQuoted(value) {
+    var source = String(value || "");
+    var out = "";
+    for (var i = 0; i < source.length; i += 1) {
+      var ch = source[i];
+      if (ch !== "\\") {
+        out += ch;
+        continue;
+      }
+      var next = source[i + 1];
+      if (next === undefined) {
+        out += "\\";
+      } else if (next === "n") {
+        out += "\n";
+        i += 1;
+      } else if (next === "r") {
+        out += "\r";
+        i += 1;
+      } else if (next === "t") {
+        out += "\t";
+        i += 1;
+      } else if (next === "\\" || next === '"' || next === "'" || next === "`") {
+        out += next;
+        i += 1;
+      } else if (next === "x" && source[i + 2] === "2" && source[i + 3] === "7") {
+        out += "'";
+        i += 3;
+      } else {
+        out += "\\" + next;
+        i += 1;
+      }
+    }
+    return out;
+  }
+
   function unescapeValue(value) {
-    return String(value || "")
-      .replace(/\\n/g, "\n")
-      .replace(/\\"/g, '"')
-      .replace(/\\\\/g, "\\");
+    return unescapeQuoted(value);
+  }
+
+  function unescapeSingleValue(value) {
+    return unescapeQuoted(value);
+  }
+
+  function decodeRawReference(value) {
+    var raw = String(value || "");
+    if (raw === "unformalized-raw" || raw === "codepoints") return "";
+    var unformalizedPrefix = "unformalized-raw ";
+    var codepointsPrefix = "codepoints ";
+    var prefix = "";
+    if (raw.indexOf(unformalizedPrefix) === 0) {
+      prefix = unformalizedPrefix;
+    } else if (raw.indexOf(codepointsPrefix) === 0) {
+      prefix = codepointsPrefix;
+    } else {
+      return raw;
+    }
+    return raw
+      .slice(prefix.length)
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(function (part) {
+        return String.fromCodePoint(parseInt(part, 10) || 0);
+      })
+      .join("");
+  }
+
+  function stripComment(line) {
+    var quote = null;
+    var escaped = false;
+    var previousWasSpace = true;
+    for (var i = 0; i < line.length; i += 1) {
+      var ch = line[i];
+      if (quote !== null) {
+        if (escaped) {
+          escaped = false;
+        } else if ((quote === '"' || quote === "`") && ch === "\\") {
+          escaped = true;
+        } else if (ch === quote) {
+          quote = null;
+        }
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === "`") {
+        quote = ch;
+        previousWasSpace = false;
+        continue;
+      }
+      if (ch === "#" && previousWasSpace) return line.slice(0, i);
+      previousWasSpace = /\s/.test(ch);
+    }
+    return line;
   }
 
   // Parse an indented Links Notation document into a nested structure:
@@ -101,10 +192,10 @@
     var stack = [root];
     for (var i = 0; i < lines.length; i += 1) {
       var line = lines[i];
-      if (!line || /^\s*$/.test(line)) continue;
+      if (!line || /^\s*$/.test(stripComment(line))) continue;
       var indentMatch = /^(\s*)/.exec(line);
       var indent = indentMatch ? indentMatch[1].length : 0;
-      var content = line.slice(indent);
+      var content = stripComment(line.slice(indent)).trim();
       // Walk back up to find the parent for this indent.
       while (stack.length > 1 && stack[stack.length - 1].indent >= indent) {
         stack.pop();
@@ -125,27 +216,41 @@
       children: [],
       indent: indent,
     };
-    var first = content.indexOf(' "');
-    if (first === -1) {
-      node.name = content.trim();
+    var colon = content.indexOf(":");
+    var firstSpace = content.search(/\s/);
+    if (colon !== -1 && (firstSpace === -1 || colon < firstSpace)) {
+      node.name = content.slice(0, colon).trim();
+      node.id = decodeRawReference(content.slice(colon + 1).trim());
+      node.value = node.id;
       return node;
     }
-    node.name = content.slice(0, first).trim();
-    var rest = content.slice(first + 1).trim();
-    if (rest.length === 0 || rest[0] !== '"') return node;
-    var closing = -1;
-    for (var i = 1; i < rest.length; i += 1) {
-      if (rest[i] === "\\") {
-        i += 1;
-        continue;
+    var parts = /^(\S+)(?:\s+([\s\S]*))?$/.exec(content.trim());
+    if (!parts) return node;
+    node.name = parts[1] || "";
+    var rest = (parts[2] || "").trim();
+    var delimiter = rest[0];
+    if (delimiter === '"' || delimiter === "'" || delimiter === "`") {
+      // The migration backslash-escapes `\` and newlines inside every quote
+      // style, so the closing scan honours escapes regardless of delimiter.
+      var closing = -1;
+      for (var i = 1; i < rest.length; i += 1) {
+        if (rest[i] === "\\") {
+          i += 1;
+          continue;
+        }
+        if (rest[i] === delimiter) {
+          closing = i;
+          break;
+        }
       }
-      if (rest[i] === '"') {
-        closing = i;
-        break;
+      // Only treat it as a quoted scalar when the quote spans the whole value.
+      if (closing !== -1 && rest.slice(closing + 1).trim().length === 0) {
+        node.id = unescapeQuoted(rest.slice(1, closing));
+        node.value = node.id;
+        return node;
       }
     }
-    if (closing === -1) return node;
-    node.id = unescapeValue(rest.slice(1, closing));
+    node.id = decodeRawReference(rest);
     node.value = node.id;
     return node;
   }
@@ -160,6 +265,11 @@
   function findChildValue(node, name) {
     var match = findChildren(node, name)[0];
     return match ? match.id : "";
+  }
+
+  function findChildValueAlias(node, primary, fallback) {
+    var value = findChildValue(node, primary);
+    return value || findChildValue(node, fallback);
   }
 
   function extractMultilingualResponses(node) {
@@ -226,7 +336,7 @@
         return {
           language: loc.id,
           term: findChildValue(loc, "term"),
-          aliases: locAliases ? locAliases.split("|").map(trim).filter(Boolean) : [],
+          aliases: splitRefList(locAliases),
           summary: findChildValue(loc, "summary"),
           source: findChildValue(loc, "source"),
           sourceKind: findChildValue(loc, "source_kind"),
@@ -240,11 +350,9 @@
         source: findChildValue(item, "source"),
         sourceKind: findChildValue(item, "source_kind") || "project-docs",
         wikidata: findChildValue(item, "wikidata"),
-        aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
-        contexts: contexts ? contexts.split("|").map(trim).filter(Boolean) : [],
-        contextLinks: contextLinks
-          ? contextLinks.split("|").map(trim).filter(Boolean)
-          : [],
+        aliases: splitRefList(aliases),
+        contexts: splitRefList(contexts),
+        contextLinks: splitRefList(contextLinks),
         localized: localized,
       });
     };
@@ -275,7 +383,7 @@
         out.push({
           slug: entry.id,
           wikidata: findChildValue(entry, "wikidata"),
-          aliases: aliases ? aliases.split("|").map(trim).filter(Boolean) : [],
+          aliases: splitRefList(aliases),
           labels: labels,
         });
       }
@@ -455,13 +563,13 @@
         return {
           language: loc.id,
           name: findChildValue(loc, "name"),
-          description: findChildValue(loc, "description"),
+          description: findChildValueAlias(loc, "note", "description"),
         };
       });
       tools.push({
         id: entry.id,
         name: findChildValue(entry, "name"),
-        description: findChildValue(entry, "description"),
+        description: findChildValueAlias(entry, "note", "description"),
         mode: findChildValue(entry, "mode") || "thinking",
         inputs: splitList(findChildValue(entry, "inputs")),
         outputs: splitList(findChildValue(entry, "outputs")),
@@ -544,13 +652,13 @@
           });
         }
       } else if (section.name === "migration") {
-        directory.migrationDescription = findChildValue(section, "description");
+        directory.migrationDescription = findChildValueAlias(section, "note", "description");
         var flowEntries = findChildren(section, "flow");
         for (var k = 0; k < flowEntries.length; k += 1) {
           var flow = flowEntries[k];
           directory.flows.push({
             id: flow.id,
-            description: findChildValue(flow, "description"),
+            description: findChildValueAlias(flow, "note", "description"),
             fileFormat: findChildValue(flow, "file_format"),
           });
         }
@@ -624,12 +732,62 @@
     return routing;
   }
 
+  // Split a canonical `(a "b c" d)` reference list into its items. Each item is
+  // a quoted scalar (which may contain spaces) or a bare whitespace-delimited
+  // token. Falls back to the legacy `a|b|c` pipe packing for any value that is
+  // not wrapped in parentheses, so old and migrated seeds both load.
+  function splitRefList(value) {
+    var raw = trim(value);
+    if (!raw) return [];
+    if (raw.charAt(0) === "(" && raw.charAt(raw.length - 1) === ")") {
+      return tokenizeRefList(raw.slice(1, -1));
+    }
+    return raw.split("|").map(trim).filter(Boolean);
+  }
+
+  function tokenizeRefList(body) {
+    var tokens = [];
+    var i = 0;
+    while (i < body.length) {
+      var ch = body.charAt(i);
+      if (/\s/.test(ch)) {
+        i += 1;
+        continue;
+      }
+      if (ch === '"' || ch === "'" || ch === "`") {
+        var quote = ch;
+        i += 1;
+        var value = "";
+        while (i < body.length) {
+          var c = body.charAt(i);
+          if ((quote === '"' || quote === "`") && c === "\\") {
+            value += body.charAt(i + 1) || "";
+            i += 2;
+            continue;
+          }
+          if (c === quote) {
+            i += 1;
+            break;
+          }
+          value += c;
+          i += 1;
+        }
+        tokens.push(value);
+      } else {
+        var bare = "";
+        while (i < body.length && !/\s/.test(body.charAt(i))) {
+          bare += body.charAt(i);
+          i += 1;
+        }
+        if (bare) tokens.push(bare);
+      }
+    }
+    return tokens;
+  }
+
+  // Backwards-compatible alias retained for existing call sites.
   function splitList(value) {
-    if (!value) return [];
-    return String(value)
-      .split("|")
-      .map(trim)
-      .filter(Boolean);
+    return splitRefList(value);
   }
 
   function trim(value) {

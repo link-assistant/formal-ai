@@ -1,0 +1,17 @@
+language en
+lemma numbers
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the fourth book of the Old Testament; contains a record of the number of Israelites who followed Moses out of Egypt"
+    id oewn-06444919-n
+    partOfSpeech n
+    synonyms ("Book of Numbers")
+  entry
+    definition "an illegal daily lottery"
+    id oewn-00509558-n
+    partOfSpeech n
+    synonyms ("numbers pool" "numbers game" "numbers racket")
+source "oewn:2024"

@@ -1,0 +1,21 @@
+view
+  id M-9b1175a12b1a
+  lemma replace
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "substitute a person or thing for (another that is broken or inefficient or lost or no longer working or yielding what is expected)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take the place or move into the position of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put something back where it belongs"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put in the place of another; switch seemingly equivalent items"
+    provenance (wordnet)

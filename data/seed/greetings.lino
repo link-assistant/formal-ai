@@ -1,101 +1,85 @@
 greeting_1
-  text "Hi"
-  intent "greeting"
+  text Hi
+  intent greeting
   response_link "response:greeting"
   answer "Hi, how may I help you?"
-
 greeting_2
-  text "Hello"
-  intent "greeting"
+  text Hello
+  intent greeting
   response_link "response:greeting"
   answer "Hi, how may I help you?"
-
 greeting_3
-  text "Hey"
-  intent "greeting"
+  text Hey
+  intent greeting
   response_link "response:greeting"
   answer "Hi, how may I help you?"
-
 greeting_4
-  text "шалом"
-  intent "greeting"
+  text шалом
+  intent greeting
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
-
 greeting_5
   text "шабат шалом"
-  intent "greeting"
+  intent greeting
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
-
 greeting_6
   text "как твои дела"
-  intent "greeting"
+  intent greeting
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
-
 greeting_7
   text "как дела"
-  intent "greeting"
+  intent greeting
   response_link "response:greeting"
   answer "Здравствуйте! Чем могу помочь?"
-
 greeting_8
   text "how are you"
-  intent "greeting"
+  intent greeting
   response_link "response:greeting"
   answer "Hi, how may I help you?"
-
 greeting_9
   text "आप कैसे हैं"
-  intent "greeting"
+  intent greeting
   response_link "response:greeting"
   answer "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
-
 greeting_10
-  text "你好吗"
-  intent "greeting"
+  text 你好吗
+  intent greeting
   response_link "response:greeting"
-  answer "你好!请问有什么可以帮您的?"
-
+  answer 你好!请问有什么可以帮您的?
 farewell_1
-  text "Bye"
-  intent "farewell"
+  text Bye
+  intent farewell
   response_link "response:farewell"
   answer "Goodbye! Feel free to return any time."
-
 farewell_2
-  text "Goodbye"
-  intent "farewell"
+  text Goodbye
+  intent farewell
   response_link "response:farewell"
   answer "Goodbye! Feel free to return any time."
-
 farewell_3
-  text "пока"
-  intent "farewell"
+  text пока
+  intent farewell
   response_link "response:farewell"
   answer "До свидания! Возвращайтесь в любое время."
-
 farewell_4
   text "до свидания"
-  intent "farewell"
+  intent farewell
   response_link "response:farewell"
   answer "До свидания! Возвращайтесь в любое время."
-
 courtesy_response_1
   text "I am fine, thank you"
-  intent "courtesy_response"
+  intent courtesy_response
   response_link "response:courtesy_response"
   answer "Glad to hear it. What would you like to do next?"
-
 courtesy_response_2
-  text "thanks"
-  intent "courtesy_response"
+  text thanks
+  intent courtesy_response
   response_link "response:courtesy_response"
   answer "Glad to hear it. What would you like to do next?"
-
 courtesy_response_3
-  text "спасибо"
-  intent "courtesy_response"
+  text спасибо
+  intent courtesy_response
   response_link "response:courtesy_response"
   answer "Рад это слышать. Что вы хотите сделать дальше?"

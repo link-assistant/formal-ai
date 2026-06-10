@@ -1,0 +1,173 @@
+[
+  {
+    "word": "hey",
+    "phonetic": "/heɪ/",
+    "phonetics": [
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75271853",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=268428"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "An exclamation to get attention.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hey! Listen!"
+          },
+          {
+            "definition": "A protest or reprimand.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hey! Stop that!"
+          },
+          {
+            "definition": "An expression of surprise.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hey! This is new!"
+          },
+          {
+            "definition": "An informal greeting, similar to hi.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hey! How's it going?"
+          },
+          {
+            "definition": "A request for repetition or explanation; an expression of confusion.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hey? How's that?"
+          },
+          {
+            "definition": "A meaningless beat marker or extra, filler syllable in song lyrics.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The chorus is \"nana na na, nana na na hey hey hey, goodbye\"."
+          }
+        ],
+        "synonyms": [
+          "oi",
+          "yo",
+          "blimey",
+          "gee whiz",
+          "yowzah",
+          "eh",
+          "huh",
+          "hi",
+          "howdy",
+          "wotcher"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/hey"
+    ]
+  },
+  {
+    "word": "hey",
+    "phonetic": "/heɪ/",
+    "phonetics": [
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75271853",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=268428"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(country dancing) A choreographic figure in which three or more dancers weave between one another, passing by left and right shoulder alternately.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/hey"
+    ]
+  },
+  {
+    "word": "hey",
+    "phonetic": "/heɪ/",
+    "phonetics": [
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=75271853",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/heɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=268428"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The name of the fifth letter of many Semitic alphabets (Phoenician, Aramaic, Hebrew, Syriac, Arabic and others).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The name of the first letter of the Old South Arabian abjad.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/he",
+      "https://en.wiktionary.org/wiki/hey"
+    ]
+  }
+]

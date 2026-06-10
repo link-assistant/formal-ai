@@ -1,0 +1,15 @@
+Q66100
+  aliases
+    en ("foreign-exchange rate" "forex rate" "FX rate" "foreign currency transactions")
+    ru ("обменный курс" "курс валюты" "курс валют" "валютные курсы" "кросс-курс" "курс обмена")
+  descriptions
+    en "rate at which one currency will be exchanged for another"
+    ru "цена (котировка) денежной единицы одной страны, выраженная в денежной единице другой страны, драгоценных металлах, ценных бумагах"
+  id Q66100
+  labels
+    en "exchange rate"
+    hi "विनिमय दर"
+    ru "валютный курс"
+    zh "汇率"
+  type item
+success 1

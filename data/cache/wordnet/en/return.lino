@@ -1,0 +1,167 @@
+language en
+lemma return
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "document giving the tax collector information about the taxpayer's tax liability"
+    examples ("his gross income was enough that he had to file a tax return")
+    id oewn-06560662-n
+    partOfSpeech n
+    synonyms ("tax return" "income tax return")
+  entry
+    definition "a coming to or returning home"
+    examples ("on his return from Australia we gave him a welcoming party")
+    id oewn-00052012-n
+    partOfSpeech n
+    synonyms (homecoming)
+  entry
+    definition "the occurrence of a change in direction back in the opposite direction"
+    id oewn-07461622-n
+    partOfSpeech n
+    synonyms ("coming back")
+  entry
+    definition "getting something back again"
+    examples ("upon the restitution of the book to its rightful owner the child was given a tongue lashing")
+    id oewn-00090171-n
+    partOfSpeech n
+    synonyms (restitution restoration regaining)
+  entry
+    definition "the act of going back to a prior location"
+    examples ("they set out on their return to the base camp")
+    id oewn-00328841-n
+    partOfSpeech n
+  entry
+    definition "the income or profit arising from such transactions as the sale of land or other property"
+    examples ("the average return was about 5%")
+    id oewn-13281089-n
+    partOfSpeech n
+    synonyms (issue take takings proceeds yield payoff)
+  entry
+    definition "happening again (especially at regular intervals)"
+    examples ("the return of spring")
+    id oewn-07357963-n
+    partOfSpeech n
+    synonyms (recurrence)
+  entry
+    definition "a quick reply to a question or remark (especially a witty or critical one)"
+    examples ("it brought a sharp rejoinder from the teacher")
+    id oewn-07214582-n
+    partOfSpeech n
+    synonyms (rejoinder retort riposte replication comeback counter)
+  entry
+    definition "the key on electric typewriters or computer keyboards that causes a carriage return and a line feed"
+    id oewn-04091629-n
+    partOfSpeech n
+    synonyms ("return key")
+  entry
+    definition "a reciprocal group action"
+    examples ("in return we gave them as good as we got")
+    id oewn-01237294-n
+    partOfSpeech n
+    synonyms ("paying back" "getting even")
+  entry
+    definition "a tennis stroke that sends the ball back to the other player"
+    examples ("he won the point on a cross-court return")
+    id oewn-00567335-n
+    partOfSpeech n
+  entry
+    definition "(American football) the act of running back the ball after a kickoff or punt or interception or fumble"
+    id oewn-00560761-n
+    partOfSpeech n
+  entry
+    definition "the act of someone appearing again"
+    examples ("his reappearance as Hamlet has been long awaited")
+    id oewn-00051707-n
+    partOfSpeech n
+    synonyms (reappearance)
+  entry
+    definition "go or come back to place, condition, or activity where one has been before"
+    examples ("return to your native land" "the professor returned to his teaching position after serving as Dean")
+    id oewn-02008888-v
+    partOfSpeech v
+  entry
+    definition "give back"
+    examples ("render money")
+    id oewn-02314987-v
+    partOfSpeech v
+    synonyms (render)
+  entry
+    definition "go back to a previous state"
+    examples ("We reverted to the old rules")
+    id oewn-00387981-v
+    partOfSpeech v
+    synonyms (revert retrovert regress "turn back")
+  entry
+    definition "go back to something earlier"
+    examples ("This harks back to a previous remark of his")
+    id oewn-00961556-v
+    partOfSpeech v
+    synonyms ("hark back" "come back" recall)
+  entry
+    definition "bring back to the point of departure"
+    id oewn-02082541-v
+    partOfSpeech v
+    synonyms ("take back" "bring back")
+  entry
+    definition "return in kind"
+    examples ("return a compliment" "return her love")
+    id oewn-02362071-v
+    partOfSpeech v
+  entry
+    definition "make a return"
+    examples ("return a kickback")
+    id oewn-01435792-v
+    partOfSpeech v
+  entry
+    definition "answer back"
+    id oewn-00818014-v
+    partOfSpeech v
+    synonyms (retort "come back" repay riposte rejoin)
+  entry
+    definition "be restored"
+    examples ("Her old vigor returned")
+    id oewn-00549233-v
+    partOfSpeech v
+    synonyms ("come back")
+  entry
+    definition "pay back"
+    examples ("Please refund me my money")
+    id oewn-02289796-v
+    partOfSpeech v
+    synonyms (refund repay "give back")
+  entry
+    definition "pass down"
+    examples ("render a verdict" "deliver a judgment")
+    id oewn-01064275-v
+    partOfSpeech v
+    synonyms (render deliver)
+  entry
+    definition "elect again"
+    id oewn-02406438-v
+    partOfSpeech v
+    synonyms (reelect re-elect)
+  entry
+    definition "be inherited by"
+    examples ("The estate fell to my sister" "The land returned to the family" "The estate devolved to an heir that everybody had assumed to be dead")
+    id oewn-02234332-v
+    partOfSpeech v
+    synonyms (fall pass devolve)
+  entry
+    definition "return to a previous position; in mathematics"
+    examples ("The point returned to the interior of the figure")
+    id oewn-02009631-v
+    partOfSpeech v
+  entry
+    definition "give or supply"
+    examples ("The cow brings in 5 liters of milk" "This year's crop yielded 1,000 bushels of corn" "The estate renders some revenue for the family")
+    id oewn-01632192-v
+    partOfSpeech v
+    synonyms (render yield give generate)
+  entry
+    definition "submit (a report, etc.) to someone in authority"
+    examples ("Gov. Chris Christie has returned a bill to the New Jersey Assembly on increased gun regulations")
+    id oewn-00880549-v
+    partOfSpeech v
+source "oewn:2024"

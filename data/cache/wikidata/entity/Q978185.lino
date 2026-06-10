@@ -1,0 +1,16 @@
+Q978185
+  aliases
+    en (.ts TS)
+    zh (TS .ts)
+  descriptions
+    en "programming language, superset of JavaScript that compiles to JavaScript"
+    hi "प्रोग्रामिंग भाषा"
+    ru "язык программирования, позиционируемый как средство разработки веб-приложений"
+    zh "程式語言，編譯成JavaScript的JavaScript超集"
+  id Q978185
+  labels
+    en TypeScript
+    ru TypeScript
+    zh TypeScript
+  type item
+success 1

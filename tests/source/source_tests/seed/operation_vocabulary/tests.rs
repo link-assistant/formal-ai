@@ -3,12 +3,7 @@ use std::collections::BTreeSet;
 use super::operation_vocabulary;
 
 fn supported_languages() -> BTreeSet<String> {
-    crate::seed::agent_info()
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages")
-        .split('|')
-        .map(ToOwned::to_owned)
-        .collect()
+    crate::seed::supported_languages().into_iter().collect()
 }
 
 #[test]

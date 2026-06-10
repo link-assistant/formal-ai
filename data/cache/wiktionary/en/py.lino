@@ -1,0 +1,18 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A phonetic script or romanization system for a language spoken in the People's Republic of China."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "(smoking) A unit for measuring the number of cigarettes a person has smoked previously; it is calculated by multiplying the average number of packs of cigarettes the person smokes per day by the number of years the person has smoked."
+      partOfSpeech noun
+      synonyms (PY py)
+  sourceUrls ("https://en.wiktionary.org/wiki/Pinyin" "https://en.wiktionary.org/wiki/pack-year" "https://en.wiktionary.org/wiki/pinyin" "https://en.wiktionary.org/wiki/py")
+  word py

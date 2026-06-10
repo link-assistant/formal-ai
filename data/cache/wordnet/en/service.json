@@ -1,0 +1,182 @@
+{
+  "lemma": "service",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11313626-n",
+      "partOfSpeech": "n",
+      "definition": "Canadian writer (born in England) who wrote about life in the Yukon Territory (1874-1958)",
+      "synonyms": [
+        "Robert W. Service",
+        "Robert William Service"
+      ]
+    },
+    {
+      "id": "oewn-00578562-n",
+      "partOfSpeech": "n",
+      "definition": "work done by one person or group that benefits another",
+      "examples": [
+        "budget separately for goods and services"
+      ]
+    },
+    {
+      "id": "oewn-01212066-n",
+      "partOfSpeech": "n",
+      "definition": "an act of help or assistance; something (such as a tool, software or system) used to render said help or assistance",
+      "examples": [
+        "he did them a service"
+      ]
+    },
+    {
+      "id": "oewn-01034072-n",
+      "partOfSpeech": "n",
+      "definition": "the act of public worship following prescribed rules",
+      "examples": [
+        "the Sunday service"
+      ],
+      "synonyms": [
+        "religious service",
+        "divine service"
+      ]
+    },
+    {
+      "id": "oewn-08202965-n",
+      "partOfSpeech": "n",
+      "definition": "a company or agency that performs a public service; subject to government regulation"
+    },
+    {
+      "id": "oewn-00585928-n",
+      "partOfSpeech": "n",
+      "definition": "employment in or work for another",
+      "examples": [
+        "he retired after 30 years of service"
+      ]
+    },
+    {
+      "id": "oewn-08215077-n",
+      "partOfSpeech": "n",
+      "definition": "a force that is a branch of the armed forces",
+      "synonyms": [
+        "military service",
+        "armed service"
+      ]
+    },
+    {
+      "id": "oewn-05157079-n",
+      "partOfSpeech": "n",
+      "definition": "a means of serving",
+      "examples": [
+        "of no avail",
+        "there's no help for it"
+      ],
+      "synonyms": [
+        "avail",
+        "help"
+      ]
+    },
+    {
+      "id": "oewn-04182441-n",
+      "partOfSpeech": "n",
+      "definition": "tableware consisting of a complete set of articles (silver or dishware) for use at table",
+      "synonyms": [
+        "table service"
+      ]
+    },
+    {
+      "id": "oewn-00855279-n",
+      "partOfSpeech": "n",
+      "definition": "the act of mating by male animals",
+      "examples": [
+        "the bull was worth good money in servicing fees"
+      ],
+      "synonyms": [
+        "servicing"
+      ]
+    },
+    {
+      "id": "oewn-00580601-n",
+      "partOfSpeech": "n",
+      "definition": "(law) the acts performed by an English feudal tenant for the benefit of their lord which formed the consideration for the property granted to them"
+    },
+    {
+      "id": "oewn-00569467-n",
+      "partOfSpeech": "n",
+      "definition": "(sports) a stroke that puts the ball in play",
+      "examples": [
+        "his powerful serves won the game"
+      ],
+      "synonyms": [
+        "serve"
+      ]
+    },
+    {
+      "id": "oewn-00319217-n",
+      "partOfSpeech": "n",
+      "definition": "the act of delivering a writ or summons upon someone",
+      "examples": [
+        "he accepted service of the subpoena"
+      ],
+      "synonyms": [
+        "serving",
+        "service of process"
+      ]
+    },
+    {
+      "id": "oewn-00268956-n",
+      "partOfSpeech": "n",
+      "definition": "periodic maintenance on a car or machine",
+      "examples": [
+        "it was time for an overhaul on the tractor"
+      ],
+      "synonyms": [
+        "overhaul",
+        "inspection and repair"
+      ]
+    },
+    {
+      "id": "oewn-00099445-n",
+      "partOfSpeech": "n",
+      "definition": "the performance of duties by a waiter or servant",
+      "examples": [
+        "that restaurant has excellent service"
+      ]
+    },
+    {
+      "id": "oewn-02546948-v",
+      "partOfSpeech": "v",
+      "definition": "be used by; as of a utility",
+      "examples": [
+        "The sewage plant served the neighboring communities",
+        "The garage served to shelter his horses"
+      ],
+      "synonyms": [
+        "serve"
+      ]
+    },
+    {
+      "id": "oewn-00457892-v",
+      "partOfSpeech": "v",
+      "definition": "make fit for use",
+      "examples": [
+        "service my truck",
+        "the washing machine needs to be serviced"
+      ]
+    },
+    {
+      "id": "oewn-01430644-v",
+      "partOfSpeech": "v",
+      "definition": "mate with",
+      "examples": [
+        "male animals serve the females for breeding purposes"
+      ],
+      "synonyms": [
+        "serve"
+      ]
+    }
+  ]
+}

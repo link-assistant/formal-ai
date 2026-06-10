@@ -1,0 +1,17 @@
+view
+  id M-87021702f03c
+  lemma wargame
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A simulation, by whatever means, of a military operation involving two or more opposing forces using rules, data, and procedures designed to depict an actual or assumed real-life situation."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A game that simulates or represents a military operation."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To run a military simulation of this kind."
+    provenance (wiktionary)

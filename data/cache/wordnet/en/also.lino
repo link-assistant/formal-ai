@@ -1,0 +1,13 @@
+language en
+lemma also
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in addition"
+    examples ("he has a Mercedes, too")
+    id oewn-00048072-r
+    partOfSpeech r
+    synonyms (besides too likewise "as well")
+source "oewn:2024"

@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q205892": {
+      "type": "item",
+      "id": "Q205892",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "calendar date"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "календарная дата"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "日期"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "particular day represented within a calendar system"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "конкретный день, представленный в календарной системе"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दिनांक"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "date"
+          },
+          {
+            "language": "en",
+            "value": "day of the year"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "день в году"
+          },
+          {
+            "language": "ru",
+            "value": "дата"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

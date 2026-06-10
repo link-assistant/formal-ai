@@ -1,0 +1,94 @@
+[
+  {
+    "word": "construction",
+    "phonetic": "/kənˈstɹʌkʃən/",
+    "phonetics": [
+      {
+        "text": "/kənˈstɹʌkʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/construction-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100355",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The process of constructing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Construction is underway on the new bridge."
+          },
+          {
+            "definition": "Anything that has been constructed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The engineer marvelled at his construction."
+          },
+          {
+            "definition": "The trade of building structures.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He had worked in construction all his life."
+          },
+          {
+            "definition": "A building, model or some other structure.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The office was a construction of steel and glass."
+          },
+          {
+            "definition": "A (usually non-representational) structure, such as a collage etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"Construction in string and clockwork\" took first prize."
+          },
+          {
+            "definition": "The manner in which something is built.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A thing of simple construction."
+          },
+          {
+            "definition": "(grammar) A group of words arranged to form a meaningful phrase.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act or result of construing the meaning of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "American conservatives tend to favor strict construction of the Constitution."
+          },
+          {
+            "definition": "The meaning or interpretation of a text, action etc.; the way something is viewed by an observer or onlooker.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A geometric figure of arcs and line segments that is drawable with a straightedge and compass.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "building"
+        ],
+        "antonyms": [
+          "destruction"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/construction"
+    ]
+  }
+]

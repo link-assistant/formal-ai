@@ -1,0 +1,38 @@
+{
+  "lemma": "summarize",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01009951-v",
+      "partOfSpeech": "v",
+      "definition": "give a summary (of)",
+      "examples": [
+        "he summed up his results",
+        "I will now summarize"
+      ],
+      "synonyms": [
+        "sum up",
+        "summarise",
+        "resume"
+      ]
+    },
+    {
+      "id": "oewn-02758570-v",
+      "partOfSpeech": "v",
+      "definition": "be a summary of",
+      "examples": [
+        "The abstract summarizes the main ideas in the paper"
+      ],
+      "synonyms": [
+        "summarise",
+        "sum",
+        "sum up"
+      ]
+    }
+  ]
+}

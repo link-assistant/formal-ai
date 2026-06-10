@@ -1,0 +1,17 @@
+view
+  id M-b990ef7a9e15
+  lemma notification
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an accusation of crime made by a grand jury on its own initiative"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "informing by words"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a request for payment"
+    provenance (wordnet)

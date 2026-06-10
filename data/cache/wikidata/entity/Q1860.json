@@ -1,0 +1,143 @@
+{
+  "entities": {
+    "Q1860": {
+      "type": "item",
+      "id": "Q1860",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेज़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英語"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "английский язык"
+        },
+        "en": {
+          "language": "en",
+          "value": "English"
+        }
+      },
+      "descriptions": {
+        "hi": {
+          "language": "hi",
+          "value": "पश्चिम जर्मनिक भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "屬於印歐語系日耳曼語族西日耳曼語支的語言，起源於英國英格蘭地區"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "западногерманский язык, происходящий из Англии"
+        },
+        "en": {
+          "language": "en",
+          "value": "West Germanic language"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "अंग्रेजी भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "अंग्रेजी"
+          },
+          {
+            "language": "hi",
+            "value": "अङ्ग्रेज़ी"
+          },
+          {
+            "language": "hi",
+            "value": "अङ्ग्रेज़ी भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "इंग्लिश"
+          },
+          {
+            "language": "hi",
+            "value": "इंगलिश"
+          },
+          {
+            "language": "hi",
+            "value": "इङ्ग्लिश"
+          },
+          {
+            "language": "hi",
+            "value": "इङ्ग्लिश भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "अंग्रेज़ी ज़बान"
+          },
+          {
+            "language": "hi",
+            "value": "अङ्ग्रेज़ी ज़बान"
+          },
+          {
+            "language": "hi",
+            "value": "इंग्लिश लैंग्वेज"
+          },
+          {
+            "language": "hi",
+            "value": "इङ्ग्लिश लैंग्वेज"
+          },
+          {
+            "language": "hi",
+            "value": "इंग्लिश ज़बान"
+          },
+          {
+            "language": "hi",
+            "value": "इङ्ग्लिश् भाषा"
+          },
+          {
+            "language": "hi",
+            "value": "अंग्रेज़ी ज़ुबान"
+          },
+          {
+            "language": "hi",
+            "value": "अंग्रेज़ी भाषा"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "英文"
+          },
+          {
+            "language": "zh",
+            "value": "英语"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "English language"
+          },
+          {
+            "language": "en",
+            "value": "English (language)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "англ."
+          },
+          {
+            "language": "ru",
+            "value": "инглиш"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

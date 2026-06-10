@@ -1,0 +1,147 @@
+[
+  {
+    "word": "keeps",
+    "phonetic": "/kiːps/",
+    "phonetics": [
+      {
+        "text": "/kiːps/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/keeps-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100462",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The main tower of a castle or fortress, located within the castle walls.",
+            "synonyms": [
+              "donjon"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "The food or money required to keep someone alive and healthy; one's support, maintenance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He works as a cobbler's apprentice for his keep."
+          },
+          {
+            "definition": "The act or office of keeping; custody; guard; care; heed; charge; notice.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The state of being kept; hence, the resulting condition; case.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to be in good keep"
+          },
+          {
+            "definition": "That which is kept in charge; a charge.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A cap for holding something, such as a journal box, in place.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "donjon"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To continue in (a course or mode of action); not to intermit or fall from; to uphold or maintain.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to keep silence;  to keep one's word;  to keep possession"
+          },
+          {
+            "definition": "(heading) To hold the status of something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(heading) To hold or be held in a state.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To wait for, keep watch for.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To act as wicket-keeper.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Godfrey Evans kept for England for many years."
+          },
+          {
+            "definition": "To take care; to be solicitous; to watch.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be in session; to take place.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "School keeps today."
+          },
+          {
+            "definition": "To observe; to adhere to; to fulfill; not to swerve from or violate.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) To visit (a place) often; to frequent.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To observe or celebrate (a holiday).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The feast of St. Stephen is kept on December 26."
+          }
+        ],
+        "synonyms": [
+          "retain",
+          "preserve",
+          "protect"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Keeping",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/keep",
+      "https://en.wiktionary.org/wiki/keeps"
+    ]
+  }
+]

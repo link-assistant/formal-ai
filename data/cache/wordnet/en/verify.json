@@ -1,0 +1,52 @@
+{
+  "lemma": "verify",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00666401-v",
+      "partOfSpeech": "v",
+      "definition": "confirm the truth of",
+      "examples": [
+        "Please verify that the doors are closed",
+        "verify a claim"
+      ]
+    },
+    {
+      "id": "oewn-02526663-v",
+      "partOfSpeech": "v",
+      "definition": "check or regulate (a scientific experiment) by conducting a parallel experiment or comparing with another standard",
+      "examples": [
+        "Are you controlling for the temperature?"
+      ],
+      "synonyms": [
+        "control"
+      ]
+    },
+    {
+      "id": "oewn-01014404-v",
+      "partOfSpeech": "v",
+      "definition": "attach or append a legal verification to (a pleading or petition)"
+    },
+    {
+      "id": "oewn-01013058-v",
+      "partOfSpeech": "v",
+      "definition": "to declare or affirm solemnly and formally as true",
+      "examples": [
+        "Before God I swear I am innocent"
+      ],
+      "synonyms": [
+        "affirm",
+        "assert",
+        "avow",
+        "aver",
+        "swan",
+        "swear"
+      ]
+    }
+  ]
+}

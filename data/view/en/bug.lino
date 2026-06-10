@@ -1,0 +1,33 @@
+view
+  id M-894b10f92e2c
+  lemma bug
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "general term for any insect or similar creeping or crawling invertebrate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a fault or defect in a computer program, system, or machine"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small hidden microphone; for listening secretly"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "insects with sucking mouthparts and forewings thickened and leathery at the base; usually show incomplete metamorphosis"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a minute life form (especially a disease-causing bacterium); the term is not in technical use"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "annoy persistently"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "tap a telephone or telegraph wire to get information"
+    provenance (wordnet)

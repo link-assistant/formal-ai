@@ -1,0 +1,1347 @@
+L3302
+  claims
+    P11055
+      entry
+        id L3302$DECAFE07-82D7-4762-9D94-5B3546F930F5
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "38213"
+          hash 94a5d526be73d60fc0db18a520bd3d3ab2680329
+          property P11055
+          snaktype value
+        rank normal
+        type statement
+    P11130
+      entry
+        id L3302$6d13f525-4005-cd0e-fad5-27b086e62f66
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value water
+          hash 4c3fd6d406dd8a0dd0263c6f03acdd0794cdde8c
+          property P11130
+          snaktype value
+        rank normal
+        type statement
+    P11228
+      entry
+        id L3302$258a7924-403a-317f-0bc1-bde9d378952b
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value water
+          hash 203f90effaa49c4362b917ed609747e8e011676b
+          property P11228
+          snaktype value
+        rank normal
+        type statement
+    P11481
+      entry
+        id L3302$74884DD0-604E-40A8-BE29-58BD5DFDF42B
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value e2z3nlq
+          hash 64a48f68bcc3c23b0058d86022a554d5822630e0
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+      entry
+        id L3302$30000CFC-05C8-48D9-9A87-19C8F2E79263
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 3jljbja
+          hash a7fdfc6db0598c16ad7367affacfa3756bda8a08
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+    P12056
+      entry
+        id L3302$a433017e-4166-32cd-fba1-2f27bc6c73d5
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value water
+          hash f05fbff9d42f6000c48ea7c8081075c7f773e694
+          property P12056
+          snaktype value
+        rank normal
+        type statement
+    P12448
+      entry
+        id L3302$34E5F33A-876D-45A6-B64E-1E43DD53CB4D
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value ID_00061910
+          hash 1542470b36add95df6d2b2a90dc4afce6c5cd46f
+          property P12448
+          snaktype value
+        rank normal
+        type statement
+    P12573
+      entry
+        id L3302$AF4E32C0-A017-40AA-8EAE-4D21159BFD19
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "10460"
+          hash b5e09c550f4b4df6084d82800bd41309f81d410e
+          property P12573
+          snaktype value
+        rank normal
+        type statement
+    P12675
+      entry
+        id L3302$ECC10173-C8C9-4473-858F-454F7FDED4A4
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "7614"
+          hash e2104e441ffebad94eb52ebc7ebbb0f683e18f0b
+          property P12675
+          snaktype value
+        rank normal
+        type statement
+    P12868
+      entry
+        id L3302$58C69FCE-7EAC-4101-AF3F-DB7B6DCD319F
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 1535_2
+          hash 1b70a836459dce8d42871af27cffd725c65ab753
+          property P12868
+          snaktype value
+        rank normal
+        type statement
+    P13258
+      entry
+        id L3302$A8E0028B-3B84-408B-8CA3-B96F2CF9ABE8
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8122926"
+          hash 842ed1dd91c4ec2129f7cce07f3f812e6201ded2
+          property P13258
+          snaktype value
+        rank normal
+        type statement
+    P13266
+      entry
+        id L3302$195cb729-4199-38de-00ab-85c63f8c2926
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "9114"
+          hash 46a852649a2f4d7a4948bbdeebed35844ff3753b
+          property P13266
+          snaktype value
+        rank normal
+        type statement
+    P5191
+      entry
+        id L3302$59a1948c-4137-15e9-2fb3-9af1c4d73e1a
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L228624
+              numeric-id 228624
+          hash abaa5f9d3f4787989e2f416ed41896c40058811b
+          property P5191
+          snaktype value
+        qualifiers
+          P7452
+            entry
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q71538638
+                  numeric-id 71538638
+              hash 6dda267e2e52fa175f8036ecbf44db9ebb4e1344
+              property P7452
+              snaktype value
+            entry
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q71536040
+                  numeric-id 71536040
+              hash f9f842b41f249e5504d48025c7ad6d7b5bfc7496
+              property P7452
+              snaktype value
+            entry
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q98386534
+                  numeric-id 98386534
+              hash 2ac5dea245f7e025415b34879bbe73844a754747
+              property P7452
+              snaktype value
+        qualifiers-order (P7452)
+        rank preferred
+        references
+          entry
+            hash 4a86c0b9813ea1c1a92ac8ed92046d407676832d
+            snaks
+              P11228
+                entry
+                  datatype external-id
+                  datavalue
+                    type string
+                    value water
+                  hash 203f90effaa49c4362b917ed609747e8e011676b
+                  property P11228
+                  snaktype value
+              P1683
+                entry
+                  datatype monolingualtext
+                  datavalue
+                    type monolingualtext
+                    value
+                      language en
+                      text "Middle English wæter, water, watre"
+                  hash 0b82d7917aee19acc2ea27fd2773af947811f3ad
+                  property P1683
+                  snaktype value
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q16960686
+                      numeric-id 16960686
+                  hash 79f69260799ed6add8919366b98acfa43270f88a
+                  property P248
+                  snaktype value
+              P813
+                entry
+                  datatype time
+                  datavalue
+                    type time
+                    value
+                      after 0
+                      before 0
+                      calendarmodel "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time "+2026-05-27T00:00:00Z"
+                      timezone 0
+                  hash 89d5568c15f4d2042c6662dcd41d2d92b9315a59
+                  property P813
+                  snaktype value
+            snaks-order (P248 P11228 P1683 P813)
+          entry
+            hash 381c1dc4c5e75f66c80267f5780d00d9b038a8b1
+            snaks
+              P11055
+                entry
+                  datatype external-id
+                  datavalue
+                    type string
+                    value "38213"
+                  hash 94a5d526be73d60fc0db18a520bd3d3ab2680329
+                  property P11055
+                  snaktype value
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q57281873
+                      numeric-id 57281873
+                  hash e75f0c15c8992a35e52e0af34cf31d7fe2eb1ec4
+                  property P248
+                  snaktype value
+              P813
+                entry
+                  datatype time
+                  datavalue
+                    type time
+                    value
+                      after 0
+                      before 0
+                      calendarmodel "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time "+2026-05-27T00:00:00Z"
+                      timezone 0
+                  hash 89d5568c15f4d2042c6662dcd41d2d92b9315a59
+                  property P813
+                  snaktype value
+            snaks-order (P248 P11055 P813)
+        type statement
+      entry
+        id L3302$dcf72e95-498a-14f1-a85e-75b12559f372
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L2095
+              numeric-id 2095
+          hash 83aa9ec0f163cfc17c5b38ca9b92e88648ed648b
+          property P5191
+          snaktype value
+        rank normal
+        references
+          entry
+            hash 3225e1dd8d731b4fd404be5b4ce34b443404f9b2
+            snaks
+              P12056
+                entry
+                  datatype external-id
+                  datavalue
+                    type string
+                    value water
+                  hash f05fbff9d42f6000c48ea7c8081075c7f773e694
+                  property P12056
+                  snaktype value
+              P1683
+                entry
+                  datatype monolingualtext
+                  datavalue
+                    type monolingualtext
+                    value
+                      language en
+                      text "Old English wæter"
+                  hash a7ac57273f5f89e2f1924f5bc2aa2c3457d5eb32
+                  property P1683
+                  snaktype value
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q1188617
+                      numeric-id 1188617
+                  hash 6ac7b4f3e9baba5637de5f4459551b29e2fc96e7
+                  property P248
+                  snaktype value
+              P813
+                entry
+                  datatype time
+                  datavalue
+                    type time
+                    value
+                      after 0
+                      before 0
+                      calendarmodel "http://www.wikidata.org/entity/Q1985727"
+                      precision 11
+                      time "+2026-05-27T00:00:00Z"
+                      timezone 0
+                  hash 89d5568c15f4d2042c6662dcd41d2d92b9315a59
+                  property P813
+                  snaktype value
+            snaks-order (P248 P12056 P1683 P813)
+        type statement
+    P5275
+      entry
+        id L3302$E9A8BC6D-CD56-49E0-A5E3-1C36A7B712BD
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "226109"
+          hash 3fd143804487ba493d1c7185a473e5f8afb1a928
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5402
+      entry
+        id L3302$8df656ef-45b5-cfc3-91e2-dd13b1a4ba30
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L3303
+              numeric-id 3303
+          hash 630cfa01a67b9c6bca65a87da68908b7bf692f12
+          property P5402
+          snaktype value
+        rank normal
+        type statement
+    P5831
+      entry
+        id L3302$2ca6e3a3-4adc-7611-68f2-e27e7c406a43
+        mainsnak
+          datatype monolingualtext
+          datavalue
+            type monolingualtext
+            value
+              language en
+              text "'[...] I will never be so ungrateful; only let me out, that I may drink some water and return.'"
+          hash 9b1c87ba732f0571f8bd19841ebdb86fb57242f2
+          property P5831
+          snaktype value
+        qualifiers
+          P5830
+            entry
+              datatype wikibase-form
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type form
+                  id L3302-F1
+              hash fceb918d92fe942d40fa4a0981c3b0b2d76a0a57
+              property P5830
+              snaktype value
+          P6072
+            entry
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L3302-S1
+              hash 750abc195e8d10262cc3b16eccb32657ca7a5dd8
+              property P6072
+              snaktype value
+        qualifiers-order (P6072 P5830)
+        rank normal
+        references
+          entry
+            hash e3d8b7419985c403102c163217c2198bee27c56e
+            snaks
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q19084365
+                      numeric-id 19084365
+                  hash b597dab79c98fdc54170865dc3d706339cf88695
+                  property P248
+                  snaktype value
+              P958
+                entry
+                  datatype string
+                  datavalue
+                    type string
+                    value "The Brahman, the Tiger, and the Six Judges"
+                  hash 7cac0df685a88e6e5f6b6d07f608eb7da10b77f9
+                  property P958
+                  snaktype value
+            snaks-order (P248 P958)
+        type statement
+    P5912
+      entry
+        id L3302$1CF4E584-36E5-4005-AD99-13201E798027
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "122592"
+          hash 92547f0cb877c3b576e95d02996f9f592efb8f40
+          property P5912
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3302-F1$42c2b727-4b7f-7820-9507-0d89978c97e2
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-uk-water.ogg
+              hash d260b2e0ec01da2ec1c2786f140c9e6f9756fd99
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3302-F1$10517f88-4af2-ecbe-c9c6-ceab73a15810
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-water.ogg
+              hash 293b0be10b7f6b479935f56b8bcf2c4b6e1ac7a2
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+        P5279
+          entry
+            id L3302-F1$ba08c906-4499-bb3e-fc05-8ac9f2eabc90
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "wa‧ter"
+              hash 351ba2913ef09b1405a664a78435e9b7bfa5b127
+              property P5279
+              snaktype value
+            rank normal
+            type statement
+        P898
+          entry
+            id L3302-F1$7AE0F9DD-25B0-49AB-9DD7-66C04AC72229
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "/ˈwɔːtə/"
+              hash 04e015023ee47bbb40c8d5ae1217408139bbb7ca
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3302-F1$745dca91-4404-62f3-efbf-4392e9eed371
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "/ˈwɔtəɹ/"
+              hash 06c26fdfeee2920834771bb4041df6ed3dca08e2
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3302-F1$f3dc57cf-4a02-180f-e3c6-f7ea2fea448e
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "[ˈwɔɾɚ]"
+              hash c952a1da9cdc4e9436e6e0daa8e7b24fdb954c19
+              property P898
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786)
+      id L3302-F1
+      representations
+        en
+          language en
+          value water
+    entry
+      claims
+        P5279
+          entry
+            id L3302-F2$474204ab-4702-4b1f-b945-b91c2e476060
+            mainsnak
+              datatype string
+              datavalue
+                type string
+                value "wa‧ters"
+              hash fc5126a72ac4e189159c98ff5cfe8b5bea746fb6
+              property P5279
+              snaktype value
+            rank normal
+            type statement
+      grammaticalFeatures (Q146786)
+      id L3302-F2
+      representations
+        en
+          language en
+          value waters
+  id L3302
+  language Q1860
+  lastrevid 2498431438
+  lemmas
+    en water
+  lexicalCategory Q1084
+  modified "2026-05-27T20:44:00Z"
+  ns 146
+  pageid 55160972
+  senses
+    entry
+      claims
+        P18
+          entry
+            id L3302-S1$C7BC3E5D-FF27-4F6F-98A3-56638A5078EC
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Stilles Mineralwasser.jpg"
+              hash 7613e3a8ccaefe1c2e2277bc43cb801094e60f6f
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3302-S1$b493cd74-475f-a6d9-5ebf-bdea6d7b22dc
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q29053744
+                  numeric-id 29053744
+              hash 64c375cf126530439b9ec3e0246b1a3993baea66
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$803A7B0E-1112-4707-86BF-56D461C9CA16
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q283
+                  numeric-id 283
+              hash 3d0645866059d7b8541c9e353ad5e68076b477dd
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+        P5972
+          entry
+            id L3302-S1$dca93cf9-4f70-a139-58c1-dbcef3989964
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L2098-S2
+              hash 8d4f9b7ab1fd0979a5341fa59223ce80f171359d
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$1cf7b1fb-421e-486d-db1d-c6caafa89e56
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L2099-S1
+              hash c0a1d22c8f19b13d4ea7af83a7cea68f09d28652
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$0426d23e-4a17-bfd9-3303-7143bff9ff89
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8362-S1
+              hash a160a7d06d0ef8b8594a3fdad2b281e455e35875
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$947e4b40-4c18-ce9f-8450-105db9d9797e
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8381-S1
+              hash ad25d110c1db4c10157f7d9862327e5efd41c35f
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$e13bb8d5-4e8d-c61e-6067-bb22e70ce74b
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8355-S1
+              hash 7fba01b238a6b4e200316bc3ee052795697911c8
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$1b186652-4524-700a-44b1-55286f8485fe
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8235-S1
+              hash 56f197c580e6f3158901063af5e0d241229cabc5
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$410fb401-43c6-7924-09eb-e065e408bcbd
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8262-S1
+              hash 264abe2f3328a431a45c673d9da2605744775f24
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$1b6aeb5b-4dd3-f987-61ff-2e2a6d64393c
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8255-S1
+              hash 14bf87f7570c21840becaf83501c6358efc0bb18
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$42469dc5-4bd2-065a-b94c-5cd7fdde10aa
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L2101-S1
+              hash a6bfc32ebc9076bf0a5830de47007e9cc0415cf9
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$7c13fbaf-4392-45f8-3f9c-c472c8790114
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8297-S1
+              hash 713d2ef32755d4c42f056df2f0eed8f90db064da
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$fdd56739-4ab4-a448-c7aa-5022157afe9f
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8319-S1
+              hash 66582c22fbc8f7ba4e22511cb167cf395b3b1679
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$4bdc5cf5-4cd7-f10a-1bf6-292d39edd2c8
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L228624-S1
+              hash 205b3632f197175fffa63b5973d666aac8e009d3
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$8acd0142-45de-95ce-17be-399633389770
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L2078-S1
+              hash 5d2f5a76dd0dac7098db861e8566952365261b16
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$d2739e8d-41ed-dbea-6afb-1607546482ec
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L233186-S1
+              hash d794caa9867e1182470579c1df99a81788406fd5
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$798d997a-46dc-c145-86ba-507cb08eca2b
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L229809-S1
+              hash 1209a2c4bb4adb15da998cfc04d7bf07c3b150af
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$01bca368-419e-abf0-e97a-fa0ef9e44b7f
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8219-S1
+              hash 3a6a0c7896487c2649231dcc198cf754dcbce45d
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$410c3d18-4783-d4ba-67aa-50a78e271ff8
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L612068-S1
+              hash dac8264730859b40982d721cc21db2072e563209
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$95a6ebf7-46e6-c84f-f1fd-c45a42a3910c
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L235641-S1
+              hash 7a57063d497cf22c0edd1daa925f9405eb06e05d
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$a4e8f6be-4cb2-bbf7-cc19-9519f741b12b
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L231848-S1
+              hash 5d96dcde61a149c71276988e5f53ef0a03139053
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$a2b94919-4240-7635-401b-8f25ab240908
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L230480-S1
+              hash be0142da1eba367ab2927afe4fbe88e5f2e031ce
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$5166325A-B7E5-491F-919E-D38B727BB66A
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8337-S1
+              hash 5be0732f47e7f8c406d39b597e455b21226dd8be
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$4E6A40E9-7E32-44DE-ADDB-022F53D56035
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8412-S1
+              hash e97b1762db91e5562516f969f9607bf694a5035a
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$b75fc46f-4ee0-2463-c8f9-1a9e01ce0cf2
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L6546-S1
+              hash ed35ef0b32bb20abb3ebd05d74702ecccf7758f8
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$fc8f117e-40f9-7e39-bd2e-88122dcd0cbc
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1037-S2
+              hash 427905495b37a1bd71562500265db32a28a0b289
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$a347313b-46f0-4481-0336-5160e4854001
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1122520-S1
+              hash 98c9cacad7159480d34674dc9a79d9af01688e8c
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$5f986f02-4831-f175-04cf-5b58cbe8f9b6
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1503-S1
+              hash 5e992c4a7a8764b81b77a35419300485ba599481
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$f16f6817-47b4-678e-1b0a-f30a9a42ae34
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L238237-S1
+              hash 0810881b26e7405314e0abe72f869d3afc3e4eec
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$ea243ca5-4f44-0900-8073-ed67d6b32a68
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L235637-S1
+              hash 27aa96b4078a45b6e1a3b1114128d058a949f6c5
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S1$f5f4559d-4d8e-a5e8-3702-d1598a9141bf
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8286-S1
+              hash 31382081d1b0a9db760eea339e7f100f4e9748b9
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        az
+          language az
+          value su
+        bjn
+          language bjn
+          value banyu
+        bs
+          language bs
+          value voda
+        ca
+          language ca
+          value aigua
+        cs
+          language cs
+          value "voda, běžně se vyskytující kapalina"
+        dag
+          language dag
+          value "kɔm"
+        de
+          language de
+          value Wasser
+        dtp
+          language dtp
+          value waig
+        en
+          language en
+          value "common liquid substance"
+        eo
+          language eo
+          value akvo
+        es
+          language es
+          value agua
+        fr
+          language fr
+          value eau
+        ha
+          language ha
+          value ruwa
+        hu
+          language hu
+          value "víz"
+        id
+          language id
+          value air
+        it
+          language it
+          value "liquido comune"
+        ml
+          language ml
+          value "വെള്ളം"
+        ms
+          language ms
+          value air
+        ms-arab
+          language ms-arab
+          value "اءير"
+        nl
+          language nl
+          value water
+        pl
+          language pl
+          value "powszechnie występująca, bezbarwna ciecz"
+        ru
+          language ru
+          value "распространённая прозрачная жидкость"
+        tg
+          language tg
+          value "оби пок"
+        uk
+          language uk
+          value "вода"
+        zh
+          language zh
+          value "水"
+      id L3302-S1
+    entry
+      claims
+        P18
+          entry
+            id L3302-S2$2F9D37C3-FEE6-4528-A9B2-ADF3D6897346
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Hex ice.GIF"
+              hash ef5344c9fc7d7513e5a78b5a04463c6bbf7fbb53
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3302-S2$d4d3bf3f-4d51-7fac-035b-bc15c2deb59b
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q283
+                  numeric-id 283
+              hash 3d0645866059d7b8541c9e353ad5e68076b477dd
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+        P5972
+          entry
+            id L3302-S2$19741125-442e-6357-ff84-eb56c307d253
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L189-S2
+              hash e883fcb3a4dd3b77130fe3363d339e49b01dd1fc
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S2$2e8de50a-49f9-0747-7820-a6f899d0bf21
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8214-S2
+              hash 802fd51b98bc5fb79cb3df6ea35e3dcbed54845b
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S2$3d97e028-420b-0570-7f79-25957baf7d66
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8215-S1
+              hash 13a4cba97aab41c6c319162bbadbdc3fad951213
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S2$1BD0656C-7639-4CF7-AA3C-634BBA362318
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L6894-S1
+              hash 91dbd02434e1fbb0d73197ac310dd5c83cc8ed5b
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S2$27765dc7-4451-b854-fc15-c2068b7bdf51
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L229809-S3
+              hash d4945f55fa6ef2d58e43ad260900c475efcc8670
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3302-S2$05b5bf14-43a1-f52d-489e-65275cb7b840
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L8286-S2
+              hash dcbab7a9c570fff48a38630fec2b3d81094be6a2
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+        P5973
+          entry
+            id L3302-S2$a028e4ee-419c-854e-7c72-e1f0826c216d
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L940625-S1
+              hash f2c8eba729652d6c4725a7f667b77afd9f7e9d95
+              property P5973
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "chemical compound of hydrogen and oxygen (H₂O)"
+        es
+          language es
+          value "compuesto químico de hidrógeno y oxígeno"
+        id
+          language id
+          value "senyawa kimia yang tersusun dari hidrogen dan oksigen"
+        it
+          language it
+          value "composto chimico di idrogeno e ossigeno"
+        ru
+          language ru
+          value "химическое соединение из водорода и кислорода"
+      id L3302-S2
+    entry
+      glosses
+        en
+          language en
+          value "a body of water, usually a river, a lake, or an ocean"
+      id L3302-S3
+  title "Lexeme:L3302"
+  type lexeme
+success 1

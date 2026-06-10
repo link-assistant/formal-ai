@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q64": {
+      "type": "item",
+      "id": "Q64",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Берлин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बर्लिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "柏林"
+        },
+        "en": {
+          "language": "en",
+          "value": "Berlin"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "крупнейший город и столица Германии"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "德國首都"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी की राजधानी और सबसे बड़ा शहर"
+        },
+        "en": {
+          "language": "en",
+          "value": "federated state, capital and largest city of Germany"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "柏林市"
+          },
+          {
+            "language": "zh",
+            "value": "柏林州"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Berlin, Germany"
+          },
+          {
+            "language": "en",
+            "value": "DE-BE"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बर्लिन, जर्मनी"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

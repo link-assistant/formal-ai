@@ -1,803 +1,686 @@
 write_program
-  intent "write_program"
+  intent write_program
   parameters "language, task"
-  tasks "hello_world|count_to_three|list_files|list_files_arg|list_files_reverse_sort|list_files_arg_reverse_sort|fizzbuzz|factorial|reverse_string|sum_to_ten|fibonacci"
-  languages "rust|python|javascript|typescript|go|c|cpp|java|csharp|ruby"
+  tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci")
+  languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby")
   source "local public-domain seed templates"
-
 task_hello_world
-  task "hello_world"
+  task hello_world
   aliases "hello world, хелло ворлд"
   output "Hello, world!"
-
 task_count_to_three
-  task "count_to_three"
+  task count_to_three
   aliases "count to three, count to 3, counts to three, counts to 3"
   output "1\n2\n3"
-
 task_list_files
-  task "list_files"
+  task list_files
   aliases "list files in the current directory, list files in current directory, list files, lists files, files in the current directory, список файлов в текущей директории, выдаёт список файлов, выводит список файлов, список файлов, файлы в текущей директории, फ़ाइलों की सूची, फाइलों की सूची, वर्तमान निर्देशिका की फ़ाइलें, 列出当前目录中的文件, 列出当前目录中文件, 列出当前目录的文件, 列出文件"
   output "Cargo.toml\nREADME.md\nmain.rs"
-
 task_list_files_arg
-  task "list_files_arg"
+  task list_files_arg
   aliases "list files in the directory given as a path argument, list files in a directory given as an argument, list files in the directory passed as an argument, list files in a path argument, list files with a path argument, list files accepting a path argument, список файлов в каталоге переданном как аргумент, список файлов в директории переданной как аргумент, список файлов по пути из аргумента, पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची, 列出作为路径参数给出的目录中的文件, 列出路径参数指定目录中的文件"
   output "Cargo.toml\nREADME.md\nmain.rs"
-
 task_list_files_reverse_sort
-  task "list_files_reverse_sort"
+  task list_files_reverse_sort
   aliases "list files in reverse order, list files sorted in reverse order, list files in descending order, reverse sorted list files, список файлов в обратном порядке, список файлов с обратной сортировкой, फ़ाइलों की सूची उल्टे क्रम में, फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें, 按相反顺序列出文件, 倒序列出文件"
   output "main.rs\nREADME.md\nCargo.toml"
-
 task_list_files_arg_reverse_sort
-  task "list_files_arg_reverse_sort"
+  task list_files_arg_reverse_sort
   aliases "list files from a path argument in reverse order, list files with a path argument in reverse order, list files with a path argument sorted descending, reverse sorted list files with a path argument, список файлов по пути из аргумента в обратном порядке, список файлов из аргумента с обратной сортировкой, पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में, पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें, 按相反顺序列出路径参数中的文件, 倒序列出路径参数指定目录中的文件"
   output "main.rs\nREADME.md\nCargo.toml"
-
 task_fizzbuzz
-  task "fizzbuzz"
+  task fizzbuzz
   aliases "fizzbuzz, fizz buzz, физзбазз, физз базз, физбаз, फ़िज़बज़, फिज़बज़, 菲茨巴兹"
   output "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"
-
 task_factorial
-  task "factorial"
+  task factorial
   aliases "factorial of 5, factorial of five, 5 factorial, five factorial, факториал 5, факториал пяти, факториал числа 5, 5 का फैक्टोरियल, पाँच का फैक्टोरियल, 5的阶乘, 五的阶乘"
-  output "120"
-
+  output 120
 task_reverse_string
-  task "reverse_string"
+  task reverse_string
   aliases "reverse a string, reverse the string hello, reverse hello, reverse string hello, reverse the word hello, перевернуть строку, перевернуть строку hello, развернуть строку, स्ट्रिंग को उलटें, स्ट्रिंग पलटें, 反转字符串, 翻转字符串, 反转hello"
-  output "olleh"
-
+  output olleh
 task_sum_to_ten
-  task "sum_to_ten"
+  task sum_to_ten
   aliases "sum of 1 to 10, sum from 1 to 10, sum the numbers 1 to 10, sum of numbers from 1 to 10, sum 1 to 10, sum to ten, сумма от 1 до 10, сумма чисел от 1 до 10, сумма чисел от одного до десяти, 1 से 10 तक का योग, 1 से 10 तक योग, 1到10的和, 1到10求和, 求1到10的和"
-  output "55"
-
+  output 55
 task_fibonacci
-  task "fibonacci"
+  task fibonacci
   aliases "fibonacci sequence recursively, fibonacci sequence, recursive fibonacci, fibonacci recursively, fibonacci function, fibonacci numbers, fibonacci number, 10th fibonacci number, the 10th fibonacci number, tenth fibonacci number, nth fibonacci number, последовательность фибоначчи, числа фибоначчи, число фибоначчи, рекурсивный фибоначчи, фибоначчи рекурсивно, 10-е число фибоначчи, десятое число фибоначчи, फ़िबोनाची अनुक्रम, फिबोनाची अनुक्रम, फ़िबोनाची संख्या, फिबोनाची संख्या, 斐波那契数列, 斐波那契序列, 斐波那契数, 递归斐波那契"
-  output "55"
-
+  output 55
 template_hello_world_rust
-  intent "write_program"
-  language "rust"
-  task "hello_world"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task hello_world
+  code_fence rust
   code 'fn main() {\n    println!("Hello, world!");\n}'
-
 template_hello_world_python
-  intent "write_program"
-  language "python"
-  task "hello_world"
-  code_fence "python"
+  intent write_program
+  language python
+  task hello_world
+  code_fence python
   code 'print("Hello, world!")'
-
 template_hello_world_javascript
-  intent "write_program"
-  language "javascript"
-  task "hello_world"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task hello_world
+  code_fence javascript
   code 'console.log("Hello, world!");'
-
 template_hello_world_typescript
-  intent "write_program"
-  language "typescript"
-  task "hello_world"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task hello_world
+  code_fence typescript
   code 'console.log("Hello, world!");'
-
 template_hello_world_go
-  intent "write_program"
-  language "go"
-  task "hello_world"
-  code_fence "go"
+  intent write_program
+  language go
+  task hello_world
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello, world!")\n}'
-
 template_hello_world_c
-  intent "write_program"
-  language "c"
-  task "hello_world"
-  code_fence "c"
+  intent write_program
+  language c
+  task hello_world
+  code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    puts("Hello, world!");\n    return 0;\n}'
-
 template_hello_world_cpp
-  intent "write_program"
-  language "cpp"
-  task "hello_world"
-  code_fence "cpp"
+  intent write_program
+  language cpp
+  task hello_world
+  code_fence cpp
   code '#include <iostream>\n\nint main() {\n    std::cout << "Hello, world!" << std::endl;\n    return 0;\n}'
-
 template_hello_world_java
-  intent "write_program"
-  language "java"
-  task "hello_world"
-  code_fence "java"
+  intent write_program
+  language java
+  task hello_world
+  code_fence java
   code 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, world!");\n    }\n}'
-
 template_hello_world_csharp
-  intent "write_program"
-  language "csharp"
-  task "hello_world"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task hello_world
+  code_fence csharp
   code 'using System;\n\nclass Program {\n    static void Main() {\n        Console.WriteLine("Hello, world!");\n    }\n}'
-
 template_hello_world_ruby
-  intent "write_program"
-  language "ruby"
-  task "hello_world"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task hello_world
+  code_fence ruby
   code 'puts "Hello, world!"'
-
 template_count_to_three_python
-  intent "write_program"
-  language "python"
-  task "count_to_three"
-  code_fence "python"
-  code 'for number in range(1, 4):\n    print(number)'
-
+  intent write_program
+  language python
+  task count_to_three
+  code_fence python
+  code "for number in range(1, 4):\n    print(number)"
 template_count_to_three_rust
-  intent "write_program"
-  language "rust"
-  task "count_to_three"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task count_to_three
+  code_fence rust
   code 'fn main() {\n    for number in 1..=3 {\n        println!("{number}");\n    }\n}'
-
 template_count_to_three_javascript
-  intent "write_program"
-  language "javascript"
-  task "count_to_three"
-  code_fence "javascript"
-  code 'for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}'
-
+  intent write_program
+  language javascript
+  task count_to_three
+  code_fence javascript
+  code "for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}"
 template_count_to_three_typescript
-  intent "write_program"
-  language "typescript"
-  task "count_to_three"
-  code_fence "typescript"
-  code 'for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}'
-
+  intent write_program
+  language typescript
+  task count_to_three
+  code_fence typescript
+  code "for (let number = 1; number <= 3; number += 1) {\n    console.log(number);\n}"
 template_count_to_three_go
-  intent "write_program"
-  language "go"
-  task "count_to_three"
-  code_fence "go"
+  intent write_program
+  language go
+  task count_to_three
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    for number := 1; number <= 3; number++ {\n        fmt.Println(number)\n    }\n}'
-
 template_count_to_three_c
-  intent "write_program"
-  language "c"
-  task "count_to_three"
-  code_fence "c"
+  intent write_program
+  language c
+  task count_to_three
+  code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 3; number++) {\n        printf("%d\\n", number);\n    }\n    return 0;\n}'
-
 template_list_files_rust
-  intent "write_program"
-  language "rust"
-  task "list_files"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task list_files
+  code_fence rust
   code 'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort();\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}'
-
 template_list_files_python
-  intent "write_program"
-  language "python"
-  task "list_files"
-  code_fence "python"
+  intent write_program
+  language python
+  task list_files
+  code_fence python
   code 'import os\n\nnames = sorted(name for name in os.listdir(".") if os.path.isfile(name))\nfor name in names:\n    print(name)'
-
 template_list_files_javascript
-  intent "write_program"
-  language "javascript"
-  task "list_files"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task list_files
+  code_fence javascript
   code 'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_typescript
-  intent "write_program"
-  language "typescript"
-  task "list_files"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task list_files
+  code_fence typescript
   code 'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_go
-  intent "write_program"
-  language "go"
-  task "list_files"
-  code_fence "go"
+  intent write_program
+  language go
+  task list_files
+  code_fence go
   code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Strings(names)\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
-
 template_list_files_c
-  intent "write_program"
-  language "c"
-  task "list_files"
-  code_fence "c"
+  intent write_program
+  language c
+  task list_files
+  code_fence c
   code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare(const void *a, const void *b) {\n    return strcmp(*(const char *const *)a, *(const char *const *)b);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
-
 template_list_files_cpp
-  intent "write_program"
-  language "cpp"
-  task "list_files"
-  code_fence "cpp"
-  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
-
+  intent write_program
+  language cpp
+  task list_files
+  code_fence cpp
+  code `#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}`
 template_list_files_java
-  intent "write_program"
-  language "java"
-  task "list_files"
-  code_fence "java"
+  intent write_program
+  language java
+  task list_files
+  code_fence java
   code 'import java.io.File;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted()\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
-
 template_list_files_csharp
-  intent "write_program"
-  language "csharp"
-  task "list_files"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task list_files
+  code_fence csharp
   code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
-
 template_list_files_ruby
-  intent "write_program"
-  language "ruby"
-  task "list_files"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task list_files
+  code_fence ruby
   code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort\nnames.each { |name| puts name }'
-
 template_list_files_arg_rust
-  intent "write_program"
-  language "rust"
-  task "list_files_arg"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task list_files_arg
+  code_fence rust
   code 'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort();\n    for name in names {\n        println!("{name}");\n    }\n}'
-
 template_list_files_arg_python
-  intent "write_program"
-  language "python"
-  task "list_files_arg"
-  code_fence "python"
+  intent write_program
+  language python
+  task list_files_arg
+  code_fence python
   code 'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))\n)\nfor name in names:\n    print(name)'
-
 template_list_files_arg_javascript
-  intent "write_program"
-  language "javascript"
-  task "list_files_arg"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task list_files_arg
+  code_fence javascript
   code 'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_arg_typescript
-  intent "write_program"
-  language "typescript"
-  task "list_files_arg"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task list_files_arg
+  code_fence typescript
   code 'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_arg_go
-  intent "write_program"
-  language "go"
-  task "list_files_arg"
-  code_fence "go"
+  intent write_program
+  language go
+  task list_files_arg
+  code_fence go
   code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Strings(names)\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
-
 template_list_files_arg_c
-  intent "write_program"
-  language "c"
-  task "list_files_arg"
-  code_fence "c"
+  intent write_program
+  language c
+  task list_files_arg
+  code_fence c
   code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare(const void *a, const void *b) {\n    return strcmp(*(const char *const *)a, *(const char *const *)b);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
-
 template_list_files_arg_cpp
-  intent "write_program"
-  language "cpp"
-  task "list_files_arg"
-  code_fence "cpp"
-  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : ".";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
-
+  intent write_program
+  language cpp
+  task list_files_arg
+  code_fence cpp
+  code `#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : ".";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.begin(), names.end());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}`
 template_list_files_arg_java
-  intent "write_program"
-  language "java"
-  task "list_files_arg"
-  code_fence "java"
+  intent write_program
+  language java
+  task list_files_arg
+  code_fence java
   code 'import java.io.File;\nimport java.util.Arrays;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted()\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
-
 template_list_files_arg_csharp
-  intent "write_program"
-  language "csharp"
-  task "list_files_arg"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task list_files_arg
+  code_fence csharp
   code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderBy(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
-
 template_list_files_arg_ruby
-  intent "write_program"
-  language "ruby"
-  task "list_files_arg"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task list_files_arg
+  code_fence ruby
   code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort\nnames.each { |name| puts name }'
-
 template_list_files_reverse_sort_rust
-  intent "write_program"
-  language "rust"
-  task "list_files_reverse_sort"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task list_files_reverse_sort
+  code_fence rust
   code 'use std::fs;\n\nfn main() -> std::io::Result<()> {\n    let mut names: Vec<String> = fs::read_dir(".")?\n        .filter_map(Result::ok)\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n    Ok(())\n}'
-
 template_list_files_reverse_sort_python
-  intent "write_program"
-  language "python"
-  task "list_files_reverse_sort"
-  code_fence "python"
+  intent write_program
+  language python
+  task list_files_reverse_sort
+  code_fence python
   code 'import os\n\nnames = sorted(\n    (name for name in os.listdir(".") if os.path.isfile(name)),\n    reverse=True,\n)\nfor name in names:\n    print(name)'
-
 template_list_files_reverse_sort_javascript
-  intent "write_program"
-  language "javascript"
-  task "list_files_reverse_sort"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task list_files_reverse_sort
+  code_fence javascript
   code 'const fs = require("fs");\n\nconst names = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_reverse_sort_typescript
-  intent "write_program"
-  language "typescript"
-  task "list_files_reverse_sort"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task list_files_reverse_sort
+  code_fence typescript
   code 'import * as fs from "fs";\n\nconst names: string[] = fs\n  .readdirSync(".")\n  .filter((name) => fs.statSync(name).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_reverse_sort_go
-  intent "write_program"
-  language "go"
-  task "list_files_reverse_sort"
-  code_fence "go"
+  intent write_program
+  language go
+  task list_files_reverse_sort
+  code_fence go
   code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    entries, err := os.ReadDir(".")\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
-
 template_list_files_reverse_sort_c
-  intent "write_program"
-  language "c"
-  task "list_files_reverse_sort"
-  code_fence "c"
+  intent write_program
+  language c
+  task list_files_reverse_sort
+  code_fence c
   code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(void) {\n    DIR *dir = opendir(".");\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        struct stat info;\n        if (stat(entry->d_name, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
-
 template_list_files_reverse_sort_cpp
-  intent "write_program"
-  language "cpp"
-  task "list_files_reverse_sort"
-  code_fence "cpp"
-  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
-
+  intent write_program
+  language cpp
+  task list_files_reverse_sort
+  code_fence cpp
+  code `#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main() {\n    namespace fs = std::filesystem;\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(".")) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}`
 template_list_files_reverse_sort_java
-  intent "write_program"
-  language "java"
-  task "list_files_reverse_sort"
-  code_fence "java"
+  intent write_program
+  language java
+  task list_files_reverse_sort
+  code_fence java
   code 'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        File[] entries = new File(".").listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
-
 template_list_files_reverse_sort_csharp
-  intent "write_program"
-  language "csharp"
-  task "list_files_reverse_sort"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task list_files_reverse_sort
+  code_fence csharp
   code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        var names = Directory.GetFiles(".")\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
-
 template_list_files_reverse_sort_ruby
-  intent "write_program"
-  language "ruby"
-  task "list_files_reverse_sort"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task list_files_reverse_sort
+  code_fence ruby
   code 'names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse\nnames.each { |name| puts name }'
-
 template_list_files_arg_reverse_sort_rust
-  intent "write_program"
-  language "rust"
-  task "list_files_arg_reverse_sort"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task list_files_arg_reverse_sort
+  code_fence rust
   code 'use std::env;\nuse std::fs;\n\nfn main() {\n    let path = env::args().nth(1).unwrap_or_else(|| String::from("."));\n    let mut names: Vec<String> = fs::read_dir(&path)\n        .expect("failed to read directory")\n        .filter_map(|entry| entry.ok())\n        .filter(|entry| entry.path().is_file())\n        .map(|entry| entry.file_name().to_string_lossy().into_owned())\n        .collect();\n    names.sort_by(|a, b| b.cmp(a));\n    for name in names {\n        println!("{name}");\n    }\n}'
-
 template_list_files_arg_reverse_sort_python
-  intent "write_program"
-  language "python"
-  task "list_files_arg_reverse_sort"
-  code_fence "python"
+  intent write_program
+  language python
+  task list_files_arg_reverse_sort
+  code_fence python
   code 'import os\nimport sys\n\npath = sys.argv[1] if len(sys.argv) > 1 else "."\nnames = sorted(\n    (\n        name\n        for name in os.listdir(path)\n        if os.path.isfile(os.path.join(path, name))\n    ),\n    reverse=True,\n)\nfor name in names:\n    print(name)'
-
 template_list_files_arg_reverse_sort_javascript
-  intent "write_program"
-  language "javascript"
-  task "list_files_arg_reverse_sort"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task list_files_arg_reverse_sort
+  code_fence javascript
   code 'const fs = require("fs");\nconst path = require("path");\n\nconst dir = process.argv[2] || ".";\nconst names = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_arg_reverse_sort_typescript
-  intent "write_program"
-  language "typescript"
-  task "list_files_arg_reverse_sort"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task list_files_arg_reverse_sort
+  code_fence typescript
   code 'import * as fs from "fs";\nimport * as path from "path";\n\nconst dir: string = process.argv[2] ?? ".";\nconst names: string[] = fs\n  .readdirSync(dir)\n  .filter((name) => fs.statSync(path.join(dir, name)).isFile())\n  .sort()\n  .reverse();\n\nfor (const name of names) {\n  console.log(name);\n}'
-
 template_list_files_arg_reverse_sort_go
-  intent "write_program"
-  language "go"
-  task "list_files_arg_reverse_sort"
-  code_fence "go"
+  intent write_program
+  language go
+  task list_files_arg_reverse_sort
+  code_fence go
   code 'package main\n\nimport (\n    "fmt"\n    "os"\n    "sort"\n)\n\nfunc main() {\n    dir := "."\n    if len(os.Args) > 1 {\n        dir = os.Args[1]\n    }\n    entries, err := os.ReadDir(dir)\n    if err != nil {\n        panic(err)\n    }\n    var names []string\n    for _, entry := range entries {\n        if !entry.IsDir() {\n            names = append(names, entry.Name())\n        }\n    }\n    sort.Sort(sort.Reverse(sort.StringSlice(names)))\n    for _, name := range names {\n        fmt.Println(name)\n    }\n}'
-
 template_list_files_arg_reverse_sort_c
-  intent "write_program"
-  language "c"
-  task "list_files_arg_reverse_sort"
-  code_fence "c"
+  intent write_program
+  language c
+  task list_files_arg_reverse_sort
+  code_fence c
   code '#include <dirent.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <sys/stat.h>\n\nstatic int compare_desc(const void *a, const void *b) {\n    return strcmp(*(const char *const *)b, *(const char *const *)a);\n}\n\nint main(int argc, char *argv[]) {\n    const char *path = argc > 1 ? argv[1] : ".";\n    DIR *dir = opendir(path);\n    if (dir == NULL) {\n        return 1;\n    }\n    char *names[1024];\n    size_t count = 0;\n    struct dirent *entry;\n    while ((entry = readdir(dir)) != NULL && count < 1024) {\n        char full[4096];\n        snprintf(full, sizeof(full), "%s/%s", path, entry->d_name);\n        struct stat info;\n        if (stat(full, &info) == 0 && S_ISREG(info.st_mode)) {\n            names[count++] = strdup(entry->d_name);\n        }\n    }\n    closedir(dir);\n    qsort(names, count, sizeof(char *), compare_desc);\n    for (size_t i = 0; i < count; i++) {\n        printf("%s\\n", names[i]);\n        free(names[i]);\n    }\n    return 0;\n}'
-
 template_list_files_arg_reverse_sort_cpp
-  intent "write_program"
-  language "cpp"
-  task "list_files_arg_reverse_sort"
-  code_fence "cpp"
-  code '#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : ".";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << \x27\\n\x27;\n    }\n}'
-
+  intent write_program
+  language cpp
+  task list_files_arg_reverse_sort
+  code_fence cpp
+  code `#include <algorithm>\n#include <filesystem>\n#include <iostream>\n#include <string>\n#include <vector>\n\nint main(int argc, char *argv[]) {\n    namespace fs = std::filesystem;\n    std::string path = argc > 1 ? argv[1] : ".";\n    std::vector<std::string> names;\n    for (const auto &entry : fs::directory_iterator(path)) {\n        if (entry.is_regular_file()) {\n            names.push_back(entry.path().filename().string());\n        }\n    }\n    std::sort(names.rbegin(), names.rend());\n    for (const auto &name : names) {\n        std::cout << name << '\\n';\n    }\n}`
 template_list_files_arg_reverse_sort_java
-  intent "write_program"
-  language "java"
-  task "list_files_arg_reverse_sort"
-  code_fence "java"
+  intent write_program
+  language java
+  task list_files_arg_reverse_sort
+  code_fence java
   code 'import java.io.File;\nimport java.util.Arrays;\nimport java.util.Comparator;\n\npublic class Main {\n    public static void main(String[] args) {\n        String path = args.length > 0 ? args[0] : ".";\n        File[] entries = new File(path).listFiles();\n        if (entries == null) {\n            return;\n        }\n        String[] names = Arrays.stream(entries)\n            .filter(File::isFile)\n            .map(File::getName)\n            .sorted(Comparator.reverseOrder())\n            .toArray(String[]::new);\n        for (String name : names) {\n            System.out.println(name);\n        }\n    }\n}'
-
 template_list_files_arg_reverse_sort_csharp
-  intent "write_program"
-  language "csharp"
-  task "list_files_arg_reverse_sort"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task list_files_arg_reverse_sort
+  code_fence csharp
   code 'using System;\nusing System.IO;\nusing System.Linq;\n\nclass Program {\n    static void Main(string[] args) {\n        var path = args.Length > 0 ? args[0] : ".";\n        var names = Directory.GetFiles(path)\n            .Select(Path.GetFileName)\n            .OrderByDescending(name => name, StringComparer.Ordinal);\n        foreach (var name in names) {\n            Console.WriteLine(name);\n        }\n    }\n}'
-
 template_list_files_arg_reverse_sort_ruby
-  intent "write_program"
-  language "ruby"
-  task "list_files_arg_reverse_sort"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task list_files_arg_reverse_sort
+  code_fence ruby
   code 'path = ARGV[0] || "."\nnames = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse\nnames.each { |name| puts name }'
-
 template_fizzbuzz_rust
-  intent "write_program"
-  language "rust"
-  task "fizzbuzz"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task fizzbuzz
+  code_fence rust
   code 'fn main() {\n    for number in 1..=15 {\n        if number % 15 == 0 {\n            println!("FizzBuzz");\n        } else if number % 3 == 0 {\n            println!("Fizz");\n        } else if number % 5 == 0 {\n            println!("Buzz");\n        } else {\n            println!("{number}");\n        }\n    }\n}'
-
 template_fizzbuzz_python
-  intent "write_program"
-  language "python"
-  task "fizzbuzz"
-  code_fence "python"
+  intent write_program
+  language python
+  task fizzbuzz
+  code_fence python
   code 'for number in range(1, 16):\n    if number % 15 == 0:\n        print("FizzBuzz")\n    elif number % 3 == 0:\n        print("Fizz")\n    elif number % 5 == 0:\n        print("Buzz")\n    else:\n        print(number)'
-
 template_fizzbuzz_javascript
-  intent "write_program"
-  language "javascript"
-  task "fizzbuzz"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task fizzbuzz
+  code_fence javascript
   code 'for (let number = 1; number <= 15; number += 1) {\n  if (number % 15 === 0) {\n    console.log("FizzBuzz");\n  } else if (number % 3 === 0) {\n    console.log("Fizz");\n  } else if (number % 5 === 0) {\n    console.log("Buzz");\n  } else {\n    console.log(number);\n  }\n}'
-
 template_fizzbuzz_typescript
-  intent "write_program"
-  language "typescript"
-  task "fizzbuzz"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task fizzbuzz
+  code_fence typescript
   code 'for (let number = 1; number <= 15; number += 1) {\n  if (number % 15 === 0) {\n    console.log("FizzBuzz");\n  } else if (number % 3 === 0) {\n    console.log("Fizz");\n  } else if (number % 5 === 0) {\n    console.log("Buzz");\n  } else {\n    console.log(number);\n  }\n}'
-
 template_fizzbuzz_go
-  intent "write_program"
-  language "go"
-  task "fizzbuzz"
-  code_fence "go"
+  intent write_program
+  language go
+  task fizzbuzz
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    for number := 1; number <= 15; number++ {\n        switch {\n        case number%15 == 0:\n            fmt.Println("FizzBuzz")\n        case number%3 == 0:\n            fmt.Println("Fizz")\n        case number%5 == 0:\n            fmt.Println("Buzz")\n        default:\n            fmt.Println(number)\n        }\n    }\n}'
-
 template_fizzbuzz_c
-  intent "write_program"
-  language "c"
-  task "fizzbuzz"
-  code_fence "c"
+  intent write_program
+  language c
+  task fizzbuzz
+  code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    for (int number = 1; number <= 15; number++) {\n        if (number % 15 == 0) {\n            puts("FizzBuzz");\n        } else if (number % 3 == 0) {\n            puts("Fizz");\n        } else if (number % 5 == 0) {\n            puts("Buzz");\n        } else {\n            printf("%d\\n", number);\n        }\n    }\n    return 0;\n}'
-
 template_fizzbuzz_cpp
-  intent "write_program"
-  language "cpp"
-  task "fizzbuzz"
-  code_fence "cpp"
-  code '#include <iostream>\n\nint main() {\n    for (int number = 1; number <= 15; number++) {\n        if (number % 15 == 0) {\n            std::cout << "FizzBuzz\\n";\n        } else if (number % 3 == 0) {\n            std::cout << "Fizz\\n";\n        } else if (number % 5 == 0) {\n            std::cout << "Buzz\\n";\n        } else {\n            std::cout << number << \x27\\n\x27;\n        }\n    }\n}'
-
+  intent write_program
+  language cpp
+  task fizzbuzz
+  code_fence cpp
+  code `#include <iostream>\n\nint main() {\n    for (int number = 1; number <= 15; number++) {\n        if (number % 15 == 0) {\n            std::cout << "FizzBuzz\\n";\n        } else if (number % 3 == 0) {\n            std::cout << "Fizz\\n";\n        } else if (number % 5 == 0) {\n            std::cout << "Buzz\\n";\n        } else {\n            std::cout << number << '\\n';\n        }\n    }\n}`
 template_fizzbuzz_java
-  intent "write_program"
-  language "java"
-  task "fizzbuzz"
-  code_fence "java"
+  intent write_program
+  language java
+  task fizzbuzz
+  code_fence java
   code 'public class Main {\n    public static void main(String[] args) {\n        for (int number = 1; number <= 15; number++) {\n            if (number % 15 == 0) {\n                System.out.println("FizzBuzz");\n            } else if (number % 3 == 0) {\n                System.out.println("Fizz");\n            } else if (number % 5 == 0) {\n                System.out.println("Buzz");\n            } else {\n                System.out.println(number);\n            }\n        }\n    }\n}'
-
 template_fizzbuzz_csharp
-  intent "write_program"
-  language "csharp"
-  task "fizzbuzz"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task fizzbuzz
+  code_fence csharp
   code 'using System;\n\nclass Program {\n    static void Main() {\n        for (int number = 1; number <= 15; number++) {\n            if (number % 15 == 0) {\n                Console.WriteLine("FizzBuzz");\n            } else if (number % 3 == 0) {\n                Console.WriteLine("Fizz");\n            } else if (number % 5 == 0) {\n                Console.WriteLine("Buzz");\n            } else {\n                Console.WriteLine(number);\n            }\n        }\n    }\n}'
-
 template_fizzbuzz_ruby
-  intent "write_program"
-  language "ruby"
-  task "fizzbuzz"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task fizzbuzz
+  code_fence ruby
   code '(1..15).each do |number|\n  if (number % 15).zero?\n    puts "FizzBuzz"\n  elsif (number % 3).zero?\n    puts "Fizz"\n  elsif (number % 5).zero?\n    puts "Buzz"\n  else\n    puts number\n  end\nend'
-
 template_factorial_rust
-  intent "write_program"
-  language "rust"
-  task "factorial"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task factorial
+  code_fence rust
   code 'fn main() {\n    let mut result: u64 = 1;\n    for number in 1..=5 {\n        result *= number;\n    }\n    println!("{result}");\n}'
-
 template_factorial_python
-  intent "write_program"
-  language "python"
-  task "factorial"
-  code_fence "python"
-  code 'result = 1\nfor number in range(1, 6):\n    result *= number\nprint(result)'
-
+  intent write_program
+  language python
+  task factorial
+  code_fence python
+  code "result = 1\nfor number in range(1, 6):\n    result *= number\nprint(result)"
 template_factorial_javascript
-  intent "write_program"
-  language "javascript"
-  task "factorial"
-  code_fence "javascript"
-  code 'let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);'
-
+  intent write_program
+  language javascript
+  task factorial
+  code_fence javascript
+  code "let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);"
 template_factorial_typescript
-  intent "write_program"
-  language "typescript"
-  task "factorial"
-  code_fence "typescript"
-  code 'let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);'
-
+  intent write_program
+  language typescript
+  task factorial
+  code_fence typescript
+  code "let result = 1;\nfor (let number = 1; number <= 5; number += 1) {\n  result *= number;\n}\nconsole.log(result);"
 template_factorial_go
-  intent "write_program"
-  language "go"
-  task "factorial"
-  code_fence "go"
+  intent write_program
+  language go
+  task factorial
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    result := 1\n    for number := 1; number <= 5; number++ {\n        result *= number\n    }\n    fmt.Println(result)\n}'
-
 template_factorial_c
-  intent "write_program"
-  language "c"
-  task "factorial"
-  code_fence "c"
+  intent write_program
+  language c
+  task factorial
+  code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    unsigned long long result = 1;\n    for (int number = 1; number <= 5; number++) {\n        result *= number;\n    }\n    printf("%llu\\n", result);\n    return 0;\n}'
-
 template_factorial_cpp
-  intent "write_program"
-  language "cpp"
-  task "factorial"
-  code_fence "cpp"
-  code '#include <iostream>\n\nint main() {\n    unsigned long long result = 1;\n    for (int number = 1; number <= 5; number++) {\n        result *= number;\n    }\n    std::cout << result << \x27\\n\x27;\n}'
-
+  intent write_program
+  language cpp
+  task factorial
+  code_fence cpp
+  code "#include <iostream>\n\nint main() {\n    unsigned long long result = 1;\n    for (int number = 1; number <= 5; number++) {\n        result *= number;\n    }\n    std::cout << result << '\\n';\n}"
 template_factorial_java
-  intent "write_program"
-  language "java"
-  task "factorial"
-  code_fence "java"
-  code 'public class Main {\n    public static void main(String[] args) {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        System.out.println(result);\n    }\n}'
-
+  intent write_program
+  language java
+  task factorial
+  code_fence java
+  code "public class Main {\n    public static void main(String[] args) {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        System.out.println(result);\n    }\n}"
 template_factorial_csharp
-  intent "write_program"
-  language "csharp"
-  task "factorial"
-  code_fence "csharp"
-  code 'using System;\n\nclass Program {\n    static void Main() {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        Console.WriteLine(result);\n    }\n}'
-
+  intent write_program
+  language csharp
+  task factorial
+  code_fence csharp
+  code "using System;\n\nclass Program {\n    static void Main() {\n        long result = 1;\n        for (int number = 1; number <= 5; number++) {\n            result *= number;\n        }\n        Console.WriteLine(result);\n    }\n}"
 template_factorial_ruby
-  intent "write_program"
-  language "ruby"
-  task "factorial"
-  code_fence "ruby"
-  code 'result = (1..5).reduce(1, :*)\nputs result'
-
+  intent write_program
+  language ruby
+  task factorial
+  code_fence ruby
+  code "result = (1..5).reduce(1, :*)\nputs result"
 template_reverse_string_rust
-  intent "write_program"
-  language "rust"
-  task "reverse_string"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task reverse_string
+  code_fence rust
   code 'fn main() {\n    let text = "hello";\n    let reversed: String = text.chars().rev().collect();\n    println!("{reversed}");\n}'
-
 template_reverse_string_python
-  intent "write_program"
-  language "python"
-  task "reverse_string"
-  code_fence "python"
+  intent write_program
+  language python
+  task reverse_string
+  code_fence python
   code 'text = "hello"\nprint(text[::-1])'
-
 template_reverse_string_javascript
-  intent "write_program"
-  language "javascript"
-  task "reverse_string"
-  code_fence "javascript"
+  intent write_program
+  language javascript
+  task reverse_string
+  code_fence javascript
   code 'const text = "hello";\nconsole.log(text.split("").reverse().join(""));'
-
 template_reverse_string_typescript
-  intent "write_program"
-  language "typescript"
-  task "reverse_string"
-  code_fence "typescript"
+  intent write_program
+  language typescript
+  task reverse_string
+  code_fence typescript
   code 'const text: string = "hello";\nconsole.log(text.split("").reverse().join(""));'
-
 template_reverse_string_go
-  intent "write_program"
-  language "go"
-  task "reverse_string"
-  code_fence "go"
+  intent write_program
+  language go
+  task reverse_string
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    text := "hello"\n    runes := []rune(text)\n    for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {\n        runes[i], runes[j] = runes[j], runes[i]\n    }\n    fmt.Println(string(runes))\n}'
-
 template_reverse_string_c
-  intent "write_program"
-  language "c"
-  task "reverse_string"
-  code_fence "c"
+  intent write_program
+  language c
+  task reverse_string
+  code_fence c
   code '#include <stdio.h>\n#include <string.h>\n\nint main(void) {\n    char text[] = "hello";\n    size_t length = strlen(text);\n    for (size_t i = 0; i < length / 2; i++) {\n        char temp = text[i];\n        text[i] = text[length - 1 - i];\n        text[length - 1 - i] = temp;\n    }\n    puts(text);\n    return 0;\n}'
-
 template_reverse_string_cpp
-  intent "write_program"
-  language "cpp"
-  task "reverse_string"
-  code_fence "cpp"
-  code '#include <algorithm>\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string text = "hello";\n    std::reverse(text.begin(), text.end());\n    std::cout << text << \x27\\n\x27;\n}'
-
+  intent write_program
+  language cpp
+  task reverse_string
+  code_fence cpp
+  code `#include <algorithm>\n#include <iostream>\n#include <string>\n\nint main() {\n    std::string text = "hello";\n    std::reverse(text.begin(), text.end());\n    std::cout << text << '\\n';\n}`
 template_reverse_string_java
-  intent "write_program"
-  language "java"
-  task "reverse_string"
-  code_fence "java"
+  intent write_program
+  language java
+  task reverse_string
+  code_fence java
   code 'public class Main {\n    public static void main(String[] args) {\n        String text = "hello";\n        System.out.println(new StringBuilder(text).reverse().toString());\n    }\n}'
-
 template_reverse_string_csharp
-  intent "write_program"
-  language "csharp"
-  task "reverse_string"
-  code_fence "csharp"
+  intent write_program
+  language csharp
+  task reverse_string
+  code_fence csharp
   code 'using System;\n\nclass Program {\n    static void Main() {\n        var text = "hello".ToCharArray();\n        Array.Reverse(text);\n        Console.WriteLine(new string(text));\n    }\n}'
-
 template_reverse_string_ruby
-  intent "write_program"
-  language "ruby"
-  task "reverse_string"
-  code_fence "ruby"
+  intent write_program
+  language ruby
+  task reverse_string
+  code_fence ruby
   code 'text = "hello"\nputs text.reverse'
-
 template_sum_to_ten_rust
-  intent "write_program"
-  language "rust"
-  task "sum_to_ten"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task sum_to_ten
+  code_fence rust
   code 'fn main() {\n    let total: u32 = (1..=10).sum();\n    println!("{total}");\n}'
-
 template_sum_to_ten_python
-  intent "write_program"
-  language "python"
-  task "sum_to_ten"
-  code_fence "python"
-  code 'total = sum(range(1, 11))\nprint(total)'
-
+  intent write_program
+  language python
+  task sum_to_ten
+  code_fence python
+  code "total = sum(range(1, 11))\nprint(total)"
 template_sum_to_ten_javascript
-  intent "write_program"
-  language "javascript"
-  task "sum_to_ten"
-  code_fence "javascript"
-  code 'let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);'
-
+  intent write_program
+  language javascript
+  task sum_to_ten
+  code_fence javascript
+  code "let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);"
 template_sum_to_ten_typescript
-  intent "write_program"
-  language "typescript"
-  task "sum_to_ten"
-  code_fence "typescript"
-  code 'let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);'
-
+  intent write_program
+  language typescript
+  task sum_to_ten
+  code_fence typescript
+  code "let total = 0;\nfor (let number = 1; number <= 10; number += 1) {\n  total += number;\n}\nconsole.log(total);"
 template_sum_to_ten_go
-  intent "write_program"
-  language "go"
-  task "sum_to_ten"
-  code_fence "go"
+  intent write_program
+  language go
+  task sum_to_ten
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc main() {\n    total := 0\n    for number := 1; number <= 10; number++ {\n        total += number\n    }\n    fmt.Println(total)\n}'
-
 template_sum_to_ten_c
-  intent "write_program"
-  language "c"
-  task "sum_to_ten"
-  code_fence "c"
+  intent write_program
+  language c
+  task sum_to_ten
+  code_fence c
   code '#include <stdio.h>\n\nint main(void) {\n    int total = 0;\n    for (int number = 1; number <= 10; number++) {\n        total += number;\n    }\n    printf("%d\\n", total);\n    return 0;\n}'
-
 template_sum_to_ten_cpp
-  intent "write_program"
-  language "cpp"
-  task "sum_to_ten"
-  code_fence "cpp"
-  code '#include <iostream>\n\nint main() {\n    int total = 0;\n    for (int number = 1; number <= 10; number++) {\n        total += number;\n    }\n    std::cout << total << \x27\\n\x27;\n}'
-
+  intent write_program
+  language cpp
+  task sum_to_ten
+  code_fence cpp
+  code "#include <iostream>\n\nint main() {\n    int total = 0;\n    for (int number = 1; number <= 10; number++) {\n        total += number;\n    }\n    std::cout << total << '\\n';\n}"
 template_sum_to_ten_java
-  intent "write_program"
-  language "java"
-  task "sum_to_ten"
-  code_fence "java"
-  code 'public class Main {\n    public static void main(String[] args) {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        System.out.println(total);\n    }\n}'
-
+  intent write_program
+  language java
+  task sum_to_ten
+  code_fence java
+  code "public class Main {\n    public static void main(String[] args) {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        System.out.println(total);\n    }\n}"
 template_sum_to_ten_csharp
-  intent "write_program"
-  language "csharp"
-  task "sum_to_ten"
-  code_fence "csharp"
-  code 'using System;\n\nclass Program {\n    static void Main() {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        Console.WriteLine(total);\n    }\n}'
-
+  intent write_program
+  language csharp
+  task sum_to_ten
+  code_fence csharp
+  code "using System;\n\nclass Program {\n    static void Main() {\n        int total = 0;\n        for (int number = 1; number <= 10; number++) {\n            total += number;\n        }\n        Console.WriteLine(total);\n    }\n}"
 template_sum_to_ten_ruby
-  intent "write_program"
-  language "ruby"
-  task "sum_to_ten"
-  code_fence "ruby"
-  code 'total = (1..10).sum\nputs total'
-
+  intent write_program
+  language ruby
+  task sum_to_ten
+  code_fence ruby
+  code "total = (1..10).sum\nputs total"
 template_fibonacci_rust
-  intent "write_program"
-  language "rust"
-  task "fibonacci"
-  code_fence "rust"
+  intent write_program
+  language rust
+  task fibonacci
+  code_fence rust
   code 'fn fibonacci(n: u64) -> u64 {\n    if n <= 2 {\n        1\n    } else {\n        fibonacci(n - 1) + fibonacci(n - 2)\n    }\n}\n\nfn main() {\n    println!("{}", fibonacci(10));\n}'
-
 template_fibonacci_python
-  intent "write_program"
-  language "python"
-  task "fibonacci"
-  code_fence "python"
-  code 'def fibonacci(n):\n    if n <= 2:\n        return 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n\nprint(fibonacci(10))'
-
+  intent write_program
+  language python
+  task fibonacci
+  code_fence python
+  code "def fibonacci(n):\n    if n <= 2:\n        return 1\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n\nprint(fibonacci(10))"
 template_fibonacci_javascript
-  intent "write_program"
-  language "javascript"
-  task "fibonacci"
-  code_fence "javascript"
-  code 'function fibonacci(n) {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));'
-
+  intent write_program
+  language javascript
+  task fibonacci
+  code_fence javascript
+  code "function fibonacci(n) {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));"
 template_fibonacci_typescript
-  intent "write_program"
-  language "typescript"
-  task "fibonacci"
-  code_fence "typescript"
-  code 'function fibonacci(n: number): number {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));'
-
+  intent write_program
+  language typescript
+  task fibonacci
+  code_fence typescript
+  code "function fibonacci(n: number): number {\n  if (n <= 2) {\n    return 1;\n  }\n  return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nconsole.log(fibonacci(10));"
 template_fibonacci_go
-  intent "write_program"
-  language "go"
-  task "fibonacci"
-  code_fence "go"
+  intent write_program
+  language go
+  task fibonacci
+  code_fence go
   code 'package main\n\nimport "fmt"\n\nfunc fibonacci(n int) int {\n    if n <= 2 {\n        return 1\n    }\n    return fibonacci(n-1) + fibonacci(n-2)\n}\n\nfunc main() {\n    fmt.Println(fibonacci(10))\n}'
-
 template_fibonacci_c
-  intent "write_program"
-  language "c"
-  task "fibonacci"
-  code_fence "c"
+  intent write_program
+  language c
+  task fibonacci
+  code_fence c
   code '#include <stdio.h>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main(void) {\n    printf("%llu\\n", fibonacci(10));\n    return 0;\n}'
-
 template_fibonacci_cpp
-  intent "write_program"
-  language "cpp"
-  task "fibonacci"
-  code_fence "cpp"
-  code '#include <iostream>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main() {\n    std::cout << fibonacci(10) << \x27\\n\x27;\n}'
-
+  intent write_program
+  language cpp
+  task fibonacci
+  code_fence cpp
+  code "#include <iostream>\n\nunsigned long long fibonacci(int n) {\n    if (n <= 2) {\n        return 1;\n    }\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nint main() {\n    std::cout << fibonacci(10) << '\\n';\n}"
 template_fibonacci_java
-  intent "write_program"
-  language "java"
-  task "fibonacci"
-  code_fence "java"
-  code 'public class Main {\n    static long fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return fibonacci(n - 1) + fibonacci(n - 2);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fibonacci(10));\n    }\n}'
-
+  intent write_program
+  language java
+  task fibonacci
+  code_fence java
+  code "public class Main {\n    static long fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return fibonacci(n - 1) + fibonacci(n - 2);\n    }\n\n    public static void main(String[] args) {\n        System.out.println(fibonacci(10));\n    }\n}"
 template_fibonacci_csharp
-  intent "write_program"
-  language "csharp"
-  task "fibonacci"
-  code_fence "csharp"
-  code 'using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}'
-
+  intent write_program
+  language csharp
+  task fibonacci
+  code_fence csharp
+  code "using System;\n\nclass Program {\n    static long Fibonacci(int n) {\n        if (n <= 2) {\n            return 1;\n        }\n        return Fibonacci(n - 1) + Fibonacci(n - 2);\n    }\n\n    static void Main() {\n        Console.WriteLine(Fibonacci(10));\n    }\n}"
 template_fibonacci_ruby
-  intent "write_program"
-  language "ruby"
-  task "fibonacci"
-  code_fence "ruby"
-  code 'def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)'
+  intent write_program
+  language ruby
+  task fibonacci
+  code_fence ruby
+  code "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)"

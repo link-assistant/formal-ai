@@ -1,0 +1,59 @@
+{
+  "lemma": "chart",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07012462-n",
+      "partOfSpeech": "n",
+      "definition": "a visual display of information",
+      "synonyms": [
+        "graph"
+      ]
+    },
+    {
+      "id": "oewn-03013574-n",
+      "partOfSpeech": "n",
+      "definition": "a map designed to assist navigation by air or sea"
+    },
+    {
+      "id": "oewn-06500907-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) a listing of best-selling recorded music",
+      "examples": [
+        "number 2 on the charts"
+      ]
+    },
+    {
+      "id": "oewn-00712632-v",
+      "partOfSpeech": "v",
+      "definition": "make a chart of",
+      "examples": [
+        "chart the territory"
+      ]
+    },
+    {
+      "id": "oewn-00706861-v",
+      "partOfSpeech": "v",
+      "definition": "plan in detail",
+      "examples": [
+        "Bush is charting a course to destroy Saddam Hussein"
+      ]
+    },
+    {
+      "id": "oewn-01758945-v",
+      "partOfSpeech": "v",
+      "definition": "represent by means of a graph",
+      "examples": [
+        "chart the data"
+      ],
+      "synonyms": [
+        "graph"
+      ]
+    }
+  ]
+}
