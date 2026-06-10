@@ -1,0 +1,25 @@
+language en
+lemma solve
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "find the solution to (a problem or question) or understand the meaning of"
+    examples ("did you solve the problem?" "Work out your problems with the boss" "this unpleasant situation isn't going to work itself out" "did you figure it out?" "Did you puzzle out my meaning?" "He could not work the math problem")
+    id oewn-00636568-v
+    partOfSpeech v
+    synonyms ("work out" "figure out" "puzzle out" lick work)
+  entry
+    definition "find the solution"
+    examples ("solve an equation" "solve for x")
+    id oewn-00735067-v
+    partOfSpeech v
+    synonyms (resolve)
+  entry
+    definition "settle, as of a debt"
+    examples ("clear a debt" "solve an old debt")
+    id oewn-00763499-v
+    partOfSpeech v
+    synonyms (clear)
+source "oewn:2024"

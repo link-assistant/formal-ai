@@ -1,0 +1,17 @@
+Q11570
+  aliases
+    en (kg kilogramme kilo kilograms)
+    ru ("кг" kg)
+    zh ("公斤" "兛")
+  descriptions
+    en "metric unit of mass"
+    ru "единица измерения массы"
+    zh "國際單位制中質量的基本單位"
+  id Q11570
+  labels
+    en kilogram
+    hi "किलोग्राम"
+    ru "килограмм"
+    zh "千克"
+  type item
+success 1

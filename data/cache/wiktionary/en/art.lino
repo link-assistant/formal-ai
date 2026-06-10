@@ -1,0 +1,50 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (mundacity nature subsistence)
+      definitions
+        entry
+          definition "The conscious production or arrangement of sounds, colours, forms, movements, or other elements in a manner that affects the senses and emotions, usually specifically the production of the beautiful in a graphic or plastic medium."
+          example "There is a debate as to whether graffiti is art or vandalism."
+        entry
+          definition "The creative and emotional expression of mental imagery, such as visual, auditory, social, etc."
+        entry
+          definition "Skillful creative activity, usually with an aesthetic focus."
+          example "She's mastered the art of programming."
+        entry
+          definition "The study and the product of these processes."
+          example "He's at university to study art."
+        entry
+          definition "Aesthetic value."
+          example "Her photographs are nice, but there's no art in them."
+        entry
+          definition Artwork.
+          example "Sotheby's regularly auctions art for millions."
+        entry
+          definition "A field or category of art, such as painting, sculpture, music, ballet, or literature."
+          example "I'm a great supporter of the arts."
+        entry
+          definition "A nonscientific branch of learning; one of the liberal arts."
+        entry
+          definition "Skill that is attained by study, practice, or observation."
+        entry
+          definition "Contrivance, scheming, manipulation."
+      partOfSpeech noun
+      synonyms (craft)
+  phonetic "/ɑːt/"
+  phonetics
+    entry
+      audio ""
+      text "/ɑːt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/art-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718886"
+      text "/ɑɹt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/art")
+  word art

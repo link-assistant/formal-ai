@@ -1,0 +1,17 @@
+view
+  id M-0def5277d2d3
+  lemma noun
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(grammar, narrow sense) A word that can be used to refer to a person, animal, place, thing, phenomenon, substance, quality, or idea; one of the basic parts of speech in many languages, including English."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(grammar, now rare, broad sense) Either a word that can be used to refer to a person, animal, place, thing, phenomenon, substance, quality or idea, or a word that modifies or describes a previous word or its referent; a substantive or adjective, sometimes also including other parts of speech such as numeral or pronoun."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To convert a word to a noun."
+    provenance (wiktionary)

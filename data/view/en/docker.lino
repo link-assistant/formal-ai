@@ -1,0 +1,9 @@
+view
+  id M-d519da735dc2
+  lemma docker
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a laborer who loads and unloads vessels in a port"
+    provenance (wordnet)

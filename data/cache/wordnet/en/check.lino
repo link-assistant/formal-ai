@@ -1,0 +1,211 @@
+language en
+lemma check
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a written order directing a bank to pay money"
+    examples ("he paid all his bills by check")
+    id oewn-13402907-n
+    partOfSpeech n
+    synonyms ("bank check" cheque)
+  entry
+    definition "an appraisal of the state of affairs"
+    examples ("they made an assay of the contents" "a check on its dependability under stress")
+    id oewn-05746570-n
+    partOfSpeech n
+    synonyms (assay)
+  entry
+    definition "the bill in a restaurant"
+    examples ("he asked the waiter for the check")
+    id oewn-06529933-n
+    partOfSpeech n
+    synonyms (chit tab)
+  entry
+    definition "the state of inactivity following an interruption"
+    examples ("the negotiations were in arrest" "held them in check" "during the halt he got some lunch" "the momentary stay enabled him to escape the blow" "he spent the entire stop in his seat")
+    id oewn-14034398-n
+    partOfSpeech n
+    synonyms (arrest halt hitch stay stop stoppage)
+  entry
+    definition "additional proof that something that was believed (some fact or hypothesis or theory) is correct"
+    examples ("fossils provided further confirmation of the evolutionary theory")
+    id oewn-05833569-n
+    partOfSpeech n
+    synonyms (confirmation verification substantiation)
+  entry
+    definition "the act of inspecting or verifying"
+    examples ("they made a check of their equipment" "the pilot ran through the check-out procedure")
+    id oewn-00142626-n
+    partOfSpeech n
+    synonyms (checkout "check-out procedure")
+  entry
+    definition "a mark indicating that something has been noted or completed etc."
+    examples ("as he called the roll he put a check mark by each student's name")
+    id oewn-06831605-n
+    partOfSpeech n
+    synonyms ("check mark" tick)
+  entry
+    definition "something immaterial that interferes with or delays action or progress"
+    id oewn-05697054-n
+    partOfSpeech n
+    synonyms (hindrance hinderance deterrent impediment balk baulk handicap)
+  entry
+    definition "a mark left after a small piece has been chopped or broken off of something"
+    id oewn-04700256-n
+    partOfSpeech n
+    synonyms (chip)
+  entry
+    definition "a textile pattern of squares or crossed lines (resembling a checkerboard)"
+    examples ("she wore a skirt with checks")
+    id oewn-03014816-n
+    partOfSpeech n
+  entry
+    definition "the act of restraining power or action or limiting excess"
+    examples ("his common sense is a bridle to his quick temper")
+    id oewn-01148552-n
+    partOfSpeech n
+    synonyms (bridle curb)
+  entry
+    definition "obstructing an opponent in ice hockey"
+    id oewn-00563972-n
+    partOfSpeech n
+  entry
+    definition "(chess) a direct attack on an opponent's king"
+    id oewn-00168267-n
+    partOfSpeech n
+  entry
+    definition "examine so as to determine accuracy, quality, or condition"
+    examples ("check the brakes" "Check out the engine")
+    id oewn-00663742-v
+    partOfSpeech v
+    synonyms ("check up on" "look into" "check out" "suss out" "check over" "go over" "check into")
+  entry
+    definition "make an examination or investigation"
+    examples ("check into the rumor" "check the time of the class")
+    id oewn-02538948-v
+    partOfSpeech v
+  entry
+    definition "be careful or certain to do something; make certain of something"
+    examples ("He verified that the valves were closed" "See that the curtains are closed" "control the quality of the product")
+    id oewn-00664507-v
+    partOfSpeech v
+    synonyms (see insure "see to it" ensure control ascertain assure)
+  entry
+    definition "lessen the intensity of; temper; hold in restraint; hold or keep within limits"
+    examples ("moderate your alcohol intake" "hold your tongue" "hold your temper" "control your anger")
+    id oewn-02516039-v
+    partOfSpeech v
+    synonyms (control "hold in" hold contain curb moderate)
+  entry
+    definition "stop for a moment, as if out of uncertainty or caution"
+    examples ("She checked for an instant and missed a step")
+    id oewn-01865389-v
+    partOfSpeech v
+  entry
+    definition "put a check mark on or near or next to"
+    examples ("Please check each name on the list" "tick off the items" "mark off the units")
+    id oewn-00664100-v
+    partOfSpeech v
+    synonyms ("check off" mark "mark off" "tick off" tick)
+  entry
+    definition "slow the growth or development of"
+    examples ("The brain damage will retard the child's language development")
+    id oewn-00441241-v
+    partOfSpeech v
+    synonyms (retard delay)
+  entry
+    definition "be verified or confirmed; pass inspection"
+    examples ("These stories don't check!")
+    id oewn-02664361-v
+    partOfSpeech v
+    synonyms ("check out")
+  entry
+    definition "be compatible, similar or consistent; coincide in their characteristics"
+    examples ("The two stories don't agree in many details" "The handwriting checks with the signature on the form" "The suspect's fingerprints don't match those on the gun")
+    id oewn-02663315-v
+    partOfSpeech v
+    synonyms (match fit correspond jibe gibe tally agree)
+  entry
+    definition "block or impede (a player from the opposing team) in ice hockey"
+    id oewn-02563464-v
+    partOfSpeech v
+  entry
+    definition "develop (a child's or animal's) behavior by instruction and practice; especially to teach self-control"
+    examples ("Parents must discipline their children" "Is this dog trained?")
+    id oewn-02559394-v
+    partOfSpeech v
+    synonyms (discipline train condition)
+  entry
+    definition "consign for shipment on a vehicle"
+    examples ("check your luggage before boarding")
+    id oewn-02352901-v
+    partOfSpeech v
+  entry
+    definition "hand over something to somebody as for temporary safekeeping"
+    examples ("Check your coat at the door")
+    id oewn-02352443-v
+    partOfSpeech v
+  entry
+    definition "abandon the intended prey, turn, and pursue an inferior prey"
+    id oewn-01865753-v
+    partOfSpeech v
+  entry
+    definition "stop in a chase especially when scent is lost"
+    examples ("The dog checked")
+    id oewn-01865608-v
+    partOfSpeech v
+  entry
+    definition "mark into squares or draw squares on; draw crossed lines on"
+    id oewn-01696873-v
+    partOfSpeech v
+    synonyms (checker chequer)
+  entry
+    definition "decline to initiate betting"
+    id oewn-01142182-v
+    partOfSpeech v
+  entry
+    definition "hold back, as of a danger or an enemy; check the expansion or influence of"
+    examples ("Arrest the downward trend" "Check the growth of communism in South East Asia" "Contain the rebel movement" "Turn back the tide of communism")
+    id oewn-01133899-v
+    partOfSpeech v
+    synonyms ("turn back" arrest stop contain "hold back")
+  entry
+    definition "place into check"
+    examples ("He checked my kings")
+    id oewn-01117182-v
+    partOfSpeech v
+  entry
+    definition "write out a check on a bank account"
+    id oewn-01067021-v
+    partOfSpeech v
+  entry
+    definition "find out, learn, or determine with certainty, usually by making an inquiry or other effort"
+    examples ("I want to see whether she speaks French" "See whether it works" "find out if he speaks Russian" "Check whether the train leaves on time")
+    id oewn-00922307-v
+    partOfSpeech v
+    synonyms (determine "find out" see ascertain watch learn)
+  entry
+    definition "verify by consulting a source or authority"
+    examples ("check the spelling of this word" "check your facts")
+    id oewn-00665271-v
+    partOfSpeech v
+  entry
+    definition "arrest the motion (of something) abruptly"
+    examples ("He checked the flow of water by shutting off the main valve")
+    id oewn-00355288-v
+    partOfSpeech v
+  entry
+    definition "make cracks or chinks in"
+    examples ("The heat checked the paint")
+    id oewn-00337349-v
+    partOfSpeech v
+    synonyms (chink)
+  entry
+    definition "become fractured; break or crack on the surface only"
+    examples ("The glass cracked when it was heated")
+    id oewn-00337070-v
+    partOfSpeech v
+    synonyms (crack break)
+source "oewn:2024"

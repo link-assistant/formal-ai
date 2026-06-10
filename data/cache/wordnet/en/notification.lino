@@ -1,0 +1,23 @@
+language en
+lemma notification
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an accusation of crime made by a grand jury on its own initiative"
+    id oewn-01189953-n
+    partOfSpeech n
+    synonyms (presentment)
+  entry
+    definition "informing by words"
+    id oewn-07227084-n
+    partOfSpeech n
+    synonyms (telling apprisal)
+  entry
+    definition "a request for payment"
+    examples ("the notification stated the grace period and the penalties for defaulting")
+    id oewn-07200328-n
+    partOfSpeech n
+    synonyms (notice)
+source "oewn:2024"

@@ -1,0 +1,93 @@
+{
+  "lemma": "feature",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05858316-n",
+      "partOfSpeech": "n",
+      "definition": "a prominent attribute or aspect of something",
+      "examples": [
+        "the map showed roads and other features",
+        "generosity is one of his best characteristics"
+      ],
+      "synonyms": [
+        "characteristic"
+      ]
+    },
+    {
+      "id": "oewn-05609513-n",
+      "partOfSpeech": "n",
+      "definition": "the characteristic parts of a person's face: eyes and nose and mouth and chin",
+      "examples": [
+        "an expression of pleasure crossed his features",
+        "his lineaments were very regular"
+      ],
+      "synonyms": [
+        "lineament"
+      ]
+    },
+    {
+      "id": "oewn-06627379-n",
+      "partOfSpeech": "n",
+      "definition": "the principal (full-length) film in a program at a movie theater",
+      "examples": [
+        "the feature tonight is ‘Casablanca’"
+      ],
+      "synonyms": [
+        "feature film"
+      ]
+    },
+    {
+      "id": "oewn-06279437-n",
+      "partOfSpeech": "n",
+      "definition": "a special or prominent article in a newspaper or magazine",
+      "examples": [
+        "they ran a feature on retirement planning"
+      ],
+      "synonyms": [
+        "feature article"
+      ]
+    },
+    {
+      "id": "oewn-05858739-n",
+      "partOfSpeech": "n",
+      "definition": "(linguistics) a distinctive characteristic of a linguistic unit that serves to distinguish it from other units of the same kind",
+      "synonyms": [
+        "feature of speech"
+      ]
+    },
+    {
+      "id": "oewn-03330714-n",
+      "partOfSpeech": "n",
+      "definition": "an article of merchandise that is displayed or advertised more than other articles"
+    },
+    {
+      "id": "oewn-02636270-v",
+      "partOfSpeech": "v",
+      "definition": "have as a feature",
+      "examples": [
+        "This restaurant features the most famous chefs in France"
+      ],
+      "synonyms": [
+        "have"
+      ]
+    },
+    {
+      "id": "oewn-02637740-v",
+      "partOfSpeech": "v",
+      "definition": "wear or display in an ostentatious or proud manner",
+      "examples": [
+        "she was sporting a new hat"
+      ],
+      "synonyms": [
+        "sport",
+        "boast"
+      ]
+    }
+  ]
+}

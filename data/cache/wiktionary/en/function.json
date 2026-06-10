@@ -1,0 +1,177 @@
+[
+  {
+    "word": "function",
+    "phonetic": "/ˈfʌŋ(k)ʃən/",
+    "phonetics": [
+      {
+        "text": "/ˈfʌŋ(k)ʃən/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈfʌŋkʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/function-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762944",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "What something does or is used for.",
+            "synonyms": [
+              "aim",
+              "intention",
+              "purpose",
+              "role",
+              "use"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A professional or official position.",
+            "synonyms": [
+              "occupation",
+              "office",
+              "part",
+              "role"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "An official or social occasion.",
+            "synonyms": [
+              "affair",
+              "occasion",
+              "social function",
+              "social occasion"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Something which is dependent on or stems from another thing; a result or concomitant.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A relation where one thing is dependent on another for its existence, value, or significance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A relation in which each element of the domain is associated with exactly one element of the codomain.",
+            "synonyms": [
+              "map",
+              "mapping",
+              "mathematical function",
+              "operator",
+              "transformation"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A routine that receives zero or more arguments and may return a result.",
+            "synonyms": [
+              "func",
+              "funct",
+              "procedure",
+              "routine",
+              "subprogram",
+              "subroutine"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "The physiological activity of an organ or body part.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The characteristic behavior of a chemical compound.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The role of a social practice in the continued existence of the group.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "affair",
+          "occasion",
+          "social function",
+          "social occasion",
+          "aim",
+          "intention",
+          "purpose",
+          "role",
+          "use",
+          "func",
+          "funct",
+          "procedure",
+          "routine",
+          "subprogram",
+          "subroutine",
+          "map",
+          "mapping",
+          "mathematical function",
+          "operator",
+          "transformation",
+          "occupation",
+          "office",
+          "part",
+          "role"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To have a function.",
+            "synonyms": [
+              "officiate",
+              "serve"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "To carry out a function; to be in action.",
+            "synonyms": [
+              "go",
+              "operate",
+              "run",
+              "work"
+            ],
+            "antonyms": [
+              "malfunction"
+            ]
+          }
+        ],
+        "synonyms": [
+          "go",
+          "operate",
+          "run",
+          "work",
+          "officiate",
+          "serve"
+        ],
+        "antonyms": [
+          "malfunction"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/function"
+    ]
+  }
+]

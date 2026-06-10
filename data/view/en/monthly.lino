@@ -1,0 +1,17 @@
+view
+  id M-dda134217e08
+  lemma monthly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a periodical that is published every month (or 12 issues per year)"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "occurring once a month"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or occurring or payable every month"
+    provenance (wordnet)

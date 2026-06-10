@@ -1,0 +1,27 @@
+{
+  "lemma": "rename",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01031245-v",
+      "partOfSpeech": "v",
+      "definition": "assign a new name to",
+      "examples": [
+        "Many streets in the former East Germany were renamed in 1990"
+      ]
+    },
+    {
+      "id": "oewn-02402123-v",
+      "partOfSpeech": "v",
+      "definition": "name again or anew",
+      "examples": [
+        "He was renamed Minister of the Interior"
+      ]
+    }
+  ]
+}

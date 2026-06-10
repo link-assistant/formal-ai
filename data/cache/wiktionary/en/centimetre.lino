@@ -1,0 +1,18 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An SI unit of length equal to 10-2 metres. Symbol: cm"
+      partOfSpeech noun
+      synonyms (cm "㎝")
+  phonetic "/ˈsɛn.tɪ.miː.tə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈsɛn.tɪ.miː.tə/"
+  sourceUrls ("https://en.wiktionary.org/wiki/centimetre")
+  word centimetre

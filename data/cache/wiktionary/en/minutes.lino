@@ -1,0 +1,63 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A unit of time equal to sixty seconds (one-sixtieth of an hour)."
+          example "You have twenty minutes to complete the test."
+        entry
+          definition "A short but unspecified time period."
+          example "Wait a minute, I’m not ready yet!"
+          synonyms (instant jiffy mo moment sec second tic)
+        entry
+          definition "A unit of angle equal to one-sixtieth of a degree."
+          example "We need to be sure these maps are accurate to within one minute of arc."
+          synonyms ("minute of arc")
+        entry
+          definition "(chiefly in the plural, minutes) A (usually formal) written record of a meeting or a part of a meeting."
+          example "Let’s look at the minutes of last week’s meeting."
+        entry
+          definition "A unit of purchase on a telephone or other network, especially a cell phone network, roughly equivalent in gross form to sixty seconds' use of the network."
+          example "If you buy this phone, you’ll get 100 free minutes."
+        entry
+          definition "A point in time; a moment."
+        entry
+          definition "A nautical or a geographic mile."
+        entry
+          definition "An old coin, a half farthing."
+        entry
+          definition "A very small part of anything, or anything very small; a jot; a whit."
+        entry
+          definition "A fixed part of a module."
+        entry
+          definition "A while or a long unspecified period of time"
+          example "Oh, I ain't heard that song in a minute!"
+      partOfSpeech noun
+      synonyms (instant jiffy mo moment sec second tic "minute of arc")
+    entry
+      definitions
+        entry
+          definition "Of an event, to write in a memo or the minutes of a meeting."
+          example "I’ll minute this evening’s meeting."
+        entry
+          definition "To set down a short sketch or note of; to jot down; to make a minute or a brief summary of."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "The official notes kept during a meeting."
+      partOfSpeech noun
+  phonetic "/ˈmɪnɪts/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/minutes-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1224303"
+      text "/ˈmɪnɪts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/minute" "https://en.wiktionary.org/wiki/minutes")
+  word minutes

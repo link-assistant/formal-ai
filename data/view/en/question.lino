@@ -1,0 +1,49 @@
+view
+  id M-f82955f2b711
+  lemma question
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an instance of questioning"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the subject matter at issue"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a sentence of inquiry that asks for a reply"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "uncertainty about the truth or factuality or existence of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal proposal for action made to a deliberative assembly for discussion and vote"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an informal reference to a marriage proposal"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "challenge the accuracy, probity, or propriety of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pose a series of questions to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pose a question"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "conduct an interview in television, newspaper, and radio reporting"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "place in doubt or express doubtful speculation"
+    provenance (wordnet)

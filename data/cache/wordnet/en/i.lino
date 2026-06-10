@@ -1,0 +1,28 @@
+language en
+lemma i
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a nonmetallic element belonging to the halogens; used especially in medicine and photography and in dyes; occurs naturally only in combination in small quantities (as in sea water or rocks)"
+    id oewn-14665575-n
+    partOfSpeech n
+    synonyms (iodine iodin "atomic number 53")
+  entry
+    definition "the smallest whole number or a numeral representing this number"
+    examples ("he has the one but will need a two and three to go with it" "they had lunch at one")
+    id oewn-13764713-n
+    partOfSpeech n
+    synonyms (one "1" ace single unity)
+  entry
+    definition "the 9th letter of the Roman alphabet"
+    id oewn-06845083-n
+    partOfSpeech n
+  entry
+    definition "used of a single unit or thing; not two or more"
+    examples ("‘ane’ is Scottish")
+    id oewn-02193977-s
+    partOfSpeech s
+    synonyms (one "1" ane)
+source "oewn:2024"

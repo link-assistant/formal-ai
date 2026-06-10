@@ -1,0 +1,37 @@
+language en
+lemma gb
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a highly toxic chemical nerve agent that inhibits the activity of cholinesterase"
+    id oewn-14985514-n
+    partOfSpeech n
+    synonyms (sarin)
+  entry
+    definition "a unit of magnetomotive force equal to 0.7958 ampere-turns"
+    id oewn-13663479-n
+    partOfSpeech n
+    synonyms (gilbert Gi)
+  entry
+    definition "a unit of information equal to 1000 megabytes or 10^9 (1,000,000,000) bytes"
+    id oewn-13650416-n
+    partOfSpeech n
+    synonyms (gigabyte G)
+  entry
+    definition "a unit of information equal to 1000 megabits or 10^9 (1,000,000,000) bits"
+    id oewn-13650593-n
+    partOfSpeech n
+    synonyms (gigabit Gbit)
+  entry
+    definition "a unit of information equal to 1024 mebibytes or 2^30 (1,073,741,824) bytes"
+    id oewn-13650222-n
+    partOfSpeech n
+    synonyms (gigabyte gibibyte G GiB)
+  entry
+    definition "an island comprising England and Scotland and Wales"
+    id oewn-08877934-n
+    partOfSpeech n
+    synonyms ("Great Britain")
+source "oewn:2024"

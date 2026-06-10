@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q82042": {
+      "type": "item",
+      "id": "Q82042",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "part of speech"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "часть речи"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "词类"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "category of words based on shared grammatical properties in a clause"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическая категория слова"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一個詞在句子裡的角色"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "lexical class"
+          },
+          {
+            "language": "en",
+            "value": "lexical category"
+          },
+          {
+            "language": "en",
+            "value": "word class"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "части речи"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "词汇范畴"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,32 @@
+language en
+lemma discord
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "lack of agreement or harmony"
+    id oewn-14002549-n
+    partOfSpeech n
+    synonyms (strife)
+  entry
+    definition "disagreement among those expected to cooperate"
+    id oewn-07196206-n
+    partOfSpeech n
+    synonyms (dissension)
+  entry
+    definition "a harsh mixture of sounds"
+    id oewn-04991947-n
+    partOfSpeech n
+    synonyms (discordance)
+  entry
+    definition "strife resulting from a lack of agreement"
+    id oewn-01172665-n
+    partOfSpeech n
+    synonyms (discordance)
+  entry
+    definition "be different from one another"
+    id oewn-02724418-v
+    partOfSpeech v
+    synonyms (disagree disaccord)
+source "oewn:2024"

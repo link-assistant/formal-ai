@@ -1,0 +1,9 @@
+view
+  id M-9c36a9c5dfd3
+  lemma anywhere
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at or in or to any place"
+    provenance (wordnet)

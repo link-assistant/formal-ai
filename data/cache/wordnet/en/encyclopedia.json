@@ -1,0 +1,21 @@
+{
+  "lemma": "encyclopedia",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06439057-n",
+      "partOfSpeech": "n",
+      "definition": "a reference work (often in several volumes) containing articles on various topics (often arranged in alphabetical order) dealing with the entire range of human knowledge or with some particular specialty",
+      "synonyms": [
+        "cyclopedia",
+        "encyclopaedia",
+        "cyclopaedia"
+      ]
+    }
+  ]
+}

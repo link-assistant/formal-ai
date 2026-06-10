@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q23806": {
+      "type": "item",
+      "id": "Q23806",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "10"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "१०"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ⅹ"
+          },
+          {
+            "language": "en",
+            "value": "𐌢"
+          },
+          {
+            "language": "en",
+            "value": "ten"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "десять"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "1 E1"
+          },
+          {
+            "language": "zh",
+            "value": "拾"
+          },
+          {
+            "language": "zh",
+            "value": "十"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

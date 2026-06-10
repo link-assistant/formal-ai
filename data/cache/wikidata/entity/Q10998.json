@@ -1,0 +1,153 @@
+{
+  "entities": {
+    "Q10998": {
+      "type": "item",
+      "id": "Q10998",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "potato"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "картофель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आलू"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "马铃薯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "species of plant (for the food, use Q16587531)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вид растений семейства Паслёновые (Solanaceae)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सबज़ी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "茄科茄属植物"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "potato plant"
+          },
+          {
+            "language": "en",
+            "value": "tater"
+          },
+          {
+            "language": "en",
+            "value": "tattie"
+          },
+          {
+            "language": "en",
+            "value": "spud"
+          },
+          {
+            "language": "en",
+            "value": "Solanum tuberosum"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "картошка"
+          },
+          {
+            "language": "ru",
+            "value": "Паслён клубненосный"
+          },
+          {
+            "language": "ru",
+            "value": "Solanum tuberosum"
+          },
+          {
+            "language": "ru",
+            "value": "картофель европейский"
+          },
+          {
+            "language": "ru",
+            "value": "картофель клубненосный"
+          },
+          {
+            "language": "ru",
+            "value": "картофель чилийский"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "土豆"
+          },
+          {
+            "language": "zh",
+            "value": "土豆植物"
+          },
+          {
+            "language": "zh",
+            "value": "馬鈴薯"
+          },
+          {
+            "language": "zh",
+            "value": "阳芋"
+          },
+          {
+            "language": "zh",
+            "value": "荷兰薯"
+          },
+          {
+            "language": "zh",
+            "value": "洋芋"
+          },
+          {
+            "language": "zh",
+            "value": "山药豆"
+          },
+          {
+            "language": "zh",
+            "value": "山药蛋"
+          },
+          {
+            "language": "zh",
+            "value": "地蛋"
+          },
+          {
+            "language": "zh",
+            "value": "阳芋（马铃薯）"
+          },
+          {
+            "language": "zh",
+            "value": "薯仔"
+          },
+          {
+            "language": "zh",
+            "value": "蕳砃"
+          },
+          {
+            "language": "zh",
+            "value": "甘丹"
+          },
+          {
+            "language": "zh",
+            "value": "蕳砃薯"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

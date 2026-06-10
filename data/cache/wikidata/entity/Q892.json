@@ -1,0 +1,151 @@
+{
+  "entities": {
+    "Q892": {
+      "type": "item",
+      "id": "Q892",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "J. R. R. Tolkien"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Джон Рональд Руэл Толкин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जे. आर. आर. टोल्किन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "約翰·羅納德·魯埃爾·托爾金"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "английский писатель, лингвист, филолог, фантаст, переводчик (1892—1973)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英國語言學家及作家（1892－1973）"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेज़ी भाषा के लेखक और कहानीकार"
+        },
+        "en": {
+          "language": "en",
+          "value": "English writer and philologist (1892–1973)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "J-R-R Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "John Ronald Reuel Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "John Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "J.R.R Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "J.R.R. Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "John R. R. Tolkien"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "約翰·羅納德·瑞爾·託爾金"
+          },
+          {
+            "language": "zh",
+            "value": "约翰·罗纳德·瑞尔·托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "約翰·羅納德·瑞爾·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "J·R·R·託爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J·R·R·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J·R·R·托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "約翰·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J.R.R. 托尔金"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Джон Толкин"
+          },
+          {
+            "language": "ru",
+            "value": "Толкин, Джон Рональд Руэл"
+          },
+          {
+            "language": "ru",
+            "value": "Толкиен, Джон Роналд Руэл"
+          },
+          {
+            "language": "ru",
+            "value": "Дж. Р. Р. Толкин"
+          },
+          {
+            "language": "ru",
+            "value": "Дж. Р. Р. Толкиен"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "जे॰आर॰आर॰ टोल्किन"
+          },
+          {
+            "language": "hi",
+            "value": "जॉन रोनल्ड राउल टोल्किन"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

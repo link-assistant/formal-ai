@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q7553": {
+      "type": "item",
+      "id": "Q7553",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "translation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "перевод"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अनुवाद"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "翻譯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "statement that explains the meaning of a word, phrase, concept, or idea"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "создание эквивалентного по смыслу текста на другом языке"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "किसी भाषा में कही या लिखी गयी बात का किसी दूसरी भाषा में सार्थक परिवर्तन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "把一種語言的文字或話語等資訊轉變成另一種語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "translating"
+          },
+          {
+            "language": "en",
+            "value": "translate"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "भाषांतर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "翻译"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,17 @@
+Q2111
+  aliases
+    en (lightspeed "Planck speed" "light speed" "speed of electromagnetic waves in vacuum" "vacuum speed of light" "speed of light in a vacuum" "velocity of light" "luminal speed" "light speed in vacuum" "speed of light")
+    ru ("скорость света в вакууме" "электродинамическая постоянная")
+    zh ("光的速度")
+  descriptions
+    en "speed of electromagnetic waves in vacuum"
+    ru "скорость движения в вакууме безмассовых частиц и связанных с ними полей"
+    zh "所有無質量粒子和相關場在真空中傳播的速度"
+  id Q2111
+  labels
+    en "speed of light in vacuum"
+    hi "प्रकाश का वेग"
+    ru "скорость света"
+    zh "光速"
+  type item
+success 1

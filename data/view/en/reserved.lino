@@ -1,0 +1,13 @@
+view
+  id M-f909e2a74588
+  lemma reserved
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "set aside for the use of a particular person or party"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "marked by self-restraint and reticence"
+    provenance (wordnet)

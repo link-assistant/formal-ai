@@ -1,0 +1,32 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "That which has a distinct existence as an individual unit. Often used for organisations which have no physical form."
+        entry
+          definition "The existence of something considered apart from its properties."
+        entry
+          definition "Anything about which information or data can be stored in a database; in particular, an organised array or set of individual elements or parts."
+        entry
+          definition "The state or quality of being or existence."
+          example "The group successfully maintains its tribal entity."
+        entry
+          definition "A spirit, ghost, or the like."
+        entry
+          definition "An alien lifeform that has no corporeal body."
+      partOfSpeech noun
+  phonetic "/ˈen.tɪ.ti/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/entity-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100386"
+      text "/ˈen.tɪ.ti/"
+  sourceUrls ("https://en.wiktionary.org/wiki/entity")
+  word entity

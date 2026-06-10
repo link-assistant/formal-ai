@@ -1,0 +1,24 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A day of the week except those which form the weekend; that is:"
+        entry
+          definition "Any day of the week (Monday through Sunday)."
+      partOfSpeech noun
+      synonyms ("business day" workday "working day")
+  phonetic "/ˈwiːkdeɪ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/weekday-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755248"
+      text "/ˈwiːkdeɪ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/weekday")
+  word weekday

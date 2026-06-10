@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q11423": {
+      "type": "item",
+      "id": "Q11423",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mass"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "масса"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द्रव्यमान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "質量"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "property of matter to resist changes of the state of motion and to attract other bodies"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мера инертности тела"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "M=vd"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "用來描述物理學中物質的絕對量"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "weight"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "质量"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

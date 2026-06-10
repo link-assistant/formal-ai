@@ -1,0 +1,9 @@
+view
+  id M-6d22b17caeb8
+  lemma who
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a United Nations agency to coordinate international health activities and to help governments improve health services"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-330e406cccee
+  lemma vowel
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a speech sound made with the vocal tract open"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a letter of the alphabet standing for a spoken vowel"
+    provenance (wordnet)

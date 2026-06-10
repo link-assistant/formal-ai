@@ -1,0 +1,29 @@
+language en
+lemma email
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(computer science) a system of world-wide electronic communication in which a computer user can compose a message at one terminal that can be regenerated at the recipient's terminal when the recipient logs in"
+    examples ("you cannot send packages by electronic mail")
+    id oewn-06289979-n
+    partOfSpeech n
+    synonyms ("electronic mail" e-mail)
+  entry
+    definition "a message sent over the internet via the email system"
+    id oewn-82169826-n
+    partOfSpeech n
+    synonyms ("email message" "e-mail message" e-mail)
+  entry
+    definition "an identifier that a person uses as their identity to communicate on the email system"
+    id oewn-83993005-n
+    partOfSpeech n
+    synonyms ("email address" "e-mail address" e-mail)
+  entry
+    definition "communicate electronically on the computer"
+    examples ("she e-mailed me the good news")
+    id oewn-01034323-v
+    partOfSpeech v
+    synonyms (e-mail netmail)
+source "oewn:2024"

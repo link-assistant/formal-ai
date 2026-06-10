@@ -1,0 +1,13 @@
+view
+  id M-4dfab85316dc
+  lemma suffix
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an affix that is added at the end of the word"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attach a suffix to"
+    provenance (wordnet)

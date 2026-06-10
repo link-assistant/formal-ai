@@ -1,0 +1,32 @@
+{
+  "lemma": "russian",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02968822-a",
+      "partOfSpeech": "a",
+      "definition": "of or pertaining to or characteristic of Russia or its people or culture or language",
+      "examples": [
+        "Russian dancing"
+      ]
+    },
+    {
+      "id": "oewn-09747745-n",
+      "partOfSpeech": "n",
+      "definition": "a native or inhabitant of Russia"
+    },
+    {
+      "id": "oewn-06957110-n",
+      "partOfSpeech": "n",
+      "definition": "the Slavic language that is the official language of Russia",
+      "synonyms": [
+        "Russian language"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+language en
+lemma chat
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an informal conversation"
+    id oewn-07149558-n
+    partOfSpeech n
+    synonyms (confab confabulation schmooze schmoose)
+  entry
+    definition "birds having a chattering call"
+    id oewn-01572477-n
+    partOfSpeech n
+    synonyms ("New World chat")
+  entry
+    definition "songbirds having a chattering call"
+    id oewn-01563277-n
+    partOfSpeech n
+    synonyms ("Old World chat")
+  entry
+    definition "talk socially without exchanging too much information"
+    examples ("the men were sitting in the cafe and shooting the breeze")
+    id oewn-01040538-v
+    partOfSpeech v
+    synonyms ("chew the fat" "shoot the breeze" confabulate confab chitchat chit-chat chatter chaffer natter gossip jaw claver visit)
+source "oewn:2024"

@@ -1,0 +1,117 @@
+{
+  "lemma": "scrape",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07407582-n",
+      "partOfSpeech": "n",
+      "definition": "a harsh noise made by scraping",
+      "examples": [
+        "the scrape of violin bows distracted her"
+      ],
+      "synonyms": [
+        "scraping",
+        "scratch",
+        "scratching"
+      ]
+    },
+    {
+      "id": "oewn-14310051-n",
+      "partOfSpeech": "n",
+      "definition": "an abraded area where the skin is torn or worn off",
+      "synonyms": [
+        "abrasion",
+        "scratch",
+        "excoriation"
+      ]
+    },
+    {
+      "id": "oewn-07290194-n",
+      "partOfSpeech": "n",
+      "definition": "a deep bow with the foot drawn backwards (indicating excessive humility)",
+      "examples": [
+        "all that bowing and scraping did not impress him"
+      ],
+      "synonyms": [
+        "scraping"
+      ]
+    },
+    {
+      "id": "oewn-04701248-n",
+      "partOfSpeech": "n",
+      "definition": "an indication of damage",
+      "synonyms": [
+        "scratch",
+        "scar",
+        "mark"
+      ]
+    },
+    {
+      "id": "oewn-01310820-v",
+      "partOfSpeech": "v",
+      "definition": "scratch repeatedly",
+      "examples": [
+        "The cat scraped at the armchair"
+      ],
+      "synonyms": [
+        "grate"
+      ]
+    },
+    {
+      "id": "oewn-01753964-v",
+      "partOfSpeech": "v",
+      "definition": "make by scraping",
+      "examples": [
+        "They scraped a letter into the stone"
+      ]
+    },
+    {
+      "id": "oewn-01311803-v",
+      "partOfSpeech": "v",
+      "definition": "cut the surface of; wear away the surface of",
+      "synonyms": [
+        "scratch",
+        "scratch up"
+      ]
+    },
+    {
+      "id": "oewn-02044554-v",
+      "partOfSpeech": "v",
+      "definition": "bend the knees and bow in a servile manner",
+      "synonyms": [
+        "kowtow",
+        "genuflect"
+      ]
+    },
+    {
+      "id": "oewn-01387406-v",
+      "partOfSpeech": "v",
+      "definition": "gather (money or other resources) together over time",
+      "examples": [
+        "She had scraped together enough money for college",
+        "they scratched a meager living"
+      ],
+      "synonyms": [
+        "scrape up",
+        "scratch",
+        "come up"
+      ]
+    },
+    {
+      "id": "oewn-01312138-v",
+      "partOfSpeech": "v",
+      "definition": "bruise, cut, or injure the skin or the surface of",
+      "examples": [
+        "The boy skinned his knee when he fell"
+      ],
+      "synonyms": [
+        "skin"
+      ]
+    }
+  ]
+}

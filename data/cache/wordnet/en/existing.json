@@ -1,0 +1,39 @@
+{
+  "lemma": "existing",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00930258-a",
+      "partOfSpeech": "a",
+      "definition": "having existence or being or actuality",
+      "examples": [
+        "an attempt to refine the existent machinery to make it more efficient",
+        "much of the beluga caviar existing in the world is found in the Soviet Union and Iran"
+      ],
+      "synonyms": [
+        "existent"
+      ]
+    },
+    {
+      "id": "oewn-01736035-s",
+      "partOfSpeech": "s",
+      "definition": "presently existing",
+      "examples": [
+        "the existing system"
+      ]
+    },
+    {
+      "id": "oewn-01853029-s",
+      "partOfSpeech": "s",
+      "definition": "existing in something specified",
+      "examples": [
+        "depletion of the oxygen existing in the bloodstream"
+      ]
+    }
+  ]
+}

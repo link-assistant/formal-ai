@@ -1,0 +1,94 @@
+[
+  {
+    "word": "into",
+    "phonetic": "/ˈɪn.tuː/",
+    "phonetics": [
+      {
+        "text": "/ˈɪn.tuː/",
+        "audio": ""
+      },
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/into-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1218986",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈɪn.tu/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "To or towards the inside of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Mary danced into the house."
+          },
+          {
+            "definition": "To or towards the region of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The eagle flew off into the wide blue sky."
+          },
+          {
+            "definition": "Against, especially with force or violence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I wasn't careful, and walked into a wall"
+          },
+          {
+            "definition": "Indicates transition into another form or substance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I carved the piece of driftwood into a sculpture of a whale."
+          },
+          {
+            "definition": "After the start of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "About 20 minutes into the flight, the pilot reported a fire on board."
+          },
+          {
+            "definition": "Interested in or attracted to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "My date for tonight has black hair, and I'm into that."
+          },
+          {
+            "definition": "Expressing the operation of multiplication.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Five into three is fifteen."
+          },
+          {
+            "definition": "Expressing the operation of division, with the denominator given first. Usually with \"goes\".",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "24 goes into 48 how many times?"
+          },
+          {
+            "definition": "Investigating the subject (of).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There have been calls for research into the pesticides that are blamed for the decline in bee populations."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/into"
+    ]
+  }
+]

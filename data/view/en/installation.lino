@@ -1,0 +1,17 @@
+view
+  id M-c4cd6aec0c19
+  lemma installation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of installing something (as equipment)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a building or place that provides a particular service or is used for a particular industry"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal entry into an organization or position or office"
+    provenance (wordnet)

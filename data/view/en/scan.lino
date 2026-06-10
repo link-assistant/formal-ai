@@ -1,0 +1,41 @@
+view
+  id M-7d54cb8541f3
+  lemma scan
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of scanning; systematic examination of a prescribed region"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an image produced by scanning"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "examine minutely or intensely"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "examine hastily"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a wide, sweeping search of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "conform to a metrical pattern"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move a light beam over; in electronics, to reproduce an image"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "read metrically"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "obtain data from magnetic tapes or other digital sources"
+    provenance (wordnet)

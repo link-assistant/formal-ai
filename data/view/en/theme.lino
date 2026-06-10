@@ -1,0 +1,29 @@
+view
+  id M-079f6d12ecc5
+  lemma theme
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the subject matter of a conversation or discussion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unifying idea that is a recurrent element in literary or artistic work"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(music) melodic subject of a musical composition"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an essay (especially one written as an assignment)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(linguistics) the form of a word after all affixes are removed"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide with a particular theme or motive"
+    provenance (wordnet)

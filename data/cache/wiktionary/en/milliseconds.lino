@@ -1,0 +1,13 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One one-thousandth of a second. Symbol: ms."
+      partOfSpeech noun
+      synonyms (millisec)
+  sourceUrls ("https://en.wiktionary.org/wiki/millisecond" "https://en.wiktionary.org/wiki/milliseconds")
+  word milliseconds

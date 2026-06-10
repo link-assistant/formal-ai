@@ -1,0 +1,76 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An artist who paints pictures."
+        entry
+          definition "A laborer or workman who paints surfaces using a paintbrush or other means."
+      partOfSpeech noun
+  phonetic "/ˈpeɪntə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈpeɪntə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1780254"
+      text "/ˈpeɪntɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/painter")
+  word painter
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A chain or rope used to attach the shank of an anchor to the side of a ship when not in use."
+        entry
+          definition "A rope connected to the bow of a boat, used to attach it to e.g. a jetty or another boat."
+      partOfSpeech noun
+  phonetic "/ˈpeɪntə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈpeɪntə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1780254"
+      text "/ˈpeɪntɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/painter")
+  word painter
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A mountain lion."
+      partOfSpeech noun
+  phonetic "/ˈpeɪntə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈpeɪntə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1780254"
+      text "/ˈpeɪntɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/painter")
+  word painter

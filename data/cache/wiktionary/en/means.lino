@@ -1,0 +1,69 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To lament."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "To intend."
+        entry
+          definition "To convey (a meaning)."
+        entry
+          definition "To have conviction in (something said or expressed); to be sincere in (what one says)."
+          example "Does she really mean what she said to him last night?"
+        entry
+          definition "To cause or produce (a given result); to bring about (a given result)."
+          example "One faltering step means certain death."
+        entry
+          definition "(usually with to) To be of some level of importance."
+          example "Formality and titles mean nothing in their circle."
+      partOfSpeech verb
+      synonyms ("bring about" cause "lead to" "result in" convey indicate signify imply intend serious)
+    entry
+      definitions
+        entry
+          definition "(now chiefly in the plural) A method or course of action used to achieve some result."
+        entry
+          definition "(in the singular) An intermediate step or intermediate steps."
+        entry
+          definition "Something which is intermediate or in the middle; an intermediate value or range of values; a medium."
+        entry
+          definition "The middle part of three-part polyphonic music; now specifically, the alto part in polyphonic music; an alto instrument."
+        entry
+          definition "The average of a set of values, calculated by summing them together and dividing by the number of terms; the arithmetic mean."
+        entry
+          definition "Any function of multiple variables that satisfies certain properties and yields a number representative of its arguments; or, the number so yielded; a measure of central tendency."
+        entry
+          definition "Either of the two numbers in the middle of a conventionally presented proportion, as 2 and 3 in 1:2=3:6."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Resources; riches."
+          example "He was living beyond his means."
+      partOfSpeech noun
+      synonyms (wherewithal)
+    entry
+      definitions
+        entry
+          definition "An instrument or condition for attaining a purpose."
+          example "A car is a means of transport."
+      partOfSpeech noun
+      synonyms (wherewithal)
+  phonetic "/miːnz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/means-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1224279"
+      text "/miːnz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/mean" "https://en.wiktionary.org/wiki/means")
+  word means

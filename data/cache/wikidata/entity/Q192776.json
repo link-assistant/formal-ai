@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "Q192776": {
+      "type": "item",
+      "id": "Q192776",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "कृत्रिम तंत्रिका नेटवर्क"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "искусственная нейронная сеть"
+        },
+        "en": {
+          "language": "en",
+          "value": "artificial neural network"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "人工神經網絡"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "математическая модель, построенная по принципу организации и функционирования биологических нейронных сетей"
+        },
+        "en": {
+          "language": "en",
+          "value": "computational model used in machine learning, based on connected, hierarchical functions"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "模仿生物神經網路結構和功能的數學模型或計算模型"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "人工智慧网路"
+          },
+          {
+            "language": "zh",
+            "value": "類神經網路"
+          },
+          {
+            "language": "zh",
+            "value": "协同神经网络"
+          },
+          {
+            "language": "zh",
+            "value": "神经网络"
+          },
+          {
+            "language": "zh",
+            "value": "人工神经网络"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "न्यूरल नेटवर्क"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "искусственные нейронные сети"
+          },
+          {
+            "language": "ru",
+            "value": "нейросеть"
+          },
+          {
+            "language": "ru",
+            "value": "искусственная нейросеть"
+          },
+          {
+            "language": "ru",
+            "value": "ИНС"
+          },
+          {
+            "language": "ru",
+            "value": "нейронная сеть"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "ANN"
+          },
+          {
+            "language": "en",
+            "value": "neural network"
+          },
+          {
+            "language": "en",
+            "value": "connectionist system"
+          },
+          {
+            "language": "en",
+            "value": "connectionist systems"
+          },
+          {
+            "language": "en",
+            "value": "deep nets"
+          },
+          {
+            "language": "en",
+            "value": "Simulated Neural Network"
+          },
+          {
+            "language": "en",
+            "value": "Static Neural Network"
+          },
+          {
+            "language": "en",
+            "value": "SNN"
+          },
+          {
+            "language": "en",
+            "value": "Synergetic Neural Network"
+          },
+          {
+            "language": "en",
+            "value": "Neural Networks, Computer"
+          },
+          {
+            "language": "en",
+            "value": "neural net"
+          },
+          {
+            "language": "en",
+            "value": "artificial neural networks"
+          },
+          {
+            "language": "en",
+            "value": "NN"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

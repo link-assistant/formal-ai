@@ -1,27 +1,27 @@
 agent_info
-  field "name"
-    value "formal-ai"
-  field "version"
-    value "0.22.0"
-  field "tagline"
+  field name
+    value formal-ai
+  field version
+    value 0.22.0
+  field tagline
     value "Deterministic symbolic AI implementation with OpenAI-compatible APIs"
-  field "default_language"
-    value "en"
-  field "supported_languages"
-    value "en|ru|hi|zh"
-  field "repository"
-    value "link-assistant/formal-ai"
-  field "issue_template_labels"
-    value "bug"
-  field "memory_export_filename"
-    value "formal-ai-memory.lino"
-  field "bundle_export_filename"
-    value "formal-ai-bundle.lino"
-  field "memory_root_header"
-    value "demo_memory"
-  field "bundle_root_header"
-    value "formal_ai_bundle"
-  field "wikipedia_summary_endpoint_template"
+  field default_language
+    value en
+  field supported_languages
+    value ("en" "ru" "hi" "zh")
+  field repository
+    value link-assistant/formal-ai
+  field issue_template_labels
+    value bug
+  field memory_export_filename
+    value formal-ai-memory.lino
+  field bundle_export_filename
+    value formal-ai-bundle.lino
+  field memory_root_header
+    value demo_memory
+  field bundle_root_header
+    value formal_ai_bundle
+  field wikipedia_summary_endpoint_template
     value "https://{language}.wikipedia.org/api/rest_v1/page/summary/{title}"
-  field "wikipedia_fallback_language"
-    value "en"
+  field wikipedia_fallback_language
+    value en

@@ -1,0 +1,46 @@
+language en
+lemma add
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a condition (mostly in boys) characterized by behavioral and learning disorders"
+    id oewn-14079762-n
+    partOfSpeech n
+    synonyms ("attention deficit disorder" "attention deficit hyperactivity disorder" ADHD "hyperkinetic syndrome" "minimal brain dysfunction" "minimal brain damage" MBD)
+  entry
+    definition "make an addition (to); join or combine or unite with others; increase the quality, quantity, size or scope of"
+    examples ("We added two students to that dorm room" "She added a personal note to her letter" "Add insult to injury" "Add some extra plates to the dinner table")
+    id oewn-00182551-v
+    partOfSpeech v
+  entry
+    definition "state or say further"
+    examples ("‘It doesn't matter,’ he supplied")
+    id oewn-01029183-v
+    partOfSpeech v
+    synonyms (append supply)
+  entry
+    definition "bestow a quality on"
+    examples ("Her presence lends a certain cachet to the company" "The music added a lot to the play" "She brings a special atmosphere to our meetings" "This adds a light note to the program")
+    id oewn-02329474-v
+    partOfSpeech v
+    synonyms (lend impart bestow contribute bring)
+  entry
+    definition "make an addition by combining numbers"
+    examples ("Add 27 and 49, please!")
+    id oewn-00642490-v
+    partOfSpeech v
+    synonyms ("add together")
+  entry
+    definition "determine the sum of"
+    examples ("Add all the people in this town to those of the neighboring town")
+    id oewn-00951320-v
+    partOfSpeech v
+    synonyms (total tot "tot up" sum "sum up" summate "tote up" "add together" tally "add up")
+  entry
+    definition "constitute an addition"
+    examples ("This paper will add to her reputation")
+    id oewn-02751047-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,209 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The act of going."
+        entry
+          definition "A turn at something, or in something (e.g. a game)."
+          example "It’s your go."
+          synonyms (move stint turn)
+        entry
+          definition "An attempt, a try."
+          example "I’ll give it a go."
+          synonyms (attempt bash shot stab try)
+        entry
+          definition "An approval or permission to do something, or that which has been approved."
+          example "We will begin as soon as the boss says it's a go."
+          synonyms ("green light")
+        entry
+          definition "An act; the working or operation."
+        entry
+          definition "A circumstance or occurrence; an incident, often unexpected."
+        entry
+          definition "The fashion or mode."
+          example "quite the go"
+          synonyms (mode style trend)
+        entry
+          definition "Noisy merriment."
+          example "a high go"
+        entry
+          definition "A glass of spirits; a quantity of spirits."
+          synonyms (gage measure)
+        entry
+          definition "Power of going or doing; energy; vitality; perseverance."
+          example "There is no go in him."
+          synonyms (energy flair liveliness perseverance pizzazz spirit verve vigour vim vitality zest)
+        entry
+          definition "The situation where a player cannot play a card which will not carry the aggregate count above thirty-one."
+        entry
+          definition "A period of activity."
+          example "ate it all in one go"
+        entry
+          definition "(British slang) A dandy; a fashionable person."
+      partOfSpeech noun
+      synonyms (attempt bash shot stab try energy flair liveliness perseverance pizzazz spirit verve vigour vim vitality zest gage measure "green light" mode style trend move stint turn)
+    entry
+      antonyms (freeze halt remain "stand still" stay stop)
+      definitions
+        entry
+          antonyms (freeze halt remain "stand still" stay stop)
+          definition "To move:"
+          synonyms (cross draw drift fare move tread wend)
+        entry
+          definition "(chiefly of a machine) To work or function (properly); to move or perform (as required)."
+          example "The engine just won't go anymore."
+          synonyms (function operate work)
+        entry
+          definition "To start; to begin (an action or process)."
+          example "Get ready, get set, go!"
+        entry
+          definition "To take a turn, especially in a game."
+          example "It’s your turn; go."
+          synonyms ("make one's move" move "take one’s turn")
+        entry
+          definition "To attend."
+          example "I go to school at the schoolhouse."
+        entry
+          definition "To proceed:"
+        entry
+          definition "To follow or travel along (a path):"
+        entry
+          definition "To extend (from one point in time or space to another)."
+          example "This property goes all the way to the state line."
+        entry
+          definition "To lead (to a place); to give access to."
+          example "Does this road go to Fort Smith?"
+        entry
+          definition "To become. (The adjective that follows usually describes a negative state.)"
+          example "After failing as a criminal, he decided to go straight."
+          synonyms (become "change into" turn)
+        entry
+          definition "To assume the obligation or function of; to be, to serve as."
+        entry
+          definition "To continuously or habitually be in a state."
+          example "I don't want my children to go hungry."
+        entry
+          definition "To come to (a certain condition or state)."
+          example "They went into debt, she goes to sleep around 10 o'clock."
+        entry
+          definition "To change (from one value to another) in the meaning of wend."
+          example "The traffic light went straight from green to red."
+        entry
+          definition "To turn out, to result; to come to (a certain result)."
+          example "How did your meeting with Smith go?"
+        entry
+          definition "To tend (toward a result)."
+          example "These experiences go to make us stronger."
+        entry
+          definition "To contribute to a (specified) end product or result."
+          example "qualities that go to make a lady / lip-reader / sharpshooter"
+        entry
+          definition "To pass, to be used up:"
+        entry
+          definition "To die."
+        entry
+          definition "To be discarded."
+          example "This chair has got to go."
+        entry
+          definition "To be lost or out:"
+        entry
+          definition "To break down or apart:"
+        entry
+          definition "To be sold."
+          example "Everything must go."
+        entry
+          definition "To be given, especially to be assigned or allotted."
+          example "The award went to Steven Spielberg."
+        entry
+          definition "To survive or get by; to last or persist for a stated length of time."
+          example "Can you two go twenty minutes without arguing?!"
+        entry
+          definition "To have a certain record."
+          example "The team is going five in a row."
+        entry
+          definition "To be authoritative, accepted, or valid:"
+        entry
+          definition "To say (something), to make a sound:"
+        entry
+          definition "To be expressed or composed (a certain way)."
+          example "As the story goes, he got the idea for the song while sitting in traffic."
+        entry
+          definition "To resort (to)."
+          example "I'll go to court if I have to."
+        entry
+          definition "To apply or subject oneself to:"
+        entry
+          definition "To fit (in a place, or together with something):"
+        entry
+          definition "To date."
+          example "He's been going with her for two weeks."
+          synonyms (date "go out (with)" see)
+        entry
+          definition "To attack:"
+        entry
+          definition "To be in general; to be usually."
+          example "As sentences go, this one is pretty boring."
+        entry
+          definition "To take (a particular part or share); to participate in to the extent of."
+          example "Let's go halves on this."
+        entry
+          definition "To yield or weigh."
+          example "Those babies go five tons apiece."
+        entry
+          definition "To offer, bid or bet an amount; to pay."
+          example "I'll go a ten-spot."
+        entry
+          definition "To enjoy. (Compare go for.)"
+          example "I could go a beer right about now."
+        entry
+          definition "To urinate or defecate."
+          example "Have you managed to go today, Mrs. Miggins?"
+      partOfSpeech verb
+      synonyms (become "change into" turn cross draw drift fare move tread wend date "go out (with)" see function operate work "make one's move" move "take one’s turn")
+    entry
+      definitions
+        entry
+          definition "Working correctly and ready to commence operation; approved and able to be put into action."
+      partOfSpeech adjective
+  phonetic "/ɡəʉ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/go-1-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75271526"
+      text "/ɡəʉ/"
+    entry
+      audio ""
+      text "/ɡɐʉ/"
+    entry
+      audio ""
+      text "/ɡəʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/go-1-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711124"
+      text "/ɡoʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/go")
+  word go
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A strategic board game, originally from China, in which two players (black and white) attempt to control the largest area of the board with their counters."
+          synonyms (baduk weiqi)
+      partOfSpeech noun
+      synonyms (baduk weiqi)
+  sourceUrls ("https://en.wiktionary.org/wiki/go")
+  word go

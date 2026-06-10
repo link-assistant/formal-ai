@@ -1,0 +1,12 @@
+language en
+lemma an
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an associate degree in nursing"
+    id oewn-06710913-n
+    partOfSpeech n
+    synonyms ("Associate in Nursing")
+source "oewn:2024"

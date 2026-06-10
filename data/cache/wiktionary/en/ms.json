@@ -1,0 +1,374 @@
+[
+  {
+    "word": "ms",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A book, composition or any other document, written by hand (or manually typewritten), not mechanically reproduced.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A single, original copy of a book, article, composition etc, written by hand or even printed, submitted as original for (copy-editing and) reproductive publication.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "autograph",
+          "handwrit",
+          "handwriting",
+          "ms",
+          "ms."
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/manuscript",
+      "https://en.wiktionary.org/wiki/ms"
+    ]
+  },
+  {
+    "word": "ms",
+    "phonetic": "/ɛmz/",
+    "phonetics": [
+      {
+        "text": "/ɛmz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Abbreviation of million.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Thousand",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A prescribed quantity or extent.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act or result of measuring.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Metrical rhythm.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A course of action.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "bar",
+          "metric"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(always meter) A device that measures things.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(always meter) A parking meter or similar device for collecting payment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(always meter) One who metes or measures.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a labouring coal-meter"
+          },
+          {
+            "definition": "(elsewhere metre) The base unit of length in the International System of Units (SI), conceived of as 1/10000000 of the distance from the North Pole to the Equator, and now defined as the distance light will travel in a vacuum in 1/299792458 second.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(elsewhere metre) An increment of music; the overall rhythm; particularly, the number of beats in a measure.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(elsewhere metre) The rhythm pattern in a poem.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(elsewhere metre) A line above or below a hanging net, to which the net is attached in order to strengthen it.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A poem.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The international mile: a unit of length precisely equal to 1.609344 kilometers established by treaty among Anglophone nations in 1959, divided into 5,280 feet or 1,760 yards.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of several customary units of length derived from the 1593 English statute mile of 8 furlongs, equivalent to 5,280 feet or 1,760 yards of various precise values.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of many customary units of length derived from the Roman mile (mille passus) of 8 stades or 5,000 Roman feet.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The Scandinavian mile: a unit of length precisely equal to 10 kilometers defined in 1889.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of many customary units of length from other measurement systems of roughly similar values, as the Chinese (里) or Arabic mile (al-mīl).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(travel) An airline mile in a frequent flier program.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any similarly large distance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The shot missed by a mile."
+          },
+          {
+            "definition": "A race of 1 mile's length; a race of around 1 mile's length (usually 1500 or 1600 meters)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The runners competed in the mile."
+          },
+          {
+            "definition": "One mile per hour, as a measure of speed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "five miles over the speed limit"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A half note, drawn as a semibreve with a stem.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A unit of volume, in the Imperial and U.S. customary systems, 1/60 fluid drachm. Approximately equal to 1 drop, 62 μL or 0.9 grain (weight) of water.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A short vertical stroke used in handwriting.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Anything very minute; applied to animalcula and the like.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the minims of existence"
+          },
+          {
+            "definition": "The smallest kind of worker in a leaf-cutter ant colony.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A little man or being; a dwarf.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A small fish; a minnow.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A short poetical encomium.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of time equal to sixty seconds (one-sixtieth of an hour).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You have twenty minutes to complete the test."
+          },
+          {
+            "definition": "A short but unspecified time period.",
+            "synonyms": [
+              "instant",
+              "jiffy",
+              "mo",
+              "moment",
+              "sec",
+              "second",
+              "tic"
+            ],
+            "antonyms": [],
+            "example": "Wait a minute, I’m not ready yet!"
+          },
+          {
+            "definition": "A unit of angle equal to one-sixtieth of a degree.",
+            "synonyms": [
+              "minute of arc"
+            ],
+            "antonyms": [],
+            "example": "We need to be sure these maps are accurate to within one minute of arc."
+          },
+          {
+            "definition": "(chiefly in the plural, minutes) A (usually formal) written record of a meeting or a part of a meeting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let’s look at the minutes of last week’s meeting."
+          },
+          {
+            "definition": "A unit of purchase on a telephone or other network, especially a cell phone network, roughly equivalent in gross form to sixty seconds' use of the network.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you buy this phone, you’ll get 100 free minutes."
+          },
+          {
+            "definition": "A point in time; a moment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A nautical or a geographic mile.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An old coin, a half farthing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A very small part of anything, or anything very small; a jot; a whit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A fixed part of a module.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A while or a long unspecified period of time",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Oh, I ain't heard that song in a minute!"
+          }
+        ],
+        "synonyms": [
+          "instant",
+          "jiffy",
+          "mo",
+          "moment",
+          "sec",
+          "second",
+          "tic",
+          "minute of arc"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A period into which a year is divided, historically based on the phases of the moon.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "July is my favourite month."
+          },
+          {
+            "definition": "A period of 30 days, 31 days, or some alternation thereof.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We went on holiday for two months."
+          },
+          {
+            "definition": "(in the plural) A woman's period; menstrual discharge.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/m",
+      "https://en.wiktionary.org/wiki/measure",
+      "https://en.wiktionary.org/wiki/meter",
+      "https://en.wiktionary.org/wiki/mile",
+      "https://en.wiktionary.org/wiki/minim",
+      "https://en.wiktionary.org/wiki/minute",
+      "https://en.wiktionary.org/wiki/month",
+      "https://en.wiktionary.org/wiki/ms"
+    ]
+  }
+]

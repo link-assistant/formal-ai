@@ -1,0 +1,25 @@
+language en
+lemma summary
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a brief statement that presents the main points in a concise form"
+    examples ("he gave a summary of the conclusions")
+    id oewn-06478678-n
+    partOfSpeech n
+    synonyms (sum-up)
+  entry
+    definition "performed speedily and without formality"
+    examples ("a summary execution" "summary justice")
+    id oewn-01637923-s
+    partOfSpeech s
+    synonyms (drumhead)
+  entry
+    definition "briefly giving the gist of something"
+    examples ("a short and compendious book" "a compact style is brief and pithy" "succinct comparisons" "a summary formulation of a wide-ranging subject")
+    id oewn-00549537-s
+    partOfSpeech s
+    synonyms (compendious compact succinct)
+source "oewn:2024"

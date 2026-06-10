@@ -1,0 +1,9 @@
+view
+  id M-cd872184ed57
+  lemma upload
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer a file or program to a central computer from a smaller computer or a computer at a remote location"
+    provenance (wordnet)

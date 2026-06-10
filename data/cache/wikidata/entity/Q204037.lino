@@ -1,0 +1,16 @@
+Q204037
+  aliases
+    en ("ln x" "natural logarithm function" "natural logarithmic function" "natural log" "natural lg" "ln(x)" "Napierian logarithm" "Naperian logarithm" "logarithmus naturalis" "hyperbolic logarithm" "base-e logarithm" "logarithm base e" "log base e")
+    zh ("㏑" "自然对数" ln)
+  descriptions
+    en "logarithm to the base of the mathematical constant e"
+    ru "логарифм по основанию e≈2,71828"
+    zh "以常數e為底數的對數"
+  id Q204037
+  labels
+    en "natural logarithm"
+    hi "प्राकृतिक लघुगणक"
+    ru "натуральный логарифм"
+    zh "自然對數"
+  type item
+success 1

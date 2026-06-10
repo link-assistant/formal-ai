@@ -1,0 +1,17 @@
+Q134237
+  aliases
+    en ("2nd root" "second root" "square root function" "second root function" "2nd root function")
+    ru ("√" "арифметический квадратный корень" "корень квадратный" sqrt)
+    zh ("開平方" "^1/2")
+  descriptions
+    en "inverse operation of square for finding the original base number; that base number itself"
+    ru "операция, обратная к возведению в квадрат"
+    zh "乘二次方的逆运算"
+  id Q134237
+  labels
+    en "square root"
+    hi "वर्गमूल"
+    ru "квадратный корень"
+    zh "平方根"
+  type item
+success 1

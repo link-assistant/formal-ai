@@ -1,0 +1,24 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition 'In the International System of Units, the base unit of thermodynamic temperature; 1/273.16 of the thermodynamic temperature of the triple point of water. Shown as "K".'
+        entry
+          definition "A unit interval on the Kelvin scale."
+          example "The interval between the freezing and boiling points of water is 100 kelvins."
+        entry
+          definition "(usually as postpositioned adjective) A unit for a specific temperature on the Kelvin scale."
+          example "Ice melts above 273.15 kelvin."
+      partOfSpeech noun
+      synonyms ("degree Kelvin" "degree absolute" "degree kelvin" "degree Celsius" "degree Kelvin" "degree absolute" "degree kelvin")
+  phonetic "/ˈkɛlvən/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkɛlvən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/kelvin")
+  word kelvin

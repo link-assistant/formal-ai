@@ -1,0 +1,141 @@
+{
+  "entities": {
+    "Q128751": {
+      "type": "item",
+      "id": "Q128751",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "source code"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "исходный код"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मूल कोड"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "源代码"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "collection of computer instructions written using some human-readable computer language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "текст компьютерной программы на каком-либо языке программирования или языке разметки"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "收集计算机使用一些人类可读的计算机语言编写的指令"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "source"
+          },
+          {
+            "language": "en",
+            "value": "src"
+          },
+          {
+            "language": "en",
+            "value": "software code"
+          },
+          {
+            "language": "en",
+            "value": "program code"
+          },
+          {
+            "language": "en",
+            "value": "code"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "код"
+          },
+          {
+            "language": "ru",
+            "value": "исходники"
+          },
+          {
+            "language": "ru",
+            "value": "исходник"
+          },
+          {
+            "language": "ru",
+            "value": "листинг"
+          },
+          {
+            "language": "ru",
+            "value": "исходные тексты"
+          },
+          {
+            "language": "ru",
+            "value": "программный код"
+          },
+          {
+            "language": "ru",
+            "value": "исходный текст"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "源程序"
+          },
+          {
+            "language": "zh",
+            "value": "源代碼"
+          },
+          {
+            "language": "zh",
+            "value": "软件代码"
+          },
+          {
+            "language": "zh",
+            "value": "源碼"
+          },
+          {
+            "language": "zh",
+            "value": "原始码"
+          },
+          {
+            "language": "zh",
+            "value": "代码"
+          },
+          {
+            "language": "zh",
+            "value": "程式碼"
+          },
+          {
+            "language": "zh",
+            "value": "查看源代码"
+          },
+          {
+            "language": "zh",
+            "value": "原程式碼"
+          },
+          {
+            "language": "zh",
+            "value": "源程式碼"
+          },
+          {
+            "language": "zh",
+            "value": "原始碼"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

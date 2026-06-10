@@ -1,0 +1,81 @@
+{
+  "entities": {
+    "Q11574": {
+      "type": "item",
+      "id": "Q11574",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "second"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "секунда"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सैकण्ड"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "秒"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of time, defined as 9 192 631 770 periods of the ground-state hyperfine transitions of caesium-133"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица времени"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "國際單位制時間單位，定義為銫133基態超精細躍遷的9192631770個週期"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "s"
+          },
+          {
+            "language": "en",
+            "value": "seconds"
+          },
+          {
+            "language": "en",
+            "value": "sec."
+          },
+          {
+            "language": "en",
+            "value": "sec"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "с"
+          },
+          {
+            "language": "ru",
+            "value": "сек"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "秒钟"
+          },
+          {
+            "language": "zh",
+            "value": "秒鐘"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

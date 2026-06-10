@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "Q23350": {
+      "type": "item",
+      "id": "Q23350",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "७"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число, расположенное между числами 6 и 8"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "N°7"
+          },
+          {
+            "language": "en",
+            "value": "the number 7"
+          },
+          {
+            "language": "en",
+            "value": "seven"
+          },
+          {
+            "language": "en",
+            "value": "number seven"
+          },
+          {
+            "language": "en",
+            "value": "number 7"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "семь"
+          },
+          {
+            "language": "ru",
+            "value": "семёрка"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "➆"
+          },
+          {
+            "language": "zh",
+            "value": "➐"
+          },
+          {
+            "language": "zh",
+            "value": "〧"
+          },
+          {
+            "language": "zh",
+            "value": "柒"
+          },
+          {
+            "language": "zh",
+            "value": "７"
+          },
+          {
+            "language": "zh",
+            "value": "❼"
+          },
+          {
+            "language": "zh",
+            "value": "七"
+          },
+          {
+            "language": "zh",
+            "value": "⓻"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,25 @@
+view
+  id M-0f9a04c17e29
+  lemma then
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "that time; that moment"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "subsequently or soon afterward (often used as sentence connectors)"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in that case or as a consequence"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at that time"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "at a specific prior time"
+    provenance (wordnet)

@@ -1,0 +1,32 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To measure with a metering device."
+        entry
+          definition "To imprint a postage mark with a postage meter."
+        entry
+          definition "To regulate the flow of or to deliver in regulated amounts (usually of fluids but sometimes of other things such as anticipation or breath)."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "The basic unit of length in the International System of Units (SI: Système International d'Unités), equal to the distance travelled by light in a vacuum in 1/299 792 458 seconds. The metre is equal to 39 47/127 (approximately 39.37) imperial inches."
+      partOfSpeech noun
+      synonyms (m)
+    entry
+      definitions
+        entry
+          definition "The rhythm or measure in verse and musical composition."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To put into metrical form."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/meter" "https://en.wiktionary.org/wiki/metre" "https://en.wiktionary.org/wiki/metres")
+  word metres

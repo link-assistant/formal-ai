@@ -1,0 +1,80 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A person who serves as a subject for artwork or fashion, usually in the medium of photography but also for painting or drawing."
+          example "The beautiful model had her face on the cover of almost every fashion magazine imaginable."
+        entry
+          definition "A person, usually an attractive female, hired to show items or goods to the public, such as items given away as prizes on a TV game show."
+        entry
+          definition "A representation of a physical object, usually in miniature."
+          example "The boy played with a model of a World War II fighter plane."
+        entry
+          definition "A simplified representation used to explain the workings of a real world system or event."
+          example "The computer weather model did not correctly predict the path of the hurricane."
+        entry
+          definition "A style, type, or design."
+          example "He decided to buy the turbo engine model of the sports car."
+        entry
+          definition "The structural design of a complex system."
+          example "The team developed a sound business model."
+        entry
+          definition "A successful example to be copied, with or without modifications."
+          example "British parliamentary democracy was seen as a model for other countries to follow."
+        entry
+          definition "An interpretation function which assigns a truth value to each atomic proposition."
+        entry
+          definition "An interpretation which makes a set of sentences true, in which case that interpretation is called a model of that set."
+        entry
+          definition "An animal that is used to study a human disease or pathology."
+        entry
+          definition "Any copy, or resemblance, more or less exact."
+        entry
+          definition "In software applications using the model-view-controller design pattern, the part or parts of the application that manage the data."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To display for others to see, especially in regard to wearing clothing while performing the role of a fashion model"
+          example "She modelled the shoes for her friends to see."
+        entry
+          definition "To use as an object in the creation of a forecast or model"
+          example "They modelled the data with a computer to analyze the experiment’s results."
+        entry
+          definition "To make a miniature model of"
+          example "He takes great pride in his skill at modeling airplanes."
+        entry
+          definition "To create from a substance such as clay"
+          example "The sculptor modelled the clay into the form of a dolphin."
+        entry
+          definition "To make a model or models"
+        entry
+          definition "To be a model of any kind"
+          example "The actress used to model before being discovered by Hollywood."
+      partOfSpeech verb
+      synonyms (modelise modelize)
+    entry
+      definitions
+        entry
+          definition "Worthy of being a model; exemplary."
+          synonyms (ideal)
+      partOfSpeech adjective
+      synonyms (ideal)
+  phonetic "/ˈmɒdl̩/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈmɒdl̩/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/model-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100796"
+      text "/ˈmɑdl̩/"
+  sourceUrls ("https://en.wiktionary.org/wiki/model")
+  word model

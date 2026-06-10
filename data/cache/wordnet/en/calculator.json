@@ -1,0 +1,30 @@
+{
+  "lemma": "calculator",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09906486-n",
+      "partOfSpeech": "n",
+      "definition": "an expert at calculation (or at operating calculating machines)",
+      "synonyms": [
+        "reckoner",
+        "figurer",
+        "estimator",
+        "computer"
+      ]
+    },
+    {
+      "id": "oewn-02942270-n",
+      "partOfSpeech": "n",
+      "definition": "a small machine that is used for mathematical calculations; can be mechanical or electronic",
+      "synonyms": [
+        "calculating machine"
+      ]
+    }
+  ]
+}

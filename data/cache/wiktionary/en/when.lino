@@ -1,0 +1,82 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The time at which something happens."
+          example "A good article will cover the who, the what, the when, the where, the why and the how."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "(interrogative) At what time? At which time? Upon which occasion or circumstance? Used to introduce direct or indirect questions about time."
+          example "Do you know when they arrived?"
+        entry
+          definition "At an earlier time and under different, usually less favorable, circumstances."
+          example "He's mister high and mighty now, but I remember him when."
+        entry
+          definition "(relative) At which, on which, during which: often omitted or replaced with that."
+          example "That was the day when the Twin Towers fell."
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition "(interrogative) What time; which time."
+          example "Since when do I need your permission?"
+        entry
+          definition "The time that."
+          example "I recall when they were called the Greys."
+      partOfSpeech pronoun
+    entry
+      definitions
+        entry
+          definition "At (or as soon as) that time that; at the (or any and every) time that; if."
+          example "A player wins when [as soon as, or at any time that, if] she has four cards of the same suit."
+        entry
+          definition "During the time that; at the time of the action of the following clause or participle phrase."
+          example "Be careful when crossing the street."
+        entry
+          definition "At what time; at which time."
+          example "I am here till Friday, when [i.e. at which time] I leave for Senegal."
+        entry
+          definition "Since; given the fact that; considering that."
+          example "I don't see the point of putting up Christmas decorations when I am the only person who is going to see them."
+        entry
+          definition "Whereas; although; at the same time as; in spite of the fact that."
+          example "He keeps changing things when the existing system works perfectly well."
+      partOfSpeech conjunction
+      synonyms ("as soon as" immediately once whenever while whilst whenever "given that" "seeing that" but where whereas)
+    entry
+      definitions
+        entry
+          definition "That's enough, a command to stop adding something, especially an ingredient of food or drink."
+        entry
+          definition "Expressing impatience. (Compare what.)"
+      partOfSpeech interjection
+  phonetic "/ʍɛn/"
+  phonetics
+    entry
+      audio ""
+      text "/ʍɛn/"
+    entry
+      audio ""
+      text "/ʍɛn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/when-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028963"
+      text "/wɛn/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/when-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=37583407"
+      text "/wɛn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/when")
+  word when

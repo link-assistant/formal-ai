@@ -1,0 +1,19 @@
+Q61
+  aliases
+    en ("Washington, District of Columbia" "D.C. Washington" "The District" "District of Columbia" "City of Washington, D.C." "Washington City, D.C." "Nation's Capital (D.C.)" "Federal City (D.C.)")
+    hi ("वाशिंगटन,डी.सी." "वाशिंगटन डी सी")
+    ru ("Округ Колумбия")
+    zh ("華盛頓特區" "哥倫比亞特區" "華盛頓市" "華盛頓" "華府" "花生屯" "浣洗屯")
+  descriptions
+    en "capital city of the United States of America"
+    hi "संयुक्त राज्य अमेरिका की राजधानी"
+    ru "город, столица Соединённых Штатов Америки"
+    zh "美利堅合眾國的首都"
+  id Q61
+  labels
+    en "Washington, D.C."
+    hi "वॉशिंगटन डी॰ सी॰"
+    ru "Вашингтон"
+    zh "華盛頓哥倫比亞特區"
+  type item
+success 1

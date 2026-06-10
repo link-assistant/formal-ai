@@ -1,240 +1,226 @@
 meanings
-  meaning "causal_interrogative"
-    gloss "the interrogative word that asks for a cause or reason — why, почему, क्यों, 为什么. By itself it carries no answer reference; a why-did-you-answer question composes it with a prior-answer reference. Only the Hindi and Chinese surfaces are read by the recogniser, paired with prior_answer_reference within the same language to detect a head-final why-question; the English and Russian why-questions front the interrogative and are matched through answer_rationale_inquiry instead."
-    wiktionary "why"
-    defined_by "inquiry"
-    role "causal_interrogative"
-    lexeme "en"
-      word "why"
-        description "English interrogative adverb asking for a cause or reason; the bare surface for the causal interrogative concept."
-    lexeme "ru"
-      word "почему"
-        description "Russian interrogative adverb (romanized pochemu) asking for a cause or reason; the bare surface for the causal interrogative concept."
-    lexeme "hi"
-      word "क्यों"
-        description "Hindi interrogative adverb (romanized kyon) asking for a cause or reason; paired with a prior-answer reference to detect a head-final why-question."
-    lexeme "zh"
-      word "为什么"
-        description "Chinese interrogative (pinyin weishenme) asking for a cause or reason; paired with a prior-answer reference to detect a head-final why-question."
-  meaning "prior_answer_reference"
-    gloss "a reference to the answer the assistant previously gave — the object a why-question points back at when it asks the assistant to justify its prior reply. Only the Hindi and Chinese surfaces are read by the recogniser, paired with the causal interrogative within the same language; the English and Russian why-questions front the interrogative and are matched through answer_rationale_inquiry instead. A dedicated reference rather than the broader answer meaning so its Chinese surface stays exactly 回答, mirroring the original recogniser that required 回答 and not the synonym 答复."
-    wiktionary "answer"
-    defined_by "answer"
-    role "prior_answer_reference"
-    lexeme "en"
-      word "answer"
-        description "English noun for the reply the assistant previously returned; the surface a why-question refers back to."
-    lexeme "ru"
-      word "ответ"
-        description "Russian noun (romanized otvet) for the answer the assistant previously returned; the surface a why-question refers back to."
-    lexeme "hi"
-      word "जवाब"
-        description "Hindi noun (romanized javab) for the reply the assistant previously gave; paired with the causal interrogative to detect a head-final why-question."
-      word "उत्तर"
-        description "Hindi noun (romanized uttar) for the answer the assistant previously gave; an alternative surface paired with the causal interrogative."
-    lexeme "zh"
-      word "回答"
-        description "Chinese noun and verb (pinyin huida) for the answer the assistant previously gave; paired with the causal interrogative to detect a head-final why-question."
-  meaning "answer_rationale_inquiry"
-    gloss "a why-did-you-answer question — the causal interrogative composed with a reference to the assistant's prior answer, asking it to justify the reply it just gave. The English and Russian surfaces front the interrogative, so the recogniser matches them directly: a prefix surface (trailing … slot) matches when the prompt opens with the literal, and a bare surface matches anywhere. The Hindi and Chinese why-questions are head-final and are detected instead as a same-language pair of causal_interrogative and prior_answer_reference, so the Hindi and Chinese surfaces here are inert completeness forms that are never matched."
-    wiktionary "why"
-    defined_by "causal_interrogative"
-    defined_by "prior_answer_reference"
-    defined_by "inquiry"
-    role "answer_rationale_lead"
-    lexeme "en"
-      word "why …"
-        description "English prefix surface; starts_with why (trailing space), the rest of the question follows the … slot."
-      word "why did you answer"
-        description "English bare surface; matches the why-did-you-answer clause anywhere in the prompt, even when it does not open it."
-    lexeme "ru"
-      word "почему …"
-        description "Russian prefix surface (romanized pochemu); starts_with почему (trailing space), the rest of the question follows the … slot."
-      word "почему ты ответил"
-        description "Russian bare surface (romanized pochemu ty otvetil) for why-did-you-answer addressed to the assistant; matches anywhere in the prompt."
-      word "почему ты так ответил"
-        description "Russian bare surface (romanized pochemu ty tak otvetil) for why-did-you-answer-that-way; matches anywhere in the prompt."
-      word "почему вы ответили"
-        description "Russian bare surface (romanized pochemu vy otvetili) for why-did-you-answer in the polite plural; matches anywhere in the prompt."
-    lexeme "hi"
-      word "ऐसा जवाब क्यों दिया"
-        description "Hindi why-did-you-answer phrasing (romanized aisa javab kyon diya); an inert completeness form — Hindi why-questions are detected as a causal_interrogative and prior_answer_reference pair, not through this surface."
-    lexeme "zh"
-      word "为什么这样回答"
-        description "Chinese why-did-you-answer phrasing (pinyin weishenme zheyang huida); an inert completeness form — Chinese why-questions are detected as a causal_interrogative and prior_answer_reference pair, not through this surface."
-  meaning "assistant_self_reference"
-    gloss "a second-person reference to the assistant — you, your, ты, вы, आप, तुम, 你, 您 and the project name formal ai. It marks that a prompt is addressed to the assistant itself. Matched as raw substrings, since several Russian forms are inflectable stems (теб for тебя and тебе, тво for твой and твоё): the architecture recogniser requires it together with an architecture concept, and the how-you-work recogniser requires its Russian forms together with the operating principle. Distinct from self_reference, whose reflexive pronouns (yourself, себя) name the assistant as the grammatical object rather than addressing it in the second person."
-    wiktionary "you"
-    defined_by "assistant"
-    defined_by "self_reference"
-    role "assistant_self_reference"
-    lexeme "en"
-      word "you"
-        description "English second-person pronoun addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "your"
-        description "English second-person possessive addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "formal ai"
-        description "English project name addressing the assistant directly; a raw-substring surface for the assistant self-reference concept."
-    lexeme "ru"
-      word "ты"
-        description "Russian second-person pronoun (romanized ty) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "теб"
-        description "Russian second-person stem (romanized teb) shared by тебя and тебе addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "твоя"
-        description "Russian feminine second-person possessive (romanized tvoya) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "твой"
-        description "Russian masculine second-person possessive (romanized tvoy) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "тво"
-        description "Russian second-person possessive stem (romanized tvo) shared by твоё and твои addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "вы"
-        description "Russian polite second-person pronoun (romanized vy) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-    lexeme "hi"
-      word "आप"
-        description "Hindi polite second-person pronoun (romanized aap) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "तुम"
-        description "Hindi informal second-person pronoun (romanized tum) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-    lexeme "zh"
-      word "你"
-        description "Chinese second-person pronoun (pinyin ni) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-      word "您"
-        description "Chinese polite second-person pronoun (pinyin nin) addressing the assistant; a raw-substring surface for the assistant self-reference concept."
-  meaning "assistant_mechanism_inquiry"
-    gloss "a how-do-you-work question addressed to the assistant — the mechanism-inquiry concept applied to the assistant itself, asking it to explain how it operates, how it is built, or the idea behind its design. Each surface is a complete clause matched as a raw substring; the recogniser fires when any one of them appears. The Russian principle-of-operation phrasing (принцип работы … тебя) is handled separately, by composing the operating_principle concept with an assistant self-reference, so it is not listed here."
-    wiktionary "work"
-    defined_by "mechanism_inquiry"
-    defined_by "assistant"
-    role "assistant_mechanism_inquiry"
-    lexeme "en"
-      word "how do you work"
-        description "English how-you-work clause asking the assistant to explain its operation; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "how does this work"
-        description "English how-this-works clause asking the assistant to explain its operation; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "how does it work"
-        description "English how-it-works clause asking the assistant to explain its operation; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "show me how you work"
-        description "English imperative asking the assistant to demonstrate how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "explain how you work"
-        description "English imperative asking the assistant to explain how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-    lexeme "ru"
-      word "как ты работаешь"
-        description "Russian how-you-work clause (romanized kak ty rabotaesh) asking the assistant to explain its operation; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "покажи как ты работаешь"
-        description "Russian imperative (romanized pokazhi kak ty rabotaesh) asking the assistant to show how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "расскажи как ты работаешь"
-        description "Russian imperative (romanized rasskazhi kak ty rabotaesh) asking the assistant to tell how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "объясни как ты работаешь"
-        description "Russian imperative (romanized obyasni kak ty rabotaesh) asking the assistant to explain how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "как ты устроен"
-        description "Russian how-you-are-built clause (romanized kak ty ustroen) asking the assistant how it is constructed; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "покажи как ты устроен"
-        description "Russian imperative (romanized pokazhi kak ty ustroen) asking the assistant to show how it is constructed; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "какая у тебя модель окружающего мира"
-        description "Russian question (romanized kakaya u tebya model okruzhayushchego mira) asking what model of the surrounding world the assistant has; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "модель окружающего мира"
-        description "Russian phrase (romanized model okruzhayushchego mira) for a model of the surrounding world; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "идея твоей разработки"
-        description "Russian phrase (romanized ideya tvoey razrabotki) for the idea behind your development; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "идея твоего проекта"
-        description "Russian phrase (romanized ideya tvoego proekta) for the idea behind your project; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "зачем тебя разработ"
-        description "Russian phrase stem (romanized zachem tebya razrabot) for why you were developed, catching разработали and разработан; a raw-substring surface for the assistant mechanism-inquiry concept."
-    lexeme "hi"
-      word "तुम कैसे काम करते हो"
-        description "Hindi how-you-work clause (romanized tum kaise kaam karte ho) asking the assistant how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "आप कैसे काम करते हैं"
-        description "Hindi polite how-you-work clause (romanized aap kaise kaam karte hain) asking the assistant how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-    lexeme "zh"
-      word "你是怎么工作的"
-        description "Chinese how-you-work clause (pinyin ni shi zenme gongzuo de) asking the assistant how it works; a raw-substring surface for the assistant mechanism-inquiry concept."
-      word "你怎么运作"
-        description "Chinese how-you-operate clause (pinyin ni zenme yunzuo) asking the assistant how it operates; a raw-substring surface for the assistant mechanism-inquiry concept."
-  meaning "operating_principle"
-    gloss "the concept of a thing's operating principle — the rule by which it works. The how-you-work recogniser reads only the Russian surface, composing it with an assistant self-reference to catch принцип работы … тебя (the principle of operation phrased about the assistant); the English, Hindi and Chinese surfaces are inert completeness forms that keep the concept lexicalised in every supported language."
-    wiktionary "principle"
-    defined_by "concept"
-    defined_by "action"
-    role "operating_principle"
-    lexeme "en"
-      word "operating principle"
-        description "English phrase for the rule by which something works; an inert completeness form for the operating-principle concept."
-    lexeme "ru"
-      word "принцип работы"
-        description "Russian phrase (romanized printsip raboty) for the principle of operation; composed with an assistant self-reference to recognise a how-you-work question about the assistant."
-    lexeme "hi"
-      word "कार्य सिद्धांत"
-        description "Hindi phrase (romanized kaarya siddhaant) for the principle of operation; an inert completeness form for the operating-principle concept."
-    lexeme "zh"
-      word "工作原理"
-        description "Chinese phrase (pinyin gongzuo yuanli) for the principle of operation; an inert completeness form for the operating-principle concept."
-  meaning "architecture_concept"
-    gloss "a term that names part of an AI system's architecture or internals — a language model, neural network, OpenAI API, world model, links-notation rules, area of knowledge, or the idea behind a project's development. The architecture recogniser fires when one of these appears together with an assistant self-reference, marking a question about how the assistant is built rather than a request for a task. Each surface is matched as a raw substring; several Russian forms are inflectable stems (нейросет for нейросеть and нейросети, ссылк for ссылка and ссылки, локальных правил for the genitive of local rules)."
-    wiktionary "architecture"
-    defined_by "concept"
-    defined_by "assistant"
-    role "architecture_concept"
-    lexeme "en"
-      word "llm"
-        description "English abbreviation for a large language model; a raw-substring surface for the architecture concept."
-      word "large language model"
-        description "English phrase for a large neural language model; a raw-substring surface for the architecture concept."
-      word "language model"
-        description "English phrase for a statistical or neural language model; a raw-substring surface for the architecture concept."
-      word "openai api"
-        description "English phrase for the OpenAI application programming interface; a raw-substring surface for the architecture concept."
-      word "openai"
-        description "English name of the OpenAI organisation and its models; a raw-substring surface for the architecture concept."
-      word "neural inference"
-        description "English phrase for running inference through a neural network; a raw-substring surface for the architecture concept."
-      word "neural network"
-        description "English phrase for a network of artificial neurons; a raw-substring surface for the architecture concept."
-      word "links notation rules"
-        description "English phrase for the deterministic Links Notation rules the assistant runs on; a raw-substring surface for the architecture concept."
-      word "local rules"
-        description "English phrase for the assistant's local rule base; a raw-substring surface for the architecture concept."
-      word "world model"
-        description "English phrase for an internal model of the world; a raw-substring surface for the architecture concept."
-      word "model of the world"
-        description "English phrase for an internal model of the world; an alternative raw-substring surface for the architecture concept."
-    lexeme "ru"
-      word "бям"
-        description "Russian abbreviation (romanized byam) for a large language model; a raw-substring surface for the architecture concept."
-      word "языковая модель"
-        description "Russian phrase (romanized yazykovaya model) for a language model; a raw-substring surface for the architecture concept."
-      word "языковой моделью"
-        description "Russian phrase (romanized yazykovoy modelyu) for a language model in the instrumental case; a raw-substring surface for the architecture concept."
-      word "нейросет"
-        description "Russian stem (romanized neyroset) shared by нейросеть and нейросети for a neural network; a raw-substring surface for the architecture concept."
-      word "нейрон"
-        description "Russian stem (romanized neyron) for a neuron, shared by нейронная and нейронов; a raw-substring surface for the architecture concept."
-      word "локальных правил"
-        description "Russian phrase (romanized lokalnykh pravil) for local rules in the genitive; a raw-substring surface for the architecture concept."
-      word "локальных правилах"
-        description "Russian phrase (romanized lokalnykh pravilakh) for local rules in the prepositional case; a raw-substring surface for the architecture concept."
-      word "область знаний"
-        description "Russian phrase (romanized oblast znaniy) for an area of knowledge; a raw-substring surface for the architecture concept."
-      word "модель окружающего мира"
-        description "Russian phrase (romanized model okruzhayushchego mira) for a model of the surrounding world; a raw-substring surface for the architecture concept."
-      word "модель мира"
-        description "Russian phrase (romanized model mira) for a model of the world; a raw-substring surface for the architecture concept."
-      word "принцип работы"
-        description "Russian phrase (romanized printsip raboty) for the principle of operation; a raw-substring surface for the architecture concept."
-      word "идея твоей разработки"
-        description "Russian phrase (romanized ideya tvoey razrabotki) for the idea behind your development; a raw-substring surface for the architecture concept."
-      word "идея твоего проекта"
-        description "Russian phrase (romanized ideya tvoego proekta) for the idea behind your project; a raw-substring surface for the architecture concept."
-      word "зачем тебя разработ"
-        description "Russian phrase stem (romanized zachem tebya razrabot) for why you were developed, catching разработали and разработан; a raw-substring surface for the architecture concept."
-      word "ссылк"
-        description "Russian stem (romanized ssylk) for a link, shared by ссылка and ссылки; a raw-substring surface for the architecture concept."
-    lexeme "hi"
-      word "न्यूरल"
-        description "Hindi word (romanized nyooral) for neural; a raw-substring surface for the architecture concept."
-      word "भाषा मॉडल"
-        description "Hindi phrase (romanized bhaasha modal) for a language model; a raw-substring surface for the architecture concept."
-    lexeme "zh"
-      word "神经"
-        description "Chinese word (pinyin shenjing) for neural or nerve, as in neural network; a raw-substring surface for the architecture concept."
-      word "語言模型"
-        description "Chinese phrase (pinyin yuyan moxing) for a language model; the traditional-character raw-substring surface for the architecture concept."
-      word "语言模型"
-        description "Chinese phrase (pinyin yuyan moxing) for a language model; the simplified-character raw-substring surface for the architecture concept."
+  causal_interrogative
+    defined-by inquiry
+    role causal_interrogative
+    lexeme en
+      surface
+        text why
+    lexeme ru
+      surface
+        text почему
+    lexeme hi
+      surface
+        text क्यों
+    lexeme zh
+      surface
+        text 为什么
+  prior_answer_reference
+    defined-by answer
+    role prior_answer_reference
+    lexeme en
+      surface
+        text answer
+    lexeme ru
+      surface
+        text ответ
+    lexeme hi
+      surface
+        text जवाब
+      surface
+        text उत्तर
+    lexeme zh
+      surface
+        text 回答
+  answer_rationale_inquiry
+    defined-by causal_interrogative
+    defined-by prior_answer_reference
+    defined-by inquiry
+    role answer_rationale_lead
+    lexeme en
+      surface
+        text "why …"
+      surface
+        text "why did you answer"
+    lexeme ru
+      surface
+        text "почему …"
+      surface
+        text "почему ты ответил"
+      surface
+        text "почему ты так ответил"
+      surface
+        text "почему вы ответили"
+    lexeme hi
+      surface
+        text "ऐसा जवाब क्यों दिया"
+    lexeme zh
+      surface
+        text 为什么这样回答
+  assistant_self_reference
+    defined-by assistant
+    defined-by self_reference
+    role assistant_self_reference
+    lexeme en
+      surface
+        text you
+      surface
+        text your
+      surface
+        text "formal ai"
+    lexeme ru
+      surface
+        text ты
+      surface
+        text теб
+      surface
+        text твоя
+      surface
+        text твой
+      surface
+        text тво
+      surface
+        text вы
+    lexeme hi
+      surface
+        text आप
+      surface
+        text तुम
+    lexeme zh
+      surface
+        text 你
+      surface
+        text 您
+  assistant_mechanism_inquiry
+    defined-by mechanism_inquiry
+    defined-by assistant
+    role assistant_mechanism_inquiry
+    lexeme en
+      surface
+        text "how do you work"
+      surface
+        text "how does this work"
+      surface
+        text "how does it work"
+      surface
+        text "show me how you work"
+      surface
+        text "explain how you work"
+    lexeme ru
+      surface
+        text "как ты работаешь"
+      surface
+        text "покажи как ты работаешь"
+      surface
+        text "расскажи как ты работаешь"
+      surface
+        text "объясни как ты работаешь"
+      surface
+        text "как ты устроен"
+      surface
+        text "покажи как ты устроен"
+      surface
+        text "какая у тебя модель окружающего мира"
+      surface
+        text "модель окружающего мира"
+      surface
+        text "идея твоей разработки"
+      surface
+        text "идея твоего проекта"
+      surface
+        text "зачем тебя разработ"
+    lexeme hi
+      surface
+        text "तुम कैसे काम करते हो"
+      surface
+        text "आप कैसे काम करते हैं"
+    lexeme zh
+      surface
+        text 你是怎么工作的
+      surface
+        text 你怎么运作
+  operating_principle
+    defined-by concept
+    defined-by action
+    role operating_principle
+    lexeme en
+      surface
+        text "operating principle"
+    lexeme ru
+      surface
+        text "принцип работы"
+    lexeme hi
+      surface
+        text "कार्य सिद्धांत"
+    lexeme zh
+      surface
+        text 工作原理
+  architecture_concept
+    defined-by concept
+    defined-by assistant
+    role architecture_concept
+    lexeme en
+      surface
+        text llm
+      surface
+        text "large language model"
+      surface
+        text "language model"
+      surface
+        text "openai api"
+      surface
+        text openai
+      surface
+        text "neural inference"
+      surface
+        text "neural network"
+      surface
+        text "links notation rules"
+      surface
+        text "local rules"
+      surface
+        text "world model"
+      surface
+        text "model of the world"
+    lexeme ru
+      surface
+        text бям
+      surface
+        text "языковая модель"
+      surface
+        text "языковой моделью"
+      surface
+        text нейросет
+      surface
+        text нейрон
+      surface
+        text "локальных правил"
+      surface
+        text "локальных правилах"
+      surface
+        text "область знаний"
+      surface
+        text "модель окружающего мира"
+      surface
+        text "модель мира"
+      surface
+        text "принцип работы"
+      surface
+        text "идея твоей разработки"
+      surface
+        text "идея твоего проекта"
+      surface
+        text "зачем тебя разработ"
+      surface
+        text ссылк
+    lexeme hi
+      surface
+        text न्यूरल
+      surface
+        text "भाषा मॉडल"
+    lexeme zh
+      surface
+        text 神经
+      surface
+        text 語言模型
+      surface
+        text 语言模型

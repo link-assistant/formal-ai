@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q8805": {
+      "type": "item",
+      "id": "Q8805",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "бит"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द्वयंक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "位元"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "basic unit of information in computing and digital communications"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "мельчайшая единица информации"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सूचना की इकाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "電腦和技術的信息的基本單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "b"
+          },
+          {
+            "language": "en",
+            "value": "binary digit"
+          },
+          {
+            "language": "en",
+            "value": "logic value"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "节"
+          },
+          {
+            "language": "zh",
+            "value": "比特"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

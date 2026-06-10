@@ -1,0 +1,15 @@
+Q1651704
+  aliases
+    en ("∨" "logical OR" disjunction "OR operation" or OR "+" "inclusive or" disjunct "logical addition")
+    ru ("логическое ИЛИ" OR "логическая дизъюнкция" "ИЛИ" "логическое сложение" "сложение" "включающее ИЛИ")
+    zh ("短路或")
+  descriptions
+    en "logical connective OR"
+    ru "логическая связка ИЛИ"
+  id Q1651704
+  labels
+    en "logical disjunction"
+    ru "дизъюнкция"
+    zh "逻辑或"
+  type item
+success 1

@@ -1,0 +1,58 @@
+[
+  {
+    "word": "admin",
+    "phonetic": "/ədˈmɪn/",
+    "phonetics": [
+      {
+        "text": "/ədˈmɪn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Administration, or administrative work.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There's a lot of admin involved in the birth of a child."
+          },
+          {
+            "definition": "A systems administrator; one who maintains a computer system or network.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Our admin has upgraded the server in our office, so we can exchange files faster."
+          },
+          {
+            "definition": "A user of a discussion forum, web site, etc. with privileges allowing them to control or restrict the activity of other uses.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The admin changed the forum settings to enable the use of emoticons."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To serve as an administrator for or of.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/admin"
+    ]
+  }
+]

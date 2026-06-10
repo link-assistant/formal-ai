@@ -1,0 +1,11 @@
+language en
+lemma descending
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "coming down or downward"
+    id oewn-02495328-a
+    partOfSpeech a
+source "oewn:2024"

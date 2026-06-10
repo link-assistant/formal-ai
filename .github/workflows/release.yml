@@ -177,6 +177,9 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
+      - name: Check semantic grounding
+        run: cargo test --test unit semantic_grounding -- --nocapture
+
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
@@ -255,6 +258,9 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
+
+      - name: Check LiNo data integrity
+        run: cargo test --test unit data_files -- --nocapture
 
       - name: Run tests
         run: cargo test --all-features --verbose

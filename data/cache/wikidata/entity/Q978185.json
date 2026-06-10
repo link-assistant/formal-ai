@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "Q978185": {
+      "type": "item",
+      "id": "Q978185",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "TypeScript"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "TypeScript"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "TypeScript"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "programming language, superset of JavaScript that compiles to JavaScript"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования, позиционируемый как средство разработки веб-приложений"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "程式語言，編譯成JavaScript的JavaScript超集"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": ".ts"
+          },
+          {
+            "language": "en",
+            "value": "TS"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "TS"
+          },
+          {
+            "language": "zh",
+            "value": ".ts"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,86 @@
+{
+  "lemma": "theme",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06612141-n",
+      "partOfSpeech": "n",
+      "definition": "the subject matter of a conversation or discussion",
+      "examples": [
+        "he didn't want to discuss that subject",
+        "it was a very sensitive topic",
+        "his letters were always on the theme of love"
+      ],
+      "synonyms": [
+        "subject",
+        "topic"
+      ]
+    },
+    {
+      "id": "oewn-05928866-n",
+      "partOfSpeech": "n",
+      "definition": "a unifying idea that is a recurrent element in literary or artistic work",
+      "examples": [
+        "it was the usual ‘boy gets girl’ theme"
+      ],
+      "synonyms": [
+        "motif"
+      ]
+    },
+    {
+      "id": "oewn-07042734-n",
+      "partOfSpeech": "n",
+      "definition": "(music) melodic subject of a musical composition",
+      "examples": [
+        "the theme is announced in the first measures",
+        "the accompanist picked up the idea and elaborated it"
+      ],
+      "synonyms": [
+        "melodic theme",
+        "musical theme",
+        "idea"
+      ]
+    },
+    {
+      "id": "oewn-06421395-n",
+      "partOfSpeech": "n",
+      "definition": "an essay (especially one written as an assignment)",
+      "examples": [
+        "he got an A on his composition"
+      ],
+      "synonyms": [
+        "composition",
+        "paper",
+        "report"
+      ]
+    },
+    {
+      "id": "oewn-06311183-n",
+      "partOfSpeech": "n",
+      "definition": "(linguistics) the form of a word after all affixes are removed",
+      "examples": [
+        "thematic vowels are part of the stem"
+      ],
+      "synonyms": [
+        "root",
+        "root word",
+        "base",
+        "stem",
+        "radical"
+      ]
+    },
+    {
+      "id": "oewn-02368596-v",
+      "partOfSpeech": "v",
+      "definition": "provide with a particular theme or motive",
+      "examples": [
+        "the restaurant often themes its menus"
+      ]
+    }
+  ]
+}

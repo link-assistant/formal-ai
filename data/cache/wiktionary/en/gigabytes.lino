@@ -1,0 +1,15 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(SI) 109, one billion (1,000,000,000) bytes. SI symbol: GB"
+        entry
+          definition "A gibibyte or 10243 (1,073,741,824) bytes."
+      partOfSpeech noun
+      synonyms (GB "㎇" gig)
+  sourceUrls ("https://en.wiktionary.org/wiki/gigabyte" "https://en.wiktionary.org/wiki/gigabytes")
+  word gigabytes

@@ -1,0 +1,185 @@
+[
+  {
+    "word": "that",
+    "phonetic": "/ˈðæt/",
+    "phonetics": [
+      {
+        "text": "/ˈðæt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈðæt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈd̪æt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈðɛt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈðæt/",
+        "audio": ""
+      },
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/that-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718785",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈðæt/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Something being indicated that is there; one of those.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "(degree) To a given extent or degree.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"The ribbon was that thin.\" \"I disagree, I say it was not that thin, it was thicker... or maybe thinner...\""
+          },
+          {
+            "definition": "(degree) To a great extent or degree; very, particularly (in negative constructions).",
+            "synonyms": [
+              "so"
+            ],
+            "antonyms": [],
+            "example": "I did the run last year, and it wasn't that difficult."
+          },
+          {
+            "definition": "To such an extent; so. (in positive constructions).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Ooh, I was that happy I nearly kissed her."
+          }
+        ],
+        "synonyms": [
+          "so"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "(demonstrative) The thing, person, idea, quality, event, action or time indicated or understood from context, especially if more remote geographically, temporally or mentally than one designated as \"this\", or if expressing distinction.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He went home, and after that I never saw him again."
+          },
+          {
+            "definition": "The known (thing); used to refer to something just said.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They're getting divorced. What do you think about that?"
+          },
+          {
+            "definition": "(demonstrative) The aforementioned quality or proposition; used to emphatically affirm or deny a previous statement or question.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The water is so cold! — That it is."
+          },
+          {
+            "definition": "(relative) (plural that) Which, who; representing a subject, direct object, indirect object, or object of a preposition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The CPR course that she took really came in handy."
+          },
+          {
+            "definition": "Used in place of relative adverbs such as where or when; often omitted.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the last time that [= when] I went to Europe"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "here",
+          "there",
+          "this",
+          "yon",
+          "yonder"
+        ]
+      },
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "Introducing a clause which is the subject or object of a verb (such as one involving reported speech), or which is a complement to a previous statement.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He told me that the book is a good read."
+          },
+          {
+            "definition": "Introducing a subordinate clause expressing a reason or cause: because, in that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Be glad that you have enough to eat."
+          },
+          {
+            "definition": "Introducing a subordinate clause that expresses an aim, purpose or goal (\"final\"), and usually contains the auxiliaries may, might or should: so, so that.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Introducing — especially, but not exclusively, with an antecedent like so or such — a subordinate clause expressing a result, consequence or effect.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The noise was so loud that she woke up."
+          },
+          {
+            "definition": "Introducing a premise or supposition for consideration: seeing as; inasmuch as; given that; as would appear from the fact that.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Introducing a subordinate clause modifying an adverb.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "How often did she visit him? — Twice that I saw."
+          },
+          {
+            "definition": "Introducing an exclamation expressing a desire or wish.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Oh that spring would come!"
+          },
+          {
+            "definition": "Introducing an exclamation expressing a strong emotion such as sadness or surprise.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/that"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+Q89
+  aliases
+    en ("apple fruit")
+    hi ("सेवफलम्" "एप्पल")
+    zh ("柰" "蘋果" "píngguǒ" "瓜果")
+  descriptions
+    en "edible fruit of the apple tree"
+    hi "सेब वृक्ष का फल"
+    ru "плод яблони"
+    zh "植物，果实是一种水果"
+  id Q89
+  labels
+    en apple
+    hi "सेब"
+    ru "яблоко"
+    zh "苹果"
+  type item
+success 1

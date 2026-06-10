@@ -1,0 +1,17 @@
+Q1568
+  aliases
+    en ("Hindi language" "Modern Standard Hindi")
+    hi ("हिंदी भाषा" "हिन्दी भाषा")
+  descriptions
+    en "Indo-Aryan language spoken in India"
+    hi "हिन्द-आर्य भाषा"
+    ru "индоарийский язык, государственный язык Индии"
+    zh "語言"
+  id Q1568
+  labels
+    en Hindi
+    hi "हिन्दी"
+    ru "хинди"
+    zh "印地語"
+  type item
+success 1

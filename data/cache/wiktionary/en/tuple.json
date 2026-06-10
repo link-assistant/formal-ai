@@ -1,0 +1,54 @@
+[
+  {
+    "word": "tuple",
+    "phonetic": "/tuːp(ə)l/",
+    "phonetics": [
+      {
+        "text": "/tuːp(ə)l/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A finite sequence of terms.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A single row in a relational database.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A set of comma-separated values passed to a program or operating system as a parameter to a function call.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In some programming languages, a data type that is similar but distinct from the list data type, whose instances are characterized by having a rather fixed arity, and the elements of which instances can differ from each other by data type. (Note: this definition may overlap with the previous one.)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Both Python and Haskell have a tuple data type as well as a list data type."
+          }
+        ],
+        "synonyms": [
+          "n-tuple",
+          "ordered pair",
+          "triple",
+          "triplet"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/tuple"
+    ]
+  }
+]

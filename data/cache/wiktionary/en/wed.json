@@ -1,0 +1,69 @@
+[
+  {
+    "word": "wed",
+    "phonetic": "/ˈwɛd/",
+    "phonetics": [
+      {
+        "text": "/ˈwɛd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/wed-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=424781",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To perform the marriage ceremony for; to join in matrimony.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The priest wed the couple."
+          },
+          {
+            "definition": "To take as one's spouse.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She wed her first love."
+          },
+          {
+            "definition": "To take a spouse.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To join or commit to, more or less permanently, as if in marriage.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'm not wedded to this proposal; suggest an alternative."
+          },
+          {
+            "definition": "To take to oneself and support; to espouse.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To wager, stake, bet, place a bet, make a wager.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'd wed my head on that."
+          }
+        ],
+        "synonyms": [
+          "marry"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/wed"
+    ]
+  }
+]

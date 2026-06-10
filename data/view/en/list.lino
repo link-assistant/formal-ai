@@ -1,0 +1,33 @@
+view
+  id M-94e9d3ad093c
+  lemma list
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a database containing an ordered array of items (names or topics)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the property possessed by a line or surface that departs from the vertical"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give or make a list of; name individually; give the names of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "include in a list"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to lean to the side"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "tilt to one side"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "enumerate"
+    provenance (wordnet)

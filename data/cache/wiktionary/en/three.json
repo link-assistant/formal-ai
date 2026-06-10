@@ -1,0 +1,111 @@
+[
+  {
+    "word": "three",
+    "phonetic": "/θɹiː/",
+    "phonetics": [
+      {
+        "text": "/θɹiː/",
+        "audio": ""
+      },
+      {
+        "text": "/fɹiː/",
+        "audio": ""
+      },
+      {
+        "text": "/θɹiː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/three-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=711330",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit/figure 3.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Anything measuring three units, as length.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Put all the threes in a separate container."
+          },
+          {
+            "definition": "A person who is three years old.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "All the threes will go in Mrs. Smith's class, while I'll take the fours and fives."
+          },
+          {
+            "definition": "The playing card featuring three pips.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value after two and before four. Represented in Arabic digits as 3; this many dots (•••).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a set or group with three elements.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "leash",
+          "tether"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A goal or other means of scoring worth three points.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A three-point shot; a basket made from beyond the three-point line.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A three-point landing; an airplane landing in which all three wheels touch the ground simultaneously.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A deer or other animal whose antlers feature three points or tines.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/three",
+      "https://en.wiktionary.org/wiki/three-pointer"
+    ]
+  }
+]

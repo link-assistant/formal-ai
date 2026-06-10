@@ -1,0 +1,95 @@
+[
+  {
+    "word": "thur",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "(location) In a place or location (stated, implied or otherwise indicated) at some distance from the speaker (compare here).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In that matter, relation, etc.; at that point, stage, etc., regarded as a distinct place.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He did not stop there, but continued his speech."
+          },
+          {
+            "definition": "(location) To or into that place; thither.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Where, there where, in which place.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In existence or in this world; see pronoun section below.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "away there",
+          "over there",
+          "thither",
+          "yonder",
+          "away there",
+          "over there",
+          "thither",
+          "yonder"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "Used as an expletive subject of be in its sense of “exist”, with the semantic, usually indefinite subject being postponed or (occasionally) implied.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Is there an answer? [=Does an answer exist?]"
+          },
+          {
+            "definition": "Used with other intransitive verbs of existence, in the same sense, or with other intransitive verbs, adding a sense of existence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If x is a positive number, then there exists [=there is] a positive number y less than x."
+          },
+          {
+            "definition": "Used with other verbs, when raised.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I expected there to be a simpler solution. [=I expected that there would be a simpler solution.]"
+          },
+          {
+            "definition": "(in combination with certain prepositions, no longer productive) That.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "therefor, thereat, thereunder"
+          },
+          {
+            "definition": "Used to replace an unknown name, principally in greetings and farewells",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Hi there, young fellow."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/there",
+      "https://en.wiktionary.org/wiki/thur"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+view
+  id M-644c8453799e
+  lemma bash
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a vigorous blow"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an uproarious party"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hit hard"
+    provenance (wordnet)

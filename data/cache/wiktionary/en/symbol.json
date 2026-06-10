@@ -1,0 +1,93 @@
+[
+  {
+    "word": "symbol",
+    "phonetic": "/ˈsɪmbəl/",
+    "phonetics": [
+      {
+        "text": "/ˈsɪmbəl/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/symbol-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755228",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A character or glyph representing an idea, concept or object.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "$ is the symbol for dollars in the US and some other countries."
+          },
+          {
+            "definition": "A thing considered the embodiment of a concept or object.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The lion is the symbol of courage; the lamb is the symbol of meekness or patience."
+          },
+          {
+            "definition": "A type of noun whereby the form refers to the same entity independently of the context; a symbol arbitrarily denotes a referent. See also icon and index.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A summary of a dogmatic statement of faith.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The Apostles, Nicene Creed and the confessional books of Protestantism, such as the Augsburg Confession of Lutheranism are considered symbols."
+          },
+          {
+            "definition": "The numerical expression which defines a plane's position relative to the assumed axes.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "That which is thrown into a common fund; hence, an appointed or accustomed duty.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Share; allotment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An internal identifier used by a debugger to relate parts of the compiled program to the corresponding names in the source code.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A signalling event on a communications channel; a signal that cannot be further divided into meaningful information.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To symbolize.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/symbol"
+    ]
+  }
+]

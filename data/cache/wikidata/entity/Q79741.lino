@@ -1,0 +1,16 @@
+Q79741
+  aliases
+    en (TByte TB)
+    ru ("Тбайт" "ТБ")
+    zh ("太位元組" "太拉位元組" "太字节")
+  descriptions
+    en "unit of digital information equal to one trillion bytes or 1,000 gigabytes"
+    ru "единица измерения количества информации, равная 2^40 байт"
+    zh "單位字節的倍數"
+  id Q79741
+  labels
+    en terabyte
+    ru "терабайт"
+    zh "太字節"
+  type item
+success 1

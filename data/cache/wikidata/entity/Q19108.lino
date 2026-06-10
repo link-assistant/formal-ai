@@ -1,0 +1,15 @@
+Q19108
+  aliases
+    en (nine "Ⅸ" "ⅸ" "9*1" "number 9" "the number 9")
+    ru ("девять")
+    zh ("九" "❾" "〩" "９" "玖")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q19108
+  labels
+    hi "९"
+  type item
+success 1

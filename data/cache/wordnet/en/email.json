@@ -1,0 +1,55 @@
+{
+  "lemma": "email",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06289979-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a system of world-wide electronic communication in which a computer user can compose a message at one terminal that can be regenerated at the recipient's terminal when the recipient logs in",
+      "examples": [
+        "you cannot send packages by electronic mail"
+      ],
+      "synonyms": [
+        "electronic mail",
+        "e-mail"
+      ]
+    },
+    {
+      "id": "oewn-82169826-n",
+      "partOfSpeech": "n",
+      "definition": "a message sent over the internet via the email system",
+      "synonyms": [
+        "email message",
+        "e-mail message",
+        "e-mail"
+      ]
+    },
+    {
+      "id": "oewn-83993005-n",
+      "partOfSpeech": "n",
+      "definition": "an identifier that a person uses as their identity to communicate on the email system",
+      "synonyms": [
+        "email address",
+        "e-mail address",
+        "e-mail"
+      ]
+    },
+    {
+      "id": "oewn-01034323-v",
+      "partOfSpeech": "v",
+      "definition": "communicate electronically on the computer",
+      "examples": [
+        "she e-mailed me the good news"
+      ],
+      "synonyms": [
+        "e-mail",
+        "netmail"
+      ]
+    }
+  ]
+}

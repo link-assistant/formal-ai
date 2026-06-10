@@ -1,0 +1,49 @@
+{
+  "lemma": "manual",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02769962-a",
+      "partOfSpeech": "a",
+      "definition": "of or relating to the hands",
+      "examples": [
+        "manual dexterity"
+      ]
+    },
+    {
+      "id": "oewn-00184143-a",
+      "partOfSpeech": "a",
+      "definition": "requiring human effort",
+      "examples": [
+        "a manual transmission"
+      ]
+    },
+    {
+      "id": "oewn-06433328-n",
+      "partOfSpeech": "n",
+      "definition": "a small handbook"
+    },
+    {
+      "id": "oewn-00896833-n",
+      "partOfSpeech": "n",
+      "definition": "(military) a prescribed drill in handling a rifle",
+      "synonyms": [
+        "manual of arms"
+      ]
+    },
+    {
+      "id": "oewn-02567793-s",
+      "partOfSpeech": "s",
+      "definition": "doing or requiring physical work",
+      "examples": [
+        "manual labor",
+        "manual laborer"
+      ]
+    }
+  ]
+}

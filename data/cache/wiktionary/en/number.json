@@ -1,0 +1,199 @@
+[
+  {
+    "word": "number",
+    "phonetic": "/ˈnʌmbə/",
+    "phonetics": [
+      {
+        "text": "/ˈnʌmbə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈnʌmbɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An abstract entity used to describe quantity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Zero, one, −1, 2.5, and pi are all numbers."
+          },
+          {
+            "definition": "A numeral: a symbol for a non-negative integer.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The number 8 is usually made with a single stroke."
+          },
+          {
+            "definition": "An element of one of several sets: natural numbers, integers, rational numbers, real numbers, complex numbers, and sometimes extensions such as hypercomplex numbers, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The equation e^{i\\pi}+1=0 includes the most important numbers: 1, 0, \\pi, i, and e."
+          },
+          {
+            "definition": "(Followed by a numeral; used attributively) Indicating the position of something in a list or sequence. Abbreviations: No or No., no or no. (in each case, sometimes written with a superscript \"o\", like Nº or №). The symbol \"#\" is also used in this manner.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Horse number 5 won the race."
+          },
+          {
+            "definition": "Quantity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Any number of people can be reading from a given repository at a time."
+          },
+          {
+            "definition": "A sequence of digits and letters used to register people, automobiles, and various other items.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her passport number is C01X864TN."
+          },
+          {
+            "definition": "A telephone number.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(grammar) Of a word or phrase, the state of being singular, dual or plural, shown by inflection.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Adjectives and nouns should agree in gender, number, and case."
+          },
+          {
+            "definition": "(in the plural) Poetic metres; verses, rhymes.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A performance; especially, a single song or song and dance routine within a larger show.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "For his second number, he sang \"The Moon Shines Bright\"."
+          },
+          {
+            "definition": "A person.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An item of clothing, particularly a stylish one.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A marijuana cigarette, or joint; also, a quantity of marijuana bought form a dealer.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An issue of a periodical publication.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the latest number of a magazine"
+          },
+          {
+            "definition": "A large amount, in contrast to a smaller amount; numerical preponderance.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "numeral",
+          "rime",
+          "scalar"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To label (items) with numbers; to assign numbers to (items).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Number the baskets so that we can find them easily."
+          },
+          {
+            "definition": "To total or count; to amount to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I don’t know how many books are in the library, but they must number in the thousands."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/number"
+    ]
+  },
+  {
+    "word": "number",
+    "phonetic": "/ˈnʌmə/",
+    "phonetics": [
+      {
+        "text": "/ˈnʌmə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈnʌmɚ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Physically unable to feel, not having the power of sensation.",
+            "synonyms": [
+              "deadened",
+              "insensible"
+            ],
+            "antonyms": [],
+            "example": "fingers numb with cold"
+          },
+          {
+            "definition": "Emotionally unable to feel or respond in a normal way.",
+            "synonyms": [
+              "stunned"
+            ],
+            "antonyms": [],
+            "example": "numb with shock; numb with boredom"
+          },
+          {
+            "definition": "Causing numbness.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "deadened",
+          "insensible",
+          "stunned"
+        ],
+        "antonyms": [
+          "sensible",
+          "sensitive"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/numb",
+      "https://en.wiktionary.org/wiki/number"
+    ]
+  }
+]

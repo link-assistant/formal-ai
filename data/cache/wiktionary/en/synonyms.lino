@@ -1,0 +1,26 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (antonym opposite)
+      definitions
+        entry
+          antonyms (antonym opposite)
+          definition "(strictly) A word whose meaning is the same as that of another word."
+          synonyms (equivalent poecilonym)
+        entry
+          definition "A word or phrase with a meaning that is the same as, or very similar to, another word or phrase."
+          example "“Happy” is a synonym of “glad”."
+          synonyms (metonym)
+        entry
+          definition "Any of the formal names for a taxon, including the valid name (i.e. the senior synonym)."
+        entry
+          definition "Any name for a taxon, usually a validly published, formally accepted one, but often also an unpublished name."
+        entry
+          definition "An alternative (often shorter) name defined for an object in a database."
+      partOfSpeech noun
+      synonyms (equivalent poecilonym metonym)
+  sourceUrls ("https://en.wiktionary.org/wiki/synonym" "https://en.wiktionary.org/wiki/synonyms")
+  word synonyms

@@ -1,0 +1,23 @@
+language en
+lemma documentation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "confirmation that some fact or statement is true through the use of documentary evidence"
+    id oewn-06663176-n
+    partOfSpeech n
+    synonyms (certification corroboration)
+  entry
+    definition "program listings or technical manuals describing the operation and use of programs"
+    id oewn-06600607-n
+    partOfSpeech n
+    synonyms ("software documentation")
+  entry
+    definition "documentary validation"
+    examples ("his documentation of the results was excellent" "the strongest support for this view is the work of Jones")
+    id oewn-00155253-n
+    partOfSpeech n
+    synonyms (support)
+source "oewn:2024"

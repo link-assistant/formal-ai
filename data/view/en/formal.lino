@@ -1,0 +1,37 @@
+view
+  id M-150bee3ec3bd
+  lemma formal
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being in accord with established forms and conventions and requirements (as e.g. of formal dress)"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of spoken and written language) adhering to traditional standards of correctness and without casual, contracted, and colloquial forms"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a lavish dance requiring formal attire"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a gown for evening wear"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "characteristic of or befitting a person in authority"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "represented in simplified or symbolic form"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "logically deductive"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "refined or imposing in manner or appearance; befitting a royal court"
+    provenance (wordnet)

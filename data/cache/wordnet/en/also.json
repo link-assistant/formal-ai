@@ -1,0 +1,25 @@
+{
+  "lemma": "also",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00048072-r",
+      "partOfSpeech": "r",
+      "definition": "in addition",
+      "examples": [
+        "he has a Mercedes, too"
+      ],
+      "synonyms": [
+        "besides",
+        "too",
+        "likewise",
+        "as well"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "lemma": "c",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13736596-n",
+      "partOfSpeech": "n",
+      "definition": "a degree on the centigrade scale of temperature",
+      "synonyms": [
+        "degree centigrade",
+        "degree Celsius"
+      ]
+    },
+    {
+      "id": "oewn-15309503-n",
+      "partOfSpeech": "n",
+      "definition": "the speed at which light travels in a vacuum; the constancy and universality of the speed of light is recognized by defining it to be exactly 299,792,458 meters per second",
+      "synonyms": [
+        "speed of light",
+        "light speed"
+      ]
+    },
+    {
+      "id": "oewn-15117865-n",
+      "partOfSpeech": "n",
+      "definition": "a vitamin found in fresh fruits (especially citrus fruits) and vegetables; prevents scurvy",
+      "synonyms": [
+        "vitamin C",
+        "ascorbic acid"
+      ]
+    },
+    {
+      "id": "oewn-14853935-n",
+      "partOfSpeech": "n",
+      "definition": "one of the four nucleotides used in building DNA, also known as also known as deoxycytidylate, or dCMP; all four nucleotides have a common phosphate group and a sugar (ribose)",
+      "synonyms": [
+        "deoxycytidine monophosphate"
+      ]
+    },
+    {
+      "id": "oewn-14852681-n",
+      "partOfSpeech": "n",
+      "definition": "a base found in DNA and RNA and derived from pyrimidine; pairs with guanine",
+      "synonyms": [
+        "cytosine"
+      ]
+    },
+    {
+      "id": "oewn-14657384-n",
+      "partOfSpeech": "n",
+      "definition": "an abundant nonmetallic tetravalent element occurring in three allotropic forms: amorphous carbon and graphite and diamond; occurs in all organic compounds",
+      "synonyms": [
+        "carbon",
+        "atomic number 6"
+      ]
+    },
+    {
+      "id": "oewn-13772555-n",
+      "partOfSpeech": "n",
+      "definition": "ten 10s",
+      "synonyms": [
+        "hundred",
+        "100",
+        "century",
+        "one C"
+      ]
+    },
+    {
+      "id": "oewn-13658127-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of electrical charge equal to the amount of charge transferred by a current of 1 ampere in 1 second",
+      "synonyms": [
+        "coulomb",
+        "ampere-second"
+      ]
+    },
+    {
+      "id": "oewn-06915472-n",
+      "partOfSpeech": "n",
+      "definition": "a general-purpose programing language closely associated with the UNIX operating system"
+    },
+    {
+      "id": "oewn-06879382-n",
+      "partOfSpeech": "n",
+      "definition": "(music) the keynote of the scale of C major"
+    },
+    {
+      "id": "oewn-06844441-n",
+      "partOfSpeech": "n",
+      "definition": "the 3rd letter of the Roman alphabet"
+    },
+    {
+      "id": "oewn-03070747-n",
+      "partOfSpeech": "n",
+      "definition": "street names for cocaine",
+      "synonyms": [
+        "coke",
+        "blow",
+        "nose candy",
+        "snow"
+      ]
+    },
+    {
+      "id": "oewn-02203776-s",
+      "partOfSpeech": "s",
+      "definition": "being ten more than ninety",
+      "synonyms": [
+        "hundred",
+        "one hundred",
+        "100"
+      ]
+    }
+  ]
+}

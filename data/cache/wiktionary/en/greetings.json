@@ -1,0 +1,52 @@
+[
+  {
+    "word": "greetings",
+    "phonetic": "/ˈɡɹiːtɪŋz/",
+    "phonetics": [
+      {
+        "text": "/ˈɡɹiːtɪŋz/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A conventional phrase used to start a letter or conversation or otherwise to acknowledge a person's arrival or presence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It's polite to begin a letter with a greeting, but this practice is less common in email."
+          },
+          {
+            "definition": "The action of the verb to greet.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "(sometimes formal, sometimes humorous) hello",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/greeting",
+      "https://en.wiktionary.org/wiki/greetings"
+    ]
+  }
+]

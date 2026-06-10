@@ -1,0 +1,18 @@
+language en
+lemma diagnostic
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "concerned with diagnosis; used for furthering diagnosis"
+    examples ("a diagnostic reading test")
+    id oewn-02987083-a
+    partOfSpeech a
+  entry
+    definition "characteristic or indicative of a disease"
+    examples ("a diagnostic sign of yellow fever" "a rash symptomatic of scarlet fever" "symptomatic of insanity" "a rise in crime symptomatic of social breakdown")
+    id oewn-00358334-s
+    partOfSpeech s
+    synonyms (symptomatic)
+source "oewn:2024"

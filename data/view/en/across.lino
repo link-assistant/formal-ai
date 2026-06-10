@@ -1,0 +1,13 @@
+view
+  id M-b1cbdd88d950
+  lemma across
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "to the opposite side"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "transversely"
+    provenance (wordnet)

@@ -1,0 +1,99 @@
+[
+  {
+    "word": "grammar",
+    "phonetic": "/ˈɡɹæm.ə(ɹ)/",
+    "phonetics": [
+      {
+        "text": "/ˈɡɹæm.ə(ɹ)/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɡɹæmɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/grammar-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762689",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A system of rules and principles for speaking and writing a language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The study of the internal structure of words (morphology) and the use of words in the construction of phrases and sentences (syntax).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A book describing the rules of grammar of a language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A formal system specifying the syntax of a language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Actual or presumed prescriptive notions about the correct use of a language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A formal system defining a formal language",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The basic rules or principles of a field of knowledge or a particular skill.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A textbook.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a grammar of geography"
+          },
+          {
+            "definition": "A grammar school.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "2012, Graeme Paton, A green light for more grammars? (in The Daily Telegraph, 11 January 2012)"
+          }
+        ],
+        "synonyms": [
+          "morpho-syntax",
+          "glomery"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To discourse according to the rules of grammar; to use grammar.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/grammar"
+    ]
+  }
+]

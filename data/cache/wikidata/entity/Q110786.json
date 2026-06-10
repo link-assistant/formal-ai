@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q110786": {
+      "type": "item",
+      "id": "Q110786",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "singular"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единственное число"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "單數"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एकवचन"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "grammatical number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическое число, используемое для обозначения одного предмета"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "語言學數"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ед.ч."
+          },
+          {
+            "language": "ru",
+            "value": "ед. ч."
+          },
+          {
+            "language": "ru",
+            "value": "сингуляр"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "singulars"
+          },
+          {
+            "language": "en",
+            "value": "sg"
+          },
+          {
+            "language": "en",
+            "value": "sing."
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "单数"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वाहिद"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

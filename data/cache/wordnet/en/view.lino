@@ -1,0 +1,83 @@
+language en
+lemma view
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a way of regarding situations or topics etc."
+    examples ("consider what follows from the positivist view")
+    id oewn-06218486-n
+    partOfSpeech n
+    synonyms (position perspective)
+  entry
+    definition "the visual percept of a region"
+    examples ("the most desirable feature of the park are the beautiful views")
+    id oewn-05941982-n
+    partOfSpeech n
+    synonyms (aspect prospect scene vista panorama)
+  entry
+    definition "the act of looking or seeing or observing"
+    examples ("he tried to get a better view of it" "his survey of the battlefield was limited")
+    id oewn-00883327-n
+    partOfSpeech n
+    synonyms (survey sight)
+  entry
+    definition "the range of the eye"
+    examples ("they were soon out of view")
+    id oewn-08578489-n
+    partOfSpeech n
+    synonyms (eyeshot)
+  entry
+    definition "a personal belief or judgment that is not founded on proof or certainty"
+    examples ("my opinion differs from yours" "I am not of your persuasion" "what are your thoughts on Haiti?")
+    id oewn-05954491-n
+    partOfSpeech n
+    synonyms (opinion sentiment persuasion thought)
+  entry
+    definition "a message expressing a belief about something; the expression of a belief that is held with confidence but not substantiated by positive knowledge or proof"
+    examples ("his opinions appeared frequently on the editorial page")
+    id oewn-06794876-n
+    partOfSpeech n
+    synonyms (opinion)
+  entry
+    definition "purpose; the phrase ‘with a view to’ means ‘with the intention of’ or ‘for the purpose of’"
+    examples ("he took the computer with a view to pawning it")
+    id oewn-05992348-n
+    partOfSpeech n
+  entry
+    definition "graphic art consisting of the graphic or photographic representation of a visual percept"
+    examples ("he painted scenes from everyday life" "figure 2 shows photographic and schematic views of the equipment")
+    id oewn-04151847-n
+    partOfSpeech n
+    synonyms (scene)
+  entry
+    definition "the range of interest or activity that can be anticipated"
+    examples ("It is beyond the horizon of present knowledge")
+    id oewn-05135047-n
+    partOfSpeech n
+    synonyms (horizon purview)
+  entry
+    definition "outward appearance"
+    examples ("they look the same in outward view")
+    id oewn-04682218-n
+    partOfSpeech n
+  entry
+    definition "deem to be"
+    examples ("She views this quite differently from me" "I consider her to be shallow" "I don't see the situation quite as negatively as you do")
+    id oewn-00692380-v
+    partOfSpeech v
+    synonyms (see consider reckon regard)
+  entry
+    definition "look at carefully; study mentally"
+    examples ("view a problem")
+    id oewn-02134765-v
+    partOfSpeech v
+    synonyms (consider "look at")
+  entry
+    definition "see or watch"
+    examples ("view a show on television" "This program will be seen all over the world" "view an exhibition" "Catch a show on Broadway" "see a movie")
+    id oewn-02155378-v
+    partOfSpeech v
+    synonyms (watch see catch "take in")
+source "oewn:2024"

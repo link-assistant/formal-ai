@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "Q161053": {
+      "type": "item",
+      "id": "Q161053",
+      "labels": {},
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "интерпретируемый язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "編程語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Ruby language"
+          },
+          {
+            "language": "en",
+            "value": "Ruby programming language"
+          },
+          {
+            "language": "en",
+            "value": "rb"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": ".rbw"
+          },
+          {
+            "language": "ru",
+            "value": "Рубин"
+          },
+          {
+            "language": "ru",
+            "value": "Язык программирования Рубин"
+          },
+          {
+            "language": "ru",
+            "value": ".rb"
+          },
+          {
+            "language": "ru",
+            "value": "Rubyn"
+          },
+          {
+            "language": "ru",
+            "value": "Руби IDE"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Ruby語言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

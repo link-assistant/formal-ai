@@ -1,0 +1,49 @@
+{
+  "lemma": "install",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01572394-v",
+      "partOfSpeech": "v",
+      "definition": "set up for use",
+      "examples": [
+        "install the washer and dryer",
+        "We put in a new sink"
+      ],
+      "synonyms": [
+        "instal",
+        "put in",
+        "set up"
+      ]
+    },
+    {
+      "id": "oewn-02389183-v",
+      "partOfSpeech": "v",
+      "definition": "put into an office or a position",
+      "examples": [
+        "the new president was installed immediately after the election"
+      ],
+      "synonyms": [
+        "instal"
+      ]
+    },
+    {
+      "id": "oewn-01572936-v",
+      "partOfSpeech": "v",
+      "definition": "place",
+      "examples": [
+        "Her manager had set her up at the Ritz"
+      ],
+      "synonyms": [
+        "instal",
+        "set up",
+        "establish"
+      ]
+    }
+  ]
+}

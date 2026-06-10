@@ -1,0 +1,35 @@
+language en
+lemma memory
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "something that is remembered"
+    examples ("search as he would, the memory was lost")
+    id oewn-05943778-n
+    partOfSpeech n
+  entry
+    definition "the cognitive processes whereby past experience is remembered"
+    examples ("he can do it from memory" "he enjoyed remembering his father")
+    id oewn-05768199-n
+    partOfSpeech n
+    synonyms (remembering)
+  entry
+    definition "the power of retaining and recalling past experience"
+    examples ("he had a good memory when he was younger")
+    id oewn-05659244-n
+    partOfSpeech n
+    synonyms (retention retentiveness retentivity)
+  entry
+    definition "an electronic memory device"
+    examples ("a memory and the CPU form the central part of a computer to which peripherals are attached")
+    id oewn-03749767-n
+    partOfSpeech n
+    synonyms ("computer memory" storage "computer storage" store "memory board")
+  entry
+    definition "the area of cognitive psychology that studies memory processes"
+    examples ("he taught a graduate course on learning and memory")
+    id oewn-06149719-n
+    partOfSpeech n
+source "oewn:2024"

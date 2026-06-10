@@ -1,0 +1,20 @@
+{
+  "lemma": "rb",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14677133-n",
+      "partOfSpeech": "n",
+      "definition": "a soft silvery metallic element of the alkali metal group; burns in air and reacts violently in water; occurs in carnallite and lepidolite and pollucite",
+      "synonyms": [
+        "rubidium",
+        "atomic number 37"
+      ]
+    }
+  ]
+}

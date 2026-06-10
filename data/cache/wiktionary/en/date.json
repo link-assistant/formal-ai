@@ -1,0 +1,179 @@
+[
+  {
+    "word": "date",
+    "phonetic": "/deɪt/",
+    "phonetics": [
+      {
+        "text": "/deɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/date-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=614848",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The fruit of the date palm, Phoenix dactylifera, somewhat in the shape of an olive, containing a soft, sweet pulp and enclosing a hard kernel.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We made a nice cake from dates."
+          },
+          {
+            "definition": "The date palm.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There were a few dates planted around the house."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/date"
+    ]
+  },
+  {
+    "word": "date",
+    "phonetic": "/deɪt/",
+    "phonetics": [
+      {
+        "text": "/deɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/date-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=614848",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The addition to a writing, inscription, coin, etc., which specifies the time (especially the day, month, and year) when the writing or inscription was given, executed, or made.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the date of a letter, of a will, of a deed, of a coin, etc."
+          },
+          {
+            "definition": "A specific day in time at which a transaction or event takes place, or is appointed to take place; a given point of time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you know the date of the wedding?"
+          },
+          {
+            "definition": "A point in time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You may need that at a later date."
+          },
+          {
+            "definition": "Assigned end; conclusion.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Given or assigned length of life; duration.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A pre-arranged meeting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I arranged a date with my Australian business partners."
+          },
+          {
+            "definition": "One's companion for social activities or occasions.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I brought Melinda to the wedding as my date."
+          },
+          {
+            "definition": "A romantic meeting or outing with a lover or potential lover, or the person so met.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The cinema is a popular place to take someone on a date."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To note the time or place of writing or executing; to express in an instrument the time of its execution.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to date a letter, a bond, a deed, or a charter"
+          },
+          {
+            "definition": "To note or fix the time of (an event); to give the date of.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To determine the age of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to date the building of the pyramids"
+          },
+          {
+            "definition": "To take (someone) on a date, or a series of dates.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) To have a steady relationship with; to be romantically involved with.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(by extension) To have a steady relationship with each other; to be romantically involved with each other.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "They met a couple of years ago, but have been dating for about five months."
+          },
+          {
+            "definition": "To make or become old, especially in such a way as to fall out of fashion, become less appealing or attractive, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The comedian dated himself by making quips about bands from the 1960s."
+          },
+          {
+            "definition": "(with from) To have beginning; to begin; to be dated or reckoned.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "age",
+          "elden",
+          "obsolesce",
+          "go out",
+          "see"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/date"
+    ]
+  }
+]

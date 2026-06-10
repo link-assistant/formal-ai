@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use formal_ai::{agent_info, ConversationTurn, FormalAiEngine, UniversalSolver};
+use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const WEB_SEARCH_SOURCE_MARKER_CASES: &[(&str, &str, &str)] = &[
     ("en", "Find apple on the internet", "apple"),
@@ -197,12 +197,10 @@ fn generic_navigation_uses_same_frame_policy_path_as_github() {
 
 #[test]
 fn web_search_source_marker_cases_cover_every_supported_language() {
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info.lino should define supported_languages")
-        .split('|')
-        .filter(|language| !language.is_empty())
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
         .collect::<BTreeSet<_>>();
     let mut case_languages = BTreeMap::<&str, usize>::new();
     for &(language, _, _) in WEB_SEARCH_SOURCE_MARKER_CASES {
@@ -221,12 +219,10 @@ fn web_search_source_marker_cases_cover_every_supported_language() {
 
 #[test]
 fn web_search_enumeration_research_cases_cover_every_supported_language() {
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info.lino should define supported_languages")
-        .split('|')
-        .filter(|language| !language.is_empty())
+    let languages = formal_ai::supported_languages();
+    let supported_languages = languages
+        .iter()
+        .map(String::as_str)
         .collect::<BTreeSet<_>>();
     let mut case_languages = BTreeMap::<&str, usize>::new();
     for &(language, _, _) in WEB_SEARCH_ENUMERATION_RESEARCH_CASES {

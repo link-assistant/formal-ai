@@ -1,0 +1,17 @@
+Q7802
+  aliases
+    en (bun breads buns)
+    zh ("面包" "麭")
+  descriptions
+    en "baked food made of flour, water and other ingredients"
+    hi "आटे से तैयार प्रधान भोजन"
+    ru "пищевой продукт"
+    zh "由麵粉製作烘烤而成的食物"
+  id Q7802
+  labels
+    en bread
+    hi "डबलरोटी"
+    ru "хлеб"
+    zh "麵包"
+  type item
+success 1

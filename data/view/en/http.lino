@@ -1,0 +1,9 @@
+view
+  id M-3434a7116d8d
+  lemma http
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a protocol (utilizing TCP) to transfer hypertext requests and information between servers and browsers"
+    provenance (wordnet)

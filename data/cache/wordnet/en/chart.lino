@@ -1,0 +1,37 @@
+language en
+lemma chart
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a visual display of information"
+    id oewn-07012462-n
+    partOfSpeech n
+    synonyms (graph)
+  entry
+    definition "a map designed to assist navigation by air or sea"
+    id oewn-03013574-n
+    partOfSpeech n
+  entry
+    definition "(usually plural) a listing of best-selling recorded music"
+    examples ("number 2 on the charts")
+    id oewn-06500907-n
+    partOfSpeech n
+  entry
+    definition "make a chart of"
+    examples ("chart the territory")
+    id oewn-00712632-v
+    partOfSpeech v
+  entry
+    definition "plan in detail"
+    examples ("Bush is charting a course to destroy Saddam Hussein")
+    id oewn-00706861-v
+    partOfSpeech v
+  entry
+    definition "represent by means of a graph"
+    examples ("chart the data")
+    id oewn-01758945-v
+    partOfSpeech v
+    synonyms (graph)
+source "oewn:2024"

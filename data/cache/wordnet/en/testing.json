@@ -1,0 +1,36 @@
+{
+  "lemma": "testing",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00641218-n",
+      "partOfSpeech": "n",
+      "definition": "the act of subjecting to experimental test in order to determine how well something works",
+      "examples": [
+        "they agreed to end the testing of atomic weapons"
+      ]
+    },
+    {
+      "id": "oewn-00645945-n",
+      "partOfSpeech": "n",
+      "definition": "an examination of the characteristics of something",
+      "examples": [
+        "there are laboratories for commercial testing",
+        "it involved testing thousands of children for smallpox"
+      ]
+    },
+    {
+      "id": "oewn-00637704-n",
+      "partOfSpeech": "n",
+      "definition": "the act of giving students or candidates a test (as by questions) to determine what they know or have learned",
+      "synonyms": [
+        "examination"
+      ]
+    }
+  ]
+}

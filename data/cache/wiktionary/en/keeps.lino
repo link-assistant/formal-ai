@@ -1,0 +1,68 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The main tower of a castle or fortress, located within the castle walls."
+          synonyms (donjon)
+        entry
+          definition "The food or money required to keep someone alive and healthy; one's support, maintenance."
+          example "He works as a cobbler's apprentice for his keep."
+        entry
+          definition "The act or office of keeping; custody; guard; care; heed; charge; notice."
+        entry
+          definition "The state of being kept; hence, the resulting condition; case."
+          example "to be in good keep"
+        entry
+          definition "That which is kept in charge; a charge."
+        entry
+          definition "A cap for holding something, such as a journal box, in place."
+      partOfSpeech noun
+      synonyms (donjon)
+    entry
+      definitions
+        entry
+          definition "To continue in (a course or mode of action); not to intermit or fall from; to uphold or maintain."
+          example "to keep silence;  to keep one's word;  to keep possession"
+        entry
+          definition "(heading) To hold the status of something."
+        entry
+          definition "(heading) To hold or be held in a state."
+        entry
+          definition "To wait for, keep watch for."
+        entry
+          definition "To act as wicket-keeper."
+          example "Godfrey Evans kept for England for many years."
+        entry
+          definition "To take care; to be solicitous; to watch."
+        entry
+          definition "To be in session; to take place."
+          example "School keeps today."
+        entry
+          definition "To observe; to adhere to; to fulfill; not to swerve from or violate."
+        entry
+          definition "(by extension) To visit (a place) often; to frequent."
+        entry
+          definition "To observe or celebrate (a holiday)."
+          example "The feast of St. Stephen is kept on December 26."
+      partOfSpeech verb
+      synonyms (retain preserve protect)
+    entry
+      definitions
+        entry
+          definition Keeping
+      partOfSpeech noun
+  phonetic "/kiːps/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/keeps-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100462"
+      text "/kiːps/"
+  sourceUrls ("https://en.wiktionary.org/wiki/keep" "https://en.wiktionary.org/wiki/keeps")
+  word keeps

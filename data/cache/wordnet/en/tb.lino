@@ -1,0 +1,32 @@
+language en
+lemma tb
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "infection transmitted by inhalation or ingestion of tubercle bacilli and manifested in fever and small lesions (usually in the lungs but in various other parts of the body in acute stages)"
+    id oewn-14166897-n
+    partOfSpeech n
+    synonyms (tuberculosis T.B.)
+  entry
+    definition "a metallic element of the rare earth group; used in lasers; occurs in apatite and monazite and xenotime and ytterbite"
+    id oewn-14681745-n
+    partOfSpeech n
+    synonyms (terbium "atomic number 65")
+  entry
+    definition "a unit of information equal to 1000 gigabytes or 10^12 (1,000,000,000,000) bytes"
+    id oewn-13651137-n
+    partOfSpeech n
+    synonyms (terabyte)
+  entry
+    definition "a unit of information equal to 1000 gigabits or 10^12 (1,000,000,000,000) bits"
+    id oewn-13651315-n
+    partOfSpeech n
+    synonyms (terabit Tbit)
+  entry
+    definition "a unit of information equal to 1024 gibibytes or 2^40 (1,099,511,627,776) bytes"
+    id oewn-13650943-n
+    partOfSpeech n
+    synonyms (terabyte tebibyte TiB)
+source "oewn:2024"

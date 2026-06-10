@@ -1,0 +1,131 @@
+[
+  {
+    "word": "sin",
+    "phonetic": "/sɪn/",
+    "phonetics": [
+      {
+        "text": "/sɪn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sin-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=252397"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A violation of God's will or religious law.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "As a Christian, I think this is a sin against God."
+          },
+          {
+            "definition": "A misdeed.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A sin offering; a sacrifice for sin.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An embodiment of sin; a very wicked person.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A flaw.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "No movie is without sin."
+          }
+        ],
+        "synonyms": [
+          "offence"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To commit a sin.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sin"
+    ]
+  },
+  {
+    "word": "sin",
+    "phonetic": "/siːn/",
+    "phonetics": [
+      {
+        "text": "/siːn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A letter of the Hebrew alphabet; שׂ",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A letter of the Arabic alphabet; س",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sin"
+    ]
+  },
+  {
+    "word": "sin",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A traditional tube skirt worn by Lao and Thai women, particularly northern Thai and northeastern Thai women.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sin"
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+view
+  id M-64dec54a9bc5
+  lemma preview
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an advertisement consisting of short scenes from a motion picture that will appear in the near future"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a screening for a select audience in advance of release for the general public"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "watch (a movie or play) before it is released to the general public"
+    provenance (wordnet)

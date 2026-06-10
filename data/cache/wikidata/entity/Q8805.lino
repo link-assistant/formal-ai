@@ -1,0 +1,17 @@
+Q8805
+  aliases
+    en (b "binary digit" "logic value")
+    zh ("节" "比特")
+  descriptions
+    en "basic unit of information in computing and digital communications"
+    hi "सूचना की इकाई"
+    ru "мельчайшая единица информации"
+    zh "電腦和技術的信息的基本單位"
+  id Q8805
+  labels
+    en bit
+    hi "द्वयंक"
+    ru "бит"
+    zh "位元"
+  type item
+success 1

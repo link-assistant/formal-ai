@@ -1,0 +1,18 @@
+language en
+lemma defined
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "clearly characterized or delimited"
+    examples ("lost in a maze of words both defined and undefined" "each child has clearly defined duties")
+    id oewn-00700633-a
+    partOfSpeech a
+  entry
+    definition "showing clearly the outline or profile or boundary"
+    examples ("hills defined against the evening sky" "the setting sun showed the outlined figure of a man standing on the hill")
+    id oewn-00784271-s
+    partOfSpeech s
+    synonyms (outlined)
+source "oewn:2024"

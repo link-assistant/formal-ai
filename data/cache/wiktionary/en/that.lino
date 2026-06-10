@@ -1,0 +1,95 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Something being indicated that is there; one of those."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "(degree) To a given extent or degree."
+          example '"The ribbon was that thin." "I disagree, I say it was not that thin, it was thicker... or maybe thinner..."'
+        entry
+          definition "(degree) To a great extent or degree; very, particularly (in negative constructions)."
+          example "I did the run last year, and it wasn't that difficult."
+          synonyms (so)
+        entry
+          definition "To such an extent; so. (in positive constructions)."
+          example "Ooh, I was that happy I nearly kissed her."
+      partOfSpeech adverb
+      synonyms (so)
+    entry
+      antonyms (here there this yon yonder)
+      definitions
+        entry
+          definition '(demonstrative) The thing, person, idea, quality, event, action or time indicated or understood from context, especially if more remote geographically, temporally or mentally than one designated as "this", or if expressing distinction.'
+          example "He went home, and after that I never saw him again."
+        entry
+          definition "The known (thing); used to refer to something just said."
+          example "They're getting divorced. What do you think about that?"
+        entry
+          definition "(demonstrative) The aforementioned quality or proposition; used to emphatically affirm or deny a previous statement or question."
+          example "The water is so cold! — That it is."
+        entry
+          definition "(relative) (plural that) Which, who; representing a subject, direct object, indirect object, or object of a preposition."
+          example "The CPR course that she took really came in handy."
+        entry
+          definition "Used in place of relative adverbs such as where or when; often omitted."
+          example "the last time that [= when] I went to Europe"
+      partOfSpeech pronoun
+    entry
+      definitions
+        entry
+          definition "Introducing a clause which is the subject or object of a verb (such as one involving reported speech), or which is a complement to a previous statement."
+          example "He told me that the book is a good read."
+        entry
+          definition "Introducing a subordinate clause expressing a reason or cause: because, in that."
+          example "Be glad that you have enough to eat."
+        entry
+          definition 'Introducing a subordinate clause that expresses an aim, purpose or goal ("final"), and usually contains the auxiliaries may, might or should: so, so that.'
+        entry
+          definition "Introducing — especially, but not exclusively, with an antecedent like so or such — a subordinate clause expressing a result, consequence or effect."
+          example "The noise was so loud that she woke up."
+        entry
+          definition "Introducing a premise or supposition for consideration: seeing as; inasmuch as; given that; as would appear from the fact that."
+        entry
+          definition "Introducing a subordinate clause modifying an adverb."
+          example "How often did she visit him? — Twice that I saw."
+        entry
+          definition "Introducing an exclamation expressing a desire or wish."
+          example "Oh that spring would come!"
+        entry
+          definition "Introducing an exclamation expressing a strong emotion such as sadness or surprise."
+      partOfSpeech conjunction
+  phonetic "/ˈðæt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈðæt/"
+    entry
+      audio ""
+      text "/ˈðæt/"
+    entry
+      audio ""
+      text "/ˈd̪æt/"
+    entry
+      audio ""
+      text "/ˈðɛt/"
+    entry
+      audio ""
+      text "/ˈðæt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/that-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718785"
+    entry
+      audio ""
+      text "/ˈðæt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/that")
+  word that

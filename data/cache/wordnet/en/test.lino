@@ -1,0 +1,78 @@
+language en
+lemma test
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "trying something to find out about it"
+    examples ("a sample for ten days free trial" "a trial of progesterone failed to relieve the pain")
+    id oewn-05807220-n
+    partOfSpeech n
+    synonyms (trial "trial run" tryout)
+  entry
+    definition "any standardized procedure for measuring sensitivity or memory or intelligence or aptitude or personality etc"
+    examples ("the test was standardized on a large sample of students")
+    id oewn-01008617-n
+    partOfSpeech n
+    synonyms ("mental test" "mental testing" "psychometric test")
+  entry
+    definition "a set of questions or exercises evaluating skill or knowledge"
+    examples ("when the test was stolen the professor had to make a new set of questions")
+    id oewn-07211681-n
+    partOfSpeech n
+    synonyms (examination exam)
+  entry
+    definition "the act of undergoing testing"
+    examples ("he survived the great test of battle" "candidates must compete in a trial of skill")
+    id oewn-00796028-n
+    partOfSpeech n
+    synonyms (trial)
+  entry
+    definition "the act of testing something"
+    examples ("in the experimental trials the amount of carbon was measured separately" "he called each flip of the coin a new trial")
+    id oewn-00792739-n
+    partOfSpeech n
+    synonyms (trial run)
+  entry
+    definition "a hard outer covering as of some amoebas and sea urchins"
+    id oewn-01907340-n
+    partOfSpeech n
+  entry
+    definition "put to the test, as for its quality, or give experimental use to"
+    examples ("This approach has been tried with good results" "Test this recipe")
+    id oewn-02537291-v
+    partOfSpeech v
+    synonyms (prove try "try out" examine essay)
+  entry
+    definition "test or examine for the presence of disease or infection"
+    examples ("screen the blood for the HIV virus")
+    id oewn-02538775-v
+    partOfSpeech v
+    synonyms (screen)
+  entry
+    definition "examine someone's knowledge of something"
+    examples ("The teacher tests us every week" "We got quizzed on French irregular verbs")
+    id oewn-00788120-v
+    partOfSpeech v
+    synonyms (quiz)
+  entry
+    definition "show a certain characteristic when tested"
+    examples ("He tested positive for HIV")
+    id oewn-02751588-v
+    partOfSpeech v
+  entry
+    definition "achieve a certain score or rating on a test"
+    examples ("She tested high on the LSAT and was admitted to all the good law schools")
+    id oewn-01115009-v
+    partOfSpeech v
+  entry
+    definition "determine the presence or properties of (a substance)"
+    id oewn-00922749-v
+    partOfSpeech v
+  entry
+    definition "undergo a test"
+    examples ("She doesn't test well")
+    id oewn-00671888-v
+    partOfSpeech v
+source "oewn:2024"

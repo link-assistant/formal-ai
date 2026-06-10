@@ -1,0 +1,12 @@
+language en
+lemma random
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "lacking any definite plan or order or purpose; governed by or depending on chance"
+    examples ("a random choice" "bombs fell at random" "random movements")
+    id oewn-01930715-a
+    partOfSpeech a
+source "oewn:2024"

@@ -1,0 +1,56 @@
+language en
+lemma conflict
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an open clash between two opposing groups (or individuals)"
+    examples ("the harder the conflict, the more glorious the triumph" "police tried to control the battle between the pro- and anti-abortion mobs")
+    id oewn-00961007-n
+    partOfSpeech n
+    synonyms (struggle battle)
+  entry
+    definition "opposition between two simultaneous but incompatible feelings"
+    examples ("he was immobilized by conflict and indecision")
+    id oewn-07498579-n
+    partOfSpeech n
+  entry
+    definition "a hostile meeting of opposing military forces in the course of a war"
+    examples ("Grant won a decisive victory in the battle of Chattanooga" "he lost his romantic ideas about war when he got into a real engagement")
+    id oewn-00955670-n
+    partOfSpeech n
+    synonyms (battle fight engagement)
+  entry
+    definition "a state of opposition between persons or ideas or interests"
+    examples ("his conflict of interest made him ineligible for the post" "a conflict of loyalties")
+    id oewn-14004330-n
+    partOfSpeech n
+  entry
+    definition "an incompatibility of dates or events"
+    examples ("he noticed a conflict in the dates of the two meetings")
+    id oewn-04721955-n
+    partOfSpeech n
+  entry
+    definition "opposition in a work of drama or fiction between characters or forces (especially an opposition that motivates the development of the plot)"
+    examples ("this form of conflict is essential to Mann's writing")
+    id oewn-13877574-n
+    partOfSpeech n
+  entry
+    definition "a disagreement or argument about something important"
+    examples ("he had a dispute with his wife" "there were irreconcilable differences" "the familiar conflict between Republicans and Democrats")
+    id oewn-07196595-n
+    partOfSpeech n
+    synonyms (dispute difference "difference of opinion")
+  entry
+    definition "be in conflict"
+    examples ("The two proposals conflict!")
+    id oewn-02673287-v
+    partOfSpeech v
+  entry
+    definition "go against, as of rules and laws"
+    examples ("He ran afoul of the law" "This behavior conflicts with our rules")
+    id oewn-02573062-v
+    partOfSpeech v
+    synonyms ("run afoul" infringe contravene)
+source "oewn:2024"

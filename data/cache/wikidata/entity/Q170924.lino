@@ -1,0 +1,15 @@
+Q170924
+  aliases
+    ru ("ссудный процент" "интерес" "финансовый интерес")
+    zh ("息")
+  descriptions
+    en "fee paid by a debtor to a creditor for borrowed capital"
+    zh "債務人就暫時藉入的資本向債權人支付的費用"
+  id Q170924
+  labels
+    en interest
+    hi "ब्याज"
+    ru "процентный доход"
+    zh "利息"
+  type item
+success 1

@@ -1,0 +1,28 @@
+{
+  "lemma": "dashboard",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04288513-n",
+      "partOfSpeech": "n",
+      "definition": "protective covering consisting of a panel to protect people from the splashing water or mud etc.",
+      "synonyms": [
+        "splashboard",
+        "splasher"
+      ]
+    },
+    {
+      "id": "oewn-03167888-n",
+      "partOfSpeech": "n",
+      "definition": "instrument panel on an automobile or airplane containing dials and controls",
+      "synonyms": [
+        "fascia"
+      ]
+    }
+  ]
+}

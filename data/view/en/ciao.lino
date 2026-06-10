@@ -1,0 +1,9 @@
+view
+  id M-0bb8dbaa2ab0
+  lemma ciao
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an acknowledgment that can be used to say hello or goodbye (aloha is Hawaiian and ciao is Italian)"
+    provenance (wordnet)

@@ -1,0 +1,12 @@
+language en
+lemma ciao
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an acknowledgment that can be used to say hello or goodbye (aloha is Hawaiian and ciao is Italian)"
+    id oewn-06644428-n
+    partOfSpeech n
+    synonyms (aloha)
+source "oewn:2024"

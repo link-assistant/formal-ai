@@ -1,69 +1,65 @@
 meanings
-  meaning "explanation_request"
-    gloss "a request to have something explained — to be told how it works, what it is, or what it does. The concept an explanation prompt expresses, independent of the language or exact phrasing. Each lead marks the subject position with the ellipsis … (U+2026): a trailing ellipsis is a prefix surface matched against the start of the prompt by the literal before the slot, while a surface with no ellipsis is a bare phrase matched anywhere as a raw substring. A bare phrase written with surrounding spaces matches only on whole-word boundaries; one written without them folds its inflections. No interrogative word is named in the consuming code; every lead lives here in the data."
-    wiktionary "explain"
-    defined_by "inquiry"
-    defined_by "action"
-    role "explanation_request_lead"
-    lexeme "en"
-      word "how …"
-        description "English prefix surface asking how something works or is done; matched by the literal how before the … slot at the start of the prompt."
-      word " how "
-        description "English bare interrogative how, space-wrapped so it matches only as a whole word anywhere inside the prompt."
-      word "explain …"
-        description "English prefix surface; the imperative explain leads a request to explain whatever follows the … slot."
-      word "describe …"
-        description "English prefix surface; the imperative describe leads a request to describe whatever follows the … slot."
-      word "what does …"
-        description "English prefix surface; the question what does leads an explanation request whose subject follows the … slot."
-      word "what is …"
-        description "English prefix surface; the question what is leads a definition request whose subject follows the … slot."
-      word "tell me about …"
-        description "English prefix surface; tell me about leads a request to explain the subject after the … slot."
-      word "how to use …"
-        description "English prefix surface; how to use leads a usage question whose subject follows the … slot, subsumed by the bare how lead but kept for the explicit usage phrasing."
-    lexeme "ru"
-      word "как …"
-        description "Russian prefix surface (romanized kak); the interrogative how leads an explanation request whose subject follows the … slot."
-      word " как "
-        description "Russian bare interrogative how (romanized kak), space-wrapped so it matches only as a whole word anywhere inside the prompt."
-      word "объясни …"
-        description "Russian prefix surface (romanized obyasni); the imperative explain leads a request to explain whatever follows the … slot."
-      word "расскажи …"
-        description "Russian prefix surface (romanized rasskazhi); the imperative tell leads a request to describe whatever follows the … slot."
-      word "что такое …"
-        description "Russian prefix surface (romanized chto takoe); the question what is leads a definition request whose subject follows the … slot."
-    lexeme "hi"
-      word "कैसे काम"
-        description "Hindi phrase (romanized kaise kaam, how it works) as a bare substring marking a how-it-works explanation request."
-      word "समझाओ…"
-        description "Hindi prefix surface (romanized samjhao, explain) matched by its literal start with no space before the … slot; the subject follows."
-      word "क्या है …"
-        description "Hindi prefix surface (romanized kya hai, what is) matched at the start of the prompt; the subject follows the … slot."
-    lexeme "zh"
-      word "如何工作"
-        description "Chinese phrase (pinyin ruhe gongzuo, how it works) as a bare substring marking a how-it-works explanation request."
-      word "怎么工作"
-        description "Chinese phrase (pinyin zenme gongzuo, how it works) as a bare substring marking a how-it-works explanation request."
-      word "解释…"
-        description "Chinese prefix surface (pinyin jieshi, explain) matched by its literal start with no space before the … slot; the subject follows."
-      word "是什么"
-        description "Chinese phrase (pinyin shi shenme, is what) as a bare substring marking a definition request."
-  meaning "code_method"
-    gloss "a method in the programming sense — a named operation or function defined on a type or object, such as the join method of a DataFrame. The word a prompt uses, in any language, to refer to such an operation when asking how it works. A handler pairs this concept with the method's own API identifier — which is written the same in every language — so it can recognise a question about a specific method without naming the word method in the code. Space-delimited surfaces match on whole-token boundaries; the Han surface matches as a substring."
-    wiktionary "method"
-    defined_by "action"
-    defined_by "concept"
-    role "code_method_noun"
-    lexeme "en"
-      word "method"
-        description "English noun method, the word for a named operation on a type or object; matched as a whole token."
-    lexeme "ru"
-      word "метод"
-        description "Russian noun (romanized metod) for a method; matched as a whole token."
-    lexeme "hi"
-      word "विधि"
-        description "Hindi noun (romanized vidhi) for a method or procedure; matched as a whole token."
-    lexeme "zh"
-      word "方法"
-        description "Chinese noun (pinyin fangfa) for a method; a Han substring marker for the method concept."
+  explanation_request
+    defined-by inquiry
+    defined-by action
+    role explanation_request_lead
+    lexeme en
+      surface
+        text "how …"
+      surface
+        text " how "
+      surface
+        text "explain …"
+      surface
+        text "describe …"
+      surface
+        text "what does …"
+      surface
+        text "what is …"
+      surface
+        text "tell me about …"
+      surface
+        text "how to use …"
+    lexeme ru
+      surface
+        text "как …"
+      surface
+        text " как "
+      surface
+        text "объясни …"
+      surface
+        text "расскажи …"
+      surface
+        text "что такое …"
+    lexeme hi
+      surface
+        text "कैसे काम"
+      surface
+        text समझाओ…
+      surface
+        text "क्या है …"
+    lexeme zh
+      surface
+        text 如何工作
+      surface
+        text 怎么工作
+      surface
+        text 解释…
+      surface
+        text 是什么
+  code_method
+    defined-by action
+    defined-by concept
+    role code_method_noun
+    lexeme en
+      surface
+        text method
+    lexeme ru
+      surface
+        text метод
+    lexeme hi
+      surface
+        text विधि
+    lexeme zh
+      surface
+        text 方法

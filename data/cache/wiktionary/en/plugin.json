@@ -1,0 +1,51 @@
+[
+  {
+    "word": "plugin",
+    "phonetic": "/ˈplʌɡɪn/",
+    "phonetics": [
+      {
+        "text": "/ˈplʌɡɪn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Anything that plugs into something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A module or device that interacts with another to add a specific feature or function.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An electric vehicle that can be recharged from an external power source.",
+            "synonyms": [
+              "PEV"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "PEV",
+          "add-in",
+          "add-on",
+          "snap-in"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/plug-in",
+      "https://en.wiktionary.org/wiki/plugin"
+    ]
+  }
+]

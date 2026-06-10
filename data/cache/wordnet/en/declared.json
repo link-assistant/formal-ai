@@ -1,0 +1,28 @@
+{
+  "lemma": "declared",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00690633-a",
+      "partOfSpeech": "a",
+      "definition": "made known or openly avowed",
+      "examples": [
+        "their declared and their covert objectives",
+        "a declared liberal"
+      ]
+    },
+    {
+      "id": "oewn-00944139-s",
+      "partOfSpeech": "s",
+      "definition": "declared as fact; explicitly stated",
+      "synonyms": [
+        "stated"
+      ]
+    }
+  ]
+}

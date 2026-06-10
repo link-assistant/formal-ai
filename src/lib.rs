@@ -14,6 +14,7 @@ pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod intent_formalization;
+pub mod json_lino;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
@@ -113,9 +114,9 @@ pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
     intent_routing, language_rules, merged_bundle, multilingual_responses, operation_vocabulary,
     parse_bundle, projects_registry, prompt_patterns, response_for, seed_files,
-    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
-    OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord, ProjectStatement,
-    ProjectsRegistry,
+    supported_languages, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
+    MigrationFlow, OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord,
+    ProjectStatement, ProjectsRegistry,
 };
 pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,

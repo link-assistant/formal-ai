@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q243": {
+      "type": "item",
+      "id": "Q243",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Эйфелева башня"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एफिल टॉवर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "埃菲尔铁塔"
+        },
+        "en": {
+          "language": "en",
+          "value": "Eiffel Tower"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "архитектурная достопримечательность Парижа"
+        },
+        "en": {
+          "language": "en",
+          "value": "tower located on the Champ de Mars in Paris, France"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेरिस, फ्रांस में चैंप डी मार्स पर टॉवर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "特大型铁制镂空塔、法国巴黎地标性建筑"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Трёхсотметровая башня"
+          },
+          {
+            "language": "ru",
+            "value": "300-метровая башня"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "艾菲爾鐵塔"
+          },
+          {
+            "language": "zh",
+            "value": "埃菲爾鐵塔"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

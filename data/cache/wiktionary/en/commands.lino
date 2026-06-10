@@ -1,0 +1,73 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An order to do something."
+          example "I was given a command to cease shooting."
+        entry
+          definition "The right or authority to order, control or dispose of; the right to be obeyed or to compel obedience."
+          example "to have command of an army"
+        entry
+          definition "Power of control, direction or disposal; mastery."
+          example "England has long held command of the sea"
+        entry
+          definition "A position of chief authority; a position involving the right or power to order or control."
+          example "General Smith was placed in command."
+        entry
+          definition "The act of commanding; exercise or authority of influence."
+        entry
+          definition "A body or troops, or any naval or military force, under the control of a particular officer; by extension, any object or body in someone's charge."
+        entry
+          definition "Dominating situation; range or control or oversight; extent of view or outlook."
+        entry
+          definition "A directive to a computer program acting as an interpreter of some kind, in order to perform a specific task."
+        entry
+          definition "The degree of control a pitcher has over his pitches."
+          example "He's got good command tonight."
+        entry
+          definition "A command performance."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To order, give orders; to compel or direct with authority."
+          example "The king commanded his servant to bring him dinner."
+        entry
+          definition "To have or exercise supreme power, control or authority over, especially military; to have under direction or control."
+          example "to command an army or a ship"
+        entry
+          definition "To require with authority; to demand, order, enjoin."
+          example "he commanded silence"
+        entry
+          definition "To dominate through ability, resources, position etc.; to overlook."
+          example "Bridges commanded by a fortified house. (Motley.)"
+        entry
+          definition "To exact, compel or secure by influence; to deserve, claim."
+          example "A good magistrate commands the respect and affections of the people."
+        entry
+          definition "To hold, to control the use of."
+          example "The fort commanded the bay."
+        entry
+          definition "To have a view, as from a superior position."
+        entry
+          definition "To direct to come; to bestow."
+      partOfSpeech verb
+      synonyms (decree order)
+  phonetic "/kəˈmɑːndz/"
+  phonetics
+    entry
+      audio ""
+      text "/kəˈmɑːndz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/commands-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100939"
+      text "/kəˈmændz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/command" "https://en.wiktionary.org/wiki/commands")
+  word commands

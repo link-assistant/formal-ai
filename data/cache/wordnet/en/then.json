@@ -1,0 +1,66 @@
+{
+  "lemma": "then",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15321597-n",
+      "partOfSpeech": "n",
+      "definition": "that time; that moment",
+      "examples": [
+        "we will arrive before then",
+        "we were friends from then on"
+      ]
+    },
+    {
+      "id": "oewn-00118527-r",
+      "partOfSpeech": "r",
+      "definition": "subsequently or soon afterward (often used as sentence connectors)",
+      "examples": [
+        "then he left",
+        "go left first, then right",
+        "first came lightning, then thunder",
+        "we watched the late movie and then went to bed",
+        "and so home and to bed"
+      ],
+      "synonyms": [
+        "so",
+        "and so"
+      ]
+    },
+    {
+      "id": "oewn-00118928-r",
+      "partOfSpeech": "r",
+      "definition": "in that case or as a consequence",
+      "examples": [
+        "if he didn't take it, then who did?",
+        "keep it then if you want to",
+        "the case, then, is closed",
+        "you've made up your mind then?",
+        "then you'll be rich"
+      ]
+    },
+    {
+      "id": "oewn-00118799-r",
+      "partOfSpeech": "r",
+      "definition": "at that time",
+      "examples": [
+        "I was young then",
+        "prices were lower back then",
+        "science as it was then taught"
+      ]
+    },
+    {
+      "id": "oewn-01735357-s",
+      "partOfSpeech": "s",
+      "definition": "at a specific prior time",
+      "examples": [
+        "the then president"
+      ]
+    }
+  ]
+}

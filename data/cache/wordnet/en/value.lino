@@ -1,0 +1,67 @@
+language en
+lemma value
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a numerical quantity measured or assigned or computed"
+    examples ("the value assigned was 16 milliseconds")
+    id oewn-05864972-n
+    partOfSpeech n
+  entry
+    definition "the quality (positive or negative) that renders something desirable or valuable"
+    examples ("the Shakespearean Shylock is of dubious value in the modern world")
+    id oewn-05145753-n
+    partOfSpeech n
+  entry
+    definition "the amount (of money or goods or services) that is considered to be a fair equivalent for something else"
+    examples ("he tried to estimate the value of the produce at normal prices")
+    id oewn-13434666-n
+    partOfSpeech n
+    synonyms ("economic value")
+  entry
+    definition "relative darkness or lightness of a color"
+    examples ("I establish the colors and principal values by organizing the painting into three values — dark, medium … and light")
+    id oewn-04986674-n
+    partOfSpeech n
+  entry
+    definition "(music) the relative duration of a musical note"
+    id oewn-15159865-n
+    partOfSpeech n
+    synonyms ("time value" "note value")
+  entry
+    definition "an ideal accepted by some individual or group"
+    examples ("he has old-fashioned values")
+    id oewn-05932615-n
+    partOfSpeech n
+  entry
+    definition "fix or determine the value of; assign a value to"
+    examples ("value the jewelry and art work in the estate")
+    id oewn-00696992-v
+    partOfSpeech v
+  entry
+    definition "hold dear"
+    examples ("I prize these old photographs")
+    id oewn-02260917-v
+    partOfSpeech v
+    synonyms (prize treasure appreciate)
+  entry
+    definition "regard highly; think much of"
+    examples ("I respect his judgement" "We prize his creativity")
+    id oewn-00695834-v
+    partOfSpeech v
+    synonyms (respect esteem prize prise)
+  entry
+    definition "evaluate or estimate the nature, quality, ability, extent, or significance of"
+    examples ("I will have the family jewels appraised by a professional" "access all the factors when taking a risk")
+    id oewn-00683348-v
+    partOfSpeech v
+    synonyms (measure evaluate valuate assess appraise)
+  entry
+    definition "estimate the value of"
+    examples ("How would you rate his chances to become President?" "Gold was rated highly among the Romans")
+    id oewn-00662642-v
+    partOfSpeech v
+    synonyms (rate)
+source "oewn:2024"

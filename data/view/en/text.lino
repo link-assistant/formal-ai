@@ -1,0 +1,25 @@
+view
+  id M-389481d03aab
+  lemma text
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the words of something written"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a passage from the Bible that is used as the subject of a sermon"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a book prepared for use in schools or colleges"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the main body of a written work (as distinct from illustrations or footnotes etc.)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to send a message by SMS or similar text-based messaging service"
+    provenance (wordnet)

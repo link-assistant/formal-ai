@@ -1,0 +1,17 @@
+view
+  id M-95a2d41e7132
+  lemma reorder
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a repeated order for the same merchandise"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign a new order to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a new request to be supplied with"
+    provenance (wordnet)

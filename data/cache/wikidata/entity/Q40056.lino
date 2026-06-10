@@ -1,0 +1,18 @@
+Q40056
+  aliases
+    en (program "software program")
+    hi ("प्रोग्राम")
+    ru ("программа" "программное приложение" "компьютерное приложение" "компьютерные программы" "программный продукт" "программное изделие" "софт")
+    zh ("电脑程序" "電腦程式" "程式" "程序")
+  descriptions
+    en "sequence of instructions written in programming language to perform a specified task with a computer"
+    ru "система инструкций для исполнения компьютером"
+    zh "使用计算机语言编写的指令序列，可以执行特定的计算机工作"
+  id Q40056
+  labels
+    en "computer program"
+    hi "कम्प्यूटर प्रोग्राम"
+    ru "компьютерная программа"
+    zh "计算机程序"
+  type item
+success 1

@@ -1,0 +1,45 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "That which results; the conclusion or end to which any course or condition of things leads, or which is obtained by any process or operation; consequence or effect."
+          example "the result of a course of action;  the result of a mathematical operation"
+        entry
+          definition "The fruit, beneficial or tangible effect(s) achieved by effort."
+        entry
+          definition "The decision or determination of a council or deliberative assembly; a resolve; a decree."
+        entry
+          definition "A flying back; resilience."
+        entry
+          definition "The final score in a game."
+        entry
+          definition "(by extension) A positive or favourable outcome for someone."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To proceed, spring up or rise, as a consequence, from facts, arguments, premises, combination of circumstances, consultation, thought or endeavor."
+        entry
+          definition '(followed by "in") To have as a consequence; to lead to; to bring about'
+          example "This measure will result in good or in evil."
+        entry
+          definition "To return to the proprietor (or heirs) after a reversion."
+        entry
+          definition "To leap back; to rebound."
+      partOfSpeech verb
+      synonyms (arise follow)
+  phonetic "/ɹɪˈzʌlts/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/results-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1669343"
+      text "/ɹɪˈzʌlts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/result" "https://en.wiktionary.org/wiki/results")
+  word results

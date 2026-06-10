@@ -1,0 +1,13 @@
+view
+  id M-06a5f05e36fd
+  lemma query
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an instance of questioning"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pose a question"
+    provenance (wordnet)

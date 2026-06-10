@@ -1,0 +1,53 @@
+{
+  "lemma": "perform",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01716563-v",
+      "partOfSpeech": "v",
+      "definition": "carry out or perform an action",
+      "examples": [
+        "John did the painting, the weeding, and he cleaned out the gutters",
+        "the skater executed a triple pirouette",
+        "she did a little dance"
+      ],
+      "synonyms": [
+        "execute",
+        "do"
+      ]
+    },
+    {
+      "id": "oewn-02379855-v",
+      "partOfSpeech": "v",
+      "definition": "perform a function",
+      "examples": [
+        "Who will perform the wedding?"
+      ]
+    },
+    {
+      "id": "oewn-01718067-v",
+      "partOfSpeech": "v",
+      "definition": "give a performance (of something)",
+      "examples": [
+        "Horowitz is performing at Carnegie Hall tonight",
+        "We performed a popular Gilbert and Sullivan opera"
+      ]
+    },
+    {
+      "id": "oewn-02567910-v",
+      "partOfSpeech": "v",
+      "definition": "get (something) done",
+      "examples": [
+        "I did my job"
+      ],
+      "synonyms": [
+        "do"
+      ]
+    }
+  ]
+}

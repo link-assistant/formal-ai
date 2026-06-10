@@ -1,0 +1,57 @@
+view
+  id M-0b50f8545759
+  lemma test
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "trying something to find out about it"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any standardized procedure for measuring sensitivity or memory or intelligence or aptitude or personality etc"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a set of questions or exercises evaluating skill or knowledge"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of undergoing testing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of testing something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a hard outer covering as of some amoebas and sea urchins"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put to the test, as for its quality, or give experimental use to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "test or examine for the presence of disease or infection"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "examine someone's knowledge of something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show a certain characteristic when tested"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "achieve a certain score or rating on a test"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the presence or properties of (a substance)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "undergo a test"
+    provenance (wordnet)

@@ -1,0 +1,48 @@
+[
+  {
+    "word": "english",
+    "phonetic": "/ˈɪŋ.ɡlɪʃ/",
+    "phonetics": [
+      {
+        "text": "/ˈɪŋ.ɡlɪʃ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/english-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227458",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Spinning or rotary motion given to a ball around the vertical axis, as in billiards or bowling.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You can't hit it directly, but maybe if you give it some english."
+          },
+          {
+            "definition": "An unusual or unexpected interpretation of a text or idea, a spin, a nuance.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "side",
+          "sidespin",
+          "spin"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/english"
+    ]
+  }
+]

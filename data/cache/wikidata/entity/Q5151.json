@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q5151": {
+      "type": "item",
+      "id": "Q5151",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "month"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "месяц"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मास"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "irregular unit of time dividing a calendar year"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения времени"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "काल मापन की एक भारतीय ईकाई"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "時間的單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "months"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "аномалистический месяц"
+          },
+          {
+            "language": "ru",
+            "value": "месяцы"
+          },
+          {
+            "language": "ru",
+            "value": "сидерический месяц"
+          },
+          {
+            "language": "ru",
+            "value": "тропический месяц"
+          },
+          {
+            "language": "ru",
+            "value": "лунный месяц"
+          },
+          {
+            "language": "ru",
+            "value": "синодический месяц"
+          },
+          {
+            "language": "ru",
+            "value": "синодический лунный месяц"
+          },
+          {
+            "language": "ru",
+            "value": "драконический месяц"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "महीने"
+          },
+          {
+            "language": "hi",
+            "value": "महीना"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "大月"
+          },
+          {
+            "language": "zh",
+            "value": "月份"
+          },
+          {
+            "language": "zh",
+            "value": "小月"
+          },
+          {
+            "language": "zh",
+            "value": "月分"
+          },
+          {
+            "language": "zh",
+            "value": "個月"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

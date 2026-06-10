@@ -1,0 +1,25 @@
+view
+  id M-b9be5d1b29f1
+  lemma memory
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something that is remembered"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the cognitive processes whereby past experience is remembered"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the power of retaining and recalling past experience"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an electronic memory device"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the area of cognitive psychology that studies memory processes"
+    provenance (wordnet)

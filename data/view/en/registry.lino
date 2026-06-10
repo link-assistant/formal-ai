@@ -1,0 +1,9 @@
+view
+  id M-fed7b55ff6f7
+  lemma registry
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an official written record of names or events or transactions"
+    provenance (wordnet)

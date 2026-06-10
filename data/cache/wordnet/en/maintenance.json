@@ -1,0 +1,62 @@
+{
+  "lemma": "maintenance",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00268366-n",
+      "partOfSpeech": "n",
+      "definition": "activity involved in maintaining something in good working order",
+      "examples": [
+        "he wrote the manual on car care"
+      ],
+      "synonyms": [
+        "care",
+        "upkeep"
+      ]
+    },
+    {
+      "id": "oewn-13387484-n",
+      "partOfSpeech": "n",
+      "definition": "means of maintenance of a family or group"
+    },
+    {
+      "id": "oewn-13304643-n",
+      "partOfSpeech": "n",
+      "definition": "court-ordered support paid by one spouse to another after they are separated",
+      "synonyms": [
+        "alimony"
+      ]
+    },
+    {
+      "id": "oewn-01218681-n",
+      "partOfSpeech": "n",
+      "definition": "the act of sustaining life by food or providing a means of subsistence",
+      "examples": [
+        "they were in want of sustenance",
+        "fishing was their main sustainment"
+      ],
+      "synonyms": [
+        "sustenance",
+        "sustentation",
+        "sustainment",
+        "upkeep"
+      ]
+    },
+    {
+      "id": "oewn-00767144-n",
+      "partOfSpeech": "n",
+      "definition": "the unauthorized interference in a legal action by a person having no interest in it (as by helping one party with money or otherwise to continue the action) so as to obstruct justice or promote unnecessary litigation or unsettle the peace of the community",
+      "examples": [
+        "unlike champerty, criminal maintenance does not necessarily involve personal profit"
+      ],
+      "synonyms": [
+        "criminal maintenance"
+      ]
+    }
+  ]
+}

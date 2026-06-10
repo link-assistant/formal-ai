@@ -1,0 +1,139 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Something that is number two in a series."
+        entry
+          definition "Something that is next in rank, quality, precedence, position, status, or authority."
+        entry
+          definition "The place that is next below or after first in a race or contest."
+        entry
+          definition "(usually in the plural) A manufactured item that, though still usable, fails to meet quality control standards."
+          example "They were discounted because they contained blemishes, nicks or were otherwise factory seconds."
+        entry
+          definition "(usually in the plural) An additional helping of food."
+          example "That was good barbecue. I hope I can get seconds."
+        entry
+          definition "A chance or attempt to achieve what should have been done the first time, usually indicating success this time around. (See second-guess.)"
+        entry
+          definition "The interval between two adjacent notes in a diatonic scale (either or both of them may be raised or lowered from the basic scale via any type of accidental)."
+        entry
+          definition "The second gear of an engine."
+        entry
+          definition "Second base."
+        entry
+          definition "The agent of a party to an honour dispute whose role was to try to resolve the dispute or to make the necessary arrangements for a duel."
+        entry
+          definition "A Cub Scout appointed to assist the sixer."
+          synonyms (seconder)
+      partOfSpeech noun
+      synonyms (seconder)
+    entry
+      definitions
+        entry
+          definition "To agree as a second person to (a proposal), usually to reach a necessary quorum of two. (See under #Etymology 3 for translations.)"
+          example "I second the motion."
+        entry
+          definition "To follow in the next place; to succeed."
+        entry
+          definition "To climb after a lead climber."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Number-two; following after the first one with nothing between them. The ordinal number corresponding to the cardinal number two."
+          example "He lives on Second Street."
+        entry
+          definition "Next to the first in value, power, excellence, dignity, or rank; secondary; subordinate; inferior."
+        entry
+          definition "Being of the same kind as one that has preceded; another."
+          example "Residents of Texas prepared for Hurricane Harvey, which would in some ways turn out to become the second Hurricane Katrina."
+      partOfSpeech adjective
+      synonyms (twoth other)
+    entry
+      definitions
+        entry
+          definition "(with superlative) After the first; at the second rank."
+          example "Saturn is the second largest planet."
+        entry
+          definition "After the first occurrence but before the third."
+          example "He is batting second today."
+      partOfSpeech adverb
+  phonetic "/ˈsɛkɪnd/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈsɛkɪnd/"
+    entry
+      audio ""
+      text "/ˈsɛkənd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/second-1-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=830170"
+      text "/ˈsɛk.(ə)nd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/second")
+  word second
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One-sixtieth of a minute; the SI unit of time, defined as the duration of 9,192,631,770 periods of radiation corresponding to the transition between two hyperfine levels of caesium-133 in a ground state at a temperature of absolute zero and at rest."
+        entry
+          definition "A unit of angle equal to one-sixtieth of a minute of arc or one part in 3600 of a degree."
+        entry
+          definition "A short, indeterminate amount of time."
+          example "I'll be there in a second."
+      partOfSpeech noun
+      synonyms (sec arcsecond "second of arc" "Words used as placeholders to count seconds")
+  phonetic "/ˈsɛk.(ə)nd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/second-2-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=830170"
+      text "/ˈsɛk.(ə)nd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/second")
+  word second
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One who supports another in a contest or combat, such as a dueller's assistant."
+        entry
+          definition "One who supports or seconds a motion, or the act itself, as required in certain meetings to pass judgement etc."
+          example "If we want the motion to pass, we will need a second."
+        entry
+          definition "Aid; assistance; help."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To transfer temporarily to alternative employment."
+          example "The army officer was seconded while he held civil office."
+        entry
+          definition "To assist or support; to back."
+        entry
+          definition "To agree as a second person to (a proposal), usually to reach a necessary quorum of two. (This may come from the English adjective above.)"
+          example "I second the motion."
+        entry
+          definition "To accompany by singing as the second performer."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/second")
+  word second

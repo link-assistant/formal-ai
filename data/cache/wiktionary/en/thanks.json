@@ -1,0 +1,99 @@
+[
+  {
+    "word": "thanks",
+    "phonetic": "/θæŋks/",
+    "phonetics": [
+      {
+        "text": "/θæŋks/",
+        "audio": ""
+      },
+      {
+        "text": "/θæŋks/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/thanks-us.ogg",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=112437543",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An expression of appreciation; a thought.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To express gratitude or appreciation toward.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She thanked him for the lift."
+          },
+          {
+            "definition": "To feel gratitude or appreciation toward.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll thank you not to smoke in my house!"
+          },
+          {
+            "definition": "To credit or hold responsible.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We can thank global warming for this weather."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An expression of gratitude.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After all I’ve done, a simple acknowledgment is all the thanks I get?"
+          },
+          {
+            "definition": "Grateful feelings or thoughts.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "Used to express appreciation or gratitude.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Could you give me a hand, please? — Yes, sure. — Thanks."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/thank",
+      "https://en.wiktionary.org/wiki/thanks"
+    ]
+  }
+]

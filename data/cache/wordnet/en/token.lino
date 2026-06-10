@@ -1,0 +1,32 @@
+language en
+lemma token
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an individual instance of a type of symbol"
+    examples ("the word ‘error’ contains three tokens of ‘r’")
+    id oewn-06808603-n
+    partOfSpeech n
+    synonyms (item)
+  entry
+    definition "something serving as a sign of something else"
+    id oewn-06659294-n
+    partOfSpeech n
+  entry
+    definition "a metal or plastic disk that can be redeemed or used in designated slot machines"
+    id oewn-04455632-n
+    partOfSpeech n
+  entry
+    definition "something of sentimental value"
+    id oewn-03615483-n
+    partOfSpeech n
+    synonyms (keepsake souvenir relic)
+  entry
+    definition "insignificantly small; a matter of form only (‘tokenish’ is informal)"
+    examples ("the fee was nominal" "a token gesture of resistance" "a tokenish gesture")
+    id oewn-01499887-s
+    partOfSpeech s
+    synonyms (nominal tokenish)
+source "oewn:2024"

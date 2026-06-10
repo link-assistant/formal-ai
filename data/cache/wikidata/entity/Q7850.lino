@@ -1,0 +1,17 @@
+Q7850
+  aliases
+    en ("Chinese language" "Chinese languages")
+    zh ("漢語" "华语" "華語" "华文" "中国语" "中国话" "汉话" "汉文" "唐话" "唐文" "汉语")
+  descriptions
+    en "language group of the Sinitic languages"
+    hi "चीनी-तिब्बती भाषा"
+    ru "язык или языковая ветвь сино-тибетской семьи, государственный язык КНР, Китайской Республики и Сингапура"
+    zh "漢藏語系分支語言"
+  id Q7850
+  labels
+    en Chinese
+    hi "चीनी भाषा"
+    ru "китайский язык"
+    zh "中文"
+  type item
+success 1

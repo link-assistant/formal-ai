@@ -1,0 +1,17 @@
+language en
+lemma lowercase
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "relating to small (not capitalized) letters that were kept in the lower half of a compositor's type case"
+    examples ("lowercase letters: a and b and c etc.")
+    id oewn-01470213-a
+    partOfSpeech a
+  entry
+    definition "the characters that were once kept in bottom half of a compositor's type case"
+    id oewn-06837807-n
+    partOfSpeech n
+    synonyms ("small letter" "lower-case letter" minuscule)
+source "oewn:2024"

@@ -1,0 +1,18 @@
+Q47574
+  aliases
+    en (unit "measurement unit" "unit of measure" "physical unit")
+    hi ("मापन की ईकाइयाँ" "मात्रक")
+    ru ("единица физической величины" "единицы величин" "единицы физических величин")
+    zh ("度量单位" "测量单位" "单位" "量測單位" "計量單位")
+  descriptions
+    en "real scalar quantity, defined and adopted by convention, with which any other quantity of the same kind can be compared to express the ratio of the two quantities as a number (VIM)"
+    ru "эталон, с которым сравнивают измеряемый объект"
+    zh "按照慣例定義和採用的實際標量，可以與任何其他數量的相同種類的數據進行比較，以表示兩個數量之比作為數字（國際計量學詞彙）"
+  id Q47574
+  labels
+    en "unit of measurement"
+    hi "मापन के मात्रक"
+    ru "единица измерения"
+    zh "计量单位"
+  type item
+success 1

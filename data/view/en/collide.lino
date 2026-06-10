@@ -1,0 +1,17 @@
+view
+  id M-b73dfe1dc277
+  lemma collide
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be incompatible; be or come into conflict"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to collide"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "crash together with violent impact"
+    provenance (wordnet)

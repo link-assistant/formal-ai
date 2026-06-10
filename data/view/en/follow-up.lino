@@ -1,0 +1,17 @@
+view
+  id M-7566f155fff7
+  lemma follow-up
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a piece of work that exploits or builds on earlier work"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an activity that continues something that has already begun or that repeats something that has already been done"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a subsequent examination of a patient for the purpose of monitoring earlier treatment"
+    provenance (wordnet)

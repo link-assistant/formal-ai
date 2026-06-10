@@ -1,0 +1,16 @@
+Q82042
+  aliases
+    en ("lexical class" "lexical category" "word class")
+    ru ("части речи")
+    zh ("词汇范畴")
+  descriptions
+    en "category of words based on shared grammatical properties in a clause"
+    ru "грамматическая категория слова"
+    zh "一個詞在句子裡的角色"
+  id Q82042
+  labels
+    en "part of speech"
+    ru "часть речи"
+    zh "词类"
+  type item
+success 1

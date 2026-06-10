@@ -1,0 +1,29 @@
+{
+  "lemma": "numbers",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06444919-n",
+      "partOfSpeech": "n",
+      "definition": "the fourth book of the Old Testament; contains a record of the number of Israelites who followed Moses out of Egypt",
+      "synonyms": [
+        "Book of Numbers"
+      ]
+    },
+    {
+      "id": "oewn-00509558-n",
+      "partOfSpeech": "n",
+      "definition": "an illegal daily lottery",
+      "synonyms": [
+        "numbers pool",
+        "numbers game",
+        "numbers racket"
+      ]
+    }
+  ]
+}

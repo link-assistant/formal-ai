@@ -1,0 +1,29 @@
+view
+  id M-4bec5676583a
+  lemma version
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an interpretation of a matter from a particular viewpoint"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something a little different from others of the same type"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written work (as a novel) that has been recast in a new form"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written communication in a second language having the same meaning as the written communication in a first language"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mental representation of the meaning or significance of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "manual turning of a fetus in the uterus (usually to aid delivery)"
+    provenance (wordnet)

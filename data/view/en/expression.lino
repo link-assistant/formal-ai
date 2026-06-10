@@ -1,0 +1,41 @@
+view
+  id M-cc8ae2a0882e
+  lemma expression
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the feelings expressed on a person's face"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "expression without words"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the communication (in speech or writing) of your beliefs or opinions"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a word or phrase that particular people use in particular situations"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the style of expressing yourself"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a group of symbols that make a mathematical statement"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(genetics) the process of expressing a gene"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a group of words that form a constituent of a sentence and are considered as a single unit"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of forcing something out by squeezing or pressing"
+    provenance (wordnet)

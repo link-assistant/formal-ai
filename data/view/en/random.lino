@@ -1,0 +1,9 @@
+view
+  id M-ffad970c8133
+  lemma random
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lacking any definite plan or order or purpose; governed by or depending on chance"
+    provenance (wordnet)

@@ -1,0 +1,97 @@
+[
+  {
+    "word": "kb",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(etc.) A set of keys used to operate a typewriter, computer etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A component of many instruments including the piano, organ, and harpsichord consisting of usually black and white keys that cause different tones to be produced when struck.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A device with keys of a musical keyboard, used to control electronic sound-producing devices which may be built into or separate from the keyboard device.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "electronic keyboard"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of pressure equal to 1,000 bars (Symbol: kb)",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A length of double-stranded DNA containing two thousand nucleotides, one thousand on each strand",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A length of single-stranded RNA containing one thousand nucleotides",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "kb",
+          "kbp",
+          "kilobase pair"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "1000 bits (binary digits)",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "1024 (210) bits",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "kibibit",
+          "kb",
+          "kib"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/kb",
+      "https://en.wiktionary.org/wiki/keyboard",
+      "https://en.wiktionary.org/wiki/kilobar",
+      "https://en.wiktionary.org/wiki/kilobase",
+      "https://en.wiktionary.org/wiki/kilobit"
+    ]
+  }
+]

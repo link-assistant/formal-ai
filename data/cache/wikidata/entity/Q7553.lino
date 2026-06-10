@@ -1,0 +1,18 @@
+Q7553
+  aliases
+    en (translating translate)
+    hi ("भाषांतर")
+    zh ("翻译")
+  descriptions
+    en "statement that explains the meaning of a word, phrase, concept, or idea"
+    hi "किसी भाषा में कही या लिखी गयी बात का किसी दूसरी भाषा में सार्थक परिवर्तन"
+    ru "создание эквивалентного по смыслу текста на другом языке"
+    zh "把一種語言的文字或話語等資訊轉變成另一種語言"
+  id Q7553
+  labels
+    en translation
+    hi "अनुवाद"
+    ru "перевод"
+    zh "翻譯"
+  type item
+success 1

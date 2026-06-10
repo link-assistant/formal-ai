@@ -1,0 +1,17 @@
+Q3314483
+  aliases
+    en ("fruit group" "fruit food group" "edible fruit")
+    ru ("фрукты" "в сыром виде" "группа фруктов")
+  descriptions
+    en "typically sweet and/or sour, edible part/s of a plant that resembles seed-bearing fruit"
+    hi "निषेचित, परिवर्तित एवं परिपक्व अंडाशय"
+    ru "плод, съедобный в сыром виде, обычно сладкий или кислый"
+    zh "可生食的植物果實（生果）"
+  id Q3314483
+  labels
+    en fruit
+    hi "फल"
+    ru "фрукт"
+    zh "水果"
+  type item
+success 1

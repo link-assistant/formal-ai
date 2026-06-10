@@ -1,0 +1,166 @@
+{
+  "entities": {
+    "P36": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P36",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "行政中心"
+        },
+        "en": {
+          "language": "en",
+          "value": "capital"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "राजधानी"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "административный центр"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "国家、省、州或其他类型行政领土实体的政府所在地"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "देश, राज्य या प्रशासनिक उपखंड की शासकीय सीट की नगर पालिका"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "официальный главный населённый пункт в административной единице"
+        },
+        "en": {
+          "language": "en",
+          "value": "seat of government of a country, province, state or other type of administrative territorial entity"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "首都"
+          },
+          {
+            "language": "zh",
+            "value": "省会"
+          },
+          {
+            "language": "zh",
+            "value": "首府"
+          },
+          {
+            "language": "zh",
+            "value": "治所"
+          },
+          {
+            "language": "zh",
+            "value": "县治"
+          },
+          {
+            "language": "zh",
+            "value": "縣治"
+          },
+          {
+            "language": "zh",
+            "value": "公所所在地"
+          },
+          {
+            "language": "zh",
+            "value": "役場所在地"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "главный город"
+          },
+          {
+            "language": "ru",
+            "value": "столица"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "capital city"
+          },
+          {
+            "language": "en",
+            "value": "capital town"
+          },
+          {
+            "language": "en",
+            "value": "chef-lieu"
+          },
+          {
+            "language": "en",
+            "value": "principal place"
+          },
+          {
+            "language": "en",
+            "value": "county seat"
+          },
+          {
+            "language": "en",
+            "value": "administrative centre"
+          },
+          {
+            "language": "en",
+            "value": "administrative headquarters"
+          },
+          {
+            "language": "en",
+            "value": "has capital"
+          },
+          {
+            "language": "en",
+            "value": "court residence"
+          },
+          {
+            "language": "en",
+            "value": "seat"
+          },
+          {
+            "language": "en",
+            "value": "administrative seat"
+          },
+          {
+            "language": "en",
+            "value": "seat of government"
+          },
+          {
+            "language": "en",
+            "value": "administrative capital"
+          },
+          {
+            "language": "en",
+            "value": "government capital"
+          },
+          {
+            "language": "en",
+            "value": "county town"
+          },
+          {
+            "language": "en",
+            "value": "government seat"
+          },
+          {
+            "language": "en",
+            "value": "administrative center"
+          },
+          {
+            "language": "en",
+            "value": "location of capital"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

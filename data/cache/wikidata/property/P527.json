@@ -1,0 +1,272 @@
+{
+  "entities": {
+    "P527": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P527",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "has part(s)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "состоит из"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "擁有的部分有"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इसके हिस्से हैं"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "part of this subject; inverse property of \"part of\" (P361). See also \"has parts of the class\" (P2670)."
+        },
+        "zh": {
+          "language": "zh",
+          "value": "此主體的一部分，是所屬實體（P361）的逆屬性，另見“拥有此类别的一部分”（P2670）"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "объект, являющийся частью предмета описания"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "formed from"
+          },
+          {
+            "language": "en",
+            "value": "formed out of"
+          },
+          {
+            "language": "en",
+            "value": "assembled from"
+          },
+          {
+            "language": "en",
+            "value": "assembled out of"
+          },
+          {
+            "language": "en",
+            "value": "created from"
+          },
+          {
+            "language": "en",
+            "value": "created out of"
+          },
+          {
+            "language": "en",
+            "value": "amalgamation of"
+          },
+          {
+            "language": "en",
+            "value": "set of"
+          },
+          {
+            "language": "en",
+            "value": "consists of"
+          },
+          {
+            "language": "en",
+            "value": "holonym of"
+          },
+          {
+            "language": "en",
+            "value": "parts"
+          },
+          {
+            "language": "en",
+            "value": "comprised of"
+          },
+          {
+            "language": "en",
+            "value": "includes part"
+          },
+          {
+            "language": "en",
+            "value": "has as part"
+          },
+          {
+            "language": "en",
+            "value": "has component"
+          },
+          {
+            "language": "en",
+            "value": "have part"
+          },
+          {
+            "language": "en",
+            "value": "composed of"
+          },
+          {
+            "language": "en",
+            "value": "has ingredient"
+          },
+          {
+            "language": "en",
+            "value": "has ingredients"
+          },
+          {
+            "language": "en",
+            "value": "ingredients"
+          },
+          {
+            "language": "en",
+            "value": "contain"
+          },
+          {
+            "language": "en",
+            "value": "contains"
+          },
+          {
+            "language": "en",
+            "value": "has member"
+          },
+          {
+            "language": "en",
+            "value": "has branch"
+          },
+          {
+            "language": "en",
+            "value": "divided by"
+          },
+          {
+            "language": "en",
+            "value": "incorporates"
+          },
+          {
+            "language": "en",
+            "value": "had part"
+          },
+          {
+            "language": "en",
+            "value": "has parts"
+          },
+          {
+            "language": "en",
+            "value": "has part"
+          },
+          {
+            "language": "en",
+            "value": "has part or parts"
+          },
+          {
+            "language": "en",
+            "value": "made up of"
+          },
+          {
+            "language": "en",
+            "value": "includes"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "имеет частью"
+          },
+          {
+            "language": "ru",
+            "value": "включает в себя"
+          },
+          {
+            "language": "ru",
+            "value": "имеет дополнение"
+          },
+          {
+            "language": "ru",
+            "value": "части"
+          },
+          {
+            "language": "ru",
+            "value": "компоненты"
+          },
+          {
+            "language": "ru",
+            "value": "имеет части"
+          },
+          {
+            "language": "ru",
+            "value": "включает части"
+          },
+          {
+            "language": "ru",
+            "value": "включает компоненты"
+          },
+          {
+            "language": "ru",
+            "value": "включает компонент"
+          },
+          {
+            "language": "ru",
+            "value": "имеет компоненты"
+          },
+          {
+            "language": "ru",
+            "value": "составляющие"
+          },
+          {
+            "language": "ru",
+            "value": "из"
+          },
+          {
+            "language": "ru",
+            "value": "содержит в себе"
+          },
+          {
+            "language": "ru",
+            "value": "содержит внутри себя"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "子类"
+          },
+          {
+            "language": "zh",
+            "value": "子類"
+          },
+          {
+            "language": "zh",
+            "value": "拥有部分"
+          },
+          {
+            "language": "zh",
+            "value": "擁有部分"
+          },
+          {
+            "language": "zh",
+            "value": "可分爲"
+          },
+          {
+            "language": "zh",
+            "value": "子实体"
+          },
+          {
+            "language": "zh",
+            "value": "可分為"
+          },
+          {
+            "language": "zh",
+            "value": "包含"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "में भाग है"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

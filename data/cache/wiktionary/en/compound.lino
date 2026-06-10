@@ -1,0 +1,103 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An enclosure within which workers, prisoners, or soldiers are confined"
+        entry
+          definition "A group of buildings situated close together, e.g. for a school or block of offices"
+      partOfSpeech noun
+      synonyms (gaol jail pen pound prison)
+  phonetic "/ˈkɒmpaʊnd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/compound-1-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88967382"
+      text "/ˈkɒmpaʊnd/"
+    entry
+      audio ""
+      text "/ˈkɑmpaʊnd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/compound")
+  word compound
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Anything made by combining several things."
+        entry
+          definition "A substance made from any combination elements."
+        entry
+          definition "A substance formed by chemical union of two or more ingredients in definite proportions by weight."
+        entry
+          definition "A lexeme that consists of more than one stem; compound word; for example laptop, formed from lap and top."
+        entry
+          definition "A compound locomotive, a steam locomotive with both high-pressure and low-pressure cylinders."
+      partOfSpeech noun
+      synonyms (amalgam blend combination composite mix mixture "compound word")
+    entry
+      definitions
+        entry
+          definition "To form (a resulting mixture) by combining different elements, ingredients, or parts."
+          example "to compound a medicine"
+        entry
+          definition "To assemble (ingredients) into a whole; to combine, mix, or unite."
+        entry
+          definition "To modify or change by combination with some other thing or part; to mingle with something else."
+        entry
+          definition "To settle by agreeing on less than the claim, or on different terms than those stipulated."
+          example "to compound a debt"
+        entry
+          definition "To settle amicably; to adjust by agreement; to compromise."
+        entry
+          definition "To come to terms of agreement; to agree; to settle by a compromise; usually followed by with before the person participating, and for before the thing compounded or the consideration."
+        entry
+          definition "To compose; to constitute."
+        entry
+          definition "To increase in value with interest, where the interest is earned on both the principal sum and prior earned interest."
+        entry
+          definition "To worsen a situation."
+        entry
+          definition "Of a horse: to fail to maintain speed."
+      partOfSpeech verb
+      synonyms (settle augment increase agree form "make up" assemble blend combine join mix "put together" unite)
+    entry
+      antonyms (simple)
+      definitions
+        entry
+          definition "Composed of elements; not simple"
+          example "a compound word"
+        entry
+          definition "Dealing with numbers of various denominations of quantity, or with processes more complex than the simple process"
+          example "compound addition; compound proportion"
+        entry
+          definition "An octave higher than originally (i.e. a compound major second is equivalent to a major ninth)."
+      partOfSpeech adjective
+      synonyms (composite)
+  phonetic "/kəmˈpaʊnd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/compound-2-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=88967382"
+      text "/kəmˈpaʊnd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/compound-2-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2650782"
+      text "/kəmˈpaʊnd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/compound")
+  word compound

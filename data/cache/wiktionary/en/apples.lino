@@ -1,0 +1,69 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A common, round fruit produced by the tree Malus domestica, cultivated in temperate climates."
+        entry
+          definition "Any of various tree-borne fruits or vegetables especially considered as resembling an apple; also (with qualifying words) used to form the names of other specific fruits such as custard apple, rose apple, thorn apple etc."
+        entry
+          definition "The fruit of the Tree of Knowledge, eaten by Adam and Eve according to post-Biblical Christian tradition; the forbidden fruit."
+        entry
+          definition "A tree of the genus Malus, especially one cultivated for its edible fruit; the apple tree."
+        entry
+          definition "The wood of the apple tree."
+        entry
+          definition "(in the plural) Short for apples and pears, slang for stairs."
+        entry
+          definition "The ball in baseball."
+        entry
+          definition "When smiling, the round, fleshy part of the cheeks between the eyes and the corners of the mouth."
+        entry
+          definition "A Native American or red-skinned person who acts and/or thinks like a white (Caucasian) person."
+        entry
+          definition "(ice hockey slang) An assist."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To become apple-like."
+        entry
+          definition "To form buds."
+      partOfSpeech verb
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/apples-1-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75266912"
+    entry
+      audio ""
+      text "/ˈæ.pl̩z/"
+    entry
+      audio ""
+      text "/ˈæ.pl̩z/"
+  sourceUrls ("https://en.wiktionary.org/wiki/apple" "https://en.wiktionary.org/wiki/apples")
+  word apples
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(Australian rhyming slang) Nice, fine."
+        entry
+          definition Testicles.
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition Stairs
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/apples" "https://en.wiktionary.org/wiki/apples%20and%20pears")
+  word apples

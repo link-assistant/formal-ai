@@ -1,0 +1,51 @@
+{
+  "lemma": "programming",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01146868-n",
+      "partOfSpeech": "n",
+      "definition": "setting an order and time for planned events",
+      "synonyms": [
+        "scheduling",
+        "programing"
+      ]
+    },
+    {
+      "id": "oewn-00930762-n",
+      "partOfSpeech": "n",
+      "definition": "creating a sequence of instructions to enable the computer to do something",
+      "synonyms": [
+        "programing",
+        "computer programming",
+        "computer programing"
+      ]
+    },
+    {
+      "id": "oewn-00796926-v",
+      "partOfSpeech": "v",
+      "definition": "arrange a program of or for",
+      "examples": [
+        "program the 80th birthday party"
+      ],
+      "synonyms": [
+        "program",
+        "programme"
+      ]
+    },
+    {
+      "id": "oewn-01751525-v",
+      "partOfSpeech": "v",
+      "definition": "write a computer program",
+      "synonyms": [
+        "program",
+        "programme"
+      ]
+    }
+  ]
+}

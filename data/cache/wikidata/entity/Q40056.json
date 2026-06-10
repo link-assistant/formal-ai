@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Q40056": {
+      "type": "item",
+      "id": "Q40056",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "computer program"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "компьютерная программа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कम्प्यूटर प्रोग्राम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "计算机程序"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sequence of instructions written in programming language to perform a specified task with a computer"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "система инструкций для исполнения компьютером"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "使用计算机语言编写的指令序列，可以执行特定的计算机工作"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "program"
+          },
+          {
+            "language": "en",
+            "value": "software program"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "программа"
+          },
+          {
+            "language": "ru",
+            "value": "программное приложение"
+          },
+          {
+            "language": "ru",
+            "value": "компьютерное приложение"
+          },
+          {
+            "language": "ru",
+            "value": "компьютерные программы"
+          },
+          {
+            "language": "ru",
+            "value": "программный продукт"
+          },
+          {
+            "language": "ru",
+            "value": "программное изделие"
+          },
+          {
+            "language": "ru",
+            "value": "софт"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "प्रोग्राम"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "电脑程序"
+          },
+          {
+            "language": "zh",
+            "value": "電腦程式"
+          },
+          {
+            "language": "zh",
+            "value": "程式"
+          },
+          {
+            "language": "zh",
+            "value": "程序"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

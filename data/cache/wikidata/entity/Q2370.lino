@@ -1,0 +1,16 @@
+Q2370
+  aliases
+    en ("c#" "Microsoft Java")
+    ru ("Си-шарп" "Си шарп" "Си-диез" "Си диез")
+    zh ("C井" "C＃")
+  descriptions
+    en "multi-paradigm (object-oriented) programming language"
+    hi "प्रोग्रामिंग भाषा"
+    ru "объектно-ориентированный язык программирования"
+    zh "多範式（面向對象）編程語言"
+  id Q2370
+  labels
+    hi "सी शार्प"
+    zh "C♯"
+  type item
+success 1

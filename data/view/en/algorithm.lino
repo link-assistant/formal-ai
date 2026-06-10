@@ -1,0 +1,17 @@
+view
+  id M-773e297894f6
+  lemma algorithm
+  language en
+  sources (wiktionary wordnet)
+  sense
+    part_of_speech noun
+    gloss "a precise rule (or set of rules) specifying how to solve some problem"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "A collection of ordered steps that solve a mathematical problem. A precise step-by-step plan for a computational procedure that possibly begins with an input value and yields an output value in a finite number of steps."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Calculation with Arabic numerals; algorism."
+    provenance (wiktionary)

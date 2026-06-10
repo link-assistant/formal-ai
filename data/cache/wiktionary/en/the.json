@@ -1,0 +1,136 @@
+[
+  {
+    "word": "the",
+    "phonetic": "/ði/",
+    "phonetics": [
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-ca-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=584109",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-uk-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79896385",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈðiː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718786",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718787",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "With a comparative or with more and a verb phrase, establishes a correlation with one or more other such comparatives.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It looks weaker and weaker, the more I think about it."
+          },
+          {
+            "definition": "With a comparative, and often with for it, indicates a result more like said comparative. This can be negated with none. See none the.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'm much the wiser for having had a difficult time like that."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/the"
+    ]
+  },
+  {
+    "word": "the",
+    "phonetic": "/ði/",
+    "phonetics": [
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-ca-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=584109",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-uk-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79896385",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈðiː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718786",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ði/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/the-us-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718787",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "For each; per.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "valued at half a pound the bushel; paying seven dollars the year interest"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/the"
+    ]
+  }
+]

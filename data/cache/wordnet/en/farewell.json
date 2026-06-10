@@ -1,0 +1,34 @@
+{
+  "lemma": "farewell",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06641899-n",
+      "partOfSpeech": "n",
+      "definition": "an acknowledgment or expression of goodwill at parting",
+      "synonyms": [
+        "word of farewell"
+      ]
+    },
+    {
+      "id": "oewn-00053917-n",
+      "partOfSpeech": "n",
+      "definition": "the act of departing politely",
+      "examples": [
+        "he disliked long farewells",
+        "he took his leave",
+        "parting is such sweet sorrow"
+      ],
+      "synonyms": [
+        "leave",
+        "leave-taking",
+        "parting"
+      ]
+    }
+  ]
+}

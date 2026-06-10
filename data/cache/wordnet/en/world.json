@@ -1,0 +1,135 @@
+{
+  "lemma": "world",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09489410-n",
+      "partOfSpeech": "n",
+      "definition": "everything that exists anywhere",
+      "examples": [
+        "they study the evolution of the universe",
+        "the biggest tree in existence"
+      ],
+      "synonyms": [
+        "universe",
+        "existence",
+        "creation",
+        "cosmos",
+        "macrocosm"
+      ]
+    },
+    {
+      "id": "oewn-07982551-n",
+      "partOfSpeech": "n",
+      "definition": "people in general; especially a distinctive group of people with some shared interest",
+      "examples": [
+        "the Western world"
+      ],
+      "synonyms": [
+        "domain"
+      ]
+    },
+    {
+      "id": "oewn-05817904-n",
+      "partOfSpeech": "n",
+      "definition": "all of your experiences that determine how things appear to you",
+      "examples": [
+        "his world was shattered",
+        "we live in different worlds",
+        "for them demons were as much a part of reality as trees were"
+      ],
+      "synonyms": [
+        "reality"
+      ]
+    },
+    {
+      "id": "oewn-09293800-n",
+      "partOfSpeech": "n",
+      "definition": "the 3rd planet from the sun; the planet we live on",
+      "examples": [
+        "the Earth moves around the sun",
+        "he sailed around the world"
+      ],
+      "synonyms": [
+        "Earth",
+        "earth",
+        "globe"
+      ]
+    },
+    {
+      "id": "oewn-08196607-n",
+      "partOfSpeech": "n",
+      "definition": "people in general considered as a whole",
+      "examples": [
+        "he is a hero in the eyes of the public"
+      ],
+      "synonyms": [
+        "populace",
+        "public"
+      ]
+    },
+    {
+      "id": "oewn-09503939-n",
+      "partOfSpeech": "n",
+      "definition": "a part of the earth that can be considered separately",
+      "examples": [
+        "the outdoor world",
+        "the world of insects"
+      ]
+    },
+    {
+      "id": "oewn-05678816-n",
+      "partOfSpeech": "n",
+      "definition": "the concerns of this life as distinguished from heaven and the afterlife",
+      "examples": [
+        "they consider the church to be independent of the world"
+      ],
+      "synonyms": [
+        "worldly concern",
+        "earthly concern",
+        "earth"
+      ]
+    },
+    {
+      "id": "oewn-02475618-n",
+      "partOfSpeech": "n",
+      "definition": "all of the living human inhabitants of the earth",
+      "examples": [
+        "all the world loves a lover",
+        "she always used ‘humankind’ because ‘mankind’ seemed to slight the women"
+      ],
+      "synonyms": [
+        "human race",
+        "humanity",
+        "humankind",
+        "human beings",
+        "humans",
+        "mankind",
+        "man"
+      ]
+    },
+    {
+      "id": "oewn-01573077-s",
+      "partOfSpeech": "s",
+      "definition": "involving the entire earth; not limited or provincial in scope",
+      "examples": [
+        "global war",
+        "global monetary policy",
+        "neither national nor continental but planetary",
+        "a world crisis",
+        "of worldwide significance"
+      ],
+      "synonyms": [
+        "global",
+        "planetary",
+        "worldwide",
+        "world-wide"
+      ]
+    }
+  ]
+}

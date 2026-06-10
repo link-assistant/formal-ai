@@ -1,0 +1,37 @@
+{
+  "lemma": "repository",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03182015-n",
+      "partOfSpeech": "n",
+      "definition": "a facility where things can be deposited for storage or safekeeping",
+      "synonyms": [
+        "depository",
+        "deposit",
+        "depositary"
+      ]
+    },
+    {
+      "id": "oewn-10541521-n",
+      "partOfSpeech": "n",
+      "definition": "a person to whom a secret is entrusted",
+      "synonyms": [
+        "secretary"
+      ]
+    },
+    {
+      "id": "oewn-04083825-n",
+      "partOfSpeech": "n",
+      "definition": "a burial vault (usually for some famous person)",
+      "synonyms": [
+        "monument"
+      ]
+    }
+  ]
+}

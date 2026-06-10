@@ -1,0 +1,48 @@
+{
+  "lemma": "bash",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07424807-n",
+      "partOfSpeech": "n",
+      "definition": "a vigorous blow",
+      "examples": [
+        "the sudden knock floored him",
+        "he took a bash right in his face",
+        "he got a bang on the head"
+      ],
+      "synonyms": [
+        "knock",
+        "bang",
+        "smash",
+        "belt"
+      ]
+    },
+    {
+      "id": "oewn-07462638-n",
+      "partOfSpeech": "n",
+      "definition": "an uproarious party",
+      "synonyms": [
+        "do",
+        "brawl"
+      ]
+    },
+    {
+      "id": "oewn-01399742-v",
+      "partOfSpeech": "v",
+      "definition": "hit hard",
+      "synonyms": [
+        "sock",
+        "bop",
+        "whop",
+        "whap",
+        "bonk"
+      ]
+    }
+  ]
+}

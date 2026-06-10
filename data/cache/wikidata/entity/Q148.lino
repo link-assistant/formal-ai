@@ -1,0 +1,19 @@
+Q148
+  aliases
+    en ("Red China" "PR China" "Communist China" "China PR" RPC cn "The PRC" China P.R.C. "the People's Republic of China")
+    hi ("चीन" "मुख्य-भूमि चीन")
+    ru ("КНР" "Поднебесная" "Материковый Китай" "Континентальный Китай" "Китайская Народная Республика")
+    zh ("中国" "中" "红色中国" "共产中国" "中国大陆" "大陆" "陆" "新中国" "北京當局" "中華人民共和國" "🇨🇳" cn "中华" "共產中國" "中國")
+  descriptions
+    en "country in East Asia"
+    hi "पूर्वी एशिया का देश"
+    ru "государство в Восточной Азии"
+    zh "东亚国家"
+  id Q148
+  labels
+    en "People's Republic of China"
+    hi "चीनी जनवादी गणराज्य"
+    ru "Китай"
+    zh "中华人民共和国"
+  type item
+success 1

@@ -1,0 +1,41 @@
+{
+  "entities": {
+    "Q2005": {
+      "type": "item",
+      "id": "Q2005",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "जावास्क्रिप्ट"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "high-level programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "編程語言"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "爪哇脚本"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

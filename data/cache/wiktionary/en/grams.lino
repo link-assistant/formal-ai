@@ -1,0 +1,34 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A photograph or video shared on this service."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A unit of mass equal to one-thousandth of a kilogram. Symbol: g"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition Grandmother
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/'gram" "https://en.wiktionary.org/wiki/Instagram" "https://en.wiktionary.org/wiki/gram" "https://en.wiktionary.org/wiki/grams")
+  word grams
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Grandmother
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/grams")
+  word grams

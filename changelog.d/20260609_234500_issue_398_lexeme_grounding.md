@@ -1,0 +1,8 @@
+---
+bump: patch
+---
+
+### Added
+- Added `scripts/ground-lexemes.py`, a re-runnable, self-verifying Wikidata **lexeme** grounding pipeline (issue #398, defect #6 / CI check 6). For each curated `(slug, lexeme-id, expected-lemma, sense-id)` it fetches the full `Special:EntityData/<L-id>.json` (lexemes are cached untrimmed so claims, forms and senses survive), caches it pretty-printed under `data/cache/wikidata/lexeme/`, generates the lossless `.lino` snapshot, **verifies** the entry really is the expected English noun (lemma match, `language` Q1860, `lexicalCategory` Q1084, named sense present) — refusing on any mismatch — and rewrites the meaning's plain `lexeme en` surface into the rich `source-lexeme` notation, sourcing the part of speech (`lexical-category`), every form (`form` + grammatical `feature`) and the grounded `sense` directly from the lexeme rather than hand-authoring them.
+- Enriched the grounded concrete-noun vocabulary (`apple`, `water`, `bread`, `potato`, `tomato`) with full lexical detail sourced from Wikidata lexemes (`L3257`, `L3302`, `L3865`, `L3784`, `L7993`): each now records its part of speech and its singular/plural forms with grammatical features (`Q110786` singular, `Q146786` plural), and its English surface references a real lexeme form instead of a hand-typed string.
+- Added the `lexical_completeness_does_not_regress` data test: a monotonic ratchet (floor 6) that records how many meanings expose a `source-lexeme` with its part of speech and at least one form + feature, and asserts every referenced lexeme resolves to a checked-in cache file. Lexical grounding is append-only, so coverage toward the defect #6 goal — every grounded word carrying its parts of speech and forms from the source — can only increase.

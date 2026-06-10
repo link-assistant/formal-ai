@@ -1,461 +1,448 @@
 fact_lotr_author
-  intent "fact_lookup"
-  category "literature"
-  wikidata "Q892|Q15228"
-  subject_aliases "lord of the rings|the lord of the rings|властелин колец|властелина колец|властелину колец|властелином колец|властелине колец|द लॉर्ड ऑफ द रिंग्स|द लॉर्ड ऑफ़ द रिंग्स|魔戒|魔戒之王|指環王"
-  question_keywords "who wrote|wrote|author|written by|написал|автор|किसने लिखी|किसने लिखा|कौन है लेखक|लेखक|是谁写的|作者|作者是谁"
+  intent fact_lookup
+  category literature
+  wikidata (Q892 Q15228)
+  subject_aliases ("lord of the rings" "the lord of the rings" "властелин колец" "властелина колец" "властелину колец" "властелином колец" "властелине колец" "द लॉर्ड ऑफ द रिंग्स" "द लॉर्ड ऑफ़ द रिंग्स" "魔戒" "魔戒之王" "指環王")
+  question_keywords ("who wrote" "wrote" "author" "written by" "написал" "автор" "किसने लिखी" "किसने लिखा" "कौन है लेखक" "लेखक" "是谁写的" "作者" "作者是谁")
   summary "The Lord of the Rings was written by J. R. R. Tolkien."
   source "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings"
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     summary "The Lord of the Rings was written by J. R. R. Tolkien."
     source "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings"
-    source_kind "wikipedia"
-  localized "ru"
+    source_kind wikipedia
+  localized ru
     summary "«Властелин колец» был написан Дж. Р. Р. Толкином."
     source "https://ru.wikipedia.org/wiki/Властелин_колец"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     summary "द लॉर्ड ऑफ द रिंग्स को जे. आर. आर. टॉल्किन ने लिखा था।"
     source "https://hi.wikipedia.org/wiki/द_लॉर्ड_ऑफ़_द_रिंग्स"
-    source_kind "wikipedia"
-  localized "zh"
+    source_kind wikipedia
+  localized zh
     summary "《魔戒》由 J·R·R·托爾金 创作。"
     source "https://zh.wikipedia.org/wiki/魔戒"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_formal_ai_creator
-  intent "fact_lookup"
-  category "identity"
-  subject_aliases "formal-ai|formal ai|formalai|you|yourself|ты|тебя|тебе|вы|вас|себя|तुम|तुम्हें|आप|आपको|खुद|你|您|自己"
-  question_keywords "who created|who made|created you|made you|creator|кто создал|кто тебя создал|создал|создатель|किसने बनाया|किसने बनाय|बनाया|निर्माता|谁创建|谁创造|创建了你|创造了你|创建者|创造者"
+  intent fact_lookup
+  category identity
+  subject_aliases ("formal-ai" "formal ai" "formalai" "you" "yourself" "ты" "тебя" "тебе" "вы" "вас" "себя" "तुम" "तुम्हें" "आप" "आपको" "खुद" "你" "您" "自己")
+  question_keywords ("who created" "who made" "created you" "made you" "creator" "кто создал" "кто тебя создал" "создал" "создатель" "किसने बनाया" "किसने बनाय" "बनाया" "निर्माता" "谁创建" "谁创造" "创建了你" "创造了你" "创建者" "创造者")
   summary "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."
   source "https://github.com/link-assistant/formal-ai"
-  source_kind "github"
-  localized "en"
+  source_kind github
+  localized en
     summary "Formal AI was created by github.com/konard using github.com/link-assistant/hive-mind."
     source "https://github.com/link-assistant/formal-ai"
-    source_kind "github"
-  localized "ru"
+    source_kind github
+  localized ru
     summary "Formal AI был создан пользователем github.com/konard с использованием github.com/link-assistant/hive-mind."
     source "https://github.com/link-assistant/formal-ai"
-    source_kind "github"
-  localized "hi"
+    source_kind github
+  localized hi
     summary "Formal AI को github.com/konard ने github.com/link-assistant/hive-mind का उपयोग करके बनाया था।"
     source "https://github.com/link-assistant/formal-ai"
-    source_kind "github"
-  localized "zh"
+    source_kind github
+  localized zh
     summary "Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。"
     source "https://github.com/link-assistant/formal-ai"
-    source_kind "github"
-
+    source_kind github
 fact_eiffel_tower_built
-  intent "fact_lookup"
-  category "landmark"
-  wikidata "Q243"
-  subject_aliases "eiffel tower|the eiffel tower|эйфелева башня|эйфелеву башню|эйфелевой башни|эйфелевой башне|эйфелевой башней|एफिल टॉवर|एफिल मीनार|埃菲尔铁塔|艾菲爾鐵塔"
-  question_keywords "when|built|construction|year|opened|completed|когда|построена|построили|открыта|открыли|строительство|кб|बनी|बनाई|कब|निर्माण|खुली|何时|建于|建造|完工|开放|什么时候"
+  intent fact_lookup
+  category landmark
+  wikidata Q243
+  subject_aliases ("eiffel tower" "the eiffel tower" "эйфелева башня" "эйфелеву башню" "эйфелевой башни" "эйфелевой башне" "эйфелевой башней" "एफिल टॉवर" "एफिल मीनार" "埃菲尔铁塔" "艾菲爾鐵塔")
+  question_keywords ("when" "built" "construction" "year" "opened" "completed" "когда" "построена" "построили" "открыта" "открыли" "строительство" "кб" "बनी" "बनाई" "कब" "निर्माण" "खुली" "何时" "建于" "建造" "完工" "开放" "什么时候")
   summary "Construction of the Eiffel Tower started in 1887 and it opened in 1889."
   source "https://en.wikipedia.org/wiki/Eiffel_Tower"
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     summary "Construction of the Eiffel Tower started in 1887 and it opened to the public on 31 March 1889."
     source "https://en.wikipedia.org/wiki/Eiffel_Tower"
-    source_kind "wikipedia"
-  localized "ru"
+    source_kind wikipedia
+  localized ru
     summary "Строительство Эйфелевой башни началось в 1887 году, а официальное открытие состоялось 31 марта 1889 года."
     source "https://ru.wikipedia.org/wiki/Эйфелева_башня"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     summary "एफिल टॉवर का निर्माण 1887 में शुरू हुआ और 31 मार्च 1889 को इसका उद्घाटन हुआ।"
     source "https://hi.wikipedia.org/wiki/एफिल_टॉवर"
-    source_kind "wikipedia"
-  localized "zh"
-    summary "埃菲尔铁塔的建造始于1887年,并于1889年3月31日正式落成开放。"
+    source_kind wikipedia
+  localized zh
+    summary 埃菲尔铁塔的建造始于1887年,并于1889年3月31日正式落成开放。
     source "https://zh.wikipedia.org/wiki/埃菲尔铁塔"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_japan
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q17|Q1490"
-  relation "capital"
-  subject_qid "Q17"
-  value_qid "Q1490"
-  subject_aliases "japan|japan's|japans|япония|японии|япония's|जापान|जापानी|日本"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q17 Q1490)
+  relation capital
+  subject_qid Q17
+  value_qid Q1490
+  subject_aliases ("japan" "japan's" "japans" "япония" "японии" "япония's" "जापान" "जापानी" "日本")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Japan is Tokyo."
   source "https://en.wikipedia.org/wiki/Tokyo"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "Japan"
-    value_label "Tokyo"
+  source_kind wikipedia
+  localized en
+    subject_label Japan
+    value_label Tokyo
     summary "The capital of Japan is Tokyo."
     source "https://en.wikipedia.org/wiki/Tokyo"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Япония"
-    value_label "Токио"
+    source_kind wikipedia
+  localized ru
+    subject_label Япония
+    value_label Токио
     summary "Столица Японии — Токио."
     source "https://ru.wikipedia.org/wiki/Токио"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "जापान"
-    value_label "टोक्यो"
+    source_kind wikipedia
+  localized hi
+    subject_label जापान
+    value_label टोक्यो
     summary "जापान की राजधानी टोक्यो है।"
     source "https://hi.wikipedia.org/wiki/टोक्यो"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "日本"
-    value_label "东京"
-    summary "日本的首都是东京。"
+    source_kind wikipedia
+  localized zh
+    subject_label 日本
+    value_label 东京
+    summary 日本的首都是东京。
     source "https://zh.wikipedia.org/wiki/东京"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_russia
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q159|Q649"
-  relation "capital"
-  subject_qid "Q159"
-  value_qid "Q649"
-  subject_aliases "russia|russia's|russias|russian federation|россия|россии|россию|российская федерация|российской федерации|रूस|रूसी संघ|俄罗斯|俄羅斯"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q159 Q649)
+  relation capital
+  subject_qid Q159
+  value_qid Q649
+  subject_aliases ("russia" "russia's" "russias" "russian federation" "россия" "россии" "россию" "российская федерация" "российской федерации" "रूस" "रूसी संघ" "俄罗斯" "俄羅斯")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Russia is Moscow."
   source "https://en.wikipedia.org/wiki/Moscow"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "Russia"
-    value_label "Moscow"
+  source_kind wikipedia
+  localized en
+    subject_label Russia
+    value_label Moscow
     summary "The capital of Russia is Moscow."
     source "https://en.wikipedia.org/wiki/Moscow"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Россия"
-    value_label "Москва"
+    source_kind wikipedia
+  localized ru
+    subject_label Россия
+    value_label Москва
     summary "Столица России — Москва."
     source "https://ru.wikipedia.org/wiki/Москва"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "रूस"
-    value_label "मास्को"
+    source_kind wikipedia
+  localized hi
+    subject_label रूस
+    value_label मास्को
     summary "रूस की राजधानी मास्को है।"
     source "https://hi.wikipedia.org/wiki/मास्को"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "俄罗斯"
-    value_label "莫斯科"
-    summary "俄罗斯的首都是莫斯科。"
+    source_kind wikipedia
+  localized zh
+    subject_label 俄罗斯
+    value_label 莫斯科
+    summary 俄罗斯的首都是莫斯科。
     source "https://zh.wikipedia.org/wiki/莫斯科"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_speed_of_light
-  intent "fact_lookup"
-  category "physics"
-  wikidata "Q2111"
-  subject_aliases "speed of light|light speed|c in vacuum|скорость света|световая скорость|प्रकाश की गति|光速|光的速度"
-  question_keywords "what is|how fast|какова|чему равна|कितनी|कितना|是多少|多快|多少"
+  intent fact_lookup
+  category physics
+  wikidata Q2111
+  subject_aliases ("speed of light" "light speed" "c in vacuum" "скорость света" "световая скорость" "प्रकाश की गति" "光速" "光的速度")
+  question_keywords ("what is" "how fast" "какова" "чему равна" "कितनी" "कितना" "是多少" "多快" "多少")
   summary "The speed of light in vacuum is exactly 299,792,458 metres per second."
   source "https://en.wikipedia.org/wiki/Speed_of_light"
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     summary "The speed of light in vacuum is exactly 299,792,458 metres per second (often abbreviated c)."
     source "https://en.wikipedia.org/wiki/Speed_of_light"
-    source_kind "wikipedia"
-  localized "ru"
+    source_kind wikipedia
+  localized ru
     summary "Скорость света в вакууме составляет ровно 299 792 458 метров в секунду (обозначается c)."
     source "https://ru.wikipedia.org/wiki/Скорость_света"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     summary "निर्वात में प्रकाश की गति ठीक 299,792,458 मीटर प्रति सेकंड है (इसे c से प्रदर्शित किया जाता है)।"
     source "https://hi.wikipedia.org/wiki/प्रकाश_का_वेग"
-    source_kind "wikipedia"
-  localized "zh"
+    source_kind wikipedia
+  localized zh
     summary "真空中的光速为 299,792,458 米每秒(通常用 c 表示)。"
     source "https://zh.wikipedia.org/wiki/光速"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_mona_lisa_painter
-  intent "fact_lookup"
-  category "art"
-  wikidata "Q12418|Q762"
-  subject_aliases "mona lisa|the mona lisa|джоконда|мона лиза|мону лизу|моне лизе|моной лизой|मोना लिसा|蒙娜丽莎|蒙娜麗莎"
-  question_keywords "who painted|painted|painter|artist|кто написал|написал|художник|किसने बनाई|चित्रकार|कलाकार|谁画的|画家|作者"
+  intent fact_lookup
+  category art
+  wikidata (Q12418 Q762)
+  subject_aliases ("mona lisa" "the mona lisa" "джоконда" "мона лиза" "мону лизу" "моне лизе" "моной лизой" "मोना लिसा" "蒙娜丽莎" "蒙娜麗莎")
+  question_keywords ("who painted" "painted" "painter" "artist" "кто написал" "написал" "художник" "किसने बनाई" "चित्रकार" "कलाकार" "谁画的" "画家" "作者")
   summary "The Mona Lisa was painted by Leonardo da Vinci."
   source "https://en.wikipedia.org/wiki/Mona_Lisa"
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     summary "The Mona Lisa was painted by Leonardo da Vinci between approximately 1503 and 1519."
     source "https://en.wikipedia.org/wiki/Mona_Lisa"
-    source_kind "wikipedia"
-  localized "ru"
+    source_kind wikipedia
+  localized ru
     summary "«Мону Лизу» написал Леонардо да Винчи примерно между 1503 и 1519 годами."
     source "https://ru.wikipedia.org/wiki/Мона_Лиза"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     summary "मोना लिसा को लियोनार्डो दा विंची ने लगभग 1503 से 1519 के बीच बनाया था।"
     source "https://hi.wikipedia.org/wiki/मोना_लिसा"
-    source_kind "wikipedia"
-  localized "zh"
-    summary "《蒙娜丽莎》由列奥纳多·达·芬奇于约1503年至1519年间绘制。"
+    source_kind wikipedia
+  localized zh
+    summary 《蒙娜丽莎》由列奥纳多·达·芬奇于约1503年至1519年间绘制。
     source "https://zh.wikipedia.org/wiki/蒙娜麗莎"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_france
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q142|Q90"
-  relation "capital"
-  subject_qid "Q142"
-  value_qid "Q90"
-  subject_aliases "france|france's|frances|french republic|франция|франции|францию|французская республика|फ्रांस|फ़्रांस|法国|法國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q142 Q90)
+  relation capital
+  subject_qid Q142
+  value_qid Q90
+  subject_aliases ("france" "france's" "frances" "french republic" "франция" "франции" "францию" "французская республика" "फ्रांस" "फ़्रांस" "法国" "法國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of France is Paris."
   source "https://en.wikipedia.org/wiki/Paris"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "France"
-    value_label "Paris"
+  source_kind wikipedia
+  localized en
+    subject_label France
+    value_label Paris
     summary "The capital of France is Paris."
     source "https://en.wikipedia.org/wiki/Paris"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Франция"
-    value_label "Париж"
+    source_kind wikipedia
+  localized ru
+    subject_label Франция
+    value_label Париж
     summary "Столица Франции — Париж."
     source "https://ru.wikipedia.org/wiki/Париж"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "फ्रांस"
-    value_label "पेरिस"
+    source_kind wikipedia
+  localized hi
+    subject_label फ्रांस
+    value_label पेरिस
     summary "फ्रांस की राजधानी पेरिस है।"
     source "https://hi.wikipedia.org/wiki/पेरिस"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "法国"
-    value_label "巴黎"
-    summary "法国的首都是巴黎。"
+    source_kind wikipedia
+  localized zh
+    subject_label 法国
+    value_label 巴黎
+    summary 法国的首都是巴黎。
     source "https://zh.wikipedia.org/wiki/巴黎"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_germany
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q183|Q64"
-  relation "capital"
-  subject_qid "Q183"
-  value_qid "Q64"
-  subject_aliases "germany|germany's|germanys|federal republic of germany|германия|германии|германию|федеративная республика германия|जर्मनी|德国|德國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q183 Q64)
+  relation capital
+  subject_qid Q183
+  value_qid Q64
+  subject_aliases ("germany" "germany's" "germanys" "federal republic of germany" "германия" "германии" "германию" "федеративная республика германия" "जर्मनी" "德国" "德國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Germany is Berlin."
   source "https://en.wikipedia.org/wiki/Berlin"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "Germany"
-    value_label "Berlin"
+  source_kind wikipedia
+  localized en
+    subject_label Germany
+    value_label Berlin
     summary "The capital of Germany is Berlin."
     source "https://en.wikipedia.org/wiki/Berlin"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Германия"
-    value_label "Берлин"
+    source_kind wikipedia
+  localized ru
+    subject_label Германия
+    value_label Берлин
     summary "Столица Германии — Берлин."
     source "https://ru.wikipedia.org/wiki/Берлин"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "जर्मनी"
-    value_label "बर्लिन"
+    source_kind wikipedia
+  localized hi
+    subject_label जर्मनी
+    value_label बर्लिन
     summary "जर्मनी की राजधानी बर्लिन है।"
     source "https://hi.wikipedia.org/wiki/बर्लिन"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "德国"
-    value_label "柏林"
-    summary "德国的首都是柏林。"
+    source_kind wikipedia
+  localized zh
+    subject_label 德国
+    value_label 柏林
+    summary 德国的首都是柏林。
     source "https://zh.wikipedia.org/wiki/柏林"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_china
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q148|Q956"
-  relation "capital"
-  subject_qid "Q148"
-  value_qid "Q956"
-  subject_aliases "china|china's|chinas|people's republic of china|prc|китай|китая|китаю|китаем|китае|китайская народная республика|चीन|中国|中華人民共和國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q148 Q956)
+  relation capital
+  subject_qid Q148
+  value_qid Q956
+  subject_aliases ("china" "china's" "chinas" "people's republic of china" "prc" "китай" "китая" "китаю" "китаем" "китае" "китайская народная республика" "चीन" "中国" "中華人民共和國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of China is Beijing."
   source "https://en.wikipedia.org/wiki/Beijing"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "China"
-    value_label "Beijing"
+  source_kind wikipedia
+  localized en
+    subject_label China
+    value_label Beijing
     summary "The capital of China is Beijing."
     source "https://en.wikipedia.org/wiki/Beijing"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Китай"
-    value_label "Пекин"
+    source_kind wikipedia
+  localized ru
+    subject_label Китай
+    value_label Пекин
     summary "Столица Китая — Пекин."
     source "https://ru.wikipedia.org/wiki/Пекин"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "चीन"
-    value_label "बीजिंग"
+    source_kind wikipedia
+  localized hi
+    subject_label चीन
+    value_label बीजिंग
     summary "चीन की राजधानी बीजिंग है।"
     source "https://hi.wikipedia.org/wiki/बीजिंग"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "中国"
-    value_label "北京"
-    summary "中国的首都是北京。"
+    source_kind wikipedia
+  localized zh
+    subject_label 中国
+    value_label 北京
+    summary 中国的首都是北京。
     source "https://zh.wikipedia.org/wiki/北京"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_india
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q668|Q987"
-  relation "capital"
-  subject_qid "Q668"
-  value_qid "Q987"
-  subject_aliases "india|india's|indias|republic of india|индия|индии|индию|индией|भारत|इंडिया|印度"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q668 Q987)
+  relation capital
+  subject_qid Q668
+  value_qid Q987
+  subject_aliases ("india" "india's" "indias" "republic of india" "индия" "индии" "индию" "индией" "भारत" "इंडिया" "印度")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of India is New Delhi."
   source "https://en.wikipedia.org/wiki/New_Delhi"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "India"
+  source_kind wikipedia
+  localized en
+    subject_label India
     value_label "New Delhi"
     summary "The capital of India is New Delhi."
     source "https://en.wikipedia.org/wiki/New_Delhi"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Индия"
-    value_label "Нью-Дели"
+    source_kind wikipedia
+  localized ru
+    subject_label Индия
+    value_label Нью-Дели
     summary "Столица Индии — Нью-Дели."
     source "https://ru.wikipedia.org/wiki/Нью-Дели"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "भारत"
+    source_kind wikipedia
+  localized hi
+    subject_label भारत
     value_label "नई दिल्ली"
     summary "भारत की राजधानी नई दिल्ली है।"
     source "https://hi.wikipedia.org/wiki/नई_दिल्ली"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "印度"
-    value_label "新德里"
-    summary "印度的首都是新德里。"
+    source_kind wikipedia
+  localized zh
+    subject_label 印度
+    value_label 新德里
+    summary 印度的首都是新德里。
     source "https://zh.wikipedia.org/wiki/新德里"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_usa
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q30|Q61"
-  relation "capital"
-  subject_qid "Q30"
-  value_qid "Q61"
-  subject_aliases "united states|united states of america|usa|us|america|the united states|сша|соединенные штаты|соединённые штаты|соединенных штатов|соединённых штатов|америка|америки|америку|संयुक्त राज्य अमेरिका|अमेरिका|美国|美利坚合众国|美國|美利堅合眾國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q30 Q61)
+  relation capital
+  subject_qid Q30
+  value_qid Q61
+  subject_aliases ("united states" "united states of america" "usa" "us" "america" "the united states" "сша" "соединенные штаты" "соединённые штаты" "соединенных штатов" "соединённых штатов" "америка" "америки" "америку" "संयुक्त राज्य अमेरिका" "अमेरिका" "美国" "美利坚合众国" "美國" "美利堅合眾國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of the United States is Washington, D.C."
   source "https://en.wikipedia.org/wiki/Washington,_D.C."
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     subject_label "the United States"
     value_label "Washington, D.C."
     summary "The capital of the United States is Washington, D.C."
     source "https://en.wikipedia.org/wiki/Washington,_D.C."
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "США"
-    value_label "Вашингтон"
+    source_kind wikipedia
+  localized ru
+    subject_label США
+    value_label Вашингтон
     summary "Столица США — Вашингтон."
     source "https://ru.wikipedia.org/wiki/Вашингтон"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     subject_label "संयुक्त राज्य अमेरिका"
     value_label "वाशिंगटन, डी.सी."
     summary "संयुक्त राज्य अमेरिका की राजधानी वाशिंगटन, डी.सी. है।"
     source "https://hi.wikipedia.org/wiki/वाशिंगटन,_डी.सी."
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "美国"
-    value_label "华盛顿哥伦比亚特区"
-    summary "美国的首都是华盛顿哥伦比亚特区。"
+    source_kind wikipedia
+  localized zh
+    subject_label 美国
+    value_label 华盛顿哥伦比亚特区
+    summary 美国的首都是华盛顿哥伦比亚特区。
     source "https://zh.wikipedia.org/wiki/华盛顿哥伦比亚特区"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_uk
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q145|Q84"
-  relation "capital"
-  subject_qid "Q145"
-  value_qid "Q84"
-  subject_aliases "united kingdom|uk|britain|great britain|england|the united kingdom|великобритания|великобритании|британия|британии|англия|англии|यूनाइटेड किंगडम|ब्रिटेन|इंग्लैंड|英国|大不列颠|英國|大不列顛"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q145 Q84)
+  relation capital
+  subject_qid Q145
+  value_qid Q84
+  subject_aliases ("united kingdom" "uk" "britain" "great britain" "england" "the united kingdom" "великобритания" "великобритании" "британия" "британии" "англия" "англии" "यूनाइटेड किंगडम" "ब्रिटेन" "इंग्लैंड" "英国" "大不列颠" "英國" "大不列顛")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of the United Kingdom is London."
   source "https://en.wikipedia.org/wiki/London"
-  source_kind "wikipedia"
-  localized "en"
+  source_kind wikipedia
+  localized en
     subject_label "the United Kingdom"
-    value_label "London"
+    value_label London
     summary "The capital of the United Kingdom is London."
     source "https://en.wikipedia.org/wiki/London"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Великобритания"
-    value_label "Лондон"
+    source_kind wikipedia
+  localized ru
+    subject_label Великобритания
+    value_label Лондон
     summary "Столица Великобритании — Лондон."
     source "https://ru.wikipedia.org/wiki/Лондон"
-    source_kind "wikipedia"
-  localized "hi"
+    source_kind wikipedia
+  localized hi
     subject_label "यूनाइटेड किंगडम"
-    value_label "लंदन"
+    value_label लंदन
     summary "यूनाइटेड किंगडम की राजधानी लंदन है।"
     source "https://hi.wikipedia.org/wiki/लंदन"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "英国"
-    value_label "伦敦"
-    summary "英国的首都是伦敦。"
+    source_kind wikipedia
+  localized zh
+    subject_label 英国
+    value_label 伦敦
+    summary 英国的首都是伦敦。
     source "https://zh.wikipedia.org/wiki/伦敦"
-    source_kind "wikipedia"
-
+    source_kind wikipedia
 fact_capital_brazil
-  intent "fact_lookup"
-  category "geography"
-  wikidata "Q155|Q2844"
-  relation "capital"
-  subject_qid "Q155"
-  value_qid "Q2844"
-  subject_aliases "brazil|brazil's|brazils|brasil|federative republic of brazil|бразилия|бразилии|бразилию|бразилией|ब्राज़ील|ब्राजील|巴西|巴西聯邦共和國"
-  question_keywords "capital|столица|столицей|столицы|राजधानी|首都|城市"
+  intent fact_lookup
+  category geography
+  wikidata (Q155 Q2844)
+  relation capital
+  subject_qid Q155
+  value_qid Q2844
+  subject_aliases ("brazil" "brazil's" "brazils" "brasil" "federative republic of brazil" "бразилия" "бразилии" "бразилию" "бразилией" "ब्राज़ील" "ब्राजील" "巴西" "巴西聯邦共和國")
+  question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
   summary "The capital of Brazil is Brasília."
   source "https://en.wikipedia.org/wiki/Brasília"
-  source_kind "wikipedia"
-  localized "en"
-    subject_label "Brazil"
-    value_label "Brasília"
+  source_kind wikipedia
+  localized en
+    subject_label Brazil
+    value_label Brasília
     summary "The capital of Brazil is Brasília."
     source "https://en.wikipedia.org/wiki/Brasília"
-    source_kind "wikipedia"
-  localized "ru"
-    subject_label "Бразилия"
-    value_label "Бразилиа"
+    source_kind wikipedia
+  localized ru
+    subject_label Бразилия
+    value_label Бразилиа
     summary "Столица Бразилии — Бразилиа."
     source "https://ru.wikipedia.org/wiki/Бразилиа"
-    source_kind "wikipedia"
-  localized "hi"
-    subject_label "ब्राज़ील"
-    value_label "ब्रासीलिया"
+    source_kind wikipedia
+  localized hi
+    subject_label ब्राज़ील
+    value_label ब्रासीलिया
     summary "ब्राज़ील की राजधानी ब्रासीलिया है।"
     source "https://hi.wikipedia.org/wiki/ब्रासीलिया"
-    source_kind "wikipedia"
-  localized "zh"
-    subject_label "巴西"
-    value_label "巴西利亚"
-    summary "巴西的首都是巴西利亚。"
+    source_kind wikipedia
+  localized zh
+    subject_label 巴西
+    value_label 巴西利亚
+    summary 巴西的首都是巴西利亚。
     source "https://zh.wikipedia.org/wiki/巴西利亞"
-    source_kind "wikipedia"
+    source_kind wikipedia

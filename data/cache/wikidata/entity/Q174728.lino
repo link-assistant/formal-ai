@@ -1,0 +1,18 @@
+Q174728
+  aliases
+    en (centimetres cm)
+    hi ("सेंटीमीटर")
+    ru ("см")
+    zh ("公分" "釐米")
+  descriptions
+    en "SI unit of length equal to one hundredth of a metre"
+    ru "единица длины в 0,01 м"
+    zh "長度單位"
+  id Q174728
+  labels
+    en centimetre
+    hi "शतिमान"
+    ru "сантиметр"
+    zh "厘米"
+  type item
+success 1

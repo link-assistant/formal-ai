@@ -1,0 +1,17 @@
+view
+  id M-83829a02fcde
+  lemma philosophy
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a belief (or system of beliefs) accepted as authoritative by some group or school"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the rational investigation of questions about existence and knowledge and ethics"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any personal belief about how to live or how to deal with a situation"
+    provenance (wordnet)

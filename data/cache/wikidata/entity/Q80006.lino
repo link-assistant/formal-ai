@@ -1,0 +1,19 @@
+Q80006
+  aliases
+    en (programming)
+    hi ("प्रोग्रामिंग" "कोडिंग")
+    ru ("компьютерное программирование" programming "программирование компьютера")
+    zh ("编程" "电脑编程" "程序設計" "计算机编程" "編程" "程式設計" "電腦程式設計" "計算機程式設計")
+  descriptions
+    en "the process of designing and building an executable computer program to accomplish a specific computing result or to perform a specific task"
+    hi "विशिष्ट संगणकीय परिणाम की प्राप्ति अथवा किसी विशिष्ट कार्य के निष्पादन हेतु क्रियान्वयन योग्य संगणक कार्यविधि की रूपरेखा का निर्माण और सृजन करने की प्रक्रिया"
+    ru "создание программного обеспечения компьютера"
+    zh "软件开发步骤"
+  id Q80006
+  labels
+    en "computer programming"
+    hi "क्रमानुदेशन"
+    ru "программирование"
+    zh "计算机程序设计"
+  type item
+success 1

@@ -8,5 +8,6 @@ mod check_file_size;
 mod create_github_release;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
+mod source_test_placement;
 mod workflow_release;
 mod workspace_manifest_resolution;

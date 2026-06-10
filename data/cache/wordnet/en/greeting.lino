@@ -1,0 +1,12 @@
+language en
+lemma greeting
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(usually plural) an acknowledgment or expression of good will (especially on meeting)"
+    id oewn-06642524-n
+    partOfSpeech n
+    synonyms (salutation)
+source "oewn:2024"

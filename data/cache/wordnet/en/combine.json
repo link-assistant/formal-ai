@@ -1,0 +1,114 @@
+{
+  "lemma": "combine",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03079638-n",
+      "partOfSpeech": "n",
+      "definition": "harvester that heads and threshes and cleans grain while moving across the field"
+    },
+    {
+      "id": "oewn-08253542-n",
+      "partOfSpeech": "n",
+      "definition": "a consortium of independent organizations formed to limit competition by controlling the production and distribution of a product or service",
+      "examples": [
+        "they set up the trust in the hope of gaining a monopoly"
+      ],
+      "synonyms": [
+        "trust",
+        "corporate trust",
+        "cartel"
+      ]
+    },
+    {
+      "id": "oewn-07388403-n",
+      "partOfSpeech": "n",
+      "definition": "an occurrence that results in things being united",
+      "synonyms": [
+        "combining"
+      ]
+    },
+    {
+      "id": "oewn-02637244-v",
+      "partOfSpeech": "v",
+      "definition": "have or possess in combination",
+      "examples": [
+        "she unites charm with a good business sense"
+      ],
+      "synonyms": [
+        "unite"
+      ]
+    },
+    {
+      "id": "oewn-00193830-v",
+      "partOfSpeech": "v",
+      "definition": "put or add together",
+      "examples": [
+        "combine resources"
+      ],
+      "synonyms": [
+        "compound"
+      ]
+    },
+    {
+      "id": "oewn-01463957-v",
+      "partOfSpeech": "v",
+      "definition": "combine so as to form a whole; mix",
+      "examples": [
+        "compound the ingredients"
+      ],
+      "synonyms": [
+        "compound"
+      ]
+    },
+    {
+      "id": "oewn-02313988-v",
+      "partOfSpeech": "v",
+      "definition": "add together from different sources",
+      "examples": [
+        "combine resources"
+      ]
+    },
+    {
+      "id": "oewn-02383029-v",
+      "partOfSpeech": "v",
+      "definition": "join for a common purpose or in a common action",
+      "examples": [
+        "These forces combined with others"
+      ]
+    },
+    {
+      "id": "oewn-01387824-v",
+      "partOfSpeech": "v",
+      "definition": "gather in a mass, sum, or whole",
+      "synonyms": [
+        "aggregate"
+      ]
+    },
+    {
+      "id": "oewn-00395719-v",
+      "partOfSpeech": "v",
+      "definition": "mix together different elements",
+      "examples": [
+        "The colors blend well"
+      ],
+      "synonyms": [
+        "blend",
+        "flux",
+        "mix",
+        "conflate",
+        "commingle",
+        "immix",
+        "fuse",
+        "coalesce",
+        "meld",
+        "merge"
+      ]
+    }
+  ]
+}

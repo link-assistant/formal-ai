@@ -1,0 +1,41 @@
+{
+  "lemma": "schedule",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05919534-n",
+      "partOfSpeech": "n",
+      "definition": "a temporally organized plan for matters to be attended to",
+      "synonyms": [
+        "agenda",
+        "docket"
+      ]
+    },
+    {
+      "id": "oewn-06507319-n",
+      "partOfSpeech": "n",
+      "definition": "an ordered list of times at which things are planned to occur"
+    },
+    {
+      "id": "oewn-00680201-v",
+      "partOfSpeech": "v",
+      "definition": "plan for an activity or event",
+      "examples": [
+        "I've scheduled a concert next week"
+      ]
+    },
+    {
+      "id": "oewn-00796643-v",
+      "partOfSpeech": "v",
+      "definition": "make a schedule; plan the time and place for events",
+      "examples": [
+        "I scheduled an exam for this afternoon"
+      ]
+    }
+  ]
+}

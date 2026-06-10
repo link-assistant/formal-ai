@@ -1,0 +1,143 @@
+[
+  {
+    "word": "language",
+    "phonetic": "[ˈleɪŋɡwɪd͡ʒ]",
+    "phonetics": [
+      {
+        "text": "[ˈleɪŋɡwɪd͡ʒ]",
+        "audio": ""
+      },
+      {
+        "text": "[ˈleɪŋɡwɪd͡ʒ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/language-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=825502",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A body of words, and set of methods of combining them (called a grammar), understood by a community and used as a form of communication.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Deaf and mute people communicate using languages like ASL."
+          },
+          {
+            "definition": "The ability to communicate using words.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the gift of language"
+          },
+          {
+            "definition": "A sublanguage: the slang of a particular community or jargon of a particular specialist field.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "legal language;   the language of chemistry"
+          },
+          {
+            "definition": "The expression of thought (the communication of meaning) in a specified way; that which communicates something, as language does.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "body language;   the language of the eyes"
+          },
+          {
+            "definition": "A body of sounds, signs and/or signals by which animals communicate, and by which plants are sometimes also thought to communicate.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A computer language; a machine language.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Manner of expression.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The particular words used in a speech or a passage of text.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The language he used to talk to me was obscene."
+          },
+          {
+            "definition": "Profanity.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "computer language",
+          "machine language",
+          "programming language"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To communicate by language; to express in language.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/language"
+    ]
+  },
+  {
+    "word": "language",
+    "phonetic": "[ˈleɪŋɡwɪd͡ʒ]",
+    "phonetics": [
+      {
+        "text": "[ˈleɪŋɡwɪd͡ʒ]",
+        "audio": ""
+      },
+      {
+        "text": "[ˈleɪŋɡwɪd͡ʒ]",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/language-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=825502",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A languet, a flat plate in or below the flue pipe of an organ.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/language"
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+language en
+lemma protection
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the activity of protecting someone or something"
+    examples ("the witnesses demanded police protection")
+    id oewn-00819341-n
+    partOfSpeech n
+  entry
+    definition "a covering that is intend to protect from damage or injury"
+    examples ("they had no protection from the fallout" "wax provided protection for the floors")
+    id oewn-04020673-n
+    partOfSpeech n
+    synonyms ("protective covering" "protective cover")
+  entry
+    definition "defense against financial failure; financial independence"
+    examples ("his pension gave him security in his old age" "insurance provided protection against loss of wages due to illness")
+    id oewn-13365086-n
+    partOfSpeech n
+    synonyms (security)
+  entry
+    definition "the condition of being protected"
+    examples ("they were huddled together for protection" "he enjoyed a sense of peace and protection in his new home")
+    id oewn-14563562-n
+    partOfSpeech n
+    synonyms (shelter)
+  entry
+    definition "kindly endorsement and guidance"
+    examples ("the tournament was held under the auspices of the city council")
+    id oewn-01217353-n
+    partOfSpeech n
+    synonyms (auspices aegis)
+  entry
+    definition "the imposition of duties or quotas on imports in order to protect domestic industry against foreign competition"
+    examples ("he made trade protection a plank in the party platform")
+    id oewn-01130195-n
+    partOfSpeech n
+    synonyms ("trade protection")
+  entry
+    definition "payment extorted by gangsters on threat of violence"
+    examples ("every store in the neighborhood had to pay him protection")
+    id oewn-00786409-n
+    partOfSpeech n
+    synonyms (tribute)
+source "oewn:2024"

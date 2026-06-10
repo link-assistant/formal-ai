@@ -1,0 +1,85 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The inevitable progression into the future with the passing of present and past events."
+          example "Time stops for nobody.   the ebb and flow of time"
+        entry
+          definition "A duration of time."
+        entry
+          definition "An instant of time."
+        entry
+          definition "The measurement under some system of region of day or moment."
+          example "Let's synchronize our watches so we're not on different time."
+        entry
+          definition "Ratio of comparison."
+          example "your car runs three times faster than mine;  that is four times as heavy as this"
+        entry
+          definition "(grammar) Tense."
+          example "the time of a verb"
+        entry
+          definition "The measured duration of sounds; measure; tempo; rate of movement; rhythmical division."
+          example "common or triple time;   the musician keeps good time."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To measure or record the time, duration, or rate of."
+          example "I used a stopwatch to time myself running around the block."
+        entry
+          definition "To choose when something begins or how long it lasts."
+          example "The President timed his speech badly, coinciding with the Super Bowl."
+        entry
+          definition "To keep or beat time; to proceed or move in time."
+        entry
+          definition "To pass time; to delay."
+        entry
+          definition "To regulate as to time; to accompany, or agree with, in time of movement."
+        entry
+          definition "To measure, as in music or harmony."
+      partOfSpeech verb
+      synonyms (set clock)
+    entry
+      definitions
+        entry
+          definition "The circumstances of a certain time."
+          example "Modern times are so very different from the past."
+        entry
+          definition "A person's experiences or biography."
+          example "The Life and Times of Rosie the Riveter."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To multiply."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Multiplied by"
+          example "Four times five is twenty."
+      partOfSpeech preposition
+  phonetic "/tɑemz/"
+  phonetics
+    entry
+      audio ""
+      text "/tɑemz/"
+    entry
+      audio ""
+      text "/taɪmz/"
+    entry
+      audio ""
+      text "/taɪmz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/times-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227453"
+      text "/taɪmz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/time" "https://en.wiktionary.org/wiki/times")
+  word times

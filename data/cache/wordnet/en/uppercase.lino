@@ -1,0 +1,18 @@
+language en
+lemma uppercase
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "relating to capital letters which were kept in the top half of a compositor's type case"
+    examples ("uppercase letters: X and Y and Z etc.")
+    id oewn-01470615-a
+    partOfSpeech a
+  entry
+    definition "one of the large alphabetic characters used as the first letter in writing or printing proper names and sometimes for emphasis"
+    examples ("printers once kept the type for capitals and for small letters in separate cases; capitals were kept in the upper half of the type case and so became known as upper-case letters")
+    id oewn-06837277-n
+    partOfSpeech n
+    synonyms (capital "capital letter" "upper-case letter" majuscule)
+source "oewn:2024"

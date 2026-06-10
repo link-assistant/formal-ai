@@ -1,0 +1,17 @@
+view
+  id M-800377c3c24f
+  lemma reply
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the speech act of continuing a conversational exchange"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "react verbally"
+    provenance (wordnet)

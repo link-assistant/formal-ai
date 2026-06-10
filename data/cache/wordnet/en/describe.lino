@@ -1,0 +1,30 @@
+language en
+lemma describe
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "give a description of"
+    examples ("He drew an elaborate plan of attack")
+    id oewn-00989103-v
+    partOfSpeech v
+    synonyms (depict draw)
+  entry
+    definition "to give an account or representation of in words"
+    examples ("Discreet Italian police described it in a manner typically continental")
+    id oewn-00967067-v
+    partOfSpeech v
+    synonyms (report account)
+  entry
+    definition "make a mark or lines on a surface"
+    examples ("draw a line" "trace the outline of a figure in the sand")
+    id oewn-01585566-v
+    partOfSpeech v
+    synonyms (trace draw line delineate)
+  entry
+    definition "identify as in botany or biology, for example"
+    id oewn-00654017-v
+    partOfSpeech v
+    synonyms (identify discover key "key out" distinguish name)
+source "oewn:2024"

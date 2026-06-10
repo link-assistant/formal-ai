@@ -1,0 +1,17 @@
+{
+  "entities": {
+    "Q1058710": {
+      "type": "item",
+      "id": "Q1058710",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Chaemtir"
+        }
+      },
+      "descriptions": {},
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

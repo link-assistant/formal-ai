@@ -1,0 +1,21 @@
+view
+  id M-166df017d0f5
+  lemma quarterly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or consisting of a quarter"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a periodical that is published every quarter (or four issues per year)"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in diagonally opposed quarters of an escutcheon"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in three month intervals"
+    provenance (wordnet)

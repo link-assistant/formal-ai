@@ -1,0 +1,50 @@
+{
+  "lemma": "research",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00638164-n",
+      "partOfSpeech": "n",
+      "definition": "systematic investigation to establish facts"
+    },
+    {
+      "id": "oewn-05805605-n",
+      "partOfSpeech": "n",
+      "definition": "a search for knowledge",
+      "examples": [
+        "their pottery deserves more research than it has received"
+      ],
+      "synonyms": [
+        "inquiry",
+        "enquiry"
+      ]
+    },
+    {
+      "id": "oewn-00878858-v",
+      "partOfSpeech": "v",
+      "definition": "attempt to find out in a systematically and scientific manner",
+      "examples": [
+        "The student researched the history of that word"
+      ]
+    },
+    {
+      "id": "oewn-00649877-v",
+      "partOfSpeech": "v",
+      "definition": "inquire into",
+      "examples": [
+        "the students had to research the history of the Second World War for their history project",
+        "He searched for information on his relatives on the web",
+        "Scientists are exploring the nature of consciousness"
+      ],
+      "synonyms": [
+        "search",
+        "explore"
+      ]
+    }
+  ]
+}

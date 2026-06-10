@@ -1,0 +1,19 @@
+language en
+lemma evaluate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "evaluate or estimate the nature, quality, ability, extent, or significance of"
+    examples ("I will have the family jewels appraised by a professional" "access all the factors when taking a risk")
+    id oewn-00683348-v
+    partOfSpeech v
+    synonyms (measure valuate assess appraise value)
+  entry
+    definition "form a critical opinion of"
+    examples ("I cannot judge some works of modern art" "How do you evaluate this grant proposal?" "We shouldn't pass judgment on other people")
+    id oewn-00672179-v
+    partOfSpeech v
+    synonyms ("pass judgment" judge)
+source "oewn:2024"

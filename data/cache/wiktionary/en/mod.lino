@@ -1,0 +1,132 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An unconventionally modern style of fashionable dress originating in England in the 1960s, characterized by ankle-length black trenchcoats and sunglasses."
+        entry
+          definition "A 1960s British person who dressed in such a style and was interested in modernism and the modern music of the time; the opposite of a rocker."
+        entry
+          definition "A modification."
+        entry
+          definition "An end user-created package containing modifications to the look or behaviour of a video game."
+        entry
+          definition "A moderator, for example on a discussion forum."
+        entry
+          definition "A module (file containing a tracker music sequence)."
+        entry
+          definition "A moderately difficult route."
+        entry
+          definition "(in the plural, Oxford University) Moderations: university examinations generally taken in the first year."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To modify (an object) from its original condition, typically for the purposes of individualizing and/or enhancing the performance of the object."
+          example "His friends were particularly impressed with the way he modded his Ruckus."
+          synonyms (trick "trick out")
+        entry
+          definition "To moderate; to silence or punish (a rule-breaking user) on a forum, especially when done by a moderator."
+          example "Don't break the rules or you'll be modded."
+      partOfSpeech verb
+      synonyms (trick "trick out")
+    entry
+      definitions
+        entry
+          definition "One of several ancient Greek scales."
+        entry
+          definition "One of several common scales in modern Western music, one of which corresponds to the modern major scale and one to the natural minor scale."
+        entry
+          definition "A particular means of accomplishing something."
+          example "What was the mode of entry?"
+        entry
+          definition "A particular state of being, or frame of mind."
+          example "After a series of early setbacks, her political campaign is in crisis mode."
+        entry
+          definition "The most frequently occurring value in a distribution"
+        entry
+          definition "A state of a system that is represented by an eigenfunction of that system."
+        entry
+          definition "One of various related sets of rules for processing data; more generally, any state of the system associated with certain behaviours."
+          example "In insert mode, characters typed are directly inserted into the buffer."
+        entry
+          definition "A series of settings on a device used for a specific purpose."
+          example "airplane mode; night mode"
+        entry
+          definition "A variation in gameplay, such as a difficulty level."
+        entry
+          definition "(grammar) A verb form that depends on how its containing clause relates to the speaker’s or writer’s wish, intent, or assertion about reality."
+          synonyms ("grammatical mood" mood)
+        entry
+          definition "That which exists only as a quality of substance."
+        entry
+          definition "In lace-making, a small decorative piece inserted into a pattern."
+        entry
+          definition "The openwork between the solid parts of a pattern."
+        entry
+          definition "A woman's mantle with a hood."
+      partOfSpeech noun
+      synonyms ("grammatical mood" mood)
+    entry
+      definitions
+        entry
+          definition "Style or fashion; popular trend."
+          example "Her wardrobe is always in mode."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Not excessive; acting in moderation"
+          example "a moderate Calvinist"
+        entry
+          definition Mediocre
+        entry
+          definition "Average priced; standard-deal"
+        entry
+          definition "Not violent or rigorous; temperate; mild; gentle."
+          example "a moderate winter"
+        entry
+          definition "Having an intermediate position between liberal and conservative."
+      partOfSpeech adjective
+    entry
+      definitions
+        entry
+          definition "The base with respect to which a congruence is computed."
+        entry
+          definition "The absolute value of a complex number."
+        entry
+          definition "A coefficient that expresses how much of a certain property is possessed by a certain substance."
+        entry
+          definition "An operator placed between two numbers, to get the remainder of the division of those numbers."
+      partOfSpeech noun
+      synonyms ("%" mod)
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/mod-1-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79241465"
+    entry
+      audio ""
+      text "/mɒd/"
+    entry
+      audio ""
+      text "/mɑd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/mod" "https://en.wiktionary.org/wiki/mode" "https://en.wiktionary.org/wiki/moderate" "https://en.wiktionary.org/wiki/modulus")
+  word mod
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A festival of Scottish Gaelic song, arts and culture, akin to the Welsh eisteddfod."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/mod")
+  word mod

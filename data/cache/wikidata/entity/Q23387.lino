@@ -1,0 +1,17 @@
+Q23387
+  aliases
+    en (weeks weekly "week duration" "7 days")
+    hi ("हफ्ता")
+    ru ("седьмица" "седмица")
+    zh ("一週" "週")
+  descriptions
+    en "unit of time"
+    ru "единица времени, равная 7 (семи) дням"
+  id Q23387
+  labels
+    en week
+    hi "सप्ताह"
+    ru "неделя"
+    zh "星期"
+  type item
+success 1

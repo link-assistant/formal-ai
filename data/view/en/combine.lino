@@ -1,0 +1,45 @@
+view
+  id M-b97718ebdfd0
+  lemma combine
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "harvester that heads and threshes and cleans grain while moving across the field"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a consortium of independent organizations formed to limit competition by controlling the production and distribution of a product or service"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an occurrence that results in things being united"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have or possess in combination"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put or add together"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "combine so as to form a whole; mix"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add together from different sources"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "join for a common purpose or in a common action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "gather in a mass, sum, or whole"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mix together different elements"
+    provenance (wordnet)

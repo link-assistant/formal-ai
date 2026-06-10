@@ -1,0 +1,29 @@
+view
+  id M-fff3a2e66e05
+  lemma chart
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a visual display of information"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a map designed to assist navigation by air or sea"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) a listing of best-selling recorded music"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a chart of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "plan in detail"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "represent by means of a graph"
+    provenance (wordnet)

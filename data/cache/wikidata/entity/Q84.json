@@ -1,0 +1,171 @@
+{
+  "entities": {
+    "Q84": {
+      "type": "item",
+      "id": "Q84",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "London"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Лондон"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "倫敦"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लंदन"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital and largest city of England and the United Kingdom"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица и крупнейший город Соединённого Королевства Великобритании и Северной Ирландии"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英國的首都與最大城市"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इंग्लैंड और यूनाइटेड किंगडम की राजधानी"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "London, UK"
+          },
+          {
+            "language": "en",
+            "value": "London, United Kingdom"
+          },
+          {
+            "language": "en",
+            "value": "London, England"
+          },
+          {
+            "language": "en",
+            "value": "London UK"
+          },
+          {
+            "language": "en",
+            "value": "London U.K."
+          },
+          {
+            "language": "en",
+            "value": "Londinium"
+          },
+          {
+            "language": "en",
+            "value": "Loñ"
+          },
+          {
+            "language": "en",
+            "value": "Lundenwic"
+          },
+          {
+            "language": "en",
+            "value": "Londinio"
+          },
+          {
+            "language": "en",
+            "value": "Londini"
+          },
+          {
+            "language": "en",
+            "value": "Londiniensium"
+          },
+          {
+            "language": "en",
+            "value": "Augusta"
+          },
+          {
+            "language": "en",
+            "value": "Trinovantum"
+          },
+          {
+            "language": "en",
+            "value": "Kaerlud"
+          },
+          {
+            "language": "en",
+            "value": "Karelundein"
+          },
+          {
+            "language": "en",
+            "value": "Lunden"
+          },
+          {
+            "language": "en",
+            "value": "Big Smoke"
+          },
+          {
+            "language": "en",
+            "value": "the Big Smoke"
+          },
+          {
+            "language": "en",
+            "value": "Lundenburh"
+          },
+          {
+            "language": "en",
+            "value": "Lundenburgh"
+          },
+          {
+            "language": "en",
+            "value": "Llyn Dain"
+          },
+          {
+            "language": "en",
+            "value": "Llan Dian"
+          },
+          {
+            "language": "en",
+            "value": "Londinion"
+          },
+          {
+            "language": "en",
+            "value": "Loniniensi"
+          },
+          {
+            "language": "en",
+            "value": "Lon."
+          },
+          {
+            "language": "en",
+            "value": "Loñ."
+          },
+          {
+            "language": "en",
+            "value": "Lond."
+          },
+          {
+            "language": "en",
+            "value": "LDN"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "लंदन,इंग्लॅण्ड"
+          },
+          {
+            "language": "hi",
+            "value": "लंदन,यूनाइटेड किंगडम"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,21 @@
+view
+  id M-05e91435c290
+  lemma literature
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "creative writing of recognized artistic value"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the humanistic study of a body of literature"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "published writings in a particular style on a particular subject"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the profession or art of a writer"
+    provenance (wordnet)

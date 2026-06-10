@@ -1,0 +1,97 @@
+language en
+lemma shell
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "ammunition consisting of a cylindrical metal casing containing an explosive charge and a projectile; fired from a large gun"
+    id oewn-04197507-n
+    partOfSpeech n
+  entry
+    definition "the material that forms the hard outer covering of many animals"
+    id oewn-14782715-n
+    partOfSpeech n
+  entry
+    definition "hard outer covering or case of certain organisms such as arthropods and turtles"
+    id oewn-01906397-n
+    partOfSpeech n
+    synonyms (carapace cuticle shield)
+  entry
+    definition "the hard usually fibrous outer layer of some fruits especially nuts"
+    id oewn-11704025-n
+    partOfSpeech n
+  entry
+    definition "the exterior covering of a bird's egg"
+    id oewn-09455334-n
+    partOfSpeech n
+    synonyms (eggshell)
+  entry
+    definition "a rigid covering that envelops an object"
+    examples ("the satellite is covered with a smooth shell of ice")
+    id oewn-09455187-n
+    partOfSpeech n
+  entry
+    definition "a very light narrow racing boat"
+    id oewn-04198040-n
+    partOfSpeech n
+    synonyms ("racing shell")
+  entry
+    definition "the housing or outer covering of something"
+    examples ("the clock has a walnut case")
+    id oewn-04197790-n
+    partOfSpeech n
+    synonyms (case casing)
+  entry
+    definition "a metal sheathing of uniform thickness (such as the shield attached to an artillery piece to protect the gunners)"
+    id oewn-03965995-n
+    partOfSpeech n
+    synonyms (plate scale)
+  entry
+    definition "the hard largely calcareous covering of a mollusc or a brachiopod"
+    id oewn-01906823-n
+    partOfSpeech n
+  entry
+    definition "use explosives on"
+    examples ("The enemy has been shelling us all day")
+    id oewn-01138348-v
+    partOfSpeech v
+    synonyms (blast)
+  entry
+    definition "create by using explosives"
+    examples ("blast a passage through the mountain")
+    id oewn-01762865-v
+    partOfSpeech v
+    synonyms (blast)
+  entry
+    definition "fall out of the pod or husk"
+    examples ("The corn shelled")
+    id oewn-01516342-v
+    partOfSpeech v
+  entry
+    definition "hit the pitches of hard and regularly"
+    examples ("He shelled the pitcher for eight runs in the first inning")
+    id oewn-01408849-v
+    partOfSpeech v
+  entry
+    definition "look for and collect shells by the seashore"
+    id oewn-01319473-v
+    partOfSpeech v
+  entry
+    definition "come out better in a competition, race, or conflict"
+    examples ("Agassi beat Becker in the tennis championship" "We beat the competition" "Harvard defeated Yale in the last football game")
+    id oewn-01104324-v
+    partOfSpeech v
+    synonyms (beat "beat out" crush trounce vanquish)
+  entry
+    definition "remove from its shell or outer covering"
+    examples ("shell the legumes" "shell mussels")
+    id oewn-00198119-v
+    partOfSpeech v
+  entry
+    definition "remove the husks from"
+    examples ("husk corn")
+    id oewn-00181403-v
+    partOfSpeech v
+    synonyms (husk)
+source "oewn:2024"

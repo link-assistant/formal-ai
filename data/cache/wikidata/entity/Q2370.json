@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q2370": {
+      "type": "item",
+      "id": "Q2370",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "सी शार्प"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "C♯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "multi-paradigm (object-oriented) programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "объектно-ориентированный язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "多範式（面向對象）編程語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "c#"
+          },
+          {
+            "language": "en",
+            "value": "Microsoft Java"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Си-шарп"
+          },
+          {
+            "language": "ru",
+            "value": "Си шарп"
+          },
+          {
+            "language": "ru",
+            "value": "Си-диез"
+          },
+          {
+            "language": "ru",
+            "value": "Си диез"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "C井"
+          },
+          {
+            "language": "zh",
+            "value": "C＃"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

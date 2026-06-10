@@ -1,218 +1,208 @@
 meanings
-  meaning "prove"
-    gloss "the act of establishing a claim by formal argument — to prove, to demonstrate, or to give a proof. It is both an inquiry (the user asks the assistant to settle a truth) and an action (the assistant carries out a proof). Two roles share this meaning, separated by slot. The proof_directive bare forms are the imperative verbs (prove, докажи, …) detected clause-initially with a verb boundary, so prover and proven never false-match. The proof_claim_scaffold prefix forms end in … and are stripped to extract the claim the user wants proved; their declaration order is significant because the extractor takes the first matching prefix, so each that variant is listed before its shorter sibling. Hindi and Chinese carry no bare directive — their proof is detected by the proof_assertion substring markers — but they still carry claim scaffolds so extraction works in every language."
-    wiktionary "prove"
-    defined_by "inquiry"
-    defined_by "action"
-    role "proof_directive"
-    role "proof_claim_scaffold"
-    lexeme "en"
-      word "prove"
-        description "English verb (to prove); a bare proof directive detected clause-initially with a verb boundary so prover and proven do not match."
-      word "proof"
-        description "English noun (a proof); a bare proof directive detected clause-initially with a verb boundary."
-      word "prove that …"
-        description "English scaffold prefix; the claim follows prove that, listed before the shorter prove so that is not kept in the claim."
-      word "prove …"
-        description "English scaffold prefix; the claim follows the bare verb prove."
-      word "proof of …"
-        description "English scaffold prefix; the claim follows proof of."
-      word "proof that …"
-        description "English scaffold prefix; the claim follows proof that."
-      word "show that …"
-        description "English scaffold prefix; the claim follows show that."
-      word "demonstrate that …"
-        description "English scaffold prefix; the claim follows demonstrate that, listed before the shorter demonstrate."
-      word "demonstrate …"
-        description "English scaffold prefix; the claim follows the bare verb demonstrate."
-      word "can you prove that …"
-        description "English polite scaffold prefix; the claim follows can you prove that, listed before the shorter can you prove."
-      word "can you prove …"
-        description "English polite scaffold prefix; the claim follows can you prove."
-      word "could you prove that …"
-        description "English polite scaffold prefix; the claim follows could you prove that, before the shorter could you prove."
-      word "could you prove …"
-        description "English polite scaffold prefix; the claim follows could you prove."
-      word "please prove that …"
-        description "English polite scaffold prefix; the claim follows please prove that, before the shorter please prove."
-      word "please prove …"
-        description "English polite scaffold prefix; the claim follows please prove."
-      word "give me a proof of …"
-        description "English scaffold prefix; the claim follows give me a proof of."
-      word "give me a proof that …"
-        description "English scaffold prefix; the claim follows give me a proof that."
-      word "give a proof of …"
-        description "English scaffold prefix; the claim follows give a proof of."
-      word "give a proof that …"
-        description "English scaffold prefix; the claim follows give a proof that."
-    lexeme "ru"
-      word "докажи"
-        description "Russian imperative (romanized dokazhi, prove); a bare proof directive detected clause-initially with a verb boundary."
-      word "докажите"
-        description "Russian polite imperative (romanized dokazhite, prove); a bare proof directive detected clause-initially."
-      word "доказать"
-        description "Russian infinitive (romanized dokazat, to prove); a bare proof directive detected clause-initially."
-      word "доказательство"
-        description "Russian noun (romanized dokazatelstvo, a proof); a bare proof directive detected clause-initially."
-      word "докажи что …"
-        description "Russian scaffold prefix (romanized dokazhi chto); the claim follows, listed before the shorter докажи."
-      word "докажите что …"
-        description "Russian scaffold prefix (romanized dokazhite chto); the claim follows, listed before the shorter докажите."
-      word "доказать что …"
-        description "Russian scaffold prefix (romanized dokazat chto); the claim follows, listed before the shorter доказать."
-      word "докажите …"
-        description "Russian scaffold prefix (romanized dokazhite); the claim follows the polite imperative."
-      word "докажи …"
-        description "Russian scaffold prefix (romanized dokazhi); the claim follows the imperative."
-      word "доказать …"
-        description "Russian scaffold prefix (romanized dokazat); the claim follows the infinitive."
-      word "доказательство …"
-        description "Russian scaffold prefix (romanized dokazatelstvo); the claim follows the noun."
-    lexeme "hi"
-      word "साबित करो कि …"
-        description "Hindi scaffold prefix (romanized sabit karo ki); the claim follows."
-      word "साबित कीजिए कि …"
-        description "Hindi polite scaffold prefix (romanized sabit kijie ki); the claim follows."
-      word "साबित कर …"
-        description "Hindi scaffold prefix (romanized sabit kar); the claim follows the bare verb."
-      word "सिद्ध कीजिए कि …"
-        description "Hindi polite scaffold prefix (romanized siddh kijie ki); the claim follows."
-      word "सिद्ध करो कि …"
-        description "Hindi scaffold prefix (romanized siddh karo ki); the claim follows."
-    lexeme "zh"
-      word "证明…"
-        description "Chinese verb (pinyin zhengming, to prove) in simplified script; scaffold prefix, the claim follows."
-      word "證明…"
-        description "Chinese verb (pinyin zhengming, to prove) in traditional script; scaffold prefix, the claim follows."
-  meaning "proof_request_frame"
-    gloss "a broad request frame that asks for a proof without naming the claim with a that clause — can you prove, please prove, give me a proof, show that, demonstrate that, and their counterparts in every supported language. These leads are detected by a plain starts_with (no verb boundary, no claim extraction), so a prompt like can you prove the riemann hypothesis is recognised even though it carries no that. The Russian, Hindi and Chinese leads each embed a proof_assertion marker (доказать, सिद्ध, 证明, …), so a prompt that opens with one is already caught by that mid-prompt marker; they are lexicalised here too so the request-frame concept is complete in every language and so a lead that carries no claim is still recognised. In English the assertion markers cover only prove that and proof of, so the English leads are the sole surface that recognises a polite request such as can you prove the riemann hypothesis."
-    wiktionary "proof"
-    defined_by "inquiry"
-    defined_by "prove"
-    role "proof_request_lead"
-    lexeme "en"
-      word "can you prove…"
-        description "English request-frame lead; starts_with can you prove (no trailing space) so it also fires without a following that."
-      word "could you prove…"
-        description "English request-frame lead; starts_with could you prove (no trailing space)."
-      word "please prove…"
-        description "English request-frame lead; starts_with please prove (no trailing space)."
-      word "give me a proof…"
-        description "English request-frame lead; starts_with give me a proof (no trailing space)."
-      word "give a proof…"
-        description "English request-frame lead; starts_with give a proof (no trailing space)."
-      word "show that …"
-        description "English request-frame lead; starts_with show that (with a trailing space)."
-      word "demonstrate that …"
-        description "English request-frame lead; starts_with demonstrate that (with a trailing space)."
-    lexeme "ru"
-      word "можешь доказать…"
-        description "Russian polite request-frame lead (romanized mozhesh dokazat, can you prove); starts_with можешь доказать and embeds the доказать assertion marker."
-      word "можете доказать…"
-        description "Russian polite request-frame lead (romanized mozhete dokazat, can you prove); starts_with можете доказать and embeds the доказать assertion marker."
-      word "сможешь доказать…"
-        description "Russian polite request-frame lead (romanized smozhesh dokazat, could you prove); starts_with сможешь доказать and embeds the доказать assertion marker."
-      word "пожалуйста докажи…"
-        description "Russian polite request-frame lead (romanized pozhaluysta dokazhi, please prove); starts_with пожалуйста докажи and embeds the докажи assertion marker."
-      word "пожалуйста докажите…"
-        description "Russian polite request-frame lead (romanized pozhaluysta dokazhite, please prove); starts_with пожалуйста докажите and embeds the докажите assertion marker."
-    lexeme "hi"
-      word "क्या आप साबित कर सकते हैं…"
-        description "Hindi polite request-frame lead (romanized kya aap sabit kar sakte hain, can you prove); starts_with the phrase and embeds the साबित कर assertion marker."
-      word "क्या आप सिद्ध कर सकते हैं…"
-        description "Hindi polite request-frame lead (romanized kya aap siddh kar sakte hain, can you prove); starts_with the phrase and embeds the सिद्ध कर assertion marker."
-      word "कृपया सिद्ध कीजिए…"
-        description "Hindi polite request-frame lead (romanized kripya siddh kijie, please prove); starts_with the phrase and embeds the सिद्ध कीजिए assertion marker."
-      word "कृपया साबित कीजिए…"
-        description "Hindi polite request-frame lead (romanized kripya sabit kijie, please prove); starts_with the phrase and embeds the साबित कीजिए assertion marker."
-    lexeme "zh"
-      word "你能证明…"
-        description "Chinese polite request-frame lead (pinyin ni neng zhengming, can you prove) in simplified script; starts_with 你能证明 and embeds the 证明 assertion marker."
-      word "你能證明…"
-        description "Chinese polite request-frame lead (pinyin ni neng zhengming, can you prove) in traditional script; starts_with 你能證明 and embeds the 證明 assertion marker."
-      word "请证明…"
-        description "Chinese polite request-frame lead (pinyin qing zhengming, please prove) in simplified script; starts_with 请证明 and embeds the 证明 assertion marker."
-      word "請證明…"
-        description "Chinese polite request-frame lead (pinyin qing zhengming, please prove) in traditional script; starts_with 請證明 and embeds the 證明 assertion marker."
-  meaning "proof_assertion"
-    gloss "a proof verb or noun appearing anywhere inside a prompt, not just clause-initially — the mid-sentence assertion that a proof is wanted. Its surfaces are matched as raw substrings (not whole tokens), so the English and Russian forms are stored space-wrapped to enforce a word boundary while the Devanagari and Han forms match bare. The four Russian markers (докажи, докажите, доказать, доказательство) keep the Rust solver and the browser worker in lockstep."
-    wiktionary "proof"
-    defined_by "inquiry"
-    defined_by "prove"
-    role "proof_marker"
-    lexeme "en"
-      word " prove that "
-        description "English space-wrapped substring marker; a proof assertion appearing mid-prompt (… prove that …)."
-      word " proof of "
-        description "English space-wrapped substring marker; a proof assertion appearing mid-prompt (… proof of …)."
-    lexeme "ru"
-      word " докажи "
-        description "Russian space-wrapped substring marker (romanized dokazhi); a proof assertion mid-prompt."
-      word " докажите "
-        description "Russian space-wrapped substring marker (romanized dokazhite); a proof assertion mid-prompt."
-      word " доказать "
-        description "Russian space-wrapped substring marker (romanized dokazat); a proof assertion mid-prompt."
-      word " доказательство "
-        description "Russian space-wrapped substring marker (romanized dokazatelstvo); a proof assertion mid-prompt."
-    lexeme "hi"
-      word "साबित कर"
-        description "Hindi substring marker (romanized sabit kar, prove) matched bare across inflections."
-      word "साबित कीजिए"
-        description "Hindi polite substring marker (romanized sabit kijie, prove)."
-      word "साबित कीजिये"
-        description "Hindi polite substring marker (romanized sabit kijiye, prove), alternate spelling."
-      word "सिद्ध कर"
-        description "Hindi substring marker (romanized siddh kar, prove)."
-      word "सिद्ध कीजिए"
-        description "Hindi polite substring marker (romanized siddh kijie, prove)."
-      word "सिद्ध कीजिये"
-        description "Hindi polite substring marker (romanized siddh kijiye, prove), alternate spelling."
-      word "प्रमाण"
-        description "Hindi noun (romanized praman, proof) matched as a bare substring."
-    lexeme "zh"
-      word "证明"
-        description "Chinese verb (pinyin zhengming, to prove) in simplified script, matched as a bare substring."
-      word "證明"
-        description "Chinese verb (pinyin zhengming, to prove) in traditional script, matched as a bare substring."
-  meaning "godel"
-    gloss "the surname Gödel (Kurt Gödel) and his incompleteness theorems, named inside a proof prompt. When present, the proof engine selects the incompleteness interpretation. Its surfaces are bare substring markers read by the Rust solver; the browser worker embeds the same data but its simpler proof engine does not branch on it."
-    wiktionary "Gödel"
-    defined_by "concept"
-    role "proof_concept_godel"
-    lexeme "en"
-      word "godel"
-        description "English transliteration of the surname Gödel; a bare substring marker steering the proof toward incompleteness."
-      word "gödel"
-        description "Umlaut spelling of the surname Gödel; a bare substring marker for the incompleteness concept."
-    lexeme "ru"
-      word "гёдел"
-        description "Russian transliteration (romanized gyodel) of the surname Gödel; a bare substring marker."
-      word "гёделя"
-        description "Russian genitive (romanized gyodelya) of the surname Gödel; a bare substring marker."
-      word "гедел"
-        description "Russian transliteration without yo (romanized gedel) of the surname Gödel; a bare substring marker."
-    lexeme "hi"
-      word "गोडेल"
-        description "Hindi transliteration (romanized godel) of the surname Gödel; a bare substring marker."
-    lexeme "zh"
-      word "哥德尔"
-        description "Chinese transliteration (pinyin gedeer) of the surname Gödel; a bare substring marker."
-  meaning "determinism"
-    gloss "the concept of determinism — that every state is fixed by prior causes — named inside a proof prompt. When present, the proof engine selects the determinism interpretation. Its surfaces are bare substring markers read by the Rust solver; the browser worker embeds the same data but its simpler proof engine does not branch on it."
-    wiktionary "determinism"
-    defined_by "concept"
-    role "proof_concept_determinism"
-    lexeme "en"
-      word "determinism"
-        description "English noun for determinism; a bare substring marker steering the proof toward the determinism interpretation."
-      word "deterministic"
-        description "English adjective (deterministic); a bare substring marker for the determinism concept."
-    lexeme "ru"
-      word "детерминизм"
-        description "Russian noun (romanized determinizm) for determinism; a bare substring marker."
-    lexeme "hi"
-      word "निर्धारणवाद"
-        description "Hindi noun (romanized nirdharanvad) for determinism; a bare substring marker."
-    lexeme "zh"
-      word "决定论"
-        description "Chinese noun (pinyin juedinglun) for determinism; a bare substring marker."
+  prove
+    defined-by inquiry
+    defined-by action
+    role proof_directive
+    role proof_claim_scaffold
+    lexeme en
+      surface
+        text prove
+      surface
+        text proof
+      surface
+        text "prove that …"
+      surface
+        text "prove …"
+      surface
+        text "proof of …"
+      surface
+        text "proof that …"
+      surface
+        text "show that …"
+      surface
+        text "demonstrate that …"
+      surface
+        text "demonstrate …"
+      surface
+        text "can you prove that …"
+      surface
+        text "can you prove …"
+      surface
+        text "could you prove that …"
+      surface
+        text "could you prove …"
+      surface
+        text "please prove that …"
+      surface
+        text "please prove …"
+      surface
+        text "give me a proof of …"
+      surface
+        text "give me a proof that …"
+      surface
+        text "give a proof of …"
+      surface
+        text "give a proof that …"
+    lexeme ru
+      surface
+        text докажи
+      surface
+        text докажите
+      surface
+        text доказать
+      surface
+        text доказательство
+      surface
+        text "докажи что …"
+      surface
+        text "докажите что …"
+      surface
+        text "доказать что …"
+      surface
+        text "докажите …"
+      surface
+        text "докажи …"
+      surface
+        text "доказать …"
+      surface
+        text "доказательство …"
+    lexeme hi
+      surface
+        text "साबित करो कि …"
+      surface
+        text "साबित कीजिए कि …"
+      surface
+        text "साबित कर …"
+      surface
+        text "सिद्ध कीजिए कि …"
+      surface
+        text "सिद्ध करो कि …"
+    lexeme zh
+      surface
+        text 证明…
+      surface
+        text 證明…
+  proof_request_frame
+    defined-by inquiry
+    defined-by prove
+    role proof_request_lead
+    lexeme en
+      surface
+        text "can you prove…"
+      surface
+        text "could you prove…"
+      surface
+        text "please prove…"
+      surface
+        text "give me a proof…"
+      surface
+        text "give a proof…"
+      surface
+        text "show that …"
+      surface
+        text "demonstrate that …"
+    lexeme ru
+      surface
+        text "можешь доказать…"
+      surface
+        text "можете доказать…"
+      surface
+        text "сможешь доказать…"
+      surface
+        text "пожалуйста докажи…"
+      surface
+        text "пожалуйста докажите…"
+    lexeme hi
+      surface
+        text "क्या आप साबित कर सकते हैं…"
+      surface
+        text "क्या आप सिद्ध कर सकते हैं…"
+      surface
+        text "कृपया सिद्ध कीजिए…"
+      surface
+        text "कृपया साबित कीजिए…"
+    lexeme zh
+      surface
+        text 你能证明…
+      surface
+        text 你能證明…
+      surface
+        text 请证明…
+      surface
+        text 請證明…
+  proof_assertion
+    defined-by inquiry
+    defined-by prove
+    role proof_marker
+    lexeme en
+      surface
+        text " prove that "
+      surface
+        text " proof of "
+    lexeme ru
+      surface
+        text " докажи "
+      surface
+        text " докажите "
+      surface
+        text " доказать "
+      surface
+        text " доказательство "
+    lexeme hi
+      surface
+        text "साबित कर"
+      surface
+        text "साबित कीजिए"
+      surface
+        text "साबित कीजिये"
+      surface
+        text "सिद्ध कर"
+      surface
+        text "सिद्ध कीजिए"
+      surface
+        text "सिद्ध कीजिये"
+      surface
+        text प्रमाण
+    lexeme zh
+      surface
+        text 证明
+      surface
+        text 證明
+  godel
+    defined-by concept
+    role proof_concept_godel
+    lexeme en
+      surface
+        text godel
+      surface
+        text gödel
+    lexeme ru
+      surface
+        text гёдел
+      surface
+        text гёделя
+      surface
+        text гедел
+    lexeme hi
+      surface
+        text गोडेल
+    lexeme zh
+      surface
+        text 哥德尔
+  determinism
+    defined-by concept
+    role proof_concept_determinism
+    lexeme en
+      surface
+        text determinism
+      surface
+        text deterministic
+    lexeme ru
+      surface
+        text детерминизм
+    lexeme hi
+      surface
+        text निर्धारणवाद
+    lexeme zh
+      surface
+        text 决定论

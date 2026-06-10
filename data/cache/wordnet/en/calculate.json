@@ -1,0 +1,82 @@
+{
+  "lemma": "calculate",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00638921-v",
+      "partOfSpeech": "v",
+      "definition": "make a mathematical calculation or computation",
+      "synonyms": [
+        "cipher",
+        "cypher",
+        "compute",
+        "work out",
+        "reckon",
+        "figure"
+      ]
+    },
+    {
+      "id": "oewn-00713964-v",
+      "partOfSpeech": "v",
+      "definition": "judge to be probable",
+      "synonyms": [
+        "estimate",
+        "reckon",
+        "count on",
+        "figure",
+        "forecast"
+      ]
+    },
+    {
+      "id": "oewn-02270039-v",
+      "partOfSpeech": "v",
+      "definition": "keep an account of",
+      "synonyms": [
+        "account"
+      ]
+    },
+    {
+      "id": "oewn-00928443-v",
+      "partOfSpeech": "v",
+      "definition": "predict in advance",
+      "synonyms": [
+        "forecast"
+      ]
+    },
+    {
+      "id": "oewn-00714920-v",
+      "partOfSpeech": "v",
+      "definition": "specifically design a product, event, or activity for a certain public",
+      "synonyms": [
+        "aim",
+        "direct"
+      ]
+    },
+    {
+      "id": "oewn-00714537-v",
+      "partOfSpeech": "v",
+      "definition": "have faith or confidence in",
+      "examples": [
+        "you can count on me to help you any time",
+        "Look to your friends for support",
+        "You can bet on that!",
+        "Depend on your family in times of crisis"
+      ],
+      "synonyms": [
+        "count",
+        "bet",
+        "depend",
+        "swear",
+        "rely",
+        "bank",
+        "look",
+        "reckon"
+      ]
+    }
+  ]
+}

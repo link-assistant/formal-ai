@@ -1,0 +1,9 @@
+view
+  id M-3d9def4a9d23
+  lemma hp
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of power equal to 746 watts"
+    provenance (wordnet)

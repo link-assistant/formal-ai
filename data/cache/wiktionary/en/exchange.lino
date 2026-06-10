@@ -1,0 +1,67 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An act of exchanging or trading."
+          example "All in all, it was an even exchange."
+        entry
+          definition "A place for conducting trading."
+          example "The stock exchange is open for trading."
+        entry
+          definition "A telephone exchange."
+        entry
+          definition "The fourth through sixth digits of a ten-digit phone number (the first three before the introduction of area codes)."
+          example "NPA-NXX-1234 is standard format, where NPA is the area code and NXX is the exchange."
+        entry
+          definition "A conversation."
+          example "After an exchange with the manager, we were no wiser."
+        entry
+          definition "The loss of one piece and associated capture of another"
+        entry
+          definition "The thing given or received in return; especially, a publication exchanged for another."
+        entry
+          definition "The transfer of substances or elements like gas, amino-acids, ions etc. sometimes through a surface like a membrane."
+        entry
+          definition "The difference between the values of money in different places."
+      partOfSpeech noun
+  phonetic "/ɛksˈtʃeɪndʒ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/exchange-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=454015"
+      text "/ɛksˈtʃeɪndʒ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/exchange")
+  word exchange
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To trade or barter."
+          example "I'll gladly exchange my place for yours."
+        entry
+          definition "To replace with, as a substitute."
+          example "I'd like to exchange this shirt for one in a larger size."
+      partOfSpeech verb
+      synonyms (interchange swap truck wrixle)
+  phonetic "/ɛksˈtʃeɪndʒ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/exchange-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=454015"
+      text "/ɛksˈtʃeɪndʒ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/exchange")
+  word exchange

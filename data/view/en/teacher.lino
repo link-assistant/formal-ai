@@ -1,0 +1,13 @@
+view
+  id M-fefd61edd9db
+  lemma teacher
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person whose occupation is teaching"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a personified abstraction that teaches"
+    provenance (wordnet)

@@ -1,0 +1,227 @@
+[
+  {
+    "word": "compound",
+    "phonetic": "/ˈkɒmpaʊnd/",
+    "phonetics": [
+      {
+        "text": "/ˈkɒmpaʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/compound-1-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88967382",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/ˈkɑmpaʊnd/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An enclosure within which workers, prisoners, or soldiers are confined",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A group of buildings situated close together, e.g. for a school or block of offices",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "gaol",
+          "jail",
+          "pen",
+          "pound",
+          "prison"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/compound"
+    ]
+  },
+  {
+    "word": "compound",
+    "phonetic": "/kəmˈpaʊnd/",
+    "phonetics": [
+      {
+        "text": "/kəmˈpaʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/compound-2-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=88967382",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/kəmˈpaʊnd/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/compound-2-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2650782",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Anything made by combining several things.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A substance made from any combination elements.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A substance formed by chemical union of two or more ingredients in definite proportions by weight.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A lexeme that consists of more than one stem; compound word; for example laptop, formed from lap and top.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A compound locomotive, a steam locomotive with both high-pressure and low-pressure cylinders.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "amalgam",
+          "blend",
+          "combination",
+          "composite",
+          "mix",
+          "mixture",
+          "compound word"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To form (a resulting mixture) by combining different elements, ingredients, or parts.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to compound a medicine"
+          },
+          {
+            "definition": "To assemble (ingredients) into a whole; to combine, mix, or unite.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To modify or change by combination with some other thing or part; to mingle with something else.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To settle by agreeing on less than the claim, or on different terms than those stipulated.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to compound a debt"
+          },
+          {
+            "definition": "To settle amicably; to adjust by agreement; to compromise.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To come to terms of agreement; to agree; to settle by a compromise; usually followed by with before the person participating, and for before the thing compounded or the consideration.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To compose; to constitute.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To increase in value with interest, where the interest is earned on both the principal sum and prior earned interest.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To worsen a situation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Of a horse: to fail to maintain speed.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "settle",
+          "augment",
+          "increase",
+          "agree",
+          "form",
+          "make up",
+          "assemble",
+          "blend",
+          "combine",
+          "join",
+          "mix",
+          "put together",
+          "unite"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Composed of elements; not simple",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a compound word"
+          },
+          {
+            "definition": "Dealing with numbers of various denominations of quantity, or with processes more complex than the simple process",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "compound addition; compound proportion"
+          },
+          {
+            "definition": "An octave higher than originally (i.e. a compound major second is equivalent to a major ninth).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "composite"
+        ],
+        "antonyms": [
+          "simple"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/compound"
+    ]
+  }
+]

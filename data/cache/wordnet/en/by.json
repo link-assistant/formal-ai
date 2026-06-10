@@ -1,0 +1,36 @@
+{
+  "lemma": "by",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00419697-r",
+      "partOfSpeech": "r",
+      "definition": "so as to pass a given point",
+      "examples": [
+        "every hour a train goes past"
+      ],
+      "synonyms": [
+        "past"
+      ]
+    },
+    {
+      "id": "oewn-00235417-r",
+      "partOfSpeech": "r",
+      "definition": "in reserve; not for immediate use",
+      "examples": [
+        "started setting aside money to buy a car",
+        "put something by for her old age",
+        "has a nest egg tucked away for a rainy day"
+      ],
+      "synonyms": [
+        "aside",
+        "away"
+      ]
+    }
+  ]
+}

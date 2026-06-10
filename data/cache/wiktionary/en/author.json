@@ -1,0 +1,72 @@
+[
+  {
+    "word": "author",
+    "phonetic": "/ˈɔː.θə/",
+    "phonetics": [
+      {
+        "text": "/ˈɔː.θə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɔ.θɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/author-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1239936",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The originator or creator of a work, especially of a literary composition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Have you read any Corinthian authors?"
+          },
+          {
+            "definition": "Someone who writes books for a living.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "One's authority for something: an informant.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "artist",
+          "bookwright",
+          "creator",
+          "fabulator",
+          "subcreator",
+          "writer"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "(sometimes proscribed) To create a work as its author.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/author"
+    ]
+  }
+]

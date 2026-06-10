@@ -1,0 +1,78 @@
+[
+  {
+    "word": "today",
+    "phonetic": "/təˈdeɪ/",
+    "phonetics": [
+      {
+        "text": "/təˈdeɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/today-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9028857",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/təˈdeɪ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/today-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=823172",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A current day or date.",
+            "synonyms": [
+              "current day",
+              "this day"
+            ],
+            "antonyms": [],
+            "example": "Today is the day we'll fix this once and for all."
+          },
+          {
+            "definition": "From 6am to 6pm on the current day.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "current day",
+          "this day"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "On the current day or date.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I want this done today."
+          },
+          {
+            "definition": "In the current era; nowadays.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In the 1500s, people had to do things by hand, but today we have electric can openers."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/today"
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (destruction)
+      definitions
+        entry
+          definition "The process of constructing."
+          example "Construction is underway on the new bridge."
+        entry
+          definition "Anything that has been constructed."
+          example "The engineer marvelled at his construction."
+        entry
+          definition "The trade of building structures."
+          example "He had worked in construction all his life."
+        entry
+          definition "A building, model or some other structure."
+          example "The office was a construction of steel and glass."
+        entry
+          definition "A (usually non-representational) structure, such as a collage etc."
+          example '"Construction in string and clockwork" took first prize.'
+        entry
+          definition "The manner in which something is built."
+          example "A thing of simple construction."
+        entry
+          definition "(grammar) A group of words arranged to form a meaningful phrase."
+        entry
+          definition "The act or result of construing the meaning of something."
+          example "American conservatives tend to favor strict construction of the Constitution."
+        entry
+          definition "The meaning or interpretation of a text, action etc.; the way something is viewed by an observer or onlooker."
+        entry
+          definition "A geometric figure of arcs and line segments that is drawable with a straightedge and compass."
+      partOfSpeech noun
+      synonyms (building)
+  phonetic "/kənˈstɹʌkʃən/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/construction-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100355"
+      text "/kənˈstɹʌkʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/construction")
+  word construction

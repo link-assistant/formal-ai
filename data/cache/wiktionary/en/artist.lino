@@ -1,0 +1,33 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A person who creates art."
+        entry
+          definition "A person who is skilled at some activity."
+        entry
+          definition "A recording artist."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition Artistic.
+      partOfSpeech adjective
+  phonetic "/ˈɑːtɪst/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈɑːtɪst/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/artist-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1317848"
+      text "/ˈɑɹ.tɪst/"
+  sourceUrls ("https://en.wiktionary.org/wiki/artist")
+  word artist

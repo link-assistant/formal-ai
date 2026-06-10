@@ -1,0 +1,21 @@
+view
+  id M-af082fda14ea
+  lemma event
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something that happens at a given place and time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a special set of circumstances"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a phenomenon located at a single point in space-time; the fundamental observational entity in relativity theory"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a phenomenon that follows and is caused by some previous phenomenon"
+    provenance (wordnet)

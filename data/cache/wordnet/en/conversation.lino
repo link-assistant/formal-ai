@@ -1,0 +1,11 @@
+language en
+lemma conversation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the use of speech for informal exchange of views or ideas or information etc."
+    id oewn-07148409-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Q47574": {
+      "type": "item",
+      "id": "Q47574",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "unit of measurement"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मापन के मात्रक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "计量单位"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "real scalar quantity, defined and adopted by convention, with which any other quantity of the same kind can be compared to express the ratio of the two quantities as a number (VIM)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "эталон, с которым сравнивают измеряемый объект"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "按照慣例定義和採用的實際標量，可以與任何其他數量的相同種類的數據進行比較，以表示兩個數量之比作為數字（國際計量學詞彙）"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "unit"
+          },
+          {
+            "language": "en",
+            "value": "measurement unit"
+          },
+          {
+            "language": "en",
+            "value": "unit of measure"
+          },
+          {
+            "language": "en",
+            "value": "physical unit"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "единица физической величины"
+          },
+          {
+            "language": "ru",
+            "value": "единицы величин"
+          },
+          {
+            "language": "ru",
+            "value": "единицы физических величин"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "मापन की ईकाइयाँ"
+          },
+          {
+            "language": "hi",
+            "value": "मात्रक"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "度量单位"
+          },
+          {
+            "language": "zh",
+            "value": "测量单位"
+          },
+          {
+            "language": "zh",
+            "value": "单位"
+          },
+          {
+            "language": "zh",
+            "value": "量測單位"
+          },
+          {
+            "language": "zh",
+            "value": "計量單位"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

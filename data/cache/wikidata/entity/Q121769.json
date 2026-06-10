@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Q121769": {
+      "type": "item",
+      "id": "Q121769",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "reference"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "референт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "指称关系"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "relationship between objects in which one object designates, or acts as a means by which to connect to or link to, another object"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "base object"
+          },
+          {
+            "language": "en",
+            "value": "linked object"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "референс"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "参考"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

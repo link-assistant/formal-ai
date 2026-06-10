@@ -1,0 +1,17 @@
+Q79735
+  aliases
+    en (Mbyte MB)
+    ru ("МБ" "Мбайт")
+    zh ("兆位元組")
+  descriptions
+    en "unit of digital information equal to one million bytes or 1,000 kilobytes"
+    ru "единица измерения количества информации"
+    zh "一種容量計量單位"
+  id Q79735
+  labels
+    en megabyte
+    hi "मैगाबाइट"
+    ru "мегабайт"
+    zh "百万字节"
+  type item
+success 1

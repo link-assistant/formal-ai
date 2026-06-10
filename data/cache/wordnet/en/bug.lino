@@ -1,0 +1,42 @@
+language en
+lemma bug
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "general term for any insect or similar creeping or crawling invertebrate"
+    id oewn-02239007-n
+    partOfSpeech n
+  entry
+    definition "a fault or defect in a computer program, system, or machine"
+    id oewn-14488259-n
+    partOfSpeech n
+    synonyms (glitch)
+  entry
+    definition "a small hidden microphone; for listening secretly"
+    id oewn-02915786-n
+    partOfSpeech n
+  entry
+    definition "insects with sucking mouthparts and forewings thickened and leathery at the base; usually show incomplete metamorphosis"
+    id oewn-02239548-n
+    partOfSpeech n
+    synonyms ("hemipterous insect" hemipteran hemipteron)
+  entry
+    definition "a minute life form (especially a disease-causing bacterium); the term is not in technical use"
+    id oewn-01387132-n
+    partOfSpeech n
+    synonyms (microbe germ)
+  entry
+    definition "annoy persistently"
+    examples ("The children teased the boy because of his stammer")
+    id oewn-01807344-v
+    partOfSpeech v
+    synonyms (tease badger pester beleaguer)
+  entry
+    definition "tap a telephone or telegraph wire to get information"
+    examples ("The FBI was tapping the phone line of the suspected spy" "Is this hotel room bugged?")
+    id oewn-02193294-v
+    partOfSpeech v
+    synonyms (wiretap tap intercept)
+source "oewn:2024"

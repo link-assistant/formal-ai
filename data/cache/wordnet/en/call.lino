@@ -1,0 +1,224 @@
+language en
+lemma call
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a special disposition (as if from a divine source) to pursue a particular course"
+    examples ("he was disappointed that he had not heard the Call")
+    id oewn-06208240-n
+    partOfSpeech n
+  entry
+    definition "a method of contacting a person by phone"
+    examples ("she reported several anonymous calls" "he placed a phone call to London" "he heard the phone ringing but didn't want to take the call")
+    id oewn-06283456-n
+    partOfSpeech n
+    synonyms ("phone call" "telephone call")
+  entry
+    definition "a loud utterance; often in protest or opposition"
+    examples ("the speaker was interrupted by loud cries from the rear of the audience")
+    id oewn-07135232-n
+    partOfSpeech n
+    synonyms (cry outcry yell shout vociferation)
+  entry
+    definition "a demand"
+    id oewn-07206789-n
+    partOfSpeech n
+    synonyms (claim)
+  entry
+    definition "the characteristic sound produced by a bird"
+    examples ("a bird will not learn its song unless it hears it at an early age")
+    id oewn-06809500-n
+    partOfSpeech n
+    synonyms (birdcall birdsong song)
+  entry
+    definition "a brief social visit"
+    examples ("senior professors' wives no longer make afternoon calls on newcomers" "the characters in Henry James' novels are forever paying calls on each other, usually in the parlor of some residence")
+    id oewn-01057878-n
+    partOfSpeech n
+  entry
+    definition "a demand by a broker that a customer deposit enough to bring their margin up to the minimum requirement"
+    id oewn-07207321-n
+    partOfSpeech n
+    synonyms ("margin call")
+  entry
+    definition "a demand for a show of hands in a card game"
+    examples ("after two raises there was a call")
+    id oewn-07207171-n
+    partOfSpeech n
+  entry
+    definition "a request"
+    examples ("many calls for Christmas stories" "not many calls for buggywhips")
+    id oewn-07205353-n
+    partOfSpeech n
+  entry
+    definition "an instruction that interrupts the program being executed"
+    examples ("Pascal performs calls by simply giving the name of the routine to be executed")
+    id oewn-06594937-n
+    partOfSpeech n
+  entry
+    definition "a visit in an official or professional capacity"
+    examples ("the pastor's calls on his parishioners" "the salesman's call on a customer")
+    id oewn-01057417-n
+    partOfSpeech n
+  entry
+    definition "(sports) the decision made by an umpire or referee"
+    examples ("he was ejected for protesting the call")
+    id oewn-00165622-n
+    partOfSpeech n
+  entry
+    definition "the option to buy a given stock (or stock index or commodity future) at a given price before a given date"
+    id oewn-00081563-n
+    partOfSpeech n
+    synonyms ("call option")
+  entry
+    definition "assign a specified (usually proper) name to"
+    examples ("They named their son David" "The new school was named after the famous Civil Rights leader")
+    id oewn-01030757-v
+    partOfSpeech v
+    synonyms (name "know as" "be known as")
+  entry
+    definition "ascribe a quality to or give a name of a common noun that reflects a quality"
+    examples ("He called me a bastard" "She called her children lazy and ungrateful")
+    id oewn-00973047-v
+    partOfSpeech v
+  entry
+    definition "get or try to get into communication (with someone) by telephone"
+    examples ("I tried to call you all night" "Take two aspirin and call me in the morning")
+    id oewn-00791110-v
+    partOfSpeech v
+    synonyms (telephone "call up" phone ring)
+  entry
+    definition "utter a sudden loud cry"
+    examples ("she cried with pain when the doctor inserted the needle" "I yelled to her from the window but she couldn't hear me")
+    id oewn-00915018-v
+    partOfSpeech v
+    synonyms (shout "shout out" cry yell scream holler hollo squall)
+  entry
+    definition "order, request, or command to come"
+    examples ("She was called into the director's office" "Call the police!")
+    id oewn-00794133-v
+    partOfSpeech v
+    synonyms ("send for")
+  entry
+    definition "pay a brief visit"
+    examples ("The mayor likes to call on some of the prominent citizens")
+    id oewn-02493222-v
+    partOfSpeech v
+    synonyms (visit "call in")
+  entry
+    definition "call a meeting; invite or command to meet"
+    examples ("The Wannsee Conference was called to discuss the ‘Final Solution’" "The new dean calls meetings every week")
+    id oewn-02434657-v
+    partOfSpeech v
+  entry
+    definition "read aloud to check for omissions or absentees"
+    examples ("Call roll")
+    id oewn-01070017-v
+    partOfSpeech v
+  entry
+    definition "send a message or attempt to reach someone by radio, phone, etc.; make a signal to in order to transmit a message"
+    examples ("Hawaii is calling!" "A transmitter in Samoa was heard calling")
+    id oewn-01064761-v
+    partOfSpeech v
+  entry
+    definition "utter a characteristic note or cry"
+    examples ("bluejays called to one another")
+    id oewn-00977068-v
+    partOfSpeech v
+  entry
+    definition "stop or postpone because of adverse conditions, such as bad weather"
+    examples ("call a football game")
+    id oewn-02649505-v
+    partOfSpeech v
+  entry
+    definition "greet, as with a prescribed form, title, or name"
+    examples ("He always addresses me with ‘Sir’" "Call me Mister" "She calls him by first name")
+    id oewn-02607453-v
+    partOfSpeech v
+    synonyms (address)
+  entry
+    definition "make a stop in a harbour"
+    examples ("The ship will call in Honolulu tomorrow")
+    id oewn-02493550-v
+    partOfSpeech v
+  entry
+    definition "demand payment of (a loan)"
+    examples ("Call a loan")
+    id oewn-02364060-v
+    partOfSpeech v
+    synonyms ("call in")
+  entry
+    definition "make a demand, as for a card or a suit or a show of hands"
+    examples ("He called his trump")
+    id oewn-02305021-v
+    partOfSpeech v
+    synonyms (bid)
+  entry
+    definition "give the calls (to the dancers) for a square dance"
+    id oewn-01903010-v
+    partOfSpeech v
+    synonyms ("call off")
+  entry
+    definition "indicate a decision in regard to"
+    examples ("call balls and strikes behind the plate")
+    id oewn-01070815-v
+    partOfSpeech v
+  entry
+    definition "make a prediction about; tell in advance"
+    examples ("Call the outcome of an election")
+    id oewn-00919743-v
+    partOfSpeech v
+    synonyms (predict foretell prognosticate forebode anticipate promise)
+  entry
+    definition "present for redemption before maturation"
+    examples ("Call a bond")
+    id oewn-00875684-v
+    partOfSpeech v
+  entry
+    definition "challenge (somebody) to make good on a statement; charge with or censure for an offense"
+    examples ("He deserves to be called on that")
+    id oewn-00871057-v
+    partOfSpeech v
+  entry
+    definition "declare in the capacity of an umpire or referee"
+    examples ("call a runner out")
+    id oewn-00824407-v
+    partOfSpeech v
+  entry
+    definition "lure by imitating the characteristic call of an animal"
+    examples ("Call ducks")
+    id oewn-00785570-v
+    partOfSpeech v
+  entry
+    definition "order or request or give a command for"
+    examples ("The unions called a general strike for Sunday")
+    id oewn-00756201-v
+    partOfSpeech v
+  entry
+    definition "order, summon, or request for a specific duty or activity, work, role"
+    examples ("He was already called 4 times for jury duty" "They called him to active military duty")
+    id oewn-00755926-v
+    partOfSpeech v
+  entry
+    definition "utter in a loud voice or announce"
+    examples ("He called my name" "The auctioneer called the bids")
+    id oewn-00740752-v
+    partOfSpeech v
+  entry
+    definition "challenge the sincerity or truthfulness of"
+    examples ("call the speaker on a question of fact")
+    id oewn-00740588-v
+    partOfSpeech v
+  entry
+    definition "consider or regard as being"
+    examples ("I would not call her beautiful")
+    id oewn-00693282-v
+    partOfSpeech v
+  entry
+    definition "rouse somebody from sleep with a call"
+    examples ("I was called at 5 A.M. this morning")
+    id oewn-00107035-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,41 @@
+{
+  "lemma": "calculation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00870588-n",
+      "partOfSpeech": "n",
+      "definition": "the procedure of calculating; determining something by mathematical or logical methods",
+      "synonyms": [
+        "computation",
+        "computing"
+      ]
+    },
+    {
+      "id": "oewn-05810193-n",
+      "partOfSpeech": "n",
+      "definition": "problem solving that involves numbers or quantities",
+      "synonyms": [
+        "computation",
+        "figuring",
+        "reckoning"
+      ]
+    },
+    {
+      "id": "oewn-05804431-n",
+      "partOfSpeech": "n",
+      "definition": "planning something carefully and intentionally",
+      "examples": [
+        "it was the deliberation of his act that was insulting"
+      ],
+      "synonyms": [
+        "deliberation"
+      ]
+    }
+  ]
+}

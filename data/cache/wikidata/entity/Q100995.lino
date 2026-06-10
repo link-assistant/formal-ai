@@ -1,0 +1,17 @@
+Q100995
+  aliases
+    en (lb "avoirdupois pound" pound-mass "pound mass" "pound (mass)" lbs pounds lbm "pound (avoirdupois)")
+    ru (Pound)
+    zh (Lb "英磅")
+  descriptions
+    en "unit of mass in imperial, US customary, and avoirdupois systems of units"
+    ru "единица массы"
+    zh "重量单位"
+  id Q100995
+  labels
+    en pound
+    hi "पाउण्ड (इकाई)"
+    ru "фунт"
+    zh "磅"
+  type item
+success 1

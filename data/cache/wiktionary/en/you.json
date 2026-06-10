@@ -1,0 +1,120 @@
+[
+  {
+    "word": "you",
+    "phonetic": "/jʉː/",
+    "phonetics": [
+      {
+        "text": "/jʉː/",
+        "audio": ""
+      },
+      {
+        "text": "/jə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/you-au-us-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=589433",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/juː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/you-uk-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9029005",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/ju/",
+        "audio": ""
+      },
+      {
+        "text": "/ju/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/you-us-stressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=589431",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/jə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/you-au-us-unstressed.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=589433",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To address (a person) using the pronoun you (in the past, especially to use you rather than thou, when you was considered more formal).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "(object pronoun) The people spoken, or written to, as an object.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Both of you should get ready now."
+          },
+          {
+            "definition": "(reflexive pronoun) (To) yourselves, (to) yourself.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(object pronoun) The person spoken to or written to, as an object. (Replacing thee; originally as a mark of respect.)",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(subject pronoun) The people spoken to or written to, as a subject. (Replacing ye.)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You are all supposed to do as I tell you."
+          },
+          {
+            "definition": "(subject pronoun) The person spoken to or written to, as a subject. (Originally as a mark of respect.)",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(indefinite personal pronoun) Anyone, one; an unspecified individual or group of individuals (as subject or object).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "thee",
+          "ye",
+          "ye",
+          "one",
+          "people",
+          "them",
+          "they"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/you"
+    ]
+  }
+]

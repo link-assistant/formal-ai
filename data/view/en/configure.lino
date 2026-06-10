@@ -1,0 +1,9 @@
+view
+  id M-cec7ad3ac071
+  lemma configure
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "set up for a particular purpose"
+    provenance (wordnet)

@@ -1,0 +1,20 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A finite sequence of terms."
+        entry
+          definition "A single row in a relational database."
+        entry
+          definition "A set of comma-separated values passed to a program or operating system as a parameter to a function call."
+        entry
+          definition "In some programming languages, a data type that is similar but distinct from the list data type, whose instances are characterized by having a rather fixed arity, and the elements of which instances can differ from each other by data type. (Note: this definition may overlap with the previous one.)"
+          example "Both Python and Haskell have a tuple data type as well as a list data type."
+      partOfSpeech noun
+      synonyms (n-tuple "ordered pair" triple triplet)
+  sourceUrls ("https://en.wiktionary.org/wiki/tuple" "https://en.wiktionary.org/wiki/tuples")
+  word tuples

@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Q4147654": {
+      "type": "item",
+      "id": "Q4147654",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "grammatical form"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "грамматическая форма"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "how words may have different forms"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "языковой знак, в котором тем или иным грамматическим способом выражается грамматическое значение"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "grammatical feature"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "словоизменительная форма"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

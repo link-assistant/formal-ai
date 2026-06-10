@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q4290": {
+      "type": "item",
+      "id": "Q4290",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "investment"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "инвестиция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विनियोग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "投资"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "commitment of resources to achieve later benefits"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вложение капитала с целью получения прибыли"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ऐसे व्यय, जो उत्पादन क्षमता में वृद्धि लायें"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "透過完善的分析，對於本金、收益可達一定程度的預估，將資金投入那些預期有所增長的標的上"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "economic investment"
+          },
+          {
+            "language": "en",
+            "value": "invest"
+          },
+          {
+            "language": "en",
+            "value": "investing"
+          },
+          {
+            "language": "en",
+            "value": "investments"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Инвестмент"
+          },
+          {
+            "language": "ru",
+            "value": "Капиталовложения"
+          },
+          {
+            "language": "ru",
+            "value": "Инвестиционная программа"
+          },
+          {
+            "language": "ru",
+            "value": "Инвестирование"
+          },
+          {
+            "language": "ru",
+            "value": "Инвестиции"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "निवेश"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

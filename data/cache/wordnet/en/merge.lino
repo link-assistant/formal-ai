@@ -1,0 +1,25 @@
+language en
+lemma merge
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "become one"
+    examples ("Germany unified officially in 1990" "the cells merge")
+    id oewn-00368338-v
+    partOfSpeech v
+    synonyms (unify unite)
+  entry
+    definition "mix together different elements"
+    examples ("The colors blend well")
+    id oewn-00395719-v
+    partOfSpeech v
+    synonyms (blend flux mix conflate commingle immix fuse coalesce meld combine)
+  entry
+    definition "join or combine"
+    examples ("We merged our resources")
+    id oewn-00244010-v
+    partOfSpeech v
+    synonyms (unite unify)
+source "oewn:2024"

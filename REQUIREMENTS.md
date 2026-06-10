@@ -633,3 +633,67 @@ benchmark.
 | R263 | Resolvable program modifications must not push the user toward a response-level report action. | Implemented by `tests/e2e/tests/issue-363.spec.js`, which verifies the resolved reverse-sort follow-up has no message-level report link. |
 | R264 | Unknown traces must feed a white-box self-improvement loop gated by the benchmark. | Implemented by `docs/design/self-improvement-loop.md`, `src/self_improvement.rs`, and `tests/unit/specification/self_improvement.rs`. |
 | R265 | The issue #349 child issues and their final status must remain auditable from repository documentation. | Implemented by `docs/case-studies/issue-365/README.md` and the Issue #349 section in `ROADMAP.md`, which map #355-#365 to their closing PRs and verification evidence. |
+
+## Issue #398 Recursive Semantic Meta-Language
+
+Issue [#398](https://github.com/link-assistant/formal-ai/issues/398) requires
+the meaning seed to move from English-only descriptions toward a recursive
+semantic meta-language where meanings describe meanings, source evidence is
+cached and inspectable, and notation, annotation, denotation, and connotation are
+represented as meaning links. This PR implements the seed/parser foundation and
+records the larger source-import/backfill plan in the case study.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R266 | Issue #398 research, issue metadata, PR metadata, comments, reviews, and online source analysis must be preserved under `docs/case-studies/issue-398`. | Implemented with `docs/case-studies/issue-398/README.md` and `raw-data/*`, including the online source survey for Wikidata, Wiktionary/Wikipedia dumps, WordNet, SKOS, and OntoLex-Lemon. |
+| R267 | Meanings must remain recursively describable by other meanings instead of relying only on prose descriptions. | Preserved and extended by the existing `defined_by` closure/root-reachability tests plus the new meaning-to-meaning semantic facet parser. |
+| R268 | Notation, annotation, denotation, and connotation must be represented as seed meanings, not hardcoded Rust vocabulary. | Implemented by `data/seed/meanings-semantic-meta.lino`; the parser recognizes only the generic `facet` container and resolves facet kind/target strings through the lexicon. |
+| R269 | The root `link` meaning must declare the required semantic facets as meaning references. | Implemented in `data/seed/meanings-ontology.lino` and verified by `root_link_declares_the_required_semantic_facets`. |
+| R270 | Semantic facet blocks must parse as meaning references and resolve through the lexicon. | Implemented by `SemanticFacet`, `Meaning::semantic_facet_targets`, and `Lexicon::semantic_facet_meanings`; verified by `semantic_facet_blocks_are_parsed_as_meaning_references`. |
+| R271 | External knowledge sources and cached source responses must become first-class semantic concepts so future imports can preserve provenance. | Seeded as `external_knowledge_source` and `cached_source_response` meanings; full source-response importers are tracked as follow-up work in the case study. |
+| R272 | The semantic meta-language must stay small at startup while allowing on-demand expansion from external corpora. | Implemented by adding only the compact facet vocabulary to `data/seed/`; the case study recommends chunked `.lino` source-response caches for large corpora. |
+| R273 | Vision documentation must reflect recursive meaning descriptions and semantic facets. | Implemented in `VISION.md` under "Meaning And Identity". |
+| R274 | User-facing changes must be captured for release notes. | Implemented by `changelog.d/20260606_201500_issue_398_semantic_facets.md`. |
+| R275 | The self-defining Links-Theory root draft from PR feedback must be executable seed data, not only prose in a comment. | Implemented by `data/seed/meanings-links-root.lino`, embedded in `src/seed/embedded.rs` and `tests/source/seed/embedded.rs`, with `semantic_root` tests for root terms and closure. |
+| R276 | Self-referential primitives must be represented as meaning-backed self-equations. | Implemented by the `self_equation` semantic facet kind plus `type`, `not`, and `same` facet links, covered by `self_equations_are_explicit_semantic_facets`. |
+| R277 | Ambiguous symbols must split into one-symbol-one-meaning records. | Implemented by `one_symbol_one_meaning`, `sense_split`, `bank_river`, and `bank_money`; `ambiguous_bank_surface_is_split_into_distinct_symbols` asserts there is no ambiguous bare `bank` meaning. |
+
+## Issue #398 PR Review Standards (comment 4663407299)
+
+The PR [#399](https://github.com/link-assistant/formal-ai/pull/399) review of
+2026-06-09 added data-quality standards for the meaning seed and its external
+grounding. These standards govern the whole `data/` tree (and `src/`), are
+applied through re-runnable migrations rather than manual edits, and each is
+locked by a directory-walking CI check that names no individual file.
+
+**Governance — latest requirement overrides any earlier one.** When two
+requirements in this document conflict, the one with the higher `R` number
+wins; the earlier requirement is superseded for the overlapping scope. Every CI
+check listed below maps to exactly one requirement so a reviewer can trace a red
+build back to the rule it protects.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R278 | Semantic facets must use the native Links Notation `subject predicate` form (`notation word_surface`); empty-bodied colon redefinitions (`word_surface:`, `concept:` with no value) are banned across the whole `data/seed` tree. | Implemented by `scripts/migrate-empty-facet-fields.rs` (tree-wide collapse), the dual-form `parse_semantic_facets` in `src/seed/meanings.rs`, and the tree-walking CI guard `seed_lino_files_have_no_empty_redefinition_fields` in `tests/unit/data_files.rs`. |
+| R279 | A `data/overrides/` layer must sit beside `data/cache/` with the same per-id structure; resolution is `(cache or live API) then overrides`; every override records why it exists; CI must fail when an override is redundant (the cache already carries its value), forcing removal. | Implemented by `data/overrides/` (mirroring `data/cache/`), `data/overrides/README.md`, `formal_ai::seed::resolve` in `src/seed/grounding_overrides.rs`, and the tree-walking CI suite `overrides_are_disciplined_and_non_redundant` / `overrides_layer_mirrors_the_cache_directory_structure` in `tests/unit/overrides.rs`. |
+| R280 | Every seed/grounding data-quality rule must be enforced by a directory-walking CI check with no hard-coded filename, so a new file cannot bypass a rule. | Implemented; R278 and R279 guards both walk their whole trees (`seed_lino_paths()`, `WalkDir` over `data/overrides`) and assert on relative paths rather than fixed names. |
+| R281 | Tree-wide fixes must be applied through re-runnable migration/refresh scripts, not one-off manual edits, so the transform is auditable and idempotent. | Implemented by `scripts/migrate-empty-facet-fields.rs` and `scripts/clean-seed-readability.rs`, both std-only and lossless, which also regenerate the embedded browser worker fallback. |
+| R282 | Meanings must be grounded in real external sources (Wikidata / Wiktionary / WordNet); per-language surfaces must come from those sources rather than being hand-typed, and the grounding closure must verify external evidence, not only local `defined-by` resolution. | Partially implemented: source-grounded meanings carry `grounded-in <Qid>` links whose recursive closure is verified against checked-in cache records by `wikidata_cache_records_cover_recursive_grounding_closure` and `seed_and_source_wikidata_ids_have_checked_in_cache_records`. Expanding grounding from the current core set to every meaning is tracked as ongoing source-import work in `docs/case-studies/issue-398/README.md`; the override layer (R279) is the mechanism for recording source gaps in the meantime. |
+| R283 | The standards introduced by this review must be recorded in `REQUIREMENTS.md` under the latest-overrides-earlier governance, with each CI check mapped to a requirement. | Implemented by this section; the mapping column names the enforcing test for R278-R281. |
+
+## Issue #398 PR Review Standards (comment 4668929105)
+
+The 2026-06-10 review accepted the corrected count (478 defined meanings, two
+definition syntaxes) and the backbone `reference_closure.rs` gate, but required
+that closure be widened from the structured backbone to **every** value token,
+and that the agreed multi-source `view` infrastructure be built and
+CI-enforced. These supersede the partial-grounding posture of R282 for the
+scope they cover.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R284 | Closure must be **total**: every non-keyword, non-quoted value token anywhere in `data/seed/**.lino` must resolve to a defined meaning (either syntax), a grounded `Q…/L…/P…`/Wiktionary/WordNet source with a checked-in cache record, or an override. CI must fail naming every unresolved token and must not pass until the count is 0; the backbone closure stays as a stricter subset. | Implemented by `scripts/audit-total-closure.py` (single-source resolver, `--json`/`--candidates`), `scripts/close-total.py` (idempotent migration defining every internal token as a meaning), and the gate `seed_has_total_reference_closure` in `tests/unit/total_closure.rs`. Audit reports 0 unresolved over 1,410 tokens. |
+| R285 | WordNet (Open English WordNet 2024) must be mirrored in-repo (raw projection + `.lino`) and reachable by meanings, ingested by a preserved re-runnable script. | Implemented by `scripts/ground-wordnet.py` (offline OEWN 2024 import via `wn`) and 312 cached lemmas under `data/cache/wordnet/en/`; presence enforced by `wordnet_cache_is_present_and_used`. |
+| R286 | A `data/view/` merge layer must exist with merged entities, deterministic `M-…` ids (same inputs → identical id), per-field provenance, and a merge that respects a threshold (same/different sense pairs merge/stay-separate). CI must fail if any piece is missing or not working. | Implemented by `scripts/build-views.py` (536 entities, `M-<sha1[:12]>` ids, per-sense provenance, Jaccard ≥ 0.5 merge, `--check`/`--selftest`) and the gates `multi_source_view_is_present_and_consistent` / `view_layer_has_real_multi_source_entities`. |
+| R287 | `data/seed/sources-registry.lino` must list every ingested source with an API endpoint and a permissive license; CI must fail on an unlisted source that has a populated cache. | Implemented by `data/seed/sources-registry.lino` (Wikidata, Wiktionary, WordNet, Wikipedia) and `sources_registry_lists_every_ingested_source`. |
+| R288 | All of the above must be delivered in this single PR through preserved, re-runnable scripts that double as migrations/loaders, and the PR must not be marked ready-to-merge while any token is undefined or any required infrastructure is absent. | Implemented: every mass action is a checked-in script (`audit-total-closure.py`, `ground-wordnet.py`, `ground-wiktionary.py`, `close-total.py`, `build-views.py`); the closure and infrastructure gates above keep the PR red until each requirement holds. |

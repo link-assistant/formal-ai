@@ -1,0 +1,26 @@
+language en
+lemma validate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "declare or make legally valid"
+    id oewn-02484290-v
+    partOfSpeech v
+    synonyms (formalize formalise)
+  entry
+    definition "prove valid; show or confirm the validity of something"
+    id oewn-00669142-v
+    partOfSpeech v
+  entry
+    definition "give evidence for"
+    id oewn-01014570-v
+    partOfSpeech v
+    synonyms (corroborate)
+  entry
+    definition "make valid or confirm the validity of"
+    examples ("validate a ticket")
+    id oewn-00449245-v
+    partOfSpeech v
+source "oewn:2024"

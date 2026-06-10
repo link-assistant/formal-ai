@@ -1,0 +1,33 @@
+view
+  id M-7689da130081
+  lemma response
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a result"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a bodily process occurring due to the effect of some antecedent stimulus or agent"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the manner in which something is greeted"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a phrase recited or sung by the congregation following a versicle by the priest or minister"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the speech act of continuing a conversational exchange"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the manner in which an electrical or mechanical device responds to an input signal or a range of input signals"
+    provenance (wordnet)

@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "P218": {
+      "type": "property",
+      "datatype": "external-id",
+      "id": "P218",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "ISO 639-1 code"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "код ISO 639-1"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "ISO 639-1代码"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "2-letter identifier for language or family of languages defined in ISO 639-1 standard"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "двухбуквенный код языка"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一个语言的ISO 639-1码"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "iso 639-1"
+          },
+          {
+            "language": "en",
+            "value": "ISO639-1"
+          },
+          {
+            "language": "en",
+            "value": "iso639-1"
+          },
+          {
+            "language": "en",
+            "value": "ISO language code (2 letter)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ISO 639-1"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

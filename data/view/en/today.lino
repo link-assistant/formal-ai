@@ -1,0 +1,21 @@
+view
+  id M-8408fa08615b
+  lemma today
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A current day or date."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "From 6am to 6pm on the current day."
+    provenance (wiktionary)
+  sense
+    part_of_speech adverb
+    gloss "On the current day or date."
+    provenance (wiktionary)
+  sense
+    part_of_speech adverb
+    gloss "In the current era; nowadays."
+    provenance (wiktionary)

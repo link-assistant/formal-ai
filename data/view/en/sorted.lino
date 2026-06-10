@@ -1,0 +1,13 @@
+view
+  id M-2b62fd04eac3
+  lemma sorted
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "arranged according to size"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "arranged into groups"
+    provenance (wordnet)

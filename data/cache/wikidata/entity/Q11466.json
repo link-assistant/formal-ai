@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q11466": {
+      "type": "item",
+      "id": "Q11466",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "temperature"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "температура"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "तापमान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "溫度"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "physical property of matter that quantitatively expresses the common notions of hot and cold"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "физическая величина, мера молекулярного движения"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "表示物體冷熱程度的物理量"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "temp"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

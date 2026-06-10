@@ -1,0 +1,44 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A statement of the meaning of a word or word group or a sign or symbol (dictionary definitions)."
+        entry
+          definition "(usually with the definite article the) A clear instance conforming to the dictionary or textbook definition."
+        entry
+          definition "A statement expressing the essential nature of something; formulation"
+        entry
+          definition "The action or process of defining."
+        entry
+          definition "The act of defining; determination of the limits."
+        entry
+          definition "A product of defining."
+        entry
+          definition "The action or power of describing, explaining, or making definite and clear."
+          example "Her comic genius is beyond definition."
+        entry
+          definition "Clarity of visual presentation, distinctness of outline or detail."
+          example "Improve the definition of an image."
+        entry
+          definition "Clarity, especially of musical sound in reproduction."
+        entry
+          definition "Sharp demarcation of outlines or limits."
+          example "A jacket with distinct waist definition."
+        entry
+          definition "The degree to which individual muscles are distinct on the body."
+        entry
+          definition "A statement which provides a previous declaration with a value or body of a subroutine (in the case of function)."
+        entry
+          definition "A statement that establishes the referent of a term or notation."
+      partOfSpeech noun
+  phonetic "/ˌdɛfɪˈnɪʃ(ə)nz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˌdɛfɪˈnɪʃ(ə)nz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/definition" "https://en.wiktionary.org/wiki/definitions")
+  word definitions

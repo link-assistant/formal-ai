@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q132": {
+      "type": "item",
+      "id": "Q132",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Sunday"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "воскресенье"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रविवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期日"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day of the week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день недели между субботой и понедельником"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सप्ताह का दिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期中的日子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Sun"
+          },
+          {
+            "language": "en",
+            "value": "Su"
+          },
+          {
+            "language": "en",
+            "value": "U"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "вс"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "रवि"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "週日"
+          },
+          {
+            "language": "zh",
+            "value": "周日"
+          },
+          {
+            "language": "zh",
+            "value": "禮拜日"
+          },
+          {
+            "language": "zh",
+            "value": "礼拜日"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,140 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (air earth ether fire metal void wind wood ice steam "water vapor" "water vapour")
+      definitions
+        entry
+          definition "A substance (of molecular formula H₂O) found at room temperature and pressure as a clear liquid; it is present naturally as rain, and found in rivers, lakes and seas; its solid form is ice and its gaseous form is steam."
+          example "By the action of electricity, the water was resolved into its two parts, oxygen and hydrogen."
+        entry
+          definition "The aforementioned liquid, considered one of the Classical elements or basic elements of alchemy."
+          example "And God said, Let the waters under the heaven be gathered together unto one place, and let the dry land appear: and it was so."
+        entry
+          definition "Water in a body; an area of open water."
+          example "The boat was found within the territorial waters."
+        entry
+          definition "A body of water, almost always a river."
+        entry
+          definition "A combination of water and other substance(s)."
+        entry
+          definition "(in the plural or in the singular) A state of affairs; conditions; usually with an adjective indicating an adverse condition."
+          example "The rough waters of change will bring about the calm after the storm."
+        entry
+          definition "A person's intuition."
+          example "I know he'll succeed. I feel it in my waters."
+        entry
+          definition "Excess valuation of securities."
+        entry
+          definition "The limpidity and lustre of a precious stone, especially a diamond."
+          example "a diamond of the first water is perfectly pure and transparent"
+        entry
+          definition "A wavy, lustrous pattern or decoration such as is imparted to linen, silk, metals, etc."
+      partOfSpeech noun
+  phonetic "/ˈwoːtə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈwoːtə/"
+    entry
+      audio ""
+      text "/ˈwɑtəɹ/"
+    entry
+      audio ""
+      text "[woːʔɐ]"
+    entry
+      audio ""
+      text "[ˈwaːʈər]"
+    entry
+      audio ""
+      text "/ˈwoːtɘ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/water-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028948"
+      text "/ˈwɔːtə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/water-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718817"
+      text "/ˈwɔtəɹ/"
+    entry
+      audio ""
+      text "/ˈwɑtəɹ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/water")
+  word water
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (refine)
+      definitions
+        entry
+          definition "To pour water into the soil surrounding (plants)."
+        entry
+          definition "To wet or supply with water; to moisten; to overflow with water; to irrigate."
+        entry
+          definition "To provide (animals) with water for drinking."
+          example "I need to go water the cattle."
+        entry
+          definition "To get or take in water."
+          example "The ship put into port to water."
+        entry
+          definition "To urinate onto."
+        entry
+          definition "To dilute."
+          example "Can you water the whisky, please?"
+        entry
+          definition "To overvalue (securities), especially through deceptive accounting."
+        entry
+          definition "To fill with or secrete water."
+          example "Chopping onions makes my eyes water."
+        entry
+          definition "To wet and calender, as cloth, so as to impart to it a lustrous appearance in wavy lines; to diversify with wavelike lines."
+          example "to water silk"
+      partOfSpeech verb
+      synonyms ("water down")
+  phonetic "/ˈwoːtə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈwoːtə/"
+    entry
+      audio ""
+      text "/ˈwɑtəɹ/"
+    entry
+      audio ""
+      text "[woːʔɐ]"
+    entry
+      audio ""
+      text "[ˈwaːʈər]"
+    entry
+      audio ""
+      text "/ˈwoːtɘ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/water-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028948"
+      text "/ˈwɔːtə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/water-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=718817"
+      text "/ˈwɔtəɹ/"
+    entry
+      audio ""
+      text "/ˈwɑtəɹ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/water")
+  word water

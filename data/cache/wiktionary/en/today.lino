@@ -1,0 +1,42 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A current day or date."
+          example "Today is the day we'll fix this once and for all."
+          synonyms ("current day" "this day")
+        entry
+          definition "From 6am to 6pm on the current day."
+      partOfSpeech noun
+      synonyms ("current day" "this day")
+    entry
+      definitions
+        entry
+          definition "On the current day or date."
+          example "I want this done today."
+        entry
+          definition "In the current era; nowadays."
+          example "In the 1500s, people had to do things by hand, but today we have electric can openers."
+      partOfSpeech adverb
+  phonetic "/təˈdeɪ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/today-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028857"
+      text "/təˈdeɪ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/today-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=823172"
+      text "/təˈdeɪ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/today")
+  word today

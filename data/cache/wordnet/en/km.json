@@ -1,0 +1,21 @@
+{
+  "lemma": "km",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13681796-n",
+      "partOfSpeech": "n",
+      "definition": "a metric unit of length equal to 1000 meters (or 0.621371 miles)",
+      "synonyms": [
+        "kilometer",
+        "kilometre",
+        "klick"
+      ]
+    }
+  ]
+}

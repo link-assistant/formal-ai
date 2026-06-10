@@ -1,0 +1,9 @@
+view
+  id M-d6a31c1687bf
+  lemma km
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a metric unit of length equal to 1000 meters (or 0.621371 miles)"
+    provenance (wordnet)

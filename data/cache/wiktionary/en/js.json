@@ -1,0 +1,38 @@
+[
+  {
+    "word": "js",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A term for a marijuana cigarette ('joint').",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An alternative version of i, the positive square root of -1; used in the context of electronics.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The second unit vector, after i",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/j",
+      "https://en.wiktionary.org/wiki/js"
+    ]
+  }
+]

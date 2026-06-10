@@ -1,0 +1,93 @@
+{
+  "lemma": "file",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06520807-n",
+      "partOfSpeech": "n",
+      "definition": "a set of related records (either written or electronic) kept together",
+      "synonyms": [
+        "data file"
+      ]
+    },
+    {
+      "id": "oewn-08445713-n",
+      "partOfSpeech": "n",
+      "definition": "a line of persons or things ranged one behind the other",
+      "synonyms": [
+        "single file",
+        "Indian file"
+      ]
+    },
+    {
+      "id": "oewn-03342085-n",
+      "partOfSpeech": "n",
+      "definition": "office furniture consisting of a container for keeping papers in order",
+      "synonyms": [
+        "file cabinet",
+        "filing cabinet"
+      ]
+    },
+    {
+      "id": "oewn-03341784-n",
+      "partOfSpeech": "n",
+      "definition": "a steel hand tool with small sharp teeth on some or all of its surfaces; used for smoothing wood or metal"
+    },
+    {
+      "id": "oewn-01003902-v",
+      "partOfSpeech": "v",
+      "definition": "record in a public office or in a court of law",
+      "examples": [
+        "file for divorce",
+        "file a complaint"
+      ],
+      "synonyms": [
+        "register"
+      ]
+    },
+    {
+      "id": "oewn-01389676-v",
+      "partOfSpeech": "v",
+      "definition": "smooth with a file",
+      "examples": [
+        "file one's fingernails"
+      ]
+    },
+    {
+      "id": "oewn-01924041-v",
+      "partOfSpeech": "v",
+      "definition": "proceed in line",
+      "examples": [
+        "The students filed into the classroom"
+      ]
+    },
+    {
+      "id": "oewn-00871595-v",
+      "partOfSpeech": "v",
+      "definition": "file a formal charge against",
+      "examples": [
+        "The suspect was charged with murdering his wife"
+      ],
+      "synonyms": [
+        "charge",
+        "lodge"
+      ]
+    },
+    {
+      "id": "oewn-01003688-v",
+      "partOfSpeech": "v",
+      "definition": "place in a container for keeping records",
+      "examples": [
+        "File these bills, please"
+      ],
+      "synonyms": [
+        "file away"
+      ]
+    }
+  ]
+}

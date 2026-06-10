@@ -1,0 +1,2 @@
+*.lino text eol=lf
+data/cache/**/*.json text eol=lf

@@ -1,0 +1,27 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A vine in the gourd family, Cucumis sativus."
+        entry
+          definition "The edible fruit of this plant, having a green rind and crisp white flesh."
+      partOfSpeech noun
+      synonyms (cuke)
+  phonetic "/ˈkjuːˌkʌmbə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkjuːˌkʌmbə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/cucumber-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1769363"
+      text "/ˈkjuːˌkʌmbɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/cucumber")
+  word cucumber

@@ -1,0 +1,37 @@
+{
+  "lemma": "sorting",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13579899-n",
+      "partOfSpeech": "n",
+      "definition": "an operation that segregates items into groups according to a specified criterion",
+      "examples": [
+        "the bottleneck in mail delivery is the process of sorting"
+      ],
+      "synonyms": [
+        "sort"
+      ]
+    },
+    {
+      "id": "oewn-05740701-n",
+      "partOfSpeech": "n",
+      "definition": "the basic cognitive process of arranging into classes or categories",
+      "synonyms": [
+        "classification",
+        "categorization",
+        "categorisation"
+      ]
+    },
+    {
+      "id": "oewn-01018774-n",
+      "partOfSpeech": "n",
+      "definition": "grouping by class or kind or size"
+    }
+  ]
+}

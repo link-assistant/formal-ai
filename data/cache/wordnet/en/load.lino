@@ -1,0 +1,79 @@
+language en
+lemma load
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "weight to be borne or conveyed"
+    id oewn-03685312-n
+    partOfSpeech n
+    synonyms (loading burden)
+  entry
+    definition "a quantity that can be processed or transported at one time"
+    examples ("the system broke down under excessive loads")
+    id oewn-13794608-n
+    partOfSpeech n
+    synonyms (loading)
+  entry
+    definition "goods carried by a large vehicle"
+    id oewn-02967841-n
+    partOfSpeech n
+    synonyms (cargo lading freight loading payload shipment consignment)
+  entry
+    definition "an amount of alcohol sufficient to intoxicate"
+    examples ("he got a load on and started a brawl")
+    id oewn-13794453-n
+    partOfSpeech n
+  entry
+    definition "the power output of a generator or power plant"
+    id oewn-11469898-n
+    partOfSpeech n
+  entry
+    definition "an onerous or difficult concern"
+    examples ("the burden of responsibility" "that's a load off my mind")
+    id oewn-05841069-n
+    partOfSpeech n
+    synonyms (burden encumbrance incumbrance onus)
+  entry
+    definition "a deposit of valuable ore occurring within definite boundaries separating it from surrounding rocks"
+    id oewn-11466163-n
+    partOfSpeech n
+    synonyms (lode)
+  entry
+    definition "the front part of a guided missile or rocket or torpedo that carries the nuclear or explosive charge or the chemical or biological agents"
+    id oewn-04558661-n
+    partOfSpeech n
+    synonyms (warhead payload)
+  entry
+    definition "electrical device to which electrical power is delivered"
+    id oewn-03685574-n
+    partOfSpeech n
+  entry
+    definition "fill or place a load on"
+    examples ("load a car" "load the truck with hay")
+    id oewn-01492646-v
+    partOfSpeech v
+    synonyms (lade laden "load up")
+  entry
+    definition "provide (a device) with something necessary"
+    examples ("He loaded his gun carefully" "load the camera")
+    id oewn-01492993-v
+    partOfSpeech v
+    synonyms (charge)
+  entry
+    definition "transfer from a storage device to a computer's memory"
+    id oewn-02236692-v
+    partOfSpeech v
+  entry
+    definition "put (something) on a structure or conveyance"
+    examples ("load the bags onto the trucks")
+    id oewn-01614988-v
+    partOfSpeech v
+  entry
+    definition "corrupt, debase, or make impure by adding a foreign or inferior substance; often by replacing valuable ingredients with inferior ones"
+    examples ("adulterate liquor")
+    id oewn-00488684-v
+    partOfSpeech v
+    synonyms (adulterate stretch dilute debase)
+source "oewn:2024"

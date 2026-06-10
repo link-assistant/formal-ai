@@ -1,0 +1,13 @@
+language en
+lemma never
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not at all; certainly not; not in any circumstances; not ever; at no time in the past or future"
+    examples ("I have never been to China" "I shall never forget this day" "had never seen a circus" "never on Sunday" "I will never marry you!" "never fear")
+    id oewn-00021214-r
+    partOfSpeech r
+    synonyms ("ne'er")
+source "oewn:2024"

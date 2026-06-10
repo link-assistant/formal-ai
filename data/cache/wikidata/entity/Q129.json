@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q129": {
+      "type": "item",
+      "id": "Q129",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Thursday"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "четверг"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गुरुवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期四"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day of the week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день недели между средой и пятницей"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सप्ताह का दिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期中的日子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Thu"
+          },
+          {
+            "language": "en",
+            "value": "Thurs"
+          },
+          {
+            "language": "en",
+            "value": "Thur"
+          },
+          {
+            "language": "en",
+            "value": "Th"
+          },
+          {
+            "language": "en",
+            "value": "R"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "чт"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "वृहस्पतिवार"
+          },
+          {
+            "language": "hi",
+            "value": "गुरु"
+          },
+          {
+            "language": "hi",
+            "value": "वृहस्पति"
+          },
+          {
+            "language": "hi",
+            "value": "वृह"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "禮拜四"
+          },
+          {
+            "language": "zh",
+            "value": "礼拜四"
+          },
+          {
+            "language": "zh",
+            "value": "週四"
+          },
+          {
+            "language": "zh",
+            "value": "周四"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

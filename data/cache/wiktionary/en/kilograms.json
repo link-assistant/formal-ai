@@ -1,0 +1,36 @@
+[
+  {
+    "word": "kilograms",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "In the International System of Units, the base unit of mass; conceived of as the mass of one litre of water, but now defined by taking the fixed numerical value of the Planck constant h to be 6.626 070 15 × 10-34 when expressed in units of kg⋅m2⋅s−1. Symbol: kg",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The unit of weight such that a one-kilogram mass is also a one-kilogram weight.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "kg",
+          "kilo"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/kilogram",
+      "https://en.wiktionary.org/wiki/kilograms"
+    ]
+  }
+]

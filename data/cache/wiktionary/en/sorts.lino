@@ -1,0 +1,78 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A general type."
+        entry
+          definition "Manner; form of being or acting."
+        entry
+          definition "Condition above the vulgar; rank."
+        entry
+          definition "A person evaluated in a certain way (bad, good, strange, etc.)."
+        entry
+          definition "Group, company."
+        entry
+          definition "A good-looking woman."
+        entry
+          definition "An act of sorting."
+          example "I had a sort of my cupboard."
+        entry
+          definition "An algorithm for sorting a list of items into a particular sequence."
+          example "Popular algorithms for sorts include quicksort and heapsort."
+        entry
+          definition "A piece of metal type used to print one letter, character, or symbol in a particular size and style."
+        entry
+          definition "A type."
+        entry
+          definition "Chance; lot; destiny."
+        entry
+          definition "A full set of anything, such as a pair of shoes, or a suit of clothes."
+      partOfSpeech noun
+      synonyms (sort-out algorithm character individual person type genre genus kind type variety glyph type)
+    entry
+      definitions
+        entry
+          definition "To separate items into different categories according to certain criteria that determine their sorts."
+          example "Sort the letters in those bags into a separate pile for each language."
+          synonyms (categorize class classify group)
+        entry
+          definition "To arrange into some sequence, usually numerically, alphabetically or chronologically."
+          example "Sort those bells into a row in ascending sequence of pitch."
+          synonyms (order rank)
+        entry
+          definition "To conjoin; to put together in distribution; to class."
+        entry
+          definition "To conform; to adapt; to accommodate."
+        entry
+          definition "To choose from a number; to select; to cull."
+        entry
+          definition "To join or associate with others, especially with others of the same kind or species; to agree."
+        entry
+          definition "To suit; to fit; to be in accord; to harmonize."
+        entry
+          definition "To fix (a problem) or handle (a task)."
+          synonyms ("sort out")
+        entry
+          definition "To attack physically."
+          example "If he comes nosing around here again I'll sort him!"
+          synonyms ("sort out")
+      partOfSpeech verb
+      synonyms (categorize class classify group order rank "sort out" "sort out")
+  phonetic "/sɔːts/"
+  phonetics
+    entry
+      audio ""
+      text "/sɔːts/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sorts-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1749997"
+      text "/sɔɹts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sort" "https://en.wiktionary.org/wiki/sorts")
+  word sorts

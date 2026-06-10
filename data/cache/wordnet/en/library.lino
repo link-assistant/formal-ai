@@ -1,0 +1,30 @@
+language en
+lemma library
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a room where books are kept"
+    examples ("they had brandy in the library")
+    id oewn-03666235-n
+    partOfSpeech n
+  entry
+    definition "a collection of literary documents or records kept for reference or borrowing"
+    id oewn-07994293-n
+    partOfSpeech n
+  entry
+    definition "a depository built to contain books and other materials for reading and study"
+    id oewn-03665990-n
+    partOfSpeech n
+    synonyms ("depository library")
+  entry
+    definition "(computing) a collection of standard programs and subroutines that are stored and available for immediate use"
+    id oewn-07994015-n
+    partOfSpeech n
+    synonyms ("program library" "subroutine library")
+  entry
+    definition "a building that houses a collection of books and other materials"
+    id oewn-03666369-n
+    partOfSpeech n
+source "oewn:2024"

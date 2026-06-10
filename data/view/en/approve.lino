@@ -1,0 +1,13 @@
+view
+  id M-bba4bbfaba1f
+  lemma approve
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give sanction to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "judge to be right or commendable; think well of"
+    provenance (wordnet)

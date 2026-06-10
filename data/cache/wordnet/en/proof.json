@@ -1,0 +1,104 @@
+{
+  "lemma": "proof",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05833063-n",
+      "partOfSpeech": "n",
+      "definition": "any factual evidence that helps to establish the truth of something",
+      "examples": [
+        "if you have any proof for what you say, now is the time to produce it"
+      ],
+      "synonyms": [
+        "cogent evidence"
+      ]
+    },
+    {
+      "id": "oewn-06660359-n",
+      "partOfSpeech": "n",
+      "definition": "a formal series of statements showing that if one thing is true something else necessarily follows from it"
+    },
+    {
+      "id": "oewn-13802392-n",
+      "partOfSpeech": "n",
+      "definition": "a measure of alcoholic strength expressed as an integer twice the percentage of alcohol present (by volume)"
+    },
+    {
+      "id": "oewn-06603166-n",
+      "partOfSpeech": "n",
+      "definition": "(printing) an impression made to check for errors",
+      "synonyms": [
+        "test copy",
+        "trial impression"
+      ]
+    },
+    {
+      "id": "oewn-04017506-n",
+      "partOfSpeech": "n",
+      "definition": "a trial photographic print from a negative"
+    },
+    {
+      "id": "oewn-00154781-n",
+      "partOfSpeech": "n",
+      "definition": "the act of validating; finding or testing the truth of something",
+      "synonyms": [
+        "validation",
+        "substantiation"
+      ]
+    },
+    {
+      "id": "oewn-01779265-s",
+      "partOfSpeech": "s",
+      "definition": "(used in combination or as a suffix) able to withstand",
+      "examples": [
+        "temptation-proof",
+        "childproof locks"
+      ]
+    },
+    {
+      "id": "oewn-01756124-v",
+      "partOfSpeech": "v",
+      "definition": "make or take a proof of, such as a photographic negative, an etching, or typeset"
+    },
+    {
+      "id": "oewn-01238122-v",
+      "partOfSpeech": "v",
+      "definition": "knead to reach proper lightness",
+      "examples": [
+        "proof dough"
+      ]
+    },
+    {
+      "id": "oewn-00629964-v",
+      "partOfSpeech": "v",
+      "definition": "read for errors",
+      "examples": [
+        "I should proofread my manuscripts"
+      ],
+      "synonyms": [
+        "proofread"
+      ]
+    },
+    {
+      "id": "oewn-00535625-v",
+      "partOfSpeech": "v",
+      "definition": "activate by mixing with water and sometimes sugar or milk",
+      "examples": [
+        "proof yeast"
+      ]
+    },
+    {
+      "id": "oewn-00165779-v",
+      "partOfSpeech": "v",
+      "definition": "make resistant (to harm)",
+      "examples": [
+        "proof the materials against shrinking in the dryer"
+      ]
+    }
+  ]
+}

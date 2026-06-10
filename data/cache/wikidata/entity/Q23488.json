@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q23488": {
+      "type": "item",
+      "id": "Q23488",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "६"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "six"
+          },
+          {
+            "language": "en",
+            "value": "the number 6"
+          },
+          {
+            "language": "en",
+            "value": "number six"
+          },
+          {
+            "language": "en",
+            "value": "number 6"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "шесть"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "〦"
+          },
+          {
+            "language": "zh",
+            "value": "六"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

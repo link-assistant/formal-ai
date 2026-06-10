@@ -1,0 +1,47 @@
+language en
+lemma list
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a database containing an ordered array of items (names or topics)"
+    id oewn-06492991-n
+    partOfSpeech n
+    synonyms (listing)
+  entry
+    definition "the property possessed by a line or surface that departs from the vertical"
+    examples ("the tower had a pronounced tilt" "the ship developed a list to starboard" "he walked with a heavy inclination to the right")
+    id oewn-05075249-n
+    partOfSpeech n
+    synonyms (tilt inclination lean leaning)
+  entry
+    definition "give or make a list of; name individually; give the names of"
+    examples ("List the states west of the Mississippi")
+    id oewn-00947885-v
+    partOfSpeech v
+    synonyms (name)
+  entry
+    definition "include in a list"
+    examples ("Am I listed in your register?")
+    id oewn-02477646-v
+    partOfSpeech v
+  entry
+    definition "cause to lean to the side"
+    examples ("Erosion listed the old tree")
+    id oewn-02042858-v
+    partOfSpeech v
+    synonyms (lean)
+  entry
+    definition "tilt to one side"
+    examples ("The balloon heeled over" "the wind made the vessel heel" "The ship listed to starboard")
+    id oewn-02042636-v
+    partOfSpeech v
+    synonyms (heel)
+  entry
+    definition enumerate
+    examples ("We must number the names of the great mathematicians")
+    id oewn-00948787-v
+    partOfSpeech v
+    synonyms (number)
+source "oewn:2024"

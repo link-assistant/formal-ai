@@ -1,0 +1,28 @@
+{
+  "lemma": "motherfucker",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09834593-n",
+      "partOfSpeech": "n",
+      "definition": "insulting terms of address for people who are stupid or irritating or ridiculous",
+      "synonyms": [
+        "asshole",
+        "bastard",
+        "cocksucker",
+        "dickhead",
+        "shit",
+        "mother fucker",
+        "prick",
+        "whoreson",
+        "son of a bitch",
+        "SOB"
+      ]
+    }
+  ]
+}

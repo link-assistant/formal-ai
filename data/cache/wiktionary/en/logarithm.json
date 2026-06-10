@@ -1,0 +1,35 @@
+[
+  {
+    "word": "logarithm",
+    "phonetic": "/ˈlɑ.ɡə.ɹɪ.ð(ə)m/",
+    "phonetics": [
+      {
+        "text": "/ˈlɑ.ɡə.ɹɪ.ð(ə)m/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "For a number x, the power to which a given base number must be raised in order to obtain x. Written \\log_b x. For example, \\log_{10} 1000 = 3 because 10^3 = 1000 and \\log_2 16 = 4 because 2^4 = 16.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "log"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/logarithm"
+    ]
+  }
+]

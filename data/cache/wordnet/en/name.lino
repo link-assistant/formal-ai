@@ -1,0 +1,90 @@
+language en
+lemma name
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a language unit by which a person or thing is known"
+    examples ("his name really is George Washington" "those are two names for the same thing")
+    id oewn-06344646-n
+    partOfSpeech n
+  entry
+    definition "a person's reputation"
+    examples ("he wanted to protect his good name")
+    id oewn-14462254-n
+    partOfSpeech n
+  entry
+    definition "family based on male descent"
+    examples ("he had no sons and there was no one to carry on his name")
+    id oewn-07988726-n
+    partOfSpeech n
+    synonyms (gens)
+  entry
+    definition "a well-known or notable person"
+    examples ("they studied all the great names in the history of France" "she is an important figure in modern music")
+    id oewn-10364174-n
+    partOfSpeech n
+    synonyms (figure "public figure")
+  entry
+    definition "by the sanction or authority of"
+    examples ("halt in the name of the law")
+    id oewn-01141957-n
+    partOfSpeech n
+  entry
+    definition "a defamatory or abusive word or phrase"
+    id oewn-06733713-n
+    partOfSpeech n
+    synonyms (epithet)
+  entry
+    definition "assign a specified (usually proper) name to"
+    examples ("They named their son David" "The new school was named after the famous Civil Rights leader")
+    id oewn-01030757-v
+    partOfSpeech v
+    synonyms (call "know as" "be known as")
+  entry
+    definition "give the name or identifying characteristics of; refer to by name or some other identifying characteristic property"
+    examples ("Many senators were named in connection with the scandal" "The almanac identifies the auspicious months")
+    id oewn-01028104-v
+    partOfSpeech v
+    synonyms (identify)
+  entry
+    definition "charge with a function; charge to be"
+    examples ("She was named Head of the Committee" "She was made president of the club")
+    id oewn-02401858-v
+    partOfSpeech v
+    synonyms (nominate make)
+  entry
+    definition "create and charge with a task or function"
+    examples ("nominate a committee")
+    id oewn-02401347-v
+    partOfSpeech v
+    synonyms (appoint nominate constitute)
+  entry
+    definition "mention and identify by name"
+    examples ("name your accomplices!")
+    id oewn-00949471-v
+    partOfSpeech v
+  entry
+    definition "make reference to"
+    examples ("he was named in connection with the invention")
+    id oewn-01026199-v
+    partOfSpeech v
+    synonyms (mention advert "bring up" cite refer)
+  entry
+    definition "identify as in botany or biology, for example"
+    id oewn-00654017-v
+    partOfSpeech v
+    synonyms (identify discover key "key out" distinguish describe)
+  entry
+    definition "give or make a list of; name individually; give the names of"
+    examples ("List the states west of the Mississippi")
+    id oewn-00947885-v
+    partOfSpeech v
+    synonyms (list)
+  entry
+    definition "determine or distinguish the nature of a problem or an illness through a diagnostic analysis"
+    id oewn-00647205-v
+    partOfSpeech v
+    synonyms (diagnose)
+source "oewn:2024"

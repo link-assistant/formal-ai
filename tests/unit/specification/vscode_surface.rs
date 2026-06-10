@@ -16,8 +16,8 @@
 //! memory features the Node host depends on, proving the engine is reused.
 
 use formal_ai::{
-    export_memory_full, handle_api_request, import_memory_full, seed_files, BundleInfo,
-    MemoryEvent, MemoryStore,
+    environment_directory, export_memory_full, handle_api_request, import_memory_full, seed_files,
+    BundleInfo, MemoryEvent, MemoryStore,
 };
 
 const VSCODE_PACKAGE: &str = include_str!("../../../vscode/package.json");
@@ -30,7 +30,6 @@ const CHAT_VIEW_LIB: &str = include_str!("../../../vscode/src/lib/chat-view.cjs"
 const SERVER_PROCESS_LIB: &str = include_str!("../../../vscode/src/lib/server-process.cjs");
 const PREPARE_RESOURCES: &str = include_str!("../../../vscode/scripts/prepare-resources.mjs");
 const WEB_APP: &str = include_str!("../../../src/web/app.js");
-const ENVIRONMENTS_SEED: &str = include_str!("../../../data/seed/environments.lino");
 
 #[test]
 fn vscode_manifest_declares_dual_host_commands_and_settings() {
@@ -318,8 +317,26 @@ fn vscode_web_surface_labels_the_host_from_its_shell() {
 
 #[test]
 fn vscode_environment_is_declared_in_seed_directory() {
+    let directory = environment_directory();
+    let vscode = directory
+        .environments
+        .iter()
+        .find(|environment| environment.id == "vscode")
+        .expect("vscode environment should be declared in seed directory");
+    let searchable = [
+        vscode.label.as_str(),
+        vscode.runtime.as_str(),
+        vscode.seed_path.as_str(),
+        vscode.memory_store.as_str(),
+        vscode.memory_export_command.as_str(),
+        vscode.bundle_export_command.as_str(),
+        vscode.bundle_import_command.as_str(),
+        vscode.start_command.as_str(),
+        vscode.package_command.as_str(),
+        &vscode.tools.join("|"),
+    ]
+    .join("\n");
     for expected in [
-        r#"environment "vscode""#,
         "VS Code extension (desktop + web)",
         "Node extension host",
         "Web Worker host",
@@ -328,12 +345,16 @@ fn vscode_environment_is_declared_in_seed_directory() {
         "v1_graph",
         "agent_permission_gate",
         "formal_ai_bundle",
-        r#"flow "browser_to_vscode""#,
-        r#"flow "vscode_local_sync""#,
     ] {
         assert!(
-            ENVIRONMENTS_SEED.contains(expected),
+            searchable.contains(expected),
             "environment seed should mention `{expected}`"
+        );
+    }
+    for expected_flow in ["browser_to_vscode", "vscode_local_sync"] {
+        assert!(
+            directory.flows.iter().any(|flow| flow.id == expected_flow),
+            "environment seed should mention flow `{expected_flow}`"
         );
     }
 }

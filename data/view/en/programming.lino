@@ -1,0 +1,21 @@
+view
+  id M-3d105f27b9ec
+  lemma programming
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "setting an order and time for planned events"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "creating a sequence of instructions to enable the computer to do something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange a program of or for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "write a computer program"
+    provenance (wordnet)

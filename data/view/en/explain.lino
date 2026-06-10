@@ -1,0 +1,17 @@
+view
+  id M-713b490de0de
+  lemma explain
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make plain and comprehensible"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "define"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "serve as a reason or cause or justification of"
+    provenance (wordnet)

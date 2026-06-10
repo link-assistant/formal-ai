@@ -1,0 +1,9 @@
+view
+  id M-a78e5ea95851
+  lemma compute
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a mathematical calculation or computation"
+    provenance (wordnet)

@@ -1,0 +1,18 @@
+P37
+  aliases
+    en ("language official" "spoken in" speaking "language spoken")
+    ru ("государственный язык" "язык (официальный)" "язык (государственный)")
+    zh ("法定语文")
+  descriptions
+    en "language designated as official by this item"
+    hi "इस आइटम द्वारा निर्दिष्ट आधिकारिक भाषा"
+    ru "язык, определённый как официальный для этого элемента"
+    zh "本项目指定的官方语言"
+  id P37
+  labels
+    en "official language"
+    hi "आधिकारिक भाषा"
+    ru "официальный язык"
+    zh "官方语言"
+  type property
+success 1

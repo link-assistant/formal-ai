@@ -1,0 +1,13 @@
+view
+  id M-7290488639d4
+  lemma physics
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the science of matter and energy and their interactions"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the physical properties, phenomena, and laws of something"
+    provenance (wordnet)

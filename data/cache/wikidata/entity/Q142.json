@@ -1,0 +1,119 @@
+{
+  "entities": {
+    "Q142": {
+      "type": "item",
+      "id": "Q142",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "फ़्रान्स"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Франция"
+        },
+        "en": {
+          "language": "en",
+          "value": "France"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "法國"
+        }
+      },
+      "descriptions": {
+        "hi": {
+          "language": "hi",
+          "value": "पश्चिम यूरोप का देश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "西歐國家"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "государство в Западной Европе"
+        },
+        "en": {
+          "language": "en",
+          "value": "country in Western Europe and other continents (through its overseas territories in America, Africa and Oceania)"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फ़्राँस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्रांस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्रान्स"
+          },
+          {
+            "language": "hi",
+            "value": "फ़्रांस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्राँस"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Французская Республика"
+          },
+          {
+            "language": "ru",
+            "value": "ФР"
+          },
+          {
+            "language": "ru",
+            "value": "Французская республика"
+          },
+          {
+            "language": "ru",
+            "value": "Республика Франция"
+          },
+          {
+            "language": "ru",
+            "value": "Пятая Французская Республика"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "法兰西共和国"
+          },
+          {
+            "language": "zh",
+            "value": "法兰西"
+          },
+          {
+            "language": "zh",
+            "value": "法蘭西共和國"
+          },
+          {
+            "language": "zh",
+            "value": "法蘭西"
+          },
+          {
+            "language": "zh",
+            "value": "法国"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "French Republic"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

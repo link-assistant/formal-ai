@@ -1,0 +1,138 @@
+{
+  "lemma": "question",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07208256-n",
+      "partOfSpeech": "n",
+      "definition": "an instance of questioning",
+      "examples": [
+        "there was a question about my training",
+        "we made inquiries of all those who were present"
+      ],
+      "synonyms": [
+        "inquiry",
+        "enquiry",
+        "query",
+        "interrogation"
+      ]
+    },
+    {
+      "id": "oewn-06796625-n",
+      "partOfSpeech": "n",
+      "definition": "the subject matter at issue",
+      "examples": [
+        "the question of disease merits serious discussion",
+        "under the head of minor Roman poets"
+      ],
+      "synonyms": [
+        "head"
+      ]
+    },
+    {
+      "id": "oewn-07211342-n",
+      "partOfSpeech": "n",
+      "definition": "a sentence of inquiry that asks for a reply",
+      "examples": [
+        "he asked a direct question",
+        "he had trouble phrasing his interrogations"
+      ],
+      "synonyms": [
+        "interrogation",
+        "interrogative",
+        "interrogative sentence"
+      ]
+    },
+    {
+      "id": "oewn-04764777-n",
+      "partOfSpeech": "n",
+      "definition": "uncertainty about the truth or factuality or existence of something",
+      "examples": [
+        "the dubiousness of his claim",
+        "there is no question about the validity of the enterprise"
+      ],
+      "synonyms": [
+        "doubt",
+        "dubiousness",
+        "doubtfulness"
+      ]
+    },
+    {
+      "id": "oewn-07178244-n",
+      "partOfSpeech": "n",
+      "definition": "a formal proposal for action made to a deliberative assembly for discussion and vote",
+      "examples": [
+        "he made a motion to adjourn",
+        "she called for the question"
+      ],
+      "synonyms": [
+        "motion"
+      ]
+    },
+    {
+      "id": "oewn-07176710-n",
+      "partOfSpeech": "n",
+      "definition": "an informal reference to a marriage proposal",
+      "examples": [
+        "he was ready to pop the question"
+      ]
+    },
+    {
+      "id": "oewn-00869073-v",
+      "partOfSpeech": "v",
+      "definition": "challenge the accuracy, probity, or propriety of",
+      "examples": [
+        "We must question your judgment in this matter"
+      ],
+      "synonyms": [
+        "oppugn",
+        "call into question"
+      ]
+    },
+    {
+      "id": "oewn-00789846-v",
+      "partOfSpeech": "v",
+      "definition": "pose a series of questions to",
+      "examples": [
+        "The suspect was questioned by the police",
+        "We questioned the survivor about the details of the explosion"
+      ],
+      "synonyms": [
+        "interrogate"
+      ]
+    },
+    {
+      "id": "oewn-00786670-v",
+      "partOfSpeech": "v",
+      "definition": "pose a question",
+      "synonyms": [
+        "query"
+      ]
+    },
+    {
+      "id": "oewn-00810517-v",
+      "partOfSpeech": "v",
+      "definition": "conduct an interview in television, newspaper, and radio reporting",
+      "synonyms": [
+        "interview"
+      ]
+    },
+    {
+      "id": "oewn-00927081-v",
+      "partOfSpeech": "v",
+      "definition": "place in doubt or express doubtful speculation",
+      "examples": [
+        "I wonder whether this was the right thing to do",
+        "she wondered whether it would snow tonight"
+      ],
+      "synonyms": [
+        "wonder"
+      ]
+    }
+  ]
+}

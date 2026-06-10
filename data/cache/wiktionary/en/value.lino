@@ -1,0 +1,66 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The quality (positive or negative) that renders something desirable or valuable."
+          example "The Shakespearean Shylock is of dubious value in the modern world."
+          synonyms (worth)
+        entry
+          definition "The degree of importance given to something."
+          example "The value of my children's happiness is second only to that of my wife."
+        entry
+          definition "That which is valued or highly esteemed, such as one's morals, morality, or belief system."
+          example "He does not share his parents' values."
+        entry
+          definition "The amount (of money or goods or services) that is considered to be a fair equivalent for something else."
+        entry
+          definition "The relative duration of a musical note."
+          example "The value of a crotchet is twice that of a quaver."
+        entry
+          definition "The relative darkness or lightness of a color in (a specific area of) a painting etc."
+        entry
+          definition "Any definite numerical quantity or other mathematical object, determined by being measured, computed, or otherwise defined."
+          example "The exact value of pi cannot be represented in decimal notation."
+        entry
+          definition "Precise meaning; import."
+          example "the value of a word; the value of a legal instrument"
+        entry
+          definition "(in the plural) The valuable ingredients to be obtained by treating a mass or compound; specifically, the precious metals contained in rock, gravel, etc."
+          example "The vein carries good values."
+        entry
+          definition "Esteem; regard."
+        entry
+          definition "Valour; also spelled valew."
+      partOfSpeech noun
+      synonyms (valence worth)
+    entry
+      antonyms (belittle derogate despise disesteem disrespect)
+      definitions
+        entry
+          definition "To estimate the value of; judge the worth of something."
+          example "I will have the family jewels valued by a professional."
+        entry
+          definition "To fix or determine the value of; assign a value to, as of jewelry or art work."
+        entry
+          definition "To regard highly; think much of; place importance upon."
+          example "Gold was valued highly among the Romans."
+        entry
+          definition "To hold dear."
+          example "I value these old photographs."
+      partOfSpeech verb
+      synonyms (appreciate assess esteem prize rate respect treasure valuate worthen)
+  phonetic "/ˈvæljuː/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/value-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1197666"
+      text "/ˈvæljuː/"
+  sourceUrls ("https://en.wiktionary.org/wiki/value")
+  word value

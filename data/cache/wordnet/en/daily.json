@@ -1,0 +1,62 @@
+{
+  "lemma": "daily",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06278217-n",
+      "partOfSpeech": "n",
+      "definition": "a newspaper that is published every day"
+    },
+    {
+      "id": "oewn-00081836-r",
+      "partOfSpeech": "r",
+      "definition": "every day; without missing a day",
+      "examples": [
+        "he stops by daily"
+      ]
+    },
+    {
+      "id": "oewn-00179304-r",
+      "partOfSpeech": "r",
+      "definition": "gradually and progressively",
+      "examples": [
+        "his health weakened day by day"
+      ],
+      "synonyms": [
+        "day by day"
+      ]
+    },
+    {
+      "id": "oewn-01975230-s",
+      "partOfSpeech": "s",
+      "definition": "of or belonging to or occurring every day",
+      "examples": [
+        "daily routine",
+        "a daily paper"
+      ],
+      "synonyms": [
+        "day-to-day",
+        "day-by-day",
+        "day-after-day"
+      ]
+    },
+    {
+      "id": "oewn-01048256-s",
+      "partOfSpeech": "s",
+      "definition": "appropriate for ordinary or routine occasions",
+      "examples": [
+        "casual clothes",
+        "everyday clothes"
+      ],
+      "synonyms": [
+        "casual",
+        "everyday"
+      ]
+    }
+  ]
+}

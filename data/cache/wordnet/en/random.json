@@ -1,0 +1,21 @@
+{
+  "lemma": "random",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01930715-a",
+      "partOfSpeech": "a",
+      "definition": "lacking any definite plan or order or purpose; governed by or depending on chance",
+      "examples": [
+        "a random choice",
+        "bombs fell at random",
+        "random movements"
+      ]
+    }
+  ]
+}

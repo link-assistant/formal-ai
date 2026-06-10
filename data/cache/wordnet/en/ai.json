@@ -1,0 +1,47 @@
+{
+  "lemma": "ai",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08412639-n",
+      "partOfSpeech": "n",
+      "definition": "an agency of the United States Army responsible for providing timely and relevant and accurate and synchronized intelligence to tactical and operational and strategic level commanders",
+      "synonyms": [
+        "Army Intelligence"
+      ]
+    },
+    {
+      "id": "oewn-02460039-n",
+      "partOfSpeech": "n",
+      "definition": "a sloth that has three long claws on each forefoot and each hindfoot",
+      "synonyms": [
+        "three-toed sloth",
+        "Bradypus tridactylus"
+      ]
+    },
+    {
+      "id": "oewn-06142654-n",
+      "partOfSpeech": "n",
+      "definition": "the branch of computer science that deal with writing computer programs that can solve problems creatively",
+      "examples": [
+        "workers in AI hope to imitate or duplicate intelligence in computers and robots"
+      ],
+      "synonyms": [
+        "artificial intelligence"
+      ]
+    },
+    {
+      "id": "oewn-00847013-n",
+      "partOfSpeech": "n",
+      "definition": "the introduction of semen into the oviduct or uterus by some means other than sexual intercourse",
+      "synonyms": [
+        "artificial insemination"
+      ]
+    }
+  ]
+}

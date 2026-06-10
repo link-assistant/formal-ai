@@ -1,0 +1,320 @@
+[
+  {
+    "word": "does",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/does-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=266988"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "(auxiliary) A syntactic marker.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To perform; to execute.",
+            "synonyms": [
+              "accomplish",
+              "carry out",
+              "functionate"
+            ],
+            "antonyms": [],
+            "example": "All you ever do is surf the Internet. What will you do this afternoon?"
+          },
+          {
+            "definition": "To cause, make (someone) (do something).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To suffice.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "it’s not the best broom, but it will have to do;  this will do me, thanks."
+          },
+          {
+            "definition": "To be reasonable or acceptable.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It simply will not do to have dozens of children running around such a quiet event."
+          },
+          {
+            "definition": "(ditransitive) To have (as an effect).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The fresh air did him some good."
+          },
+          {
+            "definition": "To fare, perform (well or poorly).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Our relationship isn't doing very well;  how do you do?"
+          },
+          {
+            "definition": "(chiefly in questions) To have as one's job.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "What does Bob do? — He's a plumber."
+          },
+          {
+            "definition": "To perform the tasks or actions associated with (something).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"Don't forget to do your report\" means something quite different depending on whether you're a student or a programmer."
+          },
+          {
+            "definition": "To cook.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll just do some eggs."
+          },
+          {
+            "definition": "To travel in, to tour, to make a circuit of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let’s do New York also."
+          },
+          {
+            "definition": "To treat in a certain way.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To work for or on, by way of caring for, looking after, preparing, cleaning, keeping in order, etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To act or behave in a certain manner; to conduct oneself.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To spend (time) in jail. (See also do time)",
+            "synonyms": [
+              "serve"
+            ],
+            "antonyms": [],
+            "example": "I did five years for armed robbery."
+          },
+          {
+            "definition": "To impersonate or depict.",
+            "synonyms": [
+              "imitate",
+              "personate",
+              "take off"
+            ],
+            "antonyms": [],
+            "example": "They really laughed when he did Clinton, with a perfect accent and a leer."
+          },
+          {
+            "definition": "(with 'a' and the name of a person, place, event, etc.) To copy or emulate the actions or behaviour that is associated with the person or thing mentioned.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He did a Henry VIII and got married six times."
+          },
+          {
+            "definition": "To kill.",
+            "synonyms": [
+              "do in",
+              "murder",
+              "off",
+              "rub out"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "To deal with for good and all; to finish up; to undo; to ruin; to do for.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To punish for a misdemeanor.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He got done for speeding."
+          },
+          {
+            "definition": "To have sex with. (See also do it)",
+            "synonyms": [
+              "go to bed with",
+              "sleep with"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "To cheat or swindle.",
+            "synonyms": [
+              "defraud",
+              "diddle",
+              "mug off",
+              "rip off",
+              "scam"
+            ],
+            "antonyms": [],
+            "example": "That guy just did me out of two hundred bucks!"
+          },
+          {
+            "definition": "To convert into a certain form; especially, to translate.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the novel has just been done into English;  I'm going to do this play into a movie"
+          },
+          {
+            "definition": "To finish.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To work as a domestic servant (with for).",
+            "synonyms": [
+              "attend",
+              "serve",
+              "wait on"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "(auxiliary) Used to form the present progressive of verbs.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To cash or to advance money for, as a bill or note.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(ditransitive) To make or provide.",
+            "synonyms": [
+              "furnish",
+              "give",
+              "supply"
+            ],
+            "antonyms": [],
+            "example": "Could you do me a burger with mayonnaise instead of ketchup?"
+          },
+          {
+            "definition": "To injure (one's own body part).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To take drugs.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I do cocaine."
+          },
+          {
+            "definition": "(in the form be doing [somewhere]) To exist with a purpose or for a reason.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "What's that car doing in our swimming pool?"
+          }
+        ],
+        "synonyms": [
+          "accomplish",
+          "carry out",
+          "functionate",
+          "attend",
+          "serve",
+          "wait on",
+          "defraud",
+          "diddle",
+          "mug off",
+          "rip off",
+          "scam",
+          "do in",
+          "murder",
+          "off",
+          "rub out",
+          "furnish",
+          "give",
+          "supply",
+          "go to bed with",
+          "sleep with",
+          "imitate",
+          "personate",
+          "take off",
+          "serve"
+        ],
+        "antonyms": [
+          "don't"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/do",
+      "https://en.wiktionary.org/wiki/does"
+    ]
+  },
+  {
+    "word": "does",
+    "phonetic": "/dəʊz/",
+    "phonetics": [
+      {
+        "text": "/dəʊz/",
+        "audio": ""
+      },
+      {
+        "text": "/doʊz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/does-2-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=266987"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A female deer; also used of similar animals such as antelope, (less commonly goat as nanny is also used).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A female rabbit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A female hare.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A female squirrel.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A female kangaroo.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "hind",
+          "blue flyer"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/doe",
+      "https://en.wiktionary.org/wiki/does"
+    ]
+  }
+]

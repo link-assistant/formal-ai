@@ -1,155 +1,147 @@
 meanings
-  meaning "definition_merge_action"
-    gloss "merging two or more definitions, translations, or encyclopedia entries into a single combined answer. The definition_merge_action role marks the surface forms that ask for such a merge; the definition-merge handler requires this together with a definition_artifact_request before it looks the term up and combines its definitions. Matched as raw substrings so inflected forms are caught in every supported language."
-    wiktionary "merge"
-    defined_by "action"
-    role "definition_merge_action"
-    lexeme "en"
-      word "merge"
-        description "English verb for combining things into one; a definition_merge_action matched as a raw substring so merges and merging are also caught."
-      word "merged"
-        description "English past participle of merge; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "combine"
-        description "English verb for joining things together; a definition_merge_action matched as a raw substring so combines and combining are also caught."
-      word "combined"
-        description "English past participle of combine; a definition_merge_action matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "fuse"
-        description "English verb for blending things into one; a definition_merge_action matched as a raw substring so fuses and fusing are also caught."
-      word "fusion"
-        description "English noun for a blending into one; a definition_merge_action matched as a raw substring, kept explicitly because fuse is not a substring of fusion."
-    lexeme "ru"
-      word "объедин"
-        description "Russian verb stem (romanized obyedin, of объединить, to merge or combine); a definition_merge_action matched as a raw substring so объедини and объединить are caught."
-      word "слия"
-        description "Russian noun stem (romanized sliya, of слияние, fusion); a definition_merge_action matched as a raw substring so слияние and слияния are caught."
-    lexeme "hi"
-      word "विलय"
-        description "Hindi noun (romanized vilay, merger); a definition_merge_action matched as a raw substring."
-      word "संयोजन"
-        description "Hindi noun (romanized sanyojan, combination); a definition_merge_action matched as a raw substring."
-    lexeme "zh"
-      word "合并"
-        description "Chinese verb (pinyin hebing, to merge); a definition_merge_action matched as a raw substring."
-      word "融合"
-        description "Chinese verb (pinyin ronghe, to fuse); a definition_merge_action matched as a raw substring."
-  meaning "definition_artifact_request"
-    gloss "a request for a definition, a translation, or a Wikipedia entry — the artifacts the definition-merge handler combines. The definition_artifact_request role marks these surface forms; the handler requires this together with a definition_merge_action before it merges definitions of a term. Matched as raw substrings so inflected forms are caught in every supported language."
-    wiktionary "definition"
-    defined_by "inquiry"
-    role "definition_artifact_request"
-    lexeme "en"
-      word "definition"
-        description "English noun for a statement of meaning; a definition_artifact_request matched as a raw substring so definitions is also caught."
-      word "definitions"
-        description "English plural of definition; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "translation"
-        description "English noun for a rendering into another language; a definition_artifact_request matched as a raw substring so translations is also caught."
-      word "translations"
-        description "English plural of translation; a definition_artifact_request matched as a raw substring, kept explicitly so the surface list mirrors the original recognizer's disjunction."
-      word "translated"
-        description "English past participle of translate; a definition_artifact_request matched as a raw substring."
-      word "wikipedia"
-        description "English proper noun for the Wikipedia encyclopedia, a source of definitions; a definition_artifact_request matched as a raw substring."
-    lexeme "ru"
-      word "определени"
-        description "Russian noun stem (romanized opredeleni, of определение, definition); a definition_artifact_request matched as a raw substring so определение and определения are caught."
-      word "перевод"
-        description "Russian noun (romanized perevod, translation); a definition_artifact_request matched as a raw substring so перевода and переводы are caught."
-      word "википеди"
-        description "Russian noun stem (romanized vikipedi, of Википедия, Wikipedia); a definition_artifact_request matched as a raw substring so Википедия and Википедии are caught."
-    lexeme "hi"
-      word "परिभाषा"
-        description "Hindi noun (romanized paribhasha, definition); a definition_artifact_request matched as a raw substring."
-      word "अनुवाद"
-        description "Hindi noun (romanized anuvad, translation); a definition_artifact_request matched as a raw substring."
-    lexeme "zh"
-      word "定义"
-        description "Chinese noun (pinyin dingyi, definition); a definition_artifact_request matched as a raw substring."
-      word "翻译"
-        description "Chinese noun (pinyin fanyi, translation); a definition_artifact_request matched as a raw substring."
-  meaning "definition_merge_marker"
-    gloss "a phrase that introduces the term whose definitions are to be merged — for example definitions of or translation for — immediately followed by the term itself. The definition_merge_marker role carries these as prefix word forms whose text before the slot marker is the phrase to locate; the definition-merge handler scans them in declaration order, finds the first whose prefix appears in the prompt, and takes the text after it as the term. The English forms are listed in the original recognizer's priority order so longer, more specific phrases win before shorter ones."
-    wiktionary "definition"
-    defined_by "inquiry"
-    role "definition_merge_marker"
-    lexeme "en"
-      word "translated definitions for …"
-        description "English prefix 'translated definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried first as the longest, most specific phrase."
-      word "translated definitions of …"
-        description "English prefix 'translated definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "wikipedia definitions for …"
-        description "English prefix 'wikipedia definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "wikipedia definitions of …"
-        description "English prefix 'wikipedia definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definitions for …"
-        description "English prefix 'definitions for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definitions of …"
-        description "English prefix 'definitions of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definition for …"
-        description "English prefix 'definition for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "definition of …"
-        description "English prefix 'definition of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translations for …"
-        description "English prefix 'translations for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translations of …"
-        description "English prefix 'translations of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translation for …"
-        description "English prefix 'translation for'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "translation of …"
-        description "English prefix 'translation of'; a definition_merge_marker whose prefix before the slot is located and stripped to leave the term, tried last as the shortest phrase."
-    lexeme "ru"
-      word "переведенные определения для …"
-        description "Russian prefix (romanized perevedennye opredeleniya dlya, translated definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "определения для …"
-        description "Russian prefix (romanized opredeleniya dlya, definitions for); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "определение …"
-        description "Russian prefix (romanized opredelenie, definition of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term that follows in the genitive."
-      word "перевод …"
-        description "Russian prefix (romanized perevod, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-    lexeme "hi"
-      word "की परिभाषाएँ …"
-        description "Hindi best-effort prefix (romanized ki paribhashaen, definitions of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "का अनुवाद …"
-        description "Hindi best-effort prefix (romanized ka anuvad, translation of); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-    lexeme "zh"
-      word "的定义 …"
-        description "Chinese best-effort prefix (pinyin de dingyi, 's definition); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-      word "的翻译 …"
-        description "Chinese best-effort prefix (pinyin de fanyi, 's translation); a definition_merge_marker whose prefix before the slot is located and stripped to leave the term."
-  meaning "definition_merge_tail_boundary"
-    gloss "a word that ends the term in a definition-merge prompt — once the term has been located, any text from the first such boundary word onward (the source, the method, the destination) is trimmed away. The definition_merge_tail_boundary role marks these forms; the handler reconstructs each as a space-padded token and cuts the extracted term at the earliest one it finds. Defined as a relation between the term and what follows it."
-    wiktionary "from"
-    defined_by "relation"
-    role "definition_merge_tail_boundary"
-    lexeme "en"
-      word "from"
-        description "English preposition introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "using"
-        description "English preposition introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "with"
-        description "English preposition introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "by"
-        description "English preposition introducing an agent or means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "into"
-        description "English preposition introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "across"
-        description "English preposition introducing a span; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "ru"
-      word "из"
-        description "Russian preposition (romanized iz, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "с"
-        description "Russian preposition (romanized s, with or from) introducing an accompaniment or source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "по"
-        description "Russian preposition (romanized po, by) introducing a means; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "в"
-        description "Russian preposition (romanized v, into) introducing a destination; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "hi"
-      word "से"
-        description "Hindi postposition (romanized se, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "के साथ"
-        description "Hindi postposition (romanized ke saath, with) introducing an accompaniment; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-    lexeme "zh"
-      word "从"
-        description "Chinese preposition (pinyin cong, from) introducing a source; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
-      word "使用"
-        description "Chinese verb (pinyin shiyong, using) introducing a method; a definition_merge_tail_boundary reconstructed as a space-padded token, marking where the term ends."
+  definition_merge_action
+    defined-by action
+    role definition_merge_action
+    lexeme en
+      surface
+        text merge
+      surface
+        text merged
+      surface
+        text combine
+      surface
+        text combined
+      surface
+        text fuse
+      surface
+        text fusion
+    lexeme ru
+      surface
+        text объедин
+      surface
+        text слия
+    lexeme hi
+      surface
+        text विलय
+      surface
+        text संयोजन
+    lexeme zh
+      surface
+        text 合并
+      surface
+        text 融合
+  definition_artifact_request
+    defined-by inquiry
+    role definition_artifact_request
+    lexeme en
+      surface
+        text definition
+      surface
+        text definitions
+      surface
+        text translation
+      surface
+        text translations
+      surface
+        text translated
+      surface
+        text wikipedia
+    lexeme ru
+      surface
+        text определени
+      surface
+        text перевод
+      surface
+        text википеди
+    lexeme hi
+      surface
+        text परिभाषा
+      surface
+        text अनुवाद
+    lexeme zh
+      surface
+        text 定义
+      surface
+        text 翻译
+  definition_merge_marker
+    defined-by inquiry
+    role definition_merge_marker
+    lexeme en
+      surface
+        text "translated definitions for …"
+      surface
+        text "translated definitions of …"
+      surface
+        text "wikipedia definitions for …"
+      surface
+        text "wikipedia definitions of …"
+      surface
+        text "definitions for …"
+      surface
+        text "definitions of …"
+      surface
+        text "definition for …"
+      surface
+        text "definition of …"
+      surface
+        text "translations for …"
+      surface
+        text "translations of …"
+      surface
+        text "translation for …"
+      surface
+        text "translation of …"
+    lexeme ru
+      surface
+        text "переведенные определения для …"
+      surface
+        text "определения для …"
+      surface
+        text "определение …"
+      surface
+        text "перевод …"
+    lexeme hi
+      surface
+        text "की परिभाषाएँ …"
+      surface
+        text "का अनुवाद …"
+    lexeme zh
+      surface
+        text "的定义 …"
+      surface
+        text "的翻译 …"
+  definition_merge_tail_boundary
+    defined-by relation
+    role definition_merge_tail_boundary
+    lexeme en
+      surface
+        text from
+      surface
+        text using
+      surface
+        text with
+      surface
+        text by
+      surface
+        text into
+      surface
+        text across
+    lexeme ru
+      surface
+        text из
+      surface
+        text с
+      surface
+        text по
+      surface
+        text в
+    lexeme hi
+      surface
+        text से
+      surface
+        text "के साथ"
+    lexeme zh
+      surface
+        text 从
+      surface
+        text 使用

@@ -1,0 +1,25 @@
+view
+  id M-007a934e12ee
+  lemma daily
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a newspaper that is published every day"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "every day; without missing a day"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "gradually and progressively"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or belonging to or occurring every day"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "appropriate for ordinary or routine occasions"
+    provenance (wordnet)

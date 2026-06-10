@@ -1,0 +1,53 @@
+{
+  "lemma": "exactly",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00159432-r",
+      "partOfSpeech": "r",
+      "definition": "indicating exactness or preciseness",
+      "examples": [
+        "he was doing precisely (or exactly) what she had told him to do",
+        "it was just as he said — the jewel was gone",
+        "it has just enough salt",
+        "Properly speaking, all true work is religion."
+      ],
+      "synonyms": [
+        "precisely",
+        "just",
+        "properly"
+      ]
+    },
+    {
+      "id": "oewn-00370459-r",
+      "partOfSpeech": "r",
+      "definition": "just as it should be",
+      "examples": [
+        "‘Precisely, my lord,’ he said"
+      ],
+      "synonyms": [
+        "precisely",
+        "on the nose",
+        "on the dot",
+        "on the button"
+      ]
+    },
+    {
+      "id": "oewn-00370083-r",
+      "partOfSpeech": "r",
+      "definition": "in a precise manner",
+      "examples": [
+        "she always expressed herself precisely"
+      ],
+      "synonyms": [
+        "precisely",
+        "incisively"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+meanings
+  lexical_form
+    grounded-in Q4147654
+    defined-by notation
+    defined-by word_surface
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation lexical_sense
+    connotation part_of_speech
+    lexeme en
+      surface
+        text "lexical form"
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "лексическая форма"
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "शाब्दिक रूप"
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 词形
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun
+  word_surface
+    defined-by lexical_form
+    defined-by notation
+    role lexical_meta
+    notation links_notation_format
+    annotation semantic_gloss
+    denotation lexical_form
+    connotation lexical_sense
+    lexeme en
+      surface
+        text "word surface"
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "словесная форма"
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "शब्द सतह"
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 词面
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun
+  lexical_sense
+    grounded-in Q1570700
+    defined-by denotation
+    defined-by concept
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation concept
+    connotation lexical_form
+    lexeme en
+      surface
+        text "lexical sense"
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "лексическое значение"
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "शाब्दिक अर्थ"
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 词义
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun
+  part_of_speech
+    grounded-in Q82042
+    defined-by semantic_facet
+    defined-by lexical_form
+    role semantic_facet_kind
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation semantic_facet
+    connotation lexical_form
+    lexeme en
+      surface
+        text "part of speech"
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "часть речи"
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "शब्द भेद"
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 词类
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun
+  noun
+    grounded-in Q1084
+    defined-by part_of_speech
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation part_of_speech
+    connotation lexical_form
+    lexeme en
+      surface
+        text noun
+        notation word_surface
+        denotation noun
+        part_of_speech noun
+    lexeme ru
+      surface
+        text существительное
+        notation word_surface
+        denotation noun
+        part_of_speech noun
+    lexeme hi
+      surface
+        text संज्ञा
+        notation word_surface
+        denotation noun
+        part_of_speech noun
+    lexeme zh
+      surface
+        text 名词
+        notation word_surface
+        denotation noun
+        part_of_speech noun
+  noun_phrase
+    grounded-in Q1401131
+    defined-by noun
+    defined-by lexical_form
+    role lexical_meta
+    notation word_surface
+    annotation semantic_gloss
+    denotation part_of_speech
+    connotation noun
+    lexeme en
+      surface
+        text "noun phrase"
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
+    lexeme ru
+      surface
+        text "именная группа"
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
+    lexeme hi
+      surface
+        text "संज्ञा पद"
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
+    lexeme zh
+      surface
+        text 名词短语
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase

@@ -1,0 +1,132 @@
+[
+  {
+    "word": "rules",
+    "phonetic": "/ˈɹuːlz/",
+    "phonetics": [
+      {
+        "text": "/ˈɹuːlz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/rules-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1661699",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A regulation, law, guideline.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "All participants must adhere to the rules."
+          },
+          {
+            "definition": "A ruler; device for measuring, a straightedge, a measure.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A straight line (continuous mark, as made by a pen or the like), especially one lying across a paper as a guide for writing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A regulating principle.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of ruling; administration of law; government; empire; authority; control.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A normal condition or state of affairs.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "As a rule, our senior editors are serious-minded."
+          },
+          {
+            "definition": "Conduct; behaviour.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An order regulating the practice of the courts, or an order made between parties to an action or a suit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A determinate method prescribed for performing any operation and producing a certain result.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a rule for extracting the cube root"
+          },
+          {
+            "definition": "A thin plate of brass or other metal, of the same height as the type, and used for printing lines, as between columns on the same page, or in tabular work.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To regulate, be in charge of, make decisions for, reign over.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To excel.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This game rules!"
+          },
+          {
+            "definition": "To mark (paper or the like) with rules (lines).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To decide judicially.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To establish or settle by, or as by, a rule; to fix by universal or general consent, or by common practice.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To revel.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/rule",
+      "https://en.wiktionary.org/wiki/rules"
+    ]
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q1075": {
+      "type": "item",
+      "id": "Q1075",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "顏色"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रंग"
+        },
+        "en": {
+          "language": "en",
+          "value": "color"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "цвет"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "characteristic of visual perception"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "качественная субъективная характеристика электромагнитного излучения оптического диапазона"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "眼對不同波長的光的視覺效應"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "coloration"
+          },
+          {
+            "language": "en",
+            "value": "colorful"
+          },
+          {
+            "language": "en",
+            "value": "colouration"
+          },
+          {
+            "language": "en",
+            "value": "colourful"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "色彩科学"
+          },
+          {
+            "language": "zh",
+            "value": "彩"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

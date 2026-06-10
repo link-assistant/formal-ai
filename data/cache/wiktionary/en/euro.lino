@@ -1,0 +1,53 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Person living or originating from Europe"
+        entry
+          definition "Person who resides within the European Union"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "The currency unit of the European Monetary Union. Symbol: €"
+          synonyms (EUR)
+        entry
+          definition "A coin with a face value of 1 euro."
+      partOfSpeech noun
+      synonyms (EUR)
+  phonetic "/ˈjʊəɹəʊ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/euro-uk.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1879423"
+      text "/ˈjʊəɹəʊ/"
+    entry
+      audio ""
+      text "/ˈjɝoʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/European" "https://en.wiktionary.org/wiki/euro")
+  word euro
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Macropus robustus, a wallaroo (macropod species)."
+      partOfSpeech noun
+  phonetic "/ˈjʊəɹəʊ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/euro-uk.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1879423"
+      text "/ˈjʊəɹəʊ/"
+    entry
+      audio ""
+      text "/ˈjɝoʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/euro")
+  word euro

@@ -1,0 +1,19 @@
+language en
+lemma configuration
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an arrangement of parts or elements"
+    examples ("the outcome depends on the configuration of influences at the time")
+    id oewn-05739724-n
+    partOfSpeech n
+    synonyms (constellation)
+  entry
+    definition "any spatial attributes (especially as defined by outline)"
+    examples ("he could barely make out their shapes")
+    id oewn-05071206-n
+    partOfSpeech n
+    synonyms (shape form contour conformation)
+source "oewn:2024"

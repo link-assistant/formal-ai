@@ -1,0 +1,53 @@
+view
+  id M-8990b363f406
+  lemma recall
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a request by the manufacturer of a defective product to return the product (as for replacement or repair)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a call to return"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a bugle call that signals troops to return"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the process of remembering (especially the process of recovering information by mental effort)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of removing an official by petition"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "recall knowledge from memory; have a recollection"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go back to something earlier"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring to mind"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "summon to return"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause one's (or someone else's) thoughts or attention to return from a reverie or digression"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make unavailable; bar from sale or distribution"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to be returned"
+    provenance (wordnet)

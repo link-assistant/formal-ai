@@ -1,0 +1,13 @@
+view
+  id M-43eb3be3f762
+  lemma farewell
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an acknowledgment or expression of goodwill at parting"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of departing politely"
+    provenance (wordnet)

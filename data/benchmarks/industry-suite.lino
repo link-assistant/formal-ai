@@ -10,7 +10,6 @@ benchmark_suite_issue_304_industry_permissive_slice
   held_out_policy "Each source has one self-authored held-out or paraphrased variant that changes wording, numbers, or distractors while preserving the source task structure."
   imported_at "2026-05-26"
   updated_at "2026-05-28"
-
 benchmark_source_humaneval
   record_type "benchmark_source"
   id "humaneval"
@@ -25,7 +24,6 @@ benchmark_source_humaneval
   imported_cases "1"
   suite_cases "2"
   held_out_variants "1"
-
 benchmark_source_mbpp
   record_type "benchmark_source"
   id "mbpp"
@@ -40,7 +38,6 @@ benchmark_source_mbpp
   imported_cases "1"
   suite_cases "2"
   held_out_variants "1"
-
 benchmark_source_gsm8k
   record_type "benchmark_source"
   id "gsm8k"
@@ -55,7 +52,6 @@ benchmark_source_gsm8k
   imported_cases "1"
   suite_cases "2"
   held_out_variants "1"
-
 benchmark_source_math
   record_type "benchmark_source"
   id "math"
@@ -70,7 +66,6 @@ benchmark_source_math
   imported_cases "1"
   suite_cases "2"
   held_out_variants "1"
-
 benchmark_source_bigbench_object_counting
   record_type "benchmark_source"
   id "bigbench_object_counting"
@@ -85,7 +80,6 @@ benchmark_source_bigbench_object_counting
   imported_cases "1"
   suite_cases "2"
   held_out_variants "1"
-
 benchmark_case_humaneval_0_has_close_elements
   record_type "benchmark_case"
   id "humaneval_0_has_close_elements"
@@ -100,7 +94,6 @@ benchmark_case_humaneval_0_has_close_elements
   expected_answer "Python function satisfying HumanEval/0 tests"
   verification "static response contains the function name, a Python fence, and an explicit false branch"
   allow_current_failure "true"
-
 benchmark_case_humaneval_0_has_close_elements_paraphrase
   record_type "benchmark_case"
   id "humaneval_0_has_close_elements_paraphrase"
@@ -116,7 +109,6 @@ benchmark_case_humaneval_0_has_close_elements_paraphrase
   expected_answer "Python function satisfying paraphrased HumanEval/0-style tests"
   verification "derived synthesis must emit the function name, a Python fence, and a verified execution status"
   allow_current_failure "true"
-
 benchmark_case_mbpp_2_similar_elements
   record_type "benchmark_case"
   id "mbpp_2_similar_elements"
@@ -131,7 +123,6 @@ benchmark_case_mbpp_2_similar_elements
   expected_answer "Python function returning the tuple intersection in deterministic order"
   verification "static response contains the function name, a Python fence, and set/intersection logic"
   allow_current_failure "true"
-
 benchmark_case_mbpp_2_similar_elements_paraphrase
   record_type "benchmark_case"
   id "mbpp_2_similar_elements_paraphrase"
@@ -147,7 +138,6 @@ benchmark_case_mbpp_2_similar_elements_paraphrase
   expected_answer "Python function returning the deterministic tuple intersection"
   verification "derived synthesis must emit the function name, a Python fence, and a verified execution status"
   allow_current_failure "true"
-
 benchmark_case_gsm8k_test_0_duck_eggs
   record_type "benchmark_case"
   id "gsm8k_test_0_duck_eggs"
@@ -160,7 +150,6 @@ benchmark_case_gsm8k_test_0_duck_eggs
   expected_answer "18"
   verification "final answer contains the GSM8K numeric answer"
   allow_current_failure "true"
-
 benchmark_case_gsm8k_held_out_hen_eggs
   record_type "benchmark_case"
   id "gsm8k_held_out_hen_eggs"
@@ -174,7 +163,6 @@ benchmark_case_gsm8k_held_out_hen_eggs
   expected_answer "36"
   verification "renumbered variant must recompute the remainder sale instead of reusing the seed answer"
   allow_current_failure "true"
-
 benchmark_case_math_train_7_algebra_substitution
   record_type "benchmark_case"
   id "math_train_7_algebra_substitution"
@@ -187,7 +175,6 @@ benchmark_case_math_train_7_algebra_substitution
   expected_answer "11"
   verification "final answer contains the evaluated integer"
   allow_current_failure "true"
-
 benchmark_case_math_held_out_algebra_substitution
   record_type "benchmark_case"
   id "math_held_out_algebra_substitution"
@@ -201,7 +188,6 @@ benchmark_case_math_held_out_algebra_substitution
   expected_answer "17"
   verification "renumbered variant must substitute variables and evaluate the changed expression"
   allow_current_failure "true"
-
 benchmark_case_bigbench_object_counting_instruments
   record_type "benchmark_case"
   id "bigbench_object_counting_instruments"
@@ -214,7 +200,6 @@ benchmark_case_bigbench_object_counting_instruments
   expected_answer "3"
   verification "exact string target from BIG-bench object_counting must appear in the answer"
   allow_current_failure "true"
-
 benchmark_case_bigbench_held_out_object_counting_instruments
   record_type "benchmark_case"
   id "bigbench_held_out_object_counting_instruments"

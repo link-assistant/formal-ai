@@ -1,0 +1,18 @@
+Q64
+  aliases
+    en ("Berlin, Germany" DE-BE)
+    hi ("बर्लिन, जर्मनी")
+    zh ("柏林市" "柏林州")
+  descriptions
+    en "federated state, capital and largest city of Germany"
+    hi "जर्मनी की राजधानी और सबसे बड़ा शहर"
+    ru "крупнейший город и столица Германии"
+    zh "德國首都"
+  id Q64
+  labels
+    en Berlin
+    hi "बर्लिन"
+    ru "Берлин"
+    zh "柏林"
+  type item
+success 1

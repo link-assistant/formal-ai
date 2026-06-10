@@ -1,0 +1,49 @@
+{
+  "lemma": "reply",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06758700-n",
+      "partOfSpeech": "n",
+      "definition": "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation",
+      "examples": [
+        "I waited several days for his answer",
+        "he wrote replies to several of his critics"
+      ],
+      "synonyms": [
+        "answer",
+        "response"
+      ]
+    },
+    {
+      "id": "oewn-07214225-n",
+      "partOfSpeech": "n",
+      "definition": "the speech act of continuing a conversational exchange",
+      "examples": [
+        "he growled his reply"
+      ],
+      "synonyms": [
+        "response"
+      ]
+    },
+    {
+      "id": "oewn-00817348-v",
+      "partOfSpeech": "v",
+      "definition": "react verbally",
+      "examples": [
+        "She didn't want to answer",
+        "answer the question",
+        "We answered that we would accept the invitation"
+      ],
+      "synonyms": [
+        "answer",
+        "respond"
+      ]
+    }
+  ]
+}

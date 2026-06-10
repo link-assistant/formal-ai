@@ -1,0 +1,34 @@
+language en
+lemma daily
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a newspaper that is published every day"
+    id oewn-06278217-n
+    partOfSpeech n
+  entry
+    definition "every day; without missing a day"
+    examples ("he stops by daily")
+    id oewn-00081836-r
+    partOfSpeech r
+  entry
+    definition "gradually and progressively"
+    examples ("his health weakened day by day")
+    id oewn-00179304-r
+    partOfSpeech r
+    synonyms ("day by day")
+  entry
+    definition "of or belonging to or occurring every day"
+    examples ("daily routine" "a daily paper")
+    id oewn-01975230-s
+    partOfSpeech s
+    synonyms (day-to-day day-by-day day-after-day)
+  entry
+    definition "appropriate for ordinary or routine occasions"
+    examples ("casual clothes" "everyday clothes")
+    id oewn-01048256-s
+    partOfSpeech s
+    synonyms (casual everyday)
+source "oewn:2024"

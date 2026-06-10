@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Q7850": {
+      "type": "item",
+      "id": "Q7850",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Chinese"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "китайский язык"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीनी भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "中文"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "language group of the Sinitic languages"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык или языковая ветвь сино-тибетской семьи, государственный язык КНР, Китайской Республики и Сингапура"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीनी-तिब्बती भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "漢藏語系分支語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Chinese language"
+          },
+          {
+            "language": "en",
+            "value": "Chinese languages"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "漢語"
+          },
+          {
+            "language": "zh",
+            "value": "华语"
+          },
+          {
+            "language": "zh",
+            "value": "華語"
+          },
+          {
+            "language": "zh",
+            "value": "华文"
+          },
+          {
+            "language": "zh",
+            "value": "中国语"
+          },
+          {
+            "language": "zh",
+            "value": "中国话"
+          },
+          {
+            "language": "zh",
+            "value": "汉话"
+          },
+          {
+            "language": "zh",
+            "value": "汉文"
+          },
+          {
+            "language": "zh",
+            "value": "唐话"
+          },
+          {
+            "language": "zh",
+            "value": "唐文"
+          },
+          {
+            "language": "zh",
+            "value": "汉语"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

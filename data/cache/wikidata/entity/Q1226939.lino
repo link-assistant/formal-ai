@@ -1,0 +1,17 @@
+Q1226939
+  aliases
+    ru ("делимое" "деление на нуль")
+    zh ("除" "÷")
+  descriptions
+    en "arithmetic operation; one of the four basic operations of arithmetic (others being addition, subtraction, multiplication).The division of two natural numbers is the process of calculating the number of times one number is contained within one another"
+    hi "अंकगणितीय संक्रिया; अंकगणित की चार मूल संक्रियाओं में से एक (अन्य संक्रियाएँ हैं जोड़, घटाव, गुणा)। दो प्राकृतिक संख्याओं का विभाजन एक संख्या के एक-दूसरे में समाहित होने की संख्या की गणना करने की प्रक्रिया है।"
+    ru "действие, обратное умножению"
+    zh "運算"
+  id Q1226939
+  labels
+    en division
+    hi "भाग"
+    ru "деление"
+    zh "除法"
+  type item
+success 1

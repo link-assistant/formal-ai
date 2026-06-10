@@ -1,0 +1,21 @@
+view
+  id M-bac17cd8c9b7
+  lemma fetch
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the action of fetching"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "go or come after and bring or take back"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be sold for a certain price"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove"
+    provenance (wordnet)

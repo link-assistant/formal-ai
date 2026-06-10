@@ -1,95 +1,91 @@
 meanings
-  meaning "followup_instruction_verb"
-    gloss "the predicate of a follow-up instruction clause appended after a search query — compare X, summarize Y, explain Z. When a prompt reads search for X and then compare their sizes, the trailing compare their sizes is a directive about what to do with the results, not part of the search topic, so the recogniser truncates the query at the start of that clause. A clause counts as a follow-up only when one of these verbs is immediately preceded by a boundary: sentence punctuation (a period, question mark, exclamation mark, semicolon or colon — universal across languages) or a clause continuation marker (and, then, and their translations). A bare verb with no boundary before it is treated as part of the topic and left alone. Each surface is a bare verb token matched on a word boundary, so it fires whether the clause ends the prompt or runs on. English carries the original follow-up verbs (compare, summarize, summarise, explain, describe) plus show and tell to match the browser worker; Russian, Hindi and Chinese add their natural imperative equivalents so follow-up clauses are recognised in every supported language."
-    wiktionary "compare"
-    defined_by "action"
-    role "followup_instruction_verb"
-    lexeme "en"
-      word "compare"
-        description "English follow-up verb (compare); after a boundary it opens a directive to contrast the results, so the query is cut before it."
-      word "summarize"
-        description "English follow-up verb (summarize, American spelling); after a boundary it opens a directive to condense the results, so the query is cut before it."
-      word "summarise"
-        description "English follow-up verb (summarise, British spelling); after a boundary it opens a directive to condense the results, so the query is cut before it."
-      word "explain"
-        description "English follow-up verb (explain); after a boundary it opens a directive to elaborate on the results, so the query is cut before it."
-      word "describe"
-        description "English follow-up verb (describe); after a boundary it opens a directive to characterise the results, so the query is cut before it."
-      word "show"
-        description "English follow-up verb (show), matched to mirror the browser worker; after a boundary it opens a directive to display the results, so the query is cut before it."
-      word "tell"
-        description "English follow-up verb (tell), matched to mirror the browser worker; after a boundary it opens a directive to report the results, so the query is cut before it."
-    lexeme "ru"
-      word "сравни"
-        description "Russian follow-up verb (romanized sravni, compare imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "обобщи"
-        description "Russian follow-up verb (romanized obobshchi, summarize imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "резюмируй"
-        description "Russian follow-up verb (romanized rezyumiruy, summarize imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "объясни"
-        description "Russian follow-up verb (romanized obyasni, explain imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "опиши"
-        description "Russian follow-up verb (romanized opishi, describe imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "покажи"
-        description "Russian follow-up verb (romanized pokazhi, show imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "расскажи"
-        description "Russian follow-up verb (romanized rasskazhi, tell imperative); after a boundary it opens a directive about the results, so the query is cut before it."
-    lexeme "hi"
-      word "तुलना करो"
-        description "Hindi follow-up verb (romanized tulna karo, compare); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "सारांश दो"
-        description "Hindi follow-up verb (romanized saaraansh do, give a summary); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "समझाओ"
-        description "Hindi follow-up verb (romanized samjhao, explain); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "वर्णन करो"
-        description "Hindi follow-up verb (romanized varnan karo, describe); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "दिखाओ"
-        description "Hindi follow-up verb (romanized dikhao, show); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "बताओ"
-        description "Hindi follow-up verb (romanized batao, tell); after a boundary it opens a directive about the results, so the query is cut before it."
-    lexeme "zh"
-      word "比较"
-        description "Chinese follow-up verb (pinyin bijiao, compare); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "总结"
-        description "Chinese follow-up verb (pinyin zongjie, summarize); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "概括"
-        description "Chinese follow-up verb (pinyin gaikuo, summarize/generalize); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "解释"
-        description "Chinese follow-up verb (pinyin jieshi, explain); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "描述"
-        description "Chinese follow-up verb (pinyin miaoshu, describe); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "显示"
-        description "Chinese follow-up verb (pinyin xianshi, show); after a boundary it opens a directive about the results, so the query is cut before it."
-      word "告诉"
-        description "Chinese follow-up verb (pinyin gaosu, tell); after a boundary it opens a directive about the results, so the query is cut before it."
-  meaning "clause_continuation_marker"
-    gloss "a conjunction or sequencing adverb that can introduce a new clause — and, then, and then. Together with sentence punctuation it forms the set of boundaries that mark where a follow-up instruction clause begins: a followup_instruction_verb counts as a follow-up directive (and triggers query truncation) only when one of these markers, or a punctuation mark, sits immediately before it. Because and and then are both modelled here, the compound and then is recognised by walking back over consecutive markers — no compound surface needs to be stored. Each surface is a bare token. English carries and and then; Russian, Hindi and Chinese add their natural coordinating and sequencing words so clause boundaries are recognised in every supported language."
-    wiktionary "and"
-    defined_by "relation"
-    role "clause_continuation_marker"
-    lexeme "en"
-      word "and"
-        description "English coordinating conjunction (and); a clause boundary that can introduce a follow-up instruction."
-      word "then"
-        description "English sequencing adverb (then); a clause boundary that can introduce a follow-up instruction, including the compound and then."
-    lexeme "ru"
-      word "и"
-        description "Russian coordinating conjunction (romanized i, and); a clause boundary that can introduce a follow-up instruction."
-      word "затем"
-        description "Russian sequencing adverb (romanized zatem, then); a clause boundary that can introduce a follow-up instruction."
-      word "потом"
-        description "Russian sequencing adverb (romanized potom, afterwards); a clause boundary that can introduce a follow-up instruction."
-    lexeme "hi"
-      word "और"
-        description "Hindi coordinating conjunction (romanized aur, and); a clause boundary that can introduce a follow-up instruction."
-      word "फिर"
-        description "Hindi sequencing adverb (romanized phir, then); a clause boundary that can introduce a follow-up instruction."
-      word "तब"
-        description "Hindi sequencing adverb (romanized tab, then); a clause boundary that can introduce a follow-up instruction."
-    lexeme "zh"
-      word "并"
-        description "Chinese coordinating conjunction (pinyin bing, and/also); a clause boundary that can introduce a follow-up instruction."
-      word "然后"
-        description "Chinese sequencing adverb (pinyin ranhou, then); a clause boundary that can introduce a follow-up instruction."
-      word "接着"
-        description "Chinese sequencing adverb (pinyin jiezhe, next); a clause boundary that can introduce a follow-up instruction."
+  followup_instruction_verb
+    defined-by action
+    role followup_instruction_verb
+    lexeme en
+      surface
+        text compare
+      surface
+        text summarize
+      surface
+        text summarise
+      surface
+        text explain
+      surface
+        text describe
+      surface
+        text show
+      surface
+        text tell
+    lexeme ru
+      surface
+        text сравни
+      surface
+        text обобщи
+      surface
+        text резюмируй
+      surface
+        text объясни
+      surface
+        text опиши
+      surface
+        text покажи
+      surface
+        text расскажи
+    lexeme hi
+      surface
+        text "तुलना करो"
+      surface
+        text "सारांश दो"
+      surface
+        text समझाओ
+      surface
+        text "वर्णन करो"
+      surface
+        text दिखाओ
+      surface
+        text बताओ
+    lexeme zh
+      surface
+        text 比较
+      surface
+        text 总结
+      surface
+        text 概括
+      surface
+        text 解释
+      surface
+        text 描述
+      surface
+        text 显示
+      surface
+        text 告诉
+  clause_continuation_marker
+    defined-by relation
+    role clause_continuation_marker
+    lexeme en
+      surface
+        text and
+      surface
+        text then
+    lexeme ru
+      surface
+        text и
+      surface
+        text затем
+      surface
+        text потом
+    lexeme hi
+      surface
+        text और
+      surface
+        text फिर
+      surface
+        text तब
+    lexeme zh
+      surface
+        text 并
+      surface
+        text 然后
+      surface
+        text 接着

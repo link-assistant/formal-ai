@@ -1,0 +1,191 @@
+{
+  "entities": {
+    "Q30": {
+      "type": "item",
+      "id": "Q30",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "美國"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संयुक्त राज्य अमेरिका"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "США"
+        },
+        "en": {
+          "language": "en",
+          "value": "United States"
+        }
+      },
+      "descriptions": {
+        "hi": {
+          "language": "hi",
+          "value": "उत्तरी अमेरिका में स्थित एक देश"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "федеративное государство в Северной Америке"
+        },
+        "en": {
+          "language": "en",
+          "value": "country located primarily in North America"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "北美洲國家"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "संयुक्त राज्य"
+          },
+          {
+            "language": "hi",
+            "value": "यू एस"
+          },
+          {
+            "language": "hi",
+            "value": "अमेरिका"
+          },
+          {
+            "language": "hi",
+            "value": "यू० एस०"
+          },
+          {
+            "language": "hi",
+            "value": "यू एस ए"
+          },
+          {
+            "language": "hi",
+            "value": "यू० एस० ए०"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Соединённые Штаты Америки"
+          },
+          {
+            "language": "ru",
+            "value": "Соединённые Штаты"
+          },
+          {
+            "language": "ru",
+            "value": "Штаты"
+          },
+          {
+            "language": "ru",
+            "value": "Соединённые Государства Америки"
+          },
+          {
+            "language": "ru",
+            "value": "САСШ"
+          },
+          {
+            "language": "ru",
+            "value": "Северо-Американские Соединённые Штаты"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "the States"
+          },
+          {
+            "language": "en",
+            "value": "the United States of America"
+          },
+          {
+            "language": "en",
+            "value": "US of America"
+          },
+          {
+            "language": "en",
+            "value": "the US"
+          },
+          {
+            "language": "en",
+            "value": "the U.S."
+          },
+          {
+            "language": "en",
+            "value": "the US of A"
+          },
+          {
+            "language": "en",
+            "value": "U.S. of America"
+          },
+          {
+            "language": "en",
+            "value": "the US of America"
+          },
+          {
+            "language": "en",
+            "value": "the USA"
+          },
+          {
+            "language": "en",
+            "value": "the U.S.A."
+          },
+          {
+            "language": "en",
+            "value": "the U.S. of A"
+          },
+          {
+            "language": "en",
+            "value": "US of A"
+          },
+          {
+            "language": "en",
+            "value": "the U.S. of America"
+          },
+          {
+            "language": "en",
+            "value": "the United States"
+          },
+          {
+            "language": "en",
+            "value": "Merica"
+          },
+          {
+            "language": "en",
+            "value": "Murica"
+          },
+          {
+            "language": "en",
+            "value": "U. S."
+          },
+          {
+            "language": "en",
+            "value": "U. S. A."
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "美利坚合众国"
+          },
+          {
+            "language": "zh",
+            "value": "美利堅合眾國"
+          },
+          {
+            "language": "zh",
+            "value": "花旗国"
+          },
+          {
+            "language": "zh",
+            "value": "美国"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

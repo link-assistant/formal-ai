@@ -1,0 +1,66 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To address (a person) using the pronoun you (in the past, especially to use you rather than thou, when you was considered more formal)."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "(object pronoun) The people spoken, or written to, as an object."
+          example "Both of you should get ready now."
+        entry
+          definition "(reflexive pronoun) (To) yourselves, (to) yourself."
+        entry
+          definition "(object pronoun) The person spoken to or written to, as an object. (Replacing thee; originally as a mark of respect.)"
+        entry
+          definition "(subject pronoun) The people spoken to or written to, as a subject. (Replacing ye.)"
+          example "You are all supposed to do as I tell you."
+        entry
+          definition "(subject pronoun) The person spoken to or written to, as a subject. (Originally as a mark of respect.)"
+        entry
+          definition "(indefinite personal pronoun) Anyone, one; an unspecified individual or group of individuals (as subject or object)."
+      partOfSpeech pronoun
+      synonyms (thee ye ye one people them they)
+  phonetic "/jʉː/"
+  phonetics
+    entry
+      audio ""
+      text "/jʉː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/you-au-us-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=589433"
+      text "/jə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/you-uk-stressed.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9029005"
+      text "/juː/"
+    entry
+      audio ""
+      text "/ju/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/you-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=589431"
+      text "/ju/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/you-au-us-unstressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=589433"
+      text "/jə/"
+  sourceUrls ("https://en.wiktionary.org/wiki/you")
+  word you

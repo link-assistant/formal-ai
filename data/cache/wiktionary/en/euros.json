@@ -1,0 +1,67 @@
+[
+  {
+    "word": "euros",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Person living or originating from Europe",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Person who resides within the European Union",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The currency unit of the European Monetary Union. Symbol: €",
+            "synonyms": [
+              "EUR"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "A coin with a face value of 1 euro.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "EUR"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Macropus robustus, a wallaroo (macropod species).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/European",
+      "https://en.wiktionary.org/wiki/euro",
+      "https://en.wiktionary.org/wiki/euros"
+    ]
+  }
+]

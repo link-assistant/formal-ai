@@ -1,0 +1,13 @@
+Q4147654
+  aliases
+    en ("grammatical feature")
+    ru ("словоизменительная форма")
+  descriptions
+    en "how words may have different forms"
+    ru "языковой знак, в котором тем или иным грамматическим способом выражается грамматическое значение"
+  id Q4147654
+  labels
+    en "grammatical form"
+    ru "грамматическая форма"
+  type item
+success 1

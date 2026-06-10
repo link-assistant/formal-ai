@@ -1,0 +1,84 @@
+[
+  {
+    "word": "quantity",
+    "phonetic": "/ˈkwɑndədi/",
+    "phonetics": [
+      {
+        "text": "/ˈkwɑndədi/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/quantity-ca.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=191048",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈkwɒn.tɪ.ti/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/quantity-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=22713365"
+      },
+      {
+        "text": "/ˈkwɑn(t)ɨti/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/quantity-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=191049",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A fundamental, generic term used when referring to the measurement (count, amount) of a scalar, vector, number of items or to some other way of denominating the value of a collection or group of items.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You have to choose between quantity and quality."
+          },
+          {
+            "definition": "An indefinite amount of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Olive oil can be used practically in any quantity."
+          },
+          {
+            "definition": "A specific measured amount.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Generally it should not be used in a quantity larger than 15 percent."
+          },
+          {
+            "definition": "A considerable measure or amount.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The Boeing P-26A was the first all-metal monoplane fighter produced in quantity for the U.S. Army Air Corps."
+          },
+          {
+            "definition": "Property of a phenomenon, body, or substance, where the property has a magnitude that can be expressed as number and a reference.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Indicates that the entire preceding expression is henceforth considered a single object.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "x plus y quantity squared equals x squared plus 2xy plus y squared."
+          }
+        ],
+        "synonyms": [
+          "Qty"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/quantity"
+    ]
+  }
+]

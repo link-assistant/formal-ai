@@ -1,0 +1,17 @@
+language en
+lemma teacher
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a person whose occupation is teaching"
+    id oewn-10713754-n
+    partOfSpeech n
+    synonyms (instructor)
+  entry
+    definition "a personified abstraction that teaches"
+    examples ("books were his teachers" "experience is a demanding teacher")
+    id oewn-05863377-n
+    partOfSpeech n
+source "oewn:2024"

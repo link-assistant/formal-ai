@@ -1,0 +1,148 @@
+{
+  "lemma": "load",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03685312-n",
+      "partOfSpeech": "n",
+      "definition": "weight to be borne or conveyed",
+      "synonyms": [
+        "loading",
+        "burden"
+      ]
+    },
+    {
+      "id": "oewn-13794608-n",
+      "partOfSpeech": "n",
+      "definition": "a quantity that can be processed or transported at one time",
+      "examples": [
+        "the system broke down under excessive loads"
+      ],
+      "synonyms": [
+        "loading"
+      ]
+    },
+    {
+      "id": "oewn-02967841-n",
+      "partOfSpeech": "n",
+      "definition": "goods carried by a large vehicle",
+      "synonyms": [
+        "cargo",
+        "lading",
+        "freight",
+        "loading",
+        "payload",
+        "shipment",
+        "consignment"
+      ]
+    },
+    {
+      "id": "oewn-13794453-n",
+      "partOfSpeech": "n",
+      "definition": "an amount of alcohol sufficient to intoxicate",
+      "examples": [
+        "he got a load on and started a brawl"
+      ]
+    },
+    {
+      "id": "oewn-11469898-n",
+      "partOfSpeech": "n",
+      "definition": "the power output of a generator or power plant"
+    },
+    {
+      "id": "oewn-05841069-n",
+      "partOfSpeech": "n",
+      "definition": "an onerous or difficult concern",
+      "examples": [
+        "the burden of responsibility",
+        "that's a load off my mind"
+      ],
+      "synonyms": [
+        "burden",
+        "encumbrance",
+        "incumbrance",
+        "onus"
+      ]
+    },
+    {
+      "id": "oewn-11466163-n",
+      "partOfSpeech": "n",
+      "definition": "a deposit of valuable ore occurring within definite boundaries separating it from surrounding rocks",
+      "synonyms": [
+        "lode"
+      ]
+    },
+    {
+      "id": "oewn-04558661-n",
+      "partOfSpeech": "n",
+      "definition": "the front part of a guided missile or rocket or torpedo that carries the nuclear or explosive charge or the chemical or biological agents",
+      "synonyms": [
+        "warhead",
+        "payload"
+      ]
+    },
+    {
+      "id": "oewn-03685574-n",
+      "partOfSpeech": "n",
+      "definition": "electrical device to which electrical power is delivered"
+    },
+    {
+      "id": "oewn-01492646-v",
+      "partOfSpeech": "v",
+      "definition": "fill or place a load on",
+      "examples": [
+        "load a car",
+        "load the truck with hay"
+      ],
+      "synonyms": [
+        "lade",
+        "laden",
+        "load up"
+      ]
+    },
+    {
+      "id": "oewn-01492993-v",
+      "partOfSpeech": "v",
+      "definition": "provide (a device) with something necessary",
+      "examples": [
+        "He loaded his gun carefully",
+        "load the camera"
+      ],
+      "synonyms": [
+        "charge"
+      ]
+    },
+    {
+      "id": "oewn-02236692-v",
+      "partOfSpeech": "v",
+      "definition": "transfer from a storage device to a computer's memory"
+    },
+    {
+      "id": "oewn-01614988-v",
+      "partOfSpeech": "v",
+      "definition": "put (something) on a structure or conveyance",
+      "examples": [
+        "load the bags onto the trucks"
+      ]
+    },
+    {
+      "id": "oewn-00488684-v",
+      "partOfSpeech": "v",
+      "definition": "corrupt, debase, or make impure by adding a foreign or inferior substance; often by replacing valuable ingredients with inferior ones",
+      "examples": [
+        "adulterate liquor"
+      ],
+      "synonyms": [
+        "adulterate",
+        "stretch",
+        "dilute",
+        "debase"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "lemma": "compute",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00638921-v",
+      "partOfSpeech": "v",
+      "definition": "make a mathematical calculation or computation",
+      "synonyms": [
+        "calculate",
+        "cipher",
+        "cypher",
+        "work out",
+        "reckon",
+        "figure"
+      ]
+    }
+  ]
+}

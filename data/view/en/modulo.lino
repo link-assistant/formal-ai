@@ -1,0 +1,21 @@
+view
+  id M-02fc8280b942
+  lemma modulo
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The operation or function that returns the remainder of one number divided by another."
+    provenance (wiktionary)
+  sense
+    part_of_speech preposition
+    gloss "Given a specified modulus of."
+    provenance (wiktionary)
+  sense
+    part_of_speech preposition
+    gloss "Except for differences accounted for by."
+    provenance (wiktionary)
+  sense
+    part_of_speech preposition
+    gloss "(extended use) With due allowance for (a specified exception or particular detail)."
+    provenance (wiktionary)

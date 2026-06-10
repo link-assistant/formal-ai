@@ -1,0 +1,94 @@
+[
+  {
+    "word": "network",
+    "phonetic": "/nɛtwɜːk/",
+    "phonetics": [
+      {
+        "text": "/nɛtwɜːk/",
+        "audio": ""
+      },
+      {
+        "text": "/nɛtwɝk/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/network-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1755178",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A fabric or structure of fibrous elements attached to each other at regular intervals.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any interconnected group or system",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A network of roads crisscrossed the country."
+          },
+          {
+            "definition": "A directory of people maintained for their advancement",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "To get a job in today's economy, it is important to have a strong network."
+          },
+          {
+            "definition": "A group of affiliated television stations that broadcast common programs from a parent company.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Multiple computers and other devices connected together to share information",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The copy machine is connected to the network so it can now serve as a printer."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To interact socially for the purpose of getting connections or personal advancement.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Many people find it worthwhile to network for jobs and information."
+          },
+          {
+            "definition": "To connect two or more computers or other computerized devices.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If we network his machine to the server, he will be able to see all the files."
+          },
+          {
+            "definition": "To interconnect a group or system.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To broadcast across an entire network of stations and affiliates at the same time.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/network"
+    ]
+  }
+]

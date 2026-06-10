@@ -1,0 +1,14 @@
+Q34264
+  aliases
+    en (BSD "Berkeley Unix" "BSD UNIX" 4.4BSD "Berkeley System Distribution")
+  descriptions
+    en "free, open-source reimplementation of the AT&T UNIX operating system"
+    hi "प्रचालन तन्त्र"
+    ru "операционная система"
+  id Q34264
+  labels
+    en "Berkeley Software Distribution"
+    ru BSD
+    zh BSD
+  type item
+success 1

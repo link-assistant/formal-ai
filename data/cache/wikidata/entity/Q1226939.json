@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q1226939": {
+      "type": "item",
+      "id": "Q1226939",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "division"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деление"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भाग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "除法"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "arithmetic operation; one of the four basic operations of arithmetic (others being addition, subtraction, multiplication).The division of two natural numbers is the process of calculating the number of times one number is contained within one another"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "действие, обратное умножению"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंकगणितीय संक्रिया; अंकगणित की चार मूल संक्रियाओं में से एक (अन्य संक्रियाएँ हैं जोड़, घटाव, गुणा)। दो प्राकृतिक संख्याओं का विभाजन एक संख्या के एक-दूसरे में समाहित होने की संख्या की गणना करने की प्रक्रिया है।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "運算"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "делимое"
+          },
+          {
+            "language": "ru",
+            "value": "деление на нуль"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "除"
+          },
+          {
+            "language": "zh",
+            "value": "÷"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

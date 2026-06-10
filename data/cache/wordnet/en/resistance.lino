@@ -1,0 +1,59 @@
+language en
+lemma resistance
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the action of opposing something that you disapprove or disagree with"
+    examples ("he encountered a general feeling of resistance from many citizens" "despite opposition from the newspapers he went ahead")
+    id oewn-00203133-n
+    partOfSpeech n
+    synonyms (opposition)
+  entry
+    definition "any mechanical force that tends to retard or oppose motion"
+    id oewn-11524062-n
+    partOfSpeech n
+  entry
+    definition "a material's opposition to the flow of electric current; measured in ohms"
+    id oewn-11524386-n
+    partOfSpeech n
+    synonyms ("electric resistance" "electrical resistance" impedance resistivity "ohmic resistance")
+  entry
+    definition "the military action of resisting the enemy's advance"
+    examples ("the enemy offered little resistance")
+    id oewn-00958098-n
+    partOfSpeech n
+  entry
+    definition "(medicine) the condition in which an organism can resist disease"
+    id oewn-14550773-n
+    partOfSpeech n
+    synonyms (immunity)
+  entry
+    definition "the capacity of an organism to defend itself against harmful environmental agents"
+    examples ("these trees are widely planted because of their resistance to salt and smog")
+    id oewn-14550556-n
+    partOfSpeech n
+  entry
+    definition "a secret group organized to overthrow a government or occupation force"
+    id oewn-08377599-n
+    partOfSpeech n
+    synonyms (underground)
+  entry
+    definition "the degree of unresponsiveness of a disease-causing microorganism to antibiotics or other drugs (as in penicillin-resistant bacteria)"
+    id oewn-05221162-n
+    partOfSpeech n
+  entry
+    definition "(psychiatry) an unwillingness to bring repressed feelings into conscious awareness"
+    id oewn-04653729-n
+    partOfSpeech n
+  entry
+    definition "an electrical device that resists the flow of electrical current"
+    id oewn-04087045-n
+    partOfSpeech n
+    synonyms (resistor)
+  entry
+    definition "group action in opposition to those in power"
+    id oewn-01171807-n
+    partOfSpeech n
+source "oewn:2024"

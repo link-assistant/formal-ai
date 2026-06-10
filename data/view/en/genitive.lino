@@ -1,0 +1,13 @@
+view
+  id M-e1541f47797c
+  lemma genitive
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "serving to express or indicate possession"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the case expressing ownership"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-685ffe510a4e
+  lemma evaluate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "evaluate or estimate the nature, quality, ability, extent, or significance of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "form a critical opinion of"
+    provenance (wordnet)

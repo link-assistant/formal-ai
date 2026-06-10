@@ -1,0 +1,108 @@
+[
+  {
+    "word": "logic",
+    "phonetic": "/ˈlɒdʒɪk/",
+    "phonetics": [
+      {
+        "text": "/ˈlɒdʒɪk/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈlɑdʒɪk/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/logic-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762980",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A method of human thought that involves thinking in a linear, step-by-step manner about how a problem can be solved. Logic is the basis of many principles including the scientific method.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The study of the principles and criteria of valid inference and demonstration.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The mathematical study of relationships between rigorously defined concepts and of mathematical proof of statements.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A formal or informal language together with a deductive system or a model-theoretic semantics.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any system of thought, whether rigorous and productive or not, especially one associated with a particular person.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It's hard to work out his system of logic."
+          },
+          {
+            "definition": "The part of a system (usually electronic) that performs the boolean logic operations, short for logic gates or logic circuit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Fred is designing the logic for the new controller."
+          }
+        ],
+        "synonyms": [
+          "formal logic",
+          "modern logic",
+          "formal system",
+          "predicate logic"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To engage in excessive or inappropriate application of logic.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To apply logical reasoning to.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To overcome by logical argument.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Logical",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/logic"
+    ]
+  }
+]

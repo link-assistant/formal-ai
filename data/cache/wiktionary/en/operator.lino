@@ -1,0 +1,41 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One who operates."
+        entry
+          definition "A telecommunications facilitator whose job is to establish temporary network connections."
+        entry
+          definition "A function or other mapping that carries variables defined on a domain into another variable or set of variables in a defined range."
+        entry
+          definition "The game of Chinese whispers."
+        entry
+          definition "A person who is adept at making deals or getting results, especially one who uses questionable methods."
+        entry
+          definition "A member of a military special operations unit."
+        entry
+          definition "The administrator of a channel or network on IRC."
+        entry
+          definition "A symbol that represents a construct in a programming language and differs from a normal function in its syntax."
+        entry
+          definition "A kind of expression that enters into an a-bar movement dependency and is said to bind a variable."
+          example 'In the sentence "What did Bill say he wants to buy?", "what" is an operator, binding a phonetically empty variable.'
+      partOfSpeech noun
+  phonetic "/ˈɒpəˌɹeɪtə/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/operator-uk.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=95142964"
+      text "/ˈɒpəˌɹeɪtə/"
+    entry
+      audio ""
+      text "/ˈɑpəˌɹeɪɾɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/operator")
+  word operator

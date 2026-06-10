@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q2728730": {
+      "type": "item",
+      "id": "Q2728730",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "gratitude"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "благодарность"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आभार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "感謝"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "feeling or attitude in acknowledgment of a benefit that one has received or will receive"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "чувство признательности за сделанное добро"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "一種回饋的反應或態度"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "thankfulness"
+          },
+          {
+            "language": "en",
+            "value": "gratefulness"
+          },
+          {
+            "language": "en",
+            "value": "appreciation"
+          },
+          {
+            "language": "en",
+            "value": "indebtedness"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "感恩"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

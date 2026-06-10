@@ -1,0 +1,25 @@
+view
+  id M-eec030482b48
+  lemma keyword
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any word used as the key to a code."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any word used in a reference work to link to other words or other information."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A reserved word used to identify a specific command, function etc."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any word that occurs in a text more often than normal."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To tag with keywords, as for example to facilitate searching."
+    provenance (wiktionary)

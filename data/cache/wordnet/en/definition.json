@@ -1,0 +1,24 @@
+{
+  "lemma": "definition",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06757091-n",
+      "partOfSpeech": "n",
+      "definition": "a concise explanation of the meaning of a word or phrase or symbol"
+    },
+    {
+      "id": "oewn-04710305-n",
+      "partOfSpeech": "n",
+      "definition": "clarity of outline",
+      "examples": [
+        "exercise had given his muscles superior definition"
+      ]
+    }
+  ]
+}

@@ -1,90 +1,90 @@
 multilingual_responses
-  response "response_greeting_en"
-    intent "greeting"
-    language "en"
+  response response_greeting_en
+    intent greeting
+    language en
     text "Hi, how may I help you?"
     variant "Hi, how may I help you?"
     variant "Hello! How can I assist you today?"
     variant "Hi there! What can I do for you?"
     variant "Hey, how can I help?"
     variant "Hello — what would you like to explore?"
-  response "response_greeting_ru"
-    intent "greeting"
-    language "ru"
+  response response_greeting_ru
+    intent greeting
+    language ru
     text "Здравствуйте! Чем могу помочь?"
     variant "Здравствуйте! Чем могу помочь?"
     variant "Привет! Чем могу быть полезен?"
     variant "Здравствуйте! Какой у вас вопрос?"
     variant "Привет! Что вас интересует?"
-  response "response_greeting_hi"
-    intent "greeting"
-    language "hi"
+  response response_greeting_hi
+    intent greeting
+    language hi
     text "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
     variant "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?"
     variant "नमस्कार! मैं आपके लिए क्या कर सकता हूँ?"
     variant "नमस्ते! कैसे सहायता कर सकता हूँ?"
-  response "response_greeting_zh"
-    intent "greeting"
-    language "zh"
-    text "你好!请问有什么可以帮您的?"
-    variant "你好!请问有什么可以帮您的?"
-    variant "您好!我能为您做些什么?"
-    variant "你好,有什么我可以协助的吗?"
-  response "response_farewell_en"
-    intent "farewell"
-    language "en"
+  response response_greeting_zh
+    intent greeting
+    language zh
+    text 你好!请问有什么可以帮您的?
+    variant 你好!请问有什么可以帮您的?
+    variant 您好!我能为您做些什么?
+    variant 你好,有什么我可以协助的吗?
+  response response_farewell_en
+    intent farewell
+    language en
     text "Goodbye! Feel free to return any time."
     variant "Goodbye! Feel free to return any time."
     variant "Bye! Come back whenever you need help."
     variant "See you later!"
     variant "Take care!"
-  response "response_farewell_ru"
-    intent "farewell"
-    language "ru"
+  response response_farewell_ru
+    intent farewell
+    language ru
     text "До свидания! Возвращайтесь в любое время."
     variant "До свидания! Возвращайтесь в любое время."
     variant "Пока! Буду рад помочь снова."
     variant "До встречи!"
-    variant "Удачи!"
-  response "response_farewell_hi"
-    intent "farewell"
-    language "hi"
+    variant Удачи!
+  response response_farewell_hi
+    intent farewell
+    language hi
     text "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
     variant "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
     variant "फिर मिलेंगे!"
-  response "response_farewell_zh"
-    intent "farewell"
-    language "zh"
-    text "再见!随时欢迎回来。"
-    variant "再见!随时欢迎回来。"
-    variant "拜拜!有需要随时回来。"
-  response "response_test_status_en"
-    intent "test_status"
-    language "en"
+  response response_farewell_zh
+    intent farewell
+    language zh
+    text 再见!随时欢迎回来。
+    variant 再见!随时欢迎回来。
+    variant 拜拜!有需要随时回来。
+  response response_test_status_en
+    intent test_status
+    language en
     text "Test passed. I'm here."
     variant "Test passed. I'm here."
     variant "I'm here. Test passed."
-  response "response_test_status_ru"
-    intent "test_status"
-    language "ru"
+  response response_test_status_ru
+    intent test_status
+    language ru
     text "Тест пройден. Я здесь."
     variant "Тест пройден. Я здесь."
     variant "Я здесь. Тест пройден."
-  response "response_test_status_hi"
-    intent "test_status"
-    language "hi"
+  response response_test_status_hi
+    intent test_status
+    language hi
     text "परीक्षण सफल रहा। मैं यहाँ हूँ।"
     variant "परीक्षण सफल रहा। मैं यहाँ हूँ।"
     variant "मैं यहाँ हूँ। परीक्षण सफल रहा।"
-  response "response_test_status_zh"
-    intent "test_status"
-    language "zh"
-    text "测试通过。我在这里。"
-    variant "测试通过。我在这里。"
-    variant "我在这里。测试通过。"
-  response "response_courtesy_response_en"
-    intent "courtesy_response"
-    language "en"
+  response response_test_status_zh
+    intent test_status
+    language zh
+    text 测试通过。我在这里。
+    variant 测试通过。我在这里。
+    variant 我在这里。测试通过。
+  response response_courtesy_response_en
+    intent courtesy_response
+    language en
     text "Glad to hear it. What would you like to do next?"
     variant "Glad to hear it. What would you like to do next?"
     variant "You're welcome. What would you like to do next?"
@@ -96,23 +96,23 @@ multilingual_responses
     follow_up_variant "Do you want to discuss something else?"
     follow_up_variant "Is there anything else you want to work on?"
     follow_up_variant "Would you like to explore another topic?"
-  response "response_courtesy_response_ru"
-    intent "courtesy_response"
-    language "ru"
+  response response_courtesy_response_ru
+    intent courtesy_response
+    language ru
     text "Рад это слышать. Что вы хотите сделать дальше?"
     variant "Рад это слышать. Что вы хотите сделать дальше?"
     variant "Пожалуйста. Что вы хотите сделать дальше?"
     ack_variant "Рад это слышать."
-    ack_variant "Пожалуйста."
+    ack_variant Пожалуйста.
     ack_variant "Хорошо, рад слышать."
-    ack_variant "Отлично."
+    ack_variant Отлично.
     follow_up_variant "Что вы хотите сделать дальше?"
     follow_up_variant "Хотите обсудить что-то еще?"
     follow_up_variant "Есть ли еще тема, с которой помочь?"
     follow_up_variant "Продолжим с другим вопросом?"
-  response "response_courtesy_response_hi"
-    intent "courtesy_response"
-    language "hi"
+  response response_courtesy_response_hi
+    intent courtesy_response
+    language hi
     text "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
     variant "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
     variant "आपका स्वागत है। अब आप क्या करना चाहेंगे?"
@@ -122,247 +122,247 @@ multilingual_responses
     follow_up_variant "अब आप क्या करना चाहेंगे?"
     follow_up_variant "क्या आप कुछ और चर्चा करना चाहते हैं?"
     follow_up_variant "क्या किसी और चीज़ में मदद चाहिए?"
-  response "response_courtesy_response_zh"
-    intent "courtesy_response"
-    language "zh"
-    text "很高兴听到。接下来您想做什么?"
-    variant "很高兴听到。接下来您想做什么?"
-    variant "不客气。接下来您想做什么?"
-    ack_variant "很高兴听到。"
-    ack_variant "不客气。"
-    ack_variant "好的。"
-    follow_up_variant "接下来您想做什么?"
-    follow_up_variant "您想讨论别的事情吗?"
-    follow_up_variant "还有什么需要我帮忙的吗?"
-  response "response_identity_en"
-    intent "identity"
-    language "en"
+  response response_courtesy_response_zh
+    intent courtesy_response
+    language zh
+    text 很高兴听到。接下来您想做什么?
+    variant 很高兴听到。接下来您想做什么?
+    variant 不客气。接下来您想做什么?
+    ack_variant 很高兴听到。
+    ack_variant 不客气。
+    ack_variant 好的。
+    follow_up_variant 接下来您想做什么?
+    follow_up_variant 您想讨论别的事情吗?
+    follow_up_variant 还有什么需要我帮忙的吗?
+  response response_identity_en
+    intent identity
+    language en
     text "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo."
-  response "response_identity_ru"
-    intent "identity"
-    language "ru"
+  response response_identity_ru
+    intent identity
+    language ru
     text "Я formal-ai — детерминированный символьный ИИ, который отвечает на основе локальных правил Links Notation и совместимых OpenAI-форматов. В этой демонстрации я не выполняю нейросетевой инференс."
-  response "response_identity_hi"
-    intent "identity"
-    language "hi"
+  response response_identity_hi
+    intent identity
+    language hi
     text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI प्रणाली, जो स्थानीय Links Notation नियमों और OpenAI-संगत API आकारों से उत्तर देती है। इस डेमो में मैं कोई न्यूरल इन्फेरेन्स नहीं करता।"
-  response "response_identity_zh"
-    intent "identity"
-    language "zh"
+  response response_identity_zh
+    intent identity
+    language zh
     text "我是 formal-ai —— 一个确定性的符号化 AI 系统,根据本地的 Links Notation 规则和兼容 OpenAI 的 API 形式作答。本演示不进行任何神经网络推理。"
-  response "response_assistant_name_en"
-    intent "assistant_name"
-    language "en"
+  response response_assistant_name_en
+    intent assistant_name
+    language en
     text "I'm formal AI, and currently I don't have a name. But you can name me as you like."
-  response "response_assistant_name_ru"
-    intent "assistant_name"
-    language "ru"
+  response response_assistant_name_ru
+    intent assistant_name
+    language ru
     text "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите."
-  response "response_assistant_name_hi"
-    intent "assistant_name"
-    language "hi"
+  response response_assistant_name_hi
+    intent assistant_name
+    language hi
     text "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
-  response "response_assistant_name_zh"
-    intent "assistant_name"
-    language "zh"
+  response response_assistant_name_zh
+    intent assistant_name
+    language zh
     text "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。"
-  response "response_meta_explanation_en"
-    intent "meta_explanation"
-    language "en"
+  response response_meta_explanation_en
+    intent meta_explanation
+    language en
     text "I work by matching your prompt against deterministic Links Notation rules stored in memory. Each rule maps a recognized pattern to a fixed response. When no rule matches, I report intent: unknown. There is no neural inference — every answer is fully traceable to a symbolic rule."
-  response "response_meta_explanation_ru"
-    intent "meta_explanation"
-    language "ru"
+  response response_meta_explanation_ru
+    intent meta_explanation
+    language ru
     text "Я работаю так: ваш запрос сопоставляется с детерминированными правилами Links Notation, хранящимися в памяти. Каждое правило связывает распознанный шаблон с фиксированным ответом. Если ни одно правило не подходит, я возвращаю intent: unknown. Нейросетевого инференса нет — каждый ответ полностью отслеживаем по символьному правилу."
-  response "response_meta_explanation_hi"
-    intent "meta_explanation"
-    language "hi"
+  response response_meta_explanation_hi
+    intent meta_explanation
+    language hi
     text "मैं इस प्रकार काम करता हूँ: आपके संकेत को मेमोरी में संग्रहीत नियतात्मक Links Notation नियमों से मिलाया जाता है। प्रत्येक नियम एक पहचाने गए पैटर्न को एक निश्चित उत्तर से जोड़ता है। जब कोई नियम मेल नहीं खाता, तो मैं intent: unknown रिपोर्ट करता हूँ। यहाँ कोई न्यूरल इन्फेरेन्स नहीं है — प्रत्येक उत्तर एक प्रतीकात्मक नियम से पूरी तरह पता लगाने योग्य है।"
-  response "response_meta_explanation_zh"
-    intent "meta_explanation"
-    language "zh"
+  response response_meta_explanation_zh
+    intent meta_explanation
+    language zh
     text "我的工作方式是：将您的提示与存储在内存中的确定性 Links Notation 规则进行匹配。每条规则将一个已识别的模式映射到一个固定的回复。当没有规则匹配时，我返回 intent: unknown。这里没有神经推理——每个答案都可以完整追溯到某条符号规则。"
-  response "response_inappropriate_content_en"
-    intent "inappropriate_content"
-    language "en"
+  response response_inappropriate_content_en
+    intent inappropriate_content
+    language en
     text "That message contains inappropriate content. Please keep the conversation respectful."
-  response "response_inappropriate_content_ru"
-    intent "inappropriate_content"
-    language "ru"
+  response response_inappropriate_content_ru
+    intent inappropriate_content
+    language ru
     text "Сообщение содержит неприемлемый контент. Пожалуйста, соблюдайте уважительный тон."
-  response "response_inappropriate_content_hi"
-    intent "inappropriate_content"
-    language "hi"
+  response response_inappropriate_content_hi
+    intent inappropriate_content
+    language hi
     text "उस संदेश में अनुचित सामग्री है। कृपया बातचीत को सम्मानजनक रखें।"
-  response "response_inappropriate_content_zh"
-    intent "inappropriate_content"
-    language "zh"
-    text "该消息包含不当内容。请保持尊重的交流方式。"
-  response "response_clarification_en"
-    intent "clarification"
-    language "en"
+  response response_inappropriate_content_zh
+    intent inappropriate_content
+    language zh
+    text 该消息包含不当内容。请保持尊重的交流方式。
+  response response_clarification_en
+    intent clarification
+    language en
     text "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and Hello World programs. If you'd like to ask about something specific, try one of those or add a fact in Links Notation."
-  response "response_clarification_ru"
-    intent "clarification"
-    language "ru"
+  response response_clarification_ru
+    intent clarification
+    language ru
     text "Приношу извинения за непонимание. Я formal-ai — детерминированный символьный ИИ. Я могу отвечать на приветствия, вопросы об идентичности, поиск понятий (что такое X?), арифметику и программы Hello World. Попробуйте один из этих запросов или добавьте факт в Links Notation."
-  response "response_clarification_hi"
-    intent "clarification"
-    language "hi"
+  response response_clarification_hi
+    intent clarification
+    language hi
     text "भ्रम के लिए क्षमा करें। मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं अभिवादन, पहचान के सवाल, अवधारणा खोज (X क्या है?), अंकगणित और Hello World कार्यक्रमों का उत्तर दे सकता हूँ। इनमें से एक आज़माएं या Links Notation में एक तथ्य जोड़ें।"
-  response "response_clarification_zh"
-    intent "clarification"
-    language "zh"
+  response response_clarification_zh
+    intent clarification
+    language zh
     text "抱歉造成困惑。我是 formal-ai，一个确定性的符号化 AI。我能回答问候、身份问题、概念查询（什么是X？）、算术以及 Hello World 程序。请尝试上述任一类型的问题，或在 Links Notation 中添加一个事实。"
-  response "response_capabilities_en"
-    intent "capabilities"
-    language "en"
+  response response_capabilities_en
+    intent capabilities
+    language en
     text "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Behavior rules**: send `List behavior rules` to see the built-in routing rules, and `Show behavior rule unknown` to read one in Links Notation.\n- **Teach this dialog**: send «When I say `your prompt`, answer `your answer`» to add a dialog-local rule for the current conversation.\n- **Self facts**: send `List all facts you know about yourself` to see what I know about myself.\n- **Report a missing rule**: use the top-bar **Report issue** button; unknown-prompt message links include the diagnostic trace for maintainers.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference."
-  response "response_capabilities_ru"
-    intent "capabilities"
-    language "ru"
+  response response_capabilities_ru
+    intent capabilities
+    language ru
     text "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Правила поведения**: отправьте `Покажи правила поведения`, чтобы увидеть встроенные правила, и `Покажи правило unknown`, чтобы прочитать одно правило.\n- **Обучение в диалоге**: отправьте «Когда я скажу `ваш запрос`, ответь `ваш ответ`», чтобы добавить правило, действующее только в этом диалоге.\n- **Факты о себе**: отправьте `List all facts you know about yourself`, чтобы увидеть, что я знаю о себе.\n- **Сообщение об ошибке**: используйте кнопку отчёта об ошибке сверху; для неизвестных запросов ссылка в сообщении добавит диагностическую трассировку.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
-  response "response_capabilities_hi"
-    intent "capabilities"
-    language "hi"
+  response response_capabilities_hi
+    intent capabilities
+    language hi
     text "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **व्यवहार नियम**: `List behavior rules` भेजकर अंतर्निहित नियम देखें और `Show behavior rule unknown` से कोई नियम पढ़ें।\n- **संवाद-स्तर पर सिखाना**: «When I say `prompt`, answer `answer`» भेजकर इस संवाद के लिए स्थानीय नियम जोड़ें।\n- **स्व-तथ्य**: `List all facts you know about yourself` भेजें ताकि मैं अपने बारे में जो जानता हूँ वह सूचीबद्ध करूँ।\n- **समस्या रिपोर्ट**: ऊपर के «Report issue» बटन का उपयोग करें; unknown prompts के message link में diagnostic trace शामिल होता है।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-  response "response_capabilities_zh"
-    intent "capabilities"
-    language "zh"
+  response response_capabilities_zh
+    intent capabilities
+    language zh
     text "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **行为规则**：发送 `List behavior rules` 查看内置规则，并发送 `Show behavior rule unknown` 阅读某条规则。\n- **对话内教学**：发送「When I say `prompt`, answer `answer`」可以在本轮对话中添加一条本地规则。\n- **自我事实**：发送 `List all facts you know about yourself` 查看我知道的关于自己的事实。\n- **问题反馈**：使用顶部的 「Report issue」按钮；未知请求的消息链接会带上 diagnostic trace。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
-  response "response_capabilities_more_en"
-    intent "capabilities_more"
-    language "en"
+  response response_capabilities_more_en
+    intent capabilities_more
+    language en
     text "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export."
-  response "response_capabilities_more_ru"
-    intent "capabilities_more"
-    language "ru"
+  response response_capabilities_more_ru
+    intent capabilities_more
+    language ru
     text "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `Покажи правила поведения` и `Покажи правило unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память."
-  response "response_capabilities_more_hi"
-    intent "capabilities_more"
-    language "hi"
+  response response_capabilities_more_hi
+    intent capabilities_more
+    language hi
     text "पहले बताई गई क्षमता के अलावा, मैं यह भी कर सकता हूँ:\n\n- **अंकगणित**: `2 + 2` जैसे expressions निकालना।\n- **अनुवाद**: समर्थित भाषाओं के बीच छोटे वाक्य अनुवाद करना।\n- **अवधारणा खोज**: `What is Wikipedia?` जैसे शब्द समझाना।\n- **Hello World**: Rust, Python, JavaScript, Go, C और अन्य भाषाओं में छोटे programs बनाना।\n- **संवाद स्मृति**: current session के पहले messages उपयोग करना।\n- **व्यवहार नियम**: `List behavior rules` और `Show behavior rule unknown` से built-in rules दिखाना।\n- **Settings और actions**: diagnostics, demo mode, agent mode, theme, language, chat style, और memory import/export configure करना।"
-  response "response_capabilities_more_zh"
-    intent "capabilities_more"
-    language "zh"
+  response response_capabilities_more_zh
+    intent capabilities_more
+    language zh
     text "除了已经提到的能力，我还可以：\n\n- **算术**：计算 `2 + 2` 这样的表达式。\n- **翻译**：在支持的语言之间翻译短句。\n- **概念查找**：解释 `What is Wikipedia?` 这样的术语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的小程序。\n- **会话记忆**：使用当前会话中的早前消息。\n- **行为规则**：通过 `List behavior rules` 和 `Show behavior rule unknown` 显示内置规则。\n- **设置和操作**：配置 diagnostics、demo mode、agent mode、theme、language、chat style，以及 memory import/export。"
-  response "response_unknown_en"
-    intent "unknown"
-    language "en"
+  response response_unknown_en
+    intent unknown
+    language en
     text "I don't know how to answer that yet. I cannot answer that from local links rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or links rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable."
-  response "response_unknown_ru"
-    intent "unknown"
-    language "ru"
+  response response_unknown_ru
+    intent unknown
+    language ru
     text "Я пока не знаю, как ответить на это. Я пока не могу ответить на это по локальным правилам связей. Чтобы посмотреть текущие правила, отправьте `Покажи правила поведения`, затем `Покажи правило unknown`. Чтобы научить этот диалог ответу, отправьте: Когда я скажу `ваш запрос`, ответь `ваш ответ`. Если после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой или экспортируйте память, чтобы сохранить правило этого диалога."
-  response "response_unknown_hi"
-    intent "unknown"
-    language "hi"
+  response response_unknown_hi
+    intent unknown
+    language hi
     text "मुझे अभी इसका उत्तर देना नहीं आता। मैं अभी स्थानीय links rules से इसका उत्तर नहीं दे सकता। नियम देखने के लिए `List behavior rules` भेजें, फिर `Show behavior rule unknown` भेजें। इस संवाद को उत्तर सिखाने के लिए भेजें: जब `आपका प्रश्न` तब `आपका उत्तर`। अगर इन checks के बाद भी shared Links Notation seed fact या links rule चाहिए, तो reasoning trace के साथ Report issue उपयोग करें, या dialog-local rule टिकाऊ रखने के लिए memory export करें।"
-  response "response_unknown_zh"
-    intent "unknown"
-    language "zh"
+  response response_unknown_zh
+    intent unknown
+    language zh
     text "我还不知道如何回答这个问题。我目前无法根据本地 links rules 回答这个问题。要查看规则,发送 `List behavior rules`,然后发送 `Show behavior rule unknown`。要在本轮对话中教我回答,发送: 当 `你的提示` 时 `你的回答`。如果这些检查后仍需要共享的 Links Notation seed 事实或 links rule,请带上 reasoning trace 使用 Report issue,或导出 memory 以保留本轮对话规则。"
-  response "response_unknown_reasoning_question_en"
-    intent "unknown_reasoning_question"
-    language "en"
+  response response_unknown_reasoning_question_en
+    intent unknown_reasoning_question
+    language en
     text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_question_ru"
-    intent "unknown_reasoning_question"
-    language "ru"
+  response response_unknown_reasoning_question_ru
+    intent unknown_reasoning_question
+    language ru
     text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Какой один источник или факт нужно использовать?\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
-  response "response_unknown_reasoning_question_hi"
-    intent "unknown_reasoning_question"
-    language "hi"
+  response response_unknown_reasoning_question_hi
+    intent unknown_reasoning_question
+    language hi
     text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. कौन सा एक source या missing fact इस्तेमाल करूँ?\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
-  response "response_unknown_reasoning_question_zh"
-    intent "unknown_reasoning_question"
-    language "zh"
+  response response_unknown_reasoning_question_zh
+    intent unknown_reasoning_question
+    language zh
     text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。应该使用哪一个来源或缺失事实?\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
-  response "response_unknown_reasoning_question_unknown"
-    intent "unknown_reasoning_question"
-    language "unknown"
+  response response_unknown_reasoning_question_unknown
+    intent unknown_reasoning_question
+    language unknown
     text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. Which one source or missing fact should I use?\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_en"
-    intent "unknown_reasoning_trace"
-    language "en"
+  response response_unknown_reasoning_trace_en
+    intent unknown_reasoning_trace
+    language en
     text "I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_ru"
-    intent "unknown_reasoning_trace"
-    language "ru"
+  response response_unknown_reasoning_trace_ru
+    intent unknown_reasoning_trace
+    language ru
     text "Я не смог определить `{focus}` по локальной памяти Links Notation, кэшу публичных знаний или доступным источникам. Я записал неудачные попытки сбора данных в диагностическую трассировку.\n\nЕсли после этих проверок всё ещё нужен общий seed-факт или правило связей в формате Links Notation, сообщите о недостающем правиле с диагностической трассировкой. Для этого диалога можно экспортировать память или обучить правило: `Покажи правила поведения`, `Покажи правило unknown`, `Когда я скажу ... ответь ...`."
-  response "response_unknown_reasoning_trace_hi"
-    intent "unknown_reasoning_trace"
-    language "hi"
+  response response_unknown_reasoning_trace_hi
+    intent unknown_reasoning_trace
+    language hi
     text "मैं `{focus}` को local Links Notation memory, public-knowledge cache, या उपलब्ध sources से निर्धारित नहीं कर सका. मैंने failed gather attempts को trace में रिकॉर्ड किया है.\n\nअगर reasoning के बाद भी shared Links Notation seed fact या links rule चाहिए, तो trace के साथ Report issue उपयोग करें. इस dialog को टिकाऊ बनाने के लिए memory export करें या `When I say ... answer ...` सिखाएँ; routes देखने के लिए `List behavior rules` और `Show behavior rule unknown`."
-  response "response_unknown_reasoning_trace_zh"
-    intent "unknown_reasoning_trace"
-    language "zh"
+  response response_unknown_reasoning_trace_zh
+    intent unknown_reasoning_trace
+    language zh
     text "我无法从本地 Links Notation 记忆、公共知识缓存或可用来源确定 `{focus}`。我已在 trace 中记录失败的 gather attempts。\n\n如果 reasoning 之后仍需要共享的 Links Notation seed 事实或 links rule,请带上 trace 使用 Report issue。要让当前对话可持久化,可以 export memory，或用 `When I say ... answer ...` 教一条规则；也可查看 `List behavior rules` 和 `Show behavior rule unknown`。"
-  response "response_unknown_reasoning_trace_unknown"
-    intent "unknown_reasoning_trace"
-    language "unknown"
+  response response_unknown_reasoning_trace_unknown
+    intent unknown_reasoning_trace
+    language unknown
     text "I detected an unsupported language and am falling back to English. I could not determine `{focus}` from local Links Notation memory, cached public knowledge, or the source cache, and cannot infer a verified answer. I recorded the failed gather attempts in the trace.\n\nIf reasoning still cannot resolve this and a shared Links Notation seed fact or links rule is needed, use Report issue with the trace. To keep a dialog-local rule durable, export memory or teach it with `When I say ... answer ...`; inspect routes with `List behavior rules` and `Show behavior rule unknown`."
-  response "response_concept_lookup_in_context_en"
-    intent "concept_lookup_in_context"
-    language "en"
+  response response_concept_lookup_in_context_en
+    intent concept_lookup_in_context
+    language en
     text "In the context of «{context}» ({context_label}), {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_ru"
-    intent "concept_lookup_in_context"
-    language "ru"
+  response response_concept_lookup_in_context_ru
+    intent concept_lookup_in_context
+    language ru
     text "В контексте «{context}» ({context_label}) {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_hi"
-    intent "concept_lookup_in_context"
-    language "hi"
+  response response_concept_lookup_in_context_hi
+    intent concept_lookup_in_context
+    language hi
     text "«{context}» ({context_label}) के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_zh"
-    intent "concept_lookup_in_context"
-    language "zh"
+  response response_concept_lookup_in_context_zh
+    intent concept_lookup_in_context
+    language zh
     text "在「{context}」({context_label})的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
-  response "response_concept_lookup_in_context_no_alias_en"
-    intent "concept_lookup_in_context_no_alias"
-    language "en"
+  response response_concept_lookup_in_context_no_alias_en
+    intent concept_lookup_in_context_no_alias
+    language en
     text "In the context of {context_label}, {term} ({category}) means: {summary}\n\nSource: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_ru"
-    intent "concept_lookup_in_context_no_alias"
-    language "ru"
+  response response_concept_lookup_in_context_no_alias_ru
+    intent concept_lookup_in_context_no_alias
+    language ru
     text "В контексте {context_label} {term} ({category}) означает: {summary}\n\nИсточник: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_hi"
-    intent "concept_lookup_in_context_no_alias"
-    language "hi"
+  response response_concept_lookup_in_context_no_alias_hi
+    intent concept_lookup_in_context_no_alias
+    language hi
     text "{context_label} के संदर्भ में, {term} ({category}) का अर्थ है: {summary}\n\nस्रोत: {source} ({source_kind})."
-  response "response_concept_lookup_in_context_no_alias_zh"
-    intent "concept_lookup_in_context_no_alias"
-    language "zh"
+  response response_concept_lookup_in_context_no_alias_zh
+    intent concept_lookup_in_context_no_alias
+    language zh
     text "在{context_label}的语境下,{term}({category})指的是:{summary}\n\n来源:{source}({source_kind})。"
-  response "response_physical_action_question_en"
-    intent "physical_action_question"
-    language "en"
+  response response_physical_action_question_en
+    intent physical_action_question
+    language en
     text "No. I do not have a physical body."
-  response "response_physical_action_question_ru"
-    intent "physical_action_question"
-    language "ru"
+  response response_physical_action_question_ru
+    intent physical_action_question
+    language ru
     text "Нет. У меня нет физического тела."
-  response "response_physical_action_question_hi"
-    intent "physical_action_question"
-    language "hi"
+  response response_physical_action_question_hi
+    intent physical_action_question
+    language hi
     text "नहीं। मेरा कोई भौतिक शरीर नहीं है।"
-  response "response_physical_action_question_zh"
-    intent "physical_action_question"
-    language "zh"
-    text "不。我没有实体的身体。"
-  response "response_kupi_slona_en"
-    intent "kupi_slona"
-    language "en"
+  response response_physical_action_question_zh
+    intent physical_action_question
+    language zh
+    text 不。我没有实体的身体。
+  response response_kupi_slona_en
+    intent kupi_slona
+    language en
     text "Buy an elephant is a well-known Russian children's word game. Whatever you reply, the answer comes back: everyone says that, but you buy an elephant! The traditional winning reply is: everyone has an elephant, but I do not."
-  response "response_kupi_slona_ru"
-    intent "kupi_slona"
-    language "ru"
+  response response_kupi_slona_ru
+    intent kupi_slona
+    language ru
     text "«Купи слона» — это известная русская детская фраза-игра. На любой ответ следует продолжение: «Все так говорят, а ты купи слона!» Правильный ответ по правилам игры: «У всех есть слон, а у меня нет»."
-  response "response_kupi_slona_hi"
-    intent "kupi_slona"
-    language "hi"
+  response response_kupi_slona_hi
+    intent kupi_slona
+    language hi
     text "«हाथी खरीदो» एक प्रसिद्ध रूसी बच्चों का शब्द-खेल है। आप जो भी उत्तर दें, जवाब आता है: सब यही कहते हैं, पर तुम हाथी खरीदो! परंपरागत विजयी उत्तर है: सबके पास हाथी है, पर मेरे पास नहीं।"
-  response "response_kupi_slona_zh"
-    intent "kupi_slona"
-    language "zh"
+  response response_kupi_slona_zh
+    intent kupi_slona
+    language zh
     text "「买大象」是一个著名的俄罗斯儿童文字游戏。无论你怎么回答,对方都会说:大家都这么说,但你去买大象吧!传统的取胜回答是:大家都有大象,而我没有。"

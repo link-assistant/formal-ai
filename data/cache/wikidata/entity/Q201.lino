@@ -1,0 +1,16 @@
+Q201
+  aliases
+    en (three "Ⅲ" "ⅲ" "number 3" "number three" tri "the number 3" "3 (number)")
+    ru ("три")
+    zh ("三")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q201
+  labels
+    en "3"
+    hi "३"
+  type item
+success 1

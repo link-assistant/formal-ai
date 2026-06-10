@@ -1,0 +1,25 @@
+view
+  id M-c4253a5a0071
+  lemma token
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an individual instance of a type of symbol"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something serving as a sign of something else"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a metal or plastic disk that can be redeemed or used in designated slot machines"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something of sentimental value"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "insignificantly small; a matter of form only (‘tokenish’ is informal)"
+    provenance (wordnet)

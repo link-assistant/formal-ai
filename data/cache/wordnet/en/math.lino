@@ -1,0 +1,12 @@
+language en
+lemma math
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a science (or group of related sciences) dealing with the logic of quantity and shape and arrangement"
+    id oewn-06009822-n
+    partOfSpeech n
+    synonyms (mathematics maths)
+source "oewn:2024"

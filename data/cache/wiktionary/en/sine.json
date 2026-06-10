@@ -1,0 +1,35 @@
+[
+  {
+    "word": "sine",
+    "phonetic": "/saɪn/",
+    "phonetics": [
+      {
+        "text": "/saɪn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "In a right triangle, the ratio of the length of the side opposite an angle to the length of the hypotenuse.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "sin"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sine"
+    ]
+  }
+]

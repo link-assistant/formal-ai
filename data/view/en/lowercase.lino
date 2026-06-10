@@ -1,0 +1,13 @@
+view
+  id M-101c2a736b42
+  lemma lowercase
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to small (not capitalized) letters that were kept in the lower half of a compositor's type case"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the characters that were once kept in bottom half of a compositor's type case"
+    provenance (wordnet)

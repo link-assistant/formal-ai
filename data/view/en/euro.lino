@@ -1,0 +1,25 @@
+view
+  id M-ae5e9e97ee02
+  lemma euro
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Person living or originating from Europe"
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Person who resides within the European Union"
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The currency unit of the European Monetary Union. Symbol: €"
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A coin with a face value of 1 euro."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Macropus robustus, a wallaroo (macropod species)."
+    provenance (wiktionary)

@@ -1,0 +1,12 @@
+language en
+lemma instructions
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a manual usually accompanying a technical device and explaining how to install or operate it"
+    id oewn-06433787-n
+    partOfSpeech n
+    synonyms ("instruction manual" "book of instructions" "operating instructions")
+source "oewn:2024"

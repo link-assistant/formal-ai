@@ -1,0 +1,22 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An abstract and general idea; an abstraction."
+        entry
+          definition "Understanding retained in the mind, from experience, reasoning and imagination; a generalization (generic, basic form), or abstraction (mental impression), of a particular set of instances or occurrences (specific, though different, recorded manifestations of the concept)."
+        entry
+          definition "In generic programming, a description of supported operations on a type, including their syntax and semantics."
+      partOfSpeech noun
+      synonyms (abstraction conception notion)
+  phonetic "/ˈkɒn.sɛpt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈkɒn.sɛpt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/concept")
+  word concept

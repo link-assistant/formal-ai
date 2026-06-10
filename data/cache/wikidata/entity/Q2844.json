@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Q2844": {
+      "type": "item",
+      "id": "Q2844",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Brasília"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Бразилиа"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴西利亚"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्रासीलिया"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "federal capital of Brazil"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴西首都"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица Бразилии"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

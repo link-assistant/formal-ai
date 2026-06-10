@@ -1,0 +1,61 @@
+{
+  "lemma": "chat",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07149558-n",
+      "partOfSpeech": "n",
+      "definition": "an informal conversation",
+      "synonyms": [
+        "confab",
+        "confabulation",
+        "schmooze",
+        "schmoose"
+      ]
+    },
+    {
+      "id": "oewn-01572477-n",
+      "partOfSpeech": "n",
+      "definition": "birds having a chattering call",
+      "synonyms": [
+        "New World chat"
+      ]
+    },
+    {
+      "id": "oewn-01563277-n",
+      "partOfSpeech": "n",
+      "definition": "songbirds having a chattering call",
+      "synonyms": [
+        "Old World chat"
+      ]
+    },
+    {
+      "id": "oewn-01040538-v",
+      "partOfSpeech": "v",
+      "definition": "talk socially without exchanging too much information",
+      "examples": [
+        "the men were sitting in the cafe and shooting the breeze"
+      ],
+      "synonyms": [
+        "chew the fat",
+        "shoot the breeze",
+        "confabulate",
+        "confab",
+        "chitchat",
+        "chit-chat",
+        "chatter",
+        "chaffer",
+        "natter",
+        "gossip",
+        "jaw",
+        "claver",
+        "visit"
+      ]
+    }
+  ]
+}

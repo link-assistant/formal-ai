@@ -1,0 +1,129 @@
+[
+  {
+    "word": "metre",
+    "phonetic": "/ˈmiːtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmiːtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/metre-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=68569011",
+        "license": {
+          "name": "BY 4.0",
+          "url": "https://creativecommons.org/licenses/by/4.0"
+        }
+      },
+      {
+        "text": "/ˈmiːtəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/metre-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762994",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To measure with a metering device.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To imprint a postage mark with a postage meter.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To regulate the flow of or to deliver in regulated amounts (usually of fluids but sometimes of other things such as anticipation or breath).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The basic unit of length in the International System of Units (SI: Système International d'Unités), equal to the distance travelled by light in a vacuum in 1/299 792 458 seconds. The metre is equal to 39 47/127 (approximately 39.37) imperial inches.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "m"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meter",
+      "https://en.wiktionary.org/wiki/metre"
+    ]
+  },
+  {
+    "word": "metre",
+    "phonetic": "/ˈmiːtə/",
+    "phonetics": [
+      {
+        "text": "/ˈmiːtə/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/metre-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=68569011",
+        "license": {
+          "name": "BY 4.0",
+          "url": "https://creativecommons.org/licenses/by/4.0"
+        }
+      },
+      {
+        "text": "/ˈmiːtəɹ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/metre-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762994",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The rhythm or measure in verse and musical composition.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To put into metrical form.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/metre"
+    ]
+  }
+]

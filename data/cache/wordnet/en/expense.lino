@@ -1,0 +1,28 @@
+language en
+lemma expense
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "amounts paid for goods and services that may be currently tax deductible (as opposed to capital expenditures)"
+    id oewn-13296518-n
+    partOfSpeech n
+    synonyms (disbursal disbursement)
+  entry
+    definition "a detriment or sacrifice"
+    examples ("at the expense of")
+    id oewn-07435271-n
+    partOfSpeech n
+  entry
+    definition "money spent to perform work and usually reimbursed by an employer"
+    examples ("he kept a careful record of his expenses at the meeting")
+    id oewn-13298909-n
+    partOfSpeech n
+  entry
+    definition "reduce the estimated value of something"
+    examples ("For tax purposes you can write off the laser printer")
+    id oewn-00316757-v
+    partOfSpeech v
+    synonyms ("write off" "write down")
+source "oewn:2024"

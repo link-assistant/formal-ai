@@ -1,0 +1,60 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (advantage bonus boon gain plus plus "plus sign" positive)
+      definitions
+        entry
+          definition "The minus sign (−)."
+        entry
+          definition "A negative quantity."
+        entry
+          definition "A downside or disadvantage."
+      partOfSpeech noun
+      synonyms (defect deficiency drawback flaw shortcoming)
+    entry
+      definitions
+        entry
+          definition "To subtract."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Being a negative quantity; pertaining to a deficit or reduction."
+          example "a minus number"
+        entry
+          definition "That is below zero by (a specified amount) on a scale."
+          example "minus seven degrees"
+        entry
+          definition "Worse off than before; out of pocket."
+        entry
+          definition "Ranking just below (a designated rating)."
+          example "He got a grade of B minus for his essay."
+      partOfSpeech adjective
+      synonyms (negative below zero)
+    entry
+      antonyms (plus)
+      definitions
+        entry
+          antonyms (plus)
+          definition "Made less or reduced by (followed by an expression of number or quantity)."
+          example "seven minus two is five"
+        entry
+          definition "Without; deprived of."
+          example "I walked out minus my coat."
+          synonyms (lacking without)
+      partOfSpeech preposition
+      synonyms (lacking without)
+  phonetic "/ˈmaɪnəs/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/minus-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1780221"
+      text "/ˈmaɪnəs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/minus")
+  word minus

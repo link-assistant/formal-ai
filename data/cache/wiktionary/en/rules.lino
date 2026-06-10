@@ -1,0 +1,61 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A regulation, law, guideline."
+          example "All participants must adhere to the rules."
+        entry
+          definition "A ruler; device for measuring, a straightedge, a measure."
+        entry
+          definition "A straight line (continuous mark, as made by a pen or the like), especially one lying across a paper as a guide for writing."
+        entry
+          definition "A regulating principle."
+        entry
+          definition "The act of ruling; administration of law; government; empire; authority; control."
+        entry
+          definition "A normal condition or state of affairs."
+          example "As a rule, our senior editors are serious-minded."
+        entry
+          definition "Conduct; behaviour."
+        entry
+          definition "An order regulating the practice of the courts, or an order made between parties to an action or a suit."
+        entry
+          definition "A determinate method prescribed for performing any operation and producing a certain result."
+          example "a rule for extracting the cube root"
+        entry
+          definition "A thin plate of brass or other metal, of the same height as the type, and used for printing lines, as between columns on the same page, or in tabular work."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To regulate, be in charge of, make decisions for, reign over."
+        entry
+          definition "To excel."
+          example "This game rules!"
+        entry
+          definition "To mark (paper or the like) with rules (lines)."
+        entry
+          definition "To decide judicially."
+        entry
+          definition "To establish or settle by, or as by, a rule; to fix by universal or general consent, or by common practice."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "To revel."
+      partOfSpeech verb
+  phonetic "/ˈɹuːlz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/rules-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1661699"
+      text "/ˈɹuːlz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/rule" "https://en.wiktionary.org/wiki/rules")
+  word rules

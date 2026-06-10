@@ -1,0 +1,13 @@
+view
+  id M-f954528a8988
+  lemma invoice
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an itemized statement of money owed for goods shipped or services rendered"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "send a bill to"
+    provenance (wordnet)

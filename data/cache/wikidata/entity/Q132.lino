@@ -1,0 +1,19 @@
+Q132
+  aliases
+    en (Sun Su U)
+    hi ("रवि")
+    ru ("вс")
+    zh ("週日" "周日" "禮拜日" "礼拜日")
+  descriptions
+    en "day of the week"
+    hi "सप्ताह का दिन"
+    ru "день недели между субботой и понедельником"
+    zh "星期中的日子"
+  id Q132
+  labels
+    en Sunday
+    hi "रविवार"
+    ru "воскресенье"
+    zh "星期日"
+  type item
+success 1

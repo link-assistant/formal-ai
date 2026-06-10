@@ -1,0 +1,108 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The smallest unit of language that has a particular meaning and can be expressed by itself; the smallest discrete, meaningful unit of language. (contrast morpheme.)"
+        entry
+          definition "Something like such a unit of language:"
+        entry
+          definition "The fact or act of speaking, as opposed to taking action. ."
+        entry
+          definition "Something that someone said; a comment, utterance; speech."
+        entry
+          definition "A watchword or rallying cry, a verbal signal (even when consisting of multiple words)."
+          example "mum's the word"
+        entry
+          definition "A proverb or motto."
+        entry
+          definition "News; tidings (used without an article)."
+          example "Have you had any word from John yet?"
+        entry
+          definition "An order; a request or instruction; an expression of will."
+          example "Don't fire till I give the word"
+        entry
+          definition "A promise; an oath or guarantee."
+          example "I give you my word that I will be there on time."
+          synonyms (promise)
+        entry
+          definition "A brief discussion or conversation."
+          example "Can I have a word with you?"
+        entry
+          definition "(in the plural) See words."
+          example "There had been words between him and the secretary about the outcome of the meeting."
+        entry
+          definition "(sometimes Word) Communication from God; the message of the Christian gospel; the Bible, Scripture."
+          example "Her parents had lived in Botswana, spreading the word among the tribespeople."
+          synonyms (Bible "word of God")
+        entry
+          definition "(sometimes Word) Logos, Christ."
+          synonyms (God Logos)
+      partOfSpeech noun
+      synonyms (Bible "word of God" God Logos promise vocable)
+    entry
+      definitions
+        entry
+          definition "To say or write (something) using particular words; to phrase (something)."
+          example "I’m not sure how to word this letter to the council."
+          synonyms (express phrase "put into words" state)
+        entry
+          definition "To flatter with words, to cajole."
+        entry
+          definition "To ply or overpower with words."
+        entry
+          definition "To conjure with a word."
+        entry
+          definition "To speak, to use words; to converse, to discourse."
+      partOfSpeech verb
+      synonyms (express phrase "put into words" state)
+    entry
+      definitions
+        entry
+          definition 'Truth, indeed, that is the truth! The shortened form of the statement "My word is my bond."'
+          example '"Yo, that movie was epic!" / "Word?" ("You speak the truth?") / "Word." ("I speak the truth.")'
+        entry
+          definition "(stereotypically) An abbreviated form of word up; a statement of the acknowledgment of fact with a hint of nonchalant approval."
+      partOfSpeech interjection
+  phonetic "/wɜːd/"
+  phonetics
+    entry
+      audio ""
+      text "/wɜːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/word-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1197728"
+      text "/wɝd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/word")
+  word word
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(except in set phrases) To be, become, betide."
+          example "Well worth thee, me friend."
+      partOfSpeech verb
+  phonetic "/wɜːd/"
+  phonetics
+    entry
+      audio ""
+      text "/wɜːd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/word-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1197728"
+      text "/wɝd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/word" "https://en.wiktionary.org/wiki/worth")
+  word word

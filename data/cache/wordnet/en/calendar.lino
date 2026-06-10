@@ -1,0 +1,24 @@
+language en
+lemma calendar
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a system of timekeeping that defines the beginning and length and divisions of the year"
+    id oewn-15198526-n
+    partOfSpeech n
+  entry
+    definition "a list or register of events (appointments or social events or court cases etc.)"
+    examples ("I have you on my calendar for next Monday")
+    id oewn-06499232-n
+    partOfSpeech n
+  entry
+    definition "a tabular array of the days (usually for one year)"
+    id oewn-08283770-n
+    partOfSpeech n
+  entry
+    definition "enter into a calendar"
+    id oewn-00680900-v
+    partOfSpeech v
+source "oewn:2024"

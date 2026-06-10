@@ -1,0 +1,218 @@
+[
+  {
+    "word": "minute",
+    "phonetic": "/ˈmɪnɪt/",
+    "phonetics": [
+      {
+        "text": "/ˈmɪnɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/minute-1-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014201",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/ˈmɪnɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/minute-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=379077"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of time equal to sixty seconds (one-sixtieth of an hour).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You have twenty minutes to complete the test."
+          },
+          {
+            "definition": "A short but unspecified time period.",
+            "synonyms": [
+              "instant",
+              "jiffy",
+              "mo",
+              "moment",
+              "sec",
+              "second",
+              "tic"
+            ],
+            "antonyms": [],
+            "example": "Wait a minute, I’m not ready yet!"
+          },
+          {
+            "definition": "A unit of angle equal to one-sixtieth of a degree.",
+            "synonyms": [
+              "minute of arc"
+            ],
+            "antonyms": [],
+            "example": "We need to be sure these maps are accurate to within one minute of arc."
+          },
+          {
+            "definition": "(chiefly in the plural, minutes) A (usually formal) written record of a meeting or a part of a meeting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let’s look at the minutes of last week’s meeting."
+          },
+          {
+            "definition": "A unit of purchase on a telephone or other network, especially a cell phone network, roughly equivalent in gross form to sixty seconds' use of the network.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you buy this phone, you’ll get 100 free minutes."
+          },
+          {
+            "definition": "A point in time; a moment.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A nautical or a geographic mile.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An old coin, a half farthing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A very small part of anything, or anything very small; a jot; a whit.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A fixed part of a module.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A while or a long unspecified period of time",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Oh, I ain't heard that song in a minute!"
+          }
+        ],
+        "synonyms": [
+          "instant",
+          "jiffy",
+          "mo",
+          "moment",
+          "sec",
+          "second",
+          "tic",
+          "minute of arc"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "Of an event, to write in a memo or the minutes of a meeting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I’ll minute this evening’s meeting."
+          },
+          {
+            "definition": "To set down a short sketch or note of; to jot down; to make a minute or a brief summary of.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/minute"
+    ]
+  },
+  {
+    "word": "minute",
+    "phonetic": "/maɪˈnjuːt/",
+    "phonetics": [
+      {
+        "text": "/maɪˈnjuːt/",
+        "audio": ""
+      },
+      {
+        "text": "/maɪˈn(j)ut/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/minute-2-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=379078"
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Very small.",
+            "synonyms": [
+              "infinitesimal",
+              "insignificant",
+              "minuscule",
+              "tiny",
+              "trace"
+            ],
+            "antonyms": [
+              "big",
+              "colossal",
+              "enormous",
+              "huge",
+              "significant",
+              "tremendous",
+              "vast"
+            ],
+            "example": "They found only minute quantities of chemical residue on his clothing."
+          },
+          {
+            "definition": "Very careful and exact, giving small details.",
+            "synonyms": [
+              "exact",
+              "exacting",
+              "excruciating",
+              "precise",
+              "scrupulous"
+            ],
+            "antonyms": [],
+            "example": "The lawyer gave the witness a minute examination."
+          }
+        ],
+        "synonyms": [
+          "exact",
+          "exacting",
+          "excruciating",
+          "precise",
+          "scrupulous",
+          "infinitesimal",
+          "insignificant",
+          "minuscule",
+          "tiny",
+          "trace"
+        ],
+        "antonyms": [
+          "big",
+          "colossal",
+          "enormous",
+          "huge",
+          "significant",
+          "tremendous",
+          "vast"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/minute"
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+language en
+lemma notion
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a vague idea in which some confidence is placed"
+    examples ("his impression of her was favorable" "what are your feelings about the crisis?" "it strengthened my belief in his sincerity" "I had a feeling that she was lying")
+    id oewn-05925333-n
+    partOfSpeech n
+    synonyms (impression feeling belief opinion)
+  entry
+    definition "a general inclusive concept"
+    id oewn-05844922-n
+    partOfSpeech n
+  entry
+    definition "an odd or fanciful or capricious idea"
+    examples ("the theatrical notion of disguise is associated with disaster in his stories" "he had a whimsy about flying to the moon" "whimsy can be humorous to someone with time to enjoy it")
+    id oewn-05928143-n
+    partOfSpeech n
+    synonyms (whim whimsy whimsey)
+  entry
+    definition "(usually plural) small personal articles or clothing or sewing items"
+    examples ("buttons and needles are notions")
+    id oewn-03838339-n
+    partOfSpeech n
+source "oewn:2024"

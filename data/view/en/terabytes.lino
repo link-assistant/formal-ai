@@ -1,0 +1,13 @@
+view
+  id M-b72a95701afe
+  lemma terabytes
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "One trillion (1012, or 1,000,000,000,000) bytes. SI symbol: TB."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Imprecisely, a tebibyte or 10244 (1,099,511,627,776) bytes. SI symbol: TiB, computing symbol: TB."
+    provenance (wiktionary)

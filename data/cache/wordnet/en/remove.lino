@@ -1,0 +1,58 @@
+language en
+lemma remove
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "degree of figurative distance or separation"
+    examples ("just one remove from madness" "it imitates at many removes a Shakespearean tragedy")
+    id oewn-05097462-n
+    partOfSpeech n
+  entry
+    definition "remove something concrete, as by lifting, pushing, or taking off, or remove something abstract"
+    examples ("remove a threat" "remove a wrapper" "Remove the dirty dishes from the table" "take the gun from your pocket" "This machine withdraws heat from the environment")
+    id oewn-00173351-v
+    partOfSpeech v
+    synonyms (take "take away" withdraw)
+  entry
+    definition "remove from a position or an office"
+    id oewn-02409366-v
+    partOfSpeech v
+  entry
+    definition "dispose of"
+    examples ("Get rid of these old shoes!" "The company got rid of all the dead wood")
+    id oewn-02228837-v
+    partOfSpeech v
+    synonyms ("get rid of")
+  entry
+    definition "cause to leave"
+    examples ("The teacher took the children out of the classroom")
+    id oewn-02410046-v
+    partOfSpeech v
+    synonyms ("take out" "move out")
+  entry
+    definition "shift the position or location of, as for business, legal, educational, or military purposes"
+    examples ("He removed his children to the countryside" "Remove the troops to the forest surrounding the city" "remove a case to another court")
+    id oewn-02090707-v
+    partOfSpeech v
+    synonyms (transfer)
+  entry
+    definition "stay away or leave"
+    examples ("He absented himself")
+    id oewn-00422488-v
+    partOfSpeech v
+    synonyms (absent)
+  entry
+    definition "kill intentionally and with premeditation"
+    examples ("The mafia boss ordered his enemies murdered")
+    id oewn-02488014-v
+    partOfSpeech v
+    synonyms (murder slay hit dispatch "bump off" off "polish off")
+  entry
+    definition "get rid of something abstract"
+    examples ("The death of her mother removed the last obstacle to their marriage" "God takes away your sins")
+    id oewn-00572138-v
+    partOfSpeech v
+    synonyms ("take away")
+source "oewn:2024"

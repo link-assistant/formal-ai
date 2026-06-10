@@ -1,0 +1,37 @@
+[
+  {
+    "word": "kilobytes",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(especially RAM) A unit of storage capacity, equal to 1024 (210) bytes : a kibibyte. Frequently abbreviated KB.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "1000 (103) bytes. SI Symbol: kB",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "KB",
+          "kB",
+          "㎅"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/kilobyte",
+      "https://en.wiktionary.org/wiki/kilobytes"
+    ]
+  }
+]
