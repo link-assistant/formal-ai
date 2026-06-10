@@ -1,0 +1,13 @@
+view
+  id M-da77f7285a8d
+  lemma browser
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a viewer who looks around casually without seeking anything in particular"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a program used to view HTML documents"
+    provenance (wordnet)

@@ -1,0 +1,46 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The person, place or thing from which something (information, goods, etc.) comes or is acquired."
+          example "The accused refused to reveal the source of the illegal drugs she was selling."
+        entry
+          definition "Spring; fountainhead; wellhead; any collection of water on or under the surface of the ground in which a stream originates."
+          example "The main sources of the Euphrates River are the Karasu and Murat Rivers."
+        entry
+          definition "A reporter's informant."
+        entry
+          definition "Source code."
+        entry
+          definition "The name of one terminal of a field effect transistor (FET)."
+      partOfSpeech noun
+      synonyms (wellspring)
+    entry
+      definitions
+        entry
+          definition "To obtain or procure: used especially of a business resource."
+        entry
+          definition "To find information about (a quotation)'s source (from which it comes): to find a citation for."
+      partOfSpeech verb
+  phonetic "/sɔːs/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/source-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9027485"
+      text "/sɔːs/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/source-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1684742"
+      text "/sɔɹs/"
+  sourceUrls ("https://en.wiktionary.org/wiki/source")
+  word source

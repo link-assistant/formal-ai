@@ -1,0 +1,21 @@
+view
+  id M-891bcfcc965b
+  lemma path
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a course of conduct"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a way especially designed for a particular use"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an established line of travel or access"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a line or route along which something travels or moves"
+    provenance (wordnet)

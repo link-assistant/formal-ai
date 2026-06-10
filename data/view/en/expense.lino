@@ -1,0 +1,21 @@
+view
+  id M-0bdf99557a6a
+  lemma expense
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "amounts paid for goods and services that may be currently tax deductible (as opposed to capital expenditures)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a detriment or sacrifice"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "money spent to perform work and usually reimbursed by an employer"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reduce the estimated value of something"
+    provenance (wordnet)

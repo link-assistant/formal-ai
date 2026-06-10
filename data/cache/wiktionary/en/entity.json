@@ -1,0 +1,64 @@
+[
+  {
+    "word": "entity",
+    "phonetic": "/ˈen.tɪ.ti/",
+    "phonetics": [
+      {
+        "text": "/ˈen.tɪ.ti/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/entity-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2100386",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "That which has a distinct existence as an individual unit. Often used for organisations which have no physical form.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The existence of something considered apart from its properties.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Anything about which information or data can be stored in a database; in particular, an organised array or set of individual elements or parts.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The state or quality of being or existence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The group successfully maintains its tribal entity."
+          },
+          {
+            "definition": "A spirit, ghost, or the like.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An alien lifeform that has no corporeal body.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/entity"
+    ]
+  }
+]

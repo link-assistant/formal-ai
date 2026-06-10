@@ -1,0 +1,13 @@
+view
+  id M-f7780ef0288c
+  lemma bye
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an automatic advance to the next round in a tournament without playing an opponent"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a farewell remark"
+    provenance (wordnet)

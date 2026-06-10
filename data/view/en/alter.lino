@@ -1,0 +1,25 @@
+view
+  id M-b13e4f80fbb4
+  lemma alter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to change; make different; cause a transformation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become different in some particular way, without permanently losing one's or its former characteristics or essence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an alteration to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "insert words into texts, often falsifying it thereby"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove the ovaries of"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-b5ca3e37a8f9
+  lemma megabyte
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "One million (106) bytes."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "1,048,576 bytes; a mebibyte."
+    provenance (wiktionary)

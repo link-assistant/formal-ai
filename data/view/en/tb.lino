@@ -1,0 +1,25 @@
+view
+  id M-22714739a2e7
+  lemma tb
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "infection transmitted by inhalation or ingestion of tubercle bacilli and manifested in fever and small lesions (usually in the lungs but in various other parts of the body in acute stages)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a metallic element of the rare earth group; used in lasers; occurs in apatite and monazite and xenotime and ytterbite"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1000 gigabytes or 10^12 (1,000,000,000,000) bytes"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1000 gigabits or 10^12 (1,000,000,000,000) bits"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of information equal to 1024 gibibytes or 2^40 (1,099,511,627,776) bytes"
+    provenance (wordnet)

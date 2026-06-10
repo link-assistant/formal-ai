@@ -1,0 +1,88 @@
+[
+  {
+    "word": "source",
+    "phonetic": "/sɔːs/",
+    "phonetics": [
+      {
+        "text": "/sɔːs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/source-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9027485",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/sɔɹs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/source-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1684742",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The person, place or thing from which something (information, goods, etc.) comes or is acquired.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The accused refused to reveal the source of the illegal drugs she was selling."
+          },
+          {
+            "definition": "Spring; fountainhead; wellhead; any collection of water on or under the surface of the ground in which a stream originates.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The main sources of the Euphrates River are the Karasu and Murat Rivers."
+          },
+          {
+            "definition": "A reporter's informant.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Source code.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The name of one terminal of a field effect transistor (FET).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "wellspring"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To obtain or procure: used especially of a business resource.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To find information about (a quotation)'s source (from which it comes): to find a citation for.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/source"
+    ]
+  }
+]

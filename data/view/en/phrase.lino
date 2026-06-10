@@ -1,0 +1,29 @@
+view
+  id M-206a70029c68
+  lemma phrase
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an expression consisting of one or more words forming a grammatical constituent of a sentence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a short musical passage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an expression whose meanings cannot be inferred from the meanings of the words that make it up"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "dance movements that are linked in a single choreographic sequence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into words or an expression"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "divide, combine, or mark into phrases"
+    provenance (wordnet)

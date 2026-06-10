@@ -1,0 +1,9 @@
+view
+  id M-9f28616884e9
+  lemma merged
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "formed or united into a whole"
+    provenance (wordnet)

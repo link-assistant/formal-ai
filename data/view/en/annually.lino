@@ -1,0 +1,13 @@
+view
+  id M-4333edcb2da7
+  lemma annually
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "without missing a year"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "by the year; every year (usually with reference to a sum of money paid or received)"
+    provenance (wordnet)

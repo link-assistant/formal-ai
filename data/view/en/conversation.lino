@@ -1,0 +1,9 @@
+view
+  id M-26495708fd65
+  lemma conversation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the use of speech for informal exchange of views or ideas or information etc."
+    provenance (wordnet)

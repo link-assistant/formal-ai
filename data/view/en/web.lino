@@ -1,0 +1,37 @@
+view
+  id M-d6251a5a338a
+  lemma web
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an intricate network suggesting something that was formed by weaving or interweaving"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an intricate trap that entangles or ensnares its victim"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the flattened weblike part of a feather consisting of a series of barbs on either side of the shaft"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an interconnected system of things or people"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "computer network consisting of a collection of internet sites that offer text and graphics and sound and animation resources through the hypertext transfer protocol"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a fabric (especially a fabric in the process of being woven)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "membrane connecting the toes of some aquatic birds and mammals"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "construct or form a web, as if by weaving"
+    provenance (wordnet)

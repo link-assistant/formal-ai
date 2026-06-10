@@ -1,0 +1,9 @@
+view
+  id M-8c7b53bafb81
+  lemma sync
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make synchronous and adjust in time or manner"
+    provenance (wordnet)

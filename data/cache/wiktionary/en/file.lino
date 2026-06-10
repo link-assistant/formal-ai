@@ -1,0 +1,139 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A collection of papers collated and archived together."
+        entry
+          definition "A roll or list."
+        entry
+          definition "Course of thought; thread of narration."
+        entry
+          definition "An aggregation of data on a storage device, identified by a name."
+          example "I'm going to delete these unwanted files to free up some disk space."
+      partOfSpeech noun
+      synonyms (document paper)
+    entry
+      definitions
+        entry
+          definition "To commit (official papers) to some office."
+        entry
+          definition "To place in an archive in a logical place and order"
+        entry
+          definition "To store a file (aggregation of data) on a storage medium such as a disc or another computer."
+        entry
+          definition "(with for) To submit a formal request to some office."
+          example "She filed for divorce the next day."
+        entry
+          definition "To set in order; to arrange, or lay away."
+      partOfSpeech verb
+  phonetic "/faɪl/"
+  phonetics
+    entry
+      audio ""
+      text "/faɪl/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/file-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1648242"
+      text "/faɪl/"
+  sourceUrls ("https://en.wiktionary.org/wiki/file")
+  word file
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition 'A column of people one behind another, whether "single file" or in a large group with many files side by side.'
+          example "The troops marched in Indian file."
+        entry
+          definition "A small detachment of soldiers."
+        entry
+          definition "One of the eight vertical lines of squares on a chessboard (i.e., those identified by a letter). The analog horizontal lines are the ranks."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To move in a file."
+          example "The applicants kept filing into the room until it was full."
+      partOfSpeech verb
+  phonetic "/faɪl/"
+  phonetics
+    entry
+      audio ""
+      text "/faɪl/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/file-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1648242"
+      text "/faɪl/"
+  sourceUrls ("https://en.wiktionary.org/wiki/file")
+  word file
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A hand tool consisting of a handle to which a block of coarse metal is attached, and used for removing sharp edges or for cutting, especially through metal."
+        entry
+          definition "A cunning or resourceful person."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To smooth, grind, or cut with a file."
+          example "I'd better file the bottoms of the table legs. Otherwise they will scratch the flooring."
+      partOfSpeech verb
+  phonetic "/faɪl/"
+  phonetics
+    entry
+      audio ""
+      text "/faɪl/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/file-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1648242"
+      text "/faɪl/"
+  sourceUrls ("https://en.wiktionary.org/wiki/file")
+  word file
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To defile"
+        entry
+          definition "To corrupt"
+      partOfSpeech verb
+  phonetic "/faɪl/"
+  phonetics
+    entry
+      audio ""
+      text "/faɪl/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/file-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1648242"
+      text "/faɪl/"
+  sourceUrls ("https://en.wiktionary.org/wiki/file")
+  word file

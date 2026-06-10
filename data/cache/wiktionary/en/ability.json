@@ -1,0 +1,87 @@
+[
+  {
+    "word": "ability",
+    "phonetic": "/əˈ.bɪl.ɪ.ti/",
+    "phonetics": [
+      {
+        "text": "/əˈ.bɪl.ɪ.ti/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/ability-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2079657",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Suitableness.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The quality or state of being able; capacity to do or of doing something; having the necessary power.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This phone has the ability to have its software upgraded wirelessly."
+          },
+          {
+            "definition": "The legal wherewithal to act.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Physical power.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Financial ability.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A unique power of the mind; a faculty.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A skill or competence in doing; mental power; talent; aptitude.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She has an uncanny ability to defuse conflict."
+          }
+        ],
+        "synonyms": [
+          "aptitude",
+          "cleverness",
+          "dexterity",
+          "talent",
+          "capability",
+          "capacity",
+          "faculty",
+          "aptitude",
+          "aptness",
+          "capability",
+          "capacity",
+          "faculty"
+        ],
+        "antonyms": [
+          "disability",
+          "inability",
+          "unability"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/ability"
+    ]
+  }
+]

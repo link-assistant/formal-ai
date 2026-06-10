@@ -1,0 +1,13 @@
+view
+  id M-a5d904d477d9
+  lemma discussion
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an extended communication (often interactive) dealing with some particular topic"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an exchange of views on some topic"
+    provenance (wordnet)

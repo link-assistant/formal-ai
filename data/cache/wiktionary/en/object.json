@@ -1,0 +1,101 @@
+[
+  {
+    "word": "object",
+    "phonetic": "/ˈɒb.d͡ʒɛkt/",
+    "phonetics": [
+      {
+        "text": "/ˈɒb.d͡ʒɛkt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɑb.d͡ʒɛkt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/object-us-noun.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227705",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A thing that has physical existence.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Objective; the goal, end or purpose of something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(grammar) The noun phrase which is an internal complement of a verb phrase or a prepositional phrase. In a verb phrase with a transitive action verb, it is typically the receiver of the action.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A person or thing toward which an emotion is directed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Mary Jane had been the object of Peter's affection for years."
+          },
+          {
+            "definition": "An instantiation of a class or structure.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An element within a category upon which functions operate. Thus, a category consists of a set of element objects and the functions that operate on them.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Sight; show; appearance; aspect.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "target",
+          "article",
+          "item",
+          "thing"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To disagree with or oppose something or someone; (especially in a Court of Law) to raise an objection.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I object to the proposal to build a new airport terminal."
+          },
+          {
+            "definition": "To offer in opposition as a criminal charge or by way of accusation or reproach; to adduce as an objection or adverse reason.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To set before or against; to bring into opposition; to oppose.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/object"
+    ]
+  }
+]

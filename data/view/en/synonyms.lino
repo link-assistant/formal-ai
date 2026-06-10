@@ -1,0 +1,25 @@
+view
+  id M-2bd37bb0a778
+  lemma synonyms
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(strictly) A word whose meaning is the same as that of another word."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A word or phrase with a meaning that is the same as, or very similar to, another word or phrase."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any of the formal names for a taxon, including the valid name (i.e. the senior synonym)."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any name for a taxon, usually a validly published, formally accepted one, but often also an unpublished name."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "An alternative (often shorter) name defined for an object in a database."
+    provenance (wiktionary)

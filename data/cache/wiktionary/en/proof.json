@@ -1,0 +1,150 @@
+[
+  {
+    "word": "proof",
+    "phonetic": "/pɹʉːf/",
+    "phonetics": [
+      {
+        "text": "/pɹʉːf/",
+        "audio": ""
+      },
+      {
+        "text": "/pɹuːf/",
+        "audio": ""
+      },
+      {
+        "text": "/pɹʉːf/",
+        "audio": ""
+      },
+      {
+        "text": "/pɹuːf/",
+        "audio": ""
+      },
+      {
+        "text": "/pɹuf/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/proof-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1669339",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An effort, process, or operation designed to establish or discover a fact or truth; an act of testing; a test; a trial.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The degree of evidence which convinces the mind of any truth or fact, and produces belief; a test by facts or arguments which induce, or tend to induce, certainty of the judgment; conclusive evidence; demonstration.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The quality or state of having been proved or tried; firmness or hardness which resists impression, or does not yield to force; impenetrability of physical bodies.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Experience of something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Firmness of mind; stability not to be shaken.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A proof sheet; a trial impression, as from type, taken for correction or examination.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A sequence of statements consisting of axioms, assumptions, statements already demonstrated in another proof, and statements that logically follow from previous statements in the sequence, and which concludes with a statement that is the object of the proof.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A process for testing the accuracy of an operation performed. Compare prove, transitive verb, 5.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Armour of excellent or tried quality, and deemed impenetrable; properly, armour of proof.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A measure of the alcohol content of liquor. Originally, in Britain, 100 proof was defined as 57.1% by volume (no longer used). In the US, 100 proof means that the alcohol content is 50% of the total volume of the liquid; thus, absolute alcohol would be 200 proof.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To proofread.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To make resistant, especially to water.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To allow yeast-containing dough to rise.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To test the activeness of yeast.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Used in proving or testing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a proof load; a proof charge"
+          },
+          {
+            "definition": "Firm or successful in resisting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "proof against harm"
+          },
+          {
+            "definition": "(of alcoholic liquors) Being of a certain standard as to alcohol content.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/proof"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A collection of ordered steps that solve a mathematical problem. A precise step-by-step plan for a computational procedure that possibly begins with an input value and yields an output value in a finite number of steps."
+        entry
+          definition "Calculation with Arabic numerals; algorism."
+      partOfSpeech noun
+  phonetic "/ˈælɡəɹɪðm̩/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈælɡəɹɪðm̩/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/algorithm-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=14545597"
+      text "/ˈælɡəˌɹɪðm̩/"
+  sourceUrls ("https://en.wiktionary.org/wiki/algorithm")
+  word algorithm

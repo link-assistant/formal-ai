@@ -1,0 +1,37 @@
+view
+  id M-b8f19d7b5c16
+  lemma stack
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an orderly pile"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(often followed by ‘of’) a large number or amount or extent"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a list in which the next item to be removed is the item most recently stored (LIFO)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a large tall chimney through which combustion gases and smoke can be evacuated"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a storage device that handles data so that the next item to be retrieved is the item most recently stored (LIFO)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "load or cover with stacks"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange in stacks"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange the order of so as to increase one's winning chances"
+    provenance (wordnet)

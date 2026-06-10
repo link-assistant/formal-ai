@@ -1,0 +1,9 @@
+view
+  id M-bd2365516c9d
+  lemma instructions
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a manual usually accompanying a technical device and explaining how to install or operate it"
+    provenance (wordnet)

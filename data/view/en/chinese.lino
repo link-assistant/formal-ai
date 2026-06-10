@@ -1,0 +1,21 @@
+view
+  id M-bb52a4d2471a
+  lemma chinese
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or pertaining to China or its peoples or cultures"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to or characteristic of the island republic on Taiwan or its residents or their language"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any of the Sino-Tibetan languages spoken in China; regarded as dialects of a single language (even though they are mutually unintelligible) because they share an ideographic writing system"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a native or inhabitant of Communist China or of Nationalist China"
+    provenance (wordnet)

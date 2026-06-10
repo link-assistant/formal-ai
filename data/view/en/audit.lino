@@ -1,0 +1,21 @@
+view
+  id M-c2ee3ab08465
+  lemma audit
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an inspection of the accounting procedures and records by a trained accountant or CPA"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a methodical examination or review of a condition or situation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "examine carefully for accuracy with the intent of verification"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attend academic courses without getting credit"
+    provenance (wordnet)

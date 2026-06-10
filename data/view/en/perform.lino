@@ -1,0 +1,21 @@
+view
+  id M-5bab4ebb114d
+  lemma perform
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "carry out or perform an action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform a function"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a performance (of something)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get (something) done"
+    provenance (wordnet)

@@ -1,0 +1,9 @@
+view
+  id M-43853797a8c3
+  lemma deterministic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "an inevitable consequence of antecedent sufficient causes"
+    provenance (wordnet)

@@ -1,0 +1,91 @@
+[
+  {
+    "word": "relation",
+    "phonetic": "/ɹɪˈleɪʃən/",
+    "phonetics": [
+      {
+        "text": "/ɹɪˈleɪʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/relation-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1157488",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The manner in which two things may be associated.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The relation between diet and health is complex."
+          },
+          {
+            "definition": "A member of one's family.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Yes, he's a relation of mine, but only a distant one."
+          },
+          {
+            "definition": "The act of relating a story.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Your relation of the events is different from mine."
+          },
+          {
+            "definition": "A set of ordered tuples.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Specifically, a set of ordered pairs.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Equality is a symmetric relation, while divisibility is not."
+          },
+          {
+            "definition": "A set of ordered tuples retrievable by a relational database; a table.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This relation uses the customer's social security number as a key."
+          },
+          {
+            "definition": "A statement of equality of two products of generators, used in the presentation of a group.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A subobject of a product of objects.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(usually collocated: sexual relation) The act of intercourse.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "recount",
+          "telling",
+          "correspondence",
+          "relative",
+          "connection",
+          "link",
+          "relationship"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/relation"
+    ]
+  }
+]

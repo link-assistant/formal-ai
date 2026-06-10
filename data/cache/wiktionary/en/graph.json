@@ -1,0 +1,98 @@
+[
+  {
+    "word": "graph",
+    "phonetic": "/ɡɹæf/",
+    "phonetics": [
+      {
+        "text": "/ɡɹæf/",
+        "audio": ""
+      },
+      {
+        "text": "/ɡɹɑːf/",
+        "audio": ""
+      },
+      {
+        "text": "/ɡɹæf/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/graph-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=50240917",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(applied mathematics) A data chart (graphical representation of data) intended to illustrate the relationship between a set (or sets) of numbers (quantities, measurements or indicative numbers) and a reference set, whose elements are indexed to those of the former set(s) and may or may not be numbers.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A set of points constituting a graphical representation of a real function; (formally) a set of tuples (x_1, x_2, \\ldots, x_m, y)\\in\\R^{m+1}, where y=f(x_1, x_2, \\ldots, x_m) for a given function f: \\R^m\\rightarrow\\R.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(formally) An ordered pair of sets (V,E), where the elements of V are called vertices or nodes and E is a set of pairs (called edges) of elements of V; (less formally) a set of vertices (or nodes) together with a set of edges that connect (some of) the vertices.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A topological space which represents some graph (ordered pair of sets) and which is constructed by representing the vertices as points and the edges as copies of the real interval [0,1] (where, for any given edge, 0 and 1 are identified with the points representing the two vertices) and equipping the result with a particular topology called the graph topology.",
+            "synonyms": [
+              "topological graph"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "(of a morphism f) A morphism \\Gamma_f from the domain of f to the product of the domain and codomain of f, such that the first projection applied to \\Gamma_f equals the identity of the domain, and the second projection applied to \\Gamma_f is equal to f.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A graphical unit on the token-level, the abstracted fundamental shape of a character or letter as distinct from its ductus (realization in a particular typeface or handwriting on the instance-level) and as distinct by a grapheme on the type-level by not fundamentally distinguishing meaning.",
+            "synonyms": [
+              "glyph"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "glyph",
+          "topological graph"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To draw a graph.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To draw a graph of a function.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "chart",
+          "plot"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/graph"
+    ]
+  }
+]

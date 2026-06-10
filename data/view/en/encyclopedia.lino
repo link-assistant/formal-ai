@@ -1,0 +1,9 @@
+view
+  id M-1534d4e07e05
+  lemma encyclopedia
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a reference work (often in several volumes) containing articles on various topics (often arranged in alphabetical order) dealing with the entire range of human knowledge or with some particular specialty"
+    provenance (wordnet)

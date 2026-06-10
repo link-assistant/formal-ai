@@ -1,0 +1,157 @@
+[
+  {
+    "word": "meaning",
+    "phonetic": "/ˈmiːnɪŋ/",
+    "phonetics": [
+      {
+        "text": "/ˈmiːnɪŋ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/meaning-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1244052",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(of words or symbols) The entity, perception, feeling or concept thereby represented or evoked.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The value, purpose, importance, point or significance (of something beyond the fact of that thing's existence).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the meaning of life"
+          },
+          {
+            "definition": "The object or concept that a word or phrase denotes, or that which a sentence says.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Intention.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "sense",
+          "definition"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/meaning"
+    ]
+  },
+  {
+    "word": "meaning",
+    "phonetic": "/ˈmiːnɪŋ/",
+    "phonetics": [
+      {
+        "text": "/ˈmiːnɪŋ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/meaning-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1244052",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To lament.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To intend.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To convey (a meaning).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have conviction in (something said or expressed); to be sincere in (what one says).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Does she really mean what she said to him last night?"
+          },
+          {
+            "definition": "To cause or produce (a given result); to bring about (a given result).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "One faltering step means certain death."
+          },
+          {
+            "definition": "(usually with to) To be of some level of importance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Formality and titles mean nothing in their circle."
+          }
+        ],
+        "synonyms": [
+          "bring about",
+          "cause",
+          "lead to",
+          "result in",
+          "convey",
+          "indicate",
+          "signify",
+          "imply",
+          "intend",
+          "serious"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Having a (specified) intention.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Expressing some intention or significance; meaningful.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mean",
+      "https://en.wiktionary.org/wiki/meaning"
+    ]
+  }
+]

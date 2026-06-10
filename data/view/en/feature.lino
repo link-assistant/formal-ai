@@ -1,0 +1,37 @@
+view
+  id M-d68972425c9f
+  lemma feature
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a prominent attribute or aspect of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the characteristic parts of a person's face: eyes and nose and mouth and chin"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the principal (full-length) film in a program at a movie theater"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a special or prominent article in a newspaper or magazine"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(linguistics) a distinctive characteristic of a linguistic unit that serves to distinguish it from other units of the same kind"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an article of merchandise that is displayed or advertised more than other articles"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have as a feature"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "wear or display in an ostentatious or proud manner"
+    provenance (wordnet)

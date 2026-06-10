@@ -1,0 +1,13 @@
+view
+  id M-0dee9030ea26
+  lemma ordering
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "logical or comprehensible arrangement of separate elements"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of putting things in a sequential arrangement"
+    provenance (wordnet)

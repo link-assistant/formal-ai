@@ -1,0 +1,9 @@
+view
+  id M-1fddb77e84ed
+  lemma math
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a science (or group of related sciences) dealing with the logic of quantity and shape and arrangement"
+    provenance (wordnet)

@@ -1,0 +1,21 @@
+view
+  id M-f39369d72de2
+  lemma tuples
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A finite sequence of terms."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A single row in a relational database."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A set of comma-separated values passed to a program or operating system as a parameter to a function call."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "In some programming languages, a data type that is similar but distinct from the list data type, whose instances are characterized by having a rather fixed arity, and the elements of which instances can differ from each other by data type. (Note: this definition may overlap with the previous one.)"
+    provenance (wiktionary)

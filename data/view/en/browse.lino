@@ -1,0 +1,33 @@
+view
+  id M-4abde0fe5d2e
+  lemma browse
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "vegetation (such as young shoots, twigs, and leaves) that is suitable for animals to eat"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "reading superficially or at random"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of feeding by continual nibbling"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "shop around; not necessarily buying"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "feed as in a meadow or pasture"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "look around casually and randomly, without seeking anything in particular"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "eat lightly, try different dishes"
+    provenance (wordnet)

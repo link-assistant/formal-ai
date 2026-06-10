@@ -1,0 +1,17 @@
+view
+  id M-d7f8d14589e3
+  lemma requirement
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "required activity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "anything indispensable"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something that is required in advance"
+    provenance (wordnet)

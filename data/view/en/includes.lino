@@ -1,0 +1,29 @@
+view
+  id M-ff23fb50ee96
+  lemma includes
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A piece of source code or other content that is dynamically retrieved for inclusion in another item."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To bring into a group, class, set, or total as a (new) part or member."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To contain, as parts of a whole; to comprehend."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To enclose, confine."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To conclude; to terminate."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To use a directive that allows the use of source code from another file."
+    provenance (wiktionary)

@@ -1,0 +1,9 @@
+view
+  id M-2e4b1b5a9f38
+  lemma coreference
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the grammatical relation between two words that have a common referent"
+    provenance (wordnet)

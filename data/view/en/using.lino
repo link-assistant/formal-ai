@@ -1,0 +1,9 @@
+view
+  id M-e84be50f5a98
+  lemma using
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an act that exploits or victimizes someone (treats them unfairly)"
+    provenance (wordnet)

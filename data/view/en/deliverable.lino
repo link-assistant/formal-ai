@@ -1,0 +1,13 @@
+view
+  id M-07f11b393384
+  lemma deliverable
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "suitable for or ready for delivery"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something that can be provided as the product of development"
+    provenance (wordnet)

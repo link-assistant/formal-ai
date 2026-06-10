@@ -1,0 +1,25 @@
+view
+  id M-23f21a8eee1b
+  lemma undo
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cancel, annul, or reverse an action or its effect"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deprive of certain characteristics"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause the ruin or downfall of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to become loose"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove the outer cover or wrapping of"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-c3ad891ea30c
+  lemma weekday
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A day of the week except those which form the weekend; that is:"
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any day of the week (Monday through Sunday)."
+    provenance (wiktionary)

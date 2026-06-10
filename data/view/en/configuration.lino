@@ -1,0 +1,13 @@
+view
+  id M-c2a105b6c0dd
+  lemma configuration
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an arrangement of parts or elements"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any spatial attributes (especially as defined by outline)"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-63818c52927b
+  lemma disadvantage
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of having an inferior or less favorable position"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put at a disadvantage; hinder, harm"
+    provenance (wordnet)

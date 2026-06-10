@@ -1,0 +1,37 @@
+view
+  id M-cd5e9432253e
+  lemma tool
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an implement used in the practice of a vocation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the means whereby some act is accomplished"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person who is controlled by others and is used to perform unpleasant or dishonest tasks for someone else"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "obscene terms for penis"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "drive"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "ride in a car with no particular goal and just for the pleasure of it"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "furnish with tools"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "work with a tool"
+    provenance (wordnet)

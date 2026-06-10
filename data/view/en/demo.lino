@@ -1,0 +1,13 @@
+view
+  id M-f901b5635f72
+  lemma demo
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a visual presentation showing how something works"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give an exhibition of to an interested audience"
+    provenance (wordnet)

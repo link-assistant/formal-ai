@@ -1,0 +1,17 @@
+view
+  id M-13e454fdbb1b
+  lemma plugin
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Anything that plugs into something."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A module or device that interacts with another to add a specific feature or function."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "An electric vehicle that can be recharged from an external power source."
+    provenance (wiktionary)

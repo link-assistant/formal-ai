@@ -1,0 +1,13 @@
+view
+  id M-eca36551ae0b
+  lemma arithmetic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or involving arithmetic"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the branch of pure mathematics dealing with the theory of numerical calculations"
+    provenance (wordnet)

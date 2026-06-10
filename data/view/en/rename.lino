@@ -1,0 +1,13 @@
+view
+  id M-f77afd817a38
+  lemma rename
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign a new name to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "name again or anew"
+    provenance (wordnet)

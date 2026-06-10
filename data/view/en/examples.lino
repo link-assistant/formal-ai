@@ -1,0 +1,33 @@
+view
+  id M-59808e133174
+  lemma examples
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Something that is representative of all such things in a group."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Something that serves to illustrate or explain a rule."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Something that serves as a pattern of behaviour to be imitated (a good example) or not to be imitated (a bad example)."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A person punished as a warning to others."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A parallel or closely similar case, especially when serving as a precedent or model."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "An instance (as a problem to be solved) serving to illustrate the rule or precept or to act as an exercise in the application of the rule."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To be illustrated or exemplified (by)."
+    provenance (wiktionary)

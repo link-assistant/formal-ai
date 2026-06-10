@@ -1,0 +1,9 @@
+view
+  id M-38eb375d0024
+  lemma llm
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an advanced law degree"
+    provenance (wordnet)

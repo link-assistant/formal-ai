@@ -1,0 +1,101 @@
+[
+  {
+    "word": "application",
+    "phonetic": "/aplɪˈkeɪʃ(ə)n/",
+    "phonetics": [
+      {
+        "text": "/aplɪˈkeɪʃ(ə)n/",
+        "audio": ""
+      },
+      {
+        "text": "/ˌæpləˈkeɪʃən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/application-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2079661",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The act of applying or laying on, in a literal sense",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The application of this cream should reduce the swelling."
+          },
+          {
+            "definition": "The substance applied.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of applying as a means; the employment of means to accomplish an end; specific use.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The act of directing or referring something to a particular case, to discover or illustrate agreement or disagreement, fitness, or correspondence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I make the remark, and leave you to make the application."
+          },
+          {
+            "definition": "A computer program or the set of software that the end user perceives as a single entity as a tool for a well-defined purpose. (Also called: application program; application software.)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This iPhone application can connect to most social networks."
+          },
+          {
+            "definition": "A verbal or written request for assistance or employment or admission to a school, course or similar.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "December 31 is the deadline for MBA applications."
+          },
+          {
+            "definition": "(bureaucracy) A petition, entreaty, or other request, with the adposition for denoting the subject matter.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Their application for a deferral of the hearing was granted."
+          },
+          {
+            "definition": "The act of requesting, claiming, or petitioning something.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Diligence; close thought or attention.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A kind of needlework; appliqué.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Compliance.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "app",
+          "program",
+          "software"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/application"
+    ]
+  }
+]

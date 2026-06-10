@@ -1,0 +1,9 @@
+view
+  id M-be9b0a40be07
+  lemma cargo
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "goods carried by a large vehicle"
+    provenance (wordnet)

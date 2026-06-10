@@ -1,0 +1,48 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A system of rules and principles for speaking and writing a language."
+        entry
+          definition "The study of the internal structure of words (morphology) and the use of words in the construction of phrases and sentences (syntax)."
+        entry
+          definition "A book describing the rules of grammar of a language."
+        entry
+          definition "A formal system specifying the syntax of a language."
+        entry
+          definition "Actual or presumed prescriptive notions about the correct use of a language."
+        entry
+          definition "A formal system defining a formal language"
+        entry
+          definition "The basic rules or principles of a field of knowledge or a particular skill."
+        entry
+          definition "A textbook."
+          example "a grammar of geography"
+        entry
+          definition "A grammar school."
+          example "2012, Graeme Paton, A green light for more grammars? (in The Daily Telegraph, 11 January 2012)"
+      partOfSpeech noun
+      synonyms (morpho-syntax glomery)
+    entry
+      definitions
+        entry
+          definition "To discourse according to the rules of grammar; to use grammar."
+      partOfSpeech verb
+  phonetic "/ˈɡɹæm.ə(ɹ)/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈɡɹæm.ə(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/grammar-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762689"
+      text "/ˈɡɹæmɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/grammar")
+  word grammar

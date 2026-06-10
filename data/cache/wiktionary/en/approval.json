@@ -1,0 +1,58 @@
+[
+  {
+    "word": "approval",
+    "phonetic": "/əˈpɹuːvəl/",
+    "phonetics": [
+      {
+        "text": "/əˈpɹuːvəl/",
+        "audio": ""
+      },
+      {
+        "text": "/əˈpɹuvəl/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/approval-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718878",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An expression granting permission; an indication of agreement with a proposal; an acknowledgement that a person, thing or event meets requirements.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I need to get an approval on this purchase order."
+          },
+          {
+            "definition": "An expression of favorable acceptance and encouragement; a compliment that also condones.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Words of approval never seem to come from him."
+          },
+          {
+            "definition": "Something mailed by a seller to a collector to match their stated interests; the collector can approve of or return the item.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "approbation",
+          "sanction",
+          "commendation"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/approval"
+    ]
+  }
+]

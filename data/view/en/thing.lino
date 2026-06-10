@@ -1,0 +1,53 @@
+view
+  id M-f7e73244c817
+  lemma thing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a special situation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an action"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a special abstraction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an artifact"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an event"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a vaguely specified concern"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statement regarded as an object"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an entity that is not named specifically"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any attribute or quality considered as having its own existence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a special objective"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a persistent illogical feeling of desire or aversion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a separate and self-contained entity"
+    provenance (wordnet)

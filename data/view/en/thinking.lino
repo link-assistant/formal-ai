@@ -1,0 +1,13 @@
+view
+  id M-e461e2184a2c
+  lemma thinking
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the process of using your mind to consider something carefully"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "endowed with the capacity to reason"
+    provenance (wordnet)

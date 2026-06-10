@@ -1,0 +1,35 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A collection of organized things; a whole composed of relationships among its members."
+          example "There are eight planets in the solar system."
+          synonyms (arrangement complex composition organization "set up" structure)
+        entry
+          definition "A method or way of organizing or planning."
+          example "Followers should have a system to follow that works in their interests, not against them."
+      partOfSpeech noun
+      synonyms (arrangement complex composition organization "set up" structure)
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/system-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75858603"
+    entry
+      audio ""
+      text "/ˈsɪstəm/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/system-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1194294"
+      text "/ˈsɪstəm/"
+  sourceUrls ("https://en.wiktionary.org/wiki/system")
+  word system

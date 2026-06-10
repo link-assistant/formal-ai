@@ -1,0 +1,33 @@
+view
+  id M-5130f89415fd
+  lemma delivery
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of delivering or distributing something (as goods or mail)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the event of giving birth"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "your characteristic style or manner of expressing yourself orally"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the voluntary transfer of something (title or possession) from one party to another"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of throwing a baseball or softball by the pitcher towards home plate, which initiates play by giving the batter a chance to hit it"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "recovery or preservation from loss or danger"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of delivering a child"
+    provenance (wordnet)

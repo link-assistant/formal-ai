@@ -1,0 +1,21 @@
+view
+  id M-d1c560f14764
+  lemma landmark
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the position of a prominent or well-known object in a particular landscape"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an event marking a unique or important historical change of course or one on which important developments depend"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mark showing the boundary of a piece of land"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an anatomical structure used as a point of origin in locating other anatomical structures (as in surgery) or as point from which measurements can be taken"
+    provenance (wordnet)

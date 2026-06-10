@@ -1,0 +1,21 @@
+view
+  id M-7547e6680793
+  lemma validate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "declare or make legally valid"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "prove valid; show or confirm the validity of something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give evidence for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make valid or confirm the validity of"
+    provenance (wordnet)

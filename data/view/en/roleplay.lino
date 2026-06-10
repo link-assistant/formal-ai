@@ -1,0 +1,9 @@
+view
+  id M-d6f63f146cab
+  lemma roleplay
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform on a stage or theater"
+    provenance (wordnet)

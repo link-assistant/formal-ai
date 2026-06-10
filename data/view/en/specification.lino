@@ -1,0 +1,21 @@
+view
+  id M-bfcd360efb4b
+  lemma specification
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a detailed description of design criteria for a piece of work"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "naming explicitly"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(patent law) a document drawn up by the applicant for a patent of invention that provides an explicit and detailed description of the nature and use of an invention"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a restriction that is insisted upon as a condition for an agreement"
+    provenance (wordnet)

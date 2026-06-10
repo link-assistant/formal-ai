@@ -1,0 +1,21 @@
+view
+  id M-5e76a1aac56b
+  lemma notion
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a vague idea in which some confidence is placed"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a general inclusive concept"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an odd or fanciful or capricious idea"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) small personal articles or clothing or sewing items"
+    provenance (wordnet)

@@ -1,0 +1,9 @@
+view
+  id M-8570e63cf927
+  lemma website
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a computer connected to the internet that maintains a series of web pages on the World Wide Web; a computer connected to the internet that maintains a series of web pages on the World Wide Web"
+    provenance (wordnet)

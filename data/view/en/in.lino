@@ -1,0 +1,33 @@
+view
+  id M-2dc248ea7f93
+  lemma in
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state in midwestern United States, with capital Indianapolis"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a rare soft silvery metallic element; occurs in small quantities in sphalerite"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of length equal to one twelfth of a foot"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "to or toward the inside of"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "holding office"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "directed or bound inward"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "currently fashionable"
+    provenance (wordnet)

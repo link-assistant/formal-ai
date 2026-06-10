@@ -1,0 +1,33 @@
+view
+  id M-89d1be7b9a29
+  lemma ping
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a river in western Thailand; a major tributary of the Chao Phraya"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a sharp high-pitched resonant sound (as of a sonar echo or a bullet striking metal)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hit with a pinging noise"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "sound like a car engine that is firing too early"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a short high-pitched sound"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "contact, usually in order to remind of something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "send a message from one computer to another to check whether it is reachable and active"
+    provenance (wordnet)

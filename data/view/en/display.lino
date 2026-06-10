@@ -1,0 +1,37 @@
+view
+  id M-1407d75a7a89
+  lemma display
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something intended to communicate a particular impression"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something shown to the public"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a visual representation of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "behavior that makes your feelings public"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "exhibiting openly in public view"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an electronic device that represents information in visual form"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "to show, make visible or apparent"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attract attention by displaying some body part or posing; of animals"
+    provenance (wordnet)

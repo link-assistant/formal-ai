@@ -1,0 +1,25 @@
+view
+  id M-a9f6ce6a1ee3
+  lemma discord
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "lack of agreement or harmony"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "disagreement among those expected to cooperate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a harsh mixture of sounds"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "strife resulting from a lack of agreement"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be different from one another"
+    provenance (wordnet)
