@@ -428,3 +428,57 @@ one*. Resolutions this round:
    source import shape is stable.
 5. Add UI/API query paths that explain a meaning by traversing `defined_by` and
    `facet` links instead of rendering scalar glossary fields alone.
+
+## Total closure + multi-source view round (comment 4668929105, 2026-06-10)
+
+The reviewer accepted that the seed defines 478 meanings (correcting an earlier
+audit that missed the nested-under-`meanings` syntax) and that the backbone
+`reference_closure.rs` gate is sound — but held the line that the gate is *too
+narrow*: it closes only the structured `defined-by`/facet/role fields, while
+~1,124 other value tokens (words in intents, surfaces, descriptions) resolve to
+nothing. The standard is **total** closure plus a working **multi-source view**,
+both CI-enforced. Resolutions this round, all in PR #399:
+
+- **Canonical total-closure audit (`scripts/audit-total-closure.py`).** Single
+  source of truth for "does every value token resolve?" A token resolves if it
+  is a language code, a `Q…/L…/P…` id with a checked-in Wikidata cache record, a
+  defined meaning (either syntax), a declared role, or a cached
+  Wiktionary/WordNet lemma. `--json` feeds the CI gate; `--candidates` feeds the
+  grounding scripts, so the work-list is always derived from the data.
+
+- **WordNet (OEWN 2024) source.** `scripts/ground-wordnet.py` imports Open
+  English WordNet 2024 offline through the `wn` library — one download grounds
+  the whole English content vocabulary with no per-word network calls — and
+  caches 312 lemmas as `.json` + lossless `.lino` under `data/cache/wordnet/en/`
+  (CC BY 4.0, recorded per entry and in the registry).
+
+- **Total closure driven to 0 (`scripts/close-total.py`).** WordNet and
+  Wiktionary close the plain-English dictionary words; the remaining tokens are
+  the system's *internal* vocabulary (intent names, task names, prompt-pattern
+  ids, source kinds, language tags). This idempotent migration defines each as a
+  first-class meaning: 17 parent category concepts rooted at `concept`, plus 508
+  member meanings parented under the category their predicate implies (so
+  `intent_greeting` is `defined-by intent`, not a bare token). It reads the
+  *base* seed only — excluding its own `closure-generated-*.lino` output — so
+  re-runs are byte-identical. `audit-total-closure.py` now reports **0**
+  unresolved tokens over 1,410 distinct value tokens.
+
+- **Multi-source `data/view/` merge layer (`scripts/build-views.py`).** Merges
+  the WordNet and Wiktionary caches into 536 per-lemma view entities, each with
+  a deterministic `M-<sha1[:12]>` id, a `sources` list, and per-sense
+  provenance. Merge rule: senses sharing part-of-speech with gloss Jaccard ≥ 0.5
+  merge and carry both sources; otherwise they stay separate (14 entities are
+  genuinely multi-source on real data). `--check` rebuilds in memory to detect
+  drift, reconfirms id determinism, and runs merge-threshold self-tests.
+
+- **`data/seed/sources-registry.lino`** lists every ingested source (Wikidata,
+  Wiktionary, WordNet, Wikipedia) with its API endpoint, permissive license, and
+  cache path.
+
+- **`tests/unit/total_closure.rs` CI gates.** Fail immediately if any seed token
+  is unresolved (naming offenders), the seed collapses below hundreds of
+  meanings, the WordNet cache is absent, `sources-registry.lino` omits an
+  ingested source/API/license, `data/view/` is missing/drifted/non-deterministic
+  or has a provenance-less field, or no view entity is genuinely multi-source.
+  The resolver and merge logic live only in the Python migrations; the gates
+  shell out to their `--json`/`--check` modes so the logic is never duplicated.
