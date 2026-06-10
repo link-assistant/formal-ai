@@ -1,0 +1,51 @@
+{
+  "lemma": "requirement",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05901258-n",
+      "partOfSpeech": "n",
+      "definition": "required activity",
+      "examples": [
+        "the requirements of his work affected his health",
+        "there were many demands on his time"
+      ],
+      "synonyms": [
+        "demand"
+      ]
+    },
+    {
+      "id": "oewn-09390100-n",
+      "partOfSpeech": "n",
+      "definition": "anything indispensable",
+      "examples": [
+        "food and shelter are necessities of life",
+        "the essentials of the good life",
+        "allow farmers to buy their requirements under favorable conditions",
+        "a place where the requisites of water fuel and fodder can be obtained"
+      ],
+      "synonyms": [
+        "necessity",
+        "essential",
+        "requisite",
+        "necessary"
+      ]
+    },
+    {
+      "id": "oewn-05901034-n",
+      "partOfSpeech": "n",
+      "definition": "something that is required in advance",
+      "examples": [
+        "Latin was a prerequisite for admission"
+      ],
+      "synonyms": [
+        "prerequisite"
+      ]
+    }
+  ]
+}

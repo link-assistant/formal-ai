@@ -1,0 +1,21 @@
+{
+  "lemma": "instructions",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06433787-n",
+      "partOfSpeech": "n",
+      "definition": "a manual usually accompanying a technical device and explaining how to install or operate it",
+      "synonyms": [
+        "instruction manual",
+        "book of instructions",
+        "operating instructions"
+      ]
+    }
+  ]
+}

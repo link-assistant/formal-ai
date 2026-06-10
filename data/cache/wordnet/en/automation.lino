@@ -1,0 +1,23 @@
+language en
+lemma automation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of implementing the control of equipment with advanced technology; usually involving electronic hardware"
+    examples ("automation replaces human workers by machines")
+    id oewn-00103277-n
+    partOfSpeech n
+    synonyms (mechanization mechanisation)
+  entry
+    definition "the condition of being automatically operated or controlled"
+    examples ("automation increases productivity")
+    id oewn-14598049-n
+    partOfSpeech n
+  entry
+    definition "equipment used to achieve automatic control or operation"
+    examples ("this factory floor is a showcase for automation and robotic equipment")
+    id oewn-02764211-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,47 @@
+language en
+lemma argument
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a fact or assertion offered as evidence that something is true"
+    examples ("it was a strong argument that his hypothesis was true")
+    id oewn-06661469-n
+    partOfSpeech n
+    synonyms (statement)
+  entry
+    definition "a contentious speech act; a dispute where there is strong disagreement"
+    examples ("they were involved in a violent argument")
+    id oewn-07197811-n
+    partOfSpeech n
+    synonyms (controversy contention contestation disputation disceptation tilt arguing)
+  entry
+    definition "a discussion in which reasons are advanced for and against some proposition or proposal"
+    examples ("the argument over foreign aid goes on and on")
+    id oewn-07155686-n
+    partOfSpeech n
+    synonyms (argumentation debate)
+  entry
+    definition "a summary of the subject or plot of a literary work or play or movie"
+    examples ("the editor added the argument to the poem")
+    id oewn-06479351-n
+    partOfSpeech n
+    synonyms ("literary argument")
+  entry
+    definition "(computer science) a reference or value that is passed to a function, procedure, subroutine, command, or program"
+    id oewn-06367706-n
+    partOfSpeech n
+    synonyms (parameter)
+  entry
+    definition "a variable in a logical or mathematical expression whose value determines the dependent variable"
+    examples ("if f(x)=y, x is the independent variable")
+    id oewn-05866365-n
+    partOfSpeech n
+  entry
+    definition "a course of reasoning aimed at demonstrating a truth or falsehood; the methodical process of logical reasoning"
+    examples ("I can't follow your line of reasoning")
+    id oewn-05781046-n
+    partOfSpeech n
+    synonyms (argumentation "logical argument" "line of reasoning" line)
+source "oewn:2024"

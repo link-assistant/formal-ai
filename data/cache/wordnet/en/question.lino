@@ -1,0 +1,70 @@
+language en
+lemma question
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an instance of questioning"
+    examples ("there was a question about my training" "we made inquiries of all those who were present")
+    id oewn-07208256-n
+    partOfSpeech n
+    synonyms (inquiry enquiry query interrogation)
+  entry
+    definition "the subject matter at issue"
+    examples ("the question of disease merits serious discussion" "under the head of minor Roman poets")
+    id oewn-06796625-n
+    partOfSpeech n
+    synonyms (head)
+  entry
+    definition "a sentence of inquiry that asks for a reply"
+    examples ("he asked a direct question" "he had trouble phrasing his interrogations")
+    id oewn-07211342-n
+    partOfSpeech n
+    synonyms (interrogation interrogative "interrogative sentence")
+  entry
+    definition "uncertainty about the truth or factuality or existence of something"
+    examples ("the dubiousness of his claim" "there is no question about the validity of the enterprise")
+    id oewn-04764777-n
+    partOfSpeech n
+    synonyms (doubt dubiousness doubtfulness)
+  entry
+    definition "a formal proposal for action made to a deliberative assembly for discussion and vote"
+    examples ("he made a motion to adjourn" "she called for the question")
+    id oewn-07178244-n
+    partOfSpeech n
+    synonyms (motion)
+  entry
+    definition "an informal reference to a marriage proposal"
+    examples ("he was ready to pop the question")
+    id oewn-07176710-n
+    partOfSpeech n
+  entry
+    definition "challenge the accuracy, probity, or propriety of"
+    examples ("We must question your judgment in this matter")
+    id oewn-00869073-v
+    partOfSpeech v
+    synonyms (oppugn "call into question")
+  entry
+    definition "pose a series of questions to"
+    examples ("The suspect was questioned by the police" "We questioned the survivor about the details of the explosion")
+    id oewn-00789846-v
+    partOfSpeech v
+    synonyms (interrogate)
+  entry
+    definition "pose a question"
+    id oewn-00786670-v
+    partOfSpeech v
+    synonyms (query)
+  entry
+    definition "conduct an interview in television, newspaper, and radio reporting"
+    id oewn-00810517-v
+    partOfSpeech v
+    synonyms (interview)
+  entry
+    definition "place in doubt or express doubtful speculation"
+    examples ("I wonder whether this was the right thing to do" "she wondered whether it would snow tonight")
+    id oewn-00927081-v
+    partOfSpeech v
+    synonyms (wonder)
+source "oewn:2024"

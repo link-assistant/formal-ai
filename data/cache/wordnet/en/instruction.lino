@@ -1,0 +1,30 @@
+language en
+lemma instruction
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a message describing how something is to be done"
+    examples ("he gave directions faster than she could follow them")
+    id oewn-06799486-n
+    partOfSpeech n
+    synonyms (direction)
+  entry
+    definition "the activities of educating or instructing; activities that impart knowledge or skill"
+    examples ("he received no formal education" "our instruction was carefully programmed" "good classroom teaching is seldom rewarded")
+    id oewn-00884975-n
+    partOfSpeech n
+    synonyms (education teaching pedagogy didactics "educational activity")
+  entry
+    definition "the profession of a teacher"
+    examples ("he prepared for teaching while still in college" "pedagogy is recognized as an important profession")
+    id oewn-00888759-n
+    partOfSpeech n
+    synonyms (teaching pedagogy)
+  entry
+    definition "(computer science) a line of code written as part of a computer program"
+    id oewn-06597067-n
+    partOfSpeech n
+    synonyms (command statement "program line")
+source "oewn:2024"

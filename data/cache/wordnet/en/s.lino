@@ -1,0 +1,37 @@
+language en
+lemma s
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an abundant tasteless odorless multivalent nonmetallic element; best known in yellow crystals; occurs in many sulphide and sulphate minerals and even in native form (especially in volcanic regions)"
+    id oewn-14680398-n
+    partOfSpeech n
+    synonyms (sulfur sulphur "atomic number 16")
+  entry
+    definition "1/60 of a minute; the basic unit of time adopted under the Systeme International d'Unites"
+    id oewn-15259923-n
+    partOfSpeech n
+    synonyms (second sec)
+  entry
+    definition "the cardinal compass point that is at 180 degrees"
+    id oewn-13855574-n
+    partOfSpeech n
+    synonyms (south "due south" southward)
+  entry
+    definition "a unit of conductance equal to the reciprocal of an ohm"
+    id oewn-13658719-n
+    partOfSpeech n
+    synonyms (mho siemens "reciprocal ohm")
+  entry
+    definition "the 19th letter of the Roman alphabet"
+    id oewn-06846162-n
+    partOfSpeech n
+  entry
+    definition "(thermodynamics) a thermodynamic quantity representing the amount of energy in a system that is no longer available for doing mechanical work"
+    examples ("entropy increases as matter and energy in the universe degrade to an ultimate state of inert uniformity")
+    id oewn-05019769-n
+    partOfSpeech n
+    synonyms (randomness entropy)
+source "oewn:2024"

@@ -1,0 +1,13 @@
+language en
+lemma using
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an act that exploits or victimizes someone (treats them unfairly)"
+    examples ("capitalistic exploitation of the working class" "paying Blacks less and charging them more is a form of victimization")
+    id oewn-00419916-n
+    partOfSpeech n
+    synonyms (exploitation victimization victimisation)
+source "oewn:2024"

@@ -1,0 +1,25 @@
+{
+  "lemma": "cargo",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02967841-n",
+      "partOfSpeech": "n",
+      "definition": "goods carried by a large vehicle",
+      "synonyms": [
+        "lading",
+        "freight",
+        "load",
+        "loading",
+        "payload",
+        "shipment",
+        "consignment"
+      ]
+    }
+  ]
+}

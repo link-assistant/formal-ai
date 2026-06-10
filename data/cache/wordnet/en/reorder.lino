@@ -1,0 +1,21 @@
+language en
+lemma reorder
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a repeated order for the same merchandise"
+    examples ("he's the one who sends out all the new orders and reorders")
+    id oewn-06542246-n
+    partOfSpeech n
+  entry
+    definition "assign a new order to"
+    id oewn-00660783-v
+    partOfSpeech v
+  entry
+    definition "make a new request to be supplied with"
+    examples ("The store had to reorder the popular CD several times")
+    id oewn-00747796-v
+    partOfSpeech v
+source "oewn:2024"

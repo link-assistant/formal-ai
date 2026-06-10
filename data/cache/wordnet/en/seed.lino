@@ -1,0 +1,67 @@
+language en
+lemma seed
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a small hard fruit"
+    id oewn-13156591-n
+    partOfSpeech n
+  entry
+    definition "a mature fertilized plant ovule consisting of an embryo and its food source and having a protective coat or testa"
+    id oewn-11704458-n
+    partOfSpeech n
+  entry
+    definition "one of the outstanding players in a tournament"
+    id oewn-10594907-n
+    partOfSpeech n
+    synonyms ("seeded player")
+  entry
+    definition "anything that provides inspiration for later work"
+    id oewn-05843082-n
+    partOfSpeech n
+    synonyms (source germ)
+  entry
+    definition "the thick white fluid containing spermatozoa that is ejaculated by the male genital tract"
+    id oewn-05411679-n
+    partOfSpeech n
+    synonyms (semen "seminal fluid" ejaculate cum come)
+  entry
+    definition "go to seed; shed seeds"
+    examples ("The dandelions went to seed")
+    id oewn-01544838-v
+    partOfSpeech v
+  entry
+    definition "help (an enterprise) in its early stages of development by providing seed money"
+    id oewn-02222328-v
+    partOfSpeech v
+  entry
+    definition "bear seeds"
+    id oewn-01655971-v
+    partOfSpeech v
+  entry
+    definition "place (seeds) in or on the ground for future growth"
+    examples ("She sowed sunflower seeds")
+    id oewn-01503512-v
+    partOfSpeech v
+    synonyms (sow)
+  entry
+    definition "distribute (players or teams) so that outstanding teams or players will not meet in the early rounds"
+    id oewn-00660584-v
+    partOfSpeech v
+  entry
+    definition "sprinkle with silver iodide particles to disperse and cause rain"
+    examples ("seed clouds")
+    id oewn-00517505-v
+    partOfSpeech v
+  entry
+    definition "inoculate with microorganisms"
+    id oewn-00188707-v
+    partOfSpeech v
+  entry
+    definition "remove the seeds from"
+    examples ("seed grapes")
+    id oewn-00179863-v
+    partOfSpeech v
+source "oewn:2024"

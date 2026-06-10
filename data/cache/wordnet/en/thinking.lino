@@ -1,0 +1,18 @@
+language en
+lemma thinking
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the process of using your mind to consider something carefully"
+    examples ("thinking always made him frown" "she paused for thought")
+    id oewn-05778923-n
+    partOfSpeech n
+    synonyms (thought "thought process" cerebration intellection mentation)
+  entry
+    definition "endowed with the capacity to reason"
+    id oewn-01932488-s
+    partOfSpeech s
+    synonyms (intelligent reasoning)
+source "oewn:2024"

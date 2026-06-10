@@ -1,0 +1,33 @@
+language en
+lemma history
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the aggregate of past events"
+    examples ("a critical time in the school's history")
+    id oewn-15146348-n
+    partOfSpeech n
+  entry
+    definition "a record or narrative description of past events"
+    examples ("a history of France" "he gave an inaccurate account of the plot to kill the president" "the story of exposure to lead")
+    id oewn-06526084-n
+    partOfSpeech n
+    synonyms (account chronicle story)
+  entry
+    definition "the discipline that records and interprets past events involving human beings"
+    examples ("he teaches Medieval history" "history takes the long view")
+    id oewn-06165265-n
+    partOfSpeech n
+  entry
+    definition "the continuum of events occurring in succession leading from the past to the present and even into the future"
+    examples ("all of human history")
+    id oewn-15148913-n
+    partOfSpeech n
+  entry
+    definition "all that is remembered of the past as preserved in writing; a body of knowledge"
+    examples ("the dawn of recorded history" "from the beginning of history")
+    id oewn-06166450-n
+    partOfSpeech n
+source "oewn:2024"

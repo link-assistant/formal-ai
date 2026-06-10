@@ -1,0 +1,191 @@
+{
+  "lemma": "color",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00395196-a",
+      "partOfSpeech": "a",
+      "definition": "having or capable of producing colors",
+      "examples": [
+        "color film",
+        "he rented a color television",
+        "marvelous color illustrations"
+      ],
+      "synonyms": [
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-04963771-n",
+      "partOfSpeech": "n",
+      "definition": "a visual attribute of things that results from the light they emit or transmit or reflect",
+      "examples": [
+        "a white color is made up of many different wavelengths of light"
+      ],
+      "synonyms": [
+        "colour",
+        "coloring",
+        "colouring"
+      ]
+    },
+    {
+      "id": "oewn-05200606-n",
+      "partOfSpeech": "n",
+      "definition": "interest and variety and intensity",
+      "examples": [
+        "the Puritan Period was lacking in color",
+        "the characters were delineated with exceptional vividness"
+      ],
+      "synonyms": [
+        "colour",
+        "vividness"
+      ]
+    },
+    {
+      "id": "oewn-04995727-n",
+      "partOfSpeech": "n",
+      "definition": "the timbre of a musical sound",
+      "examples": [
+        "the recording fails to capture the true color of the original music"
+      ],
+      "synonyms": [
+        "colour",
+        "coloration",
+        "colouration"
+      ]
+    },
+    {
+      "id": "oewn-04685309-n",
+      "partOfSpeech": "n",
+      "definition": "an outward or token appearance or form that is deliberately misleading",
+      "examples": [
+        "he hoped his claims would have a semblance of authenticity",
+        "he tried to give his falsehood the gloss of moral sanction",
+        "the situation soon took on a different color"
+      ],
+      "synonyms": [
+        "semblance",
+        "gloss",
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-15009532-n",
+      "partOfSpeech": "n",
+      "definition": "any material used for its color",
+      "examples": [
+        "she used a different color for the trim"
+      ],
+      "synonyms": [
+        "coloring material",
+        "colouring material",
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-05853190-n",
+      "partOfSpeech": "n",
+      "definition": "(physics) the characteristic of quarks that determines their role in the strong interaction",
+      "examples": [
+        "each flavor of quarks comes in three colors"
+      ],
+      "synonyms": [
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-04682325-n",
+      "partOfSpeech": "n",
+      "definition": "the appearance of objects (or light sources) described in terms of a person's perception of their hue and lightness (or brightness) and saturation",
+      "synonyms": [
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-00284671-v",
+      "partOfSpeech": "v",
+      "definition": "add color to",
+      "examples": [
+        "The child colored the drawings",
+        "Fall colored the trees",
+        "colorize black and white film"
+      ],
+      "synonyms": [
+        "colorize",
+        "colorise",
+        "colourise",
+        "colourize",
+        "colour",
+        "color in",
+        "colour in"
+      ]
+    },
+    {
+      "id": "oewn-00838605-v",
+      "partOfSpeech": "v",
+      "definition": "affect as in thought or feeling",
+      "examples": [
+        "My personal feelings color my judgment in this case",
+        "The sadness tinged his life"
+      ],
+      "synonyms": [
+        "tinge",
+        "colour",
+        "distort"
+      ]
+    },
+    {
+      "id": "oewn-02542758-v",
+      "partOfSpeech": "v",
+      "definition": "modify or bias",
+      "examples": [
+        "His political ideas color his lectures"
+      ],
+      "synonyms": [
+        "colour"
+      ]
+    },
+    {
+      "id": "oewn-01700543-v",
+      "partOfSpeech": "v",
+      "definition": "decorate with colors",
+      "examples": [
+        "color the walls with paint in warm tones"
+      ],
+      "synonyms": [
+        "colour",
+        "emblazon"
+      ]
+    },
+    {
+      "id": "oewn-00838812-v",
+      "partOfSpeech": "v",
+      "definition": "give a deceptive explanation or excuse for",
+      "examples": [
+        "color a lie"
+      ],
+      "synonyms": [
+        "colour",
+        "gloss"
+      ]
+    },
+    {
+      "id": "oewn-00281861-v",
+      "partOfSpeech": "v",
+      "definition": "change color, often in an undesired manner",
+      "examples": [
+        "The shirts discolored"
+      ],
+      "synonyms": [
+        "discolor",
+        "discolour",
+        "colour"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+language en
+lemma revert
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "go back to a previous state"
+    examples ("We reverted to the old rules")
+    id oewn-00387981-v
+    partOfSpeech v
+    synonyms (return retrovert regress "turn back")
+  entry
+    definition "undergo reversion, as in a mutation"
+    id oewn-00120025-v
+    partOfSpeech v
+source "oewn:2024"

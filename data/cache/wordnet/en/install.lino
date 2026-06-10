@@ -1,0 +1,25 @@
+language en
+lemma install
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "set up for use"
+    examples ("install the washer and dryer" "We put in a new sink")
+    id oewn-01572394-v
+    partOfSpeech v
+    synonyms (instal "put in" "set up")
+  entry
+    definition "put into an office or a position"
+    examples ("the new president was installed immediately after the election")
+    id oewn-02389183-v
+    partOfSpeech v
+    synonyms (instal)
+  entry
+    definition place
+    examples ("Her manager had set her up at the Ritz")
+    id oewn-01572936-v
+    partOfSpeech v
+    synonyms (instal "set up" establish)
+source "oewn:2024"

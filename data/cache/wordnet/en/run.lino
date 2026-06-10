@@ -1,0 +1,321 @@
+language en
+lemma run
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a score in baseball made by a runner touching all four bases safely"
+    examples ("the Yankees scored 3 runs in the bottom of the 9th" "their first tally came in the 3rd inning")
+    id oewn-00190414-n
+    partOfSpeech n
+    synonyms (tally)
+  entry
+    definition "the act of testing something"
+    examples ("in the experimental trials the amount of carbon was measured separately" "he called each flip of the coin a new trial")
+    id oewn-00792739-n
+    partOfSpeech n
+    synonyms (test trial)
+  entry
+    definition "a race run on foot"
+    examples ("she broke the record for the half-mile run")
+    id oewn-07475061-n
+    partOfSpeech n
+    synonyms (footrace "foot race")
+  entry
+    definition "an unbroken series of events"
+    examples ("had a streak of bad luck" "Nicklaus had a run of birdies")
+    id oewn-08477596-n
+    partOfSpeech n
+    synonyms (streak)
+  entry
+    definition "(American football) a play in which a player attempts to carry the ball through or past the opposing team"
+    examples ("the defensive line braced to stop the run" "the coach put great emphasis on running")
+    id oewn-00559920-n
+    partOfSpeech n
+    synonyms (running "running play" "running game")
+  entry
+    definition "a regular trip"
+    examples ("the ship made its run in record time")
+    id oewn-00309697-n
+    partOfSpeech n
+  entry
+    definition "the act of running; traveling on foot at a fast pace"
+    examples ("he broke into a run" "his daily run keeps him fit")
+    id oewn-00294760-n
+    partOfSpeech n
+    synonyms (running)
+  entry
+    definition "the continuous period of time during which something (a machine or a factory) operates or continues in operation"
+    examples ("the assembly line was on a 12-hour run")
+    id oewn-15286931-n
+    partOfSpeech n
+  entry
+    definition "unrestricted freedom to use"
+    examples ("he has the run of the house")
+    id oewn-14019420-n
+    partOfSpeech n
+  entry
+    definition "the production achieved during a continuous period of operation (of a machine or factory etc.)"
+    examples ("a daily run of 100,000 gallons of paint")
+    id oewn-13782269-n
+    partOfSpeech n
+  entry
+    definition "a small stream"
+    id oewn-09438816-n
+    partOfSpeech n
+    synonyms (rivulet rill runnel streamlet)
+  entry
+    definition "a race between candidates for elective office"
+    examples ("I managed his campaign for governor" "he is raising money for a Senate run")
+    id oewn-07488069-n
+    partOfSpeech n
+    synonyms ("political campaign" campaign)
+  entry
+    definition "a row of unravelled stitches"
+    examples ("she got a run in her stocking")
+    id oewn-07457610-n
+    partOfSpeech n
+    synonyms (ladder ravel)
+  entry
+    definition "the pouring forth of a fluid"
+    id oewn-07422377-n
+    partOfSpeech n
+    synonyms (discharge outpouring)
+  entry
+    definition "an unbroken chronological sequence"
+    examples ("the play had a long run on Broadway" "the team enjoyed a brief run of victories")
+    id oewn-05052992-n
+    partOfSpeech n
+  entry
+    definition "a short trip"
+    examples ("take a run into town")
+    id oewn-00309837-n
+    partOfSpeech n
+  entry
+    definition "move fast by using one's feet, with one foot off the ground at any given time"
+    examples ("Don't run — you'll be out of breath" "The children ran to the store")
+    id oewn-01930264-v
+    partOfSpeech v
+  entry
+    definition "flee; take to one's heels; cut and run"
+    examples ("If you see this man, run!" "The burglars escaped before the police showed up")
+    id oewn-02079296-v
+    partOfSpeech v
+    synonyms (scat scarper "turn tail" lam "run away" "hightail it" bunk "head for the hills" "take to the woods" escape "fly the coop" "break away")
+  entry
+    definition "stretch out over a distance, space, time, or scope; run or extend between two points or beyond a certain point"
+    examples ("Service runs all the way to Cranbury" "His knowledge doesn't go very far" "My memory extends back to my fourth year of life" "The facts extend beyond a consideration of her personal assets")
+    id oewn-02691775-v
+    partOfSpeech v
+    synonyms (go pass lead extend)
+  entry
+    definition "direct or control; projects, businesses, etc."
+    examples ("She is running a relief operation in the Sudan")
+    id oewn-02448714-v
+    partOfSpeech v
+    synonyms (operate)
+  entry
+    definition "have a particular form"
+    examples ("the story or argument runs as follows" "as the saying goes …")
+    id oewn-02727159-v
+    partOfSpeech v
+    synonyms (go)
+  entry
+    definition "move along, of liquids"
+    examples ("Water flowed into the cave" "the Missouri feeds into the Mississippi")
+    id oewn-02070867-v
+    partOfSpeech v
+    synonyms (flow feed course)
+  entry
+    definition "perform as expected when applied"
+    examples ("The washing machine won't go unless it's plugged in" "Does this old car still run well?" "This old radio doesn't work anymore")
+    id oewn-01528454-v
+    partOfSpeech v
+    synonyms (function work operate go)
+  entry
+    definition "change or be different within limits"
+    examples ("Estimates for the losses in the earthquake range as high as $2 billion" "Interest rates run from 5 to 10 percent" "The instruments ranged from tuba to cymbals" "My students range from very bright to dull")
+    id oewn-02732914-v
+    partOfSpeech v
+    synonyms (range)
+  entry
+    definition "run, stand, or compete for an office or a position"
+    examples ("Who's running for treasurer this year?")
+    id oewn-01096497-v
+    partOfSpeech v
+    synonyms (campaign)
+  entry
+    definition "cause to emit recorded audio or video"
+    examples ("They ran the tapes over and over again" "I'll play you my favorite record" "He never tires of playing that video")
+    id oewn-01721028-v
+    partOfSpeech v
+    synonyms (play)
+  entry
+    definition "move about freely and without restraint, or act as if running around in an uncontrolled way"
+    examples ("who are these people running around in the building?" "She runs around telling everyone of her troubles" "let the dogs run free")
+    id oewn-02104107-v
+    partOfSpeech v
+  entry
+    definition "have a tendency or disposition to do or be something; be inclined"
+    examples ("She tends to be nervous before her lectures" "These dresses run small" "He inclined to corpulence")
+    id oewn-02725274-v
+    partOfSpeech v
+    synonyms (tend "be given" lean incline)
+  entry
+    definition "be operating, running or functioning"
+    examples ("The car is still running — turn it off!")
+    id oewn-01529078-v
+    partOfSpeech v
+  entry
+    definition "change from one state to another"
+    examples ("run amok" "run rogue" "run riot")
+    id oewn-00550143-v
+    partOfSpeech v
+  entry
+    definition "cause to perform"
+    examples ("run a subject" "run a process")
+    id oewn-00518609-v
+    partOfSpeech v
+  entry
+    definition "be affected by; be subjected to"
+    examples ("run a temperature" "run a risk")
+    id oewn-02726779-v
+    partOfSpeech v
+  entry
+    definition "continue to exist"
+    examples ("These stories die hard" "The legend of Elvis endures")
+    id oewn-02653599-v
+    partOfSpeech v
+    synonyms (prevail persist "die hard" endure)
+  entry
+    definition "occur persistently"
+    examples ("Musical talent runs in the family")
+    id oewn-02618269-v
+    partOfSpeech v
+  entry
+    definition "carry out a process or program, as on a computer or a machine"
+    examples ("Run the dishwasher" "run a new program on the Mac" "the computer executed the instruction")
+    id oewn-02569242-v
+    partOfSpeech v
+    synonyms (execute)
+  entry
+    definition "include as the content; broadcast or publicize"
+    examples ("We ran the ad three times" "This paper carries a restaurant review" "All major networks carried the press conference")
+    id oewn-01750167-v
+    partOfSpeech v
+    synonyms (carry)
+  entry
+    definition "conduct to completion"
+    examples ("run an errand")
+    id oewn-01645087-v
+    partOfSpeech v
+  entry
+    definition "pass over, across, or through"
+    examples ("He ran his eyes over her body" "She ran her fingers along the carved figurine" "He drew her hair through his fingers")
+    id oewn-01214794-v
+    partOfSpeech v
+    synonyms (guide draw pass)
+  entry
+    definition "cause something to pass or lead somewhere"
+    examples ("Run the wire behind the cabinet")
+    id oewn-02692467-v
+    partOfSpeech v
+    synonyms (lead)
+  entry
+    definition "make without a miss"
+    id oewn-02530978-v
+    partOfSpeech v
+  entry
+    definition "deal in illegally, such as arms or liquor"
+    id oewn-02247038-v
+    partOfSpeech v
+    synonyms ("black market")
+  entry
+    definition "cause an animal to move fast"
+    examples ("run the dogs")
+    id oewn-02096576-v
+    partOfSpeech v
+  entry
+    definition "be diffused"
+    examples ("These dyes and colors are guaranteed not to run")
+    id oewn-02064720-v
+    partOfSpeech v
+    synonyms (bleed)
+  entry
+    definition "sail before the wind"
+    id oewn-01931856-v
+    partOfSpeech v
+  entry
+    definition "cover by running; run a certain distance"
+    examples ("She ran 10 miles that day")
+    id oewn-01918940-v
+    partOfSpeech v
+  entry
+    definition "extend or continue for a certain period of time"
+    examples ("The film runs 5 hours")
+    id oewn-02654212-v
+    partOfSpeech v
+    synonyms ("run for")
+  entry
+    definition "set animals loose to graze"
+    id oewn-02427021-v
+    partOfSpeech v
+  entry
+    definition "keep company"
+    examples ("the heifers run with the bulls to produce offspring")
+    id oewn-01931700-v
+    partOfSpeech v
+    synonyms (consort)
+  entry
+    definition "run with the ball; in such sports as football"
+    id oewn-01931400-v
+    partOfSpeech v
+  entry
+    definition "travel rapidly, by any (unspecified) means"
+    examples ("Run to the store!" "She always runs to Italy, because she has a lover there")
+    id oewn-01930937-v
+    partOfSpeech v
+  entry
+    definition "travel a route regularly"
+    examples ("Ships ply the waters near the coast")
+    id oewn-01868024-v
+    partOfSpeech v
+    synonyms (ply)
+  entry
+    definition "pursue for food or sport (as of wild animals)"
+    examples ("Goering often hunted wild boars in Poland" "The dogs are running deer" "The Duke hunted in these woods")
+    id oewn-01146304-v
+    partOfSpeech v
+    synonyms (hunt "hunt down" "track down")
+  entry
+    definition "compete in a race"
+    examples ("he is running the Marathon this year" "let's race and see who gets there first")
+    id oewn-01088514-v
+    partOfSpeech v
+    synonyms (race)
+  entry
+    definition "progress by being changed"
+    examples ("The speech has to go through several more drafts" "run through your presentation before the meeting")
+    id oewn-00540190-v
+    partOfSpeech v
+    synonyms (move go)
+  entry
+    definition "reduce or cause to be reduced from a solid to a liquid state, usually by heating"
+    examples ("melt butter" "melt down gold" "The wax melted in the sun")
+    id oewn-00445584-v
+    partOfSpeech v
+    synonyms (melt "melt down")
+  entry
+    definition "come unraveled or undone as if by snagging"
+    examples ("Her nylons were running")
+    id oewn-00335613-v
+    partOfSpeech v
+    synonyms (ladder)
+  entry
+    definition "become undone"
+    examples ("the sweater unraveled")
+    id oewn-00333482-v
+    partOfSpeech v
+    synonyms (unravel)
+source "oewn:2024"

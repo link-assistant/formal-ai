@@ -1,0 +1,38 @@
+language en
+lemma no
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(quantifier) used with either mass nouns or plural count nouns for indicating a complete or almost complete lack or zero quantity of"
+    examples ("we have no bananas" "no eggs left and no money to buy any" "have you no decency?" "did it with no help" "I'll get you there in no time")
+    id oewn-02276242-a
+    partOfSpeech a
+  entry
+    definition "a radioactive transuranic element synthesized by bombarding curium with carbon ions; 7 isotopes are known"
+    id oewn-14671900-n
+    partOfSpeech n
+    synonyms (nobelium "atomic number 102")
+  entry
+    definition "a negative"
+    examples ("his no was loud and clear")
+    id oewn-07219764-n
+    partOfSpeech n
+  entry
+    definition "referring to the degree to which a certain quality is present"
+    examples ("he was no heavier than a child")
+    id oewn-00051219-r
+    partOfSpeech r
+    synonyms ("no more")
+  entry
+    definition "not in any degree or manner; not at all"
+    examples ("he is no better today")
+    id oewn-00024946-r
+    partOfSpeech r
+  entry
+    definition "used to express refusal or denial or disagreement etc. or especially to emphasize a negative statement"
+    examples ("no, you are wrong")
+    id oewn-00024715-r
+    partOfSpeech r
+source "oewn:2024"

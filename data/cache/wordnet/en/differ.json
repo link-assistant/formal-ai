@@ -1,0 +1,33 @@
+{
+  "lemma": "differ",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02672316-v",
+      "partOfSpeech": "v",
+      "definition": "be different",
+      "examples": [
+        "These two tests differ in only one respect"
+      ]
+    },
+    {
+      "id": "oewn-00806464-v",
+      "partOfSpeech": "v",
+      "definition": "be of different opinions",
+      "examples": [
+        "I beg to differ!",
+        "She disagrees with her husband on many questions"
+      ],
+      "synonyms": [
+        "disagree",
+        "dissent",
+        "take issue"
+      ]
+    }
+  ]
+}

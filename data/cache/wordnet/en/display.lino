@@ -1,0 +1,49 @@
+language en
+lemma display
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "something intended to communicate a particular impression"
+    examples ("made a display of strength" "a show of impatience" "a good show of looking interested")
+    id oewn-06892571-n
+    partOfSpeech n
+    synonyms (show)
+  entry
+    definition "something shown to the public"
+    examples ("the museum had many exhibits of oriental art")
+    id oewn-00522265-n
+    partOfSpeech n
+    synonyms (exhibit showing)
+  entry
+    definition "a visual representation of something"
+    id oewn-03215661-n
+    partOfSpeech n
+    synonyms (presentation)
+  entry
+    definition "behavior that makes your feelings public"
+    examples ("a display of emotion")
+    id oewn-07228377-n
+    partOfSpeech n
+  entry
+    definition "exhibiting openly in public view"
+    examples ("a display of courage")
+    id oewn-06900776-n
+    partOfSpeech n
+  entry
+    definition "an electronic device that represents information in visual form"
+    id oewn-03215838-n
+    partOfSpeech n
+    synonyms ("video display")
+  entry
+    definition "to show, make visible or apparent"
+    examples ("The Metropolitan Museum is exhibiting Goya's works this month" "Why don't you show your nice legs and wear shorter skirts?" "National leaders will have to display the highest skills of statesmanship")
+    id oewn-02144506-v
+    partOfSpeech v
+    synonyms (expose exhibit)
+  entry
+    definition "attract attention by displaying some body part or posing; of animals"
+    id oewn-02540893-v
+    partOfSpeech v
+source "oewn:2024"

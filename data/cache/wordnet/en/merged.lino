@@ -1,0 +1,12 @@
+language en
+lemma merged
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "formed or united into a whole"
+    id oewn-02487032-s
+    partOfSpeech s
+    synonyms (incorporate incorporated integrated unified)
+source "oewn:2024"

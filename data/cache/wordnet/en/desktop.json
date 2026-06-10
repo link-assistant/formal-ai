@@ -1,0 +1,25 @@
+{
+  "lemma": "desktop",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08681441-n",
+      "partOfSpeech": "n",
+      "definition": "the top of a desk"
+    },
+    {
+      "id": "oewn-02772080-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) the area of the screen in graphical user interfaces against which icons and windows appear",
+      "synonyms": [
+        "background",
+        "screen background"
+      ]
+    }
+  ]
+}

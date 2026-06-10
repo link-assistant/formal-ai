@@ -1,0 +1,52 @@
+language en
+lemma let
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a brutal terrorist group active in Kashmir; fights against India with the goal of restoring Islamic rule of India"
+    examples ("Lashkar-e-Toiba has committed mass murders of civilian Hindus")
+    id oewn-08047773-n
+    partOfSpeech n
+    synonyms (Lashkar-e-Taiba Lashkar-e-Toiba Lashkar-e-Tayyiba "Army of the Pure" "Army of the Righteous")
+  entry
+    definition "a serve that strikes the net before falling into the receiver's court; the ball must be served again"
+    id oewn-00570110-n
+    partOfSpeech n
+    synonyms ("net ball")
+  entry
+    definition "make it possible through a specific action or lack of action for something to happen"
+    examples ("This permits the water to rush in" "This sealed door won't allow the water to come into the basement" "This will permit the rain to run off")
+    id oewn-02427979-v
+    partOfSpeech v
+    synonyms (allow permit)
+  entry
+    definition "actively cause something to happen"
+    examples ("I let it be known that I was not interested")
+    id oewn-00773535-v
+    partOfSpeech v
+  entry
+    definition "consent to, give permission; permit"
+    examples ("She permitted her son to visit her estranged husband" "I won't let the police search her basement" "I cannot allow you to see your exam")
+    id oewn-00803980-v
+    partOfSpeech v
+    synonyms (permit allow countenance)
+  entry
+    definition "cause to move; cause to be in a certain position or condition"
+    examples ("He got his squad on the ball" "This let me in for a big surprise" "He got a girl into trouble")
+    id oewn-00120604-v
+    partOfSpeech v
+    synonyms (get have)
+  entry
+    definition "leave unchanged"
+    examples ("let it be")
+    id oewn-00497754-v
+    partOfSpeech v
+  entry
+    definition "grant use or occupation of under a term of contract"
+    examples ("I am leasing my country estate to some foreigners")
+    id oewn-02213685-v
+    partOfSpeech v
+    synonyms (lease rent)
+source "oewn:2024"

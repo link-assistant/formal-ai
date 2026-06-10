@@ -1,0 +1,53 @@
+language en
+lemma scan
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of scanning; systematic examination of a prescribed region"
+    examples ("he made a thorough scan of the beach with his binoculars")
+    id oewn-00645186-n
+    partOfSpeech n
+  entry
+    definition "an image produced by scanning"
+    examples ("he analyzed the brain scan" "you could see the tumor in the CAT scan")
+    id oewn-04149614-n
+    partOfSpeech n
+    synonyms ("CAT scan")
+  entry
+    definition "examine minutely or intensely"
+    examples ("the surgeon scanned the X-ray")
+    id oewn-02156934-v
+    partOfSpeech v
+  entry
+    definition "examine hastily"
+    examples ("She scanned the newspaper headlines while waiting for the taxi")
+    id oewn-02156708-v
+    partOfSpeech v
+    synonyms (skim rake "glance over" "run down")
+  entry
+    definition "make a wide, sweeping search of"
+    examples ("The beams scanned the night sky")
+    id oewn-01321319-v
+    partOfSpeech v
+  entry
+    definition "conform to a metrical pattern"
+    id oewn-02667220-v
+    partOfSpeech v
+  entry
+    definition "move a light beam over; in electronics, to reproduce an image"
+    id oewn-01859433-v
+    partOfSpeech v
+  entry
+    definition "read metrically"
+    examples ("scan verses")
+    id oewn-01053700-v
+    partOfSpeech v
+  entry
+    definition "obtain data from magnetic tapes or other digital sources"
+    examples ("This dictionary can be read by the computer")
+    id oewn-00629157-v
+    partOfSpeech v
+    synonyms (read)
+source "oewn:2024"

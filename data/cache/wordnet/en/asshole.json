@@ -1,0 +1,38 @@
+{
+  "lemma": "asshole",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09834593-n",
+      "partOfSpeech": "n",
+      "definition": "insulting terms of address for people who are stupid or irritating or ridiculous",
+      "synonyms": [
+        "bastard",
+        "cocksucker",
+        "dickhead",
+        "shit",
+        "mother fucker",
+        "motherfucker",
+        "prick",
+        "whoreson",
+        "son of a bitch",
+        "SOB"
+      ]
+    },
+    {
+      "id": "oewn-05545848-n",
+      "partOfSpeech": "n",
+      "definition": "vulgar slang for anus",
+      "synonyms": [
+        "arse",
+        "arsehole",
+        "bunghole"
+      ]
+    }
+  ]
+}

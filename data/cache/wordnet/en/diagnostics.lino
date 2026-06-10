@@ -1,0 +1,12 @@
+language en
+lemma diagnostics
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the branch of medical science dealing with the classification of disease"
+    id oewn-06062811-n
+    partOfSpeech n
+    synonyms (nosology)
+source "oewn:2024"

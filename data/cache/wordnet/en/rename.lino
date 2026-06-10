@@ -1,0 +1,17 @@
+language en
+lemma rename
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "assign a new name to"
+    examples ("Many streets in the former East Germany were renamed in 1990")
+    id oewn-01031245-v
+    partOfSpeech v
+  entry
+    definition "name again or anew"
+    examples ("He was renamed Minister of the Interior")
+    id oewn-02402123-v
+    partOfSpeech v
+source "oewn:2024"

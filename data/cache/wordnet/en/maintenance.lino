@@ -1,0 +1,34 @@
+language en
+lemma maintenance
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "activity involved in maintaining something in good working order"
+    examples ("he wrote the manual on car care")
+    id oewn-00268366-n
+    partOfSpeech n
+    synonyms (care upkeep)
+  entry
+    definition "means of maintenance of a family or group"
+    id oewn-13387484-n
+    partOfSpeech n
+  entry
+    definition "court-ordered support paid by one spouse to another after they are separated"
+    id oewn-13304643-n
+    partOfSpeech n
+    synonyms (alimony)
+  entry
+    definition "the act of sustaining life by food or providing a means of subsistence"
+    examples ("they were in want of sustenance" "fishing was their main sustainment")
+    id oewn-01218681-n
+    partOfSpeech n
+    synonyms (sustenance sustentation sustainment upkeep)
+  entry
+    definition "the unauthorized interference in a legal action by a person having no interest in it (as by helping one party with money or otherwise to continue the action) so as to obstruct justice or promote unnecessary litigation or unsettle the peace of the community"
+    examples ("unlike champerty, criminal maintenance does not necessarily involve personal profit")
+    id oewn-00767144-n
+    partOfSpeech n
+    synonyms ("criminal maintenance")
+source "oewn:2024"

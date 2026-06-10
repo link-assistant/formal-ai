@@ -1,0 +1,31 @@
+language en
+lemma manual
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to the hands"
+    examples ("manual dexterity")
+    id oewn-02769962-a
+    partOfSpeech a
+  entry
+    definition "requiring human effort"
+    examples ("a manual transmission")
+    id oewn-00184143-a
+    partOfSpeech a
+  entry
+    definition "a small handbook"
+    id oewn-06433328-n
+    partOfSpeech n
+  entry
+    definition "(military) a prescribed drill in handling a rifle"
+    id oewn-00896833-n
+    partOfSpeech n
+    synonyms ("manual of arms")
+  entry
+    definition "doing or requiring physical work"
+    examples ("manual labor" "manual laborer")
+    id oewn-02567793-s
+    partOfSpeech s
+source "oewn:2024"

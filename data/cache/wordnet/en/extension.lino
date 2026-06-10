@@ -1,0 +1,69 @@
+language en
+lemma extension
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a mutually agreed delay in the date set for the completion of a job or payment of a debt"
+    examples ("they applied for an extension of the loan")
+    id oewn-15297368-n
+    partOfSpeech n
+  entry
+    definition "act of expanding in scope; making more widely available"
+    examples ("extension of the program to all in need")
+    id oewn-00368594-n
+    partOfSpeech n
+  entry
+    definition "the spreading of something (a belief or practice) into new regions"
+    id oewn-06263648-n
+    partOfSpeech n
+    synonyms (propagation)
+  entry
+    definition "an educational opportunity provided by colleges and universities to people who are not enrolled as regular students"
+    id oewn-00887717-n
+    partOfSpeech n
+    synonyms ("extension service" "university extension")
+  entry
+    definition "act of stretching or straightening out a flexed limb"
+    id oewn-00370340-n
+    partOfSpeech n
+  entry
+    definition "a string of characters beginning with a period and followed by one or more letters; the optional second part of a PC computer filename"
+    examples ("most applications provide extensions for the files they create" "most BASIC files use the filename extension .BAS")
+    id oewn-06346173-n
+    partOfSpeech n
+    synonyms ("filename extension" "file name extension")
+  entry
+    definition "the most direct or specific meaning of a word or expression; the class of objects that an expression refers to"
+    examples ("the extension of ‘satellite of Mars’ is the set containing only Demos and Phobos")
+    id oewn-05931581-n
+    partOfSpeech n
+    synonyms (reference denotation)
+  entry
+    definition "the ability to raise the working leg high in the air"
+    examples ("the dancer was praised for her uncanny extension" "good extension comes from a combination of training and native ability")
+    id oewn-05221867-n
+    partOfSpeech n
+  entry
+    definition "amount or degree or range to which something extends"
+    examples ("the wire has an extension of 50 feet")
+    id oewn-05140800-n
+    partOfSpeech n
+    synonyms (lengthiness prolongation)
+  entry
+    definition "an additional telephone set that is connected to the same telephone line"
+    id oewn-03311814-n
+    partOfSpeech n
+    synonyms ("telephone extension" "extension phone")
+  entry
+    definition "an addition to the length of something"
+    id oewn-03286846-n
+    partOfSpeech n
+    synonyms (elongation)
+  entry
+    definition "an addition that extends a main building"
+    id oewn-02716453-n
+    partOfSpeech n
+    synonyms (annex annexe wing)
+source "oewn:2024"

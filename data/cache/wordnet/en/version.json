@@ -1,0 +1,70 @@
+{
+  "lemma": "version",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07188236-n",
+      "partOfSpeech": "n",
+      "definition": "an interpretation of a matter from a particular viewpoint",
+      "examples": [
+        "his version of the fight was different from mine"
+      ]
+    },
+    {
+      "id": "oewn-05849159-n",
+      "partOfSpeech": "n",
+      "definition": "something a little different from others of the same type",
+      "examples": [
+        "an experimental version of the night fighter",
+        "a variant of the same word",
+        "an emery wheel is the modern variation of a grindstone",
+        "the boy is a younger edition of his father"
+      ],
+      "synonyms": [
+        "variant",
+        "variation",
+        "edition"
+      ]
+    },
+    {
+      "id": "oewn-06420422-n",
+      "partOfSpeech": "n",
+      "definition": "a written work (as a novel) that has been recast in a new form",
+      "examples": [
+        "the play is an adaptation of a short novel"
+      ],
+      "synonyms": [
+        "adaptation"
+      ]
+    },
+    {
+      "id": "oewn-06548380-n",
+      "partOfSpeech": "n",
+      "definition": "a written communication in a second language having the same meaning as the written communication in a first language",
+      "synonyms": [
+        "translation",
+        "interlingual rendition",
+        "rendering"
+      ]
+    },
+    {
+      "id": "oewn-05937299-n",
+      "partOfSpeech": "n",
+      "definition": "a mental representation of the meaning or significance of something",
+      "synonyms": [
+        "interpretation",
+        "reading"
+      ]
+    },
+    {
+      "id": "oewn-01270394-n",
+      "partOfSpeech": "n",
+      "definition": "manual turning of a fetus in the uterus (usually to aid delivery)"
+    }
+  ]
+}

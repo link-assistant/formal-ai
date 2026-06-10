@@ -1,0 +1,26 @@
+{
+  "lemma": "us",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09067337-n",
+      "partOfSpeech": "n",
+      "definition": "North American republic containing 50 states - 48 conterminous states in North America plus Alaska in northwest North America and the Hawaiian Islands in the Pacific Ocean; achieved independence in 1776",
+      "synonyms": [
+        "United States",
+        "United States of America",
+        "America",
+        "the States",
+        "U.S.",
+        "USA",
+        "U.S.A.",
+        "merica"
+      ]
+    }
+  ]
+}

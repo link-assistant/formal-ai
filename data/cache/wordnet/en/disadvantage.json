@@ -1,0 +1,28 @@
+{
+  "lemma": "disadvantage",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05169087-n",
+      "partOfSpeech": "n",
+      "definition": "the quality of having an inferior or less favorable position"
+    },
+    {
+      "id": "oewn-02519126-v",
+      "partOfSpeech": "v",
+      "definition": "put at a disadvantage; hinder, harm",
+      "examples": [
+        "This rule clearly disadvantages me"
+      ],
+      "synonyms": [
+        "disfavor",
+        "disfavour"
+      ]
+    }
+  ]
+}

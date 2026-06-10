@@ -1,0 +1,48 @@
+{
+  "lemma": "mb",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13649707-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1000 kilobytes or 10^6 (1,000,000) bytes",
+      "synonyms": [
+        "megabyte",
+        "M"
+      ]
+    },
+    {
+      "id": "oewn-13649880-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1000 kilobits or 10^6 (1,000,000) bits",
+      "synonyms": [
+        "megabit",
+        "Mbit"
+      ]
+    },
+    {
+      "id": "oewn-13649517-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of information equal to 1024 kibibytes or 2^20 (1,048,576) bytes",
+      "synonyms": [
+        "megabyte",
+        "mebibyte",
+        "M",
+        "MiB"
+      ]
+    },
+    {
+      "id": "oewn-06711988-n",
+      "partOfSpeech": "n",
+      "definition": "(a British degree) a bachelor's degree in medicine",
+      "synonyms": [
+        "Bachelor of Medicine"
+      ]
+    }
+  ]
+}

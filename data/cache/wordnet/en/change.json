@@ -1,0 +1,221 @@
+{
+  "lemma": "change",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07311046-n",
+      "partOfSpeech": "n",
+      "definition": "an event that occurs when something passes from one state or phase to another",
+      "examples": [
+        "the change was intended to increase sales",
+        "this storm is certainly a change for the worse",
+        "the neighborhood had undergone few modifications since his last visit years ago"
+      ],
+      "synonyms": [
+        "alteration",
+        "modification"
+      ]
+    },
+    {
+      "id": "oewn-13881240-n",
+      "partOfSpeech": "n",
+      "definition": "a relational difference between states; especially between states before and after some event",
+      "examples": [
+        "he attributed the change to their marriage"
+      ]
+    },
+    {
+      "id": "oewn-00191991-n",
+      "partOfSpeech": "n",
+      "definition": "the action of changing something",
+      "examples": [
+        "the change of government had no impact on the economy",
+        "his change on abortion cost him the election"
+      ]
+    },
+    {
+      "id": "oewn-11432841-n",
+      "partOfSpeech": "n",
+      "definition": "the result of alteration or modification",
+      "examples": [
+        "there were marked changes in the lining of the lungs",
+        "there had been no change in the mountains"
+      ]
+    },
+    {
+      "id": "oewn-13408862-n",
+      "partOfSpeech": "n",
+      "definition": "the balance of money received when the amount you tender is greater than the amount due",
+      "examples": [
+        "I paid with a twenty and pocketed the change"
+      ]
+    },
+    {
+      "id": "oewn-03009524-n",
+      "partOfSpeech": "n",
+      "definition": "a thing that is different",
+      "examples": [
+        "he inspected several changes before selecting one"
+      ]
+    },
+    {
+      "id": "oewn-03009373-n",
+      "partOfSpeech": "n",
+      "definition": "a different or fresh set of clothes",
+      "examples": [
+        "she brought a change in her overnight bag"
+      ]
+    },
+    {
+      "id": "oewn-13409284-n",
+      "partOfSpeech": "n",
+      "definition": "coins of small denomination regarded collectively",
+      "examples": [
+        "he had a pocketful of change"
+      ]
+    },
+    {
+      "id": "oewn-13408652-n",
+      "partOfSpeech": "n",
+      "definition": "money received in return for its equivalent in a larger denomination or a different currency",
+      "examples": [
+        "he got change for a twenty and used it to pay the taxi driver"
+      ]
+    },
+    {
+      "id": "oewn-04759289-n",
+      "partOfSpeech": "n",
+      "definition": "a difference that is usually pleasant",
+      "examples": [
+        "he goes to France for variety",
+        "it is a refreshing change to meet a woman mechanic"
+      ],
+      "synonyms": [
+        "variety"
+      ]
+    },
+    {
+      "id": "oewn-00126072-v",
+      "partOfSpeech": "v",
+      "definition": "cause to change; make different; cause a transformation",
+      "examples": [
+        "The advent of the automobile may have altered the growth pattern of the city",
+        "The discussion has changed my thinking about the issue"
+      ],
+      "synonyms": [
+        "alter",
+        "modify"
+      ]
+    },
+    {
+      "id": "oewn-00109468-v",
+      "partOfSpeech": "v",
+      "definition": "undergo a change; become different in essence; losing one's or its original nature",
+      "examples": [
+        "She changed completely as she grew older",
+        "The weather changed last night"
+      ]
+    },
+    {
+      "id": "oewn-00122978-v",
+      "partOfSpeech": "v",
+      "definition": "become different in some particular way, without permanently losing one's or its former characteristics or essence",
+      "examples": [
+        "her mood changes in accordance with the weather",
+        "The supermarket's selection of vegetables varies according to the season"
+      ],
+      "synonyms": [
+        "alter",
+        "vary"
+      ]
+    },
+    {
+      "id": "oewn-00551194-v",
+      "partOfSpeech": "v",
+      "definition": "lay aside, abandon, or leave for another",
+      "examples": [
+        "switch to a different brand of beer",
+        "She switched psychiatrists",
+        "The car changed lanes"
+      ],
+      "synonyms": [
+        "switch",
+        "shift"
+      ]
+    },
+    {
+      "id": "oewn-00169266-v",
+      "partOfSpeech": "v",
+      "definition": "change clothes; put on different clothes",
+      "examples": [
+        "Change before you go to the opera"
+      ]
+    },
+    {
+      "id": "oewn-00161033-v",
+      "partOfSpeech": "v",
+      "definition": "exchange or replace with another, usually of the same kind or category",
+      "examples": [
+        "Could you convert my dollars into pounds?",
+        "He changed his name",
+        "convert centimeters into inches",
+        "convert holdings into shares"
+      ],
+      "synonyms": [
+        "exchange",
+        "commute",
+        "convert"
+      ]
+    },
+    {
+      "id": "oewn-02262178-v",
+      "partOfSpeech": "v",
+      "definition": "give to, and receive from, one another",
+      "examples": [
+        "Would you change places with me?",
+        "We have been exchanging letters for a year"
+      ],
+      "synonyms": [
+        "exchange",
+        "interchange"
+      ]
+    },
+    {
+      "id": "oewn-02092508-v",
+      "partOfSpeech": "v",
+      "definition": "change from one vehicle or transportation line to another",
+      "examples": [
+        "She changed in Chicago on her way to the East coast"
+      ],
+      "synonyms": [
+        "transfer"
+      ]
+    },
+    {
+      "id": "oewn-00552287-v",
+      "partOfSpeech": "v",
+      "definition": "become deeper in tone",
+      "examples": [
+        "His voice began to change when he was 12 years old",
+        "Her voice deepened when she whispered the password"
+      ],
+      "synonyms": [
+        "deepen"
+      ]
+    },
+    {
+      "id": "oewn-00163059-v",
+      "partOfSpeech": "v",
+      "definition": "remove or replace the coverings of",
+      "examples": [
+        "Father had to learn how to change the baby",
+        "After each guest we changed the bed linens"
+      ]
+    }
+  ]
+}

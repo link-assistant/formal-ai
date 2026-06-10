@@ -1,0 +1,122 @@
+{
+  "lemma": "command",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07182782-n",
+      "partOfSpeech": "n",
+      "definition": "an authoritative direction or instruction to do something",
+      "synonyms": [
+        "bid",
+        "bidding",
+        "dictation"
+      ]
+    },
+    {
+      "id": "oewn-08207222-n",
+      "partOfSpeech": "n",
+      "definition": "a military unit or region under the control of a single officer"
+    },
+    {
+      "id": "oewn-05205065-n",
+      "partOfSpeech": "n",
+      "definition": "the power or authority to command",
+      "examples": [
+        "an admiral in command"
+      ]
+    },
+    {
+      "id": "oewn-04726652-n",
+      "partOfSpeech": "n",
+      "definition": "availability for use",
+      "examples": [
+        "the materials at the command of the potters grew"
+      ]
+    },
+    {
+      "id": "oewn-13976826-n",
+      "partOfSpeech": "n",
+      "definition": "a position of highest authority",
+      "examples": [
+        "the corporation has just undergone a change in command"
+      ]
+    },
+    {
+      "id": "oewn-05649804-n",
+      "partOfSpeech": "n",
+      "definition": "great skillfulness and knowledge of some subject or activity",
+      "examples": [
+        "a good command of French"
+      ],
+      "synonyms": [
+        "control",
+        "mastery"
+      ]
+    },
+    {
+      "id": "oewn-06597067-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a line of code written as part of a computer program",
+      "synonyms": [
+        "instruction",
+        "statement",
+        "program line"
+      ]
+    },
+    {
+      "id": "oewn-00753893-v",
+      "partOfSpeech": "v",
+      "definition": "be in command of",
+      "examples": [
+        "The general commanded a huge army"
+      ]
+    },
+    {
+      "id": "oewn-00753573-v",
+      "partOfSpeech": "v",
+      "definition": "make someone do something",
+      "synonyms": [
+        "require"
+      ]
+    },
+    {
+      "id": "oewn-01020186-v",
+      "partOfSpeech": "v",
+      "definition": "demand as one's due",
+      "examples": [
+        "This speaker commands a high fee",
+        "The author commands a fair hearing from his readers"
+      ]
+    },
+    {
+      "id": "oewn-02701971-v",
+      "partOfSpeech": "v",
+      "definition": "look down on",
+      "examples": [
+        "The villa dominates the town"
+      ],
+      "synonyms": [
+        "dominate",
+        "overlook",
+        "overtop"
+      ]
+    },
+    {
+      "id": "oewn-02445887-v",
+      "partOfSpeech": "v",
+      "definition": "exercise authoritative control or power over",
+      "examples": [
+        "control the budget",
+        "Command the military forces"
+      ],
+      "synonyms": [
+        "control"
+      ]
+    }
+  ]
+}

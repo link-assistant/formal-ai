@@ -1,0 +1,135 @@
+{
+  "lemma": "recall",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07294777-n",
+      "partOfSpeech": "n",
+      "definition": "a request by the manufacturer of a defective product to return the product (as for replacement or repair)",
+      "synonyms": [
+        "callback"
+      ]
+    },
+    {
+      "id": "oewn-07205500-n",
+      "partOfSpeech": "n",
+      "definition": "a call to return",
+      "examples": [
+        "the recall of our ambassador"
+      ]
+    },
+    {
+      "id": "oewn-06817246-n",
+      "partOfSpeech": "n",
+      "definition": "a bugle call that signals troops to return"
+    },
+    {
+      "id": "oewn-05769556-n",
+      "partOfSpeech": "n",
+      "definition": "the process of remembering (especially the process of recovering information by mental effort)",
+      "examples": [
+        "he has total recall of the episode"
+      ],
+      "synonyms": [
+        "recollection",
+        "reminiscence"
+      ]
+    },
+    {
+      "id": "oewn-01261399-n",
+      "partOfSpeech": "n",
+      "definition": "the act of removing an official by petition"
+    },
+    {
+      "id": "oewn-00609334-v",
+      "partOfSpeech": "v",
+      "definition": "recall knowledge from memory; have a recollection",
+      "examples": [
+        "I can't remember saying any such thing",
+        "I can't think what her last name was",
+        "can you remember her phone number?",
+        "Do you remember that he once loved you?",
+        "call up memories"
+      ],
+      "synonyms": [
+        "remember",
+        "retrieve",
+        "call back",
+        "call up",
+        "recollect",
+        "think"
+      ]
+    },
+    {
+      "id": "oewn-00961556-v",
+      "partOfSpeech": "v",
+      "definition": "go back to something earlier",
+      "examples": [
+        "This harks back to a previous remark of his"
+      ],
+      "synonyms": [
+        "hark back",
+        "return",
+        "come back"
+      ]
+    },
+    {
+      "id": "oewn-02681269-v",
+      "partOfSpeech": "v",
+      "definition": "bring to mind",
+      "examples": [
+        "His words echoed John F. Kennedy"
+      ],
+      "synonyms": [
+        "echo"
+      ]
+    },
+    {
+      "id": "oewn-00793168-v",
+      "partOfSpeech": "v",
+      "definition": "summon to return",
+      "examples": [
+        "The ambassador was recalled to his country",
+        "The company called back many of the workers it had laid off during the recession"
+      ],
+      "synonyms": [
+        "call back"
+      ]
+    },
+    {
+      "id": "oewn-00724810-v",
+      "partOfSpeech": "v",
+      "definition": "cause one's (or someone else's) thoughts or attention to return from a reverie or digression",
+      "examples": [
+        "She was recalled by a loud laugh"
+      ]
+    },
+    {
+      "id": "oewn-02485805-v",
+      "partOfSpeech": "v",
+      "definition": "make unavailable; bar from sale or distribution",
+      "examples": [
+        "The company recalled the product when it was found to be faulty"
+      ]
+    },
+    {
+      "id": "oewn-02317458-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be returned",
+      "examples": [
+        "recall the defective auto tires",
+        "The manufacturer tried to call back the spoilt yoghurt"
+      ],
+      "synonyms": [
+        "call in",
+        "call back",
+        "withdraw"
+      ]
+    }
+  ]
+}

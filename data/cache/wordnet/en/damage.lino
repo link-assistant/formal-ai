@@ -1,0 +1,43 @@
+language en
+lemma damage
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the occurrence of a change for the worse"
+    id oewn-07435370-n
+    partOfSpeech n
+    synonyms (harm impairment)
+  entry
+    definition "loss of military equipment"
+    id oewn-07354253-n
+    partOfSpeech n
+    synonyms ("equipment casualty")
+  entry
+    definition "the act of damaging something or someone"
+    id oewn-00403900-n
+    partOfSpeech n
+    synonyms (harm hurt scathe)
+  entry
+    definition "the amount of money needed to purchase something"
+    examples ("the price of gasoline" "he got his new car on excellent terms" "how much is the damage?")
+    id oewn-13324337-n
+    partOfSpeech n
+    synonyms (price terms)
+  entry
+    definition "any harm or injury resulting from a violation of a legal right"
+    id oewn-00745429-n
+    partOfSpeech n
+    synonyms (wrong "legal injury")
+  entry
+    definition "inflict damage upon"
+    examples ("The snow damaged the roof" "She damaged the car when she hit the tree")
+    id oewn-00259743-v
+    partOfSpeech v
+  entry
+    definition "suffer or be susceptible to damage"
+    examples ("These fine china cups damage easily")
+    id oewn-00589255-v
+    partOfSpeech v
+source "oewn:2024"

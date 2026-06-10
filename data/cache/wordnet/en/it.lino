@@ -1,0 +1,12 @@
+language en
+lemma it
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the branch of engineering that deals with the use of computers and telecommunications to retrieve and store and transmit information"
+    id oewn-06143961-n
+    partOfSpeech n
+    synonyms ("information technology")
+source "oewn:2024"

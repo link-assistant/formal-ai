@@ -1,0 +1,25 @@
+language en
+lemma installation
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of installing something (as equipment)"
+    examples ("the telephone installation took only a few minutes")
+    id oewn-00241805-n
+    partOfSpeech n
+    synonyms (installing installment instalment)
+  entry
+    definition "a building or place that provides a particular service or is used for a particular industry"
+    examples ("the assembly plant is an enormous facility")
+    id oewn-03319968-n
+    partOfSpeech n
+    synonyms (facility)
+  entry
+    definition "a formal entry into an organization or position or office"
+    examples ("his initiation into the club" "he was ordered to report for induction into the army" "he gave a speech as part of his installation into the hall of fame")
+    id oewn-07467805-n
+    partOfSpeech n
+    synonyms (initiation induction)
+source "oewn:2024"

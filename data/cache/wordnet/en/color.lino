@@ -1,0 +1,90 @@
+language en
+lemma color
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "having or capable of producing colors"
+    examples ("color film" "he rented a color television" "marvelous color illustrations")
+    id oewn-00395196-a
+    partOfSpeech a
+    synonyms (colour)
+  entry
+    definition "a visual attribute of things that results from the light they emit or transmit or reflect"
+    examples ("a white color is made up of many different wavelengths of light")
+    id oewn-04963771-n
+    partOfSpeech n
+    synonyms (colour coloring colouring)
+  entry
+    definition "interest and variety and intensity"
+    examples ("the Puritan Period was lacking in color" "the characters were delineated with exceptional vividness")
+    id oewn-05200606-n
+    partOfSpeech n
+    synonyms (colour vividness)
+  entry
+    definition "the timbre of a musical sound"
+    examples ("the recording fails to capture the true color of the original music")
+    id oewn-04995727-n
+    partOfSpeech n
+    synonyms (colour coloration colouration)
+  entry
+    definition "an outward or token appearance or form that is deliberately misleading"
+    examples ("he hoped his claims would have a semblance of authenticity" "he tried to give his falsehood the gloss of moral sanction" "the situation soon took on a different color")
+    id oewn-04685309-n
+    partOfSpeech n
+    synonyms (semblance gloss colour)
+  entry
+    definition "any material used for its color"
+    examples ("she used a different color for the trim")
+    id oewn-15009532-n
+    partOfSpeech n
+    synonyms ("coloring material" "colouring material" colour)
+  entry
+    definition "(physics) the characteristic of quarks that determines their role in the strong interaction"
+    examples ("each flavor of quarks comes in three colors")
+    id oewn-05853190-n
+    partOfSpeech n
+    synonyms (colour)
+  entry
+    definition "the appearance of objects (or light sources) described in terms of a person's perception of their hue and lightness (or brightness) and saturation"
+    id oewn-04682325-n
+    partOfSpeech n
+    synonyms (colour)
+  entry
+    definition "add color to"
+    examples ("The child colored the drawings" "Fall colored the trees" "colorize black and white film")
+    id oewn-00284671-v
+    partOfSpeech v
+    synonyms (colorize colorise colourise colourize colour "color in" "colour in")
+  entry
+    definition "affect as in thought or feeling"
+    examples ("My personal feelings color my judgment in this case" "The sadness tinged his life")
+    id oewn-00838605-v
+    partOfSpeech v
+    synonyms (tinge colour distort)
+  entry
+    definition "modify or bias"
+    examples ("His political ideas color his lectures")
+    id oewn-02542758-v
+    partOfSpeech v
+    synonyms (colour)
+  entry
+    definition "decorate with colors"
+    examples ("color the walls with paint in warm tones")
+    id oewn-01700543-v
+    partOfSpeech v
+    synonyms (colour emblazon)
+  entry
+    definition "give a deceptive explanation or excuse for"
+    examples ("color a lie")
+    id oewn-00838812-v
+    partOfSpeech v
+    synonyms (colour gloss)
+  entry
+    definition "change color, often in an undesired manner"
+    examples ("The shirts discolored")
+    id oewn-00281861-v
+    partOfSpeech v
+    synonyms (discolor discolour colour)
+source "oewn:2024"

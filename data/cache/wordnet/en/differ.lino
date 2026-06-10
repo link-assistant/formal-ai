@@ -1,0 +1,18 @@
+language en
+lemma differ
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "be different"
+    examples ("These two tests differ in only one respect")
+    id oewn-02672316-v
+    partOfSpeech v
+  entry
+    definition "be of different opinions"
+    examples ("I beg to differ!" "She disagrees with her husband on many questions")
+    id oewn-00806464-v
+    partOfSpeech v
+    synonyms (disagree dissent "take issue")
+source "oewn:2024"

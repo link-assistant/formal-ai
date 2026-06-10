@@ -1,0 +1,11 @@
+language en
+lemma deterministic
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an inevitable consequence of antecedent sufficient causes"
+    id oewn-02137517-s
+    partOfSpeech s
+source "oewn:2024"

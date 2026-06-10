@@ -1,0 +1,42 @@
+language en
+lemma a
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a metric unit of length equal to one ten billionth of a meter (or 0.0001 micron); used to specify wavelengths of electromagnetic radiation"
+    id oewn-13679721-n
+    partOfSpeech n
+    synonyms (angstrom "angstrom unit")
+  entry
+    definition "any of several fat-soluble vitamins essential for normal vision; prevents night blindness or inflammation or dryness of the eyes"
+    id oewn-15114370-n
+    partOfSpeech n
+    synonyms ("vitamin A" "antiophthalmic factor" axerophthol)
+  entry
+    definition "one of the four nucleotides used in building DNA, also known as deoxyadenylate, or dAMP; all four nucleotides have a common phosphate group and a sugar (ribose)"
+    id oewn-14853735-n
+    partOfSpeech n
+    synonyms ("deoxyadenosine monophosphate")
+  entry
+    definition "(biochemistry) purine base found in DNA and RNA; pairs with thymine in DNA and with uracil in RNA"
+    id oewn-14731050-n
+    partOfSpeech n
+    synonyms (adenine)
+  entry
+    definition "the basic unit of electric current adopted under the Systeme International d'Unites"
+    examples ("a typical household circuit carries 15 to 50 amps")
+    id oewn-13658855-n
+    partOfSpeech n
+    synonyms (ampere amp)
+  entry
+    definition "the 1st letter of the Roman alphabet"
+    id oewn-06844227-n
+    partOfSpeech n
+  entry
+    definition "the blood group whose red cells carry the A antigen"
+    id oewn-05408203-n
+    partOfSpeech n
+    synonyms ("type A" "group A")
+source "oewn:2024"

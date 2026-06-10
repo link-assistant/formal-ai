@@ -1,0 +1,41 @@
+{
+  "lemma": "validate",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02484290-v",
+      "partOfSpeech": "v",
+      "definition": "declare or make legally valid",
+      "synonyms": [
+        "formalize",
+        "formalise"
+      ]
+    },
+    {
+      "id": "oewn-00669142-v",
+      "partOfSpeech": "v",
+      "definition": "prove valid; show or confirm the validity of something"
+    },
+    {
+      "id": "oewn-01014570-v",
+      "partOfSpeech": "v",
+      "definition": "give evidence for",
+      "synonyms": [
+        "corroborate"
+      ]
+    },
+    {
+      "id": "oewn-00449245-v",
+      "partOfSpeech": "v",
+      "definition": "make valid or confirm the validity of",
+      "examples": [
+        "validate a ticket"
+      ]
+    }
+  ]
+}

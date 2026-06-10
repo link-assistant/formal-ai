@@ -1,0 +1,18 @@
+language en
+lemma hindi
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to or supporting Hinduism"
+    examples ("the Hindu faith")
+    id oewn-02935058-a
+    partOfSpeech a
+    synonyms (Hindu Hindoo)
+  entry
+    definition "the most widely spoken of modern Indic vernaculars; spoken mostly in the north of India; along with English it is one of the main official languages of India; usually written in Devanagari script"
+    id oewn-06982777-n
+    partOfSpeech n
+    synonyms ("Hindi language")
+source "oewn:2024"

@@ -1,0 +1,127 @@
+{
+  "lemma": "value",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05864972-n",
+      "partOfSpeech": "n",
+      "definition": "a numerical quantity measured or assigned or computed",
+      "examples": [
+        "the value assigned was 16 milliseconds"
+      ]
+    },
+    {
+      "id": "oewn-05145753-n",
+      "partOfSpeech": "n",
+      "definition": "the quality (positive or negative) that renders something desirable or valuable",
+      "examples": [
+        "the Shakespearean Shylock is of dubious value in the modern world"
+      ]
+    },
+    {
+      "id": "oewn-13434666-n",
+      "partOfSpeech": "n",
+      "definition": "the amount (of money or goods or services) that is considered to be a fair equivalent for something else",
+      "examples": [
+        "he tried to estimate the value of the produce at normal prices"
+      ],
+      "synonyms": [
+        "economic value"
+      ]
+    },
+    {
+      "id": "oewn-04986674-n",
+      "partOfSpeech": "n",
+      "definition": "relative darkness or lightness of a color",
+      "examples": [
+        "I establish the colors and principal values by organizing the painting into three values — dark, medium … and light"
+      ]
+    },
+    {
+      "id": "oewn-15159865-n",
+      "partOfSpeech": "n",
+      "definition": "(music) the relative duration of a musical note",
+      "synonyms": [
+        "time value",
+        "note value"
+      ]
+    },
+    {
+      "id": "oewn-05932615-n",
+      "partOfSpeech": "n",
+      "definition": "an ideal accepted by some individual or group",
+      "examples": [
+        "he has old-fashioned values"
+      ]
+    },
+    {
+      "id": "oewn-00696992-v",
+      "partOfSpeech": "v",
+      "definition": "fix or determine the value of; assign a value to",
+      "examples": [
+        "value the jewelry and art work in the estate"
+      ]
+    },
+    {
+      "id": "oewn-02260917-v",
+      "partOfSpeech": "v",
+      "definition": "hold dear",
+      "examples": [
+        "I prize these old photographs"
+      ],
+      "synonyms": [
+        "prize",
+        "treasure",
+        "appreciate"
+      ]
+    },
+    {
+      "id": "oewn-00695834-v",
+      "partOfSpeech": "v",
+      "definition": "regard highly; think much of",
+      "examples": [
+        "I respect his judgement",
+        "We prize his creativity"
+      ],
+      "synonyms": [
+        "respect",
+        "esteem",
+        "prize",
+        "prise"
+      ]
+    },
+    {
+      "id": "oewn-00683348-v",
+      "partOfSpeech": "v",
+      "definition": "evaluate or estimate the nature, quality, ability, extent, or significance of",
+      "examples": [
+        "I will have the family jewels appraised by a professional",
+        "access all the factors when taking a risk"
+      ],
+      "synonyms": [
+        "measure",
+        "evaluate",
+        "valuate",
+        "assess",
+        "appraise"
+      ]
+    },
+    {
+      "id": "oewn-00662642-v",
+      "partOfSpeech": "v",
+      "definition": "estimate the value of",
+      "examples": [
+        "How would you rate his chances to become President?",
+        "Gold was rated highly among the Romans"
+      ],
+      "synonyms": [
+        "rate"
+      ]
+    }
+  ]
+}

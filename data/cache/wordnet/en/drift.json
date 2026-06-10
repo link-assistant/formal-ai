@@ -1,0 +1,186 @@
+{
+  "lemma": "drift",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-11467947-n",
+      "partOfSpeech": "n",
+      "definition": "a force that moves something along",
+      "synonyms": [
+        "impetus",
+        "impulsion"
+      ]
+    },
+    {
+      "id": "oewn-13490877-n",
+      "partOfSpeech": "n",
+      "definition": "the gradual departure from an intended course due to external influences (as a ship or plane)"
+    },
+    {
+      "id": "oewn-13491096-n",
+      "partOfSpeech": "n",
+      "definition": "a process of linguistic change over a period of time"
+    },
+    {
+      "id": "oewn-09293139-n",
+      "partOfSpeech": "n",
+      "definition": "a large mass of material that is heaped up by the wind or by water currents"
+    },
+    {
+      "id": "oewn-06207399-n",
+      "partOfSpeech": "n",
+      "definition": "a general tendency to change (as of opinion)",
+      "examples": [
+        "not openly liberal but that is the trend of the book",
+        "a broad movement of the electorate to the right"
+      ],
+      "synonyms": [
+        "trend",
+        "movement"
+      ]
+    },
+    {
+      "id": "oewn-05931283-n",
+      "partOfSpeech": "n",
+      "definition": "the pervading meaning or tenor",
+      "examples": [
+        "caught the general drift of the conversation"
+      ],
+      "synonyms": [
+        "purport"
+      ]
+    },
+    {
+      "id": "oewn-03244102-n",
+      "partOfSpeech": "n",
+      "definition": "a horizontal (or nearly horizontal) passageway in a mine",
+      "examples": [
+        "they dug a drift parallel with the vein"
+      ],
+      "synonyms": [
+        "heading",
+        "gallery"
+      ]
+    },
+    {
+      "id": "oewn-01906776-v",
+      "partOfSpeech": "v",
+      "definition": "be in motion due to some air or water current",
+      "examples": [
+        "The leaves were blowing in the wind",
+        "the boat drifted on the lake",
+        "The sailboat was adrift on the open sea",
+        "the shipwrecked boat drifted away from the shore"
+      ],
+      "synonyms": [
+        "float",
+        "be adrift",
+        "blow"
+      ]
+    },
+    {
+      "id": "oewn-01929647-v",
+      "partOfSpeech": "v",
+      "definition": "wander from a direct course or at random",
+      "examples": [
+        "The child strayed from the path and her parents lost sight of her",
+        "don't drift from the set course"
+      ],
+      "synonyms": [
+        "stray",
+        "err"
+      ]
+    },
+    {
+      "id": "oewn-01885173-v",
+      "partOfSpeech": "v",
+      "definition": "move about aimlessly or without any destination, often in search of food or employment",
+      "examples": [
+        "The gypsies roamed the woods",
+        "roving vagabonds",
+        "the wandering Jew",
+        "The cattle roam across the prairie",
+        "the laborers drift from one town to the next",
+        "They rolled from town to town"
+      ],
+      "synonyms": [
+        "roll",
+        "wander",
+        "swan",
+        "stray",
+        "tramp",
+        "roam",
+        "cast",
+        "ramble",
+        "rove",
+        "range",
+        "vagabond"
+      ]
+    },
+    {
+      "id": "oewn-02668899-v",
+      "partOfSpeech": "v",
+      "definition": "vary or move from a fixed point or course",
+      "examples": [
+        "stock prices are drifting higher"
+      ]
+    },
+    {
+      "id": "oewn-02623391-v",
+      "partOfSpeech": "v",
+      "definition": "live unhurriedly, irresponsibly, or freely",
+      "examples": [
+        "My son drifted around for years in California before going to law school"
+      ],
+      "synonyms": [
+        "freewheel"
+      ]
+    },
+    {
+      "id": "oewn-01907211-v",
+      "partOfSpeech": "v",
+      "definition": "move in an unhurried fashion",
+      "examples": [
+        "The unknown young man drifted among the invited guests"
+      ]
+    },
+    {
+      "id": "oewn-01878868-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be carried by a current",
+      "examples": [
+        "drift the boats downstream"
+      ]
+    },
+    {
+      "id": "oewn-01579610-v",
+      "partOfSpeech": "v",
+      "definition": "drive slowly and far afield for grazing",
+      "examples": [
+        "drift the cattle herds westwards"
+      ]
+    },
+    {
+      "id": "oewn-00573579-v",
+      "partOfSpeech": "v",
+      "definition": "be subject to fluctuation",
+      "examples": [
+        "The stock market drifted upward"
+      ]
+    },
+    {
+      "id": "oewn-00572467-v",
+      "partOfSpeech": "v",
+      "definition": "be piled up in banks or heaps by the force of wind or a current",
+      "examples": [
+        "snow drifting several feet high",
+        "sand drifting like snow"
+      ]
+    }
+  ]
+}

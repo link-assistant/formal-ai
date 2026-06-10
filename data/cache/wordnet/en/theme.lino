@@ -1,0 +1,42 @@
+language en
+lemma theme
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the subject matter of a conversation or discussion"
+    examples ("he didn't want to discuss that subject" "it was a very sensitive topic" "his letters were always on the theme of love")
+    id oewn-06612141-n
+    partOfSpeech n
+    synonyms (subject topic)
+  entry
+    definition "a unifying idea that is a recurrent element in literary or artistic work"
+    examples ("it was the usual ‘boy gets girl’ theme")
+    id oewn-05928866-n
+    partOfSpeech n
+    synonyms (motif)
+  entry
+    definition "(music) melodic subject of a musical composition"
+    examples ("the theme is announced in the first measures" "the accompanist picked up the idea and elaborated it")
+    id oewn-07042734-n
+    partOfSpeech n
+    synonyms ("melodic theme" "musical theme" idea)
+  entry
+    definition "an essay (especially one written as an assignment)"
+    examples ("he got an A on his composition")
+    id oewn-06421395-n
+    partOfSpeech n
+    synonyms (composition paper report)
+  entry
+    definition "(linguistics) the form of a word after all affixes are removed"
+    examples ("thematic vowels are part of the stem")
+    id oewn-06311183-n
+    partOfSpeech n
+    synonyms (root "root word" base stem radical)
+  entry
+    definition "provide with a particular theme or motive"
+    examples ("the restaurant often themes its menus")
+    id oewn-02368596-v
+    partOfSpeech v
+source "oewn:2024"

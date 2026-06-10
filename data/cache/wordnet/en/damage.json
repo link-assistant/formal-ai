@@ -1,0 +1,78 @@
+{
+  "lemma": "damage",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07435370-n",
+      "partOfSpeech": "n",
+      "definition": "the occurrence of a change for the worse",
+      "synonyms": [
+        "harm",
+        "impairment"
+      ]
+    },
+    {
+      "id": "oewn-07354253-n",
+      "partOfSpeech": "n",
+      "definition": "loss of military equipment",
+      "synonyms": [
+        "equipment casualty"
+      ]
+    },
+    {
+      "id": "oewn-00403900-n",
+      "partOfSpeech": "n",
+      "definition": "the act of damaging something or someone",
+      "synonyms": [
+        "harm",
+        "hurt",
+        "scathe"
+      ]
+    },
+    {
+      "id": "oewn-13324337-n",
+      "partOfSpeech": "n",
+      "definition": "the amount of money needed to purchase something",
+      "examples": [
+        "the price of gasoline",
+        "he got his new car on excellent terms",
+        "how much is the damage?"
+      ],
+      "synonyms": [
+        "price",
+        "terms"
+      ]
+    },
+    {
+      "id": "oewn-00745429-n",
+      "partOfSpeech": "n",
+      "definition": "any harm or injury resulting from a violation of a legal right",
+      "synonyms": [
+        "wrong",
+        "legal injury"
+      ]
+    },
+    {
+      "id": "oewn-00259743-v",
+      "partOfSpeech": "v",
+      "definition": "inflict damage upon",
+      "examples": [
+        "The snow damaged the roof",
+        "She damaged the car when she hit the tree"
+      ]
+    },
+    {
+      "id": "oewn-00589255-v",
+      "partOfSpeech": "v",
+      "definition": "suffer or be susceptible to damage",
+      "examples": [
+        "These fine china cups damage easily"
+      ]
+    }
+  ]
+}

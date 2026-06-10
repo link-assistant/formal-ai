@@ -1,0 +1,198 @@
+language en
+lemma work
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "activity directed toward making or doing something"
+    examples ("she checked several points needing further work")
+    id oewn-00576778-n
+    partOfSpeech n
+  entry
+    definition "a product produced or accomplished through the effort or activity or agency of a person or thing"
+    examples ("it is not regarded as one of his more memorable works" "the symphony was hailed as an ingenious work" "he was indebted to the pioneering work of John Dewey" "the work of an active imagination" "erosion is the work of wind or water over time")
+    id oewn-04606723-n
+    partOfSpeech n
+    synonyms ("piece of work")
+  entry
+    definition "the occupation for which you are paid"
+    examples ("he is looking for employment" "a lot of people are out of work")
+    id oewn-00585404-n
+    partOfSpeech n
+    synonyms (employment)
+  entry
+    definition "applying the mind to learning and understanding a subject (especially by reading)"
+    examples ("mastering a second language requires a lot of work" "no schools offer graduate study in interior design")
+    id oewn-05763880-n
+    partOfSpeech n
+    synonyms (study)
+  entry
+    definition "(physics) a manifestation of energy; the transfer of energy from one physical system to another expressed as the product of a force and the distance through which it moves a body in the direction of that force"
+    examples ("work equals force times distance")
+    id oewn-11473837-n
+    partOfSpeech n
+  entry
+    definition "a place where work is done"
+    examples ("he arrived at work early today")
+    id oewn-04609402-n
+    partOfSpeech n
+    synonyms (workplace)
+  entry
+    definition "the total output of a writer or artist (or a substantial part of it)"
+    examples ("he studied the entire Wagnerian oeuvre" "Picasso's work can be divided into periods")
+    id oewn-03846937-n
+    partOfSpeech n
+    synonyms (oeuvre "body of work")
+  entry
+    definition "exert oneself by doing mental or physical work for a purpose or out of necessity; work"
+    examples ("I will work hard to improve my grades" "she worked hard for better living conditions for the poor")
+    id oewn-02418610-v
+    partOfSpeech v
+  entry
+    definition "be employed"
+    examples ("Is your husband working again?" "My wife never worked" "Do you want to work after the age of 60?" "She never did any work because she inherited a lot of money" "She works as a waitress to put herself through college")
+    id oewn-02415985-v
+    partOfSpeech v
+    synonyms ("do work")
+  entry
+    definition "have an effect or outcome; often the one desired or expected"
+    examples ("The voting process doesn't work as well as people thought" "How does your idea work in practice?" "This method doesn't work" "The breaks of my new car act quickly" "The medicine works only if you take it with a lot of water")
+    id oewn-02531113-v
+    partOfSpeech v
+    synonyms (act)
+  entry
+    definition "perform as expected when applied"
+    examples ("The washing machine won't go unless it's plugged in" "Does this old car still run well?" "This old radio doesn't work anymore")
+    id oewn-01528454-v
+    partOfSpeech v
+    synonyms (function operate go run)
+  entry
+    definition "shape, form, or improve a material"
+    examples ("work stone into tools" "process iron" "work the metal")
+    id oewn-01672498-v
+    partOfSpeech v
+    synonyms ("work on" process)
+  entry
+    definition "give a workout to"
+    examples ("Some parents exercise their infants" "My personal trainer works me hard" "work one's muscles" "this puzzle will exercise your mind")
+    id oewn-00100305-v
+    partOfSpeech v
+    synonyms (exercise "work out")
+  entry
+    definition "proceed along a path"
+    examples ("work one's way through the crowd" "make one's way into the forest")
+    id oewn-02054955-v
+    partOfSpeech v
+    synonyms (make)
+  entry
+    definition "operate in a certain place, area, or specialty"
+    examples ("She works the night clubs" "The salesman works the Midwest" "This artist works mostly in acrylics")
+    id oewn-02600976-v
+    partOfSpeech v
+  entry
+    definition "proceed towards a goal or along a path or through an activity"
+    examples ("work your way through every problem or task" "She was working on her second martini when the guests arrived" "Start from the bottom and work towards the top")
+    id oewn-02378106-v
+    partOfSpeech v
+  entry
+    definition "move in an agitated manner"
+    examples ("His fingers worked with tension")
+    id oewn-01856435-v
+    partOfSpeech v
+  entry
+    definition "cause to happen or to occur as a consequence"
+    examples ("I cannot work a miracle" "wreak havoc" "bring comments" "play a joke" "The rain brought relief to the drought-stricken area")
+    id oewn-01632781-v
+    partOfSpeech v
+    synonyms (bring play wreak "make for")
+  entry
+    definition "cause to work"
+    examples ("he is working his servants hard")
+    id oewn-02413117-v
+    partOfSpeech v
+    synonyms ("put to work")
+  entry
+    definition "prepare for crops"
+    examples ("Work the soil" "cultivate the land")
+    id oewn-01745327-v
+    partOfSpeech v
+    synonyms (cultivate crop)
+  entry
+    definition "behave in a certain way when handled"
+    examples ("This dough does not work easily" "The soft metal works well")
+    id oewn-02757146-v
+    partOfSpeech v
+  entry
+    definition "have and exert influence or effect"
+    examples ("The artist's work influenced the young painter" "She worked on her friends to support the political candidate")
+    id oewn-02542223-v
+    partOfSpeech v
+    synonyms (influence "act upon")
+  entry
+    definition "operate in or through"
+    examples ("Work the phones")
+    id oewn-02449024-v
+    partOfSpeech v
+  entry
+    definition "cause to operate or function"
+    examples ("This pilot works the controls" "Can you work an electric drill?")
+    id oewn-02441810-v
+    partOfSpeech v
+  entry
+    definition "provoke or excite"
+    examples ("The rock musician worked the crowd of young girls into a frenzy")
+    id oewn-02121463-v
+    partOfSpeech v
+  entry
+    definition "gratify and charm, usually in order to influence"
+    examples ("the political candidate worked the crowds")
+    id oewn-01821541-v
+    partOfSpeech v
+  entry
+    definition "make something, usually for a specific function"
+    examples ("She molded the rice balls carefully" "Form cylinders from the dough" "shape a figure" "Work the metal into a sword")
+    id oewn-01663142-v
+    partOfSpeech v
+    synonyms (shape form mold mould forge)
+  entry
+    definition "move into or onto"
+    examples ("work the raisins into the dough" "the student worked a few jokes into his presentation" "work the body onto the flatbed truck")
+    id oewn-01544013-v
+    partOfSpeech v
+  entry
+    definition "to mix into a homogeneous mass"
+    examples ("knead dough" "work the clay until it is soft")
+    id oewn-01237919-v
+    partOfSpeech v
+    synonyms (knead)
+  entry
+    definition "use or manipulate to one's advantage"
+    examples ("He exploited the new taxation system" "She knows how to work the system" "he works his parents for sympathy")
+    id oewn-01165070-v
+    partOfSpeech v
+    synonyms (exploit)
+  entry
+    definition "find the solution to (a problem or question) or understand the meaning of"
+    examples ("did you solve the problem?" "Work out your problems with the boss" "this unpleasant situation isn't going to work itself out" "did you figure it out?" "Did you puzzle out my meaning?" "He could not work the math problem")
+    id oewn-00636568-v
+    partOfSpeech v
+    synonyms (solve "work out" "figure out" "puzzle out" lick)
+  entry
+    definition "cause to undergo fermentation"
+    examples ("We ferment the grapes for a very long time to achieve high alcohol content" "The vintner worked the wine in big oak vats")
+    id oewn-00459709-v
+    partOfSpeech v
+    synonyms (ferment)
+  entry
+    definition "go sour or spoil"
+    examples ("The milk has soured" "The wine worked" "The cream has turned — we have to throw it out")
+    id oewn-00459426-v
+    partOfSpeech v
+    synonyms (sour turn ferment)
+  entry
+    definition "arrive at a certain condition through repeated motion"
+    examples ("The stitches of the hem worked loose after she wore the skirt many times")
+    id oewn-00149916-v
+    partOfSpeech v
+source "oewn:2024"

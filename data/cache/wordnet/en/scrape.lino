@@ -1,0 +1,62 @@
+language en
+lemma scrape
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a harsh noise made by scraping"
+    examples ("the scrape of violin bows distracted her")
+    id oewn-07407582-n
+    partOfSpeech n
+    synonyms (scraping scratch scratching)
+  entry
+    definition "an abraded area where the skin is torn or worn off"
+    id oewn-14310051-n
+    partOfSpeech n
+    synonyms (abrasion scratch excoriation)
+  entry
+    definition "a deep bow with the foot drawn backwards (indicating excessive humility)"
+    examples ("all that bowing and scraping did not impress him")
+    id oewn-07290194-n
+    partOfSpeech n
+    synonyms (scraping)
+  entry
+    definition "an indication of damage"
+    id oewn-04701248-n
+    partOfSpeech n
+    synonyms (scratch scar mark)
+  entry
+    definition "scratch repeatedly"
+    examples ("The cat scraped at the armchair")
+    id oewn-01310820-v
+    partOfSpeech v
+    synonyms (grate)
+  entry
+    definition "make by scraping"
+    examples ("They scraped a letter into the stone")
+    id oewn-01753964-v
+    partOfSpeech v
+  entry
+    definition "cut the surface of; wear away the surface of"
+    id oewn-01311803-v
+    partOfSpeech v
+    synonyms (scratch "scratch up")
+  entry
+    definition "bend the knees and bow in a servile manner"
+    id oewn-02044554-v
+    partOfSpeech v
+    synonyms (kowtow genuflect)
+  entry
+    definition "gather (money or other resources) together over time"
+    examples ("She had scraped together enough money for college" "they scratched a meager living")
+    id oewn-01387406-v
+    partOfSpeech v
+    synonyms ("scrape up" scratch "come up")
+  entry
+    definition "bruise, cut, or injure the skin or the surface of"
+    examples ("The boy skinned his knee when he fell")
+    id oewn-01312138-v
+    partOfSpeech v
+    synonyms (skin)
+source "oewn:2024"

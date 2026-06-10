@@ -1,0 +1,12 @@
+language en
+lemma why
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the cause or intention underlying an action or situation, especially in the phrase ‘the whys and wherefores’"
+    id oewn-09202503-n
+    partOfSpeech n
+    synonyms (wherefore)
+source "oewn:2024"

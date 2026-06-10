@@ -1,0 +1,23 @@
+language en
+lemma dialog
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a conversation between two persons"
+    id oewn-07150914-n
+    partOfSpeech n
+    synonyms (dialogue duologue)
+  entry
+    definition "the lines spoken by characters in drama or fiction"
+    id oewn-07023657-n
+    partOfSpeech n
+    synonyms (dialogue)
+  entry
+    definition "a literary composition in the form of a conversation between two people"
+    examples ("he has read Plato's Dialogues in the original Greek")
+    id oewn-06377836-n
+    partOfSpeech n
+    synonyms (dialogue)
+source "oewn:2024"

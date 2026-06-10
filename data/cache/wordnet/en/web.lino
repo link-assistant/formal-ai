@@ -1,0 +1,46 @@
+language en
+lemma web
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an intricate network suggesting something that was formed by weaving or interweaving"
+    examples ("the trees cast a delicate web of shadows over the lawn")
+    id oewn-09500167-n
+    partOfSpeech n
+  entry
+    definition "an intricate trap that entangles or ensnares its victim"
+    id oewn-04575843-n
+    partOfSpeech n
+    synonyms (entanglement)
+  entry
+    definition "the flattened weblike part of a feather consisting of a series of barbs on either side of the shaft"
+    id oewn-01900632-n
+    partOfSpeech n
+    synonyms (vane)
+  entry
+    definition "an interconnected system of things or people"
+    examples ("he owned a network of shops" "retirement meant dropping out of a whole network of people who had been part of my life" "tangled in a web of cloth")
+    id oewn-08451269-n
+    partOfSpeech n
+    synonyms (network)
+  entry
+    definition "computer network consisting of a collection of internet sites that offer text and graphics and sound and animation resources through the hypertext transfer protocol"
+    id oewn-04611634-n
+    partOfSpeech n
+    synonyms ("World Wide Web" WWW)
+  entry
+    definition "a fabric (especially a fabric in the process of being woven)"
+    id oewn-04575999-n
+    partOfSpeech n
+  entry
+    definition "membrane connecting the toes of some aquatic birds and mammals"
+    id oewn-01900969-n
+    partOfSpeech n
+  entry
+    definition "construct or form a web, as if by weaving"
+    id oewn-01676063-v
+    partOfSpeech v
+    synonyms (net)
+source "oewn:2024"

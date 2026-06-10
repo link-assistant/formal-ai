@@ -1,0 +1,58 @@
+language en
+lemma tell
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a Swiss patriot who lived in the early 14th century and who was renowned for his skill as an archer; according to legend an Austrian governor compelled him to shoot an apple from his son's head with his crossbow (which he did successfully without mishap)"
+    id oewn-10718145-n
+    partOfSpeech n
+    synonyms ("William Tell")
+  entry
+    definition "express in words"
+    examples ("He said that he wanted to marry her" "tell me what is bothering you" "state your opinion" "state your name")
+    id oewn-01011267-v
+    partOfSpeech v
+    synonyms (state say)
+  entry
+    definition "let something be known"
+    examples ("Tell them that you will be late")
+    id oewn-00954556-v
+    partOfSpeech v
+  entry
+    definition "narrate or give a detailed account of"
+    examples ("Tell what happened" "The father told a story to his child")
+    id oewn-00955248-v
+    partOfSpeech v
+    synonyms (narrate recount recite)
+  entry
+    definition "give instructions to or direct somebody to do something with authority"
+    examples ("I said to him to go home" "She ordered him to do the shopping" "The mother told the child to get dressed")
+    id oewn-00748704-v
+    partOfSpeech v
+    synonyms (order enjoin say)
+  entry
+    definition "discern or comprehend"
+    examples ("He could tell that she was unhappy")
+    id oewn-00722885-v
+    partOfSpeech v
+  entry
+    definition "inform positively and with certainty and confidence"
+    examples ("I tell you that man is a crook!")
+    id oewn-01021652-v
+    partOfSpeech v
+    synonyms (assure)
+  entry
+    definition "give evidence"
+    examples ("he was telling on all his former colleague")
+    id oewn-00956454-v
+    partOfSpeech v
+    synonyms (evidence)
+  entry
+    definition "mark as different"
+    examples ("We distinguish several kinds of maple")
+    id oewn-00652006-v
+    partOfSpeech v
+    synonyms (distinguish separate differentiate secern secernate severalize severalise "tell apart")
+source "oewn:2024"

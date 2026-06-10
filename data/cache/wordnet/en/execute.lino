@@ -1,0 +1,46 @@
+language en
+lemma execute
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "kill as a means of socially sanctioned punishment"
+    examples ("In some states, criminals are executed")
+    id oewn-02488856-v
+    partOfSpeech v
+    synonyms ("put to death")
+  entry
+    definition "murder in a planned fashion"
+    examples ("The Mafioso who collaborated with the police was executed")
+    id oewn-02489797-v
+    partOfSpeech v
+  entry
+    definition "put in effect"
+    examples ("carry out a task" "execute the decision of the people" "He actioned the operation")
+    id oewn-01644397-v
+    partOfSpeech v
+    synonyms ("carry through" accomplish "carry out" action fulfill fulfil)
+  entry
+    definition "carry out the legalities of"
+    examples ("execute a will or a deed")
+    id oewn-02569775-v
+    partOfSpeech v
+  entry
+    definition "carry out a process or program, as on a computer or a machine"
+    examples ("Run the dishwasher" "run a new program on the Mac" "the computer executed the instruction")
+    id oewn-02569242-v
+    partOfSpeech v
+    synonyms (run)
+  entry
+    definition "carry out or perform an action"
+    examples ("John did the painting, the weeding, and he cleaned out the gutters" "the skater executed a triple pirouette" "she did a little dance")
+    id oewn-01716563-v
+    partOfSpeech v
+    synonyms (perform do)
+  entry
+    definition "sign in the presence of witnesses"
+    examples ("The President executed the treaty")
+    id oewn-00999704-v
+    partOfSpeech v
+source "oewn:2024"

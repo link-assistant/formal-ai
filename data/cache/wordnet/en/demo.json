@@ -1,0 +1,38 @@
+{
+  "lemma": "demo",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06892230-n",
+      "partOfSpeech": "n",
+      "definition": "a visual presentation showing how something works",
+      "examples": [
+        "the lecture was accompanied by dramatic demonstrations",
+        "the lecturer shot off a pistol as a demonstration of the startle response"
+      ],
+      "synonyms": [
+        "demonstration"
+      ]
+    },
+    {
+      "id": "oewn-02153218-v",
+      "partOfSpeech": "v",
+      "definition": "give an exhibition of to an interested audience",
+      "examples": [
+        "She shows her dogs frequently",
+        "We will demo the new software in Washington"
+      ],
+      "synonyms": [
+        "show",
+        "exhibit",
+        "present",
+        "demonstrate"
+      ]
+    }
+  ]
+}

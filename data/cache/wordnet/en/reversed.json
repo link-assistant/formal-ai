@@ -1,0 +1,31 @@
+{
+  "lemma": "reversed",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02477205-s",
+      "partOfSpeech": "s",
+      "definition": "turned inside out and resewn",
+      "examples": [
+        "the reversed collar looked as good as new"
+      ]
+    },
+    {
+      "id": "oewn-00203553-s",
+      "partOfSpeech": "s",
+      "definition": "turned about in order or relation",
+      "examples": [
+        "transposed letters"
+      ],
+      "synonyms": [
+        "converse",
+        "transposed"
+      ]
+    }
+  ]
+}

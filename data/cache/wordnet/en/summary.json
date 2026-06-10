@@ -1,0 +1,50 @@
+{
+  "lemma": "summary",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06478678-n",
+      "partOfSpeech": "n",
+      "definition": "a brief statement that presents the main points in a concise form",
+      "examples": [
+        "he gave a summary of the conclusions"
+      ],
+      "synonyms": [
+        "sum-up"
+      ]
+    },
+    {
+      "id": "oewn-01637923-s",
+      "partOfSpeech": "s",
+      "definition": "performed speedily and without formality",
+      "examples": [
+        "a summary execution",
+        "summary justice"
+      ],
+      "synonyms": [
+        "drumhead"
+      ]
+    },
+    {
+      "id": "oewn-00549537-s",
+      "partOfSpeech": "s",
+      "definition": "briefly giving the gist of something",
+      "examples": [
+        "a short and compendious book",
+        "a compact style is brief and pithy",
+        "succinct comparisons",
+        "a summary formulation of a wide-ranging subject"
+      ],
+      "synonyms": [
+        "compendious",
+        "compact",
+        "succinct"
+      ]
+    }
+  ]
+}

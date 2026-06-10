@@ -1,0 +1,51 @@
+{
+  "lemma": "meaning",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06613680-n",
+      "partOfSpeech": "n",
+      "definition": "the message that is intended or expressed or signified",
+      "examples": [
+        "what is the meaning of this sentence?",
+        "the significance of a red traffic light",
+        "the signification of Chinese characters",
+        "the import of his announcement was ambiguous"
+      ],
+      "synonyms": [
+        "significance",
+        "signification",
+        "import"
+      ]
+    },
+    {
+      "id": "oewn-05928460-n",
+      "partOfSpeech": "n",
+      "definition": "the idea that is intended",
+      "examples": [
+        "What is the meaning of this proverb?"
+      ],
+      "synonyms": [
+        "substance"
+      ]
+    },
+    {
+      "id": "oewn-01500681-s",
+      "partOfSpeech": "s",
+      "definition": "rich in significance or implication",
+      "examples": [
+        "a meaning look",
+        "a significant silence"
+      ],
+      "synonyms": [
+        "pregnant",
+        "significant"
+      ]
+    }
+  ]
+}

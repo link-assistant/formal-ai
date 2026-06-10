@@ -1,0 +1,31 @@
+{
+  "lemma": "across",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00274382-r",
+      "partOfSpeech": "r",
+      "definition": "to the opposite side",
+      "examples": [
+        "the football field was 300 feet across"
+      ]
+    },
+    {
+      "id": "oewn-00274275-r",
+      "partOfSpeech": "r",
+      "definition": "transversely",
+      "examples": [
+        "the marble slabs were cut across"
+      ],
+      "synonyms": [
+        "crosswise",
+        "crossways"
+      ]
+    }
+  ]
+}

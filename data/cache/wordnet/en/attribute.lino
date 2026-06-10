@@ -1,0 +1,29 @@
+language en
+lemma attribute
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a construct whereby objects or individuals can be distinguished"
+    examples ("self-confidence is not an endearing property")
+    id oewn-05857567-n
+    partOfSpeech n
+    synonyms (property dimension)
+  entry
+    definition "an abstraction belonging to or characteristic of an entity"
+    id oewn-00024444-n
+    partOfSpeech n
+  entry
+    definition "attribute or credit to"
+    examples ("We attributed this quotation to Shakespeare" "People impute great cleverness to cats")
+    id oewn-00728262-v
+    partOfSpeech v
+    synonyms (impute ascribe assign)
+  entry
+    definition "decide as to where something belongs in a scheme"
+    examples ("The biologist assigned the mushroom to the proper class")
+    id oewn-00742058-v
+    partOfSpeech v
+    synonyms (assign)
+source "oewn:2024"

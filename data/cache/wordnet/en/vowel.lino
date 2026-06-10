@@ -1,0 +1,16 @@
+language en
+lemma vowel
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a speech sound made with the vocal tract open"
+    id oewn-07127258-n
+    partOfSpeech n
+    synonyms ("vowel sound")
+  entry
+    definition "a letter of the alphabet standing for a spoken vowel"
+    id oewn-07129420-n
+    partOfSpeech n
+source "oewn:2024"

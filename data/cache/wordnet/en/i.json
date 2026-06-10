@@ -1,0 +1,55 @@
+{
+  "lemma": "i",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14665575-n",
+      "partOfSpeech": "n",
+      "definition": "a nonmetallic element belonging to the halogens; used especially in medicine and photography and in dyes; occurs naturally only in combination in small quantities (as in sea water or rocks)",
+      "synonyms": [
+        "iodine",
+        "iodin",
+        "atomic number 53"
+      ]
+    },
+    {
+      "id": "oewn-13764713-n",
+      "partOfSpeech": "n",
+      "definition": "the smallest whole number or a numeral representing this number",
+      "examples": [
+        "he has the one but will need a two and three to go with it",
+        "they had lunch at one"
+      ],
+      "synonyms": [
+        "one",
+        "1",
+        "ace",
+        "single",
+        "unity"
+      ]
+    },
+    {
+      "id": "oewn-06845083-n",
+      "partOfSpeech": "n",
+      "definition": "the 9th letter of the Roman alphabet"
+    },
+    {
+      "id": "oewn-02193977-s",
+      "partOfSpeech": "s",
+      "definition": "used of a single unit or thing; not two or more",
+      "examples": [
+        "‘ane’ is Scottish"
+      ],
+      "synonyms": [
+        "one",
+        "1",
+        "ane"
+      ]
+    }
+  ]
+}

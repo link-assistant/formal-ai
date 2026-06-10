@@ -1,0 +1,41 @@
+{
+  "lemma": "greet",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00898754-v",
+      "partOfSpeech": "v",
+      "definition": "express greetings upon meeting someone",
+      "synonyms": [
+        "recognize",
+        "recognise"
+      ]
+    },
+    {
+      "id": "oewn-00898638-v",
+      "partOfSpeech": "v",
+      "definition": "send greetings to"
+    },
+    {
+      "id": "oewn-00720831-v",
+      "partOfSpeech": "v",
+      "definition": "react to in a certain way",
+      "examples": [
+        "The President was greeted with catcalls"
+      ]
+    },
+    {
+      "id": "oewn-02202019-v",
+      "partOfSpeech": "v",
+      "definition": "be perceived by",
+      "examples": [
+        "Loud music greeted him when he entered the apartment"
+      ]
+    }
+  ]
+}

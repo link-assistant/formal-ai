@@ -1,0 +1,119 @@
+{
+  "lemma": "tell",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-10718145-n",
+      "partOfSpeech": "n",
+      "definition": "a Swiss patriot who lived in the early 14th century and who was renowned for his skill as an archer; according to legend an Austrian governor compelled him to shoot an apple from his son's head with his crossbow (which he did successfully without mishap)",
+      "synonyms": [
+        "William Tell"
+      ]
+    },
+    {
+      "id": "oewn-01011267-v",
+      "partOfSpeech": "v",
+      "definition": "express in words",
+      "examples": [
+        "He said that he wanted to marry her",
+        "tell me what is bothering you",
+        "state your opinion",
+        "state your name"
+      ],
+      "synonyms": [
+        "state",
+        "say"
+      ]
+    },
+    {
+      "id": "oewn-00954556-v",
+      "partOfSpeech": "v",
+      "definition": "let something be known",
+      "examples": [
+        "Tell them that you will be late"
+      ]
+    },
+    {
+      "id": "oewn-00955248-v",
+      "partOfSpeech": "v",
+      "definition": "narrate or give a detailed account of",
+      "examples": [
+        "Tell what happened",
+        "The father told a story to his child"
+      ],
+      "synonyms": [
+        "narrate",
+        "recount",
+        "recite"
+      ]
+    },
+    {
+      "id": "oewn-00748704-v",
+      "partOfSpeech": "v",
+      "definition": "give instructions to or direct somebody to do something with authority",
+      "examples": [
+        "I said to him to go home",
+        "She ordered him to do the shopping",
+        "The mother told the child to get dressed"
+      ],
+      "synonyms": [
+        "order",
+        "enjoin",
+        "say"
+      ]
+    },
+    {
+      "id": "oewn-00722885-v",
+      "partOfSpeech": "v",
+      "definition": "discern or comprehend",
+      "examples": [
+        "He could tell that she was unhappy"
+      ]
+    },
+    {
+      "id": "oewn-01021652-v",
+      "partOfSpeech": "v",
+      "definition": "inform positively and with certainty and confidence",
+      "examples": [
+        "I tell you that man is a crook!"
+      ],
+      "synonyms": [
+        "assure"
+      ]
+    },
+    {
+      "id": "oewn-00956454-v",
+      "partOfSpeech": "v",
+      "definition": "give evidence",
+      "examples": [
+        "he was telling on all his former colleague"
+      ],
+      "synonyms": [
+        "evidence"
+      ]
+    },
+    {
+      "id": "oewn-00652006-v",
+      "partOfSpeech": "v",
+      "definition": "mark as different",
+      "examples": [
+        "We distinguish several kinds of maple"
+      ],
+      "synonyms": [
+        "distinguish",
+        "separate",
+        "differentiate",
+        "secern",
+        "secernate",
+        "severalize",
+        "severalise",
+        "tell apart"
+      ]
+    }
+  ]
+}

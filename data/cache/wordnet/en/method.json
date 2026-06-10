@@ -1,0 +1,24 @@
+{
+  "lemma": "method",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05668113-n",
+      "partOfSpeech": "n",
+      "definition": "a way of doing something, especially a systematic way; implies an orderly logical arrangement (usually in steps)"
+    },
+    {
+      "id": "oewn-00550803-n",
+      "partOfSpeech": "n",
+      "definition": "an acting technique introduced by Stanislavsky in which the actor recalls emotions or reactions from his or her own life and uses them to identify with the character being portrayed",
+      "synonyms": [
+        "method acting"
+      ]
+    }
+  ]
+}

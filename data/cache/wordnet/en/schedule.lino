@@ -1,0 +1,26 @@
+language en
+lemma schedule
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a temporally organized plan for matters to be attended to"
+    id oewn-05919534-n
+    partOfSpeech n
+    synonyms (agenda docket)
+  entry
+    definition "an ordered list of times at which things are planned to occur"
+    id oewn-06507319-n
+    partOfSpeech n
+  entry
+    definition "plan for an activity or event"
+    examples ("I've scheduled a concert next week")
+    id oewn-00680201-v
+    partOfSpeech v
+  entry
+    definition "make a schedule; plan the time and place for events"
+    examples ("I scheduled an exam for this afternoon")
+    id oewn-00796643-v
+    partOfSpeech v
+source "oewn:2024"

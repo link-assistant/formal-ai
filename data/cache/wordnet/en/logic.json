@@ -1,0 +1,47 @@
+{
+  "lemma": "logic",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06173467-n",
+      "partOfSpeech": "n",
+      "definition": "the branch of philosophy that analyzes inference"
+    },
+    {
+      "id": "oewn-05622811-n",
+      "partOfSpeech": "n",
+      "definition": "reasoned and reasonable judgment",
+      "examples": [
+        "it made a certain kind of logic"
+      ]
+    },
+    {
+      "id": "oewn-05880240-n",
+      "partOfSpeech": "n",
+      "definition": "the principles that guide reasoning within a given field or situation",
+      "examples": [
+        "economic logic requires it",
+        "by the logic of war"
+      ]
+    },
+    {
+      "id": "oewn-06142469-n",
+      "partOfSpeech": "n",
+      "definition": "the system of operations performed by a computer that underlies the machine's representation of logical operations"
+    },
+    {
+      "id": "oewn-05671913-n",
+      "partOfSpeech": "n",
+      "definition": "a system of reasoning",
+      "synonyms": [
+        "logical system",
+        "system of logic"
+      ]
+    }
+  ]
+}

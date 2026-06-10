@@ -1,0 +1,41 @@
+{
+  "lemma": "respond",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00719282-v",
+      "partOfSpeech": "v",
+      "definition": "show a response or a reaction to something",
+      "synonyms": [
+        "react"
+      ]
+    },
+    {
+      "id": "oewn-00817348-v",
+      "partOfSpeech": "v",
+      "definition": "react verbally",
+      "examples": [
+        "She didn't want to answer",
+        "answer the question",
+        "We answered that we would accept the invitation"
+      ],
+      "synonyms": [
+        "answer",
+        "reply"
+      ]
+    },
+    {
+      "id": "oewn-00720661-v",
+      "partOfSpeech": "v",
+      "definition": "respond favorably or as hoped",
+      "examples": [
+        "The cancer responded to the aggressive therapy"
+      ]
+    }
+  ]
+}

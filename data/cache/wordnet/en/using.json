@@ -1,0 +1,25 @@
+{
+  "lemma": "using",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00419916-n",
+      "partOfSpeech": "n",
+      "definition": "an act that exploits or victimizes someone (treats them unfairly)",
+      "examples": [
+        "capitalistic exploitation of the working class",
+        "paying Blacks less and charging them more is a form of victimization"
+      ],
+      "synonyms": [
+        "exploitation",
+        "victimization",
+        "victimisation"
+      ]
+    }
+  ]
+}

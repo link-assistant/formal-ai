@@ -1,0 +1,33 @@
+language en
+lemma text
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the words of something written"
+    examples ("there were more than a thousand words of text" "they handed out the printed text of the mayor's speech" "he wants to reconstruct the original text")
+    id oewn-06399623-n
+    partOfSpeech n
+    synonyms ("textual matter")
+  entry
+    definition "a passage from the Bible that is used as the subject of a sermon"
+    examples ("the preacher chose a text from Psalms to introduce his sermon")
+    id oewn-07187208-n
+    partOfSpeech n
+  entry
+    definition "a book prepared for use in schools or colleges"
+    examples ("his economics textbook is in its tenth edition" "the professor wrote the text that he assigned students to buy")
+    id oewn-06426015-n
+    partOfSpeech n
+    synonyms (textbook "text edition" schoolbook "school text")
+  entry
+    definition "the main body of a written work (as distinct from illustrations or footnotes etc.)"
+    examples ("pictures made the text easier to understand")
+    id oewn-06400222-n
+    partOfSpeech n
+  entry
+    definition "to send a message by SMS or similar text-based messaging service"
+    id oewn-90001251-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,42 @@
+{
+  "lemma": "before",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00061477-r",
+      "partOfSpeech": "r",
+      "definition": "earlier in time; previously",
+      "examples": [
+        "I had known her before",
+        "as I said before",
+        "he called me the day before but your call had come even earlier",
+        "her parents had died four years earlier",
+        "I mentioned that problem earlier"
+      ],
+      "synonyms": [
+        "earlier"
+      ]
+    },
+    {
+      "id": "oewn-00067181-r",
+      "partOfSpeech": "r",
+      "definition": "at or in the front",
+      "examples": [
+        "I see the lights of a town ahead",
+        "the road ahead is foggy",
+        "staring straight ahead",
+        "we couldn't see over the heads of the people in front",
+        "with the cross of Jesus marching on before"
+      ],
+      "synonyms": [
+        "ahead",
+        "in front"
+      ]
+    }
+  ]
+}

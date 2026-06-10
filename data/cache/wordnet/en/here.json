@@ -1,0 +1,73 @@
+{
+  "lemma": "here",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09586312-n",
+      "partOfSpeech": "n",
+      "definition": "queen of the Olympian gods in ancient Greek mythology; sister and wife of Zeus remembered for her jealousy of the many mortal women Zeus fell in love with; identified with Roman Juno",
+      "synonyms": [
+        "Hera"
+      ]
+    },
+    {
+      "id": "oewn-08506507-n",
+      "partOfSpeech": "n",
+      "definition": "the present location; this place; location, proximal pronoun; demonstrative pronoun, location; quantifier: demonstrative determiner, singular, proximal",
+      "examples": [
+        "where do we go from here?"
+      ]
+    },
+    {
+      "id": "oewn-00109247-r",
+      "partOfSpeech": "r",
+      "definition": "in or at this place; where the speaker or writer is",
+      "examples": [
+        "I work here",
+        "turn here",
+        "radio waves received here on Earth"
+      ]
+    },
+    {
+      "id": "oewn-00109541-r",
+      "partOfSpeech": "r",
+      "definition": "in this circumstance or respect or on this point or detail",
+      "examples": [
+        "what do we have here?",
+        "here I must disagree"
+      ]
+    },
+    {
+      "id": "oewn-00109415-r",
+      "partOfSpeech": "r",
+      "definition": "to this place (especially toward the speaker)",
+      "examples": [
+        "come here, please"
+      ],
+      "synonyms": [
+        "hither"
+      ]
+    },
+    {
+      "id": "oewn-00109789-r",
+      "partOfSpeech": "r",
+      "definition": "at this time; now",
+      "examples": [
+        "we'll adjourn here for lunch and discuss the remaining issues this afternoon"
+      ]
+    },
+    {
+      "id": "oewn-01853170-s",
+      "partOfSpeech": "s",
+      "definition": "being here now",
+      "examples": [
+        "is everyone here?"
+      ]
+    }
+  ]
+}

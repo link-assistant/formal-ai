@@ -1,0 +1,165 @@
+{
+  "lemma": "is",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02610777-v",
+      "partOfSpeech": "v",
+      "definition": "have the quality of being; (copula, used with an adjective or a predicate noun)",
+      "examples": [
+        "John is rich",
+        "This is not a good answer"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02622439-v",
+      "partOfSpeech": "v",
+      "definition": "be identical to; be someone or something",
+      "examples": [
+        "The president of the company is John Smith",
+        "This is my house"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02661230-v",
+      "partOfSpeech": "v",
+      "definition": "occupy a certain position or area; be somewhere",
+      "examples": [
+        "Where is my umbrella?",
+        "The toolshed is in the back",
+        "What is behind this behavior?"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02609706-v",
+      "partOfSpeech": "v",
+      "definition": "have an existence, be extant",
+      "examples": [
+        "Is there a God?"
+      ],
+      "synonyms": [
+        "exist",
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02670846-v",
+      "partOfSpeech": "v",
+      "definition": "be identical or equivalent to",
+      "examples": [
+        "One dollar equals 1,000 rubles these days!"
+      ],
+      "synonyms": [
+        "equal",
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02626667-v",
+      "partOfSpeech": "v",
+      "definition": "form or compose",
+      "examples": [
+        "This money is my only income",
+        "The stone wall was the backdrop for the performance",
+        "These constitute my entire belonging",
+        "The children made up the chorus",
+        "This sum represents my entire income for a year",
+        "These few men comprise his entire army"
+      ],
+      "synonyms": [
+        "constitute",
+        "represent",
+        "make up",
+        "comprise",
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02450790-v",
+      "partOfSpeech": "v",
+      "definition": "work in a specific place, with a specific subject, or in a specific function",
+      "examples": [
+        "He is a herpetologist",
+        "She is our resident philosopher"
+      ],
+      "synonyms": [
+        "be",
+        "follow"
+      ]
+    },
+    {
+      "id": "oewn-02703567-v",
+      "partOfSpeech": "v",
+      "definition": "represent, as of a character on stage",
+      "examples": [
+        "Derek Jacobi was Hamlet"
+      ],
+      "synonyms": [
+        "embody",
+        "be",
+        "personify"
+      ]
+    },
+    {
+      "id": "oewn-02273091-v",
+      "partOfSpeech": "v",
+      "definition": "spend or use time",
+      "examples": [
+        "I may be an hour"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02620216-v",
+      "partOfSpeech": "v",
+      "definition": "have life, be alive",
+      "examples": [
+        "Our great leader is no more",
+        "My grandfather lived until the end of war"
+      ],
+      "synonyms": [
+        "be",
+        "live"
+      ]
+    },
+    {
+      "id": "oewn-02750695-v",
+      "partOfSpeech": "v",
+      "definition": "to remain unmolested, undisturbed, or uninterrupted — used only in infinitive form",
+      "examples": [
+        "let her be"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02708368-v",
+      "partOfSpeech": "v",
+      "definition": "be priced at",
+      "examples": [
+        "These shoes cost $100"
+      ],
+      "synonyms": [
+        "cost",
+        "be"
+      ]
+    }
+  ]
+}

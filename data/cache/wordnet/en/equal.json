@@ -1,0 +1,85 @@
+{
+  "lemma": "equal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00893124-a",
+      "partOfSpeech": "a",
+      "definition": "having the same quantity, value, or measure as another",
+      "examples": [
+        "on equal terms",
+        "all men are equal before the law"
+      ]
+    },
+    {
+      "id": "oewn-00051265-a",
+      "partOfSpeech": "a",
+      "definition": "having the requisite qualities or resources to meet a task",
+      "examples": [
+        "she had adequate training",
+        "her training was adequate",
+        "she was adequate to the job",
+        "he was equal to the task"
+      ],
+      "synonyms": [
+        "adequate"
+      ]
+    },
+    {
+      "id": "oewn-09649426-n",
+      "partOfSpeech": "n",
+      "definition": "a person who is of equal standing with another in a group",
+      "synonyms": [
+        "peer",
+        "match",
+        "compeer"
+      ]
+    },
+    {
+      "id": "oewn-02670846-v",
+      "partOfSpeech": "v",
+      "definition": "be identical or equivalent to",
+      "examples": [
+        "One dollar equals 1,000 rubles these days!"
+      ],
+      "synonyms": [
+        "be"
+      ]
+    },
+    {
+      "id": "oewn-02677976-v",
+      "partOfSpeech": "v",
+      "definition": "be equal to in quality or ability",
+      "examples": [
+        "Nothing can rival cotton for durability",
+        "Your performance doesn't even touch that of your colleagues",
+        "Her persistence and ambition only matches that of her parents"
+      ],
+      "synonyms": [
+        "touch",
+        "rival",
+        "match"
+      ]
+    },
+    {
+      "id": "oewn-00417926-v",
+      "partOfSpeech": "v",
+      "definition": "make equal, uniform, corresponding, or matching",
+      "examples": [
+        "let's equalize the duties among all employees in this office",
+        "The company matched the discount policy of its competitors"
+      ],
+      "synonyms": [
+        "match",
+        "equalize",
+        "equalise",
+        "equate"
+      ]
+    }
+  ]
+}

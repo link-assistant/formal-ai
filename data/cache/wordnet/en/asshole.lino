@@ -1,0 +1,17 @@
+language en
+lemma asshole
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "insulting terms of address for people who are stupid or irritating or ridiculous"
+    id oewn-09834593-n
+    partOfSpeech n
+    synonyms (bastard cocksucker dickhead shit "mother fucker" motherfucker prick whoreson "son of a bitch" SOB)
+  entry
+    definition "vulgar slang for anus"
+    id oewn-05545848-n
+    partOfSpeech n
+    synonyms (arse arsehole bunghole)
+source "oewn:2024"

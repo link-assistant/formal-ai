@@ -1,0 +1,27 @@
+language en
+lemma mb
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of information equal to 1000 kilobytes or 10^6 (1,000,000) bytes"
+    id oewn-13649707-n
+    partOfSpeech n
+    synonyms (megabyte M)
+  entry
+    definition "a unit of information equal to 1000 kilobits or 10^6 (1,000,000) bits"
+    id oewn-13649880-n
+    partOfSpeech n
+    synonyms (megabit Mbit)
+  entry
+    definition "a unit of information equal to 1024 kibibytes or 2^20 (1,048,576) bytes"
+    id oewn-13649517-n
+    partOfSpeech n
+    synonyms (megabyte mebibyte M MiB)
+  entry
+    definition "(a British degree) a bachelor's degree in medicine"
+    id oewn-06711988-n
+    partOfSpeech n
+    synonyms ("Bachelor of Medicine")
+source "oewn:2024"

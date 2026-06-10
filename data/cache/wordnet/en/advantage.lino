@@ -1,0 +1,28 @@
+language en
+lemma advantage
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the quality of having a superior or more favorable position"
+    examples ("the experience gave him the advantage over me")
+    id oewn-05163204-n
+    partOfSpeech n
+    synonyms (vantage)
+  entry
+    definition "(tennis) first point scored after deuce"
+    id oewn-13631669-n
+    partOfSpeech n
+  entry
+    definition "benefit resulting from some event or action"
+    examples ("it turned out to my advantage" "reaping the rewards of generosity")
+    id oewn-05150110-n
+    partOfSpeech n
+    synonyms (reward)
+  entry
+    definition "give an advantage to"
+    examples ("This system advantages the rich")
+    id oewn-02518934-v
+    partOfSpeech v
+source "oewn:2024"

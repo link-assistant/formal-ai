@@ -1,0 +1,33 @@
+language en
+lemma request
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a formal message requesting something that is submitted to an authority"
+    id oewn-06525357-n
+    partOfSpeech n
+    synonyms (petition postulation)
+  entry
+    definition "the verbal act of requesting"
+    id oewn-07199985-n
+    partOfSpeech n
+    synonyms (asking)
+  entry
+    definition "express the need or desire for"
+    examples ("She requested an extra bed in her room" "She called for room service" "when you call, always ask for Mary")
+    id oewn-00754770-v
+    partOfSpeech v
+    synonyms ("ask for" bespeak "call for" quest)
+  entry
+    definition "ask (a person) to do something"
+    examples ("I requested that she type the entire manuscript")
+    id oewn-00755473-v
+    partOfSpeech v
+  entry
+    definition "inquire for (information)"
+    examples ("I requested information from the secretary")
+    id oewn-01071831-v
+    partOfSpeech v
+source "oewn:2024"

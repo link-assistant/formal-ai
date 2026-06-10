@@ -1,0 +1,13 @@
+language en
+lemma goodbye
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a farewell remark"
+    examples ("they said their good-byes")
+    id oewn-06642117-n
+    partOfSpeech n
+    synonyms (adieu adios arrivederci "auf wiedersehen" "au revoir" bye bye-bye cheerio good-by goodby good-bye "good day" sayonara "so long")
+source "oewn:2024"

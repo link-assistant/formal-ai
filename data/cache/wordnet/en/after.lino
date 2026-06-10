@@ -1,0 +1,22 @@
+language en
+lemma after
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "happening at a time subsequent to a reference time"
+    examples ("he apologized subsequently" "he's going to the store but he'll be back here later" "it didn't happen until afterward" "two hours after that")
+    id oewn-00061741-r
+    partOfSpeech r
+    synonyms (subsequently later afterwards afterward "later on")
+  entry
+    definition "behind or in the rear"
+    examples ("and Jill came tumbling after")
+    id oewn-00510603-r
+    partOfSpeech r
+  entry
+    definition "located farther aft"
+    id oewn-01037224-s
+    partOfSpeech s
+source "oewn:2024"

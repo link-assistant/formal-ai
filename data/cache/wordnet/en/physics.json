@@ -1,0 +1,33 @@
+{
+  "lemma": "physics",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06100457-n",
+      "partOfSpeech": "n",
+      "definition": "the science of matter and energy and their interactions",
+      "examples": [
+        "his favorite subject was physics"
+      ],
+      "synonyms": [
+        "natural philosophy"
+      ]
+    },
+    {
+      "id": "oewn-06104194-n",
+      "partOfSpeech": "n",
+      "definition": "the physical properties, phenomena, and laws of something",
+      "examples": [
+        "he studied the physics of radiation"
+      ],
+      "synonyms": [
+        "physical science"
+      ]
+    }
+  ]
+}
