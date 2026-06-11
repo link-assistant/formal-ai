@@ -79,6 +79,53 @@ fn russian_follow_up_replace_edits_previous_assistant_code_artifact() {
 }
 
 #[test]
+fn replacement_requests_ignore_word_punctuation_across_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Replace \"Hello World\" with \"Bye world\": \"Hello, world!\"",
+        },
+        Case {
+            language: "ru",
+            prompt: "Замени \"Hello World\" на \"Bye world\": \"Hello, world!\"",
+        },
+        Case {
+            language: "hi",
+            prompt: "\"Hello World\" को \"Bye world\" से बदलें: \"Hello, world!\"",
+        },
+        Case {
+            language: "zh",
+            prompt: "替换 \"Hello World\" 为 \"Bye world\": \"Hello, world!\"",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} replacement should route to text manipulation",
+            case.language
+        );
+        assert_eq!(
+            response.answer, "Bye world!",
+            "{} replacement should ignore comma/case differences between words",
+            case.language
+        );
+        assert!(
+            response.links_notation.contains("rule_replace_text"),
+            "{} replacement should record replacement rule",
+            case.language
+        );
+    }
+}
+
+#[test]
 fn extract_email_matches_from_user_supplied_text() {
     let response = text_solver().solve(
         "Extract email addresses from this text: \"Contact ada@example.com and grace@navy.mil.\"",
