@@ -297,9 +297,13 @@ test.describe('multilingual chat surface', () => {
 
   test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
     const cases = [
+      'Show rules',
       'Show list of your rules',
+      'Покажи правила',
       'Покажи список своих правил',
+      'नियम दिखाओ',
       'अपने नियमों की सूची दिखाओ',
+      '显示规则',
       '显示你的规则列表',
     ];
 

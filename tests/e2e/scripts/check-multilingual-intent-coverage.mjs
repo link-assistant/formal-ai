@@ -410,10 +410,10 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
 }
 
 const behaviorRulesListPatterns = {
-  en: ['show behavior rules', 'show list of your rules', 'list your rules'],
-  ru: ['покажи правила поведения', 'покажи список своих правил', 'перечисли свои правила'],
-  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
-  zh: ['列出行为规则', '显示你的规则列表', '列出你的规则'],
+  en: ['show behavior rules', 'show rules', 'show list of your rules', 'list your rules'],
+  ru: ['покажи правила поведения', 'покажи правила', 'покажи список своих правил', 'перечисли свои правила'],
+  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'नियम दिखाओ', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
+  zh: ['列出行为规则', '显示规则', '显示你的规则列表', '列出你的规则'],
 };
 
 assertMatrixMatchesSupportedLanguages('behaviorRulesListPatterns', behaviorRulesListPatterns);
