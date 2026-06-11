@@ -51,6 +51,8 @@ const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER =
   "Glad to hear it. What would you like to do next?";
+const FALLBACK_ASSISTANT_FREE_TIME_ANSWER =
+  "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.";
 const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
   "Glad to hear it.",
   "You're welcome.",
@@ -87,6 +89,12 @@ let MULTILINGUAL_ANSWERS = {
       variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
       acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
       followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    },
+  },
+  assistant_free_time: {
+    en: {
+      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
     },
   },
   identity: {
@@ -309,6 +317,31 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_assistant_free_time",
+      slug: "assistant_free_time",
+      responseLink: "response:assistant_free_time",
+      keywords: [],
+      phrases: [
+        "what do you do in your free time",
+        "what do you do in free time",
+        "how do you spend your free time",
+        "what do you do when you are not working",
+        "что делаешь в свободное время",
+        "что ты делаешь в свободное время",
+        "чем занимаешься в свободное время",
+        "чем ты занимаешься в свободное время",
+        "что делаешь когда свободен",
+        "खाली समय में क्या करते हो",
+        "आप खाली समय में क्या करते हैं",
+        "फुर्सत में क्या करते हो",
+        "你空闲时间做什么",
+        "你有空的时候做什么",
+        "你业余时间做什么",
+      ],
+      tokens: [],
+      combos: [],
+    },
+    {
       id: "intent_test_status",
       slug: "test_status",
       responseLink: "response:test_status",
@@ -474,6 +507,12 @@ function fallbackEntry(intent) {
       variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
       acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
       followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    };
+  }
+  if (intent === "assistant_free_time") {
+    return {
+      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
     };
   }
   if (intent === "identity") {
@@ -2765,6 +2804,10 @@ function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
 }
 
+function isAssistantFreeTimePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_assistant_free_time");
+}
+
 function isFarewellPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_farewell");
 }
@@ -3023,6 +3066,7 @@ function escapeBehaviorRuleValue(value) {
 function behaviorRuleRecords() {
   const greeting = answerFor("greeting", "en");
   const farewell = answerFor("farewell", "en");
+  const assistantFreeTime = answerFor("assistant_free_time", "en");
   const identity = answerFor("identity", "en");
   const assistantName = answerFor("assistant_name", "en");
   return [
@@ -3035,6 +3079,17 @@ function behaviorRuleRecords() {
       response: greeting,
       source: "data/seed/intent-routing.lino + multilingual responses",
       whenThen: `When the user says \`Hi\`, \`Hello\`, or \`Hey\` then respond with \`${greeting}\`.`,
+    },
+    {
+      id: "rule_assistant_free_time",
+      topic: "small_talk",
+      intent: "assistant_free_time",
+      label: "Assistant free-time rule",
+      matches:
+        "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      response: assistantFreeTime,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user asks what I do in free time then respond with \`${assistantFreeTime}\`.`,
     },
     {
       id: "rule_farewell",
@@ -3110,6 +3165,7 @@ function behaviorRuleRecords() {
 
 const BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
+  "small_talk",
   "farewells",
   "identity",
   "assistant_name",
@@ -3130,6 +3186,13 @@ function behaviorRuleTopicLabel(topic, language) {
         ru: "Приветствия",
         hi: "अभिवादन",
         zh: "问候",
+      });
+    case "small_talk":
+      return localizedText(language, {
+        en: "Small talk",
+        ru: "Светская беседа",
+        hi: "हल्की बातचीत",
+        zh: "闲聊",
       });
     case "farewells":
       return localizedText(language, {
@@ -3257,6 +3320,8 @@ function localizedRuleResponse(rule, language) {
       return answerFor("greeting", language);
     case "rule_farewell":
       return answerFor("farewell", language);
+    case "rule_assistant_free_time":
+      return answerFor("assistant_free_time", language);
     case "rule_identity":
       return answerFor("identity", language);
     case "rule_assistant_name":
@@ -3301,6 +3366,12 @@ function localizedRuleLabel(rule, language) {
       ru: "Правило прощания",
       hi: "विदाई नियम",
       zh: "告别规则",
+    },
+    rule_assistant_free_time: {
+      en: "Assistant free-time rule",
+      ru: "Правило свободного времени ассистента",
+      hi: "सहायक खाली समय नियम",
+      zh: "助手空闲时间规则",
     },
     rule_identity: {
       en: "Identity rule",
@@ -3351,6 +3422,12 @@ function localizedRuleMatches(rule, language) {
       ru: "`bye`, `goodbye`, `poka` и многоязычные seed-фразы прощания",
       hi: "`bye`, `goodbye`, `poka` और बहुभाषी farewell seed phrases",
       zh: "`bye`、`goodbye`、`poka` 以及多语言告别 seed 短语",
+    },
+    rule_assistant_free_time: {
+      en: "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      ru: "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы",
+      hi: "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases",
+      zh: "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语",
     },
     rule_identity: {
       en: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
@@ -3403,6 +3480,11 @@ function localizedRuleWhenThen(rule, language) {
     if (language === "ru") return `Когда пользователь говорит \`bye\`, \`goodbye\`, \`poka\` или многоязычную фразу прощания, ответь \`${response}\`.`;
     if (language === "hi") return `जब उपयोगकर्ता \`bye\`, \`goodbye\`, \`poka\` या बहुभाषी farewell phrase कहे, तब \`${response}\` उत्तर दें.`;
     if (language === "zh") return `当用户说 \`bye\`、\`goodbye\`、\`poka\` 或多语言告别短语时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_assistant_free_time") {
+    if (language === "ru") return `Когда пользователь спрашивает, что я делаю в свободное время, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户问我空闲时间做什么时，回答 \`${response}\`。`;
   }
   if (rule.id === "rule_identity") {
     if (language === "ru") return `Когда пользователь спрашивает \`Who are you?\` или \`Кто ты?\`, ответь \`${response}\`.`;
@@ -34040,6 +34122,23 @@ async function solve(prompt, history, prefs, userContext = {}) {
       confidence: 1.0,
       evidence: [
         "rule:greeting",
+        `language:${language}`,
+        `variation:${randomize ? "random" : "canonical"}`,
+        `temperature:${temperature.toFixed(2)}`,
+      ],
+    }, formalizationContext);
+  }
+  if (isAssistantFreeTimePrompt(normalized, prompt)) {
+    events.push("rule:assistant_free_time");
+    steps.push({ step: "match_rule", detail: "assistant_free_time" });
+    const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
+    const randomize = preferences.greetingVariations !== false && temperature > 0;
+    return finalize(events, steps, toolCalls, {
+      intent: "assistant_free_time",
+      content: answerFor("assistant_free_time", language, { randomize: randomize }),
+      confidence: 1.0,
+      evidence: [
+        "rule:assistant_free_time",
         `language:${language}`,
         `variation:${randomize ? "random" : "canonical"}`,
         `temperature:${temperature.toFixed(2)}`,

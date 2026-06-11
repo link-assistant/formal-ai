@@ -118,6 +118,33 @@ fn greeting_how_are_you_variations_match_across_languages() {
     assert_intent(&prompts, "greeting", "response:greeting");
 }
 
+// Issue #402: free-time small talk should answer with an assistant-specific
+// lifecycle statement, not the unknown fallback.
+#[test]
+fn assistant_free_time_variations_match_across_languages() {
+    let prompts = [
+        "What do you do in your free time?",
+        "what do you do in free time",
+        "How do you spend your free time?",
+        "What do you do when you are not working?",
+        "Что делаешь в свободное время?",
+        "что ты делаешь в свободное время",
+        "Чем занимаешься в свободное время?",
+        "Что делаешь когда свободен?",
+        "खाली समय में क्या करते हो?",
+        "आप खाली समय में क्या करते हैं?",
+        "फुर्सत में क्या करते हो?",
+        "你空闲时间做什么?",
+        "你有空的时候做什么?",
+        "你业余时间做什么?",
+    ];
+    assert_intent(
+        &prompts,
+        "assistant_free_time",
+        "response:assistant_free_time",
+    );
+}
+
 // -----------------------------------------------------------------------------
 // Farewells — 8-9 variants per language.
 // -----------------------------------------------------------------------------

@@ -134,6 +134,36 @@ multilingual_responses
     follow_up_variant 接下来您想做什么?
     follow_up_variant 您想讨论别的事情吗?
     follow_up_variant 还有什么需要我帮忙的吗?
+  response response_assistant_free_time_en
+    intent assistant_free_time
+    language en
+    text "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+    variant "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations."
+    variant "When nobody is using me, I am not doing anything in the background. When you write, I spend the moment helping with the current task."
+    variant "My quiet time is basically waiting state. In active dialog I work on reasoning, local rules, code, and useful explanations."
+    variant "I do not have hobbies, but in conversation I can help analyze ideas, write programs, check rules, and organize information."
+  response response_assistant_free_time_ru
+    intent assistant_free_time
+    language ru
+    text "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+    variant "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями."
+    variant "Когда меня не спрашивают, я ничего не делаю в фоне. Когда вы пишете, я разбираю текущую задачу и отвечаю по правилам."
+    variant "Мое свободное от запросов время - это состояние ожидания. В активном диалоге я помогаю рассуждать, писать код и упорядочивать знания."
+    variant "Хобби у меня нет, но в разговоре я могу помогать с идеями, программами, правилами и объяснениями."
+  response response_assistant_free_time_hi
+    intent assistant_free_time
+    language hi
+    text "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+    variant "मेरे पास इंसानों जैसा खाली समय नहीं होता। संदेशों के बीच मैं निष्क्रिय रहता हूँ; संवाद सक्रिय हो तो मैं काम, नियम और व्याख्याओं में मदद करता हूँ।"
+    variant "जब कोई मुझसे बात नहीं कर रहा होता, मैं पृष्ठभूमि में कुछ नहीं करता। संदेश आने पर मैं उसी काम पर ध्यान देता हूँ।"
+    variant "मेरा खाली समय मूलतः प्रतीक्षा की स्थिति है। बातचीत में मैं तर्क, कोड, नियम और जानकारी व्यवस्थित करने में मदद करता हूँ।"
+  response response_assistant_free_time_zh
+    intent assistant_free_time
+    language zh
+    text 我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。
+    variant 我没有人类意义上的空闲时间。两次提问之间我处于空闲状态；对话开始后,我会帮助处理任务、规则和解释。
+    variant 没有人使用我时,我不会在后台做别的事。你发来消息后,我就专注处理当前任务。
+    variant 我的空闲时间基本就是等待状态。在对话中,我可以帮助推理、写代码、检查规则和整理信息。
   response response_identity_en
     intent identity
     language en

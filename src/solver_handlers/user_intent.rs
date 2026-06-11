@@ -176,6 +176,15 @@ fn is_capability_query(normalized: &str) -> bool {
         || lexicon.mentions_role(seed::ROLE_CAPABILITY_QUERY_MORE, &cleaned)
 }
 
+fn is_assistant_free_time_prompt(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    seed::intent_routing()
+        .intents
+        .into_iter()
+        .find(|route| route.slug == "assistant_free_time")
+        .is_some_and(|route| route.keywords.contains(&cleaned) || route.phrases.contains(&cleaned))
+}
+
 fn prior_history_mentions_web_search(log: &EventLog) -> bool {
     log.events()
         .iter()
@@ -199,7 +208,7 @@ pub fn try_capabilities(
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
     let more_capabilities = is_more_capabilities_prompt(normalized);
-    if !is_capability_query(normalized) {
+    if !is_capability_query(normalized) || is_assistant_free_time_prompt(normalized) {
         return None;
     }
     if more_capabilities {

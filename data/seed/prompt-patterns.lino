@@ -609,6 +609,81 @@ prompt_patterns
     language zh
     kind phrase
     text 过得怎么样
+  pattern pattern_assistant_free_time_phrase_what_do_you_do_in_your_free_time_en
+    intent assistant_free_time
+    language en
+    kind phrase
+    text "what do you do in your free time"
+  pattern pattern_assistant_free_time_phrase_what_do_you_do_in_free_time_en
+    intent assistant_free_time
+    language en
+    kind phrase
+    text "what do you do in free time"
+  pattern pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
+    intent assistant_free_time
+    language en
+    kind phrase
+    text "how do you spend your free time"
+  pattern pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
+    intent assistant_free_time
+    language en
+    kind phrase
+    text "what do you do when you are not working"
+  pattern pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
+    intent assistant_free_time
+    language ru
+    kind phrase
+    text "что делаешь в свободное время"
+  pattern pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
+    intent assistant_free_time
+    language ru
+    kind phrase
+    text "что ты делаешь в свободное время"
+  pattern pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
+    intent assistant_free_time
+    language ru
+    kind phrase
+    text "чем занимаешься в свободное время"
+  pattern pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
+    intent assistant_free_time
+    language ru
+    kind phrase
+    text "чем ты занимаешься в свободное время"
+  pattern pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
+    intent assistant_free_time
+    language ru
+    kind phrase
+    text "что делаешь когда свободен"
+  pattern pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+    intent assistant_free_time
+    language hi
+    kind phrase
+    text "खाली समय में क्या करते हो"
+  pattern pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
+    intent assistant_free_time
+    language hi
+    kind phrase
+    text "आप खाली समय में क्या करते हैं"
+  pattern pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
+    intent assistant_free_time
+    language hi
+    kind phrase
+    text "फुर्सत में क्या करते हो"
+  pattern pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
+    intent assistant_free_time
+    language zh
+    kind phrase
+    text 你空闲时间做什么
+  pattern pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
+    intent assistant_free_time
+    language zh
+    kind phrase
+    text 你有空的时候做什么
+  pattern pattern_assistant_free_time_phrase_ni_yeyu_shijian_zuo_shenme_zh
+    intent assistant_free_time
+    language zh
+    kind phrase
+    text 你业余时间做什么
   pattern pattern_farewell_keyword_bye
     intent farewell
     language en
