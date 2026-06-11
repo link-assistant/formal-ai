@@ -25,7 +25,7 @@ use std::fmt::Write as _;
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
+    answer_links_notation, language_aware_answer_for, language_aware_intent_for,
     response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
@@ -45,9 +45,10 @@ use crate::solver_formalization::{record_formalization, record_formalization_sel
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
     try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
-    try_playwright_script, try_program_blueprint, try_project_lookup, CapabilityRuntime,
+    try_playwright_script, try_project_lookup, CapabilityRuntime,
     SelfAwarenessRuntime,
 };
+use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
@@ -557,11 +558,13 @@ impl UniversalSolver {
         // real, idiomatic program with an honest "not run" execution report. The
         // verified catalog stays untouched, so its "compiled and ran" guarantee
         // is preserved.
-        if let SelectedRule::UnsupportedWriteProgram { language, .. } = &rule {
-            let normalized = normalize_prompt(prompt);
-            if let Some(answer) = try_program_blueprint(
+        // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
+        // composite blueprint, then the cached coding oracle (uncatalogued
+        // languages), so "write a hello world program in Kotlin" returns code.
+        if let SelectedRule::UnsupportedWriteProgram { task, language } = &rule {
+            if let Some(answer) = try_unsupported_write_program(
                 prompt,
-                &normalized,
+                task.as_deref(),
                 language.as_deref(),
                 self.config.blueprint_composition,
                 &mut log,
