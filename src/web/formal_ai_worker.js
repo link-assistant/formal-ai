@@ -8093,6 +8093,7 @@ function quoteCloseFor(open) {
   if (open === "'") return "'";
   if (open === '"') return '"';
   if (open === "`") return "`";
+  if (open === "«") return "»";
   return "";
 }
 
@@ -8127,8 +8128,31 @@ function textAfterColon(prompt) {
   return text
     .slice(index + 1)
     .trim()
-    .replace(/^["'`]+|["'`]+$/g, "")
+    .replace(/^[«"'`]+|[»"'`]+$/g, "")
     .trim();
+}
+
+function isReplaceTextPrompt(normalized) {
+  const text = String(normalized || "");
+  return (
+    text.includes("replace") ||
+    text.includes("instead") ||
+    text.includes("вместо") ||
+    text.includes("замен") ||
+    text.includes("बदल") ||
+    text.includes("替换")
+  );
+}
+
+function lastAssistantTextArtifact(history) {
+  if (!Array.isArray(history)) return "";
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (!turn || turn.role !== "assistant") continue;
+    const content = String(turn.content || turn.text || turn.message || "");
+    if (content.trim()) return content;
+  }
+  return "";
 }
 
 function appendSimpleTextOperations(normalized, operations) {
@@ -8165,20 +8189,21 @@ function appendSimpleTextOperations(normalized, operations) {
   }
 }
 
-function parseTextManipulationRequest(prompt, normalized) {
+function parseTextManipulationRequest(prompt, normalized, history = []) {
   const quoted = quotedTextSegments(prompt);
   const operations = [];
+  const fallbackInput = lastAssistantTextArtifact(history);
   let input = "";
-  if (normalized.includes("replace")) {
+  if (isReplaceTextPrompt(normalized)) {
     if (quoted.length < 2) return null;
     operations.push({ slug: "replace_text", from: quoted[0], to: quoted[1] });
-    input = quoted[2] || textAfterColon(prompt);
+    input = quoted[2] || textAfterColon(prompt) || fallbackInput;
   } else if (normalized.includes("count occurrences")) {
     if (quoted.length < 1) return null;
     operations.push({ slug: "count_occurrences", needle: quoted[0] });
-    input = quoted[1] || textAfterColon(prompt);
+    input = quoted[1] || textAfterColon(prompt) || fallbackInput;
   } else {
-    input = quoted[0] || textAfterColon(prompt);
+    input = quoted[0] || textAfterColon(prompt) || fallbackInput;
     appendSimpleTextOperations(normalized, operations);
   }
   if (!input || operations.length === 0) return null;
@@ -8224,6 +8249,62 @@ function deduplicateLines(input) {
   return lines;
 }
 
+function normalizedWordSpans(text) {
+  const spans = [];
+  const source = String(text || "");
+  let start = -1;
+  let end = 0;
+  let word = "";
+  for (let index = 0; index < source.length;) {
+    const character = Array.from(source.slice(index))[0];
+    const next = index + character.length;
+    if (/[\p{L}\p{N}]/u.test(character)) {
+      if (start < 0) start = index;
+      word += character.toLowerCase();
+      end = next;
+    } else if (start >= 0) {
+      spans.push({ word, start, end });
+      start = -1;
+      word = "";
+    }
+    index = next;
+  }
+  if (start >= 0) spans.push({ word, start, end });
+  return spans;
+}
+
+function replaceWordSequence(input, from, to) {
+  const needle = normalizedWordSpans(from).map((span) => span.word);
+  if (!needle.length) return "";
+  const haystack = normalizedWordSpans(input);
+  if (haystack.length < needle.length) return "";
+  let output = "";
+  let cursor = 0;
+  let index = 0;
+  let replaced = false;
+  while (index + needle.length <= haystack.length) {
+    const matches = needle.every((word, offset) => haystack[index + offset].word === word);
+    if (matches) {
+      const start = haystack[index].start;
+      const end = haystack[index + needle.length - 1].end;
+      output += String(input).slice(cursor, start) + to;
+      cursor = end;
+      index += needle.length;
+      replaced = true;
+    } else {
+      index += 1;
+    }
+  }
+  return replaced ? output + String(input).slice(cursor) : "";
+}
+
+function replaceText(input, from, to) {
+  const source = String(input);
+  const direct = source.split(from).join(to);
+  if (!from || direct !== source) return direct;
+  return replaceWordSequence(source, from, to) || direct;
+}
+
 function applyTextOperation(operation, input) {
   switch (operation.slug) {
     case "uppercase":
@@ -8231,7 +8312,7 @@ function applyTextOperation(operation, input) {
     case "lowercase":
       return String(input).toLowerCase();
     case "replace_text":
-      return String(input).split(operation.from).join(operation.to);
+      return replaceText(input, operation.from, operation.to);
     case "reverse_words":
       return String(input).split(/\s+/).filter(Boolean).reverse().join(" ");
     case "extract_email":
@@ -8271,8 +8352,8 @@ function buildTextManipulationChain(input, operations) {
   return { result: current, steps };
 }
 
-function tryTextManipulation(prompt, normalized) {
-  const request = parseTextManipulationRequest(prompt, normalized);
+function tryTextManipulation(prompt, normalized, history = []) {
+  const request = parseTextManipulationRequest(prompt, normalized, history);
   if (!request) return null;
   const chain = buildTextManipulationChain(request.input, request.operations);
   const ruleChain = chain.steps.map((step) => step.ruleId).join(">");
@@ -28277,6 +28358,24 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   return lines;
 }
 
+function inlineHelloWorldReplacement(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (!isReplaceTextPrompt(normalized)) return "";
+  const quoted = quotedTextSegments(prompt);
+  if (!quoted.length) return "";
+  const replacement =
+    quoted.length >= 2 && (normalized.includes("replace") || normalized.includes("замен"))
+      ? quoted[1]
+      : quoted[quoted.length - 1];
+  return replacement.trim() ? replacement : "";
+}
+
+function applyInlineHelloWorldOutputReplacement(prompt, task, content) {
+  if (task !== "hello_world") return content;
+  const replacement = inlineHelloWorldReplacement(prompt);
+  return replacement ? String(content).split("Hello, world!").join(replacement) : content;
+}
+
 // Issue #330 (R9): a localized plain-language "How it works" paragraph so the
 // demo teaches a novice instead of returning an unexplained snippet. Mirrors
 // `coding::guidance::program_explanation`; `__fallback` is the neutral wording
@@ -29806,9 +29905,10 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push(programExplanationSection(task, responseLanguage));
   lines.push("");
   lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode));
+  const content = applyInlineHelloWorldOutputReplacement(prompt, task, lines.join("\n"));
   return {
     intent: "write_program",
-    content: lines.join("\n"),
+    content,
     confidence: 0.9,
     evidence: [
       `response:write_program:${task}:${language}`,
@@ -34175,7 +34275,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
           : null;
       },
     },
-    { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
+    { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized, history) },
     // Issue #395: a concrete "<operation> these numbers in <language>, give me
     // the code and the result" must produce generated code plus the
     // deterministically-computed result. It runs before program synthesis and

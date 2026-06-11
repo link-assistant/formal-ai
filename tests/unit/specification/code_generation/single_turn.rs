@@ -22,6 +22,19 @@ fn rust_hello_world_seed_compiles_and_runs() {
 }
 
 #[test]
+fn rust_hello_world_accepts_inline_output_replacement() {
+    let response = answer(
+        "Напиши мне Hello World программу на Rust, но выведи вместо Hello World \"Bye World\"",
+    );
+
+    assert_write_program_parameters(&response, "rust", "hello_world");
+    assert!(response.answer.contains("```rust"));
+    assert!(response.answer.contains("println!(\"Bye World\");"));
+    assert!(response.answer.contains("```text\nBye World\n```"));
+    assert!(!response.answer.contains("Hello, world!"));
+}
+
+#[test]
 fn python_hello_world_seed_runs() {
     let response = answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");

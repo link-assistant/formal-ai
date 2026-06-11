@@ -721,7 +721,9 @@ pub(crate) fn language_aware_answer_for(
             String::from(chinese_assistant_name_answer())
         }
         (SelectedRule::WriteProgram(spec), language) => {
-            write_program_answer(*spec, language, prior_code_response)
+            let answer = write_program_answer(*spec, language, prior_code_response);
+            crate::code_editing::apply_inline_hello_world_output_replacement(prompt, &answer, *spec)
+                .unwrap_or(answer)
         }
         (
             SelectedRule::UnsupportedWriteProgram {

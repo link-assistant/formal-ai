@@ -48,7 +48,7 @@ pub use research_table::try_research_comparison_table;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
-pub use text_manipulation::try_text_manipulation;
+pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,

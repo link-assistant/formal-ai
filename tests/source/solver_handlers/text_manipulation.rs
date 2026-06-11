@@ -5,6 +5,7 @@ use std::fmt::Write as _;
 
 use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
+use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
@@ -15,7 +16,16 @@ pub fn try_text_manipulation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let request = TextRequest::parse(prompt, normalized)?;
+    try_text_manipulation_with_history(prompt, normalized, log, &[])
+}
+
+pub fn try_text_manipulation_with_history(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+    history: &[ConversationTurn],
+) -> Option<SymbolicAnswer> {
+    let request = TextRequest::parse_with_history(prompt, normalized, history)?;
     let chain = SubstitutionTextChain::build(&request.input, &request.operations)?;
 
     log.append(
@@ -61,9 +71,14 @@ struct TextRequest {
 }
 
 impl TextRequest {
-    fn parse(prompt: &str, normalized: &str) -> Option<Self> {
+    fn parse_with_history(
+        prompt: &str,
+        normalized: &str,
+        history: &[ConversationTurn],
+    ) -> Option<Self> {
         let vocabulary = crate::seed::operation_vocabulary();
         let quoted = quoted_segments(prompt);
+        let fallback_input = || last_assistant_text_artifact(history);
 
         if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
             let from = quoted[0].clone();
@@ -71,7 +86,8 @@ impl TextRequest {
             let input = quoted
                 .get(2)
                 .cloned()
-                .or_else(|| text_after_colon(prompt))?;
+                .or_else(|| text_after_colon(prompt))
+                .or_else(fallback_input)?;
             return Self::build(input, vec![TextOperation::Replace { from, to }]);
         }
 
@@ -80,14 +96,16 @@ impl TextRequest {
             let input = quoted
                 .get(1)
                 .cloned()
-                .or_else(|| text_after_colon(prompt))?;
+                .or_else(|| text_after_colon(prompt))
+                .or_else(fallback_input)?;
             return Self::build(input, vec![TextOperation::CountOccurrences { needle }]);
         }
 
         let input = quoted
             .first()
             .cloned()
-            .or_else(|| text_after_colon(prompt))?;
+            .or_else(|| text_after_colon(prompt))
+            .or_else(fallback_input)?;
         let mut operations = Vec::new();
         append_simple_operations(&vocabulary, normalized, &mut operations);
         Self::build(input, operations)
@@ -161,7 +179,7 @@ impl TextOperation {
         match self {
             Self::Uppercase => input.chars().flat_map(char::to_uppercase).collect(),
             Self::Lowercase => input.chars().flat_map(char::to_lowercase).collect(),
-            Self::Replace { from, to } => input.replace(from, to),
+            Self::Replace { from, to } => replace_text(input, from, to),
             Self::ReverseWords => input.split_whitespace().rev().collect::<Vec<_>>().join(" "),
             Self::ExtractEmails => extract_email_addresses(input).join("\n"),
             Self::CountOccurrences { needle } => {
@@ -180,6 +198,103 @@ impl TextOperation {
             }
         }
     }
+}
+
+fn last_assistant_text_artifact(history: &[ConversationTurn]) -> Option<String> {
+    history
+        .iter()
+        .rev()
+        .find(|turn| turn.role == ConversationRole::Assistant && !turn.content.trim().is_empty())
+        .map(|turn| turn.content.clone())
+}
+
+fn replace_text(input: &str, from: &str, to: &str) -> String {
+    let direct = input.replace(from, to);
+    if from.is_empty() || direct != input {
+        return direct;
+    }
+    replace_word_sequence(input, from, to).unwrap_or(direct)
+}
+
+fn replace_word_sequence(input: &str, from: &str, to: &str) -> Option<String> {
+    let needle = normalized_word_spans(from)
+        .into_iter()
+        .map(|span| span.word)
+        .collect::<Vec<_>>();
+    if needle.is_empty() {
+        return None;
+    }
+
+    let haystack = normalized_word_spans(input);
+    if haystack.len() < needle.len() {
+        return None;
+    }
+
+    let mut out = String::new();
+    let mut cursor = 0usize;
+    let mut index = 0usize;
+    let mut replaced = false;
+    while index + needle.len() <= haystack.len() {
+        let matches = needle
+            .iter()
+            .enumerate()
+            .all(|(offset, word)| haystack[index + offset].word == *word);
+        if matches {
+            let start = haystack[index].start;
+            let end = haystack[index + needle.len() - 1].end;
+            out.push_str(&input[cursor..start]);
+            out.push_str(to);
+            cursor = end;
+            index += needle.len();
+            replaced = true;
+        } else {
+            index += 1;
+        }
+    }
+    if !replaced {
+        return None;
+    }
+    out.push_str(&input[cursor..]);
+    Some(out)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct WordSpan {
+    word: String,
+    start: usize,
+    end: usize,
+}
+
+fn normalized_word_spans(text: &str) -> Vec<WordSpan> {
+    let mut spans = Vec::new();
+    let mut current_start = None;
+    let mut current = String::new();
+    let mut current_end = 0usize;
+
+    for (index, character) in text.char_indices() {
+        if character.is_alphanumeric() {
+            if current_start.is_none() {
+                current_start = Some(index);
+            }
+            current.extend(character.to_lowercase());
+            current_end = index + character.len_utf8();
+        } else if let Some(start) = current_start.take() {
+            spans.push(WordSpan {
+                word: std::mem::take(&mut current),
+                start,
+                end: current_end,
+            });
+        }
+    }
+
+    if let Some(start) = current_start {
+        spans.push(WordSpan {
+            word: current,
+            start,
+            end: current_end,
+        });
+    }
+    spans
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

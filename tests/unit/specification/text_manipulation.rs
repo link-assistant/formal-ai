@@ -4,7 +4,7 @@
 //! formalized intent and composed substitution rules instead of per-input
 //! answer fixtures.
 
-use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
+use formal_ai::{ConversationTurn, ExecutionSurface, SolverConfig, UniversalSolver};
 use std::collections::BTreeSet;
 
 fn text_solver() -> UniversalSolver {
@@ -53,6 +53,29 @@ fn rewrite_replace_recomputes_for_arbitrary_input_text() {
     assert_ne!(first.answer, second.answer);
     assert!(first.links_notation.contains("rule_replace_text"));
     assert!(second.links_notation.contains("rule_replace_text"));
+}
+
+#[test]
+fn russian_follow_up_replace_edits_previous_assistant_code_artifact() {
+    let solver = text_solver();
+    let first_prompt = "Напиши мне Hello World программу на Rust";
+    let first = solver.solve(first_prompt);
+    assert_eq!(first.intent, "write_program");
+    assert!(first.answer.contains("println!(\"Hello, world!\");"));
+
+    let response = solver.solve_with_history(
+        "Я хчоу что бы ты заменил \"Hello World\" на \"Bye world\"",
+        &[
+            ConversationTurn::user(first_prompt),
+            ConversationTurn::assistant(first.answer),
+        ],
+    );
+
+    assert_eq!(response.intent, "text_manipulation");
+    assert!(response.answer.contains("```rust"));
+    assert!(response.answer.contains("println!(\"Bye world!\");"));
+    assert!(!response.answer.contains("Hello, world!"));
+    assert!(response.links_notation.contains("rule_replace_text"));
 }
 
 #[test]
