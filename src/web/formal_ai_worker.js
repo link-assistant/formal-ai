@@ -12740,6 +12740,143 @@ const WRITE_PROGRAM_TEMPLATES = {
   },
 };
 
+// Issue #412 (R6/R8): the coding oracle treats public knowledge bases — Rosetta
+// Code, Wikifunctions, the Hello World Collection, Stack Overflow — as cached
+// external APIs even when they expose no machine API, and generalises the
+// verified catalog above to languages it does not template (Kotlin, Swift, PHP,
+// Bash, Lua, Haskell, …). This data, the lookup, and the answer renderer mirror
+// `src/knowledge.rs` + `src/solver_handler_oracle.rs` byte-for-byte so the WASM
+// worker and the native binary agree on every reasoning surface.
+const KNOWLEDGE_SOURCES = {
+  "rosetta-code": { displayName: "Rosetta Code", baseUrl: "https://rosettacode.org" },
+  wikifunctions: { displayName: "Wikifunctions", baseUrl: "https://www.wikifunctions.org" },
+  "hello-world-collection": {
+    displayName: "Hello World Collection",
+    baseUrl: "http://helloworldcollection.de",
+  },
+  "stack-overflow": { displayName: "Stack Overflow", baseUrl: "https://stackoverflow.com" },
+};
+
+// The committed popular-case cache (mirrors ORACLE_SNAPSHOTS in src/knowledge.rs).
+// Intentionally tiny — well under the cache cap for every source (R8) — and is
+// the offline accelerator a gated live refresh would repopulate.
+const CODING_ORACLE_SNAPSHOTS = [
+  {
+    taskSlug: "hello_world",
+    languageSlug: "kotlin",
+    languageLabel: "Kotlin",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Kotlin",
+    code: 'fun main() {\n    println("Hello, World!")\n}',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "swift",
+    languageLabel: "Swift",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Swift",
+    code: 'print("Hello, World!")',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "php",
+    languageLabel: "PHP",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#PHP",
+    code: '<?php\necho "Hello, World!\\n";',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "bash",
+    languageLabel: "Bash",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Bash",
+    code: 'echo "Hello, World!"',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "lua",
+    languageLabel: "Lua",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Lua",
+    code: 'print("Hello, World!")',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "haskell",
+    languageLabel: "Haskell",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Haskell",
+    code: 'main :: IO ()\nmain = putStrLn "Hello, World!"',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "factorial",
+    languageSlug: "kotlin",
+    languageLabel: "Kotlin",
+    source: "rosetta-code",
+    sourceUrl: "https://rosettacode.org/wiki/Factorial#Kotlin",
+    code: "fun factorial(n: Int): Long =\n    if (n <= 1) 1L else n * factorial(n - 1)\n\nfun main() {\n    println(factorial(5))\n}",
+    expectedOutput: "120",
+  },
+];
+
+// Resolve a (task, language) request to a cached snippet, matching the language
+// by slug or case-insensitive display label (mirrors CodingOracle::lookup).
+function codingOracleLookup(taskSlug, language) {
+  if (!taskSlug || !language) return null;
+  const needle = String(language).trim().toLowerCase();
+  if (!needle) return null;
+  return (
+    CODING_ORACLE_SNAPSHOTS.find(
+      (snippet) =>
+        snippet.taskSlug === taskSlug &&
+        (snippet.languageSlug === needle ||
+          snippet.languageLabel.toLowerCase() === needle),
+    ) || null
+  );
+}
+
+// Render an otherwise-unsupported write_program request from the coding oracle's
+// cached external snippets (mirrors try_write_program_from_oracle in
+// src/solver_handler_oracle.rs, byte-for-byte on the content and evidence).
+function codingOracleAnswer(taskSlug, language) {
+  const snippet = codingOracleLookup(taskSlug, language);
+  if (!snippet) return null;
+  const sourceMeta = KNOWLEDGE_SOURCES[snippet.source];
+  const content =
+    `Here is a minimal ${snippet.languageLabel} program (${snippet.taskSlug.replace(/_/g, " ")}):\n\n` +
+    "```" +
+    `${snippet.languageSlug}\n${snippet.code}\n` +
+    "```" +
+    `\n\nOutput:\n` +
+    "```text\n" +
+    `${snippet.expectedOutput}\n` +
+    "```" +
+    `\nSource: ${sourceMeta.displayName} (${snippet.sourceUrl}), cached locally as a popular example.`;
+  return {
+    intent: `write_program_oracle_${snippet.taskSlug}_${snippet.languageSlug}`,
+    content,
+    confidence: 1.0,
+    evidence: [
+      `response:write_program:${snippet.taskSlug}:${snippet.languageSlug}:${snippet.source}`,
+      `knowledge_source:${snippet.source}`,
+      `knowledge_source_url:${snippet.sourceUrl}`,
+      "execution_status:not run (cached external snippet)",
+      "execution_environment:no compile/run sandbox configured for cached external snippets",
+      `program_parameter:language:${snippet.languageSlug}`,
+      `program_parameter:task:${snippet.taskSlug}`,
+    ],
+    steps: undefined,
+    trace: undefined,
+  };
+}
+
 function normalizeProgramPrompt(prompt) {
   return normalizePrompt(String(prompt || "").replace(/c\+\+/gi, " cpp ").replace(/c#/gi, " csharp "));
 }
@@ -29619,6 +29756,14 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         composition,
       );
     }
+    // Issue #412 (R6): before the unsupported dead end, try the coding oracle —
+    // the cached external knowledge bases (Hello World Collection, Rosetta Code,
+    // …) answer for languages the verified catalog does not template (Kotlin,
+    // Swift, PHP, …). Mirrors `try_write_program_from_oracle` in
+    // `src/solver_handler_oracle.rs`.
+    const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
+    const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
+    if (oracleAnswer) return oracleAnswer;
     return {
       intent: "write_program_unsupported",
       content: i18n.unsupported(

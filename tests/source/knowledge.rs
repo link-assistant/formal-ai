@@ -262,8 +262,7 @@ impl CodingOracle {
     pub fn knows_language(language: &str) -> bool {
         let needle = language.trim().to_ascii_lowercase();
         ORACLE_SNAPSHOTS.iter().any(|snippet| {
-            snippet.language_slug == needle
-                || snippet.language_label.to_ascii_lowercase() == needle
+            snippet.language_slug == needle || snippet.language_label.to_ascii_lowercase() == needle
         })
     }
 

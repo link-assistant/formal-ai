@@ -42,13 +42,12 @@ use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_dispatch::{try_contextual_override, ContextualOutcome, SPECIALIZED_HANDLERS};
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
+use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
     try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
-    try_playwright_script, try_project_lookup, CapabilityRuntime,
-    SelfAwarenessRuntime,
+    try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
 };
-use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,

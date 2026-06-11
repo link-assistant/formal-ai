@@ -94,9 +94,7 @@ fn knowledge_source_slugs_are_filesystem_safe_and_distinct() {
     .map(|source| source.slug())
     .collect();
     for slug in &slugs {
-        assert!(slug
-            .chars()
-            .all(|c| c.is_ascii_lowercase() || c == '-'));
+        assert!(slug.chars().all(|c| c.is_ascii_lowercase() || c == '-'));
     }
     let mut unique = slugs.clone();
     unique.sort_unstable();

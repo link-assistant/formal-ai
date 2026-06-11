@@ -22,7 +22,8 @@ fn resolves_a_hello_world_for_an_uncatalogued_language() {
     assert!(answer.answer.contains("Hello World Collection"));
     assert!(answer.answer.contains("helloworldcollection.de"));
     assert_eq!(
-        log.first_of("knowledge_source").map(|event| event.payload.as_str()),
+        log.first_of("knowledge_source")
+            .map(|event| event.payload.as_str()),
         Some("hello-world-collection")
     );
 }

@@ -100,7 +100,10 @@ pub fn try_write_program_from_oracle(
         "execution_environment",
         "no compile/run sandbox configured for cached external snippets".to_owned(),
     );
-    log.append("program_parameter:language", snippet.language_slug.to_owned());
+    log.append(
+        "program_parameter:language",
+        snippet.language_slug.to_owned(),
+    );
     log.append("program_parameter:task", snippet.task_slug.to_owned());
 
     let intent = format!(
