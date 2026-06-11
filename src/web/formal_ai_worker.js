@@ -8793,6 +8793,151 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+function mentionsCalendarRoleTerm(normalized, role) {
+  return wordsForRole(role).some((word) => containsCalendarTerm(normalized, word));
+}
+
+function extractCalendarClockTime(text) {
+  const raw = String(text || "");
+  const pattern = /\d{1,2}[:.]\d{2}/g;
+  let match = pattern.exec(raw);
+  while (match) {
+    const value = match[0];
+    const [hourRaw, minuteRaw] = value.split(/[:.]/);
+    const hour = Number(hourRaw);
+    const minute = Number(minuteRaw);
+    if (hour >= 0 && hour < 24 && minute >= 0 && minute < 60) {
+      return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+    }
+    match = pattern.exec(raw);
+  }
+  return "";
+}
+
+function extractCalendarDayOfMonth(text) {
+  const raw = String(text || "");
+  const pattern = /\d+/g;
+  let match = pattern.exec(raw);
+  while (match) {
+    const start = match.index;
+    const end = start + match[0].length;
+    const before = start > 0 ? raw[start - 1] : "";
+    const after = end < raw.length ? raw[end] : "";
+    const belongsToClock = before === ":" || before === "." || after === ":" || after === ".";
+    const value = Number(match[0]);
+    if (!belongsToClock && Number.isInteger(value) && value >= 1 && value <= 31) {
+      return value;
+    }
+    match = pattern.exec(raw);
+  }
+  return null;
+}
+
+function cleanCalendarEventTitle(value) {
+  const trimmed = String(value || "")
+    .trim()
+    .replace(/^[.,!?。，]+|[.,!?。，]+$/gu, "")
+    .trim();
+  return trimmed || "";
+}
+
+function extractCalendarEventTitle(prompt) {
+  const raw = String(prompt || "");
+  const lower = raw.toLowerCase();
+  const markers = [
+    " for an ",
+    " for a ",
+    " for ",
+    " на ",
+    " для ",
+    " के लिए ",
+    " के साथ ",
+  ];
+  for (const marker of markers) {
+    const position = lower.lastIndexOf(marker);
+    if (position !== -1) {
+      const title = cleanCalendarEventTitle(raw.slice(position + marker.length));
+      if (title) return title;
+    }
+  }
+  return "";
+}
+
+function defaultCalendarEventTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "कार्यक्रम";
+  if (language === "zh") return "日历事件";
+  return "Calendar event";
+}
+
+function renderCalendarDateHint(language, day) {
+  if (day) {
+    if (language === "ru") return `${day} число; месяц и год нужно подтвердить`;
+    if (language === "hi") return `माह की ${day} तारीख; महीना और वर्ष पुष्टि करें`;
+    if (language === "zh") return `本月${day}号；请确认月份和年份`;
+    return `day ${day} of the month; confirm month and year`;
+  }
+  if (language === "ru") return "дату нужно уточнить";
+  if (language === "hi") return "तारीख स्पष्ट करनी है";
+  if (language === "zh") return "需要确认日期";
+  return "date needs confirmation";
+}
+
+function detectCalendarTimeZoneAlias(normalized) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_TIME_ZONE_ALIAS)) {
+    if (meaning.words.some((word) => containsCalendarTerm(normalized, word))) {
+      if (meaning.slug === "timezone_georgia") return "Asia/Tbilisi";
+    }
+  }
+  return "";
+}
+
+function mentionsCalendarEventRequest(normalized) {
+  return (
+    mentionsCalendarRoleTerm(normalized, ROLE_CALENDAR_EVENT_CREATE_ACTION) &&
+    mentionsCalendarRoleTerm(normalized, ROLE_CALENDAR_EVENT_REFERENCE) &&
+    (extractCalendarClockTime(normalized) ||
+      mentionsCalendarRoleTerm(normalized, ROLE_CALENDAR_DAY_REFERENCE))
+  );
+}
+
+function renderCalendarEventRequest(language, draft) {
+  if (language === "ru") {
+    return `Я могу подготовить событие календаря, но не буду записывать его без подтверждения.
+Черновик:
+- Название: ${draft.title}
+- Дата: ${draft.dateHint}
+- Время: ${draft.startTime}
+- Часовой пояс: ${draft.timeZone}
+Доступные пути: экспорт .ics для Google Calendar, Apple Calendar и Outlook; в браузере - вход/OAuth или API-токен только после явного разрешения. Подтвердите дату и целевой календарь.`;
+  }
+  if (language === "hi") {
+    return `मैं कैलेंडर इवेंट का मसौदा बना सकता हूँ, लेकिन पुष्टि के बिना कैलेंडर में नहीं लिखूँगा.
+मसौदा:
+- शीर्षक: ${draft.title}
+- तारीख: ${draft.dateHint}
+- समय: ${draft.startTime}
+- समय क्षेत्र: ${draft.timeZone}
+उपलब्ध रास्ते: Google Calendar, Apple Calendar और Outlook के लिए .ics निर्यात; ब्राउज़र में login/OAuth या API token केवल स्पष्ट अनुमति के बाद. तारीख और लक्ष्य कैलेंडर की पुष्टि करें.`;
+  }
+  if (language === "zh") {
+    return `我可以先生成日历事件草稿，但不会在没有确认的情况下写入日历。
+草稿：
+- 标题：${draft.title}
+- 日期：${draft.dateHint}
+- 时间：${draft.startTime}
+- 时区：${draft.timeZone}
+可用路径：导出 .ics 供 Google Calendar、Apple Calendar 和 Outlook 使用；浏览器中可在明确授权后使用登录/OAuth 或 API token。请确认日期和目标日历。`;
+  }
+  return `I can draft a calendar event, but I will not write to a calendar without confirmation.
+Draft:
+- Title: ${draft.title}
+- Date: ${draft.dateHint}
+- Time: ${draft.startTime}
+- Time zone: ${draft.timeZone}
+Available paths: export an .ics file for Google Calendar, Apple Calendar, and Outlook; in the browser, use login/OAuth or an API token only after explicit permission. Confirm the date and target calendar.`;
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
@@ -8812,6 +8957,37 @@ function tryCalendarReasoning(prompt, normalized, userContext = {}) {
         `calendar:today:${resolved.date.iso}`,
         `calendar:weekday:${resolved.date.weekday.slug}`,
         `calendar:time_zone:${resolved.timeZone}`,
+        `language:${language}`,
+      ],
+    };
+  }
+  if (mentionsCalendarEventRequest(normalized)) {
+    const startTime = extractCalendarClockTime(prompt);
+    if (!startTime) return null;
+    const language = detectLanguage(prompt);
+    const timeZone =
+      detectCalendarTimeZoneAlias(normalized) ||
+      resolvedCalendarTimeZone(userContext) ||
+      "user local time zone";
+    const title = extractCalendarEventTitle(prompt) || defaultCalendarEventTitle(language);
+    const dateHint = renderCalendarDateHint(language, extractCalendarDayOfMonth(prompt));
+    const draft = { title, dateHint, startTime, timeZone };
+    return {
+      intent: "calendar_event_request",
+      content: renderCalendarEventRequest(language, draft),
+      confidence: 0.88,
+      evidence: [
+        "calendar:event_action:create",
+        `calendar:event_title:${title}`,
+        `calendar:event_date_hint:${dateHint}`,
+        `calendar:event_time:${startTime}`,
+        `calendar:time_zone:${timeZone}`,
+        "calendar:export:ics",
+        "calendar:integration:google_calendar_api",
+        "calendar:integration:browser_login",
+        "calendar:integration:api_token",
+        "calendar:confirmation_required",
+        "policy:destructive_action_requires_confirmation",
         `language:${language}`,
       ],
     };
@@ -15391,6 +15567,137 @@ const MEANINGS_LINO = [
   "        text 告诉",
   "      surface",
   "        text 显示",
+  "  calendar_event_create_action",
+  "    defined-by calendar_date",
+  "    role calendar_event_create_action",
+  "    lexeme en",
+  "      surface",
+  "        text add",
+  "      surface",
+  "        text \"add to calendar\"",
+  "      surface",
+  "        text book",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  "        text \"create event\"",
+  "      surface",
+  "        text \"put on calendar\"",
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  "        text забить",
+  "      surface",
+  "        text поставь",
+  "      surface",
+  "        text добавь",
+  "      surface",
+  "        text создай",
+  "      surface",
+  "        text запланируй",
+  "      surface",
+  "        text назначь",
+  "    lexeme hi",
+  "      surface",
+  "        text जोड़ो",
+  "      surface",
+  "        text जोड़ें",
+  "      surface",
+  "        text बनाओ",
+  "      surface",
+  "        text शेड्यूल",
+  "      surface",
+  "        text निर्धारित",
+  "    lexeme zh",
+  "      surface",
+  "        text 添加",
+  "      surface",
+  "        text 加到",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 创建",
+  "  calendar_event_reference",
+  "    defined-by calendar_date",
+  "    role calendar_event_reference",
+  "    lexeme en",
+  "      surface",
+  "        text calendar",
+  "      surface",
+  "        text event",
+  "      surface",
+  "        text meeting",
+  "      surface",
+  "        text appointment",
+  "    lexeme ru",
+  "      surface",
+  "        text календарь",
+  "      surface",
+  "        text календаре",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text мероприятие",
+  "    lexeme hi",
+  "      surface",
+  "        text कैलेंडर",
+  "      surface",
+  "        text कार्यक्रम",
+  "      surface",
+  "        text बैठक",
+  "      surface",
+  "        text मुलाकात",
+  "    lexeme zh",
+  "      surface",
+  "        text 日历",
+  "      surface",
+  "        text 事件",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 约会",
+  "  timezone_georgia",
+  "    defined-by calendar_date",
+  "    role calendar_time_zone_alias",
+  "    lexeme en",
+  "      surface",
+  "        text \"georgia time\"",
+  "      surface",
+  "        text \"georgian time\"",
+  "      surface",
+  "        text \"tbilisi time\"",
+  "      surface",
+  "        text \"asia/tbilisi\"",
+  "    lexeme ru",
+  "      surface",
+  "        text \"по грузии\"",
+  "      surface",
+  "        text \"грузинское время\"",
+  "      surface",
+  "        text \"по тбилиси\"",
+  "      surface",
+  "        text тбилиси",
+  "      surface",
+  "        text \"asia/tbilisi\"",
+  "    lexeme hi",
+  "      surface",
+  "        text \"जॉर्जिया समय\"",
+  "      surface",
+  "        text \"त्बिलिसी समय\"",
+  "      surface",
+  "        text \"asia/tbilisi\"",
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
+  "      surface",
+  "        text \"asia/tbilisi\"",
   "meanings",
   "  money",
   "    grounded-in Q1368",
@@ -27326,6 +27633,9 @@ const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
 const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
+const ROLE_CALENDAR_EVENT_CREATE_ACTION = "calendar_event_create_action";
+const ROLE_CALENDAR_EVENT_REFERENCE = "calendar_event_reference";
+const ROLE_CALENDAR_TIME_ZONE_ALIAS = "calendar_time_zone_alias";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.

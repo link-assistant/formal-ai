@@ -35,6 +35,7 @@ mod associative_packages;
 mod behavior_rules;
 mod benchmarks;
 mod calculator_delegation;
+mod calendar_event_requests;
 mod capabilities;
 mod chat_surface;
 mod code_generation;

@@ -9,8 +9,9 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
     lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
-    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY,
-    ROLE_CALENDAR_WEEKDAY,
+    ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT_CREATE_ACTION,
+    ROLE_CALENDAR_EVENT_REFERENCE, ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TIME_ZONE_ALIAS,
+    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
 };
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -203,6 +204,14 @@ impl CalendarDate {
     }
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CalendarEventDraft {
+    title: String,
+    date_hint: String,
+    start_time: String,
+    time_zone: String,
+}
+
 pub fn try_calendar_reasoning(
     prompt: &str,
     normalized: &str,
@@ -210,6 +219,9 @@ pub fn try_calendar_reasoning(
 ) -> Option<SymbolicAnswer> {
     if mentions_current_day_question(normalized) {
         return try_current_day_reasoning(prompt, log);
+    }
+    if let Some(answer) = try_calendar_event_request(prompt, normalized, log) {
+        return Some(answer);
     }
     if !mentions_weekday_context(normalized) {
         return None;
@@ -239,6 +251,53 @@ pub fn try_calendar_reasoning(
     ))
 }
 
+fn try_calendar_event_request(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !mentions_calendar_event_request(normalized) {
+        return None;
+    }
+    let clock_time = extract_clock_time(prompt)?;
+    let language = detect_language(prompt).slug();
+    let draft = CalendarEventDraft {
+        title: extract_event_title(prompt)
+            .unwrap_or_else(|| default_calendar_event_title(language).to_owned()),
+        date_hint: render_date_hint(language, extract_day_of_month(prompt)),
+        start_time: clock_time,
+        time_zone: detect_time_zone(normalized)
+            .unwrap_or("user local time zone")
+            .to_owned(),
+    };
+
+    log.append("calendar:event_action", "create");
+    log.append("calendar:event_title", draft.title.clone());
+    log.append("calendar:event_date_hint", draft.date_hint.clone());
+    log.append("calendar:event_time", draft.start_time.clone());
+    log.append("calendar:time_zone", draft.time_zone.clone());
+    log.append("calendar:export:ics", "available");
+    log.append("calendar:integration:google_calendar_api", "optional");
+    log.append("calendar:integration:browser_login", "optional");
+    log.append("calendar:integration:api_token", "optional");
+    log.append("calendar:confirmation_required", "true");
+    log.append(
+        "policy:destructive_action_requires_confirmation",
+        "calendar_write",
+    );
+    log.append("language", language.to_owned());
+
+    let body = render_calendar_event_request_answer(language, &draft);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "calendar_event_request",
+        "response:calendar_event_request",
+        &body,
+        0.88,
+    ))
+}
+
 fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let date = current_utc_date()?;
     let weekday = weekday_for_unix_days(date.days_since_unix_epoch);
@@ -259,6 +318,13 @@ fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<Symboli
         &body,
         1.0,
     ))
+}
+
+fn mentions_calendar_event_request(normalized: &str) -> bool {
+    mentions_role_term(normalized, ROLE_CALENDAR_EVENT_CREATE_ACTION)
+        && mentions_role_term(normalized, ROLE_CALENDAR_EVENT_REFERENCE)
+        && (extract_clock_time(normalized).is_some()
+            || mentions_role_term(normalized, ROLE_CALENDAR_DAY_REFERENCE))
 }
 
 fn mentions_current_day_question(normalized: &str) -> bool {
@@ -287,11 +353,28 @@ fn mentions_current_day_question(normalized: &str) -> bool {
     asks_for_day && question_like
 }
 
+fn mentions_role_term(normalized: &str, role: &str) -> bool {
+    lexicon()
+        .words_for_role(role)
+        .iter()
+        .any(|word| contains_term(normalized, word))
+}
+
 fn mentions_weekday_context(normalized: &str) -> bool {
     lexicon()
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
         .any(|word| contains_term(normalized, word))
+}
+
+fn detect_time_zone(normalized: &str) -> Option<&'static str> {
+    lexicon()
+        .meanings_with_role(ROLE_CALENDAR_TIME_ZONE_ALIAS)
+        .filter(|meaning| meaning.words().any(|word| contains_term(normalized, word)))
+        .find_map(|meaning| match meaning.slug.as_str() {
+            "timezone_georgia" => Some("Asia/Tbilisi"),
+            _ => None,
+        })
 }
 
 fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
@@ -311,6 +394,182 @@ fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
         (true, false) => Some(WeekdayOperation::Next),
         (false, true) => Some(WeekdayOperation::Previous),
         _ => None,
+    }
+}
+
+fn extract_clock_time(text: &str) -> Option<String> {
+    let bytes = text.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if !bytes[index].is_ascii_digit() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        let mut end = index;
+        while end < bytes.len() && bytes[end].is_ascii_digit() && end - start < 2 {
+            end += 1;
+        }
+        if end > start
+            && end + 2 < bytes.len()
+            && matches!(bytes[end], b':' | b'.')
+            && bytes[end + 1].is_ascii_digit()
+            && bytes[end + 2].is_ascii_digit()
+        {
+            let hour = text[start..end].parse::<u32>().ok()?;
+            let minute = text[end + 1..end + 3].parse::<u32>().ok()?;
+            if hour < 24 && minute < 60 {
+                return Some(format!("{hour:02}:{minute:02}"));
+            }
+        }
+        index += 1;
+    }
+    None
+}
+
+fn extract_day_of_month(text: &str) -> Option<u32> {
+    let bytes = text.as_bytes();
+    let mut index = 0;
+    while index < bytes.len() {
+        if !bytes[index].is_ascii_digit() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        let mut end = index;
+        while end < bytes.len() && bytes[end].is_ascii_digit() {
+            end += 1;
+        }
+        let before = start
+            .checked_sub(1)
+            .and_then(|position| bytes.get(position))
+            .copied();
+        let after = bytes.get(end).copied();
+        let belongs_to_clock =
+            matches!(before, Some(b':' | b'.')) || matches!(after, Some(b':' | b'.'));
+        if !belongs_to_clock {
+            if let Ok(value) = text[start..end].parse::<u32>() {
+                if (1..=31).contains(&value) {
+                    return Some(value);
+                }
+            }
+        }
+        index = end;
+    }
+    None
+}
+
+fn extract_event_title(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let markers = [
+        " for an ",
+        " for a ",
+        " for ",
+        " на ",
+        " для ",
+        " के लिए ",
+        " के साथ ",
+    ];
+    markers.iter().find_map(|marker| {
+        lower
+            .rfind(marker)
+            .and_then(|position| prompt.get(position + marker.len()..))
+            .and_then(clean_event_title)
+    })
+}
+
+fn clean_event_title(raw: &str) -> Option<String> {
+    let trimmed = raw.trim().trim_matches(|character: char| {
+        character == '.'
+            || character == ','
+            || character == '!'
+            || character == '?'
+            || character == '。'
+            || character == '，'
+    });
+    if trimmed.is_empty() {
+        None
+    } else {
+        Some(trimmed.to_owned())
+    }
+}
+
+fn default_calendar_event_title(language: &str) -> &'static str {
+    match language {
+        "ru" => "Событие",
+        "hi" => "कार्यक्रम",
+        "zh" => "日历事件",
+        _ => "Calendar event",
+    }
+}
+
+fn render_date_hint(language: &str, day: Option<u32>) -> String {
+    match (language, day) {
+        ("ru", Some(day)) => format!("{day} число; месяц и год нужно подтвердить"),
+        ("hi", Some(day)) => format!("माह की {day} तारीख; महीना और वर्ष पुष्टि करें"),
+        ("zh", Some(day)) => format!("本月{day}号；请确认月份和年份"),
+        (_, Some(day)) => format!("day {day} of the month; confirm month and year"),
+        ("ru", None) => "дату нужно уточнить".to_owned(),
+        ("hi", None) => "तारीख स्पष्ट करनी है".to_owned(),
+        ("zh", None) => "需要确认日期".to_owned(),
+        _ => "date needs confirmation".to_owned(),
+    }
+}
+
+fn render_calendar_event_request_answer(language: &str, draft: &CalendarEventDraft) -> String {
+    match language {
+        "ru" => format!(
+            "Я могу подготовить событие календаря, но не буду записывать его без подтверждения.\n\
+             Черновик:\n\
+             - Название: {title}\n\
+             - Дата: {date}\n\
+             - Время: {time}\n\
+             - Часовой пояс: {time_zone}\n\
+             Доступные пути: экспорт .ics для Google Calendar, Apple Calendar и Outlook; в браузере - вход/OAuth или API-токен только после явного разрешения. Подтвердите дату и целевой календарь.",
+            title = draft.title,
+            date = draft.date_hint,
+            time = draft.start_time,
+            time_zone = draft.time_zone,
+        ),
+        "hi" => format!(
+            "मैं कैलेंडर इवेंट का मसौदा बना सकता हूँ, लेकिन पुष्टि के बिना कैलेंडर में नहीं लिखूँगा.\n\
+             मसौदा:\n\
+             - शीर्षक: {title}\n\
+             - तारीख: {date}\n\
+             - समय: {time}\n\
+             - समय क्षेत्र: {time_zone}\n\
+             उपलब्ध रास्ते: Google Calendar, Apple Calendar और Outlook के लिए .ics निर्यात; ब्राउज़र में login/OAuth या API token केवल स्पष्ट अनुमति के बाद. तारीख और लक्ष्य कैलेंडर की पुष्टि करें.",
+            title = draft.title,
+            date = draft.date_hint,
+            time = draft.start_time,
+            time_zone = draft.time_zone,
+        ),
+        "zh" => format!(
+            "我可以先生成日历事件草稿，但不会在没有确认的情况下写入日历。\n\
+             草稿：\n\
+             - 标题：{title}\n\
+             - 日期：{date}\n\
+             - 时间：{time}\n\
+             - 时区：{time_zone}\n\
+             可用路径：导出 .ics 供 Google Calendar、Apple Calendar 和 Outlook 使用；浏览器中可在明确授权后使用登录/OAuth 或 API token。请确认日期和目标日历。",
+            title = draft.title,
+            date = draft.date_hint,
+            time = draft.start_time,
+            time_zone = draft.time_zone,
+        ),
+        _ => format!(
+            "I can draft a calendar event, but I will not write to a calendar without confirmation.\n\
+             Draft:\n\
+             - Title: {title}\n\
+             - Date: {date}\n\
+             - Time: {time}\n\
+             - Time zone: {time_zone}\n\
+             Available paths: export an .ics file for Google Calendar, Apple Calendar, and Outlook; in the browser, use login/OAuth or an API token only after explicit permission. Confirm the date and target calendar.",
+            title = draft.title,
+            date = draft.date_hint,
+            time = draft.start_time,
+            time_zone = draft.time_zone,
+        ),
     }
 }
 

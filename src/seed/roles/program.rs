@@ -81,6 +81,14 @@ pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 /// Semantic role: an interrogative or imperative asking which day (what,
 /// which, какой, कौन, 什么, …). The question side of a calendar query.
 pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
+/// Semantic role: a verb phrase that asks the assistant to create, schedule,
+/// or add an event to a calendar.
+pub const ROLE_CALENDAR_EVENT_CREATE_ACTION: &str = "calendar_event_create_action";
+/// Semantic role: a noun phrase that names a calendar event, meeting,
+/// appointment, or target calendar.
+pub const ROLE_CALENDAR_EVENT_REFERENCE: &str = "calendar_event_reference";
+/// Semantic role: a natural-language alias for an IANA time zone.
+pub const ROLE_CALENDAR_TIME_ZONE_ALIAS: &str = "calendar_time_zone_alias";
 /// Semantic role: a relation in the knowledge base that maps a subject to a
 /// value (capital, population, author, …).
 ///

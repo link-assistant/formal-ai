@@ -1249,3 +1249,18 @@ meanings
     lexeme en
       surface
         text "your"
+  appointment
+    defined-by word_surface
+    lexeme en
+      surface
+        text "appointment"
+  book
+    defined-by word_surface
+    lexeme en
+      surface
+        text "book"
+  meeting
+    defined-by word_surface
+    lexeme en
+      surface
+        text "meeting"
