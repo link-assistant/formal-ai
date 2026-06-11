@@ -806,6 +806,7 @@ const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',
   'courtesy_response',
+  'assistant_free_time',
   'test_status',
   'identity',
   'assistant_name',

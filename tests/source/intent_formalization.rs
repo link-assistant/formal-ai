@@ -300,6 +300,7 @@ pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRu
         Some("farewell") => SelectedRule::Farewell,
         Some("test_status") => SelectedRule::TestStatus,
         Some("courtesy_response") => SelectedRule::CourtesyResponse,
+        Some("assistant_free_time") => SelectedRule::AssistantFreeTime,
         Some("assistant_name") => SelectedRule::AssistantName,
         Some("identity") => SelectedRule::Identity,
         Some(WRITE_PROGRAM_INTENT) => write_program_rule_for_intent(intent),

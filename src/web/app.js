@@ -28,6 +28,8 @@ const UNKNOWN_ANSWER =
   "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const ASSISTANT_FREE_TIME_ANSWER =
+  "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.";
 const ASSISTANT_NAME_ANSWER =
   "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
 const COURTESY_ACKNOWLEDGEMENTS = [
@@ -2255,6 +2257,34 @@ function isIdentityPrompt(normalized) {
   );
 }
 
+function isLocalAssistantFreeTimePrompt(normalized) {
+  return [
+    "what do you do in your free time",
+    "what do you do in free time",
+    "how do you spend your free time",
+    "what do you do when you are not working",
+    "что делаешь в свободное время",
+    "что ты делаешь в свободное время",
+    "чем занимаешься в свободное время",
+    "чем ты занимаешься в свободное время",
+    "что делаешь когда свободен",
+    "खाली समय में क्या करते हो",
+    "आप खाली समय में क्या करते हैं",
+    "फुर्सत में क्या करते हो",
+    "你空闲时间做什么",
+    "你有空的时候做什么",
+    "你业余时间做什么",
+  ].includes(normalized);
+}
+
+function localPromptLanguage(prompt) {
+  const raw = String(prompt || "");
+  if (/[\u0400-\u04ff]/u.test(raw)) return "ru";
+  if (/[\u0900-\u097f]/u.test(raw)) return "hi";
+  if (/[\u3400-\u9fff]/u.test(raw)) return "zh";
+  return "en";
+}
+
 function isAssistantNamePrompt(normalized) {
   const tokens = normalized ? normalized.split(/\s+/) : [];
   const has = (token) => tokens.includes(token);
@@ -2414,6 +2444,17 @@ function localBehaviorRuleRecords() {
       whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with the identity answer.`,
     },
     {
+      id: "rule_assistant_free_time",
+      topic: "small_talk",
+      intent: "assistant_free_time",
+      label: "Assistant free-time rule",
+      matches:
+        "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      response: ASSISTANT_FREE_TIME_ANSWER,
+      source: "local fallback",
+      whenThen: `When the user asks what I do in free time then respond with \`${ASSISTANT_FREE_TIME_ANSWER}\`.`,
+    },
+    {
       id: "rule_assistant_name",
       topic: "assistant_name",
       intent: "assistant_name",
@@ -2441,6 +2482,7 @@ function localBehaviorRuleRecords() {
 const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "identity",
+  "small_talk",
   "assistant_name",
   "unknown_fallback",
 ];
@@ -2453,6 +2495,12 @@ function localBehaviorRuleTopicLabel(topic, language) {
   const labels = {
     greetings: { en: "Greetings", ru: "Приветствия", hi: "अभिवादन", zh: "问候" },
     identity: { en: "Identity", ru: "Идентичность", hi: "पहचान", zh: "身份" },
+    small_talk: {
+      en: "Small talk",
+      ru: "Светская беседа",
+      hi: "हल्की बातचीत",
+      zh: "闲聊",
+    },
     assistant_name: {
       en: "Assistant name",
       ru: "Имя ассистента",
@@ -2496,6 +2544,14 @@ function localRuleResponse(rule, language) {
     if (language === "hi") return "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?";
     if (language === "zh") return "你好，请问我可以帮你什么？";
   }
+  if (rule.id === "rule_assistant_free_time") {
+    return localLocalizedText(language, {
+      en: ASSISTANT_FREE_TIME_ANSWER,
+      ru: "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями.",
+      hi: "मेरे पास मनुष्यों जैसा खाली समय नहीं है. prompts के बीच मैं निष्क्रिय रहता हूँ; dialog सक्रिय हो तो tasks, rules और explanations में मदद करता हूँ.",
+      zh: "我没有人类意义上的空闲时间。两次提示之间我处于空闲状态；对话活跃时，我帮助处理任务、规则和解释。",
+    });
+  }
   if (rule.id === "rule_assistant_name") {
     return localLocalizedText(language, {
       en: "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting.",
@@ -2520,6 +2576,12 @@ function localRuleLabel(rule, language) {
       ru: "Правило идентичности",
       hi: "पहचान नियम",
       zh: "身份规则",
+    },
+    rule_assistant_free_time: {
+      en: "Assistant free-time rule",
+      ru: "Правило свободного времени ассистента",
+      hi: "सहायक खाली समय नियम",
+      zh: "助手空闲时间规则",
     },
     rule_assistant_name: {
       en: "Assistant name rule",
@@ -2551,6 +2613,12 @@ function localRuleMatches(rule, language) {
       hi: "`Who are you?`, `Кто ты?` और समान identity prompts",
       zh: "`Who are you?`、`Кто ты?` 以及等价身份提示",
     },
+    rule_assistant_free_time: {
+      en: "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      ru: "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы",
+      hi: "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases",
+      zh: "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语",
+    },
     rule_assistant_name: {
       en: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
       ru: "`What is your name?`, `Как твое имя?` и равнозначные вопросы об имени",
@@ -2578,6 +2646,11 @@ function localRuleWhenThen(rule, language) {
     if (language === "ru") return "Когда пользователь спрашивает `Who are you?` или `Кто ты?`, ответь сообщением об идентичности.";
     if (language === "hi") return "जब उपयोगकर्ता `Who are you?` या `Кто ты?` पूछे, तब identity answer दें.";
     if (language === "zh") return "当用户问 `Who are you?` 或 `Кто ты?` 时，回答身份说明。";
+  }
+  if (rule.id === "rule_assistant_free_time") {
+    if (language === "ru") return `Когда пользователь спрашивает, что я делаю в свободное время, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户问我空闲时间做什么时，回答 \`${response}\`。`;
   }
   if (rule.id === "rule_assistant_name") {
     if (language === "ru") return "Когда пользователь спрашивает `What is your name?` или `Как твое имя?`, ответь сообщением об имени ассистента; если настройка имени есть, включи настроенное имя.";
@@ -3525,6 +3598,16 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
     return {
       intent: "greeting",
       content: "Hi, how may I help you?",
+    };
+  }
+
+  if (isLocalAssistantFreeTimePrompt(normalized)) {
+    return {
+      intent: "assistant_free_time",
+      content: localRuleResponse(
+        { id: "rule_assistant_free_time", response: ASSISTANT_FREE_TIME_ANSWER },
+        localPromptLanguage(prompt),
+      ),
     };
   }
 

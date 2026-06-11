@@ -25,6 +25,7 @@ fn multilingual_responses_contain_four_languages() {
     for expected in [
         "greeting",
         "courtesy_response",
+        "assistant_free_time",
         "test_status",
         "identity",
         "assistant_name",
