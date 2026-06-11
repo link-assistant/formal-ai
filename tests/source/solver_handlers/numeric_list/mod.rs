@@ -202,9 +202,7 @@ pub fn try_numeric_list_with_history(
             "numeric_list_coreference",
             format!(
                 "inherited_language={} inherited_code_request={}",
-                inherited
-                    .language
-                    .map_or("none", |language| language.slug),
+                inherited.language.map_or("none", |language| language.slug),
                 inherited.code_requested,
             ),
         );
@@ -303,8 +301,7 @@ fn solve_numeric_list_with_context(
 
     // The target language may come from this turn or, for a bare follow-up, from
     // the most recent numeric-list coding turn in the conversation.
-    let language = crate::coding::program_language_by_alias(normalized)
-        .or(inherited.language)?;
+    let language = crate::coding::program_language_by_alias(normalized).or(inherited.language)?;
     let items = parse_list_items(prompt, operation);
     if items.len() < 2 {
         return None;

@@ -28,8 +28,10 @@ fn javascript_sort_context() -> Vec<ConversationTurn> {
 #[test]
 fn issue_412_bare_followup_inherits_language_and_is_not_unknown() {
     let solver = UniversalSolver::default();
-    let response =
-        solver.solve_with_history("Отсортируй 4, 3, 1, 17, 8, 9, 15", &javascript_sort_context());
+    let response = solver.solve_with_history(
+        "Отсортируй 4, 3, 1, 17, 8, 9, 15",
+        &javascript_sort_context(),
+    );
 
     assert_eq!(
         response.intent, "write_program",
@@ -42,7 +44,9 @@ fn issue_412_bare_followup_inherits_language_and_is_not_unknown() {
         response.answer
     );
     assert!(
-        response.answer.contains("const numbers = [4, 3, 1, 17, 8, 9, 15];"),
+        response
+            .answer
+            .contains("const numbers = [4, 3, 1, 17, 8, 9, 15];"),
         "code must keep the user's new given order, got: {}",
         response.answer
     );
@@ -88,7 +92,9 @@ fn issue_412_reduction_followup_inherits_code_request() {
     let solver = UniversalSolver::default();
     let mut history = javascript_sort_context();
     history.push(ConversationTurn::user("Отсортируй 4, 3, 1, 17, 8, 9, 15"));
-    history.push(ConversationTurn::assistant("Результат: 1, 3, 4, 8, 9, 15, 17"));
+    history.push(ConversationTurn::assistant(
+        "Результат: 1, 3, 4, 8, 9, 15, 17",
+    ));
 
     let response = solver.solve_with_history("Теперь просуммируй 2, 4, 6", &history);
 
