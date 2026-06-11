@@ -71,7 +71,7 @@ distinct requirement, and how this PR addresses it:
 | R1 | The reported follow-up must no longer answer `unknown`; it must continue the JavaScript code+result context. | **Done** — history-aware inheritance in both runtimes. |
 | R2 | Fix must not over-reach: a bare sort with no established language must stay `unknown` (no fabricated language). | **Done** — guarded inheritance + regression test. |
 | R3 | Apply the fix across the **entire** codebase wherever the defect appears (Rust solver **and** JS worker mirror). | **Done** — both runtimes patched, byte-parity verified. |
-| R4 | Generalize beyond this one prompt (≈10 similar tasks): the path must cover the whole numeric-list family and both languages. | **Done** — inheritance covers every operation/language; English + reduction follow-ups tested. |
+| R4 | Generalize beyond this one prompt (≈10 similar tasks): the path must cover the whole numeric-list family and both languages. | **Done** — inheritance covers every operation/program language; follow-ups tested across all four supported natural languages (en, ru, hi, zh) plus the reduction family. |
 | R5 | Use `link-foundation/meta-language` for coding manipulation. | **Already true** — the inherited path runs through the meta-language CST engine (trace shows `cst_engine meta_language`). |
 | R6 | Integrate external knowledge oracles (Wikifunctions, Rosetta Code, Hello World Collection, Stack Overflow) as cached APIs merged into views. | **Scoped as future work** — see §7; researched in [`raw-data/online-research.md`](./raw-data/online-research.md). |
 | R7 | "Meta-algorithm that builds algorithms" / first-principles re-architecture. | **Partially** — the numeric-list path already composes code from the `coding-idioms.lino` knowledge base rather than per-prompt templates; broader meta-builder is future work (§7). |
@@ -115,10 +115,13 @@ the change is purely additive for every existing (history-free) case — the
 
 ## 6. Verification
 
-- `tests/integration/issue_412_followup_sort.rs` — 4 tests: the exact reported
+- `tests/integration/issue_412_followup_sort.rs` — 6 tests: the exact reported
   follow-up recovers JavaScript + code + sorted result; a no-context bare prompt
-  stays non-`write_program`; a reduction follow-up inherits the code request; an
-  English/Python context inherits across a bare English follow-up.
+  stays non-`write_program`; a reduction follow-up inherits the code request; and
+  the coreference is exercised across **every supported language** — an
+  English/Python, a Hindi/JavaScript, and a Chinese/Python context each inherit
+  across a bare follow-up that names no language and render the localized result
+  label (`Result:` / `परिणाम:` / `结果:`).
 - `experiments/issue-412-js-numeric-list-coreference.mjs` — the same scenarios
   (plus an "unrelated context → not claimed" negative) through the JS worker in a
   node VM sandbox: **all pass**.

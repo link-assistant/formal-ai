@@ -141,3 +141,82 @@ fn issue_412_english_followup_inherits_language() {
         response.answer
     );
 }
+
+/// Hindi parity: the issue's generalization mandate requires the coreference to
+/// hold for every supported language. A Hindi coding context — "…उन्हें
+/// जावास्क्रिप्ट में क्रमबद्ध करें, मुझे कोड और परिणाम दें" — followed by a bare
+/// Hindi sort follow-up that names no language inherits JavaScript and renders
+/// the Hindi result label.
+#[test]
+fn issue_412_hindi_followup_inherits_language() {
+    let solver = UniversalSolver::default();
+    let history = vec![
+        ConversationTurn::user(
+            "मेरे पास संख्याएँ 3, 5, 6, 7, 8 हैं, उन्हें जावास्क्रिप्ट में क्रमबद्ध करें, मुझे कोड और परिणाम दें",
+        ),
+        ConversationTurn::assistant("परिणाम: 3, 5, 6, 7, 8"),
+    ];
+
+    let response = solver.solve_with_history("क्रमबद्ध करें 4, 3, 1, 17, 8, 9, 15", &history);
+
+    assert_eq!(
+        response.intent, "write_program",
+        "the Hindi follow-up must continue the coding context, got: {} / {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("```javascript"),
+        "answer must inherit JavaScript, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("परिणाम: 1, 3, 4, 8, 9, 15, 17"),
+        "result must use the Hindi label and be sorted ascending, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("numeric_list_coreference inherited_language=javascript"),
+        "trace must record the inherited language, got: {}",
+        response.links_notation
+    );
+}
+
+/// Chinese parity: a Chinese coding context — "…请用 Python 排序，给我代码和结果"
+/// — followed by a bare Chinese sort follow-up inherits Python and renders the
+/// Chinese result label. (Program-language names stay Latin inside CJK text, so
+/// the alias still resolves from the prior turn.)
+#[test]
+fn issue_412_chinese_followup_inherits_language() {
+    let solver = UniversalSolver::default();
+    let history = vec![
+        ConversationTurn::user("我有数字 3, 5, 6, 7, 8，请用 Python 排序，给我代码和结果"),
+        ConversationTurn::assistant("结果: 3, 5, 6, 7, 8"),
+    ];
+
+    let response = solver.solve_with_history("排序 4, 3, 1, 17, 8, 9, 15", &history);
+
+    assert_eq!(
+        response.intent, "write_program",
+        "the Chinese follow-up must continue the coding context, got: {} / {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer must inherit Python, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("结果: 1, 3, 4, 8, 9, 15, 17"),
+        "result must use the Chinese label and be sorted ascending, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("numeric_list_coreference inherited_language=python"),
+        "trace must record the inherited language, got: {}",
+        response.links_notation
+    );
+}
