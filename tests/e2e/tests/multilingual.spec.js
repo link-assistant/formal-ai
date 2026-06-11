@@ -2182,7 +2182,7 @@ test.describe('Issue #27: agent mode', () => {
   test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
     const toggle = page.locator('[data-testid="agent-toggle"]');
     await expect(toggle).toBeVisible();
-    // Issue #27: the topbar buttons render an emoji icon + label so the label
+    // Issue #409: the topbar buttons render an icon + label so the label
     // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
     await expect(toggle.locator('.btn-label')).toHaveText('Chat');
     await toggle.click();
@@ -2227,12 +2227,12 @@ test.describe('Issue #27: mobile layout', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   });
 
-  test('topbar buttons collapse to emoji icons on mobile', async ({ page }) => {
+  test('topbar buttons collapse to icons on mobile', async ({ page }) => {
     const demoToggle = page.locator('.mode-toggle');
     await expect(demoToggle).toBeVisible();
     // The label span is hidden via CSS on the mobile breakpoint…
     await expect(demoToggle.locator('.btn-label')).toBeHidden();
-    // …but the emoji icon stays visible so the action is still recognisable.
+    // …but the icon stays visible so the action is still recognisable.
     await expect(demoToggle.locator('.btn-icon')).toBeVisible();
     // The aria-label still announces the action for screen readers.
     await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);
