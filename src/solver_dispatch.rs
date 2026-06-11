@@ -7,6 +7,8 @@
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
+use crate::proof_engine::ProofRenderConfig;
+use crate::solver::ConversationTurn;
 use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
@@ -15,12 +17,14 @@ use crate::solver_handlers::{
     try_capabilities, try_clarification, try_compound_interest, try_concept_lookup,
     try_conversation_memory, try_conversation_topic_request, try_coreference_request,
     try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_network_query, try_numeric_list,
-    try_opinion_question, try_program_synthesis, try_proof_request, try_punctuation_only_prompt,
-    try_research_comparison_table, try_roleplay_request, try_shell_refusal,
-    try_software_project_followup, try_software_project_request, try_source_conflict,
-    try_source_refresh, try_summarization_request, try_text_manipulation, try_translation,
-    try_url_navigate, try_web_search, try_who_is_question, try_write_script,
+    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
+    try_network_query, try_numeric_list, try_numeric_list_with_history, try_opinion_question,
+    try_program_synthesis, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
+    try_shell_refusal, try_software_project_followup, try_software_project_request,
+    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
+    SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -52,6 +56,50 @@ fn handle_concept_lookup(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     try_concept_lookup(prompt, log)
+}
+
+/// Outcome of routing a handler name through [`try_contextual_override`].
+pub enum ContextualOutcome {
+    /// `name` is not a contextual handler; fall through to the registry lookup.
+    NotHandled,
+    /// The contextual handler produced an answer; the loop should return it.
+    Answer(SymbolicAnswer),
+    /// `name` is contextual but produced nothing; the loop should `continue`
+    /// (these handlers never fall back to a plain registry variant).
+    Skip,
+}
+
+/// A handful of specialized handlers need more than the uniform
+/// `(prompt, normalized, log)` signature: they take a runtime/render config or
+/// the conversation history. Rather than widen [`SpecializedHandler`] for every
+/// handler, the dispatch loop routes those few names through this helper.
+///
+/// Extracted from `solver.rs` so that module stays under the repository line
+/// limit; the three branches were previously inlined in
+/// `UniversalSolver::handle_specialized_pattern`.
+pub fn try_contextual_override(
+    name: &str,
+    prompt: &str,
+    normalized: &str,
+    history: &[ConversationTurn],
+    proof_render_config: ProofRenderConfig,
+    self_awareness_runtime: SelfAwarenessRuntime,
+    log: &mut EventLog,
+) -> ContextualOutcome {
+    let answer = match name {
+        "proof_request" => {
+            try_proof_request_with_config(prompt, normalized, log, proof_render_config)
+        }
+        "meta_explanation" => {
+            try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
+        }
+        "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
+        _ => return ContextualOutcome::NotHandled,
+    };
+    answer.map_or(ContextualOutcome::Skip, |answer| {
+        log.append("specialized_handler", name.to_owned());
+        ContextualOutcome::Answer(answer)
+    })
 }
 
 /// Ordered dispatch table for the universal solver's specialized handlers.

@@ -40,13 +40,12 @@ use crate::proof_engine::ProofRenderConfig;
 use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::SPECIALIZED_HANDLERS;
+use crate::solver_dispatch::{try_contextual_override, ContextualOutcome, SPECIALIZED_HANDLERS};
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
-    try_definition_merge_by_default, try_feature_capability, try_meta_explanation_with_runtime,
-    try_natural_language_tool_request, try_numeric_list_with_history, try_playwright_script,
-    try_program_blueprint, try_project_lookup, try_proof_request_with_config, CapabilityRuntime,
+    try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
+    try_playwright_script, try_program_blueprint, try_project_lookup, CapabilityRuntime,
     SelfAwarenessRuntime,
 };
 use crate::solver_helpers::{
@@ -752,45 +751,27 @@ impl UniversalSolver {
                     return Some(answer);
                 }
             }
-            // The proof handler is the only entry that depends on the solver
-            // configuration sliders — route it through the config-aware
-            // variant instead of the static handler in the registry. The
-            // entry stays in `SPECIALIZED_HANDLERS` so the precedence order
-            // (and the existing default-config fallback) remains documented
-            // in one place.
-            if name == "proof_request" {
-                if let Some(answer) =
-                    try_proof_request_with_config(prompt, &normalized, log, proof_render_config)
-                {
-                    log.append("specialized_handler", "proof_request".to_owned());
-                    return Some(answer);
-                }
-                continue;
-            }
-            if name == "meta_explanation" {
-                if let Some(answer) = try_meta_explanation_with_runtime(
-                    prompt,
-                    &normalized,
-                    log,
-                    self_awareness_runtime,
-                ) {
-                    log.append("specialized_handler", "meta_explanation".to_owned());
-                    return Some(answer);
-                }
-                continue;
-            }
-            // Issue #412: the numeric-list handler needs conversation context so a
-            // bare follow-up ("Отсортируй 4, 3, 1, 17, 8, 9, 15") inherits the
-            // language and code request established by an earlier coding turn. The
-            // entry stays in the registry to keep its precedence documented.
-            if name == "numeric_list" {
-                if let Some(answer) =
-                    try_numeric_list_with_history(prompt, &normalized, log, history)
-                {
-                    log.append("specialized_handler", "numeric_list".to_owned());
-                    return Some(answer);
-                }
-                continue;
+            // A few handlers need more than the uniform signature: the proof
+            // handler depends on the solver configuration sliders, the
+            // meta-explanation handler on the self-awareness runtime, and the
+            // numeric-list handler on the conversation history (issue #412, so a
+            // bare follow-up "Отсортируй 4, 3, 1, 17, 8, 9, 15" inherits the
+            // language and code request established by an earlier coding turn).
+            // Their entries stay in `SPECIALIZED_HANDLERS` to keep the precedence
+            // order documented in one place; `try_contextual_override` routes the
+            // few contextual names through their richer variants.
+            match try_contextual_override(
+                name,
+                prompt,
+                &normalized,
+                history,
+                proof_render_config,
+                self_awareness_runtime,
+                log,
+            ) {
+                ContextualOutcome::Answer(answer) => return Some(answer),
+                ContextualOutcome::Skip => continue,
+                ContextualOutcome::NotHandled => {}
             }
             if let Some(answer) = handler(prompt, &normalized, log) {
                 log.append("specialized_handler", name.to_owned());
