@@ -381,11 +381,36 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('два плюс два = 4');
   });
 
-  test('Russian embedded calculation request resolves as a calculation', async ({ page }) => {
-    const last = await sendPrompt(page, 'хочу понять сколько будет 2+2');
-    await expect(last).toHaveClass(/assistant/);
-    await expect(last).toContainText('2+2 = 4');
-    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  test('embedded calculation requests resolve across supported languages', async ({ page }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt: 'I want to know what is 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'ru',
+        prompt: 'хочу понять сколько будет 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'hi',
+        prompt: 'मुझे बताओ गणना करें 8 / 2',
+        expected: '8 / 2 = 4',
+      },
+      {
+        language: 'zh',
+        prompt: '我想知道计算 2 + 2',
+        expected: '2 + 2 = 4',
+      },
+    ];
+
+    for (const { prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
