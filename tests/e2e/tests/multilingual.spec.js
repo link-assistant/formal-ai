@@ -381,6 +381,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('два плюс два = 4');
   });
 
+  test('Russian embedded calculation request resolves as a calculation', async ({ page }) => {
+    const last = await sendPrompt(page, 'хочу понять сколько будет 2+2');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText('2+2 = 4');
+    await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+  });
+
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Посчитай 1000 рублей в долларах');
     await expect(last).toHaveClass(/assistant/);
