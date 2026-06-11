@@ -442,9 +442,9 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
 fn trim_prompt_punctuation(value: &str) -> &str {
     value
         .trim()
-        .trim_start_matches(|c| matches!(c, '!' | '。' | '？' | '！'))
+        .trim_start_matches(['!', '。', '？', '！'])
         .trim()
-        .trim_end_matches(|c| matches!(c, '?' | '!' | '。' | '？' | '！'))
+        .trim_end_matches(['?', '!', '。', '？', '！'])
         .trim()
         .trim_end_matches('.')
         .trim()
