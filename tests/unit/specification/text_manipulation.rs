@@ -126,6 +126,142 @@ fn replacement_requests_ignore_word_punctuation_across_supported_languages() {
 }
 
 #[test]
+fn replacement_request_matrix_covers_prompt_order_quotes_punctuation_and_unicode() {
+    struct Case {
+        label: &'static str,
+        prompt: &'static str,
+        answer: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            label: "from-first double quotes",
+            prompt: "Replace \"cat\" with \"dog\": \"cat sat with cat\"",
+            answer: "dog sat with dog",
+        },
+        Case {
+            label: "from-first single quotes",
+            prompt: "Replace 'cat' with 'dog' in this text: 'wild cat naps'",
+            answer: "wild dog naps",
+        },
+        Case {
+            label: "input-first smart quotes",
+            prompt: "In “cat sat”, replace “cat” with “dog”",
+            answer: "dog sat",
+        },
+        Case {
+            label: "input-first Russian guillemets",
+            prompt: "В тексте «Hello, world!» замени «Hello World» на «Bye world»",
+            answer: "Bye world!",
+        },
+        Case {
+            label: "input-first Hindi backticks",
+            prompt: "इस पाठ `red blue red` में `red` को `green` से बदलें",
+            answer: "green blue green",
+        },
+        Case {
+            label: "input-first Chinese corner quotes",
+            prompt: "在「你好，世界！」中把「你好 世界」替换为「再见 世界」",
+            answer: "再见 世界！",
+        },
+        Case {
+            label: "mixed exact and punctuation multi-word matches",
+            prompt:
+                "Replace \"invoice id\" with \"ticket ID\": \"Invoice-ID invoice_id invoice id\"",
+            answer: "ticket ID ticket ID ticket ID",
+        },
+        Case {
+            label: "Cyrillic case and punctuation",
+            prompt: "Замени \"привет мир\" на \"пока мир\": \"Привет, мир! привет-мир\"",
+            answer: "пока мир! пока мир",
+        },
+        Case {
+            label: "Chinese punctuation and exact multi-word mix",
+            prompt: "替换 \"alpha beta\" 为 \"gamma\": \"alpha/beta alpha beta\"",
+            answer: "gamma gamma",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} should route to text manipulation, got {} with answer {}",
+            case.label, response.intent, response.answer
+        );
+        assert_eq!(
+            response.answer, case.answer,
+            "{} should produce the generalized replacement result",
+            case.label
+        );
+        assert!(
+            response.links_notation.contains("rule_replace_text"),
+            "{} should still be backed by a substitution replacement rule",
+            case.label
+        );
+    }
+}
+
+#[test]
+fn replacement_follow_up_variants_edit_previous_assistant_artifacts() {
+    struct Case {
+        label: &'static str,
+        previous: &'static str,
+        prompt: &'static str,
+        expected: &'static str,
+        forbidden: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            label: "plain text follow-up with punctuation mismatch",
+            previous: "Hello, world!\nHello World",
+            prompt: "Replace \"Hello World\" with \"Bye world\"",
+            expected: "Bye world!\nBye world",
+            forbidden: "Hello",
+        },
+        Case {
+            label: "Russian code-artifact follow-up with guillemets",
+            previous: "```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```",
+            prompt: "В предыдущем ответе замени «Hello World» на «Bye world»",
+            expected: "println!(\"Bye world!\");",
+            forbidden: "Hello, world!",
+        },
+        Case {
+            label: "Hindi markdown follow-up with backticks",
+            previous: "- red blue\n- red-blue",
+            prompt: "`red blue` को `green` से बदलें",
+            expected: "- green\n- green",
+            forbidden: "red",
+        },
+    ];
+
+    for case in cases {
+        let response =
+            solver.solve_with_history(case.prompt, &[ConversationTurn::assistant(case.previous)]);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} should use the previous assistant artifact as input",
+            case.label
+        );
+        assert!(
+            response.answer.contains(case.expected),
+            "{} should include expected edited artifact, got {}",
+            case.label,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(case.forbidden),
+            "{} should remove the replaced text, got {}",
+            case.label,
+            response.answer
+        );
+    }
+}
+
+#[test]
 fn extract_email_matches_from_user_supplied_text() {
     let response = text_solver().solve(
         "Extract email addresses from this text: \"Contact ada@example.com and grace@navy.mil.\"",

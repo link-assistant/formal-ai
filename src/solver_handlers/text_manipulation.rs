@@ -81,13 +81,7 @@ impl TextRequest {
         let fallback_input = || last_assistant_text_artifact(history);
 
         if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
-            let from = quoted[0].clone();
-            let to = quoted[1].clone();
-            let input = quoted
-                .get(2)
-                .cloned()
-                .or_else(|| text_after_colon(prompt))
-                .or_else(fallback_input)?;
+            let (input, from, to) = parse_replace_request(prompt, history)?;
             return Self::build(input, vec![TextOperation::Replace { from, to }]);
         }
 
@@ -210,7 +204,13 @@ fn last_assistant_text_artifact(history: &[ConversationTurn]) -> Option<String> 
 
 fn replace_text(input: &str, from: &str, to: &str) -> String {
     let direct = input.replace(from, to);
-    if from.is_empty() || direct != input {
+    if from.is_empty() {
+        return direct;
+    }
+    if normalized_word_spans(from).len() > 1 {
+        return replace_word_sequence(input, from, to).unwrap_or(direct);
+    }
+    if direct != input {
         return direct;
     }
     replace_word_sequence(input, from, to).unwrap_or(direct)
@@ -295,6 +295,80 @@ fn normalized_word_spans(text: &str) -> Vec<WordSpan> {
         });
     }
     spans
+}
+
+fn parse_replace_request(
+    prompt: &str,
+    history: &[ConversationTurn],
+) -> Option<(String, String, String)> {
+    let quoted = quoted_segment_spans(prompt);
+    if quoted.len() < 2 {
+        return None;
+    }
+
+    if quoted.len() >= 3 && looks_like_input_first_replacement(prompt, &quoted) {
+        return Some((
+            quoted[0].text.clone(),
+            quoted[1].text.clone(),
+            quoted[2].text.clone(),
+        ));
+    }
+
+    let input = quoted
+        .get(2)
+        .map(|segment| segment.text.clone())
+        .or_else(|| text_after_colon(prompt))
+        .or_else(|| last_assistant_text_artifact(history))?;
+    Some((input, quoted[0].text.clone(), quoted[1].text.clone()))
+}
+
+fn looks_like_input_first_replacement(prompt: &str, quoted: &[QuotedSegment]) -> bool {
+    if quoted.len() < 3 {
+        return false;
+    }
+
+    let before_first = &prompt[..quoted[0].start];
+    let between_first_second = &prompt[quoted[0].end..quoted[1].start];
+    let between_second_third = &prompt[quoted[1].end..quoted[2].start];
+
+    input_context_before_first_quote(before_first)
+        || contains_replacement_keyword(between_first_second)
+        || (contains_input_continuation(between_first_second)
+            && contains_replacement_keyword(between_second_third))
+}
+
+fn input_context_before_first_quote(text: &str) -> bool {
+    if contains_replacement_keyword(text) {
+        return false;
+    }
+    let normalized = normalize_replacement_prompt(text);
+    let raw = text.to_lowercase();
+    normalized.ends_with("in")
+        || normalized.contains("text")
+        || normalized.contains("текст")
+        || raw.contains("पाठ")
+        || raw.contains("टेक्स्ट")
+        || raw.contains('在')
+        || raw.contains("文本")
+        || raw.contains("内容")
+}
+
+fn contains_input_continuation(text: &str) -> bool {
+    let normalized = normalize_replacement_prompt(text);
+    let raw = text.to_lowercase();
+    normalized.contains("in")
+        || normalized.contains("text")
+        || normalized.contains("текст")
+        || raw.contains("में")
+        || raw.contains('中')
+}
+
+fn contains_replacement_keyword(text: &str) -> bool {
+    let normalized = normalize_replacement_prompt(text);
+    normalized.contains("replace")
+        || normalized.contains("замен")
+        || normalized.contains("बदल")
+        || normalized.contains("替换")
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -426,6 +500,20 @@ fn hex_encode(bytes: &[u8]) -> String {
 }
 
 fn quoted_segments(text: &str) -> Vec<String> {
+    quoted_segment_spans(text)
+        .into_iter()
+        .map(|segment| segment.text)
+        .collect()
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct QuotedSegment {
+    text: String,
+    start: usize,
+    end: usize,
+}
+
+fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
     let mut segments = Vec::new();
     let mut cursor = 0usize;
     while cursor < text.len() {
@@ -438,13 +526,19 @@ fn quoted_segments(text: &str) -> Vec<String> {
         else {
             break;
         };
-        let content_start = cursor + relative_start + open.len_utf8();
+        let open_start = cursor + relative_start;
+        let content_start = open_start + open.len_utf8();
         let Some(relative_end) = text[content_start..].find(close) else {
             break;
         };
         let content_end = content_start + relative_end;
-        segments.push(text[content_start..content_end].to_owned());
-        cursor = content_end + close.len_utf8();
+        let segment_end = content_end + close.len_utf8();
+        segments.push(QuotedSegment {
+            text: text[content_start..content_end].to_owned(),
+            start: open_start,
+            end: segment_end,
+        });
+        cursor = segment_end;
     }
     segments
 }
@@ -455,15 +549,36 @@ const fn quote_close_for(open: char) -> Option<char> {
         '"' => Some('"'),
         '`' => Some('`'),
         '«' => Some('»'),
+        '“' => Some('”'),
+        '‘' => Some('’'),
+        '「' => Some('」'),
+        '『' => Some('』'),
         _ => None,
     }
+}
+
+fn normalize_replacement_prompt(prompt: &str) -> String {
+    let mut normalized = String::with_capacity(prompt.len());
+    for character in prompt.chars().flat_map(char::to_lowercase) {
+        if character.is_alphanumeric() {
+            normalized.push(character);
+        } else {
+            normalized.push(' ');
+        }
+    }
+    normalized.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
 fn text_after_colon(prompt: &str) -> Option<String> {
     let (_, tail) = prompt.rsplit_once(':')?;
     let text = tail
         .trim()
-        .trim_matches(|character| matches!(character, '"' | '\'' | '`'))
+        .trim_matches(|character| {
+            matches!(
+                character,
+                '"' | '\'' | '`' | '«' | '»' | '“' | '”' | '‘' | '’' | '「' | '」' | '『' | '』'
+            )
+        })
         .trim();
     (!text.is_empty()).then(|| text.to_owned())
 }

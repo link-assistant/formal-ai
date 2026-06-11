@@ -87,6 +87,10 @@ const fn quote_close_for(open: char) -> Option<char> {
         '"' => Some('"'),
         '`' => Some('`'),
         '«' => Some('»'),
+        '“' => Some('”'),
+        '‘' => Some('’'),
+        '「' => Some('」'),
+        '『' => Some('』'),
         _ => None,
     }
 }

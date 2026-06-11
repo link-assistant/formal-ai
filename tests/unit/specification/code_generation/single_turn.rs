@@ -35,6 +35,63 @@ fn rust_hello_world_accepts_inline_output_replacement() {
 }
 
 #[test]
+fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
+    struct Case {
+        language: &'static str,
+        slug: &'static str,
+        prompt: &'static str,
+        code_fragment: &'static str,
+        output_fragment: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "Python",
+            slug: "python",
+            prompt: "Write hello world in Python, but print “Bye Python” instead",
+            code_fragment: "print(\"Bye Python\")",
+            output_fragment: "```text\nBye Python\n```",
+        },
+        Case {
+            language: "JavaScript",
+            slug: "javascript",
+            prompt: "Write hello world in JavaScript and replace `Hello World` with `Bye JS`",
+            code_fragment: "console.log(\"Bye JS\");",
+            output_fragment: "```text\nBye JS\n```",
+        },
+        Case {
+            language: "Go",
+            slug: "go",
+            prompt: "Write hello world in Go and 替换「Hello World」为「Bye Go」",
+            code_fragment: "fmt.Println(\"Bye Go\")",
+            output_fragment: "```text\nBye Go\n```",
+        },
+    ];
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_write_program_parameters(&response, case.slug, "hello_world");
+        assert!(
+            response.answer.contains(case.code_fragment),
+            "{} prompt should replace the generated program literal, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains(case.output_fragment),
+            "{} prompt should replace the expected output block, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains("Hello, world!"),
+            "{} prompt should not leave the old hello-world literal behind",
+            case.language
+        );
+    }
+}
+
+#[test]
 fn python_hello_world_seed_runs() {
     let response = answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");

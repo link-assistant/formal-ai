@@ -8094,10 +8094,14 @@ function quoteCloseFor(open) {
   if (open === '"') return '"';
   if (open === "`") return "`";
   if (open === "«") return "»";
+  if (open === "“") return "”";
+  if (open === "‘") return "’";
+  if (open === "「") return "」";
+  if (open === "『") return "』";
   return "";
 }
 
-function quotedTextSegments(text) {
+function quotedTextSpans(text) {
   const segments = [];
   let cursor = 0;
   const source = String(text || "");
@@ -8115,10 +8119,18 @@ function quotedTextSegments(text) {
     const contentStart = found + 1;
     const contentEnd = source.indexOf(close, contentStart);
     if (contentEnd < 0) break;
-    segments.push(source.slice(contentStart, contentEnd));
+    segments.push({
+      text: source.slice(contentStart, contentEnd),
+      start: found,
+      end: contentEnd + close.length,
+    });
     cursor = contentEnd + 1;
   }
   return segments;
+}
+
+function quotedTextSegments(text) {
+  return quotedTextSpans(text).map((segment) => segment.text);
 }
 
 function textAfterColon(prompt) {
@@ -8128,7 +8140,7 @@ function textAfterColon(prompt) {
   return text
     .slice(index + 1)
     .trim()
-    .replace(/^[«"'`]+|[»"'`]+$/g, "")
+    .replace(/^[«»“”‘’「」『』"'`]+|[«»“”‘’「」『』"'`]+$/g, "")
     .trim();
 }
 
@@ -8153,6 +8165,52 @@ function lastAssistantTextArtifact(history) {
     if (content.trim()) return content;
   }
   return "";
+}
+
+function containsReplacementKeyword(text) {
+  return isReplaceTextPrompt(normalizePrompt(text));
+}
+
+function inputContextBeforeFirstQuote(text) {
+  if (containsReplacementKeyword(text)) return false;
+  const normalized = normalizePrompt(text);
+  const raw = String(text || "").toLowerCase();
+  return (
+    normalized.endsWith("in") ||
+    normalized.includes("text") ||
+    normalized.includes("текст") ||
+    raw.includes("पाठ") ||
+    raw.includes("टेक्स्ट") ||
+    raw.includes("在") ||
+    raw.includes("文本") ||
+    raw.includes("内容")
+  );
+}
+
+function containsInputContinuation(text) {
+  const normalized = normalizePrompt(text);
+  const raw = String(text || "").toLowerCase();
+  return (
+    normalized.includes("in") ||
+    normalized.includes("text") ||
+    normalized.includes("текст") ||
+    raw.includes("में") ||
+    raw.includes("中")
+  );
+}
+
+function looksLikeInputFirstReplacement(prompt, quoted) {
+  if (quoted.length < 3) return false;
+  const source = String(prompt || "");
+  const beforeFirst = source.slice(0, quoted[0].start);
+  const betweenFirstSecond = source.slice(quoted[0].end, quoted[1].start);
+  const betweenSecondThird = source.slice(quoted[1].end, quoted[2].start);
+  return (
+    inputContextBeforeFirstQuote(beforeFirst) ||
+    containsReplacementKeyword(betweenFirstSecond) ||
+    (containsInputContinuation(betweenFirstSecond) &&
+      containsReplacementKeyword(betweenSecondThird))
+  );
 }
 
 function appendSimpleTextOperations(normalized, operations) {
@@ -8190,20 +8248,25 @@ function appendSimpleTextOperations(normalized, operations) {
 }
 
 function parseTextManipulationRequest(prompt, normalized, history = []) {
-  const quoted = quotedTextSegments(prompt);
+  const quoted = quotedTextSpans(prompt);
   const operations = [];
   const fallbackInput = lastAssistantTextArtifact(history);
   let input = "";
   if (isReplaceTextPrompt(normalized)) {
     if (quoted.length < 2) return null;
-    operations.push({ slug: "replace_text", from: quoted[0], to: quoted[1] });
-    input = quoted[2] || textAfterColon(prompt) || fallbackInput;
+    if (quoted.length >= 3 && looksLikeInputFirstReplacement(prompt, quoted)) {
+      operations.push({ slug: "replace_text", from: quoted[1].text, to: quoted[2].text });
+      input = quoted[0].text;
+    } else {
+      operations.push({ slug: "replace_text", from: quoted[0].text, to: quoted[1].text });
+      input = (quoted[2] && quoted[2].text) || textAfterColon(prompt) || fallbackInput;
+    }
   } else if (normalized.includes("count occurrences")) {
     if (quoted.length < 1) return null;
-    operations.push({ slug: "count_occurrences", needle: quoted[0] });
-    input = quoted[1] || textAfterColon(prompt) || fallbackInput;
+    operations.push({ slug: "count_occurrences", needle: quoted[0].text });
+    input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || fallbackInput;
   } else {
-    input = quoted[0] || textAfterColon(prompt) || fallbackInput;
+    input = (quoted[0] && quoted[0].text) || textAfterColon(prompt) || fallbackInput;
     appendSimpleTextOperations(normalized, operations);
   }
   if (!input || operations.length === 0) return null;
@@ -8301,7 +8364,9 @@ function replaceWordSequence(input, from, to) {
 function replaceText(input, from, to) {
   const source = String(input);
   const direct = source.split(from).join(to);
-  if (!from || direct !== source) return direct;
+  if (!from) return direct;
+  if (normalizedWordSpans(from).length > 1) return replaceWordSequence(source, from, to) || direct;
+  if (direct !== source) return direct;
   return replaceWordSequence(source, from, to) || direct;
 }
 
