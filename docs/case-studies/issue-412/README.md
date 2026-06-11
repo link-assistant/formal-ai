@@ -73,9 +73,9 @@ distinct requirement, and how this PR addresses it:
 | R3 | Apply the fix across the **entire** codebase wherever the defect appears (Rust solver **and** JS worker mirror). | **Done** — both runtimes patched, byte-parity verified. |
 | R4 | Generalize beyond this one prompt (≈10 similar tasks): the path must cover the whole numeric-list family and both languages. | **Done** — inheritance covers every operation/program language; follow-ups tested across all four supported natural languages (en, ru, hi, zh) plus the reduction family. |
 | R5 | Use `link-foundation/meta-language` for coding manipulation. | **Already true** — the inherited path runs through the meta-language CST engine (trace shows `cst_engine meta_language`). |
-| R6 | Integrate external knowledge oracles (Wikifunctions, Rosetta Code, Hello World Collection, Stack Overflow) as cached APIs merged into views. | **Scoped as future work** — see §7; researched in [`raw-data/online-research.md`](./raw-data/online-research.md). |
-| R7 | "Meta-algorithm that builds algorithms" / first-principles re-architecture. | **Partially** — the numeric-list path already composes code from the `coding-idioms.lino` knowledge base rather than per-prompt templates; broader meta-builder is future work (§7). |
-| R8 | Cache popular cases but never everything (≤1%, or 512 if smaller, per source). | **Documented** for the future oracle work; matches the existing `data/cache/<api>` discipline. |
+| R6 | Integrate external knowledge oracles (Wikifunctions, Rosetta Code, Hello World Collection, Stack Overflow) as cached APIs merged into views. | **Done** — `src/knowledge.rs` models the four sources and a `CodingOracle`; the `write_program` fallback (`src/solver_handler_oracle.rs`, mirrored in the worker) answers languages the catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell + a Rosetta-Code Kotlin factorial) from the cached corpus. See §7; researched in [`raw-data/online-research.md`](./raw-data/online-research.md). |
+| R7 | "Meta-algorithm that builds algorithms" / first-principles re-architecture. | **Partially** — the numeric-list path already composes code from the `coding-idioms.lino` knowledge base rather than per-prompt templates, and the oracle generalises the answer source beyond hand-written templates; the broader task-agnostic meta-builder remains the tracked next step (§7). |
+| R8 | Cache popular cases but never everything (≤1%, or 512 if smaller, per source). | **Done** — `cache_capacity`/`within_cache_capacity`/`KNOWLEDGE_CACHE_FLOOR` in `src/knowledge.rs` enforce the `min(1%, 512)`-clamped cap, and a ratchet test fails if the committed snapshot set exceeds it. |
 | R9 | Add debug/verbose output if data is insufficient for root cause. | **Not needed** — root cause was directly reproducible; added a `numeric_list_coreference` trace line for observability instead. |
 | R10 | Build a deep case study under `docs/case-studies/issue-412`. | **Done** — this document + `raw-data/`. |
 | R11 | Report upstream issues to related repos with repro + fix suggestions. | **N/A** — the defect is entirely in this repository; meta-language behaved correctly. |
@@ -129,27 +129,74 @@ the change is purely additive for every existing (history-free) case — the
   byte-identical**, confirming no regression.
 - `examples/repro_issue_412.rs` — runnable reproduction printing the recovered
   answer and the full meta-language-backed trace.
-- Full suites: `cargo test --test source` (374), `--test unit`/`--test
-  integration` (814), `cargo clippy --all-targets` under `-Dwarnings` — all green.
+- `tests/integration/issue_412_oracle_languages.rs` + the
+  `source_tests/solver_handler_oracle` / `source_tests/knowledge` suites — the
+  coding oracle (R6) and the bounded-cache policy (R8): Kotlin/Swift/PHP
+  hello-world resolve from the oracle, catalogued languages keep their verified
+  route, and the cache-cap ratchet holds.
+- `experiments/issue-412-js-oracle.mjs` — the worker's oracle path; the rendered
+  answer is byte-identical to the Rust `solve()` output.
+- `examples/issue_412_oracle_smoke.rs` — runnable oracle smoke check across
+  Kotlin/Swift/PHP (oracle) and Rust (catalogue).
+- Full suites: `cargo test --test source` (387), `--test unit` (814), `--test
+  integration` (35), `cargo clippy --all-targets` under `-Dwarnings` — all green.
 
-## 7. Future work (the broad generalization mandate, R6–R8)
+## 7. The broad generalization mandate (R6–R8)
 
-The concrete defect is fixed and the numeric-list family is generalized, but the
-issue's larger architectural asks are deliberately scoped out of this PR to keep
-it reviewable. Documented here so they are not lost:
+The 2026-06-11 review rejected deferring the larger asks, so they ship in this
+same PR alongside the numeric-list fix.
 
-1. **External result oracles.** Add Wikifunctions as a *result oracle* (it
-   evaluates `Z7` function calls and returns a `Z22` result) to cross-check the
-   in-solver computation, and Rosetta Code as a *code corpus* for idioms we do
-   not yet template. Both are MediaWiki surfaces that fit the existing
-   `data/cache/<api>/<entity>` snapshot discipline.
-2. **Cache cap.** Introduce a shared per-source cap constant (`min(1%, 512)`) and
-   a ratchet test, reusing the Wikidata/Wiktionary caching pattern.
-3. **Meta-builder.** The numeric-list path already composes from
-   `data/seed/coding-idioms.lino` rather than hard-coded templates; the next step
-   is to generalize that composer into a task-agnostic "algorithm that builds
-   algorithms" so new coding tasks reach the meta-language CST engine without a
-   bespoke handler.
+### 7.1 External knowledge sources as cached APIs (R6) — done
 
-These are tracked as the natural follow-ups to this PR; this change is the first,
-self-contained step (conversational continuity for the coding path).
+`src/knowledge.rs` models the four public corpora — Rosetta Code,
+Wikifunctions, the Hello World Collection, and Stack Overflow — as external
+sources we treat as APIs even when they expose none: a fetched page is parsed
+into a reviewed `OracleSnippet` and cached under a per-source bucket exactly
+like the Wikidata/Wiktionary caches. `CodingOracle` is the offline-first lookup
+that resolves a `(task, language)` request to a snippet plus its deterministic
+output and source attribution. The `write_program` fallback lives in
+`src/solver_handler_oracle.rs` (called from `solver.rs` when the formalizer
+yields `UnsupportedWriteProgram`, *after* the issue-#340 blueprint handler
+declines): a canonical request like "write a hello world program in Kotlin" now
+returns the idiomatic snippet, its output, and "Source: Hello World Collection
+(…), cached locally as a popular example" — the same "code + result" shape the
+built-in catalogue produces, but for a language the catalogue never templated.
+Catalogued languages (Rust, Python, …) keep their verified "compiled and ran"
+route untouched; the oracle is purely additive.
+
+The committed popular-case cache covers Kotlin/Swift/PHP/Bash/Lua/Haskell
+hello-world (Hello World Collection) and a Kotlin factorial (Rosetta Code).
+
+### 7.2 Bounded cache, never a mirror (R8) — done
+
+`cache_capacity(source_total)` encodes "never cache more than 1% — or 512 items
+when 1% is smaller": 1% rounded up (MSRV-safe `(n+99)/100`), floored at
+`KNOWLEDGE_CACHE_FLOOR = 512`, then clamped to the source's own size. The same
+number bounds every per-source / per-topic cache so no single corpus can bloat
+the merged views. `committed_snapshots_stay_within_the_cache_cap` is the ratchet
+that fails CI if any per-source snapshot count creeps over the cap.
+
+### 7.3 Cross-runtime parity (R3, restated for the oracle) — done
+
+The oracle data, lookup, and answer renderer are mirrored in
+`src/web/formal_ai_worker.js` (`CODING_ORACLE_SNAPSHOTS`, `codingOracleLookup`,
+`codingOracleAnswer`). `experiments/issue-412-js-oracle.mjs` drives the worker's
+own `tryWriteProgram` and the rendered answer is verified **byte-identical** to
+the Rust `solve()` output.
+
+### 7.4 Meta-builder (R7) — tracked next step
+
+The numeric-list path already composes from `data/seed/coding-idioms.lino`
+rather than hard-coded templates, and the oracle now generalises the *answer
+source* beyond hand-written templates. The remaining step is to generalise the
+composer into a task-agnostic "algorithm that builds algorithms" so an arbitrary
+new coding task reaches the meta-language CST engine without a bespoke handler.
+This is the one piece still open; it is architectural rather than a data/policy
+gap and is tracked as the direct follow-up to this PR.
+
+### 7.5 Live refresh
+
+The committed snapshots are the offline accelerator; a gated live-refresh path
+(mirroring the existing `FORMAL_AI_LIVE_API` discipline used by the Wikidata /
+Wiktionary loaders) repopulates them from the live sources without changing the
+offline-first default, so tests stay fast on the popular cached cases.
