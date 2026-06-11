@@ -18,8 +18,8 @@ use crate::solver_handlers::{
     try_conversation_memory, try_conversation_topic_request, try_coreference_request,
     try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
     try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_numeric_list, try_numeric_list_with_history, try_opinion_question,
-    try_program_synthesis, try_proof_request, try_proof_request_with_config,
+    try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
+    try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
     try_shell_refusal, try_software_project_followup, try_software_project_request,
     try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
@@ -142,6 +142,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // reductions. It runs before `arithmetic` (which would otherwise claim the
     // numeric prompt) and before the generic, result-less `algorithm` handler.
     ("numeric_list", try_numeric_list),
+    ("number_constraint_reasoning", try_number_riddle),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", try_definition_merge),
