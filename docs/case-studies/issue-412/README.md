@@ -150,9 +150,14 @@ same PR alongside the numeric-list fix.
 
 `src/knowledge.rs` models the four public corpora — Rosetta Code,
 Wikifunctions, the Hello World Collection, and Stack Overflow — as external
-sources we treat as APIs even when they expose none: a fetched page is parsed
-into a reviewed `OracleSnippet` and cached under a per-source bucket exactly
-like the Wikidata/Wiktionary caches. `CodingOracle` is the offline-first lookup
+sources we treat as APIs even when they expose none: a reviewed `OracleSnippet`
+(snippet + deterministic output + source attribution) is kept as a cached
+example so the answer is served offline, the same offline-first contract the
+Wikidata/Wiktionary caches provide. The popular-case cache is embedded
+(`ORACLE_SNAPSHOTS`) so it compiles into both the native binary and the WASM
+worker without a runtime fetch; a gated live-refresh (§7.5) is what would
+materialise a per-source `data/cache/<source-slug>/` bucket from the live
+pages. `CodingOracle` is the offline-first lookup
 that resolves a `(task, language)` request to a snippet plus its deterministic
 output and source attribution. The `write_program` fallback lives in
 `src/solver_handler_oracle.rs` (called from `solver.rs` when the formalizer

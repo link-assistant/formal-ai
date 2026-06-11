@@ -3,11 +3,16 @@
 //! The universal solver should not depend on a fixed, hand-written catalogue of
 //! coding answers. Instead it treats public knowledge bases — Rosetta Code,
 //! Wikifunctions, the Hello World Collection, and Stack Overflow — as external
-//! APIs, even when they expose no machine API: a fetched page is parsed into a
-//! reviewed snippet and cached under `data/cache/<source-slug>/` exactly like
-//! the Wikidata/Wiktionary caches already are. The local cache holds only the
-//! *popular* cases so offline tests stay fast and the repository stays light; it
-//! never mirrors a whole source.
+//! APIs, even when they expose no machine API: a reviewed snippet plus its
+//! deterministic output and source attribution is kept as a *cached* example so
+//! the answer is served offline, exactly the offline-first contract the
+//! Wikidata/Wiktionary caches provide. This cache of popular cases is embedded
+//! ([`ORACLE_SNAPSHOTS`]) so it compiles into both the native binary and the
+//! Rust→WASM worker without a runtime fetch; the cache holds only the *popular*
+//! cases so offline tests stay fast and the repository stays light, and it
+//! never mirrors a whole source. A gated live-refresh path (below) is what
+//! would materialise a per-source `data/cache/<source-slug>/` bucket from the
+//! live pages; until it runs, the embedded snapshots are the cache of record.
 //!
 //! Two concerns live here:
 //!
