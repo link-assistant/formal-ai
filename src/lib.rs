@@ -11,6 +11,7 @@ pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
+pub(crate) mod engine_responses;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;

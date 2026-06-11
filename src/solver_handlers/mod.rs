@@ -14,6 +14,7 @@ mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
 mod natural_language_tools;
+mod number_riddle;
 mod numeric_list;
 mod playwright_script;
 mod program_blueprint;
@@ -40,6 +41,7 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
+pub use number_riddle::try_number_riddle;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;

@@ -20,194 +20,27 @@ use crate::engine_assistant_name::{
     assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
     russian_assistant_name_answer, ASSISTANT_NAME_EXAMPLES,
 };
+pub(crate) use crate::engine_responses::{
+    assistant_free_time_answer, chinese_unknown_answer, farewell_answer, greeting_answer,
+    hindi_unknown_answer, identity_answer, russian_unknown_answer, unknown_answer,
+    unknown_language_fallback_answer,
+};
+use crate::engine_responses::{
+    chinese_assistant_free_time_answer, chinese_courtesy_response_answer, chinese_farewell_answer,
+    chinese_greeting_answer, chinese_identity_answer, chinese_test_status_answer,
+    courtesy_response_answer, hindi_assistant_free_time_answer, hindi_courtesy_response_answer,
+    hindi_farewell_answer, hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer,
+    russian_assistant_free_time_answer, russian_courtesy_response_answer, russian_farewell_answer,
+    russian_greeting_answer, russian_identity_answer, russian_test_status_answer,
+    test_status_answer, ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES,
+    GREETING_EXAMPLES, IDENTITY_EXAMPLES, TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES,
+};
 use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::links_format::{format_lino_record, sanitize_lino_value};
 use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
-
-/// Hardcoded English fallbacks used only when `data/seed/multilingual-responses.lino`
-/// cannot be parsed (which would be a build-time bug since the file is
-/// embedded via `include_str!`). All real reads come from [`crate::seed`].
-const FALLBACK_GREETING_ANSWER: &str = "Hi, how may I help you?";
-const FALLBACK_FAREWELL_ANSWER: &str = "Goodbye! Feel free to return any time.";
-const FALLBACK_TEST_STATUS_ANSWER: &str = "Test passed. I'm here.";
-const FALLBACK_COURTESY_RESPONSE_ANSWER: &str = "Glad to hear it. What would you like to do next?";
-const FALLBACK_IDENTITY_ANSWER: &str = "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-const FALLBACK_UNKNOWN_ANSWER: &str = "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
-const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
-    "I detected an unsupported language. Falling back to English: I cannot ",
-    "answer that from local Links Notation rules yet. Please add a fact or ",
-    "add a rule in Links Notation, then run the request again."
-);
-
-fn cached_response(
-    cell: &'static OnceLock<String>,
-    intent: &str,
-    language: &str,
-    fallback: &str,
-) -> &'static str {
-    cell.get_or_init(|| {
-        seed::response_for(intent, language).unwrap_or_else(|| String::from(fallback))
-    })
-    .as_str()
-}
-
-pub(crate) fn greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "en", FALLBACK_GREETING_ANSWER)
-}
-
-pub(crate) fn farewell_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "farewell", "en", FALLBACK_FAREWELL_ANSWER)
-}
-
-pub(crate) fn courtesy_response_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(
-        &CELL,
-        "courtesy_response",
-        "en",
-        FALLBACK_COURTESY_RESPONSE_ANSWER,
-    )
-}
-
-fn russian_farewell_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "farewell", "ru", FALLBACK_FAREWELL_ANSWER)
-}
-
-fn hindi_farewell_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "farewell", "hi", FALLBACK_FAREWELL_ANSWER)
-}
-
-fn chinese_farewell_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "farewell", "zh", FALLBACK_FAREWELL_ANSWER)
-}
-
-pub(crate) fn test_status_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "test_status", "en", FALLBACK_TEST_STATUS_ANSWER)
-}
-
-fn russian_test_status_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "test_status", "ru", FALLBACK_TEST_STATUS_ANSWER)
-}
-
-fn hindi_test_status_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "test_status", "hi", FALLBACK_TEST_STATUS_ANSWER)
-}
-
-fn chinese_test_status_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "test_status", "zh", FALLBACK_TEST_STATUS_ANSWER)
-}
-
-fn russian_courtesy_response_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(
-        &CELL,
-        "courtesy_response",
-        "ru",
-        FALLBACK_COURTESY_RESPONSE_ANSWER,
-    )
-}
-
-fn hindi_courtesy_response_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(
-        &CELL,
-        "courtesy_response",
-        "hi",
-        FALLBACK_COURTESY_RESPONSE_ANSWER,
-    )
-}
-
-fn chinese_courtesy_response_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(
-        &CELL,
-        "courtesy_response",
-        "zh",
-        FALLBACK_COURTESY_RESPONSE_ANSWER,
-    )
-}
-
-pub(crate) fn identity_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "identity", "en", FALLBACK_IDENTITY_ANSWER)
-}
-
-pub(crate) fn unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "en", FALLBACK_UNKNOWN_ANSWER)
-}
-
-fn russian_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "ru", FALLBACK_GREETING_ANSWER)
-}
-
-fn hindi_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "hi", FALLBACK_GREETING_ANSWER)
-}
-
-fn chinese_greeting_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "greeting", "zh", FALLBACK_GREETING_ANSWER)
-}
-
-fn russian_identity_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "identity", "ru", FALLBACK_IDENTITY_ANSWER)
-}
-
-fn hindi_identity_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "identity", "hi", FALLBACK_IDENTITY_ANSWER)
-}
-
-fn chinese_identity_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "identity", "zh", FALLBACK_IDENTITY_ANSWER)
-}
-
-pub(crate) fn russian_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "ru", FALLBACK_UNKNOWN_ANSWER)
-}
-
-pub(crate) fn hindi_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "hi", FALLBACK_UNKNOWN_ANSWER)
-}
-
-pub(crate) fn chinese_unknown_answer() -> &'static str {
-    static CELL: OnceLock<String> = OnceLock::new();
-    cached_response(&CELL, "unknown", "zh", FALLBACK_UNKNOWN_ANSWER)
-}
-
-pub(crate) const fn unknown_language_fallback_answer() -> &'static str {
-    FALLBACK_UNKNOWN_LANGUAGE_ANSWER
-}
-
-const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
-const TEST_STATUS_EXAMPLES: &[&str] = &["Test", "Test passed", "I'm here", "test passed, I'm here"];
-const COURTESY_RESPONSE_EXAMPLES: &[&str] = &["I am fine, thank you", "thanks"];
-const IDENTITY_EXAMPLES: &[&str] = &[
-    "Who are you?",
-    "What are you?",
-    "Tell me about yourself",
-    "What is formal-ai?",
-];
-const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic rule"];
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SymbolicAnswer {
@@ -250,7 +83,7 @@ pub fn knowledge_links_notation() -> String {
                         "untyped indented Links Notation via lino-objects-codec format helpers",
                     ),
                 ),
-                ("rule_count", (1 + 6).to_string()),
+                ("rule_count", (1 + 7).to_string()),
             ],
         ),
         format_concept_index_record(),
@@ -281,6 +114,19 @@ pub fn knowledge_links_notation() -> String {
                 ("response_link", String::from("response:courtesy_response")),
                 ("answer", String::from(courtesy_response_answer())),
                 ("examples", COURTESY_RESPONSE_EXAMPLES.join(", ")),
+                ("source", String::from("local symbolic seed set")),
+            ],
+        ),
+        format_lino_record(
+            "rule_assistant_free_time",
+            &[
+                ("intent", String::from("assistant_free_time")),
+                (
+                    "response_link",
+                    String::from("response:assistant_free_time"),
+                ),
+                ("answer", String::from(assistant_free_time_answer())),
+                ("examples", ASSISTANT_FREE_TIME_EXAMPLES.join(", ")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -344,6 +190,10 @@ fn format_concept_index_record() -> String {
             (
                 "courtesy_response",
                 String::from("intent: courtesy_response"),
+            ),
+            (
+                "assistant_free_time",
+                String::from("intent: assistant_free_time"),
             ),
             ("identity", String::from("intent: identity")),
             ("assistant_name", String::from("intent: assistant_name")),
@@ -497,6 +347,14 @@ pub fn knowledge_graph() -> KnowledgeGraph {
             ),
         },
         GraphNode {
+            id: String::from("rule_assistant_free_time"),
+            label: String::from("Assistant free-time rule"),
+            links_notation: format!(
+                "rule_assistant_free_time answer={}",
+                assistant_free_time_answer()
+            ),
+        },
+        GraphNode {
             id: String::from("rule_test_status"),
             label: String::from("Test status rule"),
             links_notation: format!("rule_test_status answer={}", test_status_answer()),
@@ -530,6 +388,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         },
         GraphEdge {
             from: String::from("formal_ai_knowledge"),
+            to: String::from("rule_assistant_free_time"),
+            role: String::from("contains"),
+        },
+        GraphEdge {
+            from: String::from("formal_ai_knowledge"),
             to: String::from("rule_test_status"),
             role: String::from("contains"),
         },
@@ -556,6 +419,11 @@ pub fn knowledge_graph() -> KnowledgeGraph {
         GraphEdge {
             from: String::from("rule_courtesy_response"),
             to: String::from("response:courtesy_response"),
+            role: String::from("response_link"),
+        },
+        GraphEdge {
+            from: String::from("rule_assistant_free_time"),
+            to: String::from("response:assistant_free_time"),
             role: String::from("response_link"),
         },
         GraphEdge {
@@ -619,6 +487,7 @@ pub(crate) enum SelectedRule {
     Farewell,
     TestStatus,
     CourtesyResponse,
+    AssistantFreeTime,
     Identity,
     AssistantName,
     WriteProgram(ProgramSpec),
@@ -636,6 +505,7 @@ impl SelectedRule {
             Self::Farewell => String::from("farewell"),
             Self::TestStatus => String::from("test_status"),
             Self::CourtesyResponse => String::from("courtesy_response"),
+            Self::AssistantFreeTime => String::from("assistant_free_time"),
             Self::Identity => String::from("identity"),
             Self::AssistantName => String::from("assistant_name"),
             Self::WriteProgram(_) => String::from(WRITE_PROGRAM_INTENT),
@@ -650,6 +520,7 @@ impl SelectedRule {
             Self::Farewell => String::from("response:farewell"),
             Self::TestStatus => String::from("response:test_status"),
             Self::CourtesyResponse => String::from("response:courtesy_response"),
+            Self::AssistantFreeTime => String::from("response:assistant_free_time"),
             Self::Identity => String::from("response:identity"),
             Self::AssistantName => String::from("response:assistant_name"),
             Self::WriteProgram(spec) => spec.response_link(),
@@ -666,6 +537,7 @@ impl SelectedRule {
             Self::Farewell => String::from(farewell_answer()),
             Self::TestStatus => String::from(test_status_answer()),
             Self::CourtesyResponse => String::from(courtesy_response_answer()),
+            Self::AssistantFreeTime => String::from(assistant_free_time_answer()),
             Self::Identity => String::from(identity_answer()),
             Self::AssistantName => String::from(assistant_name_answer()),
             Self::WriteProgram(spec) => write_program_answer(*spec, Language::English, false),
@@ -707,6 +579,15 @@ pub(crate) fn language_aware_answer_for(
         }
         (SelectedRule::CourtesyResponse, Language::Chinese) => {
             String::from(chinese_courtesy_response_answer())
+        }
+        (SelectedRule::AssistantFreeTime, Language::Russian) => {
+            String::from(russian_assistant_free_time_answer())
+        }
+        (SelectedRule::AssistantFreeTime, Language::Hindi) => {
+            String::from(hindi_assistant_free_time_answer())
+        }
+        (SelectedRule::AssistantFreeTime, Language::Chinese) => {
+            String::from(chinese_assistant_free_time_answer())
         }
         (SelectedRule::Identity, Language::Russian) => String::from(russian_identity_answer()),
         (SelectedRule::Identity, Language::Hindi) => String::from(hindi_identity_answer()),
