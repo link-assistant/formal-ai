@@ -253,6 +253,26 @@ fn simple_variable_equations_are_solved_after_calculator_delegation() {
 }
 
 #[test]
+fn placeholder_unknown_equations_are_solved_instead_of_reported_unknown() {
+    for (prompt, expected) in [
+        ("?+2=4", &["?+2=4 => ? = 2"][..]),
+        ("*+2=4", &["*+2=4 => * = 2"][..]),
+        ("Solve ? + 2 = 4", &["? = 2"][..]),
+        ("Solve * + 2 = 4", &["* = 2"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:formal-ai-equation-fallback"),
+            "placeholder equations should be solved by the local equation fallback: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn calculator_extraction_does_not_steal_named_entities_with_digits() {
     for prompt in [
         "What is Python 3?",

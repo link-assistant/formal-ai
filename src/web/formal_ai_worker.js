@@ -1987,6 +1987,10 @@ function parseLinearExpression(input) {
     return { coefficient: 1, constant: 0 };
   }
 
+  function isUnknownPlaceholder(character) {
+    return character === "?" || character === "*";
+  }
+
   function hasVariable(value) {
     return Math.abs(value.coefficient) > Number.EPSILON;
   }
@@ -2075,7 +2079,7 @@ function parseLinearExpression(input) {
       return value;
     }
     if (/[0-9.]/.test(peek())) return parseNumber();
-    if (/\p{L}/u.test(peek())) return parseVariable();
+    if (/\p{L}/u.test(peek()) || isUnknownPlaceholder(peek())) return parseVariable();
     throw new Error("expression could not be parsed");
   }
 
@@ -2100,7 +2104,11 @@ function parseLinearExpression(input) {
 
   function parseVariable() {
     const start = position;
-    while (/[\p{L}_]/u.test(peek())) position += 1;
+    if (isUnknownPlaceholder(peek())) {
+      position += 1;
+    } else {
+      while (/[\p{L}_]/u.test(peek())) position += 1;
+    }
     const name = input.slice(start, position);
     if (!name) throw new Error("expression could not be parsed");
     if (variable && variable !== name) throw new Error("multiple variables");
@@ -2650,7 +2658,7 @@ function extractArithmeticExpression(prompt) {
   if (evaluateCurrencyConversionExpression(working) !== null) {
     return extracted;
   }
-  const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
+  const allowed = /^[0-9+\-*/%().=?\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return extracted;
 }
@@ -6068,6 +6076,7 @@ function tryArithmetic(prompt) {
         backend = "js-percent-of";
       } else if (isEquation) {
         formatted = solveLinearEquation(expression);
+        backend = "js-equation-fallback";
       } else {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }

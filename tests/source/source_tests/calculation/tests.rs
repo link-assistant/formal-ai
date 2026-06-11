@@ -29,6 +29,55 @@ fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
 }
 
 #[test]
+fn placeholder_unknown_equations_are_solved_by_local_fallback() {
+    let equation_templates = [
+        ("u + 2 = 4", "2"),
+        ("2 + u = 4", "2"),
+        ("4 = u + 2", "2"),
+        ("u - 2 = 4", "6"),
+        ("10 - u = 4", "6"),
+        ("u * 2 = 8", "4"),
+        ("2 * u = 8", "4"),
+        ("u / 2 = 4", "8"),
+        ("(u + 2) * 3 = 12", "2"),
+        ("3 * (u + 2) = 12", "2"),
+        ("u + u = 10", "5"),
+        ("2 * u + 3 = 11", "4"),
+        ("3 + 2 * u = 11", "4"),
+        ("10 = u / 3 + 1", "27"),
+        ("u / 3 + 1 = 10", "27"),
+        ("u + 2.5 = 4", "1.5"),
+        ("u - 0.5 = 2", "2.5"),
+        ("2 * (u - 1) = 6", "4"),
+        ("(u - 1) / 3 = 2", "7"),
+        ("-u + 10 = 4", "6"),
+        ("u + (-2) = 4", "6"),
+        ("2 * u - 4 = 0", "2"),
+        ("0 = 2 * u - 4", "2"),
+        ("u + 0 = 7", "7"),
+        ("1 * u = 9", "9"),
+    ];
+
+    for marker in ["?", "*"] {
+        for (template, expected_value) in equation_templates {
+            let expression = template.replace('u', marker);
+            let evaluation = evaluate_calculation(&expression)
+                .unwrap_or_else(|error| panic!("{expression:?} should solve: {error:?}"));
+            assert_eq!(
+                evaluation.engine,
+                CalculationEngine::FormalAiEquationFallback,
+                "{expression:?} should use the local placeholder fallback"
+            );
+            assert_eq!(
+                evaluation.formatted,
+                format!("{marker} = {expected_value}"),
+                "{expression:?} should solve the placeholder unknown"
+            );
+        }
+    }
+}
+
+#[test]
 fn arithmetic_word_tables_match_seed() {
     // src/arithmetic.rs is compiled into the wasm worker (no_std, no build.rs),
     // so its spelled-word→value tables are materialized at author time into

@@ -345,6 +345,21 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('x*2 = 123 => x = 61.5');
   });
 
+  test('placeholder unknown equations resolve as calculations across supported languages', async ({ page }) => {
+    const cases = [
+      { language: 'en', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'ru', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'hi', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+      { language: 'zh', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+    ];
+
+    for (const { language, prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, language).toHaveClass(/assistant/);
+      await expect(last, language).toContainText(expected);
+    }
+  });
+
   test('polite arithmetic action resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Can you calculate 2 + 2?');
     await expect(last).toHaveClass(/assistant/);
