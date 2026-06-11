@@ -40,7 +40,7 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
-pub use numeric_list::try_numeric_list;
+pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;

@@ -45,8 +45,9 @@ use crate::solver_formalization::{record_formalization, record_formalization_sel
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
     try_definition_merge_by_default, try_feature_capability, try_meta_explanation_with_runtime,
-    try_natural_language_tool_request, try_playwright_script, try_program_blueprint,
-    try_project_lookup, try_proof_request_with_config, CapabilityRuntime, SelfAwarenessRuntime,
+    try_natural_language_tool_request, try_numeric_list_with_history, try_playwright_script,
+    try_program_blueprint, try_project_lookup, try_proof_request_with_config, CapabilityRuntime,
+    SelfAwarenessRuntime,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -588,7 +589,7 @@ impl UniversalSolver {
         let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
         if !is_concrete_write_program {
             if let Some(answer) =
-                self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
+                self.handle_specialized_pattern(prompt, &intent_formalization, history, &mut log)
             {
                 return answer;
             }
@@ -683,6 +684,7 @@ impl UniversalSolver {
         &self,
         prompt: &str,
         intent_formalization: &IntentFormalization,
+        history: &[ConversationTurn],
         log: &mut EventLog,
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
@@ -773,6 +775,19 @@ impl UniversalSolver {
                     self_awareness_runtime,
                 ) {
                     log.append("specialized_handler", "meta_explanation".to_owned());
+                    return Some(answer);
+                }
+                continue;
+            }
+            // Issue #412: the numeric-list handler needs conversation context so a
+            // bare follow-up ("Отсортируй 4, 3, 1, 17, 8, 9, 15") inherits the
+            // language and code request established by an earlier coding turn. The
+            // entry stays in the registry to keep its precedence documented.
+            if name == "numeric_list" {
+                if let Some(answer) =
+                    try_numeric_list_with_history(prompt, &normalized, log, history)
+                {
+                    log.append("specialized_handler", "numeric_list".to_owned());
                     return Some(answer);
                 }
                 continue;
