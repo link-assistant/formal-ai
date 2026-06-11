@@ -1,0 +1,10 @@
+    Blocking waiting for file lock on package cache
+    Updating crates.io index
+web-capture #web #capture #screenshot #markdown #html
+CLI and microservice to render web pages as HTML, Markdown, or PNG
+version: 0.3.29
+license: Unlicense
+rust-version: 1.88
+documentation: https://docs.rs/web-capture
+repository: https://github.com/link-assistant/web-capture
+crates.io: https://crates.io/crates/web-capture/0.3.29

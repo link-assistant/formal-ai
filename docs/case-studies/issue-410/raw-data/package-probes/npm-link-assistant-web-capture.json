@@ -1,0 +1,17 @@
+{
+  "name": "@link-assistant/web-capture",
+  "version": "1.10.6",
+  "dist-tags": {
+    "latest": "1.10.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/link-assistant/web-capture.git"
+  },
+  "engines": {
+    "node": ">=22.0.0 <23.0.0"
+  },
+  "bin": {
+    "web-capture": "bin/web-capture.js"
+  }
+}
