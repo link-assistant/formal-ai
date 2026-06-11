@@ -7912,7 +7912,33 @@ function numericListProgramSource(program) {
 // solve_numeric_list in src/solver_handlers/numeric_list/mod.rs. The result is
 // computed in-solver (every operation is a pure, total function over the parsed
 // values) — no runtime is embedded.
-function tryNumericList(prompt) {
+// Issue #412: recover the coding context from earlier conversation turns so a
+// bare numeric-list follow-up ("Отсортируй 4, 3, 1, 17, 8, 9, 15") can inherit
+// the language and the code request established earlier. Mirrors
+// numeric_list_history_context in src/solver_handlers/numeric_list/mod.rs: we
+// only inherit from a prior *user* turn that was itself a genuine numeric-list
+// coding request — it names an operation, a supported language, and lists at
+// least two numbers — so unrelated chatter never leaks a language.
+function numericListHistoryContext(history) {
+  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const turn = history[i];
+    if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
+    const content = String(turn.content || "");
+    const normalized = normalizePrompt(content);
+    if (!detectNumericListOperation(normalized)) continue;
+    const slug = programLanguageFromPrompt(normalized);
+    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
+    if (parseNumericListNumbers(content).length < 2) continue;
+    return {
+      slug,
+      codeRequested: operationMatchesSlug("code_request", normalized),
+    };
+  }
+  return { slug: null, codeRequested: false };
+}
+
+function tryNumericList(prompt, history) {
   const normalized = normalizePrompt(prompt);
 
   // Defer genuine function-synthesis prompts ("write a function that returns the
@@ -7924,17 +7950,26 @@ function tryNumericList(prompt) {
   const canonical = detectNumericListOperation(normalized);
   if (!canonical) return null;
 
+  // Issue #412: a bare follow-up names no language and may not say "code" —
+  // recover both from the active coding context before applying the gates.
+  const inherited = numericListHistoryContext(history);
+  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
-  // code (the `code_request` operation) — exactly the issue #395 contract.
+  // code (the `code_request` operation) — exactly the issue #395 contract. A
+  // reduction follow-up inside an established code context inherits that code
+  // request (issue #412).
   if (
     numericListFamily(canonical) === "list_reduction" &&
-    !operationMatchesSlug("code_request", normalized)
+    !operationMatchesSlug("code_request", normalized) &&
+    !inherited.codeRequested
   ) {
     return null;
   }
 
-  const slug = programLanguageFromPrompt(normalized);
+  // The current prompt's own language wins; otherwise inherit it from context.
+  const slug = programLanguageFromPrompt(normalized) || inherited.slug;
   if (!slug) return null;
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
@@ -7968,21 +8003,33 @@ function tryNumericList(prompt) {
   const resultText = result.join(", ");
   const body = `${parts.intro(canonical, languageInfo.name, givenText, program.valueType.label)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
 
+  const evidence = [
+    `response:write_program:numeric_list:${canonical}:${slug}`,
+  ];
+  // Issue #412: record when the language / code request was recovered from the
+  // conversation, mirroring the `numeric_list_coreference` event the Rust
+  // solver appends to its trace.
+  if (hasInheritance) {
+    evidence.push(
+      `numeric_list_coreference inherited_language=${inherited.slug || "none"} inherited_code_request=${inherited.codeRequested}`,
+    );
+  }
+  evidence.push(
+    `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
+    `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
+    `synthesis:given:${givenText}`,
+    `synthesis:syntax_tree:${syntaxTree}`,
+    `composition:code_fragment:${code}`,
+    "execution_status:computed deterministically",
+    "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
+    `execution_result:${resultText}`,
+  );
+
   return {
     intent: "write_program",
     content: body,
     confidence: 1.0,
-    evidence: [
-      `response:write_program:numeric_list:${canonical}:${slug}`,
-      `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
-      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
-      `synthesis:given:${givenText}`,
-      `synthesis:syntax_tree:${syntaxTree}`,
-      `composition:code_fragment:${code}`,
-      "execution_status:computed deterministically",
-      "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
-      `execution_result:${resultText}`,
-    ],
+    evidence,
     trace: [
       `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
       `synthesis:syntax_tree:${syntaxTree}`,
@@ -12692,6 +12739,143 @@ const WRITE_PROGRAM_TEMPLATES = {
       "def fibonacci(n)\n  return 1 if n <= 2\n\n  fibonacci(n - 1) + fibonacci(n - 2)\nend\n\nputs fibonacci(10)",
   },
 };
+
+// Issue #412 (R6/R8): the coding oracle treats public knowledge bases — Rosetta
+// Code, Wikifunctions, the Hello World Collection, Stack Overflow — as cached
+// external APIs even when they expose no machine API, and generalises the
+// verified catalog above to languages it does not template (Kotlin, Swift, PHP,
+// Bash, Lua, Haskell, …). This data, the lookup, and the answer renderer mirror
+// `src/knowledge.rs` + `src/solver_handler_oracle.rs` byte-for-byte so the WASM
+// worker and the native binary agree on every reasoning surface.
+const KNOWLEDGE_SOURCES = {
+  "rosetta-code": { displayName: "Rosetta Code", baseUrl: "https://rosettacode.org" },
+  wikifunctions: { displayName: "Wikifunctions", baseUrl: "https://www.wikifunctions.org" },
+  "hello-world-collection": {
+    displayName: "Hello World Collection",
+    baseUrl: "http://helloworldcollection.de",
+  },
+  "stack-overflow": { displayName: "Stack Overflow", baseUrl: "https://stackoverflow.com" },
+};
+
+// The committed popular-case cache (mirrors ORACLE_SNAPSHOTS in src/knowledge.rs).
+// Intentionally tiny — well under the cache cap for every source (R8) — and is
+// the offline accelerator a gated live refresh would repopulate.
+const CODING_ORACLE_SNAPSHOTS = [
+  {
+    taskSlug: "hello_world",
+    languageSlug: "kotlin",
+    languageLabel: "Kotlin",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Kotlin",
+    code: 'fun main() {\n    println("Hello, World!")\n}',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "swift",
+    languageLabel: "Swift",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Swift",
+    code: 'print("Hello, World!")',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "php",
+    languageLabel: "PHP",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#PHP",
+    code: '<?php\necho "Hello, World!\\n";',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "bash",
+    languageLabel: "Bash",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Bash",
+    code: 'echo "Hello, World!"',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "lua",
+    languageLabel: "Lua",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Lua",
+    code: 'print("Hello, World!")',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "hello_world",
+    languageSlug: "haskell",
+    languageLabel: "Haskell",
+    source: "hello-world-collection",
+    sourceUrl: "http://helloworldcollection.de/#Haskell",
+    code: 'main :: IO ()\nmain = putStrLn "Hello, World!"',
+    expectedOutput: "Hello, World!",
+  },
+  {
+    taskSlug: "factorial",
+    languageSlug: "kotlin",
+    languageLabel: "Kotlin",
+    source: "rosetta-code",
+    sourceUrl: "https://rosettacode.org/wiki/Factorial#Kotlin",
+    code: "fun factorial(n: Int): Long =\n    if (n <= 1) 1L else n * factorial(n - 1)\n\nfun main() {\n    println(factorial(5))\n}",
+    expectedOutput: "120",
+  },
+];
+
+// Resolve a (task, language) request to a cached snippet, matching the language
+// by slug or case-insensitive display label (mirrors CodingOracle::lookup).
+function codingOracleLookup(taskSlug, language) {
+  if (!taskSlug || !language) return null;
+  const needle = String(language).trim().toLowerCase();
+  if (!needle) return null;
+  return (
+    CODING_ORACLE_SNAPSHOTS.find(
+      (snippet) =>
+        snippet.taskSlug === taskSlug &&
+        (snippet.languageSlug === needle ||
+          snippet.languageLabel.toLowerCase() === needle),
+    ) || null
+  );
+}
+
+// Render an otherwise-unsupported write_program request from the coding oracle's
+// cached external snippets (mirrors try_write_program_from_oracle in
+// src/solver_handler_oracle.rs, byte-for-byte on the content and evidence).
+function codingOracleAnswer(taskSlug, language) {
+  const snippet = codingOracleLookup(taskSlug, language);
+  if (!snippet) return null;
+  const sourceMeta = KNOWLEDGE_SOURCES[snippet.source];
+  const content =
+    `Here is a minimal ${snippet.languageLabel} program (${snippet.taskSlug.replace(/_/g, " ")}):\n\n` +
+    "```" +
+    `${snippet.languageSlug}\n${snippet.code}\n` +
+    "```" +
+    `\n\nOutput:\n` +
+    "```text\n" +
+    `${snippet.expectedOutput}\n` +
+    "```" +
+    `\nSource: ${sourceMeta.displayName} (${snippet.sourceUrl}), cached locally as a popular example.`;
+  return {
+    intent: `write_program_oracle_${snippet.taskSlug}_${snippet.languageSlug}`,
+    content,
+    confidence: 1.0,
+    evidence: [
+      `response:write_program:${snippet.taskSlug}:${snippet.languageSlug}:${snippet.source}`,
+      `knowledge_source:${snippet.source}`,
+      `knowledge_source_url:${snippet.sourceUrl}`,
+      "execution_status:not run (cached external snippet)",
+      "execution_environment:no compile/run sandbox configured for cached external snippets",
+      `program_parameter:language:${snippet.languageSlug}`,
+      `program_parameter:task:${snippet.taskSlug}`,
+    ],
+    steps: undefined,
+    trace: undefined,
+  };
+}
 
 function normalizeProgramPrompt(prompt) {
   return normalizePrompt(String(prompt || "").replace(/c\+\+/gi, " cpp ").replace(/c#/gi, " csharp "));
@@ -29572,6 +29756,14 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         composition,
       );
     }
+    // Issue #412 (R6): before the unsupported dead end, try the coding oracle —
+    // the cached external knowledge bases (Hello World Collection, Rosetta Code,
+    // …) answer for languages the verified catalog does not template (Kotlin,
+    // Swift, PHP, …). Mirrors `try_write_program_from_oracle` in
+    // `src/solver_handler_oracle.rs`.
+    const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
+    const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
+    if (oracleAnswer) return oracleAnswer;
     return {
       intent: "write_program_unsupported",
       content: i18n.unsupported(
@@ -33990,7 +34182,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     // arithmetic (either of which would otherwise claim the numeric prompt),
     // mirroring the Rust dispatch where numeric_list precedes arithmetic and
     // program_synthesis.
-    { name: "tryNumericList", run: () => tryNumericList(prompt) },
+    { name: "tryNumericList", run: () => tryNumericList(prompt, history) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
     {
       name: "tryCompoundInterest",

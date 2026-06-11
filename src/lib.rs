@@ -15,6 +15,7 @@ pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod intent_formalization;
 pub mod json_lino;
+pub mod knowledge;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
@@ -37,6 +38,7 @@ pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
+pub(crate) mod solver_handler_oracle;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
@@ -76,6 +78,10 @@ pub use github_logs::{
 pub use intent_formalization::{
     formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
     IntentFormalizationCacheEntry, IntentKind,
+};
+pub use knowledge::{
+    cache_capacity, within_cache_capacity, CodingOracle, KnowledgeSource, OracleSnippet,
+    KNOWLEDGE_CACHE_FLOOR,
 };
 pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]

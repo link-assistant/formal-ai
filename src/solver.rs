@@ -25,7 +25,7 @@ use std::fmt::Write as _;
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
+    answer_links_notation, language_aware_answer_for, language_aware_intent_for,
     response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
@@ -40,13 +40,13 @@ use crate::proof_engine::ProofRenderConfig;
 use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::SPECIALIZED_HANDLERS;
+use crate::solver_dispatch::{try_contextual_override, ContextualOutcome, SPECIALIZED_HANDLERS};
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
+use crate::solver_handler_oracle::try_unsupported_write_program;
 use crate::solver_handlers::{
     finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
-    try_definition_merge_by_default, try_feature_capability, try_meta_explanation_with_runtime,
-    try_natural_language_tool_request, try_playwright_script, try_program_blueprint,
-    try_project_lookup, try_proof_request_with_config, CapabilityRuntime, SelfAwarenessRuntime,
+    try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
+    try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
@@ -557,11 +557,13 @@ impl UniversalSolver {
         // real, idiomatic program with an honest "not run" execution report. The
         // verified catalog stays untouched, so its "compiled and ran" guarantee
         // is preserved.
-        if let SelectedRule::UnsupportedWriteProgram { language, .. } = &rule {
-            let normalized = normalize_prompt(prompt);
-            if let Some(answer) = try_program_blueprint(
+        // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
+        // composite blueprint, then the cached coding oracle (uncatalogued
+        // languages), so "write a hello world program in Kotlin" returns code.
+        if let SelectedRule::UnsupportedWriteProgram { task, language } = &rule {
+            if let Some(answer) = try_unsupported_write_program(
                 prompt,
-                &normalized,
+                task.as_deref(),
                 language.as_deref(),
                 self.config.blueprint_composition,
                 &mut log,
@@ -588,7 +590,7 @@ impl UniversalSolver {
         let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
         if !is_concrete_write_program {
             if let Some(answer) =
-                self.handle_specialized_pattern(prompt, &intent_formalization, &mut log)
+                self.handle_specialized_pattern(prompt, &intent_formalization, history, &mut log)
             {
                 return answer;
             }
@@ -683,6 +685,7 @@ impl UniversalSolver {
         &self,
         prompt: &str,
         intent_formalization: &IntentFormalization,
+        history: &[ConversationTurn],
         log: &mut EventLog,
     ) -> Option<SymbolicAnswer> {
         let normalized = prompt.to_lowercase();
@@ -750,32 +753,27 @@ impl UniversalSolver {
                     return Some(answer);
                 }
             }
-            // The proof handler is the only entry that depends on the solver
-            // configuration sliders — route it through the config-aware
-            // variant instead of the static handler in the registry. The
-            // entry stays in `SPECIALIZED_HANDLERS` so the precedence order
-            // (and the existing default-config fallback) remains documented
-            // in one place.
-            if name == "proof_request" {
-                if let Some(answer) =
-                    try_proof_request_with_config(prompt, &normalized, log, proof_render_config)
-                {
-                    log.append("specialized_handler", "proof_request".to_owned());
-                    return Some(answer);
-                }
-                continue;
-            }
-            if name == "meta_explanation" {
-                if let Some(answer) = try_meta_explanation_with_runtime(
-                    prompt,
-                    &normalized,
-                    log,
-                    self_awareness_runtime,
-                ) {
-                    log.append("specialized_handler", "meta_explanation".to_owned());
-                    return Some(answer);
-                }
-                continue;
+            // A few handlers need more than the uniform signature: the proof
+            // handler depends on the solver configuration sliders, the
+            // meta-explanation handler on the self-awareness runtime, and the
+            // numeric-list handler on the conversation history (issue #412, so a
+            // bare follow-up "Отсортируй 4, 3, 1, 17, 8, 9, 15" inherits the
+            // language and code request established by an earlier coding turn).
+            // Their entries stay in `SPECIALIZED_HANDLERS` to keep the precedence
+            // order documented in one place; `try_contextual_override` routes the
+            // few contextual names through their richer variants.
+            match try_contextual_override(
+                name,
+                prompt,
+                &normalized,
+                history,
+                proof_render_config,
+                self_awareness_runtime,
+                log,
+            ) {
+                ContextualOutcome::Answer(answer) => return Some(answer),
+                ContextualOutcome::Skip => continue,
+                ContextualOutcome::NotHandled => {}
             }
             if let Some(answer) = handler(prompt, &normalized, log) {
                 log.append("specialized_handler", name.to_owned());

@@ -37,13 +37,34 @@ mod codegen;
 use std::cmp::Ordering;
 use std::fmt::Write as _;
 
+use crate::coding::ProgramLanguage;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
 use crate::seed::parser::{parse_lino, LinoNode};
 use crate::seed::NUMERIC_LIST_OPERATIONS_LINO;
+use crate::solver::{ConversationRole, ConversationTurn};
 
 use super::finalize_simple;
+
+/// Coding context inherited from earlier conversation turns when the current
+/// prompt is a bare numeric-list follow-up (issue #412).
+///
+/// Issue #412 reported `Отсортируй 4, 3, 1, 17, 8, 9, 15` answering `unknown`.
+/// In isolation that turn names no programming language and does not ask for
+/// code, so the numeric-list handler declined it. But the *previous* turn —
+/// "…отсортируй их в JavaScript, дай мне код и результат" — established both: a
+/// target language and a code+result request. A follow-up imperative over a new
+/// list of numbers continues that coding context. We recover the missing
+/// parameters from history rather than hardcoding the reported prompt.
+#[derive(Clone, Copy, Default)]
+struct InheritedCoding {
+    /// The most recent programming language the user asked numeric-list code in.
+    language: Option<&'static ProgramLanguage>,
+    /// Whether an earlier numeric-list turn explicitly asked for code, so a bare
+    /// reduction follow-up ("sum them") still counts as a code request.
+    code_requested: bool,
+}
 
 /// Whether a list transformation orders the numbers up, down, or simply flips
 /// their given order.
@@ -147,12 +168,45 @@ pub struct NumericListSolution {
 
 /// Specialized-handler entry point. Returns `Some` only when the prompt is a
 /// concrete "<operation> these numbers in <language>" request.
+///
+/// This context-free variant keeps the uniform specialized-handler signature.
+/// The dispatch calls [`try_numeric_list_with_history`] so a bare follow-up can
+/// inherit the language and code request from earlier turns (issue #412).
 pub fn try_numeric_list(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    try_numeric_list_with_history(prompt, normalized, log, &[])
+}
+
+/// Conversation-aware entry point. When the current prompt omits the target
+/// language (and, for reductions, the code request), recover them from the most
+/// recent numeric-list coding turn so a bare "<operation> these numbers"
+/// follow-up continues the established coding context (issue #412).
+pub fn try_numeric_list_with_history(
     prompt: &str,
     _normalized: &str,
     log: &mut EventLog,
+    history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
-    let solution = solve_numeric_list(prompt)?;
+    let inherited = numeric_list_history_context(history);
+    let has_inheritance = inherited.language.is_some() || inherited.code_requested;
+    let solution = if has_inheritance {
+        solve_numeric_list_with_context(prompt, inherited)?
+    } else {
+        solve_numeric_list(prompt)?
+    };
+    if has_inheritance {
+        log.append(
+            "numeric_list_coreference",
+            format!(
+                "inherited_language={} inherited_code_request={}",
+                inherited.language.map_or("none", |language| language.slug),
+                inherited.code_requested,
+            ),
+        );
+    }
 
     log.append("formalize", solution.formalization());
     log.append(
@@ -206,6 +260,18 @@ pub fn try_numeric_list(
 /// resolves through the token-boundary alias matcher.
 #[must_use]
 pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
+    solve_numeric_list_with_context(prompt, InheritedCoding::default())
+}
+
+/// Core solver with optional conversation-inherited coding context (issue #412).
+/// When `inherited.language` is present the current prompt need not name a
+/// language itself; when `inherited.code_requested` is set a reduction
+/// follow-up counts as a code request even without the verb in this turn.
+#[must_use]
+fn solve_numeric_list_with_context(
+    prompt: &str,
+    inherited: InheritedCoding,
+) -> Option<NumericListSolution> {
     let normalized = crate::web_engine_core::normalize_prompt(prompt);
     let normalized = normalized.as_str();
     let vocabulary = crate::seed::operation_vocabulary();
@@ -223,14 +289,19 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
     // ordinary prose — "in total", "the largest building" — far more than the
     // imperative transform verbs do. They only fire when the prompt explicitly
     // asks for code (the `code_request` operation), which is exactly the issue
-    // #395 contract: "give me the code and the result". Transformations keep
-    // their unambiguous-verb behavior.
-    if matches!(operation, Operation::Reduce(_)) && !vocabulary.matches("code_request", normalized)
+    // #395 contract: "give me the code and the result". A reduction follow-up
+    // inherits the code request from an earlier numeric-list turn (issue #412).
+    // Transformations keep their unambiguous-verb behavior.
+    if matches!(operation, Operation::Reduce(_))
+        && !vocabulary.matches("code_request", normalized)
+        && !inherited.code_requested
     {
         return None;
     }
 
-    let language = crate::coding::program_language_by_alias(normalized)?;
+    // The target language may come from this turn or, for a bare follow-up, from
+    // the most recent numeric-list coding turn in the conversation.
+    let language = crate::coding::program_language_by_alias(normalized).or(inherited.language)?;
     let items = parse_list_items(prompt, operation);
     if items.len() < 2 {
         return None;
@@ -268,6 +339,37 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
         cst_engine,
         code,
     })
+}
+
+/// Recover the coding context (target language and whether code was requested)
+/// from the most recent prior turn that was itself a numeric-list coding
+/// request. A turn qualifies only when it names a numeric-list operation, a
+/// supported programming language, and at least two numbers — the same three
+/// signals the live handler requires — so unrelated chatter never leaks a
+/// language into a later follow-up (issue #412).
+fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding {
+    let vocabulary = crate::seed::operation_vocabulary();
+    for turn in history.iter().rev() {
+        if turn.role != ConversationRole::User {
+            continue;
+        }
+        let normalized = crate::web_engine_core::normalize_prompt(&turn.content);
+        let normalized = normalized.as_str();
+        if detect_operation(&vocabulary, normalized).is_none() {
+            continue;
+        }
+        let Some(language) = crate::coding::program_language_by_alias(normalized) else {
+            continue;
+        };
+        if parse_numbers(&turn.content).len() < 2 {
+            continue;
+        }
+        return InheritedCoding {
+            language: Some(language),
+            code_requested: vocabulary.matches("code_request", normalized),
+        };
+    }
+    InheritedCoding::default()
 }
 
 /// Recognize which numeric-list operation the prompt asks for, in priority
