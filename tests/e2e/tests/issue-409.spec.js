@@ -11,6 +11,12 @@ const ICON_PACKS = [
   'tabler-icons',
   'names',
 ];
+const LOCALE_EXPECTATIONS = [
+  { language: 'en', label: 'Toolbar icons', namesOption: 'Names' },
+  { language: 'ru', label: 'Иконки панели', namesOption: 'Названия' },
+  { language: 'hi', label: 'टूलबार आइकन', namesOption: 'नाम' },
+  { language: 'zh', label: '工具栏图标', namesOption: '名称' },
+];
 
 async function boot(page, extraPreferences = '') {
   await page.addInitScript((extra) => {
@@ -119,5 +125,23 @@ test.describe('Issue #409 - toolbar icon packs', () => {
       'data-icon-pack',
       'fontawesome',
     );
+  });
+
+  test('toolbar icon setting label is localized across supported UI languages', async ({
+    page,
+  }) => {
+    await boot(page);
+
+    const languageSelect = page.locator('[data-testid="setting-ui-language"]');
+    const iconSelect = page.locator('[data-testid="setting-toolbar-icon-pack"]');
+
+    for (const { language, label, namesOption } of LOCALE_EXPECTATIONS) {
+      await languageSelect.selectOption(language);
+      await expect(page.locator('html')).toHaveAttribute('lang', language);
+      await expect(page.getByText(label, { exact: true })).toBeVisible();
+      await expect(iconSelect.locator('option[value="names"]')).toHaveText(
+        namesOption,
+      );
+    }
   });
 });
