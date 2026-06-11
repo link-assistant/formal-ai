@@ -7912,7 +7912,33 @@ function numericListProgramSource(program) {
 // solve_numeric_list in src/solver_handlers/numeric_list/mod.rs. The result is
 // computed in-solver (every operation is a pure, total function over the parsed
 // values) — no runtime is embedded.
-function tryNumericList(prompt) {
+// Issue #412: recover the coding context from earlier conversation turns so a
+// bare numeric-list follow-up ("Отсортируй 4, 3, 1, 17, 8, 9, 15") can inherit
+// the language and the code request established earlier. Mirrors
+// numeric_list_history_context in src/solver_handlers/numeric_list/mod.rs: we
+// only inherit from a prior *user* turn that was itself a genuine numeric-list
+// coding request — it names an operation, a supported language, and lists at
+// least two numbers — so unrelated chatter never leaks a language.
+function numericListHistoryContext(history) {
+  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const turn = history[i];
+    if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
+    const content = String(turn.content || "");
+    const normalized = normalizePrompt(content);
+    if (!detectNumericListOperation(normalized)) continue;
+    const slug = programLanguageFromPrompt(normalized);
+    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
+    if (parseNumericListNumbers(content).length < 2) continue;
+    return {
+      slug,
+      codeRequested: operationMatchesSlug("code_request", normalized),
+    };
+  }
+  return { slug: null, codeRequested: false };
+}
+
+function tryNumericList(prompt, history) {
   const normalized = normalizePrompt(prompt);
 
   // Defer genuine function-synthesis prompts ("write a function that returns the
@@ -7924,17 +7950,26 @@ function tryNumericList(prompt) {
   const canonical = detectNumericListOperation(normalized);
   if (!canonical) return null;
 
+  // Issue #412: a bare follow-up names no language and may not say "code" —
+  // recover both from the active coding context before applying the gates.
+  const inherited = numericListHistoryContext(history);
+  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
-  // code (the `code_request` operation) — exactly the issue #395 contract.
+  // code (the `code_request` operation) — exactly the issue #395 contract. A
+  // reduction follow-up inside an established code context inherits that code
+  // request (issue #412).
   if (
     numericListFamily(canonical) === "list_reduction" &&
-    !operationMatchesSlug("code_request", normalized)
+    !operationMatchesSlug("code_request", normalized) &&
+    !inherited.codeRequested
   ) {
     return null;
   }
 
-  const slug = programLanguageFromPrompt(normalized);
+  // The current prompt's own language wins; otherwise inherit it from context.
+  const slug = programLanguageFromPrompt(normalized) || inherited.slug;
   if (!slug) return null;
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
@@ -7968,21 +8003,33 @@ function tryNumericList(prompt) {
   const resultText = result.join(", ");
   const body = `${parts.intro(canonical, languageInfo.name, givenText, program.valueType.label)}\n\n\`\`\`${languageInfo.fence}\n${code}\n\`\`\`\n\n${parts.resultLabel} ${shown}`;
 
+  const evidence = [
+    `response:write_program:numeric_list:${canonical}:${slug}`,
+  ];
+  // Issue #412: record when the language / code request was recovered from the
+  // conversation, mirroring the `numeric_list_coreference` event the Rust
+  // solver appends to its trace.
+  if (hasInheritance) {
+    evidence.push(
+      `numeric_list_coreference inherited_language=${inherited.slug || "none"} inherited_code_request=${inherited.codeRequested}`,
+    );
+  }
+  evidence.push(
+    `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
+    `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
+    `synthesis:given:${givenText}`,
+    `synthesis:syntax_tree:${syntaxTree}`,
+    `composition:code_fragment:${code}`,
+    "execution_status:computed deterministically",
+    "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
+    `execution_result:${resultText}`,
+  );
+
   return {
     intent: "write_program",
     content: body,
     confidence: 1.0,
-    evidence: [
-      `response:write_program:numeric_list:${canonical}:${slug}`,
-      `formalize:(@USER OP:${canonical} values:[${given.join(" ")}] value_type:${program.valueType.label} language:${slug} result_kind:${resultKind} request:[code result])`,
-      `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
-      `synthesis:given:${givenText}`,
-      `synthesis:syntax_tree:${syntaxTree}`,
-      `composition:code_fragment:${code}`,
-      "execution_status:computed deterministically",
-      "execution_environment:pure in-solver evaluation of a decidable numeric-list operation",
-      `execution_result:${resultText}`,
-    ],
+    evidence,
     trace: [
       `synthesis:spec:language=${slug} task=numeric_list operation=${canonical} family=${family} result_kind=${resultKind} value_type=${program.valueType.label}`,
       `synthesis:syntax_tree:${syntaxTree}`,
@@ -33990,7 +34037,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     // arithmetic (either of which would otherwise claim the numeric prompt),
     // mirroring the Rust dispatch where numeric_list precedes arithmetic and
     // program_synthesis.
-    { name: "tryNumericList", run: () => tryNumericList(prompt) },
+    { name: "tryNumericList", run: () => tryNumericList(prompt, history) },
     { name: "tryProgramSynthesis", run: () => tryProgramSynthesis(prompt, normalized) },
     {
       name: "tryCompoundInterest",
