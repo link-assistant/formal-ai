@@ -712,3 +712,20 @@ catalogue. These standards govern that work.
 | R290 | No cache may mirror a whole source: the local copy is capped at 1% of the source, or 512 items when 1% is smaller, per source / API / merged topic. CI must keep the committed cache under the cap. | Implemented by `cache_capacity` / `within_cache_capacity` / `KNOWLEDGE_CACHE_FLOOR` in `src/knowledge.rs` (1% rounded up, floored at 512, clamped to source size) and the ratchet test `committed_snapshots_stay_within_the_cache_cap`, which fails if any per-source snapshot count exceeds the cap. |
 | R291 | Every reasoning surface must agree: a fix in the Rust solver must be mirrored in the WASM browser worker so the native binary, the desktop/VS Code shells, and the web demo return byte-identical answers. | Implemented by mirroring the oracle data + lookup + renderer in `src/web/formal_ai_worker.js` (`CODING_ORACLE_SNAPSHOTS`, `codingOracleLookup`, `codingOracleAnswer`); `experiments/issue-412-js-oracle.mjs` drives the worker's `tryWriteProgram` and the rendered answer is verified byte-identical to the Rust `solve()` output. |
 | R292 | These broad requirements must ship in this PR, not be deferred: the oracle, the bounded-cache policy, and the cross-runtime mirror are all delivered here, with the popular-case cache committed as the offline accelerator a gated live refresh would repopulate. | Implemented in this PR; the live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline and the committed snapshots are the popular-case cache it repopulates. |
+
+## Issue #408 Text And Code Editing Requirements
+
+Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) reported
+that a Russian follow-up request to replace text inside the previously generated
+Rust code answer fell through to the generic fallback. PR
+[#416](https://github.com/link-assistant/formal-ai/pull/416) adds the missing
+deterministic edit path and records the benchmark-scope boundary requested in
+review.
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R293 | Follow-up replacement requests must edit the active assistant artifact, including generated code, instead of falling through to `unknown`. | Implemented by `src/code_editing.rs`, `src/solver_handlers/text_manipulation.rs`, and the issue #408 regression tests in `tests/unit/specification/text_manipulation.rs`. |
+| R294 | Deterministic text/code editing operations must share the multilingual operation vocabulary and keep Rust/browser-worker behavior aligned. | Implemented by `data/seed/operation-vocabulary.lino`, `src/solver_handlers/text_manipulation.rs`, `src/web/formal_ai_worker.js`, and the shared text-manipulation parity coverage. |
+| R295 | The issue #408 benchmark-family matrix must use self-authored minimal examples, not copied external benchmark records, and must contain at least 30 non-regression cases. | Implemented by `tests/unit/specification/text_manipulation_benchmarks.rs`, which currently requires at least 50 cases and covers the 8 named edit benchmark families. |
+| R296 | Benchmark documentation for issue #408 must list the 8 PR-referenced edit benchmark sources plus 20 additional popular LLM benchmark sources, and must distinguish current slice/example coverage from full upstream benchmark pass claims. | Implemented by `docs/case-studies/issue-408/README.md`, `docs/case-studies/issue-408/raw-data/online-research.md`, and `tests/unit/docs_requirements.rs::issue_408_text_edit_benchmark_scope_documents_are_traceable`. |
+| R297 | The repository must not represent PR #416 as passing 10% of every upstream benchmark unless the corresponding datasets, runners, scoring rules, provenance, CI budget, and pass-count ratchets are imported. | Implemented as a documented scope boundary in the issue #408 case study, with docs coverage that keeps `VISION.md`, `ROADMAP.md`, `ARCHITECTURE.md`, and this requirements matrix synchronized. |

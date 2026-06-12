@@ -198,3 +198,12 @@ ratchet, reasoning-first report behavior, and the white-box self-improvement
 loop. The final epic #365 records that the original Russian dialog now produces
 a `write_program` answer with reverse-sorted output instead of `unknown`, and
 that the behavior is covered across runtime and benchmark surfaces.
+
+Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
+the same deterministic path to user-requested text and code edits: follow-up
+replacement requests can target the previous assistant artifact, including a
+generated code block, and the supported edit operations use the shared
+multilingual operation vocabulary. The benchmark claims stay slice-based: PR #416
+uses self-authored benchmark-family edit examples and source research, but it
+does not claim full upstream benchmark pass rates without imported datasets,
+runners, scoring, provenance, and CI ratchets.

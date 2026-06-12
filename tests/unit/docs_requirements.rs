@@ -754,6 +754,84 @@ fn issue_398_pr_review_standards_are_recorded_and_traceable() {
 }
 
 #[test]
+fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #408 Text And Code Editing Requirements",
+            "| R293 ",
+            "| R294 ",
+            "| R295 ",
+            "| R296 ",
+            "| R297 ",
+            "docs/case-studies/issue-408/README.md",
+        ],
+    );
+
+    let roadmap = read(root.join("ROADMAP.md"));
+    assert_contains_all(
+        "ROADMAP.md",
+        &roadmap,
+        &[
+            "Issue #408 Text And Code Editing - current PR",
+            "does not claim 10% of every upstream benchmark",
+        ],
+    );
+
+    let vision = read(root.join("VISION.md"));
+    assert_contains_all("VISION.md", &vision, &["benchmark claims stay slice-based"]);
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &["Issue #408 text/code editing path", "R1 … R297"],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-408/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/README.md",
+        &case_study,
+        &[
+            "# Issue 408 Case Study",
+            "10% of every upstream benchmark",
+            "does not claim",
+            "tests/unit/specification/text_manipulation_benchmarks.rs",
+            "20 additional",
+        ],
+    );
+
+    let research = read(root.join("docs/case-studies/issue-408/raw-data/online-research.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/raw-data/online-research.md",
+        &research,
+        &[
+            "Benchmark Sources Referenced By PR 416",
+            "Additional Popular LLM Benchmarks (20)",
+            "HumanEval",
+            "MMLU",
+            "HELM",
+            "ARC",
+            "TruthfulQA",
+            "CommonsenseQA",
+            "IFEval",
+        ],
+    );
+
+    let benchmark_tests =
+        read(root.join("tests/unit/specification/text_manipulation_benchmarks.rs"));
+    assert_contains_all(
+        "tests/unit/specification/text_manipulation_benchmarks.rs",
+        &benchmark_tests,
+        &["cases.len() >= 50", "at least 30 examples"],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
