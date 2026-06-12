@@ -29,7 +29,7 @@ fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
 }
 
 #[test]
-fn placeholder_unknown_equations_are_solved_by_local_fallback() {
+fn placeholder_unknown_equations_are_delegated_to_link_calculator() {
     let equation_templates = [
         ("u + 2 = 4", "2"),
         ("2 + u = 4", "2"),
@@ -65,15 +65,67 @@ fn placeholder_unknown_equations_are_solved_by_local_fallback() {
                 .unwrap_or_else(|error| panic!("{expression:?} should solve: {error:?}"));
             assert_eq!(
                 evaluation.engine,
-                CalculationEngine::FormalAiEquationFallback,
-                "{expression:?} should use the local placeholder fallback"
+                CalculationEngine::LinkCalculator,
+                "{expression:?} should be delegated to link-calculator"
             );
             assert_eq!(
                 evaluation.formatted,
                 format!("{marker} = {expected_value}"),
                 "{expression:?} should solve the placeholder unknown"
             );
+            assert!(
+                !evaluation.steps.is_empty(),
+                "{expression:?} should expose upstream derivation steps"
+            );
         }
+    }
+}
+
+#[test]
+fn upstream_equation_categories_are_delegated_with_steps() {
+    for (expression, expected, required_step) in [
+        ("2 * ? + 3 = 11", "? = 4", "Solve linear equation:"),
+        ("2 * * + 3 = 11", "* = 4", "Solve linear equation:"),
+        (
+            "2 * x + 3 * y = 12",
+            "x = 6 - 1.5*y",
+            "Solve linear equation:",
+        ),
+        (
+            "x^2 - 5 * x + 6 = 0",
+            "x = 2 or x = 3",
+            "Solve polynomial equation:",
+        ),
+        ("? * ? = 4", "? = -2 or ? = 2", "Solve polynomial equation:"),
+        ("* * * = 4", "* = -2 or * = 2", "Solve polynomial equation:"),
+    ] {
+        let evaluation = evaluate_calculation(expression)
+            .unwrap_or_else(|error| panic!("{expression:?} should solve: {error:?}"));
+        assert_eq!(
+            evaluation.engine,
+            CalculationEngine::LinkCalculator,
+            "{expression:?} should be delegated to link-calculator"
+        );
+        assert_eq!(
+            evaluation.formatted, expected,
+            "{expression:?} should return the upstream equation result"
+        );
+        assert!(
+            evaluation
+                .lino
+                .as_deref()
+                .is_some_and(|lino| lino.contains('=')),
+            "{expression:?} should preserve upstream LINO: {:?}",
+            evaluation.lino
+        );
+        assert!(
+            evaluation
+                .steps
+                .iter()
+                .any(|step| step.starts_with(required_step)),
+            "{expression:?} should expose upstream derivation steps: {:?}",
+            evaluation.steps
+        );
     }
 }
 
