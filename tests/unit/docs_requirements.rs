@@ -778,8 +778,8 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &roadmap,
         &[
             "Issue #408 Text And Code Editing - current PR",
-            "repository-local 10%-style profile",
-            "560 of 560",
+            "repository-local 10% floor of 3 checks",
+            "1,440 of 1,440",
         ],
     );
 
@@ -800,7 +800,7 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &[
             "Issue #408 text/code editing path",
             "text-manipulation-suite.lino",
-            "560/560 pass-count ratchet",
+            "1,440/1,440 pass-count ratchet",
         ],
     );
 
@@ -810,12 +810,12 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &case_study,
         &[
             "# Issue 408 Case Study",
-            "repository-local 10%-style ratchet",
-            "minimum_pass_count = 560",
-            "560 generated",
+            "repository-local edit benchmark profile",
+            "minimum_pass_count = 1440",
+            "1,440-case profile",
             "tests/unit/specification/text_manipulation_benchmarks.rs",
             "data/benchmarks/text-manipulation-suite.lino",
-            "20 additional",
+            "40 additional",
         ],
     );
 
@@ -826,8 +826,9 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &[
             "Benchmark Sources Referenced By PR 416",
             "Additional Popular LLM Benchmarks (20)",
+            "Additional Current/Common LLM Benchmarks (20)",
             "repository-local edit variations per source",
-            "560 of 560",
+            "1,440 profile checks",
             "HumanEval",
             "MMLU",
             "HELM",

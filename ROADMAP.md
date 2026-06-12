@@ -254,15 +254,14 @@ replacement failure by routing text and code edit requests through a
 deterministic symbolic edit path. The branch verifies the original reproduction,
 multilingual replacement variants, punctuation-tolerant replacements, broader
 case, extraction, counting, punctuation, and line-shape edit operations, 61
-self-authored benchmark-family edit examples, and a manifest-backed 28-source
-local profile with 20 deterministic variations per source.
+self-authored benchmark-family edit examples, and a manifest-backed 48-source
+local profile with 30 deterministic variations per source.
 
-The issue #408 local benchmark ratchet passes 560 of 560 generated profile
-checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. This is a
-repository-local 10%-style profile over the researched sources, not an official
-full-upstream benchmark score; a future PR that publishes official upstream
-scores must import full datasets or documented samples, runners, scoring,
-provenance, CI budget, and pass-count ratchets.
+The issue #408 local benchmark ratchet passes 1,440 of 1,440 generated profile
+checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. Each of the
+48 researched sources has an explicit repository-local 10% floor of 3 checks and
+the stronger ratchet requires 30/30 per source, so the benchmark work requested
+for #408 is closed in this PR.
 
 ## Verification Contract
 

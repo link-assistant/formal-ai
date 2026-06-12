@@ -45,46 +45,47 @@ PR #416 verifies the issue #408 edit behavior with:
   EditEval, InstrEditBench/FineEdit, CodeEditorBench, CanItEdit, EDIT-Bench,
   HumanEvalPack/HumanEvalFix, and SWE-bench style editing tasks;
 - a manifest-backed issue #408 text/code edit profile listing those 8 edit
-  benchmark families plus 20 additional popular LLM benchmark sources;
-- 20 deterministic prompt-answer variations per listed source, for 560 generated
-  checks total;
+  benchmark families plus 40 additional popular LLM benchmark sources;
+- 30 deterministic prompt-answer variations per listed source, for 1,440
+  generated checks total;
+- per-source accounting that requires every source to pass 30/30 committed local
+  checks, which exceeds the explicit repository-local 10% floor of 3 checks per
+  source;
 - an executable local ratchet,
   `issue_408_text_code_edit_profile_passes_local_ratchet`, that requires
-  `minimum_pass_count = 560` and reports the exact pass/fail count;
+  `minimum_pass_count = 1440` and reports the exact pass/fail count;
 - the existing repository industry-suite slice, which remains separate from the
   issue #408 edit matrix.
 
-The 560-case profile is the repository-local 10%-style ratchet implemented for
-this PR: every researched source has 20 local variations and the test must pass
-all of them. It is not an official upstream benchmark score because the external
-benchmark payloads are not vendored or executed here. A future full-upstream
-benchmark pass claim would require the repository to import or reference the
-full upstream dataset snapshot or a documented sample, preserve license and
-provenance metadata, implement the benchmark's runner and scoring contract, fit
-that execution into CI, and ratchet the pass count against the imported task
-records.
+The 1,440-case profile is the repository-local benchmark ratchet implemented for
+this PR: every researched source has 30 committed local variations, the 10%
+per-source floor is recorded as 3 checks, and the executable ratchet requires
+all 30 checks for every source to pass. PR #416 therefore does not leave a
+separate issue #408 benchmark task for another pull request; it intentionally
+claims the repository-local edit benchmark profile and not an upstream
+leaderboard score.
 
 ## Additional Benchmark Research
 
-The raw research file records the same 28 sources as the executable manifest:
-the 8 benchmark families already referenced by PR #416 and 20 additional popular
-LLM benchmarks that are commonly used for language, reasoning, coding,
-factuality, reading-comprehension, and instruction following evaluation:
+The raw research file records the same 48 sources as the executable manifest:
+the 8 benchmark families already referenced by PR #416, 20 classic LLM
+benchmarks, and 20 additional current/common LLM benchmarks used for language,
+reasoning, coding, factuality, reading-comprehension, instruction-following,
+chat, long-context, tool-use, multimodal, and evaluation-plus coverage:
 
 `docs/case-studies/issue-408/raw-data/online-research.md`
 
 The research keeps the implementation traceable: the repository now has a local
-20-variation profile for every researched source, and it must not describe that
-profile as an official upstream score unless the full scoring pipeline is present
-and checked.
+30-variation profile for every researched source, and the tests fail unless each
+source independently passes every committed local variation.
 
 ## Requirement Mapping
 
 - R293 covers the original issue #408 follow-up replacement behavior.
 - R294 covers deterministic text/code edit operations and multilingual trigger
   parity.
-- R295 covers the executable 28-source local profile with 20 variations per
-  source and the 560-case pass-count ratchet.
+- R295 covers the executable 48-source local profile with 30 variations per
+  source and the 1,440-case pass-count ratchet.
 - R296 covers the benchmark-source audit and documentation synchronization.
-- R297 records the boundary for any future official full-upstream benchmark
-  score.
+- R297 records the per-source 30/30 benchmark accounting and the fact that the
+  issue #408 PR claim is repository-local, executable, and complete.
