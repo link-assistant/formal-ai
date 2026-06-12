@@ -855,6 +855,12 @@ prompt_patterns
     kind phrase
     coverage_group direct
     text "show behavior rules"
+  pattern pattern_behavior_rules_list_show_rules_en
+    intent behavior_rules_list
+    language en
+    kind phrase
+    coverage_group short_rule_list
+    text "show rules"
   pattern pattern_behavior_rules_list_show_list_your_rules_en
     intent behavior_rules_list
     language en
@@ -873,6 +879,12 @@ prompt_patterns
     kind phrase
     coverage_group direct
     text "покажи правила поведения"
+  pattern pattern_behavior_rules_list_pokazhi_pravila_ru
+    intent behavior_rules_list
+    language ru
+    kind phrase
+    coverage_group short_rule_list
+    text "покажи правила"
   pattern pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
     intent behavior_rules_list
     language ru
@@ -891,6 +903,12 @@ prompt_patterns
     kind phrase
     coverage_group direct
     text "व्यवहार के नियम सूचीबद्ध करें"
+  pattern pattern_behavior_rules_list_niyam_dikhao_hi
+    intent behavior_rules_list
+    language hi
+    kind phrase
+    coverage_group short_rule_list
+    text "नियम दिखाओ"
   pattern pattern_behavior_rules_list_apne_niyamon_ki_suchi_dikhao_hi
     intent behavior_rules_list
     language hi
@@ -909,6 +927,12 @@ prompt_patterns
     kind phrase
     coverage_group direct
     text 列出行为规则
+  pattern pattern_behavior_rules_list_xianshi_guize_zh
+    intent behavior_rules_list
+    language zh
+    kind phrase
+    coverage_group short_rule_list
+    text 显示规则
   pattern pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
     intent behavior_rules_list
     language zh

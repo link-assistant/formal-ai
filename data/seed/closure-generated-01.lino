@@ -1004,6 +1004,11 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list list your rules en"
+  pattern_behavior_rules_list_niyam_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list niyam dikhao hi"
   pattern_behavior_rules_list_perechisli_svoi_pravila_ru
     defined-by prompt_pattern
     lexeme en
@@ -1014,6 +1019,11 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list pokazhi pravila povedeniya ru"
+  pattern_behavior_rules_list_pokazhi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila ru"
   pattern_behavior_rules_list_pokazhi_spisok_svoih_pravil_ru
     defined-by prompt_pattern
     lexeme en
@@ -1029,11 +1039,21 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list show list your rules en"
+  pattern_behavior_rules_list_show_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show rules en"
   pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
     defined-by prompt_pattern
     lexeme en
       surface
         text "pattern behavior rules list vyavahar niyam suchibaddh hi"
+  pattern_behavior_rules_list_xianshi_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list xianshi guize zh"
   pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
     defined-by prompt_pattern
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix whats a"
-  pattern_concept_prefix_whats_an
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats an"
-  pattern_concept_prefix_whats_the
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats the"
-  pattern_concept_prefix_who_is
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix who is"
-  pattern_concept_prefix_who_was
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix who was"

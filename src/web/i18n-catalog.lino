@@ -171,6 +171,15 @@ en
       flat "Flat"
       glass "Glass"
       contrast "Contrast"
+    toolbarIconPack
+      label "Toolbar icons"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "Names"
     chatStyle
       label "Chat style"
       cards "Cards"
@@ -396,6 +405,15 @@ ru
       flat "Плоский"
       glass "Стекло"
       contrast "Контраст"
+    toolbarIconPack
+      label "Иконки панели"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "Названия"
     chatStyle
       label "Стиль чата"
       cards "Карточки"
@@ -611,6 +629,15 @@ zh
       flat "扁平"
       glass "玻璃"
       contrast "高对比"
+    toolbarIconPack
+      label "工具栏图标"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "名称"
     chatStyle
       label "聊天样式"
       cards "卡片"
@@ -832,6 +859,15 @@ hi
       flat "फ्लैट"
       glass "ग्लास"
       contrast "कॉन्ट्रास्ट"
+    toolbarIconPack
+      label "टूलबार आइकन"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "नाम"
     chatStyle
       label "चैट शैली"
       cards "कार्ड"

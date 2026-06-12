@@ -1,4 +1,24 @@
 meanings
+  pattern_concept_prefix_whats_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats an"
+  pattern_concept_prefix_whats_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats the"
+  pattern_concept_prefix_who_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who is"
+  pattern_concept_prefix_who_was
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who was"
   pattern_concept_prefix_znachenie
     defined-by prompt_pattern
     lexeme en
@@ -1099,6 +1119,11 @@ meanings
     lexeme en
       surface
         text "shell helpers"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
   signal-processing
     defined-by category
     lexeme en
@@ -1369,28 +1394,3 @@ meanings
     lexeme en
       surface
         text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"

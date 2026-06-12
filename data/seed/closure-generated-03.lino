@@ -1,4 +1,29 @@
 meanings
+  wikipedia_lookup
+    defined-by name
+    lexeme en
+      surface
+        text "wikipedia lookup"
+  wikipedia_summary_endpoint_template
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia summary endpoint template"
+  wiktionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wiktionary"
+  wordnet
+    defined-by source
+    lexeme en
+      surface
+        text "wordnet"
+  write_program
+    defined-by intent
+    lexeme en
+      surface
+        text "write program"
   your
     defined-by word_surface
     lexeme en

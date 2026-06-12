@@ -1,6 +1,6 @@
 [package]
 name = "formal-ai"
-version = "0.186.0"
+version = "0.188.0"
 edition = "2021"
 description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
 readme = "README.md"
@@ -35,7 +35,7 @@ doublets = { version = "0.3.0", optional = true }
 lino-arguments = "0.3"
 lino-objects-codec = "0.2.1"
 links-notation = "0.13.0"
-link-calculator = "0.17.2"
+link-calculator = "0.18.2"
 # CST/AST engine: the link-foundation meta-language links network. It ships
 # real tree-sitter grammars for every language we target and exposes a single
 # mutable links-network representation, so it is the sole CST/AST engine here

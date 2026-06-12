@@ -715,7 +715,7 @@ dependencies = [
 
 [[package]]
 name = "formal-ai"
-version = "0.186.0"
+version = "0.188.0"
 dependencies = [
  "clap",
  "doublets",
@@ -1470,9 +1470,9 @@ dependencies = [
 
 [[package]]
 name = "link-calculator"
-version = "0.17.2"
+version = "0.18.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73946e07cfee4642f2d688776a47ea3e886ca252232f5c25c4241d9a23dde594"
+checksum = "72440292882a0c0b3469bc82aaae2a02c2076560fe168827058ff6aa9c4a72b4"
 dependencies = [
  "chrono",
  "console_error_panic_hook",

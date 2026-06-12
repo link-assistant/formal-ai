@@ -416,14 +416,56 @@ button {
   white-space: nowrap;
 }
 
-/* Issue #27: topbar buttons carry an emoji icon + label so the label can be
- * hidden on narrow viewports for an icon-only mobile topbar. */
+/* Issue #409: toolbar buttons carry a local icon + label so the label can be
+ * hidden on narrow viewports without falling back to ambiguous emoji glyphs. */
 .btn-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
   font-size: 16px;
   line-height: 1;
+}
+
+.toolbar-icon-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.toolbar-icon.icon-pack-fontawesome .toolbar-icon-svg {
+  stroke-width: 2.35;
+}
+
+.toolbar-icon.icon-pack-material-symbols .toolbar-icon-svg,
+.toolbar-icon.icon-pack-ionicons .toolbar-icon-svg {
+  stroke-width: 2.2;
+}
+
+.toolbar-icon.icon-pack-bootstrap-icons .toolbar-icon-svg,
+.toolbar-icon.icon-pack-remix-icon .toolbar-icon-svg {
+  stroke-width: 1.95;
+}
+
+.toolbar-icon.icon-pack-tabler-icons .toolbar-icon-svg {
+  stroke-width: 1.75;
+}
+
+.toolbar-icon-name {
+  width: 30px;
+  flex-basis: 30px;
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .btn-label {
@@ -1895,7 +1937,13 @@ body.is-resizing-context {
 }
 
 .composer-demo-hint-icon {
-  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin: 0 3px;
+  vertical-align: -2px;
 }
 
 .composer-grid {
@@ -1955,6 +2003,14 @@ textarea:disabled {
   font-size: 22px;
   font-weight: 800;
   line-height: 1;
+}
+
+.composer-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
 .composer-action-button:hover,
@@ -2431,7 +2487,7 @@ textarea:disabled {
   }
 
   /* Issue #27: drop the brand wordmark on the narrowest viewports so the
-   * topbar holds the FA logo + emoji actions + hamburger on a single row. */
+   * topbar holds the FA logo + icon actions + hamburger on a single row. */
   .brand {
     display: none;
   }
