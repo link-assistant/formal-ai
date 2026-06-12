@@ -204,6 +204,16 @@ meanings
     lexeme en
       surface
         text "bundle root header"
+  camel
+    defined-by concept
+    lexeme en
+      surface
+        text "camel"
+  camel_case
+    defined-by operation
+    lexeme en
+      surface
+        text "camel case"
   cancel_reverse_sort
     defined-by operation
     lexeme en
@@ -214,6 +224,11 @@ meanings
     lexeme en
       surface
         text "capabilities more"
+  case
+    defined-by concept
+    lexeme en
+      surface
+        text "case"
   class-library
     defined-by category
     lexeme en
@@ -579,6 +594,16 @@ meanings
     lexeme en
       surface
         text "inappropriate content"
+  indent
+    defined-by concept
+    lexeme en
+      surface
+        text "indent"
+  indent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "indent lines"
   intent_algorithm
     defined-by intent
     lexeme en
@@ -704,6 +729,31 @@ meanings
     lexeme en
       surface
         text "javascript"
+  join
+    defined-by concept
+    lexeme en
+      surface
+        text "join"
+  join_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "join lines"
+  kebab
+    defined-by concept
+    lexeme en
+      surface
+        text "kebab"
+  kebab-case
+    defined-by phrase
+    lexeme en
+      surface
+        text "kebab case"
+  kebab_case
+    defined-by operation
+    lexeme en
+      surface
+        text "kebab case"
   knowledge-representation
     defined-by category
     lexeme en
@@ -724,6 +774,11 @@ meanings
     lexeme en
       surface
         text "lexical database"
+  lines
+    defined-by concept
+    lexeme en
+      surface
+        text "lines"
   link-assistant
     defined-by organization
     lexeme en
@@ -849,6 +904,11 @@ meanings
     lexeme en
       surface
         text "normalize whitespace"
+  number_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "number lines"
   official-docs
     defined-by source_kind
     lexeme en
@@ -879,6 +939,16 @@ meanings
     lexeme en
       surface
         text "openai"
+  outdent
+    defined-by concept
+    lexeme en
+      surface
+        text "outdent"
+  outdent_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "outdent lines"
   owlbear
     defined-by word_surface
     lexeme en
@@ -889,6 +959,16 @@ meanings
     lexeme en
       surface
         text "package management"
+  pascal
+    defined-by concept
+    lexeme en
+      surface
+        text "pascal"
+  pascal_case
+    defined-by operation
+    lexeme en
+      surface
+        text "pascal case"
   path_argument
     defined-by operation
     lexeme en
@@ -1314,83 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix shenmeshi simplified"
-  pattern_concept_prefix_shenmeshi_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmeshi traditional"
-  pattern_concept_prefix_shuoshuo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shuoshuo"
-  pattern_concept_prefix_smysl
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix smysl"
-  pattern_concept_prefix_tell_me_about
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix tell me about"
-  pattern_concept_prefix_tell_me_what
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix tell me what"
-  pattern_concept_prefix_v_chem_smysl
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix v chem smysl"
-  pattern_concept_prefix_v_chem_smysl_alt
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix v chem smysl alt"
-  pattern_concept_prefix_what_do
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what do"
-  pattern_concept_prefix_what_does
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what does"
-  pattern_concept_prefix_what_does_mean
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what does mean"
-  pattern_concept_prefix_what_is
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is"
-  pattern_concept_prefix_what_is_a
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is a"
-  pattern_concept_prefix_what_is_an
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is an"
-  pattern_concept_prefix_what_is_the
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix what is the"
-  pattern_concept_prefix_whats
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats"
-  pattern_concept_prefix_whats_a
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix whats a"

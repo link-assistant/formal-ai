@@ -8678,6 +8678,36 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("normalize_whitespace", normalized)) {
     operations.push({ slug: "normalize_whitespace" });
   }
+  if (textOperationMatches("title_case", normalized)) {
+    operations.push({ slug: "title_case" });
+  }
+  if (textOperationMatches("snake_case", normalized)) {
+    operations.push({ slug: "snake_case" });
+  }
+  if (textOperationMatches("kebab_case", normalized)) {
+    operations.push({ slug: "kebab_case" });
+  }
+  if (textOperationMatches("camel_case", normalized)) {
+    operations.push({ slug: "camel_case" });
+  }
+  if (textOperationMatches("pascal_case", normalized)) {
+    operations.push({ slug: "pascal_case" });
+  }
+  if (textOperationMatches("strip_empty_lines", normalized)) {
+    operations.push({ slug: "strip_empty_lines" });
+  }
+  if (textOperationMatches("join_lines", normalized)) {
+    operations.push({ slug: "join_lines" });
+  }
+  if (textOperationMatches("number_lines", normalized)) {
+    operations.push({ slug: "number_lines" });
+  }
+  if (textOperationMatches("indent_lines", normalized)) {
+    operations.push({ slug: "indent_lines" });
+  }
+  if (textOperationMatches("outdent_lines", normalized)) {
+    operations.push({ slug: "outdent_lines" });
+  }
   if (textOperationMatches("count_unique_words", normalized)) {
     operations.push({ slug: "count_unique_words" });
   }
@@ -8797,6 +8827,61 @@ function deduplicateLines(input) {
     }
   }
   return lines;
+}
+
+function caseWords(input) {
+  return normalizedWordSpans(input).map((span) => span.word);
+}
+
+function capitalizeWord(word) {
+  const letters = Array.from(String(word || "").toLowerCase());
+  if (!letters.length) return "";
+  return `${letters[0].toUpperCase()}${letters.slice(1).join("")}`;
+}
+
+function titleCase(input) {
+  return caseWords(input).map(capitalizeWord).join(" ");
+}
+
+function delimiterCase(input, delimiter) {
+  return caseWords(input).join(delimiter);
+}
+
+function camelCase(input) {
+  const words = caseWords(input);
+  if (!words.length) return "";
+  return `${words[0]}${words.slice(1).map(capitalizeWord).join("")}`;
+}
+
+function pascalCase(input) {
+  return caseWords(input).map(capitalizeWord).join("");
+}
+
+function stripEmptyLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim());
+}
+
+function joinLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
+function numberLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .map((line, index) => `${index + 1}. ${line}`);
+}
+
+function outdentLine(line) {
+  const text = String(line || "");
+  if (text.startsWith("    ")) return text.slice(4);
+  if (text.startsWith("\t")) return text.slice(1);
+  return text;
 }
 
 function normalizedWordSpans(text) {
@@ -8939,6 +9024,26 @@ function applyTextOperation(operation, input) {
       return String(input).trim();
     case "normalize_whitespace":
       return String(input).split(/\s+/).filter(Boolean).join(" ");
+    case "title_case":
+      return titleCase(input);
+    case "snake_case":
+      return delimiterCase(input, "_");
+    case "kebab_case":
+      return delimiterCase(input, "-");
+    case "camel_case":
+      return camelCase(input);
+    case "pascal_case":
+      return pascalCase(input);
+    case "strip_empty_lines":
+      return stripEmptyLines(input).join("\n");
+    case "join_lines":
+      return joinLines(input);
+    case "number_lines":
+      return numberLines(input).join("\n");
+    case "indent_lines":
+      return String(input).split(/\r?\n/).map((line) => `    ${line}`).join("\n");
+    case "outdent_lines":
+      return String(input).split(/\r?\n/).map(outdentLine).join("\n");
     default:
       return String(input);
   }
@@ -13951,6 +14056,146 @@ const OPERATION_VOCABULARY_LINO = [
   "      phrase 规范化空白",
   "      phrase 合并空白",
   "      combo 合并+空白",
+  "  operation title_case",
+  "    language en",
+  '      phrase "title case"',
+  '      phrase "capitalize words"',
+  "      combo title+case",
+  "    language ru",
+  '      phrase "заглавные слова"',
+  "      combo каждое+слово+заглавн",
+  "    language hi",
+  '      phrase "शीर्षक केस"',
+  "      combo शब्द+बड़े",
+  "    language zh",
+  "      phrase 标题大小写",
+  "      combo 单词+大写",
+  "  operation snake_case",
+  "    language en",
+  '      phrase "snake case"',
+  "      phrase snake_case",
+  "      combo snake+case",
+  "    language ru",
+  '      phrase "snake case"',
+  "      combo змеиный+регистр",
+  "    language hi",
+  '      phrase "स्नेक केस"',
+  "      combo स्नेक+केस",
+  "    language zh",
+  "      phrase 蛇形命名",
+  "      phrase snake_case",
+  "  operation kebab_case",
+  "    language en",
+  '      phrase "kebab case"',
+  "      phrase kebab-case",
+  "      combo kebab+case",
+  "    language ru",
+  '      phrase "kebab case"',
+  "      combo кебаб+регистр",
+  "    language hi",
+  '      phrase "केबाब केस"',
+  "      combo केबाब+केस",
+  "    language zh",
+  "      phrase 短横线命名",
+  "      phrase kebab-case",
+  "  operation camel_case",
+  "    language en",
+  '      phrase "camel case"',
+  "      phrase camelCase",
+  "      combo camel+case",
+  "    language ru",
+  '      phrase "camel case"',
+  "      combo верблюжий+регистр",
+  "    language hi",
+  '      phrase "कैमल केस"',
+  "      combo कैमल+केस",
+  "    language zh",
+  "      phrase 驼峰命名",
+  "      phrase camelCase",
+  "  operation pascal_case",
+  "    language en",
+  '      phrase "pascal case"',
+  "      phrase PascalCase",
+  "      combo pascal+case",
+  "    language ru",
+  '      phrase "pascal case"',
+  "      combo паскаль+регистр",
+  "    language hi",
+  '      phrase "पास्कल केस"',
+  "      combo पास्कल+केस",
+  "    language zh",
+  "      phrase 帕斯卡命名",
+  "      phrase PascalCase",
+  "  operation strip_empty_lines",
+  "    language en",
+  '      phrase "strip empty lines"',
+  '      phrase "remove empty lines"',
+  "      combo empty+lines+remove",
+  "    language ru",
+  '      phrase "удали пустые строки"',
+  "      combo пустые+строки+удали",
+  "    language hi",
+  '      phrase "खाली लाइनें हटाओ"',
+  "      combo खाली+लाइनें+हटा",
+  "    language zh",
+  "      phrase 删除空行",
+  "      phrase 移除空行",
+  "  operation join_lines",
+  "    language en",
+  '      phrase "join lines"',
+  '      phrase "merge lines"',
+  "      combo join+lines",
+  "    language ru",
+  '      phrase "объедини строки"',
+  "      combo объединить+строки",
+  "    language hi",
+  '      phrase "लाइनें जोड़ो"',
+  "      combo लाइनें+जोड़",
+  "    language zh",
+  "      phrase 合并行",
+  "      phrase 连接行",
+  "  operation number_lines",
+  "    language en",
+  '      phrase "number lines"',
+  '      phrase "add line numbers"',
+  "      combo line+numbers",
+  "    language ru",
+  '      phrase "пронумеруй строки"',
+  "      combo номера+строк",
+  "    language hi",
+  '      phrase "लाइनों को नंबर दो"',
+  "      combo लाइन+नंबर",
+  "    language zh",
+  "      phrase 给行编号",
+  "      phrase 添加行号",
+  "  operation indent_lines",
+  "    language en",
+  '      phrase "indent lines"',
+  '      phrase "indent the lines"',
+  "      combo indent+lines",
+  "    language ru",
+  '      phrase "добавь отступ"',
+  "      combo отступ+строки",
+  "    language hi",
+  '      phrase "लाइनों को इंडेंट करो"',
+  "      combo लाइन+इंडेंट",
+  "    language zh",
+  "      phrase 缩进行",
+  "      phrase 添加缩进",
+  "  operation outdent_lines",
+  "    language en",
+  '      phrase "outdent lines"',
+  '      phrase "remove indentation"',
+  "      combo outdent+lines",
+  "    language ru",
+  '      phrase "убери отступ"',
+  "      combo убрать+отступ",
+  "    language hi",
+  '      phrase "इंडेंट हटाओ"',
+  "      combo इंडेंट+हटा",
+  "    language zh",
+  "      phrase 减少缩进",
+  "      phrase 移除缩进",
   "  operation path_argument",
   "    language en",
   '      phrase "path argument"',

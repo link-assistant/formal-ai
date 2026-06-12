@@ -939,10 +939,12 @@ extracts the prior assistant artifact from conversation history when the prompt
 omits an explicit input, applies deterministic text operations from
 `src/solver_handlers/text_manipulation.rs`, and mirrors the supported operations
 in `src/web/formal_ai_worker.js`. The issue #408 benchmark matrix uses
-self-authored benchmark-family examples; full upstream benchmark pass-rate
-claims remain out of scope until the repository imports the relevant datasets,
-runners, scoring contracts, provenance records, CI budget, and pass-count
-ratchets.
+self-authored benchmark-family examples plus
+`data/benchmarks/text-manipulation-suite.lino`, which records 28 researched
+sources and drives 10 deterministic local variations per source through a
+280/280 pass-count ratchet. Official full-upstream benchmark pass-rate claims
+remain out of scope until the repository imports the relevant datasets, runners,
+scoring contracts, provenance records, CI budget, and pass-count ratchets.
 
 A still-open lower-priority question carried over from the E20 batch: arbitrary
 natural-language programming (executing reviewed generated stubs in sandboxed

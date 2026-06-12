@@ -252,15 +252,17 @@ PR [#416](https://github.com/link-assistant/formal-ai/pull/416) fixes the issue
 [#408](https://github.com/link-assistant/formal-ai/issues/408) Russian follow-up
 replacement failure by routing text and code edit requests through a
 deterministic symbolic edit path. The branch verifies the original reproduction,
-multilingual replacement variants, punctuation-tolerant replacements, and 50
-self-authored benchmark-family edit examples.
+multilingual replacement variants, punctuation-tolerant replacements, broader
+case and line-shape edit operations, 50 self-authored benchmark-family edit
+examples, and a manifest-backed 28-source local profile with 10 deterministic
+variations per source.
 
-The benchmark scope is deliberately narrower than a full external benchmark
-import. This PR does not claim 10% of every upstream benchmark. It records the
-8 edit-benchmark families already referenced by the branch, researches 20
-additional popular LLM benchmarks, and keeps the implemented coverage tied to
-reviewable regression examples until a future PR imports full datasets, runners,
-scoring, provenance, CI budget, and pass-count ratchets.
+The issue #408 local benchmark ratchet passes 280 of 280 generated profile
+checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. This is a
+repository-local 10%-style profile over the researched sources, not an official
+full-upstream benchmark score; a future PR that publishes official upstream
+scores must import full datasets or documented samples, runners, scoring,
+provenance, CI budget, and pass-count ratchets.
 
 ## Verification Contract
 

@@ -161,6 +161,36 @@ fn append_simple_operations(
     if vocabulary.matches("normalize_whitespace", normalized) {
         operations.push(TextOperation::NormalizeWhitespace);
     }
+    if vocabulary.matches("title_case", normalized) {
+        operations.push(TextOperation::TitleCase);
+    }
+    if vocabulary.matches("snake_case", normalized) {
+        operations.push(TextOperation::SnakeCase);
+    }
+    if vocabulary.matches("kebab_case", normalized) {
+        operations.push(TextOperation::KebabCase);
+    }
+    if vocabulary.matches("camel_case", normalized) {
+        operations.push(TextOperation::CamelCase);
+    }
+    if vocabulary.matches("pascal_case", normalized) {
+        operations.push(TextOperation::PascalCase);
+    }
+    if vocabulary.matches("strip_empty_lines", normalized) {
+        operations.push(TextOperation::StripEmptyLines);
+    }
+    if vocabulary.matches("join_lines", normalized) {
+        operations.push(TextOperation::JoinLines);
+    }
+    if vocabulary.matches("number_lines", normalized) {
+        operations.push(TextOperation::NumberLines);
+    }
+    if vocabulary.matches("indent_lines", normalized) {
+        operations.push(TextOperation::IndentLines);
+    }
+    if vocabulary.matches("outdent_lines", normalized) {
+        operations.push(TextOperation::OutdentLines);
+    }
     if vocabulary.matches("count_unique_words", normalized) {
         operations.push(TextOperation::CountUniqueWords);
     }
@@ -182,6 +212,16 @@ enum TextOperation {
     SortLines,
     TrimWhitespace,
     NormalizeWhitespace,
+    TitleCase,
+    SnakeCase,
+    KebabCase,
+    CamelCase,
+    PascalCase,
+    StripEmptyLines,
+    JoinLines,
+    NumberLines,
+    IndentLines,
+    OutdentLines,
 }
 
 impl TextOperation {
@@ -201,6 +241,16 @@ impl TextOperation {
             Self::SortLines => "sort_lines",
             Self::TrimWhitespace => "trim_whitespace",
             Self::NormalizeWhitespace => "normalize_whitespace",
+            Self::TitleCase => "title_case",
+            Self::SnakeCase => "snake_case",
+            Self::KebabCase => "kebab_case",
+            Self::CamelCase => "camel_case",
+            Self::PascalCase => "pascal_case",
+            Self::StripEmptyLines => "strip_empty_lines",
+            Self::JoinLines => "join_lines",
+            Self::NumberLines => "number_lines",
+            Self::IndentLines => "indent_lines",
+            Self::OutdentLines => "outdent_lines",
         }
     }
 
@@ -230,6 +280,24 @@ impl TextOperation {
             }
             Self::TrimWhitespace => input.trim().to_owned(),
             Self::NormalizeWhitespace => input.split_whitespace().collect::<Vec<_>>().join(" "),
+            Self::TitleCase => title_case(input),
+            Self::SnakeCase => delimiter_case(input, "_"),
+            Self::KebabCase => delimiter_case(input, "-"),
+            Self::CamelCase => camel_case(input),
+            Self::PascalCase => pascal_case(input),
+            Self::StripEmptyLines => strip_empty_lines(input).join("\n"),
+            Self::JoinLines => join_lines(input),
+            Self::NumberLines => number_lines(input).join("\n"),
+            Self::IndentLines => input
+                .lines()
+                .map(|line| format!("    {line}"))
+                .collect::<Vec<_>>()
+                .join("\n"),
+            Self::OutdentLines => input
+                .lines()
+                .map(outdent_line)
+                .collect::<Vec<_>>()
+                .join("\n"),
         }
     }
 }
@@ -777,6 +845,88 @@ fn count_unique_words(input: &str) -> usize {
         .filter(|word| !word.is_empty())
         .collect::<BTreeSet<_>>()
         .len()
+}
+
+fn case_words(input: &str) -> Vec<String> {
+    normalized_word_spans(input)
+        .into_iter()
+        .map(|span| span.word)
+        .collect()
+}
+
+fn capitalize_word(word: &str) -> String {
+    let mut chars = word.chars();
+    let Some(first) = chars.next() else {
+        return String::new();
+    };
+
+    let mut out = first.to_uppercase().collect::<String>();
+    out.extend(chars.flat_map(char::to_lowercase));
+    out
+}
+
+fn title_case(input: &str) -> String {
+    case_words(input)
+        .iter()
+        .map(|word| capitalize_word(word))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn delimiter_case(input: &str, delimiter: &str) -> String {
+    case_words(input).join(delimiter)
+}
+
+fn camel_case(input: &str) -> String {
+    let mut words = case_words(input).into_iter();
+    let Some(first) = words.next() else {
+        return String::new();
+    };
+
+    let mut out = first;
+    for word in words {
+        out.push_str(&capitalize_word(&word));
+    }
+    out
+}
+
+fn pascal_case(input: &str) -> String {
+    case_words(input)
+        .iter()
+        .map(|word| capitalize_word(word))
+        .collect::<Vec<_>>()
+        .join("")
+}
+
+fn strip_empty_lines(input: &str) -> Vec<String> {
+    input
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .map(str::to_owned)
+        .collect()
+}
+
+fn join_lines(input: &str) -> String {
+    input
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn number_lines(input: &str) -> Vec<String> {
+    input
+        .lines()
+        .enumerate()
+        .map(|(index, line)| format!("{}. {line}", index + 1))
+        .collect()
+}
+
+fn outdent_line(line: &str) -> &str {
+    line.strip_prefix("    ")
+        .or_else(|| line.strip_prefix('\t'))
+        .unwrap_or(line)
 }
 
 fn clean_word(word: &str) -> String {

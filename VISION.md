@@ -203,7 +203,9 @@ Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
 the same deterministic path to user-requested text and code edits: follow-up
 replacement requests can target the previous assistant artifact, including a
 generated code block, and the supported edit operations use the shared
-multilingual operation vocabulary. The benchmark claims stay slice-based: PR #416
-uses self-authored benchmark-family edit examples and source research, but it
-does not claim full upstream benchmark pass rates without imported datasets,
-runners, scoring, provenance, and CI ratchets.
+multilingual operation vocabulary. The benchmark claim is manifest-backed:
+PR #416 lists 28 researched sources in
+`data/benchmarks/text-manipulation-suite.lino`, generates 10 deterministic local
+edit variations per source, and requires the 280/280 pass-count ratchet before
+the branch is complete. Official full-upstream benchmark pass rates still require
+imported datasets, runners, scoring, provenance, and CI ratchets.

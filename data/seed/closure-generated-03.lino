@@ -1,4 +1,109 @@
 meanings
+  tool_wikipedia_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool wikipedia lookup"
+  tool_write_program
+    defined-by tool
+    lexeme en
+      surface
+        text "tool write program"
+  trace_
+    defined-by identifier
+    lexeme en
+      surface
+        text "trace"
+  trim
+    defined-by concept
+    lexeme en
+      surface
+        text "trim"
+  trim_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "trim whitespace"
+  ts
+    defined-by word_surface
+    lexeme en
+      surface
+        text "ts"
+  tue
+    defined-by word_surface
+    lexeme en
+      surface
+        text "tue"
+  ui
+    defined-by category
+    lexeme en
+      surface
+        text "ui"
+  unknown_reasoning_question
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning question"
+  unknown_reasoning_trace
+    defined-by intent
+    lexeme en
+      surface
+        text "unknown reasoning trace"
+  usd
+    defined-by word_surface
+    lexeme en
+      surface
+        text "usd"
+  visual-property
+    defined-by category
+    lexeme en
+      surface
+        text "visual property"
+  vscode
+    defined-by environment
+    lexeme en
+      surface
+        text "vscode"
+  vscode_local_sync
+    defined-by flow
+    lexeme en
+      surface
+        text "vscode local sync"
+  web-search
+    defined-by word_surface
+    lexeme en
+      surface
+        text "web search"
+  webvm
+    defined-by word_surface
+    lexeme en
+      surface
+        text "webvm"
+  whitespace
+    defined-by concept
+    lexeme en
+      surface
+        text "whitespace"
+  wikidata
+    defined-by source
+    lexeme en
+      surface
+        text "wikidata"
+  wikipedia
+    defined-by source_kind
+    lexeme en
+      surface
+        text "wikipedia"
+  wikipedia_article_question
+    defined-by intent
+    lexeme en
+      surface
+        text "wikipedia article question"
+  wikipedia_fallback_language
+    defined-by field
+    lexeme en
+      surface
+        text "wikipedia fallback language"
   wikipedia_lookup
     defined-by name
     lexeme en

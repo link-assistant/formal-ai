@@ -226,6 +226,146 @@ operation_vocabulary
       phrase 规范化空白
       phrase 合并空白
       combo 合并+空白
+  operation title_case
+    language en
+      phrase "title case"
+      phrase "capitalize words"
+      combo title+case
+    language ru
+      phrase "заглавные слова"
+      combo каждое+слово+заглавн
+    language hi
+      phrase "शीर्षक केस"
+      combo शब्द+बड़े
+    language zh
+      phrase 标题大小写
+      combo 单词+大写
+  operation snake_case
+    language en
+      phrase "snake case"
+      phrase snake_case
+      combo snake+case
+    language ru
+      phrase "snake case"
+      combo змеиный+регистр
+    language hi
+      phrase "स्नेक केस"
+      combo स्नेक+केस
+    language zh
+      phrase 蛇形命名
+      phrase snake_case
+  operation kebab_case
+    language en
+      phrase "kebab case"
+      phrase kebab-case
+      combo kebab+case
+    language ru
+      phrase "kebab case"
+      combo кебаб+регистр
+    language hi
+      phrase "केबाब केस"
+      combo केबाब+केस
+    language zh
+      phrase 短横线命名
+      phrase kebab-case
+  operation camel_case
+    language en
+      phrase "camel case"
+      phrase camelCase
+      combo camel+case
+    language ru
+      phrase "camel case"
+      combo верблюжий+регистр
+    language hi
+      phrase "कैमल केस"
+      combo कैमल+केस
+    language zh
+      phrase 驼峰命名
+      phrase camelCase
+  operation pascal_case
+    language en
+      phrase "pascal case"
+      phrase PascalCase
+      combo pascal+case
+    language ru
+      phrase "pascal case"
+      combo паскаль+регистр
+    language hi
+      phrase "पास्कल केस"
+      combo पास्कल+केस
+    language zh
+      phrase 帕斯卡命名
+      phrase PascalCase
+  operation strip_empty_lines
+    language en
+      phrase "strip empty lines"
+      phrase "remove empty lines"
+      combo empty+lines+remove
+    language ru
+      phrase "удали пустые строки"
+      combo пустые+строки+удали
+    language hi
+      phrase "खाली लाइनें हटाओ"
+      combo खाली+लाइनें+हटा
+    language zh
+      phrase 删除空行
+      phrase 移除空行
+  operation join_lines
+    language en
+      phrase "join lines"
+      phrase "merge lines"
+      combo join+lines
+    language ru
+      phrase "объедини строки"
+      combo объединить+строки
+    language hi
+      phrase "लाइनें जोड़ो"
+      combo लाइनें+जोड़
+    language zh
+      phrase 合并行
+      phrase 连接行
+  operation number_lines
+    language en
+      phrase "number lines"
+      phrase "add line numbers"
+      combo line+numbers
+    language ru
+      phrase "пронумеруй строки"
+      combo номера+строк
+    language hi
+      phrase "लाइनों को नंबर दो"
+      combo लाइन+नंबर
+    language zh
+      phrase 给行编号
+      phrase 添加行号
+  operation indent_lines
+    language en
+      phrase "indent lines"
+      phrase "indent the lines"
+      combo indent+lines
+    language ru
+      phrase "добавь отступ"
+      combo отступ+строки
+    language hi
+      phrase "लाइनों को इंडेंट करो"
+      combo लाइन+इंडेंट
+    language zh
+      phrase 缩进行
+      phrase 添加缩进
+  operation outdent_lines
+    language en
+      phrase "outdent lines"
+      phrase "remove indentation"
+      combo outdent+lines
+    language ru
+      phrase "убери отступ"
+      combo убрать+отступ
+    language hi
+      phrase "इंडेंट हटाओ"
+      combo इंडेंट+हटा
+    language zh
+      phrase 减少缩进
+      phrase 移除缩进
   operation path_argument
     language en
       phrase "path argument"

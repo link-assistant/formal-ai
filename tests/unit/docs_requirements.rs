@@ -778,18 +778,30 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &roadmap,
         &[
             "Issue #408 Text And Code Editing - current PR",
-            "does not claim 10% of every upstream benchmark",
+            "repository-local 10%-style profile",
+            "280 of 280",
         ],
     );
 
     let vision = read(root.join("VISION.md"));
-    assert_contains_all("VISION.md", &vision, &["benchmark claims stay slice-based"]);
+    assert_contains_all(
+        "VISION.md",
+        &vision,
+        &[
+            "benchmark claim is manifest-backed",
+            "text-manipulation-suite.lino",
+        ],
+    );
 
     let architecture = read(root.join("ARCHITECTURE.md"));
     assert_contains_all(
         "ARCHITECTURE.md",
         &architecture,
-        &["Issue #408 text/code editing path", "R1 … R297"],
+        &[
+            "Issue #408 text/code editing path",
+            "text-manipulation-suite.lino",
+            "280/280 pass-count ratchet",
+        ],
     );
 
     let case_study = read(root.join("docs/case-studies/issue-408/README.md"));
@@ -798,9 +810,11 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &case_study,
         &[
             "# Issue 408 Case Study",
-            "10% of every upstream benchmark",
-            "does not claim",
+            "repository-local 10%-style ratchet",
+            "minimum_pass_count = 280",
+            "280 generated",
             "tests/unit/specification/text_manipulation_benchmarks.rs",
+            "data/benchmarks/text-manipulation-suite.lino",
             "20 additional",
         ],
     );
@@ -812,6 +826,8 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
         &[
             "Benchmark Sources Referenced By PR 416",
             "Additional Popular LLM Benchmarks (20)",
+            "repository-local edit variations per source",
+            "280 of 280",
             "HumanEval",
             "MMLU",
             "HELM",
@@ -827,7 +843,11 @@ fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
     assert_contains_all(
         "tests/unit/specification/text_manipulation_benchmarks.rs",
         &benchmark_tests,
-        &["cases.len() >= 50", "at least 30 examples"],
+        &[
+            "issue_408_text_code_edit_profile_passes_local_ratchet",
+            "minimum_pass_count",
+            "variations_per_source",
+        ],
     );
 }
 

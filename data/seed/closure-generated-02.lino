@@ -1,4 +1,84 @@
 meanings
+  pattern_concept_prefix_shenmeshi_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi traditional"
+  pattern_concept_prefix_shuoshuo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shuoshuo"
+  pattern_concept_prefix_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix smysl"
+  pattern_concept_prefix_tell_me_about
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me about"
+  pattern_concept_prefix_tell_me_what
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me what"
+  pattern_concept_prefix_v_chem_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl"
+  pattern_concept_prefix_v_chem_smysl_alt
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl alt"
+  pattern_concept_prefix_what_do
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what do"
+  pattern_concept_prefix_what_does
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does"
+  pattern_concept_prefix_what_does_mean
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does mean"
+  pattern_concept_prefix_what_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is"
+  pattern_concept_prefix_what_is_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is a"
+  pattern_concept_prefix_what_is_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is an"
+  pattern_concept_prefix_what_is_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is the"
+  pattern_concept_prefix_whats
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats"
+  pattern_concept_prefix_whats_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats a"
   pattern_concept_prefix_whats_an
     defined-by prompt_pattern
     lexeme en
@@ -1129,6 +1209,16 @@ meanings
     lexeme en
       surface
         text "signal processing"
+  snake
+    defined-by concept
+    lexeme en
+      surface
+        text "snake"
+  snake_case
+    defined-by phrase
+    lexeme en
+      surface
+        text "snake case"
   software-design
     defined-by category
     lexeme en
@@ -1154,6 +1244,11 @@ meanings
     lexeme en
       surface
         text "sqrt"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
   structured-knowledge
     defined-by category
     lexeme en
@@ -1204,6 +1299,16 @@ meanings
     lexeme en
       surface
         text "time dilation"
+  title
+    defined-by concept
+    lexeme en
+      surface
+        text "title"
+  title_case
+    defined-by operation
+    lexeme en
+      surface
+        text "title case"
   tool_append_memory
     defined-by tool
     lexeme en
@@ -1289,108 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool web search"
-  tool_wikipedia_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool wikipedia lookup"
-  tool_write_program
-    defined-by tool
-    lexeme en
-      surface
-        text "tool write program"
-  trace_
-    defined-by identifier
-    lexeme en
-      surface
-        text "trace"
-  trim
-    defined-by concept
-    lexeme en
-      surface
-        text "trim"
-  trim_whitespace
-    defined-by operation
-    lexeme en
-      surface
-        text "trim whitespace"
-  ts
-    defined-by word_surface
-    lexeme en
-      surface
-        text "ts"
-  tue
-    defined-by word_surface
-    lexeme en
-      surface
-        text "tue"
-  ui
-    defined-by category
-    lexeme en
-      surface
-        text "ui"
-  unknown_reasoning_question
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning question"
-  unknown_reasoning_trace
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning trace"
-  usd
-    defined-by word_surface
-    lexeme en
-      surface
-        text "usd"
-  visual-property
-    defined-by category
-    lexeme en
-      surface
-        text "visual property"
-  vscode
-    defined-by environment
-    lexeme en
-      surface
-        text "vscode"
-  vscode_local_sync
-    defined-by flow
-    lexeme en
-      surface
-        text "vscode local sync"
-  web-search
-    defined-by word_surface
-    lexeme en
-      surface
-        text "web search"
-  webvm
-    defined-by word_surface
-    lexeme en
-      surface
-        text "webvm"
-  whitespace
-    defined-by concept
-    lexeme en
-      surface
-        text "whitespace"
-  wikidata
-    defined-by source
-    lexeme en
-      surface
-        text "wikidata"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
