@@ -12116,6 +12116,21 @@ function isInstallationConversionRequest(normalized) {
     "turn",
     "translate",
     "back to",
+    "конверт",
+    "преобраз",
+    "перевед",
+    "बदल",
+    "परिवर्त",
+    "रूपांतर",
+    "कन्वर्ट",
+    "转换",
+    "轉換",
+    "转成",
+    "轉成",
+    "转为",
+    "轉為",
+    "翻译",
+    "翻譯",
   ]);
   const namesInstallSurface = installationContainsAny(normalized, [
     "readme",
@@ -12128,6 +12143,15 @@ function isInstallationConversionRequest(normalized) {
     "install script",
     "deployment script",
     "deploy script",
+    "руководство по установ",
+    "инструкц",
+    "установ",
+    "स्थापना",
+    "इंस्टॉल",
+    "इंस्टॉलेशन",
+    "安装",
+    "安裝",
+    "部署",
   ]);
   const namesScriptSurface = installationContainsAny(normalized, [
     " sh ",
@@ -12137,6 +12161,10 @@ function isInstallationConversionRequest(normalized) {
     "pwsh",
     "ps1",
     "script",
+    "скрипт",
+    "скрипта",
+    "脚本",
+    "腳本",
   ]);
   return asksConversion && namesInstallSurface && namesScriptSurface;
 }

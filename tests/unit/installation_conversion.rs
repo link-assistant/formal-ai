@@ -147,6 +147,59 @@ ollama serve
 }
 
 #[test]
+fn install_conversion_prompts_route_across_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        command: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Convert this README.md installation guide into a sh script:\n\
+                     ## Installation\n\
+                     1. Run `npm install`.\n",
+            command: "npm install",
+        },
+        Case {
+            language: "ru",
+            prompt: "Преобразуй это README.md руководство по установке в sh скрипт:\n\
+                     ## Установка\n\
+                     1. Выполни `npm install`.\n",
+            command: "npm install",
+        },
+        Case {
+            language: "hi",
+            prompt: "इस README.md स्थापना guide को sh script में बदलें:\n\
+                     ## स्थापना\n\
+                     1. चलाएं `npm install`.\n",
+            command: "npm install",
+        },
+        Case {
+            language: "zh",
+            prompt: "请把这个 README.md 安装指南转换为 sh 脚本:\n\
+                     ## 安装\n\
+                     1. 运行 `npm install`.\n",
+            command: "npm install",
+        },
+    ];
+
+    for case in cases {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent, "installation_conversion",
+            "language: {}, answer was: {}",
+            case.language, response.answer
+        );
+        assert!(response.answer.contains("source_format markdown"));
+        assert!(response.answer.contains("target_format shell_script"));
+        assert!(response.answer.contains(case.command));
+    }
+}
+
+#[test]
 fn popular_github_projects_route_through_install_conversion() {
     let cases = [
         ("codecrafters-io/build-your-own-x", "git clone https://github.com/codecrafters-io/build-your-own-x.git", "make test"),
