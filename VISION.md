@@ -198,3 +198,14 @@ ratchet, reasoning-first report behavior, and the white-box self-improvement
 loop. The final epic #365 records that the original Russian dialog now produces
 a `write_program` answer with reverse-sorted output instead of `unknown`, and
 that the behavior is covered across runtime and benchmark surfaces.
+
+Issue [#408](https://github.com/link-assistant/formal-ai/issues/408) extends
+the same deterministic path to user-requested text and code edits: follow-up
+replacement requests can target the previous assistant artifact, including a
+generated code block, and the supported edit operations use the shared
+multilingual operation vocabulary. The benchmark claim is manifest-backed:
+PR #416 lists 48 researched sources in
+`data/benchmarks/text-manipulation-suite.lino`, generates 30 deterministic local
+edit variations per source, and requires every source to pass both the explicit
+3-check repository-local 10% floor and the stronger 30/30 ratchet, for 1,440 of
+1,440 passing checks before the branch is complete.
