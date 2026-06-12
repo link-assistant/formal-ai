@@ -329,6 +329,7 @@ The chat surface can explain and modify behavior rules without leaving the dialo
 
 ```text
 List behavior rules
+Покажи правила
 Show behavior rule unknown
 List all facts you know about yourself
 When `Какая у тебя модель личности?` then `У меня символьная модель личности.`

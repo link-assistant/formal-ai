@@ -534,6 +534,11 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
   program_plan_rules
     defined-by concept
     lexeme en

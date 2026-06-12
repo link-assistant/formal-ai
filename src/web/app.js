@@ -3532,15 +3532,19 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
 
 const LOCAL_BEHAVIOR_RULES_LIST_PATTERNS = [
   "show behavior rules",
+  "show rules",
   "show list of your rules",
   "list your rules",
   "покажи правила поведения",
+  "покажи правила",
   "покажи список своих правил",
   "перечисли свои правила",
   "व्यवहार के नियम सूचीबद्ध करें",
+  "नियम दिखाओ",
   "अपने नियमों की सूची दिखाओ",
   "अपने नियम गिनाओ",
   "列出行为规则",
+  "显示规则",
   "显示你的规则列表",
   "列出你的规则",
 ];
