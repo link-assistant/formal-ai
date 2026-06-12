@@ -277,6 +277,61 @@ fn simple_variable_equations_are_solved_after_calculator_delegation() {
 }
 
 #[test]
+fn placeholder_unknown_equations_are_solved_instead_of_reported_unknown() {
+    for (prompt, expected) in [
+        ("?+2=4", &["?+2=4 => ? = 2"][..]),
+        ("*+2=4", &["*+2=4 => * = 2"][..]),
+        ("Solve ? + 2 = 4", &["? = 2"][..]),
+        ("Solve * + 2 = 4", &["* = 2"][..]),
+        ("Solve 2 * ? + 3 = 11", &["? = 4"][..]),
+        ("Solve 2 * * + 3 = 11", &["* = 4"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "placeholder equations should be delegated after link-calculator v0.18.2: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn calculator_handles_upstream_equation_categories_after_placeholder_fix() {
+    for (prompt, expected) in [
+        ("Solve 2 * x + 3 * y = 12", &["x = 6 - 1.5*y"][..]),
+        ("Solve x + ? = 4", &["? = 4 - x"][..]),
+        ("Solve x + * = 4", &["* = 4 - x"][..]),
+        ("Solve ? + * = 4", &["? = 4 - *"][..]),
+        ("Solve x^2 = 4", &["x = -2 or x = 2"][..]),
+        ("Solve x^2 - 5 * x + 6 = 0", &["x = 2 or x = 3"][..]),
+        ("Solve x^3 - x = 0", &["x = -1 or x = 0 or x = 1"][..]),
+        ("Solve ? * ? = 4", &["? = -2 or ? = 2"][..]),
+        ("Solve * * * = 4", &["* = -2 or * = 2"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "upstream equation category should be delegated to link-calculator: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("calculation:lino:")),
+            "upstream equation category should preserve LINO evidence: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn calculator_extraction_does_not_steal_named_entities_with_digits() {
     for prompt in [
         "What is Python 3?",

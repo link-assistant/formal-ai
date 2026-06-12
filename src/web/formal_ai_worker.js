@@ -1998,78 +1998,142 @@ function formatArithmeticResult(value) {
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
 
+function escapeCalculationMarkdown(value) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\*/g, "\\*")
+    .replace(/_/g, "\\_");
+}
+
+const EQUATION_EPSILON = 1e-10;
+
+function equationNearlyZero(value) {
+  return Math.abs(value) <= EQUATION_EPSILON;
+}
+
+function isEquationUnknownPlaceholder(character) {
+  return character === "?" || character === "*";
+}
+
+function parseEquationNumber(input, state, constant) {
+  const start = state.position;
+  let hasDigit = false;
+  let hasDot = false;
+  while (/[0-9.]/.test(input[state.position] || "")) {
+    if (input[state.position] === ".") {
+      if (hasDot) break;
+      hasDot = true;
+    } else {
+      hasDigit = true;
+    }
+    state.position += 1;
+  }
+  if (!hasDigit) throw new Error("expression could not be parsed");
+  const value = Number(input.slice(start, state.position));
+  if (!Number.isFinite(value)) throw new Error("expression could not be parsed");
+  return constant(value);
+}
+
+function parseEquationVariable(input, state, onName) {
+  const start = state.position;
+  if (isEquationUnknownPlaceholder(input[state.position] || "")) {
+    state.position += 1;
+  } else {
+    while (/[\p{L}_]/u.test(input[state.position] || "")) {
+      state.position += 1;
+    }
+  }
+  const name = input.slice(start, state.position);
+  if (!name) throw new Error("expression could not be parsed");
+  onName(name);
+  return name;
+}
+
+function linearConstant(value) {
+  return { terms: Object.create(null), constant: value };
+}
+
+function linearVariable(name) {
+  const terms = Object.create(null);
+  terms[name] = 1;
+  return { terms, constant: 0 };
+}
+
+function linearEntries(value) {
+  return Object.entries(value.terms).filter((entry) => !equationNearlyZero(entry[1]));
+}
+
+function linearHasVariable(value) {
+  return linearEntries(value).length > 0;
+}
+
+function linearAdd(left, right) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(left)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  for (const [name, coefficient] of linearEntries(right)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  return { terms, constant: left.constant + right.constant };
+}
+
+function linearSubtract(left, right) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(left)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  for (const [name, coefficient] of linearEntries(right)) {
+    terms[name] = (terms[name] || 0) - coefficient;
+  }
+  return { terms, constant: left.constant - right.constant };
+}
+
+function linearScale(value, scalar) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(value)) {
+    terms[name] = coefficient * scalar;
+  }
+  return { terms, constant: value.constant * scalar };
+}
+
+function linearMultiply(left, right) {
+  if (linearHasVariable(left) && linearHasVariable(right)) {
+    throw new Error("non-linear equation");
+  }
+  if (linearHasVariable(left)) return linearScale(left, right.constant);
+  if (linearHasVariable(right)) return linearScale(right, left.constant);
+  return linearConstant(left.constant * right.constant);
+}
+
+function linearDivide(left, right) {
+  if (linearHasVariable(right)) throw new Error("variable denominator");
+  if (equationNearlyZero(right.constant)) throw new Error("division by zero");
+  return linearScale(left, 1 / right.constant);
+}
+
 function parseLinearExpression(input) {
-  let position = 0;
-  let variable = null;
+  const state = { position: 0 };
+  const variables = [];
 
   function peek() {
-    return input[position] || "";
+    return input[state.position] || "";
   }
 
   function skipWhitespace() {
-    while (/\s/.test(peek())) position += 1;
+    while (/\s/.test(peek())) state.position += 1;
   }
 
   function consume(expected) {
     if (peek() === expected) {
-      position += 1;
+      state.position += 1;
       return true;
     }
     return false;
   }
 
-  function constant(value) {
-    return { coefficient: 0, constant: value };
-  }
-
-  function variableValue() {
-    return { coefficient: 1, constant: 0 };
-  }
-
-  function hasVariable(value) {
-    return Math.abs(value.coefficient) > Number.EPSILON;
-  }
-
-  function add(left, right) {
-    return {
-      coefficient: left.coefficient + right.coefficient,
-      constant: left.constant + right.constant,
-    };
-  }
-
-  function subtract(left, right) {
-    return {
-      coefficient: left.coefficient - right.coefficient,
-      constant: left.constant - right.constant,
-    };
-  }
-
-  function multiply(left, right) {
-    if (hasVariable(left) && hasVariable(right)) {
-      throw new Error("non-linear equation");
-    }
-    if (hasVariable(left)) {
-      return {
-        coefficient: left.coefficient * right.constant,
-        constant: left.constant * right.constant,
-      };
-    }
-    if (hasVariable(right)) {
-      return {
-        coefficient: right.coefficient * left.constant,
-        constant: right.constant * left.constant,
-      };
-    }
-    return constant(left.constant * right.constant);
-  }
-
-  function divide(left, right) {
-    if (hasVariable(right)) throw new Error("variable denominator");
-    if (Math.abs(right.constant) <= Number.EPSILON) throw new Error("division by zero");
-    return {
-      coefficient: left.coefficient / right.constant,
-      constant: left.constant / right.constant,
-    };
+  function rememberVariable(name) {
+    if (!variables.includes(name)) variables.push(name);
   }
 
   function parseExpression() {
@@ -2077,9 +2141,9 @@ function parseLinearExpression(input) {
     while (true) {
       skipWhitespace();
       if (consume("+")) {
-        value = add(value, parseTerm());
+        value = linearAdd(value, parseTerm());
       } else if (consume("-") || consume("−")) {
-        value = subtract(value, parseTerm());
+        value = linearSubtract(value, parseTerm());
       } else {
         return value;
       }
@@ -2091,9 +2155,9 @@ function parseLinearExpression(input) {
     while (true) {
       skipWhitespace();
       if (consume("*") || consume("×") || consume("·")) {
-        value = multiply(value, parseFactor());
+        value = linearMultiply(value, parseFactor());
       } else if (consume("/") || consume("÷")) {
-        value = divide(value, parseFactor());
+        value = linearDivide(value, parseFactor());
       } else {
         return value;
       }
@@ -2103,54 +2167,44 @@ function parseLinearExpression(input) {
   function parseFactor() {
     skipWhitespace();
     if (consume("+")) return parseFactor();
-    if (consume("-") || consume("−")) {
-      const value = parseFactor();
-      return { coefficient: -value.coefficient, constant: -value.constant };
-    }
+    if (consume("-") || consume("−")) return linearScale(parseFactor(), -1);
     if (consume("(")) {
       const value = parseExpression();
       skipWhitespace();
       if (!consume(")")) throw new Error("unbalanced parentheses");
       return value;
     }
-    if (/[0-9.]/.test(peek())) return parseNumber();
-    if (/\p{L}/u.test(peek())) return parseVariable();
-    throw new Error("expression could not be parsed");
-  }
-
-  function parseNumber() {
-    const start = position;
-    let hasDigit = false;
-    let hasDot = false;
-    while (/[0-9.]/.test(peek())) {
-      if (peek() === ".") {
-        if (hasDot) break;
-        hasDot = true;
-      } else {
-        hasDigit = true;
-      }
-      position += 1;
+    if (/[0-9.]/.test(peek())) return parseEquationNumber(input, state, linearConstant);
+    if (/\p{L}/u.test(peek()) || isEquationUnknownPlaceholder(peek())) {
+      return linearVariable(parseEquationVariable(input, state, rememberVariable));
     }
-    if (!hasDigit) throw new Error("expression could not be parsed");
-    const value = Number(input.slice(start, position));
-    if (!Number.isFinite(value)) throw new Error("expression could not be parsed");
-    return constant(value);
-  }
-
-  function parseVariable() {
-    const start = position;
-    while (/[\p{L}_]/u.test(peek())) position += 1;
-    const name = input.slice(start, position);
-    if (!name) throw new Error("expression could not be parsed");
-    if (variable && variable !== name) throw new Error("multiple variables");
-    variable = name;
-    return variableValue();
+    throw new Error("expression could not be parsed");
   }
 
   const value = parseExpression();
   skipWhitespace();
-  if (position !== input.length) throw new Error("expression could not be parsed");
-  return { value, variable };
+  if (state.position !== input.length) throw new Error("expression could not be parsed");
+  return { value, variables };
+}
+
+function formatLinearSymbolicSolution(constant, terms) {
+  const parts = [];
+  if (!equationNearlyZero(constant)) {
+    parts.push(formatArithmeticResult(constant));
+  }
+  for (const [variable, coefficient] of terms) {
+    if (equationNearlyZero(coefficient)) continue;
+    const absolute = Math.abs(coefficient);
+    const body = equationNearlyZero(absolute - 1)
+      ? variable
+      : `${formatArithmeticResult(absolute)}*${variable}`;
+    if (parts.length === 0) {
+      parts.push(coefficient < 0 ? `-${body}` : body);
+    } else {
+      parts.push(`${coefficient < 0 ? "-" : "+"} ${body}`);
+    }
+  }
+  return parts.length > 0 ? parts.join(" ") : "0";
 }
 
 function solveLinearEquation(expression) {
@@ -2158,16 +2212,264 @@ function solveLinearEquation(expression) {
   if (parts.length !== 2) throw new Error("expression could not be parsed");
   const left = parseLinearExpression(parts[0]);
   const right = parseLinearExpression(parts[1]);
+  const variableOrder = left.variables.concat(
+    right.variables.filter((name) => !left.variables.includes(name)),
+  );
+  const combined = linearSubtract(left.value, right.value);
+  const activeVariables = variableOrder.filter((name) =>
+    !equationNearlyZero(combined.terms[name] || 0),
+  );
+  const variable =
+    activeVariables.find((name) => isEquationUnknownPlaceholder(name)) ||
+    activeVariables[0];
+  if (!variable) throw new Error("expression could not be parsed");
+  const coefficient = combined.terms[variable] || 0;
+  if (equationNearlyZero(coefficient)) throw new Error("expression could not be parsed");
+
+  const constant = -combined.constant / coefficient;
+  const symbolicTerms = [];
+  for (const name of activeVariables) {
+    if (name === variable) continue;
+    symbolicTerms.push([name, -(combined.terms[name] || 0) / coefficient]);
+  }
+  const hasSymbolicTerms = symbolicTerms.some((entry) => !equationNearlyZero(entry[1]));
+  const rendered = hasSymbolicTerms
+    ? formatLinearSymbolicSolution(constant, symbolicTerms)
+    : formatArithmeticResult(constant);
+  return `${variable} = ${rendered}`;
+}
+
+function polynomialConstant(value) {
+  const coefficients = Object.create(null);
+  if (!equationNearlyZero(value)) coefficients[0] = value;
+  return { coefficients };
+}
+
+function polynomialVariable() {
+  const coefficients = Object.create(null);
+  coefficients[1] = 1;
+  return { coefficients };
+}
+
+function polynomialCoefficient(poly, degree) {
+  return poly.coefficients[degree] || 0;
+}
+
+function polynomialEntries(poly) {
+  return Object.entries(poly.coefficients)
+    .map(([degree, coefficient]) => [Number(degree), coefficient])
+    .filter((entry) => !equationNearlyZero(entry[1]));
+}
+
+function polynomialDegree(poly) {
+  return polynomialEntries(poly).reduce(
+    (degree, entry) => Math.max(degree, entry[0]),
+    0,
+  );
+}
+
+function polynomialAdd(left, right) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(left)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  for (const [degree, coefficient] of polynomialEntries(right)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  return { coefficients };
+}
+
+function polynomialSubtract(left, right) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(left)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  for (const [degree, coefficient] of polynomialEntries(right)) {
+    coefficients[degree] = (coefficients[degree] || 0) - coefficient;
+  }
+  return { coefficients };
+}
+
+function polynomialScale(poly, scalar) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(poly)) {
+    coefficients[degree] = coefficient * scalar;
+  }
+  return { coefficients };
+}
+
+function polynomialMultiply(left, right) {
+  const coefficients = Object.create(null);
+  for (const [leftDegree, leftCoefficient] of polynomialEntries(left)) {
+    for (const [rightDegree, rightCoefficient] of polynomialEntries(right)) {
+      const degree = leftDegree + rightDegree;
+      coefficients[degree] =
+        (coefficients[degree] || 0) + leftCoefficient * rightCoefficient;
+    }
+  }
+  return { coefficients };
+}
+
+function polynomialDivide(left, right) {
+  if (polynomialDegree(right) !== 0) throw new Error("variable denominator");
+  const denominator = polynomialCoefficient(right, 0);
+  if (equationNearlyZero(denominator)) throw new Error("division by zero");
+  return polynomialScale(left, 1 / denominator);
+}
+
+function polynomialPower(poly, exponent) {
+  if (
+    polynomialDegree(exponent) !== 0 ||
+    !Number.isInteger(polynomialCoefficient(exponent, 0)) ||
+    polynomialCoefficient(exponent, 0) < 0 ||
+    polynomialCoefficient(exponent, 0) > 6
+  ) {
+    throw new Error("unsupported polynomial exponent");
+  }
+  let result = polynomialConstant(1);
+  for (let i = 0; i < polynomialCoefficient(exponent, 0); i += 1) {
+    result = polynomialMultiply(result, poly);
+  }
+  return result;
+}
+
+function parsePolynomialExpression(input) {
+  const state = { position: 0 };
+  let variable = null;
+
+  function peek() {
+    return input[state.position] || "";
+  }
+
+  function skipWhitespace() {
+    while (/\s/.test(peek())) state.position += 1;
+  }
+
+  function consume(expected) {
+    if (peek() === expected) {
+      state.position += 1;
+      return true;
+    }
+    return false;
+  }
+
+  function rememberVariable(name) {
+    if (variable && variable !== name) throw new Error("multiple variables");
+    variable = name;
+  }
+
+  function parseExpression() {
+    let value = parseTerm();
+    while (true) {
+      skipWhitespace();
+      if (consume("+")) {
+        value = polynomialAdd(value, parseTerm());
+      } else if (consume("-") || consume("−")) {
+        value = polynomialSubtract(value, parseTerm());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseTerm() {
+    let value = parseUnary();
+    while (true) {
+      skipWhitespace();
+      if (consume("*") || consume("×") || consume("·")) {
+        value = polynomialMultiply(value, parseUnary());
+      } else if (consume("/") || consume("÷")) {
+        value = polynomialDivide(value, parseUnary());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseUnary() {
+    skipWhitespace();
+    if (consume("+")) return parseUnary();
+    if (consume("-") || consume("−")) return polynomialScale(parseUnary(), -1);
+    return parsePower();
+  }
+
+  function parsePower() {
+    let value = parsePrimary();
+    skipWhitespace();
+    if (consume("^")) {
+      value = polynomialPower(value, parseUnary());
+    }
+    return value;
+  }
+
+  function parsePrimary() {
+    skipWhitespace();
+    if (consume("(")) {
+      const value = parseExpression();
+      skipWhitespace();
+      if (!consume(")")) throw new Error("unbalanced parentheses");
+      return value;
+    }
+    if (/[0-9.]/.test(peek())) return parseEquationNumber(input, state, polynomialConstant);
+    if (/\p{L}/u.test(peek()) || isEquationUnknownPlaceholder(peek())) {
+      parseEquationVariable(input, state, rememberVariable);
+      return polynomialVariable();
+    }
+    throw new Error("expression could not be parsed");
+  }
+
+  const value = parseExpression();
+  skipWhitespace();
+  if (state.position !== input.length) throw new Error("expression could not be parsed");
+  return { value, variable };
+}
+
+function evaluatePolynomial(poly, value) {
+  return polynomialEntries(poly).reduce(
+    (total, entry) => total + entry[1] * value ** entry[0],
+    0,
+  );
+}
+
+function findPolynomialRealRoots(poly) {
+  const roots = [];
+  for (let denominator = 1; denominator <= 20; denominator += 1) {
+    for (let numerator = -200; numerator <= 200; numerator += 1) {
+      const candidate = numerator / denominator;
+      if (roots.some((root) => Math.abs(root - candidate) < 1e-8)) continue;
+      if (Math.abs(evaluatePolynomial(poly, candidate)) < 1e-8) {
+        roots.push(candidate);
+      }
+    }
+  }
+  return roots.sort((left, right) => left - right);
+}
+
+function solvePolynomialEquation(expression) {
+  const parts = String(expression).split("=");
+  if (parts.length !== 2) throw new Error("expression could not be parsed");
+  const left = parsePolynomialExpression(parts[0]);
+  const right = parsePolynomialExpression(parts[1]);
+  if (!left.variable && !right.variable) throw new Error("expression could not be parsed");
+  if (left.variable && right.variable && left.variable !== right.variable) {
+    throw new Error("expression could not be parsed");
+  }
   const variable = left.variable || right.variable;
-  if (!variable || (left.variable && right.variable && left.variable !== right.variable)) {
-    throw new Error("expression could not be parsed");
+  const combined = polynomialSubtract(left.value, right.value);
+  if (polynomialDegree(combined) < 2) throw new Error("expression could not be parsed");
+  const roots = findPolynomialRealRoots(combined);
+  if (roots.length === 0) throw new Error("expression could not be parsed");
+  return roots
+    .map((root) => `${variable} = ${formatArithmeticResult(root)}`)
+    .join(" or ");
+}
+
+function solveEquation(expression) {
+  try {
+    return solveLinearEquation(expression);
+  } catch (_linearError) {
+    return solvePolynomialEquation(expression);
   }
-  const coefficient = left.value.coefficient - right.value.coefficient;
-  if (Math.abs(coefficient) <= Number.EPSILON) {
-    throw new Error("expression could not be parsed");
-  }
-  const value = (right.value.constant - left.value.constant) / coefficient;
-  return `${variable} = ${formatArithmeticResult(value)}`;
 }
 
 function hasArithmeticWordOperator(expression) {
@@ -2737,7 +3039,7 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   if (evaluateCurrencyConversionExpression(working) !== null) {
     return extracted;
   }
-  const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
+  const allowed = /^[0-9+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return extracted;
 }
@@ -6197,14 +6499,17 @@ function tryArithmetic(prompt) {
         formatted = percentOfResult;
         backend = "js-percent-of";
       } else if (isEquation) {
-        formatted = solveLinearEquation(expression);
+        formatted = solveEquation(expression);
+        backend = "js-equation-fallback";
       } else {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }
     }
+    const renderedExpression = escapeCalculationMarkdown(expression.trim());
+    const renderedFormatted = escapeCalculationMarkdown(formatted);
     const calculationLine = isEquation
-      ? `${expression.trim()} => ${formatted}`
-      : `${expression.trim()} = ${formatted}`;
+      ? `${renderedExpression} => ${renderedFormatted}`
+      : `${renderedExpression} = ${renderedFormatted}`;
     const sections = [];
     if (reasoningSteps.length > 0) {
       sections.push(

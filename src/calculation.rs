@@ -256,7 +256,10 @@ impl<'a> LinearParser<'a> {
         {
             return self.parse_number();
         }
-        if self.peek().is_some_and(char::is_alphabetic) {
+        if self
+            .peek()
+            .is_some_and(|character| character.is_alphabetic() || is_unknown_placeholder(character))
+        {
             return self.parse_variable();
         }
         Err(ArithmeticError::Unparseable)
@@ -288,11 +291,17 @@ impl<'a> LinearParser<'a> {
 
     fn parse_variable(&mut self) -> Result<LinearValue, ArithmeticError> {
         let start = self.position;
-        while let Some(character) = self.peek() {
-            if character.is_alphabetic() || character == '_' {
+        if let Some(character) = self.peek() {
+            if is_unknown_placeholder(character) {
                 self.advance(character);
             } else {
-                break;
+                while let Some(character) = self.peek() {
+                    if character.is_alphabetic() || character == '_' {
+                        self.advance(character);
+                    } else {
+                        break;
+                    }
+                }
             }
         }
         let name = self.input[start..self.position].to_owned();
@@ -339,6 +348,10 @@ impl<'a> LinearParser<'a> {
 
 fn nearly_zero(value: f64) -> bool {
     value.abs() < f64::EPSILON
+}
+
+const fn is_unknown_placeholder(character: char) -> bool {
+    matches!(character, '?' | '*')
 }
 
 fn format_equation_number(value: f64) -> Result<String, ArithmeticError> {
@@ -429,7 +442,9 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
 fn trim_prompt_punctuation(value: &str) -> &str {
     value
         .trim()
-        .trim_matches(|c| matches!(c, '?' | '!' | '。' | '？' | '！'))
+        .trim_start_matches(['!', '。', '？', '！'])
+        .trim()
+        .trim_end_matches(['?', '!', '。', '？', '！'])
         .trim()
         .trim_end_matches('.')
         .trim()

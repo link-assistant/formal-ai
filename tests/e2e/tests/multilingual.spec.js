@@ -349,6 +349,44 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('x*2 = 123 => x = 61.5');
   });
 
+  test('placeholder unknown equations resolve as calculations across supported languages', async ({ page }) => {
+    const cases = [
+      { language: 'en', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'ru', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'hi', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+      { language: 'zh', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+    ];
+
+    for (const { language, prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, language).toHaveClass(/assistant/);
+      await expect(last, language).toContainText(expected);
+    }
+  });
+
+  test('symbolic and polynomial equations resolve as calculations', async ({ page }) => {
+    const cases = [
+      {
+        prompt: '2 * x + 3 * y = 12',
+        expected: '2 * x + 3 * y = 12 => x = 6 - 1.5*y',
+      },
+      { prompt: 'x + ? = 4', expected: 'x + ? = 4 => ? = 4 - x' },
+      { prompt: 'x^2 = 4', expected: 'x^2 = 4 => x = -2 or x = 2' },
+      {
+        prompt: 'x^2 - 5 * x + 6 = 0',
+        expected: 'x^2 - 5 * x + 6 = 0 => x = 2 or x = 3',
+      },
+      { prompt: '? * ? = 4', expected: '? * ? = 4 => ? = -2 or ? = 2' },
+      { prompt: '* * * = 4', expected: '* * * = 4 => * = -2 or * = 2' },
+    ];
+
+    for (const { prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, prompt).toHaveClass(/assistant/);
+      await expect(last, prompt).toContainText(expected);
+    }
+  });
+
   test('polite arithmetic action resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Can you calculate 2 + 2?');
     await expect(last).toHaveClass(/assistant/);
