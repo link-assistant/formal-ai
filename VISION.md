@@ -205,7 +205,7 @@ replacement requests can target the previous assistant artifact, including a
 generated code block, and the supported edit operations use the shared
 multilingual operation vocabulary. The benchmark claim is manifest-backed:
 PR #416 lists 28 researched sources in
-`data/benchmarks/text-manipulation-suite.lino`, generates 10 deterministic local
-edit variations per source, and requires the 280/280 pass-count ratchet before
+`data/benchmarks/text-manipulation-suite.lino`, generates 20 deterministic local
+edit variations per source, and requires the 560/560 pass-count ratchet before
 the branch is complete. Official full-upstream benchmark pass rates still require
 imported datasets, runners, scoring, provenance, and CI ratchets.

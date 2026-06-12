@@ -1,4 +1,44 @@
 meanings
+  pattern_concept_prefix_rasskazhi_mne_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne o"
+  pattern_concept_prefix_rasskazhi_mne_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne pro"
+  pattern_concept_prefix_rasskazhi_mne_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne za"
+  pattern_concept_prefix_rasskazhi_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi o"
+  pattern_concept_prefix_rasskazhi_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi pro"
+  pattern_concept_prefix_rasskazhi_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi za"
+  pattern_concept_prefix_shenmejiao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmejiao"
+  pattern_concept_prefix_shenmeshi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi simplified"
   pattern_concept_prefix_shenmeshi_traditional
     defined-by prompt_pattern
     lexeme en
@@ -704,6 +744,11 @@ meanings
     lexeme en
       surface
         text "proposal only"
+  punctuation
+    defined-by concept
+    lexeme en
+      surface
+        text "punctuation"
   react-chat-ui
     defined-by name
     lexeme en
@@ -724,6 +769,11 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remove_punctuation
+    defined-by operation
+    lexeme en
+      surface
+        text "remove punctuation"
   remove_text
     defined-by operation
     lexeme en
@@ -1124,6 +1174,11 @@ meanings
     lexeme en
       surface
         text "response unknown zh"
+  reverse_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse lines"
   reverse_sort
     defined-by operation
     lexeme en
@@ -1194,6 +1249,11 @@ meanings
     lexeme en
       surface
         text "self improvement loop"
+  sentence_case
+    defined-by operation
+    lexeme en
+      surface
+        text "sentence case"
   shell-helpers
     defined-by category
     lexeme en
@@ -1239,6 +1299,11 @@ meanings
     lexeme en
       surface
         text "sort lines"
+  sort_words
+    defined-by operation
+    lexeme en
+      surface
+        text "sort words"
   sqrt
     defined-by word_surface
     lexeme en
@@ -1329,68 +1394,3 @@ meanings
     lexeme en
       surface
         text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_roleplay
-    defined-by tool
-    lexeme en
-      surface
-        text "tool roleplay"
-  tool_summarize_conversation
-    defined-by tool
-    lexeme en
-      surface
-        text "tool summarize conversation"
-  tool_url_navigate
-    defined-by tool
-    lexeme en
-      surface
-        text "tool url navigate"
-  tool_web_search
-    defined-by tool
-    lexeme en
-      surface
-        text "tool web search"

@@ -253,11 +253,11 @@ PR [#416](https://github.com/link-assistant/formal-ai/pull/416) fixes the issue
 replacement failure by routing text and code edit requests through a
 deterministic symbolic edit path. The branch verifies the original reproduction,
 multilingual replacement variants, punctuation-tolerant replacements, broader
-case and line-shape edit operations, 50 self-authored benchmark-family edit
-examples, and a manifest-backed 28-source local profile with 10 deterministic
-variations per source.
+case, extraction, counting, punctuation, and line-shape edit operations, 61
+self-authored benchmark-family edit examples, and a manifest-backed 28-source
+local profile with 20 deterministic variations per source.
 
-The issue #408 local benchmark ratchet passes 280 of 280 generated profile
+The issue #408 local benchmark ratchet passes 560 of 560 generated profile
 checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. This is a
 repository-local 10%-style profile over the researched sources, not an official
 full-upstream benchmark score; a future PR that publishes official upstream

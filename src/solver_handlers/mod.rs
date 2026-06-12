@@ -24,6 +24,7 @@ mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
+mod text_edit_ops;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;

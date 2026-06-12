@@ -121,6 +121,37 @@ operation_vocabulary
       phrase 提取邮箱
       phrase 提取电子邮件
       phrase 提取邮件
+  operation extract_url
+    language en
+      phrase "extract urls"
+      phrase "extract links"
+      combo extract+url
+      combo extract+link
+    language ru
+      combo извлеки+url
+      combo извлеки+ссылк
+      combo найди+ссылк
+    language hi
+      combo लिंक+निकाल
+      combo यूआरएल+निकाल
+    language zh
+      phrase 提取链接
+      phrase 提取网址
+      combo 提取+url
+  operation extract_number
+    language en
+      phrase "extract numbers"
+      combo extract+number
+      combo extract+numbers
+    language ru
+      combo извлеки+числ
+      combo найди+числ
+    language hi
+      combo संख्या+निकाल
+      combo नंबर+निकाल
+    language zh
+      phrase 提取数字
+      phrase 提取数值
   operation count_occurrences
     language en
       phrase "count occurrences"
@@ -151,6 +182,46 @@ operation_vocabulary
       phrase 唯一单词
       phrase 不同单词
       phrase 统计唯一
+  operation count_words
+    language en
+      phrase "count words"
+      phrase "word count"
+    language ru
+      phrase "количество слов"
+      combo посчитай+слова
+    language hi
+      combo शब्द+गिन
+      phrase "शब्दों की संख्या"
+    language zh
+      phrase 统计单词
+      phrase 单词数量
+  operation count_lines
+    language en
+      phrase "count lines"
+      phrase "line count"
+    language ru
+      phrase "количество строк"
+      combo посчитай+строки
+    language hi
+      combo लाइन+गिन
+      phrase "लाइनों की संख्या"
+    language zh
+      phrase 统计行
+      phrase 行数
+  operation count_characters
+    language en
+      phrase "count characters"
+      phrase "character count"
+      phrase "count chars"
+    language ru
+      phrase "количество символов"
+      combo посчитай+символ
+    language hi
+      combo अक्षर+गिन
+      combo वर्ण+गिन
+    language zh
+      phrase 统计字符
+      phrase 字符数
   operation deduplicate_lines
     language en
       phrase "deduplicate lines"
@@ -193,6 +264,20 @@ operation_vocabulary
       phrase 排序行
       phrase 行排序
       phrase 对行排序
+  operation sort_words
+    language en
+      phrase "sort words"
+      phrase "sort the words"
+      combo sort+words
+    language ru
+      combo сортир+слова
+      combo упорядоч+слова
+    language hi
+      combo शब्द+क्रमबद्ध
+      combo शब्दों+क्रमबद्ध
+    language zh
+      phrase 排序单词
+      phrase 单词排序
   operation trim_whitespace
     language en
       phrase "trim whitespace"
@@ -240,6 +325,19 @@ operation_vocabulary
     language zh
       phrase 标题大小写
       combo 单词+大写
+  operation sentence_case
+    language en
+      phrase "sentence case"
+      combo sentence+case
+    language ru
+      phrase "как предложение"
+      combo регистр+предложения
+    language hi
+      phrase "वाक्य केस"
+      combo वाक्य+केस
+    language zh
+      phrase 句子大小写
+      combo 句子+大小写
   operation snake_case
     language en
       phrase "snake case"
@@ -296,6 +394,20 @@ operation_vocabulary
     language zh
       phrase 帕斯卡命名
       phrase PascalCase
+  operation remove_punctuation
+    language en
+      phrase "remove punctuation"
+      phrase "strip punctuation"
+      combo remove+punctuation
+    language ru
+      phrase "удали пунктуацию"
+      combo убрать+пунктуац
+    language hi
+      combo विराम+हटा
+      combo punctuation+हटा
+    language zh
+      phrase 删除标点
+      phrase 去除标点
   operation strip_empty_lines
     language en
       phrase "strip empty lines"
@@ -324,6 +436,20 @@ operation_vocabulary
     language zh
       phrase 合并行
       phrase 连接行
+  operation reverse_lines
+    language en
+      phrase "reverse lines"
+      phrase "reverse the lines"
+      combo reverse+lines
+    language ru
+      combo переверни+строки
+      combo разверни+строки
+    language hi
+      combo लाइनें+उल्टा
+      combo लाइन+उल्टा
+    language zh
+      phrase 反转行
+      phrase 倒转行
   operation number_lines
     language en
       phrase "number lines"
@@ -366,6 +492,34 @@ operation_vocabulary
     language zh
       phrase 减少缩进
       phrase 移除缩进
+  operation comment_lines
+    language en
+      phrase "comment lines"
+      phrase "comment the lines"
+      combo add+comments
+    language ru
+      phrase "закомментируй строки"
+      combo добавить+комментарии
+    language hi
+      combo लाइन+comment
+      combo टिप्पणी+जोड़
+    language zh
+      phrase 注释行
+      phrase 添加注释
+  operation uncomment_lines
+    language en
+      phrase "uncomment lines"
+      phrase "remove line comments"
+      combo remove+comments
+    language ru
+      phrase "раскомментируй строки"
+      combo убрать+комментарии
+    language hi
+      combo टिप्पणी+हटा
+      combo comment+हटा
+    language zh
+      phrase 取消注释
+      phrase 删除注释
   operation path_argument
     language en
       phrase "path argument"

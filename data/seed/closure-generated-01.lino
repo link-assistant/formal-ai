@@ -259,6 +259,21 @@ meanings
     lexeme en
       surface
         text "command stream"
+  comment
+    defined-by concept
+    lexeme en
+      surface
+        text "comment"
+  comment_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "comment lines"
+  comments
+    defined-by concept
+    lexeme en
+      surface
+        text "comments"
   concept_lookup
     defined-by intent
     lexeme en
@@ -339,6 +354,16 @@ meanings
     lexeme en
       surface
         text "coreference rust"
+  count_characters
+    defined-by operation
+    lexeme en
+      surface
+        text "count characters"
+  count_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "count lines"
   count_occurrences
     defined-by operation
     lexeme en
@@ -354,6 +379,11 @@ meanings
     lexeme en
       surface
         text "count unique words"
+  count_words
+    defined-by operation
+    lexeme en
+      surface
+        text "count words"
   courtesy_response
     defined-by intent
     lexeme en
@@ -489,6 +519,16 @@ meanings
     lexeme en
       surface
         text "extract email"
+  extract_number
+    defined-by operation
+    lexeme en
+      surface
+        text "extract number"
+  extract_url
+    defined-by operation
+    lexeme en
+      surface
+        text "extract url"
   fact_lookup
     defined-by intent
     lexeme en
@@ -1354,43 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix opredelenie"
-  pattern_concept_prefix_rasskazhi_mne_o
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne o"
-  pattern_concept_prefix_rasskazhi_mne_pro
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne pro"
-  pattern_concept_prefix_rasskazhi_mne_za
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi mne za"
-  pattern_concept_prefix_rasskazhi_o
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi o"
-  pattern_concept_prefix_rasskazhi_pro
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi pro"
-  pattern_concept_prefix_rasskazhi_za
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix rasskazhi za"
-  pattern_concept_prefix_shenmejiao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmejiao"
-  pattern_concept_prefix_shenmeshi_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix shenmeshi simplified"

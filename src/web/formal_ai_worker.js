@@ -8666,11 +8666,20 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("extract_email", normalized)) {
     operations.push({ slug: "extract_email" });
   }
+  if (textOperationMatches("extract_url", normalized)) {
+    operations.push({ slug: "extract_url" });
+  }
+  if (textOperationMatches("extract_number", normalized)) {
+    operations.push({ slug: "extract_number" });
+  }
   if (textOperationMatches("deduplicate_lines", normalized)) {
     operations.push({ slug: "deduplicate_lines" });
   }
   if (textOperationMatches("sort_lines", normalized)) {
     operations.push({ slug: "sort_lines" });
+  }
+  if (textOperationMatches("sort_words", normalized)) {
+    operations.push({ slug: "sort_words" });
   }
   if (textOperationMatches("trim_whitespace", normalized)) {
     operations.push({ slug: "trim_whitespace" });
@@ -8680,6 +8689,9 @@ function appendSimpleTextOperations(normalized, operations) {
   }
   if (textOperationMatches("title_case", normalized)) {
     operations.push({ slug: "title_case" });
+  }
+  if (textOperationMatches("sentence_case", normalized)) {
+    operations.push({ slug: "sentence_case" });
   }
   if (textOperationMatches("snake_case", normalized)) {
     operations.push({ slug: "snake_case" });
@@ -8699,6 +8711,9 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("join_lines", normalized)) {
     operations.push({ slug: "join_lines" });
   }
+  if (textOperationMatches("reverse_lines", normalized)) {
+    operations.push({ slug: "reverse_lines" });
+  }
   if (textOperationMatches("number_lines", normalized)) {
     operations.push({ slug: "number_lines" });
   }
@@ -8708,8 +8723,24 @@ function appendSimpleTextOperations(normalized, operations) {
   if (textOperationMatches("outdent_lines", normalized)) {
     operations.push({ slug: "outdent_lines" });
   }
+  if (textOperationMatches("uncomment_lines", normalized)) {
+    operations.push({ slug: "uncomment_lines" });
+  } else if (textOperationMatches("comment_lines", normalized)) {
+    operations.push({ slug: "comment_lines" });
+  }
+  if (textOperationMatches("remove_punctuation", normalized)) {
+    operations.push({ slug: "remove_punctuation" });
+  }
   if (textOperationMatches("count_unique_words", normalized)) {
     operations.push({ slug: "count_unique_words" });
+  } else if (textOperationMatches("count_words", normalized)) {
+    operations.push({ slug: "count_words" });
+  }
+  if (textOperationMatches("count_lines", normalized)) {
+    operations.push({ slug: "count_lines" });
+  }
+  if (textOperationMatches("count_characters", normalized)) {
+    operations.push({ slug: "count_characters" });
   }
 }
 
@@ -8767,7 +8798,7 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
     if (quoted.length < 1) return null;
     operations.push({ slug: "count_occurrences", needle: quoted[0].text });
     input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || fallbackInput;
-  } else if (textOperationMatches("remove_text", normalized)) {
+  } else if (textOperationMatches("remove_text", normalized) && !matchesSpecificRemoveOperation(normalized)) {
     const parsed = parseRemoveTextRequest(prompt, history, quoted);
     if (!parsed) return null;
     operations.push({ slug: "remove_text", needle: parsed.needle });
@@ -8790,6 +8821,10 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
   return { input, operations };
 }
 
+function matchesSpecificRemoveOperation(normalized) {
+  return textOperationMatches("remove_punctuation", normalized) || textOperationMatches("strip_empty_lines", normalized);
+}
+
 function cleanEmailCandidate(candidate) {
   return String(candidate || "")
     .replace(/^[^A-Za-z0-9@._+-]+|[^A-Za-z0-9@._+-]+$/g, "")
@@ -8808,6 +8843,24 @@ function looksLikeEmail(candidate) {
   );
 }
 
+function cleanUrlCandidate(candidate) {
+  return String(candidate || "")
+    .replace(/^[`"'<>()[\]{},;]+|[`"'<>()[\]{},;]+$/g, "")
+    .replace(/[.!?:]+$/g, "");
+}
+
+function looksLikeUrl(candidate) {
+  const text = String(candidate || "");
+  return text.startsWith("http://") || text.startsWith("https://") || text.startsWith("www.");
+}
+
+function extractNumbers(input) {
+  const numbers = [];
+  const pattern = /(^|[^\p{L}\p{N}])([+-]?\d+(?:\.\d+)?)(?=$|[^\p{L}\p{N}])/gu;
+  for (const match of String(input || "").matchAll(pattern)) numbers.push(match[2]);
+  return numbers;
+}
+
 function countUniqueWords(input) {
   return new Set(
     String(input || "")
@@ -8815,6 +8868,13 @@ function countUniqueWords(input) {
       .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
       .filter(Boolean),
   ).size;
+}
+
+function countWords(input) {
+  return String(input || "")
+    .split(/\s+/)
+    .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
+    .filter(Boolean).length;
 }
 
 function deduplicateLines(input) {
@@ -8841,6 +8901,20 @@ function capitalizeWord(word) {
 
 function titleCase(input) {
   return caseWords(input).map(capitalizeWord).join(" ");
+}
+
+function textSentenceCase(input) {
+  let capitalized = false;
+  let output = "";
+  for (const character of Array.from(String(input || "").toLowerCase())) {
+    if (!capitalized && /[\p{L}\p{N}]/u.test(character)) {
+      output += character.toUpperCase();
+      capitalized = true;
+    } else {
+      output += character;
+    }
+  }
+  return output;
 }
 
 function delimiterCase(input, delimiter) {
@@ -8875,6 +8949,34 @@ function numberLines(input) {
   return String(input || "")
     .split(/\r?\n/)
     .map((line, index) => `${index + 1}. ${line}`);
+}
+
+function reverseLines(input) {
+  return String(input || "").split(/\r?\n/).reverse().join("\n");
+}
+
+function commentLines(input) {
+  return String(input || "").split(/\r?\n/).map((line) => `// ${line}`).join("\n");
+}
+
+function uncommentLine(line) {
+  const text = String(line || "");
+  const match = text.match(/^(\s*)(\/\/ |\/\/|# |#)(.*)$/);
+  return match ? `${match[1]}${match[3]}` : text;
+}
+
+function uncommentLines(input) {
+  return String(input || "").split(/\r?\n/).map(uncommentLine).join("\n");
+}
+
+function removePunctuation(input) {
+  return Array.from(String(input || ""))
+    .filter((character) => /[\p{L}\p{N}\s]/u.test(character))
+    .join("");
+}
+
+function sortWords(input) {
+  return String(input || "").split(/\s+/).filter(Boolean).sort().join(" ");
 }
 
 function outdentLine(line) {
@@ -9012,20 +9114,38 @@ function applyTextOperation(operation, input) {
         .map(cleanEmailCandidate)
         .filter(looksLikeEmail)
         .join("\n");
+    case "extract_url":
+      return String(input)
+        .split(/\s+/)
+        .map(cleanUrlCandidate)
+        .filter(looksLikeUrl)
+        .join("\n");
+    case "extract_number":
+      return extractNumbers(input).join("\n");
     case "count_occurrences":
       return operation.needle ? String(input).split(operation.needle).length - 1 : "0";
     case "count_unique_words":
       return String(countUniqueWords(input));
+    case "count_words":
+      return String(countWords(input));
+    case "count_lines":
+      return String(String(input).split(/\r?\n/).length);
+    case "count_characters":
+      return String(Array.from(String(input)).length);
     case "deduplicate_lines":
       return deduplicateLines(input).join("\n");
     case "sort_lines":
       return String(input).split(/\r?\n/).sort().join("\n");
+    case "sort_words":
+      return sortWords(input);
     case "trim_whitespace":
       return String(input).trim();
     case "normalize_whitespace":
       return String(input).split(/\s+/).filter(Boolean).join(" ");
     case "title_case":
       return titleCase(input);
+    case "sentence_case":
+      return textSentenceCase(input);
     case "snake_case":
       return delimiterCase(input, "_");
     case "kebab_case":
@@ -9034,16 +9154,24 @@ function applyTextOperation(operation, input) {
       return camelCase(input);
     case "pascal_case":
       return pascalCase(input);
+    case "remove_punctuation":
+      return removePunctuation(input);
     case "strip_empty_lines":
       return stripEmptyLines(input).join("\n");
     case "join_lines":
       return joinLines(input);
+    case "reverse_lines":
+      return reverseLines(input);
     case "number_lines":
       return numberLines(input).join("\n");
     case "indent_lines":
       return String(input).split(/\r?\n/).map((line) => `    ${line}`).join("\n");
     case "outdent_lines":
       return String(input).split(/\r?\n/).map(outdentLine).join("\n");
+    case "comment_lines":
+      return commentLines(input);
+    case "uncomment_lines":
+      return uncommentLines(input);
     default:
       return String(input);
   }
@@ -13951,6 +14079,37 @@ const OPERATION_VOCABULARY_LINO = [
   "      phrase 提取邮箱",
   "      phrase 提取电子邮件",
   "      phrase 提取邮件",
+  "  operation extract_url",
+  "    language en",
+  '      phrase "extract urls"',
+  '      phrase "extract links"',
+  "      combo extract+url",
+  "      combo extract+link",
+  "    language ru",
+  "      combo извлеки+url",
+  "      combo извлеки+ссылк",
+  "      combo найди+ссылк",
+  "    language hi",
+  "      combo लिंक+निकाल",
+  "      combo यूआरएल+निकाल",
+  "    language zh",
+  "      phrase 提取链接",
+  "      phrase 提取网址",
+  "      combo 提取+url",
+  "  operation extract_number",
+  "    language en",
+  '      phrase "extract numbers"',
+  "      combo extract+number",
+  "      combo extract+numbers",
+  "    language ru",
+  "      combo извлеки+числ",
+  "      combo найди+числ",
+  "    language hi",
+  "      combo संख्या+निकाल",
+  "      combo नंबर+निकाल",
+  "    language zh",
+  "      phrase 提取数字",
+  "      phrase 提取数值",
   "  operation count_occurrences",
   "    language en",
   '      phrase "count occurrences"',
@@ -13981,6 +14140,46 @@ const OPERATION_VOCABULARY_LINO = [
   "      phrase 唯一单词",
   "      phrase 不同单词",
   "      phrase 统计唯一",
+  "  operation count_words",
+  "    language en",
+  '      phrase "count words"',
+  '      phrase "word count"',
+  "    language ru",
+  '      phrase "количество слов"',
+  "      combo посчитай+слова",
+  "    language hi",
+  "      combo शब्द+गिन",
+  '      phrase "शब्दों की संख्या"',
+  "    language zh",
+  "      phrase 统计单词",
+  "      phrase 单词数量",
+  "  operation count_lines",
+  "    language en",
+  '      phrase "count lines"',
+  '      phrase "line count"',
+  "    language ru",
+  '      phrase "количество строк"',
+  "      combo посчитай+строки",
+  "    language hi",
+  "      combo लाइन+गिन",
+  '      phrase "लाइनों की संख्या"',
+  "    language zh",
+  "      phrase 统计行",
+  "      phrase 行数",
+  "  operation count_characters",
+  "    language en",
+  '      phrase "count characters"',
+  '      phrase "character count"',
+  '      phrase "count chars"',
+  "    language ru",
+  '      phrase "количество символов"',
+  "      combo посчитай+символ",
+  "    language hi",
+  "      combo अक्षर+गिन",
+  "      combo वर्ण+गिन",
+  "    language zh",
+  "      phrase 统计字符",
+  "      phrase 字符数",
   "  operation deduplicate_lines",
   "    language en",
   '      phrase "deduplicate lines"',
@@ -14023,6 +14222,20 @@ const OPERATION_VOCABULARY_LINO = [
   "      phrase 排序行",
   "      phrase 行排序",
   "      phrase 对行排序",
+  "  operation sort_words",
+  "    language en",
+  '      phrase "sort words"',
+  '      phrase "sort the words"',
+  "      combo sort+words",
+  "    language ru",
+  "      combo сортир+слова",
+  "      combo упорядоч+слова",
+  "    language hi",
+  "      combo शब्द+क्रमबद्ध",
+  "      combo शब्दों+क्रमबद्ध",
+  "    language zh",
+  "      phrase 排序单词",
+  "      phrase 单词排序",
   "  operation trim_whitespace",
   "    language en",
   '      phrase "trim whitespace"',
@@ -14070,6 +14283,19 @@ const OPERATION_VOCABULARY_LINO = [
   "    language zh",
   "      phrase 标题大小写",
   "      combo 单词+大写",
+  "  operation sentence_case",
+  "    language en",
+  '      phrase "sentence case"',
+  "      combo sentence+case",
+  "    language ru",
+  '      phrase "как предложение"',
+  "      combo регистр+предложения",
+  "    language hi",
+  '      phrase "वाक्य केस"',
+  "      combo वाक्य+केस",
+  "    language zh",
+  "      phrase 句子大小写",
+  "      combo 句子+大小写",
   "  operation snake_case",
   "    language en",
   '      phrase "snake case"',
@@ -14126,6 +14352,20 @@ const OPERATION_VOCABULARY_LINO = [
   "    language zh",
   "      phrase 帕斯卡命名",
   "      phrase PascalCase",
+  "  operation remove_punctuation",
+  "    language en",
+  '      phrase "remove punctuation"',
+  '      phrase "strip punctuation"',
+  "      combo remove+punctuation",
+  "    language ru",
+  '      phrase "удали пунктуацию"',
+  "      combo убрать+пунктуац",
+  "    language hi",
+  "      combo विराम+हटा",
+  "      combo punctuation+हटा",
+  "    language zh",
+  "      phrase 删除标点",
+  "      phrase 去除标点",
   "  operation strip_empty_lines",
   "    language en",
   '      phrase "strip empty lines"',
@@ -14154,6 +14394,20 @@ const OPERATION_VOCABULARY_LINO = [
   "    language zh",
   "      phrase 合并行",
   "      phrase 连接行",
+  "  operation reverse_lines",
+  "    language en",
+  '      phrase "reverse lines"',
+  '      phrase "reverse the lines"',
+  "      combo reverse+lines",
+  "    language ru",
+  "      combo переверни+строки",
+  "      combo разверни+строки",
+  "    language hi",
+  "      combo लाइनें+उल्टा",
+  "      combo लाइन+उल्टा",
+  "    language zh",
+  "      phrase 反转行",
+  "      phrase 倒转行",
   "  operation number_lines",
   "    language en",
   '      phrase "number lines"',
@@ -14196,6 +14450,34 @@ const OPERATION_VOCABULARY_LINO = [
   "    language zh",
   "      phrase 减少缩进",
   "      phrase 移除缩进",
+  "  operation comment_lines",
+  "    language en",
+  '      phrase "comment lines"',
+  '      phrase "comment the lines"',
+  "      combo add+comments",
+  "    language ru",
+  '      phrase "закомментируй строки"',
+  "      combo добавить+комментарии",
+  "    language hi",
+  "      combo लाइन+comment",
+  "      combo टिप्पणी+जोड़",
+  "    language zh",
+  "      phrase 注释行",
+  "      phrase 添加注释",
+  "  operation uncomment_lines",
+  "    language en",
+  '      phrase "uncomment lines"',
+  '      phrase "remove line comments"',
+  "      combo remove+comments",
+  "    language ru",
+  '      phrase "раскомментируй строки"',
+  "      combo убрать+комментарии",
+  "    language hi",
+  "      combo टिप्पणी+हटा",
+  "      combo comment+हटा",
+  "    language zh",
+  "      phrase 取消注释",
+  "      phrase 删除注释",
   "  operation path_argument",
   "    language en",
   '      phrase "path argument"',

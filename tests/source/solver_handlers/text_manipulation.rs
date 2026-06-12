@@ -7,6 +7,12 @@ use crate::engine::{stable_id, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
+use crate::solver_handlers::text_edit_ops::{
+    camel_case, comment_lines, count_unique_words, count_words, deduplicate_lines, delimiter_case,
+    extract_email_addresses, extract_numbers, extract_urls, join_lines, normalized_word_spans,
+    number_lines, outdent_line, pascal_case, remove_punctuation, reverse_lines, sentence_case,
+    sort_words, strip_empty_lines, title_case, uncomment_lines,
+};
 use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
 };
@@ -99,7 +105,10 @@ impl TextRequest {
             return Self::build(input, vec![TextOperation::CountOccurrences { needle }]);
         }
 
-        if vocabulary.matches("remove_text", normalized) && !quoted.is_empty() {
+        if vocabulary.matches("remove_text", normalized)
+            && !matches_specific_remove_operation(&vocabulary, normalized)
+            && !quoted.is_empty()
+        {
             let (input, needle) = parse_remove_request(prompt, history)?;
             return Self::build(input, vec![TextOperation::RemoveText { needle }]);
         }
@@ -132,6 +141,14 @@ impl TextRequest {
     }
 }
 
+fn matches_specific_remove_operation(
+    vocabulary: &crate::seed::OperationVocabulary,
+    normalized: &str,
+) -> bool {
+    vocabulary.matches("remove_punctuation", normalized)
+        || vocabulary.matches("strip_empty_lines", normalized)
+}
+
 fn append_simple_operations(
     vocabulary: &crate::seed::OperationVocabulary,
     normalized: &str,
@@ -149,11 +166,20 @@ fn append_simple_operations(
     if vocabulary.matches("extract_email", normalized) {
         operations.push(TextOperation::ExtractEmails);
     }
+    if vocabulary.matches("extract_url", normalized) {
+        operations.push(TextOperation::ExtractUrls);
+    }
+    if vocabulary.matches("extract_number", normalized) {
+        operations.push(TextOperation::ExtractNumbers);
+    }
     if vocabulary.matches("deduplicate_lines", normalized) {
         operations.push(TextOperation::DeduplicateLines);
     }
     if vocabulary.matches("sort_lines", normalized) {
         operations.push(TextOperation::SortLines);
+    }
+    if vocabulary.matches("sort_words", normalized) {
+        operations.push(TextOperation::SortWords);
     }
     if vocabulary.matches("trim_whitespace", normalized) {
         operations.push(TextOperation::TrimWhitespace);
@@ -163,6 +189,9 @@ fn append_simple_operations(
     }
     if vocabulary.matches("title_case", normalized) {
         operations.push(TextOperation::TitleCase);
+    }
+    if vocabulary.matches("sentence_case", normalized) {
+        operations.push(TextOperation::SentenceCase);
     }
     if vocabulary.matches("snake_case", normalized) {
         operations.push(TextOperation::SnakeCase);
@@ -182,6 +211,9 @@ fn append_simple_operations(
     if vocabulary.matches("join_lines", normalized) {
         operations.push(TextOperation::JoinLines);
     }
+    if vocabulary.matches("reverse_lines", normalized) {
+        operations.push(TextOperation::ReverseLines);
+    }
     if vocabulary.matches("number_lines", normalized) {
         operations.push(TextOperation::NumberLines);
     }
@@ -191,8 +223,24 @@ fn append_simple_operations(
     if vocabulary.matches("outdent_lines", normalized) {
         operations.push(TextOperation::OutdentLines);
     }
+    if vocabulary.matches("uncomment_lines", normalized) {
+        operations.push(TextOperation::UncommentLines);
+    } else if vocabulary.matches("comment_lines", normalized) {
+        operations.push(TextOperation::CommentLines);
+    }
+    if vocabulary.matches("remove_punctuation", normalized) {
+        operations.push(TextOperation::RemovePunctuation);
+    }
     if vocabulary.matches("count_unique_words", normalized) {
         operations.push(TextOperation::CountUniqueWords);
+    } else if vocabulary.matches("count_words", normalized) {
+        operations.push(TextOperation::CountWords);
+    }
+    if vocabulary.matches("count_lines", normalized) {
+        operations.push(TextOperation::CountLines);
+    }
+    if vocabulary.matches("count_characters", normalized) {
+        operations.push(TextOperation::CountCharacters);
     }
 }
 
@@ -206,22 +254,33 @@ enum TextOperation {
     PrependText { prefix: String },
     ReverseWords,
     ExtractEmails,
+    ExtractUrls,
+    ExtractNumbers,
     CountOccurrences { needle: String },
     CountUniqueWords,
+    CountWords,
+    CountLines,
+    CountCharacters,
     DeduplicateLines,
     SortLines,
+    SortWords,
     TrimWhitespace,
     NormalizeWhitespace,
     TitleCase,
+    SentenceCase,
     SnakeCase,
     KebabCase,
     CamelCase,
     PascalCase,
+    RemovePunctuation,
     StripEmptyLines,
     JoinLines,
+    ReverseLines,
     NumberLines,
     IndentLines,
     OutdentLines,
+    CommentLines,
+    UncommentLines,
 }
 
 impl TextOperation {
@@ -235,22 +294,33 @@ impl TextOperation {
             Self::PrependText { .. } => "prepend_text",
             Self::ReverseWords => "reverse_words",
             Self::ExtractEmails => "extract_email",
+            Self::ExtractUrls => "extract_url",
+            Self::ExtractNumbers => "extract_number",
             Self::CountOccurrences { .. } => "count_occurrences",
             Self::CountUniqueWords => "count_unique_words",
+            Self::CountWords => "count_words",
+            Self::CountLines => "count_lines",
+            Self::CountCharacters => "count_characters",
             Self::DeduplicateLines => "deduplicate_lines",
             Self::SortLines => "sort_lines",
+            Self::SortWords => "sort_words",
             Self::TrimWhitespace => "trim_whitespace",
             Self::NormalizeWhitespace => "normalize_whitespace",
             Self::TitleCase => "title_case",
+            Self::SentenceCase => "sentence_case",
             Self::SnakeCase => "snake_case",
             Self::KebabCase => "kebab_case",
             Self::CamelCase => "camel_case",
             Self::PascalCase => "pascal_case",
+            Self::RemovePunctuation => "remove_punctuation",
             Self::StripEmptyLines => "strip_empty_lines",
             Self::JoinLines => "join_lines",
+            Self::ReverseLines => "reverse_lines",
             Self::NumberLines => "number_lines",
             Self::IndentLines => "indent_lines",
             Self::OutdentLines => "outdent_lines",
+            Self::CommentLines => "comment_lines",
+            Self::UncommentLines => "uncomment_lines",
         }
     }
 
@@ -264,6 +334,8 @@ impl TextOperation {
             Self::PrependText { prefix } => format!("{prefix}{input}"),
             Self::ReverseWords => input.split_whitespace().rev().collect::<Vec<_>>().join(" "),
             Self::ExtractEmails => extract_email_addresses(input).join("\n"),
+            Self::ExtractUrls => extract_urls(input).join("\n"),
+            Self::ExtractNumbers => extract_numbers(input).join("\n"),
             Self::CountOccurrences { needle } => {
                 if needle.is_empty() {
                     String::from("0")
@@ -272,21 +344,28 @@ impl TextOperation {
                 }
             }
             Self::CountUniqueWords => count_unique_words(input).to_string(),
+            Self::CountWords => count_words(input).to_string(),
+            Self::CountLines => input.lines().count().to_string(),
+            Self::CountCharacters => input.chars().count().to_string(),
             Self::DeduplicateLines => deduplicate_lines(input).join("\n"),
             Self::SortLines => {
                 let mut lines = input.lines().map(str::to_owned).collect::<Vec<_>>();
                 lines.sort();
                 lines.join("\n")
             }
+            Self::SortWords => sort_words(input),
             Self::TrimWhitespace => input.trim().to_owned(),
             Self::NormalizeWhitespace => input.split_whitespace().collect::<Vec<_>>().join(" "),
             Self::TitleCase => title_case(input),
+            Self::SentenceCase => sentence_case(input),
             Self::SnakeCase => delimiter_case(input, "_"),
             Self::KebabCase => delimiter_case(input, "-"),
             Self::CamelCase => camel_case(input),
             Self::PascalCase => pascal_case(input),
+            Self::RemovePunctuation => remove_punctuation(input),
             Self::StripEmptyLines => strip_empty_lines(input).join("\n"),
             Self::JoinLines => join_lines(input),
+            Self::ReverseLines => reverse_lines(input),
             Self::NumberLines => number_lines(input).join("\n"),
             Self::IndentLines => input
                 .lines()
@@ -298,6 +377,8 @@ impl TextOperation {
                 .map(outdent_line)
                 .collect::<Vec<_>>()
                 .join("\n"),
+            Self::CommentLines => comment_lines(input),
+            Self::UncommentLines => uncomment_lines(input),
         }
     }
 }
@@ -426,45 +507,6 @@ fn replace_ranges(input: &str, ranges: &[ReplacementRange], to: &str) -> Option<
     }
     out.push_str(&input[cursor..]);
     Some(out)
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-struct WordSpan {
-    word: String,
-    start: usize,
-    end: usize,
-}
-
-fn normalized_word_spans(text: &str) -> Vec<WordSpan> {
-    let mut spans = Vec::new();
-    let mut current_start = None;
-    let mut current = String::new();
-    let mut current_end = 0usize;
-
-    for (index, character) in text.char_indices() {
-        if character.is_alphanumeric() {
-            if current_start.is_none() {
-                current_start = Some(index);
-            }
-            current.extend(character.to_lowercase());
-            current_end = index + character.len_utf8();
-        } else if let Some(start) = current_start.take() {
-            spans.push(WordSpan {
-                word: std::mem::take(&mut current),
-                start,
-                end: current_end,
-            });
-        }
-    }
-
-    if let Some(start) = current_start {
-        spans.push(WordSpan {
-            word: current,
-            start,
-            end: current_end,
-        });
-    }
-    spans
 }
 
 fn parse_replace_request(
@@ -796,152 +838,6 @@ fn text_after_colon(prompt: &str) -> Option<String> {
         })
         .trim();
     (!text.is_empty()).then(|| text.to_owned())
-}
-
-fn extract_email_addresses(input: &str) -> Vec<String> {
-    input
-        .split_whitespace()
-        .map(clean_email_candidate)
-        .filter(|candidate| looks_like_email(candidate))
-        .map(ToOwned::to_owned)
-        .collect()
-}
-
-fn clean_email_candidate(candidate: &str) -> &str {
-    candidate
-        .trim_matches(|character: char| {
-            !(character.is_ascii_alphanumeric() || matches!(character, '@' | '.' | '_' | '-' | '+'))
-        })
-        .trim_matches('.')
-}
-
-fn looks_like_email(candidate: &str) -> bool {
-    if candidate
-        .chars()
-        .filter(|character| *character == '@')
-        .count()
-        != 1
-    {
-        return false;
-    }
-    let Some((local, domain)) = candidate.split_once('@') else {
-        return false;
-    };
-    !local.is_empty()
-        && domain.contains('.')
-        && domain
-            .split('.')
-            .all(|segment| !segment.is_empty() && segment.chars().all(is_email_domain_char))
-}
-
-const fn is_email_domain_char(character: char) -> bool {
-    character.is_ascii_alphanumeric() || character == '-'
-}
-
-fn count_unique_words(input: &str) -> usize {
-    input
-        .split_whitespace()
-        .map(clean_word)
-        .filter(|word| !word.is_empty())
-        .collect::<BTreeSet<_>>()
-        .len()
-}
-
-fn case_words(input: &str) -> Vec<String> {
-    normalized_word_spans(input)
-        .into_iter()
-        .map(|span| span.word)
-        .collect()
-}
-
-fn capitalize_word(word: &str) -> String {
-    let mut chars = word.chars();
-    let Some(first) = chars.next() else {
-        return String::new();
-    };
-
-    let mut out = first.to_uppercase().collect::<String>();
-    out.extend(chars.flat_map(char::to_lowercase));
-    out
-}
-
-fn title_case(input: &str) -> String {
-    case_words(input)
-        .iter()
-        .map(|word| capitalize_word(word))
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
-fn delimiter_case(input: &str, delimiter: &str) -> String {
-    case_words(input).join(delimiter)
-}
-
-fn camel_case(input: &str) -> String {
-    let mut words = case_words(input).into_iter();
-    let Some(first) = words.next() else {
-        return String::new();
-    };
-
-    let mut out = first;
-    for word in words {
-        out.push_str(&capitalize_word(&word));
-    }
-    out
-}
-
-fn pascal_case(input: &str) -> String {
-    case_words(input)
-        .iter()
-        .map(|word| capitalize_word(word))
-        .collect::<String>()
-}
-
-fn strip_empty_lines(input: &str) -> Vec<String> {
-    input
-        .lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(str::to_owned)
-        .collect()
-}
-
-fn join_lines(input: &str) -> String {
-    input
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
-fn number_lines(input: &str) -> Vec<String> {
-    input
-        .lines()
-        .enumerate()
-        .map(|(index, line)| format!("{}. {line}", index + 1))
-        .collect()
-}
-
-fn outdent_line(line: &str) -> &str {
-    line.strip_prefix("    ")
-        .or_else(|| line.strip_prefix('\t'))
-        .unwrap_or(line)
-}
-
-fn clean_word(word: &str) -> String {
-    word.trim_matches(|character: char| !character.is_alphanumeric())
-        .to_owned()
-}
-
-fn deduplicate_lines(input: &str) -> Vec<String> {
-    let mut seen = BTreeSet::new();
-    let mut lines = Vec::new();
-    for line in input.lines() {
-        if seen.insert(line.to_owned()) {
-            lines.push(line.to_owned());
-        }
-    }
-    lines
 }
 
 fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option<&str>) {

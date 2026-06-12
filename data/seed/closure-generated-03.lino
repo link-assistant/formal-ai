@@ -1,4 +1,69 @@
 meanings
+  tool_conversation_recall
+    defined-by tool
+    lexeme en
+      surface
+        text "tool conversation recall"
+  tool_coreference
+    defined-by tool
+    lexeme en
+      surface
+        text "tool coreference"
+  tool_eval_js
+    defined-by tool
+    lexeme en
+      surface
+        text "tool eval js"
+  tool_export_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool export memory"
+  tool_fact_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool fact lookup"
+  tool_http_fetch
+    defined-by tool
+    lexeme en
+      surface
+        text "tool http fetch"
+  tool_import_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool import memory"
+  tool_intent_routing
+    defined-by tool
+    lexeme en
+      surface
+        text "tool intent routing"
+  tool_read_local_file
+    defined-by tool
+    lexeme en
+      surface
+        text "tool read local file"
+  tool_roleplay
+    defined-by tool
+    lexeme en
+      surface
+        text "tool roleplay"
+  tool_summarize_conversation
+    defined-by tool
+    lexeme en
+      surface
+        text "tool summarize conversation"
+  tool_url_navigate
+    defined-by tool
+    lexeme en
+      surface
+        text "tool url navigate"
+  tool_web_search
+    defined-by tool
+    lexeme en
+      surface
+        text "tool web search"
   tool_wikipedia_lookup
     defined-by tool
     lexeme en
@@ -39,6 +104,11 @@ meanings
     lexeme en
       surface
         text "ui"
+  uncomment_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "uncomment lines"
   unknown_reasoning_question
     defined-by intent
     lexeme en
@@ -124,6 +194,11 @@ meanings
     lexeme en
       surface
         text "wordnet"
+  words
+    defined-by concept
+    lexeme en
+      surface
+        text "words"
   write_program
     defined-by intent
     lexeme en

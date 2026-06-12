@@ -406,6 +406,83 @@ fn benchmark_family_matrix_covers_text_and_code_edit_variations() {
             rule: "rule_count_occurrences",
         },
         Case {
+            source: "CoEdIT",
+            family: "sentence_case",
+            prompt: "Sentence case this text: \"hELLO EDIT BENCH\"",
+            answer: "Hello edit bench",
+            rule: "rule_sentence_case",
+        },
+        Case {
+            source: "EditEval",
+            family: "word_count",
+            prompt: "Count words in this text: \"red blue red\"",
+            answer: "3",
+            rule: "rule_count_words",
+        },
+        Case {
+            source: "InstrEditBench",
+            family: "url_extraction",
+            prompt: "Extract URLs from this text: \"See https://example.test/path. now\"",
+            answer: "https://example.test/path",
+            rule: "rule_extract_url",
+        },
+        Case {
+            source: "CodeEditorBench",
+            family: "comment_lines",
+            prompt: "Comment lines: \"let x = 1;\nreturn x;\"",
+            answer: "// let x = 1;\n// return x;",
+            rule: "rule_comment_lines",
+        },
+        Case {
+            source: "CanItEdit",
+            family: "uncomment_lines",
+            prompt: "Uncomment lines: \"// let x = 1;\n# return x;\"",
+            answer: "let x = 1;\nreturn x;",
+            rule: "rule_uncomment_lines",
+        },
+        Case {
+            source: "EDIT-Bench",
+            family: "reverse_lines",
+            prompt: "Reverse lines: \"first\nsecond\nthird\"",
+            answer: "third\nsecond\nfirst",
+            rule: "rule_reverse_lines",
+        },
+        Case {
+            source: "HumanEvalFix",
+            family: "number_extraction",
+            prompt: "Extract numbers from this text: \"expected 3 got -2.5\"",
+            answer: "3\n-2.5",
+            rule: "rule_extract_number",
+        },
+        Case {
+            source: "SWE-bench",
+            family: "punctuation_cleanup",
+            prompt: "Remove punctuation: \"bug, fix! now.\"",
+            answer: "bug fix now",
+            rule: "rule_remove_punctuation",
+        },
+        Case {
+            source: "EditEval",
+            family: "sort_words",
+            prompt: "Sort words: \"zeta alpha beta\"",
+            answer: "alpha beta zeta",
+            rule: "rule_sort_words",
+        },
+        Case {
+            source: "SWE-bench",
+            family: "line_count",
+            prompt: "Count lines: \"one\ntwo\nthree\"",
+            answer: "3",
+            rule: "rule_count_lines",
+        },
+        Case {
+            source: "CoEdIT",
+            family: "character_count",
+            prompt: "Count characters: \"abcd\"",
+            answer: "4",
+            rule: "rule_count_characters",
+        },
+        Case {
             source: "issue_408_regression",
             family: "hello_world_replacement",
             prompt: "Replace \"Hello World\" with \"Bye world\": \"Hello, world!\"",
@@ -422,7 +499,7 @@ fn benchmark_family_matrix_covers_text_and_code_edit_variations() {
     ];
 
     assert!(
-        cases.len() >= 50,
+        cases.len() >= 60,
         "issue #408 follow-up requested a 5x/10x wider matrix; got {}",
         cases.len()
     );
@@ -486,8 +563,8 @@ fn issue_408_text_code_edit_profile_passes_local_ratchet() {
         "the issue #408 profile must keep every researched benchmark source executable"
     );
     assert_eq!(
-        suite.variations_per_source, 10,
-        "review feedback requested 10 variations for each benchmark source"
+        suite.variations_per_source, 20,
+        "review feedback requested at least 10 variations for each benchmark source; this profile now records 20"
     );
     assert!(
         suite.ratchet_policy.contains("minimum_pass_count"),
@@ -739,6 +816,9 @@ fn profile_cases_for_source(source: &TextEditSource) -> Vec<ProfileCase> {
     let pascal = format!("Local{}", pascalize_words(&words));
     let line_one = source.id.clone();
     let line_two = String::from("profile");
+    let source_lines = format!("{line_one}\n{line_two}\n{}", source.domain);
+    let word_count_text = format!("{plain} profile");
+    let word_count = word_count_text.split_whitespace().count().to_string();
 
     vec![
         ProfileCase {
@@ -800,6 +880,69 @@ fn profile_cases_for_source(source: &TextEditSource) -> Vec<ProfileCase> {
             prompt: format!("Outdent lines: \"    {line_one}\n\t{line_two}\""),
             answer: format!("{line_one}\n{line_two}"),
             rule: "rule_outdent_lines",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!("Count words: \"{word_count_text}\""),
+            answer: word_count,
+            rule: "rule_count_words",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!("Count lines: \"{source_lines}\""),
+            answer: String::from("3"),
+            rule: "rule_count_lines",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: String::from("Count characters: \"abcd\""),
+            answer: String::from("4"),
+            rule: "rule_count_characters",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!(
+                "Extract URLs from this text: \"Source {} docs\"",
+                source.primary_url
+            ),
+            answer: source.primary_url.clone(),
+            rule: "rule_extract_url",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!("Extract numbers: \"10 {} -2 3.5\"", source.id),
+            answer: String::from("10\n-2\n3.5"),
+            rule: "rule_extract_number",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: String::from("Remove punctuation: \"Alpha, beta!\""),
+            answer: String::from("Alpha beta"),
+            rule: "rule_remove_punctuation",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!("Sentence case this text: \"hELLO {}\"", source.id),
+            answer: format!("Hello {}", source.id),
+            rule: "rule_sentence_case",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: String::from("Sort words: \"zeta alpha beta\""),
+            answer: String::from("alpha beta zeta"),
+            rule: "rule_sort_words",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: format!("Reverse lines: \"{line_one}\n{line_two}\""),
+            answer: format!("{line_two}\n{line_one}"),
+            rule: "rule_reverse_lines",
+        },
+        ProfileCase {
+            source: source.id.clone(),
+            prompt: String::from("Comment lines: \"let x = 1;\nreturn x;\""),
+            answer: String::from("// let x = 1;\n// return x;"),
+            rule: "rule_comment_lines",
         },
     ]
 }

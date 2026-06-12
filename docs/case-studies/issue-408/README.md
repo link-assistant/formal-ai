@@ -23,8 +23,11 @@ surface used for normal text manipulation. The implemented behavior covers:
 - punctuation-tolerant replacement across generated code and plain text;
 - remove, append, prepend, trim-whitespace, and normalize-whitespace operations;
 - title-case, snake-case, kebab-case, camel-case, and pascal-case operations;
-- strip-empty-lines, join-lines, number-lines, indent-lines, and outdent-lines
-  operations;
+- URL, number, and email extraction operations;
+- word, line, character, occurrence, and unique-word counting operations;
+- punctuation removal, sentence-case, sort-words, strip-empty-lines, join-lines,
+  reverse-lines, number-lines, indent-lines, outdent-lines, comment-lines, and
+  uncomment-lines operations;
 - Rust/browser-worker parity for the supported edit operations.
 
 The regression tests are in
@@ -38,21 +41,21 @@ local benchmark-source manifest is
 PR #416 verifies the issue #408 edit behavior with:
 
 - the original Russian follow-up replacement reproduction;
-- 50 self-authored benchmark-family prompt-answer examples inspired by CoEdIT,
+- 61 self-authored benchmark-family prompt-answer examples inspired by CoEdIT,
   EditEval, InstrEditBench/FineEdit, CodeEditorBench, CanItEdit, EDIT-Bench,
   HumanEvalPack/HumanEvalFix, and SWE-bench style editing tasks;
 - a manifest-backed issue #408 text/code edit profile listing those 8 edit
   benchmark families plus 20 additional popular LLM benchmark sources;
-- 10 deterministic prompt-answer variations per listed source, for 280 generated
+- 20 deterministic prompt-answer variations per listed source, for 560 generated
   checks total;
 - an executable local ratchet,
   `issue_408_text_code_edit_profile_passes_local_ratchet`, that requires
-  `minimum_pass_count = 280` and reports the exact pass/fail count;
+  `minimum_pass_count = 560` and reports the exact pass/fail count;
 - the existing repository industry-suite slice, which remains separate from the
   issue #408 edit matrix.
 
-The 280-case profile is the repository-local 10%-style ratchet implemented for
-this PR: every researched source has 10 local variations and the test must pass
+The 560-case profile is the repository-local 10%-style ratchet implemented for
+this PR: every researched source has 20 local variations and the test must pass
 all of them. It is not an official upstream benchmark score because the external
 benchmark payloads are not vendored or executed here. A future full-upstream
 benchmark pass claim would require the repository to import or reference the
@@ -71,7 +74,7 @@ factuality, reading-comprehension, and instruction following evaluation:
 `docs/case-studies/issue-408/raw-data/online-research.md`
 
 The research keeps the implementation traceable: the repository now has a local
-10-variation profile for every researched source, and it must not describe that
+20-variation profile for every researched source, and it must not describe that
 profile as an official upstream score unless the full scoring pipeline is present
 and checked.
 
@@ -80,8 +83,8 @@ and checked.
 - R293 covers the original issue #408 follow-up replacement behavior.
 - R294 covers deterministic text/code edit operations and multilingual trigger
   parity.
-- R295 covers the executable 28-source local profile with 10 variations per
-  source and the 280-case pass-count ratchet.
+- R295 covers the executable 28-source local profile with 20 variations per
+  source and the 560-case pass-count ratchet.
 - R296 covers the benchmark-source audit and documentation synchronization.
 - R297 records the boundary for any future official full-upstream benchmark
   score.
