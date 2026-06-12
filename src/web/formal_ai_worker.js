@@ -2597,6 +2597,48 @@ function calculatorDomainSignals() {
 }
 
 function extractArithmeticExpression(prompt) {
+  return extractArithmeticExpressionInternal(prompt, true);
+}
+
+function calculationRequestPrefixes() {
+  return wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
+    containsCjk(surface) ? surface : `${surface} `,
+  );
+}
+
+function hasEmbeddedCalculationPrefixBoundary(value, start) {
+  if (start === 0) return true;
+  const previous = Array.from(String(value || "").slice(0, start)).pop() || "";
+  return !/[\p{L}\p{N}]/u.test(previous);
+}
+
+function embeddedCalculationRequestSlices(prompt, prefixes) {
+  const text = String(prompt || "");
+  const lower = text.toLowerCase();
+  const matches = [];
+  for (const prefix of prefixes) {
+    let searchStart = 0;
+    while (searchStart < lower.length) {
+      const start = lower.indexOf(prefix, searchStart);
+      if (start === -1) break;
+      if (containsCjk(prefix) || hasEmbeddedCalculationPrefixBoundary(text, start)) {
+        matches.push({ start, length: prefix.length });
+      }
+      searchStart = start + Math.max(prefix.length, 1);
+    }
+  }
+  matches.sort((left, right) => left.start - right.start || right.length - left.length);
+  const seen = new Set();
+  return matches
+    .filter((match) => {
+      if (seen.has(match.start)) return false;
+      seen.add(match.start);
+      return true;
+    })
+    .map((match) => text.slice(match.start));
+}
+
+function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
   const interpretations = [];
@@ -2609,10 +2651,9 @@ function extractArithmeticExpression(prompt) {
   // order, and the Chinese cues are stored longest first, so a more specific
   // cue strips before a shorter one it contains. Mirrors
   // strip_calculation_wrappers in src/calculation.rs.
-  const prefixes = wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
-    containsCjk(surface) ? surface : `${surface} `,
-  );
+  const prefixes = calculationRequestPrefixes();
   let working = trimmed;
+  let strippedLeadingCue = false;
   let changed = true;
   while (changed) {
     changed = false;
@@ -2621,6 +2662,7 @@ function extractArithmeticExpression(prompt) {
       working = stripped.value;
       if (stripped.interpretation) interpretations.push(stripped.interpretation);
       changed = true;
+      strippedLeadingCue = true;
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
@@ -2659,6 +2701,12 @@ function extractArithmeticExpression(prompt) {
     }
   }
   if (!working) return null;
+  if (allowEmbedded && !strippedLeadingCue) {
+    for (const slice of embeddedCalculationRequestSlices(trimmed, prefixes)) {
+      const extracted = extractArithmeticExpressionInternal(slice, false);
+      if (extracted) return extracted;
+    }
+  }
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.

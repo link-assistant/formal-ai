@@ -136,6 +136,30 @@ fn calculator_handles_russian_variations() {
 }
 
 #[test]
+fn calculator_handles_embedded_request_variations() {
+    for (prompt, expected) in [
+        ("хочу понять сколько будет 2+2", &["2+2 = 4"][..]),
+        ("подскажи, сколько будет 7 - 4", &["7 - 4 = 3"][..]),
+        (
+            "мне нужно узнать сколько будет два плюс два",
+            &["два плюс два = 4"][..],
+        ),
+        ("I want to know what is 2+2", &["2+2 = 4"][..]),
+        ("Tell me what is 3 * 3", &["3 * 3 = 9"][..]),
+        (
+            "Before we continue, please calculate sqrt(16)",
+            &["sqrt(16) = 4"][..],
+        ),
+        ("First say hi, then compute 10 / 2", &["10 / 2 = 5"][..]),
+        ("我想知道计算 2 + 2", &["2 + 2 = 4"][..]),
+        ("请帮我算一下 6 * 7", &["6 * 7 = 42"][..]),
+        ("मुझे बताओ गणना करें 8 / 2", &["8 / 2 = 4"][..]),
+    ] {
+        assert_calculation(prompt, expected);
+    }
+}
+
+#[test]
 fn calculator_explains_usd_rate_basis_prompts() {
     for (language, prompt) in [
         (
