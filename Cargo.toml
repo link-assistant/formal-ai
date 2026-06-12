@@ -40,7 +40,7 @@ link-calculator = "0.18.2"
 # real tree-sitter grammars for every language we target and exposes a single
 # mutable links-network representation, so it is the sole CST/AST engine here
 # (https://github.com/link-foundation/meta-language).
-meta-language = "0.39"
+meta-language = "0.40.0"
 mem = { package = "platform-mem", version = "0.3.0", optional = true }
 nom = "8"
 serde = { version = "1", features = ["derive"] }
