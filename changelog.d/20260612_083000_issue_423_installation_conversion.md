@@ -11,5 +11,11 @@ bump: minor
   or generic script generation.
 
 - Added issue #423 regression coverage, including README-to-Bash/PowerShell,
-  script-to-README, nested fenced README content, and a 50-project GitHub
-  repository corpus captured from the most-starred repository snapshot.
+  script-to-README, nested fenced README content, PowerShell-to-README,
+  meta-algorithm trace assertions, and a 100-project GitHub repository corpus
+  captured from the most-starred repository snapshot.
+
+- Added an algorithm-construction trace for installation conversion responses,
+  connecting the problem-class -> shared-IR -> renderer -> verification pattern
+  to the existing coding catalog, program synthesis, program blueprint,
+  numeric-list, and rule-synthesis surfaces.

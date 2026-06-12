@@ -147,6 +147,93 @@ ollama serve
 }
 
 #[test]
+fn powershell_install_script_converts_back_to_readme_guide() {
+    let prompt = r#"Convert this PowerShell installation script back to a README.md installation guide:
+
+```powershell
+$ErrorActionPreference = 'Stop'
+irm https://get.activated.win | iex
+powershell -NoProfile -Command "$PSVersionTable.PSVersion"
+```
+"#;
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "installation_conversion",
+        "answer: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("source_format powershell_script"));
+    assert!(response.answer.contains("target_format markdown"));
+    assert!(response.answer.contains("README.md installation guide"));
+    assert!(response
+        .answer
+        .contains("irm https://get.activated.win | iex"));
+    assert!(response
+        .answer
+        .contains("powershell -NoProfile -Command \"$PSVersionTable.PSVersion\""));
+}
+
+#[test]
+fn conversion_answer_exposes_algorithm_construction_trace() {
+    let prompt = r"Convert this README.md installation guide into a sh script and show the meta algorithm:
+
+```markdown
+## Installation
+
+1. Install dependencies.
+   `python -m pip install -r requirements.txt`
+2. Verify the package.
+   `python -m pytest`
+```
+";
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "installation_conversion",
+        "answer: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("Meta algorithm for constructing conversion algorithms"),
+        "answer should expose the algorithm-construction layer, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("shared intermediate representation")
+            && response.answer.contains("verification fixture"),
+        "meta algorithm should name IR construction and verification, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("program_blueprint")
+            && response.answer.contains("rule_synthesis")
+            && response.answer.contains("numeric_list"),
+        "meta algorithm should connect existing coding surfaces, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("algorithm_construction:stage"),
+        "trace should record algorithm construction stages, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response.links_notation.contains("coding_surface")
+            && response.links_notation.contains("program_blueprint"),
+        "formal meaning should record producible coding surfaces, got: {}",
+        response.links_notation
+    );
+}
+
+#[test]
 fn install_conversion_prompts_route_across_supported_languages() {
     struct Case {
         language: &'static str,
@@ -252,12 +339,62 @@ fn popular_github_projects_route_through_install_conversion() {
         ("Snailclimb/JavaGuide", "git clone https://github.com/Snailclimb/JavaGuide.git", "mvn test"),
         ("microsoft/markitdown", "python -m pip install markitdown", "markitdown --help"),
         ("anthropics/skills", "git clone https://github.com/anthropics/skills.git", "npm test"),
+        ("langflow-ai/langflow", "python -m pip install langflow", "python -m langflow run --help"),
+        ("airbnb/javascript", "git clone https://github.com/airbnb/javascript.git", "npm test"),
+        ("langgenius/dify", "docker compose up -d", "docker ps"),
+        ("Genymobile/scrcpy", "sudo apt install scrcpy", "bash -lc \"scrcpy --version\""),
+        ("open-webui/open-webui", "docker run -d -p 3000:8080 ghcr.io/open-webui/open-webui:main", "docker ps"),
+        ("ytdl-org/youtube-dl", "python -m pip install -U youtube_dl", "python -m youtube_dl --version"),
+        ("yangshun/tech-interview-handbook", "pnpm install", "pnpm test"),
+        ("x1xhlol/system-prompts-and-models-of-ai-tools", "git clone https://github.com/x1xhlol/system-prompts-and-models-of-ai-tools.git", "npm test"),
+        ("vercel/next.js", "pnpm install", "pnpm test"),
+        ("langchain-ai/langchain", "python -m pip install langchain", "python -c \"import langchain; print(langchain.__version__)\""),
+        ("golang/go", "git clone https://github.com/golang/go.git", "bash ./src/all.bash"),
+        ("microsoft/PowerToys", "git clone https://github.com/microsoft/PowerToys.git", "powershell -NoProfile -Command \"Write-Output PowerToys\""),
+        ("labuladong/fucking-algorithm", "git clone https://github.com/labuladong/fucking-algorithm.git", "npm test"),
+        ("anthropics/claude-code", "npm install -g @anthropic-ai/claude-code", "npm view @anthropic-ai/claude-code version"),
+        ("firecrawl/firecrawl", "pnpm install", "pnpm test"),
+        ("Chalarangelo/30-seconds-of-code", "npm install", "npm test"),
+        ("krahets/hello-algo", "git clone https://github.com/krahets/hello-algo.git", "npm test"),
+        ("mattpocock/skills", "git clone https://github.com/mattpocock/skills.git", "bash --version"),
+        ("react/react-native", "yarn install", "yarn test"),
+        ("excalidraw/excalidraw", "yarn install", "yarn test"),
+        ("clash-verge-rev/clash-verge-rev", "pnpm install", "pnpm test"),
+        ("ripienaar/free-for-dev", "git clone https://github.com/ripienaar/free-for-dev.git", "npm test"),
+        ("kubernetes/kubernetes", "git clone https://github.com/kubernetes/kubernetes.git", "make test"),
+        ("electron/electron", "npm install", "npm test"),
+        ("iptv-org/iptv", "npm install", "npm test"),
+        ("nodejs/node", "python configure.py", "make test"),
+        ("justjavac/free-programming-books-zh_CN", "git clone https://github.com/justjavac/free-programming-books-zh_CN.git", "npm test"),
+        ("Comfy-Org/ComfyUI", "python -m pip install -r requirements.txt", "python main.py --help"),
+        ("shadcn-ui/ui", "pnpm install", "pnpm test"),
+        ("ggml-org/llama.cpp", "cmake -B build", "cmake --build build"),
+        ("rustdesk/rustdesk", "cargo build", "cargo test"),
+        ("Shubhamsaboo/awesome-llm-apps", "python -m pip install -r requirements.txt", "python -m pytest"),
+        ("Hack-with-Github/Awesome-Hacking", "git clone https://github.com/Hack-with-Github/Awesome-Hacking.git", "npm test"),
+        ("rust-lang/rust", "git clone https://github.com/rust-lang/rust.git", "python x.py test library/std"),
+        ("d3/d3", "npm install", "npm test"),
+        ("mrdoob/three.js", "npm install", "npm test"),
+        ("godotengine/godot", "python -m pip install scons", "python -c \"import SCons; print(SCons.__version__)\""),
+        ("msitarzewski/agency-agents", "git clone https://github.com/msitarzewski/agency-agents.git", "bash --version"),
+        ("microsoft/generative-ai-for-beginners", "git clone https://github.com/microsoft/generative-ai-for-beginners.git", "python -m pytest"),
+        ("github/spec-kit", "python -m pip install -e .", "python -m pytest"),
+        ("garrytan/gstack", "npm install", "npm test"),
+        ("microsoft/TypeScript", "npm install", "npm test"),
+        ("axios/axios", "npm install", "npm test"),
+        ("2dust/v2rayN", "git clone https://github.com/2dust/v2rayN.git", "powershell -NoProfile -Command \"Write-Output v2rayN\""),
+        ("GrowingGit/GitHub-Chinese-Top-Charts", "git clone https://github.com/GrowingGit/GitHub-Chinese-Top-Charts.git", "mvn test"),
+        ("tauri-apps/tauri", "cargo build", "cargo test"),
+        ("fatedier/frp", "go test ./...", "go test ./cmd/..."),
+        ("denoland/deno", "cargo build", "cargo test"),
+        ("papers-we-love/papers-we-love", "git clone https://github.com/papers-we-love/papers-we-love.git", "npm test"),
+        ("jaywcjlove/awesome-mac", "git clone https://github.com/jaywcjlove/awesome-mac.git", "npm test"),
     ];
 
     assert_eq!(
         cases.len(),
-        50,
-        "issue #423 requires at least 50 popular-project conversion cases"
+        100,
+        "issue #423 follow-up requires doubling the popular-project conversion cases"
     );
 
     for (repo, install_command, verify_command) in cases {

@@ -93,6 +93,21 @@ check("README prompt renders bash", readmeHit?.content.includes("Bash script:"),
 check("README prompt renders PowerShell", readmeHit?.content.includes("PowerShell script:"), readmeHit?.content.slice(0, 120));
 check("README prompt preserves clone command", readmeHit?.content.includes("git clone https://github.com/react/react.git"));
 check("README prompt preserves test command", readmeHit?.content.includes("yarn test"));
+check(
+  "README prompt exposes meta algorithm",
+  readmeHit?.content.includes("Meta algorithm for constructing conversion algorithms"),
+);
+check(
+  "README prompt connects coding surfaces",
+  readmeHit?.content.includes("program_blueprint") &&
+    readmeHit?.content.includes("rule_synthesis") &&
+    readmeHit?.content.includes("numeric_list"),
+);
+check(
+  "README evidence records construction stages",
+  readmeHit?.evidence?.some((line) => line.includes("algorithm_construction:stage:extract_ir")),
+  JSON.stringify(readmeHit?.evidence || []),
+);
 
 const scriptHit = sandbox.tryInstallationConversion(
   scriptPrompt,

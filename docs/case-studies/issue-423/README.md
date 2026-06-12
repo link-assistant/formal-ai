@@ -3,7 +3,7 @@
 > Source issue: <https://github.com/link-assistant/formal-ai/issues/423>
 > Branch: `issue-423-85026fdc955a` - PR: #424
 > Raw data: [`raw-data/`](./raw-data) (issue JSON, comments, PR JSON, PR comments,
-> review comments, reviews, and a top-50 GitHub repository snapshot)
+> review comments, reviews, and a top-100 GitHub repository snapshot)
 
 ## Summary
 
@@ -24,7 +24,10 @@ the source commands and render multiple target formats from the same meaning.
 This PR adds a deterministic `installation_conversion` handler in the Rust
 solver and the browser worker mirror. The handler extracts ordered command-like
 install/deploy steps, stores them in a small install-step IR, and renders the
-requested target format(s) from that single IR.
+requested target format(s) from that single IR. The follow-up work adds an
+explicit algorithm-construction layer: the response now records how the solver
+constructs this class of conversion algorithm from examples, surfaces, a shared
+IR, renderers, and verification fixtures.
 
 ## Research and raw inputs
 
@@ -33,13 +36,14 @@ Raw GitHub inputs were archived under [`raw-data/`](./raw-data):
 - `issue-423.json` and `issue-423-comments.json`
 - `pr-424.json`, `pr-424-conversation-comments.json`,
   `pr-424-review-comments.json`, and `pr-424-reviews.json`
-- `github-top-50-repositories.json`, captured with GitHub repository search
+- `github-top-100-repositories.json`, captured with GitHub repository search
   sorted by stars on 2026-06-12
 
-There were no issue comments or PR review comments when the work started. The
-top-50 repository snapshot is summarized in
+There were no issue comments or PR review comments when the work started. A
+follow-up PR comment requested a broader meta-algorithm focus and twice as many
+test cases. The top-100 repository snapshot is summarized in
 [`raw-data/online-research.md`](./raw-data/online-research.md) and is used as
-the basis for the 50-project regression matrix in
+the basis for the 100-project regression matrix in
 `tests/unit/installation_conversion.rs`.
 
 ## Requirements
@@ -50,10 +54,11 @@ the basis for the 50-project regression matrix in
 | R2 | Convert README installation instructions to PowerShell scripts. | Done. |
 | R3 | Convert installation scripts back to a `README.md` guide. | Done. |
 | R4 | Use a general algorithm rather than one-off per-project answers. | Done: one install-step IR feeds every renderer. |
-| R5 | Cover at least 50 popular GitHub project cases. | Done: 50 repository prompts from the captured top-starred GitHub snapshot. |
+| R5 | Cover at least 50 popular GitHub project cases. | Done and doubled: 100 repository prompts from the captured top-starred GitHub snapshot. |
 | R6 | Cover the deployed browser worker as well as the Rust solver. | Done: `src/web/formal_ai_worker.js` mirrors the handler and dispatch order. |
 | R7 | Preserve commands verbatim so conversions can round-trip. | Done: commands are stored unchanged in ordered `InstallStep` records. |
 | R8 | Document the investigation, requirements, solution, and tests. | Done: this case study plus archived raw data. |
+| R9 | Add a meta algorithm that produces this kind of algorithm rather than another one-off solution. | Done: responses and traces include a problem-class-to-IR-to-renderers-to-verification construction pattern. |
 
 ## Root cause
 
@@ -69,6 +74,9 @@ The first reproducing tests confirmed the gap:
 - Script-to-README prompts returned `unknown`.
 - 50 popular-project conversion prompts were claimed by the wrong generic path
   or not claimed at all.
+- The follow-up meta-algorithm requirement was not visible in the runtime answer
+  or event trace, so reviewers could not see how the specific handler fits the
+  broader coding-task construction architecture.
 
 ## Implementation
 
@@ -94,6 +102,10 @@ The handler uses this pipeline:
    - script lines, ignoring shebangs, comments, and strict-mode boilerplate.
 5. Build `InstallStep { id, description, command }` records.
 6. Render every target from the same ordered step list.
+7. Emit a meta-algorithm trace that explains how this class of algorithm is
+   constructed: collect corpus, derive surfaces, extract shared IR, synthesize
+   recognizers/renderers/validators, project target outputs, mirror runtimes,
+   and promote the reusable capability.
 
 The rendered answer includes a formalized meaning block:
 
@@ -105,10 +117,29 @@ installation_conversion_request
   project "react/react"
   validation "ordered_commands_preserved"
   validation "single_ir_renders_markdown_shell_powershell"
+  meta_algorithm "problem_class_to_shared_ir_to_renderers_to_verification"
+  construction_stage "extract_ir"
+  stage_output "shared intermediate representation"
+  stage_verifier "ordered command preservation fixture"
   step "S1"
   description "Clone the repository"
   command "git clone https://github.com/react/react.git"
 ```
+
+The answer also names the existing coding paths producible by the same
+meta-algorithm shape:
+
+- `coding_catalog`: task spec -> parameterized template -> CST/compile check.
+- `program_synthesis`: semantic function tree -> source program -> sandbox
+  tests.
+- `program_blueprint`: capability set -> blueprint recipe -> honest code
+  projection.
+- `numeric_list`: operation/data/language IR -> generated code plus evaluated
+  result.
+- `rule_synthesis`: operation/target binding -> candidate rule -> verification
+  fixture.
+- `installation_conversion`: installation surfaces -> install-step IR -> target
+  renderers.
 
 The browser worker mirror implements the same recognizer, IR extraction, and
 renderers in `src/web/formal_ai_worker.js`. Its dispatch entry runs before the
@@ -123,7 +154,9 @@ source instructions instead of producing a starter script.
 - A wrapped `markdown` README containing nested shell fences, which is common
   when users paste README content into a prompt.
 - Shell installation script back to a `README.md` guide.
-- 50 popular GitHub project conversion prompts built from the captured
+- PowerShell installation script back to a `README.md` guide.
+- Runtime output and links notation for the meta-algorithm construction trace.
+- 100 popular GitHub project conversion prompts built from the captured
   top-starred repository snapshot.
 
 `experiments/issue-423-js-installation-conversion.mjs` loads the browser worker
@@ -131,6 +164,7 @@ in a Node VM and verifies:
 
 - the direct worker handler claims README-to-script and script-to-README prompts;
 - rendered output preserves commands;
+- the worker response includes the same meta-algorithm construction section;
 - full `solve()` dispatch routes through `tryInstallationConversion` before
   `write_program`.
 
@@ -147,10 +181,11 @@ cargo test --test unit installation_conversion -- --nocapture
 The final PR validation should also include formatting, source mirror checks,
 clippy, and the repository file-size check.
 
-## Limitations and next steps
+## Limits
 
 The handler intentionally does not execute installation commands or validate
 external project setup. It performs deterministic text conversion only. The
-command detector is conservative and favors common installation commands; future
-work can widen the command vocabulary through seed data if the project later
-wants multilingual or ecosystem-specific installation phrase coverage.
+command detector is conservative and favors common installation commands, while
+the meta-algorithm trace makes the extension path explicit: add examples,
+derive surfaces, extend the shared IR only when required, and add verification
+fixtures before widening behavior.

@@ -12104,6 +12104,71 @@ const INSTALL_FORMAT_MARKDOWN = "markdown";
 const INSTALL_FORMAT_SHELL = "shell_script";
 const INSTALL_FORMAT_POWERSHELL = "powershell_script";
 
+const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
+  {
+    id: "collect_corpus",
+    output: "representative problem-class examples",
+    verifier: "case-study corpus preserved",
+  },
+  {
+    id: "derive_surfaces",
+    output: "source and target surface ontology",
+    verifier: "source/target format detection",
+  },
+  {
+    id: "extract_ir",
+    output: "shared intermediate representation",
+    verifier: "ordered command preservation fixture",
+  },
+  {
+    id: "synthesize_operations",
+    output: "recognizers, extractors, renderers, and validators",
+    verifier: "round-trip surface invariants",
+  },
+  {
+    id: "project_targets",
+    output: "target-specific Markdown, shell, and PowerShell renderers",
+    verifier: "per-target rendering fixture",
+  },
+  {
+    id: "mirror_runtimes",
+    output: "Rust and browser-worker projections of the same algorithm",
+    verifier: "cross-runtime parity checks",
+  },
+  {
+    id: "promote_capability",
+    output: "reusable coding-task construction pattern",
+    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+  },
+];
+
+const INSTALL_CODING_SURFACE_PROJECTIONS = [
+  {
+    slug: "coding_catalog",
+    projection: "task spec -> parameterized template -> CST/compile check",
+  },
+  {
+    slug: "program_synthesis",
+    projection: "semantic function tree -> source program -> sandbox tests",
+  },
+  {
+    slug: "program_blueprint",
+    projection: "capability set -> blueprint recipe -> honest code projection",
+  },
+  {
+    slug: "numeric_list",
+    projection: "operation/data/language IR -> generated code plus evaluated result",
+  },
+  {
+    slug: "rule_synthesis",
+    projection: "operation/target binding -> candidate rule -> verification fixture",
+  },
+  {
+    slug: "installation_conversion",
+    projection: "installation surfaces -> install-step IR -> target renderers",
+  },
+];
+
 function installationContainsAny(value, needles) {
   return needles.some((needle) => String(value || "").includes(needle));
 }
@@ -12497,9 +12562,16 @@ function installationEvidence(conversion) {
   const evidence = [
     "formalization:install_steps_ir",
     `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
+    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
     `installation_conversion:source_format:${conversion.sourceFormat}`,
     `installation_conversion:project:${conversion.project}`,
   ];
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
+  }
   for (const target of conversion.targetFormats) {
     evidence.push(`installation_conversion:target_format:${target}`);
   }
@@ -12517,12 +12589,39 @@ function renderInstallationLino(conversion) {
   lines.push(`  project ${linoString(conversion.project)}`);
   lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
   lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
+  lines.push(
+    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
+  );
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    lines.push(`  construction_stage ${linoString(stage.id)}`);
+    lines.push(`  stage_output ${linoString(stage.output)}`);
+    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`  coding_surface ${linoString(surface.slug)}`);
+    lines.push(`  surface_projection ${linoString(surface.projection)}`);
+  }
   for (const step of conversion.steps) {
     lines.push(`  step ${linoString(step.id)}`);
     lines.push(`  description ${linoString(step.description)}`);
     lines.push(`  command ${linoString(step.command)}`);
   }
   return lines.join("\n") + "\n";
+}
+
+function renderInstallationMetaAlgorithm() {
+  const lines = ["Meta algorithm for constructing conversion algorithms:"];
+  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
+    lines.push(
+      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
+    );
+  });
+  lines.push("");
+  lines.push("Existing coding solutions producible by the same meta algorithm:");
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  }
+  return lines.join("\n");
 }
 
 function renderInstallationMarkdownGuide(conversion) {
@@ -12571,6 +12670,8 @@ function renderInstallationConversion(conversion) {
     "2. Extract command-like install/deploy steps in original order.",
     "3. Render every target from the same install-step IR.",
     "4. Preserve commands verbatim so the conversion can round-trip.",
+    "",
+    renderInstallationMetaAlgorithm(),
   ];
   for (const target of conversion.targetFormats) {
     lines.push("");

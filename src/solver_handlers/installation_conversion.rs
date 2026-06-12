@@ -44,6 +44,84 @@ struct InstallationConversion {
     steps: Vec<InstallStep>,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct AlgorithmConstructionStage {
+    id: &'static str,
+    output: &'static str,
+    verifier: &'static str,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct CodingSurfaceProjection {
+    slug: &'static str,
+    projection: &'static str,
+}
+
+const ALGORITHM_CONSTRUCTION_STAGES: &[AlgorithmConstructionStage] = &[
+    AlgorithmConstructionStage {
+        id: "collect_corpus",
+        output: "representative problem-class examples",
+        verifier: "case-study corpus preserved",
+    },
+    AlgorithmConstructionStage {
+        id: "derive_surfaces",
+        output: "source and target surface ontology",
+        verifier: "source/target format detection",
+    },
+    AlgorithmConstructionStage {
+        id: "extract_ir",
+        output: "shared intermediate representation",
+        verifier: "ordered command preservation fixture",
+    },
+    AlgorithmConstructionStage {
+        id: "synthesize_operations",
+        output: "recognizers, extractors, renderers, and validators",
+        verifier: "round-trip surface invariants",
+    },
+    AlgorithmConstructionStage {
+        id: "project_targets",
+        output: "target-specific Markdown, shell, and PowerShell renderers",
+        verifier: "per-target rendering fixture",
+    },
+    AlgorithmConstructionStage {
+        id: "mirror_runtimes",
+        output: "Rust and browser-worker projections of the same algorithm",
+        verifier: "cross-runtime parity checks",
+    },
+    AlgorithmConstructionStage {
+        id: "promote_capability",
+        output: "reusable coding-task construction pattern",
+        verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+    },
+];
+
+const CODING_SURFACE_PROJECTIONS: &[CodingSurfaceProjection] = &[
+    CodingSurfaceProjection {
+        slug: "coding_catalog",
+        projection: "task spec -> parameterized template -> CST/compile check",
+    },
+    CodingSurfaceProjection {
+        slug: "program_synthesis",
+        projection: "semantic function tree -> source program -> sandbox tests",
+    },
+    CodingSurfaceProjection {
+        slug: "program_blueprint",
+        projection: "capability set -> blueprint recipe -> honest code projection",
+    },
+    CodingSurfaceProjection {
+        slug: "numeric_list",
+        projection: "operation/data/language IR -> generated code plus evaluated result",
+    },
+    CodingSurfaceProjection {
+        slug: "rule_synthesis",
+        projection: "operation/target binding -> candidate rule -> verification fixture",
+    },
+    CodingSurfaceProjection {
+        slug: "installation_conversion",
+        projection: "installation surfaces -> install-step IR -> target renderers",
+    },
+];
+
 pub fn try_installation_conversion(
     prompt: &str,
     normalized: &str,
@@ -572,6 +650,7 @@ fn extract_project(prompt: &str) -> Option<String> {
 fn record_conversion(log: &mut EventLog, conversion: &InstallationConversion) {
     log.append("formalization", "install_steps_ir".to_owned());
     log.append("meaning", conversion.meaning_id());
+    record_algorithm_construction(log);
     log.append(
         "installation_conversion:source_format",
         conversion.source_format.label().to_owned(),
@@ -598,6 +677,28 @@ fn record_conversion(log: &mut EventLog, conversion: &InstallationConversion) {
     );
 }
 
+fn record_algorithm_construction(log: &mut EventLog) {
+    log.append(
+        "algorithm_construction:meta_algorithm",
+        "problem_class_to_shared_ir_to_renderers_to_verification".to_owned(),
+    );
+    for stage in ALGORITHM_CONSTRUCTION_STAGES {
+        log.append(
+            "algorithm_construction:stage",
+            format!(
+                "{} output={} verifier={}",
+                stage.id, stage.output, stage.verifier
+            ),
+        );
+    }
+    for surface in CODING_SURFACE_PROJECTIONS {
+        log.append(
+            "algorithm_construction:coding_surface",
+            format!("{} projection={}", surface.slug, surface.projection),
+        );
+    }
+}
+
 fn render_conversion(conversion: &InstallationConversion) -> String {
     let mut output = String::new();
     let _ = writeln!(
@@ -612,6 +713,8 @@ fn render_conversion(conversion: &InstallationConversion) -> String {
     output.push_str("2. Extract command-like install/deploy steps in original order.\n");
     output.push_str("3. Render every target from the same install-step IR.\n");
     output.push_str("4. Preserve commands verbatim so the conversion can round-trip.\n");
+    output.push('\n');
+    render_meta_algorithm(&mut output);
 
     for target in &conversion.target_formats {
         output.push('\n');
@@ -641,12 +744,48 @@ fn render_lino(conversion: &InstallationConversion) -> String {
         "  validation {}",
         lino_string("single_ir_renders_markdown_shell_powershell")
     );
+    let _ = writeln!(
+        lino,
+        "  meta_algorithm {}",
+        lino_string("problem_class_to_shared_ir_to_renderers_to_verification")
+    );
+    for stage in ALGORITHM_CONSTRUCTION_STAGES {
+        let _ = writeln!(lino, "  construction_stage {}", lino_string(stage.id));
+        let _ = writeln!(lino, "  stage_output {}", lino_string(stage.output));
+        let _ = writeln!(lino, "  stage_verifier {}", lino_string(stage.verifier));
+    }
+    for surface in CODING_SURFACE_PROJECTIONS {
+        let _ = writeln!(lino, "  coding_surface {}", lino_string(surface.slug));
+        let _ = writeln!(
+            lino,
+            "  surface_projection {}",
+            lino_string(surface.projection)
+        );
+    }
     for step in &conversion.steps {
         let _ = writeln!(lino, "  step {}", lino_string(&step.id));
         let _ = writeln!(lino, "  description {}", lino_string(&step.description));
         let _ = writeln!(lino, "  command {}", lino_string(&step.command));
     }
     lino
+}
+
+fn render_meta_algorithm(output: &mut String) {
+    output.push_str("Meta algorithm for constructing conversion algorithms:\n");
+    for (index, stage) in ALGORITHM_CONSTRUCTION_STAGES.iter().enumerate() {
+        let _ = writeln!(
+            output,
+            "{}. {} -> {}; verification fixture: {}.",
+            index + 1,
+            stage.id,
+            stage.output,
+            stage.verifier
+        );
+    }
+    output.push_str("\nExisting coding solutions producible by the same meta algorithm:\n");
+    for surface in CODING_SURFACE_PROJECTIONS {
+        let _ = writeln!(output, "- {}: {}.", surface.slug, surface.projection);
+    }
 }
 
 fn render_markdown_guide(output: &mut String, conversion: &InstallationConversion) {
