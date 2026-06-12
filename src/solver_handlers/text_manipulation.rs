@@ -894,8 +894,7 @@ fn pascal_case(input: &str) -> String {
     case_words(input)
         .iter()
         .map(|word| capitalize_word(word))
-        .collect::<Vec<_>>()
-        .join("")
+        .collect::<String>()
 }
 
 fn strip_empty_lines(input: &str) -> Vec<String> {

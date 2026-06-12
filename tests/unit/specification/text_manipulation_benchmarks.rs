@@ -816,8 +816,7 @@ fn pascalize_words(words: &[&str]) -> String {
     words
         .iter()
         .map(|word| capitalize_ascii_word(word))
-        .collect::<Vec<_>>()
-        .join("")
+        .collect::<String>()
 }
 
 fn capitalize_ascii_word(word: &str) -> String {
