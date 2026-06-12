@@ -25,6 +25,10 @@ pub fn try_text_manipulation_with_history(
     log: &mut EventLog,
     history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
+    if crate::solver_helpers::is_agent_request(normalized) {
+        return None;
+    }
+
     let request = TextRequest::parse_with_history(prompt, normalized, history)?;
     let chain = SubstitutionTextChain::build(&request.input, &request.operations)?;
 
@@ -95,6 +99,21 @@ impl TextRequest {
             return Self::build(input, vec![TextOperation::CountOccurrences { needle }]);
         }
 
+        if vocabulary.matches("remove_text", normalized) && !quoted.is_empty() {
+            let (input, needle) = parse_remove_request(prompt, history)?;
+            return Self::build(input, vec![TextOperation::RemoveText { needle }]);
+        }
+
+        if vocabulary.matches("append_text", normalized) && !quoted.is_empty() {
+            let (input, suffix) = parse_affix_request(prompt, history)?;
+            return Self::build(input, vec![TextOperation::AppendText { suffix }]);
+        }
+
+        if vocabulary.matches("prepend_text", normalized) && !quoted.is_empty() {
+            let (input, prefix) = parse_affix_request(prompt, history)?;
+            return Self::build(input, vec![TextOperation::PrependText { prefix }]);
+        }
+
         let input = quoted
             .first()
             .cloned()
@@ -136,6 +155,12 @@ fn append_simple_operations(
     if vocabulary.matches("sort_lines", normalized) {
         operations.push(TextOperation::SortLines);
     }
+    if vocabulary.matches("trim_whitespace", normalized) {
+        operations.push(TextOperation::TrimWhitespace);
+    }
+    if vocabulary.matches("normalize_whitespace", normalized) {
+        operations.push(TextOperation::NormalizeWhitespace);
+    }
     if vocabulary.matches("count_unique_words", normalized) {
         operations.push(TextOperation::CountUniqueWords);
     }
@@ -146,12 +171,17 @@ enum TextOperation {
     Uppercase,
     Lowercase,
     Replace { from: String, to: String },
+    RemoveText { needle: String },
+    AppendText { suffix: String },
+    PrependText { prefix: String },
     ReverseWords,
     ExtractEmails,
     CountOccurrences { needle: String },
     CountUniqueWords,
     DeduplicateLines,
     SortLines,
+    TrimWhitespace,
+    NormalizeWhitespace,
 }
 
 impl TextOperation {
@@ -160,12 +190,17 @@ impl TextOperation {
             Self::Uppercase => "uppercase",
             Self::Lowercase => "lowercase",
             Self::Replace { .. } => "replace_text",
+            Self::RemoveText { .. } => "remove_text",
+            Self::AppendText { .. } => "append_text",
+            Self::PrependText { .. } => "prepend_text",
             Self::ReverseWords => "reverse_words",
             Self::ExtractEmails => "extract_email",
             Self::CountOccurrences { .. } => "count_occurrences",
             Self::CountUniqueWords => "count_unique_words",
             Self::DeduplicateLines => "deduplicate_lines",
             Self::SortLines => "sort_lines",
+            Self::TrimWhitespace => "trim_whitespace",
+            Self::NormalizeWhitespace => "normalize_whitespace",
         }
     }
 
@@ -174,6 +209,9 @@ impl TextOperation {
             Self::Uppercase => input.chars().flat_map(char::to_uppercase).collect(),
             Self::Lowercase => input.chars().flat_map(char::to_lowercase).collect(),
             Self::Replace { from, to } => replace_text(input, from, to),
+            Self::RemoveText { needle } => replace_text(input, needle, ""),
+            Self::AppendText { suffix } => format!("{input}{suffix}"),
+            Self::PrependText { prefix } => format!("{prefix}{input}"),
             Self::ReverseWords => input.split_whitespace().rev().collect::<Vec<_>>().join(" "),
             Self::ExtractEmails => extract_email_addresses(input).join("\n"),
             Self::CountOccurrences { needle } => {
@@ -190,6 +228,8 @@ impl TextOperation {
                 lines.sort();
                 lines.join("\n")
             }
+            Self::TrimWhitespace => input.trim().to_owned(),
+            Self::NormalizeWhitespace => input.split_whitespace().collect::<Vec<_>>().join(" "),
         }
     }
 }
@@ -207,33 +247,65 @@ fn replace_text(input: &str, from: &str, to: &str) -> String {
     if from.is_empty() {
         return direct;
     }
-    if normalized_word_spans(from).len() > 1 {
-        return replace_word_sequence(input, from, to).unwrap_or(direct);
-    }
-    if direct != input {
+    let exact_ranges = exact_match_ranges(input, from);
+    if !exact_ranges.is_empty() {
+        if normalized_word_spans(from).len() > 1 {
+            let mut ranges = exact_ranges.clone();
+            ranges.extend(word_sequence_match_ranges(input, from, &exact_ranges));
+            return replace_ranges(input, &ranges, to).unwrap_or(direct);
+        }
         return direct;
     }
     replace_word_sequence(input, from, to).unwrap_or(direct)
 }
 
 fn replace_word_sequence(input: &str, from: &str, to: &str) -> Option<String> {
+    let ranges = word_sequence_match_ranges(input, from, &[]);
+    replace_ranges(input, &ranges, to)
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct ReplacementRange {
+    start: usize,
+    end: usize,
+}
+
+fn exact_match_ranges(input: &str, from: &str) -> Vec<ReplacementRange> {
+    if from.is_empty() {
+        return Vec::new();
+    }
+
+    let mut ranges = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(relative_start) = input[cursor..].find(from) {
+        let start = cursor + relative_start;
+        let end = start + from.len();
+        ranges.push(ReplacementRange { start, end });
+        cursor = end;
+    }
+    ranges
+}
+
+fn word_sequence_match_ranges(
+    input: &str,
+    from: &str,
+    excluded: &[ReplacementRange],
+) -> Vec<ReplacementRange> {
     let needle = normalized_word_spans(from)
         .into_iter()
         .map(|span| span.word)
         .collect::<Vec<_>>();
     if needle.is_empty() {
-        return None;
+        return Vec::new();
     }
 
     let haystack = normalized_word_spans(input);
     if haystack.len() < needle.len() {
-        return None;
+        return Vec::new();
     }
 
-    let mut out = String::new();
-    let mut cursor = 0usize;
+    let mut ranges = Vec::new();
     let mut index = 0usize;
-    let mut replaced = false;
     while index + needle.len() <= haystack.len() {
         let matches = needle
             .iter()
@@ -242,14 +314,44 @@ fn replace_word_sequence(input: &str, from: &str, to: &str) -> Option<String> {
         if matches {
             let start = haystack[index].start;
             let end = haystack[index + needle.len() - 1].end;
-            out.push_str(&input[cursor..start]);
-            out.push_str(to);
-            cursor = end;
+            let range = ReplacementRange { start, end };
+            if !excluded
+                .iter()
+                .any(|excluded| ranges_overlap(range, *excluded))
+            {
+                ranges.push(range);
+            }
             index += needle.len();
-            replaced = true;
         } else {
             index += 1;
         }
+    }
+    ranges
+}
+
+const fn ranges_overlap(left: ReplacementRange, right: ReplacementRange) -> bool {
+    left.start < right.end && right.start < left.end
+}
+
+fn replace_ranges(input: &str, ranges: &[ReplacementRange], to: &str) -> Option<String> {
+    if ranges.is_empty() {
+        return None;
+    }
+
+    let mut ranges = ranges.to_vec();
+    ranges.sort_by_key(|range| (range.start, range.end));
+
+    let mut out = String::new();
+    let mut cursor = 0usize;
+    let mut replaced = false;
+    for range in ranges {
+        if range.start < cursor {
+            continue;
+        }
+        out.push_str(&input[cursor..range.start]);
+        out.push_str(to);
+        cursor = range.end;
+        replaced = true;
     }
     if !replaced {
         return None;
@@ -320,6 +422,51 @@ fn parse_replace_request(
         .or_else(|| text_after_colon(prompt))
         .or_else(|| last_assistant_text_artifact(history))?;
     Some((input, quoted[0].text.clone(), quoted[1].text.clone()))
+}
+
+fn parse_remove_request(prompt: &str, history: &[ConversationTurn]) -> Option<(String, String)> {
+    let quoted = quoted_segment_spans(prompt);
+    if quoted.is_empty() {
+        return None;
+    }
+
+    if quoted.len() >= 2 && looks_like_input_first_unary_edit(prompt, &quoted) {
+        return Some((quoted[0].text.clone(), quoted[1].text.clone()));
+    }
+
+    let input = quoted
+        .get(1)
+        .map(|segment| segment.text.clone())
+        .or_else(|| text_after_colon(prompt))
+        .or_else(|| last_assistant_text_artifact(history))?;
+    Some((input, quoted[0].text.clone()))
+}
+
+fn parse_affix_request(prompt: &str, history: &[ConversationTurn]) -> Option<(String, String)> {
+    let quoted = quoted_segment_spans(prompt);
+    if quoted.is_empty() {
+        return None;
+    }
+
+    if quoted.len() >= 2 && looks_like_input_first_unary_edit(prompt, &quoted) {
+        return Some((quoted[0].text.clone(), quoted[1].text.clone()));
+    }
+
+    let input = quoted
+        .get(1)
+        .map(|segment| segment.text.clone())
+        .or_else(|| text_after_colon(prompt))
+        .or_else(|| last_assistant_text_artifact(history))?;
+    Some((input, quoted[0].text.clone()))
+}
+
+fn looks_like_input_first_unary_edit(prompt: &str, quoted: &[QuotedSegment]) -> bool {
+    if quoted.len() < 2 {
+        return false;
+    }
+
+    let before_first = &prompt[..quoted[0].start];
+    input_context_before_first_quote(before_first)
 }
 
 fn looks_like_input_first_replacement(prompt: &str, quoted: &[QuotedSegment]) -> bool {

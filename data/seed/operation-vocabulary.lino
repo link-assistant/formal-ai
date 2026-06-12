@@ -35,6 +35,61 @@ operation_vocabulary
       phrase बदल
     language zh
       phrase 替换
+  operation remove_text
+    language en
+      phrase remove
+      phrase delete
+      phrase "remove text"
+      phrase "delete text"
+      combo remove+text
+      combo delete+text
+    language ru
+      phrase удали
+      phrase удалить
+      combo удали+текст
+      combo удалить+текст
+      combo убери+текст
+    language hi
+      combo पाठ+हटा
+      combo टेक्स्ट+हटा
+    language zh
+      phrase 删除文本
+      phrase 移除文本
+      combo 删除+文本
+  operation append_text
+    language en
+      phrase append
+      phrase "append text"
+      phrase "add to end"
+      combo append+text
+    language ru
+      phrase "добавь в конец"
+      combo добавить+конец
+    language hi
+      combo अंत+जोड़
+      combo आखिर+जोड़
+    language zh
+      phrase 追加
+      phrase 追加文本
+      phrase 末尾添加
+      combo 追加+文本
+  operation prepend_text
+    language en
+      phrase prepend
+      phrase "prepend text"
+      phrase "add to start"
+      combo prepend+text
+    language ru
+      phrase "добавь в начало"
+      combo добавить+начало
+    language hi
+      combo शुरुआत+जोड़
+      combo शुरू+जोड़
+    language zh
+      phrase 前置
+      phrase 前置文本
+      phrase 开头添加
+      combo 前面+添加
   operation reverse_words
     language en
       phrase "reverse words"
@@ -138,6 +193,39 @@ operation_vocabulary
       phrase 排序行
       phrase 行排序
       phrase 对行排序
+  operation trim_whitespace
+    language en
+      phrase "trim whitespace"
+      phrase "strip whitespace"
+      combo trim+whitespace
+    language ru
+      phrase "убери пробелы по краям"
+      combo убрать+пробелы
+      combo обрежь+пробелы
+    language hi
+      combo खाली+स्थान+हटा
+      combo स्पेस+हटा
+    language zh
+      phrase 去除首尾空白
+      phrase 修剪空白
+      combo 去除+空白
+  operation normalize_whitespace
+    language en
+      phrase "normalize whitespace"
+      phrase "collapse whitespace"
+      combo normalize+whitespace
+      combo collapse+whitespace
+    language ru
+      phrase "нормализуй пробелы"
+      phrase "схлопни пробелы"
+      combo нормализуй+пробелы
+    language hi
+      combo खाली+स्थान+सामान्य
+      combo स्पेस+सामान्य
+    language zh
+      phrase 规范化空白
+      phrase 合并空白
+      combo 合并+空白
   operation path_argument
     language en
       phrase "path argument"

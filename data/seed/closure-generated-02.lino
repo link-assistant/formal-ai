@@ -1,4 +1,34 @@
 meanings
+  pattern_concept_prefix_znachenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix znachenie"
+  pattern_concept_suffix_de_yisi_shi_shenme_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix de yisi shi shenme simplified"
+  pattern_concept_suffix_ka_arth
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth"
+  pattern_concept_suffix_ka_arth_batao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth batao"
+  pattern_concept_suffix_kaun_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kaun hai"
+  pattern_concept_suffix_kaun_hain
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kaun hain"
   pattern_concept_suffix_kya_hai
     defined-by prompt_pattern
     lexeme en
@@ -534,6 +564,16 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  prepend
+    defined-by phrase
+    lexeme en
+      surface
+        text "prepend"
+  prepend_text
+    defined-by operation
+    lexeme en
+      surface
+        text "prepend text"
   program_plan_rules
     defined-by concept
     lexeme en
@@ -584,6 +624,11 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remove_text
+    defined-by operation
+    lexeme en
+      surface
+        text "remove text"
   reserved-role
     defined-by concept
     lexeme en
@@ -1234,6 +1279,16 @@ meanings
     lexeme en
       surface
         text "trace"
+  trim
+    defined-by concept
+    lexeme en
+      surface
+        text "trim"
+  trim_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "trim whitespace"
   ts
     defined-by word_surface
     lexeme en
@@ -1289,6 +1344,11 @@ meanings
     lexeme en
       surface
         text "webvm"
+  whitespace
+    defined-by concept
+    lexeme en
+      surface
+        text "whitespace"
   wikidata
     defined-by source
     lexeme en
@@ -1334,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "write program"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

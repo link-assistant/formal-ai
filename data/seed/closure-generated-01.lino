@@ -114,11 +114,21 @@ meanings
     lexeme en
       surface
         text "api"
+  append
+    defined-by phrase
+    lexeme en
+      surface
+        text "append"
   append_memory
     defined-by name
     lexeme en
       surface
         text "append memory"
+  append_text
+    defined-by operation
+    lexeme en
+      surface
+        text "append text"
   assistant_free_time
     defined-by intent
     lexeme en
@@ -224,6 +234,11 @@ meanings
     lexeme en
       surface
         text "code request"
+  collapse
+    defined-by concept
+    lexeme en
+      surface
+        text "collapse"
   command-stream
     defined-by name
     lexeme en
@@ -369,6 +384,11 @@ meanings
     lexeme en
       surface
         text "default language"
+  delete
+    defined-by phrase
+    lexeme en
+      surface
+        text "delete"
   demo_memory
     defined-by value
     lexeme en
@@ -819,6 +839,16 @@ meanings
     lexeme en
       surface
         text "nondeterministic"
+  normalize
+    defined-by concept
+    lexeme en
+      surface
+        text "normalize"
+  normalize_whitespace
+    defined-by operation
+    lexeme en
+      surface
+        text "normalize whitespace"
   official-docs
     defined-by source_kind
     lexeme en
@@ -1364,33 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix who was"
-  pattern_concept_prefix_znachenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix znachenie"
-  pattern_concept_suffix_de_yisi_shi_shenme_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix de yisi shi shenme simplified"
-  pattern_concept_suffix_ka_arth
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix ka arth"
-  pattern_concept_suffix_ka_arth_batao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix ka arth batao"
-  pattern_concept_suffix_kaun_hai
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kaun hai"
-  pattern_concept_suffix_kaun_hain
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kaun hain"
