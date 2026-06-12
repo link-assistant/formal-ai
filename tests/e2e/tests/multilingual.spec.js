@@ -297,9 +297,13 @@ test.describe('multilingual chat surface', () => {
 
   test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
     const cases = [
+      'Show rules',
       'Show list of your rules',
+      'Покажи правила',
       'Покажи список своих правил',
+      'नियम दिखाओ',
       'अपने नियमों की सूची दिखाओ',
+      '显示规则',
       '显示你的规则列表',
     ];
 
@@ -417,6 +421,38 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Сколько будет два плюс два?');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('два плюс два = 4');
+  });
+
+  test('embedded calculation requests resolve across supported languages', async ({ page }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt: 'I want to know what is 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'ru',
+        prompt: 'хочу понять сколько будет 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'hi',
+        prompt: 'मुझे बताओ गणना करें 8 / 2',
+        expected: '8 / 2 = 4',
+      },
+      {
+        language: 'zh',
+        prompt: '我想知道计算 2 + 2',
+        expected: '2 + 2 = 4',
+      },
+    ];
+
+    for (const { prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
@@ -2220,7 +2256,7 @@ test.describe('Issue #27: agent mode', () => {
   test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
     const toggle = page.locator('[data-testid="agent-toggle"]');
     await expect(toggle).toBeVisible();
-    // Issue #27: the topbar buttons render an emoji icon + label so the label
+    // Issue #409: the topbar buttons render an icon + label so the label
     // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
     await expect(toggle.locator('.btn-label')).toHaveText('Chat');
     await toggle.click();
@@ -2265,12 +2301,12 @@ test.describe('Issue #27: mobile layout', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   });
 
-  test('topbar buttons collapse to emoji icons on mobile', async ({ page }) => {
+  test('topbar buttons collapse to icons on mobile', async ({ page }) => {
     const demoToggle = page.locator('.mode-toggle');
     await expect(demoToggle).toBeVisible();
     // The label span is hidden via CSS on the mobile breakpoint…
     await expect(demoToggle.locator('.btn-label')).toBeHidden();
-    // …but the emoji icon stays visible so the action is still recognisable.
+    // …but the icon stays visible so the action is still recognisable.
     await expect(demoToggle.locator('.btn-icon')).toBeVisible();
     // The aria-label still announces the action for screen readers.
     await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);

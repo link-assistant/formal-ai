@@ -119,6 +119,11 @@ meanings
     lexeme en
       surface
         text "append memory"
+  assistant_free_time
+    defined-by intent
+    lexeme en
+      surface
+        text "assistant free time"
   assistant_name
     defined-by intent
     lexeme en
@@ -524,11 +529,6 @@ meanings
     lexeme en
       surface
         text "grammar context"
-  highest
-    defined-by phrase
-    lexeme en
-      surface
-        text "highest"
   hive-mind
     defined-by name
     lexeme en
@@ -564,6 +564,11 @@ meanings
     lexeme en
       surface
         text "intent algorithm"
+  intent_assistant_free_time
+    defined-by intent
+    lexeme en
+      surface
+        text "intent assistant free time"
   intent_assistant_name
     defined-by intent
     lexeme en
@@ -694,11 +699,6 @@ meanings
     lexeme en
       surface
         text "language detection"
-  largest
-    defined-by phrase
-    lexeme en
-      surface
-        text "largest"
   lexical_database
     defined-by kind
     lexeme en
@@ -874,6 +874,81 @@ meanings
     lexeme en
       surface
         text "path argument list files reverse sort"
+  pattern_assistant_free_time_phrase_aap_khali_samay_men_kya_karte_hain_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase aap khali samay men kya karte hain hi"
+  pattern_assistant_free_time_phrase_chem_ty_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem ty zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chem_zanimaeshsya_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chem zanimaeshsya v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_kogda_svoboden_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh kogda svoboden ru"
+  pattern_assistant_free_time_phrase_chto_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_chto_ty_delaesh_v_svobodnoe_vremya_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase chto ty delaesh v svobodnoe vremya ru"
+  pattern_assistant_free_time_phrase_fursat_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase fursat men kya karte ho hi"
+  pattern_assistant_free_time_phrase_how_do_you_spend_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase how do you spend your free time en"
+  pattern_assistant_free_time_phrase_khali_samay_men_kya_karte_ho_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase khali samay men kya karte ho hi"
+  pattern_assistant_free_time_phrase_ni_kongxian_shijian_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni kongxian shijian zuo shenme zh"
+  pattern_assistant_free_time_phrase_ni_yeyu_shijian_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni yeyu shijian zuo shenme zh"
+  pattern_assistant_free_time_phrase_ni_you_kong_de_shihou_zuo_shenme_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase ni you kong de shihou zuo shenme zh"
+  pattern_assistant_free_time_phrase_what_do_you_do_in_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do in free time en"
+  pattern_assistant_free_time_phrase_what_do_you_do_in_your_free_time_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do in your free time en"
+  pattern_assistant_free_time_phrase_what_do_you_do_when_you_are_not_working_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern assistant free time phrase what do you do when you are not working en"
   pattern_behavior_rules_list_apne_niyam_ginao_hi
     defined-by prompt_pattern
     lexeme en
@@ -899,11 +974,21 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list list your rules en"
+  pattern_behavior_rules_list_niyam_dikhao_hi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list niyam dikhao hi"
   pattern_behavior_rules_list_perechisli_svoi_pravila_ru
     defined-by prompt_pattern
     lexeme en
       surface
         text "pattern behavior rules list perechisli svoi pravila ru"
+  pattern_behavior_rules_list_pokazhi_pravila_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list pokazhi pravila ru"
   pattern_behavior_rules_list_pokazhi_pravila_povedeniya_ru
     defined-by prompt_pattern
     lexeme en
@@ -924,11 +1009,21 @@ meanings
     lexeme en
       surface
         text "pattern behavior rules list show list your rules en"
+  pattern_behavior_rules_list_show_rules_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list show rules en"
   pattern_behavior_rules_list_vyavahar_niyam_suchibaddh_hi
     defined-by prompt_pattern
     lexeme en
       surface
         text "pattern behavior rules list vyavahar niyam suchibaddh hi"
+  pattern_behavior_rules_list_xianshi_guize_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern behavior rules list xianshi guize zh"
   pattern_behavior_rules_list_xianshi_nide_guize_liebiao_zh
     defined-by prompt_pattern
     lexeme en
@@ -1319,78 +1414,3 @@ meanings
     lexeme en
       surface
         text "pattern concept suffix kaun hain"
-  pattern_concept_suffix_kya_hai
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya hai"
-  pattern_concept_suffix_kya_hota_hai
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya hota hai"
-  pattern_concept_suffix_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix kya matlab"
-  pattern_concept_suffix_se_kya_matlab
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix se kya matlab"
-  pattern_concept_suffix_shenmeyisi_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shenmeyisi simplified"
-  pattern_concept_suffix_shi_shei_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei simplified"
-  pattern_concept_suffix_shi_shei_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shei traditional"
-  pattern_concept_suffix_shi_shenme_simplified
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme simplified"
-  pattern_concept_suffix_shi_shenme_traditional
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept suffix shi shenme traditional"
-  pattern_courtesy_keyword_blagodaryu
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword blagodaryu"
-  pattern_courtesy_keyword_dhanyavad
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword dhanyavad"
-  pattern_courtesy_keyword_spasibo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword spasibo"
-  pattern_courtesy_keyword_thanks
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword thanks"
-  pattern_courtesy_keyword_xiexie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy keyword xiexie"
-  pattern_courtesy_phrase_fine_thank_you
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern courtesy phrase fine thank you"

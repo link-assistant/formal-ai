@@ -13,8 +13,9 @@
 use std::collections::BTreeMap;
 
 use crate::engine::{
-    farewell_answer, greeting_answer, identity_answer, normalize_prompt,
-    supported_program_languages, supported_program_tasks, unknown_answer, SymbolicAnswer,
+    assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer,
+    normalize_prompt, supported_program_languages, supported_program_tasks, unknown_answer,
+    SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -142,6 +143,21 @@ fn behavior_rule_records() -> Vec<BehaviorRuleRecord> {
             ),
         },
         BehaviorRuleRecord {
+            id: "rule_assistant_free_time".to_owned(),
+            topic: "small_talk",
+            intent: "assistant_free_time".to_owned(),
+            label: "Assistant free-time rule".to_owned(),
+            matches:
+                "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases"
+                    .to_owned(),
+            response: assistant_free_time_answer().to_owned(),
+            source: "data/seed/intent-routing.lino + multilingual responses".to_owned(),
+            when_then: format!(
+                "When the user asks what I do in free time then respond with `{}`.",
+                assistant_free_time_answer()
+            ),
+        },
+        BehaviorRuleRecord {
             id: "rule_identity".to_owned(),
             topic: "identity",
             intent: "identity".to_owned(),
@@ -224,12 +240,13 @@ fn topic_order(topic: &str) -> u8 {
     match topic {
         "greetings" => 0,
         "farewells" => 1,
-        "identity" => 2,
-        "assistant_name" => 3,
-        "capabilities" => 4,
-        "write_program" => 5,
-        "unknown_fallback" => 6,
-        _ => 7,
+        "small_talk" => 2,
+        "identity" => 3,
+        "assistant_name" => 4,
+        "capabilities" => 5,
+        "write_program" => 6,
+        "unknown_fallback" => 7,
+        _ => 8,
     }
 }
 
@@ -252,6 +269,13 @@ fn topic_label(topic: &str, language: &str) -> &'static str {
     match topic {
         "greetings" => localized_text(language, "Greetings", "Приветствия", "अभिवादन", "问候"),
         "farewells" => localized_text(language, "Farewells", "Прощания", "विदाई", "告别"),
+        "small_talk" => localized_text(
+            language,
+            "Small talk",
+            "Светская беседа",
+            "हल्की बातचीत",
+            "闲聊",
+        ),
         "identity" => localized_text(language, "Identity", "Идентичность", "पहचान", "身份"),
         "assistant_name" => localized_text(
             language,
@@ -430,6 +454,13 @@ fn rule_label(rule: &BehaviorRuleRecord, language: &str) -> String {
             "विदाई नियम",
             "告别规则",
         ),
+        "rule_assistant_free_time" => localized_text(
+            language,
+            "Assistant free-time rule",
+            "Правило свободного времени ассистента",
+            "सहायक खाली समय नियम",
+            "助手空闲时间规则",
+        ),
         "rule_identity" => localized_text(
             language,
             "Identity rule",
@@ -488,6 +519,13 @@ fn rule_matches(rule: &BehaviorRuleRecord, language: &str) -> String {
             "`bye`, `goodbye`, `poka` और बहुभाषी farewell seed phrases",
             "`bye`、`goodbye`、`poka` 以及多语言告别 seed 短语",
         ),
+        "rule_assistant_free_time" => localized_text(
+            language,
+            "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+            "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы",
+            "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases",
+            "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语",
+        ),
         "rule_identity" => localized_text(
             language,
             "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
@@ -535,6 +573,11 @@ fn rule_response(rule: &BehaviorRuleRecord, language: &str) -> String {
     match rule.id.as_str() {
         "rule_greeting" => localized_response("greeting", language, greeting_answer()),
         "rule_farewell" => localized_response("farewell", language, farewell_answer()),
+        "rule_assistant_free_time" => localized_response(
+            "assistant_free_time",
+            language,
+            assistant_free_time_answer(),
+        ),
         "rule_identity" => localized_response("identity", language, identity_answer()),
         "rule_assistant_name" => localized_text(
             language,
@@ -594,6 +637,21 @@ fn rule_when_then(rule: &BehaviorRuleRecord, language: &str) -> String {
             ),
             "zh" => format!(
                 "当用户说 `bye`、`goodbye`、`poka` 或多语言告别短语时，回答 `{}`。",
+                rule_response(rule, language)
+            ),
+            _ => rule.when_then.clone(),
+        },
+        "rule_assistant_free_time" => match language {
+            "ru" => format!(
+                "Когда пользователь спрашивает, что я делаю в свободное время, ответь `{}`.",
+                rule_response(rule, language)
+            ),
+            "hi" => format!(
+                "जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब `{}` उत्तर दें.",
+                rule_response(rule, language)
+            ),
+            "zh" => format!(
+                "当用户问我空闲时间做什么时，回答 `{}`。",
                 rule_response(rule, language)
             ),
             _ => rule.when_then.clone(),

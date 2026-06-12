@@ -109,6 +109,24 @@ intent_routing
     phrase "我很好 谢谢"
     phrase 好的谢谢
     phrase "好的 谢谢"
+  intent intent_assistant_free_time
+    slug assistant_free_time
+    response_link "response:assistant_free_time"
+    phrase "what do you do in your free time"
+    phrase "what do you do in free time"
+    phrase "how do you spend your free time"
+    phrase "what do you do when you are not working"
+    phrase "что делаешь в свободное время"
+    phrase "что ты делаешь в свободное время"
+    phrase "чем занимаешься в свободное время"
+    phrase "чем ты занимаешься в свободное время"
+    phrase "что делаешь когда свободен"
+    phrase "खाली समय में क्या करते हो"
+    phrase "आप खाली समय में क्या करते हैं"
+    phrase "फुर्सत में क्या करते हो"
+    phrase 你空闲时间做什么
+    phrase 你有空的时候做什么
+    phrase 你业余时间做什么
   intent intent_test_status
     slug test_status
     response_link "response:test_status"

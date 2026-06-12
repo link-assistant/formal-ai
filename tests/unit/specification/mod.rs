@@ -47,6 +47,7 @@ mod desktop_surface;
 mod formalization;
 mod intent_formalization;
 mod issue_146;
+mod issue_402;
 mod links_network;
 mod multilingual;
 mod natural_language_access;
