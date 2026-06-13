@@ -66,12 +66,19 @@ fn issue_435_relative_tomorrow_call_is_scheduled() {
 }
 
 // The same relative-date support must work without an explicit calendar word and
-// across languages: a bare "tomorrow"/"明天" plus a schedule/event cue is enough.
+// across every supported language: a bare relative-date word plus a schedule/event
+// cue is enough. Coverage spans all four locales so a fix never lands with a
+// single-language regression:
+//   - English ("en"): "tomorrow" + "schedule a call"
+//   - Russian ("ru"): "на завтра" + "созвон"
+//   - Hindi ("hi"):   "कल" + "मीटिंग शेड्यूल करें"
+//   - Chinese ("zh"): "明天" + "安排...通话"
 #[test]
 fn issue_435_relative_tomorrow_multilingual() {
     for (prompt, title) in [
         ("поставь созвон на завтра", "Созвон"),
         ("schedule a call for tomorrow", "Call"),
+        ("कल मीटिंग शेड्यूल करें", "मीटिंग"),
         ("明天安排一个通话", "通话"),
     ] {
         let response = answer(prompt);
