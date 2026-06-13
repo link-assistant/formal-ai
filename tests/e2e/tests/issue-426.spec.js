@@ -146,7 +146,10 @@ test.describe('Issue #426 — records/financials about a subject use web search'
 
       const last = await sendPrompt(page, testCase.prompt);
 
-      await expect(last).toContainText('Search results for');
+      // The "Search results for" heading is localized per language, so assert
+      // on the rendered provider content (English in our mocks) plus the
+      // language-independent intent and evidence signals instead.
+      await expect(last).toContainText('Boeing financial records');
       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
       await expect(last.locator('.intent')).toContainText('intent:web_search');
       await expect(last.locator('.evidence-list')).toContainText(
