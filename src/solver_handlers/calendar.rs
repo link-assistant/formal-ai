@@ -499,7 +499,7 @@ fn render_answer(
 /// Returns Some only for prompts that look like a create request (day reference +
 /// schedule action cue or "число" + time/title signals). On success it records rich
 /// `calendar:parsed_*` trace events, builds a localized confirmation proposal, and
-/// emits via finalize_simple with intent "calendar_create_event".
+/// emits via `finalize_simple` with intent `calendar_create_event`.
 pub fn try_calendar_create_event(
     prompt: &str,
     normalized: &str,
@@ -743,7 +743,7 @@ fn extract_event_title(normalized: &str) -> Option<String> {
     None
 }
 
-fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32, u32, u32) {
+const fn compute_target_date_with_rollover(base: CalendarDate, day: u32) -> (i32, u32, u32) {
     let mut y = base.year;
     let mut m = base.month;
     let mut d = day;
@@ -772,16 +772,16 @@ fn extract_clock_time(normalized: &str) -> Option<(u32, u32)> {
     let bytes = normalized.as_bytes();
     for i in 0..bytes.len().saturating_sub(3) {
         if bytes[i].is_ascii_digit() && bytes[i + 1].is_ascii_digit() {
-            let h1 = (bytes[i] - b'0') as u32;
-            let h2 = (bytes[i + 1] - b'0') as u32;
+            let h1 = u32::from(bytes[i] - b'0');
+            let h2 = u32::from(bytes[i + 1] - b'0');
             let mut hour = h1 * 10 + h2;
             let mut j = i + 2;
             if j < bytes.len() && (bytes[j] == b':' || bytes[j] == b'.') {
                 j += 1;
             }
             if j + 1 < bytes.len() && bytes[j].is_ascii_digit() && bytes[j + 1].is_ascii_digit() {
-                let m1 = (bytes[j] - b'0') as u32;
-                let m2 = (bytes[j + 1] - b'0') as u32;
+                let m1 = u32::from(bytes[j] - b'0');
+                let m2 = u32::from(bytes[j + 1] - b'0');
                 let minute = m1 * 10 + m2;
                 if hour <= 23 && minute <= 59 {
                     if hour == 0 {
@@ -936,10 +936,9 @@ fn strip_action_words(value: &str) -> String {
 
 fn capitalize_first(value: &str) -> String {
     let mut chars = value.chars();
-    match chars.next() {
-        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
-        None => String::new(),
-    }
+    chars.next().map_or_else(String::new, |first| {
+        first.to_uppercase().collect::<String>() + chars.as_str()
+    })
 }
 
 fn render_create_confirmation(

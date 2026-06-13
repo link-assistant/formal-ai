@@ -83,7 +83,9 @@ pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
 /// Semantic role: an imperative or verb phrase requesting creation or booking
 /// of a calendar event (забей, поставь, schedule, book on the calendar, …).
-/// Surfaces live in data/seed/meanings-calendar.lino under role calendar_schedule_action.
+///
+/// Surfaces live in `data/seed/meanings-calendar.lino` under role
+/// `calendar_schedule_action`.
 pub const ROLE_CALENDAR_SCHEDULE_ACTION: &str = "calendar_schedule_action";
 /// Semantic role: a noun naming the thing being scheduled (встреча, meeting,
 /// событие, call, event, …). Surfaces live in meanings-calendar.lino.
