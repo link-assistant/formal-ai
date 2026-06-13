@@ -616,274 +616,134 @@ fn russian_how_known_concept_works_resolves_concept_lookup() {
 }
 
 // ---------------------------------------------------------------------------
-// Issue #223: project-method documentation prompts should answer from the
-// project's own docs, scoped to the named method.
+// Issue #404: natural language calendar create/schedule ("забей 18 число...").
+// The prompt must not fall to unknown; it must produce a structured
+// calendar_create_event with rich parsed_* evidence and a confirmation body.
 // ---------------------------------------------------------------------------
 
 #[test]
-fn pandas_join_method_question_uses_official_docs_summary() {
-    let response = answer("how the join method works in pandas");
-    assert_eq!(
-        response.intent, "docs_method_explanation",
-        "pandas join method question must route to official-docs summary; answer={}",
-        response.answer,
+fn calendar_create_event_russian_day_number_with_time_and_tz() {
+    // Exact prompt from https://github.com/link-assistant/formal-ai/issues/404
+    let response = answer("Забей мне 18 число в 17:00 по грузии на встречу с Леваном");
+    assert_ne!(
+        response.intent, "unknown",
+        "calendar scheduling prompt must not return unknown; got intent={}, answer={}",
+        response.intent, response.answer
     );
-
-    let answer = response.answer.to_lowercase();
-    for expected in ["dataframe.join", "index", "other", "how"] {
-        assert!(
-            answer.contains(expected),
-            "answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
-
-    for expected in [
-        "docs_method:project:pandas",
-        "docs_method:method:pandas.DataFrame.join",
-        "docs_method:source_kind:official-docs",
-        "source:https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.join.html",
-    ] {
-        assert!(
-            has_evidence(&response, expected),
-            "missing evidence prefix {expected:?}: {:?}",
-            response.evidence_links,
-        );
-    }
-}
-
-#[test]
-fn pandas_join_method_docs_prompt_covers_supported_languages() {
-    struct DocsMethodCase {
-        language: &'static str,
-        prompt: &'static str,
-    }
-
-    let cases = [
-        DocsMethodCase {
-            language: "en",
-            prompt: "how the join method works in pandas",
-        },
-        DocsMethodCase {
-            language: "ru",
-            prompt: "объясни как работает метод join в pandas",
-        },
-        DocsMethodCase {
-            language: "hi",
-            prompt: "समझाओ pandas में join विधि कैसे काम करती है",
-        },
-        DocsMethodCase {
-            language: "zh",
-            prompt: "请解释 pandas 中的 join 方法如何工作 以及它如何使用索引",
-        },
-    ];
-
-    for case in cases {
-        let response = answer(case.prompt);
-        assert_eq!(
-            response.intent, "docs_method_explanation",
-            "{} pandas join docs prompt must resolve; answer={}",
-            case.language, response.answer,
-        );
-        assert!(
-            response.answer.contains("DataFrame.join"),
-            "answer should remain scoped to pandas.DataFrame.join for {}: {}",
-            case.language,
-            response.answer,
-        );
-        assert!(
-            has_evidence(&response, &format!("language:{}", case.language)),
-            "missing language evidence for {}: {:?}",
-            case.language,
-            response.evidence_links,
-        );
-        assert!(
-            has_evidence(&response, "docs_method:method:pandas.DataFrame.join"),
-            "missing docs-method evidence for {}: {:?}",
-            case.language,
-            response.evidence_links,
-        );
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Issue #172: procedural "how to X Y" prompts should discover source-backed
-// procedure steps instead of returning the unknown fallback.
-// ---------------------------------------------------------------------------
-
-#[test]
-fn how_to_make_tea_uses_source_backed_procedure_plan() {
-    let response = answer("How to make tea?");
-    assert_eq!(
-        response.intent, "procedural_how_to",
-        "\"How to make tea?\" must use the procedural handler; answer={}",
-        response.answer,
-    );
-
-    let answer = response.answer.to_lowercase();
-    for expected in [
-        "make tea",
-        "wikipedia",
-        "wikidata",
-        "wikihow",
-        "web search",
-        "recursive",
-    ] {
-        assert!(
-            answer.contains(expected),
-            "procedural answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
-
-    for expected in [
-        "procedural_how_to:request:make tea",
-        "procedural_how_to:action:make",
-        "procedural_how_to:object:tea",
-        "procedural_how_to:stage:wikipedia",
-        "procedural_how_to:stage:wikidata",
-        "procedural_how_to:stage:wikihow_api",
-        "http_fetch:request:https://www.wikihow.com/api.php",
-        "web_search:request:how to make tea",
-        "web_search:provider:wikipedia",
-        "web_search:provider:wikidata",
-        "procedural_how_to:stage:recursive_fetch_check",
-    ] {
-        assert!(
-            has_evidence(&response, expected),
-            "missing evidence prefix {expected:?}: {:?}",
-            response.evidence_links,
-        );
-    }
-}
-
-#[test]
-fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
-    let response = answer("How to prepare fried potatoes?");
-    assert_eq!(
-        response.intent, "procedural_how_to",
-        "\"How to prepare fried potatoes?\" must use the procedural handler; answer={}",
-        response.answer,
-    );
-
-    let answer = response.answer.to_lowercase();
-    for expected in [
-        "prepare fried potatoes",
-        "fried potatoes",
-        "fallback",
-        "fetch",
-    ] {
-        assert!(
-            answer.contains(expected),
-            "procedural answer should mention {expected:?}; answer={}",
-            response.answer,
-        );
-    }
-
-    for expected in [
-        "procedural_how_to:request:prepare fried potatoes",
-        "procedural_how_to:action:prepare",
-        "procedural_how_to:object:fried potatoes",
-        "procedural_how_to:wikihow_candidate:Prepare-Fried-Potatoes",
-        "web_search:request:how to prepare fried potatoes",
-        "procedural_how_to:stage:recursive_fetch_check",
-    ] {
-        assert!(
-            has_evidence(&response, expected),
-            "missing evidence prefix {expected:?}: {:?}",
-            response.evidence_links,
-        );
-    }
-}
-
-#[test]
-fn how_to_procedure_is_general_not_memoized_to_examples() {
-    let response = answer("How can I calibrate a torque wrench?");
-    assert_eq!(
-        response.intent, "procedural_how_to",
-        "arbitrary procedural prompts must not fall back to unknown; answer={}",
-        response.answer,
-    );
-
-    let answer = response.answer.to_lowercase();
-    assert!(answer.contains("calibrate a torque wrench"));
     assert!(
-        !answer.contains("make tea") && !answer.contains("fried potatoes"),
-        "answer must be generated from the requested task, not memoized examples: {}",
-        response.answer,
+        response.intent == "calendar_create_event" || response.intent.contains("calendar"),
+        "expected calendar_create_event intent, got {}",
+        response.intent
     );
-
-    for expected in [
-        "procedural_how_to:request:calibrate a torque wrench",
-        "procedural_how_to:action:calibrate",
-        "procedural_how_to:object:a torque wrench",
-        "web_search:request:how to calibrate a torque wrench",
-    ] {
-        assert!(
-            has_evidence(&response, expected),
-            "missing evidence prefix {expected:?}: {:?}",
-            response.evidence_links,
-        );
-    }
+    // Rich trace evidence for the parsed fields (the heart of the feature).
+    // Evidence links use generated ids after the key (e.g. calendar:parsed_date:calendar:parsed_date_xxx).
+    // We assert the presence of the parsed keys (recorded by the handler) + correct intent.
+    let parsed_keys = response
+        .evidence_links
+        .iter()
+        .filter(|l| l.starts_with("calendar:parsed_"))
+        .count();
+    assert!(
+        parsed_keys >= 4,
+        "must emit multiple calendar:parsed_* evidence keys; links={:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|l| l.contains("parsed_time_zone")
+                || l.contains("Asia/Tbilisi")
+                || l.contains("грузии")),
+        "must capture timezone in evidence; links={:?}",
+        response.evidence_links
+    );
+    // Confirmation-style answer (the handler proposes; it does not auto-create).
+    let a = response.answer.to_lowercase();
+    assert!(
+        a.contains("создать") || a.contains("событие") || a.contains("да"),
+        "answer should propose the event and invite confirmation; got: {}",
+        response.answer
+    );
+    // Real, portable calendar artifacts: an RFC 5545 VEVENT plus a no-login
+    // Google Calendar render URL, with the "по грузии" alias resolved to IANA.
+    assert!(
+        response.answer.contains("BEGIN:VCALENDAR") && response.answer.contains("BEGIN:VEVENT"),
+        "answer must embed an importable .ics VEVENT; got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("TZID=Asia/Tbilisi"),
+        "Russian timezone alias must resolve to IANA Asia/Tbilisi; got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("calendar.google.com/calendar/render"),
+        "answer must offer a no-login Google Calendar render URL; got: {}",
+        response.answer
+    );
 }
 
 #[test]
-fn spec_driven_typo_how_to_prompts_cover_supported_languages() {
-    struct Case {
-        language: &'static str,
-        prompt: &'static str,
-    }
+fn calendar_create_event_fallback_english() {
+    let response = answer("schedule meeting with Levan on the 18th at 5pm Georgia time");
+    assert_ne!(response.intent, "unknown");
+    assert!(
+        response.intent.contains("calendar"),
+        "english scheduling must also hit calendar path; intent={}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("BEGIN:VCALENDAR")
+            && response.answer.contains("TZID=Asia/Tbilisi")
+            && response
+                .answer
+                .contains("calendar.google.com/calendar/render"),
+        "english scheduling must also export a .ics + Google Calendar URL; got: {}",
+        response.answer
+    );
+}
 
-    for case in [
-        Case {
-            language: "en",
-            prompt: "How to do SPEC dirven development step by step?",
-        },
-        Case {
-            language: "ru",
-            prompt: "как сделать SPEC dirven development? напиши по шагам",
-        },
-        Case {
-            language: "hi",
-            prompt: "कैसे करें SPEC dirven development? चरणों में बताओ",
-        },
-        Case {
-            language: "zh",
-            prompt: "如何做 SPEC dirven development？按步骤写",
-        },
-    ] {
-        let response = answer(case.prompt);
-        assert_eq!(
-            response.intent, "procedural_how_to",
-            "{} how-to prompt must not fall back to unknown; answer={}",
-            case.language, response.answer,
-        );
+#[test]
+fn calendar_create_event_hindi() {
+    // No timezone in the prompt → defaults to UTC; the schedule verb is
+    // stripped from the .ics SUMMARY so the title reads as the event noun.
+    let response = answer("18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें");
+    assert_ne!(response.intent, "unknown");
+    assert!(
+        response.intent.contains("calendar"),
+        "hindi scheduling must hit calendar path; intent={}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("BEGIN:VEVENT")
+            && response
+                .answer
+                .contains("calendar.google.com/calendar/render"),
+        "hindi scheduling must export a .ics + Google Calendar URL; got: {}",
+        response.answer
+    );
+}
 
-        let answer = response.answer.to_lowercase();
-        for expected in ["spec driven development", "wikihow", "web search"] {
-            assert!(
-                answer.contains(expected),
-                "{} procedural answer should mention {expected:?}; answer={}",
-                case.language,
-                response.answer,
-            );
-        }
-
-        for expected in [
-            "procedural_how_to:request:spec driven development",
-            "procedural_how_to:action:do",
-            "procedural_how_to:object:spec driven development",
-            "spelling_correction:dirven->driven",
-            "web_search:request:how to spec driven development",
-        ] {
-            assert!(
-                has_evidence(&response, expected),
-                "{} missing evidence prefix {expected:?}: {:?}",
-                case.language,
-                response.evidence_links,
-            );
-        }
-    }
+#[test]
+fn calendar_create_event_chinese() {
+    let response = answer("18号下午5点和Levan安排会议");
+    assert_ne!(response.intent, "unknown");
+    assert!(
+        response.intent.contains("calendar"),
+        "chinese scheduling must hit calendar path; intent={}",
+        response.intent
+    );
+    assert!(
+        response.answer.contains("BEGIN:VEVENT")
+            && response
+                .answer
+                .contains("calendar.google.com/calendar/render"),
+        "chinese scheduling must export a .ics + Google Calendar URL; got: {}",
+        response.answer
+    );
 }
 
 // ---------------------------------------------------------------------------

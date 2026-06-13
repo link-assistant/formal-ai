@@ -39,8 +39,16 @@ roles
     kind predicate
   calendar_direction_previous
     kind predicate
+  calendar_event
+    kind meaning
   calendar_question
     kind predicate
+  calendar_schedule_action
+    kind meaning
+  calendar_time
+    kind predicate
+  calendar_timezone_alias
+    kind meaning
   calendar_today
     kind meaning
   calendar_weekday

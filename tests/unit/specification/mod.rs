@@ -60,6 +60,7 @@ mod project_lookups;
 mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
+mod reasoning_paths_procedures;
 mod self_improvement;
 mod source_cache;
 mod substitution_rules;

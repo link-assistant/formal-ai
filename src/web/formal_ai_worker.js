@@ -9717,7 +9717,438 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+// --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
+// Must be defined before tryCalendarReasoning. All recognition uses wordsForRole(ROLE_*)
+// + containsCalendarTerm (or the documented loose includes for directions/questions/fallbacks)
+// exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
+// Rust current_utc_date (create does not inherit the browser userContext tz used only by
+// the "today" path). Returns the same {intent, content, confidence, evidence} shape.
+function mentionsCalendarCreateRequest(normalized) {
+  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A clock time anchors the event just as well as a day word; the lexicon
+  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
+  const hasClock =
+    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) || extractClockTime(normalized) !== null;
+  // A genuine scheduling request anchors to a concrete date/time cue: a
+  // day-reference word or a clock time. Bare digits (e.g. the "1." / "2." of
+  // a numbered installation-guide list) are NOT a date signal — they were the
+  // source of false positives that hijacked installation-conversion prompts
+  // such as "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock;
+  if (!hasDateSignal) return false;
+  const hasAction =
+    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
+    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
+      containsCalendarTerm(normalized, w),
+    );
+  if (hasAction) return true;
+  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
+  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
+  const hasScheduleVerb = [
+    "забей",
+    "поставь",
+    "создай",
+    "добавь",
+    "schedule",
+    "book",
+    "add to",
+  ].some((verb) => containsCalendarTerm(normalized, verb));
+  // The date/time anchor is already guaranteed by hasDateSignal above, so a
+  // recognized schedule verb is enough to confirm a create request here.
+  return hasScheduleVerb;
+}
+
+function extractDayNumber(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_DAY_REFERENCE)) {
+    if (!containsCalendarTerm(normalized, word)) continue;
+    const pos = normalized.indexOf(word);
+    if (pos !== -1) {
+      const prefix = normalized.slice(0, pos);
+      let digits = "";
+      for (let i = prefix.length - 1; i >= 0; i--) {
+        const ch = prefix[i];
+        if (/\d/.test(ch)) digits = ch + digits;
+        else if (digits) break;
+      }
+      const n = parseInt(digits, 10);
+      if (n >= 1 && n <= 31) return n;
+    }
+  }
+  // bare leading number
+  let num = "";
+  for (const ch of normalized) {
+    if (/\d/.test(ch)) num += ch;
+    else if (num) break;
+  }
+  const n = parseInt(num, 10);
+  if (n >= 1 && n <= 31) return n;
+  return null;
+}
+
+function computeTargetDateWithRollover(base, day) {
+  let y = base.year,
+    m = base.month,
+    d = day;
+  if (d < base.day) {
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
+  if (d > maxDay) d = maxDay;
+  return [y, m, d];
+}
+
+function extractClockTime(normalized) {
+  const bytes = normalized.split("");
+  for (let i = 0; i < bytes.length - 2; i++) {
+    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
+      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      let j = i + 2;
+      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
+      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
+        const min = parseInt(bytes[j] + bytes[j + 1], 10);
+        if (h <= 23 && min <= 59) {
+          if (h === 0) h = 0;
+          if (h === 24) h = 0;
+          return [h, min];
+        }
+      }
+    }
+  }
+  const vPos = normalized.indexOf("в ");
+  if (vPos !== -1) {
+    const tail = normalized.slice(vPos + 2);
+    let num = "";
+    for (const ch of tail) {
+      if (/\d/.test(ch)) num += ch;
+      else if (num) break;
+    }
+    const h = parseInt(num, 10);
+    if (h <= 23) return [h, 0];
+  }
+  return null;
+}
+
+function resolveTimezone(normalized) {
+  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (hit) return "Asia/Tbilisi";
+  if (
+    normalized.includes("asia/tbilisi") ||
+    normalized.includes("tbilisi") ||
+    normalized.includes("по грузии")
+  )
+    return "Asia/Tbilisi";
+  return null;
+}
+
+function defaultTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "घटना";
+  if (language === "zh") return "事件";
+  return "Event";
+}
+
+function capitalizeFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+// Trim a candidate title down to its subject: stop at the first time/date/zone
+// boundary, sentence punctuation, or day number, then capitalize. Mirrors the
+// Rust tidy_title.
+function tidyTitle(candidate) {
+  let end = candidate.length;
+  for (const boundary of [
+    " on the ",
+    " on ",
+    " at ",
+    " в ",
+    " по ",
+    " 在 ",
+    "下午",
+    "上午",
+    " को ",
+    " शाम",
+  ]) {
+    const pos = candidate.indexOf(boundary);
+    if (pos !== -1) end = Math.min(end, pos);
+  }
+  const punct = candidate.search(/[.!?,]/);
+  if (punct !== -1) end = Math.min(end, punct);
+  const digit = candidate.search(/\d/);
+  if (digit !== -1) end = Math.min(end, digit);
+  const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
+  if (!trimmed) return null;
+  return capitalizeFirst(trimmed);
+}
+
+// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
+// or lead (Chinese has no word spaces) the subject so the .ics SUMMARY keeps
+// only the event and its participant. Mirrors the Rust strip_action_words.
+function stripActionWords(value) {
+  let out = value;
+  for (const fragment of [
+    "शेड्यूल करें",
+    "कैलेंडर में जोड़ें",
+    "बनाएँ",
+    "बनाओ",
+    "安排",
+    "添加到日历",
+    "创建",
+  ]) {
+    out = out.split(fragment).join("");
+  }
+  return out.split(/\s+/).filter(Boolean).join(" ");
+}
+
+function extractTitle(normalized) {
+  for (const marker of [
+    "на ",
+    "for ",
+    "встречу ",
+    "meeting with ",
+    "call with ",
+    "के साथ ",
+    "和",
+  ]) {
+    const pos = normalized.indexOf(marker);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + marker.length).trim();
+      const title = tidyTitle(rest);
+      if (title) return title;
+    }
+  }
+  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+    const pos = normalized.indexOf(verb);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + verb.length).trimStart();
+      const title = tidyTitle(rest);
+      if (title && title.length < 60) return title;
+    }
+  }
+  return null;
+}
+
+// --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function pad4(value) {
+  return String(value).padStart(4, "0");
+}
+
+function isoDate(year, month, day) {
+  return `${pad4(year)}-${pad2(month)}-${pad2(day)}`;
+}
+
+function startStamp(year, month, day, hour, minute) {
+  return `${pad4(year)}${pad2(month)}${pad2(day)}T${pad2(hour)}${pad2(minute)}00`;
+}
+
+function daysInMonth(year, month) {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+  }
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+
+function addMinutes(year, month, day, hour, minute, minutes) {
+  const total = hour * 60 + minute + minutes;
+  let dayCarry = Math.floor(total / (24 * 60));
+  const newMinute = total % 60;
+  const newHour = Math.floor(total / 60) % 24;
+  let y = year,
+    m = month,
+    d = day;
+  while (dayCarry > 0) {
+    if (d < daysInMonth(y, m)) {
+      d += 1;
+    } else {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    dayCarry -= 1;
+  }
+  return [y, m, d, newHour, newMinute];
+}
+
+function icsEscape(value) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsDtstamp() {
+  const d = new Date();
+  return (
+    `${pad4(d.getUTCFullYear())}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`
+  );
+}
+
+function buildIcs(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  const uid = `${start}-${event.timeZone}@formal-ai`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//formal-ai//calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDtstamp()}`,
+    `DTSTART;TZID=${event.timeZone}:${start}`,
+    `DTEND;TZID=${event.timeZone}:${end}`,
+    `SUMMARY:${icsEscape(event.title)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n") + "\r\n";
+}
+
+function buildGoogleCalendarUrl(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(event.title)}` +
+    `&dates=${start}/${end}` +
+    `&ctz=${encodeURIComponent(event.timeZone)}`
+  );
+}
+
+function renderCreateConfirmation(language, event, ics, googleUrl) {
+  const iso = isoDate(event.year, event.month, event.day);
+  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
+  const tz = event.timeZone;
+  const title = event.title;
+  const minutes = event.durationMinutes;
+  if (language === "ru") {
+    return (
+      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
+      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
+      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
+      `Ответьте «да», чтобы подтвердить.`
+    );
+  }
+  if (language === "hi") {
+    return (
+      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
+      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
+      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
+      `पुष्टि के लिए «हाँ» उत्तर दें।`
+    );
+  }
+  if (language === "zh") {
+    return (
+      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
+      `将此 .ics 文件导入任何日历：\n${ics}\n` +
+      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
+      `回复「是」以确认。`
+    );
+  }
+  return (
+    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
+    `Import this .ics file into any calendar:\n${ics}\n` +
+    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
+    `Reply 'yes' to confirm.`
+  );
+}
+
+function currentUtcCalendarBase() {
+  const d = new Date();
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
+}
+
+function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
+  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const base = currentUtcCalendarBase();
+  const language = detectLanguage(prompt);
+  const day = extractDayNumber(normalized) || base.day;
+  const [year, month, d] = computeTargetDateWithRollover(base, day);
+  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const tz = resolveTimezone(normalized) || "UTC";
+  const title = extractTitle(normalized) || defaultTitle(language);
+  const event = {
+    title,
+    year,
+    month,
+    day: d,
+    hour,
+    minute,
+    timeZone: tz,
+    durationMinutes: 60,
+  };
+  const ics = buildIcs(event);
+  const googleUrl = buildGoogleCalendarUrl(event);
+  const body = renderCreateConfirmation(language, event, ics, googleUrl);
+  const evidence = [
+    "calendar:clock:browser",
+    `calendar:parsed_date:${isoDate(year, month, d)}`,
+    `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
+    `calendar:parsed_time_zone:${tz}`,
+    `calendar:parsed_title:${title}`,
+    `calendar:parsed_duration_minutes:${event.durationMinutes}`,
+  ];
+  if (normalized.includes("число") || normalized.includes("number")) {
+    evidence.push("calendar:parsed_via:day_number");
+  }
+  evidence.push(`calendar:ics:${ics}`);
+  evidence.push(`calendar:google_calendar_url:${googleUrl}`);
+  evidence.push(`language:${language}`);
+  return {
+    intent: "calendar_create_event",
+    content: body,
+    confidence: 0.95,
+    evidence,
+  };
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+  // gate (and before the current-day question) so that "18 число ... забей / поставь"
+  // claims are handled by the action path and do not fall through to the existing
+  // weekday-only logic. Mirrors src/solver_handlers/calendar.rs exactly.
+  const create = tryCalendarCreateEvent(prompt, normalized, userContext);
+  if (create) return create;
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
     const resolved = currentCalendarDate(userContext);
@@ -17452,6 +17883,142 @@ const MEANINGS_LINO = [
   "      surface",
   "        text 显示",
   "meanings",
+  "  calendar_schedule_action",
+  "    defined-by calendar_day",
+  "    role calendar_schedule_action",
+  "    lexeme en",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  '        text "schedule me"',
+  "      surface",
+  '        text "book"',
+  "      surface",
+  '        text "book on the"',
+  "      surface",
+  '        text "put on the calendar"',
+  "      surface",
+  '        text "put on my calendar"',
+  "      surface",
+  '        text "add to the calendar"',
+  "      surface",
+  '        text "add to my calendar"',
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  '        text "забей мне"',
+  "      surface",
+  "        text поставь",
+  "      surface",
+  '        text "поставь мне"',
+  "      surface",
+  "        text создай",
+  "      surface",
+  '        text "создай событие"',
+  "      surface",
+  "        text добавь",
+  "      surface",
+  '        text "добавь в календарь"',
+  "      surface",
+  '        text "на встречу"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शेड्यूल करें"',
+  "      surface",
+  '        text "कैलेंडर में जोड़ें"',
+  "    lexeme zh",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 添加到日历",
+  "  calendar_event",
+  "    defined-by calendar_day",
+  "    role calendar_event",
+  "    lexeme en",
+  "      surface",
+  '        text "meeting"',
+  "      surface",
+  "        text call",
+  "      surface",
+  "        text event",
+  "    lexeme ru",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречи",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text события",
+  "    lexeme hi",
+  "      surface",
+  "        text मीटिंग",
+  "      surface",
+  '        text "घटना"',
+  "    lexeme zh",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 事件",
+  "  calendar_clock_time",
+  "    defined-by calendar_day",
+  "    role calendar_time",
+  "    lexeme en",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "5 pm"',
+  "      surface",
+  '        text "5pm"',
+  "      surface",
+  '        text "at 17:00"',
+  "    lexeme ru",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "в 17:00"',
+  "      surface",
+  '        text "17.00"',
+  "      surface",
+  "        text вечером",
+  "      surface",
+  '        text "в 17"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शाम 5 बजे"',
+  "    lexeme zh",
+  "      surface",
+  "        text 下午5点",
+  "  calendar_timezone_alias",
+  "    defined-by calendar_day",
+  "    role calendar_timezone_alias",
+  "    lexeme ru",
+  "      surface",
+  '        text "по грузии"',
+  "      surface",
+  '        text "по тбилиси"',
+  "      surface",
+  '        text "грузинское время"',
+  "    lexeme en",
+  "      surface",
+  '        text "tbilisi time"',
+  "      surface",
+  '        text "georgia time"',
+  "      surface",
+  '        text "Asia/Tbilisi"',
+  "    lexeme hi",
+  "      surface",
+  '        text "जॉर्जिया समय"',
+  "      surface",
+  '        text "त्बिलिसी समय"',
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
   "  money",
   "    grounded-in Q1368",
   "    defined-by concept",
@@ -29394,6 +29961,14 @@ const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
 const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
+
+// Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+// + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+// pattern as the existing weekday helpers.
+const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+const ROLE_CALENDAR_EVENT = "calendar_event";
+const ROLE_CALENDAR_TIME = "calendar_time";
+const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
