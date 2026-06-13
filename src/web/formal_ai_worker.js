@@ -13248,50 +13248,96 @@ function shouldSkipInstallationScriptLine(line) {
   );
 }
 
-function looksLikeInstallationCommand(command) {
-  const lower = String(command || "").toLowerCase();
-  const prefixes = [
-    "./",
-    "apt ",
-    "bash ",
-    "brew ",
-    "cargo ",
-    "cd ",
-    "cmake ",
-    "curl ",
-    "docker ",
-    "docker-compose ",
-    "flutter ",
-    "git ",
-    "go ",
-    "gradle ",
-    "irm ",
-    "make",
-    "markitdown ",
-    "mvn ",
-    "npm ",
-    "npx ",
-    "ollama ",
-    "opencode ",
-    "pip ",
-    "pipx ",
-    "pnpm ",
-    "powershell ",
-    "pwsh ",
-    "python ",
-    "rustup ",
-    "sh ",
-    "sudo ",
-    "yarn ",
-    "yt-dlp ",
-    "zsh ",
-  ];
-  return prefixes.some((prefix) => lower.startsWith(prefix)) || lower.includes(" | ") || lower.includes("&&");
+// Provenance of a candidate line. Mirrors the Rust `Provenance` enum: code
+// spans/fences are author-marked code (weak shape check), bare lines must prove
+// themselves structurally.
+const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
+const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
+
+const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "with",
+  "into",
+  "from",
+  "your",
+  "you",
+  "our",
+  "this",
+  "that",
+  "these",
+  "those",
+  "then",
+  "will",
+  "should",
+  "must",
+  "please",
+  "manually",
+]);
+
+// True when the token is shaped like an executable name or a path to one rather
+// than a natural-language word. Commands are lowercase by convention, so an
+// uppercase or non-ASCII lead immediately reads as prose.
+function isInstallationExecutableHead(token) {
+  if (!token) return false;
+  const first = token[0];
+  const startsOk = /[a-z0-9./]/.test(first);
+  if (!startsOk) return false;
+  return /^[a-z0-9./_+-]+$/.test(token);
 }
 
-function pushInstallationCommand(commands, candidate) {
+function installationHasShellOperator(command) {
+  return (
+    command.includes(" | ") ||
+    command.includes("&&") ||
+    command.includes("||") ||
+    command.includes(" ; ")
+  );
+}
+
+function installationReadsAsProse(tokens) {
+  return tokens.some((token) => {
+    const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
+    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+  });
+}
+
+// Decide whether `command` is an install/deploy command by reasoning about its
+// structure and provenance instead of matching a fixed tool whitelist. Any
+// well-formed command line is accepted regardless of which tool it invokes,
+// while prose lines are rejected even when they mention a tool.
+function looksLikeInstallationCommand(command, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const trimmed = String(command || "").trim();
+  if (!trimmed) return false;
+
+  // A raw prose line that embeds a code span ("Run `npm install`.") is prose:
+  // the inline/fence collectors already lifted the real command out.
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE && trimmed.includes("`")) return false;
+
+  const tokens = trimmed.split(/\s+/);
+  const head = tokens[0].toLowerCase();
+  if (!isInstallationExecutableHead(head)) return false;
+
+  // Shell composition is unambiguous command shape regardless of provenance.
+  if (installationHasShellOperator(trimmed)) return true;
+
+  // An executable-looking head can still front a wrapped prose note; English
+  // function words betray it.
+  if (installationReadsAsProse(tokens)) return false;
+
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE) {
+    return tokens.length >= 2 || head.includes("/");
+  }
+  return true;
+}
+
+function pushInstallationCommand(commands, candidate, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
   const command = String(candidate || "").trim();
-  if (!command || !looksLikeInstallationCommand(command)) return;
+  if (!command || !looksLikeInstallationCommand(command, provenance)) return;
   if (!commands.includes(command)) commands.push(command);
 }
 
@@ -13302,7 +13348,8 @@ function collectInstallationInlineCommands(source, commands) {
   for (const character of text) {
     if (character === "`") {
       if (inTick) {
-        pushInstallationCommand(commands, candidate.trim());
+        // Inline code spans are author-marked code: trust the shape.
+        pushInstallationCommand(commands, candidate.trim(), INSTALL_PROVENANCE_CODE_SPAN);
         candidate = "";
         inTick = false;
       } else {
@@ -13319,9 +13366,11 @@ function collectInstallationBulletCommands(source, commands) {
     let trimmed = line.trim();
     trimmed = trimmed.replace(/^[-*+\d]+[.) ]*/, "").trim();
     if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length > 2) {
-      pushInstallationCommand(commands, trimmed.slice(1, -1));
+      // The whole bullet is a single code span: code provenance.
+      pushInstallationCommand(commands, trimmed.slice(1, -1), INSTALL_PROVENANCE_CODE_SPAN);
     } else {
-      pushInstallationCommand(commands, trimmed);
+      // Raw document line with no code markup: prove it structurally.
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_BARE_LINE);
     }
   }
 }
@@ -13329,35 +13378,130 @@ function collectInstallationBulletCommands(source, commands) {
 function collectInstallationScriptCommands(source, commands) {
   for (const line of String(source || "").split(/\r?\n/)) {
     const trimmed = normalizeInstallationScriptLine(line);
-    if (!shouldSkipInstallationScriptLine(trimmed)) pushInstallationCommand(commands, trimmed);
+    // Lines inside a shell/PowerShell fence are code by construction.
+    if (!shouldSkipInstallationScriptLine(trimmed))
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_CODE_SPAN);
   }
 }
 
+// Translate a single verb token into an action category. Keyed on the verb
+// itself (not the surrounding tool), so the same lexicon serves every program.
+// Returns the marker "run" for generic launcher verbs so the caller can prefer
+// a more concrete object.
+function classifyInstallationVerb(token) {
+  switch (token) {
+    case "clone":
+      return "Clone the repository";
+    case "cd":
+    case "chdir":
+    case "pushd":
+      return "Enter the project directory";
+    case "install":
+    case "add":
+    case "ci":
+    case "restore":
+    case "sync":
+    case "bootstrap":
+    case "vendor":
+    case "i":
+      return "Install dependencies";
+    case "test":
+    case "check":
+    case "lint":
+    case "doctor":
+    case "verify":
+    case "validate":
+    case "version":
+    case "pytest":
+    case "jest":
+    case "mocha":
+    case "vitest":
+    case "tox":
+      return "Run the verification command";
+    case "build":
+    case "compile":
+    case "configure":
+    case "make":
+    case "package":
+    case "dist":
+    case "bundle":
+    case "cmake":
+    case "gradle":
+    case "ninja":
+    case "msbuild":
+      return "Build the project";
+    case "run":
+    case "serve":
+    case "start":
+    case "up":
+    case "exec":
+    case "dev":
+    case "launch":
+    case "watch":
+      return "run";
+    default:
+      return null;
+  }
+}
+
+// Structural view of a command: the program (last path segment of the
+// executable), the ordered non-flag argument tokens, and whether a version/help
+// probe flag is present.
+function parseInstallationCommand(command) {
+  let tokens = String(command || "").trim().split(/\s+/).filter(Boolean);
+  while (tokens.length && (tokens[0] === "sudo" || tokens[0] === "env" || tokens[0] === "command")) {
+    tokens = tokens.slice(1);
+  }
+  const rawProgram = tokens.shift() || "";
+  let program = rawProgram.split("/").pop().toLowerCase();
+
+  let rest = tokens;
+  if ((program === "python" || program === "python3" || program === "py") && rest[0] === "-m" && rest[1]) {
+    program = rest[1].toLowerCase();
+    rest = rest.slice(2);
+  }
+
+  const args = [];
+  let isProbe = false;
+  for (const token of rest) {
+    const bare = token.replace(/^['"]+/, "").replace(/['"]+$/, "");
+    if (["--version", "-v", "-V", "--help", "-h"].includes(bare)) {
+      isProbe = true;
+      continue;
+    }
+    if (bare.startsWith("-")) continue;
+    args.push(bare.toLowerCase());
+  }
+  return { program, args, isProbe };
+}
+
+// Derive a human-readable step description from the parsed verb/object of the
+// command rather than matching the whole string against a substring table.
 function describeInstallationCommand(command) {
-  const lower = String(command || "").toLowerCase();
-  if (lower.startsWith("git clone ")) return "Clone the repository";
-  if (lower.startsWith("cd ")) return "Enter the project directory";
-  if (
-    installationContainsAny(lower, [
-      " install",
-      "npm ci",
-      "pnpm install",
-      "yarn install",
-      "pip install",
-      "cargo install",
-      "brew install",
-    ])
-  ) {
-    return "Install dependencies";
+  const parsed = parseInstallationCommand(command);
+  if (parsed.isProbe) return "Verify the installation";
+
+  let genericRun = false;
+  for (const argument of parsed.args) {
+    const action = classifyInstallationVerb(argument);
+    if (action === "run") {
+      genericRun = true;
+    } else if (action) {
+      return action;
+    }
   }
-  if (installationContainsAny(lower, [" test", "pytest", "mvn test"])) {
-    return "Run the verification command";
+  const programAction = classifyInstallationVerb(parsed.program);
+  if (programAction === "run") {
+    genericRun = true;
+  } else if (programAction) {
+    return programAction;
   }
-  if (installationContainsAny(lower, [" build", "compile", "make"])) return "Build the project";
-  if (installationContainsAny(lower, ["doctor", "--version", " --help"])) {
-    return "Verify the installation";
-  }
-  return "Run the installation command";
+  if (genericRun) return "Start the application";
+
+  // Fall back to a description synthesized from the program/verb so unseen but
+  // well-formed commands still read meaningfully.
+  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
+  return `Run ${parsed.program}`;
 }
 
 function extractInstallationSteps(source, sourceFormat) {

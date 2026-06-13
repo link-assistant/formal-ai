@@ -418,3 +418,87 @@ fn popular_github_projects_route_through_install_conversion() {
         assert!(response.answer.contains(verify_command));
     }
 }
+
+#[test]
+fn unlisted_tools_still_route_through_install_conversion() {
+    // Issue #433: the command recognizer no longer leans on an enumerated tool
+    // whitelist. `bun`, `deno`, and `uv` never appeared in the old `PREFIXES`
+    // table, yet their commands are recognized purely from structure/provenance.
+    let cases = [
+        ("acme/widget", "bun install", "bun test"),
+        ("acme/server", "deno task setup", "deno test"),
+        (
+            "acme/tool",
+            "uv pip install -r requirements.txt",
+            "uv run pytest",
+        ),
+        ("acme/native", "zig build", "zig build test"),
+    ];
+
+    for (repo, install_command, verify_command) in cases {
+        let prompt = format!(
+            "Convert this README.md installation guide for {repo} into a sh script:\n\
+             ## Installation\n\
+             1. Run `{install_command}`.\n\
+             2. Verify with `{verify_command}`.\n"
+        );
+
+        let response = FormalAiEngine.answer(&prompt);
+
+        assert_eq!(
+            response.intent, "installation_conversion",
+            "repo {repo} returned {}: {}",
+            response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains(install_command),
+            "missing install command for {repo}: {}",
+            response.answer
+        );
+        assert!(
+            response.answer.contains(verify_command),
+            "missing verify command for {repo}: {}",
+            response.answer
+        );
+    }
+}
+
+#[test]
+fn prose_bullets_do_not_leak_into_generated_scripts() {
+    // Issue #433: adversarial prose surrounding a single real command. Only the
+    // back-ticked command should survive into the rendered script; the prose
+    // sentences (even ones that name tools) must be rejected.
+    let prompt = "Convert this README.md installation guide for acme/widget into a sh script:\n\
+                  ## Installation\n\
+                  First, make sure you have the toolchain installed and configured.\n\
+                  1. Install the project with `npm install`.\n\
+                  Then build everything and run the whole pipeline manually.\n";
+
+    let response = FormalAiEngine.answer(prompt);
+
+    assert_eq!(
+        response.intent, "installation_conversion",
+        "answer: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("npm install"),
+        "real command dropped: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("make sure you have"),
+        "prose leaked into script: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Then build everything"),
+        "prose leaked into script: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("First, make sure"),
+        "prose leaked into script: {}",
+        response.answer
+    );
+}

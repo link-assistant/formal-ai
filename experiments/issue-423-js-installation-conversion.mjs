@@ -127,6 +127,59 @@ check("unwrapped README keeps markdown source", unwrappedHit?.content.includes("
 check("unwrapped README preserves first fenced command", unwrappedHit?.content.includes("git clone https://github.com/example/widget.git"));
 check("unwrapped README preserves second fenced command", unwrappedHit?.content.includes("npm test"));
 
+// Issue #433: the recognizer reasons about command shape, so tools that never
+// appeared in the retired prefix whitelist still convert, and prose bullets that
+// merely mention tools are rejected instead of leaking into the script.
+const unlistedToolsPrompt = `Convert this README.md installation guide for acme/widget into a sh script:
+
+\`\`\`sh
+bun install
+deno task build
+uv pip install -r requirements.txt
+zig build test
+\`\`\``;
+
+const unlistedHit = sandbox.tryInstallationConversion(
+  unlistedToolsPrompt,
+  sandbox.normalizePrompt(unlistedToolsPrompt),
+);
+check(
+  "unlisted tools route to installation_conversion",
+  unlistedHit?.intent === "installation_conversion",
+  unlistedHit?.intent,
+);
+for (const command of ["bun install", "deno task build", "uv pip install -r requirements.txt", "zig build test"]) {
+  check(`unlisted tool preserved: ${command}`, unlistedHit?.content.includes(command));
+}
+
+const proseBulletsPrompt = `Convert this README.md installation guide for acme/widget into a sh script:
+
+## Installation
+
+- First clone the repository and then build everything from source.
+- Install the dependencies manually.
+- Run \`npm install\` to set up the project.
+
+\`\`\`sh
+git clone https://github.com/acme/widget.git
+npm install
+\`\`\``;
+
+const proseHit = sandbox.tryInstallationConversion(
+  proseBulletsPrompt,
+  sandbox.normalizePrompt(proseBulletsPrompt),
+);
+check(
+  "prose bullets route to installation_conversion",
+  proseHit?.intent === "installation_conversion",
+  proseHit?.intent,
+);
+check("prose bullet text does not leak (clone the)", !proseHit?.content.includes("clone the repository and then"));
+check("prose bullet text does not leak (manually)", !proseHit?.content.includes("Install the dependencies manually"));
+check("prose bullet text does not leak (set up)", !proseHit?.content.includes("to set up the project"));
+check("real fenced clone still preserved", proseHit?.content.includes("git clone https://github.com/acme/widget.git"));
+check("real fenced install still preserved", proseHit?.content.includes("npm install"));
+
 const fullRoute = await sandbox.solve(readmePrompt, [], {});
 check("solve routes README prompt before write_program", fullRoute?.intent === "installation_conversion", fullRoute?.intent);
 check(
