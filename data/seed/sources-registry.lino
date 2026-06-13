@@ -42,7 +42,7 @@ sources_registry
     license_name "CC BY-NC-SA 3.0"
     license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
     cache_path data/cache/wikihow/
-    note "Ordered how-to steps via the MediaWiki action=parse surface; primary structured source for procedural \"how to X\" guides. Consulted live and opt-out-able from settings."
+    note "Ordered how-to steps via the MediaWiki action=parse surface; primary structured source for procedural 'how to X' guides. Consulted live and opt-out-able from settings."
   source stackexchange
     name "Stack Exchange / Stack Overflow"
     kind qa_network
@@ -97,4 +97,4 @@ sources_registry
     license_name "Varies (per repository)"
     license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
     cache_path data/cache/github/
-    note "Project READMEs and docs/ trees for software \"how to\" questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
+    note "Project READMEs and docs/ trees for software 'how to' questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."

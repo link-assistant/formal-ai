@@ -149,7 +149,7 @@ fn sources_registry_lists_every_ingested_source() {
 }
 
 /// Issue #444: the external trusted services the procedural how-to handler may
-/// consult (wikiHow, Stack Exchange, the MediaWiki family, GitHub) must be
+/// consult (wikiHow, Stack Exchange, the `MediaWiki` family, GitHub) must be
 /// enumerated in the registry as an `external_trusted` group, each carrying the
 /// settings key the UI toggles bind to and a `default_enabled` flag. This keeps
 /// the "available services" list data-driven and the settings opt-in/opt-out

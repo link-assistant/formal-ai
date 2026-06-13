@@ -2,7 +2,7 @@ benchmark_suite_issue_444_procedural_howto_slice
   record_type "benchmark_suite"
   id "issue_444_procedural_howto_slice"
   title "Procedural how-to / instruction-following slice"
-  purpose "Deterministic capability slice for issue #444: procedural \"how to X\" prompts (and their elaboration follow-ups) drawn from popular instruction-following benchmarks must route to the procedural_how_to handler instead of the unknown opener. Cases are self-authored, representative prompts in the style of each upstream benchmark (the same local-profile convention issue #408 established), with paraphrased held-out variants for anti-memorization."
+  purpose "Deterministic capability slice for issue #444: procedural 'how to X' prompts (and their elaboration follow-ups) drawn from popular instruction-following benchmarks must route to the procedural_how_to handler instead of the unknown opener. Cases are self-authored, representative prompts in the style of each upstream benchmark (the same local-profile convention issue #408 established), with paraphrased held-out variants for anti-memorization."
   runner "cargo test --test unit issue_444_procedural_howto_suite_routes_each_case -- --nocapture"
   report_mode "Pass/fail counts are reported; a failing case documents a routing gap unless the pass-count floor regresses."
   minimum_pass_count "12"
@@ -11,7 +11,6 @@ benchmark_suite_issue_444_procedural_howto_slice
   topic "procedural_how_to / instruction_following"
   imported_at "2026-06-13"
   updated_at "2026-06-13"
-
 benchmark_source_ifeval
   record_type "benchmark_source"
   id "ifeval"
@@ -22,7 +21,6 @@ benchmark_source_ifeval
   source_url "https://github.com/google-research/google-research/tree/master/instruction_following_eval"
   source_ref "b182d3b1a3ee20fbba8a4e6a3a1c1a7a2bf0e3df"
   note "Verifiable instruction-following prompts; here represented by procedural how-to drafting tasks."
-
 benchmark_source_super_natural_instructions
   record_type "benchmark_source"
   id "super_natural_instructions"
@@ -33,7 +31,6 @@ benchmark_source_super_natural_instructions
   source_url "https://github.com/allenai/natural-instructions"
   source_ref "0a5c0e0d2a1c0b8d2f4f0a8c6c1e2d3a4b5c6d7e"
   note "1.6k crowd-authored instruction tasks; here represented by step-by-step planning procedures."
-
 benchmark_source_self_instruct
   record_type "benchmark_source"
   id "self_instruct"
@@ -43,8 +40,7 @@ benchmark_source_self_instruct
   license_url "https://raw.githubusercontent.com/yizhongw/self-instruct/main/LICENSE"
   source_url "https://github.com/yizhongw/self-instruct"
   source_ref "8a8b3b0a3b4f4a8a9c8d7e6f5a4b3c2d1e0f9a8b"
-  note "Seed instructions include many \"how to / give step-by-step instructions\" tasks; represented by procedural how-to prompts."
-
+  note "Seed instructions include many 'how to / give step-by-step instructions' tasks; represented by procedural how-to prompts."
 benchmark_source_oasst1
   record_type "benchmark_source"
   id "oasst1"
@@ -54,8 +50,7 @@ benchmark_source_oasst1
   license_url "https://huggingface.co/datasets/OpenAssistant/oasst1"
   source_url "https://huggingface.co/datasets/OpenAssistant/oasst1"
   source_ref "b7e3f9b3e7e3a9c0d1e2f3a4b5c6d7e8f9a0b1c2"
-  note "Human assistant dialogues; many openers are \"how do I X\" questions, represented here by procedural prompts."
-
+  note "Human assistant dialogues; many openers are 'how do I X' questions, represented here by procedural prompts."
 benchmark_source_bigbench
   record_type "benchmark_source"
   id "bigbench"
@@ -66,7 +61,6 @@ benchmark_source_bigbench
   source_url "https://github.com/google/BIG-bench"
   source_ref "092b196c1f8f14a54bbc62f24759d43bde46dd3b"
   note "Broad task collection including procedural/everyday tasks, represented by how-to prompts."
-
 benchmark_source_mmlu
   record_type "benchmark_source"
   id "mmlu"
@@ -77,7 +71,6 @@ benchmark_source_mmlu
   source_url "https://github.com/hendrycks/test"
   source_ref "4d28a3a3ec7a3a2b1c0d9e8f7a6b5c4d3e2f1a0b"
   note "57-subject knowledge benchmark; represented here by everyday how-to procedures."
-
 benchmark_case_ifeval_apology_letter
   record_type "benchmark_case"
   id "ifeval_apology_letter"
@@ -92,7 +85,6 @@ benchmark_case_ifeval_apology_letter
   expected_answer "Procedural discovery plan rebound to the apology-letter task"
   verification "the elaboration follow-up must rebind to the prior how-to and restate the task"
   allow_current_failure "true"
-
 benchmark_case_ifeval_apology_letter_held_out
   record_type "benchmark_case"
   id "ifeval_apology_letter_held_out"
@@ -107,7 +99,6 @@ benchmark_case_ifeval_apology_letter_held_out
   expected_answer "Procedural discovery plan for the apology-letter task"
   verification "paraphrased procedural prompt still routes to the how-to handler"
   allow_current_failure "true"
-
 benchmark_case_super_natural_meal_plan
   record_type "benchmark_case"
   id "super_natural_meal_plan"
@@ -121,7 +112,6 @@ benchmark_case_super_natural_meal_plan
   expected_answer "Procedural discovery plan for the meal-scheduling task"
   verification "planning how-to routes to the procedural handler"
   allow_current_failure "true"
-
 benchmark_case_super_natural_meal_plan_held_out
   record_type "benchmark_case"
   id "super_natural_meal_plan_held_out"
@@ -136,7 +126,6 @@ benchmark_case_super_natural_meal_plan_held_out
   expected_answer "Procedural discovery plan for the meal-scheduling task"
   verification "paraphrased planning how-to still routes procedurally"
   allow_current_failure "true"
-
 benchmark_case_self_instruct_vegetable_garden
   record_type "benchmark_case"
   id "self_instruct_vegetable_garden"
@@ -151,7 +140,6 @@ benchmark_case_self_instruct_vegetable_garden
   expected_answer "Procedural discovery plan rebound to the gardening task"
   verification "elaboration follow-up rebinds to the gardening how-to"
   allow_current_failure "true"
-
 benchmark_case_self_instruct_vegetable_garden_held_out
   record_type "benchmark_case"
   id "self_instruct_vegetable_garden_held_out"
@@ -166,7 +154,6 @@ benchmark_case_self_instruct_vegetable_garden_held_out
   expected_answer "Procedural discovery plan for the gardening task"
   verification "paraphrased gardening how-to still routes procedurally"
   allow_current_failure "true"
-
 benchmark_case_oasst1_bicycle_tire
   record_type "benchmark_case"
   id "oasst1_bicycle_tire"
@@ -181,7 +168,6 @@ benchmark_case_oasst1_bicycle_tire
   expected_answer "Procedural discovery plan rebound to the bicycle-tire task"
   verification "elaboration follow-up rebinds to the bicycle-tire how-to"
   allow_current_failure "true"
-
 benchmark_case_oasst1_bicycle_tire_held_out
   record_type "benchmark_case"
   id "oasst1_bicycle_tire_held_out"
@@ -196,7 +182,6 @@ benchmark_case_oasst1_bicycle_tire_held_out
   expected_answer "Procedural discovery plan for the bicycle-tire task"
   verification "paraphrased bicycle-tire how-to still routes procedurally"
   allow_current_failure "true"
-
 benchmark_case_bigbench_pour_over_coffee
   record_type "benchmark_case"
   id "bigbench_pour_over_coffee"
@@ -210,7 +195,6 @@ benchmark_case_bigbench_pour_over_coffee
   expected_answer "Procedural discovery plan for the pour-over-coffee task"
   verification "everyday procedure routes to the how-to handler"
   allow_current_failure "true"
-
 benchmark_case_bigbench_pour_over_coffee_held_out
   record_type "benchmark_case"
   id "bigbench_pour_over_coffee_held_out"
@@ -225,7 +209,6 @@ benchmark_case_bigbench_pour_over_coffee_held_out
   expected_answer "Procedural discovery plan for the pour-over-coffee task"
   verification "paraphrased everyday procedure still routes procedurally"
   allow_current_failure "true"
-
 benchmark_case_mmlu_nutrition_label
   record_type "benchmark_case"
   id "mmlu_nutrition_label"
@@ -239,7 +222,6 @@ benchmark_case_mmlu_nutrition_label
   expected_answer "Procedural discovery plan for the nutrition-label task"
   verification "applied-knowledge how-to routes to the procedural handler"
   allow_current_failure "true"
-
 benchmark_case_mmlu_nutrition_label_held_out
   record_type "benchmark_case"
   id "mmlu_nutrition_label_held_out"

@@ -1,4 +1,24 @@
 meanings
+  pattern_concept_prefix_nazovi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix nazovi"
+  pattern_concept_prefix_obyasni
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix obyasni"
+  pattern_concept_prefix_opishi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opishi"
+  pattern_concept_prefix_opredelenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opredelenie"
   pattern_concept_prefix_rasskazhi_mne_o
     defined-by prompt_pattern
     lexeme en
@@ -749,6 +769,11 @@ meanings
     lexeme en
       surface
         text "punctuation"
+  qa_network
+    defined-by kind
+    lexeme en
+      surface
+        text "qa network"
   react-chat-ui
     defined-by name
     lexeme en
@@ -1284,6 +1309,11 @@ meanings
     lexeme en
       surface
         text "software design"
+  software_docs
+    defined-by kind
+    lexeme en
+      surface
+        text "software docs"
   software_project_implementation
     defined-by concept
     lexeme en
@@ -1309,6 +1339,11 @@ meanings
     lexeme en
       surface
         text "sqrt"
+  stackexchange
+    defined-by source
+    lexeme en
+      surface
+        text "stackexchange"
   strip_empty_lines
     defined-by operation
     lexeme en
@@ -1359,38 +1394,3 @@ meanings
     lexeme en
       surface
         text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  title
-    defined-by concept
-    lexeme en
-      surface
-        text "title"
-  title_case
-    defined-by operation
-    lexeme en
-      surface
-        text "title case"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"

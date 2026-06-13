@@ -939,8 +939,9 @@ fn issue_444_benchmark_catalog_lists_every_touched_suite() {
     let benchmarks_dir = root.join("data/benchmarks");
     for entry in fs::read_dir(&benchmarks_dir).expect("data/benchmarks should be readable") {
         let entry = entry.expect("benchmark dir entry");
+        let path = entry.path();
         let name = entry.file_name().to_string_lossy().into_owned();
-        if name.ends_with(".lino") {
+        if path.extension().and_then(|extension| extension.to_str()) == Some("lino") {
             assert!(
                 catalog.contains(&name),
                 "docs/benchmarks.md should index benchmark fixture: {name}"

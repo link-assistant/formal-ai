@@ -514,6 +514,11 @@ meanings
     lexeme en
       surface
         text "expression language"
+  external_trusted
+    defined-by concept
+    lexeme en
+      surface
+        text "external trusted"
   extract_email
     defined-by operation
     lexeme en
@@ -614,6 +619,11 @@ meanings
     lexeme en
       surface
         text "how it works"
+  how_to_guide
+    defined-by kind
+    lexeme en
+      surface
+        text "how to guide"
   http_server
     defined-by environment
     lexeme en
@@ -809,6 +819,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  learning_resource
+    defined-by kind
+    lexeme en
+      surface
+        text "learning resource"
   lexical_database
     defined-by kind
     lexeme en
@@ -910,7 +925,7 @@ meanings
       surface
         text "meta expression"
   meta-theory
-    defined-by name
+    defined-by word_surface
     lexeme en
       surface
         text "meta theory"
@@ -974,6 +989,11 @@ meanings
     lexeme en
       surface
         text "one paragraph"
+  open_textbook
+    defined-by kind
+    lexeme en
+      surface
+        text "open textbook"
   openai
     defined-by word_surface
     lexeme en
@@ -1374,23 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix meaning of"
-  pattern_concept_prefix_nazovi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix nazovi"
-  pattern_concept_prefix_obyasni
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix obyasni"
-  pattern_concept_prefix_opishi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opishi"
-  pattern_concept_prefix_opredelenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opredelenie"

@@ -4,8 +4,8 @@
 //! popular AI benchmarks on the topic". This harness loads
 //! `data/benchmarks/procedural-howto-suite.lino` — self-authored, representative
 //! procedural "how to X" prompts in the style of six widely-used instruction-
-//! following benchmarks (IFEval, Super-NaturalInstructions, Self-Instruct,
-//! OASST1, BIG-bench, MMLU), all carrying permissive licenses — and asserts:
+//! following benchmarks (`IFEval`, `Super-NaturalInstructions`, `Self-Instruct`,
+//! `OASST1`, `BIG-bench`, `MMLU`), all carrying permissive licenses — and asserts:
 //!
 //!   1. the suite holds at least ten cases and every source has a held-out
 //!      paraphrase variant (anti-memorization, the issue #317 ratchet);
@@ -40,6 +40,7 @@ struct Record {
 }
 
 #[derive(Debug)]
+#[allow(clippy::struct_field_names)]
 struct Source {
     id: String,
     license: String,
@@ -323,7 +324,7 @@ fn evaluate_case(solver: &UniversalSolver, case: &Case) -> Result<(), String> {
     let response = if let Some(followup) = &case.followup {
         let history = [
             ConversationTurn::user(&case.prompt),
-            ConversationTurn::assistant(plan.answer.clone()),
+            ConversationTurn::assistant(plan.answer),
         ];
         let follow_up = solver.solve_with_history(followup, &history);
         if follow_up.intent != case.expected_intent {
@@ -355,7 +356,10 @@ fn evaluate_case(solver: &UniversalSolver, case: &Case) -> Result<(), String> {
         .cloned()
         .collect::<Vec<_>>();
     if !missing.is_empty() {
-        return Err(format!("answer missing {missing:?}; answer={}", response.answer));
+        return Err(format!(
+            "answer missing {missing:?}; answer={}",
+            response.answer
+        ));
     }
 
     Ok(())
