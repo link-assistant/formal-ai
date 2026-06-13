@@ -4,7 +4,9 @@ This directory stores reviewable Links Notation seed data for issue #1.
 `data/benchmarks/` stores curated benchmark fixtures with source revisions and
 license provenance for deterministic regression and gap-reporting suites. Large
 external benchmark payloads are not stored here; issue #362 network checks fetch
-them into `target/formal-ai-benchmarks` at test time.
+them into `target/formal-ai-benchmarks` at test time. The issue #408 text/code
+edit profile records researched benchmark sources and repository-local generated
+variations in `data/benchmarks/text-manipulation-suite.lino`.
 
 Generate or refresh the checked-in `.lino` files with:
 

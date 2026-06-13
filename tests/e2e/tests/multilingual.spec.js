@@ -297,9 +297,13 @@ test.describe('multilingual chat surface', () => {
 
   test('behavior-rule list possessive phrasing shows rules across supported languages', async ({ page }) => {
     const cases = [
+      'Show rules',
       'Show list of your rules',
+      'Покажи правила',
       'Покажи список своих правил',
+      'नियम दिखाओ',
       'अपने नियमों की सूची दिखाओ',
+      '显示规则',
       '显示你的规则列表',
     ];
 
@@ -345,6 +349,44 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toContainText('x*2 = 123 => x = 61.5');
   });
 
+  test('placeholder unknown equations resolve as calculations across supported languages', async ({ page }) => {
+    const cases = [
+      { language: 'en', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'ru', prompt: '?+2=4', expected: '?+2=4 => ? = 2' },
+      { language: 'hi', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+      { language: 'zh', prompt: '*+2=4', expected: '*+2=4 => * = 2' },
+    ];
+
+    for (const { language, prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, language).toHaveClass(/assistant/);
+      await expect(last, language).toContainText(expected);
+    }
+  });
+
+  test('symbolic and polynomial equations resolve as calculations', async ({ page }) => {
+    const cases = [
+      {
+        prompt: '2 * x + 3 * y = 12',
+        expected: '2 * x + 3 * y = 12 => x = 6 - 1.5*y',
+      },
+      { prompt: 'x + ? = 4', expected: 'x + ? = 4 => ? = 4 - x' },
+      { prompt: 'x^2 = 4', expected: 'x^2 = 4 => x = -2 or x = 2' },
+      {
+        prompt: 'x^2 - 5 * x + 6 = 0',
+        expected: 'x^2 - 5 * x + 6 = 0 => x = 2 or x = 3',
+      },
+      { prompt: '? * ? = 4', expected: '? * ? = 4 => ? = -2 or ? = 2' },
+      { prompt: '* * * = 4', expected: '* * * = 4 => * = -2 or * = 2' },
+    ];
+
+    for (const { prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last, prompt).toHaveClass(/assistant/);
+      await expect(last, prompt).toContainText(expected);
+    }
+  });
+
   test('polite arithmetic action resolves as a calculation', async ({ page }) => {
     const last = await sendPrompt(page, 'Can you calculate 2 + 2?');
     await expect(last).toHaveClass(/assistant/);
@@ -379,6 +421,38 @@ test.describe('multilingual chat surface', () => {
     const last = await sendPrompt(page, 'Сколько будет два плюс два?');
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('два плюс два = 4');
+  });
+
+  test('embedded calculation requests resolve across supported languages', async ({ page }) => {
+    const cases = [
+      {
+        language: 'en',
+        prompt: 'I want to know what is 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'ru',
+        prompt: 'хочу понять сколько будет 2+2',
+        expected: '2+2 = 4',
+      },
+      {
+        language: 'hi',
+        prompt: 'मुझे बताओ गणना करें 8 / 2',
+        expected: '8 / 2 = 4',
+      },
+      {
+        language: 'zh',
+        prompt: '我想知道计算 2 + 2',
+        expected: '2 + 2 = 4',
+      },
+    ];
+
+    for (const { prompt, expected } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      await expect(last).toContainText(expected);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
   });
 
   test('Russian currency conversion resolves as a calculation', async ({ page }) => {
@@ -439,6 +513,63 @@ test.describe('multilingual chat surface', () => {
       await expect(last).toHaveClass(/assistant/);
       await expect(last).toContainText(today);
       await expect(last).toContainText(expectedWeekday);
+      await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
+    }
+  });
+
+  test('calendar create event from natural language (issue #404)', async ({ page }) => {
+    // Russian exact prompt from the bug report + English fallback.
+    // The worker (edited for parity) should now return non-unknown calendar_create_event
+    // with a confirmation-style proposal instead of falling through.
+    // Every environment returns a real, portable calendar artifact: an RFC 5545
+    // VEVENT (.ics) the user can import anywhere plus a no-login Google Calendar
+    // render URL. We assert those appear for all four supported languages, with
+    // the Russian timezone alias ("по грузии") resolved to IANA Asia/Tbilisi.
+    const cases = [
+      {
+        prompt: 'Забей мне 18 число в 17:00 по грузии на встречу с Леваном',
+        locale: 'ru-RU',
+        mustContain: [
+          'событие',
+          '18',
+          '17:00',
+          'Asia/Tbilisi',
+          'BEGIN:VCALENDAR',
+          'calendar.google.com',
+          'да',
+        ],
+      },
+      {
+        prompt: 'schedule meeting with Levan on the 18th at 5pm Georgia time',
+        locale: 'en-US',
+        mustContain: [
+          'Create event',
+          '18',
+          '17:00',
+          'Asia/Tbilisi',
+          'BEGIN:VCALENDAR',
+          'calendar.google.com',
+          'yes',
+        ],
+      },
+      {
+        prompt: '18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें',
+        locale: 'hi-IN',
+        mustContain: ['मीटिंग', '18', '17:00', 'BEGIN:VCALENDAR', 'calendar.google.com', 'हाँ'],
+      },
+      {
+        prompt: '18号下午5点和Levan安排会议',
+        locale: 'zh-CN',
+        mustContain: ['会议', '18', '17:00', 'BEGIN:VCALENDAR', 'calendar.google.com', '是'],
+      },
+    ];
+
+    for (const { prompt, mustContain } of cases) {
+      const last = await sendPrompt(page, prompt);
+      await expect(last).toHaveClass(/assistant/);
+      for (const needle of mustContain) {
+        await expect(last).toContainText(needle);
+      }
       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
     }
   });
@@ -2182,7 +2313,7 @@ test.describe('Issue #27: agent mode', () => {
   test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
     const toggle = page.locator('[data-testid="agent-toggle"]');
     await expect(toggle).toBeVisible();
-    // Issue #27: the topbar buttons render an emoji icon + label so the label
+    // Issue #409: the topbar buttons render an icon + label so the label
     // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
     await expect(toggle.locator('.btn-label')).toHaveText('Chat');
     await toggle.click();
@@ -2227,12 +2358,12 @@ test.describe('Issue #27: mobile layout', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   });
 
-  test('topbar buttons collapse to emoji icons on mobile', async ({ page }) => {
+  test('topbar buttons collapse to icons on mobile', async ({ page }) => {
     const demoToggle = page.locator('.mode-toggle');
     await expect(demoToggle).toBeVisible();
     // The label span is hidden via CSS on the mobile breakpoint…
     await expect(demoToggle.locator('.btn-label')).toBeHidden();
-    // …but the emoji icon stays visible so the action is still recognisable.
+    // …but the icon stays visible so the action is still recognisable.
     await expect(demoToggle.locator('.btn-icon')).toBeVisible();
     // The aria-label still announces the action for screen readers.
     await expect(demoToggle).toHaveAttribute('aria-label', /Demo/);

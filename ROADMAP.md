@@ -246,6 +246,23 @@ evidence is recorded in
 | [#364](https://github.com/link-assistant/formal-ai/issues/364) | [#376](https://github.com/link-assistant/formal-ai/pull/376) | White-box unknown-trace self-improvement loop. |
 | [#365](https://github.com/link-assistant/formal-ai/issues/365) | [#377](https://github.com/link-assistant/formal-ai/pull/377) | Final closure report and verification map. |
 
+## Issue #408 Text And Code Editing - current PR
+
+PR [#416](https://github.com/link-assistant/formal-ai/pull/416) fixes the issue
+[#408](https://github.com/link-assistant/formal-ai/issues/408) Russian follow-up
+replacement failure by routing text and code edit requests through a
+deterministic symbolic edit path. The branch verifies the original reproduction,
+multilingual replacement variants, punctuation-tolerant replacements, broader
+case, extraction, counting, punctuation, and line-shape edit operations, 61
+self-authored benchmark-family edit examples, and a manifest-backed 48-source
+local profile with 30 deterministic variations per source.
+
+The issue #408 local benchmark ratchet passes 1,440 of 1,440 generated profile
+checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. Each of the
+48 researched sources has an explicit repository-local 10% floor of 3 checks and
+the stronger ratchet requires 30/30 per source, so the benchmark work requested
+for #408 is closed in this PR.
+
 ## Verification Contract
 
 When any roadmap item changes, the PR should update the corresponding rows in

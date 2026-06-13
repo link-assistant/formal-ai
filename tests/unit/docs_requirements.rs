@@ -754,6 +754,105 @@ fn issue_398_pr_review_standards_are_recorded_and_traceable() {
 }
 
 #[test]
+fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #408 Text And Code Editing Requirements",
+            "| R293 ",
+            "| R294 ",
+            "| R295 ",
+            "| R296 ",
+            "| R297 ",
+            "docs/case-studies/issue-408/README.md",
+        ],
+    );
+
+    let roadmap = read(root.join("ROADMAP.md"));
+    assert_contains_all(
+        "ROADMAP.md",
+        &roadmap,
+        &[
+            "Issue #408 Text And Code Editing - current PR",
+            "repository-local 10% floor of 3 checks",
+            "1,440 of 1,440",
+        ],
+    );
+
+    let vision = read(root.join("VISION.md"));
+    assert_contains_all(
+        "VISION.md",
+        &vision,
+        &[
+            "benchmark claim is manifest-backed",
+            "text-manipulation-suite.lino",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Issue #408 text/code editing path",
+            "text-manipulation-suite.lino",
+            "1,440/1,440 pass-count ratchet",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-408/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/README.md",
+        &case_study,
+        &[
+            "# Issue 408 Case Study",
+            "repository-local edit benchmark profile",
+            "minimum_pass_count = 1440",
+            "1,440-case profile",
+            "tests/unit/specification/text_manipulation_benchmarks.rs",
+            "data/benchmarks/text-manipulation-suite.lino",
+            "40 additional",
+        ],
+    );
+
+    let research = read(root.join("docs/case-studies/issue-408/raw-data/online-research.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/raw-data/online-research.md",
+        &research,
+        &[
+            "Benchmark Sources Referenced By PR 416",
+            "Additional Popular LLM Benchmarks (20)",
+            "Additional Current/Common LLM Benchmarks (20)",
+            "repository-local edit variations per source",
+            "1,440 profile checks",
+            "HumanEval",
+            "MMLU",
+            "HELM",
+            "ARC",
+            "TruthfulQA",
+            "CommonsenseQA",
+            "IFEval",
+        ],
+    );
+
+    let benchmark_tests =
+        read(root.join("tests/unit/specification/text_manipulation_benchmarks.rs"));
+    assert_contains_all(
+        "tests/unit/specification/text_manipulation_benchmarks.rs",
+        &benchmark_tests,
+        &[
+            "issue_408_text_code_edit_profile_passes_local_ratchet",
+            "minimum_pass_count",
+            "variations_per_source",
+        ],
+    );
+}
+
+#[test]
 fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
     let phrase_space = ["proof", " of ", "concept"].concat();
@@ -821,8 +920,19 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
         return true;
     }
 
+    // Verbatim external captures archived alongside a case study (the issue/PR
+    // JSON snapshots under `docs/case-studies/<issue>/raw-data`) are third-party
+    // text, not authored repository documentation. They are quoted as-is, so
+    // they may legitimately contain deferred-implementation wording that this
+    // lint forbids in the project's own prose (for example an issue author
+    // asking for a quick prototype before committing to a full design).
+    let relative = relative_path(root, entry.path());
+    if relative.starts_with("docs/case-studies/") && relative.ends_with("/raw-data") {
+        return true;
+    }
+
     matches!(
-        relative_path(root, entry.path()).as_str(),
+        relative.as_str(),
         "ci-logs"
             | "logs"
             | "tests/e2e/playwright-report"

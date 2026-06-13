@@ -81,14 +81,21 @@ pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
 /// Semantic role: an interrogative or imperative asking which day (what,
 /// which, какой, कौन, 什么, …). The question side of a calendar query.
 pub const ROLE_CALENDAR_QUESTION: &str = "calendar_question";
-/// Semantic role: a verb phrase that asks the assistant to create, schedule,
-/// or add an event to a calendar.
-pub const ROLE_CALENDAR_EVENT_CREATE_ACTION: &str = "calendar_event_create_action";
-/// Semantic role: a noun phrase that names a calendar event, meeting,
-/// appointment, or target calendar.
-pub const ROLE_CALENDAR_EVENT_REFERENCE: &str = "calendar_event_reference";
-/// Semantic role: a natural-language alias for an IANA time zone.
-pub const ROLE_CALENDAR_TIME_ZONE_ALIAS: &str = "calendar_time_zone_alias";
+/// Semantic role: an imperative or verb phrase requesting creation or booking
+/// of a calendar event (забей, поставь, schedule, book on the calendar, …).
+/// Surfaces live in data/seed/meanings-calendar.lino under role calendar_schedule_action.
+pub const ROLE_CALENDAR_SCHEDULE_ACTION: &str = "calendar_schedule_action";
+/// Semantic role: a noun naming the thing being scheduled (встреча, meeting,
+/// событие, call, event, …). Surfaces live in meanings-calendar.lino.
+pub const ROLE_CALENDAR_EVENT: &str = "calendar_event";
+/// Semantic role: clock time / time-of-day expressions that anchor an event
+/// (17:00, в 17:00, 5 pm, вечером, …). Actual numeric extraction is in the
+/// handler; surfaces are data-driven.
+pub const ROLE_CALENDAR_TIME: &str = "calendar_time";
+/// Semantic role: alias phrases that indicate a target IANA timezone for a
+/// scheduled event (по грузии, по тбилиси, Asia/Tbilisi, …). The handler
+/// maps a hit on these surfaces to the concrete IANA string.
+pub const ROLE_CALENDAR_TIMEZONE_ALIAS: &str = "calendar_timezone_alias";
 /// Semantic role: a relation in the knowledge base that maps a subject to a
 /// value (capital, population, author, …).
 ///

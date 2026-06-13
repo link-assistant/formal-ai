@@ -432,134 +432,139 @@ meanings
         text 告诉
       surface
         text 显示
-  calendar_event_create_action
-    defined-by calendar_date
-    role calendar_event_create_action
+  calendar_schedule_action
+    defined-by calendar_day
+    role calendar_schedule_action
     lexeme en
-      surface
-        text add
-      surface
-        text "add to calendar"
-      surface
-        text book
       surface
         text schedule
       surface
-        text "create event"
+        text "schedule me"
       surface
-        text "put on calendar"
+        text "book"
+      surface
+        text "book on the"
+      surface
+        text "put on the calendar"
+      surface
+        text "put on my calendar"
+      surface
+        text "add to the calendar"
+      surface
+        text "add to my calendar"
     lexeme ru
       surface
         text забей
       surface
-        text забить
+        text "забей мне"
       surface
         text поставь
       surface
-        text добавь
+        text "поставь мне"
       surface
         text создай
       surface
-        text запланируй
+        text "создай событие"
       surface
-        text назначь
+        text добавь
+      surface
+        text "добавь в календарь"
+      surface
+        text "на встречу"
     lexeme hi
       surface
-        text जोड़ो
+        text "शेड्यूल करें"
       surface
-        text जोड़ें
-      surface
-        text बनाओ
-      surface
-        text शेड्यूल
-      surface
-        text निर्धारित
+        text "कैलेंडर में जोड़ें"
     lexeme zh
-      surface
-        text 添加
-      surface
-        text 加到
       surface
         text 安排
       surface
-        text 创建
-  calendar_event_reference
-    defined-by calendar_date
-    role calendar_event_reference
+        text 添加到日历
+  calendar_event
+    defined-by calendar_day
+    role calendar_event
     lexeme en
       surface
-        text calendar
+        text "meeting"
+      surface
+        text call
       surface
         text event
-      surface
-        text meeting
-      surface
-        text appointment
     lexeme ru
-      surface
-        text календарь
-      surface
-        text календаре
-      surface
-        text событие
       surface
         text встреча
       surface
+        text встречи
+      surface
         text встречу
       surface
-        text мероприятие
+        text событие
+      surface
+        text события
     lexeme hi
       surface
-        text कैलेंडर
+        text मीटिंग
       surface
-        text कार्यक्रम
-      surface
-        text बैठक
-      surface
-        text मुलाकात
+        text "घटना"
     lexeme zh
-      surface
-        text 日历
-      surface
-        text 事件
       surface
         text 会议
       surface
-        text 约会
-  timezone_georgia
-    defined-by calendar_date
-    role calendar_time_zone_alias
+        text 事件
+  calendar_clock_time
+    defined-by calendar_day
+    role calendar_time
     lexeme en
       surface
-        text "georgia time"
+        text "17:00"
       surface
-        text "georgian time"
+        text "5 pm"
       surface
-        text "tbilisi time"
+        text "5pm"
       surface
-        text "asia/tbilisi"
+        text "at 17:00"
+    lexeme ru
+      surface
+        text "17:00"
+      surface
+        text "в 17:00"
+      surface
+        text "17.00"
+      surface
+        text вечером
+      surface
+        text "в 17"
+    lexeme hi
+      surface
+        text "शाम 5 बजे"
+    lexeme zh
+      surface
+        text 下午5点
+  calendar_timezone_alias
+    defined-by calendar_day
+    role calendar_timezone_alias
     lexeme ru
       surface
         text "по грузии"
       surface
-        text "грузинское время"
-      surface
         text "по тбилиси"
       surface
-        text тбилиси
+        text "грузинское время"
+    lexeme en
       surface
-        text "asia/tbilisi"
+        text "tbilisi time"
+      surface
+        text "georgia time"
+      surface
+        text "Asia/Tbilisi"
     lexeme hi
       surface
         text "जॉर्जिया समय"
       surface
         text "त्बिलिसी समय"
-      surface
-        text "asia/tbilisi"
     lexeme zh
       surface
         text 格鲁吉亚时间
       surface
         text 第比利斯时间
-      surface
-        text "asia/tbilisi"

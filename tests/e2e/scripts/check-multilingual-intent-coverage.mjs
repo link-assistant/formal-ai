@@ -410,10 +410,10 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
 }
 
 const behaviorRulesListPatterns = {
-  en: ['show behavior rules', 'show list of your rules', 'list your rules'],
-  ru: ['покажи правила поведения', 'покажи список своих правил', 'перечисли свои правила'],
-  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
-  zh: ['列出行为规则', '显示你的规则列表', '列出你的规则'],
+  en: ['show behavior rules', 'show rules', 'show list of your rules', 'list your rules'],
+  ru: ['покажи правила поведения', 'покажи правила', 'покажи список своих правил', 'перечисли свои правила'],
+  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'नियम दिखाओ', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
+  zh: ['列出行为规则', '显示规则', '显示你的规则列表', '列出你的规则'],
 };
 
 assertMatrixMatchesSupportedLanguages('behaviorRulesListPatterns', behaviorRulesListPatterns);
@@ -747,6 +747,40 @@ assertBalancedLanguageCaseCounts(
   }
 }
 
+// Issue #404: calendar create/scheduling from natural language (e.g. "Забей мне 18 число...")
+const calendarCreateEventCases = {
+  en: ['schedule meeting with Levan on the 18th at 5pm Georgia time'],
+  ru: ['Забей мне 18 число в 17:00 по грузии на встречу с Леваном'],
+  hi: ['18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें'],
+  zh: ['18号下午5点和Levan安排会议'],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'calendarCreateEventCases',
+  calendarCreateEventCases,
+);
+assertBalancedLanguageCaseCounts(
+  'calendarCreateEventCases',
+  calendarCreateEventCases,
+);
+
+{
+  const rustReasoningTests = readRepoFile('tests/unit/specification/reasoning_paths.rs');
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, prompts] of Object.entries(calendarCreateEventCases)) {
+    for (const prompt of prompts) {
+      assert(
+        rustReasoningTests.includes(prompt),
+        `tests/unit/specification/reasoning_paths.rs must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+      );
+      assert(
+        browserMultilingualTests.includes(prompt),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+      );
+    }
+  }
+}
+
 const primeInfinitudeProofCases = {
   en: [
     {
@@ -806,6 +840,7 @@ const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',
   'courtesy_response',
+  'assistant_free_time',
   'test_status',
   'identity',
   'assistant_name',

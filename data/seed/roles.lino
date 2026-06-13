@@ -39,14 +39,16 @@ roles
     kind predicate
   calendar_direction_previous
     kind predicate
-  calendar_event_create_action
-    kind meaning
-  calendar_event_reference
+  calendar_event
     kind meaning
   calendar_question
     kind predicate
-  calendar_time_zone_alias
+  calendar_schedule_action
+    kind meaning
+  calendar_time
     kind predicate
+  calendar_timezone_alias
+    kind meaning
   calendar_today
     kind meaning
   calendar_weekday
@@ -266,6 +268,8 @@ roles
   proof_concept_determinism
     kind predicate
   proof_concept_godel
+    kind predicate
+  proof_concept_metatheory
     kind predicate
   proof_directive
     kind predicate

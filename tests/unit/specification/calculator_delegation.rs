@@ -136,6 +136,30 @@ fn calculator_handles_russian_variations() {
 }
 
 #[test]
+fn calculator_handles_embedded_request_variations() {
+    for (prompt, expected) in [
+        ("хочу понять сколько будет 2+2", &["2+2 = 4"][..]),
+        ("подскажи, сколько будет 7 - 4", &["7 - 4 = 3"][..]),
+        (
+            "мне нужно узнать сколько будет два плюс два",
+            &["два плюс два = 4"][..],
+        ),
+        ("I want to know what is 2+2", &["2+2 = 4"][..]),
+        ("Tell me what is 3 * 3", &["3 * 3 = 9"][..]),
+        (
+            "Before we continue, please calculate sqrt(16)",
+            &["sqrt(16) = 4"][..],
+        ),
+        ("First say hi, then compute 10 / 2", &["10 / 2 = 5"][..]),
+        ("我想知道计算 2 + 2", &["2 + 2 = 4"][..]),
+        ("请帮我算一下 6 * 7", &["6 * 7 = 42"][..]),
+        ("मुझे बताओ गणना करें 8 / 2", &["8 / 2 = 4"][..]),
+    ] {
+        assert_calculation(prompt, expected);
+    }
+}
+
+#[test]
 fn calculator_explains_usd_rate_basis_prompts() {
     for (language, prompt) in [
         (
@@ -247,6 +271,61 @@ fn simple_variable_equations_are_solved_after_calculator_delegation() {
                 .iter()
                 .any(|link| link == "calculation:engine:link-calculator"),
             "simple equations should be delegated after link-calculator v0.17.1: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn placeholder_unknown_equations_are_solved_instead_of_reported_unknown() {
+    for (prompt, expected) in [
+        ("?+2=4", &["?+2=4 => ? = 2"][..]),
+        ("*+2=4", &["*+2=4 => * = 2"][..]),
+        ("Solve ? + 2 = 4", &["? = 2"][..]),
+        ("Solve * + 2 = 4", &["* = 2"][..]),
+        ("Solve 2 * ? + 3 = 11", &["? = 4"][..]),
+        ("Solve 2 * * + 3 = 11", &["* = 4"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "placeholder equations should be delegated after link-calculator v0.18.2: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn calculator_handles_upstream_equation_categories_after_placeholder_fix() {
+    for (prompt, expected) in [
+        ("Solve 2 * x + 3 * y = 12", &["x = 6 - 1.5*y"][..]),
+        ("Solve x + ? = 4", &["? = 4 - x"][..]),
+        ("Solve x + * = 4", &["* = 4 - x"][..]),
+        ("Solve ? + * = 4", &["? = 4 - *"][..]),
+        ("Solve x^2 = 4", &["x = -2 or x = 2"][..]),
+        ("Solve x^2 - 5 * x + 6 = 0", &["x = 2 or x = 3"][..]),
+        ("Solve x^3 - x = 0", &["x = -1 or x = 0 or x = 1"][..]),
+        ("Solve ? * ? = 4", &["? = -2 or ? = 2"][..]),
+        ("Solve * * * = 4", &["* = -2 or * = 2"][..]),
+    ] {
+        let response = assert_calculation(prompt, expected);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "upstream equation category should be delegated to link-calculator: {:?}",
+            response.evidence_links,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("calculation:lino:")),
+            "upstream equation category should preserve LINO evidence: {:?}",
             response.evidence_links,
         );
     }
