@@ -583,6 +583,27 @@ fn web_search_online_variant_routes_to_web_search_handler() {
     );
 }
 
+// Issue #426: a verbless "records about a subject" prompt (records / filings /
+// statistics / financials tied to a subject by a topic connective) routed to
+// `unknown` instead of web search. The reported prompt and its multilingual
+// siblings must now reach the `web_search` handler.
+const RECORDS_INFORMATION_PROMPTS: &[&str] = &[
+    "Financical records for boeing after crysis with icas system",
+    "financial records for boeing after the crisis with the icas system",
+    "statistics on tesla after the merger",
+    "финансовые отчёты о boeing после кризиса",
+    "статистика по tesla после слияния",
+    "boeing के बारे में वित्तीय रिकॉर्ड",
+    "tesla के बारे में आंकड़े",
+    "关于波音的财务记录",
+    "关于特斯拉的统计",
+];
+
+#[test]
+fn records_information_prompts_route_to_web_search() {
+    assert_intent_for_each(RECORDS_INFORMATION_PROMPTS, "web_search");
+}
+
 // Promoted project lookup tests live in
 // `project_lookups.rs` so this file stays under the 1000-line cap.
 

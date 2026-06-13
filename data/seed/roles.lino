@@ -405,6 +405,8 @@ roles
     kind predicate
   web_search_query_trailing_noise
     kind predicate
+  web_search_records_subject
+    kind predicate
   web_search_signal
     kind predicate
   web_search_source_only
