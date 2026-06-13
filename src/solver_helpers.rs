@@ -649,3 +649,55 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         execution.notes
     )
 }
+
+/// Parse the `FORMAL_AI_DEFINITION_FUSION` env switch into an explicit override.
+pub fn env_definition_fusion_by_default() -> Option<bool> {
+    env_bool_with_extra_truthy(
+        "FORMAL_AI_DEFINITION_FUSION",
+        &["auto", "merge", "fusion", "default"],
+        &["explicit", "manual", "none"],
+    )
+}
+
+/// Parse a boolean env var using the standard truthy/falsy vocabulary.
+pub fn env_bool(name: &str) -> Option<bool> {
+    env_bool_with_extra_truthy(name, &[], &[])
+}
+
+/// Parse a boolean env var, extending the truthy/falsy vocabulary with extras.
+pub fn env_bool_with_extra_truthy(name: &str, truthy: &[&str], falsy: &[&str]) -> Option<bool> {
+    let raw = std::env::var(name).ok()?;
+    let value = raw.trim().to_ascii_lowercase();
+    if value.is_empty() {
+        return None;
+    }
+    match value.as_str() {
+        "1" | "true" | "yes" | "on" => Some(true),
+        "0" | "false" | "no" | "off" => Some(false),
+        other if truthy.contains(&other) => Some(true),
+        other if falsy.contains(&other) => Some(false),
+        _ => None,
+    }
+}
+
+/// Parse a finite `f32` env var, clamped into `[min, max]`.
+pub fn env_bounded_f32(name: &str, min: f32, max: f32) -> Option<f32> {
+    let parsed = std::env::var(name).ok()?.trim().parse::<f32>().ok()?;
+    if parsed.is_finite() {
+        Some(parsed.clamp(min, max))
+    } else {
+        None
+    }
+}
+
+/// Return `true` when an env var is set to anything other than a falsy value.
+pub fn env_truthy(name: &str) -> bool {
+    std::env::var(name).is_ok_and(|raw| {
+        let value = raw.trim();
+        !value.is_empty()
+            && !matches!(
+                value.to_ascii_lowercase().as_str(),
+                "0" | "false" | "no" | "off"
+            )
+    })
+}

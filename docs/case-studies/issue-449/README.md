@@ -274,8 +274,40 @@ exact prior behaviour, which also equals the paper's recommended baseline
 mirror their `src/` counterparts (the `source` crate compiles a copy of `src/`
 for private-function tests).
 
+### 6b. Second pass — full mechanism coverage and generalization
+
+A follow-up pass in this same PR doubled the specification suite *first* and
+then ported the paper's remaining mechanisms, still additively and still
+non-neural:
+
+- **Similarity fallback (`SS`).** `symbolic_cosine_similarity` computes a
+  deterministic bag-of-words cosine over the alphanumeric tokens of two target
+  IDs (no embeddings). `ProbabilityStore::nearest_similar_evidence` finds the
+  highest-similarity stored target above a floor (ties broken by name) and lends
+  its utility — scaled by the similarity — to a candidate with no exact evidence.
+  `ProbabilityRankingConfig::similarity_threshold` (the paper's `SS`) enables it;
+  borrowed evidence still passes the `TU`/`TC` gate. `RankedProbabilityCandidate`
+  gains a `similarity` field (`1.0` exact, `< 1.0` borrowed) so the decision
+  stays interpretable.
+- **Episode-wide global feedback.** `ProbabilityStore::reinforce_transition_path`
+  appends one `markov_transition` observation per adjacent pair of a state path
+  with a single reward — the paper's one-shot episode update — replayable through
+  the event log and link-store projection.
+- **Generalized decision policy.** `ProbabilityDecisionPolicy` groups the
+  `CU`/`TU`/`TC`/`SS` knobs into one `Copy` value. `SolverConfig::probability_policy`
+  threads it through every selection use case —
+  `select_formalization_candidate_with_policy` and
+  `try_synthesize_from_sub_results` — via
+  `ProbabilityRankingConfig::with_decision_policy`. The old store-only entry
+  points delegate with the default policy, so every existing surface is
+  byte-for-byte unaffected.
+- **Worked example.** `examples/issue_449_interpretable_learning.rs` prints the
+  ranked candidates for all four mechanisms, demonstrating the `CU` decision
+  reversal, the `TC` gate, the `SS` borrow, and an episode reinforcement.
+
 **Docs:** this case study, plus an `ARCHITECTURE.md` §6.1 update describing the
-evidence-count / counted-utility / threshold mechanisms.
+evidence-count / counted-utility / threshold mechanisms, the `SS` fallback,
+episode feedback, and the generalized decision policy.
 
 **Changelog:** a `changelog.d/` fragment (`bump: minor`, since the public
 ranking API gains fields).
@@ -301,15 +333,22 @@ is withheld and the candidate falls back to its prior.
 
 ## 8. Future work (explicitly out of scope here)
 
-These are reasonable follow-ups, each deserving its own issue rather than being
-silently bundled:
+Items 1 and 3 below were originally scoped as follow-ups but were completed in
+this PR's second pass (see §6b); they are kept here struck through for an honest
+record. The remainder are reasonable follow-ups, each deserving its own issue
+rather than being silently bundled:
 
-1. **Symbolic cosine-similarity `SS` fallback** for inexact state matches,
-   integrated with the existing deterministic guess path.
+1. ~~**Symbolic cosine-similarity `SS` fallback** for inexact state matches,
+   integrated with the existing deterministic guess path.~~ **Done (§6b):**
+   `symbolic_cosine_similarity` + `nearest_similar_evidence` +
+   `similarity_threshold`.
 2. **Context size `CS` > 2** — multi-step transition keys (n-gram states).
-3. **A worked end-to-end example/benchmark** exercising counted-utility on a
+3. ~~**A worked end-to-end example/benchmark** exercising counted-utility on a
    sequential decision task, mirroring the paper's Breakout evaluation in a
-   symbolic domain.
+   symbolic domain.~~ **Done (§6b):**
+   `examples/issue_449_interpretable_learning.rs`.
+4. **Episode-level credit assignment beyond uniform reward** — discounting or
+   eligibility traces layered on `reinforce_transition_path`.
 
 ---
 

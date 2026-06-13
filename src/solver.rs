@@ -49,10 +49,10 @@ use crate::solver_handlers::{
     try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_helpers::{
-    confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
-    is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
-    is_unbounded_loop, record_candidates, record_decomposition, record_validation,
-    requires_external_lookup,
+    confidence_for, env_bool, env_bounded_f32, env_definition_fusion_by_default, env_truthy,
+    is_agent_opt_in, is_agent_request, is_cache_flush_request, is_destructive_action,
+    is_forget_request, is_inappropriate_content, is_unbounded_autonomy, is_unbounded_loop,
+    record_candidates, record_decomposition, record_validation, requires_external_lookup,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
@@ -291,53 +291,6 @@ impl SolverConfig {
         }
         config
     }
-}
-
-fn env_definition_fusion_by_default() -> Option<bool> {
-    env_bool_with_extra_truthy(
-        "FORMAL_AI_DEFINITION_FUSION",
-        &["auto", "merge", "fusion", "default"],
-        &["explicit", "manual", "none"],
-    )
-}
-
-fn env_bool(name: &str) -> Option<bool> {
-    env_bool_with_extra_truthy(name, &[], &[])
-}
-
-fn env_bool_with_extra_truthy(name: &str, truthy: &[&str], falsy: &[&str]) -> Option<bool> {
-    let raw = std::env::var(name).ok()?;
-    let value = raw.trim().to_ascii_lowercase();
-    if value.is_empty() {
-        return None;
-    }
-    match value.as_str() {
-        "1" | "true" | "yes" | "on" => Some(true),
-        "0" | "false" | "no" | "off" => Some(false),
-        other if truthy.contains(&other) => Some(true),
-        other if falsy.contains(&other) => Some(false),
-        _ => None,
-    }
-}
-
-fn env_bounded_f32(name: &str, min: f32, max: f32) -> Option<f32> {
-    let parsed = std::env::var(name).ok()?.trim().parse::<f32>().ok()?;
-    if parsed.is_finite() {
-        Some(parsed.clamp(min, max))
-    } else {
-        None
-    }
-}
-
-fn env_truthy(name: &str) -> bool {
-    std::env::var(name).is_ok_and(|raw| {
-        let value = raw.trim();
-        !value.is_empty()
-            && !matches!(
-                value.to_ascii_lowercase().as_str(),
-                "0" | "false" | "no" | "off"
-            )
-    })
 }
 
 /// Speaker role for [`ConversationTurn`]. The solver only inspects user
