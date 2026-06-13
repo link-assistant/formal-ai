@@ -34045,7 +34045,17 @@ function tryDocsMethodExplanation(prompt, language) {
   };
 }
 
-async function tryProceduralHowTo(prompt, language) {
+// Issue #444: external *trusted* services are opt-out. A preference value of
+// exactly `false` disables the service; a missing/undefined value keeps it
+// enabled, so the assistant's default behavior is unchanged unless the user opts
+// out in settings. The `key` arguments mirror the `settings_key` recorded in
+// data/seed/sources-registry.lino and the EXTERNAL_TRUSTED_SERVICES catalog in
+// src/web/app.js, keeping the registry the single source of truth.
+function externalServiceEnabled(preferences, key) {
+  return !(preferences && preferences[key] === false);
+}
+
+async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
@@ -34054,15 +34064,25 @@ async function tryProceduralHowTo(prompt, language) {
   const pageTitle = wikiHowPageTitle(task.task);
   const apiUrl = wikiHowParseApiUrl(pageTitle);
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
+  // its live fetch entirely, emit a service_disabled marker, and route straight
+  // to the web-search fallback.
+  const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
   const evidence = [
     `procedural_how_to:request:${task.task}`,
     `procedural_how_to:action:${task.action}`,
     `procedural_how_to:stage:wikipedia`,
     `procedural_how_to:stage:wikidata`,
-    `procedural_how_to:stage:wikihow_api`,
-    `procedural_how_to:wikihow_candidate:${pageTitle}`,
-    `http_fetch:request:${apiUrl}`,
   ];
+  if (wikihowEnabled) {
+    evidence.push(
+      `procedural_how_to:stage:wikihow_api`,
+      `procedural_how_to:wikihow_candidate:${pageTitle}`,
+      `http_fetch:request:${apiUrl}`,
+    );
+  } else {
+    evidence.push("procedural_how_to:service_disabled:wikihow");
+  }
   for (const correction of task.corrections || []) {
     evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
   }
@@ -34070,11 +34090,16 @@ async function tryProceduralHowTo(prompt, language) {
     evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
   }
 
-  const wikiHow = await fetchWikiHowProcedure(pageTitle, evidence);
+  const wikiHow = wikihowEnabled
+    ? await fetchWikiHowProcedure(pageTitle, evidence)
+    : { ok: false, error: "service_disabled" };
+  const sourcePath = wikihowEnabled
+    ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+    : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
   const lines = [
     `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
     "",
-    "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.",
+    sourcePath,
     "",
   ];
 
@@ -34094,16 +34119,19 @@ async function tryProceduralHowTo(prompt, language) {
     lines.push("");
     lines.push(`[Source](${wikiHow.sourceUrl})`);
   } else {
-    evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    if (wikihowEnabled) {
+      evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    }
     evidence.push("procedural_how_to:stage:web_search");
+    const missNote = wikihowEnabled
+      ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
+      : "wikiHow is disabled in settings.";
     const webSearch = await tryWebSearch(`search the web for ${query}`, language);
     if (webSearch) {
       appendUniqueEvidence(evidence, webSearch.evidence);
       diagnostics = webSearch.diagnostics || null;
       formalizedObject = webSearch.formalizedObject || "";
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(`Fallback web search for \`${query}\`:`);
       lines.push("");
@@ -34114,9 +34142,7 @@ async function tryProceduralHowTo(prompt, language) {
         evidence.push(`web_search:provider:${provider.id}`);
       }
       evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(
         `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
@@ -34175,12 +34201,12 @@ function priorProceduralHowToDialogue(history) {
 // meaning and the prior turn was an answered how-to request, re-run the original
 // discovery so the elaboration rebinds to the recovered task. Mirrors
 // try_procedural_how_to_followup in src/solver_handler_how.rs (mirror parity).
-async function tryProceduralHowToFollowup(prompt, language, history = []) {
+async function tryProceduralHowToFollowup(prompt, language, history = [], preferences = {}) {
   const canonical = normalizePrompt(prompt);
   if (!isProceduralElaborationRequest(canonical)) return null;
   const dialogue = priorProceduralHowToDialogue(history);
   if (!dialogue) return null;
-  const procedure = await tryProceduralHowTo(dialogue.user, language);
+  const procedure = await tryProceduralHowTo(dialogue.user, language, preferences);
   if (!procedure) return null;
   // Front-load the follow-up evidence so the rebind is visible in the trace,
   // matching the log.append order on the Rust side.
@@ -36382,31 +36408,37 @@ function githubCommitDate(commits) {
   );
 }
 
-async function tryGithubRepositoryInfo(repo, language) {
+async function tryGithubRepositoryInfo(repo, language, preferences = {}) {
   const diagnostics = [];
   const errors = [];
   let repoData = null;
   let commits = null;
   let readme = null;
 
-  try {
-    repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
-  } catch (error) {
-    errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    commits = await fetchGithubJson(
-      githubApiRepositoryUrl(repo, "/commits?per_page=1"),
-      "commits",
-      diagnostics,
-    );
-  } catch (error) {
-    errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
-  } catch (error) {
-    errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+  // Issue #444: honor the GitHub opt-out. When disabled we skip every live
+  // api.github.com fetch and report that the trusted service was turned off in
+  // settings instead of contacting it.
+  const githubEnabled = externalServiceEnabled(preferences, "externalServiceGithub");
+  if (githubEnabled) {
+    try {
+      repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
+    } catch (error) {
+      errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      commits = await fetchGithubJson(
+        githubApiRepositoryUrl(repo, "/commits?per_page=1"),
+        "commits",
+        diagnostics,
+      );
+    } catch (error) {
+      errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
+    } catch (error) {
+      errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   const slug = repositorySlug(repo);
@@ -36424,15 +36456,19 @@ async function tryGithubRepositoryInfo(repo, language) {
   if (errors.length > 0) {
     payload.errors = errors;
   }
+  if (!githubEnabled) {
+    payload.note = "GitHub is disabled in settings; no live data was fetched.";
+  }
   const content = `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
   return {
     intent: "github_repo_info",
     content,
-    confidence: errors.length === 0 ? 0.92 : 0.55,
+    confidence: !githubEnabled ? 0.4 : errors.length === 0 ? 0.92 : 0.55,
     evidence: [
       `github_repo_info:repository:${slug}`,
-      `source:${repo.url}`,
-      "source:https://api.github.com",
+      ...(githubEnabled
+        ? [`source:${repo.url}`, "source:https://api.github.com"]
+        : ["github_repo_info:service_disabled:github"]),
       `language:${language}`,
       ...(errors.length > 0 ? errors.map((error) => `github_repo_info:error:${error}`) : []),
     ],
@@ -36951,6 +36987,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     const githubRepoInfo = await tryGithubRepositoryInfo(
       githubRepoInfoRequest,
       language,
+      preferences,
     );
     events.push(`handler:${githubRepoInfo.intent}`);
     steps.push({
@@ -37317,7 +37354,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
   }
 
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
-  const procedure = await tryProceduralHowTo(prompt, language);
+  const procedure = await tryProceduralHowTo(prompt, language, preferences);
   if (procedure) {
     events.push(`handler:${procedure.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
@@ -37345,7 +37382,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
   // opener. Mirrors the procedural_how_to_followup slot in the Rust dispatch
   // table, which sits right after procedural_how_to.
   steps.push({ step: "invoke_tool", detail: "procedural_how_to_followup" });
-  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history);
+  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history, preferences);
   if (procedureFollowup) {
     events.push(`handler:${procedureFollowup.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowToFollowup" });

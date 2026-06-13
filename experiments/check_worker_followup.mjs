@@ -80,3 +80,49 @@ for (const [howTo, elaboration, task] of topics) {
     && r.evidence.some(e => e.startsWith('procedural_how_to:followup:'))
     && r.evidence.some(e => e === `procedural_how_to:request:${task}`));
 }
+
+// 6. external trusted-service opt-out (issue #444). The procedural path consults
+//    wikiHow by default, but a user can disable it in settings. With the toggle
+//    off the wikiHow API stage and its live fetch must be skipped, a
+//    service_disabled marker emitted, and the answer must still route through the
+//    web-search fallback. Default-on behavior must be byte-for-byte unchanged.
+const enabled = await g.tryProceduralHowTo('how to bake sourdough bread', 'en');
+check('wikihow enabled by default: wikihow_api stage present',
+  enabled && enabled.evidence.includes('procedural_how_to:stage:wikihow_api'));
+check('wikihow enabled by default: no service_disabled marker',
+  enabled && !enabled.evidence.some(e => e.startsWith('procedural_how_to:service_disabled')));
+
+const wikihowOff = await g.tryProceduralHowTo('how to bake sourdough bread', 'en', {
+  externalServiceWikihow: false,
+});
+check('wikihow disabled: routes procedural_how_to',
+  wikihowOff && wikihowOff.intent === 'procedural_how_to');
+check('wikihow disabled: emits service_disabled marker',
+  wikihowOff && wikihowOff.evidence.includes('procedural_how_to:service_disabled:wikihow'));
+check('wikihow disabled: skips wikihow_api stage',
+  wikihowOff && !wikihowOff.evidence.includes('procedural_how_to:stage:wikihow_api'));
+check('wikihow disabled: skips wikihow http fetch',
+  wikihowOff && !wikihowOff.evidence.some(e => e.startsWith('http_fetch:request:')));
+check('wikihow disabled: still falls back to web search',
+  wikihowOff && wikihowOff.evidence.includes('procedural_how_to:stage:web_search'));
+
+// The opt-out must thread through the elaboration follow-up rebind too.
+const histOff = [
+  { role: 'user', content: 'how to bake sourdough bread' },
+  { role: 'assistant', content: 'Procedural discovery for `bake sourdough bread` ...' },
+];
+const followupOff = await g.tryProceduralHowToFollowup(
+  'give me the exact steps', 'en', histOff, { externalServiceWikihow: false },
+);
+check('followup honors wikihow opt-out',
+  followupOff
+  && followupOff.evidence.includes('procedural_how_to:service_disabled:wikihow')
+  && !followupOff.evidence.includes('procedural_how_to:stage:wikihow_api'));
+
+// The reusable helper is opt-out: only an explicit false disables a service.
+check('externalServiceEnabled: undefined prefs => enabled',
+  g.externalServiceEnabled(undefined, 'externalServiceWikihow') === true);
+check('externalServiceEnabled: missing key => enabled',
+  g.externalServiceEnabled({}, 'externalServiceGithub') === true);
+check('externalServiceEnabled: explicit false => disabled',
+  g.externalServiceEnabled({ externalServiceGithub: false }, 'externalServiceGithub') === false);
