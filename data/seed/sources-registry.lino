@@ -32,3 +32,69 @@ sources_registry
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"
     cache_path data/cache/wikipedia/
     note "Article summaries cross-referenced from Wikidata sitelinks; cached per title when an article anchors a meaning."
+  source wikihow
+    name "wikiHow"
+    kind how_to_guide
+    service_group external_trusted
+    settings_key externalServiceWikihow
+    default_enabled true
+    api "https://www.wikihow.com/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-NC-SA 3.0"
+    license_url "https://creativecommons.org/licenses/by-nc-sa/3.0/"
+    cache_path data/cache/wikihow/
+    note "Ordered how-to steps via the MediaWiki action=parse surface; primary structured source for procedural \"how to X\" guides. Consulted live and opt-out-able from settings."
+  source stackexchange
+    name "Stack Exchange / Stack Overflow"
+    kind qa_network
+    service_group external_trusted
+    settings_key externalServiceStackExchange
+    default_enabled true
+    api "https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q={query}&site=stackoverflow&filter=withbody"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/stackexchange/
+    note "Developer Q&A with accepted answers across the Stack Exchange network (Stack Overflow, Super User, etc.); a structured second source for technical procedures. Consulted live and opt-out-able from settings."
+  source wikibooks
+    name "Wikibooks"
+    kind open_textbook
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://en.wikibooks.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikibooks/
+    note "Open textbooks and step-by-step tutorials; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source wikiversity
+    name "Wikiversity"
+    kind learning_resource
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://en.wikiversity.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikiversity/
+    note "Learning materials, lab procedures, and courses; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source wikivoyage
+    name "Wikivoyage"
+    kind travel_guide
+    service_group external_trusted
+    settings_key externalServiceMediawikiFamily
+    default_enabled true
+    api "https://en.wikivoyage.org/w/api.php?action=parse&page={title}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+    license_name "CC BY-SA 4.0"
+    license_url "https://creativecommons.org/licenses/by-sa/4.0/"
+    cache_path data/cache/wikivoyage/
+    note "Travel and itinerary how-tos; reuses the Wikipedia action=parse path. Part of the MediaWiki-family toggle in settings."
+  source github
+    name "GitHub READMEs & docs"
+    kind software_docs
+    service_group external_trusted
+    settings_key externalServiceGithub
+    default_enabled true
+    api "https://api.github.com/repos/{owner}/{repo}/readme"
+    license_name "Varies (per repository)"
+    license_url "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository"
+    cache_path data/cache/github/
+    note "Project READMEs and docs/ trees for software \"how to\" questions, fetched per repository; each repo carries its own license. Consulted live and opt-out-able from settings."
