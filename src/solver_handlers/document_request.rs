@@ -163,6 +163,20 @@ fn mentions_authoring_action(lowercased: &str) -> bool {
         "выгрузи",
         "экспортир",
         "сверста",
+        // Hindi (verb stems; `बना` covers बनाओ/बनाएं/बनाना)
+        "बना",
+        "तैयार",
+        "उत्पन्न",
+        "चाहिए",
+        // Chinese (authoring verbs)
+        "做",
+        "制作",
+        "生成",
+        "创建",
+        "编写",
+        "整理",
+        "给我",
+        "帮我",
     ];
     ACTIONS.iter().any(|needle| lowercased.contains(needle))
 }
@@ -179,10 +193,29 @@ fn detect_document_format(lowercased: &str) -> Option<DocFormat> {
     if has_any(&["docx", ".doc", "word document", "ворд", "документ word"]) {
         return Some(DocFormat::Word);
     }
-    if has_any(&["xlsx", "csv", "spreadsheet", "excel", "эксель", "табличк"]) {
+    if has_any(&[
+        "xlsx",
+        "csv",
+        "spreadsheet",
+        "excel",
+        "эксель",
+        "табличк",
+        "电子表格",
+        "表格",
+        "स्प्रेडशीट",
+    ]) {
         return Some(DocFormat::Spreadsheet);
     }
-    if has_any(&["pptx", "powerpoint", "slide deck", "презентаци", "слайд"]) {
+    if has_any(&[
+        "pptx",
+        "powerpoint",
+        "slide deck",
+        "презентаци",
+        "слайд",
+        "演示",
+        "幻灯片",
+        "प्रस्तुति",
+    ]) {
         return Some(DocFormat::Presentation);
     }
     if has_any(&["epub", "e-book", "ebook", "электронн"]) && has_any(&["book", "книг"])
@@ -206,18 +239,29 @@ fn detect_document_format(lowercased: &str) -> Option<DocFormat> {
         "memo",
         "записку",
         "записка",
+        // Hindi
+        "दस्तावेज़",
+        "दस्तावेज",
+        "रिपोर्ट",
+        // Chinese
+        "文档",
+        "文件",
+        "报告",
     ]) {
         return Some(DocFormat::Generic);
     }
     None
 }
 
-/// Render the localized document-generation plan. Russian prompts get a Russian
-/// plan; every other detected language falls back to English, matching the
-/// localization scope of the sibling reasoning handlers.
+/// Render the localized document-generation plan. The plan is translated for
+/// every supported language (Russian, Hindi, Chinese); any other detected
+/// language falls back to English, matching the localization scope of the
+/// sibling reasoning handlers.
 fn render_document_plan(language: &str, format: DocFormat) -> String {
     match language {
         "ru" => render_plan_ru(format),
+        "hi" => render_plan_hi(format),
+        "zh" => render_plan_zh(format),
         _ => render_plan_en(format),
     }
 }
@@ -243,6 +287,44 @@ fn render_plan_ru(format: DocFormat) -> String {
          конкретными шагами. Если нужны фактические данные, которых нет в \
          локальной памяти Links Notation, укажите источник, и я добавлю его как \
          правило связей."
+    )
+}
+
+fn render_plan_hi(format: DocFormat) -> String {
+    let format_suffix = format
+        .label()
+        .map_or_else(String::new, |label| format!(" ({label} प्रारूप में)"));
+    format!(
+        "यह एक दस्तावेज़ बनाने का अनुरोध है{format_suffix}. मैं एक नियतात्मक \
+         प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और \
+         बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम \
+         की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n\
+         1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं \
+         और कौन-से गुण उन्हें अलग करते हैं।\n\
+         2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक \
+         दर्ज करें।\n\
+         3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n\
+         4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n\
+         5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\n\
+         योजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के \
+         साथ आगे बढ़ूँगा।"
+    )
+}
+
+fn render_plan_zh(format: DocFormat) -> String {
+    let format_suffix = format
+        .label()
+        .map_or_else(String::new, |label| format!("（{label} 格式）"));
+    format!(
+        "这是一个生成文档的请求{format_suffix}。我是一个确定性的符号求解器：我无法在\
+         网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用\
+         算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n\
+         1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n\
+         2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n\
+         3. 根据所述标准对每个条目进行分类。\n\
+         4. 组装文档结构：标题、章节以及表格或列表。\n\
+         5. 将完成的结构导出为所请求的格式。\n\n\
+         请确认计划或细化标准与来源，我将继续给出具体步骤。"
     )
 }
 

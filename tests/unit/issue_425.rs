@@ -55,6 +55,44 @@ fn english_document_request_returns_plan() {
 }
 
 #[test]
+fn hindi_pdf_document_request_returns_plan() {
+    let response = FormalAiEngine.answer(
+        "गरीब लोगों के लिए खाद्य सब्सिडी वाले देशों की सूची के साथ एक PDF \
+         दस्तावेज़ बनाओ।",
+    );
+
+    assert_eq!(response.intent, "document_generation_plan");
+    assert!(
+        response.answer.contains("PDF"),
+        "hindi plan should name the PDF format, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("दस्तावेज़"),
+        "answer should be localized to Hindi, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn chinese_pdf_document_request_returns_plan() {
+    let response =
+        FormalAiEngine.answer("给我做一个包含为低收入者提供食品补贴的国家列表的PDF文档。");
+
+    assert_eq!(response.intent, "document_generation_plan");
+    assert!(
+        response.answer.contains("PDF"),
+        "chinese plan should name the PDF format, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("文档"),
+        "answer should be localized to Chinese, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn software_build_request_is_not_a_document_plan() {
     // A build task that merely mentions PDF export must still route to the
     // software-project handler, not the document plan.
