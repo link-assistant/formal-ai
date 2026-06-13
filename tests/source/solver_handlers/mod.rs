@@ -9,6 +9,7 @@ mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
 mod calendar;
+mod calendar_ics;
 mod compound_interest;
 mod definition_merge;
 mod feature_capability;
