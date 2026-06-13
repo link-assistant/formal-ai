@@ -10,7 +10,9 @@ use crate::event_log::EventLog;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::ConversationTurn;
 use crate::solver_handler_docs::try_docs_method_explanation;
-use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
+use crate::solver_handler_how::{
+    try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
+};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
@@ -118,6 +120,13 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("research_comparison_table", try_research_comparison_table),
     ("docs_method_explanation", try_docs_method_explanation),
     ("procedural_how_to", try_how_to_procedure),
+    // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
+    // give me specific instructions?") carries no "how to" lead-in of its own.
+    // It must rebind to the procedure recovered from the prior turn rather than
+    // fall to the unknown opener, so it sits right after the procedural handler
+    // and above the general lookups. It only fires when the previous user turn
+    // was itself a how-to request, so unrelated prompts are untouched.
+    ("procedural_how_to_followup", try_procedural_how_to_followup),
     ("conversation_memory", try_conversation_memory),
     // Issue #341: a decomposed agent step like "test it by scraping
     // wikipedia.org and show me the top 10 most frequent words" must stay

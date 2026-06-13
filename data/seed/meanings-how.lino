@@ -362,6 +362,96 @@ meanings
         text "… 一步一步写"
       surface
         text "… 请"
+  procedural_elaboration
+    defined-by inquiry
+    defined-by procedural_request
+    role procedural_elaboration
+    lexeme en
+      surface
+        text "specific instructions"
+      surface
+        text "specific steps"
+      surface
+        text "detailed instructions"
+      surface
+        text "detailed steps"
+      surface
+        text "exact steps"
+      surface
+        text "exact instructions"
+      surface
+        text "the steps"
+      surface
+        text "step by step"
+      surface
+        text "step-by-step"
+      surface
+        text "more specific"
+      surface
+        text "more detail"
+      surface
+        text "more details"
+      surface
+        text "in detail"
+      surface
+        text "elaborate"
+    lexeme ru
+      surface
+        text "конкретные инструкции"
+      surface
+        text "конкретные шаги"
+      surface
+        text "подробные инструкции"
+      surface
+        text "подробные шаги"
+      surface
+        text "точные шаги"
+      surface
+        text "пошагово"
+      surface
+        text "по шагам"
+      surface
+        text "поподробнее"
+      surface
+        text "подробнее"
+      surface
+        text "более конкретно"
+      surface
+        text "конкретнее"
+    lexeme hi
+      surface
+        text "विशिष्ट निर्देश"
+      surface
+        text "विस्तृत निर्देश"
+      surface
+        text "विस्तृत चरण"
+      surface
+        text "सटीक चरण"
+      surface
+        text "चरण दर चरण"
+      surface
+        text "कदम दर कदम"
+      surface
+        text "अधिक विस्तार"
+      surface
+        text "और विस्तार"
+    lexeme zh
+      surface
+        text 具体说明
+      surface
+        text 具体步骤
+      surface
+        text 详细步骤
+      surface
+        text 详细说明
+      surface
+        text 确切步骤
+      surface
+        text 一步一步
+      surface
+        text 更具体
+      surface
+        text 更详细
   common_typo
     defined-by relation
     role common_typo
