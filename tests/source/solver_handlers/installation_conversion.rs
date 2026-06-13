@@ -488,7 +488,8 @@ fn collect_inline_commands(source: &str, commands: &mut Vec<String>) {
     for character in source.chars() {
         if character == '`' {
             if in_tick {
-                push_command(commands, candidate.trim());
+                // Inline code spans are author-marked code: trust the shape.
+                push_command(commands, candidate.trim(), Provenance::CodeSpan);
                 candidate.clear();
                 in_tick = false;
             } else {
@@ -511,9 +512,15 @@ fn collect_bullet_commands(source: &str, commands: &mut Vec<String>) {
             })
             .trim_start_matches(['.', ')', ' ']);
         if trimmed.starts_with('`') && trimmed.ends_with('`') && trimmed.len() > 2 {
-            push_command(commands, &trimmed[1..trimmed.len() - 1]);
+            // The whole bullet is a single code span: code provenance.
+            push_command(
+                commands,
+                &trimmed[1..trimmed.len() - 1],
+                Provenance::CodeSpan,
+            );
         } else {
-            push_command(commands, trimmed);
+            // Raw document line with no code markup: prove it structurally.
+            push_command(commands, trimmed, Provenance::BareLine);
         }
     }
 }
@@ -524,7 +531,8 @@ fn collect_script_commands(source: &str, commands: &mut Vec<String>) {
         if should_skip_script_line(&trimmed) {
             continue;
         }
-        push_command(commands, &trimmed);
+        // Lines inside a shell/PowerShell fence are code by construction.
+        push_command(commands, &trimmed, Provenance::CodeSpan);
     }
 }
 
@@ -546,9 +554,21 @@ fn should_skip_script_line(line: &str) -> bool {
         )
 }
 
-fn push_command(commands: &mut Vec<String>, candidate: &str) {
+/// Where a candidate line came from in the source document. Provenance is the
+/// first structural signal the recognizer reasons about: an author who already
+/// fenced or back-ticked a line told us it is code, so a weaker shape check is
+/// enough; a raw prose line has to prove itself.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Provenance {
+    /// Verbatim contents of a Markdown code span or a shell/PowerShell fence.
+    CodeSpan,
+    /// A raw document line (bullet text, prose) with no code markup.
+    BareLine,
+}
+
+fn push_command(commands: &mut Vec<String>, candidate: &str, provenance: Provenance) {
     let command = candidate.trim();
-    if command.is_empty() || !looks_like_command(command) {
+    if command.is_empty() || !looks_like_command(command, provenance) {
         return;
     }
     if !commands.iter().any(|existing| existing == command) {
@@ -556,77 +576,220 @@ fn push_command(commands: &mut Vec<String>, candidate: &str) {
     }
 }
 
-fn looks_like_command(command: &str) -> bool {
-    const PREFIXES: &[&str] = &[
-        "./",
-        "apt ",
-        "bash ",
-        "brew ",
-        "cargo ",
-        "cd ",
-        "cmake ",
-        "curl ",
-        "docker ",
-        "docker-compose ",
-        "flutter ",
-        "git ",
-        "go ",
-        "gradle ",
-        "irm ",
-        "make",
-        "markitdown ",
-        "mvn ",
-        "npm ",
-        "npx ",
-        "ollama ",
-        "opencode ",
-        "pip ",
-        "pipx ",
-        "pnpm ",
-        "powershell ",
-        "pwsh ",
-        "python ",
-        "rustup ",
-        "sh ",
-        "sudo ",
-        "yarn ",
-        "yt-dlp ",
-        "zsh ",
-    ];
-    let lower = command.to_lowercase();
-    PREFIXES.iter().any(|prefix| lower.starts_with(prefix))
-        || lower.contains(" | ")
-        || lower.contains("&&")
+/// Decide whether `command` is an install/deploy command by reasoning about its
+/// structure and provenance instead of matching a fixed tool whitelist. Any
+/// well-formed command line is accepted regardless of which tool it invokes,
+/// while prose lines are rejected even when they mention a tool.
+fn looks_like_command(command: &str, provenance: Provenance) -> bool {
+    let command = command.trim();
+    if command.is_empty() {
+        return false;
+    }
+
+    // A raw prose line that *embeds* a code span ("Run `npm install`.") is
+    // prose, not a command: the inline/fence collectors already lifted the real
+    // command out of the back-ticks, so the surrounding sentence is noise.
+    if provenance == Provenance::BareLine && command.contains('`') {
+        return false;
+    }
+
+    let tokens: Vec<&str> = command.split_whitespace().collect();
+    let head = tokens[0];
+
+    // The leading token has to read as an executable name or path rather than an
+    // English word: lowercase identifier characters, optionally a `./` or `/`
+    // path. This is what separates `npm`/`yt-dlp`/`./webui.sh` from `Clone`,
+    // `Установи`, or `运行`.
+    if !is_executable_head(head) {
+        return false;
+    }
+
+    // Shell composition (`|`, `&&`, `||`, `;`) is unambiguous command shape and
+    // settles the decision regardless of provenance — `curl … | sh` is a
+    // command even though `sh` alone would be skipped on a bare line.
+    if has_shell_operator(command) {
+        return true;
+    }
+
+    // An executable-looking head can still front a wrapped prose note
+    // ("make sure you have node"); English function words betray it.
+    if reads_as_prose(&tokens) {
+        return false;
+    }
+
+    match provenance {
+        // Already marked as code: an executable head is sufficient.
+        Provenance::CodeSpan => true,
+        // A raw line needs more than a lone bare word so a stray "make" or
+        // "test" in prose is not promoted to a command: require an argument,
+        // flag, or path.
+        Provenance::BareLine => tokens.len() >= 2 || head.contains('/'),
+    }
 }
 
-fn describe_command(command: &str) -> String {
-    let lower = command.to_lowercase();
-    if lower.starts_with("git clone ") {
-        String::from("Clone the repository")
-    } else if lower.starts_with("cd ") {
-        String::from("Enter the project directory")
-    } else if contains_any(
-        &lower,
-        &[
-            " install",
-            "npm ci",
-            "pnpm install",
-            "yarn install",
-            "pip install",
-            "cargo install",
-            "brew install",
-        ],
-    ) {
-        String::from("Install dependencies")
-    } else if contains_any(&lower, &[" test", "pytest", "mvn test"]) {
-        String::from("Run the verification command")
-    } else if contains_any(&lower, &[" build", "compile", "make"]) {
-        String::from("Build the project")
-    } else if contains_any(&lower, &["doctor", "--version", " --help"]) {
-        String::from("Verify the installation")
-    } else {
-        String::from("Run the installation command")
+/// True when `token` is shaped like an executable name or a path to one, rather
+/// than a natural-language word. Commands are lowercase by convention, so an
+/// uppercase or non-ASCII lead immediately reads as prose.
+fn is_executable_head(token: &str) -> bool {
+    let mut chars = token.chars();
+    let Some(first) = chars.next() else {
+        return false;
+    };
+    if !(first.is_ascii_lowercase() || first.is_ascii_digit() || first == '.' || first == '/') {
+        return false;
     }
+    token.chars().all(|character| {
+        character.is_ascii_lowercase()
+            || character.is_ascii_digit()
+            || matches!(character, '.' | '/' | '_' | '-' | '+')
+    })
+}
+
+/// True when the line joins sub-commands with a shell composition operator.
+fn has_shell_operator(command: &str) -> bool {
+    command.contains(" | ")
+        || command.contains("&&")
+        || command.contains("||")
+        || command.contains(" ; ")
+}
+
+/// True when the tokens lean on English function words that real commands omit,
+/// catching lowercase prose that slipped past the executable-head check
+/// ("clone the repository manually").
+fn reads_as_prose(tokens: &[&str]) -> bool {
+    const FUNCTION_WORDS: &[&str] = &[
+        "the", "a", "an", "and", "or", "to", "with", "into", "from", "your", "you", "our", "this",
+        "that", "these", "those", "then", "will", "should", "must", "please", "manually",
+    ];
+    tokens.iter().any(|token| {
+        let word = token.trim_matches(|c: char| !c.is_alphanumeric());
+        FUNCTION_WORDS.contains(&word)
+    })
+}
+
+/// Derive a human-readable step description from the parsed verb/object of the
+/// command rather than matching the whole string against a substring table. The
+/// action is inferred from the sub-command verb (or the program itself), so an
+/// unseen tool with a recognizable verb (`pdm install`, `just build`) still gets
+/// an accurate description without extending a table.
+fn describe_command(command: &str) -> String {
+    let parsed = ParsedCommand::parse(command);
+    parsed
+        .action()
+        .map_or_else(|| parsed.synthesized_description(), String::from)
+}
+
+/// Structural view of a command: the program (last path segment of the
+/// executable), the ordered non-flag argument tokens (its verb then objects),
+/// and whether a version/help probe flag is present.
+struct ParsedCommand {
+    program: String,
+    arguments: Vec<String>,
+    is_probe: bool,
+}
+
+impl ParsedCommand {
+    fn parse(command: &str) -> Self {
+        let mut tokens = command.split_whitespace().peekable();
+        // Drop leading privilege/escape wrappers so the real program surfaces.
+        while matches!(tokens.peek().copied(), Some("sudo" | "env" | "command")) {
+            tokens.next();
+        }
+        let raw_program = tokens.next().unwrap_or_default();
+        let mut program = raw_program
+            .rsplit('/')
+            .next()
+            .unwrap_or(raw_program)
+            .to_lowercase();
+
+        let mut arguments = Vec::new();
+        let mut is_probe = false;
+        // `python -m pip install …`: the module after `-m` behaves as the
+        // effective program, so fold it in.
+        let rest: Vec<&str> = tokens.collect();
+        let mut index = 0;
+        if (program == "python" || program == "python3" || program == "py")
+            && rest.first() == Some(&"-m")
+        {
+            if let Some(module) = rest.get(1) {
+                program = module.to_lowercase();
+                index = 2;
+            }
+        }
+        for token in &rest[index..] {
+            let bare = token.trim_matches(|c: char| c == '"' || c == '\'');
+            if bare == "--version"
+                || bare == "-v"
+                || bare == "-V"
+                || bare == "--help"
+                || bare == "-h"
+            {
+                is_probe = true;
+                continue;
+            }
+            if bare.starts_with('-') {
+                continue;
+            }
+            arguments.push(bare.to_lowercase());
+        }
+        Self {
+            program,
+            arguments,
+            is_probe,
+        }
+    }
+
+    /// Map the parsed verb/object onto an install-step action category.
+    fn action(&self) -> Option<&'static str> {
+        if self.is_probe {
+            return Some("Verify the installation");
+        }
+        let mut generic_run = false;
+        for argument in &self.arguments {
+            match classify_verb(argument) {
+                // A generic launcher verb defers to a more concrete object
+                // ("npm run build" is a build, not a launch).
+                Some("run") => generic_run = true,
+                Some(action) => return Some(action),
+                None => {}
+            }
+        }
+        match classify_verb(&self.program) {
+            Some("run") => generic_run = true,
+            Some(action) => return Some(action),
+            None => {}
+        }
+        generic_run.then_some("Start the application")
+    }
+
+    /// Fall back to a description synthesized from the program/verb so unseen
+    /// but well-formed commands still read meaningfully.
+    fn synthesized_description(&self) -> String {
+        self.arguments.first().map_or_else(
+            || format!("Run {}", self.program),
+            |verb| format!("Run the {} {} step", self.program, verb),
+        )
+    }
+}
+
+/// Translate a single verb token into an action category. Keyed on the verb
+/// itself (not the surrounding tool), so the same lexicon serves every program.
+/// Returns the special marker `"run"` for generic launcher verbs so the caller
+/// can prefer a more concrete object.
+fn classify_verb(token: &str) -> Option<&'static str> {
+    Some(match token {
+        "clone" => "Clone the repository",
+        "cd" | "chdir" | "pushd" => "Enter the project directory",
+        "install" | "add" | "ci" | "restore" | "sync" | "bootstrap" | "vendor" | "i" => {
+            "Install dependencies"
+        }
+        "test" | "check" | "lint" | "doctor" | "verify" | "validate" | "version" | "pytest"
+        | "jest" | "mocha" | "vitest" | "tox" => "Run the verification command",
+        "build" | "compile" | "configure" | "make" | "package" | "dist" | "bundle" | "cmake"
+        | "gradle" | "ninja" | "msbuild" => "Build the project",
+        "run" | "serve" | "start" | "up" | "exec" | "dev" | "launch" | "watch" => "run",
+        _ => return None,
+    })
 }
 
 fn extract_project(prompt: &str) -> Option<String> {
@@ -831,3 +994,6 @@ fn lino_string(value: &str) -> String {
     escaped.push('"');
     escaped
 }
+
+#[path = "../source_tests/solver_handlers/installation_conversion/tests.rs"]
+mod tests;
