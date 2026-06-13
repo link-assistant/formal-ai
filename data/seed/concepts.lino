@@ -391,3 +391,29 @@ concept_relative_meta_logic
   summary "relative-meta-logic (RML) is the Rust implementation of the Relative Meta-Logic framework maintained by Link Foundation. It exposes a `run`/`evaluate` entry point, a formalization pipeline (`formalize_selected_interpretation`, `evaluate_formalization`, `FormalizationRequest`, `Interpretation`), and exporters for Lean 4 and Rocq. formal-ai plans to use it as the prover backend for `proof_request` prompts once the crate is wired in as a library."
   source "https://github.com/link-foundation/relative-meta-logic"
   source_kind official-repository
+concept_metatheory
+  term metatheory
+  intent concept_lookup
+  category logic
+  aliases ("metatheory" "meta-theory" "meta theory" "metatheories" "theory of theory" "theory of theories" "theory about a theory" "теория теории" "теория о теории" "метатеория" "мета-теория" "परासिद्धांत" "मेटा-सिद्धांत" "सिद्धांत का सिद्धांत" "元理论" "元理論" "後設理論" "理论的理论" "理論之理論")
+  summary "A metatheory or meta-theory is a theory whose subject matter is itself another theory, so «theory of theory» is the literal reading of the term. A statement made about a theory is a metatheoretic statement. For mathematics and mathematical logic, a metatheory is a mathematical theory about another mathematical theory (the object theory): it reasons about that theory's symbols, axioms, and proofs from the outside — for example, metamathematics studies the consistency and completeness of formal systems. This is the general concept; for the Link Foundation product use «Links meta-theory»."
+  source "https://en.wikipedia.org/wiki/Metatheory"
+  source_kind wikipedia
+  localized en
+    term metatheory
+    aliases ("meta-theory" "meta theory" "metatheories" "theory of theory" "theory of theories" "theory about a theory")
+    summary "A metatheory or meta-theory is a theory whose subject matter is itself another theory, so «theory of theory» is the literal reading of the term. A statement made about a theory is a metatheoretic statement. For mathematics and mathematical logic, a metatheory is a mathematical theory about another mathematical theory (the object theory): it reasons about that theory's symbols, axioms, and proofs from the outside — for example, metamathematics studies the consistency and completeness of formal systems. This is the general concept; for the Link Foundation product use «Links meta-theory»."
+    source "https://en.wikipedia.org/wiki/Metatheory"
+    source_kind wikipedia
+  localized ru
+    term Метатеория
+    aliases ("метатеория" "мета-теория" "теория теории" "теория о теории")
+    summary "Метатеория (буквально «теория теории») — это теория, анализирующая методы и свойства другой теории, так называемой предметной или объектной теории. Утверждение о теории называется метатеоретическим. В математике и математической логике метатеория рассуждает о символах, аксиомах и доказательствах объектной теории извне; например, метаматематика изучает непротиворечивость и полноту формальных систем. Это общее понятие; продукт Link Foundation называется «теория связей»."
+    source "https://ru.wikipedia.org/wiki/Метатеория"
+    source_kind wikipedia
+  localized zh
+    term 元理论
+    aliases ("元理论" "元理論" "後設理論" "理论的理论" "理論之理論")
+    summary 元理论(英语:metatheory),又译后设理论,是系统地解释理论本身的理论,即「理论之理论」。关于某个理论所作的陈述称为元理论陈述。在数学和数理逻辑中,元理论是研究另一种数学理论(对象理论)的数学理论,从外部考察其符号、公理与证明;例如元数学研究形式系统的一致性与完备性。
+    source "https://zh.wikipedia.org/wiki/元理论"
+    source_kind wikipedia
