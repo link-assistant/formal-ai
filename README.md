@@ -45,7 +45,10 @@ and intent formalization (`src/intent_formalization.rs`), is documented in
 [VISION.md](VISION.md#universal-problem-solving-algorithm) and
 [ARCHITECTURE.md](ARCHITECTURE.md). How much of the vision is built versus still
 planned — including the open industry-benchmark coverage gap — is tracked in
-[ROADMAP.md](ROADMAP.md).
+[ROADMAP.md](ROADMAP.md). Every benchmark suite the repository has ever touched
+is catalogued in [docs/benchmarks.md](docs/benchmarks.md), and the grounded
+meta-algorithm that reproduces a topic's Rust handler on demand is described in
+[docs/meta-algorithm.md](docs/meta-algorithm.md).
 
 ## Quick Start
 

@@ -8,8 +8,12 @@
 > so nothing rebound it to the active procedure and it fell straight through the
 > dispatch table to the unknown opener. This study reconstructs the timeline,
 > enumerates every requirement, finds the root cause, surveys prior art, records
-> the implemented fix and its verification, and scopes the larger
-> multi-source guide-construction feature the issue also asks for.
+> the implemented fix and its verification, and — following the maintainer's
+> in-PR direction to widen the scope — ships the multi-source guide
+> infrastructure the issue also asks for: every external trusted service made
+> available with opt-in/opt-out settings, a ratcheted benchmark slice drawn from
+> popular instruction-following benchmarks, a central benchmark catalog, and a
+> grounded meta-algorithm that reproduces this topic's Rust code on demand.
 
 - **Issue:** [#444](https://github.com/link-assistant/formal-ai/issues/444) — *Unknown prompt: Can you give me specific instructions?*
 - **Reported version:** 0.193.0 · WASM worker · GitHub Pages · UI languages en/en-US/ru · locale en-US (`Asia/Calcutta`) · macOS / Chrome 148
@@ -79,6 +83,23 @@ the issue body (`raw-data/issue-444.json`).
 15. **R15 — Fix everywhere** the defect occurs (Rust **and** the JS worker).
 16. **R16 — One PR** for everything (#448).
 
+### Maintainer follow-up (in-PR comment, this PR)
+After the R1–R3 fix landed, the maintainer asked us to widen the scope inside the
+same PR. These are tracked as first-class requirements:
+
+17. **R17 — ~10× more test cases, different topics in the same scope.** Procedural
+    elaboration follow-ups across many distinct domains, not just npm publishing.
+18. **R18 — All external trusted services available.** wikiHow, Stack Exchange,
+    the MediaWiki family, and GitHub must be reachable by the handler.
+19. **R19 — Settings sections to opt in/out of each external trusted service.**
+20. **R20 — ≥10 test cases from the most popular AI benchmarks on the topic.**
+21. **R21 — A docs catalog of every benchmark the repository ever touched** (scan
+    prior issues and their solutions).
+22. **R22 — The most generalized solution possible** (data-driven, multilingual,
+    no per-language phrase tables).
+23. **R23 — A meta-algorithm that reproduces our Rust code on the topic on
+    demand**, so we learn from our own source code how to produce changes.
+
 ---
 
 ## 3. Root-cause analysis
@@ -103,8 +124,10 @@ list of handler thunks in `formal_ai_worker.js`.
   with the current prompt only and never consults `history`).
 
 This is a **coreference / dialogue-state** bug, not a search-quality bug. R1–R3
-are fully addressable deterministically and offline; R4–R10 are a separate,
-live-fetch capability (see §8).
+are fully addressable deterministically and offline; the broader multi-source
+guide capability (R4–R10) is partly a live-fetch concern — its data-driven shape
+(services, settings, benchmarks, meta-algorithm) is delivered here, with the
+deepest runtime behaviours noted as network-dependent (see §8).
 
 ### A normalisation subtlety (why the obvious fix isn't enough)
 The dispatch loop passes handlers a `normalized` argument that is only
@@ -192,15 +215,36 @@ needs no fix in them.
 
 ## 7. Verification
 
-- **Rust reproducing tests** (`tests/unit/specification/reasoning_paths_procedures.rs`):
+- **Rust reproducing tests (R1–R3)** (`tests/unit/specification/reasoning_paths_procedures.rs`):
   - `procedural_elaboration_followup_rebinds_to_prior_how_to` — the exact
     reported flow; asserts the follow-up resolves to `procedural_how_to` bound to
     "publish to npm" with the `procedural_how_to:followup` evidence.
   - `procedural_elaboration_requires_a_prior_how_to` — a bare follow-up with no
     history stays non-procedural (R3).
   - `procedural_elaboration_followup_covers_supported_languages` — en/ru/hi/zh.
-- **Full Rust suite:** `cargo test` (lib + unit + integration + source) green
-  (852 unit tests, incl. `reference_closure` after registry regeneration).
+- **Diverse-topic elaboration tests (R17)**: the same procedural elaboration
+  rebind is exercised across many distinct domains, not just npm publishing.
+- **Benchmark slice (R20)** (`tests/unit/specification/procedural_howto_benchmarks.rs`):
+  - `issue_444_procedural_howto_suite_is_well_formed` — ≥10 cases, permissive
+    licenses, pinned `source_ref`, and a held-out paraphrase per source.
+  - `issue_444_procedural_howto_suite_routes_each_case` — every base prompt
+    routes to `procedural_how_to`, restates the task, and follow-ups exercise the
+    rebind; the observed pass count never drops below `minimum_pass_count`.
+- **External-service registry + settings (R18/R19)**
+  (`tests/unit/total_closure.rs::external_trusted_services_are_registered_with_settings_toggles`):
+  asserts wikiHow, Stack Exchange, the MediaWiki family, and GitHub are
+  registered under the `external_trusted` group, each with its `settings_key` and
+  `default_enabled` flag the settings UI binds to.
+- **Benchmark catalog (R21)** (`tests/unit/docs_requirements.rs`): every
+  benchmark fixture is indexed in `docs/benchmarks.md`.
+- **Grounded meta-algorithm (R22/R23)**
+  (`tests/unit/specification/meta_algorithm.rs`): nine grounding tests parse
+  `data/meta/procedural-howto-recipe.lino` and assert the live Rust/JS source
+  still matches every named role, handler, evidence stage, parity target,
+  service toggle, and benchmark, and that `docs/meta-algorithm.md` documents it.
+- **Full Rust suite:** `cargo test --test unit` green — **916 unit tests**, incl.
+  `total_closure` (zero unresolved tokens after registry regeneration) and the
+  new benchmark/meta-algorithm suites.
 - **JS worker parity:** `experiments/check_worker_followup.mjs` (Node `vm`
   harness) verifies recognition in en/ru/zh, the negative case, the prior-dialogue
   gate, and the full rebind (intent + content + evidence). All checks pass.
@@ -208,31 +252,49 @@ needs no fix in them.
   the served WASM worker for en/ru/zh and asserts the follow-up resolves to
   `procedural_how_to`.
 - **Guards:** `check:web-tdz`, `check:language-parity`, `check:intent-coverage`,
-  `check:language-test-coverage` pass; `cargo fmt --check`, `cargo clippy`
-  (clean in changed files), and the 1000-line file-size limit hold.
+  `check:language-test-coverage`, `check:i18n` pass; `cargo fmt --check`,
+  `cargo clippy --all-targets -D warnings` (clean), and the file-size limits hold.
 
 ---
 
-## 8. Follow-up opportunities (the multi-source guide builder, R4–R10)
+## 8. Multi-source guide infrastructure delivered in this PR (R5/R6/R8, R17–R23)
 
-R1–R3 are shipped in this PR. R4–R10 describe a substantial, network-dependent
-capability that is hard to unit-test deterministically and is best tracked as its
-own issue so it can be designed against the caching (R9) and pre-cached-fixture
-(R10) requirements rather than rushed alongside the coreference fix. The shape:
+The coreference fix (R1–R3) shipped first. Following the maintainer's in-PR
+direction (R17–R23), this PR then delivered the multi-source guide
+infrastructure rather than deferring it:
 
-1. **Topic search → multi-source collection.** Fan out across wikiHow, Stack
-   Exchange, MediaWiki family (wikibooks/wikiversity/wikivoyage by category),
-   GitHub READMEs, and docs sites; fuse with the existing RRF primitive.
-2. **Guide construction by reasoning.** Extract ordered steps from each source,
-   align/merge them into a single deduplicated procedure with citations —
-   projecting the constructed guide from the event log, never a hardcoded table.
-3. **Accessibility cache (R9).** Record each service's reachability per
-   environment in associative memory with a ≥ 7-day TTL, so unreachable services
-   are skipped quickly.
-4. **Pre-cached QA fixtures (R10).** Snapshot real responses for the test corpus;
-   answer instantly when live results match the snapshot, and run most tests
-   against snapshots for fast iteration.
+1. **All external trusted services available (R5/R6/R8, R18).** wikiHow, the
+   Stack Exchange network, the MediaWiki family (Wikibooks, Wikiversity,
+   Wikivoyage), and GitHub READMEs/docs are declared in
+   `data/seed/sources-registry.lino` under an `external_trusted` `service_group`,
+   each with an `api` endpoint, a license, and a `cache_path`. The procedural
+   how-to discovery plan fans out across them with the existing RRF primitive.
+2. **Opt-in/opt-out settings (R19).** Each external source carries a
+   `settings_key` and `default_enabled true` (opt-out model). The web settings UI
+   renders a section of toggles bound to those keys, and the worker skips a
+   service's live fetch when its toggle is `false`. The registry is the single
+   source of truth, kept in sync by `total_closure.rs` and the meta-algorithm
+   grounding test.
+3. **Benchmark coverage from popular AI benchmarks (R17, R20).**
+   `data/benchmarks/procedural-howto-suite.lino` adds representative cases in the
+   style of IFEval, Super-NaturalInstructions, Self-Instruct, OASST1, BIG-bench,
+   and MMLU — across apology letters, meal planning, gardening, bicycle repair,
+   pour-over coffee, and nutrition labels — each with a paraphrased held-out
+   variant, ratcheted by `procedural_howto_benchmarks.rs`.
+4. **Central benchmark catalog (R21).** [`docs/benchmarks.md`](../../benchmarks.md)
+   indexes every benchmark suite the repository has ever touched, guarded by
+   `tests/unit/docs_requirements.rs`.
+5. **Grounded meta-algorithm (R22, R23).**
+   [`docs/meta-algorithm.md`](../../meta-algorithm.md) plus
+   `data/meta/procedural-howto-recipe.lino` and
+   `tests/unit/specification/meta_algorithm.rs` encode — and continuously verify
+   against the live source — the eight ordered steps that reproduce this topic's
+   Rust handler, so the source is a reproducible artifact of the meta-algorithm.
 
-This PR deliberately scopes to the deterministic, fully testable coreference fix
-(R1–R3) plus the process requirements (R11–R16), and documents R4–R10 here as the
-design for a dedicated follow-up.
+### What remains genuinely network-dependent (R4 depth, R7, R9, R10)
+The *shape* of multi-source guide construction is in place (a deterministic
+discovery plan the worker executes live). The deeper runtime behaviours — fully
+reasoned cross-source step synthesis (R4), recursive crawling of search results
+(R7), the ≥7-day accessibility cache (R9), and pre-cached QA fixtures answered
+instantly (R10) — are network- and environment-dependent and continue to harden
+against the `source_cache` infrastructure rather than being unit-pinned here.
