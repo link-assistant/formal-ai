@@ -16,15 +16,16 @@ use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_reasoning,
     try_capabilities, try_clarification, try_compound_interest, try_concept_lookup,
     try_conversation_memory, try_conversation_topic_request, try_coreference_request,
-    try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
-    try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
-    try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
-    try_shell_refusal, try_software_project_followup, try_software_project_request,
-    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
-    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
-    try_who_is_question, try_write_script, SelfAwarenessRuntime,
+    try_definition_merge, try_document_request, try_execution_failure, try_fact_lookup,
+    try_http_fetch, try_ill_formed, try_javascript_execution, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_network_query, try_number_riddle, try_numeric_list,
+    try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
+    try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
+    try_roleplay_request, try_shell_refusal, try_software_project_followup,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
+    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
+    SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -159,6 +160,11 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("execution_failure", try_execution_failure),
     ("write_script", try_write_script),
     ("program_synthesis", try_program_synthesis),
+    // Issue #425: "make me a PDF / document / report with <subject>" is a
+    // document-generation task, not a software build. It runs before
+    // `software_project` so a document request is not mistaken for code, and it
+    // converts the would-be unknown response into the universal-algorithm plan.
+    ("document_generation_plan", try_document_request),
     ("software_project", try_software_project_request),
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),

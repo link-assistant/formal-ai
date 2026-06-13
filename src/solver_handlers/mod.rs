@@ -11,6 +11,7 @@ mod calculator_rate;
 mod calendar;
 mod compound_interest;
 mod definition_merge;
+mod document_request;
 mod feature_capability;
 mod meta_explanation;
 mod natural_language_tools;
@@ -39,6 +40,7 @@ pub use benchmark_prompts::{
 pub use calendar::try_calendar_reasoning;
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
+pub use document_request::try_document_request;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;

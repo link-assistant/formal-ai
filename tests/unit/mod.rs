@@ -7,6 +7,7 @@ mod formal_ai;
 mod github_logs;
 mod issue_337;
 mod issue_403;
+mod issue_425;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;
