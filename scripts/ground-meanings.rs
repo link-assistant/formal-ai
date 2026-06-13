@@ -197,6 +197,8 @@ const GROUNDINGS: &[(&str, &str, &str)] = &[
     // discourse and calendar concepts
     ("politeness", "Q281287", "politeness"),
     ("calendar_today", "Q3151690", "today"),
+    ("calendar_tomorrow", "Q1209716", "tomorrow"),
+    ("calendar_day_after_tomorrow", "Q1036448", "day after tomorrow"),
 ];
 
 /// Meaning seed files mirrored into the browser worker fallback, in load order.
