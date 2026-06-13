@@ -4,6 +4,32 @@ Formal AI should become a symbolic assistant whose live state is an associative 
 
 The associative network is the AI. The runtime should activate, extend, query, and simplify that network as work happens.
 
+## Who This Is For And What Pain It Closes
+
+Before the architecture, the people. Mainstream AI assistants share a cluster of
+pains: you cannot see *why* an answer was produced, the same prompt is not
+guaranteed to return the same answer, useful answers require a GPU and a vendor's
+cloud, the assistant's memory is an opaque store you cannot export or move, and
+you cannot teach it by editing data instead of retraining weights.
+
+Formal AI is for the person who needs the opposite of each: a **defensible,
+reproducible, ownable, editable** answer. The auditor who must cite reasoning,
+the multilingual user who wants `en | ru | hi | zh` treated equally, the learner
+who wants honest execution notes on generated code, the analyst who needs math
+and currency with shown work, the integrator who wants a drop-in
+OpenAI-compatible endpoint with no GPU bill, the privacy-conscious owner who
+exports everything the agent saw and did as one file, and the tinkerer who
+reconfigures behavior by editing seed data.
+
+A concrete example user journey — Dana the auditor asks `What is 8% of $50?`,
+gets `$4`, then asks `Why did you answer that?` and receives the recorded
+impulse, formalization, decomposition, validation, and simplification that
+produced it — is walked end to end in
+[`docs/USER-JOURNEYS.md`](docs/USER-JOURNEYS.md). That document enumerates
+**every user journey supported today and every journey we could support next**,
+mapped to the surfaces below and to the principles in this file, so the vision
+makes a concrete promise rather than only describing the machine.
+
 ## Core Idea
 
 The system should prefer deep understanding of user needs, intent, context, and available evidence over answer memoization. A prompt should trigger enough data collection and reasoning to justify the response for that prompt. What the system learns along the way should remain available as reviewable knowledge, with source links and execution traces attached.
