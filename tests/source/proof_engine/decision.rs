@@ -5,7 +5,9 @@
 //! the current crate so the proof presenter can discharge classes of claims
 //! rather than named theorem-table entries:
 //!
-//! * propositional formulas by exhaustive truth-table enumeration;
+//! * small propositional formulas by exhaustive truth-table enumeration, and
+//!   larger ones by a Tseitin encoding handed to an in-process DPLL
+//!   satisfiability search (the article's SAT / constraint best practice);
 //! * quantifier-free affine real-arithmetic identities and one-variable
 //!   constraint entailments by interval solving.
 
@@ -13,6 +15,7 @@ use crate::proof_engine::types::ProofOutcome;
 
 mod boolean;
 mod linear;
+mod sat;
 
 /// Try to discharge a claim with an in-process decision procedure.
 #[must_use]
