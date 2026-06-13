@@ -502,3 +502,77 @@ fn prose_bullets_do_not_leak_into_generated_scripts() {
         response.answer
     );
 }
+
+#[test]
+fn prose_rejection_holds_across_supported_languages() {
+    // Issue #433: the structural recognizer rejects prose and keeps real commands
+    // independently of the surrounding natural language. Exercise the same
+    // adversarial shape (prose sentences wrapping one back-ticked command) in
+    // every supported language so the generalization is not English-only.
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        prose_fragment: &'static str,
+    }
+
+    let cases = [
+        Case {
+            // english
+            language: "en",
+            prompt: "Convert this README.md installation guide into a sh script:\n\
+                     ## Installation\n\
+                     First, make sure your environment is ready before continuing.\n\
+                     1. Install the project with `npm install`.\n",
+            prose_fragment: "make sure your environment",
+        },
+        Case {
+            // russian / русский
+            language: "ru",
+            prompt: "Преобразуй это README.md руководство по установке в sh скрипт:\n\
+                     ## Установка\n\
+                     Сначала убедитесь, что окружение готово к работе.\n\
+                     1. Установите проект командой `npm install`.\n",
+            prose_fragment: "убедитесь, что окружение",
+        },
+        Case {
+            // hindi / हिन्दी
+            language: "hi",
+            prompt: "इस README.md स्थापना guide को sh script में बदलें:\n\
+                     ## स्थापना\n\
+                     पहले सुनिश्चित करें कि आपका वातावरण तैयार है।\n\
+                     1. परियोजना को `npm install` से स्थापित करें।\n",
+            prose_fragment: "सुनिश्चित करें कि आपका",
+        },
+        Case {
+            // chinese / 中文
+            language: "zh",
+            prompt: "请把这个 README.md 安装指南转换为 sh 脚本:\n\
+                     ## 安装\n\
+                     首先请确认你的环境已经准备就绪。\n\
+                     1. 使用 `npm install` 安装项目。\n",
+            prose_fragment: "首先请确认你的环境",
+        },
+    ];
+
+    for case in cases {
+        let response = FormalAiEngine.answer(case.prompt);
+
+        assert_eq!(
+            response.intent, "installation_conversion",
+            "language {} returned {}: {}",
+            case.language, response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains("npm install"),
+            "language {}: real command dropped: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(case.prose_fragment),
+            "language {}: prose leaked into script: {}",
+            case.language,
+            response.answer
+        );
+    }
+}
