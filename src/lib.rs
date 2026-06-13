@@ -108,9 +108,10 @@ pub use memory_sync::{
     configured_memory_path, events_since, merge_event, merge_union_by_id, SyncStore,
 };
 pub use probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,
-    ProbabilityRanking, ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
-    RankedProbabilityCandidate,
+    rank_probability_candidates, symbolic_cosine_similarity, ProbabilityCandidate,
+    ProbabilityDecisionPolicy, ProbabilityEvidence, ProbabilityModel, ProbabilityRanking,
+    ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
+    RankedProbabilityCandidate, SimilarEvidence,
 };
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,

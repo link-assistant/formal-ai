@@ -73,6 +73,7 @@ pub use pipeline::{Translation, TranslationPipeline};
 pub use prompt::extract_unquoted_translation_surface;
 pub use selection::{
     formalization_probability_target, select_formalization_candidate,
+    select_formalization_candidate_with_policy,
     select_formalization_candidate_with_probability_store, softmax_formalization_scores,
     FormalizationDecision, FormalizationSelection, FormalizationSelectionConfig,
     FormalizationSelectionReason,

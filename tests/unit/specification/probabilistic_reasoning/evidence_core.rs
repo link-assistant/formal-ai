@@ -1,27 +1,4 @@
-//! Symbolic probabilistic reasoning tests.
-//!
-//! Issue #279 requires probability evidence to remain link-native and
-//! deterministic: symbolic evidence can change candidate ranking, but it must
-//! not introduce neural inference, hidden weights, or nondeterministic replay.
-
-use formal_ai::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityEvidence, ProbabilityModel,
-    ProbabilityRankingConfig, ProbabilitySourceProvenance, ProbabilityStore,
-};
-use formal_ai::translation::{
-    formalization_probability_target, formalize_prompt_candidates, select_formalization_candidate,
-    select_formalization_candidate_with_probability_store, FormalizationDecision,
-    FormalizationSelectionConfig,
-};
-use formal_ai::{EventLog, MemoryStore, SolverConfig, UniversalSolver};
-
-const fn ambiguous_config() -> FormalizationSelectionConfig {
-    FormalizationSelectionConfig {
-        temperature: 0.7,
-        guess_probability: 0.0,
-        questioning_rigor: 1.0,
-    }
-}
+use super::*;
 
 #[test]
 fn empty_probability_store_preserves_selection_for_supported_languages() {
@@ -198,6 +175,7 @@ fn markov_transition_evidence_can_rank_answer_candidates() {
             temperature: 0.0,
             offline: false,
             markov_from: Some(String::from("answer:guessed_interpretation")),
+            ..ProbabilityRankingConfig::default()
         },
     );
 
@@ -309,6 +287,7 @@ fn offline_mode_uses_cached_probability_sources_and_skips_live_only_sources() {
             temperature: 0.0,
             offline: true,
             markov_from: None,
+            ..ProbabilityRankingConfig::default()
         },
     );
 
@@ -329,3 +308,9 @@ fn offline_mode_uses_cached_probability_sources_and_skips_live_only_sources() {
         .iter()
         .any(|event| event.kind == "network_fetch"));
 }
+
+// The following tests cover the decision-policy mechanics ported from Anton
+// Kolonin's "Interpretable Experiential Learning" (arXiv:2605.00940): the
+// evidence count `C`, the counted-utility policy `CU` (argmax of `U * C`), and
+// the transition utility/count thresholds `TU`/`TC`. They stay link-native and
+// deterministic, exactly like the issue #279 layer they extend.
