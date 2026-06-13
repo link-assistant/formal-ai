@@ -8354,23 +8354,43 @@ function numericListProgramSource(program) {
 // only inherit from a prior *user* turn that was itself a genuine numeric-list
 // coding request — it names an operation, a supported language, and lists at
 // least two numbers — so unrelated chatter never leaks a language.
+// Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.") names
+// an operation but no numbers of its own — it refers to the list from the
+// previous numeric-list turn. We therefore inherit the list from the most
+// recent operation turn that carried a concrete list, while the language / code
+// request keep coming from the most recent turn that named a language (issue
+// #412). Splitting the two lets a number-less invert-sort inherit both even when
+// they were established in different turns. Mirrors numeric_list_history_context
+// in src/solver_handlers/numeric_list/mod.rs.
 function numericListHistoryContext(history) {
-  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  if (!Array.isArray(history))
+    return { slug: null, codeRequested: false, items: [] };
+  let slug = null;
+  let codeRequested = false;
+  let items = [];
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const turn = history[i];
     if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
     const content = String(turn.content || "");
     const normalized = normalizePrompt(content);
     if (!detectNumericListOperation(normalized)) continue;
-    const slug = programLanguageFromPrompt(normalized);
-    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
-    if (parseNumericListNumbers(content).length < 2) continue;
-    return {
-      slug,
-      codeRequested: operationMatchesSlug("code_request", normalized),
-    };
+    const numbers = parseNumericListNumbers(content);
+    if (numbers.length < 2) continue;
+    // The most recent numeric-list turn with a concrete list seeds the
+    // inherited list (issue #427).
+    if (items.length === 0) items = numbers;
+    // Language + code request come from the most recent turn naming a supported
+    // language (issue #412).
+    if (!slug) {
+      const candidate = programLanguageFromPrompt(normalized);
+      if (candidate && WRITE_PROGRAM_LANGUAGES[candidate]) {
+        slug = candidate;
+        codeRequested = operationMatchesSlug("code_request", normalized);
+      }
+    }
+    if (items.length > 0 && slug) break;
   }
-  return { slug: null, codeRequested: false };
+  return { slug, codeRequested, items };
 }
 
 function tryNumericList(prompt, history) {
@@ -8388,7 +8408,10 @@ function tryNumericList(prompt, history) {
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
   const inherited = numericListHistoryContext(history);
-  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+  const hasInheritance =
+    Boolean(inherited.slug) ||
+    inherited.codeRequested ||
+    inherited.items.length > 0;
 
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
@@ -8409,7 +8432,13 @@ function tryNumericList(prompt, history) {
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const items = parseNumericListItems(prompt, canonical);
+  let items = parseNumericListItems(prompt, canonical);
+  // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
+  // names no numbers of its own — inherit the list from the previous
+  // numeric-list turn so the operation has data to act on.
+  if (items.length === 0 && inherited.items.length > 0) {
+    items = inherited.items;
+  }
   if (items.length < 2) return null;
   if (
     numericListFamily(canonical) === "list_reduction" &&
@@ -14501,21 +14530,30 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "sort the results in reverse order"',
   '      phrase "reverse order"',
   '      phrase "descending order"',
+  '      phrase "invert the sort"',
+  '      phrase "invert the sorting"',
+  '      phrase "invert sort"',
   "      combo sort+reverse",
   "      combo sort+descending",
+  "      combo invert+sort",
   "    language ru",
   '      phrase "в обратном порядке"',
   "      combo сортиров+обратн",
   "      combo отсортир+обратн",
+  "      combo инверс+сортиров",
+  "      combo инверт+сортиров",
   "    language hi",
   '      phrase "उल्टे क्रम"',
   "      combo क्रमबद्ध+उल्टे",
   "      combo क्रमबद्ध+उल्टा",
+  "      combo उलट+क्रम",
   "    language zh",
   "      phrase 相反顺序排序",
   "      combo 排序+相反",
   "      combo 排序+反向",
   "      combo 排序+倒序",
+  "      combo 反转+排序",
+  "      combo 颠倒+排序",
   "  operation cancel_reverse_sort",
   "    inverse reverse_sort",
   "    language en",

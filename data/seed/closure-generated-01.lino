@@ -754,6 +754,11 @@ meanings
     lexeme en
       surface
         text "intent write program"
+  invert
+    defined-by concept
+    lexeme en
+      surface
+        text "invert"
   issue_364_unknown_trace_learning
     defined-by concept
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix opishi"
-  pattern_concept_prefix_opredelenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opredelenie"
