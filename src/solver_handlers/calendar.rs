@@ -511,27 +511,50 @@ pub fn try_calendar_create_event(
     let base = current_utc_date()?;
     log.append("calendar:clock", "system_utc".to_owned());
 
+    let language = detect_language(prompt).slug();
     let day = extract_day_number(normalized).unwrap_or(base.day);
     let (year, month, day) = compute_target_date_with_rollover(base, day);
     let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
     let tz = resolve_timezone(normalized).unwrap_or("UTC");
-    let title = extract_title(normalized).unwrap_or_else(|| "Событие".to_string());
-    let duration_minutes: u32 = 60;
+    let title = extract_title(normalized).unwrap_or_else(|| default_title(language).to_owned());
+
+    let event = ScheduledEvent {
+        title,
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        time_zone: tz,
+        duration_minutes: 60,
+    };
 
     // Rich diagnostic trace (exactly the style used by the weekday paths).
-    log.append("calendar:parsed_date", format!("{:04}-{:02}-{:02}", year, month, day));
-    log.append("calendar:parsed_time", format!("{:02}:{:02}", hour, minute));
-    log.append("calendar:parsed_time_zone", tz.to_owned());
-    log.append("calendar:parsed_title", title.clone());
-    log.append("calendar:parsed_duration_minutes", duration_minutes.to_string());
+    log.append("calendar:parsed_date", event.iso_date());
+    log.append("calendar:parsed_time", format!("{:02}:{:02}", event.hour, event.minute));
+    log.append("calendar:parsed_time_zone", event.time_zone.to_owned());
+    log.append("calendar:parsed_title", event.title.clone());
+    log.append(
+        "calendar:parsed_duration_minutes",
+        event.duration_minutes.to_string(),
+    );
     if normalized.contains("число") || normalized.contains("number") {
         log.append("calendar:parsed_via", "day_number".to_owned());
     }
 
-    let language = detect_language(prompt).slug();
+    // Real, portable calendar artifacts (issue #404): a universal RFC 5545
+    // `.ics` document any calendar app can import, plus a Google Calendar
+    // "render" template link that pre-fills the event with no login required.
+    // These are emitted as evidence so every environment (CLI, HTTP server,
+    // browser worker) can surface whichever is simplest for the user.
+    let ics = event.to_ics();
+    let google_url = event.to_google_calendar_url();
+    log.append("calendar:ics", ics.clone());
+    log.append("calendar:google_calendar_url", google_url.clone());
+
     log.append("language", language.to_owned());
 
-    let body = render_create_confirmation(language, &title, day, month, year, hour, minute, tz);
+    let body = render_create_confirmation(language, &event, &ics, &google_url);
 
     Some(finalize_simple(
         prompt,
@@ -541,6 +564,207 @@ pub fn try_calendar_create_event(
         &body,
         0.95,
     ))
+}
+
+/// A fully-parsed scheduling request, ready to be exported to any calendar.
+/// Times are wall-clock times in `time_zone` (a floating local time paired with
+/// an IANA zone id), which is exactly what both iCalendar `TZID` and the Google
+/// Calendar `ctz` parameter expect.
+struct ScheduledEvent {
+    title: String,
+    year: i32,
+    month: u32,
+    day: u32,
+    hour: u32,
+    minute: u32,
+    time_zone: &'static str,
+    duration_minutes: u32,
+}
+
+impl ScheduledEvent {
+    fn iso_date(&self) -> String {
+        format!("{:04}-{:02}-{:02}", self.year, self.month, self.day)
+    }
+
+    /// Wall-clock start as the basic iCalendar date-time form `YYYYMMDDTHHMMSS`.
+    fn start_stamp(&self) -> String {
+        format!(
+            "{:04}{:02}{:02}T{:02}{:02}00",
+            self.year, self.month, self.day, self.hour, self.minute
+        )
+    }
+
+    /// Wall-clock end, derived from the start plus the duration, rolling over
+    /// across the hour/day/month/year boundaries as needed.
+    fn end_stamp(&self) -> String {
+        let (year, month, day, hour, minute) = add_minutes(
+            self.year,
+            self.month,
+            self.day,
+            self.hour,
+            self.minute,
+            self.duration_minutes,
+        );
+        format!(
+            "{:04}{:02}{:02}T{:02}{:02}00",
+            year, month, day, hour, minute
+        )
+    }
+
+    /// A stable, content-derived UID so re-importing the same proposal updates
+    /// the existing entry instead of duplicating it.
+    fn uid(&self) -> String {
+        format!("{}-{}@formal-ai", self.start_stamp(), self.time_zone)
+    }
+
+    /// Build an RFC 5545 VEVENT calendar document. CRLF line endings keep it
+    /// spec-compliant so it imports cleanly into Apple Calendar, Outlook,
+    /// Google Calendar, Thunderbird, and any other iCalendar client.
+    fn to_ics(&self) -> String {
+        let lines = [
+            "BEGIN:VCALENDAR".to_owned(),
+            "VERSION:2.0".to_owned(),
+            "PRODID:-//formal-ai//calendar//EN".to_owned(),
+            "CALSCALE:GREGORIAN".to_owned(),
+            "METHOD:PUBLISH".to_owned(),
+            "BEGIN:VEVENT".to_owned(),
+            format!("UID:{}", self.uid()),
+            format!("DTSTAMP:{}", ics_dtstamp()),
+            format!("DTSTART;TZID={}:{}", self.time_zone, self.start_stamp()),
+            format!("DTEND;TZID={}:{}", self.time_zone, self.end_stamp()),
+            format!("SUMMARY:{}", ics_escape(&self.title)),
+            "END:VEVENT".to_owned(),
+            "END:VCALENDAR".to_owned(),
+        ];
+        let mut out = lines.join("\r\n");
+        out.push_str("\r\n");
+        out
+    }
+
+    /// Build a Google Calendar "render" template URL. Opening it pre-fills a new
+    /// event in the user's logged-in calendar with no API token or server — the
+    /// simplest possible path in a browser environment.
+    fn to_google_calendar_url(&self) -> String {
+        format!(
+            "https://calendar.google.com/calendar/render?action=TEMPLATE&text={}&dates={}/{}&ctz={}",
+            percent_encode(&self.title),
+            self.start_stamp(),
+            self.end_stamp(),
+            percent_encode(self.time_zone),
+        )
+    }
+}
+
+/// Localized fallback title used when no explicit subject was parsed.
+fn default_title(language: &str) -> &'static str {
+    match language {
+        "ru" => "Событие",
+        "hi" => "घटना",
+        "zh" => "事件",
+        _ => "Event",
+    }
+}
+
+/// Add `minutes` to a wall-clock date-time, rolling over hour/day/month/year.
+fn add_minutes(
+    year: i32,
+    month: u32,
+    day: u32,
+    hour: u32,
+    minute: u32,
+    minutes: u32,
+) -> (i32, u32, u32, u32, u32) {
+    let total = hour * 60 + minute + minutes;
+    let mut day_carry = total / (24 * 60);
+    let new_minute = total % 60;
+    let new_hour = (total / 60) % 24;
+    let mut y = year;
+    let mut m = month;
+    let mut d = day;
+    while day_carry > 0 {
+        let max_day = days_in_month(y, m);
+        if d < max_day {
+            d += 1;
+        } else {
+            d = 1;
+            m += 1;
+            if m > 12 {
+                m = 1;
+                y += 1;
+            }
+        }
+        day_carry -= 1;
+    }
+    (y, m, d, new_hour, new_minute)
+}
+
+const fn days_in_month(year: i32, month: u32) -> u32 {
+    match month {
+        2 => {
+            if year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) {
+                29
+            } else {
+                28
+            }
+        }
+        4 | 6 | 9 | 11 => 30,
+        _ => 31,
+    }
+}
+
+/// Current UTC instant as an iCalendar UTC stamp `YYYYMMDDTHHMMSSZ` for DTSTAMP.
+fn ics_dtstamp() -> String {
+    let Ok(now) = SystemTime::now().duration_since(UNIX_EPOCH) else {
+        return "19700101T000000Z".to_owned();
+    };
+    let secs = now.as_secs() as i64;
+    let days = secs.div_euclid(86_400);
+    let sod = secs.rem_euclid(86_400);
+    let (y, m, d) = days_to_date(days);
+    format!(
+        "{:04}{:02}{:02}T{:02}{:02}{:02}Z",
+        y,
+        m,
+        d,
+        sod / 3_600,
+        (sod % 3_600) / 60,
+        sod % 60,
+    )
+}
+
+/// Escape a text value for an iCalendar property (RFC 5545 §3.3.11).
+fn ics_escape(value: &str) -> String {
+    let mut out = String::with_capacity(value.len());
+    for ch in value.chars() {
+        match ch {
+            '\\' => out.push_str("\\\\"),
+            ';' => out.push_str("\\;"),
+            ',' => out.push_str("\\,"),
+            '\n' => out.push_str("\\n"),
+            _ => out.push(ch),
+        }
+    }
+    out
+}
+
+/// Percent-encode a string for use in a URL query value (RFC 3986 unreserved
+/// set kept literal; everything else encoded as UTF-8 `%XX`).
+fn percent_encode(value: &str) -> String {
+    const HEX: &[u8; 16] = b"0123456789ABCDEF";
+    let mut out = String::with_capacity(value.len());
+    for byte in value.bytes() {
+        match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                out.push(byte as char);
+            }
+            _ => {
+                out.push('%');
+                out.push(HEX[(byte >> 4) as usize] as char);
+                out.push(HEX[(byte & 0x0F) as usize] as char);
+            }
+        }
+    }
+    out
 }
 
 fn mentions_calendar_create_request(normalized: &str) -> bool {
@@ -707,18 +931,19 @@ fn resolve_timezone(normalized: &str) -> Option<&'static str> {
 
 fn extract_title(normalized: &str) -> Option<String> {
     // Prefer "на <title>" / "for <title>" / "встречу с ..." style (safe, marker.len() is char boundary).
-    for marker in ["на ", "for ", "встречу ", "meeting with ", "call with "] {
+    for marker in [
+        "на ",
+        "for ",
+        "встречу ",
+        "meeting with ",
+        "call with ",
+        "के साथ ",
+        "和",
+    ] {
         if let Some(pos) = normalized.find(marker) {
             let rest = normalized[pos + marker.len()..].trim();
-            if !rest.is_empty() {
-                // Cut at first sentence punctuation or end.
-                let cut = rest
-                    .find(|c| c == '.' || c == '!' || c == '?')
-                    .unwrap_or(rest.len());
-                let t = rest[..cut].trim();
-                if !t.is_empty() {
-                    return Some(t.to_string());
-                }
+            if let Some(title) = tidy_title(rest) {
+                return Some(title);
             }
         }
     }
@@ -726,34 +951,88 @@ fn extract_title(normalized: &str) -> Option<String> {
     for verb in ["забей", "поставь", "создай", "добавь"] {
         if let Some(pos) = normalized.find(verb) {
             let after = normalized[pos + verb.len()..].trim_start();
-            let cut = after.find(" в ").or_else(|| after.find(" at ")).unwrap_or(after.len());
-            let t = after[..cut].trim();
-            if !t.is_empty() && t.len() < 60 {
-                return Some(t.to_string());
+            if let Some(title) = tidy_title(after) {
+                if title.chars().count() < 60 {
+                    return Some(title);
+                }
             }
         }
     }
     None
 }
 
+/// Trim a candidate title down to its meaningful subject: stop at the first
+/// time/date/timezone boundary or sentence punctuation, drop a leading day
+/// number, and capitalize the first character so the `.ics` SUMMARY reads well.
+fn tidy_title(candidate: &str) -> Option<String> {
+    let mut end = candidate.len();
+    // Boundary phrases that introduce the time, date, or zone rather than the title.
+    for boundary in [
+        " on the ", " on ", " at ", " в ", " по ", " 在 ", "下午", "上午", " को ", " शाम",
+    ] {
+        if let Some(pos) = candidate.find(boundary) {
+            end = end.min(pos);
+        }
+    }
+    // Sentence punctuation also ends the title.
+    if let Some(pos) = candidate.find(['.', '!', '?', ',']) {
+        end = end.min(pos);
+    }
+    // A standalone ascii digit run (a day number or clock time) ends it too.
+    if let Some(pos) = candidate.find(|c: char| c.is_ascii_digit()) {
+        end = end.min(pos);
+    }
+    let trimmed = candidate[..end].trim();
+    if trimmed.is_empty() {
+        return None;
+    }
+    Some(capitalize_first(trimmed))
+}
+
+fn capitalize_first(value: &str) -> String {
+    let mut chars = value.chars();
+    match chars.next() {
+        Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+        None => String::new(),
+    }
+}
+
 fn render_create_confirmation(
     language: &str,
-    title: &str,
-    day: u32,
-    month: u32,
-    year: i32,
-    hour: u32,
-    minute: u32,
-    tz: &str,
+    event: &ScheduledEvent,
+    ics: &str,
+    google_url: &str,
 ) -> String {
+    let iso = event.iso_date();
+    let time = format!("{:02}:{:02}", event.hour, event.minute);
+    let tz = event.time_zone;
+    let title = &event.title;
+    let minutes = event.duration_minutes;
     match language {
         "ru" => format!(
-            "Создать событие «{}» на {} число ({}). Время: {:02}:{:02}, часовой пояс: {}. Длительность 60 минут.\nОтветьте «да», чтобы подтвердить.",
-            title, day, format!("{:04}-{:02}-{:02}", year, month, day), hour, minute, tz
+            "Создать событие «{title}» на {day} число ({iso}). Время: {time}, часовой пояс: {tz}. Длительность {minutes} минут.\n\
+             Импортируйте этот файл .ics в любой календарь:\n{ics}\n\
+             Или откройте в Google Календаре (вход не требуется):\n{google_url}\n\
+             Ответьте «да», чтобы подтвердить.",
+            day = event.day,
+        ),
+        "hi" => format!(
+            "{iso} ({time}, समय क्षेत्र {tz}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\n\
+             इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\n\
+             या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\n\
+             पुष्टि के लिए «हाँ» उत्तर दें।",
+        ),
+        "zh" => format!(
+            "在 {iso}（{time}，时区 {tz}）创建事件「{title}」。时长 {minutes} 分钟。\n\
+             将此 .ics 文件导入任何日历：\n{ics}\n\
+             或在 Google 日历中打开（无需登录）：\n{google_url}\n\
+             回复「是」以确认。",
         ),
         _ => format!(
-            "Create event «{}» on {}-{:02}-{:02}. Time: {:02}:{:02}, timezone: {}. Duration 60 minutes.\nReply 'yes' to confirm.",
-            title, year, month, day, hour, minute, tz
+            "Create event «{title}» on {iso}. Time: {time}, timezone: {tz}. Duration {minutes} minutes.\n\
+             Import this .ics file into any calendar:\n{ics}\n\
+             Or open it in Google Calendar (no login required):\n{google_url}\n\
+             Reply 'yes' to confirm.",
         ),
     }
 }

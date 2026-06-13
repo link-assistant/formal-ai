@@ -558,3 +558,13 @@ meanings
         text "georgia time"
       surface
         text "Asia/Tbilisi"
+    lexeme hi
+      surface
+        text "जॉर्जिया समय"
+      surface
+        text "त्बिलिसी समय"
+    lexeme zh
+      surface
+        text 格鲁吉亚时间
+      surface
+        text 第比利斯时间
