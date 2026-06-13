@@ -24,6 +24,7 @@ mod software_project;
 mod specification;
 mod test_status;
 mod total_closure;
+mod user_journeys;
 mod web_requests;
 
 #[path = "ci-cd/mod.rs"]

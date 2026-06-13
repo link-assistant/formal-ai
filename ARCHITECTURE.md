@@ -446,6 +446,71 @@ that have a probability store. The default `FormalAiEngine::answer` path uses
 an empty store, so existing deterministic behavior is unchanged until evidence
 is explicitly supplied.
 
+### Evidence count and counted-utility ranking (issue #449)
+
+Issue #449 ports the interpretable, non-neural mechanisms from Kolonin's
+"Interpretable Experiential Learning" (arXiv:2605.00940) onto this same
+associative layer. The paper models behaviour as a transition graph where every
+transition carries both a **utility `U`** and an **evidence count `C`**; the
+existing store already accumulated `U` (`target_weight`) but folded the count
+into it. The additions keep the two separate without leaving the non-neural
+boundary:
+
+- `ProbabilityStore::target_evidence_count` returns the count `C` of append-only
+  observations supporting a target, using the same offline and Markov-state
+  filters as `target_weight`, so `U` and `C` always describe the same evidence
+  subset.
+- `ProbabilityRankingConfig` gains three opt-in fields mirroring the paper's
+  decision-policy hyperparameters: `counted_utility` (`CU` — rank by
+  `argmax(U·C)` instead of `argmax(U)`), `min_transition_utility` (`TU`), and
+  `min_transition_count` (`TC`). A transition below `TU`/`TC` is treated as
+  under-evidenced: its learned evidence is withheld and the candidate falls back
+  to its structural prior.
+- `RankedProbabilityCandidate` exposes `evidence_count` and `similarity` next to
+  `evidence_weight`, so each ranked option is locally interpretable — it carries
+  the utility, the number of observations behind it, and how the evidence was
+  matched.
+
+The defaults (`counted_utility = false`, both thresholds `None`) reproduce the
+prior additive behavior, which equals the paper's recommended `CU=False`,
+`TU=0`, `TC=1` baseline; existing callers are unaffected until they opt in.
+
+#### Similarity fallback (`SS`)
+
+The paper falls back to the **closest** stored state when no exact transition
+matches, gated by a cosine-similarity floor `SS`. The same idea is ported
+symbolically:
+
+- `symbolic_cosine_similarity` computes a deterministic bag-of-words cosine over
+  the alphanumeric tokens of two target IDs — no embeddings, no neural logits.
+- `ProbabilityStore::nearest_similar_evidence` finds the highest-similarity
+  stored target (above the `similarity_threshold` floor, ties broken by target
+  name) and lends its evidence, scaled by the similarity, to a candidate that
+  has no exact evidence of its own.
+- The fallback only fires when the candidate's direct evidence count is zero,
+  and the borrowed evidence still passes the `TU`/`TC` gate, so an
+  under-evidenced neighbour cannot smuggle weight past the thresholds.
+
+#### Episode-wide global feedback
+
+`ProbabilityStore::reinforce_transition_path` mirrors the paper's one-shot,
+episode-wide reward: given an ordered state path and a reward, it appends one
+`markov_transition` observation per adjacent pair, so a whole successful episode
+reinforces every transition it traversed in a single append-only pass. The
+records replay deterministically through the event log and link-store projection
+like any other evidence.
+
+#### Generalized decision policy
+
+The `CU`/`TU`/`TC`/`SS` knobs are grouped into a single
+`ProbabilityDecisionPolicy` value. `SolverConfig::probability_policy` threads it
+through every selection use case — `select_formalization_candidate_with_policy`
+(the formalization selector) and `try_synthesize_from_sub_results` (the
+synthesis ranker) — via `ProbabilityRankingConfig::with_decision_policy`. The
+default policy is the paper's baseline, so the store-only entry points delegate
+with it and existing surfaces are byte-for-byte unaffected until a caller opts
+in. The full analysis is archived in `docs/case-studies/issue-449/`.
+
 ---
 
 ## 7. Universal Problem Solver
