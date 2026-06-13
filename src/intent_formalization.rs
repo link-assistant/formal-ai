@@ -783,16 +783,12 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
                     .iter()
                     .any(|w| contains_term_for_relevants(normalized, w));
             // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
-            let fallback_cue = normalized.contains("забей")
-                || normalized.contains("поставь")
-                || normalized.contains("schedule")
-                || normalized.contains("book")
+            // Token-boundary checks keep unrelated text such as "free-programming-books"
+            // (the word "book" embedded in "books") from masquerading as a schedule verb.
+            let fallback_cue = has_any_token(normalized, &["забей", "поставь", "schedule", "book"])
                 || (normalized.contains("число")
                     && (normalized.contains("в ") || normalized.contains(":")))
-                || (has_digit
-                    && (normalized.contains("schedule")
-                        || normalized.contains("book")
-                        || normalized.contains("add")));
+                || (has_digit && has_any_token(normalized, &["schedule", "book", "add"]));
             has_date_signal && (has_schedule || fallback_cue)
         }),
     ];
