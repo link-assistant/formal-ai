@@ -88,7 +88,7 @@ fn issue_427_english_invert_sort_followup_inherits_language_and_list() {
 
 /// Hindi parity: a bare invert-sort follow-up over a Hindi Python coding
 /// context inherits the language and the list, then renders the descending
-/// result. Exercises the `combo उलट+क्रम` reverse_sort vocabulary (issue #427).
+/// result. Exercises the `combo उलट+क्रम` `reverse_sort` vocabulary (issue #427).
 #[test]
 fn issue_427_hindi_invert_sort_followup_inherits_language_and_list() {
     let solver = UniversalSolver::default();
@@ -120,7 +120,7 @@ fn issue_427_hindi_invert_sort_followup_inherits_language_and_list() {
 
 /// Chinese parity: a bare invert-sort follow-up over a Chinese Python coding
 /// context inherits the language and the list, then renders the descending
-/// result. Exercises the `combo 反转+排序` reverse_sort vocabulary (issue #427).
+/// result. Exercises the `combo 反转+排序` `reverse_sort` vocabulary (issue #427).
 #[test]
 fn issue_427_chinese_invert_sort_followup_inherits_language_and_list() {
     let solver = UniversalSolver::default();
