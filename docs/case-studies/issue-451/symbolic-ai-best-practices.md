@@ -94,9 +94,11 @@ solver is deterministic for a given config and impulse (`src/solver.rs` header).
 ### 2.2 Automated theorem proving — **applied**
 The article's Vampire/E/ACL2 niche. `src/proof_engine/` provides a universal
 proof/disproof engine with **delegated decision procedures**
-(`src/proof_engine/decision.rs`): propositional truth-table enumeration and
-quantifier-free affine real-arithmetic solving (`REQUIREMENTS.md` R18). The
-delegated-procedure boundary is the reuse seam for §9's proposed SAT work.
+(`src/proof_engine/decision.rs`): propositional truth-table enumeration, a DPLL
+satisfiability backend for wider formulas (`src/proof_engine/decision/sat.rs`,
+§3.2), and quantifier-free affine real-arithmetic solving (`REQUIREMENTS.md`
+R18). The delegated-procedure boundary is the reuse seam each of these plugs
+into.
 
 ### 2.3 Truth maintenance / non-monotonic reasoning — **applied**
 The article's TMS/non-monotonic practice maps to the **append-only event log**:
@@ -123,14 +125,24 @@ smallest sufficient draft, recombine* (`README.md` "Universal Problem-Solving
 Algorithm"; `src/solver.rs` steps 5–11). This is classical reasoning-as-search
 applied to impulses.
 
-### 3.2 SAT / constraint solving — **proposed** (gap)
-The article devotes a section to DPLL/CDCL/WalkSAT and constraint solving. The
-stack currently delegates only arithmetic (to `link-calculator`); there is no
-general SAT/CSP engine. **Reuse target:** wrap a Rust solver
-([`splr`](https://crates.io/crates/splr) or
-[`varisat`](https://crates.io/crates/varisat)) behind the same
+### 3.2 SAT / constraint solving — **applied**
+The article devotes a section to DPLL/CDCL/WalkSAT and constraint solving.
+`src/proof_engine/decision/sat.rs` ships a deterministic **DPLL** satisfiability
+solver over CNF — unit propagation, pure-literal elimination, and chronological
+backtracking — as a reusable backend behind the same
 "formalize → delegate → trace" boundary `src/proof_engine/decision.rs` already
-uses for arithmetic. Scoped in §9; not claimed present.
+uses for arithmetic. The propositional path now generalizes past the
+eight-variable truth-table limit: `src/proof_engine/decision/boolean.rs`
+Tseitin-encodes a wide formula's negation into CNF and asks the solver whether
+it is unsatisfiable (a tautology proof) or satisfiable (a printed countermodel),
+so claims like `a or not a or … or i` (nine variables, 2⁹ rows) are discharged
+without enumerating the table. Evaluated alternatives — the Rust SAT crates
+[`splr`](https://crates.io/crates/splr) and
+[`varisat`](https://crates.io/crates/varisat) — were set aside in favor of an
+in-house, dependency-free implementation that keeps the engine deterministic and
+WebAssembly-safe (no native solver, byte-reproducible models). The
+backtracking-search seam stays open for a future CDCL/WalkSAT upgrade or a full
+CSP engine if a workload demands it.
 
 ---
 
@@ -231,7 +243,7 @@ file §9) is tracked for when/if that changes.
 | 2.3 | Truth maintenance / non-monotonic | applied |
 | 2.4 | Meta-level reasoning | partial |
 | 3.1 | Means-ends / decomposition planning | applied |
-| 3.2 | SAT / constraint solving | proposed |
+| 3.2 | SAT / constraint solving | applied |
 | 4.1 | Bayesian / Markov (symbolic) | applied |
 | 5.1 | Rule synthesis / ILP | applied |
 | 5.2 | Case-based reasoning | applied |
@@ -242,24 +254,30 @@ file §9) is tracked for when/if that changes.
 | 6.4 | Sample efficiency & verifiability | applied |
 | 7 | Neuro-symbolic integration | partial |
 
-**15 applied, 4 partial, 1 proposed.** The applied rows are existing code now
-made citable; the partials are honest scope boundaries; the single proposed row
-has a named reuse target.
+**16 applied, 3 partial, 0 proposed.** The applied rows are existing code now
+made citable — including SAT / constraint solving (3.2), which this issue
+promoted from a proposed gap to a shipped, in-house DPLL backend; the partials
+are honest scope boundaries with named reuse targets in §9.
 
 ---
 
 ## 9. Proposed work (the gaps), with reuse targets
 
-No best practice is left both unimplemented and unplanned (R303). The
-non-"applied" rows, each with the *existing component* to reuse rather than
-re-build:
+No best practice is left both unimplemented and unplanned (R303). SAT /
+constraint solving (3.2) — previously the single proposed gap — is now
+**shipped** as the in-house DPLL backend `src/proof_engine/decision/sat.rs`
+(the Rust crates [`splr`](https://crates.io/crates/splr) and
+[`varisat`](https://crates.io/crates/varisat) were evaluated as reuse targets
+but set aside to keep the engine dependency-free and WebAssembly-safe). The
+remaining non-"applied" rows, each with the *existing component* to reuse rather
+than re-build:
 
-1. **SAT / constraint solving (3.2, proposed).** Reuse a Rust SAT/CSP crate
-   ([`splr`](https://crates.io/crates/splr),
-   [`varisat`](https://crates.io/crates/varisat)) behind the
-   `src/proof_engine/decision.rs` delegation seam — the same pattern that already
-   wraps `link-calculator` for arithmetic. New associative package, no engine
-   rewrite.
+1. **CDCL / WalkSAT / full CSP (3.2, future upgrade).** The shipped DPLL backend
+   keeps a clean backtracking-search seam; a clause-learning (CDCL) or local-
+   search (WalkSAT) upgrade, or a finite-domain CSP layer, can replace the search
+   core without touching the `formalize → delegate → trace` boundary — adopt
+   [`splr`](https://crates.io/crates/splr)/[`varisat`](https://crates.io/crates/varisat)
+   here if a workload ever needs industrial-scale solving.
 2. **Frames with default inheritance (1.5, partial).** Extend concept seeds with
    slot-default + override links; the doublet store already supports the edges,
    so this is data + a small resolver, not new infrastructure.

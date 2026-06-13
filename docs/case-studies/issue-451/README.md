@@ -40,7 +40,7 @@ The deliverables are therefore documentation-centric and fully traceable:
    technique family the article enumerates** to its associative-stack
    realization, with `path:symbol` evidence and an honest *applied / partial /
    proposed* status per row.
-3. This case study collects the data, lists requirements **R298–R304**, and
+3. This case study collects the data, lists requirements **R298–R305**, and
    gives a solution plan and a prior-art survey for each.
 4. `tests/unit/docs_requirements.rs::issue_451_symbolic_ai_reference_documents_are_present_and_traceable`
    pins all of the above so the reference and the mapping cannot silently
@@ -70,27 +70,32 @@ quotes only short definitional phrases and links every claim to its source.
 
 Every requirement extracted from the issue body (the issue has no comments, so
 the body is the complete specification). These are recorded in
-[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as **R298–R304** under
+[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as **R298–R305** under
 *"Issue #451 Symbolic AI Reference And Best Practices"*.
 
 | ID | Requirement (verbatim intent) | Status |
 |---|---|---|
 | **R298** | Reference `https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence` in the project documentation. | Done — cited from `README.md`, `VISION.md`, `ARCHITECTURE.md` §17. |
-| **R299** | Use **all best known practices** listed in that article *and others in the domain*, applied through the repository's **associative technological stack**. | Done — [`symbolic-ai-best-practices.md`](symbolic-ai-best-practices.md) maps every technique family to existing code; 3 genuine gaps are scoped as proposed work (§6). |
+| **R299** | Use **all best known practices** listed in that article *and others in the domain*, applied through the repository's **associative technological stack**. | Done — [`symbolic-ai-best-practices.md`](symbolic-ai-best-practices.md) maps every technique family to existing code; the one-time SAT gap is now shipped (R305) and the remaining 3 partial rows are scoped with reuse targets (§6). |
 | **R300** | **Collect issue-related data** into `docs/case-studies/issue-451/`. | Done — see §2 and [`raw-data/`](raw-data/). |
 | **R301** | Do a **deep case-study analysis**, including **searching online** for additional facts and data. | Done — §4 (analysis) + [`raw-data/online-research.md`](raw-data/online-research.md) (8 cited sources incl. 2024–2026 surveys). |
-| **R302** | **List each and all requirements** from the issue. | Done — this table (R298–R304) plus the prose enumeration in this section. |
+| **R302** | **List each and all requirements** from the issue. | Done — this table (R298–R305) plus the prose enumeration in this section. |
 | **R303** | Propose **possible solutions and solution plans for each requirement**, checking **known existing components/libraries** that solve a similar problem or can help. | Done — §6 (per-requirement plans) + §7 (prior-art survey). |
 | **R304** | **Plan and execute everything in the single PR #452.** | Done — every artifact above plus the regression test, changelog fragment, and doc edits land in PR #452. |
+| **R305** | **Close the last audit gap** (§3.2 SAT / constraint solving) by shipping a real decision procedure and generalizing the propositional path, keeping every prior test green. | Done — the in-house DPLL backend [`src/proof_engine/decision/sat.rs`](../../../src/proof_engine/decision/sat.rs) with Tseitin encoding in `boolean.rs`; see §6 and the best-practices audit §3.2. |
 
-### Why these seven and not more
+### Why these eight and not more
 
 The issue body is one paragraph of intent. R298 is the literal title ask; R299
 is the "best practices" sentence; R300–R301 are the "collect data … deep case
 study … search online" sentence; R302 is "list of each and all requirements";
 R303 is "propose possible solutions … check existing components"; R304 is "plan
-and execute everything in this single pull request". No requirement is implied
-beyond these without over-reading the text.
+and execute everything in this single pull request". R305 is the maintainer's
+follow-up directive to *"enhance all our use cases … with all best techniques and
+practices … generalize our solutions in code more … until each and every
+requirement is fully addressed"* — operationalized as closing the single audit
+gap (§3.2 SAT). No requirement is implied beyond these without over-reading the
+text.
 
 ---
 
@@ -182,13 +187,14 @@ The full mapping with evidence and status is in
 | Case-based reasoning | history lookup / answer reuse | applied |
 | Truth maintenance / non-monotonic | append-only history + retraction discipline | applied |
 | Meta-level reasoning (Soar-style) | budget-aware strategy selection in the solver | partial |
-| Constraint solving / SAT | calculator delegation; no general constraint engine yet | **gap → proposed** |
+| Constraint solving / SAT | `src/proof_engine/decision/sat.rs` (in-house DPLL) + Tseitin encoding in `boolean.rs` | applied |
 | Common-sense / frame problem | bounded decomposition + public-KB grounding | partial (mitigated) |
 | Neuro-symbolic integration | temperature selector over discrete interpretations | partial (by design) |
 
 "Applied" rows are backed by `path:symbol` citations in the mapping document.
-The three non-"applied" rows are the honest residue and drive the solution plans
-below.
+The constraint-solving row, previously the single proposed gap, is now shipped
+(R305); the three remaining non-"applied" rows are the honest residue and drive
+the solution plans below.
 
 ---
 
@@ -218,13 +224,20 @@ practices already in place and **scopes** the gaps without overclaiming.
 `proof_engine/`, `probability.rs`, `substitution.rs`, `rule_synthesis.rs`,
 `knowledge.rs`) — the best practices are already implemented; the work is to
 name and cite them.
-**Proposed (gap) work, scoped not deferred-silently:**
-- *Constraint solving / SAT* — the cleanest fit is the existing **delegated
-  decision-procedure pattern** (the way `link-calculator` is called): a future
-  associative package could wrap a Rust SAT/CSP crate (e.g.
-  [`splr`](https://crates.io/crates/splr), [`varisat`](https://crates.io/crates/varisat))
-  behind the same "formalize → delegate → trace" boundary `proof_engine` already
-  uses. Noted as future work in the mapping doc, not claimed as present.
+**Shipped (R305), closing the one-time SAT gap:**
+- *Constraint solving / SAT* — realized via the existing **delegated
+  decision-procedure pattern** (the way `link-calculator` is called for
+  arithmetic). The propositional path now Tseitin-encodes claims wider than the
+  eight-variable truth-table limit and hands them to an in-house, deterministic
+  DPLL search (`src/proof_engine/decision/sat.rs`) behind the same "formalize →
+  delegate → trace" boundary `proof_engine` already uses: UNSAT yields a
+  tautology proof, SAT a concrete countermodel. The Rust crates
+  [`splr`](https://crates.io/crates/splr) /
+  [`varisat`](https://crates.io/crates/varisat) were evaluated as reuse targets
+  but set aside to keep the engine dependency-free and WebAssembly-safe; they
+  remain the upgrade path if industrial-scale (CDCL/CSP) solving is ever needed.
+
+**Remaining partial rows, scoped not deferred-silently:**
 - *Meta-level reasoning* — partially present (budget-aware candidate selection);
   a fuller Soar-style agenda would extend `solver_diagnostics`.
 - *Common-sense / frame problem* — inherent to symbolic AI; mitigated (not
@@ -244,7 +257,7 @@ research, including 2024–2026 survey literature beyond the single article.
 convention introduced by issue-195/issue-408.
 
 ### R302 — List all requirements
-**Approach (chosen, done):** §3's R298–R304 table plus the "why these seven"
+**Approach (chosen, done):** §3's R298–R305 table plus the "why these eight"
 justification, mirrored into `REQUIREMENTS.md`.
 
 ### R303 — Solution plans + component survey
@@ -254,6 +267,17 @@ justification, mirrored into `REQUIREMENTS.md`.
 **Approach (chosen, done):** all artifacts land in PR #452: the three doc edits,
 this case study, the mapping doc, the `raw-data/` captures, the
 `REQUIREMENTS.md` rows, the regression test, and the changelog fragment.
+
+### R305 — Close the SAT gap
+**Approach (chosen, done):** ship the in-house DPLL backend
+[`src/proof_engine/decision/sat.rs`](../../../src/proof_engine/decision/sat.rs)
+and route wide propositional claims through a Tseitin CNF encoding in
+`src/proof_engine/decision/boolean.rs`, keeping the ≤8-variable truth-table path
+untouched so every prior test stays green. **Existing pattern reused:** the
+`proof_engine` "formalize → delegate → trace" delegation seam (same shape as the
+calculator delegation). **Alternatives considered:** the `splr` / `varisat`
+crates — set aside to preserve byte-reproducibility and WASM-safety, retained as
+the documented upgrade path for CDCL/CSP-scale workloads.
 
 ---
 
@@ -288,10 +312,16 @@ versus re-expresses in its associative stack.
 ### Theorem proving / SAT / constraints
 - **Vampire, E, Z3, Prover9, ACL2** — ATP/SMT systems. `src/proof_engine/`
   occupies this role with built-in decision procedures (propositional truth
-  tables, quantifier-free affine real arithmetic — `REQUIREMENTS.md` R18).
-- **MiniSat / Glucose / `splr` / `varisat`** — SAT/CSP solvers. *Not yet
-  integrated*; the proposed delegated-package plan (R299 gap) names these as the
-  reuse target rather than a re-implementation.
+  tables and, for wide formulas, a Tseitin-encoded DPLL search; quantifier-free
+  affine real arithmetic — `REQUIREMENTS.md` R18).
+- **MiniSat / Glucose / DPLL** — the classical SAT algorithm family. `formal-ai`
+  now ships its own deterministic DPLL search (`src/proof_engine/decision/sat.rs`,
+  R305) with unit propagation, pure-literal elimination, and chronological
+  backtracking — the textbook algorithm re-expressed dependency-free so it stays
+  byte-reproducible and WASM-safe.
+- **`splr` / `varisat`** — production Rust CDCL/CSP solvers. *Evaluated as reuse
+  targets and set aside* in favor of the in-house DPLL backend; named as the
+  documented upgrade path if industrial-scale solving is ever required.
 
 ### Uncertainty
 - **Bayesian networks (Pearl), HMMs, Markov logic networks, ProbLog** —
@@ -362,7 +392,7 @@ docs/case-studies/issue-451/
 Wired into the rest of the repository by:
 
 - `README.md`, `VISION.md`, `ARCHITECTURE.md` — the Wikipedia reference (R298).
-- `REQUIREMENTS.md` — rows **R298–R304** (R302).
+- `REQUIREMENTS.md` — rows **R298–R305** (R302).
 - `tests/unit/docs_requirements.rs::issue_451_symbolic_ai_reference_documents_are_present_and_traceable`
   — pins the reference, the mapping headings, and the requirement IDs.
 - `changelog.d/` — a `minor` fragment recording the reference + mapping.

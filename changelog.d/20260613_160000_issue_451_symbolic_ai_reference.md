@@ -17,9 +17,11 @@ bump: patch
   component that realizes it (`solver.rs`, `proof_engine/`, `probability.rs`,
   `substitution.rs`, `rule_synthesis.rs`, `knowledge.rs`, `event_log.rs`), with an
   honest applied/partial/proposed status and named reuse targets for each gap.
-- Requirements **R298–R304** in `REQUIREMENTS.md` and the regression test
+- Requirements **R298–R305** in `REQUIREMENTS.md` and the regression test
   `tests/unit/docs_requirements.rs::issue_451_symbolic_ai_reference_documents_are_present_and_traceable`,
   which pins the reference, the audit, and the requirement list so they cannot
   silently regress.
 
-This change is documentation and tests only; the solver's behavior is unchanged.
+The documentation half of this work is reference and tests only; the
+accompanying engine change (the DPLL satisfiability backend that closes the
+audit's single proposed gap, R305) is described in its own changelog entry.

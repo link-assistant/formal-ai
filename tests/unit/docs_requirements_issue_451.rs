@@ -37,7 +37,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
             "Domain background (symbolic AI)",
             symbolic_ai_url,
             "https://en.wikipedia.org/wiki/Neuro-symbolic_AI",
-            "R1 ... R304",
+            "R1 ... R305",
         ],
     );
 
@@ -55,6 +55,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
             "| R302 ",
             "| R303 ",
             "| R304 ",
+            "| R305 ",
             "docs/case-studies/issue-451/symbolic-ai-best-practices.md",
         ],
     );
@@ -96,10 +97,20 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
             "Automated theorem proving",
             "Explainability / glass box",
             "Knowledge-acquisition bottleneck mitigation",
-            "15 applied, 4 partial, 1 proposed",
+            "16 applied, 3 partial, 0 proposed",
             "splr",
             "varisat",
             symbolic_ai_url,
+        ],
+    );
+    // R305: the SAT/constraint row is now realized by the in-house DPLL backend.
+    assert_contains_all(
+        "docs/case-studies/issue-451/symbolic-ai-best-practices.md",
+        &best_practices,
+        &[
+            "src/proof_engine/decision/sat.rs",
+            "DPLL",
+            "Tseitin",
         ],
     );
 
