@@ -1046,6 +1046,7 @@ const PREFERENCE_DEFAULTS = {
   chatStyle: "cards",
   composerStyle: "flat",
   composerAction: "attach",
+  toolbarIconPack: "fontawesome",
 };
 
 // Issue #386: precompute the formatted default values so the issue report can
@@ -1077,6 +1078,15 @@ const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
+const TOOLBAR_ICON_PACKS = [
+  "fontawesome",
+  "material-symbols",
+  "bootstrap-icons",
+  "ionicons",
+  "remix-icon",
+  "tabler-icons",
+  "names",
+];
 const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // Issue #340: blueprint program-composition strategies. "composed" projects the
 // program from the detected capabilities; "documented" always emits the full
@@ -1336,6 +1346,12 @@ function normalizeComposerAction(value) {
     : PREFERENCE_DEFAULTS.composerAction;
 }
 
+function normalizeToolbarIconPack(value) {
+  return TOOLBAR_ICON_PACKS.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.toolbarIconPack;
+}
+
 function normalizeDefinitionFusion(value) {
   return DEFINITION_FUSION_MODES.includes(value)
     ? value
@@ -1358,6 +1374,255 @@ function normalizePreferredLanguage(value) {
   return PREFERRED_RESPONSE_LANGUAGES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.preferredLanguage;
+}
+
+const TOOLBAR_ICON_FONT_NAMES = {
+  fontawesome: {
+    sourceCode: "fa-code",
+    download: "fa-download",
+    reportIssue: "fa-bug",
+    exportMemory: "fa-file-export",
+    importMemory: "fa-file-import",
+    resetMemory: "fa-broom",
+    diagnostics: "fa-flask-vial",
+    chat: "fa-comment-dots",
+    agent: "fa-robot",
+    demo: "fa-clapperboard",
+    attachFiles: "fa-paperclip",
+  },
+  "material-symbols": {
+    sourceCode: "code",
+    download: "download",
+    reportIssue: "bug_report",
+    exportMemory: "upload_file",
+    importMemory: "file_download",
+    resetMemory: "cleaning_services",
+    diagnostics: "science",
+    chat: "chat_bubble",
+    agent: "smart_toy",
+    demo: "movie",
+    attachFiles: "attach_file",
+  },
+  "bootstrap-icons": {
+    sourceCode: "bi-code-slash",
+    download: "bi-download",
+    reportIssue: "bi-bug",
+    exportMemory: "bi-file-earmark-arrow-up",
+    importMemory: "bi-file-earmark-arrow-down",
+    resetMemory: "bi-eraser",
+    diagnostics: "bi-flask",
+    chat: "bi-chat-dots",
+    agent: "bi-robot",
+    demo: "bi-play-btn",
+    attachFiles: "bi-paperclip",
+  },
+  ionicons: {
+    sourceCode: "code-slash-outline",
+    download: "download-outline",
+    reportIssue: "bug-outline",
+    exportMemory: "cloud-upload-outline",
+    importMemory: "cloud-download-outline",
+    resetMemory: "brush-outline",
+    diagnostics: "flask-outline",
+    chat: "chatbubble-ellipses-outline",
+    agent: "hardware-chip-outline",
+    demo: "videocam-outline",
+    attachFiles: "attach-outline",
+  },
+  "remix-icon": {
+    sourceCode: "ri-code-s-slash-line",
+    download: "ri-download-line",
+    reportIssue: "ri-bug-line",
+    exportMemory: "ri-file-upload-line",
+    importMemory: "ri-file-download-line",
+    resetMemory: "ri-brush-3-line",
+    diagnostics: "ri-flask-line",
+    chat: "ri-chat-3-line",
+    agent: "ri-robot-2-line",
+    demo: "ri-movie-line",
+    attachFiles: "ri-attachment-line",
+  },
+  "tabler-icons": {
+    sourceCode: "IconCode",
+    download: "IconDownload",
+    reportIssue: "IconBug",
+    exportMemory: "IconFileExport",
+    importMemory: "IconFileImport",
+    resetMemory: "IconEraser",
+    diagnostics: "IconFlask",
+    chat: "IconMessageCircle",
+    agent: "IconRobot",
+    demo: "IconMovie",
+    attachFiles: "IconPaperclip",
+  },
+  names: {
+    sourceCode: "Code",
+    download: "Download",
+    reportIssue: "Bug",
+    exportMemory: "Export",
+    importMemory: "Import",
+    resetMemory: "Reset",
+    diagnostics: "Diagnostics",
+    chat: "Chat",
+    agent: "Agent",
+    demo: "Demo",
+    attachFiles: "Attach",
+  },
+};
+
+const TOOLBAR_ICON_SHORT_NAMES = {
+  sourceCode: "Code",
+  download: "Down",
+  reportIssue: "Bug",
+  exportMemory: "Out",
+  importMemory: "In",
+  resetMemory: "Clear",
+  diagnostics: "Diag",
+  chat: "Chat",
+  agent: "Agent",
+  demo: "Demo",
+  attachFiles: "File",
+};
+
+const TOOLBAR_ICON_SHAPES = {
+  sourceCode: [
+    ["path", { d: "M8.5 8.5 5 12l3.5 3.5" }],
+    ["path", { d: "m15.5 8.5 3.5 3.5-3.5 3.5" }],
+    ["path", { d: "m13.5 6-3 12" }],
+  ],
+  download: [
+    ["path", { d: "M12 5v10" }],
+    ["path", { d: "m8 11 4 4 4-4" }],
+    ["path", { d: "M5 19h14" }],
+  ],
+  reportIssue: [
+    ["path", { d: "M8 9h8v6a4 4 0 0 1-8 0V9Z" }],
+    ["path", { d: "M9 9 7 6" }],
+    ["path", { d: "m15 9 2-3" }],
+    ["path", { d: "M12 8V5" }],
+    ["path", { d: "M6 13H3.5" }],
+    ["path", { d: "M20.5 13H18" }],
+    ["path", { d: "M7 18l-2 2" }],
+    ["path", { d: "m17 18 2 2" }],
+    ["path", { d: "M10 13h.01" }],
+    ["path", { d: "M14 13h.01" }],
+  ],
+  exportMemory: [
+    ["path", { d: "M6 3h8l4 4v14H6V3Z" }],
+    ["path", { d: "M14 3v5h4" }],
+    ["path", { d: "M12 17V9" }],
+    ["path", { d: "m8.5 12.5 3.5-3.5 3.5 3.5" }],
+  ],
+  importMemory: [
+    ["path", { d: "M6 3h8l4 4v14H6V3Z" }],
+    ["path", { d: "M14 3v5h4" }],
+    ["path", { d: "M12 9v8" }],
+    ["path", { d: "m8.5 13.5 3.5 3.5 3.5-3.5" }],
+  ],
+  resetMemory: [
+    ["path", { d: "m15 4-7 7" }],
+    ["path", { d: "m7 12 5 5" }],
+    ["path", { d: "m5 14 5 5" }],
+    ["path", { d: "m9 10 5 5" }],
+    ["path", { d: "M4 20h16" }],
+  ],
+  diagnostics: [
+    ["path", { d: "M10 4h4" }],
+    ["path", { d: "M11 4v5l-5 8a3 3 0 0 0 2.5 4h7a3 3 0 0 0 2.5-4l-5-8V4" }],
+    ["path", { d: "M8 16h8" }],
+  ],
+  chat: [
+    ["path", { d: "M5 6h14v9H9l-4 4V6Z" }],
+    ["path", { d: "M8.5 10.5h7" }],
+    ["path", { d: "M8.5 13h4" }],
+  ],
+  agent: [
+    ["path", { d: "M8 9h8v8H8V9Z" }],
+    ["path", { d: "M12 9V5" }],
+    ["path", { d: "M9.5 5h5" }],
+    ["path", { d: "M6 12H4" }],
+    ["path", { d: "M20 12h-2" }],
+    ["path", { d: "M10 12h.01" }],
+    ["path", { d: "M14 12h.01" }],
+    ["path", { d: "M10 15h4" }],
+  ],
+  demo: [
+    ["path", { d: "M4 7h16v12H4V7Z" }],
+    ["path", { d: "M4 11h16" }],
+    ["path", { d: "m7 7 2-4" }],
+    ["path", { d: "m12 7 2-4" }],
+    ["path", { d: "m17 7 2-4" }],
+    ["path", { d: "m10 14 4 2-4 2v-4Z" }],
+  ],
+  attachFiles: [
+    ["path", { d: "m8 12 5.5-5.5a3 3 0 0 1 4.25 4.25l-7.25 7.25a5 5 0 0 1-7.07-7.07L10 4.36" }],
+    ["path", { d: "m9.5 14.5 6-6" }],
+  ],
+};
+
+function toolbarIconFontName(action, pack) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  return (
+    TOOLBAR_ICON_FONT_NAMES[normalizedPack]?.[action] ||
+    TOOLBAR_ICON_FONT_NAMES.fontawesome[action] ||
+    action
+  );
+}
+
+function toolbarIconFontClass(action, pack) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  const name = toolbarIconFontName(action, normalizedPack);
+  if (normalizedPack === "fontawesome") return `fa-solid ${name}`;
+  if (normalizedPack === "material-symbols") return `material-symbols-outlined ${name}`;
+  if (normalizedPack === "bootstrap-icons") return `bi ${name}`;
+  if (normalizedPack === "remix-icon") return `ri ${name}`;
+  if (normalizedPack === "tabler-icons") return `ti ${name}`;
+  return name;
+}
+
+function ToolbarIcon({ action, pack, className = "btn-icon" }) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  const fontName = toolbarIconFontName(action, normalizedPack);
+  const fontClass = toolbarIconFontClass(action, normalizedPack);
+  const baseClass = `${className} toolbar-icon icon-pack-${normalizedPack}`;
+  if (normalizedPack === "names") {
+    return h(
+      "span",
+      {
+        className: `${baseClass} toolbar-icon-name`,
+        "aria-hidden": "true",
+        "data-icon-pack": normalizedPack,
+        "data-icon-font-name": fontName,
+        "data-icon-font-class": fontClass,
+      },
+      TOOLBAR_ICON_SHORT_NAMES[action] || fontName,
+    );
+  }
+  const shape = TOOLBAR_ICON_SHAPES[action] || TOOLBAR_ICON_SHAPES.chat;
+  return h(
+    "span",
+    {
+      className: baseClass,
+      "aria-hidden": "true",
+      "data-icon-pack": normalizedPack,
+      "data-icon-font-name": fontName,
+      "data-icon-font-class": fontClass,
+    },
+    h(
+      "svg",
+      {
+        className: "toolbar-icon-svg",
+        viewBox: "0 0 24 24",
+        focusable: "false",
+      },
+      shape.map(([tag, attrs], index) =>
+        h(tag, {
+          ...attrs,
+          key: `${action}-${index}`,
+        }),
+      ),
+    ),
+  );
 }
 
 function i18nApi() {
@@ -1435,6 +1700,7 @@ function collectUserContext({
   chatStyle,
   composerStyle,
   composerAction,
+  toolbarIconPack,
   locationPreference,
   assistantName,
   guessProbability,
@@ -1460,6 +1726,7 @@ function collectUserContext({
     chatStyle,
     composerStyle,
     composerAction,
+    toolbarIconPack,
     browserLanguage: nav.language || "",
     browserLanguages: browserLanguages.join(", "),
     locale: resolvedLocale(),
@@ -1574,6 +1841,10 @@ function appendUserContextBlock(lines, context) {
   }
   if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
     push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  const toolbarIconPack = safe.toolbarIconPack || PREFERENCE_DEFAULTS.toolbarIconPack;
+  if (toolbarIconPack !== PREFERENCE_DEFAULTS.toolbarIconPack) {
+    push("Toolbar icon pack", toolbarIconPack);
   }
   // Issue #386: the inference-only location ("time zone / locale only") is the
   // default, so it is omitted. An explicit preference is reported above.
@@ -3261,15 +3532,19 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
 
 const LOCAL_BEHAVIOR_RULES_LIST_PATTERNS = [
   "show behavior rules",
+  "show rules",
   "show list of your rules",
   "list your rules",
   "покажи правила поведения",
+  "покажи правила",
   "покажи список своих правил",
   "перечисли свои правила",
   "व्यवहार के नियम सूचीबद्ध करें",
+  "नियम दिखाओ",
   "अपने नियमों की सूची दिखाओ",
   "अपने नियम गिनाओ",
   "列出行为规则",
+  "显示规则",
   "显示你的规则列表",
   "列出你的规则",
 ];
@@ -4879,6 +5154,9 @@ function App() {
   const [composerAction, setComposerAction] = useState(
     normalizeComposerAction(initialPreferences.current.composerAction),
   );
+  const [toolbarIconPack, setToolbarIconPack] = useState(
+    normalizeToolbarIconPack(initialPreferences.current.toolbarIconPack),
+  );
   const [locationPreference, setLocationPreference] = useState(
     String(initialPreferences.current.location || ""),
   );
@@ -5107,6 +5385,7 @@ function App() {
         chatStyle,
         composerStyle,
         composerAction,
+        toolbarIconPack,
         locationPreference,
         assistantName,
         guessProbability,
@@ -5123,6 +5402,7 @@ function App() {
       chatStyle,
       composerStyle,
       composerAction,
+      toolbarIconPack,
       locationPreference,
       assistantName,
       guessProbability,
@@ -5610,6 +5890,7 @@ function App() {
       chatStyle,
       composerStyle,
       composerAction,
+      toolbarIconPack,
       location: locationPreference,
       assistantName: normalizeAssistantName(assistantName),
       currentConversationId,
@@ -5643,6 +5924,7 @@ function App() {
     chatStyle,
     composerStyle,
     composerAction,
+    toolbarIconPack,
     locationPreference,
     assistantName,
     currentConversationId,
@@ -6452,6 +6734,7 @@ function App() {
     { key: "chatStyle", value: chatStyle, set: setChatStyle, label: "settings.chatStyle" },
     { key: "composerStyle", value: composerStyle, set: setComposerStyle, label: "settings.composerStyle" },
     { key: "composerAction", value: composerAction, set: setComposerAction, label: "settings.composerAction" },
+    { key: "toolbarIconPack", value: toolbarIconPack, set: setToolbarIconPack, label: "settings.toolbarIconPack" },
     { key: "assistantName", value: assistantName, set: setAssistantName, label: "settings.assistantName" },
     { key: "location", value: locationPreference, set: setLocationPreference, label: "settings.location" },
   ];
@@ -6467,7 +6750,14 @@ function App() {
     }
   };
 
-  const composerActionIcon = composerAction === "plus" ? "+" : "📎";
+  const composerActionIcon =
+    composerAction === "plus"
+      ? "+"
+      : h(ToolbarIcon, {
+          action: "attachFiles",
+          pack: toolbarIconPack,
+          className: "composer-action-icon",
+        });
   const attachmentStatus =
     attachments.length > 0
       ? t("composer.attachments", { count: attachments.length })
@@ -6487,6 +6777,7 @@ function App() {
         `ui-skin-${uiSkin}`,
         `chat-style-${chatStyle}`,
         `composer-style-${composerStyle}`,
+        `toolbar-icon-pack-${toolbarIconPack}`,
         desktopStatus ? "desktop-shell" : "",
       ].filter(Boolean).join(" "),
     },
@@ -6575,7 +6866,7 @@ function App() {
             title: t("titles.sourceCode"),
             "aria-label": t("buttons.sourceCode"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+          h(ToolbarIcon, { action: "sourceCode", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.sourceCode")),
         ),
         h(
@@ -6588,7 +6879,7 @@ function App() {
             title: t("titles.download"),
             "aria-label": t("buttons.download"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "⬇️"),
+          h(ToolbarIcon, { action: "download", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.download")),
         ),
         h(
@@ -6603,7 +6894,7 @@ function App() {
             title: t("titles.reportIssue"),
             "aria-label": t("buttons.reportIssue"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+          h(ToolbarIcon, { action: "reportIssue", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.reportIssue")),
         ),
         h(
@@ -6617,7 +6908,7 @@ function App() {
             title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+          h(ToolbarIcon, { action: "exportMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.exportMemory")),
         ),
         h(
@@ -6631,7 +6922,7 @@ function App() {
             title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+          h(ToolbarIcon, { action: "importMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.importMemory")),
         ),
         h(
@@ -6645,7 +6936,7 @@ function App() {
             title: t("titles.resetMemory"),
             "aria-label": t("buttons.resetMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+          h(ToolbarIcon, { action: "resetMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.resetMemory")),
         ),
         h("input", {
@@ -6683,7 +6974,7 @@ function App() {
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
+          h(ToolbarIcon, { action: "diagnostics", pack: toolbarIconPack }),
           h(
             "span",
             { className: "btn-label" },
@@ -6704,11 +6995,10 @@ function App() {
             "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
             onClick: () => setAgentMode((value) => !value),
           },
-          h(
-            "span",
-            { className: "btn-icon", "aria-hidden": "true" },
-            agentMode ? "🤖" : "💬",
-          ),
+          h(ToolbarIcon, {
+            action: agentMode ? "agent" : "chat",
+            pack: toolbarIconPack,
+          }),
           h(
             "span",
             { className: "btn-label" },
@@ -6728,7 +7018,7 @@ function App() {
               : t("titles.demoOff"),
             "aria-label": demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+          h(ToolbarIcon, { action: "demo", pack: toolbarIconPack }),
           h(
             "span",
             { className: "btn-label" },
@@ -6803,7 +7093,7 @@ function App() {
                 target: "_blank",
                 rel: "noopener noreferrer",
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+              h(ToolbarIcon, { action: "sourceCode", pack: toolbarIconPack }),
               h("span", null, t("buttons.sourceCode")),
             ),
             h(
@@ -6815,7 +7105,7 @@ function App() {
                 target: "_blank",
                 rel: "noopener noreferrer",
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+              h(ToolbarIcon, { action: "reportIssue", pack: toolbarIconPack }),
               h("span", null, t("buttons.reportIssue")),
             ),
             h(
@@ -6826,7 +7116,7 @@ function App() {
                 "data-testid": "drawer-memory-export",
                 onClick: handleExportMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+              h(ToolbarIcon, { action: "exportMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.exportMemory")),
             ),
             h(
@@ -6837,7 +7127,7 @@ function App() {
                 "data-testid": "drawer-memory-import",
                 onClick: triggerImportMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+              h(ToolbarIcon, { action: "importMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.importMemory")),
             ),
             h(
@@ -6848,7 +7138,7 @@ function App() {
                 "data-testid": "drawer-memory-reset",
                 onClick: handleResetMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+              h(ToolbarIcon, { action: "resetMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.resetMemory")),
             ),
             h(
@@ -6859,7 +7149,7 @@ function App() {
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
+              h(ToolbarIcon, { action: "diagnostics", pack: toolbarIconPack }),
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
@@ -6870,7 +7160,10 @@ function App() {
                 "aria-pressed": agentMode,
                 onClick: () => setAgentMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, agentMode ? "🤖" : "💬"),
+              h(ToolbarIcon, {
+                action: agentMode ? "agent" : "chat",
+                pack: toolbarIconPack,
+              }),
               h("span", null, agentMode ? t("buttons.agent") : t("buttons.chat")),
             ),
             h(
@@ -6881,7 +7174,7 @@ function App() {
                 "aria-pressed": demoMode,
                 onClick: () => setDemoMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+              h(ToolbarIcon, { action: "demo", pack: toolbarIconPack }),
               h("span", null, demoMode ? t("buttons.demoOn") : t("buttons.demo")),
             ),
           ),
@@ -7502,6 +7795,29 @@ function App() {
             h(
               "label",
               { className: "setting-row" },
+              h("span", null, t("settings.toolbarIconPack")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-toolbar-icon-pack",
+                  value: toolbarIconPack,
+                  onChange: (event) =>
+                    setToolbarIconPack(
+                      normalizeToolbarIconPack(event.target.value),
+                    ),
+                },
+                h("option", { value: "fontawesome" }, t("settings.toolbarIconPack.fontawesome")),
+                h("option", { value: "material-symbols" }, t("settings.toolbarIconPack.materialSymbols")),
+                h("option", { value: "bootstrap-icons" }, t("settings.toolbarIconPack.bootstrapIcons")),
+                h("option", { value: "ionicons" }, t("settings.toolbarIconPack.ionicons")),
+                h("option", { value: "remix-icon" }, t("settings.toolbarIconPack.remixIcon")),
+                h("option", { value: "tabler-icons" }, t("settings.toolbarIconPack.tablerIcons")),
+                h("option", { value: "names" }, t("settings.toolbarIconPack.names")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
               h("span", null, t("settings.chatStyle")),
               h(
                 "select",
@@ -7753,7 +8069,11 @@ function App() {
                 "p",
                 { className: "composer-demo-hint", "data-testid": "composer-demo-hint" },
                 t("composer.demoHint.before"),
-                h("span", { className: "composer-demo-hint-icon", "aria-hidden": "true" }, "🎬"),
+                h(ToolbarIcon, {
+                  action: "demo",
+                  pack: toolbarIconPack,
+                  className: "composer-demo-hint-icon",
+                }),
                 t("composer.demoHint.after"),
               )
             : null,

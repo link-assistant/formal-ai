@@ -66,6 +66,7 @@ mod summarization_pipeline;
 mod synthesis;
 mod telegram_surface;
 mod text_manipulation;
+mod text_manipulation_benchmarks;
 mod translation_via_links;
 mod transparent_state;
 mod unknown_reasoning;

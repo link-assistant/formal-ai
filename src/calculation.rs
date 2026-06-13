@@ -256,7 +256,10 @@ impl<'a> LinearParser<'a> {
         {
             return self.parse_number();
         }
-        if self.peek().is_some_and(char::is_alphabetic) {
+        if self
+            .peek()
+            .is_some_and(|character| character.is_alphabetic() || is_unknown_placeholder(character))
+        {
             return self.parse_variable();
         }
         Err(ArithmeticError::Unparseable)
@@ -288,11 +291,17 @@ impl<'a> LinearParser<'a> {
 
     fn parse_variable(&mut self) -> Result<LinearValue, ArithmeticError> {
         let start = self.position;
-        while let Some(character) = self.peek() {
-            if character.is_alphabetic() || character == '_' {
+        if let Some(character) = self.peek() {
+            if is_unknown_placeholder(character) {
                 self.advance(character);
             } else {
-                break;
+                while let Some(character) = self.peek() {
+                    if character.is_alphabetic() || character == '_' {
+                        self.advance(character);
+                    } else {
+                        break;
+                    }
+                }
             }
         }
         let name = self.input[start..self.position].to_owned();
@@ -339,6 +348,10 @@ impl<'a> LinearParser<'a> {
 
 fn nearly_zero(value: f64) -> bool {
     value.abs() < f64::EPSILON
+}
+
+const fn is_unknown_placeholder(character: char) -> bool {
+    matches!(character, '?' | '*')
 }
 
 fn format_equation_number(value: f64) -> Result<String, ArithmeticError> {
@@ -429,7 +442,9 @@ pub fn evaluate_calculation(expression: &str) -> Result<CalculationEvaluation, A
 fn trim_prompt_punctuation(value: &str) -> &str {
     value
         .trim()
-        .trim_matches(|c| matches!(c, '?' | '!' | '。' | '？' | '！'))
+        .trim_start_matches(['!', '。', '？', '！'])
+        .trim()
+        .trim_end_matches(['?', '!', '。', '？', '！'])
         .trim()
         .trim_end_matches('.')
         .trim()
@@ -570,7 +585,7 @@ fn calculation_wrapper_suffixes() -> Vec<String> {
     suffixes
 }
 
-fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpretation>) {
+fn calculation_request_prefixes() -> Vec<String> {
     // Issue #386: the calculation request cues (imperatives like "calculate" /
     // "посчитай" and question openers like "what is" / "сколько будет") live in
     // the `calculation_request` meaning, not a literal array. Each surface is
@@ -580,7 +595,7 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
     // strip as-is because those scripts have no inter-word spaces. The seed
     // lists the Chinese cues longest first, and `words_for_role` preserves that
     // order, so a more specific cue strips before a shorter one it contains.
-    let cue_prefixes: Vec<String> = seed::lexicon()
+    seed::lexicon()
         .words_for_role(seed::ROLE_CALCULATION_REQUEST_CUE)
         .into_iter()
         .map(|surface| {
@@ -590,7 +605,13 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
                 format!("{surface} ")
             }
         })
-        .collect();
+        .collect()
+}
+
+fn strip_calculation_wrappers_with_prefixes(
+    prompt: &str,
+    cue_prefixes: &[String],
+) -> (String, bool, Vec<PromptInterpretation>) {
     let prefixes: Vec<&str> = cue_prefixes.iter().map(String::as_str).collect();
     let suffixes = calculation_wrapper_suffixes();
 
@@ -637,6 +658,42 @@ fn strip_calculation_wrappers(prompt: &str) -> (String, bool, Vec<PromptInterpre
         }
     }
     (working.trim().to_owned(), explicit, interpretations)
+}
+
+fn has_prefix_boundary(value: &str, start: usize) -> bool {
+    value.is_char_boundary(start)
+        && (start == 0
+            || value[..start]
+                .chars()
+                .next_back()
+                .is_some_and(|character| !character.is_alphanumeric()))
+}
+
+fn embedded_calculation_request_slices<'a>(
+    prompt: &'a str,
+    cue_prefixes: &[String],
+) -> Vec<&'a str> {
+    let lower = prompt.to_lowercase();
+    let mut matches = Vec::new();
+    for prefix in cue_prefixes {
+        let mut search_start = 0;
+        while search_start < lower.len() {
+            let Some(relative_start) = lower[search_start..].find(prefix) else {
+                break;
+            };
+            let start = search_start + relative_start;
+            if crate::coding::contains_cjk(prefix) || has_prefix_boundary(prompt, start) {
+                matches.push((start, prefix.len()));
+            }
+            search_start = start + prefix.len().max(1);
+        }
+    }
+    matches.sort_by(|left, right| left.0.cmp(&right.0).then_with(|| right.1.cmp(&left.1)));
+    matches.dedup_by_key(|(start, _)| *start);
+    matches
+        .into_iter()
+        .filter_map(|(start, _)| prompt.get(start..))
+        .collect()
 }
 
 /// Surfaces whose presence beside a number marks a prompt as a calculation.
@@ -741,6 +798,29 @@ fn contains_spelled_arithmetic(expression: &str) -> bool {
     has_number_word && contains_word_operator(expression)
 }
 
+fn push_calculation_candidate(
+    candidates: &mut Vec<CalculationCandidate>,
+    expression: String,
+    explicit: bool,
+    interpretations: Vec<PromptInterpretation>,
+    reasoning_steps: Vec<String>,
+    result_label: Option<String>,
+) {
+    if candidates
+        .iter()
+        .any(|candidate| candidate.expression == expression)
+    {
+        return;
+    }
+    candidates.push(CalculationCandidate {
+        expression,
+        explicit,
+        interpretations,
+        reasoning_steps,
+        result_label,
+    });
+}
+
 /// Pull calculation expressions out of a natural-language prompt. Returns an
 /// empty vector when the prompt does not look like a calculator request, so
 /// the solver can fall through to other specialized handlers.
@@ -750,33 +830,56 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
     if trimmed.is_empty() {
         return Vec::new();
     }
-    let (stripped, explicit, interpretations) = strip_calculation_wrappers(trimmed);
+    let cue_prefixes = calculation_request_prefixes();
+    let (stripped, explicit, interpretations) =
+        strip_calculation_wrappers_with_prefixes(trimmed, &cue_prefixes);
     let mut candidates = Vec::new();
+
+    let embedded_slices = if explicit {
+        Vec::new()
+    } else {
+        embedded_calculation_request_slices(trimmed, &cue_prefixes)
+    };
+
     if !stripped.is_empty() && has_calculation_signal(&stripped, explicit) {
-        candidates.push(CalculationCandidate {
-            expression: stripped.clone(),
+        push_calculation_candidate(
+            &mut candidates,
+            stripped.clone(),
             explicit,
-            interpretations: interpretations.clone(),
-            reasoning_steps: Vec::new(),
-            result_label: None,
-        });
+            interpretations.clone(),
+            Vec::new(),
+            None,
+        );
     }
+
+    for embedded in embedded_slices {
+        let (embedded_stripped, _, embedded_interpretations) =
+            strip_calculation_wrappers_with_prefixes(embedded, &cue_prefixes);
+        if !embedded_stripped.is_empty() && has_calculation_signal(&embedded_stripped, true) {
+            push_calculation_candidate(
+                &mut candidates,
+                embedded_stripped,
+                true,
+                embedded_interpretations,
+                Vec::new(),
+                None,
+            );
+        }
+    }
+
     // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
     // Fibonacci number and multiply it by 8% of 500. Show me the code ...") into
     // a calculator expression and offer it as an additional candidate.
     if let Some(normalized) = normalize_word_problem_detailed(&stripped) {
-        if has_calculation_signal(&normalized.expression, explicit)
-            && !candidates
-                .iter()
-                .any(|candidate| candidate.expression == normalized.expression)
-        {
-            candidates.push(CalculationCandidate {
-                expression: normalized.expression,
+        if has_calculation_signal(&normalized.expression, explicit) {
+            push_calculation_candidate(
+                &mut candidates,
+                normalized.expression,
                 explicit,
                 interpretations,
-                reasoning_steps: normalized.reasoning_steps,
-                result_label: normalized.result_label,
-            });
+                normalized.reasoning_steps,
+                normalized.result_label,
+            );
         }
     }
     if trimmed
@@ -786,13 +889,14 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
             .unwrap_or_default()
         && has_calculation_signal(trimmed, false)
     {
-        candidates.push(CalculationCandidate {
-            expression: trimmed.to_owned(),
-            explicit: false,
-            interpretations: Vec::new(),
-            reasoning_steps: Vec::new(),
-            result_label: None,
-        });
+        push_calculation_candidate(
+            &mut candidates,
+            trimmed.to_owned(),
+            false,
+            Vec::new(),
+            Vec::new(),
+            None,
+        );
     }
     candidates
 }

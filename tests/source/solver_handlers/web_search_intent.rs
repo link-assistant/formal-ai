@@ -97,6 +97,9 @@ pub(super) fn extract_web_search_request(
             }
         }
     }
+    if is_text_extraction_request(&normalized_words) {
+        return None;
+    }
     if let Some(query) = extract_semantic_web_search_query(&normalized_words) {
         return Some(WebSearchRequest {
             query,
@@ -311,6 +314,13 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         }
     }
     None
+}
+
+fn is_text_extraction_request(normalized: &str) -> bool {
+    let vocabulary = seed::operation_vocabulary();
+    vocabulary.matches("extract_url", normalized)
+        || vocabulary.matches("extract_email", normalized)
+        || vocabulary.matches("extract_number", normalized)
 }
 
 fn extract_latest_news_search_request(normalized: &str) -> Option<String> {

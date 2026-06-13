@@ -809,11 +809,16 @@ fn looks_like_text_manipulation(normalized: &str) -> bool {
         "uppercase",
         "lowercase",
         "replace",
+        "remove text",
+        "append text",
+        "prepend text",
         "extract email",
         "count occurrences",
         "count unique words",
         "deduplicate lines",
         "sort lines",
+        "trim whitespace",
+        "normalize whitespace",
         "reverse words",
     ]
     .iter()

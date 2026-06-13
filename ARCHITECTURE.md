@@ -933,6 +933,19 @@ is guarded by `tests/integration/issue_349_reverse_sort.rs`, the browser-worker
 parity harness `experiments/issue-361-cross-runtime-parity.mjs`, the
 coding-modification benchmark ratchet, and the self-improvement specs.
 
+Issue #408 text/code editing path extends that active-artifact behavior to
+literal user edits such as "replace Hello World with Bye world". The solver
+extracts the prior assistant artifact from conversation history when the prompt
+omits an explicit input, applies deterministic text operations from
+`src/solver_handlers/text_manipulation.rs`, and mirrors the supported operations
+in `src/web/formal_ai_worker.js`. The issue #408 benchmark matrix uses
+self-authored benchmark-family examples plus
+`data/benchmarks/text-manipulation-suite.lino`, which records 48 researched
+sources and drives 30 deterministic local variations per source through a
+1,440/1,440 pass-count ratchet. The benchmark gate reports per-source totals:
+each source has a 3-check repository-local 10% floor and must pass the stronger
+30/30 local ratchet.
+
 A still-open lower-priority question carried over from the E20 batch: arbitrary
 natural-language programming (executing reviewed generated stubs in sandboxed
 runtimes) remains outside the current supported subset of
@@ -949,7 +962,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 … R255).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 ... R297).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.

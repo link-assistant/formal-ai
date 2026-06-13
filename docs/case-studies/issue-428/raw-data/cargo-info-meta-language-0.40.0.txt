@@ -1,0 +1,12 @@
+meta-language #links #language #cst #ast
+A self-describing links-network core for lossless language representation
+version: 0.40.0
+license: Unlicense
+rust-version: 1.77
+documentation: https://github.com/link-foundation/meta-language
+repository: https://github.com/link-foundation/meta-language
+crates.io: https://crates.io/crates/meta-language/0.40.0
+features:
+ +default  = []
+  doublets = [dep:doublets, dep:platform-mem]
+note: to see how you depend on meta-language, run `cargo tree --invert meta-language@0.40.0`
