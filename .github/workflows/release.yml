@@ -231,14 +231,33 @@ jobs:
         run: npm run vscode:test
 
   # === TEST ===
-  # Test runs independently of changelog check
+  # Test runs independently of the changelog check and gates on the change
+  # detector so it never burns runner time on non-code changes (issue #442).
+  #
+  # Previously this job ran whenever `changelog` was skipped. But `changelog`
+  # is skipped precisely when there are NO code changes (docs-only / .gitkeep /
+  # changelog-fragment-only commits), so `needs.changelog.result == 'skipped'`
+  # turned "no code changed" into "run the full test suite" — the exact
+  # opposite of what we want. Gate on the detect-changes outputs instead, the
+  # same way `lint` and `coverage` already do.
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
-    needs: [detect-changes, changelog]
-    # Run if: push event, OR changelog succeeded, OR changelog was skipped (docs-only PR)
-    if: always() && !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || needs.changelog.result == 'success' || needs.changelog.result == 'skipped')
+    needs: [detect-changes]
+    # Note: always() is required because detect-changes is skipped on
+    # workflow_dispatch; without it the skipped dependency would cascade and
+    # skip this job despite the workflow_dispatch condition below.
+    # See: https://github.com/actions/runner/issues/491
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
     strategy:
       fail-fast: false
       matrix:
