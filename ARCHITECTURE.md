@@ -446,6 +446,35 @@ that have a probability store. The default `FormalAiEngine::answer` path uses
 an empty store, so existing deterministic behavior is unchanged until evidence
 is explicitly supplied.
 
+### Evidence count and counted-utility ranking (issue #449)
+
+Issue #449 ports the interpretable, non-neural mechanisms from Kolonin's
+"Interpretable Experiential Learning" (arXiv:2605.00940) onto this same
+associative layer. The paper models behaviour as a transition graph where every
+transition carries both a **utility `U`** and an **evidence count `C`**; the
+existing store already accumulated `U` (`target_weight`) but folded the count
+into it. The additions keep the two separate without leaving the non-neural
+boundary:
+
+- `ProbabilityStore::target_evidence_count` returns the count `C` of append-only
+  observations supporting a target, using the same offline and Markov-state
+  filters as `target_weight`, so `U` and `C` always describe the same evidence
+  subset.
+- `ProbabilityRankingConfig` gains three opt-in fields mirroring the paper's
+  decision-policy hyperparameters: `counted_utility` (`CU` — rank by
+  `argmax(U·C)` instead of `argmax(U)`), `min_transition_utility` (`TU`), and
+  `min_transition_count` (`TC`). A transition below `TU`/`TC` is treated as
+  under-evidenced: its learned evidence is withheld and the candidate falls back
+  to its structural prior.
+- `RankedProbabilityCandidate` exposes `evidence_count` next to
+  `evidence_weight`, so each ranked option is locally interpretable — it carries
+  both the utility and the number of observations behind it.
+
+The defaults (`counted_utility = false`, both thresholds `None`) reproduce the
+prior additive behavior, which equals the paper's recommended `CU=False`,
+`TU=0`, `TC=1` baseline; existing callers are unaffected until they opt in. The
+full analysis is archived in `docs/case-studies/issue-449/`.
+
 ---
 
 ## 7. Universal Problem Solver

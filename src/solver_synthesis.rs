@@ -138,6 +138,7 @@ pub fn try_synthesize_from_sub_results(
             temperature: config.temperature,
             offline: config.offline,
             markov_from: Some(String::from("synthesis")),
+            ..ProbabilityRankingConfig::default()
         },
     );
     log.append("probability:ranking", ranking.trace_summary());

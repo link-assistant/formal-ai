@@ -255,6 +255,30 @@ impl ProbabilityStore {
             .sum()
     }
 
+    /// Count the number of append-only observations that support `target`.
+    ///
+    /// This is the symbolic analogue of the evidence count `C` from Kolonin's
+    /// "Interpretable Experiential Learning" (arXiv:2605.00940): every recorded
+    /// observation is one unit of evidence for a transition/answer, kept
+    /// separate from the accumulated utility (`target_weight`) so that a rarely
+    /// seen high-weight transition can be told apart from a frequently confirmed
+    /// one. The same offline and Markov-state filters as [`Self::target_weight`]
+    /// apply, so utility and count always describe the same evidence subset.
+    #[must_use]
+    pub fn target_evidence_count(
+        &self,
+        target: &str,
+        offline: bool,
+        markov_from: Option<&str>,
+    ) -> usize {
+        self.records
+            .iter()
+            .filter(|evidence| evidence.target == target)
+            .filter(|evidence| evidence.usable_offline(offline))
+            .filter(|evidence| evidence.applies_to_markov_state(markov_from))
+            .count()
+    }
+
     #[must_use]
     pub fn to_links_notation(&self) -> String {
         let mut blocks = vec![format_lino_record(
@@ -333,19 +357,47 @@ impl ProbabilityCandidate {
 }
 
 /// Ranking controls shared by Bayesian and Markov-style helpers.
+///
+/// The optional fields below port the decision-policy hyperparameters from
+/// Kolonin's "Interpretable Experiential Learning" (arXiv:2605.00940). Their
+/// defaults (`counted_utility = false`, both thresholds `None`) reproduce the
+/// paper's recommended `CU = False`, `TU = 0`, `TC = 1` baseline, which is
+/// exactly the additive behavior this module shipped before they were added, so
+/// existing callers are unaffected unless they opt in.
 #[derive(Debug, Default, Clone, PartialEq)]
 pub struct ProbabilityRankingConfig {
     pub temperature: f32,
     pub offline: bool,
     pub markov_from: Option<String>,
+    /// Counted-utility policy (the paper's `CU`). When `true`, a candidate's
+    /// learned utility is scaled by its evidence count (`U` becomes `U * C`), so
+    /// a frequently confirmed transition outranks a rarely seen one of equal
+    /// per-observation weight. When `false` the ranking uses the accumulated
+    /// utility directly (`argmax(U)`).
+    pub counted_utility: bool,
+    /// Minimum accumulated transition utility (the paper's `TU`). A candidate
+    /// whose evidence weight is below this threshold has its learned evidence
+    /// withheld and falls back to its structural prior. `None` disables the gate.
+    pub min_transition_utility: Option<f32>,
+    /// Minimum evidence count (the paper's `TC`). A candidate observed fewer
+    /// times than this threshold has its learned evidence withheld and falls
+    /// back to its structural prior. `None` disables the gate.
+    pub min_transition_count: Option<usize>,
 }
 
 /// One ranked candidate with inspectable prior/evidence/posterior fields.
+///
+/// `evidence_weight` is the accumulated utility `U` and `evidence_count` is the
+/// evidence count `C` for this candidate (after any `TU`/`TC` gating). Keeping
+/// both visible is what makes a decision locally interpretable in the sense of
+/// arXiv:2605.00940: every ranked option carries the utility and the number of
+/// observations that produced it.
 #[derive(Debug, Clone, PartialEq)]
 pub struct RankedProbabilityCandidate {
     pub target: String,
     pub prior_score: f32,
     pub evidence_weight: f32,
+    pub evidence_count: usize,
     pub posterior_score: f32,
     pub probability: f32,
 }
@@ -398,17 +450,40 @@ pub fn rank_probability_candidates(
         temperature,
         offline,
         markov_from,
+        counted_utility,
+        min_transition_utility,
+        min_transition_count,
     } = config;
     let markov_from = markov_from.as_deref();
     let mut ranked = candidates
         .iter()
         .map(|candidate| {
-            let evidence_weight = store.target_weight(&candidate.target, offline, markov_from);
-            let posterior_score = candidate.prior_score + evidence_weight;
+            let raw_weight = store.target_weight(&candidate.target, offline, markov_from);
+            let raw_count = store.target_evidence_count(&candidate.target, offline, markov_from);
+            // Transition utility/count thresholds (TU/TC): an under-evidenced
+            // transition is not trusted as a learned candidate, so its evidence
+            // is withheld and the candidate falls back to its structural prior.
+            let below_utility =
+                min_transition_utility.is_some_and(|threshold| raw_weight < threshold);
+            let below_count = min_transition_count.is_some_and(|threshold| raw_count < threshold);
+            let (evidence_weight, evidence_count) = if below_utility || below_count {
+                (0.0, 0)
+            } else {
+                (raw_weight, raw_count)
+            };
+            // Counted-utility policy (CU): scale the learned utility by how many
+            // times the transition was confirmed (`U` becomes `U * C`).
+            let contribution = if counted_utility {
+                evidence_weight * count_to_f32(evidence_count)
+            } else {
+                evidence_weight
+            };
+            let posterior_score = candidate.prior_score + contribution;
             RankedProbabilityCandidate {
                 target: candidate.target.clone(),
                 prior_score: candidate.prior_score,
                 evidence_weight,
+                evidence_count,
                 posterior_score,
                 probability: 0.0,
             }
@@ -493,4 +568,12 @@ fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
 fn usize_to_f32(value: usize) -> f32 {
     let bounded = u16::try_from(value).unwrap_or(u16::MAX);
     f32::from(bounded.max(1))
+}
+
+/// Convert an evidence count into a scaling factor for the counted-utility
+/// policy. Unlike [`usize_to_f32`], a count of zero stays `0.0` (an unevidenced
+/// candidate contributes nothing), and counts are saturated at `u16::MAX` to
+/// avoid precision loss for absurdly large symbolic histories.
+fn count_to_f32(value: usize) -> f32 {
+    f32::from(u16::try_from(value).unwrap_or(u16::MAX))
 }
