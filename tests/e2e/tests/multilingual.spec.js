@@ -521,21 +521,50 @@ test.describe('multilingual chat surface', () => {
     // Russian exact prompt from the bug report + English fallback.
     // The worker (edited for parity) should now return non-unknown calendar_create_event
     // with a confirmation-style proposal instead of falling through.
+    // Every environment returns a real, portable calendar artifact: an RFC 5545
+    // VEVENT (.ics) the user can import anywhere plus a no-login Google Calendar
+    // render URL. We assert those appear for all four supported languages, with
+    // the Russian timezone alias ("по грузии") resolved to IANA Asia/Tbilisi.
     const cases = [
       {
         prompt: 'Забей мне 18 число в 17:00 по грузии на встречу с Леваном',
         locale: 'ru-RU',
-        mustContain: ['Событие', '18', '17:00', 'грузии', 'да'],
+        mustContain: [
+          'событие',
+          '18',
+          '17:00',
+          'Asia/Tbilisi',
+          'BEGIN:VCALENDAR',
+          'calendar.google.com',
+          'да',
+        ],
       },
       {
         prompt: 'schedule meeting with Levan on the 18th at 5pm Georgia time',
         locale: 'en-US',
-        mustContain: ['Create event', '18', '17:00', 'yes'],
+        mustContain: [
+          'Create event',
+          '18',
+          '17:00',
+          'Asia/Tbilisi',
+          'BEGIN:VCALENDAR',
+          'calendar.google.com',
+          'yes',
+        ],
+      },
+      {
+        prompt: '18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें',
+        locale: 'hi-IN',
+        mustContain: ['मीटिंग', '18', '17:00', 'BEGIN:VCALENDAR', 'calendar.google.com', 'हाँ'],
+      },
+      {
+        prompt: '18号下午5点和Levan安排会议',
+        locale: 'zh-CN',
+        mustContain: ['会议', '18', '17:00', 'BEGIN:VCALENDAR', 'calendar.google.com', '是'],
       },
     ];
 
-    for (const { prompt, locale, mustContain } of cases) {
-      // Force a specific locale if the demo supports it; sendPrompt will still work.
+    for (const { prompt, mustContain } of cases) {
       const last = await sendPrompt(page, prompt);
       await expect(last).toHaveClass(/assistant/);
       for (const needle of mustContain) {
@@ -544,10 +573,6 @@ test.describe('multilingual chat surface', () => {
       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
     }
   });
-
-  // Coverage notes for hi/zh (calendarCreateEventCases):
-  // '18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें'
-  // '18号下午5点和Levan安排会议'
 
   test('percentage-of-currency prompt resolves as a calculation before Wikipedia fallback', async ({ page }) => {
     let wikipediaRequests = 0;

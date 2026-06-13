@@ -9727,7 +9727,11 @@ function mentionsCalendarCreateRequest(normalized) {
   const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
     containsCalendarTerm(normalized, w),
   );
-  if (!hasDayRef) return false;
+  // Also accept bare day numbers (18th, on the 18, 18号) when combined with
+  // schedule cues — mirrors Rust has_date_signal = has_day_ref || has_digit.
+  const hasDigit = /\d/.test(normalized);
+  const hasDateSignal = hasDayRef || hasDigit;
+  if (!hasDateSignal) return false;
   const hasAction =
     wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
       containsCalendarTerm(normalized, w),
@@ -9736,13 +9740,18 @@ function mentionsCalendarCreateRequest(normalized) {
       containsCalendarTerm(normalized, w),
     );
   if (hasAction) return true;
-  // Rust fallback heuristic (classic RU pattern).
+  // Rust fallback heuristic (classic RU/EN patterns).
+  const hasScheduleVerb =
+    normalized.includes("забей") ||
+    normalized.includes("поставь") ||
+    normalized.includes("создай") ||
+    normalized.includes("добавь") ||
+    normalized.includes("schedule") ||
+    normalized.includes("book") ||
+    normalized.includes("add to");
   return (
-    (normalized.includes("забей") ||
-      normalized.includes("поставь") ||
-      normalized.includes("создай") ||
-      normalized.includes("добавь")) &&
-    (normalized.includes("число") || normalized.includes("встреч"))
+    hasScheduleVerb &&
+    (normalized.includes("число") || normalized.includes("встреч") || hasDigit)
   );
 }
 
@@ -9834,31 +9843,244 @@ function resolveTimezone(normalized) {
   return null;
 }
 
+function defaultTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "घटना";
+  if (language === "zh") return "事件";
+  return "Event";
+}
+
+function capitalizeFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+// Trim a candidate title down to its subject: stop at the first time/date/zone
+// boundary, sentence punctuation, or day number, then capitalize. Mirrors the
+// Rust tidy_title.
+function tidyTitle(candidate) {
+  let end = candidate.length;
+  for (const boundary of [
+    " on the ",
+    " on ",
+    " at ",
+    " в ",
+    " по ",
+    " 在 ",
+    "下午",
+    "上午",
+    " को ",
+    " शाम",
+  ]) {
+    const pos = candidate.indexOf(boundary);
+    if (pos !== -1) end = Math.min(end, pos);
+  }
+  const punct = candidate.search(/[.!?,]/);
+  if (punct !== -1) end = Math.min(end, punct);
+  const digit = candidate.search(/\d/);
+  if (digit !== -1) end = Math.min(end, digit);
+  const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
+  if (!trimmed) return null;
+  return capitalizeFirst(trimmed);
+}
+
+// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
+// or lead (Chinese has no word spaces) the subject so the .ics SUMMARY keeps
+// only the event and its participant. Mirrors the Rust strip_action_words.
+function stripActionWords(value) {
+  let out = value;
+  for (const fragment of [
+    "शेड्यूल करें",
+    "कैलेंडर में जोड़ें",
+    "बनाएँ",
+    "बनाओ",
+    "安排",
+    "添加到日历",
+    "创建",
+  ]) {
+    out = out.split(fragment).join("");
+  }
+  return out.split(/\s+/).filter(Boolean).join(" ");
+}
+
 function extractTitle(normalized) {
-  for (const marker of ["на ", "for ", "встречу ", "meeting with ", "call with "]) {
+  for (const marker of [
+    "на ",
+    "for ",
+    "встречу ",
+    "meeting with ",
+    "call with ",
+    "के साथ ",
+    "和",
+  ]) {
     const pos = normalized.indexOf(marker);
     if (pos !== -1) {
-      let rest = normalized.slice(pos + marker.length).trim();
-      const cut = rest.search(/[.!?]/);
-      const t = (cut === -1 ? rest : rest.slice(0, cut)).trim();
-      if (t) return t;
+      const rest = normalized.slice(pos + marker.length).trim();
+      const title = tidyTitle(rest);
+      if (title) return title;
     }
   }
-  if (normalized.includes("забей") || normalized.includes("поставь")) {
-    const pos = normalized.indexOf("забей") !== -1 ? normalized.indexOf("забей") : normalized.indexOf("поставь");
-    let rest = normalized.slice(pos + 5).trimStart();
-    const cut = rest.indexOf(" в ") !== -1 ? rest.indexOf(" в ") : rest.indexOf(" at ");
-    const t = (cut === -1 ? rest : rest.slice(0, cut)).trim();
-    if (t && t.length < 60) return t;
+  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+    const pos = normalized.indexOf(verb);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + verb.length).trimStart();
+      const title = tidyTitle(rest);
+      if (title && title.length < 60) return title;
+    }
   }
   return null;
 }
 
-function renderCreateConfirmation(language, title, day, month, year, hour, minute, tz) {
-  if (language === "ru") {
-    return `Создать событие «${title}» на ${day} число (${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}). Время: ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}, часовой пояс: ${tz} (Asia/Tbilisi). Длительность 60 минут.\nОтветьте «да», чтобы подтвердить.`;
+// --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function pad4(value) {
+  return String(value).padStart(4, "0");
+}
+
+function isoDate(year, month, day) {
+  return `${pad4(year)}-${pad2(month)}-${pad2(day)}`;
+}
+
+function startStamp(year, month, day, hour, minute) {
+  return `${pad4(year)}${pad2(month)}${pad2(day)}T${pad2(hour)}${pad2(minute)}00`;
+}
+
+function daysInMonth(year, month) {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
   }
-  return `Create event «${title}» on ${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}. Time: ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}, timezone: ${tz} (Asia/Tbilisi). Duration 60 minutes.\nReply 'yes' to confirm.`;
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+
+function addMinutes(year, month, day, hour, minute, minutes) {
+  const total = hour * 60 + minute + minutes;
+  let dayCarry = Math.floor(total / (24 * 60));
+  const newMinute = total % 60;
+  const newHour = Math.floor(total / 60) % 24;
+  let y = year,
+    m = month,
+    d = day;
+  while (dayCarry > 0) {
+    if (d < daysInMonth(y, m)) {
+      d += 1;
+    } else {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    dayCarry -= 1;
+  }
+  return [y, m, d, newHour, newMinute];
+}
+
+function icsEscape(value) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsDtstamp() {
+  const d = new Date();
+  return (
+    `${pad4(d.getUTCFullYear())}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`
+  );
+}
+
+function buildIcs(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  const uid = `${start}-${event.timeZone}@formal-ai`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//formal-ai//calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDtstamp()}`,
+    `DTSTART;TZID=${event.timeZone}:${start}`,
+    `DTEND;TZID=${event.timeZone}:${end}`,
+    `SUMMARY:${icsEscape(event.title)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n") + "\r\n";
+}
+
+function buildGoogleCalendarUrl(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(event.title)}` +
+    `&dates=${start}/${end}` +
+    `&ctz=${encodeURIComponent(event.timeZone)}`
+  );
+}
+
+function renderCreateConfirmation(language, event, ics, googleUrl) {
+  const iso = isoDate(event.year, event.month, event.day);
+  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
+  const tz = event.timeZone;
+  const title = event.title;
+  const minutes = event.durationMinutes;
+  if (language === "ru") {
+    return (
+      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
+      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
+      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
+      `Ответьте «да», чтобы подтвердить.`
+    );
+  }
+  if (language === "hi") {
+    return (
+      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
+      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
+      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
+      `पुष्टि के लिए «हाँ» उत्तर दें।`
+    );
+  }
+  if (language === "zh") {
+    return (
+      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
+      `将此 .ics 文件导入任何日历：\n${ics}\n` +
+      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
+      `回复「是」以确认。`
+    );
+  }
+  return (
+    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
+    `Import this .ics file into any calendar:\n${ics}\n` +
+    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
+    `Reply 'yes' to confirm.`
+  );
 }
 
 function currentUtcCalendarBase() {
@@ -9869,25 +10091,38 @@ function currentUtcCalendarBase() {
 function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
   if (!mentionsCalendarCreateRequest(normalized)) return null;
   const base = currentUtcCalendarBase();
+  const language = detectLanguage(prompt);
   const day = extractDayNumber(normalized) || base.day;
   const [year, month, d] = computeTargetDateWithRollover(base, day);
   const [hour, minute] = extractClockTime(normalized) || [17, 0];
   const tz = resolveTimezone(normalized) || "UTC";
-  const title = extractTitle(normalized) || "Событие";
-  const durationMinutes = 60;
-  const language = detectLanguage(prompt);
-  const body = renderCreateConfirmation(language, title, d, month, year, hour, minute, tz);
+  const title = extractTitle(normalized) || defaultTitle(language);
+  const event = {
+    title,
+    year,
+    month,
+    day: d,
+    hour,
+    minute,
+    timeZone: tz,
+    durationMinutes: 60,
+  };
+  const ics = buildIcs(event);
+  const googleUrl = buildGoogleCalendarUrl(event);
+  const body = renderCreateConfirmation(language, event, ics, googleUrl);
   const evidence = [
     "calendar:clock:browser",
-    `calendar:parsed_date:${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(d).padStart(2, "0")}`,
-    `calendar:parsed_time:${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+    `calendar:parsed_date:${isoDate(year, month, d)}`,
+    `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
     `calendar:parsed_time_zone:${tz}`,
     `calendar:parsed_title:${title}`,
-    `calendar:parsed_duration_minutes:${durationMinutes}`,
+    `calendar:parsed_duration_minutes:${event.durationMinutes}`,
   ];
   if (normalized.includes("число") || normalized.includes("number")) {
     evidence.push("calendar:parsed_via:day_number");
   }
+  evidence.push(`calendar:ics:${ics}`);
+  evidence.push(`calendar:google_calendar_url:${googleUrl}`);
   evidence.push(`language:${language}`);
   return {
     intent: "calendar_create_event",
@@ -16884,6 +17119,142 @@ const MEANINGS_LINO = [
   "      surface",
   "        text 显示",
   "meanings",
+  "  calendar_schedule_action",
+  "    defined-by calendar_day",
+  "    role calendar_schedule_action",
+  "    lexeme en",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  '        text "schedule me"',
+  "      surface",
+  '        text "book"',
+  "      surface",
+  '        text "book on the"',
+  "      surface",
+  '        text "put on the calendar"',
+  "      surface",
+  '        text "put on my calendar"',
+  "      surface",
+  '        text "add to the calendar"',
+  "      surface",
+  '        text "add to my calendar"',
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  '        text "забей мне"',
+  "      surface",
+  "        text поставь",
+  "      surface",
+  '        text "поставь мне"',
+  "      surface",
+  "        text создай",
+  "      surface",
+  '        text "создай событие"',
+  "      surface",
+  "        text добавь",
+  "      surface",
+  '        text "добавь в календарь"',
+  "      surface",
+  '        text "на встречу"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शेड्यूल करें"',
+  "      surface",
+  '        text "कैलेंडर में जोड़ें"',
+  "    lexeme zh",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 添加到日历",
+  "  calendar_event",
+  "    defined-by calendar_day",
+  "    role calendar_event",
+  "    lexeme en",
+  "      surface",
+  '        text "meeting"',
+  "      surface",
+  "        text call",
+  "      surface",
+  "        text event",
+  "    lexeme ru",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречи",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text события",
+  "    lexeme hi",
+  "      surface",
+  "        text मीटिंग",
+  "      surface",
+  '        text "घटना"',
+  "    lexeme zh",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 事件",
+  "  calendar_clock_time",
+  "    defined-by calendar_day",
+  "    role calendar_time",
+  "    lexeme en",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "5 pm"',
+  "      surface",
+  '        text "5pm"',
+  "      surface",
+  '        text "at 17:00"',
+  "    lexeme ru",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "в 17:00"',
+  "      surface",
+  '        text "17.00"',
+  "      surface",
+  "        text вечером",
+  "      surface",
+  '        text "в 17"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शाम 5 बजे"',
+  "    lexeme zh",
+  "      surface",
+  "        text 下午5点",
+  "  calendar_timezone_alias",
+  "    defined-by calendar_day",
+  "    role calendar_timezone_alias",
+  "    lexeme ru",
+  "      surface",
+  '        text "по грузии"',
+  "      surface",
+  '        text "по тбилиси"',
+  "      surface",
+  '        text "грузинское время"',
+  "    lexeme en",
+  "      surface",
+  '        text "tbilisi time"',
+  "      surface",
+  '        text "georgia time"',
+  "      surface",
+  '        text "Asia/Tbilisi"',
+  "    lexeme hi",
+  "      surface",
+  '        text "जॉर्जिया समय"',
+  "      surface",
+  '        text "त्बिलिसी समय"',
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
   "  money",
   "    grounded-in Q1368",
   "    defined-by concept",

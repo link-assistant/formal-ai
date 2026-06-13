@@ -766,34 +766,35 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             "handler:concept_lookup",
             normalized.starts_with("what is ") || normalized.starts_with("define "),
         ),
-        (
-            "handler:calendar_create_event",
-            {
-                let lex = seed::lexicon();
-                let has_day_ref = lex
-                    .words_for_role(seed::ROLE_CALENDAR_DAY_REFERENCE)
+        ("handler:calendar_create_event", {
+            let lex = seed::lexicon();
+            let has_day_ref = lex
+                .words_for_role(seed::ROLE_CALENDAR_DAY_REFERENCE)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w));
+            let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
+            let has_date_signal = has_day_ref || has_digit;
+            let has_schedule = lex
+                .words_for_role(seed::ROLE_CALENDAR_SCHEDULE_ACTION)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w))
+                || lex
+                    .words_for_role(seed::ROLE_CALENDAR_EVENT)
                     .iter()
                     .any(|w| contains_term_for_relevants(normalized, w));
-                let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
-                let has_date_signal = has_day_ref || has_digit;
-                let has_schedule = lex
-                    .words_for_role(seed::ROLE_CALENDAR_SCHEDULE_ACTION)
-                    .iter()
-                    .any(|w| contains_term_for_relevants(normalized, w))
-                    || lex
-                        .words_for_role(seed::ROLE_CALENDAR_EVENT)
-                        .iter()
-                        .any(|w| contains_term_for_relevants(normalized, w));
-                // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
-                let fallback_cue = normalized.contains("забей")
-                    || normalized.contains("поставь")
-                    || normalized.contains("schedule")
-                    || normalized.contains("book")
-                    || (normalized.contains("число") && (normalized.contains("в ") || normalized.contains(":")))
-                    || (has_digit && (normalized.contains("schedule") || normalized.contains("book") || normalized.contains("add")));
-                has_date_signal && (has_schedule || fallback_cue)
-            },
-        ),
+            // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
+            let fallback_cue = normalized.contains("забей")
+                || normalized.contains("поставь")
+                || normalized.contains("schedule")
+                || normalized.contains("book")
+                || (normalized.contains("число")
+                    && (normalized.contains("в ") || normalized.contains(":")))
+                || (has_digit
+                    && (normalized.contains("schedule")
+                        || normalized.contains("book")
+                        || normalized.contains("add")));
+            has_date_signal && (has_schedule || fallback_cue)
+        }),
     ];
     for (handler, matches) in handlers {
         if matches {
