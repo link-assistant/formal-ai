@@ -10,8 +10,8 @@ use crate::language::detect as detect_language;
 use crate::seed::{
     lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
     ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIMEZONE_ALIAS, ROLE_CALENDAR_TODAY,
-    ROLE_CALENDAR_WEEKDAY,
+    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_TIMEZONE_ALIAS,
+    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -587,9 +587,20 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         .words_for_role(ROLE_CALENDAR_DAY_REFERENCE)
         .iter()
         .any(|w| contains_term(normalized, w));
-    // Also accept bare day numbers (18th, on the 18, 18 число) when combined with schedule cues.
-    let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
-    let has_date_signal = has_day_ref || has_digit;
+    // A clock time anchors the event just as well as a day word; the lexicon
+    // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+    // std scanner covers any bare "HH:MM"/"в HH".
+    let has_clock = lex
+        .words_for_role(ROLE_CALENDAR_TIME)
+        .iter()
+        .any(|w| contains_term(normalized, w))
+        || extract_clock_time(normalized).is_some();
+    // A genuine scheduling request anchors to a concrete date/time cue: a
+    // day-reference word or a clock time. Bare digits (e.g. the "1." / "2." of
+    // a numbered installation-guide list) are NOT a date signal — they were the
+    // source of false positives that hijacked installation-conversion prompts
+    // such as "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+    let has_date_signal = has_day_ref || has_clock;
     if !has_date_signal {
         return false;
     }
@@ -606,15 +617,22 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         return true;
     }
     // Fallback heuristic for classic patterns (RU "забей/поставь ... число", EN "schedule ... 18th").
-    let has_schedule_verb = normalized.contains("забей")
-        || normalized.contains("поставь")
-        || normalized.contains("создай")
-        || normalized.contains("добавь")
-        || normalized.contains("schedule")
-        || normalized.contains("book")
-        || normalized.contains("add to");
+    // Match on word boundaries so unrelated text such as "free-programming-books"
+    // (the word "book" embedded in "books") never masquerades as a schedule verb.
+    let has_schedule_verb = [
+        "забей",
+        "поставь",
+        "создай",
+        "добавь",
+        "schedule",
+        "book",
+        "add to",
+    ]
+    .iter()
+    .any(|verb| contains_term(normalized, verb));
+    // The date/time anchor is already guaranteed by `has_date_signal` above, so
+    // a recognized schedule verb is enough to confirm a create request here.
     has_schedule_verb
-        && (normalized.contains("число") || normalized.contains("встреч") || has_digit)
 }
 
 fn extract_day_number(normalized: &str) -> Option<u32> {

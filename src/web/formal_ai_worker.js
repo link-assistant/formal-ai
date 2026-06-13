@@ -9727,10 +9727,19 @@ function mentionsCalendarCreateRequest(normalized) {
   const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
     containsCalendarTerm(normalized, w),
   );
-  // Also accept bare day numbers (18th, on the 18, 18号) when combined with
-  // schedule cues — mirrors Rust has_date_signal = has_day_ref || has_digit.
-  const hasDigit = /\d/.test(normalized);
-  const hasDateSignal = hasDayRef || hasDigit;
+  // A clock time anchors the event just as well as a day word; the lexicon
+  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
+  const hasClock =
+    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) || extractClockTime(normalized) !== null;
+  // A genuine scheduling request anchors to a concrete date/time cue: a
+  // day-reference word or a clock time. Bare digits (e.g. the "1." / "2." of
+  // a numbered installation-guide list) are NOT a date signal — they were the
+  // source of false positives that hijacked installation-conversion prompts
+  // such as "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock;
   if (!hasDateSignal) return false;
   const hasAction =
     wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
@@ -9740,19 +9749,20 @@ function mentionsCalendarCreateRequest(normalized) {
       containsCalendarTerm(normalized, w),
     );
   if (hasAction) return true;
-  // Rust fallback heuristic (classic RU/EN patterns).
-  const hasScheduleVerb =
-    normalized.includes("забей") ||
-    normalized.includes("поставь") ||
-    normalized.includes("создай") ||
-    normalized.includes("добавь") ||
-    normalized.includes("schedule") ||
-    normalized.includes("book") ||
-    normalized.includes("add to");
-  return (
-    hasScheduleVerb &&
-    (normalized.includes("число") || normalized.includes("встреч") || hasDigit)
-  );
+  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
+  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
+  const hasScheduleVerb = [
+    "забей",
+    "поставь",
+    "создай",
+    "добавь",
+    "schedule",
+    "book",
+    "add to",
+  ].some((verb) => containsCalendarTerm(normalized, verb));
+  // The date/time anchor is already guaranteed by hasDateSignal above, so a
+  // recognized schedule verb is enough to confirm a create request here.
+  return hasScheduleVerb;
 }
 
 function extractDayNumber(normalized) {
