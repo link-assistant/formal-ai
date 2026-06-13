@@ -404,6 +404,81 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
 }
 
 #[test]
+fn test_job_skips_non_code_changes() {
+    // Issue #442: the `test` job ran whenever the `changelog` job was *skipped*.
+    // `changelog` is skipped precisely when there are no code changes (docs-only
+    // commits, .gitkeep edits, changelog-fragment-only commits), so the
+    // `needs.changelog.result == 'skipped'` clause turned "nothing relevant
+    // changed" into "run the entire test suite". This regression guard pins the
+    // corrected gating: `test` keys off the detect-changes outputs, exactly like
+    // `lint` and `coverage`, and never resurrects the changelog-skip escape.
+    let workflow = release_workflow();
+    let test = job_block(&workflow, "test");
+
+    assert!(
+        !test.contains("needs.changelog.result == 'skipped'"),
+        "test job must not run merely because the changelog check was skipped; \
+         a skipped changelog means there were no code changes (issue #442)"
+    );
+    assert!(
+        !test.contains("needs.changelog.result == 'success'"),
+        "test job should be decoupled from the changelog check and gate on the \
+         change detector instead (issue #442)"
+    );
+    assert!(
+        test.contains("needs: [detect-changes]"),
+        "test job should depend on detect-changes so it can gate on its outputs"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.any-code-changed == 'true'"),
+        "test job should run when code files changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.rs-changed == 'true'"),
+        "test job should run when Rust sources changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.toml-changed == 'true'"),
+        "test job should run when Cargo manifests changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.workflow-changed == 'true'"),
+        "test job should run when the CI workflow itself changed"
+    );
+    assert!(
+        test.contains("github.event_name == 'push'")
+            && test.contains("github.event_name == 'workflow_dispatch'"),
+        "test job should still always run on push and manual dispatch"
+    );
+    assert!(
+        test.contains("always() && !cancelled()"),
+        "test job needs always() so the skipped detect-changes dependency does \
+         not cascade on workflow_dispatch"
+    );
+}
+
+#[test]
+fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
+    // Generalises issue #442 across every change-gated job: none of them should
+    // treat a *skipped* changelog/version check as a signal to run. A skipped
+    // upstream check means "no code changed", which must never widen coverage.
+    let workflow = release_workflow();
+    for job_name in ["lint", "test", "coverage", "test-e2e-local"] {
+        let job = job_block(&workflow, job_name);
+        // Inspect only effective YAML (skip `#` comment lines) so the rationale
+        // comments that quote the old buggy clause don't trip the guard.
+        let has_skip_dependency = job
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .any(|line| line.contains("result == 'skipped'"));
+        assert!(
+            !has_skip_dependency,
+            "{job_name} job must not run because an upstream check was skipped (issue #442)"
+        );
+    }
+}
+
+#[test]
 fn release_workflow_jobs_have_explicit_timeouts() {
     let workflow = release_workflow();
     let expected_timeouts = [
