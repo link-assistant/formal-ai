@@ -1,0 +1,15 @@
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/@link-assistant%2fweb-search - Not found
+npm error 404
+npm error 404  The requested resource '@link-assistant/web-search@*' could not be found or you do not have permission to access it.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+{
+  "error": {
+    "code": "E404",
+    "summary": "Not Found - GET https://registry.npmjs.org/@link-assistant%2fweb-search - Not found",
+    "detail": "The requested resource '@link-assistant/web-search@*' could not be found or you do not have permission to access it.\n\nNote that you can also install from a\ntarball, folder, http url, or git url."
+  }
+}
+npm error A complete log of this run can be found in: /home/box/.npm/_logs/2026-06-11T17_16_58_131Z-debug-0.log
