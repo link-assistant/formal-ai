@@ -747,6 +747,40 @@ assertBalancedLanguageCaseCounts(
   }
 }
 
+// Issue #404: calendar create/scheduling from natural language (e.g. "Забей мне 18 число...")
+const calendarCreateEventCases = {
+  en: ['schedule meeting with Levan on the 18th at 5pm Georgia time'],
+  ru: ['Забей мне 18 число в 17:00 по грузии на встречу с Леваном'],
+  hi: ['18 तारीख को शाम 5 बजे लेवान के साथ मीटिंग शेड्यूल करें'],
+  zh: ['18号下午5点和Levan安排会议'],
+};
+
+assertMatrixMatchesSupportedLanguages(
+  'calendarCreateEventCases',
+  calendarCreateEventCases,
+);
+assertBalancedLanguageCaseCounts(
+  'calendarCreateEventCases',
+  calendarCreateEventCases,
+);
+
+{
+  const rustReasoningTests = readRepoFile('tests/unit/specification/reasoning_paths.rs');
+  const browserMultilingualTests = readRepoFile('tests/e2e/tests/multilingual.spec.js');
+  for (const [language, prompts] of Object.entries(calendarCreateEventCases)) {
+    for (const prompt of prompts) {
+      assert(
+        rustReasoningTests.includes(prompt),
+        `tests/unit/specification/reasoning_paths.rs must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+      );
+      assert(
+        browserMultilingualTests.includes(prompt),
+        `tests/e2e/tests/multilingual.spec.js must cover ${language} calendar create event prompt ${JSON.stringify(prompt)}`,
+      );
+    }
+  }
+}
+
 const primeInfinitudeProofCases = {
   en: [
     {

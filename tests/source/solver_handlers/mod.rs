@@ -9,9 +9,11 @@ mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
 mod calendar;
+mod calendar_ics;
 mod compound_interest;
 mod definition_merge;
 mod feature_capability;
+mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
 mod numeric_list;
@@ -35,10 +37,11 @@ pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
-pub use calendar::try_calendar_reasoning;
+pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};

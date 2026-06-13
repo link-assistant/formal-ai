@@ -116,6 +116,58 @@ fn decision_procedure_proves_tautology_outside_theorem_registry() {
 }
 
 #[test]
+fn decision_procedure_proves_wide_tautology_via_sat() {
+    // Nine variables exceed the eight-variable truth-table limit, so the
+    // propositional decision procedure must delegate to the DPLL satisfiability
+    // backend instead of enumerating 2^9 rows. `a or not a …` is a tautology.
+    let response =
+        FormalAiEngine.answer("Prove that a or not a or b or c or d or e or f or g or h or i");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.contains("decision procedure"),
+        "wide tautology should be discharged by the delegated decision procedure, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("DPLL") && response.answer.contains("Tseitin"),
+        "wide tautology should be proved by the SAT backend, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("tautology"),
+        "conclusion should declare the formula a tautology, got: {}",
+        response.answer
+    );
+    assert!(response.answer.contains("∎"));
+}
+
+#[test]
+fn decision_procedure_disproves_wide_non_tautology_via_sat() {
+    // A nine-way conjunction is not a tautology; the SAT backend must return a
+    // countermodel rather than a proof.
+    let response =
+        FormalAiEngine.answer("Prove that a and b and c and d and e and f and g and h and i");
+    assert_eq!(response.intent, "proof_request");
+    assert!(
+        response.answer.to_lowercase().contains("counterexample")
+            || response.answer.to_lowercase().contains("disproof")
+            || response.answer.to_lowercase().contains("countermodel"),
+        "wide non-tautology should be disproven, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("DPLL"),
+        "disproof should cite the SAT backend, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("false"),
+        "countermodel should report a falsifying assignment, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn decision_procedure_proves_symbolic_linear_identity() {
     let response = FormalAiEngine.answer("Prove that 2 * (x + 3) = 2 * x + 6");
     assert_eq!(response.intent, "proof_request");

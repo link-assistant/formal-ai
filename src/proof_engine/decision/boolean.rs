@@ -2,7 +2,19 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use super::sat::{CnfFormula, Literal, SatOutcome};
 use crate::proof_engine::types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
+
+/// Largest variable count the exhaustive truth-table audit will enumerate.
+/// Up to this width the procedure renders every row of the table as its
+/// witness; beyond it the model space is too large to print, so the claim is
+/// delegated to the DPLL satisfiability backend instead.
+const TRUTH_TABLE_VARIABLE_LIMIT: usize = 8;
+
+/// Largest variable count the DPLL fallback will accept before declining the
+/// claim. This keeps the worst-case search bounded and the engine
+/// deterministic; wider formulas fall through to the generic proof planner.
+const MAX_SAT_VARIABLES: usize = 20;
 
 enum BoolExpr {
     Var(String),
@@ -54,10 +66,13 @@ pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<Proo
     let expression = BoolParser::new(tokens).parse()?;
     let mut variables = BTreeSet::new();
     expression.variables(&mut variables);
-    if variables.is_empty() || variables.len() > 8 {
+    if variables.is_empty() {
         return None;
     }
     let variable_list = variables.into_iter().collect::<Vec<_>>();
+    if variable_list.len() > TRUTH_TABLE_VARIABLE_LIMIT {
+        return attempt_boolean_via_sat(&expression, &variable_list);
+    }
     let mut rows = Vec::new();
     let mut first_false = None;
     for mask in 0..(1usize << variable_list.len()) {
@@ -86,6 +101,223 @@ pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<Proo
     Some(ProofOutcome::Proven {
         proof: boolean_tautology_proof(&formula, &rows),
     })
+}
+
+/// Discharge a wide propositional claim through the DPLL satisfiability
+/// backend instead of an exhaustive truth table.
+///
+/// The goal `F` is a tautology exactly when its negation `¬F` is
+/// unsatisfiable, so the formula is Tseitin-encoded into CNF, the root gate is
+/// asserted false, and the result is handed to [`CnfFormula::solve`]. An
+/// `Unsatisfiable` answer proves the tautology; a `Satisfiable` answer hands
+/// back the named-variable assignment as a printed countermodel.
+fn attempt_boolean_via_sat(
+    expression: &BoolExpr,
+    variable_list: &[String],
+) -> Option<ProofOutcome> {
+    if variable_list.len() > MAX_SAT_VARIABLES {
+        return None;
+    }
+    let variable_index = variable_list
+        .iter()
+        .enumerate()
+        .map(|(index, name)| (name.as_str(), index))
+        .collect::<BTreeMap<_, _>>();
+    let mut encoder = TseitinEncoder::new(variable_list.len(), &variable_index);
+    let root = encoder.encode(expression);
+    // Search for a model of `¬F`: assert the formula's root gate is false.
+    encoder.assert_literal(root.negated());
+    let formula = format_bool_expr(expression);
+    let cnf = encoder.into_formula();
+    let clause_count = cnf.clauses().len();
+    let variable_count = variable_list.len();
+    match cnf.solve() {
+        SatOutcome::Unsatisfiable => Some(ProofOutcome::Proven {
+            proof: sat_tautology_proof(&formula, variable_count, clause_count),
+        }),
+        SatOutcome::Satisfiable(model) => {
+            let counterexample = decode_named_model(variable_list, &model);
+            Some(ProofOutcome::Disproven {
+                counterexample: format!(
+                    "{} makes {formula} false.",
+                    format_bool_assignment(&counterexample)
+                ),
+                method: ProofMethod::DecisionProcedure,
+                partial_proof: Some(sat_disproof(
+                    &formula,
+                    &counterexample,
+                    variable_count,
+                    clause_count,
+                )),
+            })
+        }
+    }
+}
+
+/// Project a CNF model back onto the named propositional variables, dropping
+/// the Tseitin auxiliary gates that occupy the higher indices.
+fn decode_named_model(variable_list: &[String], model: &[bool]) -> BTreeMap<String, bool> {
+    variable_list
+        .iter()
+        .enumerate()
+        .map(|(index, name)| (name.clone(), model[index]))
+        .collect()
+}
+
+/// A Tseitin transformer from a [`BoolExpr`] into an equisatisfiable CNF.
+///
+/// Named variables keep their caller-assigned indices; every binary gate gets
+/// a fresh auxiliary variable defined by the standard three-clause Tseitin
+/// pattern. Negation is folded directly into literal polarity, so `not` never
+/// allocates a gate.
+struct TseitinEncoder<'a> {
+    variable_index: &'a BTreeMap<&'a str, usize>,
+    next_variable: usize,
+    clauses: Vec<Vec<Literal>>,
+}
+
+impl<'a> TseitinEncoder<'a> {
+    const fn new(named_count: usize, variable_index: &'a BTreeMap<&'a str, usize>) -> Self {
+        Self {
+            variable_index,
+            next_variable: named_count,
+            clauses: Vec::new(),
+        }
+    }
+
+    fn fresh_gate(&mut self) -> Literal {
+        let variable = self.next_variable;
+        self.next_variable += 1;
+        Literal::positive(variable)
+    }
+
+    fn assert_literal(&mut self, literal: Literal) {
+        self.clauses.push(vec![literal]);
+    }
+
+    /// Encode `expression`, returning the literal that represents its truth.
+    fn encode(&mut self, expression: &BoolExpr) -> Literal {
+        match expression {
+            BoolExpr::Var(name) => Literal::positive(self.variable_index[name.as_str()]),
+            BoolExpr::Not(inner) => self.encode(inner).negated(),
+            BoolExpr::And(left, right) => {
+                let a = self.encode(left);
+                let b = self.encode(right);
+                self.define_and(a, b)
+            }
+            BoolExpr::Or(left, right) => {
+                let a = self.encode(left);
+                let b = self.encode(right);
+                self.define_or(a, b)
+            }
+            BoolExpr::Implies(left, right) => {
+                // `a → b` is `¬a ∨ b`; fold the antecedent's negation into its
+                // literal so the gate is a plain disjunction.
+                let a = self.encode(left).negated();
+                let b = self.encode(right);
+                self.define_or(a, b)
+            }
+        }
+    }
+
+    fn define_and(&mut self, a: Literal, b: Literal) -> Literal {
+        let gate = self.fresh_gate();
+        // gate ↔ (a ∧ b)
+        self.clauses.push(vec![gate.negated(), a]);
+        self.clauses.push(vec![gate.negated(), b]);
+        self.clauses.push(vec![gate, a.negated(), b.negated()]);
+        gate
+    }
+
+    fn define_or(&mut self, a: Literal, b: Literal) -> Literal {
+        let gate = self.fresh_gate();
+        // gate ↔ (a ∨ b)
+        self.clauses.push(vec![gate.negated(), a, b]);
+        self.clauses.push(vec![gate, a.negated()]);
+        self.clauses.push(vec![gate, b.negated()]);
+        gate
+    }
+
+    fn into_formula(self) -> CnfFormula {
+        let mut formula = CnfFormula::new(self.next_variable);
+        for clause in self.clauses {
+            formula.add_clause(clause);
+        }
+        formula
+    }
+}
+
+fn sat_tautology_proof(formula: &str, variable_count: usize, clause_count: usize) -> Proof {
+    Proof {
+        statement: formula.to_owned(),
+        steps: vec![
+            ProofStep {
+                kind: StepKind::Hypothesis,
+                text: format!(
+                    "Delegate the formula to the relative-meta-logic / SMT decision procedure. \
+                     With {variable_count} variables an exhaustive truth table (2^{variable_count} \
+                     rows) is infeasible, so the verified backend is a DPLL satisfiability search."
+                ),
+            },
+            ProofStep {
+                kind: StepKind::Definition,
+                text: format!(
+                    "Negate the goal and Tseitin-encode ¬({formula}) into conjunctive normal \
+                     form: {clause_count} clauses over the propositional variables plus gate \
+                     auxiliaries."
+                ),
+            },
+            ProofStep {
+                kind: StepKind::Inference,
+                text: String::from(
+                    "DPLL with unit propagation, pure-literal elimination, and backtracking \
+                     finds the negation unsatisfiable.",
+                ),
+            },
+        ],
+        conclusion: format!(
+            "Because ¬({formula}) is unsatisfiable, every assignment satisfies {formula}, \
+             so it is a tautology. ∎"
+        ),
+        method: ProofMethod::DecisionProcedure,
+    }
+}
+
+fn sat_disproof(
+    formula: &str,
+    counterexample: &BTreeMap<String, bool>,
+    variable_count: usize,
+    clause_count: usize,
+) -> Proof {
+    Proof {
+        statement: formula.to_owned(),
+        steps: vec![
+            ProofStep {
+                kind: StepKind::Hypothesis,
+                text: format!(
+                    "Delegate the formula to the relative-meta-logic / SMT decision procedure. \
+                     With {variable_count} variables a truth table is infeasible, so the verified \
+                     backend is a DPLL satisfiability search."
+                ),
+            },
+            ProofStep {
+                kind: StepKind::Definition,
+                text: format!(
+                    "Tseitin-encode ¬({formula}) into {clause_count} CNF clauses and search for \
+                     an assignment that makes the formula false."
+                ),
+            },
+            ProofStep {
+                kind: StepKind::Inference,
+                text: format!(
+                    "DPLL returns the satisfying assignment {}, a countermodel.",
+                    format_bool_assignment(counterexample)
+                ),
+            },
+        ],
+        conclusion: format!("Therefore {formula} is not a tautology. ∎"),
+        method: ProofMethod::DecisionProcedure,
+    }
 }
 
 fn rewrite_boolean_if_then(claim: &str) -> String {

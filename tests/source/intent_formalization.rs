@@ -766,6 +766,31 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             "handler:concept_lookup",
             normalized.starts_with("what is ") || normalized.starts_with("define "),
         ),
+        ("handler:calendar_create_event", {
+            let lex = seed::lexicon();
+            let has_day_ref = lex
+                .words_for_role(seed::ROLE_CALENDAR_DAY_REFERENCE)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w));
+            let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
+            let has_date_signal = has_day_ref || has_digit;
+            let has_schedule = lex
+                .words_for_role(seed::ROLE_CALENDAR_SCHEDULE_ACTION)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w))
+                || lex
+                    .words_for_role(seed::ROLE_CALENDAR_EVENT)
+                    .iter()
+                    .any(|w| contains_term_for_relevants(normalized, w));
+            // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
+            // Token-boundary checks keep unrelated text such as "free-programming-books"
+            // (the word "book" embedded in "books") from masquerading as a schedule verb.
+            let fallback_cue = has_any_token(normalized, &["забей", "поставь", "schedule", "book"])
+                || (normalized.contains("число")
+                    && (normalized.contains("в ") || normalized.contains(':')))
+                || (has_digit && has_any_token(normalized, &["schedule", "book", "add"]));
+            has_date_signal && (has_schedule || fallback_cue)
+        }),
     ];
     for (handler, matches) in handlers {
         if matches {
@@ -827,6 +852,15 @@ fn looks_like_text_manipulation(normalized: &str) -> bool {
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
     tokens.iter().any(|token| contains_token(normalized, token))
+}
+
+// Loose term check used only inside append_prompt_relevants for calendar create
+// promotion (the real strict boundary-aware version lives in the calendar handler).
+fn contains_term_for_relevants(haystack: &str, needle: &str) -> bool {
+    if needle.is_empty() {
+        return false;
+    }
+    haystack.contains(needle)
 }
 
 fn route_from_relevants(relevants: &[String]) -> Option<String> {

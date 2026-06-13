@@ -8354,23 +8354,43 @@ function numericListProgramSource(program) {
 // only inherit from a prior *user* turn that was itself a genuine numeric-list
 // coding request — it names an operation, a supported language, and lists at
 // least two numbers — so unrelated chatter never leaks a language.
+// Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.") names
+// an operation but no numbers of its own — it refers to the list from the
+// previous numeric-list turn. We therefore inherit the list from the most
+// recent operation turn that carried a concrete list, while the language / code
+// request keep coming from the most recent turn that named a language (issue
+// #412). Splitting the two lets a number-less invert-sort inherit both even when
+// they were established in different turns. Mirrors numeric_list_history_context
+// in src/solver_handlers/numeric_list/mod.rs.
 function numericListHistoryContext(history) {
-  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  if (!Array.isArray(history))
+    return { slug: null, codeRequested: false, items: [] };
+  let slug = null;
+  let codeRequested = false;
+  let items = [];
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const turn = history[i];
     if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
     const content = String(turn.content || "");
     const normalized = normalizePrompt(content);
     if (!detectNumericListOperation(normalized)) continue;
-    const slug = programLanguageFromPrompt(normalized);
-    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
-    if (parseNumericListNumbers(content).length < 2) continue;
-    return {
-      slug,
-      codeRequested: operationMatchesSlug("code_request", normalized),
-    };
+    const numbers = parseNumericListNumbers(content);
+    if (numbers.length < 2) continue;
+    // The most recent numeric-list turn with a concrete list seeds the
+    // inherited list (issue #427).
+    if (items.length === 0) items = numbers;
+    // Language + code request come from the most recent turn naming a supported
+    // language (issue #412).
+    if (!slug) {
+      const candidate = programLanguageFromPrompt(normalized);
+      if (candidate && WRITE_PROGRAM_LANGUAGES[candidate]) {
+        slug = candidate;
+        codeRequested = operationMatchesSlug("code_request", normalized);
+      }
+    }
+    if (items.length > 0 && slug) break;
   }
-  return { slug: null, codeRequested: false };
+  return { slug, codeRequested, items };
 }
 
 function tryNumericList(prompt, history) {
@@ -8388,7 +8408,10 @@ function tryNumericList(prompt, history) {
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
   const inherited = numericListHistoryContext(history);
-  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+  const hasInheritance =
+    Boolean(inherited.slug) ||
+    inherited.codeRequested ||
+    inherited.items.length > 0;
 
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
@@ -8409,7 +8432,13 @@ function tryNumericList(prompt, history) {
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const items = parseNumericListItems(prompt, canonical);
+  let items = parseNumericListItems(prompt, canonical);
+  // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
+  // names no numbers of its own — inherit the list from the previous
+  // numeric-list turn so the operation has data to act on.
+  if (items.length === 0 && inherited.items.length > 0) {
+    items = inherited.items;
+  }
   if (items.length < 2) return null;
   if (
     numericListFamily(canonical) === "list_reduction" &&
@@ -9717,7 +9746,509 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+// --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
+// Must be defined before tryCalendarReasoning. All recognition uses wordsForRole(ROLE_*)
+// + containsCalendarTerm (or the documented loose includes for directions/questions/fallbacks)
+// exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
+// Rust current_utc_date (create does not inherit the browser userContext tz used only by
+// the "today" path). Returns the same {intent, content, confidence, evidence} shape.
+function mentionsCalendarCreateRequest(normalized) {
+  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A clock time anchors the event just as well as a day word; the lexicon
+  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
+  const hasClock =
+    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) || extractClockTime(normalized) !== null;
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
+  // anchors the event to a specific day just as well as a day number or a
+  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
+  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
+  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A genuine scheduling request anchors to a concrete date/time cue: a
+  // day-reference word, a clock time, or a relative-date word. Bare digits
+  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
+  // date signal — they were the source of false positives that hijacked
+  // installation-conversion prompts such as
+  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
+  if (!hasDateSignal) return false;
+  const hasAction =
+    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
+    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
+      containsCalendarTerm(normalized, w),
+    );
+  if (hasAction) return true;
+  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
+  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
+  const hasScheduleVerb = [
+    "забей",
+    "поставь",
+    "создай",
+    "добавь",
+    "schedule",
+    "book",
+    "add to",
+  ].some((verb) => containsCalendarTerm(normalized, verb));
+  // The date/time anchor is already guaranteed by hasDateSignal above, so a
+  // recognized schedule verb is enough to confirm a create request here.
+  return hasScheduleVerb;
+}
+
+function extractDayNumber(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_DAY_REFERENCE)) {
+    if (!containsCalendarTerm(normalized, word)) continue;
+    const pos = normalized.indexOf(word);
+    if (pos !== -1) {
+      const prefix = normalized.slice(0, pos);
+      let digits = "";
+      for (let i = prefix.length - 1; i >= 0; i--) {
+        const ch = prefix[i];
+        if (/\d/.test(ch)) digits = ch + digits;
+        else if (digits) break;
+      }
+      const n = parseInt(digits, 10);
+      if (n >= 1 && n <= 31) return n;
+    }
+  }
+  // bare leading number
+  let num = "";
+  for (const ch of normalized) {
+    if (/\d/.test(ch)) num += ch;
+    else if (num) break;
+  }
+  const n = parseInt(num, 10);
+  if (n >= 1 && n <= 31) return n;
+  return null;
+}
+
+function computeTargetDateWithRollover(base, day) {
+  let y = base.year,
+    m = base.month,
+    d = day;
+  if (d < base.day) {
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
+  if (d > maxDay) d = maxDay;
+  return [y, m, d];
+}
+
+// Resolve a relative-date word to a whole-day offset from today. The surfaces
+// and their languages live in data/seed/meanings-calendar.lino; this code knows
+// only the role and the stable English meaning slugs that name the offset
+// (calendar_tomorrow → +1 day, calendar_day_after_tomorrow → +2 days). Mirrors
+// the Rust relative_date_offset (issue #435).
+function relativeDateOffset(normalized) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_RELATIVE_DATE)) {
+    const matches = meaning.words.some((word) =>
+      containsCalendarTerm(normalized, word),
+    );
+    if (!matches) continue;
+    if (meaning.slug === "calendar_tomorrow") return 1;
+    if (meaning.slug === "calendar_day_after_tomorrow") return 2;
+    return null;
+  }
+  return null;
+}
+
+// Apply a whole-day offset to a {year, month, day} base via UTC date math.
+// Mirrors date_from_unix_days(base.days_since_unix_epoch + offset) in Rust.
+function offsetCalendarDate(base, offset) {
+  const d = new Date(Date.UTC(base.year, base.month - 1, base.day + offset));
+  return [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()];
+}
+
+// Fallback title built from the matched event noun ("созвон" → "Созвон",
+// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
+// phrase was given. Mirrors the Rust extract_event_title (issue #435).
+function extractEventTitle(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_EVENT)) {
+    if (containsCalendarTerm(normalized, word)) return capitalizeFirst(word);
+  }
+  return null;
+}
+
+function extractClockTime(normalized) {
+  const bytes = normalized.split("");
+  for (let i = 0; i < bytes.length - 2; i++) {
+    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
+      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      let j = i + 2;
+      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
+      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
+        const min = parseInt(bytes[j] + bytes[j + 1], 10);
+        if (h <= 23 && min <= 59) {
+          if (h === 0) h = 0;
+          if (h === 24) h = 0;
+          return [h, min];
+        }
+      }
+    }
+  }
+  const vPos = normalized.indexOf("в ");
+  if (vPos !== -1) {
+    const tail = normalized.slice(vPos + 2);
+    let num = "";
+    for (const ch of tail) {
+      if (/\d/.test(ch)) num += ch;
+      else if (num) break;
+    }
+    const h = parseInt(num, 10);
+    if (h <= 23) return [h, 0];
+  }
+  return null;
+}
+
+function resolveTimezone(normalized) {
+  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (hit) return "Asia/Tbilisi";
+  if (
+    normalized.includes("asia/tbilisi") ||
+    normalized.includes("tbilisi") ||
+    normalized.includes("по грузии")
+  )
+    return "Asia/Tbilisi";
+  return null;
+}
+
+function defaultTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "घटना";
+  if (language === "zh") return "事件";
+  return "Event";
+}
+
+function capitalizeFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+// Trim a candidate title down to its subject: stop at the first time/date/zone
+// boundary, sentence punctuation, or day number, then capitalize. Mirrors the
+// Rust tidy_title.
+function tidyTitle(candidate) {
+  let end = candidate.length;
+  for (const boundary of [
+    " on the ",
+    " on ",
+    " at ",
+    " в ",
+    " по ",
+    " на ",
+    " 在 ",
+    "下午",
+    "上午",
+    " को ",
+    " शाम",
+  ]) {
+    const pos = candidate.indexOf(boundary);
+    if (pos !== -1) end = Math.min(end, pos);
+  }
+  const punct = candidate.search(/[.!?,]/);
+  if (punct !== -1) end = Math.min(end, punct);
+  const digit = candidate.search(/\d/);
+  if (digit !== -1) end = Math.min(end, digit);
+  const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
+  if (!trimmed) return null;
+  // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
+  // title — reject it so the caller falls back to the event noun (issue #435).
+  if (
+    wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(
+      (word) => word.toLowerCase() === trimmed.toLowerCase(),
+    )
+  )
+    return null;
+  return capitalizeFirst(trimmed);
+}
+
+// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
+// or lead (Chinese has no word spaces) the subject so the .ics SUMMARY keeps
+// only the event and its participant. Mirrors the Rust strip_action_words.
+function stripActionWords(value) {
+  let out = value;
+  for (const fragment of [
+    "शेड्यूल करें",
+    "कैलेंडर में जोड़ें",
+    "बनाएँ",
+    "बनाओ",
+    "安排",
+    "添加到日历",
+    "创建",
+  ]) {
+    out = out.split(fragment).join("");
+  }
+  return out.split(/\s+/).filter(Boolean).join(" ");
+}
+
+function extractTitle(normalized) {
+  for (const marker of [
+    "на ",
+    "for ",
+    "встречу ",
+    "meeting with ",
+    "call with ",
+    "के साथ ",
+    "和",
+  ]) {
+    const pos = normalized.indexOf(marker);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + marker.length).trim();
+      const title = tidyTitle(rest);
+      if (title) return title;
+    }
+  }
+  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+    const pos = normalized.indexOf(verb);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + verb.length).trimStart();
+      const title = tidyTitle(rest);
+      if (title && title.length < 60) return title;
+    }
+  }
+  return null;
+}
+
+// --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function pad4(value) {
+  return String(value).padStart(4, "0");
+}
+
+function isoDate(year, month, day) {
+  return `${pad4(year)}-${pad2(month)}-${pad2(day)}`;
+}
+
+function startStamp(year, month, day, hour, minute) {
+  return `${pad4(year)}${pad2(month)}${pad2(day)}T${pad2(hour)}${pad2(minute)}00`;
+}
+
+function daysInMonth(year, month) {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+  }
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+
+function addMinutes(year, month, day, hour, minute, minutes) {
+  const total = hour * 60 + minute + minutes;
+  let dayCarry = Math.floor(total / (24 * 60));
+  const newMinute = total % 60;
+  const newHour = Math.floor(total / 60) % 24;
+  let y = year,
+    m = month,
+    d = day;
+  while (dayCarry > 0) {
+    if (d < daysInMonth(y, m)) {
+      d += 1;
+    } else {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    dayCarry -= 1;
+  }
+  return [y, m, d, newHour, newMinute];
+}
+
+function icsEscape(value) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsDtstamp() {
+  const d = new Date();
+  return (
+    `${pad4(d.getUTCFullYear())}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`
+  );
+}
+
+function buildIcs(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  const uid = `${start}-${event.timeZone}@formal-ai`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//formal-ai//calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDtstamp()}`,
+    `DTSTART;TZID=${event.timeZone}:${start}`,
+    `DTEND;TZID=${event.timeZone}:${end}`,
+    `SUMMARY:${icsEscape(event.title)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n") + "\r\n";
+}
+
+function buildGoogleCalendarUrl(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(event.title)}` +
+    `&dates=${start}/${end}` +
+    `&ctz=${encodeURIComponent(event.timeZone)}`
+  );
+}
+
+function renderCreateConfirmation(language, event, ics, googleUrl) {
+  const iso = isoDate(event.year, event.month, event.day);
+  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
+  const tz = event.timeZone;
+  const title = event.title;
+  const minutes = event.durationMinutes;
+  if (language === "ru") {
+    return (
+      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
+      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
+      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
+      `Ответьте «да», чтобы подтвердить.`
+    );
+  }
+  if (language === "hi") {
+    return (
+      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
+      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
+      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
+      `पुष्टि के लिए «हाँ» उत्तर दें।`
+    );
+  }
+  if (language === "zh") {
+    return (
+      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
+      `将此 .ics 文件导入任何日历：\n${ics}\n` +
+      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
+      `回复「是」以确认。`
+    );
+  }
+  return (
+    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
+    `Import this .ics file into any calendar:\n${ics}\n` +
+    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
+    `Reply 'yes' to confirm.`
+  );
+}
+
+function currentUtcCalendarBase() {
+  const d = new Date();
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
+}
+
+function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
+  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const base = currentUtcCalendarBase();
+  const language = detectLanguage(prompt);
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
+  // event to a day offset from today (issue #435). It takes priority over a
+  // bare day number so "поставь созвон на завтра" lands on tomorrow rather
+  // than today's date.
+  const relativeOffset = relativeDateOffset(normalized);
+  let year, month, d;
+  if (relativeOffset !== null) {
+    [year, month, d] = offsetCalendarDate(base, relativeOffset);
+  } else {
+    const day = extractDayNumber(normalized) || base.day;
+    [year, month, d] = computeTargetDateWithRollover(base, day);
+  }
+  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const tz = resolveTimezone(normalized) || "UTC";
+  // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
+  // back to the matched event noun ("созвон" → "Созвон") before the localized
+  // default, so a title-less request still proposes a meaningful event.
+  const title =
+    extractTitle(normalized) ||
+    extractEventTitle(normalized) ||
+    defaultTitle(language);
+  const event = {
+    title,
+    year,
+    month,
+    day: d,
+    hour,
+    minute,
+    timeZone: tz,
+    durationMinutes: 60,
+  };
+  const ics = buildIcs(event);
+  const googleUrl = buildGoogleCalendarUrl(event);
+  const body = renderCreateConfirmation(language, event, ics, googleUrl);
+  const evidence = [
+    "calendar:clock:browser",
+    `calendar:parsed_date:${isoDate(year, month, d)}`,
+    `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
+    `calendar:parsed_time_zone:${tz}`,
+    `calendar:parsed_title:${title}`,
+    `calendar:parsed_duration_minutes:${event.durationMinutes}`,
+  ];
+  if (relativeOffset !== null) {
+    evidence.push(`calendar:parsed_relative_offset:${relativeOffset}`);
+  }
+  if (normalized.includes("число") || normalized.includes("number")) {
+    evidence.push("calendar:parsed_via:day_number");
+  }
+  evidence.push(`calendar:ics:${ics}`);
+  evidence.push(`calendar:google_calendar_url:${googleUrl}`);
+  evidence.push(`language:${language}`);
+  return {
+    intent: "calendar_create_event",
+    content: body,
+    confidence: 0.95,
+    evidence,
+  };
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+  // gate (and before the current-day question) so that "18 число ... забей / поставь"
+  // claims are handled by the action path and do not fall through to the existing
+  // weekday-only logic. Mirrors src/solver_handlers/calendar.rs exactly.
+  const create = tryCalendarCreateEvent(prompt, normalized, userContext);
+  if (create) return create;
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
     const resolved = currentCalendarDate(userContext);
@@ -12942,6 +13473,760 @@ function priorSoftwareProjectMeaning(history) {
   return user ? formalizeSoftwareProjectRequest(user) : null;
 }
 
+const INSTALL_FORMAT_MARKDOWN = "markdown";
+const INSTALL_FORMAT_SHELL = "shell_script";
+const INSTALL_FORMAT_POWERSHELL = "powershell_script";
+
+const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
+  {
+    id: "collect_corpus",
+    output: "representative problem-class examples",
+    verifier: "case-study corpus preserved",
+  },
+  {
+    id: "derive_surfaces",
+    output: "source and target surface ontology",
+    verifier: "source/target format detection",
+  },
+  {
+    id: "extract_ir",
+    output: "shared intermediate representation",
+    verifier: "ordered command preservation fixture",
+  },
+  {
+    id: "synthesize_operations",
+    output: "recognizers, extractors, renderers, and validators",
+    verifier: "round-trip surface invariants",
+  },
+  {
+    id: "project_targets",
+    output: "target-specific Markdown, shell, and PowerShell renderers",
+    verifier: "per-target rendering fixture",
+  },
+  {
+    id: "mirror_runtimes",
+    output: "Rust and browser-worker projections of the same algorithm",
+    verifier: "cross-runtime parity checks",
+  },
+  {
+    id: "promote_capability",
+    output: "reusable coding-task construction pattern",
+    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+  },
+];
+
+const INSTALL_CODING_SURFACE_PROJECTIONS = [
+  {
+    slug: "coding_catalog",
+    projection: "task spec -> parameterized template -> CST/compile check",
+  },
+  {
+    slug: "program_synthesis",
+    projection: "semantic function tree -> source program -> sandbox tests",
+  },
+  {
+    slug: "program_blueprint",
+    projection: "capability set -> blueprint recipe -> honest code projection",
+  },
+  {
+    slug: "numeric_list",
+    projection: "operation/data/language IR -> generated code plus evaluated result",
+  },
+  {
+    slug: "rule_synthesis",
+    projection: "operation/target binding -> candidate rule -> verification fixture",
+  },
+  {
+    slug: "installation_conversion",
+    projection: "installation surfaces -> install-step IR -> target renderers",
+  },
+];
+
+function installationContainsAny(value, needles) {
+  return needles.some((needle) => String(value || "").includes(needle));
+}
+
+function isInstallationConversionRequest(normalized) {
+  const asksConversion = installationContainsAny(normalized, [
+    "convert",
+    "conversion",
+    "transform",
+    "turn",
+    "translate",
+    "back to",
+    "конверт",
+    "преобраз",
+    "перевед",
+    "बदल",
+    "परिवर्त",
+    "रूपांतर",
+    "कन्वर्ट",
+    "转换",
+    "轉換",
+    "转成",
+    "轉成",
+    "转为",
+    "轉為",
+    "翻译",
+    "翻譯",
+  ]);
+  const namesInstallSurface = installationContainsAny(normalized, [
+    "readme",
+    "markdown",
+    "installation guide",
+    "install guide",
+    "deployment guide",
+    "deploy guide",
+    "installation script",
+    "install script",
+    "deployment script",
+    "deploy script",
+    "руководство по установ",
+    "инструкц",
+    "установ",
+    "स्थापना",
+    "इंस्टॉल",
+    "इंस्टॉलेशन",
+    "安装",
+    "安裝",
+    "部署",
+  ]);
+  const namesScriptSurface = installationContainsAny(normalized, [
+    " sh ",
+    " bash",
+    "shell",
+    "powershell",
+    "pwsh",
+    "ps1",
+    "script",
+    "скрипт",
+    "скрипта",
+    "脚本",
+    "腳本",
+  ]);
+  return asksConversion && namesInstallSurface && namesScriptSurface;
+}
+
+function installationFencedBlocks(text) {
+  const blocks = [];
+  let currentInfo = null;
+  let currentBody = [];
+  for (const line of String(text || "").split(/\r?\n/)) {
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith("```")) {
+      if (currentInfo !== null) {
+        blocks.push({
+          info: currentInfo,
+          body: currentBody.join("\n").replace(/\n+$/g, ""),
+        });
+        currentInfo = null;
+        currentBody = [];
+      } else {
+        currentInfo = trimmed.slice(3).trim().split(/\s+/, 1)[0].toLowerCase();
+      }
+      continue;
+    }
+    if (currentInfo !== null) currentBody.push(line);
+  }
+  return blocks;
+}
+
+function isInstallationShellFence(info) {
+  return ["bash", "sh", "shell", "zsh"].includes(String(info || ""));
+}
+
+function isInstallationPowerShellFence(info) {
+  return ["powershell", "pwsh", "ps1"].includes(String(info || ""));
+}
+
+function detectInstallationSourceFormat(prompt, normalized) {
+  const fences = installationFencedBlocks(prompt);
+  const explicitPowerShell = installationContainsAny(normalized, [
+    "this powershell",
+    "powershell installation script",
+    "powershell script back",
+    "ps1 script",
+  ]);
+  const explicitShell = installationContainsAny(normalized, [
+    "this shell",
+    "this bash",
+    "shell installation script",
+    "shell script back",
+    "bash script back",
+  ]);
+  const explicitMarkdown = installationContainsAny(normalized, [
+    "this readme",
+    "readme.md installation guide",
+    "readme installation guide",
+    "this markdown",
+    "markdown installation guide",
+  ]);
+  if (explicitPowerShell) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (explicitShell) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (explicitMarkdown) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  if (fences.some((block) => isInstallationPowerShellFence(block.info))) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (fences.some((block) => isInstallationShellFence(block.info))) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (fences.some((block) => block.info === "markdown" || block.info === "md")) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  return INSTALL_FORMAT_MARKDOWN;
+}
+
+function pushInstallationTarget(targets, target) {
+  if (!targets.includes(target)) targets.push(target);
+}
+
+function detectInstallationTargetFormats(normalized, sourceFormat) {
+  const targets = [];
+  if (
+    installationContainsAny(normalized, [
+      "back to a readme",
+      "back to readme",
+      "to a readme",
+      "to readme",
+      "to markdown",
+      "markdown guide",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "both sh and powershell",
+      "both bash and powershell",
+      "sh and powershell",
+      "bash and powershell",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "into a sh script",
+      "to a sh script",
+      "into sh",
+      "to sh",
+      "into a shell script",
+      "to a shell script",
+      "into a bash script",
+      "to a bash script",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+  }
+  if (
+    sourceFormat !== INSTALL_FORMAT_POWERSHELL &&
+    installationContainsAny(normalized, [
+      "into a powershell script",
+      "to a powershell script",
+      "into powershell",
+      "to powershell",
+      "to ps1",
+      "into ps1",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (targets.length === 0) {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    } else {
+      pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+    }
+  }
+  return targets;
+}
+
+function extractInstallationSourceText(prompt, sourceFormat) {
+  const fences = installationFencedBlocks(prompt);
+  const matching = fences.find((block) => {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      return block.info === "markdown" || block.info === "md";
+    }
+    if (sourceFormat === INSTALL_FORMAT_SHELL) return isInstallationShellFence(block.info);
+    return isInstallationPowerShellFence(block.info);
+  });
+  if (matching) return matching.body;
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) return String(prompt || "");
+  if (fences.length > 0) return fences[0].body;
+  return String(prompt || "");
+}
+
+function normalizeInstallationScriptLine(line) {
+  return String(line || "").trim().replace(/^\$ /, "").replace(/^PS> /, "").trim();
+}
+
+function shouldSkipInstallationScriptLine(line) {
+  return (
+    line === "" ||
+    line.startsWith("#!") ||
+    line.startsWith("#") ||
+    line === "set -e" ||
+    line === "set -eu" ||
+    line === "set -euo pipefail" ||
+    line === "$ErrorActionPreference = 'Stop'"
+  );
+}
+
+// Provenance of a candidate line. Mirrors the Rust `Provenance` enum: code
+// spans/fences are author-marked code (weak shape check), bare lines must prove
+// themselves structurally.
+const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
+const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
+
+const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "with",
+  "into",
+  "from",
+  "your",
+  "you",
+  "our",
+  "this",
+  "that",
+  "these",
+  "those",
+  "then",
+  "will",
+  "should",
+  "must",
+  "please",
+  "manually",
+]);
+
+// True when the token is shaped like an executable name or a path to one rather
+// than a natural-language word. Commands are lowercase by convention, so an
+// uppercase or non-ASCII lead immediately reads as prose.
+function isInstallationExecutableHead(token) {
+  if (!token) return false;
+  const first = token[0];
+  const startsOk = /[a-z0-9./]/.test(first);
+  if (!startsOk) return false;
+  return /^[a-z0-9./_+-]+$/.test(token);
+}
+
+function installationHasShellOperator(command) {
+  return (
+    command.includes(" | ") ||
+    command.includes("&&") ||
+    command.includes("||") ||
+    command.includes(" ; ")
+  );
+}
+
+function installationReadsAsProse(tokens) {
+  return tokens.some((token) => {
+    const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
+    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+  });
+}
+
+// Decide whether `command` is an install/deploy command by reasoning about its
+// structure and provenance instead of matching a fixed tool whitelist. Any
+// well-formed command line is accepted regardless of which tool it invokes,
+// while prose lines are rejected even when they mention a tool.
+function looksLikeInstallationCommand(command, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const trimmed = String(command || "").trim();
+  if (!trimmed) return false;
+
+  // A raw prose line that embeds a code span ("Run `npm install`.") is prose:
+  // the inline/fence collectors already lifted the real command out.
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE && trimmed.includes("`")) return false;
+
+  const tokens = trimmed.split(/\s+/);
+  const head = tokens[0].toLowerCase();
+  if (!isInstallationExecutableHead(head)) return false;
+
+  // Shell composition is unambiguous command shape regardless of provenance.
+  if (installationHasShellOperator(trimmed)) return true;
+
+  // An executable-looking head can still front a wrapped prose note; English
+  // function words betray it.
+  if (installationReadsAsProse(tokens)) return false;
+
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE) {
+    return tokens.length >= 2 || head.includes("/");
+  }
+  return true;
+}
+
+function pushInstallationCommand(commands, candidate, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const command = String(candidate || "").trim();
+  if (!command || !looksLikeInstallationCommand(command, provenance)) return;
+  if (!commands.includes(command)) commands.push(command);
+}
+
+function collectInstallationInlineCommands(source, commands) {
+  const text = String(source || "");
+  let inTick = false;
+  let candidate = "";
+  for (const character of text) {
+    if (character === "`") {
+      if (inTick) {
+        // Inline code spans are author-marked code: trust the shape.
+        pushInstallationCommand(commands, candidate.trim(), INSTALL_PROVENANCE_CODE_SPAN);
+        candidate = "";
+        inTick = false;
+      } else {
+        inTick = true;
+      }
+      continue;
+    }
+    if (inTick) candidate += character;
+  }
+}
+
+function collectInstallationBulletCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    let trimmed = line.trim();
+    trimmed = trimmed.replace(/^[-*+\d]+[.) ]*/, "").trim();
+    if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length > 2) {
+      // The whole bullet is a single code span: code provenance.
+      pushInstallationCommand(commands, trimmed.slice(1, -1), INSTALL_PROVENANCE_CODE_SPAN);
+    } else {
+      // Raw document line with no code markup: prove it structurally.
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_BARE_LINE);
+    }
+  }
+}
+
+function collectInstallationScriptCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    const trimmed = normalizeInstallationScriptLine(line);
+    // Lines inside a shell/PowerShell fence are code by construction.
+    if (!shouldSkipInstallationScriptLine(trimmed))
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_CODE_SPAN);
+  }
+}
+
+// Translate a single verb token into an action category. Keyed on the verb
+// itself (not the surrounding tool), so the same lexicon serves every program.
+// Returns the marker "run" for generic launcher verbs so the caller can prefer
+// a more concrete object.
+function classifyInstallationVerb(token) {
+  switch (token) {
+    case "clone":
+      return "Clone the repository";
+    case "cd":
+    case "chdir":
+    case "pushd":
+      return "Enter the project directory";
+    case "install":
+    case "add":
+    case "ci":
+    case "restore":
+    case "sync":
+    case "bootstrap":
+    case "vendor":
+    case "i":
+      return "Install dependencies";
+    case "test":
+    case "check":
+    case "lint":
+    case "doctor":
+    case "verify":
+    case "validate":
+    case "version":
+    case "pytest":
+    case "jest":
+    case "mocha":
+    case "vitest":
+    case "tox":
+      return "Run the verification command";
+    case "build":
+    case "compile":
+    case "configure":
+    case "make":
+    case "package":
+    case "dist":
+    case "bundle":
+    case "cmake":
+    case "gradle":
+    case "ninja":
+    case "msbuild":
+      return "Build the project";
+    case "run":
+    case "serve":
+    case "start":
+    case "up":
+    case "exec":
+    case "dev":
+    case "launch":
+    case "watch":
+      return "run";
+    default:
+      return null;
+  }
+}
+
+// Structural view of a command: the program (last path segment of the
+// executable), the ordered non-flag argument tokens, and whether a version/help
+// probe flag is present.
+function parseInstallationCommand(command) {
+  let tokens = String(command || "").trim().split(/\s+/).filter(Boolean);
+  while (tokens.length && (tokens[0] === "sudo" || tokens[0] === "env" || tokens[0] === "command")) {
+    tokens = tokens.slice(1);
+  }
+  const rawProgram = tokens.shift() || "";
+  let program = rawProgram.split("/").pop().toLowerCase();
+
+  let rest = tokens;
+  if ((program === "python" || program === "python3" || program === "py") && rest[0] === "-m" && rest[1]) {
+    program = rest[1].toLowerCase();
+    rest = rest.slice(2);
+  }
+
+  const args = [];
+  let isProbe = false;
+  for (const token of rest) {
+    const bare = token.replace(/^['"]+/, "").replace(/['"]+$/, "");
+    if (["--version", "-v", "-V", "--help", "-h"].includes(bare)) {
+      isProbe = true;
+      continue;
+    }
+    if (bare.startsWith("-")) continue;
+    args.push(bare.toLowerCase());
+  }
+  return { program, args, isProbe };
+}
+
+// Derive a human-readable step description from the parsed verb/object of the
+// command rather than matching the whole string against a substring table.
+function describeInstallationCommand(command) {
+  const parsed = parseInstallationCommand(command);
+  if (parsed.isProbe) return "Verify the installation";
+
+  let genericRun = false;
+  for (const argument of parsed.args) {
+    const action = classifyInstallationVerb(argument);
+    if (action === "run") {
+      genericRun = true;
+    } else if (action) {
+      return action;
+    }
+  }
+  const programAction = classifyInstallationVerb(parsed.program);
+  if (programAction === "run") {
+    genericRun = true;
+  } else if (programAction) {
+    return programAction;
+  }
+  if (genericRun) return "Start the application";
+
+  // Fall back to a description synthesized from the program/verb so unseen but
+  // well-formed commands still read meaningfully.
+  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
+  return `Run ${parsed.program}`;
+}
+
+function extractInstallationSteps(source, sourceFormat) {
+  const commands = [];
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+    for (const block of installationFencedBlocks(source)) {
+      if (isInstallationShellFence(block.info) || isInstallationPowerShellFence(block.info)) {
+        collectInstallationScriptCommands(block.body, commands);
+      }
+    }
+    collectInstallationInlineCommands(source, commands);
+    collectInstallationBulletCommands(source, commands);
+  } else {
+    collectInstallationScriptCommands(source, commands);
+  }
+  return commands.map((command, index) => ({
+    id: `S${index + 1}`,
+    description: describeInstallationCommand(command),
+    command,
+  }));
+}
+
+function extractInstallationProject(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  const marker = " for ";
+  const start = lower.indexOf(marker);
+  if (start < 0) return "the project";
+  const tail = source.slice(start + marker.length);
+  const stopMatch = tail.match(/[\s,:;\n]/);
+  const stop = stopMatch ? stopMatch.index : tail.length;
+  const project = tail.slice(0, stop).trim();
+  return project.includes("/") || project.includes("-") ? project : "the project";
+}
+
+function installationMeaningKey(conversion) {
+  const parts = [`source=${conversion.sourceFormat}`, `project=${conversion.project}`];
+  for (const target of conversion.targetFormats) parts.push(`target=${target}`);
+  for (const step of conversion.steps) parts.push(`command=${step.command}`);
+  return parts.join(";");
+}
+
+function installationEvidence(conversion) {
+  const evidence = [
+    "formalization:install_steps_ir",
+    `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
+    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    `installation_conversion:source_format:${conversion.sourceFormat}`,
+    `installation_conversion:project:${conversion.project}`,
+  ];
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
+  }
+  for (const target of conversion.targetFormats) {
+    evidence.push(`installation_conversion:target_format:${target}`);
+  }
+  for (const step of conversion.steps) {
+    evidence.push(`installation_conversion:step:${step.id}:${step.command}`);
+  }
+  evidence.push("installation_conversion:validation:ordered_commands_preserved");
+  return evidence;
+}
+
+function renderInstallationLino(conversion) {
+  const lines = ["installation_conversion_request"];
+  lines.push(`  source_format ${conversion.sourceFormat}`);
+  for (const target of conversion.targetFormats) lines.push(`  target_format ${target}`);
+  lines.push(`  project ${linoString(conversion.project)}`);
+  lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
+  lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
+  lines.push(
+    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
+  );
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    lines.push(`  construction_stage ${linoString(stage.id)}`);
+    lines.push(`  stage_output ${linoString(stage.output)}`);
+    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`  coding_surface ${linoString(surface.slug)}`);
+    lines.push(`  surface_projection ${linoString(surface.projection)}`);
+  }
+  for (const step of conversion.steps) {
+    lines.push(`  step ${linoString(step.id)}`);
+    lines.push(`  description ${linoString(step.description)}`);
+    lines.push(`  command ${linoString(step.command)}`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationMetaAlgorithm() {
+  const lines = ["Meta algorithm for constructing conversion algorithms:"];
+  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
+    lines.push(
+      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
+    );
+  });
+  lines.push("");
+  lines.push("Existing coding solutions producible by the same meta algorithm:");
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  }
+  return lines.join("\n");
+}
+
+function renderInstallationMarkdownGuide(conversion) {
+  const lines = ["README.md installation guide:", "", "## Installation", ""];
+  conversion.steps.forEach((step, index) => {
+    lines.push(`${index + 1}. ${step.description}.`);
+    lines.push("");
+    lines.push("   ```sh");
+    lines.push(`   ${step.command}`);
+    lines.push("   ```");
+  });
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationShellScript(conversion) {
+  const lines = ["Bash script:", "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationPowerShellScript(conversion) {
+  const lines = ["PowerShell script:", "```powershell", "$ErrorActionPreference = 'Stop'", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationConversion(conversion) {
+  const lines = [
+    `Converted installation instructions for ${conversion.project}.`,
+    "",
+    "Formalized meaning:",
+    "```lino",
+    renderInstallationLino(conversion).trimEnd(),
+    "```",
+    "",
+    "Conversion algorithm:",
+    "1. Detect the source surface and requested target surface(s).",
+    "2. Extract command-like install/deploy steps in original order.",
+    "3. Render every target from the same install-step IR.",
+    "4. Preserve commands verbatim so the conversion can round-trip.",
+    "",
+    renderInstallationMetaAlgorithm(),
+  ];
+  for (const target of conversion.targetFormats) {
+    lines.push("");
+    if (target === INSTALL_FORMAT_MARKDOWN) {
+      lines.push(renderInstallationMarkdownGuide(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_SHELL) {
+      lines.push(renderInstallationShellScript(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_POWERSHELL) {
+      lines.push(renderInstallationPowerShellScript(conversion).trimEnd());
+    }
+  }
+  return lines.join("\n").trimEnd();
+}
+
+function tryInstallationConversion(prompt, normalized) {
+  if (!isInstallationConversionRequest(normalized)) return null;
+  const sourceFormat = detectInstallationSourceFormat(prompt, normalized);
+  const targetFormats = detectInstallationTargetFormats(normalized, sourceFormat);
+  const sourceText = extractInstallationSourceText(prompt, sourceFormat);
+  let steps = extractInstallationSteps(sourceText, sourceFormat);
+  if (steps.length === 0 && sourceFormat === INSTALL_FORMAT_MARKDOWN && sourceText !== String(prompt || "")) {
+    steps = extractInstallationSteps(prompt, sourceFormat);
+  }
+  if (steps.length === 0) return null;
+  const conversion = {
+    sourceFormat,
+    targetFormats,
+    project: extractInstallationProject(prompt),
+    steps,
+  };
+  return {
+    intent: "installation_conversion",
+    content: renderInstallationConversion(conversion),
+    confidence: 0.84,
+    evidence: installationEvidence(conversion),
+  };
+}
+
 function trySoftwareProjectRequest(prompt, history = []) {
   const normalized = normalizePrompt(prompt);
   if (isSoftwareApprovalPrompt(normalized)) {
@@ -14501,21 +15786,30 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "sort the results in reverse order"',
   '      phrase "reverse order"',
   '      phrase "descending order"',
+  '      phrase "invert the sort"',
+  '      phrase "invert the sorting"',
+  '      phrase "invert sort"',
   "      combo sort+reverse",
   "      combo sort+descending",
+  "      combo invert+sort",
   "    language ru",
   '      phrase "в обратном порядке"',
   "      combo сортиров+обратн",
   "      combo отсортир+обратн",
+  "      combo инверс+сортиров",
+  "      combo инверт+сортиров",
   "    language hi",
   '      phrase "उल्टे क्रम"',
   "      combo क्रमबद्ध+उल्टे",
   "      combo क्रमबद्ध+उल्टा",
+  "      combo उलट+क्रम",
   "    language zh",
   "      phrase 相反顺序排序",
   "      combo 排序+相反",
   "      combo 排序+反向",
   "      combo 排序+倒序",
+  "      combo 反转+排序",
+  "      combo 颠倒+排序",
   "  operation cancel_reverse_sort",
   "    inverse reverse_sort",
   "    language en",
@@ -16654,6 +17948,48 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 今天",
+  "  calendar_tomorrow",
+  "    grounded-in Q1209716",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  "        text tomorrow",
+  "      surface",
+  '        text "the next day"',
+  "    lexeme ru",
+  "      surface",
+  "        text завтра",
+  "      surface",
+  '        text "на завтра"',
+  "    lexeme hi",
+  "      surface",
+  "        text कल",
+  "      surface",
+  "        text आनेवाला कल",
+  "    lexeme zh",
+  "      surface",
+  "        text 明天",
+  "      surface",
+  "        text 明日",
+  "  calendar_day_after_tomorrow",
+  "    grounded-in Q1036448",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  '        text "day after tomorrow"',
+  "      surface",
+  '        text "the day after tomorrow"',
+  "    lexeme ru",
+  "      surface",
+  "        text послезавтра",
+  "    lexeme hi",
+  "      surface",
+  "        text परसों",
+  "    lexeme zh",
+  "      surface",
+  "        text 后天",
   "  calendar_interrogative",
   "    defined-by calendar_day",
   "    role calendar_question",
@@ -16697,6 +18033,160 @@ const MEANINGS_LINO = [
   "        text 告诉",
   "      surface",
   "        text 显示",
+  "  calendar_schedule_action",
+  "    defined-by calendar_day",
+  "    role calendar_schedule_action",
+  "    lexeme en",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  '        text "schedule me"',
+  "      surface",
+  '        text "book"',
+  "      surface",
+  '        text "book on the"',
+  "      surface",
+  '        text "put on the calendar"',
+  "      surface",
+  '        text "put on my calendar"',
+  "      surface",
+  '        text "add to the calendar"',
+  "      surface",
+  '        text "add to my calendar"',
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  '        text "забей мне"',
+  "      surface",
+  "        text поставь",
+  "      surface",
+  '        text "поставь мне"',
+  "      surface",
+  "        text поставить",
+  "      surface",
+  '        text "поставить мне"',
+  "      surface",
+  "        text создай",
+  "      surface",
+  '        text "создай событие"',
+  "      surface",
+  "        text добавь",
+  "      surface",
+  '        text "добавь в календарь"',
+  "      surface",
+  '        text "на встречу"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शेड्यूल करें"',
+  "      surface",
+  '        text "कैलेंडर में जोड़ें"',
+  "    lexeme zh",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 添加到日历",
+  "  calendar_event",
+  "    defined-by calendar_day",
+  "    role calendar_event",
+  "    lexeme en",
+  "      surface",
+  '        text "meeting"',
+  "      surface",
+  "        text call",
+  "      surface",
+  "        text event",
+  "    lexeme ru",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречи",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text события",
+  "      surface",
+  "        text созвон",
+  "      surface",
+  "        text созвона",
+  "      surface",
+  "        text созвоны",
+  "      surface",
+  "        text созвону",
+  "      surface",
+  "        text звонок",
+  "      surface",
+  "        text звонка",
+  "    lexeme hi",
+  "      surface",
+  "        text मीटिंग",
+  "      surface",
+  '        text "घटना"',
+  "    lexeme zh",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 事件",
+  "      surface",
+  "        text 通话",
+  "  calendar_clock_time",
+  "    defined-by calendar_day",
+  "    role calendar_time",
+  "    lexeme en",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "5 pm"',
+  "      surface",
+  '        text "5pm"',
+  "      surface",
+  '        text "at 17:00"',
+  "    lexeme ru",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "в 17:00"',
+  "      surface",
+  '        text "17.00"',
+  "      surface",
+  "        text вечером",
+  "      surface",
+  '        text "в 17"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शाम 5 बजे"',
+  "    lexeme zh",
+  "      surface",
+  "        text 下午5点",
+  "  calendar_timezone_alias",
+  "    defined-by calendar_day",
+  "    role calendar_timezone_alias",
+  "    lexeme ru",
+  "      surface",
+  '        text "по грузии"',
+  "      surface",
+  '        text "по тбилиси"',
+  "      surface",
+  '        text "грузинское время"',
+  "    lexeme en",
+  "      surface",
+  '        text "tbilisi time"',
+  "      surface",
+  '        text "georgia time"',
+  "      surface",
+  '        text "Asia/Tbilisi"',
+  "    lexeme hi",
+  "      surface",
+  '        text "जॉर्जिया समय"',
+  "      surface",
+  '        text "त्बिलिसी समय"',
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
   "meanings",
   "  money",
   "    grounded-in Q1368",
@@ -25484,6 +26974,23 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 决定论",
+  "  metatheory",
+  "    defined-by concept",
+  "    role proof_concept_metatheory",
+  "    lexeme en",
+  "      surface",
+  "        text metatheory",
+  "      surface",
+  "        text meta-theory",
+  "    lexeme ru",
+  "      surface",
+  "        text метатеория",
+  "    lexeme hi",
+  "      surface",
+  "        text परासिद्धांत",
+  "    lexeme zh",
+  "      surface",
+  "        text 元理论",
   "meanings",
   "  physical_action_query",
   "    defined-by inquiry",
@@ -28640,6 +30147,18 @@ const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
 const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
+
+// Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+// + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+// pattern as the existing weekday helpers.
+const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+const ROLE_CALENDAR_EVENT = "calendar_event";
+const ROLE_CALENDAR_TIME = "calendar_time";
+const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
+// Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
+// anchor a scheduled event to a day offset from today. Mirrors
+// ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.
+const ROLE_CALENDAR_RELATIVE_DATE = "calendar_relative_date";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
@@ -35540,6 +37059,11 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    // Issue #423: README/install-guide to shell/PowerShell conversion is a
+    // narrower script request than generic program synthesis. Keep it ahead of
+    // writeProgram so "convert this README to a script" preserves the source
+    // instructions instead of producing an unrelated starter script.
+    { name: "tryInstallationConversion", run: () => tryInstallationConversion(prompt, normalized) },
     {
       name: "tryWriteProgramConcrete",
       run: () => {

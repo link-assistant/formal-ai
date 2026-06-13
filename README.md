@@ -2,6 +2,8 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack.
+
 The current implementation covers the surface area requested in issue #1:
 
 - library API for symbolic prompt handling
@@ -14,7 +16,7 @@ The current implementation covers the surface area requested in issue #1:
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
 ## Universal Problem-Solving Algorithm
 
