@@ -50,3 +50,33 @@ check('followup evidence has request', res && res.evidence.some(e => e === 'proc
 // 4. no rebind when there is no prior how-to
 const noHist = await g.tryProceduralHowToFollowup('Can you give me specific instructions?', 'en', []);
 check('no rebind without prior how-to', noHist === null);
+
+// 5. breadth across topics in the same scope (Rust parity for issue #444:
+//    procedural_elaboration_followup_covers_many_topics). The rebind is generic,
+//    so a dozen unrelated how-to subjects with varied elaboration phrasings must
+//    each recover their own task and emit the followup evidence.
+const topics = [
+  ['how to bake sourdough bread', 'give me the exact steps', 'bake sourdough bread'],
+  ['how to change a car tire', 'the steps please', 'change a car tire'],
+  ['how to set up a home wifi network', 'more details please', 'set up a home wifi network'],
+  ['how to brew espresso', 'explain it step by step', 'brew espresso'],
+  ['how to write a resume', 'give me detailed instructions', 'write a resume'],
+  ['how to train a puppy', 'be more specific', 'train a puppy'],
+  ['how to file a tax return', 'give me the specific steps', 'file a tax return'],
+  ['how to plant a tree', 'give me the exact instructions', 'plant a tree'],
+  ['how to tie a tie', 'step-by-step please', 'tie a tie'],
+  ['how to start a podcast', 'give me specific steps', 'start a podcast'],
+  ['how to meditate', 'explain in detail', 'meditate'],
+];
+for (const [howTo, elaboration, task] of topics) {
+  const hist = [
+    { role: 'user', content: howTo },
+    { role: 'assistant', content: `Procedural discovery for \`${task}\` ...` },
+  ];
+  const r = await g.tryProceduralHowToFollowup(elaboration, 'en', hist);
+  check(`topic rebind: ${howTo}`,
+    r && r.intent === 'procedural_how_to'
+    && r.content.includes(task)
+    && r.evidence.some(e => e.startsWith('procedural_how_to:followup:'))
+    && r.evidence.some(e => e === `procedural_how_to:request:${task}`));
+}

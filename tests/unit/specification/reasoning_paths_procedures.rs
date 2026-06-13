@@ -425,3 +425,130 @@ fn procedural_elaboration_followup_covers_supported_languages() {
         );
     }
 }
+
+// Breadth across topics in the same scope: the maintainer asked us to cover
+// "x10 more test cases, with different topics in the same scope". The rebind is
+// fully generic — it recovers the prior task from the conversation regardless of
+// subject — so a single data-driven table exercises a dozen unrelated how-to
+// domains (cooking, vehicle maintenance, networking, gardening, finance, …) and
+// a variety of elaboration phrasings. Each must rebind to its own procedure and
+// emit the followup evidence, with no cross-talk between topics.
+#[test]
+fn procedural_elaboration_followup_covers_many_topics() {
+    struct Case {
+        how_to: &'static str,
+        elaboration: &'static str,
+        task_fragment: &'static str,
+    }
+
+    let cases = [
+        Case {
+            how_to: "how to publish to npm",
+            elaboration: "Can you give me specific instructions?",
+            task_fragment: "publish to npm",
+        },
+        Case {
+            how_to: "how to bake sourdough bread",
+            elaboration: "give me the exact steps",
+            task_fragment: "bake sourdough bread",
+        },
+        Case {
+            how_to: "how to change a car tire",
+            elaboration: "the steps please",
+            task_fragment: "change a car tire",
+        },
+        Case {
+            how_to: "how to set up a home wifi network",
+            elaboration: "more details please",
+            task_fragment: "set up a home wifi network",
+        },
+        Case {
+            how_to: "how to brew espresso",
+            elaboration: "explain it step by step",
+            task_fragment: "brew espresso",
+        },
+        Case {
+            how_to: "how to write a resume",
+            elaboration: "give me detailed instructions",
+            task_fragment: "write a resume",
+        },
+        Case {
+            how_to: "how to train a puppy",
+            elaboration: "be more specific",
+            task_fragment: "train a puppy",
+        },
+        Case {
+            how_to: "how to file a tax return",
+            elaboration: "give me the specific steps",
+            task_fragment: "file a tax return",
+        },
+        Case {
+            how_to: "how to plant a tree",
+            elaboration: "give me the exact instructions",
+            task_fragment: "plant a tree",
+        },
+        Case {
+            how_to: "how to tie a tie",
+            elaboration: "step-by-step please",
+            task_fragment: "tie a tie",
+        },
+        Case {
+            how_to: "how to start a podcast",
+            elaboration: "give me specific steps",
+            task_fragment: "start a podcast",
+        },
+        Case {
+            how_to: "how to meditate",
+            elaboration: "explain in detail",
+            task_fragment: "meditate",
+        },
+    ];
+
+    assert!(
+        cases.len() >= 10,
+        "issue #444 asks for at least ten additional topic cases; have {}",
+        cases.len(),
+    );
+
+    for case in cases {
+        let solver = UniversalSolver::default();
+        let plan = solver.solve(case.how_to);
+        assert_eq!(
+            plan.intent, "procedural_how_to",
+            "setup how-to {:?} must route procedurally; answer={}",
+            case.how_to, plan.answer,
+        );
+        let history = [
+            ConversationTurn::user(case.how_to),
+            ConversationTurn::assistant(plan.answer),
+        ];
+        let follow_up = solver.solve_with_history(case.elaboration, &history);
+        assert_eq!(
+            follow_up.intent, "procedural_how_to",
+            "elaboration {:?} after {:?} must rebind to the procedure; answer={}",
+            case.elaboration, case.how_to, follow_up.answer,
+        );
+        assert!(
+            follow_up.answer.to_lowercase().contains(case.task_fragment),
+            "follow-up after {:?} should restate {:?}; answer={}",
+            case.how_to,
+            case.task_fragment,
+            follow_up.answer,
+        );
+        assert!(
+            has_evidence(&follow_up, "procedural_how_to:followup"),
+            "missing followup evidence for {:?}: {:?}",
+            case.how_to,
+            follow_up.evidence_links,
+        );
+        assert!(
+            has_evidence(
+                &follow_up,
+                &format!("procedural_how_to:request:{}", case.task_fragment),
+            ),
+            "follow-up after {:?} should recover the exact task; evidence={:?}",
+            case.how_to,
+            follow_up.evidence_links,
+        );
+    }
+}
