@@ -543,21 +543,30 @@ operation_vocabulary
       phrase "sort the results in reverse order"
       phrase "reverse order"
       phrase "descending order"
+      phrase "invert the sort"
+      phrase "invert the sorting"
+      phrase "invert sort"
       combo sort+reverse
       combo sort+descending
+      combo invert+sort
     language ru
       phrase "в обратном порядке"
       combo сортиров+обратн
       combo отсортир+обратн
+      combo инверс+сортиров
+      combo инверт+сортиров
     language hi
       phrase "उल्टे क्रम"
       combo क्रमबद्ध+उल्टे
       combo क्रमबद्ध+उल्टा
+      combo उलट+क्रम
     language zh
       phrase 相反顺序排序
       combo 排序+相反
       combo 排序+反向
       combo 排序+倒序
+      combo 反转+排序
+      combo 颠倒+排序
   operation cancel_reverse_sort
     inverse reverse_sort
     language en

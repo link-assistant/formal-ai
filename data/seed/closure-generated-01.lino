@@ -764,6 +764,11 @@ meanings
     lexeme en
       surface
         text "intent write program"
+  invert
+    defined-by concept
+    lexeme en
+      surface
+        text "invert"
   issue_364_unknown_trace_learning
     defined-by concept
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept prefix kto takoy"
-  pattern_concept_prefix_meaning_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix meaning of"

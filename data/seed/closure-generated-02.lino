@@ -1,4 +1,9 @@
 meanings
+  pattern_concept_prefix_meaning_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix meaning of"
   pattern_concept_prefix_nazovi
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"

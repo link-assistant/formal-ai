@@ -1,4 +1,9 @@
 meanings
+  thurs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thurs"
   time_dilation
     defined-by topic
     lexeme en
