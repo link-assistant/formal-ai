@@ -729,3 +729,23 @@ and adds the repository-local benchmark profile requested in review.
 | R295 | The issue #408 benchmark-family matrix must list the 8 PR-referenced edit benchmark sources plus 40 additional popular/current LLM benchmark sources, and must provide at least 30 deterministic repository-local prompt-answer variations per source. | Implemented by `data/benchmarks/text-manipulation-suite.lino` and `tests/unit/specification/text_manipulation_benchmarks.rs::issue_408_text_code_edit_profile_passes_local_ratchet`, which requires 48 sources, 30 variations per source, and 1,440 passing checks. |
 | R296 | Benchmark documentation for issue #408 must keep the executable local profile, source research, requirement matrix, roadmap, vision, architecture notes, and changelog synchronized. | Implemented by `docs/case-studies/issue-408/README.md`, `docs/case-studies/issue-408/raw-data/online-research.md`, `data/benchmarks/text-manipulation-suite.lino`, and `tests/unit/docs_requirements.rs::issue_408_text_edit_benchmark_scope_documents_are_traceable`. |
 | R297 | The issue #408 benchmark claim must be per-source, not aggregate-only: every benchmark source committed to the repository-local profile must pass at least the explicit 10% floor and the stronger 30/30 per-source ratchet, with no issue #408 benchmark work deferred. | Implemented by `text-manipulation-suite.lino` fields `local_10_percent_floor_per_source`, `minimum_pass_count_per_source`, and `minimum_pass_count`, plus `issue_408_text_code_edit_profile_passes_local_ratchet`, which fails unless each source passes 30/30 and the total is 1,440/1,440. |
+
+## Issue #451 Symbolic AI Reference And Best Practices
+
+Issue [#451](https://github.com/link-assistant/formal-ai/issues/451) asks the
+project to reference the Wikipedia *Symbolic artificial intelligence* article in
+the docs, adopt the field's best known practices through the repository's own
+associative technological stack, and produce a deep case study with collected
+data, online research, an exhaustive requirement list, and per-requirement
+solution plans (surveying existing components). The work lands in PR
+[#452](https://github.com/link-assistant/formal-ai/pull/452).
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R298 | The project documentation must reference `https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence` so the symbolic-AI (GOFAI) lineage is explicit to newcomers, contributors, and integrators. | Implemented: cited from `README.md` (intro), `VISION.md` (the "associative network is the AI" paragraph), and `ARCHITECTURE.md` §17 References, alongside the related *Semantic network*, *Physical symbol system*, and *Neuro-symbolic AI* articles. |
+| R299 | The best known practices from the article and the domain must be applied through the associative stack (Links Notation, doublets, public-KB grounding), with each practice tied to the code that realizes it and any gap scoped rather than silently deferred. | Implemented by `docs/case-studies/issue-451/symbolic-ai-best-practices.md`, a 20-row audit (15 applied, 4 partial, 1 proposed) with `path:symbol` evidence (`solver.rs`, `proof_engine/`, `probability.rs`, `substitution.rs`, `rule_synthesis.rs`, `knowledge.rs`, `event_log.rs`) and named reuse targets for every gap. |
+| R300 | Issue-related data must be collected into `docs/case-studies/issue-451/`. | Implemented: `docs/case-studies/issue-451/raw-data/` holds `issue-451.json`, the empty `issue-451-comments.json`, and `pr-452.json`. |
+| R301 | A deep case-study analysis must be produced, including online research for additional facts and data beyond the single article. | Implemented by `docs/case-studies/issue-451/README.md` §4 and `docs/case-studies/issue-451/raw-data/online-research.md` (8 cited sources including 2024–2026 neuro-symbolic surveys). |
+| R302 | Each and all requirements from the issue must be listed. | Implemented: requirements R298–R304 enumerated here and in `docs/case-studies/issue-451/README.md` §3 with a "why these seven" justification. |
+| R303 | Possible solutions and solution plans must be proposed for each requirement, checking existing components/libraries that solve a similar problem. | Implemented by `docs/case-studies/issue-451/README.md` §6 (per-requirement plans) and §7 (prior-art survey: WordNet, ConceptNet, RDF/OWL, Prolog, CLIPS/Drools, Cyc, Vampire/Z3, MiniSat/`splr`/`varisat`, DeepProbLog/Scallop, doublets). |
+| R304 | Everything must be planned and executed in the single PR #452. | Implemented: the three doc edits, the case study, the best-practices audit, the `raw-data/` captures, these requirement rows, the changelog fragment, and `issue_451_symbolic_ai_reference_documents_are_present_and_traceable` all land in PR #452. |
