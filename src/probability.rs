@@ -242,6 +242,50 @@ impl ProbabilityStore {
         ))
     }
 
+    /// Reinforce a whole episode's trajectory in one shot — the deterministic,
+    /// append-only counterpart of the paper's global feedback (episode-wide
+    /// one-shot update) from arXiv:2605.00940.
+    ///
+    /// Given an ordered `path` of visited states `[s0, s1, ..., sn]`, this
+    /// appends one [`ProbabilityModel::MarkovTransition`] record per adjacent
+    /// pair `(s_i -> s_{i+1})`, each carrying the shared episode `reward` as its
+    /// utility `U` and the same `provenance`/`recorded_at` stamp, so the entire
+    /// episode is reinforced together rather than transition by transition. The
+    /// recorded evidence is then visible to [`Self::target_weight`] /
+    /// [`Self::target_evidence_count`] under the matching `markov_from` state,
+    /// exactly like any other transition observation.
+    ///
+    /// Returns the ids of the appended records in path order. A `path` with
+    /// fewer than two states has no transitions, so it records nothing and
+    /// returns an empty vector.
+    pub fn reinforce_transition_path<S: AsRef<str>>(
+        &mut self,
+        path: &[S],
+        reward: f32,
+        provenance: impl Into<String>,
+        recorded_at: impl Into<String>,
+    ) -> Vec<String> {
+        let provenance = provenance.into();
+        let recorded_at = recorded_at.into();
+        path.windows(2)
+            .map(|pair| {
+                let from = pair[0].as_ref();
+                let to = pair[1].as_ref();
+                self.record(
+                    ProbabilityEvidence::symbolic(
+                        to,
+                        format!("episode_transition:{from}->{to}"),
+                        reward,
+                        provenance.clone(),
+                        recorded_at.clone(),
+                    )
+                    .with_model(ProbabilityModel::MarkovTransition)
+                    .with_transition_from(from),
+                )
+            })
+            .collect()
+    }
+
     #[must_use]
     pub fn records(&self) -> &[ProbabilityEvidence] {
         &self.records

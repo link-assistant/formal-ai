@@ -1234,6 +1234,94 @@ fn default_decision_policy_is_a_no_op_overlay() {
 }
 
 #[test]
+fn reinforce_transition_path_records_one_observation_per_adjacent_pair() {
+    let mut store = ProbabilityStore::new();
+    let ids = store.reinforce_transition_path(
+        &["s0", "s1", "s2"],
+        0.50,
+        "source:episode:test",
+        "2026-06-13T00:00:00Z",
+    );
+    // Three states => two transitions => two appended records, all retained
+    // append-only.
+    assert_eq!(ids.len(), 2);
+    assert_eq!(store.records().len(), 2);
+
+    // Each transition is visible only under its own `from` state, carrying the
+    // shared episode reward as utility and counting as one observation.
+    assert!((store.target_weight("s1", false, Some("s0")) - 0.50).abs() < 1e-6);
+    assert_eq!(store.target_evidence_count("s1", false, Some("s0")), 1);
+    assert!((store.target_weight("s2", false, Some("s1")) - 0.50).abs() < 1e-6);
+    assert_eq!(store.target_evidence_count("s2", false, Some("s1")), 1);
+
+    // A transition does not apply to a non-matching prior state.
+    assert!(store.target_weight("s2", false, Some("s0")).abs() < 1e-6);
+}
+
+#[test]
+fn reinforce_transition_path_is_a_no_op_below_two_states() {
+    let mut store = ProbabilityStore::new();
+    assert!(store
+        .reinforce_transition_path(&["only"], 1.0, "src", "2026-06-13T00:00:00Z")
+        .is_empty());
+    let empty: [&str; 0] = [];
+    assert!(store
+        .reinforce_transition_path(&empty, 1.0, "src", "2026-06-13T00:00:00Z")
+        .is_empty());
+    assert_eq!(store.records().len(), 0);
+}
+
+#[test]
+fn reinforce_transition_path_accumulates_repeated_episodes() {
+    let mut store = ProbabilityStore::new();
+    // Two episodes that both traverse s0 -> s1 accumulate utility and count for
+    // that transition, which is exactly what the counted-utility policy rewards.
+    store.reinforce_transition_path(
+        &["s0", "s1"],
+        0.40,
+        "source:episode:a",
+        "2026-06-13T00:00:00Z",
+    );
+    store.reinforce_transition_path(
+        &["s0", "s1"],
+        0.30,
+        "source:episode:b",
+        "2026-06-13T00:01:00Z",
+    );
+    assert_eq!(store.records().len(), 2);
+    assert!((store.target_weight("s1", false, Some("s0")) - 0.70).abs() < 1e-6);
+    assert_eq!(store.target_evidence_count("s1", false, Some("s0")), 2);
+}
+
+#[test]
+fn reinforce_transition_path_replays_into_event_log_and_link_store() {
+    let mut store = ProbabilityStore::new();
+    store.reinforce_transition_path(
+        &["s0".to_owned(), "s1".to_owned(), "s2".to_owned()],
+        0.60,
+        "source:episode:test",
+        "2026-06-13T00:00:00Z",
+    );
+
+    // The episode evidence stays link-native and replayable like every other
+    // probability record.
+    let lino = store.to_links_notation();
+    assert!(lino.contains("record_count \"2\""), "{lino}");
+    assert!(lino.contains("transition_from \"s0\""), "{lino}");
+    assert!(lino.contains("transition_from \"s1\""), "{lino}");
+
+    let mut log = EventLog::new();
+    assert_eq!(store.replay_into_event_log(&mut log, false), 2);
+    let mut memory = MemoryStore::new();
+    assert_eq!(
+        store
+            .append_to_link_store(&mut memory, false)
+            .expect("episode evidence should replay to link store"),
+        2
+    );
+}
+
+#[test]
 fn probability_evidence_reranks_formalization_across_supported_languages() {
     // Issue #449 extends `ProbabilityRankingConfig` (evidence count, counted
     // utility, transition thresholds) ported from arXiv:2605.00940. That config
