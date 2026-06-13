@@ -1027,7 +1027,7 @@ the table in Section 2 and link the new module.
 - `VISION.md` — values, product story, north-star user experience.
 - `GOALS.md` — what counts as success per surface.
 - `NON-GOALS.md` — what we explicitly do not build.
-- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 ... R297).
+- `REQUIREMENTS.md` — issue-by-issue implementation matrix (R1 ... R305).
 - `ROADMAP.md` — implementation-progress tracker mapping each `VISION.md` pillar to its real code status, closed planning batches, and remaining follow-up gaps.
 - [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — default native storage backend.
 - [`linksplatform/doublets-web`](https://github.com/linksplatform/doublets-web) — browser-side mirror.
@@ -1038,3 +1038,22 @@ the table in Section 2 and link the new module.
   concept articles.
 - Wiktionary (`https://*.wiktionary.org/`) — public source of per-language
   word and idiom entries.
+
+### Domain background (symbolic AI)
+
+- [Symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence)
+  — the field this project belongs to (GOFAI); the source of the best-practice
+  audit in `docs/case-studies/issue-451/symbolic-ai-best-practices.md`.
+- [Semantic network](https://en.wikipedia.org/wiki/Semantic_network) — the
+  classical-AI name for the associative link store.
+- [Physical symbol system](https://en.wikipedia.org/wiki/Physical_symbol_system)
+  — Newell & Simon's hypothesis underlying the link-as-symbol model.
+- [Neuro-symbolic AI](https://en.wikipedia.org/wiki/Neuro-symbolic_AI) — the
+  integration framing the project tracks while staying pure-symbolic.
+- [Boolean satisfiability problem](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem)
+  and the [DPLL algorithm](https://en.wikipedia.org/wiki/DPLL_algorithm) — the
+  decision procedure the propositional engine delegates to for claims wider than
+  the truth-table limit. The in-house, dependency-free DPLL search lives in
+  `src/proof_engine/decision/sat.rs`; wide claims are
+  [Tseitin-encoded](https://en.wikipedia.org/wiki/Tseytin_transformation) to CNF
+  in `src/proof_engine/decision/boolean.rs` before being handed to it.
