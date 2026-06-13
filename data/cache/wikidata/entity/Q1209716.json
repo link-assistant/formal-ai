@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "Q1209716": {
+      "type": "item",
+      "id": "Q1209716",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "tomorrow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "завтра"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "明天"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day after today"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день после сегодня"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "明日"
+          },
+          {
+            "language": "zh",
+            "value": "翌日"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

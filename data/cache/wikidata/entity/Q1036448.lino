@@ -1,0 +1,14 @@
+Q1036448
+  aliases
+    en ("day after to-morrow" overmorrow)
+    ru ("день после завтра")
+  descriptions
+    en "two days after today"
+    ru "день, следующий за завтра"
+  id Q1036448
+  labels
+    en "day after tomorrow"
+    ru "послезавтра"
+    zh "後天"
+  type item
+success 1

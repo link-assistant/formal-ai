@@ -48,10 +48,7 @@ impl ScheduledEvent {
             self.minute,
             self.duration_minutes,
         );
-        format!(
-            "{:04}{:02}{:02}T{:02}{:02}00",
-            year, month, day, hour, minute
-        )
+        format!("{year:04}{month:02}{day:02}T{hour:02}{minute:02}00")
     }
 
     /// A stable, content-derived UID so re-importing the same proposal updates
@@ -99,7 +96,7 @@ impl ScheduledEvent {
 }
 
 /// Add `minutes` to a wall-clock date-time, rolling over hour/day/month/year.
-fn add_minutes(
+const fn add_minutes(
     year: i32,
     month: u32,
     day: u32,
@@ -150,7 +147,7 @@ fn ics_dtstamp() -> String {
     let Ok(now) = SystemTime::now().duration_since(UNIX_EPOCH) else {
         return "19700101T000000Z".to_owned();
     };
-    let secs = now.as_secs() as i64;
+    let secs = i64::try_from(now.as_secs()).unwrap_or(0);
     let days = secs.div_euclid(86_400);
     let sod = secs.rem_euclid(86_400);
     let (y, m, d) = days_to_date(days);

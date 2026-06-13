@@ -43,6 +43,8 @@ roles
     kind meaning
   calendar_question
     kind predicate
+  calendar_relative_date
+    kind predicate
   calendar_schedule_action
     kind meaning
   calendar_time
