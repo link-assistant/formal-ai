@@ -21751,6 +21751,96 @@ const MEANINGS_LINO = [
   '        text "… 一步一步写"',
   "      surface",
   '        text "… 请"',
+  "  procedural_elaboration",
+  "    defined-by inquiry",
+  "    defined-by procedural_request",
+  "    role procedural_elaboration",
+  "    lexeme en",
+  "      surface",
+  '        text "specific instructions"',
+  "      surface",
+  '        text "specific steps"',
+  "      surface",
+  '        text "detailed instructions"',
+  "      surface",
+  '        text "detailed steps"',
+  "      surface",
+  '        text "exact steps"',
+  "      surface",
+  '        text "exact instructions"',
+  "      surface",
+  '        text "the steps"',
+  "      surface",
+  '        text "step by step"',
+  "      surface",
+  '        text "step-by-step"',
+  "      surface",
+  '        text "more specific"',
+  "      surface",
+  '        text "more detail"',
+  "      surface",
+  '        text "more details"',
+  "      surface",
+  '        text "in detail"',
+  "      surface",
+  '        text "elaborate"',
+  "    lexeme ru",
+  "      surface",
+  '        text "конкретные инструкции"',
+  "      surface",
+  '        text "конкретные шаги"',
+  "      surface",
+  '        text "подробные инструкции"',
+  "      surface",
+  '        text "подробные шаги"',
+  "      surface",
+  '        text "точные шаги"',
+  "      surface",
+  '        text "пошагово"',
+  "      surface",
+  '        text "по шагам"',
+  "      surface",
+  '        text "поподробнее"',
+  "      surface",
+  '        text "подробнее"',
+  "      surface",
+  '        text "более конкретно"',
+  "      surface",
+  '        text "конкретнее"',
+  "    lexeme hi",
+  "      surface",
+  '        text "विशिष्ट निर्देश"',
+  "      surface",
+  '        text "विस्तृत निर्देश"',
+  "      surface",
+  '        text "विस्तृत चरण"',
+  "      surface",
+  '        text "सटीक चरण"',
+  "      surface",
+  '        text "चरण दर चरण"',
+  "      surface",
+  '        text "कदम दर कदम"',
+  "      surface",
+  '        text "अधिक विस्तार"',
+  "      surface",
+  '        text "और विस्तार"',
+  "    lexeme zh",
+  "      surface",
+  "        text 具体说明",
+  "      surface",
+  "        text 具体步骤",
+  "      surface",
+  "        text 详细步骤",
+  "      surface",
+  "        text 详细说明",
+  "      surface",
+  "        text 确切步骤",
+  "      surface",
+  "        text 一步一步",
+  "      surface",
+  "        text 更具体",
+  "      surface",
+  "        text 更详细",
   "  common_typo",
   "    defined-by relation",
   "    role common_typo",
@@ -29731,6 +29821,13 @@ const ROLE_PROCEDURAL_REQUEST = "procedural_request";
 // these forms by meaning instead of hardcoding per-language modifier and typo
 // arrays.
 const ROLE_PROCEDURAL_TASK_MODIFIER = "procedural_task_modifier";
+// Issue #444: a follow-up that asks for the concrete steps of an active
+// procedure ("give me specific instructions", "step by step", "дай конкретные
+// инструкции", "具体步骤", …). Its surfaces live in data/seed/meanings-how.lino
+// (embedded in MEANINGS_LINO above); tryProceduralHowToFollowup asks the lexicon
+// for this role by meaning instead of hardcoding per-language phrase arrays.
+// Mirrors ROLE_PROCEDURAL_ELABORATION in src/seed/roles/intent.rs.
+const ROLE_PROCEDURAL_ELABORATION = "procedural_elaboration";
 const ROLE_COMMON_TYPO = "common_typo";
 // Issue #386 mechanism-subject cleanup roles — mirror the
 // ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
@@ -33897,6 +33994,52 @@ async function tryProceduralHowTo(prompt, language) {
   };
 }
 
+// Recognise a request for the concrete steps of an active procedure by
+// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
+// Each surface of the procedural_elaboration meaning lives in
+// data/seed/meanings-how.lino (embedded in MEANINGS_LINO above); this code knows
+// only the concept. Mirrors is_procedural_elaboration_request in
+// src/solver_handler_how.rs.
+function isProceduralElaborationRequest(normalized) {
+  return lexiconMentionsRole(ROLE_PROCEDURAL_ELABORATION, normalized);
+}
+
+// The prior exchange must have been a how-to procedure: the previous user turn
+// re-parses as a procedural request and the assistant answered it. Mirrors the
+// last_assistant_turn + last_user_turn re-parse gate in
+// try_procedural_how_to_followup (src/solver_handler_how.rs).
+function priorProceduralHowToDialogue(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (!assistant) return null;
+  const user = lastHistoryTurn(history, "user");
+  if (!user) return null;
+  const task = extractProceduralHowToTask(normalizePrompt(user));
+  return task ? { user, task } : null;
+}
+
+// Issue #444: a bare follow-up such as "Can you give me specific instructions?"
+// carries no "how to" lead-in of its own and would otherwise dead-end at the
+// unknown opener. When the current prompt evidences the procedural_elaboration
+// meaning and the prior turn was an answered how-to request, re-run the original
+// discovery so the elaboration rebinds to the recovered task. Mirrors
+// try_procedural_how_to_followup in src/solver_handler_how.rs (mirror parity).
+async function tryProceduralHowToFollowup(prompt, language, history = []) {
+  const canonical = normalizePrompt(prompt);
+  if (!isProceduralElaborationRequest(canonical)) return null;
+  const dialogue = priorProceduralHowToDialogue(history);
+  if (!dialogue) return null;
+  const procedure = await tryProceduralHowTo(dialogue.user, language);
+  if (!procedure) return null;
+  // Front-load the follow-up evidence so the rebind is visible in the trace,
+  // matching the log.append order on the Rust side.
+  procedure.evidence = [
+    `procedural_how_to:followup:${canonical}`,
+    `procedural_how_to:followup_task:${dialogue.task.task}`,
+    ...procedure.evidence,
+  ];
+  return procedure;
+}
+
 function stripHtml(value) {
   return String(value || "")
     .replace(/<[^>]*>/g, "")
@@ -37041,6 +37184,34 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     });
     return finalize(events, steps, toolCalls, procedure, formalizationContext);
+  }
+
+  // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
+  // give me specific instructions?") carries no "how to" lead-in of its own, so
+  // tryProceduralHowTo above returned null. Rebind it to the procedure recovered
+  // from the prior turn instead of letting it fall to web search / the unknown
+  // opener. Mirrors the procedural_how_to_followup slot in the Rust dispatch
+  // table, which sits right after procedural_how_to.
+  steps.push({ step: "invoke_tool", detail: "procedural_how_to_followup" });
+  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history);
+  if (procedureFollowup) {
+    events.push(`handler:${procedureFollowup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProceduralHowToFollowup" });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt,
+        language,
+        query: procedureFollowup.query || "",
+        wikihowCandidate: procedureFollowup.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: procedureFollowup.intent,
+        confidence: procedureFollowup.confidence,
+        formalizedObject: procedureFollowup.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
