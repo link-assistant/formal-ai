@@ -28,8 +28,8 @@ use crate::seed::{
     ROLE_RESEARCH_SUPERLATIVE_MODIFIER, ROLE_WEB_SEARCH_ACTION, ROLE_WEB_SEARCH_EXPLICIT_PREFIX,
     ROLE_WEB_SEARCH_IMPERATIVE_LEAD, ROLE_WEB_SEARCH_NEWS_RECENCY, ROLE_WEB_SEARCH_NEWS_SUBJECT,
     ROLE_WEB_SEARCH_QUERY_LEADING_NOISE, ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE,
-    ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY, ROLE_WEB_SEARCH_STRONG_ACTION,
-    ROLE_WEB_SEARCH_TOPIC_MARKER,
+    ROLE_WEB_SEARCH_RECORDS_SUBJECT, ROLE_WEB_SEARCH_SIGNAL, ROLE_WEB_SEARCH_SOURCE_ONLY,
+    ROLE_WEB_SEARCH_STRONG_ACTION, ROLE_WEB_SEARCH_TOPIC_MARKER,
 };
 
 use super::web_requests::normalize_url_candidate;
@@ -39,6 +39,7 @@ pub(super) enum WebSearchQueryKind {
     ExplicitPrefix,
     SemanticAction,
     LatestNews,
+    RecordsInformationRequest,
     ImplicitResearchQuestion,
     EnumerationResearchRequest,
 }
@@ -49,6 +50,7 @@ impl WebSearchQueryKind {
             Self::ExplicitPrefix => "explicit_prefix",
             Self::SemanticAction => "semantic_action",
             Self::LatestNews => "latest_news",
+            Self::RecordsInformationRequest => "records_information_request",
             Self::ImplicitResearchQuestion => "implicit_research_question",
             Self::EnumerationResearchRequest => "enumeration_research_request",
         }
@@ -110,6 +112,12 @@ pub(super) fn extract_web_search_request(
         return Some(WebSearchRequest {
             query,
             kind: WebSearchQueryKind::LatestNews,
+        });
+    }
+    if let Some(query) = extract_records_information_request(&normalized_words) {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::RecordsInformationRequest,
         });
     }
     if let Some(query) = extract_enumeration_research_request(&normalized_words) {
@@ -191,6 +199,8 @@ struct WebSearchMarkers {
     news_subject_markers: Vec<&'static str>,
     /// Freshness markers that pair with news/headline subjects.
     news_recency_markers: Vec<&'static str>,
+    /// Records/documents subject nouns for verbless "records about X" requests.
+    records_subject_markers: Vec<&'static str>,
     /// Verbs that open a follow-up instruction clause ("compare", "summarize").
     followup_verbs: Vec<&'static str>,
     /// Conjunctions/adverbs that, like punctuation, mark a clause boundary.
@@ -225,6 +235,7 @@ fn markers() -> &'static WebSearchMarkers {
         source_only: source_literals(ROLE_WEB_SEARCH_SOURCE_ONLY),
         news_subject_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
         news_recency_markers: bare_literals(ROLE_WEB_SEARCH_NEWS_RECENCY),
+        records_subject_markers: bare_literals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
         followup_verbs: bare_literals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
         continuation_markers: bare_literals(ROLE_CLAUSE_CONTINUATION_MARKER),
         research_question_prefixes: prefix_literals(ROLE_RESEARCH_QUESTION_OPENER),
@@ -328,6 +339,33 @@ fn extract_latest_news_search_request(normalized: &str) -> Option<String> {
     if !contains_any_search_marker(normalized, &markers.news_subject_markers)
         || !contains_any_search_marker(normalized, &markers.news_recency_markers)
     {
+        return None;
+    }
+    valid_news_search_query(normalized)
+}
+
+/// A verbless "records about a subject" request — "financial records for boeing",
+/// "statistics on icas", "записи о boeing", "boeing के रिकॉर्ड".
+///
+/// It fires only when the prompt names a retrievable record subject
+/// ([`ROLE_WEB_SEARCH_RECORDS_SUBJECT`]: records / filings / statements /
+/// financials / statistics / dossier and their translations) *and* ties it to a
+/// subject with a topic connective ([`ROLE_WEB_SEARCH_TOPIC_MARKER`]: for /
+/// about / on / of, о, के बारे में, 关于 …). Requiring both keeps it from
+/// stealing bare fact-lookups ("what is a financial record") while routing the
+/// "<records> <connective> <subject>" shape to web search without an imperative
+/// search verb. The whole prompt is the query, cleaned like a news request.
+fn extract_records_information_request(normalized: &str) -> Option<String> {
+    let markers = markers();
+    if !contains_any_search_marker(normalized, &markers.records_subject_markers) {
+        return None;
+    }
+    let has_topic_marker = markers
+        .topic_after_markers
+        .iter()
+        .chain(markers.topic_before_markers.iter())
+        .any(|marker| contains_search_marker(normalized, marker));
+    if !has_topic_marker {
         return None;
     }
     valid_news_search_query(normalized)

@@ -244,6 +244,73 @@ meanings
         text 今日
       surface
         text 今天
+  reference_records
+    defined-by web_resource
+    defined-by concept
+    role web_search_signal
+    role web_search_records_subject
+    lexeme en
+      surface
+        text " records "
+      surface
+        text " record "
+      surface
+        text " filings "
+      surface
+        text " filing "
+      surface
+        text " statements "
+      surface
+        text " statement "
+      surface
+        text " financials "
+      surface
+        text " statistics "
+      surface
+        text " dossier "
+    lexeme ru
+      surface
+        text " записи "
+      surface
+        text " отчет"
+      surface
+        text " отчёт"
+      surface
+        text " ведомост"
+      surface
+        text " статистик"
+      surface
+        text " досье "
+    lexeme hi
+      surface
+        text रिकॉर्ड
+      surface
+        text आंकड़े
+      surface
+        text आँकड़े
+      surface
+        text दस्तावेज़
+      surface
+        text दस्तावेज
+      surface
+        text ब्योरा
+    lexeme zh
+      surface
+        text 记录
+      surface
+        text 記錄
+      surface
+        text 档案
+      surface
+        text 檔案
+      surface
+        text 报表
+      surface
+        text 報表
+      surface
+        text 统计
+      surface
+        text 統計
   act_search_strong
     defined-by inquiry
     defined-by action

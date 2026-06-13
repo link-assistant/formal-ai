@@ -21266,6 +21266,73 @@ const MEANINGS_LINO = [
   "        text 今日",
   "      surface",
   "        text 今天",
+  "  reference_records",
+  "    defined-by web_resource",
+  "    defined-by concept",
+  "    role web_search_signal",
+  "    role web_search_records_subject",
+  "    lexeme en",
+  "      surface",
+  '        text " records "',
+  "      surface",
+  '        text " record "',
+  "      surface",
+  '        text " filings "',
+  "      surface",
+  '        text " filing "',
+  "      surface",
+  '        text " statements "',
+  "      surface",
+  '        text " statement "',
+  "      surface",
+  '        text " financials "',
+  "      surface",
+  '        text " statistics "',
+  "      surface",
+  '        text " dossier "',
+  "    lexeme ru",
+  "      surface",
+  '        text " записи "',
+  "      surface",
+  '        text " отчет"',
+  "      surface",
+  '        text " отчёт"',
+  "      surface",
+  '        text " ведомост"',
+  "      surface",
+  '        text " статистик"',
+  "      surface",
+  '        text " досье "',
+  "    lexeme hi",
+  "      surface",
+  "        text रिकॉर्ड",
+  "      surface",
+  "        text आंकड़े",
+  "      surface",
+  "        text आँकड़े",
+  "      surface",
+  "        text दस्तावेज़",
+  "      surface",
+  "        text दस्तावेज",
+  "      surface",
+  "        text ब्योरा",
+  "    lexeme zh",
+  "      surface",
+  "        text 记录",
+  "      surface",
+  "        text 記錄",
+  "      surface",
+  "        text 档案",
+  "      surface",
+  "        text 檔案",
+  "      surface",
+  "        text 报表",
+  "      surface",
+  "        text 報表",
+  "      surface",
+  "        text 统计",
+  "      surface",
+  "        text 統計",
   "  act_search_strong",
   "    defined-by inquiry",
   "    defined-by action",
@@ -31608,6 +31675,7 @@ const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE = "web_search_query_trailing_noise";
 const ROLE_WEB_SEARCH_SOURCE_ONLY = "web_search_source_only";
 const ROLE_WEB_SEARCH_NEWS_SUBJECT = "web_search_news_subject";
 const ROLE_WEB_SEARCH_NEWS_RECENCY = "web_search_news_recency";
+const ROLE_WEB_SEARCH_RECORDS_SUBJECT = "web_search_records_subject";
 // Mention of web search inside a *prior* conversation turn (raw lowercased
 // substring of the turn text, not the normalised prompt). Mirrors
 // ROLE_WEB_SEARCH_HISTORY_SIGNAL in src/seed/roles.rs.
@@ -31766,6 +31834,7 @@ function webSearchMarkers() {
     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
+    recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
@@ -32045,6 +32114,27 @@ function extractLatestNewsSearchRequest(normalized) {
   return validNewsSearchQuery(text);
 }
 
+// A verbless "records about a subject" request — "financial records for boeing",
+// "записи о boeing", "关于波音的财务记录". Fires only when the prompt names a
+// retrievable record subject (ROLE_WEB_SEARCH_RECORDS_SUBJECT) tied to a subject
+// by a topic connective (ROLE_WEB_SEARCH_TOPIC_MARKER). Mirrors
+// extract_records_information_request in
+// src/solver_handlers/web_search_intent.rs.
+function extractRecordsInformationRequest(normalized) {
+  const markers = webSearchMarkers();
+  const text = String(normalized || "");
+  if (!containsAnySearchMarker(text, markers.recordsSubjectMarkers)) {
+    return "";
+  }
+  const hasTopicMarker = markers.topicAfterMarkers
+    .concat(markers.topicBeforeMarkers)
+    .some((marker) => containsSearchMarker(text, marker));
+  if (!hasTopicMarker) {
+    return "";
+  }
+  return validNewsSearchQuery(text);
+}
+
 function stripImplicitResearchPrefix(value) {
   const text = String(value || "");
   for (const prefix of webSearchMarkers().researchQuestionPrefixes) {
@@ -32130,6 +32220,10 @@ function extractWebSearchRequest(prompt, normalized) {
   const latestNewsQuery = extractLatestNewsSearchRequest(normalized);
   if (latestNewsQuery) {
     return { query: latestNewsQuery, kind: "latest_news" };
+  }
+  const recordsQuery = extractRecordsInformationRequest(normalized);
+  if (recordsQuery) {
+    return { query: recordsQuery, kind: "records_information_request" };
   }
   const enumerationQuery = extractEnumerationResearchRequest(prompt, normalized);
   if (enumerationQuery) {
