@@ -1,0 +1,13 @@
+Q1209716
+  aliases
+    zh ("明日" "翌日")
+  descriptions
+    en "day after today"
+    ru "день после сегодня"
+  id Q1209716
+  labels
+    en tomorrow
+    ru "завтра"
+    zh "明天"
+  type item
+success 1

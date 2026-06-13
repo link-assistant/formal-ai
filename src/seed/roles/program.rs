@@ -96,6 +96,14 @@ pub const ROLE_CALENDAR_TIME: &str = "calendar_time";
 /// scheduled event (по грузии, по тбилиси, Asia/Tbilisi, …). The handler
 /// maps a hit on these surfaces to the concrete IANA string.
 pub const ROLE_CALENDAR_TIMEZONE_ALIAS: &str = "calendar_timezone_alias";
+/// Semantic role: a relative-date word that anchors a scheduled event to a day
+/// offset from "today" (tomorrow, завтра, послезавтра, 后天, …).
+///
+/// The meaning slug names the offset (`calendar_tomorrow` → +1,
+/// `calendar_day_after_tomorrow` → +2); the handler resolves the slug back to a
+/// number of days so the words live once, per language, in
+/// `data/seed/meanings-calendar.lino`.
+pub const ROLE_CALENDAR_RELATIVE_DATE: &str = "calendar_relative_date";
 /// Semantic role: a relation in the knowledge base that maps a subject to a
 /// value (capital, population, author, …).
 ///

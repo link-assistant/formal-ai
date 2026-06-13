@@ -1,7 +1,10 @@
 // @ts-check
-// Issue #404: the Russian calendar-event request fell through to unknown in the
-// browser worker. It must now draft a calendar event and expose safe execution
-// paths instead of pretending it can write the user's calendar without consent.
+// Issue #435: the Russian prompt "Можешь поставить мне созвон в кальндарь на
+// завтра?" carries no day number and no clock time — only a relative-date word
+// ("на завтра") and an event noun ("созвон"). It used to fall through to the
+// unknown intent. The browser worker must now recognize the relative date,
+// resolve "завтра" to tomorrow, and draft an importable calendar event titled
+// from the event noun instead of pretending it cannot help.
 const { test, expect } = require('@playwright/test');
 
 async function disableGreetingVariations(page) {
@@ -42,7 +45,7 @@ async function sendPrompt(page, text) {
   return messages.last();
 }
 
-test.describe('Issue #404 - calendar event request', () => {
+test.describe('Issue #435 - relative-date calendar request', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
     await page.goto('./');
@@ -51,26 +54,32 @@ test.describe('Issue #404 - calendar event request', () => {
     await switchToManualMode(page);
   });
 
-  test('reported Russian prompt drafts a Georgia-time event instead of unknown', async ({
+  test('reported "на завтра" prompt drafts a tomorrow event instead of unknown', async ({
     page,
   }) => {
     const answer = await sendPrompt(
       page,
-      'Забей мне 18 число в 17:00 по грузии на встречу с Леваном',
+      'Можешь поставить мне созвон в кальндарь на завтра?',
     );
     const body = answer.locator('.markdown-body');
 
     await expect(body).not.toContainText('Я тебя не понял');
     await expect(body).not.toContainText('Я пока не знаю');
-    // The subject is extracted from "на встречу с Леваном" and capitalized for
-    // the .ics SUMMARY ("Встречу с леваном").
-    await expect(body).toContainText('Встречу с леваном');
-    await expect(body).toContainText('17:00');
-    await expect(body).toContainText('Asia/Tbilisi');
+    // Title is derived from the event noun «созвон».
+    await expect(body).toContainText('Созвон');
     await expect(body).toContainText('.ics');
     await expect(body).toContainText('BEGIN:VEVENT');
     await expect(body).toContainText('calendar.google.com/calendar/render');
-    // The draft asks for confirmation instead of silently writing the calendar.
     await expect(body).toContainText('Ответьте «да», чтобы подтвердить');
+
+    // The resolved date must be tomorrow (today UTC + 1 day), formatted YYYY-MM-DD.
+    const now = new Date();
+    const tomorrow = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1),
+    );
+    const iso = `${tomorrow.getUTCFullYear()}-${String(
+      tomorrow.getUTCMonth() + 1,
+    ).padStart(2, '0')}-${String(tomorrow.getUTCDate()).padStart(2, '0')}`;
+    await expect(body).toContainText(iso);
   });
 });

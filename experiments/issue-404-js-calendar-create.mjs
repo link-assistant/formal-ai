@@ -114,6 +114,45 @@ check(
   gate("install version 3 of the package") === false,
 );
 
+// --- Issue #435: relative-date scheduling ("на завтра") with no digit/day word.
+const issue435 = [
+  ["ru #435 prompt", "Можешь поставить мне созвон в кальндарь на завтра?", "Созвон"],
+  ["ru short", "поставь созвон на завтра", "Созвон"],
+  ["en", "schedule a call for tomorrow", "Call"],
+  ["zh", "明天安排一个通话", "通话"],
+];
+for (const [label, prompt, expectedTitle] of issue435) {
+  check(`${label}: gate recognizes relative-date create`, gate(prompt) === true);
+  const hit = create(prompt);
+  check(
+    `${label}: routes to calendar_create_event`,
+    hit?.intent === "calendar_create_event",
+    hit?.intent,
+  );
+  check(
+    `${label}: title is the event noun "${expectedTitle}"`,
+    hit?.content?.includes(`«${expectedTitle}»`) ||
+      hit?.content?.includes(`「${expectedTitle}」`) ||
+      hit?.content?.includes(`SUMMARY:${expectedTitle}`),
+    hit?.content?.slice(0, 80),
+  );
+  check(
+    `${label}: records parsed_relative_offset evidence`,
+    hit?.evidence?.some((e) => e.startsWith("calendar:parsed_relative_offset")),
+  );
+  // Tomorrow = today (UTC) + 1 day.
+  const base = new Date();
+  const expected = new Date(
+    Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate() + 1),
+  );
+  const iso = `${expected.getUTCFullYear()}-${String(expected.getUTCMonth() + 1).padStart(2, "0")}-${String(expected.getUTCDate()).padStart(2, "0")}`;
+  check(
+    `${label}: date resolves to tomorrow (${iso})`,
+    hit?.evidence?.some((e) => e === `calendar:parsed_date:${iso}`),
+    hit?.evidence?.find((e) => e.startsWith("calendar:parsed_date:")),
+  );
+}
+
 console.log(
   `\n${failures.length === 0 ? "ALL PASS" : `FAILURES: ${failures.join(", ")}`}`,
 );

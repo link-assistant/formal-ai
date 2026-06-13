@@ -389,6 +389,48 @@ meanings
     lexeme zh
       surface
         text 今天
+  calendar_tomorrow
+    grounded-in Q1209716
+    defined-by calendar_day
+    role calendar_relative_date
+    lexeme en
+      surface
+        text tomorrow
+      surface
+        text "the next day"
+    lexeme ru
+      surface
+        text завтра
+      surface
+        text "на завтра"
+    lexeme hi
+      surface
+        text कल
+      surface
+        text आनेवाला कल
+    lexeme zh
+      surface
+        text 明天
+      surface
+        text 明日
+  calendar_day_after_tomorrow
+    grounded-in Q1036448
+    defined-by calendar_day
+    role calendar_relative_date
+    lexeme en
+      surface
+        text "day after tomorrow"
+      surface
+        text "the day after tomorrow"
+    lexeme ru
+      surface
+        text послезавтра
+    lexeme hi
+      surface
+        text परसों
+    lexeme zh
+      surface
+        text 后天
   calendar_interrogative
     defined-by calendar_day
     role calendar_question
@@ -462,6 +504,10 @@ meanings
       surface
         text "поставь мне"
       surface
+        text поставить
+      surface
+        text "поставить мне"
+      surface
         text создай
       surface
         text "создай событие"
@@ -502,6 +548,18 @@ meanings
         text событие
       surface
         text события
+      surface
+        text созвон
+      surface
+        text созвона
+      surface
+        text созвоны
+      surface
+        text созвону
+      surface
+        text звонок
+      surface
+        text звонка
     lexeme hi
       surface
         text मीटिंग
@@ -512,6 +570,8 @@ meanings
         text 会议
       surface
         text 事件
+      surface
+        text 通话
   calendar_clock_time
     defined-by calendar_day
     role calendar_time

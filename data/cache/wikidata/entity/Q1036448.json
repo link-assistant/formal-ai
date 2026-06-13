@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "Q1036448": {
+      "type": "item",
+      "id": "Q1036448",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "day after tomorrow"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "послезавтра"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "後天"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "two days after today"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день, следующий за завтра"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "day after to-morrow"
+          },
+          {
+            "language": "en",
+            "value": "overmorrow"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "день после завтра"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

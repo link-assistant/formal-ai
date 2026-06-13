@@ -1,0 +1,46 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (yesterday)
+      definitions
+        entry
+          definition "The day after the present day."
+      partOfSpeech noun
+      synonyms (morrow)
+    entry
+      antonyms (yesterday)
+      definitions
+        entry
+          definition "On the day after the present day."
+        entry
+          definition "At some point in the future; later on"
+          example "If you don't get your life on track today, you're going to be very sorry tomorrow."
+        entry
+          definition "(possibly obsolete) On next (period of time other than a day, such as a week or a month), following the present (period of time)."
+        entry
+          definition "On the next day (following some date in the past)."
+      partOfSpeech adverb
+  phonetic "/təˈmɔɹoʊ/"
+  phonetics
+    entry
+      audio ""
+      text "/təˈmɔɹoʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tomorrow-uk.mp3"
+      license
+        name "BY 3.0 US"
+        url "https://creativecommons.org/licenses/by/3.0/us"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9028860"
+      text "/təˈmɒɹəʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/tomorrow-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=823175"
+      text "/təˈmɑɹoʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/tomorrow")
+  word tomorrow

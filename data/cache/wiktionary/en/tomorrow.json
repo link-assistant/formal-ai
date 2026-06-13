@@ -1,0 +1,85 @@
+[
+  {
+    "word": "tomorrow",
+    "phonetic": "/təˈmɔɹoʊ/",
+    "phonetics": [
+      {
+        "text": "/təˈmɔɹoʊ/",
+        "audio": ""
+      },
+      {
+        "text": "/təˈmɒɹəʊ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/tomorrow-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9028860",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/təˈmɑɹoʊ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/tomorrow-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=823175",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The day after the present day.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "morrow"
+        ],
+        "antonyms": [
+          "yesterday"
+        ]
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "On the day after the present day.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "At some point in the future; later on",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you don't get your life on track today, you're going to be very sorry tomorrow."
+          },
+          {
+            "definition": "(possibly obsolete) On next (period of time other than a day, such as a week or a month), following the present (period of time).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "On the next day (following some date in the past).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "yesterday"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/tomorrow"
+    ]
+  }
+]

@@ -9734,12 +9734,20 @@ function mentionsCalendarCreateRequest(normalized) {
     wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
       containsCalendarTerm(normalized, w),
     ) || extractClockTime(normalized) !== null;
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
+  // anchors the event to a specific day just as well as a day number or a
+  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
+  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
+  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
   // A genuine scheduling request anchors to a concrete date/time cue: a
-  // day-reference word or a clock time. Bare digits (e.g. the "1." / "2." of
-  // a numbered installation-guide list) are NOT a date signal — they were the
-  // source of false positives that hijacked installation-conversion prompts
-  // such as "…the-book-of-secret-knowledge…" (issue #404 vs #423).
-  const hasDateSignal = hasDayRef || hasClock;
+  // day-reference word, a clock time, or a relative-date word. Bare digits
+  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
+  // date signal — they were the source of false positives that hijacked
+  // installation-conversion prompts such as
+  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
   if (!hasDateSignal) return false;
   const hasAction =
     wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
@@ -9806,6 +9814,41 @@ function computeTargetDateWithRollover(base, day) {
   const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
   if (d > maxDay) d = maxDay;
   return [y, m, d];
+}
+
+// Resolve a relative-date word to a whole-day offset from today. The surfaces
+// and their languages live in data/seed/meanings-calendar.lino; this code knows
+// only the role and the stable English meaning slugs that name the offset
+// (calendar_tomorrow → +1 day, calendar_day_after_tomorrow → +2 days). Mirrors
+// the Rust relative_date_offset (issue #435).
+function relativeDateOffset(normalized) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_RELATIVE_DATE)) {
+    const matches = meaning.words.some((word) =>
+      containsCalendarTerm(normalized, word),
+    );
+    if (!matches) continue;
+    if (meaning.slug === "calendar_tomorrow") return 1;
+    if (meaning.slug === "calendar_day_after_tomorrow") return 2;
+    return null;
+  }
+  return null;
+}
+
+// Apply a whole-day offset to a {year, month, day} base via UTC date math.
+// Mirrors date_from_unix_days(base.days_since_unix_epoch + offset) in Rust.
+function offsetCalendarDate(base, offset) {
+  const d = new Date(Date.UTC(base.year, base.month - 1, base.day + offset));
+  return [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()];
+}
+
+// Fallback title built from the matched event noun ("созвон" → "Созвон",
+// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
+// phrase was given. Mirrors the Rust extract_event_title (issue #435).
+function extractEventTitle(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_EVENT)) {
+    if (containsCalendarTerm(normalized, word)) return capitalizeFirst(word);
+  }
+  return null;
 }
 
 function extractClockTime(normalized) {
@@ -9876,6 +9919,7 @@ function tidyTitle(candidate) {
     " at ",
     " в ",
     " по ",
+    " на ",
     " 在 ",
     "下午",
     "上午",
@@ -9891,6 +9935,14 @@ function tidyTitle(candidate) {
   if (digit !== -1) end = Math.min(end, digit);
   const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
   if (!trimmed) return null;
+  // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
+  // title — reject it so the caller falls back to the event noun (issue #435).
+  if (
+    wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(
+      (word) => word.toLowerCase() === trimmed.toLowerCase(),
+    )
+  )
+    return null;
   return capitalizeFirst(trimmed);
 }
 
@@ -10102,11 +10154,27 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
   if (!mentionsCalendarCreateRequest(normalized)) return null;
   const base = currentUtcCalendarBase();
   const language = detectLanguage(prompt);
-  const day = extractDayNumber(normalized) || base.day;
-  const [year, month, d] = computeTargetDateWithRollover(base, day);
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
+  // event to a day offset from today (issue #435). It takes priority over a
+  // bare day number so "поставь созвон на завтра" lands on tomorrow rather
+  // than today's date.
+  const relativeOffset = relativeDateOffset(normalized);
+  let year, month, d;
+  if (relativeOffset !== null) {
+    [year, month, d] = offsetCalendarDate(base, relativeOffset);
+  } else {
+    const day = extractDayNumber(normalized) || base.day;
+    [year, month, d] = computeTargetDateWithRollover(base, day);
+  }
   const [hour, minute] = extractClockTime(normalized) || [17, 0];
   const tz = resolveTimezone(normalized) || "UTC";
-  const title = extractTitle(normalized) || defaultTitle(language);
+  // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
+  // back to the matched event noun ("созвон" → "Созвон") before the localized
+  // default, so a title-less request still proposes a meaningful event.
+  const title =
+    extractTitle(normalized) ||
+    extractEventTitle(normalized) ||
+    defaultTitle(language);
   const event = {
     title,
     year,
@@ -10128,6 +10196,9 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
     `calendar:parsed_title:${title}`,
     `calendar:parsed_duration_minutes:${event.durationMinutes}`,
   ];
+  if (relativeOffset !== null) {
+    evidence.push(`calendar:parsed_relative_offset:${relativeOffset}`);
+  }
   if (normalized.includes("число") || normalized.includes("number")) {
     evidence.push("calendar:parsed_via:day_number");
   }
@@ -17839,6 +17910,48 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 今天",
+  "  calendar_tomorrow",
+  "    grounded-in Q1209716",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  "        text tomorrow",
+  "      surface",
+  '        text "the next day"',
+  "    lexeme ru",
+  "      surface",
+  "        text завтра",
+  "      surface",
+  '        text "на завтра"',
+  "    lexeme hi",
+  "      surface",
+  "        text कल",
+  "      surface",
+  "        text आनेवाला कल",
+  "    lexeme zh",
+  "      surface",
+  "        text 明天",
+  "      surface",
+  "        text 明日",
+  "  calendar_day_after_tomorrow",
+  "    grounded-in Q1036448",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  '        text "day after tomorrow"',
+  "      surface",
+  '        text "the day after tomorrow"',
+  "    lexeme ru",
+  "      surface",
+  "        text послезавтра",
+  "    lexeme hi",
+  "      surface",
+  "        text परसों",
+  "    lexeme zh",
+  "      surface",
+  "        text 后天",
   "  calendar_interrogative",
   "    defined-by calendar_day",
   "    role calendar_question",
@@ -17882,7 +17995,6 @@ const MEANINGS_LINO = [
   "        text 告诉",
   "      surface",
   "        text 显示",
-  "meanings",
   "  calendar_schedule_action",
   "    defined-by calendar_day",
   "    role calendar_schedule_action",
@@ -17912,6 +18024,10 @@ const MEANINGS_LINO = [
   "        text поставь",
   "      surface",
   '        text "поставь мне"',
+  "      surface",
+  "        text поставить",
+  "      surface",
+  '        text "поставить мне"',
   "      surface",
   "        text создай",
   "      surface",
@@ -17953,6 +18069,18 @@ const MEANINGS_LINO = [
   "        text событие",
   "      surface",
   "        text события",
+  "      surface",
+  "        text созвон",
+  "      surface",
+  "        text созвона",
+  "      surface",
+  "        text созвоны",
+  "      surface",
+  "        text созвону",
+  "      surface",
+  "        text звонок",
+  "      surface",
+  "        text звонка",
   "    lexeme hi",
   "      surface",
   "        text मीटिंग",
@@ -17963,6 +18091,8 @@ const MEANINGS_LINO = [
   "        text 会议",
   "      surface",
   "        text 事件",
+  "      surface",
+  "        text 通话",
   "  calendar_clock_time",
   "    defined-by calendar_day",
   "    role calendar_time",
@@ -18019,6 +18149,7 @@ const MEANINGS_LINO = [
   "        text 格鲁吉亚时间",
   "      surface",
   "        text 第比利斯时间",
+  "meanings",
   "  money",
   "    grounded-in Q1368",
   "    defined-by concept",
@@ -26805,6 +26936,23 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 决定论",
+  "  metatheory",
+  "    defined-by concept",
+  "    role proof_concept_metatheory",
+  "    lexeme en",
+  "      surface",
+  "        text metatheory",
+  "      surface",
+  "        text meta-theory",
+  "    lexeme ru",
+  "      surface",
+  "        text метатеория",
+  "    lexeme hi",
+  "      surface",
+  "        text परासिद्धांत",
+  "    lexeme zh",
+  "      surface",
+  "        text 元理论",
   "meanings",
   "  physical_action_query",
   "    defined-by inquiry",
@@ -29969,6 +30117,10 @@ const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
 const ROLE_CALENDAR_EVENT = "calendar_event";
 const ROLE_CALENDAR_TIME = "calendar_time";
 const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
+// Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
+// anchor a scheduled event to a day offset from today. Mirrors
+// ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.
+const ROLE_CALENDAR_RELATIVE_DATE = "calendar_relative_date";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.

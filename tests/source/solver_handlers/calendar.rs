@@ -10,8 +10,8 @@ use crate::language::detect as detect_language;
 use crate::seed::{
     lexicon, ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT,
     ROLE_CALENDAR_DIRECTION_PREVIOUS, ROLE_CALENDAR_EVENT, ROLE_CALENDAR_QUESTION,
-    ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME, ROLE_CALENDAR_TIMEZONE_ALIAS,
-    ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
+    ROLE_CALENDAR_RELATIVE_DATE, ROLE_CALENDAR_SCHEDULE_ACTION, ROLE_CALENDAR_TIME,
+    ROLE_CALENDAR_TIMEZONE_ALIAS, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY,
 };
 use crate::solver_handlers::calendar_ics::ScheduledEvent;
 use crate::solver_handlers::finalize_simple;
@@ -513,11 +513,30 @@ pub fn try_calendar_create_event(
     log.append("calendar:clock", "system_utc".to_owned());
 
     let language = detect_language(prompt).slug();
-    let day = extract_day_number(normalized).unwrap_or(base.day);
-    let (year, month, day) = compute_target_date_with_rollover(base, day);
+    // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
+    // event to a day offset from today (issue #435). It takes priority over a
+    // bare day number so "поставь созвон на завтра" lands on tomorrow rather
+    // than today's date.
+    let relative_offset = relative_date_offset(normalized);
+    let (year, month, day) = relative_offset.map_or_else(
+        || {
+            let day = extract_day_number(normalized).unwrap_or(base.day);
+            compute_target_date_with_rollover(base, day)
+        },
+        |offset| {
+            log.append("calendar:parsed_relative_offset", offset.to_string());
+            let target = date_from_unix_days(base.days_since_unix_epoch + offset);
+            (target.year, target.month, target.day)
+        },
+    );
     let (hour, minute) = extract_clock_time(normalized).unwrap_or((17, 0));
     let tz = resolve_timezone(normalized).unwrap_or("UTC");
-    let title = extract_title(normalized).unwrap_or_else(|| default_title(language).to_owned());
+    // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
+    // back to the matched event noun ("созвон" → "Созвон") before the localized
+    // default, so a title-less request still proposes a meaningful event.
+    let title = extract_title(normalized)
+        .or_else(|| extract_event_title(normalized))
+        .unwrap_or_else(|| default_title(language).to_owned());
 
     let event = ScheduledEvent {
         title,
@@ -595,12 +614,21 @@ fn mentions_calendar_create_request(normalized: &str) -> bool {
         .iter()
         .any(|w| contains_term(normalized, w))
         || extract_clock_time(normalized).is_some();
+    // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
+    // anchors the event to a specific day just as well as a day number or a
+    // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
+    // digit at all). The surfaces live in data/seed/meanings-calendar.lino.
+    let has_relative_date = lex
+        .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
+        .iter()
+        .any(|w| contains_term(normalized, w));
     // A genuine scheduling request anchors to a concrete date/time cue: a
-    // day-reference word or a clock time. Bare digits (e.g. the "1." / "2." of
-    // a numbered installation-guide list) are NOT a date signal — they were the
-    // source of false positives that hijacked installation-conversion prompts
-    // such as "…the-book-of-secret-knowledge…" (issue #404 vs #423).
-    let has_date_signal = has_day_ref || has_clock;
+    // day-reference word, a clock time, or a relative-date word. Bare digits
+    // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
+    // date signal — they were the source of false positives that hijacked
+    // installation-conversion prompts such as
+    // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+    let has_date_signal = has_day_ref || has_clock || has_relative_date;
     if !has_date_signal {
         return false;
     }
@@ -672,6 +700,44 @@ fn extract_day_number(normalized: &str) -> Option<u32> {
     if let Ok(n) = num.parse::<u32>() {
         if (1..=31).contains(&n) {
             return Some(n);
+        }
+    }
+    None
+}
+
+/// Resolve a relative-date word in the prompt to a whole-day offset from today.
+///
+/// The surfaces ("завтра", "tomorrow", "послезавтра", "后天", …) and their
+/// languages live in `data/seed/meanings-calendar.lino`; this code knows only
+/// the role and the stable English meaning slugs that name the offset
+/// (`calendar_tomorrow` → +1 day, `calendar_day_after_tomorrow` → +2 days).
+/// Adding "the day after the day after tomorrow" to another language is a pure
+/// data edit plus one slug arm here (issue #386 + #435).
+fn relative_date_offset(normalized: &str) -> Option<i64> {
+    let lex = lexicon();
+    for meaning in lex.meanings_with_role(ROLE_CALENDAR_RELATIVE_DATE) {
+        if !meaning.words().any(|word| contains_term(normalized, word)) {
+            continue;
+        }
+        return match meaning.slug.as_str() {
+            "calendar_tomorrow" => Some(1),
+            "calendar_day_after_tomorrow" => Some(2),
+            _ => None,
+        };
+    }
+    None
+}
+
+/// Fallback title built from the matched event noun ("созвон" → "Созвон",
+/// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
+/// phrase was given. Lets a title-less request such as issue #435's
+/// "поставь мне созвон ... на завтра" still propose a meaningful event instead
+/// of the bare localized default. The surfaces live in the lexicon (#386).
+fn extract_event_title(normalized: &str) -> Option<String> {
+    let lex = lexicon();
+    for word in lex.words_for_role(ROLE_CALENDAR_EVENT) {
+        if contains_term(normalized, &word) {
+            return Some(capitalize_first(&word));
         }
     }
     None
@@ -810,6 +876,7 @@ fn tidy_title(candidate: &str) -> Option<String> {
         " at ",
         " в ",
         " по ",
+        " на ",
         " 在 ",
         "下午",
         "上午",
@@ -832,6 +899,15 @@ fn tidy_title(candidate: &str) -> Option<String> {
     let trimmed = strip_action_words(trimmed);
     let trimmed = trimmed.trim();
     if trimmed.is_empty() {
+        return None;
+    }
+    // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
+    // title — reject it so the caller falls back to the event noun (issue #435).
+    if lexicon()
+        .words_for_role(ROLE_CALENDAR_RELATIVE_DATE)
+        .iter()
+        .any(|word| word.eq_ignore_ascii_case(trimmed))
+    {
         return None;
     }
     Some(capitalize_first(trimmed))
