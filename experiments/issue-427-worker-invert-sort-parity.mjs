@@ -94,6 +94,46 @@ check(
   en && en.content,
 );
 
+// Hindi: Python context, last sorted list is 4, 1, 3.
+const hiHistory = [
+  {
+    role: "user",
+    content:
+      "मेरे पास संख्याएँ 4, 1, 3 हैं — उन्हें Python में क्रमबद्ध करो, मुझे कोड और परिणाम दो",
+  },
+  { role: "assistant", content: "परिणाम: 1, 3, 4" },
+];
+const hi = tryNumericList("क्रम उलट दो।", hiHistory);
+check("HI invert-sort is not null", Boolean(hi), JSON.stringify(hi));
+check(
+  "HI invert-sort fenced as ```python",
+  hi && hi.content.includes("```python"),
+  hi && hi.content,
+);
+check(
+  "HI invert-sort result is descending 4, 3, 1",
+  hi && hi.content.includes("परिणाम: 4, 3, 1"),
+  hi && hi.content,
+);
+
+// Chinese: Python context, last sorted list is 4, 1, 3.
+const zhHistory = [
+  { role: "user", content: "我有数字 4, 1, 3 — 用 Python 排序，给我代码和结果" },
+  { role: "assistant", content: "结果: 1, 3, 4" },
+];
+const zh = tryNumericList("反转排序。", zhHistory);
+check("ZH invert-sort is not null", Boolean(zh), JSON.stringify(zh));
+check(
+  "ZH invert-sort fenced as ```python",
+  zh && zh.content.includes("```python"),
+  zh && zh.content,
+);
+check(
+  "ZH invert-sort result is descending 4, 3, 1",
+  zh && zh.content.includes("结果: 4, 3, 1"),
+  zh && zh.content,
+);
+
 // No context: must not fabricate a program.
 const bare = tryNumericList("Сделай инверсию сортировки.", []);
 check(

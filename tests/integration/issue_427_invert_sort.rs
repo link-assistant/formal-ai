@@ -86,6 +86,68 @@ fn issue_427_english_invert_sort_followup_inherits_language_and_list() {
     );
 }
 
+/// Hindi parity: a bare invert-sort follow-up over a Hindi Python coding
+/// context inherits the language and the list, then renders the descending
+/// result. Exercises the `combo उलट+क्रम` reverse_sort vocabulary (issue #427).
+#[test]
+fn issue_427_hindi_invert_sort_followup_inherits_language_and_list() {
+    let solver = UniversalSolver::default();
+    let history = vec![
+        ConversationTurn::user(
+            "मेरे पास संख्याएँ 4, 1, 3 हैं — उन्हें Python में क्रमबद्ध करो, मुझे कोड और परिणाम दो",
+        ),
+        ConversationTurn::assistant("परिणाम: 1, 3, 4"),
+    ];
+
+    let response = solver.solve_with_history("क्रम उलट दो।", &history);
+
+    assert_eq!(
+        response.intent, "write_program",
+        "the Hindi invert-sort follow-up must continue the coding context, got: {} / {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer must inherit Python, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("परिणाम: 4, 3, 1"),
+        "result must be the inherited list sorted descending, got: {}",
+        response.answer
+    );
+}
+
+/// Chinese parity: a bare invert-sort follow-up over a Chinese Python coding
+/// context inherits the language and the list, then renders the descending
+/// result. Exercises the `combo 反转+排序` reverse_sort vocabulary (issue #427).
+#[test]
+fn issue_427_chinese_invert_sort_followup_inherits_language_and_list() {
+    let solver = UniversalSolver::default();
+    let history = vec![
+        ConversationTurn::user("我有数字 4, 1, 3 — 用 Python 排序，给我代码和结果"),
+        ConversationTurn::assistant("结果: 1, 3, 4"),
+    ];
+
+    let response = solver.solve_with_history("反转排序。", &history);
+
+    assert_eq!(
+        response.intent, "write_program",
+        "the Chinese invert-sort follow-up must continue the coding context, got: {} / {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer must inherit Python, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("结果: 4, 3, 1"),
+        "result must be the inherited list sorted descending, got: {}",
+        response.answer
+    );
+}
+
 /// Without any prior numeric-list context, a bare invert-sort prompt names no
 /// list and no language, so it must not fabricate a program (it stays out of
 /// the `write_program` intent).
