@@ -206,3 +206,20 @@ meanings
     lexeme zh
       surface
         text 决定论
+  metatheory
+    defined-by concept
+    role proof_concept_metatheory
+    lexeme en
+      surface
+        text metatheory
+      surface
+        text meta-theory
+    lexeme ru
+      surface
+        text метатеория
+    lexeme hi
+      surface
+        text परासिद्धांत
+    lexeme zh
+      surface
+        text 元理论

@@ -261,6 +261,8 @@ roles
     kind predicate
   proof_concept_godel
     kind predicate
+  proof_concept_metatheory
+    kind predicate
   proof_directive
     kind predicate
   proof_marker
