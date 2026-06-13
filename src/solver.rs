@@ -35,7 +35,7 @@ use crate::intent_formalization::{
     IntentFormalizationCache, IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
-use crate::probability::ProbabilityStore;
+use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
 use crate::proof_engine::ProofRenderConfig;
 use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
@@ -57,8 +57,8 @@ use crate::solver_helpers::{
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
 use crate::translation::{
-    formalize_prompt_candidates, select_formalization_candidate_with_probability_store,
-    FormalizationDecision, FormalizationSelectionConfig,
+    formalize_prompt_candidates, select_formalization_candidate_with_policy, FormalizationDecision,
+    FormalizationSelectionConfig,
 };
 
 /// Runtime surface where the solver is embedded.
@@ -209,6 +209,12 @@ pub struct SolverConfig {
     /// How composite-program blueprints (issue #340) project their annotated
     /// recipe template into the program shown to the user.
     pub blueprint_composition: BlueprintComposition,
+    /// Interpretable decision-policy knobs (`CU`/`TU`/`TC`/`SS`) from
+    /// arXiv:2605.00940 that govern how symbolic probability evidence ranks
+    /// candidates. The default is the paper's recommended baseline, which keeps
+    /// the additive exact-evidence behaviour the solver shipped before the
+    /// policy existed, so every existing surface is unaffected unless it opts in.
+    pub probability_policy: ProbabilityDecisionPolicy,
 }
 
 impl Default for SolverConfig {
@@ -228,6 +234,7 @@ impl Default for SolverConfig {
             associative_project_promotion: true,
             execution_surface: ExecutionSurface::default(),
             blueprint_composition: BlueprintComposition::default(),
+            probability_policy: ProbabilityDecisionPolicy::default(),
         }
     }
 }
@@ -478,7 +485,7 @@ impl UniversalSolver {
             }
         } else {
             let formalization_candidates = formalize_prompt_candidates(prompt, language.slug());
-            let formalization_selection = select_formalization_candidate_with_probability_store(
+            let formalization_selection = select_formalization_candidate_with_policy(
                 &formalization_candidates,
                 FormalizationSelectionConfig {
                     temperature: self.config.temperature,
@@ -488,6 +495,7 @@ impl UniversalSolver {
                 prompt,
                 probability_store,
                 self.config.offline,
+                self.config.probability_policy,
             );
             record_formalization_selection(&mut log, &formalization_selection);
             if let FormalizationDecision::Clarify { question, .. } =

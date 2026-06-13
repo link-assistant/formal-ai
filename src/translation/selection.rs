@@ -5,7 +5,8 @@
 //! `SolverConfig::temperature` range stays useful.
 
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    rank_probability_candidates, ProbabilityCandidate, ProbabilityDecisionPolicy,
+    ProbabilityRankingConfig, ProbabilityStore,
 };
 use crate::translation::{FormalizationCandidate, FormalizationRole};
 
@@ -134,6 +135,31 @@ pub fn select_formalization_candidate_with_probability_store(
     probability_store: &ProbabilityStore,
     offline: bool,
 ) -> FormalizationSelection {
+    select_formalization_candidate_with_policy(
+        candidates,
+        config,
+        impulse,
+        probability_store,
+        offline,
+        ProbabilityDecisionPolicy::default(),
+    )
+}
+
+/// Rank with the store *and* an explicit interpretable decision policy.
+///
+/// Like [`select_formalization_candidate_with_probability_store`], but threads
+/// the `CU`/`TU`/`TC`/`SS` policy from arXiv:2605.00940 into the probability
+/// ranking. A defaulted policy reproduces the exact-evidence behaviour of the
+/// store-only entry point.
+#[must_use]
+pub fn select_formalization_candidate_with_policy(
+    candidates: &[FormalizationCandidate],
+    config: FormalizationSelectionConfig,
+    impulse: &str,
+    probability_store: &ProbabilityStore,
+    offline: bool,
+    policy: ProbabilityDecisionPolicy,
+) -> FormalizationSelection {
     let config = config.normalized();
     let candidates = candidates.to_vec();
     let probability_candidates = candidates
@@ -153,7 +179,8 @@ pub fn select_formalization_candidate_with_probability_store(
             offline,
             markov_from: None,
             ..ProbabilityRankingConfig::default()
-        },
+        }
+        .with_decision_policy(policy),
     );
     let probabilities = candidates
         .iter()

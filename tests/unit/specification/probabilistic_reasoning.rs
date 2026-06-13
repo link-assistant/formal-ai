@@ -11,6 +11,7 @@ use formal_ai::probability::{
 };
 use formal_ai::translation::{
     formalization_probability_target, formalize_prompt_candidates, select_formalization_candidate,
+    select_formalization_candidate_with_policy,
     select_formalization_candidate_with_probability_store, FormalizationDecision,
     FormalizationSelectionConfig,
 };
@@ -1231,6 +1232,139 @@ fn default_decision_policy_is_a_no_op_overlay() {
         .clone()
         .with_decision_policy(ProbabilityDecisionPolicy::default());
     assert_eq!(base, overlaid);
+}
+
+#[test]
+fn solver_config_default_carries_the_baseline_decision_policy() {
+    // The solver's default must reproduce the paper's recommended baseline so
+    // every existing surface keeps its prior exact-evidence behaviour.
+    assert_eq!(
+        SolverConfig::default().probability_policy,
+        ProbabilityDecisionPolicy::default()
+    );
+}
+
+#[test]
+fn decision_policy_threads_into_formalization_selection() {
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+    let config = FormalizationSelectionConfig {
+        temperature: 0.0,
+        guess_probability: 1.0,
+        questioning_rigor: 0.0,
+    };
+    let baseline = select_formalization_candidate(&candidates, config, "apple is a fruit");
+    let baseline_target = formalization_probability_target(
+        baseline
+            .selected_candidate()
+            .expect("baseline should select a candidate"),
+    );
+
+    let subclass_target = candidates
+        .iter()
+        .find(|candidate| {
+            candidate
+                .compact_summary()
+                .contains("predicate=wikidata:P279")
+        })
+        .map(formalization_probability_target)
+        .expect("ambiguous relation should include subclass candidate");
+    assert_ne!(baseline_target, subclass_target);
+
+    let mut store = ProbabilityStore::new();
+    store.update(
+        &subclass_target,
+        "single_strong_observation",
+        0.80,
+        "source:seed:test",
+        "2026-06-13T00:00:00Z",
+    );
+
+    // A defaulted policy lets the single strong observation flip the decision.
+    let reranked = select_formalization_candidate_with_policy(
+        &candidates,
+        config,
+        "apple is a fruit",
+        &store,
+        false,
+        ProbabilityDecisionPolicy::default(),
+    );
+    assert_eq!(
+        formalization_probability_target(
+            reranked
+                .selected_candidate()
+                .expect("evidence-backed selection should choose a candidate")
+        ),
+        subclass_target
+    );
+
+    // A TC=2 policy withholds the lightly-evidenced rerank, so the policy
+    // genuinely reaches the ranking and the baseline selection is restored.
+    let gated_policy = ProbabilityDecisionPolicy {
+        min_transition_count: Some(2),
+        ..ProbabilityDecisionPolicy::default()
+    };
+    let gated = select_formalization_candidate_with_policy(
+        &candidates,
+        config,
+        "apple is a fruit",
+        &store,
+        false,
+        gated_policy,
+    );
+    assert_eq!(
+        formalization_probability_target(
+            gated
+                .selected_candidate()
+                .expect("gated selection should still choose a candidate")
+        ),
+        baseline_target
+    );
+}
+
+#[test]
+fn store_only_selection_matches_default_policy_selection() {
+    // The store-only entry point must be exactly the defaulted-policy path so
+    // the generalization is backwards compatible.
+    let candidates = formalize_prompt_candidates("apple is a fruit", "en");
+    let config = FormalizationSelectionConfig {
+        temperature: 0.0,
+        guess_probability: 1.0,
+        questioning_rigor: 0.0,
+    };
+    let subclass_target = candidates
+        .iter()
+        .find(|candidate| {
+            candidate
+                .compact_summary()
+                .contains("predicate=wikidata:P279")
+        })
+        .map(formalization_probability_target)
+        .expect("ambiguous relation should include subclass candidate");
+    let mut store = ProbabilityStore::new();
+    store.update(
+        &subclass_target,
+        "obs",
+        0.80,
+        "source:seed:test",
+        "2026-06-13T00:00:00Z",
+    );
+
+    let store_only = select_formalization_candidate_with_probability_store(
+        &candidates,
+        config,
+        "apple is a fruit",
+        &store,
+        false,
+    );
+    let default_policy = select_formalization_candidate_with_policy(
+        &candidates,
+        config,
+        "apple is a fruit",
+        &store,
+        false,
+        ProbabilityDecisionPolicy::default(),
+    );
+    assert_eq!(store_only.selected_index(), default_policy.selected_index());
 }
 
 #[test]

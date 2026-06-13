@@ -139,7 +139,8 @@ pub fn try_synthesize_from_sub_results(
             offline: config.offline,
             markov_from: Some(String::from("synthesis")),
             ..ProbabilityRankingConfig::default()
-        },
+        }
+        .with_decision_policy(config.probability_policy),
     );
     log.append("probability:ranking", ranking.trace_summary());
 
