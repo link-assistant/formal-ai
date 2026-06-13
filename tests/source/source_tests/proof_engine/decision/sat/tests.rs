@@ -6,10 +6,7 @@ use super::*;
 fn clause(literals: &[(usize, bool)]) -> Vec<Literal> {
     literals
         .iter()
-        .map(|&(variable, positive)| Literal {
-            variable,
-            positive,
-        })
+        .map(|&(variable, positive)| Literal { variable, positive })
         .collect()
 }
 
@@ -91,10 +88,7 @@ fn branch_order_is_lowest_index_false_first() {
     let mut formula = CnfFormula::new(2);
     formula.add_clause(clause(&[(0, true), (1, true)]));
     formula.add_clause(clause(&[(0, false), (1, false)]));
-    assert_eq!(
-        formula.solve(),
-        SatOutcome::Satisfiable(vec![false, true])
-    );
+    assert_eq!(formula.solve(), SatOutcome::Satisfiable(vec![false, true]));
 }
 
 #[test]
@@ -155,17 +149,26 @@ fn solving_is_deterministic() {
 
 #[test]
 fn literal_constructors_and_negation() {
-    assert_eq!(Literal::positive(2), Literal {
-        variable: 2,
-        positive: true,
-    });
-    assert_eq!(Literal::negative(5), Literal {
-        variable: 5,
-        positive: false,
-    });
+    assert_eq!(
+        Literal::positive(2),
+        Literal {
+            variable: 2,
+            positive: true,
+        }
+    );
+    assert_eq!(
+        Literal::negative(5),
+        Literal {
+            variable: 5,
+            positive: false,
+        }
+    );
     assert_eq!(Literal::positive(1).negated(), Literal::negative(1));
     assert_eq!(Literal::negative(1).negated(), Literal::positive(1));
-    assert_eq!(Literal::positive(7).negated().negated(), Literal::positive(7));
+    assert_eq!(
+        Literal::positive(7).negated().negated(),
+        Literal::positive(7)
+    );
 }
 
 #[test]

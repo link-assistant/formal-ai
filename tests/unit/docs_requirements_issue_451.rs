@@ -107,11 +107,7 @@ fn issue_451_symbolic_ai_reference_documents_are_present_and_traceable() {
     assert_contains_all(
         "docs/case-studies/issue-451/symbolic-ai-best-practices.md",
         &best_practices,
-        &[
-            "src/proof_engine/decision/sat.rs",
-            "DPLL",
-            "Tseitin",
-        ],
+        &["src/proof_engine/decision/sat.rs", "DPLL", "Tseitin"],
     );
 
     // R301: the cited online research backing the analysis.

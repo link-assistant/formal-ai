@@ -29,7 +29,10 @@ fn wide_tautology_is_proven_via_dpll() {
                 .collect::<Vec<_>>()
                 .join(" ");
             assert!(trace.contains("DPLL"), "trace should name the DPLL backend");
-            assert!(trace.contains("Tseitin"), "trace should mention the CNF encoding");
+            assert!(
+                trace.contains("Tseitin"),
+                "trace should mention the CNF encoding"
+            );
             assert!(trace.contains("unit propagation"));
             assert!(proof.conclusion.contains("tautology"));
             assert!(proof.conclusion.contains('∎'));
@@ -81,7 +84,10 @@ fn small_formula_still_uses_truth_table_not_sat() {
                 .map(|step| step.text.as_str())
                 .collect::<Vec<_>>()
                 .join(" ");
-            assert!(trace.contains("Truth table"), "small formulas keep the table");
+            assert!(
+                trace.contains("Truth table"),
+                "small formulas keep the table"
+            );
             assert!(!trace.contains("DPLL"));
         }
         other => panic!("expected Proven, got {other:?}"),
