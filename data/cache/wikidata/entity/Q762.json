@@ -1,0 +1,145 @@
+{
+  "entities": {
+    "Q762": {
+      "type": "item",
+      "id": "Q762",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Леонардо да Винчи"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिओनार्दो दा विंची"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "列奥纳多·达·芬奇"
+        },
+        "en": {
+          "language": "en",
+          "value": "Leonardo da Vinci"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "Italian Renaissance polymath (1452−1519)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "義大利文藝復興時期人物"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "итальянский художник, учёный, изобретатель, писатель, один из крупнейших представителей искусства Высокого Возрождения (1452–1519)"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इतलवी बहुज्ञ (1452-1519)"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "达芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "達文西"
+          },
+          {
+            "language": "zh",
+            "value": "达·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "莱奥纳尔多·达芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "列奧納多·達文西"
+          },
+          {
+            "language": "zh",
+            "value": "李奧納多·達文西"
+          },
+          {
+            "language": "zh",
+            "value": "列奥那多·达芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "列昂纳多·达芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "達·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "李安納度·迪·瑟皮耶羅·達文西"
+          },
+          {
+            "language": "zh",
+            "value": "李奧納多·達·文西"
+          },
+          {
+            "language": "zh",
+            "value": "列奥纳多·达芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "列奧納多·達·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "李奥纳多·达文西"
+          },
+          {
+            "language": "zh",
+            "value": "列奥纳多·迪·瑟皮耶罗·达·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "列奧納多·迪·瑟皮耶羅·達·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "达文西"
+          },
+          {
+            "language": "zh",
+            "value": "達芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "莱奥纳多·达·芬奇"
+          },
+          {
+            "language": "zh",
+            "value": "达·芬奇，L."
+          },
+          {
+            "language": "zh",
+            "value": "李安納度·達文西"
+          },
+          {
+            "language": "zh",
+            "value": "莱奥纳多"
+          },
+          {
+            "language": "zh",
+            "value": "达文謇"
+          },
+          {
+            "language": "zh",
+            "value": "莱昂纳多·达·芬奇"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

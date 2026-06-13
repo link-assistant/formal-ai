@@ -1,0 +1,623 @@
+{
+  "entities": {
+    "L7993": {
+      "pageid": 55791193,
+      "ns": 146,
+      "title": "Lexeme:L7993",
+      "lastrevid": 2306581090,
+      "modified": "2025-02-04T02:58:21Z",
+      "type": "lexeme",
+      "id": "L7993",
+      "lemmas": {
+        "en": {
+          "language": "en",
+          "value": "tomato"
+        }
+      },
+      "lexicalCategory": "Q1084",
+      "language": "Q1860",
+      "claims": {
+        "P12573": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12573",
+              "hash": "d956d3745bbf9958031528c2499d327108b81eda",
+              "datavalue": {
+                "value": "9914",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$653FEF3E-A1B4-4A23-8ABF-104116457D9C",
+            "rank": "normal"
+          }
+        ],
+        "P5912": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5912",
+              "hash": "d75ef6efd1f77e378b6c927d318f018218eac5a0",
+              "datavalue": {
+                "value": "129731",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$E3D76843-CD44-45AA-B651-81C387FECFB8",
+            "rank": "normal"
+          }
+        ],
+        "P12448": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12448",
+              "hash": "ff390a4b5248f8affa03ef29265f843d55e86303",
+              "datavalue": {
+                "value": "ID_00059689",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$2A3426F1-428F-49E1-8705-D1E193BAC3AA",
+            "rank": "normal"
+          }
+        ],
+        "P11481": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11481",
+              "hash": "02d1c63865a1330c349b8c3ce3dc99036f745621",
+              "datavalue": {
+                "value": "3bom2oa",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$50768C8B-7A22-4AD9-A8CC-B60B82387193",
+            "rank": "normal"
+          }
+        ],
+        "P5275": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5275",
+              "hash": "1ba490ab86ac95e2a933a06c92bca1d73beeea8a",
+              "datavalue": {
+                "value": "203082",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$4922E344-D726-4B2F-ACBE-E4723F26D85B",
+            "rank": "normal"
+          }
+        ],
+        "P12690": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12690",
+              "hash": "110c71cab1c6f45453994ce57ed375d8ca51bb68",
+              "datavalue": {
+                "value": "1299253",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$9F90BB2B-5E0B-40C4-8B8E-4546D8873B3F",
+            "rank": "normal"
+          }
+        ],
+        "P12718": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12718",
+              "hash": "d425882650e9f40766e6f2444e684989f3c6d1a8",
+              "datavalue": {
+                "value": "0056752",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$570C4026-7CA1-4888-8CAC-96FC63340070",
+            "rank": "normal"
+          }
+        ],
+        "P12724": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12724",
+              "hash": "6ce20b15416a2b9d592b7960a7a5a53dfb30cb2a",
+              "datavalue": {
+                "value": "0055381",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$A16D58AF-5496-4D8D-9AFF-9405AEAF5E61",
+            "rank": "normal"
+          }
+        ],
+        "P12726": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12726",
+              "hash": "984eb0c5677730399b065e046098fff72dff921f",
+              "datavalue": {
+                "value": "0071621",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$08AEB192-4AEA-48AA-BAFD-B08992A0BFC9",
+            "rank": "normal"
+          }
+        ],
+        "P12739": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12739",
+              "hash": "f81cdc08d6ff168adcee651cd3a22b4c9f890514",
+              "datavalue": {
+                "value": "0869470",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$95347D59-878D-4380-AB71-4DB981ADCD64",
+            "rank": "normal"
+          }
+        ],
+        "P12510": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12510",
+              "hash": "75bc09293726233357d73a9c64992f9b9230e4a5",
+              "datavalue": {
+                "value": "2513470802",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$95BE16B5-3261-404E-9CB9-E3096CDA6AEF",
+            "rank": "normal"
+          }
+        ],
+        "P12868": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12868",
+              "hash": "6c4fa97bda546ec77f8f912086fdeca9c8e81f42",
+              "datavalue": {
+                "value": "1192_2",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$B398E431-B2E3-4509-83E7-0562E89B274D",
+            "rank": "normal"
+          }
+        ],
+        "P11138": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11138",
+              "hash": "341800a16560e83c89c5c5c908c5199c306a7049",
+              "datavalue": {
+                "value": "830875",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$2CFB32A4-DA46-42AB-918A-A8D4C01781D3",
+            "rank": "normal"
+          }
+        ],
+        "P13258": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P13258",
+              "hash": "c3fbd266491359e7ff7e462375d0500c58372fc6",
+              "datavalue": {
+                "value": "8117205",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L7993$EB754605-193E-4186-B140-D9AB4F3264BF",
+            "rank": "normal"
+          }
+        ]
+      },
+      "forms": [
+        {
+          "id": "L7993-F1",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "tomato"
+            },
+            "en-gb": {
+              "language": "en-gb",
+              "value": "tomato"
+            },
+            "en-us": {
+              "language": "en-us",
+              "value": "tomato"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q110786"
+          ],
+          "claims": {
+            "P443": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "1d9d755d59715bb46bc3fa44c56f57d7f3d7b629",
+                  "datavalue": {
+                    "value": "En-au-tomato.ogg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "qualifiers": {
+                  "P5237": [
+                    {
+                      "snaktype": "value",
+                      "property": "P5237",
+                      "hash": "75b268cd0ed87008e9bb525897fe97b0cf4330c1",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 44679,
+                          "id": "Q44679"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ]
+                },
+                "qualifiers-order": [
+                  "P5237"
+                ],
+                "id": "L7993-F1$24E70C7B-84DC-4A27-84EA-ECC745B119BF",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "b7ae19267cb45e3e93ff3184c122cf05c3f01a82",
+                  "datavalue": {
+                    "value": "En-uk-tomato.ogg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "qualifiers": {
+                  "P5237": [
+                    {
+                      "snaktype": "value",
+                      "property": "P5237",
+                      "hash": "c22ed230107969afc0ac70ee5e257e90104129b7",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 7979,
+                          "id": "Q7979"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ]
+                },
+                "qualifiers-order": [
+                  "P5237"
+                ],
+                "id": "L7993-F1$ED1F563C-7300-4EE2-B8D5-621AE159DB9E",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P443",
+                  "hash": "1704cfc678a7a705494bf6fcef6698a1965389ea",
+                  "datavalue": {
+                    "value": "En-us-tomato.ogg",
+                    "type": "string"
+                  },
+                  "datatype": "commonsMedia"
+                },
+                "type": "statement",
+                "qualifiers": {
+                  "P5237": [
+                    {
+                      "snaktype": "value",
+                      "property": "P5237",
+                      "hash": "6c54ff643a290ae5f9b384b3d255bf3708481de3",
+                      "datavalue": {
+                        "value": {
+                          "entity-type": "item",
+                          "numeric-id": 7976,
+                          "id": "Q7976"
+                        },
+                        "type": "wikibase-entityid"
+                      },
+                      "datatype": "wikibase-item"
+                    }
+                  ]
+                },
+                "qualifiers-order": [
+                  "P5237"
+                ],
+                "id": "L7993-F1$83F048C4-7778-4494-8894-9AB3850548E4",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L7993-F2",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "tomatoes"
+            }
+          },
+          "grammaticalFeatures": [
+            "Q146786"
+          ],
+          "claims": {}
+        }
+      ],
+      "senses": [
+        {
+          "id": "L7993-S1",
+          "glosses": {
+            "en": {
+              "language": "en",
+              "value": "fruit, used as a vegetable"
+            }
+          },
+          "claims": {
+            "P5137": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5137",
+                  "hash": "9e61e964a3a433fbf49312b69245d3e60ed3a4d4",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 20638126,
+                      "id": "Q20638126"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                },
+                "type": "statement",
+                "id": "L7993-S1$B76D33F5-D0B8-4DC0-8102-41328E5C8DCA",
+                "rank": "normal"
+              }
+            ],
+            "P5972": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "93ea61167662baf58c16f94bc2ebe0f4ab077cae",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L302309-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$e572678c-40cb-a30d-f47c-6c45ad2348eb",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "ad78c7513d514cf78faa8ccd14762c38fda3cac0",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L302439-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$2EAA4DA9-7FF3-4EFE-9557-EB2F50F179D8",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "b5bc71e7529185998d49bf6fd276875a07f4b434",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L455957-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$4d5f37bd-4f2e-1d69-db76-385f62e9bc5b",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "82c585d5a3537a6d485e5ebacb7b7773baefd8cc",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L229448-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$57ce82fc-4d00-c1ed-b26f-3d02ad91879a",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "2e67ad56f567ffc9d7bae9b2cf84f7394dbe47ce",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L7863-S2"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$1EABC663-AFFE-4DAF-9570-54DF4B0C8D0D",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "20244734521db3d4b78e8210f2a6af4cb53c571d",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L1377307-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$7c610c57-4fdd-6b76-18e1-c74ddd33b5f0",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "85ba2deec779a7d50a56d9c12bac140ac390c1f2",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L28212-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S1$6181ec61-4b16-fd3d-57b0-28e475e7edf4",
+                "rank": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "id": "L7993-S2",
+          "glosses": {
+            "en": {
+              "language": "en",
+              "value": "type of plant species with edible, often red, berry fruit"
+            }
+          },
+          "claims": {
+            "P5137": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5137",
+                  "hash": "c318db72d30dabf5155fdbd023c2f15be83366a3",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 23501,
+                      "id": "Q23501"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                },
+                "type": "statement",
+                "id": "L7993-S2$0736E199-C91C-40F3-9150-D78E988F8635",
+                "rank": "normal"
+              }
+            ],
+            "P5972": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "cfba4bfce58ea07d019b012149da1c564193562c",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L7863-S3"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L7993-S2$0BED7D47-7C0A-4805-A288-BF8511E950EA",
+                "rank": "normal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "success": 1
+}

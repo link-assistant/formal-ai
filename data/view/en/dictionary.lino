@@ -1,0 +1,9 @@
+view
+  id M-6e8a476aac26
+  lemma dictionary
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a reference book containing an alphabetical list of words with information about them"
+    provenance (wordnet)

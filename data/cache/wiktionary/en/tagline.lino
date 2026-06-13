@@ -1,0 +1,25 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The punch line of a joke."
+        entry
+          definition "An advertising slogan."
+        entry
+          definition "A pithy quotation habitually appended to a signature in email, newsgroups, etc."
+        entry
+          definition "A line attached to a draft of cargo or a container to provide control and minimize pendulation of cargo during lifting operations."
+        entry
+          definition "A light rope attached to an object being hoisted by a crane, used to guide it while lifting or lowering."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To supply with an advertising slogan; to market as."
+      partOfSpeech verb
+  sourceUrls ("https://en.wiktionary.org/wiki/tagline")
+  word tagline

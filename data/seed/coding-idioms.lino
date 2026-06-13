@@ -1,0 +1,461 @@
+coding_idioms
+  description "Per-language code composition knowledge for the universal list coding algorithm (issue #395). Each language defines scaffolds (one per operation family) and idioms (named fragments with cases selected by operation and value class). The composer discovers the coding algorithm at execution time: it picks the scaffold for the operation family, then recursively expands {slot} placeholders by matching idiom cases against the requested operation and the value class of the list items. Computed slots (literal, count, tab, list, transformed, reduced, type) are resolved from the program data; every other slot names an idiom defined here. Languages inherit scaffolds, types, names, and idioms through extends, nearest definition wins."
+  defaults
+    list "numbers"
+    transformed "sorted"
+    reduced "result"
+  language "javascript"
+    scaffold "list_transformation"
+      code 'const {list} = [{literal}];\nconst {transformed} = {action};\nconsole.log({transformed}.join(", "));'
+    scaffold "list_reduction"
+      code "const {list} = [{literal}];\nconst {reduced} = {expression};\nconsole.log({reduced});"
+    idiom "action"
+      case
+        for "sort"
+        on "string"
+        code "[...{list}].sort()"
+      case
+        for "reverse_sort"
+        on "string"
+        code "[...{list}].sort().reverse()"
+      case
+        for "sort"
+        code "[...{list}].sort((a, b) => a - b)"
+      case
+        for "reverse_sort"
+        code "[...{list}].sort((a, b) => b - a)"
+      case
+        for "reverse"
+        code "[...{list}].reverse()"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.reduce((a, b) => a + b, 0)"
+      case
+        for "product"
+        code "{list}.reduce((a, b) => a * b, 1)"
+      case
+        for "minimum"
+        code "Math.min(...{list})"
+      case
+        for "maximum"
+        code "Math.max(...{list})"
+  language "typescript"
+    extends "javascript"
+    types
+      integer "number"
+      float "number"
+      string "string"
+    scaffold "list_transformation"
+      code 'const {list}: {type}[] = [{literal}];\nconst {transformed} = {action};\nconsole.log({transformed}.join(", "));'
+    scaffold "list_reduction"
+      code "const {list}: {type}[] = [{literal}];\nconst {reduced} = {expression};\nconsole.log({reduced});"
+  language "python"
+    names
+      transformed "sorted_numbers"
+    scaffold "list_transformation"
+      code '{list} = [{literal}]\n{transformed} = {action}\nprint(", ".join(str(n) for n in {transformed}))'
+    scaffold "list_reduction"
+      code "{imports}{list} = [{literal}]\n{reduced} = {expression}\nprint({reduced})"
+    idiom "imports"
+      case
+        for "product"
+        code "import math\n\n"
+      case
+        for "any"
+        code ""
+    idiom "action"
+      case
+        for "sort"
+        code "sorted({list})"
+      case
+        for "reverse_sort"
+        code "sorted({list}, reverse=True)"
+      case
+        for "reverse"
+        code "list(reversed({list}))"
+    idiom "expression"
+      case
+        for "sum"
+        code "sum({list})"
+      case
+        for "product"
+        code "math.prod({list})"
+      case
+        for "minimum"
+        code "min({list})"
+      case
+        for "maximum"
+        code "max({list})"
+  language "rust"
+    mutable_list "true"
+    types
+      integer "i64"
+      float "f64"
+      string "&str"
+    scaffold "list_transformation"
+      code 'fn main() {\n    let mut {list}: Vec<{type}> = vec![{literal}];\n    {action}\n    let rendered: Vec<String> = {list}.iter().map(|n| n.to_string()).collect();\n    println!("{}", rendered.join(", "));\n}'
+    scaffold "list_reduction"
+      code 'fn main() {\n    let {list}: Vec<{type}> = vec![{literal}];\n    let {reduced} = {expression};\n    println!("{}", {reduced});\n}'
+    idiom "action"
+      case
+        for "sort"
+        on "integer string"
+        code "{list}.sort();"
+      case
+        for "reverse_sort"
+        on "integer string"
+        code "{list}.sort_by(|a, b| b.cmp(a));"
+      case
+        for "sort"
+        on "float"
+        code "{list}.sort_by(|a, b| a.partial_cmp(b).unwrap());"
+      case
+        for "reverse_sort"
+        on "float"
+        code "{list}.sort_by(|a, b| b.partial_cmp(a).unwrap());"
+      case
+        for "reverse"
+        code "{list}.reverse();"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.iter().copied().sum::<{type}>()"
+      case
+        for "product"
+        code "{list}.iter().copied().product::<{type}>()"
+      case
+        for "minimum"
+        on "integer"
+        code "*{list}.iter().min().unwrap()"
+      case
+        for "maximum"
+        on "integer"
+        code "*{list}.iter().max().unwrap()"
+      case
+        for "minimum"
+        on "float"
+        code "{list}.iter().copied().fold(f64::INFINITY, f64::min)"
+      case
+        for "maximum"
+        on "float"
+        code "{list}.iter().copied().fold(f64::NEG_INFINITY, f64::max)"
+  language "go"
+    mutable_list "true"
+    types
+      integer "int"
+      float "float64"
+      string "string"
+    scaffold "list_transformation"
+      code 'package main\n\nimport (\n{imports}\n)\n\nfunc main() {\n{tab}{list} := []{type}{{literal}}\n{tab}{action}\n{tab}parts := make([]string, len({list}))\n{tab}for i, n := range {list} {\n{tab}{tab}parts[i] = {format_item}\n{tab}}\n{tab}fmt.Println(strings.Join(parts, ", "))\n}'
+    scaffold "list_reduction"
+      code 'package main\n\nimport "fmt"\n\nfunc main() {\n{tab}{list} := []{type}{{literal}}\n{tab}{body}\n{tab}fmt.Println({reduced})\n}'
+    idiom "imports"
+      case
+        for "sort reverse_sort"
+        on "string"
+        code '{tab}"fmt"\n{tab}"sort"\n{tab}"strings"'
+      case
+        for "sort reverse_sort"
+        code '{tab}"fmt"\n{tab}"sort"\n{tab}"strconv"\n{tab}"strings"'
+      case
+        for "reverse"
+        on "string"
+        code '{tab}"fmt"\n{tab}"strings"'
+      case
+        for "reverse"
+        code '{tab}"fmt"\n{tab}"strconv"\n{tab}"strings"'
+    idiom "action"
+      case
+        for "sort"
+        on "string"
+        code "sort.Strings({list})"
+      case
+        for "reverse_sort"
+        on "string"
+        code "sort.Sort(sort.Reverse(sort.StringSlice({list})))"
+      case
+        for "sort"
+        code "sort.Slice({list}, func(i, j int) bool { return {list}[i] < {list}[j] })"
+      case
+        for "reverse_sort"
+        code "sort.Slice({list}, func(i, j int) bool { return {list}[i] > {list}[j] })"
+      case
+        for "reverse"
+        code "for i, j := 0, len({list})-1; i < j; i, j = i+1, j-1 {\n{tab}{tab}{list}[i], {list}[j] = {list}[j], {list}[i]\n{tab}}"
+    idiom "format_item"
+      case
+        for "any"
+        on "integer"
+        code "strconv.Itoa(n)"
+      case
+        for "any"
+        on "float"
+        code "strconv.FormatFloat(n, 'g', -1, 64)"
+      case
+        for "any"
+        on "string"
+        code "n"
+    idiom "body"
+      case
+        for "sum"
+        code "var {reduced} {type} = 0\n{tab}for _, n := range {list} {\n{tab}{tab}{reduced} += n\n{tab}}"
+      case
+        for "product"
+        code "var {reduced} {type} = 1\n{tab}for _, n := range {list} {\n{tab}{tab}{reduced} *= n\n{tab}}"
+      case
+        for "minimum"
+        code "{reduced} := {list}[0]\n{tab}for _, n := range {list}[1:] {\n{tab}{tab}if n < {reduced} {\n{tab}{tab}{tab}{reduced} = n\n{tab}{tab}}\n{tab}}"
+      case
+        for "maximum"
+        code "{reduced} := {list}[0]\n{tab}for _, n := range {list}[1:] {\n{tab}{tab}if n > {reduced} {\n{tab}{tab}{tab}{reduced} = n\n{tab}{tab}}\n{tab}}"
+  language "ruby"
+    scaffold "list_transformation"
+      code '{list} = [{literal}]\n{transformed} = {action}\nputs {transformed}.join(", ")'
+    scaffold "list_reduction"
+      code "{list} = [{literal}]\n{reduced} = {expression}\nputs {reduced}"
+    idiom "action"
+      case
+        for "sort"
+        code "{list}.sort"
+      case
+        for "reverse_sort"
+        code "{list}.sort.reverse"
+      case
+        for "reverse"
+        code "{list}.reverse"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.sum"
+      case
+        for "product"
+        code "{list}.inject(1, :*)"
+      case
+        for "minimum"
+        code "{list}.min"
+      case
+        for "maximum"
+        code "{list}.max"
+  language "java"
+    mutable_list "true"
+    types
+      integer "int"
+      float "double"
+      string "String"
+    scaffold "list_transformation"
+      code 'import java.util.Arrays;\nimport java.util.Collections;\nimport java.util.StringJoiner;\n\npublic class Main {\n    public static void main(String[] args) {\n        {type}[] {list} = {{literal}};\n        {action}\n        StringJoiner joiner = new StringJoiner(", ");\n        for ({type} n : {list}) joiner.add(String.valueOf(n));\n        System.out.println(joiner.toString());\n    }\n}'
+    scaffold "list_reduction"
+      code 'public class Main {\n    public static void main(String[] args) {\n        {type}[] {list} = {{literal}};\n        {body}\n        System.out.println({reduced});\n    }\n}'
+    idiom "boxed"
+      case
+        for "any"
+        on "integer"
+        code "Integer"
+      case
+        for "any"
+        on "float"
+        code "Double"
+      case
+        for "any"
+        on "string"
+        code "String"
+    idiom "action"
+      case
+        for "sort"
+        code "Arrays.sort({list});"
+      case
+        for "reverse_sort"
+        on "string"
+        code "Arrays.sort({list}, Collections.reverseOrder());"
+      case
+        for "reverse_sort"
+        code '{boxed}[] boxed = Arrays.stream({list}).boxed().toArray({boxed}[]::new);\n        Arrays.sort(boxed, Collections.reverseOrder());\n        for (int i = 0; i < {list}.length; i++) {list}[i] = boxed[i];'
+      case
+        for "reverse"
+        code 'for (int i = 0, j = {list}.length - 1; i < j; i++, j--) {\n            {type} tmp = {list}[i];\n            {list}[i] = {list}[j];\n            {list}[j] = tmp;\n        }'
+    idiom "body"
+      case
+        for "sum"
+        code "{type} {reduced} = 0;\n        for ({type} n : {list}) {reduced} += n;"
+      case
+        for "product"
+        code "{type} {reduced} = 1;\n        for ({type} n : {list}) {reduced} *= n;"
+      case
+        for "minimum"
+        code "{type} {reduced} = {list}[0];\n        for ({type} n : {list}) {reduced} = Math.min({reduced}, n);"
+      case
+        for "maximum"
+        code "{type} {reduced} = {list}[0];\n        for ({type} n : {list}) {reduced} = Math.max({reduced}, n);"
+  language "csharp"
+    types
+      integer "int"
+      float "double"
+      string "string"
+    scaffold "list_transformation"
+      code 'using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        {type}[] {list} = {{literal}};\n        var {transformed} = {action};\n        Console.WriteLine(string.Join(", ", {transformed}));\n    }\n}'
+    scaffold "list_reduction"
+      code 'using System;\nusing System.Linq;\n\nclass Program {\n    static void Main() {\n        {type}[] {list} = {{literal}};\n        var {reduced} = {expression};\n        Console.WriteLine({reduced});\n    }\n}'
+    idiom "action"
+      case
+        for "sort"
+        code "{list}.OrderBy(n => n)"
+      case
+        for "reverse_sort"
+        code "{list}.OrderByDescending(n => n)"
+      case
+        for "reverse"
+        code "{list}.Reverse()"
+    idiom "expression"
+      case
+        for "sum"
+        code "{list}.Sum()"
+      case
+        for "product"
+        code "{list}.Aggregate(({type})1, (a, b) => a * b)"
+      case
+        for "minimum"
+        code "{list}.Min()"
+      case
+        for "maximum"
+        code "{list}.Max()"
+  language "cpp"
+    mutable_list "true"
+    types
+      integer "int"
+      float "double"
+      string "std::string"
+    scaffold "list_transformation"
+      code '#include <algorithm>\n#include <iostream>\n{string_include}#include <vector>\n\nint main() {\n    std::vector<{type}> {list} = {{literal}};\n    {action}\n    for (size_t i = 0; i < {list}.size(); ++i) {\n        if (i) std::cout << ", ";\n        std::cout << {list}[i];\n    }\n    std::cout << std::endl;\n    return 0;\n}'
+    scaffold "list_reduction"
+      code '#include <algorithm>\n#include <iostream>\n#include <numeric>\n{string_include}#include <vector>\n\nint main() {\n    std::vector<{type}> {list} = {{literal}};\n    {type} {reduced} = {expression};\n    std::cout << {reduced} << std::endl;\n    return 0;\n}'
+    idiom "string_include"
+      case
+        for "any"
+        on "string"
+        code "#include <string>\n"
+      case
+        for "any"
+        code ""
+    idiom "action"
+      case
+        for "sort"
+        code "std::sort({list}.begin(), {list}.end());"
+      case
+        for "reverse_sort"
+        code "std::sort({list}.begin(), {list}.end(), std::greater<>());"
+      case
+        for "reverse"
+        code "std::reverse({list}.begin(), {list}.end());"
+    idiom "expression"
+      case
+        for "sum"
+        code "std::accumulate({list}.begin(), {list}.end(), ({type})0)"
+      case
+        for "product"
+        code "std::accumulate({list}.begin(), {list}.end(), ({type})1, std::multiplies<{type}>())"
+      case
+        for "minimum"
+        code "*std::min_element({list}.begin(), {list}.end())"
+      case
+        for "maximum"
+        code "*std::max_element({list}.begin(), {list}.end())"
+  language "c"
+    mutable_list "true"
+    types
+      integer "int"
+      float "double"
+      string "char *"
+    scaffold "list_transformation"
+      code '#include <stdio.h>\n#include <stdlib.h>\n{string_include}\n{comparator}int main(void) {\n{body}\n    for (size_t i = 0; i < count; ++i) {\n        if (i) printf(", ");\n        printf("{printf_format}", {list}[i]);\n    }\n    printf("\\n");\n    return 0;\n}'
+    scaffold "list_reduction"
+      code '#include <stdio.h>\n\nint main(void) {\n    {type} {list}[] = {{literal}};\n    size_t count = {count};\n    {type} {reduced} = {init};\n    for (size_t i = 0; i < count; ++i) {\n{step}\n    }\n    printf("{printf_format}\\n", {reduced});\n    return 0;\n}'
+    idiom "string_include"
+      case
+        for "any"
+        on "string"
+        code "#include <string.h>\n"
+      case
+        for "any"
+        code ""
+    idiom "printf_format"
+      case
+        for "any"
+        on "integer"
+        code "%d"
+      case
+        for "any"
+        on "float"
+        code "%g"
+      case
+        for "any"
+        on "string"
+        code "%s"
+    idiom "body"
+      case
+        for "reverse"
+        code '    {type} {list}[] = {{literal}};\n    size_t count = {count};\n    for (size_t i = 0, j = count - 1; i < j; ++i, --j) {\n        {type} tmp = {list}[i];\n        {list}[i] = {list}[j];\n        {list}[j] = tmp;\n    }'
+      case
+        for "sort reverse_sort"
+        code '    {type} {list}[] = {{literal}};\n    size_t count = {count};\n    qsort({list}, count, sizeof({type}), compare);'
+    idiom "comparator"
+      case
+        for "reverse"
+        code ""
+      case
+        for "sort"
+        on "integer"
+        code 'static int compare(const void *a, const void *b) {\n    return (*(const int *)a - *(const int *)b);\n}\n\n'
+      case
+        for "reverse_sort"
+        on "integer"
+        code 'static int compare(const void *a, const void *b) {\n    return (*(const int *)b - *(const int *)a);\n}\n\n'
+      case
+        for "sort"
+        on "float"
+        code 'static int compare(const void *a, const void *b) {\n    double diff = *(const double *)a - *(const double *)b;\n    return (diff > 0) - (diff < 0);\n}\n\n'
+      case
+        for "reverse_sort"
+        on "float"
+        code 'static int compare(const void *a, const void *b) {\n    double diff = *(const double *)b - *(const double *)a;\n    return (diff > 0) - (diff < 0);\n}\n\n'
+      case
+        for "sort"
+        on "string"
+        code 'static int compare(const void *a, const void *b) {\n    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(left, right);\n}\n\n'
+      case
+        for "reverse_sort"
+        on "string"
+        code 'static int compare(const void *a, const void *b) {\n    const char *left = *(const char * const *)a;\n    const char *right = *(const char * const *)b;\n    return strcmp(right, left);\n}\n\n'
+    idiom "init"
+      case
+        for "sum"
+        on "integer"
+        code "0"
+      case
+        for "sum"
+        on "float"
+        code "0.0"
+      case
+        for "product"
+        on "integer"
+        code "1"
+      case
+        for "product"
+        on "float"
+        code "1.0"
+      case
+        for "minimum maximum"
+        code "{list}[0]"
+    idiom "step"
+      case
+        for "sum"
+        code "        {reduced} += {list}[i];"
+      case
+        for "product"
+        code "        {reduced} *= {list}[i];"
+      case
+        for "minimum"
+        code "        if ({list}[i] < {reduced}) {reduced} = {list}[i];"
+      case
+        for "maximum"
+        code "        if ({list}[i] > {reduced}) {reduced} = {list}[i];"

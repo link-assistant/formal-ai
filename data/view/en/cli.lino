@@ -1,0 +1,9 @@
+view
+  id M-5930da53a649
+  lemma cli
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a user interface in which you type commands instead of choosing them from a menu or selecting an icon"
+    provenance (wordnet)

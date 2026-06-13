@@ -10,14 +10,18 @@ pub mod arithmetic;
 pub mod associative_package;
 pub(crate) mod calculation;
 pub(crate) mod calculation_word_problem;
+pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
+pub(crate) mod engine_responses;
 pub mod event_log;
 pub(crate) mod fuzzy;
 pub mod github_logs;
 pub mod intent_formalization;
+pub mod json_lino;
+pub mod knowledge;
 pub mod language;
 pub mod link_store;
 pub(crate) mod links_format;
@@ -40,6 +44,7 @@ pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
 pub(crate) mod solver_handler_docs;
 pub(crate) mod solver_handler_how;
+pub(crate) mod solver_handler_oracle;
 pub(crate) mod solver_handler_units;
 pub(crate) mod solver_handlers;
 pub(crate) mod solver_handlers_policy;
@@ -80,6 +85,10 @@ pub use intent_formalization::{
     formalize_intent, impulse_id_for, IntentFormalization, IntentFormalizationCache,
     IntentFormalizationCacheEntry, IntentKind,
 };
+pub use knowledge::{
+    cache_capacity, within_cache_capacity, CodingOracle, KnowledgeSource, OracleSnippet,
+    KNOWLEDGE_CACHE_FLOOR,
+};
 pub use language::{detect as detect_language, Language};
 #[cfg(feature = "doublets-native")]
 pub use link_store::DoubletsLinkStore;
@@ -117,9 +126,9 @@ pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
     intent_routing, language_rules, merged_bundle, multilingual_responses, operation_vocabulary,
     parse_bundle, projects_registry, prompt_patterns, response_for, seed_files,
-    EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject, MigrationFlow,
-    OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord, ProjectStatement,
-    ProjectsRegistry,
+    supported_languages, EnvironmentDirectory, EnvironmentRecord, IntentRouting, LocalizedProject,
+    MigrationFlow, OperationLanguageForms, OperationTrigger, OperationVocabulary, ProjectRecord,
+    ProjectStatement, ProjectsRegistry,
 };
 pub use self_improvement::{
     learn_rules_from_unknown_traces, BenchmarkGateReport, LearnedRuleAdoption, LearnedRuleProposal,

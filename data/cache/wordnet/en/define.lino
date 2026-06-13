@@ -1,0 +1,34 @@
+language en
+lemma define
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "determine the essential quality of"
+    id oewn-02617665-v
+    partOfSpeech v
+    synonyms (specify delineate delimit delimitate)
+  entry
+    definition "give a definition for the meaning of a word"
+    examples ("Define ‘sadness’")
+    id oewn-00959410-v
+    partOfSpeech v
+  entry
+    definition "determine the nature of"
+    examples ("What defines a good wine?")
+    id oewn-02704161-v
+    partOfSpeech v
+  entry
+    definition "show the form or outline of"
+    examples ("The tree was clearly defined by the light" "The camera could define the smallest object")
+    id oewn-02742653-v
+    partOfSpeech v
+    synonyms (delineate)
+  entry
+    definition "decide upon or fix definitely"
+    examples ("fix the variables" "specify the parameters")
+    id oewn-00949109-v
+    partOfSpeech v
+    synonyms (specify set determine fix limit)
+source "oewn:2024"

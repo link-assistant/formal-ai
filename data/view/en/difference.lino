@@ -1,0 +1,25 @@
+view
+  id M-c4970f6c8f49
+  lemma difference
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being unlike or dissimilar"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a variation that deviates from the standard or norm"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a disagreement or argument about something important"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a significant change"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the number that remains after subtraction; the number that when added to the subtrahend gives the minuend"
+    provenance (wordnet)

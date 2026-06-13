@@ -1,0 +1,43 @@
+[
+  {
+    "word": "java",
+    "phonetic": "/ˈdʒɑː.və/",
+    "phonetics": [
+      {
+        "text": "/ˈdʒɑː.və/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A blend of coffee imported from the island of Java.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Coffee in general.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A dance popular in France in the early 20th century.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/java"
+    ]
+  }
+]

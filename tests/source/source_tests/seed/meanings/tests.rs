@@ -65,6 +65,299 @@ fn every_meaning_is_self_describing() {
 }
 
 #[test]
+fn semantic_facet_blocks_are_parsed_as_meaning_references() {
+    let lex = parse_lexicon(
+        r#"
+meanings
+  meaning "alpha"
+    gloss "alpha meaning"
+    wiktionary "alpha"
+    defined_by "alpha"
+    role "ontology_root"
+    facet "notation"
+      meaning "beta"
+    lexeme "en"
+      word "alpha"
+        description "English alpha."
+    lexeme "ru"
+      word "альфа"
+        description "Russian alpha."
+    lexeme "hi"
+      word "अल्फा"
+        description "Hindi alpha."
+    lexeme "zh"
+      word "阿尔法"
+        description "Chinese alpha."
+  meaning "beta"
+    gloss "beta meaning"
+    wiktionary "beta"
+    defined_by "alpha"
+    role "ontology_category"
+    lexeme "en"
+      word "beta"
+        description "English beta."
+    lexeme "ru"
+      word "бета"
+        description "Russian beta."
+    lexeme "hi"
+      word "बीटा"
+        description "Hindi beta."
+    lexeme "zh"
+      word "贝塔"
+        description "Chinese beta."
+"#,
+    );
+
+    let alpha = lex.meaning("alpha").expect("alpha fixture meaning");
+    let notation_targets: Vec<&str> = alpha.semantic_facet_targets("notation").collect();
+    assert_eq!(
+        notation_targets,
+        vec!["beta"],
+        "facet blocks must parse as meaning references"
+    );
+    let resolved = lex.semantic_facet_meanings("alpha", "notation");
+    assert_eq!(
+        resolved.iter().map(|m| m.slug.as_str()).collect::<Vec<_>>(),
+        vec!["beta"],
+        "facet targets must resolve through the lexicon"
+    );
+}
+
+#[test]
+fn word_form_facet_blocks_are_parsed_as_meaning_references() {
+    let lex = parse_lexicon(
+        r#"
+meanings
+  meaning "alpha"
+    gloss "alpha meaning"
+    wiktionary "alpha"
+    defined_by "alpha"
+    role "ontology_root"
+    lexeme "en"
+      word "alpha"
+        description "English alpha."
+        facet "denotation"
+          meaning "alpha"
+        facet "part_of_speech"
+          meaning "noun"
+  meaning "denotation"
+    gloss "denotation facet"
+    wiktionary "denotation"
+    defined_by "alpha"
+    role "semantic_facet_kind"
+  meaning "part_of_speech"
+    gloss "part of speech facet"
+    wiktionary "part of speech"
+    defined_by "alpha"
+    role "semantic_facet_kind"
+  meaning "noun"
+    gloss "noun part of speech"
+    wiktionary "noun"
+    defined_by "part_of_speech"
+    role "lexical_meta"
+"#,
+    );
+
+    let alpha = lex.meaning("alpha").expect("alpha fixture meaning");
+    let alpha_form = alpha
+        .word_forms()
+        .find(|form| form.text == "alpha")
+        .expect("alpha word form");
+    assert_eq!(
+        alpha_form
+            .semantic_facet_targets("denotation")
+            .collect::<Vec<_>>(),
+        vec!["alpha"],
+        "word-form denotation facet must parse as a meaning reference"
+    );
+    assert_eq!(
+        alpha_form
+            .semantic_facet_targets("part_of_speech")
+            .collect::<Vec<_>>(),
+        vec!["noun"],
+        "word-form part_of_speech facet must parse as a meaning reference"
+    );
+    for target in ["denotation", "part_of_speech", "noun"] {
+        assert!(
+            lex.meaning(target).is_some(),
+            "word-form facet target {target} should resolve in the fixture"
+        );
+    }
+}
+
+#[test]
+fn root_link_declares_the_required_semantic_facets() {
+    // Issue #398: notation, annotation, denotation, and connotation are
+    // meaning links in the lexicon, not English-only prose fields. The root
+    // link meaning carries all four so future domain meanings can backfill the
+    // same schema without changing parser code.
+    let lex = lexicon();
+    let root = lex
+        .meaning("link")
+        .expect("the ontology root meaning must exist");
+    let facet_kinds = ["notation", "annotation", "denotation", "connotation"];
+    for kind in facet_kinds {
+        let kind_meaning = lex
+            .meaning(kind)
+            .unwrap_or_else(|| panic!("{kind} must itself be a meaning"));
+        assert!(
+            kind_meaning.has_role("semantic_facet_kind"),
+            "{kind} must be identifiable as a semantic facet kind"
+        );
+        assert!(
+            lex.reaches_root(kind),
+            "{kind} must reduce to the link ontology root"
+        );
+        let targets: Vec<&str> = root.semantic_facet_targets(kind).collect();
+        assert!(
+            !targets.is_empty(),
+            "the root link meaning must declare a {kind} facet"
+        );
+        for target in targets {
+            assert!(
+                lex.meaning(target).is_some(),
+                "link facet {kind} references undefined meaning {target}"
+            );
+        }
+    }
+}
+
+#[test]
+fn every_semantic_facet_resolves_to_seed_meanings() {
+    let lex = lexicon();
+    for meaning in &lex.meanings {
+        for facet in &meaning.semantic_facets {
+            assert!(
+                lex.meaning(&facet.kind).is_some(),
+                "{} declares undefined semantic facet kind {}",
+                meaning.slug,
+                facet.kind
+            );
+            assert!(
+                !facet.meanings.is_empty(),
+                "{} declares empty semantic facet {}",
+                meaning.slug,
+                facet.kind
+            );
+            for target in &facet.meanings {
+                assert!(
+                    lex.meaning(target).is_some(),
+                    "{} semantic facet {} references undefined meaning {}",
+                    meaning.slug,
+                    facet.kind,
+                    target
+                );
+            }
+        }
+        for lexeme in &meaning.lexemes {
+            for form in &lexeme.words {
+                for facet in &form.semantic_facets {
+                    assert!(
+                        lex.meaning(&facet.kind).is_some(),
+                        "{} / {} / {} declares undefined word-form facet kind {}",
+                        meaning.slug,
+                        lexeme.language,
+                        form.text,
+                        facet.kind
+                    );
+                    assert!(
+                        !facet.meanings.is_empty(),
+                        "{} / {} / {} declares empty word-form facet {}",
+                        meaning.slug,
+                        lexeme.language,
+                        form.text,
+                        facet.kind
+                    );
+                    for target in &facet.meanings {
+                        assert!(
+                            lex.meaning(target).is_some(),
+                            "{} / {} / {} word-form facet {} references undefined meaning {}",
+                            meaning.slug,
+                            lexeme.language,
+                            form.text,
+                            facet.kind,
+                            target
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn every_word_form_exposes_recursive_notation_and_denotation() {
+    // The lexeme/word nesting is itself seed data: every surface belongs to a
+    // parent meaning. The parser must expose that structural assertion as
+    // meaning-linked facets so consumers are not forced to interpret English
+    // `description` text.
+    let lex = lexicon();
+    for meaning in &lex.meanings {
+        for form in meaning.word_forms() {
+            assert!(
+                form.semantic_facet_targets("notation")
+                    .any(|target| target == "word_surface"),
+                "{} / {} must expose word_surface as its notation meaning",
+                meaning.slug,
+                form.text
+            );
+            assert!(
+                form.semantic_facet_targets("denotation")
+                    .any(|target| target == meaning.slug),
+                "{} / {} must denote its parent meaning",
+                meaning.slug,
+                form.text
+            );
+        }
+    }
+}
+
+#[test]
+fn semantic_meta_word_forms_have_recursive_facet_links() {
+    // Issue #398 review feedback called out English-only word descriptions.
+    // The semantic-meta seed now ratchets the richer shape: each surface form
+    // in that cluster carries meaning-linked notation, denotation, and
+    // part-of-speech facets. The legacy English `description` remains only as
+    // a human annotation while consumers migrate to these links.
+    let lex = lexicon();
+    let semantic_meta_meanings = [
+        "semantic_facet",
+        "notation",
+        "annotation",
+        "denotation",
+        "connotation",
+        "semantic_gloss",
+        "external_knowledge_source",
+        "cached_source_response",
+    ];
+    for slug in semantic_meta_meanings {
+        let meaning = lex
+            .meaning(slug)
+            .unwrap_or_else(|| panic!("{slug} semantic-meta meaning must exist"));
+        for form in meaning.word_forms() {
+            assert!(
+                form.semantic_facet_targets("notation")
+                    .any(|target| target == "word_surface"),
+                "{slug} / {} must link its notation to word_surface",
+                form.text
+            );
+            assert!(
+                form.semantic_facet_targets("denotation")
+                    .any(|target| target == slug),
+                "{slug} / {} must denote its parent meaning",
+                form.text
+            );
+            assert!(
+                form.semantic_facet_targets("part_of_speech")
+                    .any(|target| target == "noun" || target == "noun_phrase"),
+                "{slug} / {} must declare a meaning-backed part of speech",
+                form.text
+            );
+        }
+    }
+}
+
+#[test]
 fn every_meaning_covers_all_supported_languages() {
     let lex = lexicon();
     for meaning in &lex.meanings {
@@ -191,6 +484,7 @@ fn word_form_slot_is_derived_from_the_ellipsis_marker() {
         text: text.to_string(),
         description: String::new(),
         action: String::new(),
+        semantic_facets: Vec::new(),
     };
 
     let bare = form("how it works");

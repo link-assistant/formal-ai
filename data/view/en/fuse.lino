@@ -1,0 +1,29 @@
+view
+  id M-7482d6fbbf63
+  lemma fuse
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an electrical device that can interrupt the flow of electrical current when it is overloaded"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any igniter that is used to initiate the burning of a propellant"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mix together different elements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become plastic or fluid or liquefied from heat"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "equip with a fuse; provide with a fuse"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make liquid or plastic by heating"
+    provenance (wordnet)

@@ -1,0 +1,167 @@
+{
+  "lemma": "subject",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06612141-n",
+      "partOfSpeech": "n",
+      "definition": "the subject matter of a conversation or discussion",
+      "examples": [
+        "he didn't want to discuss that subject",
+        "it was a very sensitive topic",
+        "his letters were always on the theme of love"
+      ],
+      "synonyms": [
+        "topic",
+        "theme"
+      ]
+    },
+    {
+      "id": "oewn-04354303-n",
+      "partOfSpeech": "n",
+      "definition": "something (a person or object or scene) selected by an artist or photographer for graphic representation",
+      "examples": [
+        "a moving picture of a train is more dramatic than a still picture of the same subject"
+      ],
+      "synonyms": [
+        "content",
+        "depicted object"
+      ]
+    },
+    {
+      "id": "oewn-06005806-n",
+      "partOfSpeech": "n",
+      "definition": "a branch of knowledge",
+      "examples": [
+        "in what discipline is his doctorate?",
+        "teachers should be well trained in their subject",
+        "anthropology is the study of human beings"
+      ],
+      "synonyms": [
+        "discipline",
+        "subject area",
+        "subject field",
+        "field",
+        "field of study",
+        "study",
+        "bailiwick"
+      ]
+    },
+    {
+      "id": "oewn-05822417-n",
+      "partOfSpeech": "n",
+      "definition": "some situation or event that is thought about",
+      "examples": [
+        "he kept drifting off the topic",
+        "he had been thinking about the subject for several years",
+        "it is a matter for the police"
+      ],
+      "synonyms": [
+        "topic",
+        "issue",
+        "matter"
+      ]
+    },
+    {
+      "id": "oewn-06320921-n",
+      "partOfSpeech": "n",
+      "definition": "(grammar) one of the two main constituents of a sentence; the grammatical constituent about which something is predicated"
+    },
+    {
+      "id": "oewn-10688105-n",
+      "partOfSpeech": "n",
+      "definition": "a person who is subjected to experimental or other observational procedures; someone who is an object of investigation",
+      "examples": [
+        "the subjects for this investigation were selected randomly",
+        "the cases that we studied were drawn from two different communities"
+      ],
+      "synonyms": [
+        "case",
+        "guinea pig"
+      ]
+    },
+    {
+      "id": "oewn-09648571-n",
+      "partOfSpeech": "n",
+      "definition": "a person who owes allegiance to that nation",
+      "examples": [
+        "a monarch has a duty to his subjects"
+      ],
+      "synonyms": [
+        "national"
+      ]
+    },
+    {
+      "id": "oewn-06321115-n",
+      "partOfSpeech": "n",
+      "definition": "(logic) the first term of a proposition"
+    },
+    {
+      "id": "oewn-02370095-s",
+      "partOfSpeech": "s",
+      "definition": "possibly accepting or permitting",
+      "examples": [
+        "a passage capable of misinterpretation",
+        "open to interpretation",
+        "an issue open to question",
+        "the time is fixed by the director and players and therefore subject to much variation"
+      ],
+      "synonyms": [
+        "capable",
+        "open"
+      ]
+    },
+    {
+      "id": "oewn-02337856-s",
+      "partOfSpeech": "s",
+      "definition": "being under the power or sovereignty of another or others",
+      "examples": [
+        "subject peoples",
+        "a dependent prince"
+      ],
+      "synonyms": [
+        "dependent"
+      ]
+    },
+    {
+      "id": "oewn-00072167-s",
+      "partOfSpeech": "s",
+      "definition": "likely to be affected by something",
+      "examples": [
+        "the bond is subject to taxation",
+        "he is subject to fits of depression"
+      ]
+    },
+    {
+      "id": "oewn-02115410-v",
+      "partOfSpeech": "v",
+      "definition": "cause to experience or suffer or make liable or vulnerable to",
+      "examples": [
+        "He subjected me to his awful poetry",
+        "The sergeant subjected the new recruits to many drills",
+        "People in Chernobyl were subjected to radiation"
+      ]
+    },
+    {
+      "id": "oewn-01120710-v",
+      "partOfSpeech": "v",
+      "definition": "make accountable for",
+      "examples": [
+        "He did not want to subject himself to the judgments of his superiors"
+      ]
+    },
+    {
+      "id": "oewn-02502465-v",
+      "partOfSpeech": "v",
+      "definition": "make subservient; force to submit or subdue",
+      "synonyms": [
+        "subjugate"
+      ]
+    }
+  ]
+}

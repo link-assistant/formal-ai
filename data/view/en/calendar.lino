@@ -1,0 +1,21 @@
+view
+  id M-00424a4e0616
+  lemma calendar
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a system of timekeeping that defines the beginning and length and divisions of the year"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a list or register of events (appointments or social events or court cases etc.)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a tabular array of the days (usually for one year)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "enter into a calendar"
+    provenance (wordnet)

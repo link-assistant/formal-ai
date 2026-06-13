@@ -11,7 +11,6 @@ coding_modification_suite_issue_362
   download_policy "External code-edit datasets are fetched at test time into target/formal-ai-benchmarks; full datasets are never committed."
   audit "Edit, But Verify (arXiv:2604.05100) warns that instructed code-editing benchmark scores can overstate real-world editing reliability when language coverage, edit domains, or tests are weak; this suite treats external sources as sample providers and keeps a deterministic local ratchet."
   updated_at "2026-05-30"
-
 external_edit_dataset_canitedit
   record_type "external_edit_dataset"
   id "canitedit"
@@ -31,7 +30,6 @@ external_edit_dataset_canitedit
   row_count "105"
   license_verified_at "2026-05-30"
   audit_note "Use as an edit-task source; keep the local formal-ai ratchet because the upstream benchmark is Python-only and hidden-test oriented."
-
 external_edit_dataset_humanevalfix
   record_type "external_edit_dataset"
   id "humanevalfix"
@@ -50,7 +48,6 @@ external_edit_dataset_humanevalfix
   integration_mode "download_on_test"
   license_verified_at "2026-05-30"
   audit_note "Use as a bug-fix source and keep it separate from the instructed-edit ratchet because HumanEvalFix is narrower than multi-turn modification."
-
 external_edit_dataset_editbench
   record_type "external_edit_dataset"
   id "editbench"
@@ -70,7 +67,6 @@ external_edit_dataset_editbench
   row_count "648"
   license_verified_at "2026-05-30"
   audit_note "Use as a real-world edit-task source, but do not treat raw pass rate as sufficient because the audit found thin tests and benchmark artifacts in parts of EDIT-Bench."
-
 coding_modification_case_en_reverse_sort
   record_type "coding_modification_case"
   id "en_reverse_sort"
@@ -86,7 +82,6 @@ coding_modification_case_en_reverse_sort
   expected_answer_contains "names.sort_by(|a, b| b.cmp(a))"
   expected_links_contains "program_parameter:language rust"
   expected_links_contains "program_parameter:task list_files_arg_reverse_sort"
-
 coding_modification_case_ru_issue_349_reverse_sort
   record_type "coding_modification_case"
   id "ru_issue_349_reverse_sort"
@@ -102,7 +97,6 @@ coding_modification_case_ru_issue_349_reverse_sort
   expected_answer_contains "names.sort_by(|a, b| b.cmp(a))"
   expected_links_contains "program_parameter:language rust"
   expected_links_contains "program_parameter:task list_files_arg_reverse_sort"
-
 coding_modification_case_hi_reverse_sort
   record_type "coding_modification_case"
   id "hi_reverse_sort"
@@ -118,7 +112,6 @@ coding_modification_case_hi_reverse_sort
   expected_answer_contains "names.sort_by(|a, b| b.cmp(a))"
   expected_links_contains "program_parameter:language rust"
   expected_links_contains "program_parameter:task list_files_arg_reverse_sort"
-
 coding_modification_case_zh_reverse_sort
   record_type "coding_modification_case"
   id "zh_reverse_sort"

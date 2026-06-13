@@ -1,0 +1,77 @@
+[
+  {
+    "word": "modulo",
+    "phonetic": "/ˈmɒdjʊləʊ/",
+    "phonetics": [
+      {
+        "text": "/ˈmɒdjʊləʊ/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈmɒdʒəloʊ/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The operation or function that returns the remainder of one number divided by another.",
+            "synonyms": [
+              "modulus"
+            ],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "modulus"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Given a specified modulus of.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "21 and 84 are congruent to each other modulo 9, since both numbers leave the same remainder, 3, when divided by 9."
+          },
+          {
+            "definition": "Except for differences accounted for by.",
+            "synonyms": [
+              "up to"
+            ],
+            "antonyms": [],
+            "example": "\"A is the same as B modulo C\" means A is the same as B except for differences accounted for by C."
+          },
+          {
+            "definition": "(extended use) With due allowance for (a specified exception or particular detail).",
+            "synonyms": [
+              "barring",
+              "except for",
+              "save for"
+            ],
+            "antonyms": [],
+            "example": "All mammals, modulo the monotremes, give birth to live young."
+          }
+        ],
+        "synonyms": [
+          "barring",
+          "except for",
+          "save for",
+          "up to"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/modulo"
+    ]
+  }
+]

@@ -1,0 +1,9 @@
+view
+  id M-3a596a9e5f12
+  lemma why
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the cause or intention underlying an action or situation, especially in the phrase ‘the whys and wherefores’"
+    provenance (wordnet)

@@ -1,0 +1,21 @@
+language en
+lemma payment
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a sum of money paid or a claim discharged"
+    id oewn-13299398-n
+    partOfSpeech n
+  entry
+    definition "the act of paying money"
+    id oewn-01122769-n
+    partOfSpeech n
+    synonyms (defrayal defrayment)
+  entry
+    definition "an act of requiting; returning in kind"
+    id oewn-01237702-n
+    partOfSpeech n
+    synonyms (requital)
+source "oewn:2024"

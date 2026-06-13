@@ -1,0 +1,114 @@
+[
+  {
+    "word": "argument",
+    "phonetic": "/ˈɑːɡjʊmənt/",
+    "phonetics": [
+      {
+        "text": "/ˈɑːɡjʊmənt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈɑɹɡjumənt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/argument-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718879",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A fact or statement used to support a proposition; a reason.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A verbal dispute; a quarrel.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A process of reasoning.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A series of propositions organized so that the final proposition is a conclusion which is intended to follow logically from the preceding propositions, which function as premises.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The independent variable of a function.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The phase of a complex number.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A value, or reference to a value, passed to a function.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Parameters are like labeled fillable blanks used to define a function whereas arguments are passed to a function when calling it, filling in those blanks."
+          },
+          {
+            "definition": "A parameter at a function call; an actual parameter, as opposed to a formal parameter.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of the phrases that bears a syntactic connection to the verb of a clause.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The quantity on which another quantity in a table depends.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The altitude is the argument of the refraction."
+          },
+          {
+            "definition": "The subject matter of a discourse, writing, or artistic representation; theme or topic; also, an abstract or summary, as of the contents of a book, chapter, poem.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Matter for question; business in hand.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "actual argument",
+          "passed parameter"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "(NNES) To put forward as an argument; to argue.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/argument"
+    ]
+  }
+]

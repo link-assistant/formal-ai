@@ -117,9 +117,9 @@ Status legend:
 | 2 | Universal problem-solving loop runs for every prompt in the same shape | Built | `src/solver.rs::UniversalSolver`, active `reasoning_loop` specs | None in the E1-E14 backlog. |
 | 3 | Formalization to Wikidata P-ids/Q-ids with fallback sources | Built | `src/translation/formalization.rs`, `src/translation/pipeline.rs`, active `formalization` specs | Future ranking improvements feed into [#279](https://github.com/link-assistant/formal-ai/issues/279). |
 | 4 | Temperature-based interpretation selection plus clarify-vs-guess | Built | `src/translation/selection.rs`, `SolverConfig::temperature`, active tests | None in the E1-E14 backlog. |
-| 5 | Public knowledge as a cache with provenance | Built | `src/solver.rs` and `src/solver_handlers/mod.rs` source-cache handling, active `source_cache` specs | None in the E1-E14 backlog. |
+| 5 | Public knowledge as a cache with provenance | Built | `src/solver.rs` and `src/solver_handlers/mod.rs` source-cache handling, active `source_cache` specs; `src/knowledge.rs` adds the coding oracle that treats Rosetta Code / Wikifunctions / the Hello World Collection / Stack Overflow as cached external APIs under a `min(1%, 512)` per-source cap ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | None in the E1-E14 backlog; the oracle's gated live-refresh path follows the existing `FORMAL_AI_LIVE_API` discipline. |
 | 6 | Translation through link-native meanings | Built | `src/translation/`, active `translation_via_links` specs | None in the E1-E14 backlog. |
-| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs | None in the E1-E14 backlog. |
+| 7 | Code generation and cross-language translation | Built | `src/solver_handlers/software_project.rs`, active `code_generation` specs; `src/solver_handler_oracle.rs` generalises `write_program` to languages the verified catalogue does not template (Kotlin/Swift/PHP/Bash/Lua/Haskell) by sourcing reviewed snippets from the cached knowledge oracle ([#412](https://github.com/link-assistant/formal-ai/issues/412)) | A task-agnostic meta-builder ("algorithm that builds algorithms", R7) is the tracked next step in [`docs/case-studies/issue-412`](docs/case-studies/issue-412/README.md). |
 | 8 | Formal reasoning beyond a fixed answer table | Built | `src/proof_engine/decision.rs`, boolean and linear decision modules | Optional future backends can build on this, but #253 closed the planned requirement. |
 | 9 | Chat over experience: why, facts, export, retraction | Built | `src/event_log.rs`, active `transparent_state` specs | None in the E1-E14 backlog. |
 | 10 | Links-network invariants and dynamic type system | Built | `src/link_store.rs`, `src/links_format.rs`, active `links_network` specs | Native physical-store default is tracked separately in [#278](https://github.com/link-assistant/formal-ai/issues/278). |
@@ -245,6 +245,23 @@ evidence is recorded in
 | [#363](https://github.com/link-assistant/formal-ai/issues/363) | [#375](https://github.com/link-assistant/formal-ai/pull/375) | Reasoning-first report behavior. |
 | [#364](https://github.com/link-assistant/formal-ai/issues/364) | [#376](https://github.com/link-assistant/formal-ai/pull/376) | White-box unknown-trace self-improvement loop. |
 | [#365](https://github.com/link-assistant/formal-ai/issues/365) | [#377](https://github.com/link-assistant/formal-ai/pull/377) | Final closure report and verification map. |
+
+## Issue #408 Text And Code Editing - current PR
+
+PR [#416](https://github.com/link-assistant/formal-ai/pull/416) fixes the issue
+[#408](https://github.com/link-assistant/formal-ai/issues/408) Russian follow-up
+replacement failure by routing text and code edit requests through a
+deterministic symbolic edit path. The branch verifies the original reproduction,
+multilingual replacement variants, punctuation-tolerant replacements, broader
+case, extraction, counting, punctuation, and line-shape edit operations, 61
+self-authored benchmark-family edit examples, and a manifest-backed 48-source
+local profile with 30 deterministic variations per source.
+
+The issue #408 local benchmark ratchet passes 1,440 of 1,440 generated profile
+checks in `issue_408_text_code_edit_profile_passes_local_ratchet`. Each of the
+48 researched sources has an explicit repository-local 10% floor of 3 checks and
+the stronger ratchet requires 30/30 per source, so the benchmark work requested
+for #408 is closed in this PR.
 
 ## Verification Contract
 

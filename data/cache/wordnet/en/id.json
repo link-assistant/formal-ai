@@ -1,0 +1,37 @@
+{
+  "lemma": "id",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09103738-n",
+      "partOfSpeech": "n",
+      "definition": "a state in the Rocky Mountains",
+      "synonyms": [
+        "Idaho",
+        "Gem State",
+        "Id."
+      ]
+    },
+    {
+      "id": "oewn-05621577-n",
+      "partOfSpeech": "n",
+      "definition": "(psychoanalysis) primitive instincts and energies underlying all psychic activity"
+    },
+    {
+      "id": "oewn-06900328-n",
+      "partOfSpeech": "n",
+      "definition": "a card or badge used to identify the bearer",
+      "examples": [
+        "you had to show your ID in order to get in"
+      ],
+      "synonyms": [
+        "I.D."
+      ]
+    }
+  ]
+}

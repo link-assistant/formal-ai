@@ -1,0 +1,117 @@
+{
+  "lemma": "extract",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14872955-n",
+      "partOfSpeech": "n",
+      "definition": "a solution obtained by steeping or soaking a substance (usually in water)",
+      "synonyms": [
+        "infusion"
+      ]
+    },
+    {
+      "id": "oewn-06412153-n",
+      "partOfSpeech": "n",
+      "definition": "a passage selected from a larger work",
+      "examples": [
+        "he presented excerpts from William James' philosophical writings"
+      ],
+      "synonyms": [
+        "excerpt",
+        "excerption",
+        "selection"
+      ]
+    },
+    {
+      "id": "oewn-01353852-v",
+      "partOfSpeech": "v",
+      "definition": "remove, usually with some force or effort; also used in an abstract sense",
+      "examples": [
+        "pull weeds",
+        "extract a bad tooth",
+        "take out a splinter",
+        "extract information from the telegram"
+      ],
+      "synonyms": [
+        "pull out",
+        "pull",
+        "pull up",
+        "take out",
+        "draw out",
+        "rip out",
+        "tear out"
+      ]
+    },
+    {
+      "id": "oewn-02243880-v",
+      "partOfSpeech": "v",
+      "definition": "get despite difficulties or obstacles",
+      "examples": [
+        "I extracted a promise from the Dean for two new positions"
+      ]
+    },
+    {
+      "id": "oewn-01634074-v",
+      "partOfSpeech": "v",
+      "definition": "deduce (a principle) or construe (a meaning)",
+      "examples": [
+        "We drew out some interesting linguistic data from the native informant"
+      ],
+      "synonyms": [
+        "educe",
+        "evoke",
+        "elicit",
+        "draw out"
+      ]
+    },
+    {
+      "id": "oewn-00229706-v",
+      "partOfSpeech": "v",
+      "definition": "extract by the process of distillation",
+      "examples": [
+        "distill the essence of this compound"
+      ],
+      "synonyms": [
+        "distill",
+        "distil"
+      ]
+    },
+    {
+      "id": "oewn-01462021-v",
+      "partOfSpeech": "v",
+      "definition": "separate (a metal) from an ore"
+    },
+    {
+      "id": "oewn-01354457-v",
+      "partOfSpeech": "v",
+      "definition": "obtain from a substance, as by mechanical action",
+      "examples": [
+        "Italians express coffee rather than filter it"
+      ],
+      "synonyms": [
+        "press out",
+        "express"
+      ]
+    },
+    {
+      "id": "oewn-00678940-v",
+      "partOfSpeech": "v",
+      "definition": "take out of a literary work in order to cite or copy",
+      "synonyms": [
+        "excerpt",
+        "take out"
+      ]
+    },
+    {
+      "id": "oewn-00640385-v",
+      "partOfSpeech": "v",
+      "definition": "calculate the root of a number"
+    }
+  ]
+}

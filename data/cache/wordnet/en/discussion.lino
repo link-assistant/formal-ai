@@ -1,0 +1,19 @@
+language en
+lemma discussion
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an extended communication (often interactive) dealing with some particular topic"
+    examples ("the book contains an excellent discussion of modal logic" "his treatment of the race question is badly biased")
+    id oewn-07152793-n
+    partOfSpeech n
+    synonyms (treatment discourse)
+  entry
+    definition "an exchange of views on some topic"
+    examples ("we had a good discussion" "we had a word or two about it")
+    id oewn-07155367-n
+    partOfSpeech n
+    synonyms (give-and-take word)
+source "oewn:2024"

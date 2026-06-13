@@ -1,0 +1,15 @@
+Q2735883
+  aliases
+    en (cucumbers cuke)
+    ru ("огурцы")
+    zh ("拍黄瓜")
+  descriptions
+    en "fruit used as vegetable"
+    ru "овощ, плод огурца обыкновенного (Cucumis sativus)"
+  id Q2735883
+  labels
+    en cucumber
+    ru "огурец"
+    zh "黄瓜"
+  type item
+success 1

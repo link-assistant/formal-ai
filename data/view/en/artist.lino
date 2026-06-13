@@ -1,0 +1,21 @@
+view
+  id M-f98b66feb4bb
+  lemma artist
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A person who creates art."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A person who is skilled at some activity."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A recording artist."
+    provenance (wiktionary)
+  sense
+    part_of_speech adjective
+    gloss "Artistic."
+    provenance (wiktionary)

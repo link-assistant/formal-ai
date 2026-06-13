@@ -1,0 +1,18 @@
+Q4917
+  aliases
+    en (USD $ US$ "American dollar" "US $" "U.S. Dollar" "U. S. Dollar" US-$ dollar dollars "US dollar" buck greenback $USD USD$ "US dollars" "United States dollars" "American dollars" "USA dollar" "USA dollars" "American money")
+    ru (USD "$ США" "доллар" "американский доллар")
+    zh ("美金" USD $)
+  descriptions
+    en "official currency of the United States"
+    hi "अमेरिका की मुद्रा"
+    ru "денежная единица США и ряда других стран"
+    zh "美國官方貨幣"
+  id Q4917
+  labels
+    en "United States dollar"
+    hi "अमेरिकी डॉलर"
+    ru "доллар США"
+    zh "美元"
+  type item
+success 1

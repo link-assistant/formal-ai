@@ -1,0 +1,42 @@
+[
+  {
+    "word": "cosine",
+    "phonetic": "/ˈkəʊ.saɪn/",
+    "phonetics": [
+      {
+        "text": "/ˈkəʊ.saɪn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/cosine-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=31972304",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      },
+      {
+        "text": "/ˈkoʊ.saɪn/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "In a right triangle, the ratio of the length of the side adjacent to an acute angle to the length of the hypotenuse. Symbol: cos",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/cosine"
+    ]
+  }
+]

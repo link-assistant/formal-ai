@@ -1,0 +1,48 @@
+language en
+lemma gloss
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an explanation or definition of an obscure word in a text"
+    id oewn-06756695-n
+    partOfSpeech n
+    synonyms (rubric)
+  entry
+    definition "an alphabetical list of technical terms in some specialized field of knowledge; usually published as an appendix to a text on that field"
+    id oewn-06432424-n
+    partOfSpeech n
+    synonyms (glossary)
+  entry
+    definition "the property of being smooth and shiny"
+    id oewn-04962337-n
+    partOfSpeech n
+    synonyms (polish glossiness burnish)
+  entry
+    definition "an outward or token appearance or form that is deliberately misleading"
+    examples ("he hoped his claims would have a semblance of authenticity" "he tried to give his falsehood the gloss of moral sanction" "the situation soon took on a different color")
+    id oewn-04685309-n
+    partOfSpeech n
+    synonyms (semblance color colour)
+  entry
+    definition "give a shine or gloss to, usually by rubbing"
+    id oewn-01686477-v
+    partOfSpeech v
+  entry
+    definition "provide interlinear explanations for words or phrases"
+    examples ("He annotated on what his teacher had written")
+    id oewn-00963361-v
+    partOfSpeech v
+    synonyms (comment annotate)
+  entry
+    definition "provide an interlinear translation of a word or phrase"
+    id oewn-00962993-v
+    partOfSpeech v
+  entry
+    definition "give a deceptive explanation or excuse for"
+    examples ("color a lie")
+    id oewn-00838812-v
+    partOfSpeech v
+    synonyms (color colour)
+source "oewn:2024"

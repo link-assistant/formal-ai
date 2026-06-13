@@ -1,0 +1,369 @@
+[
+  {
+    "word": "bit",
+    "phonetic": "/bɪt/",
+    "phonetics": [
+      {
+        "text": "/bɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=545618",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A piece of metal placed in a horse's mouth and connected to the reins to direct the animal.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A horse hates having a bit put in its mouth."
+          },
+          {
+            "definition": "A rotary cutting tool fitted to a drill, used to bore holes.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A coin of a specified value.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a threepenny bit"
+          },
+          {
+            "definition": "A ten-cent piece, dime.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A unit of currency or coin in the Americas worth a fraction of a Spanish dollar; now specifically, an eighth of a US dollar.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A quarter is two bits."
+          },
+          {
+            "definition": "In the southern and southwestern states, a small silver coin (such as the real) formerly current; commonly, one worth about 12½ cents; also, the sum of 12½ cents.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A small amount of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There were bits of paper all over the floor.   Does your leg still hurt? / Just a bit now.   I've done my bit; I expect you to do yours."
+          },
+          {
+            "definition": "Specifically, a small amount of time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll be there in a bit; I need to take care of something first.   He was here just a bit ago, but it looks like he's stepped out."
+          },
+          {
+            "definition": "(plural) Fractions of a second.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The 400 metres race was won in 47 seconds and bits."
+          },
+          {
+            "definition": "A portion of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'd like a big bit of cake, please."
+          },
+          {
+            "definition": "Somewhat; something, but not very great; also used like jot and whit to express the smallest degree. See also a bit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Am I bored? Not a bit of it!"
+          },
+          {
+            "definition": "A prison sentence, especially a short one.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An excerpt of material making up part of a show, comedy routine, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "His bit about video games was not nearly as entertaining as the other segments of his show."
+          },
+          {
+            "definition": "A small part or role, sometimes with spoken lines, in a theatrical performance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "She acted her bit in the opening scene."
+          },
+          {
+            "definition": "The part of a key which enters the lock and acts upon the bolt and tumblers.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The cutting iron of a plane.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The bevelled front edge of an axehead along which the cutting edge runs.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "coin",
+          "piece",
+          "kimberwicke",
+          "pelham",
+          "snaffle",
+          "portion",
+          "segment",
+          "share",
+          "bid",
+          "morsel",
+          "piece",
+          "scrap"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To put a bridle upon; to put the bit in the mouth of (a horse).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bit"
+    ]
+  },
+  {
+    "word": "bit",
+    "phonetic": "/bɪt/",
+    "phonetics": [
+      {
+        "text": "/bɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=545618",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Bitten.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Even though he's bit, of course the zombies would still chase him."
+          },
+          {
+            "definition": "(only in combination) Having been bitten.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To cut into something by clamping the teeth.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "As soon as you bite that sandwich, you'll know how good it is."
+          },
+          {
+            "definition": "To hold something by clamping one's teeth.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To attack with the teeth.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "That dog is about to bite!"
+          },
+          {
+            "definition": "To behave aggressively; to reject advances.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you see me, come and say hello. I don't bite."
+          },
+          {
+            "definition": "To take hold; to establish firm contact with.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I needed snow chains to make the tires bite."
+          },
+          {
+            "definition": "To have significant effect, often negative.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "For homeowners with adjustable rate mortgages, rising interest will really bite."
+          },
+          {
+            "definition": "(of a fish) To bite a baited hook or other lure and thus be caught.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Are the fish biting today?"
+          },
+          {
+            "definition": "To accept something offered, often secretly or deceptively, to cause some action by the acceptor.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I've planted the story. Do you think they'll bite?"
+          },
+          {
+            "definition": "(of an insect) To sting.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "These mosquitoes are really biting today!"
+          },
+          {
+            "definition": "To cause a smarting sensation; to have a property which causes such a sensation; to be pungent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "It bites like pepper or mustard."
+          },
+          {
+            "definition": "(sometimes figurative) To cause sharp pain or damage to; to hurt or injure.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Pepper bites the mouth."
+          },
+          {
+            "definition": "To cause sharp pain; to produce anguish; to hurt or injure; to have the property of so doing.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To take or keep a firm hold.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The anchor bites."
+          },
+          {
+            "definition": "To take hold of; to hold fast; to adhere to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The anchor bites the ground."
+          },
+          {
+            "definition": "To lack quality; to be worthy of derision; to suck.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This music really bites."
+          },
+          {
+            "definition": "To perform oral sex on. Used in invective.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You don't like that I sat on your car? Bite me."
+          },
+          {
+            "definition": "To plagiarize, to imitate.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He always be biting my moves."
+          },
+          {
+            "definition": "To deceive or defraud; to take in.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bit",
+      "https://en.wiktionary.org/wiki/bite"
+    ]
+  },
+  {
+    "word": "bit",
+    "phonetic": "/bɪt/",
+    "phonetics": [
+      {
+        "text": "/bɪt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/bit-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=545618",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A binary digit, generally represented as a 1 or 0.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The smallest unit of storage in a digital computer, consisting of a binary digit.",
+            "synonyms": [
+              "b"
+            ],
+            "antonyms": []
+          },
+          {
+            "definition": "Any datum that may take on one of exactly two values.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "permission bits in a file system"
+          },
+          {
+            "definition": "A unit of measure for information entropy.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A microbitcoin, or a millionth of a bitcoin (0.000001 BTC).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "b"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/bit"
+    ]
+  }
+]

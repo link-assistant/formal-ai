@@ -1,0 +1,22 @@
+{
+  "lemma": "approved",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00180335-s",
+      "partOfSpeech": "s",
+      "definition": "established by authority; given authoritative approval",
+      "examples": [
+        "a list of approved candidates"
+      ],
+      "synonyms": [
+        "sanctioned"
+      ]
+    }
+  ]
+}

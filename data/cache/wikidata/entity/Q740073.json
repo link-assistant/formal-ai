@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "Q740073": {
+      "type": "item",
+      "id": "Q740073",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Protacanthamoeba bohemica"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Protacanthamoeba bohemica"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "species of prokaryote"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "變形蟲的一種"
+        }
+      },
+      "aliases": {}
+    }
+  },
+  "success": 1
+}

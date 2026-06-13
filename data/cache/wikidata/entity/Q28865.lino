@@ -1,0 +1,16 @@
+Q28865
+  aliases
+    en ("Python programming language" "Python language" "Python (language)" "Python computer language" "Python Programming Language" "Python (scripting language)" "Python (lang)" "Python (programming)" "Python (computer language)" "Python (software)" "Python (Programming Language)" "Python (computing)" Python.org)
+    ru ("Пайтон" "Питон")
+    zh ("派森编程语言" "派森语言" "派森程序设计语言" "派森" "Python语言" "Python编程语言" "Python程序设计语言")
+  descriptions
+    en "general-purpose programming language"
+    hi "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+    ru "высокоуровневый, интерпретируемый, объектно-ориентированный язык программирования"
+    zh "通用高級編程語言"
+  id Q28865
+  labels
+    en Python
+    hi "पाइथन"
+  type item
+success 1

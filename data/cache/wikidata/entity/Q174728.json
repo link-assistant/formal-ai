@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "Q174728": {
+      "type": "item",
+      "id": "Q174728",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "centimetre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сантиметр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "शतिमान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "厘米"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of length equal to one hundredth of a metre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица длины в 0,01 м"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "centimetres"
+          },
+          {
+            "language": "en",
+            "value": "cm"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "см"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सेंटीमीटर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "公分"
+          },
+          {
+            "language": "zh",
+            "value": "釐米"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

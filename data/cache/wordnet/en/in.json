@@ -1,0 +1,77 @@
+{
+  "lemma": "in",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09107288-n",
+      "partOfSpeech": "n",
+      "definition": "a state in midwestern United States, with capital Indianapolis",
+      "synonyms": [
+        "Indiana",
+        "Hoosier State",
+        "Ind."
+      ]
+    },
+    {
+      "id": "oewn-14665401-n",
+      "partOfSpeech": "n",
+      "definition": "a rare soft silvery metallic element; occurs in small quantities in sphalerite",
+      "synonyms": [
+        "indium",
+        "atomic number 49"
+      ]
+    },
+    {
+      "id": "oewn-13671409-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of length equal to one twelfth of a foot",
+      "synonyms": [
+        "inch"
+      ]
+    },
+    {
+      "id": "oewn-00504204-r",
+      "partOfSpeech": "r",
+      "definition": "to or toward the inside of",
+      "examples": [
+        "come in",
+        "smash in the door"
+      ],
+      "synonyms": [
+        "inwards",
+        "inward"
+      ]
+    },
+    {
+      "id": "oewn-02340196-s",
+      "partOfSpeech": "s",
+      "definition": "holding office",
+      "examples": [
+        "the in party"
+      ]
+    },
+    {
+      "id": "oewn-01298266-s",
+      "partOfSpeech": "s",
+      "definition": "directed or bound inward",
+      "examples": [
+        "took the in bus",
+        "the in basket"
+      ]
+    },
+    {
+      "id": "oewn-00975680-s",
+      "partOfSpeech": "s",
+      "definition": "currently fashionable",
+      "examples": [
+        "the in thing to do",
+        "large shoulder pads are in"
+      ]
+    }
+  ]
+}

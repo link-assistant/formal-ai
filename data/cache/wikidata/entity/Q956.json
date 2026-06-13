@@ -1,0 +1,265 @@
+{
+  "entities": {
+    "Q956": {
+      "type": "item",
+      "id": "Q956",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Beijing"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Пекин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बीजिंग"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "北京市"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital city of China"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица и город центрального подчинения КНР"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "中華人民共和國首都暨直轄市"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीन की राजधानी"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Beiping"
+          },
+          {
+            "language": "en",
+            "value": "Peiping"
+          },
+          {
+            "language": "en",
+            "value": "Yanjing"
+          },
+          {
+            "language": "en",
+            "value": "Zhongdu"
+          },
+          {
+            "language": "en",
+            "value": "Khanbaliq"
+          },
+          {
+            "language": "en",
+            "value": "BJ"
+          },
+          {
+            "language": "en",
+            "value": "Pekin"
+          },
+          {
+            "language": "en",
+            "value": "Shuntian"
+          },
+          {
+            "language": "en",
+            "value": "Shuntianfu"
+          },
+          {
+            "language": "en",
+            "value": "Shuntian Fu"
+          },
+          {
+            "language": "en",
+            "value": "Pe-king"
+          },
+          {
+            "language": "en",
+            "value": "Pei-p'ing"
+          },
+          {
+            "language": "en",
+            "value": "Pei-ping"
+          },
+          {
+            "language": "en",
+            "value": "Peip'ing"
+          },
+          {
+            "language": "en",
+            "value": "Pei-ching"
+          },
+          {
+            "language": "en",
+            "value": "Yan-ching"
+          },
+          {
+            "language": "en",
+            "value": "Yanking"
+          },
+          {
+            "language": "en",
+            "value": "Chung-tu"
+          },
+          {
+            "language": "en",
+            "value": "Chungtu"
+          },
+          {
+            "language": "en",
+            "value": "Khanbalik"
+          },
+          {
+            "language": "en",
+            "value": "Shun-t'ien"
+          },
+          {
+            "language": "en",
+            "value": "Shun-tien"
+          },
+          {
+            "language": "en",
+            "value": "Beeijing"
+          },
+          {
+            "language": "en",
+            "value": "Poh-cin"
+          },
+          {
+            "language": "en",
+            "value": "Bākgīng"
+          },
+          {
+            "language": "en",
+            "value": "Pak-kiann"
+          },
+          {
+            "language": "en",
+            "value": "Ji"
+          },
+          {
+            "language": "en",
+            "value": "Jicheng"
+          },
+          {
+            "language": "en",
+            "value": "Chi"
+          },
+          {
+            "language": "en",
+            "value": "Chi-ch'eng"
+          },
+          {
+            "language": "en",
+            "value": "Chi-cheng"
+          },
+          {
+            "language": "en",
+            "value": "Chi-ch’êng"
+          },
+          {
+            "language": "en",
+            "value": "Bei Jing Shi"
+          },
+          {
+            "language": "en",
+            "value": "Beijing Shi"
+          },
+          {
+            "language": "en",
+            "value": "Peking Shi"
+          },
+          {
+            "language": "en",
+            "value": "Běijīng"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "北平"
+          },
+          {
+            "language": "zh",
+            "value": "北平市"
+          },
+          {
+            "language": "zh",
+            "value": "平"
+          },
+          {
+            "language": "zh",
+            "value": "燕京"
+          },
+          {
+            "language": "zh",
+            "value": "燕"
+          },
+          {
+            "language": "zh",
+            "value": "京兆地方"
+          },
+          {
+            "language": "zh",
+            "value": "Běijīng shì"
+          },
+          {
+            "language": "zh",
+            "value": "Běijīng"
+          },
+          {
+            "language": "zh",
+            "value": "Jīng"
+          },
+          {
+            "language": "zh",
+            "value": "Běipíng"
+          },
+          {
+            "language": "zh",
+            "value": "Běipíng shì"
+          },
+          {
+            "language": "zh",
+            "value": "Píng"
+          },
+          {
+            "language": "zh",
+            "value": "Yànjīng"
+          },
+          {
+            "language": "zh",
+            "value": "Yàn"
+          },
+          {
+            "language": "zh",
+            "value": "Jīngzhào dìfāng"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Бэйцзин"
+          },
+          {
+            "language": "ru",
+            "value": "Бэйпин"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

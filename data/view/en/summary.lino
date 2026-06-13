@@ -1,0 +1,17 @@
+view
+  id M-2968baaad89e
+  lemma summary
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a brief statement that presents the main points in a concise form"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "performed speedily and without formality"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "briefly giving the gist of something"
+    provenance (wordnet)

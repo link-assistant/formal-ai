@@ -1,0 +1,99 @@
+language en
+lemma do
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "doctor's degree in osteopathy"
+    id oewn-06716496-n
+    partOfSpeech n
+    synonyms ("Doctor of Osteopathy")
+  entry
+    definition "an uproarious party"
+    id oewn-07462638-n
+    partOfSpeech n
+    synonyms (bash brawl)
+  entry
+    definition "the syllable naming the first (tonic) note of any major scale in solmization"
+    id oewn-06881359-n
+    partOfSpeech n
+    synonyms (doh ut)
+  entry
+    definition "engage in"
+    examples ("make love, not war" "make an effort" "do research" "do nothing" "make revolution")
+    id oewn-02566500-v
+    partOfSpeech v
+    synonyms (make)
+  entry
+    definition "carry out or perform an action"
+    examples ("John did the painting, the weeding, and he cleaned out the gutters" "the skater executed a triple pirouette" "she did a little dance")
+    id oewn-01716563-v
+    partOfSpeech v
+    synonyms (perform execute)
+  entry
+    definition "get (something) done"
+    examples ("I did my job")
+    id oewn-02567910-v
+    partOfSpeech v
+    synonyms (perform)
+  entry
+    definition "proceed or get along"
+    examples ("How is she doing in her new job?" "How are you making out in graduate school?" "He's come a long way")
+    id oewn-02623620-v
+    partOfSpeech v
+    synonyms (fare "make out" come "get along")
+  entry
+    definition "give rise to; cause to happen or occur, not always intentionally"
+    examples ("cause a commotion" "make a stir" "cause an accident")
+    id oewn-01649143-v
+    partOfSpeech v
+    synonyms (cause make)
+  entry
+    definition "carry out or practice; as of jobs and professions"
+    examples ("practice law")
+    id oewn-02574587-v
+    partOfSpeech v
+    synonyms (practice practise exercise)
+  entry
+    definition "be sufficient; be adequate, either in quality or quantity"
+    examples ("A few words would answer" "This car suits my purpose well" "Will $100 do?" "A ‘B’ grade doesn't suffice to get me into medical school" "Nothing else will serve")
+    id oewn-02675578-v
+    partOfSpeech v
+    synonyms (suffice answer serve)
+  entry
+    definition "create or design, often in a certain way"
+    examples ("Do my room in blue" "I did this piece in wood to express my love for the forest")
+    id oewn-01622033-v
+    partOfSpeech v
+    synonyms (make)
+  entry
+    definition "behave in a certain manner; show a certain behavior; conduct or comport oneself"
+    examples ("You should act like an adult" "Don't behave like a fool" "What makes her do this way?" "The dog acts ferocious, but he is really afraid of people")
+    id oewn-00010428-v
+    partOfSpeech v
+    synonyms (act behave acquit bear deport conduct comport carry)
+  entry
+    definition "spend time in prison or in a labor camp"
+    examples ("He did six years for embezzlement")
+    id oewn-02714981-v
+    partOfSpeech v
+    synonyms (serve)
+  entry
+    definition "carry on or function"
+    examples ("We could do with a little more help around here")
+    id oewn-02528887-v
+    partOfSpeech v
+    synonyms (manage)
+  entry
+    definition "arrange attractively"
+    examples ("dress my hair for the wedding")
+    id oewn-00038562-v
+    partOfSpeech v
+    synonyms (dress arrange set coif coiffe coiffure)
+  entry
+    definition "travel or traverse (a distance)"
+    examples ("This car does 150 miles per hour" "We did 6 miles on our hike every day")
+    id oewn-01845714-v
+    partOfSpeech v
+source "oewn:2024"

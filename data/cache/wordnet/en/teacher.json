@@ -1,0 +1,28 @@
+{
+  "lemma": "teacher",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-10713754-n",
+      "partOfSpeech": "n",
+      "definition": "a person whose occupation is teaching",
+      "synonyms": [
+        "instructor"
+      ]
+    },
+    {
+      "id": "oewn-05863377-n",
+      "partOfSpeech": "n",
+      "definition": "a personified abstraction that teaches",
+      "examples": [
+        "books were his teachers",
+        "experience is a demanding teacher"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+language en
+lemma annually
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "without missing a year"
+    examples ("they travel to China annually")
+    id oewn-00082087-r
+    partOfSpeech r
+    synonyms (yearly "every year" "each year")
+  entry
+    definition "by the year; every year (usually with reference to a sum of money paid or received)"
+    examples ("he earned $100,000 per annum" "we issue six volumes per annum")
+    id oewn-00252039-r
+    partOfSpeech r
+    synonyms ("per annum" p.a. "per year" "each year")
+source "oewn:2024"

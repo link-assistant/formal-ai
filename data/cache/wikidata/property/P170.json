@@ -1,0 +1,165 @@
+{
+  "entities": {
+    "P170": {
+      "type": "property",
+      "id": "P170",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "creator"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "создатель"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रचयिता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "創作者"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "maker of this creative work or other object (where no more specific property exists)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "создатель творческого произведения или иного объекта"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "रचनात्मक कार्य या अन्य वस्तु (जहां कोई अधिक विशिष्ट प्रोपर्टी मौजूद नहीं है) का निर्माता"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "藝術創作或其他類型的創作的作者（適用於該創作不帶有其他更精切屬性的情況）"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "artist (non-musical)"
+          },
+          {
+            "language": "en",
+            "value": "created by"
+          },
+          {
+            "language": "en",
+            "value": "painter"
+          },
+          {
+            "language": "en",
+            "value": "sculptor"
+          },
+          {
+            "language": "en",
+            "value": "made by"
+          },
+          {
+            "language": "en",
+            "value": "painted by"
+          },
+          {
+            "language": "en",
+            "value": "sculpted by"
+          },
+          {
+            "language": "en",
+            "value": "visual artist"
+          },
+          {
+            "language": "en",
+            "value": "art by"
+          },
+          {
+            "language": "en",
+            "value": "artwork by"
+          },
+          {
+            "language": "en",
+            "value": "art work by"
+          },
+          {
+            "language": "en",
+            "value": "realized by"
+          },
+          {
+            "language": "en",
+            "value": "realised by"
+          },
+          {
+            "language": "en",
+            "value": "drawer"
+          },
+          {
+            "language": "en",
+            "value": "drawn by"
+          },
+          {
+            "language": "en",
+            "value": "by"
+          },
+          {
+            "language": "en",
+            "value": "original author"
+          },
+          {
+            "language": "en",
+            "value": "photographer"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "создатель объекта"
+          },
+          {
+            "language": "ru",
+            "value": "создатель произведения"
+          },
+          {
+            "language": "ru",
+            "value": "автор"
+          },
+          {
+            "language": "ru",
+            "value": "создательница"
+          },
+          {
+            "language": "ru",
+            "value": "автор произведения"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "创作主体"
+          },
+          {
+            "language": "zh",
+            "value": "创作者"
+          },
+          {
+            "language": "zh",
+            "value": "建立者"
+          },
+          {
+            "language": "zh",
+            "value": "创造者"
+          },
+          {
+            "language": "zh",
+            "value": "作者"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

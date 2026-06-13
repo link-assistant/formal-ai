@@ -1,0 +1,13 @@
+language en
+lemma kg
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "one thousand grams; the basic unit of mass adopted under the Systeme International d'Unites"
+    examples ("a kilogram is approximately 2.2 pounds")
+    id oewn-13746692-n
+    partOfSpeech n
+    synonyms (kilogram kilo)
+source "oewn:2024"

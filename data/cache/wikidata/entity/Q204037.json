@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q204037": {
+      "type": "item",
+      "id": "Q204037",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "natural logarithm"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральный логарифм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्राकृतिक लघुगणक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然對數"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "logarithm to the base of the mathematical constant e"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "логарифм по основанию e≈2,71828"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "以常數e為底數的對數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "ln x"
+          },
+          {
+            "language": "en",
+            "value": "natural logarithm function"
+          },
+          {
+            "language": "en",
+            "value": "natural logarithmic function"
+          },
+          {
+            "language": "en",
+            "value": "natural log"
+          },
+          {
+            "language": "en",
+            "value": "natural lg"
+          },
+          {
+            "language": "en",
+            "value": "ln(x)"
+          },
+          {
+            "language": "en",
+            "value": "Napierian logarithm"
+          },
+          {
+            "language": "en",
+            "value": "Naperian logarithm"
+          },
+          {
+            "language": "en",
+            "value": "logarithmus naturalis"
+          },
+          {
+            "language": "en",
+            "value": "hyperbolic logarithm"
+          },
+          {
+            "language": "en",
+            "value": "base-e logarithm"
+          },
+          {
+            "language": "en",
+            "value": "logarithm base e"
+          },
+          {
+            "language": "en",
+            "value": "log base e"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "㏑"
+          },
+          {
+            "language": "zh",
+            "value": "自然对数"
+          },
+          {
+            "language": "zh",
+            "value": "ln"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

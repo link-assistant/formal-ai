@@ -1,0 +1,41 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(often in the plural) In general, a product of plant growth useful to man or animals."
+        entry
+          definition "Specifically, a sweet, edible part of a plant that resembles seed-bearing fruit (see next sense), even if it does not develop from a floral ovary; also used in a technically imprecise sense for some sweet or sweetish vegetables, such as the petioles of rhubarb, that resemble a true fruit or are used in cookery as if they were a fruit."
+        entry
+          definition "A product of fertilization in a plant, specifically:"
+        entry
+          definition "An end result, effect, or consequence; advantageous or disadvantageous result."
+          example "His long nights in the office eventually bore fruit when his business boomed and he was given a raise."
+        entry
+          definition "Of, belonging to, related to, or having fruit or its characteristics; (of living things) producing or consuming fruit."
+          example "the fresh-squeezed fruit juice; a fruit salad; an artificial fruit flavor; a fruit tree; a fruit bat"
+        entry
+          definition "A homosexual man; an effeminate man."
+        entry
+          definition "Offspring from a sexual union."
+          example "Blessed art thou amongst women and blessed is the fruit of thy womb."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To produce fruit, seeds, or spores."
+      partOfSpeech verb
+  phonetic "/fɹuːts/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/fruits-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2100429"
+      text "/fɹuːts/"
+  sourceUrls ("https://en.wiktionary.org/wiki/fruit" "https://en.wiktionary.org/wiki/fruits")
+  word fruits

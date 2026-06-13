@@ -1,0 +1,29 @@
+view
+  id M-8c4c6d2cb6fb
+  lemma no
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(quantifier) used with either mass nouns or plural count nouns for indicating a complete or almost complete lack or zero quantity of"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a radioactive transuranic element synthesized by bombarding curium with carbon ions; 7 isotopes are known"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a negative"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "referring to the degree to which a certain quality is present"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "not in any degree or manner; not at all"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "used to express refusal or denial or disagreement etc. or especially to emphasize a negative statement"
+    provenance (wordnet)

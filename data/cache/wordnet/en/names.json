@@ -1,0 +1,22 @@
+{
+  "lemma": "names",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06733533-n",
+      "partOfSpeech": "n",
+      "definition": "verbal abuse; a crude substitute for argument",
+      "examples": [
+        "sticks and stones may break my bones but names can never hurt me"
+      ],
+      "synonyms": [
+        "name calling"
+      ]
+    }
+  ]
+}

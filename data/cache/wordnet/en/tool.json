@@ -1,0 +1,80 @@
+{
+  "lemma": "tool",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04459089-n",
+      "partOfSpeech": "n",
+      "definition": "an implement used in the practice of a vocation"
+    },
+    {
+      "id": "oewn-00174610-n",
+      "partOfSpeech": "n",
+      "definition": "the means whereby some act is accomplished",
+      "examples": [
+        "my greed was the instrument of my destruction",
+        "science has given us new tools to fight disease"
+      ],
+      "synonyms": [
+        "instrument"
+      ]
+    },
+    {
+      "id": "oewn-09996081-n",
+      "partOfSpeech": "n",
+      "definition": "a person who is controlled by others and is used to perform unpleasant or dishonest tasks for someone else",
+      "synonyms": [
+        "creature",
+        "puppet"
+      ]
+    },
+    {
+      "id": "oewn-05534354-n",
+      "partOfSpeech": "n",
+      "definition": "obscene terms for penis",
+      "synonyms": [
+        "cock",
+        "prick",
+        "dick",
+        "shaft",
+        "pecker",
+        "putz"
+      ]
+    },
+    {
+      "id": "oewn-02104619-v",
+      "partOfSpeech": "v",
+      "definition": "drive",
+      "examples": [
+        "The convertible tooled down the street"
+      ]
+    },
+    {
+      "id": "oewn-01960567-v",
+      "partOfSpeech": "v",
+      "definition": "ride in a car with no particular goal and just for the pleasure of it",
+      "examples": [
+        "We tooled down the street"
+      ],
+      "synonyms": [
+        "joyride",
+        "tool around"
+      ]
+    },
+    {
+      "id": "oewn-02342999-v",
+      "partOfSpeech": "v",
+      "definition": "furnish with tools"
+    },
+    {
+      "id": "oewn-01673442-v",
+      "partOfSpeech": "v",
+      "definition": "work with a tool"
+    }
+  ]
+}

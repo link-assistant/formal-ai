@@ -1,0 +1,34 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The digit/figure 7 or an occurrence thereof."
+          example "He wrote three sevens on the paper."
+        entry
+          definition "A card bearing seven pips."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "A numerical value equal to 7; the number following six and preceding eight. This many dots: (•••••••)."
+        entry
+          definition "Describing a group or set with seven elements."
+      partOfSpeech numeral
+  phonetic "/ˈsɛv.ən/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈsɛv.ən/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/seven-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=537396"
+      text "/ˈsɛv.ən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/seven")
+  word seven

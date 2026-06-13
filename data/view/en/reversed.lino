@@ -1,0 +1,13 @@
+view
+  id M-94e99d29635b
+  lemma reversed
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "turned inside out and resewn"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "turned about in order or relation"
+    provenance (wordnet)

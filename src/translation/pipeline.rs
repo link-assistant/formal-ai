@@ -134,6 +134,26 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
             });
         }
 
+        if let Some((slug, target_surface)) =
+            seed_compositional_translation(&page_title, source_lang, target_lang)
+        {
+            translation_debug("translate", "seed compositional hit");
+            provenance.push(format!(
+                "compositional:{source_lang}->{target_lang}:{page_title}"
+            ));
+            return Ok(Translation {
+                source_surface: surface.to_owned(),
+                source_lang: source_lang.to_owned(),
+                target_lang: target_lang.to_owned(),
+                meaning: seed_meaning_id(slug),
+                candidates: vec![WiktionaryCandidate {
+                    surface: target_surface.to_owned(),
+                    qualifier: None,
+                }],
+                provenance,
+            });
+        }
+
         // Stage 1: formalize — fetch the source-edition Wiktionary page.
         // This single fetch usually carries translations for every target
         // language, grouped by sense (one block per `{{trans-top}}` on
@@ -292,6 +312,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 &active_page_title,
                 source_lang,
                 target_lang,
+                &mut meaning,
                 &mut provenance,
             );
         }
@@ -548,18 +569,30 @@ fn compositional_candidates(
     page_title: &str,
     source_lang: &str,
     target_lang: &str,
+    meaning: &mut MeaningId,
     provenance: &mut Vec<String>,
 ) -> Vec<WiktionaryCandidate> {
-    if !source_lang.eq_ignore_ascii_case("ru") || !target_lang.eq_ignore_ascii_case("en") {
-        return Vec::new();
-    }
-
-    if let Some(surface) = russian_phrase_to_english(page_title) {
-        provenance.push(format!("compositional:ru->en:{page_title}"));
+    if let Some((slug, surface)) =
+        seed_compositional_translation(page_title, source_lang, target_lang)
+    {
+        provenance.push(format!(
+            "compositional:{source_lang}->{target_lang}:{page_title}"
+        ));
+        *meaning = seed_meaning_id(slug);
         return vec![WiktionaryCandidate {
             surface: surface.to_owned(),
             qualifier: None,
         }];
+    }
+
+    if source_lang.eq_ignore_ascii_case("ru") && target_lang.eq_ignore_ascii_case("en") {
+        if let Some(surface) = russian_phrase_to_english(page_title) {
+            provenance.push(format!("compositional:ru->en:{page_title}"));
+            return vec![WiktionaryCandidate {
+                surface: surface.to_owned(),
+                qualifier: None,
+            }];
+        }
     }
 
     // The HTTP variant fallback already tried `phrasal_variants` against
@@ -567,15 +600,22 @@ fn compositional_candidates(
     // table so politeness-marked phrases like `как у тебя дела` collapse
     // to the canonical `как дела` entry.
     for variant in phrasal_variants(page_title, source_lang) {
-        if let Some(surface) = russian_phrase_to_english(&variant) {
+        if let Some((slug, surface)) =
+            seed_compositional_translation(&variant, source_lang, target_lang)
+        {
             provenance.push(format!(
-                "compositional:ru->en:{page_title}=>variant:{variant}"
+                "compositional:{source_lang}->{target_lang}:{page_title}=>variant:{variant}"
             ));
+            *meaning = seed_meaning_id(slug);
             return vec![WiktionaryCandidate {
                 surface: surface.to_owned(),
                 qualifier: None,
             }];
         }
+    }
+
+    if !source_lang.eq_ignore_ascii_case("ru") || !target_lang.eq_ignore_ascii_case("en") {
+        return Vec::new();
     }
 
     let words: Vec<&str> = page_title.split_whitespace().collect();
@@ -591,6 +631,67 @@ fn compositional_candidates(
         surface,
         qualifier: None,
     }]
+}
+
+fn seed_meaning_id(slug: &str) -> MeaningId {
+    MeaningId::from_wiktionary_page("seed", slug)
+}
+
+pub(crate) fn seed_meaning_for_surface(surface: &str, language: &str) -> Option<MeaningId> {
+    let page_title = normalize_page_title(surface);
+    seed_compositional_translation(&page_title, language, language)
+        .map(|(slug, _)| seed_meaning_id(slug))
+}
+
+fn seed_compositional_translation(
+    page_title: &str,
+    source_lang: &str,
+    target_lang: &str,
+) -> Option<(&'static str, &'static str)> {
+    seed_role_translation(
+        ROLE_COMPOSITIONAL_PHRASE,
+        source_lang,
+        target_lang,
+        page_title,
+    )
+    .or_else(|| {
+        seed_role_translation(
+            ROLE_COMPOSITIONAL_LEMMA,
+            source_lang,
+            target_lang,
+            page_title,
+        )
+    })
+}
+
+fn seed_role_translation(
+    role: &str,
+    source_lang: &str,
+    target_lang: &str,
+    surface: &str,
+) -> Option<(&'static str, &'static str)> {
+    crate::seed::lexicon()
+        .meanings
+        .iter()
+        .filter(|meaning| meaning.has_role(role))
+        .find(|meaning| {
+            meaning.lexemes.iter().any(|lexeme| {
+                lexeme.language.eq_ignore_ascii_case(source_lang)
+                    && lexeme
+                        .words
+                        .iter()
+                        .any(|word| same_surface(&word.text, surface))
+            })
+        })
+        .and_then(|meaning| {
+            meaning
+                .word_in(target_lang)
+                .map(|target| (meaning.slug.as_str(), target))
+        })
+}
+
+fn same_surface(left: &str, right: &str) -> bool {
+    left == right || left.eq_ignore_ascii_case(right)
 }
 
 /// The normalized Russian title rendered as a whole, when it is a fixed phrase.

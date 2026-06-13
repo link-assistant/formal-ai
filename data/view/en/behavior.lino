@@ -1,0 +1,21 @@
+view
+  id M-b9743647cf08
+  lemma behavior
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "manner of acting or controlling yourself"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the action or reaction of something (as a machine or substance) under specified circumstances"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(behavioral attributes) the way a person behaves toward other people"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(psychology) the aggregate of the responses or reactions or movements made by an organism in any situation"
+    provenance (wordnet)

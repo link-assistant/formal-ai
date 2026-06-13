@@ -1,92 +1,88 @@
 meanings
-  meaning "playwright"
-    gloss "the Playwright browser-automation and end-to-end testing tool — the named entity a 'write me a Playwright script' request is about. The playwright-script handler asks whether the tool is named by walking this meaning's forms through mentions_role_raw (a raw substring check across every language), so the proper noun lives here, not in the code. One English form is the common misspelling 'playright'; it carries an action naming the canonical spelling 'playwright', and the handler reports a spelling correction when a form whose action is set occurs in the prompt — so the typo and its fix are data, not a literal in the code."
-    wiktionary "playwright"
-    defined_by "entity"
-    role "playwright_tool_name"
-    lexeme "en"
-      word "playwright"
-        description "English proper noun naming the Playwright automation tool; a playwright_tool_name matched as a raw substring of the normalized prompt."
-      word "playright"
-        description "English misspelling of 'playwright' (the 'w' dropped); a playwright_tool_name matched as a raw substring. Its action names the canonical spelling, so the handler reports the correction without naming either form in the code."
-        action "playwright"
-    lexeme "ru"
-      word "плейврайт"
-        description "Russian transliteration 'плейврайт' (romanized pleyvrayt) of the Playwright tool name; a playwright_tool_name matched as a raw substring."
-      word "плейрайт"
-        description "Russian transliteration 'плейрайт' (romanized pleyrayt) of the common 'playright' misspelling; a playwright_tool_name matched as a raw substring."
-    lexeme "hi"
-      word "प्लेराइट"
-        description "Hindi transliteration 'प्लेराइट' (romanized pleraait) of the Playwright tool name; a playwright_tool_name matched as a raw substring."
-    lexeme "zh"
-      word "普莱赖特"
-        description "Chinese phonetic transliteration '普莱赖特' (pinyin pulailaite) of the Playwright tool name; a playwright_tool_name matched as a raw substring."
-  meaning "playwright_script_request_cue"
-    gloss "a cue that a prompt naming Playwright is asking for a script rather than discussing the tool — an artifact noun (script, test, spec, code) or an authoring frame (write, create, generate, make, build, can you, could you, and their other-language equivalents). The playwright-script handler routes only when a playwright_tool_name and one of these cues both occur, each checked through mentions_role_raw (a raw substring across every language), so the cue vocabulary lives in the data rather than in a hand-listed array in the code."
-    wiktionary "script"
-    defined_by "concept"
-    role "playwright_script_cue"
-    lexeme "en"
-      word "script"
-        description "English noun 'script' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "test"
-        description "English noun 'test' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "spec"
-        description "English noun 'spec' (specification) naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "code"
-        description "English noun 'code' naming the artifact to author; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "write"
-        description "English verb 'write' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "create"
-        description "English verb 'create' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "generate"
-        description "English verb 'generate' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "make"
-        description "English verb 'make' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "build"
-        description "English verb 'build' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "can you"
-        description "English polite frame 'can you' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-      word "could you"
-        description "English polite frame 'could you' opening an authoring request; a playwright_script_cue matched as a raw substring of the normalized prompt."
-    lexeme "ru"
-      word "скрипт"
-        description "Russian noun 'скрипт' (romanized skript, script) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "сценар"
-        description "Russian stem 'сценар' (romanized stsenar) of 'сценарий' (scenario/script); a playwright_script_cue matched as a raw substring so the inflected forms are caught."
-      word "тест"
-        description "Russian noun 'тест' (romanized test) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "код"
-        description "Russian noun 'код' (romanized kod, code) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "напиши"
-        description "Russian imperative 'напиши' (romanized napishi, write) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "написать"
-        description "Russian infinitive 'написать' (romanized napisat, to write) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "можешь"
-        description "Russian frame 'можешь' (romanized mozhesh, can you) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "сделай"
-        description "Russian imperative 'сделай' (romanized sdelay, make) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "создай"
-        description "Russian imperative 'создай' (romanized sozday, create) opening an authoring request; a playwright_script_cue matched as a raw substring."
-    lexeme "hi"
-      word "स्क्रिप्ट"
-        description "Hindi noun 'स्क्रिप्ट' (romanized skript, script) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "टेस्ट"
-        description "Hindi noun 'टेस्ट' (romanized test) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "कोड"
-        description "Hindi noun 'कोड' (romanized kod, code) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "लिखो"
-        description "Hindi imperative 'लिखो' (romanized likho, write) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "बनाओ"
-        description "Hindi imperative 'बनाओ' (romanized banao, make/create) opening an authoring request; a playwright_script_cue matched as a raw substring."
-    lexeme "zh"
-      word "脚本"
-        description "Chinese noun '脚本' (pinyin jiaoben, script) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "测试"
-        description "Chinese noun '测试' (pinyin ceshi, test) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "代码"
-        description "Chinese noun '代码' (pinyin daima, code) naming the artifact to author; a playwright_script_cue matched as a raw substring."
-      word "写"
-        description "Chinese verb '写' (pinyin xie, write) opening an authoring request; a playwright_script_cue matched as a raw substring."
-      word "生成"
-        description "Chinese verb '生成' (pinyin shengcheng, generate) opening an authoring request; a playwright_script_cue matched as a raw substring."
+  playwright
+    defined-by entity
+    role playwright_tool_name
+    lexeme en
+      surface
+        text playwright
+      surface
+        text playright
+        action playwright
+    lexeme ru
+      surface
+        text плейврайт
+      surface
+        text плейрайт
+    lexeme hi
+      surface
+        text प्लेराइट
+    lexeme zh
+      surface
+        text 普莱赖特
+  playwright_script_request_cue
+    defined-by concept
+    role playwright_script_cue
+    lexeme en
+      surface
+        text script
+      surface
+        text test
+      surface
+        text spec
+      surface
+        text code
+      surface
+        text write
+      surface
+        text create
+      surface
+        text generate
+      surface
+        text make
+      surface
+        text build
+      surface
+        text "can you"
+      surface
+        text "could you"
+    lexeme ru
+      surface
+        text скрипт
+      surface
+        text сценар
+      surface
+        text тест
+      surface
+        text код
+      surface
+        text напиши
+      surface
+        text написать
+      surface
+        text можешь
+      surface
+        text сделай
+      surface
+        text создай
+    lexeme hi
+      surface
+        text स्क्रिप्ट
+      surface
+        text टेस्ट
+      surface
+        text कोड
+      surface
+        text लिखो
+      surface
+        text बनाओ
+    lexeme zh
+      surface
+        text 脚本
+      surface
+        text 测试
+      surface
+        text 代码
+      surface
+        text 写
+      surface
+        text 生成

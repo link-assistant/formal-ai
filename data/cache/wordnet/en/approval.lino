@@ -1,0 +1,30 @@
+language en
+lemma approval
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the formal act of approving"
+    examples ("he gave the project his blessing" "his decision merited the approval of any sensible person")
+    id oewn-01217882-n
+    partOfSpeech n
+    synonyms (blessing approving)
+  entry
+    definition "a feeling of liking something or someone good"
+    examples ("although she fussed at them, she secretly viewed all her children with approval")
+    id oewn-07515398-n
+    partOfSpeech n
+  entry
+    definition "acceptance as satisfactory"
+    examples ("he bought it on approval")
+    id oewn-14435778-n
+    partOfSpeech n
+    synonyms ("favorable reception" "favourable reception")
+  entry
+    definition "a message expressing a favorable opinion"
+    examples ("words of approval seldom passed his lips")
+    id oewn-06699481-n
+    partOfSpeech n
+    synonyms (commendation)
+source "oewn:2024"

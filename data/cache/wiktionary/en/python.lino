@@ -1,0 +1,27 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A type of large constricting snake."
+        entry
+          definition Penis
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/python-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=79268748"
+    entry
+      audio ""
+      text "/ˈpaɪθən/"
+    entry
+      audio ""
+      text "/ˈpaɪθɑːn/"
+  sourceUrls ("https://en.wiktionary.org/wiki/python")
+  word python

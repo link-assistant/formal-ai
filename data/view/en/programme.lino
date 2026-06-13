@@ -1,0 +1,41 @@
+view
+  id M-e011c5607b6c
+  lemma programme
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an announcement of the events that will occur as part of a theatrical or sporting event"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an integrated course of academic studies"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a radio or television show"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a sequence of instructions that a computer can interpret and execute"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a system of projects or services intended to meet a public need"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a series of steps to be carried out or goals to be accomplished"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a performance (or series of performances) at a public presentation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "write a computer program"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange a program of or for"
+    provenance (wordnet)

@@ -1,0 +1,38 @@
+language en
+lemma network
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an interconnected system of things or people"
+    examples ("he owned a network of shops" "retirement meant dropping out of a whole network of people who had been part of my life" "tangled in a web of cloth")
+    id oewn-08451269-n
+    partOfSpeech n
+    synonyms (web)
+  entry
+    definition "(broadcasting) a communication system consisting of a group of broadcasting stations that all transmit the same programs"
+    examples ("the networks compete to broadcast important sports events")
+    id oewn-03826014-n
+    partOfSpeech n
+  entry
+    definition "an open fabric of string or rope or wire woven together at regular intervals"
+    id oewn-03825135-n
+    partOfSpeech n
+    synonyms (net mesh meshing meshwork)
+  entry
+    definition "a system of intersecting lines or channels"
+    examples ("a railroad network" "a network of canals")
+    id oewn-03826490-n
+    partOfSpeech n
+  entry
+    definition "(electronics) a system of interconnected electronic components or circuits"
+    id oewn-03826268-n
+    partOfSpeech n
+    synonyms ("electronic network")
+  entry
+    definition "communicate with and within a group"
+    examples ("You have to network if you want to get a good job")
+    id oewn-01034712-v
+    partOfSpeech v
+source "oewn:2024"

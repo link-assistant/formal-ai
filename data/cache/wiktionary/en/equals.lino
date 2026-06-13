@@ -1,0 +1,44 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A person or thing of equal status to others."
+          example "This beer has no equal."
+        entry
+          definition "State of being equal; equality."
+      partOfSpeech noun
+      synonyms (peer)
+    entry
+      definitions
+        entry
+          definition "To be equal to, to have the same value as; to correspond to."
+          example "Two plus two equals four."
+        entry
+          definition "To make equivalent to; to cause to match."
+          example "David equaled the water levels of the bottles, so they now both contain exactly 1 liter."
+        entry
+          definition "To have as its consequence."
+          example "Losing this deal equals losing your job."
+      partOfSpeech verb
+      synonyms (entail imply lead mean "result in" spell be is)
+    entry
+      definitions
+        entry
+          definition "The symbol ="
+      partOfSpeech noun
+      synonyms ("equals sign")
+  phonetic "/ˈiːkwəlz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/equals-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2650918"
+      text "/ˈiːkwəlz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/equal" "https://en.wiktionary.org/wiki/equals")
+  word equals

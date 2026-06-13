@@ -1,0 +1,156 @@
+{
+  "lemma": "up",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02499848-a",
+      "partOfSpeech": "a",
+      "definition": "being or moving higher in position or greater in some value; being above a former position or level",
+      "examples": [
+        "the anchor is up",
+        "the sun is up",
+        "he lay face up",
+        "he is up by a pawn",
+        "the market is up",
+        "the corn is up"
+      ]
+    },
+    {
+      "id": "oewn-00096883-r",
+      "partOfSpeech": "r",
+      "definition": "spatially or metaphorically from a lower to a higher position",
+      "examples": [
+        "look up!",
+        "the music surged up",
+        "the fragments flew upwards",
+        "prices soared upwards",
+        "upwardly mobile"
+      ],
+      "synonyms": [
+        "upwards",
+        "upward",
+        "upwardly"
+      ]
+    },
+    {
+      "id": "oewn-00097561-r",
+      "partOfSpeech": "r",
+      "definition": "to a higher intensity",
+      "examples": [
+        "he turned up the volume"
+      ]
+    },
+    {
+      "id": "oewn-00097471-r",
+      "partOfSpeech": "r",
+      "definition": "nearer to the speaker",
+      "examples": [
+        "he walked up and grabbed my lapels"
+      ]
+    },
+    {
+      "id": "oewn-00097310-r",
+      "partOfSpeech": "r",
+      "definition": "to a more central or a more northerly place",
+      "examples": [
+        "was transferred up to headquarters",
+        "up to Canada for a vacation"
+      ]
+    },
+    {
+      "id": "oewn-00097186-r",
+      "partOfSpeech": "r",
+      "definition": "to a later time",
+      "examples": [
+        "they moved the meeting date up",
+        "from childhood upward"
+      ],
+      "synonyms": [
+        "upwards",
+        "upward"
+      ]
+    },
+    {
+      "id": "oewn-00188413-s",
+      "partOfSpeech": "s",
+      "definition": "out of bed",
+      "examples": [
+        "are they astir yet?",
+        "up by seven each morning"
+      ],
+      "synonyms": [
+        "astir"
+      ]
+    },
+    {
+      "id": "oewn-02496786-s",
+      "partOfSpeech": "s",
+      "definition": "getting higher or more vigorous",
+      "examples": [
+        "it's an up market",
+        "an improving economy"
+      ],
+      "synonyms": [
+        "improving"
+      ]
+    },
+    {
+      "id": "oewn-02495166-s",
+      "partOfSpeech": "s",
+      "definition": "extending or moving toward a higher place",
+      "examples": [
+        "the up staircase",
+        "a general upward movement of fish"
+      ],
+      "synonyms": [
+        "upward"
+      ]
+    },
+    {
+      "id": "oewn-01850926-s",
+      "partOfSpeech": "s",
+      "definition": "(usually followed by ‘on’ or ‘for’) in readiness",
+      "examples": [
+        "he was up on his homework",
+        "had to be up for the game"
+      ]
+    },
+    {
+      "id": "oewn-01210818-s",
+      "partOfSpeech": "s",
+      "definition": "open",
+      "examples": [
+        "the windows are up"
+      ]
+    },
+    {
+      "id": "oewn-01095688-s",
+      "partOfSpeech": "s",
+      "definition": "(used of computers) operating properly",
+      "examples": [
+        "how soon will the computers be up?"
+      ]
+    },
+    {
+      "id": "oewn-01007834-s",
+      "partOfSpeech": "s",
+      "definition": "used up",
+      "examples": [
+        "time is up"
+      ]
+    },
+    {
+      "id": "oewn-00154774-v",
+      "partOfSpeech": "v",
+      "definition": "raise",
+      "examples": [
+        "up the ante"
+      ]
+    }
+  ]
+}

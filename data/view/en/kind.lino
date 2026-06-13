@@ -1,0 +1,21 @@
+view
+  id M-c2346863e568
+  lemma kind
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having or showing a tender and considerate and helpful nature; used especially of persons and their behavior"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a category of things distinguished by some common characteristic or quality"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "agreeable, conducive to comfort"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "tolerant and forgiving under provocation"
+    provenance (wordnet)

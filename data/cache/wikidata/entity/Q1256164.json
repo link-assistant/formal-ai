@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "Q1256164": {
+      "type": "item",
+      "id": "Q1256164",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "cosine"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "косинус"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "餘弦"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "trigonometric function; ratio between the lengths of the adjacent side and the hypotenuse in a right triangle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тригонометрическая функция"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "cos"
+          },
+          {
+            "language": "en",
+            "value": "cosine function"
+          },
+          {
+            "language": "en",
+            "value": "cos function"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

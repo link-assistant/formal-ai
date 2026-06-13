@@ -1,0 +1,16 @@
+Q23806
+  aliases
+    en ("ⅹ" "𐌢" ten)
+    ru ("десять")
+    zh ("1 E1" "拾" "十")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q23806
+  labels
+    en "10"
+    hi "१०"
+  type item
+success 1

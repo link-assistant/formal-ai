@@ -1,0 +1,33 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (exclude omit release vent)
+      definitions
+        entry
+          definition "To hold inside."
+        entry
+          definition "To include as a part."
+        entry
+          definition "To put constraint upon; to restrain; to confine; to keep within bounds."
+          example "I'm so excited, I can hardly contain myself!"
+        entry
+          definition "(of a set etc.) To have as an element or subset."
+          example "A group contains a unique inverse for each of its elements."
+        entry
+          definition "To restrain desire; to live in continence or chastity."
+      partOfSpeech verb
+      synonyms (enclose inhold comprise embody incorporate inhold control curb repress restrain restrict stifle)
+  phonetic "/kənˈteɪnz/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/contains-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1749760"
+      text "/kənˈteɪnz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/contain" "https://en.wiktionary.org/wiki/contains")
+  word contains

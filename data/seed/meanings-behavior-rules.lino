@@ -1,185 +1,183 @@
 meanings
-  meaning "behavior_rule"
-    gloss "the rule itself — a single When-X-then-Y conditional that governs how the assistant responds, the noun a listing request enumerates. It is both a relation (a condition mapped to a response) and part of the assistant's knowledge (its stored, chat-editable conduct), so it is defined_by both. A behavior-rules-list recogniser reads this role to decide the prompt names rules at all; on its own that is not enough — the request and scope roles must also be present, within one language, for the prompt to count as a list query. The surface forms are matched as raw substrings so an inflected stem catches its whole paradigm."
-    wiktionary "rule"
-    defined_by "relation"
-    defined_by "knowledge"
-    role "rule_listing_subject"
-    lexeme "en"
-      word "rules"
-        description "English plural noun (rules) naming the behavior rules to enumerate; matched as a raw substring."
-      word "rule list"
-        description "English noun phrase (singular rule + list) so 'show my rule list' is recognised even though it lacks the plural 'rules'."
-      word "rules list"
-        description "English noun phrase (plural rules + list); explicit variant kept for parity with the singular form."
-    lexeme "ru"
-      word "правил"
-        description "Russian noun stem (romanized pravil, genitive plural of правило, rule); matched as a substring so it also catches правила/правилами."
-      word "правила"
-        description "Russian noun form (romanized pravila, nominative plural / genitive singular of правило, rule)."
-    lexeme "hi"
-      word "नियम"
-        description "Hindi noun (romanized niyam, rule); the bare stem, matched as a substring so it also catches inflections like नियमों."
-      word "नियमों"
-        description "Hindi oblique-plural noun (romanized niyamon, of rules)."
-    lexeme "zh"
-      word "规则"
-        description "Chinese noun (pinyin guize, rule) in simplified script."
-      word "規則"
-        description "Chinese noun (pinyin guize, rule) in traditional script."
-  meaning "rule_enumeration_request"
-    gloss "the request to reveal the members of a set — either the imperative to list or show them, or the which/what interrogative that asks for them. It is an action (an enumerate operation) framed as an inquiry (a question put to the assistant), so it is defined_by both. Combined with the subject and scope roles it identifies a behavior-rules-list prompt; alone it is just a generic 'show me' verb. Imperatives and interrogatives are grouped here because both equally ask the assistant to enumerate the rule set."
-    wiktionary "list"
-    defined_by "action"
-    defined_by "inquiry"
-    role "rule_listing_request"
-    lexeme "en"
-      word "list"
-        description "English verb (list) — the imperative to enumerate a set's members."
-      word "show"
-        description "English verb (show) — the imperative to display a set's members."
-      word "what"
-        description "English interrogative (what) opening a request for the members of a set ('what behavior rules…')."
-      word "which"
-        description "English interrogative (which) selecting among a set's members."
-    lexeme "ru"
-      word "список"
-        description "Russian noun (romanized spisok, a list); used as the nominalised request 'give the list of …'."
-      word "перечисли"
-        description "Russian verb (romanized perechisli, enumerate, imperative) — list them one by one."
-      word "покажи"
-        description "Russian verb (romanized pokazhi, show, imperative)."
-      word "какие"
-        description "Russian interrogative (romanized kakiye, which / what kind) asking which members a set has."
-    lexeme "hi"
-      word "सूची"
-        description "Hindi noun (romanized suchi, a list)."
-      word "सूचीबद्ध"
-        description "Hindi adjective/verb (romanized suchibaddh, listed / enumerated), as in 'list them'."
-      word "दिखाओ"
-        description "Hindi verb (romanized dikhao, show, informal imperative)."
-      word "दिखाएं"
-        description "Hindi verb (romanized dikhaen, show, polite imperative)."
-      word "बताओ"
-        description "Hindi verb (romanized batao, tell, imperative)."
-      word "गिनाओ"
-        description "Hindi verb (romanized ginao, enumerate / count off, imperative)."
-      word "कौन"
-        description "Hindi interrogative (romanized kaun, who / which) asking which members a set has."
-    lexeme "zh"
-      word "列出"
-        description "Chinese verb (pinyin liechu, list out)."
-      word "显示"
-        description "Chinese verb (pinyin xianshi, display) in simplified script."
-      word "顯示"
-        description "Chinese verb (pinyin xianshi, display) in traditional script."
-      word "展示"
-        description "Chinese verb (pinyin zhanshi, show / exhibit)."
-      word "哪些"
-        description "Chinese interrogative (pinyin naxie, which ones) asking for a set's members."
-      word "什么"
-        description "Chinese interrogative (pinyin shenme, what)."
-  meaning "behavior_domain"
-    gloss "the domain of conduct — behaviour itself, the dimension the rules govern. Naming it scopes a rules-listing request to the assistant's behaviour rather than some other rule set. It is a concept (an abstract domain) and a facet of the assistant's self (how it acts), so it is defined_by self_reference and concept. One of two meanings carrying the rule_listing_scope role; the other is assistant_own_ruleset. Surface forms match as raw substrings."
-    wiktionary "behavior"
-    defined_by "self_reference"
-    defined_by "concept"
-    role "rule_listing_scope"
-    lexeme "en"
-      word "behavior"
-        description "English noun (behavior, US spelling) naming the conduct that the rules govern."
-    lexeme "ru"
-      word "поведения"
-        description "Russian noun (romanized povedeniya, genitive of поведение, behaviour); the stem matched as a substring."
-    lexeme "hi"
-      word "व्यवहार"
-        description "Hindi noun (romanized vyavahar, behaviour / conduct)."
-    lexeme "zh"
-      word "行为"
-        description "Chinese noun (pinyin xingwei, behaviour) in simplified script."
-      word "行為"
-        description "Chinese noun (pinyin xingwei, behaviour) in traditional script."
-  meaning "assistant_own_ruleset"
-    gloss "the requester pointing at the assistant's OWN, already-existing rule set — the second-person possessive (your), the reflexive own (own / собственные / 自己), the existence deixis (current / existing), and the bare rule-list compound that already names the set (список правил / नियमों की सूची / 规则列表). Any of these scopes a listing request to the assistant's stored rules. It is defined_by self_reference (it points back at the assistant) and knowledge (its existing set). The word set mirrors the recogniser exactly; the per-language cues are not parallel — only English carries a distinct current/existing deixis — so they are grouped here under the single notion of the assistant's own existing rules rather than split into meanings that some languages could not fill."
-    wiktionary "own"
-    defined_by "self_reference"
-    defined_by "knowledge"
-    role "rule_listing_scope"
-    lexeme "en"
-      word "your"
-        description "English second-person possessive (your) scoping the rules to the assistant addressed."
-      word "own"
-        description "English reflexive determiner (own), as in 'your own rules'."
-      word "current"
-        description "English deictic adjective (current) selecting the rules in force now."
-      word "existing"
-        description "English participial adjective (existing) selecting the rules that already exist."
-    lexeme "ru"
-      word "свои"
-        description "Russian reflexive possessive (romanized svoi, one's own, nominative plural)."
-      word "своих"
-        description "Russian reflexive possessive (romanized svoikh, one's own, genitive / prepositional plural)."
-      word "твои"
-        description "Russian second-person possessive (romanized tvoi, your, nominative plural, informal)."
-      word "твоих"
-        description "Russian second-person possessive (romanized tvoikh, your, genitive / prepositional plural, informal)."
-      word "собственные"
-        description "Russian adjective (romanized sobstvennye, own / proper, plural)."
-      word "список правил"
-        description "Russian noun phrase (romanized spisok pravil, list of rules) — the bare compound that already names the set, so it scopes the request by itself."
-    lexeme "hi"
-      word "अपने"
-        description "Hindi reflexive possessive (romanized apne, one's own, oblique / plural)."
-      word "तुम्हारे"
-        description "Hindi second-person possessive (romanized tumhare, your, informal plural)."
-      word "आपके"
-        description "Hindi second-person possessive (romanized aapke, your, polite)."
-      word "नियमों की सूची"
-        description "Hindi noun phrase (romanized niyamon ki suchi, list of rules) — the compound that already names the set."
-    lexeme "zh"
-      word "你的"
-        description "Chinese second-person possessive (pinyin nide, your, informal)."
-      word "您的"
-        description "Chinese second-person possessive (pinyin ninde, your, polite)."
-      word "自己"
-        description "Chinese reflexive (pinyin ziji, oneself / own)."
-      word "规则列表"
-        description "Chinese noun phrase (pinyin guize liebiao, rule list) in simplified script — the compound that already names the set."
-      word "規則列表"
-        description "Chinese noun phrase (pinyin guize liebiao, rule list) in traditional script."
-  meaning "behavior_rule_set_phrase"
-    gloss "fixed multi-word phrases that directly name the assistant's behavior-rule set and are recognised as a list request even without a separate enumerate verb — most importantly the bare compound 'behavior rules' / 行为规则 / व्यवहार के नियम, where the noun phrase alone is a standing request to see the catalogue. The verbed variants (list / show … behavior rules) are kept so the phrase set matches the prior hand-listed recogniser exactly and stays symmetric across the supported languages, even though most of them are also reachable by composing the subject, request, and scope roles. Defined_by inquiry (each phrase is itself a request) and knowledge (it names the stored rule set). Matched as raw substrings."
-    wiktionary "rule"
-    defined_by "inquiry"
-    defined_by "knowledge"
-    role "rule_listing_phrase"
-    lexeme "en"
-      word "list behavior rules"
-        description "English imperative phrase requesting the behavior-rule catalogue."
-      word "list all behavior rules"
-        description "English imperative phrase (with 'all') requesting the entire behavior-rule catalogue."
-      word "show behavior rules"
-        description "English imperative phrase requesting display of the behavior rules."
-      word "show all behavior rules"
-        description "English imperative phrase (with 'all') requesting display of every behavior rule."
-      word "what behavior rules"
-        description "English interrogative phrase asking which behavior rules exist."
-      word "existing behavior rules"
-        description "English noun phrase naming the behavior rules already in force; recognised as a standing request to list them even without an enumerate verb."
-    lexeme "ru"
-      word "список правил поведения"
-        description "Russian noun phrase (romanized spisok pravil povedeniya, list of behavior rules)."
-      word "покажи правила поведения"
-        description "Russian imperative phrase (romanized pokazhi pravila povedeniya, show the behavior rules)."
-      word "какие правила поведения"
-        description "Russian interrogative phrase (romanized kakiye pravila povedeniya, which behavior rules)."
-    lexeme "hi"
-      word "व्यवहार के नियम"
-        description "Hindi noun phrase (romanized vyavahar ke niyam, rules of behaviour) — the bare compound recognised as a standing list request."
-      word "व्यवहार नियम सूचीबद्ध करें"
-        description "Hindi imperative phrase (romanized vyavahar niyam suchibaddh karen, list the behavior rules)."
-    lexeme "zh"
-      word "行为规则"
-        description "Chinese noun phrase (pinyin xingwei guize, behavior rules) — the bare compound recognised as a standing list request."
-      word "列出行为规则"
-        description "Chinese imperative phrase (pinyin liechu xingwei guize, list the behavior rules)."
+  behavior_rule
+    defined-by relation
+    defined-by knowledge
+    role rule_listing_subject
+    lexeme en
+      surface
+        text rules
+      surface
+        text "rule list"
+      surface
+        text "rules list"
+    lexeme ru
+      surface
+        text правил
+      surface
+        text правила
+    lexeme hi
+      surface
+        text नियम
+      surface
+        text नियमों
+    lexeme zh
+      surface
+        text 规则
+      surface
+        text 規則
+  rule_enumeration_request
+    defined-by action
+    defined-by inquiry
+    role rule_listing_request
+    lexeme en
+      surface
+        text list
+      surface
+        text show
+      surface
+        text what
+      surface
+        text which
+    lexeme ru
+      surface
+        text список
+      surface
+        text перечисли
+      surface
+        text покажи
+      surface
+        text какие
+    lexeme hi
+      surface
+        text सूची
+      surface
+        text सूचीबद्ध
+      surface
+        text दिखाओ
+      surface
+        text दिखाएं
+      surface
+        text बताओ
+      surface
+        text गिनाओ
+      surface
+        text कौन
+    lexeme zh
+      surface
+        text 列出
+      surface
+        text 显示
+      surface
+        text 顯示
+      surface
+        text 展示
+      surface
+        text 哪些
+      surface
+        text 什么
+  behavior_domain
+    defined-by self_reference
+    defined-by concept
+    role rule_listing_scope
+    lexeme en
+      surface
+        text behavior
+    lexeme ru
+      surface
+        text поведения
+    lexeme hi
+      surface
+        text व्यवहार
+    lexeme zh
+      surface
+        text 行为
+      surface
+        text 行為
+  assistant_own_ruleset
+    defined-by self_reference
+    defined-by knowledge
+    role rule_listing_scope
+    lexeme en
+      surface
+        text your
+      surface
+        text own
+      surface
+        text current
+      surface
+        text existing
+    lexeme ru
+      surface
+        text свои
+      surface
+        text своих
+      surface
+        text твои
+      surface
+        text твоих
+      surface
+        text собственные
+      surface
+        text "список правил"
+    lexeme hi
+      surface
+        text अपने
+      surface
+        text तुम्हारे
+      surface
+        text आपके
+      surface
+        text "नियमों की सूची"
+    lexeme zh
+      surface
+        text 你的
+      surface
+        text 您的
+      surface
+        text 自己
+      surface
+        text 规则列表
+      surface
+        text 規則列表
+  behavior_rule_set_phrase
+    defined-by inquiry
+    defined-by knowledge
+    role rule_listing_phrase
+    lexeme en
+      surface
+        text "list behavior rules"
+      surface
+        text "list all behavior rules"
+      surface
+        text "show behavior rules"
+      surface
+        text "show all behavior rules"
+      surface
+        text "show rules"
+      surface
+        text "what behavior rules"
+      surface
+        text "existing behavior rules"
+    lexeme ru
+      surface
+        text "список правил поведения"
+      surface
+        text "покажи правила поведения"
+      surface
+        text "покажи правила"
+      surface
+        text "какие правила поведения"
+    lexeme hi
+      surface
+        text "व्यवहार के नियम"
+      surface
+        text "व्यवहार नियम सूचीबद्ध करें"
+      surface
+        text "नियम दिखाओ"
+    lexeme zh
+      surface
+        text 行为规则
+      surface
+        text 显示规则
+      surface
+        text 列出行为规则

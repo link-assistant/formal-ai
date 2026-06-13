@@ -1,0 +1,29 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Senses relating to the change of information, etc., from one form to another."
+        entry
+          definition "Senses relating to a change of position."
+        entry
+          definition "To entrance, to cause to lose recollection or sense."
+          example "William was translated by the blow to the head he received, being unable to speak for the next few minutes."
+      partOfSpeech verb
+  phonetic "/tɹɑːnzˈleɪtɪd/"
+  phonetics
+    entry
+      audio ""
+      text "/tɹɑːnzˈleɪtɪd/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/translated-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2423318"
+      text "/ˈtɹænsleɪtɪd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/translate" "https://en.wiktionary.org/wiki/translated")
+  word translated

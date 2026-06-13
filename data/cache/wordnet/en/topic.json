@@ -1,0 +1,40 @@
+{
+  "lemma": "topic",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06612141-n",
+      "partOfSpeech": "n",
+      "definition": "the subject matter of a conversation or discussion",
+      "examples": [
+        "he didn't want to discuss that subject",
+        "it was a very sensitive topic",
+        "his letters were always on the theme of love"
+      ],
+      "synonyms": [
+        "subject",
+        "theme"
+      ]
+    },
+    {
+      "id": "oewn-05822417-n",
+      "partOfSpeech": "n",
+      "definition": "some situation or event that is thought about",
+      "examples": [
+        "he kept drifting off the topic",
+        "he had been thinking about the subject for several years",
+        "it is a matter for the police"
+      ],
+      "synonyms": [
+        "subject",
+        "issue",
+        "matter"
+      ]
+    }
+  ]
+}

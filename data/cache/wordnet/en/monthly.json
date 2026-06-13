@@ -1,0 +1,33 @@
+{
+  "lemma": "monthly",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06606709-n",
+      "partOfSpeech": "n",
+      "definition": "a periodical that is published every month (or 12 issues per year)"
+    },
+    {
+      "id": "oewn-00256458-r",
+      "partOfSpeech": "r",
+      "definition": "occurring once a month",
+      "examples": [
+        "they meet monthly"
+      ]
+    },
+    {
+      "id": "oewn-01976772-s",
+      "partOfSpeech": "s",
+      "definition": "of or occurring or payable every month",
+      "examples": [
+        "monthly payments",
+        "the monthly newsletter"
+      ]
+    }
+  ]
+}

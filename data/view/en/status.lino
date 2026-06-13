@@ -1,0 +1,13 @@
+view
+  id M-d63bcf91ba43
+  lemma status
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the relative position or standing of things or especially persons in a society"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state at a particular time"
+    provenance (wordnet)

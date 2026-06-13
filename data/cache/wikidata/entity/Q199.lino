@@ -1,0 +1,16 @@
+Q199
+  aliases
+    en ("number 1" "number one" unity unit "multiplicative identity" "unit one" one)
+    hi ("प्रथम")
+    ru ("один" "единица")
+  descriptions
+    en "natural number one"
+    hi "संख्या रेखा की पहली सकारात्मक संख्या"
+    ru "натуральное число"
+    zh "自然數"
+  id Q199
+  labels
+    en "1"
+    hi "एक"
+  type item
+success 1

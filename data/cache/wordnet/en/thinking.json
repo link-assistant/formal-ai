@@ -1,0 +1,36 @@
+{
+  "lemma": "thinking",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05778923-n",
+      "partOfSpeech": "n",
+      "definition": "the process of using your mind to consider something carefully",
+      "examples": [
+        "thinking always made him frown",
+        "she paused for thought"
+      ],
+      "synonyms": [
+        "thought",
+        "thought process",
+        "cerebration",
+        "intellection",
+        "mentation"
+      ]
+    },
+    {
+      "id": "oewn-01932488-s",
+      "partOfSpeech": "s",
+      "definition": "endowed with the capacity to reason",
+      "synonyms": [
+        "intelligent",
+        "reasoning"
+      ]
+    }
+  ]
+}

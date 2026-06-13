@@ -1,0 +1,206 @@
+[
+  {
+    "word": "sat",
+    "phonetic": "/sæt/",
+    "phonetics": [
+      {
+        "text": "/sæt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sat-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=631215",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "(of a person) To be in a position in which the upper body is upright and supported by the buttocks.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After a long day of walking, it was good just to sit and relax."
+          },
+          {
+            "definition": "(of a person) To move oneself into such a position.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I asked him to sit."
+          },
+          {
+            "definition": "(of an object) To occupy a given position permanently.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The temple has sat atop that hill for centuries."
+          },
+          {
+            "definition": "To remain in a state of repose; to rest; to abide; to rest in any position or condition.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be a member of a deliberative body.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I currently sit on a standards committee."
+          },
+          {
+            "definition": "Of a legislative or, especially, a judicial body such as a court, to be in session.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "In what city is the circuit court sitting for this session."
+          },
+          {
+            "definition": "To lie, rest, or bear; to press or weigh.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be adjusted; to fit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Your new coat sits well."
+          },
+          {
+            "definition": "(of an agreement or arrangement) To be accepted or acceptable; to work.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "How will this new contract sit with the workers?"
+          },
+          {
+            "definition": "(causative) To cause to be seated or in a sitting posture; to furnish a seat to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Sit him in front of the TV and he might watch for hours."
+          },
+          {
+            "definition": "To accommodate in seats; to seat.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The dining room table sits eight comfortably."
+          },
+          {
+            "definition": "To babysit.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I need to find someone to sit my kids on Friday evening for four hours."
+          },
+          {
+            "definition": "To take, to undergo or complete (an examination or test).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To cover and warm eggs for hatching, as a fowl; to brood; to incubate.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To take a position for the purpose of having some artistic representation of oneself made, such as a picture or a bust.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'm sitting for a painter this evening."
+          },
+          {
+            "definition": "To have position, as at the point blown from; to hold a relative position; to have direction.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "accepted",
+          "received",
+          "welcomed",
+          "well",
+          "be seated",
+          "be seated",
+          "sit down",
+          "sit up",
+          "take a seat",
+          "be",
+          "found",
+          "situated",
+          "seat"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sat",
+      "https://en.wiktionary.org/wiki/sit"
+    ]
+  },
+  {
+    "word": "sat",
+    "phonetic": "/sæt/",
+    "phonetics": [
+      {
+        "text": "/sæt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/sat-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=631215",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A moon or other smaller body orbiting a larger one.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A spent upper stage is a derelict satellite."
+          },
+          {
+            "definition": "A man-made apparatus designed to be placed in orbit around a celestial body, generally to relay information, data etc. to Earth.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Many telecommunication satellites orbit at 36000km above the equator."
+          },
+          {
+            "definition": "A country, state, office, building etc. which is under the jurisdiction, influence, or domination of another body.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An attendant on an important person; a member of someone's retinue, often in a somewhat derogatory sense; a henchman.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Satellite TV; reception of television broadcasts via services that utilize man-made satellite technology.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you have satellite at your house?"
+          },
+          {
+            "definition": "(grammar) A grammatical construct that takes various forms and may encode a path of movement, a change of state, or the grammatical aspect. Examples: \"a bird flew past\"; \"she turned on the light\".",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "sat"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/sat",
+      "https://en.wiktionary.org/wiki/satellite"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+language en
+lemma upload
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "transfer a file or program to a central computer from a smaller computer or a computer at a remote location"
+    id oewn-02238680-v
+    partOfSpeech v
+source "oewn:2024"

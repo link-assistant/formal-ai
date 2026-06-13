@@ -1,0 +1,83 @@
+{
+  "lemma": "browse",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08454309-n",
+      "partOfSpeech": "n",
+      "definition": "vegetation (such as young shoots, twigs, and leaves) that is suitable for animals to eat",
+      "examples": [
+        "a deer needs to eat twenty pounds of browse every day"
+      ]
+    },
+    {
+      "id": "oewn-06611001-n",
+      "partOfSpeech": "n",
+      "definition": "reading superficially or at random",
+      "synonyms": [
+        "browsing"
+      ]
+    },
+    {
+      "id": "oewn-00840684-n",
+      "partOfSpeech": "n",
+      "definition": "the act of feeding by continual nibbling",
+      "synonyms": [
+        "browsing"
+      ]
+    },
+    {
+      "id": "oewn-02331351-v",
+      "partOfSpeech": "v",
+      "definition": "shop around; not necessarily buying",
+      "examples": [
+        "I don't need help, I'm just browsing"
+      ],
+      "synonyms": [
+        "shop"
+      ]
+    },
+    {
+      "id": "oewn-01578996-v",
+      "partOfSpeech": "v",
+      "definition": "feed as in a meadow or pasture",
+      "examples": [
+        "the herd was grazing"
+      ],
+      "synonyms": [
+        "crop",
+        "graze",
+        "range",
+        "pasture"
+      ]
+    },
+    {
+      "id": "oewn-01317993-v",
+      "partOfSpeech": "v",
+      "definition": "look around casually and randomly, without seeking anything in particular",
+      "examples": [
+        "browse a computer directory",
+        "surf the internet or the world wide web"
+      ],
+      "synonyms": [
+        "surf"
+      ]
+    },
+    {
+      "id": "oewn-01177039-v",
+      "partOfSpeech": "v",
+      "definition": "eat lightly, try different dishes",
+      "examples": [
+        "There was so much food at the party that we quickly got sated just by browsing"
+      ],
+      "synonyms": [
+        "graze"
+      ]
+    }
+  ]
+}

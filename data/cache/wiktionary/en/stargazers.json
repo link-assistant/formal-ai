@@ -1,0 +1,33 @@
+[
+  {
+    "word": "stargazers",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One who stargazes.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A perciform fish in the family Uranoscopidae.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/stargazer",
+      "https://en.wiktionary.org/wiki/stargazers"
+    ]
+  }
+]

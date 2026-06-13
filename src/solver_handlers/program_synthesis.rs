@@ -9,9 +9,193 @@ use super::finalize_simple;
 
 struct PythonCandidate {
     id: &'static str,
-    code: String,
+    function: PythonFunctionTree,
     tests: Vec<&'static str>,
     fragments: Vec<&'static str>,
+}
+
+struct PythonFunctionTree {
+    signature: String,
+    body: Vec<PythonStatement>,
+}
+
+enum PythonStatement {
+    Assign {
+        semantic_node: &'static str,
+        target: &'static str,
+        expression: &'static str,
+    },
+    Return {
+        semantic_node: &'static str,
+        expression: &'static str,
+    },
+    IfReturn {
+        semantic_node: &'static str,
+        condition: &'static str,
+        value: &'static str,
+    },
+    For {
+        semantic_node: &'static str,
+        target: &'static str,
+        iterator: &'static str,
+        body: Vec<Self>,
+    },
+}
+
+impl PythonFunctionTree {
+    const fn new(signature: String, body: Vec<PythonStatement>) -> Self {
+        Self { signature, body }
+    }
+
+    fn render(&self) -> String {
+        let mut code = format!("def {}:\n", self.signature);
+        Self::render_statements(&mut code, &self.body, 1);
+        code
+    }
+
+    fn links_notation(&self) -> String {
+        let mut out = String::from("python_function_syntax_tree\n");
+        let _ = writeln!(
+            out,
+            "  semantic_node function_definition signature={:?}",
+            self.signature
+        );
+        for statement in &self.body {
+            statement.links_line(&mut out, 1);
+        }
+        out.trim_end().to_owned()
+    }
+
+    fn render_statements(code: &mut String, statements: &[PythonStatement], indent_level: usize) {
+        for statement in statements {
+            statement.render(code, indent_level);
+        }
+    }
+}
+
+impl PythonStatement {
+    const fn assign(
+        semantic_node: &'static str,
+        target: &'static str,
+        expression: &'static str,
+    ) -> Self {
+        Self::Assign {
+            semantic_node,
+            target,
+            expression,
+        }
+    }
+
+    const fn return_expr(semantic_node: &'static str, expression: &'static str) -> Self {
+        Self::Return {
+            semantic_node,
+            expression,
+        }
+    }
+
+    const fn if_return(
+        semantic_node: &'static str,
+        condition: &'static str,
+        value: &'static str,
+    ) -> Self {
+        Self::IfReturn {
+            semantic_node,
+            condition,
+            value,
+        }
+    }
+
+    const fn for_loop(
+        semantic_node: &'static str,
+        target: &'static str,
+        iterator: &'static str,
+        body: Vec<Self>,
+    ) -> Self {
+        Self::For {
+            semantic_node,
+            target,
+            iterator,
+            body,
+        }
+    }
+
+    fn render(&self, code: &mut String, indent_level: usize) {
+        let indent = "    ".repeat(indent_level);
+        match self {
+            Self::Assign {
+                target, expression, ..
+            } => {
+                let _ = writeln!(code, "{indent}{target} = {expression}");
+            }
+            Self::Return { expression, .. } => {
+                let _ = writeln!(code, "{indent}return {expression}");
+            }
+            Self::IfReturn {
+                condition, value, ..
+            } => {
+                let _ = writeln!(code, "{indent}if {condition}:");
+                let _ = writeln!(code, "{indent}    return {value}");
+            }
+            Self::For {
+                target,
+                iterator,
+                body,
+                ..
+            } => {
+                let _ = writeln!(code, "{indent}for {target} in {iterator}:");
+                PythonFunctionTree::render_statements(code, body, indent_level + 1);
+            }
+        }
+    }
+
+    fn links_line(&self, out: &mut String, depth: usize) {
+        let indent = "  ".repeat(depth + 1);
+        match self {
+            Self::Assign {
+                semantic_node,
+                target,
+                expression,
+            } => {
+                let _ = writeln!(
+                    out,
+                    "{indent}semantic_node {semantic_node} target={target:?} expression={expression:?}"
+                );
+            }
+            Self::Return {
+                semantic_node,
+                expression,
+            } => {
+                let _ = writeln!(
+                    out,
+                    "{indent}semantic_node {semantic_node} expression={expression:?}"
+                );
+            }
+            Self::IfReturn {
+                semantic_node,
+                condition,
+                value,
+            } => {
+                let _ = writeln!(
+                    out,
+                    "{indent}semantic_node {semantic_node} condition={condition:?} value={value:?}"
+                );
+            }
+            Self::For {
+                semantic_node,
+                target,
+                iterator,
+                body,
+            } => {
+                let _ = writeln!(
+                    out,
+                    "{indent}semantic_node {semantic_node} target={target:?} iterator={iterator:?}"
+                );
+                for statement in body {
+                    statement.links_line(out, depth + 1);
+                }
+            }
+        }
+    }
 }
 
 pub fn try_program_synthesis(
@@ -26,10 +210,14 @@ pub fn try_program_synthesis(
 
     let function_name = extract_function_name(prompt, &canonical)?;
     let candidate = synthesize_python_candidate(prompt, &canonical, &function_name)?;
+    let source_cst = crate::coding::validated_program_cst("python", &candidate.function.render())?;
     log.append(
         "synthesis:spec",
         format!("language=python function={function_name}"),
     );
+    log.append("synthesis:syntax_tree", candidate.function.links_notation());
+    log.append("synthesis:cst_engine", source_cst.engine().to_owned());
+    log.append("synthesis:cst_tree", source_cst.links_notation());
     for fragment in &candidate.fragments {
         log.append("composition:code_fragment", (*fragment).to_owned());
     }
@@ -214,14 +402,25 @@ fn synthesize_python_candidate(
         });
         return Some(PythonCandidate {
             id: "pairwise_threshold_distance",
-            code: render_python_function(
-                &signature,
-                &[
-                    "for left_index, left in enumerate(numbers):",
-                    "    for right in numbers[left_index + 1:]:",
-                    "        if abs(left - right) < threshold:",
-                    "            return True",
-                    "return False",
+            function: PythonFunctionTree::new(
+                signature,
+                vec![
+                    PythonStatement::for_loop(
+                        "pairwise_outer_loop",
+                        "left_index, left",
+                        "enumerate(numbers)",
+                        vec![PythonStatement::for_loop(
+                            "pairwise_inner_loop",
+                            "right",
+                            "numbers[left_index + 1:]",
+                            vec![PythonStatement::if_return(
+                                "threshold_match_return",
+                                "abs(left - right) < threshold",
+                                "True",
+                            )],
+                        )],
+                    ),
+                    PythonStatement::return_expr("no_pair_matches_return", "False"),
                 ],
             ),
             tests: vec![
@@ -244,9 +443,12 @@ fn synthesize_python_candidate(
             .unwrap_or_else(|| String::from("similar_elements(test_tup1, test_tup2)"));
         return Some(PythonCandidate {
             id: "tuple_intersection_set",
-            code: render_python_function(
-                &signature,
-                &["return tuple(sorted(set(test_tup1) & set(test_tup2)))"],
+            function: PythonFunctionTree::new(
+                signature,
+                vec![PythonStatement::return_expr(
+                    "deterministic_tuple_intersection_return",
+                    "tuple(sorted(set(test_tup1) & set(test_tup2)))",
+                )],
             ),
             tests: vec![
                 "assert similar_elements((3, 4, 5, 6), (5, 7, 4, 10)) == (4, 5)",
@@ -266,11 +468,18 @@ fn synthesize_python_candidate(
             .unwrap_or_else(|| String::from("count_vowels(text: str) -> int"));
         return Some(PythonCandidate {
             id: "count_matching_characters",
-            code: render_python_function(
-                &signature,
-                &[
-                    "vowels = set(\"aeiouAEIOU\")",
-                    "return sum(1 for character in text if character in vowels)",
+            function: PythonFunctionTree::new(
+                signature,
+                vec![
+                    PythonStatement::assign(
+                        "vowel_membership_set_assignment",
+                        "vowels",
+                        "set(\"aeiouAEIOU\")",
+                    ),
+                    PythonStatement::return_expr(
+                        "matching_character_count_return",
+                        "sum(1 for character in text if character in vowels)",
+                    ),
                 ],
             ),
             tests: vec![
@@ -289,18 +498,6 @@ fn synthesize_python_candidate(
     None
 }
 
-fn render_python_function(signature: &str, body_lines: &[&str]) -> String {
-    let mut code = format!("def {signature}:\n");
-    for line in body_lines {
-        if !line.is_empty() {
-            code.push_str("    ");
-            code.push_str(line);
-        }
-        code.push('\n');
-    }
-    code
-}
-
 fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<AgentRun> {
     let config = AgentWorkspaceConfig {
         time_budget: Duration::from_secs(5),
@@ -317,7 +514,7 @@ fn verify_python_candidate(prompt: &str, candidate: &PythonCandidate) -> Option<
 }
 
 fn verification_script(candidate: &PythonCandidate) -> String {
-    let mut script = candidate.code.clone();
+    let mut script = candidate.function.render();
     script.push_str("\n\nif __name__ == \"__main__\":\n");
     for test in &candidate.tests {
         script.push_str("    ");
@@ -353,9 +550,10 @@ fn append_agent_run(log: &mut EventLog, run: &AgentRun) {
 }
 
 fn render_python_answer(candidate: &PythonCandidate) -> String {
+    let code = candidate.function.render();
     format!(
         "Here is a derived Python function synthesized from the specification and verified in an isolated workspace:\n\n```python\n{}```\n\nExecution status: tests passed in isolated bounded agent workspace.\nCheck command: `python3 solution.py`\nTest outcome: {}/{} assertions passed.\nWorkspace isolation: temporary agent workspace with environment cleared and a 5 second command budget.",
-        candidate.code,
+        code,
         candidate.tests.len(),
         candidate.tests.len()
     )

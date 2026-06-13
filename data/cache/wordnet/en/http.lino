@@ -1,0 +1,12 @@
+language en
+lemma http
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a protocol (utilizing TCP) to transfer hypertext requests and information between servers and browsers"
+    id oewn-06678592-n
+    partOfSpeech n
+    synonyms ("hypertext transfer protocol")
+source "oewn:2024"

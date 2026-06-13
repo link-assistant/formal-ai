@@ -1,0 +1,17 @@
+language en
+lemma cm
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a radioactive transuranic metallic element; produced by bombarding plutonium with helium nuclei"
+    id oewn-14660398-n
+    partOfSpeech n
+    synonyms (curium "atomic number 96")
+  entry
+    definition "a metric unit of length equal to one hundredth of a meter"
+    id oewn-13680636-n
+    partOfSpeech n
+    synonyms (centimeter centimetre)
+source "oewn:2024"

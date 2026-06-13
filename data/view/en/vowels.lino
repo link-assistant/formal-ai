@@ -1,0 +1,13 @@
+view
+  id M-d7c1d02e02c8
+  lemma vowels
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A sound produced by the vocal cords with relatively little restriction of the oral cavity, forming the prominent sound of a syllable."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A letter representing the sound of vowel; in English, the vowels are a, e, i, o, u, and sometimes y."
+    provenance (wiktionary)

@@ -1,0 +1,58 @@
+{
+  "lemma": "threshold",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15293950-n",
+      "partOfSpeech": "n",
+      "definition": "the starting point for a new state or experience",
+      "examples": [
+        "on the threshold of manhood"
+      ]
+    },
+    {
+      "id": "oewn-05720373-n",
+      "partOfSpeech": "n",
+      "definition": "the smallest detectable sensation",
+      "synonyms": [
+        "limen"
+      ]
+    },
+    {
+      "id": "oewn-03228735-n",
+      "partOfSpeech": "n",
+      "definition": "the entrance (the space in a wall) through which you enter or leave a room or building; the space that a door can close",
+      "examples": [
+        "he stuck his head in the doorway"
+      ],
+      "synonyms": [
+        "doorway",
+        "door",
+        "room access"
+      ]
+    },
+    {
+      "id": "oewn-03228389-n",
+      "partOfSpeech": "n",
+      "definition": "the sill of a door; a horizontal piece of wood or stone that forms the bottom of a doorway and offers support when passing through a doorway",
+      "synonyms": [
+        "doorsill",
+        "doorstep"
+      ]
+    },
+    {
+      "id": "oewn-13926744-n",
+      "partOfSpeech": "n",
+      "definition": "a region marking a boundary",
+      "synonyms": [
+        "brink",
+        "verge"
+      ]
+    }
+  ]
+}

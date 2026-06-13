@@ -1,0 +1,13 @@
+view
+  id M-f1e1c8163cd9
+  lemma method
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a way of doing something, especially a systematic way; implies an orderly logical arrangement (usually in steps)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an acting technique introduced by Stanislavsky in which the actor recalls emotions or reactions from his or her own life and uses them to identify with the character being portrayed"
+    provenance (wordnet)

@@ -1,0 +1,73 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An effort, process, or operation designed to establish or discover a fact or truth; an act of testing; a test; a trial."
+        entry
+          definition "The degree of evidence which convinces the mind of any truth or fact, and produces belief; a test by facts or arguments which induce, or tend to induce, certainty of the judgment; conclusive evidence; demonstration."
+        entry
+          definition "The quality or state of having been proved or tried; firmness or hardness which resists impression, or does not yield to force; impenetrability of physical bodies."
+        entry
+          definition "Experience of something."
+        entry
+          definition "Firmness of mind; stability not to be shaken."
+        entry
+          definition "A proof sheet; a trial impression, as from type, taken for correction or examination."
+        entry
+          definition "A sequence of statements consisting of axioms, assumptions, statements already demonstrated in another proof, and statements that logically follow from previous statements in the sequence, and which concludes with a statement that is the object of the proof."
+        entry
+          definition "A process for testing the accuracy of an operation performed. Compare prove, transitive verb, 5."
+        entry
+          definition "Armour of excellent or tried quality, and deemed impenetrable; properly, armour of proof."
+        entry
+          definition "A measure of the alcohol content of liquor. Originally, in Britain, 100 proof was defined as 57.1% by volume (no longer used). In the US, 100 proof means that the alcohol content is 50% of the total volume of the liquid; thus, absolute alcohol would be 200 proof."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To proofread."
+        entry
+          definition "To make resistant, especially to water."
+        entry
+          definition "To allow yeast-containing dough to rise."
+        entry
+          definition "To test the activeness of yeast."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Used in proving or testing."
+          example "a proof load; a proof charge"
+        entry
+          definition "Firm or successful in resisting."
+          example "proof against harm"
+        entry
+          definition "(of alcoholic liquors) Being of a certain standard as to alcohol content."
+      partOfSpeech adjective
+  phonetic "/pɹʉːf/"
+  phonetics
+    entry
+      audio ""
+      text "/pɹʉːf/"
+    entry
+      audio ""
+      text "/pɹuːf/"
+    entry
+      audio ""
+      text "/pɹʉːf/"
+    entry
+      audio ""
+      text "/pɹuːf/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/proof-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1669339"
+      text "/pɹuf/"
+  sourceUrls ("https://en.wiktionary.org/wiki/proof")
+  word proof

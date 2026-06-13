@@ -1,0 +1,16 @@
+{
+  "lemma": "identifier",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07285306-n",
+      "partOfSpeech": "n",
+      "definition": "a symbol that establishes the identity of the one bearing it"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+view
+  id M-d4244dacebfa
+  lemma summarize
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a summary (of)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be a summary of"
+    provenance (wordnet)

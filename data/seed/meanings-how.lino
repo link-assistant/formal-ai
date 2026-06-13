@@ -1,466 +1,450 @@
 meanings
-  meaning "mechanism_inquiry"
-    gloss "an inquiry into how something works — its internal mechanism or operating principle. The concept a how-it-works prompt expresses, independent of the language or phrasing used. Each surface marks the subject position with the ellipsis … (U+2026): no ellipsis is a bare phrase, a trailing ellipsis is a prefix surface, a leading ellipsis is a suffix surface, and a middle ellipsis is a circumfix surface."
-    wiktionary "how"
-    defined_by "inquiry"
-    defined_by "action"
-    role "mechanism_inquiry"
-    lexeme "en"
-      word "how it works"
-        description "English bare how-it-works phrase with no subject slot; asks for the mechanism of the current topic."
-      word "how does it work"
-        description "English bare how-does-it-work phrase with no subject slot; asks for the mechanism of the current topic."
-      word "how does …"
-        description "English prefix surface; the literal before the … slot introduces a mechanism question whose subject follows (how does X)."
-      word "how do …"
-        description "English prefix surface for a plural subject; the subject follows the … slot (how do X)."
-      word "how did …"
-        description "English past-tense prefix surface; asks how the subject after the … slot worked (how did X)."
-      word "how is …"
-        description "English prefix surface asking how the subject after the … slot is built or arranged (how is X)."
-      word "how … works"
-        description "English circumfix surface; the subject sits between how and works in the … slot (how X works)."
-      word "how … work"
-        description "English circumfix surface for a plural subject between how and work in the … slot (how X work)."
-    lexeme "ru"
-      word "как это работает"
-        description "Russian bare how-it-works phrase (romanized kak eto rabotaet) with no subject slot."
-      word "как оно работает"
-        description "Russian bare how-it-works phrase (romanized kak ono rabotaet) with no subject slot."
-      word "как устроен …"
-        description "Russian masculine prefix surface (romanized kak ustroen) asking how the subject after the … slot is built."
-      word "как устроена …"
-        description "Russian feminine prefix surface (romanized kak ustroena) asking how the subject after the … slot is built."
-      word "как устроено …"
-        description "Russian neuter prefix surface (romanized kak ustroeno) asking how the subject after the … slot is built."
-      word "как устроены …"
-        description "Russian plural prefix surface (romanized kak ustroeny) asking how the subjects after the … slot are built."
-      word "как работает …"
-        description "Russian prefix surface (romanized kak rabotaet) asking how the subject after the … slot works."
-      word "как работают …"
-        description "Russian plural prefix surface (romanized kak rabotayut) asking how the subjects after the … slot work."
-      word "как … работает"
-        description "Russian circumfix surface (romanized kak … rabotaet); the subject sits in the … slot between kak and rabotaet."
-      word "как … работают"
-        description "Russian plural circumfix surface (romanized kak … rabotayut); the subject sits in the … slot."
-      word "… как работает"
-        description "Russian suffix surface (romanized … kak rabotaet); the subject precedes the trailing how-it-works phrase in the leading … slot."
-      word "… как работают"
-        description "Russian plural suffix surface (romanized … kak rabotayut); the subject precedes the trailing phrase in the leading … slot."
-    lexeme "hi"
-      word "यह कैसे काम करता है"
-        description "Hindi bare how-it-works phrase (romanized yah kaise kaam karta hai) with no subject slot."
-      word "यह कैसे काम करती है"
-        description "Hindi bare how-it-works phrase, feminine (romanized yah kaise kaam karti hai), with no subject slot."
-      word "यह कैसे काम करता"
-        description "Hindi bare how-it-works phrase, clipped (romanized yah kaise kaam karta), with no subject slot."
-      word "… कैसे काम करता है"
-        description "Hindi suffix surface (romanized … kaise kaam karta hai); the subject precedes the trailing how-it-works phrase in the leading … slot."
-      word "… कैसे काम करती है"
-        description "Hindi feminine suffix surface (romanized … kaise kaam karti hai); the subject is in the leading … slot."
-      word "… कैसे काम करते हैं"
-        description "Hindi plural suffix surface (romanized … kaise kaam karte hain); the subject is in the leading … slot."
-      word "… कैसे काम करता"
-        description "Hindi clipped suffix surface (romanized … kaise kaam karta); the subject is in the leading … slot."
-      word "… कैसे काम करती"
-        description "Hindi feminine clipped suffix surface (romanized … kaise kaam karti); the subject is in the leading … slot."
-      word "… कैसे काम करते"
-        description "Hindi plural clipped suffix surface (romanized … kaise kaam karte); the subject is in the leading … slot."
-    lexeme "zh"
-      word "这是如何工作的"
-        description "Chinese bare how-it-works phrase (pinyin zhe shi ruhe gongzuo de) with no subject slot."
-      word "这是怎么工作的"
-        description "Chinese bare how-it-works phrase (pinyin zhe shi zenme gongzuo de) with no subject slot."
-      word "这个如何工作"
-        description "Chinese bare how-it-works phrase (pinyin zhege ruhe gongzuo) with no subject slot."
-      word "它如何工作"
-        description "Chinese bare how-it-works phrase (pinyin ta ruhe gongzuo) with no subject slot."
-      word "它是如何工作的"
-        description "Chinese bare how-it-works phrase (pinyin ta shi ruhe gongzuo de) with no subject slot."
-      word "它怎么工作"
-        description "Chinese bare how-it-works phrase (pinyin ta zenme gongzuo) with no subject slot."
-      word "… 是如何工作的"
-        description "Chinese suffix surface (pinyin … shi ruhe gongzuo de) with a leading space; the subject is in the leading … slot."
-      word "…是如何工作的"
-        description "Chinese suffix surface (pinyin … shi ruhe gongzuo de) with no leading space; the subject is in the leading … slot."
-      word "… 是怎么工作的"
-        description "Chinese suffix surface (pinyin … shi zenme gongzuo de) with a leading space; the subject is in the leading … slot."
-      word "…是怎么工作的"
-        description "Chinese suffix surface (pinyin … shi zenme gongzuo de) with no leading space; the subject is in the leading … slot."
-      word "… 如何工作"
-        description "Chinese suffix surface (pinyin … ruhe gongzuo) with a leading space; the subject is in the leading … slot."
-      word "…如何工作"
-        description "Chinese suffix surface (pinyin … ruhe gongzuo) with no leading space; the subject is in the leading … slot."
-      word "… 怎么工作"
-        description "Chinese suffix surface (pinyin … zenme gongzuo) with a leading space; the subject is in the leading … slot."
-      word "…怎么工作"
-        description "Chinese suffix surface (pinyin … zenme gongzuo) with no leading space; the subject is in the leading … slot."
-      word "… 的工作原理是什么"
-        description "Chinese suffix surface (pinyin … de gongzuo yuanli shi shenme) with a leading space; asks the working principle of the subject in the leading … slot."
-      word "…的工作原理是什么"
-        description "Chinese suffix surface (pinyin … de gongzuo yuanli shi shenme) with no leading space; asks the working principle of the subject in the leading … slot."
-  meaning "procedural_request"
-    gloss "a request for the ordered steps to accomplish a task — the how-to-X question that asks for a procedure rather than a mechanism, independent of phrasing language. Each surface is a prefix carrying the … slot at the end, where the task follows. A surface may name the canonical operation in an action child (do, perform, implement, create, write); when it does not, the operation is taken from the first word of the task."
-    wiktionary "procedure"
-    defined_by "inquiry"
-    defined_by "action"
-    role "procedural_request"
-    lexeme "en"
-      word "please tell me how to …"
-        description "English polite prefix surface; the task follows the … slot, with the operation taken from its first word."
-      word "please show me how to …"
-        description "English polite prefix surface requesting a demonstration; the task follows the … slot, operation from its first word."
-      word "tell me how to …"
-        description "English prefix surface; the task follows the … slot, operation from its first word."
-      word "show me how to …"
-        description "English prefix surface requesting a walkthrough; the task follows the … slot, operation from its first word."
-      word "what are the steps to …"
-        description "English prefix surface asking for the steps; the task follows the … slot, operation from its first word."
-      word "what steps do i need to …"
-        description "English first-person prefix surface asking which steps are needed; the task follows the … slot."
-      word "what steps do we need to …"
-        description "English first-person-plural prefix surface asking which steps are needed; the task follows the … slot."
-      word "how should i …"
-        description "English advice-seeking prefix surface; the task follows the … slot, operation from its first word."
-      word "how should we …"
-        description "English first-person-plural advice-seeking prefix surface; the task follows the … slot."
-      word "how could i …"
-        description "English possibility prefix surface; the task follows the … slot, operation from its first word."
-      word "how could we …"
-        description "English first-person-plural possibility prefix surface; the task follows the … slot."
-      word "how would i …"
-        description "English hypothetical prefix surface; the task follows the … slot, operation from its first word."
-      word "how would we …"
-        description "English first-person-plural hypothetical prefix surface; the task follows the … slot."
-      word "how can i …"
-        description "English capability prefix surface; the task follows the … slot, operation from its first word."
-      word "how can we …"
-        description "English first-person-plural capability prefix surface; the task follows the … slot."
-      word "how do i …"
-        description "English procedural prefix surface; the task follows the … slot, operation from its first word."
-      word "how do we …"
-        description "English first-person-plural procedural prefix surface; the task follows the … slot."
-      word "how to do …"
-        action "do"
-        description "English prefix surface naming the do operation explicitly; the whole task follows the … slot."
-      word "how to …"
-        description "English bare how-to prefix surface; the task follows the … slot, operation from its first word."
-    lexeme "ru"
-      word "как сделать …"
-        action "do"
-        description "Russian prefix surface (romanized kak sdelat) naming the do operation; the task follows the … slot."
-      word "как делать …"
-        action "do"
-        description "Russian imperfective prefix surface (romanized kak delat) naming the do operation; the task follows the … slot."
-      word "как выполнить …"
-        action "perform"
-        description "Russian prefix surface (romanized kak vypolnit) naming the perform operation; the task follows the … slot."
-      word "как реализовать …"
-        action "implement"
-        description "Russian prefix surface (romanized kak realizovat) naming the implement operation; the task follows the … slot."
-      word "как создать …"
-        action "create"
-        description "Russian prefix surface (romanized kak sozdat) naming the create operation; the task follows the … slot."
-      word "как написать …"
-        action "write"
-        description "Russian prefix surface (romanized kak napisat) naming the write operation; the task follows the … slot."
-    lexeme "hi"
-      word "कैसे करें …"
-        action "do"
-        description "Hindi polite prefix surface (romanized kaise karen) naming the do operation; the task follows the … slot."
-      word "कैसे करे …"
-        action "do"
-        description "Hindi prefix surface (romanized kaise kare) naming the do operation; the task follows the … slot."
-      word "कैसे लागू करें …"
-        action "implement"
-        description "Hindi prefix surface (romanized kaise laagu karen) naming the implement operation; the task follows the … slot."
-      word "कैसे बनाएं …"
-        action "create"
-        description "Hindi prefix surface (romanized kaise banaen) naming the create operation; the task follows the … slot."
-      word "कैसे बनाएँ …"
-        action "create"
-        description "Hindi prefix surface variant (romanized kaise banaen, with candrabindu) naming the create operation; the task follows the … slot."
-      word "कैसे लिखें …"
-        action "write"
-        description "Hindi prefix surface (romanized kaise likhen) naming the write operation; the task follows the … slot."
-    lexeme "zh"
-      word "如何做 …"
-        action "do"
-        description "Chinese prefix surface (pinyin ruhe zuo) naming the do operation, with a trailing space; the task follows the … slot."
-      word "怎么做 …"
-        action "do"
-        description "Chinese prefix surface (pinyin zenme zuo) naming the do operation, with a trailing space; the task follows the … slot."
-      word "如何实现 …"
-        action "implement"
-        description "Chinese prefix surface (pinyin ruhe shixian) naming the implement operation, with a trailing space; the task follows the … slot."
-      word "怎么实现 …"
-        action "implement"
-        description "Chinese prefix surface (pinyin zenme shixian) naming the implement operation, with a trailing space; the task follows the … slot."
-      word "如何创建 …"
-        action "create"
-        description "Chinese prefix surface (pinyin ruhe chuangjian) naming the create operation, with a trailing space; the task follows the … slot."
-      word "怎么创建 …"
-        action "create"
-        description "Chinese prefix surface (pinyin zenme chuangjian) naming the create operation, with a trailing space; the task follows the … slot."
-      word "如何写 …"
-        action "write"
-        description "Chinese prefix surface (pinyin ruhe xie) naming the write operation, with a trailing space; the task follows the … slot."
-      word "怎么写 …"
-        action "write"
-        description "Chinese prefix surface (pinyin zenme xie) naming the write operation, with a trailing space; the task follows the … slot."
-  meaning "mechanism_predicate"
-    gloss "the predicate that completes a how-it-works clause — the verb or participle stating that a subject operates, is structured, or is built (work, works, structured, organized, organised, built, …). Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the predicate tail a mechanism-inquiry extractor strips so the bare subject remains. The English surfaces are the ones an extractor removes after a how-does prefix match; the other languages name genuine predicates so every language is covered."
-    wiktionary "work"
-    defined_by "action"
-    defined_by "mechanism_inquiry"
-    role "mechanism_predicate"
-    lexeme "en"
-      word "… work"
-        description "English plural-or-base predicate tail meaning operates; the text after the … slot is stripped to leave the subject."
-      word "… works"
-        description "English singular predicate tail meaning operates; the text after the … slot is stripped to leave the subject."
-      word "… structured"
-        description "English predicate tail meaning arranged; the text after the … slot is stripped to leave the subject."
-      word "… organized"
-        description "English predicate tail meaning arranged, American spelling; the text after the … slot is stripped to leave the subject."
-      word "… organised"
-        description "English predicate tail meaning arranged, British spelling; the text after the … slot is stripped to leave the subject."
-      word "… built"
-        description "English predicate tail meaning constructed; the text after the … slot is stripped to leave the subject."
-    lexeme "ru"
-      word "… работает"
-        description "Russian singular predicate tail (romanized rabotaet) meaning works; a genuine mechanism predicate stripped when a subject ends with it after a prefix match."
-      word "… устроен"
-        description "Russian predicate tail (romanized ustroen) meaning is structured; a genuine mechanism predicate completing a how-it-works clause."
-    lexeme "hi"
-      word "… काम करता है"
-        description "Hindi predicate tail (romanized kaam karta hai) meaning works; a genuine mechanism predicate completing a how-it-works clause."
-      word "… बना है"
-        description "Hindi predicate tail (romanized bana hai) meaning is built; a genuine mechanism predicate completing a how-it-works clause."
-    lexeme "zh"
-      word "…工作"
-        description "Chinese predicate tail (pinyin gongzuo) meaning works, with no leading space; a genuine mechanism predicate completing a how-it-works clause."
-      word "…构建"
-        description "Chinese predicate tail (pinyin goujian) meaning is built, with no leading space; a genuine mechanism predicate completing a how-it-works clause."
-  meaning "detail_modifier"
-    gloss "an optional modifier appended to a how-it-works question asking for more thoroughness or politeness (in detail, internally, exactly, please, …) without naming the subject. Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the modifier tail a mechanism-inquiry extractor strips so the bare subject remains. The extractor strips every matching modifier in declaration order, re-trimming after each."
-    wiktionary "detail"
-    defined_by "property"
-    defined_by "mechanism_inquiry"
-    role "detail_modifier"
-    lexeme "en"
-      word "… in detail"
-        description "English modifier tail asking for a thorough explanation; the text after the … slot is stripped to leave the subject."
-      word "… internally"
-        description "English modifier tail asking about internal workings; the text after the … slot is stripped to leave the subject."
-      word "… exactly"
-        description "English modifier tail asking for precision; the text after the … slot is stripped to leave the subject."
-      word "… please"
-        description "English politeness modifier tail; the text after the … slot is stripped to leave the subject."
-    lexeme "ru"
-      word "… подробнее"
-        description "Russian modifier tail (romanized podrobneye) meaning in more detail; the text after the … slot is stripped to leave the subject."
-      word "… подробно"
-        description "Russian modifier tail (romanized podrobno) meaning in detail; the text after the … slot is stripped to leave the subject."
-      word "… пожалуйста"
-        description "Russian politeness modifier tail (romanized pozhaluysta) meaning please; the text after the … slot is stripped to leave the subject."
-    lexeme "hi"
-      word "… विस्तार से"
-        description "Hindi modifier tail (romanized vistaar se) meaning in detail; the text after the … slot is stripped to leave the subject."
-      word "… कृपया"
-        description "Hindi politeness modifier tail (romanized kripya) meaning please; the text after the … slot is stripped to leave the subject."
-    lexeme "zh"
-      word "…详细"
-        description "Chinese modifier tail (pinyin xiangxi) meaning in detail, with no leading space; the text after the … slot is stripped to leave the subject."
-      word "…请"
-        description "Chinese politeness modifier tail (pinyin qing) meaning please, with no leading space; the text after the … slot is stripped to leave the subject."
-  meaning "non_referential_subject"
-    gloss "a subject candidate that names no real topic — a pronoun or bare function word that points back at the surrounding context instead of introducing a subject, so a how-it-works extractor rejects it and falls back to the active topic. Bare surfaces match the whole candidate exactly; prefix surfaces carry the … (U+2026) slot and match when the candidate begins with the literal before the slot."
-    wiktionary "pronoun"
-    defined_by "entity"
-    defined_by "mechanism_inquiry"
-    role "non_referential_subject"
-    lexeme "en"
-      word "it"
-        description "English third-person pronoun referring back to context; rejected as a non-referential subject."
-      word "this"
-        description "English demonstrative pronoun pointing at context; rejected as a non-referential subject."
-      word "that"
-        description "English demonstrative pronoun pointing at context; rejected as a non-referential subject."
-      word "you"
-        description "English second-person pronoun addressing the assistant; rejected as a non-referential subject."
-      word "yourself"
-        description "English reflexive pronoun addressing the assistant; rejected as a non-referential subject."
-      word "does"
-        description "English auxiliary verb left over from a how-does question; rejected as a non-referential subject."
-      word "do"
-        description "English auxiliary verb left over from a how-do question; rejected as a non-referential subject."
-      word "does …"
-        description "English prefix surface; a candidate beginning with 'does ' is a dangling auxiliary clause and is rejected as a non-referential subject."
-      word "do …"
-        description "English prefix surface; a candidate beginning with 'do ' is a dangling auxiliary clause and is rejected as a non-referential subject."
-      word "to …"
-        description "English prefix surface; a candidate beginning with 'to ' is an infinitive clause, not a subject, and is rejected."
-      word "you …"
-        description "English prefix surface; a candidate beginning with 'you ' addresses the assistant and is rejected as a non-referential subject."
-    lexeme "ru"
-      word "это"
-        description "Russian demonstrative pronoun (romanized eto) meaning this or it; rejected as a non-referential subject."
-      word "оно"
-        description "Russian neuter pronoun (romanized ono) meaning it; rejected as a non-referential subject."
-      word "он"
-        description "Russian masculine pronoun (romanized on) meaning he or it; rejected as a non-referential subject."
-      word "она"
-        description "Russian feminine pronoun (romanized ona) meaning she or it; rejected as a non-referential subject."
-      word "они"
-        description "Russian plural pronoun (romanized oni) meaning they; rejected as a non-referential subject."
-      word "ты"
-        description "Russian informal second-person pronoun (romanized ty) meaning you; rejected as a non-referential subject."
-      word "вы"
-        description "Russian formal or plural second-person pronoun (romanized vy) meaning you; rejected as a non-referential subject."
-    lexeme "hi"
-      word "यह"
-        description "Hindi pronoun (romanized yah) meaning this or it; rejected as a non-referential subject."
-      word "ये"
-        description "Hindi pronoun (romanized ye) meaning these or this; rejected as a non-referential subject."
-    lexeme "zh"
-      word "这"
-        description "Chinese demonstrative pronoun (pinyin zhe) meaning this; rejected as a non-referential subject."
-      word "这个"
-        description "Chinese demonstrative pronoun (pinyin zhege) meaning this one; rejected as a non-referential subject."
-      word "它"
-        description "Chinese third-person pronoun (pinyin ta) meaning it; rejected as a non-referential subject."
-  meaning "procedural_task_modifier"
-    gloss "an optional modifier trailing a procedural how-to task that asks for step-by-step granularity or adds politeness (step by step, in steps, please, …) without naming part of the task itself. Each surface is a suffix carrying the … (U+2026) slot at the front; the text after the slot is the modifier tail a procedural extractor strips from the end of the task, scanning surfaces in declaration order and stopping at the first match, so the longer Russian 'напиши по шагам' is tried before its 'по шагам' tail."
-    wiktionary "step"
-    defined_by "property"
-    defined_by "procedural_request"
-    role "procedural_task_modifier"
-    lexeme "en"
-      word "… step by step"
-        description "English modifier tail asking for incremental steps; the text after the … slot is stripped from the end of the task."
-      word "… in steps"
-        description "English modifier tail asking for the task broken into steps; the text after the … slot is stripped from the end of the task."
-      word "… with steps"
-        description "English modifier tail asking for accompanying steps; the text after the … slot is stripped from the end of the task."
-      word "… for me"
-        description "English modifier tail framing the request as personal; the text after the … slot is stripped from the end of the task."
-      word "… please"
-        description "English politeness modifier tail; the text after the … slot is stripped from the end of the task."
-    lexeme "ru"
-      word "… напиши по шагам"
-        description "Russian modifier tail (romanized napishi po shagam) meaning write it step by step; declared before its 'по шагам' tail so the longer surface matches first. The text after the … slot is stripped from the end of the task."
-      word "… по шагам"
-        description "Russian modifier tail (romanized po shagam) meaning step by step; the text after the … slot is stripped from the end of the task."
-      word "… пошагово"
-        description "Russian modifier tail (romanized poshagovo) meaning step-by-step; the text after the … slot is stripped from the end of the task."
-      word "… пожалуйста"
-        description "Russian politeness modifier tail (romanized pozhaluysta) meaning please; the text after the … slot is stripped from the end of the task."
-    lexeme "hi"
-      word "… चरणों में लिखो"
-        description "Hindi modifier tail (romanized charanon mein likho) meaning write it in steps; the text after the … slot is stripped from the end of the task."
-      word "… चरणों में बताओ"
-        description "Hindi modifier tail (romanized charanon mein batao) meaning explain it in steps; the text after the … slot is stripped from the end of the task."
-      word "… कदम दर कदम"
-        description "Hindi modifier tail (romanized kadam dar kadam) meaning step by step; the text after the … slot is stripped from the end of the task."
-      word "… कृपया"
-        description "Hindi politeness modifier tail (romanized kripya) meaning please; the text after the … slot is stripped from the end of the task."
-    lexeme "zh"
-      word "… 按步骤写"
-        description "Chinese modifier tail (pinyin an buzhou xie) meaning write by steps, with a leading space matching the task separator; the text after the … slot is stripped from the end of the task."
-      word "… 按步骤说明"
-        description "Chinese modifier tail (pinyin an buzhou shuoming) meaning explain by steps, with a leading space; the text after the … slot is stripped from the end of the task."
-      word "… 一步一步写"
-        description "Chinese modifier tail (pinyin yibu yibu xie) meaning write it step by step, with a leading space; the text after the … slot is stripped from the end of the task."
-      word "… 请"
-        description "Chinese politeness modifier tail (pinyin qing) meaning please, with a leading space; the text after the … slot is stripped from the end of the task."
-  meaning "common_typo"
-    gloss "a common misspelling that can appear in a procedural how-to task, paired with its correction so an extractor can repair the token by data rather than a hardcoded table. Each surface is a bare word whose text is the misspelled token; its action child names the correct spelling that replaces the token, deduplicated per task by the misspelled form. The English 'dirven' for 'driven' is the canonical example; the other languages carry one genuine misspelling each so every supported language is covered."
-    wiktionary "misspelling"
-    defined_by "relation"
-    role "common_typo"
-    lexeme "en"
-      word "dirven"
-        action "driven"
-        description "English transposition misspelling of 'driven' (as in data-driven); replaced by its action correction when it appears as a task token."
-    lexeme "ru"
-      word "руский"
-        action "русский"
-        description "Russian misspelling (romanized ruskiy) of 'русский' meaning Russian, dropping one с; replaced by its action correction when it appears as a task token."
-    lexeme "hi"
-      word "वेबसाईट"
-        action "वेबसाइट"
-        description "Hindi misspelling (romanized vebsaait) of 'वेबसाइट' meaning website, with an extra long-i vowel sign; replaced by its action correction when it appears as a task token."
-    lexeme "zh"
-      word "登陆"
-        action "登录"
-        description "Chinese misspelling (pinyin denglu) of '登录' meaning to log in, confusing 陆 'land' for 录 'record'; replaced by its action correction when it appears as a task token."
-  meaning "topic_scan_stop_word"
-    gloss "a closed-class function word — an article, preposition, conjunction or pronoun — or a citation heading such as 'source' that names no subject, so a scanner looking for the topic of a prior assistant reply skips it. Each surface is a bare word compared case-insensitively (after lowercasing) against a capitalised token from the reply; the first capitalised token that is not one of these is taken as the topic. English carries the original scan list verbatim (i, the, a, an, in, to, for, of, and, or, source); the other languages add their canonical function words so every supported language is covered. Because the scanner only considers capitalised tokens, the Devanagari and Han forms are self-describing — those scripts have no capitalisation — while the Russian forms also let a capitalised Cyrillic function word be skipped."
-    wiktionary "the"
-    defined_by "concept"
-    role "topic_scan_stop_word"
-    lexeme "en"
-      word "i"
-        description "English first-person pronoun; a closed-class word the topic scanner skips. It never matches in practice because the scanner ignores single-letter tokens, but it documents the original scan list."
-      word "the"
-        description "English definite article; skipped by the topic scanner as a function word that names no subject."
-      word "a"
-        description "English indefinite article; a closed-class word the scanner skips. Single-letter, so it never matches in practice but completes the original list."
-      word "an"
-        description "English indefinite article before a vowel; skipped by the topic scanner as a function word that names no subject."
-      word "in"
-        description "English preposition; skipped by the topic scanner as a function word that names no subject."
-      word "to"
-        description "English preposition or infinitive marker; skipped by the topic scanner as a function word that names no subject."
-      word "for"
-        description "English preposition; skipped by the topic scanner as a function word that names no subject."
-      word "of"
-        description "English preposition; skipped by the topic scanner as a function word that names no subject."
-      word "and"
-        description "English coordinating conjunction; skipped by the topic scanner as a function word that names no subject."
-      word "or"
-        description "English coordinating conjunction; skipped by the topic scanner as a function word that names no subject."
-      word "source"
-        description "English heading word that introduces a citation (as in 'Source: URL') in concept-lookup replies; skipped so the scanner does not mistake it for the subject."
-    lexeme "ru"
-      word "и"
-        description "Russian coordinating conjunction (romanized i) meaning and; skipped by the topic scanner as a function word that names no subject."
-      word "или"
-        description "Russian coordinating conjunction (romanized ili) meaning or; skipped by the topic scanner as a function word that names no subject."
-      word "в"
-        description "Russian preposition (romanized v) meaning in; skipped by the topic scanner as a function word that names no subject."
-      word "к"
-        description "Russian preposition (romanized k) meaning to or toward; skipped by the topic scanner as a function word that names no subject."
-      word "для"
-        description "Russian preposition (romanized dlya) meaning for; skipped by the topic scanner as a function word that names no subject."
-      word "из"
-        description "Russian preposition (romanized iz) meaning of or from; skipped by the topic scanner as a function word that names no subject."
-      word "источник"
-        description "Russian heading word (romanized istochnik) meaning source; skipped so the scanner does not mistake a citation heading for the subject."
-    lexeme "hi"
-      word "और"
-        description "Hindi coordinating conjunction (romanized aur) meaning and; a function word the scanner skips. Devanagari has no capitalisation, so it is self-describing rather than matched."
-      word "या"
-        description "Hindi coordinating conjunction (romanized ya) meaning or; a function word the scanner skips. Self-describing, since Devanagari has no capitalisation."
-      word "में"
-        description "Hindi postposition (romanized mein) meaning in; a function word the scanner skips. Self-describing, since Devanagari has no capitalisation."
-      word "को"
-        description "Hindi postposition (romanized ko) marking the object; a function word the scanner skips. Self-describing, since Devanagari has no capitalisation."
-      word "के"
-        description "Hindi postposition (romanized ke) marking possession or relation; a function word the scanner skips. Self-describing, since Devanagari has no capitalisation."
-      word "का"
-        description "Hindi postposition (romanized ka) marking possession; a function word the scanner skips. Self-describing, since Devanagari has no capitalisation."
-      word "स्रोत"
-        description "Hindi heading word (romanized srot) meaning source; skipped so a citation heading is not mistaken for the subject. Self-describing, since Devanagari has no capitalisation."
-    lexeme "zh"
-      word "和"
-        description "Chinese coordinating conjunction (pinyin he) meaning and; a function word the scanner skips. Han script has no capitalisation, so it is self-describing rather than matched."
-      word "或"
-        description "Chinese coordinating conjunction (pinyin huo) meaning or; a function word the scanner skips. Self-describing, since Han script has no capitalisation."
-      word "在"
-        description "Chinese preposition (pinyin zai) meaning in or at; a function word the scanner skips. Self-describing, since Han script has no capitalisation."
-      word "的"
-        description "Chinese possessive particle (pinyin de); a function word the scanner skips. Self-describing, since Han script has no capitalisation."
-      word "来源"
-        description "Chinese heading word (pinyin laiyuan) meaning source; skipped so a citation heading is not mistaken for the subject. Self-describing, since Han script has no capitalisation."
+  mechanism_inquiry
+    defined-by inquiry
+    defined-by action
+    role mechanism_inquiry
+    lexeme en
+      surface
+        text "how it works"
+      surface
+        text "how does it work"
+      surface
+        text "how does …"
+      surface
+        text "how do …"
+      surface
+        text "how did …"
+      surface
+        text "how is …"
+      surface
+        text "how … works"
+      surface
+        text "how … work"
+    lexeme ru
+      surface
+        text "как это работает"
+      surface
+        text "как оно работает"
+      surface
+        text "как устроен …"
+      surface
+        text "как устроена …"
+      surface
+        text "как устроено …"
+      surface
+        text "как устроены …"
+      surface
+        text "как работает …"
+      surface
+        text "как работают …"
+      surface
+        text "как … работает"
+      surface
+        text "как … работают"
+      surface
+        text "… как работает"
+      surface
+        text "… как работают"
+    lexeme hi
+      surface
+        text "यह कैसे काम करता है"
+      surface
+        text "यह कैसे काम करती है"
+      surface
+        text "यह कैसे काम करता"
+      surface
+        text "… कैसे काम करता है"
+      surface
+        text "… कैसे काम करती है"
+      surface
+        text "… कैसे काम करते हैं"
+      surface
+        text "… कैसे काम करता"
+      surface
+        text "… कैसे काम करती"
+      surface
+        text "… कैसे काम करते"
+    lexeme zh
+      surface
+        text 这是如何工作的
+      surface
+        text 这是怎么工作的
+      surface
+        text 这个如何工作
+      surface
+        text 它如何工作
+      surface
+        text 它是如何工作的
+      surface
+        text 它怎么工作
+      surface
+        text "… 是如何工作的"
+      surface
+        text …是如何工作的
+      surface
+        text "… 是怎么工作的"
+      surface
+        text …是怎么工作的
+      surface
+        text "… 如何工作"
+      surface
+        text …如何工作
+      surface
+        text "… 怎么工作"
+      surface
+        text …怎么工作
+      surface
+        text "… 的工作原理是什么"
+      surface
+        text …的工作原理是什么
+  procedural_request
+    defined-by inquiry
+    defined-by action
+    role procedural_request
+    lexeme en
+      surface
+        text "please tell me how to …"
+      surface
+        text "please show me how to …"
+      surface
+        text "tell me how to …"
+      surface
+        text "show me how to …"
+      surface
+        text "what are the steps to …"
+      surface
+        text "what steps do i need to …"
+      surface
+        text "what steps do we need to …"
+      surface
+        text "how should i …"
+      surface
+        text "how should we …"
+      surface
+        text "how could i …"
+      surface
+        text "how could we …"
+      surface
+        text "how would i …"
+      surface
+        text "how would we …"
+      surface
+        text "how can i …"
+      surface
+        text "how can we …"
+      surface
+        text "how do i …"
+      surface
+        text "how do we …"
+      surface
+        text "how to do …"
+        action do
+      surface
+        text "how to …"
+    lexeme ru
+      surface
+        text "как сделать …"
+        action do
+      surface
+        text "как делать …"
+        action do
+      surface
+        text "как выполнить …"
+        action perform
+      surface
+        text "как реализовать …"
+        action implement
+      surface
+        text "как создать …"
+        action create
+      surface
+        text "как написать …"
+        action write
+    lexeme hi
+      surface
+        text "कैसे करें …"
+        action do
+      surface
+        text "कैसे करे …"
+        action do
+      surface
+        text "कैसे लागू करें …"
+        action implement
+      surface
+        text "कैसे बनाएं …"
+        action create
+      surface
+        text "कैसे बनाएँ …"
+        action create
+      surface
+        text "कैसे लिखें …"
+        action write
+    lexeme zh
+      surface
+        text "如何做 …"
+        action do
+      surface
+        text "怎么做 …"
+        action do
+      surface
+        text "如何实现 …"
+        action implement
+      surface
+        text "怎么实现 …"
+        action implement
+      surface
+        text "如何创建 …"
+        action create
+      surface
+        text "怎么创建 …"
+        action create
+      surface
+        text "如何写 …"
+        action write
+      surface
+        text "怎么写 …"
+        action write
+  mechanism_predicate
+    defined-by action
+    defined-by mechanism_inquiry
+    role mechanism_predicate
+    lexeme en
+      surface
+        text "… work"
+      surface
+        text "… works"
+      surface
+        text "… structured"
+      surface
+        text "… organized"
+      surface
+        text "… organised"
+      surface
+        text "… built"
+    lexeme ru
+      surface
+        text "… работает"
+      surface
+        text "… устроен"
+    lexeme hi
+      surface
+        text "… काम करता है"
+      surface
+        text "… बना है"
+    lexeme zh
+      surface
+        text …工作
+      surface
+        text …构建
+  detail_modifier
+    defined-by property
+    defined-by mechanism_inquiry
+    role detail_modifier
+    lexeme en
+      surface
+        text "… in detail"
+      surface
+        text "… internally"
+      surface
+        text "… exactly"
+      surface
+        text "… please"
+    lexeme ru
+      surface
+        text "… подробнее"
+      surface
+        text "… подробно"
+      surface
+        text "… пожалуйста"
+    lexeme hi
+      surface
+        text "… विस्तार से"
+      surface
+        text "… कृपया"
+    lexeme zh
+      surface
+        text …详细
+      surface
+        text …请
+  non_referential_subject
+    defined-by entity
+    defined-by mechanism_inquiry
+    role non_referential_subject
+    lexeme en
+      surface
+        text it
+      surface
+        text this
+      surface
+        text that
+      surface
+        text you
+      surface
+        text yourself
+      surface
+        text does
+      surface
+        text do
+      surface
+        text "does …"
+      surface
+        text "do …"
+      surface
+        text "to …"
+      surface
+        text "you …"
+    lexeme ru
+      surface
+        text это
+      surface
+        text оно
+      surface
+        text он
+      surface
+        text она
+      surface
+        text они
+      surface
+        text ты
+      surface
+        text вы
+    lexeme hi
+      surface
+        text यह
+      surface
+        text ये
+    lexeme zh
+      surface
+        text 这
+      surface
+        text 这个
+      surface
+        text 它
+  procedural_task_modifier
+    defined-by property
+    defined-by procedural_request
+    role procedural_task_modifier
+    lexeme en
+      surface
+        text "… step by step"
+      surface
+        text "… in steps"
+      surface
+        text "… with steps"
+      surface
+        text "… for me"
+      surface
+        text "… please"
+    lexeme ru
+      surface
+        text "… напиши по шагам"
+      surface
+        text "… по шагам"
+      surface
+        text "… пошагово"
+      surface
+        text "… пожалуйста"
+    lexeme hi
+      surface
+        text "… चरणों में लिखो"
+      surface
+        text "… चरणों में बताओ"
+      surface
+        text "… कदम दर कदम"
+      surface
+        text "… कृपया"
+    lexeme zh
+      surface
+        text "… 按步骤写"
+      surface
+        text "… 按步骤说明"
+      surface
+        text "… 一步一步写"
+      surface
+        text "… 请"
+  common_typo
+    defined-by relation
+    role common_typo
+    lexeme en
+      surface
+        text dirven
+        action driven
+    lexeme ru
+      surface
+        text руский
+        action русский
+    lexeme hi
+      surface
+        text वेबसाईट
+        action वेबसाइट
+    lexeme zh
+      surface
+        text 登陆
+        action 登录
+  topic_scan_stop_word
+    defined-by concept
+    role topic_scan_stop_word
+    lexeme en
+      surface
+        text i
+      surface
+        text the
+      surface
+        text a
+      surface
+        text an
+      surface
+        text in
+      surface
+        text to
+      surface
+        text for
+      surface
+        text of
+      surface
+        text and
+      surface
+        text or
+      surface
+        text source
+    lexeme ru
+      surface
+        text и
+      surface
+        text или
+      surface
+        text в
+      surface
+        text к
+      surface
+        text для
+      surface
+        text из
+      surface
+        text источник
+    lexeme hi
+      surface
+        text और
+      surface
+        text या
+      surface
+        text में
+      surface
+        text को
+      surface
+        text के
+      surface
+        text का
+      surface
+        text स्रोत
+    lexeme zh
+      surface
+        text 和
+      surface
+        text 或
+      surface
+        text 在
+      surface
+        text 的
+      surface
+        text 来源

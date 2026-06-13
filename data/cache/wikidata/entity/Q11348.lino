@@ -1,0 +1,18 @@
+Q11348
+  aliases
+    en ("mathematical function" "single-valued function" "total function" map application mapping)
+    ru ("отображение" "функциональная зависимость" "преобразование" "морфизм" "функция" "оператор" "однозначная функция")
+    zh ("函數")
+  descriptions
+    en "association of a single output to each input"
+    hi "प्रत्येक इनपुट के लिए एकल आउटपुट का संयोजन"
+    ru "математическое бинарное отношение, такое что для каждого элемента слева существует ровно один соответствующий элемент справа"
+    zh "数学二元关系，输入值集合中的每项元素皆能对应​​唯一一项输出值集合中的元素"
+  id Q11348
+  labels
+    en function
+    hi "फलन"
+    ru "математическая функция"
+    zh "函数"
+  type item
+success 1

@@ -1,0 +1,114 @@
+[
+  {
+    "word": "mon",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79241616",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The former currency of Japan until 1870, before the yen.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The badge or emblem a Japanese family, especially a family of the ancient feudal nobility; typically circular and consists of conventionalized forms from nature.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mon"
+    ]
+  },
+  {
+    "word": "mon",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79241616",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(used in the vocative) A colloquial means of address of man in places such as Jamaica and Shropshire in England.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mon"
+    ]
+  },
+  {
+    "word": "mon",
+    "phonetics": [
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mon-au.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=79241616",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A creature in a video game, usually one which is captured, trained up and used in battles.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A video game or anime in which catching and battling creatures is an important element.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mon"
+    ]
+  }
+]

@@ -1,0 +1,67 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An application (program), especially a small one designed for a mobile device."
+        entry
+          definition "Application (use, purpose; not a computer program)"
+        entry
+          definition "Application (to a college etc.)"
+      partOfSpeech noun
+  phonetic "[ʔæʔp̚]"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=60470597"
+      text "[ʔæʔp̚]"
+  sourceUrls ("https://en.wiktionary.org/wiki/app")
+  word app
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition Appetizer
+      partOfSpeech noun
+  phonetic "[ʔæʔp̚]"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=60470597"
+      text "[ʔæʔp̚]"
+  sourceUrls ("https://en.wiktionary.org/wiki/app")
+  word app
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An appearance in a game (e.g., a player with 10 apps in a season played 10 times)"
+      partOfSpeech noun
+  phonetic "[ʔæʔp̚]"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/app-us.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=60470597"
+      text "[ʔæʔp̚]"
+  sourceUrls ("https://en.wiktionary.org/wiki/app")
+  word app

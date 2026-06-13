@@ -1,0 +1,71 @@
+language en
+lemma exercise
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the activity of exerting your muscles in various ways to keep fit"
+    examples ("the doctor recommended regular exercise" "he did some exercising" "the physical exertion required by his work kept him fit")
+    id oewn-00625978-n
+    partOfSpeech n
+    synonyms (exercising "physical exercise" "physical exertion" workout)
+  entry
+    definition "the act of using"
+    examples ("he warned against the use of narcotic drugs" "skilled in the utilization of computers")
+    id oewn-00948944-n
+    partOfSpeech n
+    synonyms (use usage utilization utilisation employment)
+  entry
+    definition "systematic training by multiple repetitions"
+    examples ("practice makes perfect")
+    id oewn-00896250-n
+    partOfSpeech n
+    synonyms (practice drill "practice session" recitation)
+  entry
+    definition "a task performed or problem solved in order to develop skill or understanding"
+    examples ("you must work the examples at the end of each chapter in the textbook")
+    id oewn-00731217-n
+    partOfSpeech n
+    synonyms (example)
+  entry
+    definition "(usually plural) a ceremony that involves processions and speeches"
+    examples ("academic exercises")
+    id oewn-07469062-n
+    partOfSpeech n
+  entry
+    definition "an action, often used negatively and without consequences"
+    examples ("an exercise in futility" "an exercise in cheap talk")
+    id oewn-00034873-n
+    partOfSpeech n
+  entry
+    definition "put to use"
+    examples ("exert one's power or influence")
+    id oewn-01168409-v
+    partOfSpeech v
+    synonyms (exert)
+  entry
+    definition "carry out or practice; as of jobs and professions"
+    examples ("practice law")
+    id oewn-02574587-v
+    partOfSpeech v
+    synonyms (practice practise do)
+  entry
+    definition "give a workout to"
+    examples ("Some parents exercise their infants" "My personal trainer works me hard" "work one's muscles" "this puzzle will exercise your mind")
+    id oewn-00100305-v
+    partOfSpeech v
+    synonyms (work "work out")
+  entry
+    definition "do physical exercise"
+    examples ("She works out in the gym every day")
+    id oewn-00099475-v
+    partOfSpeech v
+    synonyms ("work out")
+  entry
+    definition "learn by repetition"
+    examples ("We drilled French verbs every day" "Pianists practice scales")
+    id oewn-00607488-v
+    partOfSpeech v
+    synonyms (drill practice practise)
+source "oewn:2024"

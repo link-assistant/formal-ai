@@ -1,0 +1,21 @@
+view
+  id M-ce7652ee1852
+  lemma relationship
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a relation between people; (‘relationship’ is often used where ‘relation’ would serve, as in ‘the relationship between inflation and unemployment’, but the preferred usage of ‘relationship’ is for human relations or states of relatedness)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state of connectedness between people (especially an emotional connection)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state involving mutual dealings between people or parties or countries"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(anthropology) relatedness or connection by blood or marriage or adoption"
+    provenance (wordnet)

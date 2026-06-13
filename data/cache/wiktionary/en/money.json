@@ -1,0 +1,120 @@
+[
+  {
+    "word": "money",
+    "phonetic": "/ˈmʌni/",
+    "phonetics": [
+      {
+        "text": "/ˈmʌni/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/money-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9023233",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/ˈmʌni/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/money-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1113567",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A legally or socially binding conceptual contract of entitlement to wealth, void of intrinsic value, payable for all debts and taxes, and regulated in supply.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A generally accepted means of exchange and measure of value.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Before colonial times cowry shells imported from Mauritius were used as money in Western Africa."
+          },
+          {
+            "definition": "A currency maintained by a state or other entity which can guarantee its value (such as a monetary union).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "money supply;  money market"
+          },
+          {
+            "definition": "Hard cash in the form of banknotes and coins, as opposed to cheques/checks, credit cards, or credit more generally.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The total value of liquid assets available for an individual or other economic unit, such as cash and bank deposits.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Wealth; a person, family or class that possesses wealth",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He married money."
+          },
+          {
+            "definition": "An item of value between two or more parties used for the exchange of goods or services.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A person who funds an operation.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "beer ticket",
+          "bread",
+          "bucks",
+          "cake",
+          "cash",
+          "cheddar",
+          "coin",
+          "cream",
+          "currency",
+          "dinars",
+          "dosh",
+          "dough",
+          "ducats",
+          "folding stuff",
+          "funds",
+          "geld",
+          "gelt",
+          "greenbacks",
+          "jack",
+          "legal tender",
+          "lolly",
+          "lucre",
+          "means",
+          "moolah",
+          "paper",
+          "pennies",
+          "readies",
+          "sheets",
+          "shrapnel",
+          "simoleons",
+          "spends",
+          "spondulicks",
+          "sterling",
+          "wonga"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/money"
+    ]
+  }
+]

@@ -1,0 +1,114 @@
+{
+  "lemma": "stack",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07979701-n",
+      "partOfSpeech": "n",
+      "definition": "an orderly pile"
+    },
+    {
+      "id": "oewn-13796604-n",
+      "partOfSpeech": "n",
+      "definition": "(often followed by ‘of’) a large number or amount or extent",
+      "examples": [
+        "a batch of letters",
+        "a deal of trouble",
+        "a lot of money",
+        "he made a mint on the stock market",
+        "see the rest of the winners in our huge passel of photos",
+        "it must have cost plenty",
+        "a slew of journalists",
+        "a wad of money"
+      ],
+      "synonyms": [
+        "batch",
+        "deal",
+        "flock",
+        "good deal",
+        "great deal",
+        "hatful",
+        "heap",
+        "lot",
+        "mass",
+        "mess",
+        "mickle",
+        "mint",
+        "mountain",
+        "muckle",
+        "passel",
+        "peck",
+        "pile",
+        "plenty",
+        "pot",
+        "quite a little",
+        "raft",
+        "sight",
+        "slew",
+        "spate",
+        "tidy sum",
+        "wad"
+      ]
+    },
+    {
+      "id": "oewn-06506637-n",
+      "partOfSpeech": "n",
+      "definition": "a list in which the next item to be removed is the item most recently stored (LIFO)",
+      "synonyms": [
+        "push-down list",
+        "push-down stack"
+      ]
+    },
+    {
+      "id": "oewn-04254303-n",
+      "partOfSpeech": "n",
+      "definition": "a large tall chimney through which combustion gases and smoke can be evacuated",
+      "synonyms": [
+        "smokestack"
+      ]
+    },
+    {
+      "id": "oewn-04033980-n",
+      "partOfSpeech": "n",
+      "definition": "a storage device that handles data so that the next item to be retrieved is the item most recently stored (LIFO)",
+      "synonyms": [
+        "push-down storage",
+        "push-down store"
+      ]
+    },
+    {
+      "id": "oewn-01506584-v",
+      "partOfSpeech": "v",
+      "definition": "load or cover with stacks",
+      "examples": [
+        "stack a truck with boxes"
+      ]
+    },
+    {
+      "id": "oewn-01506036-v",
+      "partOfSpeech": "v",
+      "definition": "arrange in stacks",
+      "examples": [
+        "heap firewood around the fireplace",
+        "stack your books up on the shelves"
+      ],
+      "synonyms": [
+        "pile",
+        "heap"
+      ]
+    },
+    {
+      "id": "oewn-01467410-v",
+      "partOfSpeech": "v",
+      "definition": "arrange the order of so as to increase one's winning chances",
+      "examples": [
+        "stack the deck of cards"
+      ]
+    }
+  ]
+}

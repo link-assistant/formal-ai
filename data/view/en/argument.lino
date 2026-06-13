@@ -1,0 +1,85 @@
+view
+  id M-280051de3220
+  lemma argument
+  language en
+  sources (wiktionary wordnet)
+  sense
+    part_of_speech noun
+    gloss "a fact or assertion offered as evidence that something is true"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a contentious speech act; a dispute where there is strong disagreement"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a discussion in which reasons are advanced for and against some proposition or proposal"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a summary of the subject or plot of a literary work or play or movie"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a reference or value that is passed to a function, procedure, subroutine, command, or program"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a variable in a logical or mathematical expression whose value determines the dependent variable"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a course of reasoning aimed at demonstrating a truth or falsehood; the methodical process of logical reasoning"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "A fact or statement used to support a proposition; a reason."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A verbal dispute; a quarrel."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A process of reasoning."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A series of propositions organized so that the final proposition is a conclusion which is intended to follow logically from the preceding propositions, which function as premises."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The independent variable of a function."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The phase of a complex number."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A value, or reference to a value, passed to a function."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A parameter at a function call; an actual parameter, as opposed to a formal parameter."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Any of the phrases that bears a syntactic connection to the verb of a clause."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The quantity on which another quantity in a table depends."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "The subject matter of a discourse, writing, or artistic representation; theme or topic; also, an abstract or summary, as of the contents of a book, chapter, poem."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Matter for question; business in hand."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "(NNES) To put forward as an argument; to argue."
+    provenance (wiktionary)

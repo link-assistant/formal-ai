@@ -1,0 +1,18 @@
+Q577
+  aliases
+    en (anno annum)
+    hi ("साल (समय)" "साल")
+    ru ("лет" "годы" "года")
+    zh ("年份" "地球年")
+  descriptions
+    en "the orbital period of the Earth: the estimated period of time for the Earth's orbit around the Sun and observed at a fixed geographic point (averaging 365.24 days); base later modified to define or adjust various calendars"
+    ru "единица измерения времени, приблизительно равная периоду обращения Земли вокруг Солнца"
+    zh "地球圍繞太陽公轉一圈的時間"
+  id Q577
+  labels
+    en year
+    hi "वर्ष"
+    ru "год"
+    zh "年"
+  type item
+success 1

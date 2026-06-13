@@ -1,0 +1,37 @@
+view
+  id M-ca7e394b4b0f
+  lemma sum
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a quantity of money"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a quantity obtained by the addition of a group of numbers"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the final aggregate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the choicest or most essential or most vital part of some idea or experience"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the whole amount"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a set containing all and only the members of two or more given sets"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be a summary of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the sum of"
+    provenance (wordnet)

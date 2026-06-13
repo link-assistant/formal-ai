@@ -1,0 +1,20 @@
+{
+  "lemma": "algorithm",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05855965-n",
+      "partOfSpeech": "n",
+      "definition": "a precise rule (or set of rules) specifying how to solve some problem",
+      "synonyms": [
+        "algorithmic rule",
+        "algorithmic program"
+      ]
+    }
+  ]
+}

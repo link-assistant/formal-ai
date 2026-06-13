@@ -1,0 +1,73 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Along, together with others, in a group, etc."
+          example "Do you want to come with?"
+      partOfSpeech adverb
+    entry
+      antonyms (against without)
+      definitions
+        entry
+          definition Against.
+          example "He picked a fight with the class bully."
+        entry
+          definition "In the company of; alongside, close to; near to."
+          example "He went with his friends."
+        entry
+          definition "In addition to; as an accessory to."
+          example "She owns a motorcycle with a sidecar."
+        entry
+          definition "Used to indicate simultaneous happening, or immediate succession or consequence."
+          example "Jim was listening to Bach with his eyes closed."
+        entry
+          definition "In support of."
+          example "We are with you all the way."
+        entry
+          definition "In regard to."
+          example "He was pleased with the outcome."
+        entry
+          definition "To denote the accomplishment of cause, means, instrument, etc; – sometimes equivalent to by."
+          example "slain with robbers"
+        entry
+          definition "Using as an instrument; by means of."
+          example "Find what you want instantly with our search engine."
+        entry
+          definition "Using as nourishment; more recently replaced by on."
+        entry
+          definition "Having, owning."
+          example "It was small and bumpy, with a tinge of orange."
+        entry
+          definition "Affected by (a certain emotion or condition)."
+          example "He spoke with sadness in his voice."
+        entry
+          definition "Prompted by (a certain emotion)."
+          example "green with envy; flushed with success"
+      partOfSpeech preposition
+      synonyms ("c̄" "w/")
+  sourceUrls ("https://en.wiktionary.org/wiki/with")
+  word with
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A flexible, slender twig or shoot, especially when used as a band or for binding; a withy."
+        entry
+          definition "A band of twisted twigs."
+        entry
+          definition "An elastic handle to a tool to save the hand from the shock of blows."
+        entry
+          definition "An iron attachment on one end of a mast or boom, with a ring, through which another mast or boom is rigged out and secured."
+        entry
+          definition "A partition between flues in a chimney."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/with" "https://en.wiktionary.org/wiki/withe")
+  word with

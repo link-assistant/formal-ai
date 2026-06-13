@@ -1,0 +1,13 @@
+view
+  id M-df745cbe112c
+  lemma calculator
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an expert at calculation (or at operating calculating machines)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small machine that is used for mathematical calculations; can be mechanical or electronic"
+    provenance (wordnet)

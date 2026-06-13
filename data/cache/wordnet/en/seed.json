@@ -1,0 +1,105 @@
+{
+  "lemma": "seed",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13156591-n",
+      "partOfSpeech": "n",
+      "definition": "a small hard fruit"
+    },
+    {
+      "id": "oewn-11704458-n",
+      "partOfSpeech": "n",
+      "definition": "a mature fertilized plant ovule consisting of an embryo and its food source and having a protective coat or testa"
+    },
+    {
+      "id": "oewn-10594907-n",
+      "partOfSpeech": "n",
+      "definition": "one of the outstanding players in a tournament",
+      "synonyms": [
+        "seeded player"
+      ]
+    },
+    {
+      "id": "oewn-05843082-n",
+      "partOfSpeech": "n",
+      "definition": "anything that provides inspiration for later work",
+      "synonyms": [
+        "source",
+        "germ"
+      ]
+    },
+    {
+      "id": "oewn-05411679-n",
+      "partOfSpeech": "n",
+      "definition": "the thick white fluid containing spermatozoa that is ejaculated by the male genital tract",
+      "synonyms": [
+        "semen",
+        "seminal fluid",
+        "ejaculate",
+        "cum",
+        "come"
+      ]
+    },
+    {
+      "id": "oewn-01544838-v",
+      "partOfSpeech": "v",
+      "definition": "go to seed; shed seeds",
+      "examples": [
+        "The dandelions went to seed"
+      ]
+    },
+    {
+      "id": "oewn-02222328-v",
+      "partOfSpeech": "v",
+      "definition": "help (an enterprise) in its early stages of development by providing seed money"
+    },
+    {
+      "id": "oewn-01655971-v",
+      "partOfSpeech": "v",
+      "definition": "bear seeds"
+    },
+    {
+      "id": "oewn-01503512-v",
+      "partOfSpeech": "v",
+      "definition": "place (seeds) in or on the ground for future growth",
+      "examples": [
+        "She sowed sunflower seeds"
+      ],
+      "synonyms": [
+        "sow"
+      ]
+    },
+    {
+      "id": "oewn-00660584-v",
+      "partOfSpeech": "v",
+      "definition": "distribute (players or teams) so that outstanding teams or players will not meet in the early rounds"
+    },
+    {
+      "id": "oewn-00517505-v",
+      "partOfSpeech": "v",
+      "definition": "sprinkle with silver iodide particles to disperse and cause rain",
+      "examples": [
+        "seed clouds"
+      ]
+    },
+    {
+      "id": "oewn-00188707-v",
+      "partOfSpeech": "v",
+      "definition": "inoculate with microorganisms"
+    },
+    {
+      "id": "oewn-00179863-v",
+      "partOfSpeech": "v",
+      "definition": "remove the seeds from",
+      "examples": [
+        "seed grapes"
+      ]
+    }
+  ]
+}

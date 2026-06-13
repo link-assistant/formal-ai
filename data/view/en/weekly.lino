@@ -1,0 +1,17 @@
+view
+  id M-7fc92f18a74c
+  lemma weekly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a periodical that is published every week (or 52 issues per year)"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "without missing a week"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or occurring every seven days"
+    provenance (wordnet)

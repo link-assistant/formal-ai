@@ -1,0 +1,138 @@
+[
+  {
+    "word": "minus",
+    "phonetic": "/ˈmaɪnəs/",
+    "phonetics": [
+      {
+        "text": "/ˈmaɪnəs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/minus-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1780221",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The minus sign (−).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A negative quantity.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A downside or disadvantage.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "defect",
+          "deficiency",
+          "drawback",
+          "flaw",
+          "shortcoming"
+        ],
+        "antonyms": [
+          "advantage",
+          "bonus",
+          "boon",
+          "gain",
+          "plus",
+          "plus",
+          "plus sign",
+          "positive"
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To subtract.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Being a negative quantity; pertaining to a deficit or reduction.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a minus number"
+          },
+          {
+            "definition": "That is below zero by (a specified amount) on a scale.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "minus seven degrees"
+          },
+          {
+            "definition": "Worse off than before; out of pocket.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Ranking just below (a designated rating).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He got a grade of B minus for his essay."
+          }
+        ],
+        "synonyms": [
+          "negative",
+          "below",
+          "zero"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "Made less or reduced by (followed by an expression of number or quantity).",
+            "synonyms": [],
+            "antonyms": [
+              "plus"
+            ],
+            "example": "seven minus two is five"
+          },
+          {
+            "definition": "Without; deprived of.",
+            "synonyms": [
+              "lacking",
+              "without"
+            ],
+            "antonyms": [],
+            "example": "I walked out minus my coat."
+          }
+        ],
+        "synonyms": [
+          "lacking",
+          "without"
+        ],
+        "antonyms": [
+          "plus"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/minus"
+    ]
+  }
+]

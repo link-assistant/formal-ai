@@ -1,0 +1,25 @@
+view
+  id M-170a25da6446
+  lemma purpose
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an anticipated outcome that is intended or that guides your planned actions"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "what something is used for"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being determined to do or achieve something; firmness of purpose"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "propose or intend"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reach a decision"
+    provenance (wordnet)

@@ -1,0 +1,105 @@
+[
+  {
+    "word": "continent",
+    "phonetic": "/ˈkɒntɪnənt/",
+    "phonetics": [
+      {
+        "text": "/ˈkɒntɪnənt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈkɑntɪnənt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/continent-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762649",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Each of the main continuous land-masses on the earth's surface, now generally regarded as seven in number, including their related islands, continental shelves etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A large contiguous landmass considered independent of its islands, peninsulas etc. Specifically, the Old World continent of Europe–Asia–Africa. See the Continent.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Land (as opposed to the water).",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/continent"
+    ]
+  },
+  {
+    "word": "continent",
+    "phonetic": "/ˈkɒntɪnənt/",
+    "phonetics": [
+      {
+        "text": "/ˈkɒntɪnənt/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈkɑntɪnənt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/continent-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1762649",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Exercising self-restraint; controlled, temperate with respect to one's bodily needs or passions, especially sex, urination and/or defecation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Not interrupted; connected; continuous.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a continent fever"
+          },
+          {
+            "definition": "Serving to restrain or limit; restraining; opposing.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "incontinent"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/continent"
+    ]
+  }
+]

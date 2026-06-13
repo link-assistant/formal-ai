@@ -1,0 +1,17 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Typewritten material, especially such a copy of a manuscript"
+      partOfSpeech noun
+  phonetic "/ˈtʌɪpskɹɪpt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈtʌɪpskɹɪpt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/typescript")
+  word typescript

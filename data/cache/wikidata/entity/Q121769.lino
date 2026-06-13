@@ -1,0 +1,14 @@
+Q121769
+  aliases
+    en ("base object" "linked object")
+    ru ("референс")
+    zh ("参考")
+  descriptions
+    en "relationship between objects in which one object designates, or acts as a means by which to connect to or link to, another object"
+  id Q121769
+  labels
+    en reference
+    ru "референт"
+    zh "指称关系"
+  type item
+success 1

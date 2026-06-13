@@ -1,0 +1,14 @@
+Q203
+  aliases
+    en (five "number 5" "number five")
+    ru ("пять")
+    zh ("五")
+  descriptions
+    en "natural number"
+    hi "संख्या"
+    ru "натуральное число"
+  id Q203
+  labels
+    hi "५"
+  type item
+success 1

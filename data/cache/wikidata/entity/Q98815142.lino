@@ -1,0 +1,16 @@
+Q98815142
+  aliases
+    hi ("हेलो")
+    ru ("хеллоу" "хэлло" "халлоу" "привет" "халло")
+  descriptions
+    en "salutation or greeting in the English language"
+    hi "अंग्रेज़ी भाषा में अभिवादन या नमस्कार"
+    ru "приветствие в немецком языке"
+  id Q98815142
+  labels
+    en hello
+    hi "हैलो"
+    ru "хелло"
+    zh Hello
+  type item
+success 1

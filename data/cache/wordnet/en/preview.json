@@ -1,0 +1,30 @@
+{
+  "lemma": "preview",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06901724-n",
+      "partOfSpeech": "n",
+      "definition": "an advertisement consisting of short scenes from a motion picture that will appear in the near future",
+      "synonyms": [
+        "prevue",
+        "trailer"
+      ]
+    },
+    {
+      "id": "oewn-06901556-n",
+      "partOfSpeech": "n",
+      "definition": "a screening for a select audience in advance of release for the general public"
+    },
+    {
+      "id": "oewn-02156246-v",
+      "partOfSpeech": "v",
+      "definition": "watch (a movie or play) before it is released to the general public"
+    }
+  ]
+}

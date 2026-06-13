@@ -1,0 +1,69 @@
+language en
+lemma command
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an authoritative direction or instruction to do something"
+    id oewn-07182782-n
+    partOfSpeech n
+    synonyms (bid bidding dictation)
+  entry
+    definition "a military unit or region under the control of a single officer"
+    id oewn-08207222-n
+    partOfSpeech n
+  entry
+    definition "the power or authority to command"
+    examples ("an admiral in command")
+    id oewn-05205065-n
+    partOfSpeech n
+  entry
+    definition "availability for use"
+    examples ("the materials at the command of the potters grew")
+    id oewn-04726652-n
+    partOfSpeech n
+  entry
+    definition "a position of highest authority"
+    examples ("the corporation has just undergone a change in command")
+    id oewn-13976826-n
+    partOfSpeech n
+  entry
+    definition "great skillfulness and knowledge of some subject or activity"
+    examples ("a good command of French")
+    id oewn-05649804-n
+    partOfSpeech n
+    synonyms (control mastery)
+  entry
+    definition "(computer science) a line of code written as part of a computer program"
+    id oewn-06597067-n
+    partOfSpeech n
+    synonyms (instruction statement "program line")
+  entry
+    definition "be in command of"
+    examples ("The general commanded a huge army")
+    id oewn-00753893-v
+    partOfSpeech v
+  entry
+    definition "make someone do something"
+    id oewn-00753573-v
+    partOfSpeech v
+    synonyms (require)
+  entry
+    definition "demand as one's due"
+    examples ("This speaker commands a high fee" "The author commands a fair hearing from his readers")
+    id oewn-01020186-v
+    partOfSpeech v
+  entry
+    definition "look down on"
+    examples ("The villa dominates the town")
+    id oewn-02701971-v
+    partOfSpeech v
+    synonyms (dominate overlook overtop)
+  entry
+    definition "exercise authoritative control or power over"
+    examples ("control the budget" "Command the military forces")
+    id oewn-02445887-v
+    partOfSpeech v
+    synonyms (control)
+source "oewn:2024"

@@ -26,4 +26,3 @@ test specification::multilingual::russian_unknown_reply_uses_russian_rule_config
 test specification::unknown_reasoning::russian_unknown_reasoning_hint_uses_russian_rule_commands ... ok
 
 test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 767 filtered out; finished in 0.06s
-

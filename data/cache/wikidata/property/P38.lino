@@ -1,0 +1,17 @@
+P38
+  aliases
+    en ("base currency" "used money")
+    ru ("деньги" "денежная единица" "валюта")
+  descriptions
+    en "currency used by item"
+    hi "इस आइटम द्वारा इस्तेमाल की जाने वाली मुद्रा"
+    ru "валюта, используемая в стране"
+    zh "项目使用的货币"
+  id P38
+  labels
+    en currency
+    hi "मुद्रा"
+    ru "денежная единица"
+    zh "货币"
+  type property
+success 1

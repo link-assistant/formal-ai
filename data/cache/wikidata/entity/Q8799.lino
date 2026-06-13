@@ -1,0 +1,15 @@
+Q8799
+  aliases
+    en (B u8 octet "eight-bit byte" "8-bit byte")
+  descriptions
+    en "unit of digital information equal to 8 bits"
+    ru "основная единица информации в компьютере, равна 8 бит"
+    zh "电脑、手机及智能手表等设备上的信息计量单位，代表八个比特"
+  id Q8799
+  labels
+    en byte
+    hi "बाइट"
+    ru "байт"
+    zh "字节"
+  type item
+success 1

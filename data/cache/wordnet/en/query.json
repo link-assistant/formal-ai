@@ -1,0 +1,34 @@
+{
+  "lemma": "query",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07208256-n",
+      "partOfSpeech": "n",
+      "definition": "an instance of questioning",
+      "examples": [
+        "there was a question about my training",
+        "we made inquiries of all those who were present"
+      ],
+      "synonyms": [
+        "question",
+        "inquiry",
+        "enquiry",
+        "interrogation"
+      ]
+    },
+    {
+      "id": "oewn-00786670-v",
+      "partOfSpeech": "v",
+      "definition": "pose a question",
+      "synonyms": [
+        "question"
+      ]
+    }
+  ]
+}

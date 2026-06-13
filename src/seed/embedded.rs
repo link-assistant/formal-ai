@@ -25,6 +25,11 @@ pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patt
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
+pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
+    include_str!("../../data/seed/numeric-list-operations.lino");
+pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
+pub const PROGRAM_CST_GRAMMARS_LINO: &str =
+    include_str!("../../data/seed/program-cst-grammars.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../data/seed/meanings.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str = include_str!("../../data/seed/meanings-calendar.lino");
@@ -49,6 +54,11 @@ pub const MEANINGS_WEB_FOLLOWUP_LINO: &str =
 pub const MEANINGS_TRANSLATION_LINO: &str =
     include_str!("../../data/seed/meanings-translation.lino");
 pub const MEANINGS_ONTOLOGY_LINO: &str = include_str!("../../data/seed/meanings-ontology.lino");
+pub const MEANINGS_SEMANTIC_META_LINO: &str =
+    include_str!("../../data/seed/meanings-semantic-meta.lino");
+pub const MEANINGS_LEXICAL_META_LINO: &str =
+    include_str!("../../data/seed/meanings-lexical-meta.lino");
+pub const MEANINGS_LINKS_ROOT_LINO: &str = include_str!("../../data/seed/meanings-links-root.lino");
 pub const MEANINGS_WIKIDATA_LINO: &str = include_str!("../../data/seed/meanings-wikidata.lino");
 pub const MEANINGS_BEHAVIOR_RULES_LINO: &str =
     include_str!("../../data/seed/meanings-behavior-rules.lino");
@@ -108,6 +118,15 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/operation-vocabulary.lino",
             OPERATION_VOCABULARY_LINO,
         ),
+        (
+            "data/seed/numeric-list-operations.lino",
+            NUMERIC_LIST_OPERATIONS_LINO,
+        ),
+        ("data/seed/coding-idioms.lino", CODING_IDIOMS_LINO),
+        (
+            "data/seed/program-cst-grammars.lino",
+            PROGRAM_CST_GRAMMARS_LINO,
+        ),
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
@@ -152,6 +171,18 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             MEANINGS_TRANSLATION_LINO,
         ),
         ("data/seed/meanings-ontology.lino", MEANINGS_ONTOLOGY_LINO),
+        (
+            "data/seed/meanings-semantic-meta.lino",
+            MEANINGS_SEMANTIC_META_LINO,
+        ),
+        (
+            "data/seed/meanings-lexical-meta.lino",
+            MEANINGS_LEXICAL_META_LINO,
+        ),
+        (
+            "data/seed/meanings-links-root.lino",
+            MEANINGS_LINKS_ROOT_LINO,
+        ),
         ("data/seed/meanings-wikidata.lino", MEANINGS_WIKIDATA_LINO),
         (
             "data/seed/meanings-behavior-rules.lino",
@@ -233,6 +264,9 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_WEB_FOLLOWUP_LINO,
     MEANINGS_TRANSLATION_LINO,
     MEANINGS_ONTOLOGY_LINO,
+    MEANINGS_SEMANTIC_META_LINO,
+    MEANINGS_LEXICAL_META_LINO,
+    MEANINGS_LINKS_ROOT_LINO,
     MEANINGS_WIKIDATA_LINO,
     MEANINGS_BEHAVIOR_RULES_LINO,
     MEANINGS_PROOF_LINO,

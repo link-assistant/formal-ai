@@ -1,0 +1,579 @@
+{
+  "entities": {
+    "P571": {
+      "type": "property",
+      "id": "P571",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "inception"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дата возникновения"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "स्थापना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "创建时间"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "time when an entity begins to exist; for date of official opening use P1619"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "дата, когда организация или объект были основаны/созданы"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विषय के निर्माण की तारीख"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "某个实体开始存在的时间；正式开业日期请用 P1619"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "built"
+          },
+          {
+            "language": "en",
+            "value": "commenced on date"
+          },
+          {
+            "language": "en",
+            "value": "commencement date"
+          },
+          {
+            "language": "en",
+            "value": "completed"
+          },
+          {
+            "language": "en",
+            "value": "composed"
+          },
+          {
+            "language": "en",
+            "value": "constructed"
+          },
+          {
+            "language": "en",
+            "value": "construction end date"
+          },
+          {
+            "language": "en",
+            "value": "created"
+          },
+          {
+            "language": "en",
+            "value": "created in"
+          },
+          {
+            "language": "en",
+            "value": "created in year"
+          },
+          {
+            "language": "en",
+            "value": "created on"
+          },
+          {
+            "language": "en",
+            "value": "created on date"
+          },
+          {
+            "language": "en",
+            "value": "creation date"
+          },
+          {
+            "language": "en",
+            "value": "creation year"
+          },
+          {
+            "language": "en",
+            "value": "date commenced"
+          },
+          {
+            "language": "en",
+            "value": "date constructed"
+          },
+          {
+            "language": "en",
+            "value": "date created"
+          },
+          {
+            "language": "en",
+            "value": "date first created"
+          },
+          {
+            "language": "en",
+            "value": "date formed"
+          },
+          {
+            "language": "en",
+            "value": "date founded"
+          },
+          {
+            "language": "en",
+            "value": "date of commencement"
+          },
+          {
+            "language": "en",
+            "value": "date of creation"
+          },
+          {
+            "language": "en",
+            "value": "date of establishment"
+          },
+          {
+            "language": "en",
+            "value": "date of foundation"
+          },
+          {
+            "language": "en",
+            "value": "date of foundation or creation"
+          },
+          {
+            "language": "en",
+            "value": "date of founding"
+          },
+          {
+            "language": "en",
+            "value": "date of inception"
+          },
+          {
+            "language": "en",
+            "value": "date of origin"
+          },
+          {
+            "language": "en",
+            "value": "day of inception"
+          },
+          {
+            "language": "en",
+            "value": "dedication date"
+          },
+          {
+            "language": "en",
+            "value": "established"
+          },
+          {
+            "language": "en",
+            "value": "established on date"
+          },
+          {
+            "language": "en",
+            "value": "establishment date"
+          },
+          {
+            "language": "en",
+            "value": "first created on"
+          },
+          {
+            "language": "en",
+            "value": "first issue"
+          },
+          {
+            "language": "en",
+            "value": "formation"
+          },
+          {
+            "language": "en",
+            "value": "formation date"
+          },
+          {
+            "language": "en",
+            "value": "formed at"
+          },
+          {
+            "language": "en",
+            "value": "formed in"
+          },
+          {
+            "language": "en",
+            "value": "formed in year"
+          },
+          {
+            "language": "en",
+            "value": "formed on"
+          },
+          {
+            "language": "en",
+            "value": "formed on date"
+          },
+          {
+            "language": "en",
+            "value": "foundation"
+          },
+          {
+            "language": "en",
+            "value": "foundation date"
+          },
+          {
+            "language": "en",
+            "value": "foundation / creation date"
+          },
+          {
+            "language": "en",
+            "value": "founded"
+          },
+          {
+            "language": "en",
+            "value": "founded in"
+          },
+          {
+            "language": "en",
+            "value": "founded on"
+          },
+          {
+            "language": "en",
+            "value": "founded on date"
+          },
+          {
+            "language": "en",
+            "value": "founding date"
+          },
+          {
+            "language": "en",
+            "value": "inception date"
+          },
+          {
+            "language": "en",
+            "value": "initial release date"
+          },
+          {
+            "language": "en",
+            "value": "initiated"
+          },
+          {
+            "language": "en",
+            "value": "installated in"
+          },
+          {
+            "language": "en",
+            "value": "installated on"
+          },
+          {
+            "language": "en",
+            "value": "installation date"
+          },
+          {
+            "language": "en",
+            "value": "instantiation date"
+          },
+          {
+            "language": "en",
+            "value": "introduced"
+          },
+          {
+            "language": "en",
+            "value": "introduction"
+          },
+          {
+            "language": "en",
+            "value": "launch date"
+          },
+          {
+            "language": "en",
+            "value": "made in year"
+          },
+          {
+            "language": "en",
+            "value": "made on"
+          },
+          {
+            "language": "en",
+            "value": "start date"
+          },
+          {
+            "language": "en",
+            "value": "starting date"
+          },
+          {
+            "language": "en",
+            "value": "time of foundation or creation"
+          },
+          {
+            "language": "en",
+            "value": "time of inception"
+          },
+          {
+            "language": "en",
+            "value": "written on date"
+          },
+          {
+            "language": "en",
+            "value": "year commenced"
+          },
+          {
+            "language": "en",
+            "value": "year created"
+          },
+          {
+            "language": "en",
+            "value": "year established"
+          },
+          {
+            "language": "en",
+            "value": "year founded"
+          },
+          {
+            "language": "en",
+            "value": "year of creation"
+          },
+          {
+            "language": "en",
+            "value": "year of inception"
+          },
+          {
+            "language": "en",
+            "value": "year written"
+          },
+          {
+            "language": "en",
+            "value": "release date"
+          },
+          {
+            "language": "en",
+            "value": "released"
+          },
+          {
+            "language": "en",
+            "value": "released in"
+          },
+          {
+            "language": "en",
+            "value": "date of release"
+          },
+          {
+            "language": "en",
+            "value": "year of release"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "время создания"
+          },
+          {
+            "language": "ru",
+            "value": "выпуск"
+          },
+          {
+            "language": "ru",
+            "value": "год основания"
+          },
+          {
+            "language": "ru",
+            "value": "дата изготовления"
+          },
+          {
+            "language": "ru",
+            "value": "дата основания"
+          },
+          {
+            "language": "ru",
+            "value": "дата постройки"
+          },
+          {
+            "language": "ru",
+            "value": "дата появления"
+          },
+          {
+            "language": "ru",
+            "value": "дата происхождения"
+          },
+          {
+            "language": "ru",
+            "value": "дата создания"
+          },
+          {
+            "language": "ru",
+            "value": "дата сочинения"
+          },
+          {
+            "language": "ru",
+            "value": "дата учреждения"
+          },
+          {
+            "language": "ru",
+            "value": "день создания"
+          },
+          {
+            "language": "ru",
+            "value": "запущено"
+          },
+          {
+            "language": "ru",
+            "value": "издано"
+          },
+          {
+            "language": "ru",
+            "value": "написано"
+          },
+          {
+            "language": "ru",
+            "value": "начало"
+          },
+          {
+            "language": "ru",
+            "value": "основан в"
+          },
+          {
+            "language": "ru",
+            "value": "основана"
+          },
+          {
+            "language": "ru",
+            "value": "основано в"
+          },
+          {
+            "language": "ru",
+            "value": "пуск"
+          },
+          {
+            "language": "ru",
+            "value": "пущено"
+          },
+          {
+            "language": "ru",
+            "value": "рождение"
+          },
+          {
+            "language": "ru",
+            "value": "сдано в эксплуатацию"
+          },
+          {
+            "language": "ru",
+            "value": "создан в"
+          },
+          {
+            "language": "ru",
+            "value": "создано в"
+          },
+          {
+            "language": "ru",
+            "value": "старт"
+          },
+          {
+            "language": "ru",
+            "value": "учрежден в"
+          },
+          {
+            "language": "ru",
+            "value": "учреждена в"
+          },
+          {
+            "language": "ru",
+            "value": "учреждено в"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "स्थापित"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "创立于"
+          },
+          {
+            "language": "zh",
+            "value": "建立于"
+          },
+          {
+            "language": "zh",
+            "value": "创建于"
+          },
+          {
+            "language": "zh",
+            "value": "创始于"
+          },
+          {
+            "language": "zh",
+            "value": "开工日期"
+          },
+          {
+            "language": "zh",
+            "value": "開工日期"
+          },
+          {
+            "language": "zh",
+            "value": "發佈日期"
+          },
+          {
+            "language": "zh",
+            "value": "發表日期"
+          },
+          {
+            "language": "zh",
+            "value": "成立或創建時間"
+          },
+          {
+            "language": "zh",
+            "value": "創作年代"
+          },
+          {
+            "language": "zh",
+            "value": "创作年份"
+          },
+          {
+            "language": "zh",
+            "value": "始创时间"
+          },
+          {
+            "language": "zh",
+            "value": "创建日期"
+          },
+          {
+            "language": "zh",
+            "value": "成立于"
+          },
+          {
+            "language": "zh",
+            "value": "建校日"
+          },
+          {
+            "language": "zh",
+            "value": "创刊号"
+          },
+          {
+            "language": "zh",
+            "value": "始建日期"
+          },
+          {
+            "language": "zh",
+            "value": "竣工时间"
+          },
+          {
+            "language": "zh",
+            "value": "安装日期"
+          },
+          {
+            "language": "zh",
+            "value": "首发日期"
+          },
+          {
+            "language": "zh",
+            "value": "启动日期"
+          },
+          {
+            "language": "zh",
+            "value": "上线时间"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

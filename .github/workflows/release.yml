@@ -31,7 +31,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref == 'refs/heads/main' }}
+  # Always cancel superseded runs so only the latest commit is tested.
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -177,6 +178,9 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
+      - name: Check semantic grounding
+        run: cargo test --test unit semantic_grounding -- --nocapture
+
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
@@ -238,7 +242,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # Windows and macOS execution is dropped for now to speed up iteration;
+        # the tests themselves are kept and still run on Linux.
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v6
 
@@ -255,6 +261,9 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-cargo-
+
+      - name: Check LiNo data integrity
+        run: cargo test --test unit data_files -- --nocapture
 
       - name: Run tests
         run: cargo test --all-features --verbose

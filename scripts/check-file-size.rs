@@ -30,6 +30,7 @@ const FILE_LIMITS: &[FileLimit] = &[
     },
 ];
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
+const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/"];
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct FileLimit {
@@ -40,10 +41,16 @@ struct FileLimit {
 }
 
 fn should_exclude(path: &Path) -> bool {
-    let path_str = path.to_string_lossy();
+    let path_str = path
+        .to_string_lossy()
+        .replace(std::path::MAIN_SEPARATOR, "/");
+
     EXCLUDE_PATTERNS
         .iter()
         .any(|pattern| path_str.contains(pattern))
+        || EXCLUDE_PATH_FRAGMENTS
+            .iter()
+            .any(|fragment| path_str.contains(fragment))
 }
 
 fn file_limit(path: &Path) -> Option<&'static FileLimit> {
@@ -344,6 +351,20 @@ mod tests {
                 label: lino_limit.label,
             }]
         );
+    }
+
+    #[test]
+    fn check_directory_skips_generated_wikidata_cache() {
+        let repo = temp_dir("wikidata-cache");
+        let cache_dir = repo.join("data/cache/wikidata");
+        fs::create_dir_all(&cache_dir).unwrap();
+        let lino_limit = FILE_LIMITS[1];
+        write_lino_file_with_lines(&cache_dir.join("Q1860.lino"), lino_limit.max_lines + 1);
+
+        let result = check_directory(&repo);
+
+        assert_eq!(result.violations, Vec::new());
+        assert_eq!(result.warnings, Vec::new());
     }
 
     #[test]

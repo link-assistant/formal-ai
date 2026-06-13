@@ -1,0 +1,49 @@
+{
+  "lemma": "installation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00241805-n",
+      "partOfSpeech": "n",
+      "definition": "the act of installing something (as equipment)",
+      "examples": [
+        "the telephone installation took only a few minutes"
+      ],
+      "synonyms": [
+        "installing",
+        "installment",
+        "instalment"
+      ]
+    },
+    {
+      "id": "oewn-03319968-n",
+      "partOfSpeech": "n",
+      "definition": "a building or place that provides a particular service or is used for a particular industry",
+      "examples": [
+        "the assembly plant is an enormous facility"
+      ],
+      "synonyms": [
+        "facility"
+      ]
+    },
+    {
+      "id": "oewn-07467805-n",
+      "partOfSpeech": "n",
+      "definition": "a formal entry into an organization or position or office",
+      "examples": [
+        "his initiation into the club",
+        "he was ordered to report for induction into the army",
+        "he gave a speech as part of his installation into the hall of fame"
+      ],
+      "synonyms": [
+        "initiation",
+        "induction"
+      ]
+    }
+  ]
+}

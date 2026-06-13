@@ -1,0 +1,21 @@
+language en
+lemma philosophy
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a belief (or system of beliefs) accepted as authoritative by some group or school"
+    id oewn-05952149-n
+    partOfSpeech n
+    synonyms (doctrine "philosophical system" "school of thought" ism)
+  entry
+    definition "the rational investigation of questions about existence and knowledge and ethics"
+    id oewn-06168062-n
+    partOfSpeech n
+  entry
+    definition "any personal belief about how to live or how to deal with a situation"
+    examples ("self-indulgence was his only philosophy" "my father's philosophy of child-rearing was to let mother do it")
+    id oewn-05953535-n
+    partOfSpeech n
+source "oewn:2024"

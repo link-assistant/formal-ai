@@ -1,0 +1,13 @@
+language en
+lemma sync
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make synchronous and adjust in time or manner"
+    examples ("Let's synchronize our efforts")
+    id oewn-00394859-v
+    partOfSpeech v
+    synonyms (synchronize synchronise)
+source "oewn:2024"

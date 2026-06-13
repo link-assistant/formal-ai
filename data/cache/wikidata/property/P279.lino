@@ -1,0 +1,18 @@
+P279
+  aliases
+    en ("rdfs:subClassOf" "has superclass" "subtype of" "subcategory of" "is thereby also a" "is necessarily also a" "whose instances are among" "is a type of" "is a class of" "type of" "form of" "way of" "all members of this class also belong to" "category of" "whose instances are a subset of those of" "sc (abbreviation)" "kind of" "sort of" "variant of" "subgenre of")
+    ru ("является гипонимом по отношению к" "надмножества этого понятия" "является подклассом для" "гипоним от" "подмножество от" "подкласс в" "подпонятие от" "подпонятие в" "относится как подкласс к" "гипероним" "надмножество" "подкатегория" "является частным по отношению к")
+    zh ("上一级分类" "父類" "上級分類" "所属分类" "所属上级分类" "包含在" "是一種" "為一種" "包含於")
+  datatype wikibase-item
+  descriptions
+    en "this item is a subclass (subset) of that item; ALL instances of this item are instances of that item; different from P31 (instance of), e.g.: volcano is a subclass of mountain; Everest is an instance of mountain"
+    ru 'каждый экземпляр данного класса является также экземпляром следующего(-их) класса(-ов). Не путать с P31 ("это частный случай понятия")'
+    zh "此项目为彼项目的子类（子集），即所有属于此项目的事物皆属于彼项目；与P31（属于）不同，例：火山包含於山、珠穆朗玛峰属于山"
+  id P279
+  labels
+    en "subclass of"
+    hi "का उपवर्ग"
+    ru "подкласс от"
+    zh "上级分类"
+  type property
+success 1

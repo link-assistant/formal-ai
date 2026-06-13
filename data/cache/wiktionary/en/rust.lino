@@ -1,0 +1,61 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The deteriorated state of iron or steel as a result of moisture and oxidation."
+          example "The rust on my bicycle chain made cycling to work very dangerous."
+        entry
+          definition 'A similar substance based on another metal (usually with qualification, such as "copper rust").'
+          example "aerugo. Green or blue-green copper rust; verdigris. (American Heritage Dictionary, 1973)"
+        entry
+          definition "A reddish-brown color."
+        entry
+          definition "A disease of plants caused by a reddish-brown fungus."
+        entry
+          definition "Damage caused to stamps and album pages by a fungal infection."
+      partOfSpeech noun
+  phonetic "/ɹʌst/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/rust-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1770040"
+      text "/ɹʌst/"
+  sourceUrls ("https://en.wiktionary.org/wiki/rust")
+  word rust
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To oxidize, especially of iron or steel."
+          example "The patio furniture had rusted in the wind-driven spray."
+        entry
+          definition "To cause to oxidize."
+          example "The wind-driven spray had thoroughly rusted the patio furniture."
+        entry
+          definition "To be affected with the parasitic fungus called rust."
+        entry
+          definition "To (cause to) degenerate in idleness; to make or become dull or impaired by inaction."
+      partOfSpeech verb
+      synonyms (corrode oxidise oxidize)
+  phonetic "/ɹʌst/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/rust-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1770040"
+      text "/ɹʌst/"
+  sourceUrls ("https://en.wiktionary.org/wiki/rust")
+  word rust

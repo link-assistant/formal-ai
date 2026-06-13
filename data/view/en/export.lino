@@ -1,0 +1,21 @@
+view
+  id M-819d93cc3bad
+  lemma export
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "commodities (goods or services) sold to a foreign country"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "sell or transfer abroad"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer (electronic data) out of a database or document in a format that can be used by other programs"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to spread in another part of the world"
+    provenance (wordnet)

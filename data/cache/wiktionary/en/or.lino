@@ -1,0 +1,165 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition 'Connects at least two alternative words, phrases, clauses, sentences, etc. each of which could make a passage true. In English, this is the "inclusive or." The "exclusive or" is formed by "either [...] or".'
+          example "He might get cancer, or be hit by a bus, or God knows what."
+        entry
+          definition "An operator denoting the disjunction of two propositions or truth values. There are two forms, the inclusive or and the exclusive or."
+        entry
+          definition "Counts the elements before and after as two possibilities."
+        entry
+          definition "Otherwise (a consequence of the condition that the previous is false)."
+          example "It's raining! Come inside or you'll catch a cold!"
+        entry
+          definition "Connects two equivalent names."
+          example "The country Myanmar, or Burma"
+      partOfSpeech conjunction
+      synonyms ("and/or")
+  phonetic "/ɔː(ɹ)/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      text "/ɔː(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711593"
+      text "/ɔɹ/"
+    entry
+      audio ""
+      text "/ɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/or")
+  word or
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (NOR)
+      definitions
+        entry
+          definition "The binary operator inclusive or, true if one at least one of two inputs is true. In infix notation."
+      partOfSpeech noun
+      synonyms ("∨")
+    entry
+      antonyms (NOR)
+      definitions
+        entry
+          definition "Initialism of Olympic Record."
+        entry
+          definition "Initialism of odorant receptor."
+        entry
+          definition "Initialism of olfactory receptor."
+        entry
+          definition "(Wiktionary and WMF jargon) Initialism of original research."
+      partOfSpeech noun
+      synonyms ("∨")
+    entry
+      definitions
+        entry
+          definition "A room in a hospital used for performing surgical operations."
+      partOfSpeech noun
+      synonyms ("operating theatre")
+    entry
+      definitions
+        entry
+          definition "(operations) The application of scientific methods and techniques to problems of decision making, especially in business management and government administration."
+      partOfSpeech noun
+      synonyms (OR "operational research")
+  phonetic "/ɔː(ɹ)/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      text "/ɔː(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711593"
+      text "/ɔɹ/"
+    entry
+      audio ""
+      text "/ɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/OR" "https://en.wiktionary.org/wiki/operating%20room" "https://en.wiktionary.org/wiki/operations%20research" "https://en.wiktionary.org/wiki/or")
+  word or
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The gold or yellow tincture on a coat of arms."
+      partOfSpeech noun
+      synonyms (Or o.)
+    entry
+      definitions
+        entry
+          definition "Of gold or yellow tincture on a coat of arms."
+      partOfSpeech adjective
+      synonyms (gold)
+  phonetic "/ɔː(ɹ)/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      text "/ɔː(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711593"
+      text "/ɔɹ/"
+    entry
+      audio ""
+      text "/ɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/or")
+  word or
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Early (on)."
+        entry
+          definition "Earlier, previously."
+      partOfSpeech adverb
+    entry
+      definitions
+        entry
+          definition 'Before; ere. Followed by "ever" or "ere".'
+      partOfSpeech preposition
+  phonetic "/ɔː(ɹ)/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-uk-stressed.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=3884520"
+      text "/ɔː(ɹ)/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/or-us-stressed.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=711593"
+      text "/ɔɹ/"
+    entry
+      audio ""
+      text "/ɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/or")
+  word or

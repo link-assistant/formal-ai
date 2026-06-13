@@ -1,0 +1,53 @@
+language en
+lemma sum
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a quantity of money"
+    examples ("he borrowed a large sum" "the amount he had in cash was insufficient")
+    id oewn-13352213-n
+    partOfSpeech n
+    synonyms ("sum of money" amount "amount of money")
+  entry
+    definition "a quantity obtained by the addition of a group of numbers"
+    id oewn-05869651-n
+    partOfSpeech n
+    synonyms (amount total)
+  entry
+    definition "the final aggregate"
+    examples ("the sum of all our troubles did not equal the misery they suffered")
+    id oewn-07975630-n
+    partOfSpeech n
+    synonyms (summation "sum total")
+  entry
+    definition "the choicest or most essential or most vital part of some idea or experience"
+    examples ("the gist of the prosecutor's argument" "the heart and soul of the Republican Party" "the nub of the story")
+    id oewn-05929717-n
+    partOfSpeech n
+    synonyms (kernel substance core center centre essence gist heart "heart and soul" inwardness marrow meat nub pith nitty-gritty)
+  entry
+    definition "the whole amount"
+    id oewn-04360881-n
+    partOfSpeech n
+    synonyms (total totality aggregate)
+  entry
+    definition "a set containing all and only the members of two or more given sets"
+    examples ("let C be the union of the sets A and B")
+    id oewn-08015154-n
+    partOfSpeech n
+    synonyms (union join)
+  entry
+    definition "be a summary of"
+    examples ("The abstract summarizes the main ideas in the paper")
+    id oewn-02758570-v
+    partOfSpeech v
+    synonyms (summarize summarise "sum up")
+  entry
+    definition "determine the sum of"
+    examples ("Add all the people in this town to those of the neighboring town")
+    id oewn-00951320-v
+    partOfSpeech v
+    synonyms (total tot "tot up" "sum up" summate "tote up" add "add together" tally "add up")
+source "oewn:2024"

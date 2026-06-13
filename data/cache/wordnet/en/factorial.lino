@@ -1,0 +1,16 @@
+language en
+lemma factorial
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to factorials"
+    id oewn-02736086-a
+    partOfSpeech a
+  entry
+    definition "the product of all the integers up to and including a given integer"
+    examples ("1, 2, 6, 24, and 120 are factorials")
+    id oewn-05868395-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,17 @@
+view
+  id M-dd491a1422cd
+  lemma dialog
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a conversation between two persons"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the lines spoken by characters in drama or fiction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a literary composition in the form of a conversation between two people"
+    provenance (wordnet)

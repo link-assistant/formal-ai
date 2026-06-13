@@ -7,8 +7,8 @@
 //! make agent/tool-call permissions explicit.
 
 use formal_ai::{
-    export_memory_full, handle_api_request, import_memory_full, seed_files, BundleInfo,
-    MemoryEvent, MemoryStore,
+    environment_records, export_memory_full, handle_api_request, import_memory_full, seed_files,
+    BundleInfo, MemoryEvent, MemoryStore,
 };
 
 const DESKTOP_PACKAGE: &str = include_str!("../../../desktop/package.json");
@@ -16,7 +16,6 @@ const DESKTOP_MAIN: &str = include_str!("../../../desktop/main.cjs");
 const DESKTOP_PRELOAD: &str = include_str!("../../../desktop/preload.cjs");
 const DESKTOP_SMOKE: &str = include_str!("../../../desktop/scripts/smoke.mjs");
 const WEB_APP: &str = include_str!("../../../src/web/app.js");
-const ENVIRONMENTS_SEED: &str = include_str!("../../../data/seed/environments.lino");
 
 #[test]
 fn desktop_package_declares_local_dev_smoke_and_release_commands() {
@@ -108,8 +107,24 @@ fn desktop_web_surface_exposes_status_permissions_and_http_chat_path() {
 
 #[test]
 fn desktop_environment_is_declared_in_seed_directory() {
+    let desktop = environment_records()
+        .into_iter()
+        .find(|environment| environment.id == "desktop")
+        .expect("desktop environment should be declared in seed directory");
+    let searchable = [
+        desktop.label,
+        desktop.runtime,
+        desktop.seed_path,
+        desktop.memory_store,
+        desktop.memory_export_command,
+        desktop.bundle_export_command,
+        desktop.bundle_import_command,
+        desktop.start_command,
+        desktop.package_command,
+        desktop.tools.join("|"),
+    ]
+    .join("\n");
     for expected in [
-        r#"environment "desktop""#,
         "Electron desktop shell",
         "formal-ai serve",
         "v1_chat_completions",
@@ -118,7 +133,7 @@ fn desktop_environment_is_declared_in_seed_directory() {
         "formal_ai_bundle",
     ] {
         assert!(
-            ENVIRONMENTS_SEED.contains(expected),
+            searchable.contains(expected),
             "environment seed should mention `{expected}`"
         );
     }

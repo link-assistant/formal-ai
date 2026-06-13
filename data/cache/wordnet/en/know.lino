@@ -1,0 +1,66 @@
+language en
+lemma know
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the fact of being aware of information that is known to few people"
+    examples ("he is always in the know")
+    id oewn-05813020-n
+    partOfSpeech n
+  entry
+    definition "be cognizant or aware of a fact or a specific piece of information; possess knowledge or information about"
+    examples ("I know that the President lied to the people" "I want to know who is winning the game!" "I know it's time")
+    id oewn-00596016-v
+    partOfSpeech v
+    synonyms (cognize cognise)
+  entry
+    definition "know how to do or perform something"
+    examples ("She knows how to knit" "Does your husband know how to cook?")
+    id oewn-00597330-v
+    partOfSpeech v
+  entry
+    definition "be familiar or acquainted with a person or an object"
+    examples ("She doesn't know this composer" "Do you know my sister?" "We know this movie" "I know him under a different name" "This flower is known as a Peruvian Lily")
+    id oewn-00595732-v
+    partOfSpeech v
+  entry
+    definition "have firsthand knowledge of states, situations, emotions, or sensations"
+    examples ("I know the feeling!" "have you ever known hunger?" "I have lived a kind of hell when I was a drug addict" "The holocaust survivors have lived a nightmare" "I lived through two divorces")
+    id oewn-00598039-v
+    partOfSpeech v
+    synonyms (experience live)
+  entry
+    definition "accept (someone) to be what is claimed or accept their power and authority"
+    examples ("The Crown Prince was acknowledged as the true heir to the throne" "We do not recognize your gods")
+    id oewn-00594278-v
+    partOfSpeech v
+    synonyms (acknowledge recognize recognise)
+  entry
+    definition "have fixed in the mind"
+    examples ("I know Latin" "This student knows her irregular verbs" "Do you know the poem well enough to recite it?")
+    id oewn-00597527-v
+    partOfSpeech v
+  entry
+    definition "have sexual intercourse with"
+    examples ("Adam knew Eve" "Were you ever intimate with this man?")
+    id oewn-01429048-v
+    partOfSpeech v
+    synonyms ("sleep together" "roll in the hay" love "make out" "make love" "sleep with" "get laid" "have sex" "do it" "be intimate" "have intercourse" "have it away" "have it off" screw fuck jazz eff hump "lie with" bed "have a go at it" bang "get it on" bonk)
+  entry
+    definition "know the nature or character of"
+    examples ("we all knew her as a big show-off")
+    id oewn-00610224-v
+    partOfSpeech v
+  entry
+    definition "be able to distinguish, recognize as being different"
+    examples ("The child knows right from wrong")
+    id oewn-00610056-v
+    partOfSpeech v
+  entry
+    definition "perceive as familiar"
+    examples ("I know this voice!")
+    id oewn-00609926-v
+    partOfSpeech v
+source "oewn:2024"

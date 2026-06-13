@@ -1,0 +1,12 @@
+language en
+lemma cli
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a user interface in which you type commands instead of choosing them from a menu or selecting an icon"
+    id oewn-06587681-n
+    partOfSpeech n
+    synonyms ("command line interface")
+source "oewn:2024"

@@ -1,0 +1,17 @@
+view
+  id M-81a5b2ae3c3b
+  lemma automation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of implementing the control of equipment with advanced technology; usually involving electronic hardware"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the condition of being automatically operated or controlled"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "equipment used to achieve automatic control or operation"
+    provenance (wordnet)

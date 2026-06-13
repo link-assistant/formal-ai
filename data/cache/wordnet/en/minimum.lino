@@ -1,0 +1,22 @@
+language en
+lemma minimum
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the least possible"
+    examples ("needed to enforce minimal standards" "her grades were minimal" "minimum wage" "a minimal charge for the service")
+    id oewn-01499316-a
+    partOfSpeech a
+    synonyms (minimal)
+  entry
+    definition "the smallest possible quantity"
+    id oewn-13785524-n
+    partOfSpeech n
+    synonyms ("lower limit")
+  entry
+    definition "the point on a curve where the tangent changes from negative on the left to positive on the right"
+    id oewn-08617830-n
+    partOfSpeech n
+source "oewn:2024"

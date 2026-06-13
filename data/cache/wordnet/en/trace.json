@@ -1,0 +1,162 @@
+{
+  "lemma": "trace",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13795501-n",
+      "partOfSpeech": "n",
+      "definition": "a just detectable amount",
+      "examples": [
+        "he speaks French with a trace of an accent",
+        "a hint mockery in her manner",
+        "a tint of glamour"
+      ],
+      "synonyms": [
+        "hint",
+        "tint",
+        "suggestion"
+      ]
+    },
+    {
+      "id": "oewn-06659391-n",
+      "partOfSpeech": "n",
+      "definition": "an indication that something has been present",
+      "examples": [
+        "there wasn't a trace of evidence for the claim",
+        "a tincture of condescension"
+      ],
+      "synonyms": [
+        "vestige",
+        "tincture",
+        "shadow"
+      ]
+    },
+    {
+      "id": "oewn-07178814-n",
+      "partOfSpeech": "n",
+      "definition": "a suggestion of some quality",
+      "examples": [
+        "there was a touch of sarcasm in his tone",
+        "he detected a ghost of a smile on her face"
+      ],
+      "synonyms": [
+        "touch",
+        "ghost"
+      ]
+    },
+    {
+      "id": "oewn-04470508-n",
+      "partOfSpeech": "n",
+      "definition": "a drawing created by superimposing a semitransparent sheet of paper on the original image and copying on it the lines of the original image",
+      "synonyms": [
+        "tracing"
+      ]
+    },
+    {
+      "id": "oewn-04469642-n",
+      "partOfSpeech": "n",
+      "definition": "either of two lines that connect a horse's harness to a wagon or other vehicle or to a whiffletree"
+    },
+    {
+      "id": "oewn-06659799-n",
+      "partOfSpeech": "n",
+      "definition": "a visible mark (as a footprint) left by the passage of person or animal or vehicle"
+    },
+    {
+      "id": "oewn-00731071-v",
+      "partOfSpeech": "v",
+      "definition": "follow, discover, or ascertain the course of development of something",
+      "examples": [
+        "We must follow closely the economic development is Cuba",
+        "trace the student's progress",
+        "trace one's ancestry"
+      ],
+      "synonyms": [
+        "follow"
+      ]
+    },
+    {
+      "id": "oewn-01585566-v",
+      "partOfSpeech": "v",
+      "definition": "make a mark or lines on a surface",
+      "examples": [
+        "draw a line",
+        "trace the outline of a figure in the sand"
+      ],
+      "synonyms": [
+        "draw",
+        "line",
+        "describe",
+        "delineate"
+      ]
+    },
+    {
+      "id": "oewn-02008366-v",
+      "partOfSpeech": "v",
+      "definition": "to go back over again",
+      "examples": [
+        "we retraced the route we took last summer",
+        "trace your path"
+      ],
+      "synonyms": [
+        "retrace"
+      ]
+    },
+    {
+      "id": "oewn-02007615-v",
+      "partOfSpeech": "v",
+      "definition": "pursue or chase relentlessly",
+      "examples": [
+        "The hunters traced the deer into the woods",
+        "the detectives hounded the suspect until they found him"
+      ],
+      "synonyms": [
+        "hound",
+        "hunt"
+      ]
+    },
+    {
+      "id": "oewn-02160493-v",
+      "partOfSpeech": "v",
+      "definition": "discover traces of",
+      "examples": [
+        "She traced the circumstances of her birth"
+      ]
+    },
+    {
+      "id": "oewn-01999981-v",
+      "partOfSpeech": "v",
+      "definition": "make one's course or travel along a path; travel or pass over, around, or along",
+      "examples": [
+        "The children traced along the edge of the dark forest",
+        "The women traced the pasture"
+      ]
+    },
+    {
+      "id": "oewn-01698271-v",
+      "partOfSpeech": "v",
+      "definition": "copy by following the lines of the original drawing on a transparent sheet placed upon it; make a tracing of",
+      "examples": [
+        "trace a design",
+        "trace a pattern"
+      ]
+    },
+    {
+      "id": "oewn-00627767-v",
+      "partOfSpeech": "v",
+      "definition": "read with difficulty",
+      "examples": [
+        "Can you decipher this letter?",
+        "The archeologist traced the hieroglyphs"
+      ],
+      "synonyms": [
+        "decipher"
+      ]
+    }
+  ]
+}

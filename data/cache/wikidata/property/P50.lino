@@ -1,0 +1,18 @@
+P50
+  aliases
+    en ("written by" writer creator playwright poet maker)
+    ru ("кто автор" "писатель" "создатель")
+    zh ("著作者")
+  descriptions
+    en "main creator(s) of a written work (use on works, not humans); use P2093 (author name string) when Wikidata item is unknown or does not exist"
+    hi "लिखित कार्य का मुख्य रचियता"
+    ru "создатель произведения"
+    zh "书面作品的主要创作者（用于作品项目，而不是人类项目）；当维基数据项目未知或不存在时使用P2093（作者名字符串）"
+  id P50
+  labels
+    en author
+    hi "लेखक"
+    ru "автор"
+    zh "作者"
+  type property
+success 1

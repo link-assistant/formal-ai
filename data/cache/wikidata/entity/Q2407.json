@@ -1,0 +1,47 @@
+{
+  "entities": {
+    "Q2407": {
+      "type": "item",
+      "id": "Q2407",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "सी++"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "通用高階程式語言"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Си++"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "C加加"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

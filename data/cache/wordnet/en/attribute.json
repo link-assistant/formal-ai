@@ -1,0 +1,53 @@
+{
+  "lemma": "attribute",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05857567-n",
+      "partOfSpeech": "n",
+      "definition": "a construct whereby objects or individuals can be distinguished",
+      "examples": [
+        "self-confidence is not an endearing property"
+      ],
+      "synonyms": [
+        "property",
+        "dimension"
+      ]
+    },
+    {
+      "id": "oewn-00024444-n",
+      "partOfSpeech": "n",
+      "definition": "an abstraction belonging to or characteristic of an entity"
+    },
+    {
+      "id": "oewn-00728262-v",
+      "partOfSpeech": "v",
+      "definition": "attribute or credit to",
+      "examples": [
+        "We attributed this quotation to Shakespeare",
+        "People impute great cleverness to cats"
+      ],
+      "synonyms": [
+        "impute",
+        "ascribe",
+        "assign"
+      ]
+    },
+    {
+      "id": "oewn-00742058-v",
+      "partOfSpeech": "v",
+      "definition": "decide as to where something belongs in a scheme",
+      "examples": [
+        "The biologist assigned the mushroom to the proper class"
+      ],
+      "synonyms": [
+        "assign"
+      ]
+    }
+  ]
+}

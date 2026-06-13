@@ -1,0 +1,17 @@
+view
+  id M-494c3d80590f
+  lemma repository
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a facility where things can be deposited for storage or safekeeping"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person to whom a secret is entrusted"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a burial vault (usually for some famous person)"
+    provenance (wordnet)

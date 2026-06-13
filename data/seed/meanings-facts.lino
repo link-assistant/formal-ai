@@ -1,311 +1,296 @@
 meanings
-  meaning "knowledge_relation"
-    gloss "a relation in the knowledge base that maps a subject to a value; the genus of every fact-query relation below"
-    wiktionary "relation"
-    defined_by "knowledge_subject"
-    defined_by "knowledge_value"
-    defined_by "relation"
-    role "knowledge_relation"
-    lexeme "en"
-      word "relation"
-        description "English noun for a link in the knowledge base that maps a subject to a value; the genus of the fact-query relations."
-      word "property"
-        description "English noun for an attribute that maps a subject to a value; a synonym surface for the knowledge relation."
-    lexeme "ru"
-      word "отношение"
-        description "Russian noun (romanized otnosheniye) for a relation that maps a subject to a value; the Russian surface for the knowledge relation."
-      word "свойство"
-        description "Russian noun (romanized svoystvo) for a property mapping a subject to a value; an alternative Russian surface for the knowledge relation."
-    lexeme "hi"
-      word "संबंध"
-        description "Hindi noun (romanized sambandh) for a relation that maps a subject to a value; the Hindi surface for the knowledge relation."
-      word "गुण"
-        description "Hindi noun (romanized gun) for a property or attribute; an alternative Hindi surface for the knowledge relation."
-    lexeme "zh"
-      word "关系"
-        description "Chinese noun (pinyin guanxi) for a relation that maps a subject to a value; the Chinese surface for the knowledge relation."
-      word "属性"
-        description "Chinese noun (pinyin shuxing) for an attribute or property; an alternative Chinese surface for the knowledge relation."
-  meaning "knowledge_subject"
-    gloss "the entity a knowledge-base question is about — the subject a fact relation maps to a value"
-    wiktionary "subject"
-    defined_by "knowledge_relation"
-    role "knowledge_subject"
-    lexeme "en"
-      word "subject"
-        description "English noun for the entity a knowledge-base question is about; the subject a fact relation maps to a value."
-      word "entity"
-        description "English noun for the thing being asked about; a synonym surface for the knowledge subject."
-      word "topic"
-        description "English noun for what a question concerns; an alternative surface for the knowledge subject."
-    lexeme "ru"
-      word "субъект"
-        description "Russian noun (romanized subyekt) for the subject of a question; the Russian surface for the knowledge subject."
-      word "сущность"
-        description "Russian noun (romanized sushchnost) for the entity being asked about; an alternative Russian surface for the knowledge subject."
-      word "предмет"
-        description "Russian noun (romanized predmet) for the topic of a question; another Russian surface for the knowledge subject."
-    lexeme "hi"
-      word "विषय"
-        description "Hindi noun (romanized vishay) for the topic or subject of a question; the Hindi surface for the knowledge subject."
-      word "इकाई"
-        description "Hindi noun (romanized ikai) for the entity being asked about; an alternative Hindi surface for the knowledge subject."
-    lexeme "zh"
-      word "主体"
-        description "Chinese noun (pinyin zhuti) for the subject of a question; the Chinese surface for the knowledge subject."
-      word "实体"
-        description "Chinese noun (pinyin shiti) for the entity being asked about; an alternative Chinese surface for the knowledge subject."
-  meaning "knowledge_value"
-    gloss "the value a fact relation yields for its subject — the answer to the question"
-    wiktionary "value"
-    defined_by "knowledge_relation"
-    role "knowledge_value"
-    lexeme "en"
-      word "value"
-        description "English noun for the value a fact relation yields for its subject; the answer to the question."
-      word "answer"
-        description "English noun for the response to a question; a synonym surface for the knowledge value."
-    lexeme "ru"
-      word "значение"
-        description "Russian noun (romanized znacheniye) for the value a relation yields; the Russian surface for the knowledge value."
-      word "ответ"
-        description "Russian noun (romanized otvet) for the answer to a question; an alternative Russian surface for the knowledge value."
-    lexeme "hi"
-      word "मान"
-        description "Hindi noun (romanized maan) for the value a relation yields; the Hindi surface for the knowledge value."
-      word "उत्तर"
-        description "Hindi noun (romanized uttar) for the answer to a question; an alternative Hindi surface for the knowledge value."
-    lexeme "zh"
-      word "值"
-        description "Chinese noun (pinyin zhi) for the value a relation yields; the Chinese surface for the knowledge value."
-      word "答案"
-        description "Chinese noun (pinyin daan) for the answer to a question; an alternative Chinese surface for the knowledge value."
-  meaning "capital"
-    gloss "the relation linking a country to its capital city (Wikidata P36)"
-    wiktionary "capital"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "capital"
-        description "English noun for the seat-of-government city of a country; the surface for the capital-of relation."
-    lexeme "ru"
-      word "столица"
-        description "Russian noun (romanized stolitsa), nominative singular, for a capital city; the Russian surface for the capital-of relation."
-      word "столицы"
-        description "Russian noun (romanized stolitsy), genitive singular or nominative plural of capital; an inflected surface for the capital-of relation."
-      word "столицей"
-        description "Russian noun (romanized stolitsey), instrumental singular of capital; an inflected surface for the capital-of relation."
-    lexeme "hi"
-      word "राजधानी"
-        description "Hindi noun (romanized rajdhani) for a capital city; the Hindi surface for the capital-of relation."
-    lexeme "zh"
-      word "首都"
-        description "Chinese noun (pinyin shoudu) for a capital city; the Chinese surface for the capital-of relation."
-  meaning "population"
-    gloss "the relation linking a place to how many people live there (Wikidata P1082)"
-    wiktionary "population"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "population"
-        description "English noun for how many people live in a place; the surface for the population relation."
-      word "how many people"
-        description "English interrogative phrase asking the count of inhabitants; a question surface for the population relation."
-    lexeme "ru"
-      word "население"
-        description "Russian noun (romanized naseleniye) for the population of a place; the Russian surface for the population relation."
-    lexeme "hi"
-      word "जनसंख्या"
-        description "Hindi noun (romanized jansankhya) for population; the Hindi surface for the population relation."
-      word "आबादी"
-        description "Hindi noun (romanized aabaadi) for population or inhabitants; an alternative Hindi surface for the population relation."
-    lexeme "zh"
-      word "人口"
-        description "Chinese noun (pinyin renkou) for population; the Chinese surface for the population relation."
-  meaning "currency"
-    gloss "the relation linking a country to its official currency (Wikidata P38)"
-    wiktionary "currency"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "currency"
-        description "English noun for the official money of a country; the surface for the currency relation."
-    lexeme "ru"
-      word "валюта"
-        description "Russian noun (romanized valyuta) for currency; the Russian surface for the currency relation."
-    lexeme "hi"
-      word "मुद्रा"
-        description "Hindi noun (romanized mudra) for currency; the Hindi surface for the currency relation."
-    lexeme "zh"
-      word "货币"
-        description "Chinese noun (pinyin huobi) for currency, in simplified characters; the Chinese surface for the currency relation."
-      word "貨幣"
-        description "Chinese noun (pinyin huobi) for currency, in traditional characters; an alternative Chinese surface for the currency relation."
-  meaning "official_language"
-    gloss "the relation linking a country to its official language (Wikidata P37)"
-    wiktionary "language"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "official language"
-        description "English noun phrase for a country's officially designated language; the surface for the official-language relation."
-      word "what language"
-        description "English interrogative phrase asking which language is official; a question surface for the official-language relation."
-    lexeme "ru"
-      word "государственный язык"
-        description "Russian noun phrase (romanized gosudarstvennyy yazyk) for the state language; the Russian surface for the official-language relation."
-      word "официальный язык"
-        description "Russian noun phrase (romanized ofitsialnyy yazyk) for the official language; an alternative Russian surface for the official-language relation."
-    lexeme "hi"
-      word "राजभाषा"
-        description "Hindi noun (romanized rajbhasha) for the official or state language; the Hindi surface for the official-language relation."
-      word "आधिकारिक भाषा"
-        description "Hindi noun phrase (romanized aadhikaarik bhasha) for the official language; an alternative Hindi surface for the official-language relation."
-    lexeme "zh"
-      word "官方语言"
-        description "Chinese noun phrase (pinyin guanfang yuyan) for the official language, in simplified characters; the Chinese surface for the official-language relation."
-      word "官方語言"
-        description "Chinese noun phrase (pinyin guanfang yuyan) for the official language, in traditional characters; an alternative Chinese surface for the official-language relation."
-  meaning "continent"
-    gloss "the relation linking a place to the continent it lies on (Wikidata P30)"
-    wiktionary "continent"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "continent"
-        description "English noun for one of the large landmasses a place lies on; the surface for the continent relation."
-    lexeme "ru"
-      word "континент"
-        description "Russian noun (romanized kontinent) for a continent; the Russian surface for the continent relation."
-    lexeme "hi"
-      word "महाद्वीप"
-        description "Hindi noun (romanized mahadweep) for a continent; the Hindi surface for the continent relation."
-    lexeme "zh"
-      word "大洲"
-        description "Chinese noun (pinyin dazhou) for a continent; the Chinese surface for the continent relation."
-  meaning "author_of_book"
-    gloss "the relation linking a book to the author who wrote it (Wikidata P50)"
-    wiktionary "author"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "who wrote"
-        description "English interrogative phrase asking which person authored a book; a question surface for the author-of-book relation."
-      word "author"
-        description "English noun for the person who wrote a book; the surface for the author-of-book relation."
-      word "written by"
-        description "English passive phrase naming the writer of a book; an alternative surface for the author-of-book relation."
-    lexeme "ru"
-      word "кто написал"
-        description "Russian interrogative phrase (romanized kto napisal) asking who wrote a book; a question surface for the author-of-book relation."
-      word "написал"
-        description "Russian verb (romanized napisal), past tense of to write, for authored a book; a surface for the author-of-book relation."
-      word "автор"
-        description "Russian noun (romanized avtor) for the author of a book; an alternative Russian surface for the author-of-book relation."
-    lexeme "hi"
-      word "किसने लिखी"
-        description "Hindi interrogative phrase (romanized kisne likhi) asking who wrote it, agreeing with a feminine book noun; a question surface for the author-of-book relation."
-      word "किसने लिखा"
-        description "Hindi interrogative phrase (romanized kisne likha) asking who wrote it, masculine agreement; an alternative question surface for the author-of-book relation."
-      word "लेखक"
-        description "Hindi noun (romanized lekhak) for the author or writer; the Hindi surface for the author-of-book relation."
-    lexeme "zh"
-      word "是谁写的"
-        description "Chinese interrogative phrase (pinyin shi shei xie de) asking who wrote it; a question surface for the author-of-book relation."
-      word "作者"
-        description "Chinese noun (pinyin zuozhe) for the author of a book; the Chinese surface for the author-of-book relation."
-  meaning "painter_of_painting"
-    gloss "the relation linking a painting to the painter who created it (Wikidata P170)"
-    wiktionary "painter"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "who painted"
-        description "English interrogative phrase asking which person created a painting; a question surface for the painter-of-painting relation."
-      word "painted"
-        description "English verb, past tense of to paint, for created a painting; a surface for the painter-of-painting relation."
-      word "painter"
-        description "English noun for the person who painted a painting; the surface for the painter-of-painting relation."
-      word "artist"
-        description "English noun for the creator of a painting; a synonym surface for the painter-of-painting relation."
-    lexeme "ru"
-      word "кто написал"
-        description "Russian interrogative phrase (romanized kto napisal) asking who painted it, since napisal also covers painting a picture; a question surface for the painter-of-painting relation."
-      word "написал"
-        description "Russian verb (romanized napisal), past tense used for painting a picture; a surface for the painter-of-painting relation."
-      word "художник"
-        description "Russian noun (romanized khudozhnik) for the painter or artist; the Russian surface for the painter-of-painting relation."
-    lexeme "hi"
-      word "किसने बनाई"
-        description "Hindi interrogative phrase (romanized kisne banai) asking who made it, agreeing with a feminine painting noun; a question surface for the painter-of-painting relation."
-      word "चित्रकार"
-        description "Hindi noun (romanized chitrakar) for a painter; the Hindi surface for the painter-of-painting relation."
-      word "कलाकार"
-        description "Hindi noun (romanized kalakar) for an artist; an alternative Hindi surface for the painter-of-painting relation."
-    lexeme "zh"
-      word "谁画的"
-        description "Chinese interrogative phrase (pinyin shei hua de) asking who painted it; a question surface for the painter-of-painting relation."
-      word "画家"
-        description "Chinese noun (pinyin huajia) for a painter; the Chinese surface for the painter-of-painting relation."
-  meaning "built_year"
-    gloss "the relation linking a structure to the year it was built (Wikidata P571)"
-    wiktionary "build"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "when"
-        description "English interrogative adverb asking the year a structure was built; a question surface for the built-year relation."
-      word "built"
-        description "English verb, past participle of to build, for constructed in a given year; a surface for the built-year relation."
-      word "construction"
-        description "English noun for the building of a structure; an alternative surface for the built-year relation."
-    lexeme "ru"
-      word "когда"
-        description "Russian interrogative adverb (romanized kogda) asking when a structure was built; a question surface for the built-year relation."
-      word "построена"
-        description "Russian verb (romanized postroyena), feminine past participle of to build, for was built; a surface for the built-year relation."
-      word "построили"
-        description "Russian verb (romanized postroili), plural past tense of to build, for they built; an alternative surface for the built-year relation."
-    lexeme "hi"
-      word "बनी"
-        description "Hindi verb (romanized bani), feminine past form of to be made, for was built; a surface for the built-year relation."
-      word "बनाई"
-        description "Hindi verb (romanized banai), feminine past form of to make, for was built; an alternative surface for the built-year relation."
-      word "कब"
-        description "Hindi interrogative adverb (romanized kab) asking when something was built; a question surface for the built-year relation."
-    lexeme "zh"
-      word "何时"
-        description "Chinese interrogative phrase (pinyin heshi) asking at what time it was built; a question surface for the built-year relation."
-      word "建于"
-        description "Chinese verb phrase (pinyin jianyu) for built in a given year; a surface for the built-year relation."
-      word "建造"
-        description "Chinese verb (pinyin jianzao) for to build or construct; an alternative surface for the built-year relation."
-  meaning "physical_constant"
-    gloss "the relation linking a named physical constant to its value (e.g. the speed of light)"
-    wiktionary "constant"
-    defined_by "knowledge_relation"
-    role "fact_relation"
-    lexeme "en"
-      word "speed of light"
-        description "English noun phrase naming a physical constant, the speed at which light travels; an example surface for the physical-constant relation."
-      word "what is"
-        description "English interrogative phrase asking the value of a named constant; a question surface for the physical-constant relation."
-      word "how fast"
-        description "English interrogative phrase asking the magnitude of a speed constant; an alternative question surface for the physical-constant relation."
-    lexeme "ru"
-      word "скорость света"
-        description "Russian noun phrase (romanized skorost sveta) for the speed of light; an example surface for the physical-constant relation."
-      word "какова"
-        description "Russian interrogative pronoun (romanized kakova), feminine, asking what a constant's value is; a question surface for the physical-constant relation."
-      word "чему равна"
-        description "Russian interrogative phrase (romanized chemu ravna) asking what a quantity equals; an alternative question surface for the physical-constant relation."
-    lexeme "hi"
-      word "प्रकाश की गति"
-        description "Hindi noun phrase (romanized prakash ki gati) for the speed of light; an example surface for the physical-constant relation."
-      word "कितनी"
-        description "Hindi interrogative adjective (romanized kitni), feminine, asking how much a quantity is; a question surface for the physical-constant relation."
-    lexeme "zh"
-      word "光速"
-        description "Chinese noun (pinyin guangsu) for the speed of light; an example surface for the physical-constant relation."
-      word "是多少"
-        description "Chinese interrogative phrase (pinyin shi duoshao) asking what amount a constant is; a question surface for the physical-constant relation."
+  knowledge_relation
+    defined-by knowledge_subject
+    defined-by knowledge_value
+    defined-by relation
+    role knowledge_relation
+    lexeme en
+      surface
+        text relation
+      surface
+        text property
+    lexeme ru
+      surface
+        text отношение
+      surface
+        text свойство
+    lexeme hi
+      surface
+        text संबंध
+      surface
+        text गुण
+    lexeme zh
+      surface
+        text 关系
+      surface
+        text 属性
+  knowledge_subject
+    defined-by knowledge_relation
+    role knowledge_subject
+    lexeme en
+      surface
+        text subject
+      surface
+        text entity
+      surface
+        text topic
+    lexeme ru
+      surface
+        text субъект
+      surface
+        text сущность
+      surface
+        text предмет
+    lexeme hi
+      surface
+        text विषय
+      surface
+        text इकाई
+    lexeme zh
+      surface
+        text 主体
+      surface
+        text 实体
+  knowledge_value
+    defined-by knowledge_relation
+    role knowledge_value
+    lexeme en
+      surface
+        text value
+      surface
+        text answer
+    lexeme ru
+      surface
+        text значение
+      surface
+        text ответ
+    lexeme hi
+      surface
+        text मान
+      surface
+        text उत्तर
+    lexeme zh
+      surface
+        text 值
+      surface
+        text 答案
+  capital
+    grounded-in P36
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text capital
+    lexeme ru
+      surface
+        text столица
+      surface
+        text столицы
+      surface
+        text столицей
+    lexeme hi
+      surface
+        text राजधानी
+    lexeme zh
+      surface
+        text 首都
+  population
+    grounded-in P1082
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text population
+      surface
+        text "how many people"
+    lexeme ru
+      surface
+        text население
+    lexeme hi
+      surface
+        text जनसंख्या
+      surface
+        text आबादी
+    lexeme zh
+      surface
+        text 人口
+  currency
+    grounded-in P38
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text currency
+    lexeme ru
+      surface
+        text валюта
+    lexeme hi
+      surface
+        text मुद्रा
+    lexeme zh
+      surface
+        text 货币
+      surface
+        text 貨幣
+  official_language
+    grounded-in P37
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "official language"
+      surface
+        text "what language"
+    lexeme ru
+      surface
+        text "государственный язык"
+      surface
+        text "официальный язык"
+    lexeme hi
+      surface
+        text राजभाषा
+      surface
+        text "आधिकारिक भाषा"
+    lexeme zh
+      surface
+        text 官方语言
+      surface
+        text 官方語言
+  continent
+    grounded-in P30
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text continent
+    lexeme ru
+      surface
+        text континент
+    lexeme hi
+      surface
+        text महाद्वीप
+    lexeme zh
+      surface
+        text 大洲
+  author_of_book
+    grounded-in P50
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "who wrote"
+      surface
+        text author
+      surface
+        text "written by"
+    lexeme ru
+      surface
+        text "кто написал"
+      surface
+        text написал
+      surface
+        text автор
+    lexeme hi
+      surface
+        text "किसने लिखी"
+      surface
+        text "किसने लिखा"
+      surface
+        text लेखक
+    lexeme zh
+      surface
+        text 是谁写的
+      surface
+        text 作者
+  painter_of_painting
+    grounded-in P170
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "who painted"
+      surface
+        text painted
+      surface
+        text painter
+      surface
+        text artist
+    lexeme ru
+      surface
+        text "кто написал"
+      surface
+        text написал
+      surface
+        text художник
+    lexeme hi
+      surface
+        text "किसने बनाई"
+      surface
+        text चित्रकार
+      surface
+        text कलाकार
+    lexeme zh
+      surface
+        text 谁画的
+      surface
+        text 画家
+  built_year
+    grounded-in P571
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text when
+      surface
+        text built
+      surface
+        text construction
+    lexeme ru
+      surface
+        text когда
+      surface
+        text построена
+      surface
+        text построили
+    lexeme hi
+      surface
+        text बनी
+      surface
+        text बनाई
+      surface
+        text कब
+    lexeme zh
+      surface
+        text 何时
+      surface
+        text 建于
+      surface
+        text 建造
+  physical_constant
+    grounded-in Q173227
+    defined-by knowledge_relation
+    role fact_relation
+    lexeme en
+      surface
+        text "speed of light"
+      surface
+        text "what is"
+      surface
+        text "how fast"
+    lexeme ru
+      surface
+        text "скорость света"
+      surface
+        text какова
+      surface
+        text "чему равна"
+    lexeme hi
+      surface
+        text "प्रकाश की गति"
+      surface
+        text कितनी
+    lexeme zh
+      surface
+        text 光速
+      surface
+        text 是多少

@@ -1,0 +1,27 @@
+language en
+lemma audit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an inspection of the accounting procedures and records by a trained accountant or CPA"
+    id oewn-13432330-n
+    partOfSpeech n
+    synonyms ("audited account")
+  entry
+    definition "a methodical examination or review of a condition or situation"
+    examples ("he made an audit of all the plants on his property" "an energy efficiency audit" "an email log audit")
+    id oewn-00141996-n
+    partOfSpeech n
+  entry
+    definition "examine carefully for accuracy with the intent of verification"
+    examples ("audit accounts and tax returns")
+    id oewn-00698828-v
+    partOfSpeech v
+    synonyms (scrutinize scrutinise inspect)
+  entry
+    definition "attend academic courses without getting credit"
+    id oewn-00601630-v
+    partOfSpeech v
+source "oewn:2024"

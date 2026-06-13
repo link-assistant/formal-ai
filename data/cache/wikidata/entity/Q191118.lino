@@ -1,0 +1,17 @@
+Q191118
+  aliases
+    en (t "metric ton" ton "metric tonne" MT T)
+    ru ("т" "метрическая тонна")
+    zh ("公吨" "頓" "公頓")
+  descriptions
+    en "metric unit of mass equivalent to 1000 kilograms"
+    ru "единица измерения массы, равная тысяче килограмм"
+    zh "重量单位"
+  id Q191118
+  labels
+    en tonne
+    hi "टन"
+    ru "тонна"
+    zh "公噸"
+  type item
+success 1

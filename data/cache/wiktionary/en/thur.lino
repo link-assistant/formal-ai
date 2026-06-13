@@ -1,0 +1,40 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(location) In a place or location (stated, implied or otherwise indicated) at some distance from the speaker (compare here)."
+        entry
+          definition "In that matter, relation, etc.; at that point, stage, etc., regarded as a distinct place."
+          example "He did not stop there, but continued his speech."
+        entry
+          definition "(location) To or into that place; thither."
+        entry
+          definition "Where, there where, in which place."
+        entry
+          definition "In existence or in this world; see pronoun section below."
+      partOfSpeech adverb
+      synonyms ("away there" "over there" thither yonder "away there" "over there" thither yonder)
+    entry
+      definitions
+        entry
+          definition "Used as an expletive subject of be in its sense of “exist”, with the semantic, usually indefinite subject being postponed or (occasionally) implied."
+          example "Is there an answer? [=Does an answer exist?]"
+        entry
+          definition "Used with other intransitive verbs of existence, in the same sense, or with other intransitive verbs, adding a sense of existence."
+          example "If x is a positive number, then there exists [=there is] a positive number y less than x."
+        entry
+          definition "Used with other verbs, when raised."
+          example "I expected there to be a simpler solution. [=I expected that there would be a simpler solution.]"
+        entry
+          definition "(in combination with certain prepositions, no longer productive) That."
+          example "therefor, thereat, thereunder"
+        entry
+          definition "Used to replace an unknown name, principally in greetings and farewells"
+          example "Hi there, young fellow."
+      partOfSpeech pronoun
+  sourceUrls ("https://en.wiktionary.org/wiki/there" "https://en.wiktionary.org/wiki/thur")
+  word thur

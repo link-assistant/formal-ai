@@ -1,0 +1,98 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(of a person) To be in a position in which the upper body is upright and supported by the buttocks."
+          example "After a long day of walking, it was good just to sit and relax."
+        entry
+          definition "(of a person) To move oneself into such a position."
+          example "I asked him to sit."
+        entry
+          definition "(of an object) To occupy a given position permanently."
+          example "The temple has sat atop that hill for centuries."
+        entry
+          definition "To remain in a state of repose; to rest; to abide; to rest in any position or condition."
+        entry
+          definition "To be a member of a deliberative body."
+          example "I currently sit on a standards committee."
+        entry
+          definition "Of a legislative or, especially, a judicial body such as a court, to be in session."
+          example "In what city is the circuit court sitting for this session."
+        entry
+          definition "To lie, rest, or bear; to press or weigh."
+        entry
+          definition "To be adjusted; to fit."
+          example "Your new coat sits well."
+        entry
+          definition "(of an agreement or arrangement) To be accepted or acceptable; to work."
+          example "How will this new contract sit with the workers?"
+        entry
+          definition "(causative) To cause to be seated or in a sitting posture; to furnish a seat to."
+          example "Sit him in front of the TV and he might watch for hours."
+        entry
+          definition "To accommodate in seats; to seat."
+          example "The dining room table sits eight comfortably."
+        entry
+          definition "To babysit."
+          example "I need to find someone to sit my kids on Friday evening for four hours."
+        entry
+          definition "To take, to undergo or complete (an examination or test)."
+        entry
+          definition "To cover and warm eggs for hatching, as a fowl; to brood; to incubate."
+        entry
+          definition "To take a position for the purpose of having some artistic representation of oneself made, such as a picture or a bust."
+          example "I'm sitting for a painter this evening."
+        entry
+          definition "To have position, as at the point blown from; to hold a relative position; to have direction."
+      partOfSpeech verb
+      synonyms (accepted received welcomed well "be seated" "be seated" "sit down" "sit up" "take a seat" be found situated seat)
+  phonetic "/sæt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sat-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631215"
+      text "/sæt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sat" "https://en.wiktionary.org/wiki/sit")
+  word sat
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A moon or other smaller body orbiting a larger one."
+          example "A spent upper stage is a derelict satellite."
+        entry
+          definition "A man-made apparatus designed to be placed in orbit around a celestial body, generally to relay information, data etc. to Earth."
+          example "Many telecommunication satellites orbit at 36000km above the equator."
+        entry
+          definition "A country, state, office, building etc. which is under the jurisdiction, influence, or domination of another body."
+        entry
+          definition "An attendant on an important person; a member of someone's retinue, often in a somewhat derogatory sense; a henchman."
+        entry
+          definition "Satellite TV; reception of television broadcasts via services that utilize man-made satellite technology."
+          example "Do you have satellite at your house?"
+        entry
+          definition '(grammar) A grammatical construct that takes various forms and may encode a path of movement, a change of state, or the grammatical aspect. Examples: "a bird flew past"; "she turned on the light".'
+      partOfSpeech noun
+      synonyms (sat)
+  phonetic "/sæt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/sat-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=631215"
+      text "/sæt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/sat" "https://en.wiktionary.org/wiki/satellite")
+  word sat

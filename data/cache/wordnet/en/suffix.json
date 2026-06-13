@@ -1,0 +1,27 @@
+{
+  "lemma": "suffix",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06319977-n",
+      "partOfSpeech": "n",
+      "definition": "an affix that is added at the end of the word",
+      "synonyms": [
+        "postfix"
+      ]
+    },
+    {
+      "id": "oewn-01300709-v",
+      "partOfSpeech": "v",
+      "definition": "attach a suffix to",
+      "examples": [
+        "suffix words"
+      ]
+    }
+  ]
+}

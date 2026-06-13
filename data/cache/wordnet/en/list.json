@@ -1,0 +1,89 @@
+{
+  "lemma": "list",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06492991-n",
+      "partOfSpeech": "n",
+      "definition": "a database containing an ordered array of items (names or topics)",
+      "synonyms": [
+        "listing"
+      ]
+    },
+    {
+      "id": "oewn-05075249-n",
+      "partOfSpeech": "n",
+      "definition": "the property possessed by a line or surface that departs from the vertical",
+      "examples": [
+        "the tower had a pronounced tilt",
+        "the ship developed a list to starboard",
+        "he walked with a heavy inclination to the right"
+      ],
+      "synonyms": [
+        "tilt",
+        "inclination",
+        "lean",
+        "leaning"
+      ]
+    },
+    {
+      "id": "oewn-00947885-v",
+      "partOfSpeech": "v",
+      "definition": "give or make a list of; name individually; give the names of",
+      "examples": [
+        "List the states west of the Mississippi"
+      ],
+      "synonyms": [
+        "name"
+      ]
+    },
+    {
+      "id": "oewn-02477646-v",
+      "partOfSpeech": "v",
+      "definition": "include in a list",
+      "examples": [
+        "Am I listed in your register?"
+      ]
+    },
+    {
+      "id": "oewn-02042858-v",
+      "partOfSpeech": "v",
+      "definition": "cause to lean to the side",
+      "examples": [
+        "Erosion listed the old tree"
+      ],
+      "synonyms": [
+        "lean"
+      ]
+    },
+    {
+      "id": "oewn-02042636-v",
+      "partOfSpeech": "v",
+      "definition": "tilt to one side",
+      "examples": [
+        "The balloon heeled over",
+        "the wind made the vessel heel",
+        "The ship listed to starboard"
+      ],
+      "synonyms": [
+        "heel"
+      ]
+    },
+    {
+      "id": "oewn-00948787-v",
+      "partOfSpeech": "v",
+      "definition": "enumerate",
+      "examples": [
+        "We must number the names of the great mathematicians"
+      ],
+      "synonyms": [
+        "number"
+      ]
+    }
+  ]
+}

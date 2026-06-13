@@ -1,0 +1,146 @@
+[
+  {
+    "word": "value",
+    "phonetic": "/ˈvæljuː/",
+    "phonetics": [
+      {
+        "text": "/ˈvæljuː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/value-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1197666",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The quality (positive or negative) that renders something desirable or valuable.",
+            "synonyms": [
+              "worth"
+            ],
+            "antonyms": [],
+            "example": "The Shakespearean Shylock is of dubious value in the modern world."
+          },
+          {
+            "definition": "The degree of importance given to something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The value of my children's happiness is second only to that of my wife."
+          },
+          {
+            "definition": "That which is valued or highly esteemed, such as one's morals, morality, or belief system.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He does not share his parents' values."
+          },
+          {
+            "definition": "The amount (of money or goods or services) that is considered to be a fair equivalent for something else.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The relative duration of a musical note.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The value of a crotchet is twice that of a quaver."
+          },
+          {
+            "definition": "The relative darkness or lightness of a color in (a specific area of) a painting etc.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any definite numerical quantity or other mathematical object, determined by being measured, computed, or otherwise defined.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The exact value of pi cannot be represented in decimal notation."
+          },
+          {
+            "definition": "Precise meaning; import.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the value of a word; the value of a legal instrument"
+          },
+          {
+            "definition": "(in the plural) The valuable ingredients to be obtained by treating a mass or compound; specifically, the precious metals contained in rock, gravel, etc.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The vein carries good values."
+          },
+          {
+            "definition": "Esteem; regard.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Valour; also spelled valew.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "valence",
+          "worth"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To estimate the value of; judge the worth of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I will have the family jewels valued by a professional."
+          },
+          {
+            "definition": "To fix or determine the value of; assign a value to, as of jewelry or art work.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To regard highly; think much of; place importance upon.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Gold was valued highly among the Romans."
+          },
+          {
+            "definition": "To hold dear.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I value these old photographs."
+          }
+        ],
+        "synonyms": [
+          "appreciate",
+          "assess",
+          "esteem",
+          "prize",
+          "rate",
+          "respect",
+          "treasure",
+          "valuate",
+          "worthen"
+        ],
+        "antonyms": [
+          "belittle",
+          "derogate",
+          "despise",
+          "disesteem",
+          "disrespect"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/value"
+    ]
+  }
+]

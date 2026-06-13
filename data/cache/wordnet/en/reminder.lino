@@ -1,0 +1,21 @@
+language en
+lemma reminder
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a message that helps you remember something"
+    examples ("he ignored his wife's reminders")
+    id oewn-06518748-n
+    partOfSpeech n
+  entry
+    definition "an experience that causes you to remember something"
+    id oewn-05821727-n
+    partOfSpeech n
+  entry
+    definition "someone who gives a warning so that a mistake can be avoided"
+    id oewn-09791278-n
+    partOfSpeech n
+    synonyms (admonisher monitor)
+source "oewn:2024"

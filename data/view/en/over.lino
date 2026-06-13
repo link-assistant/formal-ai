@@ -1,0 +1,33 @@
+view
+  id M-dde093a1579b
+  lemma over
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(cricket) the division of play during which six balls are bowled at the batsman by one player from the other team from the same end of the pitch"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at or to a point across intervening space etc."
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "throughout an area"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "throughout a period of time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "beyond the top or upper surface or edge; forward from an upright position"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "over the entire area"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having come or been brought to a conclusion"
+    provenance (wordnet)

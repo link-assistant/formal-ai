@@ -1,0 +1,16 @@
+Q1329258
+  aliases
+    en ("cardinal number")
+  descriptions
+    en "subtype of word class numeral; word describing an integer quantity (zero, three, twenty-seven, ...)"
+    hi "शब्द भेद"
+    ru "часть речи"
+    zh "表示事物數量的數詞"
+  id Q1329258
+  labels
+    en "cardinal numeral"
+    hi "गणन संख्या"
+    ru "количественное числительное"
+    zh "基数词"
+  type item
+success 1

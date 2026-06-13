@@ -1,0 +1,89 @@
+{
+  "entities": {
+    "Q1799665": {
+      "type": "item",
+      "id": "Q1799665",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "modulo operation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "деление с остатком"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "模除"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "computational operation"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "modulo"
+          },
+          {
+            "language": "en",
+            "value": "modulus"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "деление с остастком"
+          },
+          {
+            "language": "ru",
+            "value": "неполное частное"
+          },
+          {
+            "language": "ru",
+            "value": "деление по модулю"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "取模運算"
+          },
+          {
+            "language": "zh",
+            "value": "取模操作"
+          },
+          {
+            "language": "zh",
+            "value": "模数"
+          },
+          {
+            "language": "zh",
+            "value": "取模运算"
+          },
+          {
+            "language": "zh",
+            "value": "模运算"
+          },
+          {
+            "language": "zh",
+            "value": "取余运算"
+          },
+          {
+            "language": "zh",
+            "value": "求余运算"
+          },
+          {
+            "language": "zh",
+            "value": "取餘運算"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

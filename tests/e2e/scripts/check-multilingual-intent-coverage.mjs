@@ -8,6 +8,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import {
+  parseLinoEntry,
+  parseLinoField,
+  parseSupportedLanguagesFromAgentInfo,
+} from './lino-seed-parser.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '../../..');
@@ -18,11 +23,7 @@ function readRepoFile(relativePath) {
 
 function parseSupportedLanguages() {
   const agentInfo = readRepoFile('data/seed/agent-info.lino');
-  const match = agentInfo.match(/field "supported_languages"\s*\n\s+value "([^"]+)"/);
-  if (!match) {
-    throw new Error('data/seed/agent-info.lino is missing supported_languages');
-  }
-  return match[1].split('|').filter(Boolean);
+  return parseSupportedLanguagesFromAgentInfo(agentInfo);
 }
 
 function parseIntentRouting() {
@@ -30,10 +31,10 @@ function parseIntentRouting() {
   let current = null;
 
   for (const line of readRepoFile('data/seed/intent-routing.lino').split(/\r?\n/)) {
-    const intent = line.match(/^  intent "([^"]+)"/);
-    if (intent) {
+    const intent = parseLinoEntry(line, 2, 'intent');
+    if (intent !== null) {
       current = {
-        id: intent[1],
+        id: intent,
         slug: '',
         keywords: [],
         phrases: [],
@@ -46,16 +47,16 @@ function parseIntentRouting() {
 
     if (!current) continue;
 
-    const slug = line.match(/^    slug "([^"]+)"/);
-    if (slug) {
-      current.slug = slug[1];
+    const slug = parseLinoEntry(line, 4, 'slug');
+    if (slug !== null) {
+      current.slug = slug;
       continue;
     }
 
-    const entry = line.match(/^    (keyword|phrase|token|combo) "([^"]+)"/);
+    const entry = parseLinoField(line, 4);
     if (entry) {
-      const collection = `${entry[1]}s`;
-      current[collection].push(entry[2]);
+      const collection = `${entry.key}s`;
+      if (collection in current) current[collection].push(entry.value);
     }
   }
 
@@ -67,18 +68,18 @@ function parsePromptPatterns() {
   let current = null;
 
   for (const line of readRepoFile('data/seed/prompt-patterns.lino').split(/\r?\n/)) {
-    const pattern = line.match(/^  pattern "([^"]+)"/);
-    if (pattern) {
+    const pattern = parseLinoEntry(line, 2, 'pattern');
+    if (pattern !== null) {
       if (current) patterns.push(current);
-      current = { id: pattern[1] };
+      current = { id: pattern };
       continue;
     }
 
     if (!current) continue;
 
-    const field = line.match(/^    ([a-z_]+) "([^"]*)"/);
+    const field = parseLinoField(line, 4);
     if (field) {
-      current[field[1]] = field[2];
+      current[field.key] = field.value;
     }
   }
 
@@ -91,18 +92,18 @@ function parseResponseRecords() {
   let current = null;
 
   for (const line of readRepoFile('data/seed/multilingual-responses.lino').split(/\r?\n/)) {
-    const response = line.match(/^  response "([^"]+)"/);
-    if (response) {
+    const response = parseLinoEntry(line, 2, 'response');
+    if (response !== null) {
       if (current) responses.push(current);
-      current = { id: response[1] };
+      current = { id: response };
       continue;
     }
 
     if (!current) continue;
 
-    const field = line.match(/^    ([a-z_]+) "([^"]*)"/);
-    if (field && field[1] !== 'variant') {
-      current[field[1]] = field[2];
+    const field = parseLinoField(line, 4);
+    if (field && field.key !== 'variant') {
+      current[field.key] = field.value;
     }
   }
 
@@ -126,22 +127,22 @@ function parseConceptRecords() {
 
     if (!current) continue;
 
-    const localizedHeader = line.match(/^  localized "([^"]+)"/);
-    if (localizedHeader) {
-      localized = { language: localizedHeader[1] };
+    const localizedHeader = parseLinoEntry(line, 2, 'localized');
+    if (localizedHeader !== null) {
+      localized = { language: localizedHeader };
       current.localized.push(localized);
       continue;
     }
 
-    const localizedField = line.match(/^    ([a-z_]+) "([^"]*)"/);
+    const localizedField = parseLinoField(line, 4);
     if (localized && localizedField) {
-      localized[localizedField[1]] = localizedField[2];
+      localized[localizedField.key] = localizedField.value;
       continue;
     }
 
-    const field = line.match(/^  ([a-z_]+) "([^"]*)"/);
+    const field = parseLinoField(line, 2);
     if (field) {
-      current[field[1]] = field[2];
+      current[field.key] = field.value;
       localized = null;
     }
   }
@@ -156,32 +157,32 @@ function parseToolRecords() {
   let localized = null;
 
   for (const line of readRepoFile('data/seed/tools.lino').split(/\r?\n/)) {
-    const tool = line.match(/^  tool "([^"]+)"/);
-    if (tool) {
+    const tool = parseLinoEntry(line, 2, 'tool');
+    if (tool !== null) {
       if (current) tools.push(current);
-      current = { id: tool[1], localized: [] };
+      current = { id: tool, localized: [] };
       localized = null;
       continue;
     }
 
     if (!current) continue;
 
-    const localizedHeader = line.match(/^    localized "([^"]+)"/);
-    if (localizedHeader) {
-      localized = { language: localizedHeader[1] };
+    const localizedHeader = parseLinoEntry(line, 4, 'localized');
+    if (localizedHeader !== null) {
+      localized = { language: localizedHeader };
       current.localized.push(localized);
       continue;
     }
 
-    const localizedField = line.match(/^      ([a-z_]+) "([^"]*)"/);
+    const localizedField = parseLinoField(line, 6);
     if (localized && localizedField) {
-      localized[localizedField[1]] = localizedField[2];
+      localized[localizedField.key] = localizedField.value;
       continue;
     }
 
-    const field = line.match(/^    ([a-z_]+) "([^"]*)"/);
+    const field = parseLinoField(line, 4);
     if (field) {
-      current[field[1]] = field[2];
+      current[field.key] = field.value;
       localized = null;
     }
   }
@@ -196,26 +197,26 @@ function parseContextRecords() {
   let label = null;
 
   for (const line of readRepoFile('data/seed/concept-contexts.lino').split(/\r?\n/)) {
-    const context = line.match(/^  context "([^"]+)"/);
-    if (context) {
+    const context = parseLinoEntry(line, 2, 'context');
+    if (context !== null) {
       if (current) contexts.push(current);
-      current = { id: context[1], labels: [] };
+      current = { id: context, labels: [] };
       label = null;
       continue;
     }
 
     if (!current) continue;
 
-    const labelHeader = line.match(/^    label "([^"]+)"/);
-    if (labelHeader) {
-      label = { language: labelHeader[1] };
+    const labelHeader = parseLinoEntry(line, 4, 'label');
+    if (labelHeader !== null) {
+      label = { language: labelHeader };
       current.labels.push(label);
       continue;
     }
 
-    const labelText = line.match(/^      text "([^"]*)"/);
-    if (label && labelText) {
-      label.text = labelText[1];
+    const labelText = parseLinoEntry(line, 6, 'text');
+    if (label && labelText !== null) {
+      label.text = labelText;
       continue;
     }
 
@@ -409,10 +410,10 @@ for (const [language, entries] of Object.entries(testStatusPatterns)) {
 }
 
 const behaviorRulesListPatterns = {
-  en: ['show behavior rules', 'show list of your rules', 'list your rules'],
-  ru: ['покажи правила поведения', 'покажи список своих правил', 'перечисли свои правила'],
-  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
-  zh: ['列出行为规则', '显示你的规则列表', '列出你的规则'],
+  en: ['show behavior rules', 'show rules', 'show list of your rules', 'list your rules'],
+  ru: ['покажи правила поведения', 'покажи правила', 'покажи список своих правил', 'перечисли свои правила'],
+  hi: ['व्यवहार के नियम सूचीबद्ध करें', 'नियम दिखाओ', 'अपने नियमों की सूची दिखाओ', 'अपने नियम गिनाओ'],
+  zh: ['列出行为规则', '显示规则', '显示你的规则列表', '列出你的规则'],
 };
 
 assertMatrixMatchesSupportedLanguages('behaviorRulesListPatterns', behaviorRulesListPatterns);
@@ -839,6 +840,7 @@ const requiredLocalizedResponseIntents = [
   'greeting',
   'farewell',
   'courtesy_response',
+  'assistant_free_time',
   'test_status',
   'identity',
   'assistant_name',
@@ -884,9 +886,18 @@ for (const concept of concepts.filter((record) => record.localized.length > 0)) 
 }
 
 for (const tool of tools) {
+  const localizedToolRecords = Object.fromEntries(
+    tool.localized.map((localized) => [
+      localized.language,
+      {
+        ...localized,
+        description: localized.description ?? localized.note,
+      },
+    ]),
+  );
   const languageRecords = {
-    en: { name: tool.name, description: tool.description },
-    ...Object.fromEntries(tool.localized.map((localized) => [localized.language, localized])),
+    en: { name: tool.name, description: tool.description ?? tool.note },
+    ...localizedToolRecords,
   };
   assertMatrixMatchesSupportedLanguages(
     `tools.lino ${tool.id} localized records`,

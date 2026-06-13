@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q15228": {
+      "type": "item",
+      "id": "Q15228",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "The Lord of the Rings"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "द लॉर्ड ऑफ़ द रिंग्स"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Властелин колец"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "魔戒"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "роман Дж. Р. Р. Толкина (1954—1955)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "J·R·R·托爾金創作的史詩奇幻小說"
+        },
+        "en": {
+          "language": "en",
+          "value": "1954–1955 fantasy novel trilogy by J. R. R. Tolkien"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "指环王"
+          },
+          {
+            "language": "zh",
+            "value": "指環王"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Lord of the Rings"
+          },
+          {
+            "language": "en",
+            "value": "TLotR"
+          },
+          {
+            "language": "en",
+            "value": "LotR"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

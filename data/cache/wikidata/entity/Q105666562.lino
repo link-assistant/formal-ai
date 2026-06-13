@@ -1,0 +1,12 @@
+Q105666562
+  aliases
+    en ("computer data size" "computer storage size" "quantity of data" "data quantity" "computer data quantity" "quantity of information" "amount of data" "amount of information" "byte size" "data length" "byte length")
+  descriptions
+    en "quantity of computer data storage or memory capacity occupied by a file, program, dataset, etc."
+  id Q105666562
+  labels
+    en "data size"
+    ru "размер данных"
+    zh "資料大小"
+  type item
+success 1

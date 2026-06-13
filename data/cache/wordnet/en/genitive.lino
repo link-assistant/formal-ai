@@ -1,0 +1,18 @@
+language en
+lemma genitive
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "serving to express or indicate possession"
+    examples ("possessive pronouns" "the genitive endings")
+    id oewn-02873533-a
+    partOfSpeech a
+    synonyms (possessive)
+  entry
+    definition "the case expressing ownership"
+    id oewn-06322842-n
+    partOfSpeech n
+    synonyms ("genitive case" possessive "possessive case")
+source "oewn:2024"

@@ -1,0 +1,18 @@
+language en
+lemma across
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "to the opposite side"
+    examples ("the football field was 300 feet across")
+    id oewn-00274382-r
+    partOfSpeech r
+  entry
+    definition transversely
+    examples ("the marble slabs were cut across")
+    id oewn-00274275-r
+    partOfSpeech r
+    synonyms (crosswise crossways)
+source "oewn:2024"

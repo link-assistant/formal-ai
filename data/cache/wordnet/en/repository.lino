@@ -1,0 +1,22 @@
+language en
+lemma repository
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a facility where things can be deposited for storage or safekeeping"
+    id oewn-03182015-n
+    partOfSpeech n
+    synonyms (depository deposit depositary)
+  entry
+    definition "a person to whom a secret is entrusted"
+    id oewn-10541521-n
+    partOfSpeech n
+    synonyms (secretary)
+  entry
+    definition "a burial vault (usually for some famous person)"
+    id oewn-04083825-n
+    partOfSpeech n
+    synonyms (monument)
+source "oewn:2024"

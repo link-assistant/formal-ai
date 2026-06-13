@@ -1,0 +1,12 @@
+language en
+lemma telegram
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a message transmitted by telegraph"
+    id oewn-06635216-n
+    partOfSpeech n
+    synonyms (wire)
+source "oewn:2024"

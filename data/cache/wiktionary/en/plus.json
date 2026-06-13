@@ -1,0 +1,181 @@
+[
+  {
+    "word": "plus",
+    "phonetic": "/plʌs/",
+    "phonetics": [
+      {
+        "text": "/plʌs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/plus-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2454204",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A positive quantity.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An asset or useful addition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He is a real plus to the team."
+          },
+          {
+            "definition": "A plus sign: +.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "plus sign",
+          "asset"
+        ],
+        "antonyms": [
+          "minus",
+          "minus sign",
+          "liability",
+          "minus"
+        ]
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To add; to subject to addition.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(often followed by 'up') To increase in magnitude.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To improve.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To provide critical feedback by giving suggestions for improvement rather than criticisms.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(sales) To sell additional related items with an original purchase.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To frame in a positive light; to provide a sympathetic interpretation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(social media) To give a mark of approval on Google+.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To increase the potency of a remedy by diluting it in water and stirring.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(optometry) To increase a correction.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Being positive rather than negative or zero.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "−2 * −2 = +4 (\"minus 2 times minus 2 equals plus four\")"
+          },
+          {
+            "definition": "Positive, or involving advantage.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He is a plus factor."
+          },
+          {
+            "definition": "Electrically positive.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A battery has both a plus pole and a minus pole."
+          },
+          {
+            "definition": "(Of a quantity) Equal to or greater than; or more; upwards.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The bus can fit 60 plus kids, but we only get 48."
+          }
+        ],
+        "synonyms": [
+          "positive",
+          "advantageous",
+          "good",
+          "positive"
+        ],
+        "antonyms": [
+          "minus",
+          "negative",
+          "bad",
+          "disadvantageous",
+          "minus",
+          "negative"
+        ]
+      },
+      {
+        "partOfSpeech": "preposition",
+        "definitions": [
+          {
+            "definition": "And; sum of the previous one and the following one.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A water molecule is made up of two hydrogen atoms plus one of oxygen."
+          },
+          {
+            "definition": "With; having in addition.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I've won a holiday to France plus five hundred euros in spending money!"
+          },
+          {
+            "definition": "And also; in addition; besides (which).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let's go home now. It's late, plus I'm not feeling too well."
+          }
+        ],
+        "synonyms": [
+          "and"
+        ],
+        "antonyms": [
+          "minus"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/plus"
+    ]
+  }
+]

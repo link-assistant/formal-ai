@@ -1,0 +1,9 @@
+view
+  id M-b093fa8d4c50
+  lemma approved
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "established by authority; given authoritative approval"
+    provenance (wordnet)

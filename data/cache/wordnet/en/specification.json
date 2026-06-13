@@ -1,0 +1,37 @@
+{
+  "lemma": "specification",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06737816-n",
+      "partOfSpeech": "n",
+      "definition": "a detailed description of design criteria for a piece of work",
+      "synonyms": [
+        "spec"
+      ]
+    },
+    {
+      "id": "oewn-07245859-n",
+      "partOfSpeech": "n",
+      "definition": "naming explicitly"
+    },
+    {
+      "id": "oewn-06688083-n",
+      "partOfSpeech": "n",
+      "definition": "(patent law) a document drawn up by the applicant for a patent of invention that provides an explicit and detailed description of the nature and use of an invention"
+    },
+    {
+      "id": "oewn-01151798-n",
+      "partOfSpeech": "n",
+      "definition": "a restriction that is insisted upon as a condition for an agreement",
+      "synonyms": [
+        "stipulation"
+      ]
+    }
+  ]
+}

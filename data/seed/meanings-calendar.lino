@@ -1,557 +1,560 @@
 meanings
-  meaning "monday"
-    gloss "the first day of the working week in the ISO weekday cycle"
-    wiktionary "Monday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "monday"
-        description "English noun for the first day of the ISO weekday cycle."
-      word "mon"
-        description "English abbreviation for Monday, the first day of the ISO weekday cycle."
-    lexeme "ru"
-      word "понедельник"
-        description "Russian noun (romanized ponedelnik) for Monday, the first ISO weekday, in the nominative case."
-      word "понедельника"
-        description "Russian noun (romanized ponedelnika) for Monday, the genitive case form of the first ISO weekday."
-      word "понедельником"
-        description "Russian noun (romanized ponedelnikom) for Monday, the instrumental case form of the first ISO weekday."
-      word "понедельнику"
-        description "Russian noun (romanized ponedelniku) for Monday, the dative case form of the first ISO weekday."
-      word "понедельнике"
-        description "Russian noun (romanized ponedelnike) for Monday, the prepositional case form of the first ISO weekday."
-    lexeme "hi"
-      word "सोमवार"
-        description "Hindi noun (romanized somvar) for Monday, the first day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期一"
-        description "Chinese noun (pinyin xingqiyi) for Monday, the first day of the ISO weekday cycle."
-      word "周一"
-        description "Chinese noun (pinyin zhouyi) for Monday, a colloquial surface for the first ISO weekday."
-  meaning "tuesday"
-    gloss "the second day of the ISO weekday cycle, after Monday"
-    wiktionary "Tuesday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "tuesday"
-        description "English noun for the second day of the ISO weekday cycle, after Monday."
-      word "tue"
-        description "English abbreviation for Tuesday, the second day of the ISO weekday cycle."
-      word "tues"
-        description "English abbreviation for Tuesday, an alternative short form of the second ISO weekday."
-    lexeme "ru"
-      word "вторник"
-        description "Russian noun (romanized vtornik) for Tuesday, the second ISO weekday, in the nominative case."
-      word "вторника"
-        description "Russian noun (romanized vtornika) for Tuesday, the genitive case form of the second ISO weekday."
-      word "вторником"
-        description "Russian noun (romanized vtornikom) for Tuesday, the instrumental case form of the second ISO weekday."
-      word "вторнику"
-        description "Russian noun (romanized vtorniku) for Tuesday, the dative case form of the second ISO weekday."
-      word "вторнике"
-        description "Russian noun (romanized vtornike) for Tuesday, the prepositional case form of the second ISO weekday."
-    lexeme "hi"
-      word "मंगलवार"
-        description "Hindi noun (romanized mangalvar) for Tuesday, the second day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期二"
-        description "Chinese noun (pinyin xingqier) for Tuesday, the second day of the ISO weekday cycle."
-      word "周二"
-        description "Chinese noun (pinyin zhouer) for Tuesday, a colloquial surface for the second ISO weekday."
-  meaning "wednesday"
-    gloss "the third day of the ISO weekday cycle, after Tuesday"
-    wiktionary "Wednesday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "wednesday"
-        description "English noun for the third day of the ISO weekday cycle, after Tuesday."
-      word "wed"
-        description "English abbreviation for Wednesday, the third day of the ISO weekday cycle."
-    lexeme "ru"
-      word "среда"
-        description "Russian noun (romanized sreda) for Wednesday, the third ISO weekday, in the nominative case."
-      word "среды"
-        description "Russian noun (romanized sredy) for Wednesday, the genitive case form of the third ISO weekday."
-      word "среде"
-        description "Russian noun (romanized srede) for Wednesday, the dative or prepositional case form of the third ISO weekday."
-      word "среду"
-        description "Russian noun (romanized sredu) for Wednesday, the accusative case form of the third ISO weekday."
-      word "средой"
-        description "Russian noun (romanized sredoy) for Wednesday, the instrumental case form of the third ISO weekday."
-    lexeme "hi"
-      word "बुधवार"
-        description "Hindi noun (romanized budhvar) for Wednesday, the third day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期三"
-        description "Chinese noun (pinyin xingqisan) for Wednesday, the third day of the ISO weekday cycle."
-      word "周三"
-        description "Chinese noun (pinyin zhousan) for Wednesday, a colloquial surface for the third ISO weekday."
-  meaning "thursday"
-    gloss "the fourth day of the ISO weekday cycle, after Wednesday"
-    wiktionary "Thursday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "thursday"
-        description "English noun for the fourth day of the ISO weekday cycle, after Wednesday."
-      word "thu"
-        description "English abbreviation for Thursday, the fourth day of the ISO weekday cycle."
-      word "thur"
-        description "English abbreviation for Thursday, an alternative short form of the fourth ISO weekday."
-      word "thurs"
-        description "English abbreviation for Thursday, another short form of the fourth ISO weekday."
-    lexeme "ru"
-      word "четверг"
-        description "Russian noun (romanized chetverg) for Thursday, the fourth ISO weekday, in the nominative case."
-      word "четверга"
-        description "Russian noun (romanized chetverga) for Thursday, the genitive case form of the fourth ISO weekday."
-      word "четвергом"
-        description "Russian noun (romanized chetvergom) for Thursday, the instrumental case form of the fourth ISO weekday."
-      word "четвергу"
-        description "Russian noun (romanized chetvergu) for Thursday, the dative case form of the fourth ISO weekday."
-      word "четверге"
-        description "Russian noun (romanized chetverge) for Thursday, the prepositional case form of the fourth ISO weekday."
-    lexeme "hi"
-      word "गुरुवार"
-        description "Hindi noun (romanized guruvar) for Thursday, the fourth day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期四"
-        description "Chinese noun (pinyin xingqisi) for Thursday, the fourth day of the ISO weekday cycle."
-      word "周四"
-        description "Chinese noun (pinyin zhousi) for Thursday, a colloquial surface for the fourth ISO weekday."
-  meaning "friday"
-    gloss "the fifth day of the ISO weekday cycle, after Thursday"
-    wiktionary "Friday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "friday"
-        description "English noun for the fifth day of the ISO weekday cycle, after Thursday."
-      word "fri"
-        description "English abbreviation for Friday, the fifth day of the ISO weekday cycle."
-    lexeme "ru"
-      word "пятница"
-        description "Russian noun (romanized pyatnitsa) for Friday, the fifth ISO weekday, in the nominative case."
-      word "пятницы"
-        description "Russian noun (romanized pyatnitsy) for Friday, the genitive case form of the fifth ISO weekday."
-      word "пятнице"
-        description "Russian noun (romanized pyatnitse) for Friday, the dative or prepositional case form of the fifth ISO weekday."
-      word "пятницу"
-        description "Russian noun (romanized pyatnitsu) for Friday, the accusative case form of the fifth ISO weekday."
-      word "пятницей"
-        description "Russian noun (romanized pyatnitsey) for Friday, the instrumental case form of the fifth ISO weekday."
-    lexeme "hi"
-      word "शुक्रवार"
-        description "Hindi noun (romanized shukravar) for Friday, the fifth day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期五"
-        description "Chinese noun (pinyin xingqiwu) for Friday, the fifth day of the ISO weekday cycle."
-      word "周五"
-        description "Chinese noun (pinyin zhouwu) for Friday, a colloquial surface for the fifth ISO weekday."
-  meaning "saturday"
-    gloss "the sixth day of the ISO weekday cycle, after Friday"
-    wiktionary "Saturday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "saturday"
-        description "English noun for the sixth day of the ISO weekday cycle, after Friday."
-      word "sat"
-        description "English abbreviation for Saturday, the sixth day of the ISO weekday cycle."
-    lexeme "ru"
-      word "суббота"
-        description "Russian noun (romanized subbota) for Saturday, the sixth ISO weekday, in the nominative case."
-      word "субботы"
-        description "Russian noun (romanized subboty) for Saturday, the genitive case form of the sixth ISO weekday."
-      word "субботе"
-        description "Russian noun (romanized subbote) for Saturday, the dative or prepositional case form of the sixth ISO weekday."
-      word "субботу"
-        description "Russian noun (romanized subbotu) for Saturday, the accusative case form of the sixth ISO weekday."
-      word "субботой"
-        description "Russian noun (romanized subbotoy) for Saturday, the instrumental case form of the sixth ISO weekday."
-    lexeme "hi"
-      word "शनिवार"
-        description "Hindi noun (romanized shanivar) for Saturday, the sixth day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期六"
-        description "Chinese noun (pinyin xingqiliu) for Saturday, the sixth day of the ISO weekday cycle."
-      word "周六"
-        description "Chinese noun (pinyin zhouliu) for Saturday, a colloquial surface for the sixth ISO weekday."
-  meaning "sunday"
-    gloss "the seventh day of the ISO weekday cycle, after Saturday"
-    wiktionary "Sunday"
-    defined_by "calendar_day"
-    role "calendar_weekday"
-    lexeme "en"
-      word "sunday"
-        description "English noun for the seventh day of the ISO weekday cycle, after Saturday."
-      word "sun"
-        description "English abbreviation for Sunday, the seventh day of the ISO weekday cycle."
-    lexeme "ru"
-      word "воскресенье"
-        description "Russian noun (romanized voskresenye) for Sunday, the seventh ISO weekday, in the nominative case."
-      word "воскресенья"
-        description "Russian noun (romanized voskresenya) for Sunday, the genitive case form of the seventh ISO weekday."
-      word "воскресенью"
-        description "Russian noun (romanized voskresenyu) for Sunday, the dative case form of the seventh ISO weekday."
-      word "воскресеньем"
-        description "Russian noun (romanized voskresenyem) for Sunday, the instrumental case form of the seventh ISO weekday."
-    lexeme "hi"
-      word "रविवार"
-        description "Hindi noun (romanized ravivar) for Sunday, the seventh day of the ISO weekday cycle."
-    lexeme "zh"
-      word "星期日"
-        description "Chinese noun (pinyin xingqiri) for Sunday, the seventh day of the ISO weekday cycle."
-      word "星期天"
-        description "Chinese noun (pinyin xingqitian) for Sunday, a colloquial surface for the seventh ISO weekday."
-      word "周日"
-        description "Chinese noun (pinyin zhouri) for Sunday, a colloquial surface for the seventh ISO weekday."
-  meaning "calendar_day"
-    gloss "a single named day; the unit a weekday-relation question asks about"
-    wiktionary "day"
-    defined_by "calendar_week"
-    defined_by "calendar_date"
-    defined_by "concept"
-    role "calendar_day_reference"
-    lexeme "en"
-      word "day"
-        description "English noun for a single named day, the unit a weekday-relation question asks about."
-      word "weekday"
-        description "English noun for a day of the week; a more specific surface for a single named day."
-      word "week day"
-        description "English two-word spelling of weekday, naming a single day of the week."
-    lexeme "ru"
-      word "день"
-        description "Russian noun (romanized den) for a day, in the nominative or accusative case."
-      word "дня"
-        description "Russian noun (romanized dnya) for a day, the genitive case form."
-      word "дни"
-        description "Russian noun (romanized dni) for days, the nominative plural form."
-      word "дней"
-        description "Russian noun (romanized dney) for days, the genitive plural form."
-    lexeme "hi"
-      word "दिन"
-        description "Hindi noun (romanized din) for a day, the unit a weekday-relation question asks about."
-    lexeme "zh"
-      word "星期几"
-        description "Chinese phrase (pinyin xingqiji) meaning which day of the week, the interrogative surface for a named day."
-      word "日子"
-        description "Chinese noun (pinyin rizi) for a day or date, a colloquial surface for a single named day."
-  meaning "calendar_date"
-    gloss "a calendar date — the year-month-day coordinate of a day"
-    wiktionary "date"
-    defined_by "calendar_day"
-    role "calendar_day_reference"
-    lexeme "en"
-      word "date"
-        description "English noun for a calendar date, the year-month-day coordinate of a day."
-    lexeme "ru"
-      word "дата"
-        description "Russian noun (romanized data) for a date, in the nominative case."
-      word "дату"
-        description "Russian noun (romanized datu) for a date, the accusative case form."
-      word "число"
-        description "Russian noun (romanized chislo) for a day-of-month number; a surface for a calendar date."
-    lexeme "hi"
-      word "तारीख"
-        description "Hindi noun (romanized tarikh) for a date, the year-month-day coordinate of a day."
-      word "दिनांक"
-        description "Hindi noun (romanized dinank) for a date; a more formal surface for a calendar date."
-    lexeme "zh"
-      word "日期"
-        description "Chinese noun (pinyin riqi) for a date, the year-month-day coordinate of a day."
-      word "几号"
-        description "Chinese phrase (pinyin jihao) meaning which day of the month, an interrogative surface for a date."
-  meaning "calendar_week"
-    gloss "the seven-day cycle the weekdays belong to"
-    wiktionary "week"
-    defined_by "calendar_day"
-    role "calendar_day_reference"
-    lexeme "en"
-      word "week"
-        description "English noun for the seven-day cycle the weekdays belong to."
-    lexeme "ru"
-      word "неделя"
-        description "Russian noun (romanized nedelya) for a week, in the nominative case."
-      word "недели"
-        description "Russian noun (romanized nedeli) for a week, the genitive singular or nominative plural form."
-      word "неделе"
-        description "Russian noun (romanized nedele) for a week, the dative or prepositional case form."
-      word "неделю"
-        description "Russian noun (romanized nedelyu) for a week, the accusative case form."
-      word "неделей"
-        description "Russian noun (romanized nedeley) for a week, the instrumental case form."
-      word "недель"
-        description "Russian noun (romanized nedel) for weeks, the genitive plural form."
-    lexeme "hi"
-      word "सप्ताह"
-        description "Hindi noun (romanized saptah) for a week, the seven-day cycle the weekdays belong to."
-    lexeme "zh"
-      word "星期"
-        description "Chinese noun (pinyin xingqi) for a week, the seven-day cycle the weekdays belong to."
-      word "周"
-        description "Chinese noun (pinyin zhou) for a week, a shorter surface for the seven-day cycle."
-  meaning "calendar_following"
-    gloss "the relation 'the day that comes after' — a +1 step in the weekday cycle"
-    wiktionary "after"
-    defined_by "calendar_day"
-    role "calendar_direction_next"
-    lexeme "en"
-      word "after"
-        description "English preposition for the relation the day that comes after, a +1 step in the weekday cycle."
-      word "comes after"
-        description "English verb phrase for following in sequence, naming the +1 step in the weekday cycle."
-      word "day after"
-        description "English noun phrase for the day that follows, a +1 step in the weekday cycle."
-      word "next day"
-        description "English noun phrase for the following day, a +1 step in the weekday cycle."
-      word "following day"
-        description "English noun phrase for the day that comes after, a +1 step in the weekday cycle."
-      word "following weekday"
-        description "English noun phrase for the weekday that comes after, a +1 step in the weekday cycle."
-      word "follows"
-        description "English verb for coming after in sequence, naming the +1 step in the weekday cycle."
-    lexeme "ru"
-      word "после"
-        description "Russian preposition (romanized posle) meaning after, naming the +1 step in the weekday cycle."
-      word "наступает после"
-        description "Russian verb phrase (romanized nastupayet posle) meaning comes after, naming the +1 step in the weekday cycle."
-      word "следующий день"
-        description "Russian noun phrase (romanized sleduyushchiy den) meaning the next day, a +1 step in the weekday cycle."
-      word "следующая"
-        description "Russian adjective (romanized sleduyushchaya) meaning following, the feminine form naming the +1 step."
-      word "следом за"
-        description "Russian phrase (romanized sledom za) meaning right after, naming the +1 step in the weekday cycle."
-    lexeme "hi"
-      word "के बाद"
-        description "Hindi postposition (romanized ke baad) meaning after, naming the +1 step in the weekday cycle."
-      word "बाद"
-        description "Hindi adverb (romanized baad) meaning after or later, naming the +1 step in the weekday cycle."
-      word "अगला"
-        description "Hindi adjective (romanized agla) meaning next, the masculine form naming the +1 step."
-      word "अगले"
-        description "Hindi adjective (romanized agle) meaning next, an oblique or plural form naming the +1 step."
-    lexeme "zh"
-      word "之后"
-        description "Chinese phrase (pinyin zhihou) meaning after, naming the +1 step in the weekday cycle."
-      word "后"
-        description "Chinese word (pinyin hou) meaning after or behind, a shorter surface for the +1 step."
-      word "下一个"
-        description "Chinese phrase (pinyin xiayige) meaning the next one, naming the +1 step in the weekday cycle."
-      word "下一天"
-        description "Chinese phrase (pinyin xiayitian) meaning the next day, a +1 step in the weekday cycle."
-  meaning "calendar_preceding"
-    gloss "the relation 'the day that comes before' — a -1 step in the weekday cycle"
-    wiktionary "before"
-    defined_by "calendar_day"
-    role "calendar_direction_previous"
-    lexeme "en"
-      word "before"
-        description "English preposition for the relation the day that comes before, a -1 step in the weekday cycle."
-      word "comes before"
-        description "English verb phrase for preceding in sequence, naming the -1 step in the weekday cycle."
-      word "day before"
-        description "English noun phrase for the day that precedes, a -1 step in the weekday cycle."
-      word "previous day"
-        description "English noun phrase for the preceding day, a -1 step in the weekday cycle."
-      word "previous weekday"
-        description "English noun phrase for the preceding weekday, a -1 step in the weekday cycle."
-      word "precedes"
-        description "English verb for coming before in sequence, naming the -1 step in the weekday cycle."
-    lexeme "ru"
-      word "перед"
-        description "Russian preposition (romanized pered) meaning before, naming the -1 step in the weekday cycle."
-      word "предыдущий день"
-        description "Russian noun phrase (romanized predydushchiy den) meaning the previous day, a -1 step in the weekday cycle."
-      word "предыдущая"
-        description "Russian adjective (romanized predydushchaya) meaning previous, the feminine form naming the -1 step."
-      word "предшествует"
-        description "Russian verb (romanized predshestvuyet) meaning precedes, naming the -1 step in the weekday cycle."
-    lexeme "hi"
-      word "से पहले"
-        description "Hindi postposition (romanized se pehle) meaning before, naming the -1 step in the weekday cycle."
-      word "के पहले"
-        description "Hindi postposition (romanized ke pehle) meaning before, an alternative surface for the -1 step."
-      word "पहले"
-        description "Hindi adverb (romanized pehle) meaning before or earlier, naming the -1 step in the weekday cycle."
-      word "पिछला"
-        description "Hindi adjective (romanized pichhla) meaning previous, the masculine form naming the -1 step."
-    lexeme "zh"
-      word "之前"
-        description "Chinese phrase (pinyin zhiqian) meaning before, naming the -1 step in the weekday cycle."
-      word "前"
-        description "Chinese word (pinyin qian) meaning before or front, a shorter surface for the -1 step."
-      word "上一个"
-        description "Chinese phrase (pinyin shangyige) meaning the previous one, naming the -1 step in the weekday cycle."
-      word "上一天"
-        description "Chinese phrase (pinyin shangyitian) meaning the previous day, a -1 step in the weekday cycle."
-  meaning "calendar_today"
-    gloss "the present day relative to the system clock"
-    wiktionary "today"
-    defined_by "calendar_day"
-    role "calendar_today"
-    lexeme "en"
-      word "today"
-        description "English noun and adverb for the present day relative to the system clock."
-    lexeme "ru"
-      word "сегодня"
-        description "Russian adverb (romanized segodnya) for today, the present day relative to the system clock."
-    lexeme "hi"
-      word "आज"
-        description "Hindi adverb (romanized aaj) for today, the present day relative to the system clock."
-    lexeme "zh"
-      word "今天"
-        description "Chinese noun (pinyin jintian) for today, the present day relative to the system clock."
-  meaning "calendar_interrogative"
-    gloss "an interrogative or imperative asking which day — the question side of a calendar query"
-    wiktionary "what"
-    defined_by "calendar_day"
-    role "calendar_question"
-    lexeme "en"
-      word "what"
-        description "English interrogative pronoun asking which day, the question side of a calendar query."
-      word "which"
-        description "English interrogative determiner selecting which day, the question side of a calendar query."
-      word "tell me"
-        description "English imperative phrase requesting which day, the question side of a calendar query."
-      word "show"
-        description "English imperative verb requesting which day be displayed, the question side of a calendar query."
-      word "?"
-        description "Question mark punctuation marking an interrogative, the question side of a calendar query."
-    lexeme "ru"
-      word "какой"
-        description "Russian interrogative (romanized kakoy) meaning which, the masculine form asking which day."
-      word "какая"
-        description "Russian interrogative (romanized kakaya) meaning which, the feminine form asking which day."
-      word "какое"
-        description "Russian interrogative (romanized kakoye) meaning which, the neuter form asking which day."
-      word "скажи"
-        description "Russian imperative (romanized skazhi) meaning tell me, requesting which day."
-      word "покажи"
-        description "Russian imperative (romanized pokazhi) meaning show, requesting which day be displayed."
-    lexeme "hi"
-      word "कौन"
-        description "Hindi interrogative pronoun (romanized kaun) meaning who or which, asking which day."
-      word "क्या"
-        description "Hindi interrogative (romanized kya) meaning what, the question side of a calendar query."
-      word "बताओ"
-        description "Hindi imperative (romanized batao) meaning tell me, requesting which day."
-      word "दिखाओ"
-        description "Hindi imperative (romanized dikhao) meaning show, requesting which day be displayed."
-    lexeme "zh"
-      word "什么"
-        description "Chinese interrogative (pinyin shenme) meaning what, the question side of a calendar query."
-      word "几"
-        description "Chinese interrogative (pinyin ji) meaning how many or which number, asking which day."
-      word "告诉"
-        description "Chinese verb (pinyin gaosu) meaning tell, requesting which day."
-      word "显示"
-        description "Chinese verb (pinyin xianshi) meaning show or display, requesting which day be displayed."
-  meaning "calendar_schedule_action"
-    gloss "a verb or imperative requesting creation, booking or addition of a calendar event or meeting"
-    wiktionary "schedule"
-    defined_by "calendar_day"
-    role "calendar_schedule_action"
-    lexeme "en"
-      word "schedule"
-        description "English verb for scheduling or booking a calendar item."
-      word "schedule me"
-        description "English imperative phrase requesting to create a calendar entry."
-      word "book"
-        description "English verb for booking a time slot or meeting."
-      word "book on the"
-        description "English phrase fragment used in booking phrases."
-      word "put on the calendar"
-        description "English verb phrase for placing an item onto the calendar."
-      word "put on my calendar"
-        description "English variant for personal scheduling."
-      word "add to the calendar"
-        description "English verb phrase for adding an event to the calendar."
-      word "add to my calendar"
-        description "English variant requesting addition to the user's own calendar."
-    lexeme "ru"
-      word "забей"
-        description "Russian imperative (romanized zabey) meaning schedule or punch in a calendar entry."
-      word "забей мне"
-        description "Russian imperative phrase (romanized zabey mne) meaning 'schedule for me'."
-      word "поставь"
-        description "Russian imperative (romanized postav') meaning 'put' or set a calendar appointment."
-      word "поставь мне"
-        description "Russian phrase (romanized postav' mne) 'put for me'."
-      word "создай"
-        description "Russian imperative (romanized sozday) meaning create."
-      word "создай событие"
-        description "Russian phrase (romanized sozday sobytie) 'create an event'."
-      word "добавь"
-        description "Russian imperative (romanized dobav') meaning add."
-      word "добавь в календарь"
-        description "Russian phrase (romanized dobav' v kalendar') 'add to the calendar'."
-      word "на встречу"
-        description "Russian phrase (romanized na vstrechu) 'for a meeting'."
-  meaning "calendar_event"
-    gloss "a noun naming a scheduled meeting, call, appointment or general calendar event"
-    wiktionary "meeting"
-    defined_by "calendar_day"
-    role "calendar_event"
-    lexeme "en"
-      word "meeting"
-        description "English noun for a scheduled meeting or appointment."
-      word "call"
-        description "English noun for a phone or video call as a calendar event."
-      word "event"
-        description "English noun for a calendar event or happening."
-    lexeme "ru"
-      word "встреча"
-        description "Russian noun (romanized vstrecha) for a meeting or appointment, nominative."
-      word "встречи"
-        description "Russian noun (romanized vstrechi) for meetings, genitive or nominative plural."
-      word "встречу"
-        description "Russian noun (romanized vstrechu) for a meeting, accusative case."
-      word "событие"
-        description "Russian noun (romanized sobytie) for an event."
-      word "события"
-        description "Russian noun (romanized sobytiya) for events, plural or genitive."
-  meaning "calendar_clock_time"
-    gloss "clock time and time-of-day surfaces used to anchor a scheduled event or meeting (17:00, в 17:00, 5 pm, вечером, ...)"
-    wiktionary "time"
-    defined_by "calendar_day"
-    role "calendar_time"
-    lexeme "en"
-      word "17:00"
-        description "English 24-hour clock time surface."
-      word "5 pm"
-        description "English 12-hour time surface '5 pm' or '5pm'."
-      word "at 17:00"
-        description "English prepositional time phrase."
-    lexeme "ru"
-      word "17:00"
-        description "Russian 24-hour time literal."
-      word "в 17:00"
-        description "Russian time phrase (romanized v 17:00) 'at 17:00'."
-      word "17.00"
-        description "Russian dot-separated time variant."
-      word "вечером"
-        description "Russian adverb (romanized vecherom) 'in the evening' as a time-of-day cue."
-      word "в 17"
-        description "Russian shorthand time phrase."
-  meaning "calendar_timezone_alias"
-    gloss "alias surfaces for the Georgia/Tbilisi time zone; stable slug tbilisi maps to IANA Asia/Tbilisi"
-    wiktionary "Tbilisi"
-    defined_by "calendar_day"
-    role "calendar_timezone_alias"
-    lexeme "ru"
-      word "по грузии"
-        description "Russian phrase (romanized po gruzii) 'Georgia time'."
-      word "по тбилиси"
-        description "Russian phrase (romanized po tbilisi) 'Tbilisi time'."
-      word "грузинское время"
-        description "Russian noun phrase (romanized gruzinskoe vremya) 'Georgian time'."
-    lexeme "en"
-      word "tbilisi time"
-        description "English noun phrase naming Tbilisi local time."
-      word "georgia time"
-        description "English noun phrase naming Georgia (country) time."
-      word "Asia/Tbilisi"
-        description "IANA timezone identifier used directly as surface."
+  monday
+    grounded-in Q105
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text monday
+      surface
+        text mon
+    lexeme ru
+      surface
+        text понедельник
+      surface
+        text понедельника
+      surface
+        text понедельником
+      surface
+        text понедельнику
+      surface
+        text понедельнике
+    lexeme hi
+      surface
+        text सोमवार
+    lexeme zh
+      surface
+        text 星期一
+      surface
+        text 周一
+  tuesday
+    grounded-in Q127
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text tuesday
+      surface
+        text tue
+      surface
+        text tues
+    lexeme ru
+      surface
+        text вторник
+      surface
+        text вторника
+      surface
+        text вторником
+      surface
+        text вторнику
+      surface
+        text вторнике
+    lexeme hi
+      surface
+        text मंगलवार
+    lexeme zh
+      surface
+        text 星期二
+      surface
+        text 周二
+  wednesday
+    grounded-in Q128
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text wednesday
+      surface
+        text wed
+    lexeme ru
+      surface
+        text среда
+      surface
+        text среды
+      surface
+        text среде
+      surface
+        text среду
+      surface
+        text средой
+    lexeme hi
+      surface
+        text बुधवार
+    lexeme zh
+      surface
+        text 星期三
+      surface
+        text 周三
+  thursday
+    grounded-in Q129
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text thursday
+      surface
+        text thu
+      surface
+        text thur
+      surface
+        text thurs
+    lexeme ru
+      surface
+        text четверг
+      surface
+        text четверга
+      surface
+        text четвергом
+      surface
+        text четвергу
+      surface
+        text четверге
+    lexeme hi
+      surface
+        text गुरुवार
+    lexeme zh
+      surface
+        text 星期四
+      surface
+        text 周四
+  friday
+    grounded-in Q130
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text friday
+      surface
+        text fri
+    lexeme ru
+      surface
+        text пятница
+      surface
+        text пятницы
+      surface
+        text пятнице
+      surface
+        text пятницу
+      surface
+        text пятницей
+    lexeme hi
+      surface
+        text शुक्रवार
+    lexeme zh
+      surface
+        text 星期五
+      surface
+        text 周五
+  saturday
+    grounded-in Q131
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text saturday
+      surface
+        text sat
+    lexeme ru
+      surface
+        text суббота
+      surface
+        text субботы
+      surface
+        text субботе
+      surface
+        text субботу
+      surface
+        text субботой
+    lexeme hi
+      surface
+        text शनिवार
+    lexeme zh
+      surface
+        text 星期六
+      surface
+        text 周六
+  sunday
+    grounded-in Q132
+    defined-by calendar_day
+    role calendar_weekday
+    lexeme en
+      surface
+        text sunday
+      surface
+        text sun
+    lexeme ru
+      surface
+        text воскресенье
+      surface
+        text воскресенья
+      surface
+        text воскресенью
+      surface
+        text воскресеньем
+    lexeme hi
+      surface
+        text रविवार
+    lexeme zh
+      surface
+        text 星期日
+      surface
+        text 星期天
+      surface
+        text 周日
+  calendar_day
+    grounded-in Q573
+    defined-by calendar_week
+    defined-by calendar_date
+    defined-by concept
+    role calendar_day_reference
+    lexeme en
+      surface
+        text day
+      surface
+        text weekday
+      surface
+        text "week day"
+    lexeme ru
+      surface
+        text день
+      surface
+        text дня
+      surface
+        text дни
+      surface
+        text дней
+    lexeme hi
+      surface
+        text दिन
+    lexeme zh
+      surface
+        text 星期几
+      surface
+        text 日子
+  calendar_date
+    grounded-in Q205892
+    defined-by calendar_day
+    role calendar_day_reference
+    lexeme en
+      surface
+        text date
+    lexeme ru
+      surface
+        text дата
+      surface
+        text дату
+      surface
+        text число
+    lexeme hi
+      surface
+        text तारीख
+      surface
+        text दिनांक
+    lexeme zh
+      surface
+        text 日期
+      surface
+        text 几号
+  calendar_week
+    grounded-in Q23387
+    defined-by calendar_day
+    role calendar_day_reference
+    lexeme en
+      surface
+        text week
+    lexeme ru
+      surface
+        text неделя
+      surface
+        text недели
+      surface
+        text неделе
+      surface
+        text неделю
+      surface
+        text неделей
+      surface
+        text недель
+    lexeme hi
+      surface
+        text सप्ताह
+    lexeme zh
+      surface
+        text 星期
+      surface
+        text 周
+  calendar_following
+    defined-by calendar_day
+    role calendar_direction_next
+    lexeme en
+      surface
+        text after
+      surface
+        text "comes after"
+      surface
+        text "day after"
+      surface
+        text "next day"
+      surface
+        text "following day"
+      surface
+        text "following weekday"
+      surface
+        text follows
+    lexeme ru
+      surface
+        text после
+      surface
+        text "наступает после"
+      surface
+        text "следующий день"
+      surface
+        text следующая
+      surface
+        text "следом за"
+    lexeme hi
+      surface
+        text "के बाद"
+      surface
+        text बाद
+      surface
+        text अगला
+      surface
+        text अगले
+    lexeme zh
+      surface
+        text 之后
+      surface
+        text 后
+      surface
+        text 下一个
+      surface
+        text 下一天
+  calendar_preceding
+    defined-by calendar_day
+    role calendar_direction_previous
+    lexeme en
+      surface
+        text before
+      surface
+        text "comes before"
+      surface
+        text "day before"
+      surface
+        text "previous day"
+      surface
+        text "previous weekday"
+      surface
+        text precedes
+    lexeme ru
+      surface
+        text перед
+      surface
+        text "предыдущий день"
+      surface
+        text предыдущая
+      surface
+        text предшествует
+    lexeme hi
+      surface
+        text "से पहले"
+      surface
+        text "के पहले"
+      surface
+        text पहले
+      surface
+        text पिछला
+    lexeme zh
+      surface
+        text 之前
+      surface
+        text 前
+      surface
+        text 上一个
+      surface
+        text 上一天
+  calendar_today
+    grounded-in Q3151690
+    defined-by calendar_day
+    role calendar_today
+    lexeme en
+      surface
+        text today
+    lexeme ru
+      surface
+        text сегодня
+    lexeme hi
+      surface
+        text आज
+    lexeme zh
+      surface
+        text 今天
+  calendar_interrogative
+    defined-by calendar_day
+    role calendar_question
+    lexeme en
+      surface
+        text what
+      surface
+        text which
+      surface
+        text "tell me"
+      surface
+        text show
+      surface
+        text ?
+    lexeme ru
+      surface
+        text какой
+      surface
+        text какая
+      surface
+        text какое
+      surface
+        text скажи
+      surface
+        text покажи
+    lexeme hi
+      surface
+        text कौन
+      surface
+        text क्या
+      surface
+        text बताओ
+      surface
+        text दिखाओ
+    lexeme zh
+      surface
+        text 什么
+      surface
+        text 几
+      surface
+        text 告诉
+      surface
+        text 显示
+  calendar_schedule_action
+    defined-by calendar_day
+    role calendar_schedule_action
+    lexeme en
+      surface
+        text schedule
+      surface
+        text "schedule me"
+      surface
+        text "book"
+      surface
+        text "book on the"
+      surface
+        text "put on the calendar"
+      surface
+        text "put on my calendar"
+      surface
+        text "add to the calendar"
+      surface
+        text "add to my calendar"
+    lexeme ru
+      surface
+        text забей
+      surface
+        text "забей мне"
+      surface
+        text поставь
+      surface
+        text "поставь мне"
+      surface
+        text создай
+      surface
+        text "создай событие"
+      surface
+        text добавь
+      surface
+        text "добавь в календарь"
+      surface
+        text "на встречу"
+    lexeme hi
+      surface
+        text "शेड्यूल करें"
+      surface
+        text "कैलेंडर में जोड़ें"
+    lexeme zh
+      surface
+        text 安排
+      surface
+        text 添加到日历
+  calendar_event
+    defined-by calendar_day
+    role calendar_event
+    lexeme en
+      surface
+        text "meeting"
+      surface
+        text call
+      surface
+        text event
+    lexeme ru
+      surface
+        text встреча
+      surface
+        text встречи
+      surface
+        text встречу
+      surface
+        text событие
+      surface
+        text события
+    lexeme hi
+      surface
+        text मीटिंग
+      surface
+        text "घटना"
+    lexeme zh
+      surface
+        text 会议
+      surface
+        text 事件
+  calendar_clock_time
+    defined-by calendar_day
+    role calendar_time
+    lexeme en
+      surface
+        text "17:00"
+      surface
+        text "5 pm"
+      surface
+        text "5pm"
+      surface
+        text "at 17:00"
+    lexeme ru
+      surface
+        text "17:00"
+      surface
+        text "в 17:00"
+      surface
+        text "17.00"
+      surface
+        text вечером
+      surface
+        text "в 17"
+    lexeme hi
+      surface
+        text "शाम 5 बजे"
+    lexeme zh
+      surface
+        text 下午5点
+  calendar_timezone_alias
+    defined-by calendar_day
+    role calendar_timezone_alias
+    lexeme ru
+      surface
+        text "по грузии"
+      surface
+        text "по тбилиси"
+      surface
+        text "грузинское время"
+    lexeme en
+      surface
+        text "tbilisi time"
+      surface
+        text "georgia time"
+      surface
+        text "Asia/Tbilisi"

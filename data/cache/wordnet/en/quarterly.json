@@ -1,0 +1,43 @@
+{
+  "lemma": "quarterly",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03009554-a",
+      "partOfSpeech": "a",
+      "definition": "of or relating to or consisting of a quarter",
+      "examples": [
+        "quarterly report"
+      ]
+    },
+    {
+      "id": "oewn-06606829-n",
+      "partOfSpeech": "n",
+      "definition": "a periodical that is published every quarter (or four issues per year)"
+    },
+    {
+      "id": "oewn-00438873-r",
+      "partOfSpeech": "r",
+      "definition": "in diagonally opposed quarters of an escutcheon",
+      "examples": [
+        "two coats of arms borne quarterly"
+      ]
+    },
+    {
+      "id": "oewn-00438741-r",
+      "partOfSpeech": "r",
+      "definition": "in three month intervals",
+      "examples": [
+        "interest is compounded quarterly"
+      ],
+      "synonyms": [
+        "every quarter"
+      ]
+    }
+  ]
+}

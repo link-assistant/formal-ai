@@ -1,0 +1,90 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The fruit of the date palm, Phoenix dactylifera, somewhat in the shape of an olive, containing a soft, sweet pulp and enclosing a hard kernel."
+          example "We made a nice cake from dates."
+        entry
+          definition "The date palm."
+          example "There were a few dates planted around the house."
+      partOfSpeech noun
+  phonetic "/deɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/date-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=614848"
+      text "/deɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/date")
+  word date
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The addition to a writing, inscription, coin, etc., which specifies the time (especially the day, month, and year) when the writing or inscription was given, executed, or made."
+          example "the date of a letter, of a will, of a deed, of a coin, etc."
+        entry
+          definition "A specific day in time at which a transaction or event takes place, or is appointed to take place; a given point of time."
+          example "Do you know the date of the wedding?"
+        entry
+          definition "A point in time."
+          example "You may need that at a later date."
+        entry
+          definition "Assigned end; conclusion."
+        entry
+          definition "Given or assigned length of life; duration."
+        entry
+          definition "A pre-arranged meeting."
+          example "I arranged a date with my Australian business partners."
+        entry
+          definition "One's companion for social activities or occasions."
+          example "I brought Melinda to the wedding as my date."
+        entry
+          definition "A romantic meeting or outing with a lover or potential lover, or the person so met."
+          example "The cinema is a popular place to take someone on a date."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To note the time or place of writing or executing; to express in an instrument the time of its execution."
+          example "to date a letter, a bond, a deed, or a charter"
+        entry
+          definition "To note or fix the time of (an event); to give the date of."
+        entry
+          definition "To determine the age of something."
+          example "to date the building of the pyramids"
+        entry
+          definition "To take (someone) on a date, or a series of dates."
+        entry
+          definition "(by extension) To have a steady relationship with; to be romantically involved with."
+        entry
+          definition "(by extension) To have a steady relationship with each other; to be romantically involved with each other."
+          example "They met a couple of years ago, but have been dating for about five months."
+        entry
+          definition "To make or become old, especially in such a way as to fall out of fashion, become less appealing or attractive, etc."
+          example "The comedian dated himself by making quips about bands from the 1960s."
+        entry
+          definition "(with from) To have beginning; to begin; to be dated or reckoned."
+      partOfSpeech verb
+      synonyms (age elden obsolesce "go out" see)
+  phonetic "/deɪt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/date-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=614848"
+      text "/deɪt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/date")
+  word date

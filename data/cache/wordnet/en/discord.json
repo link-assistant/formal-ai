@@ -1,0 +1,52 @@
+{
+  "lemma": "discord",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14002549-n",
+      "partOfSpeech": "n",
+      "definition": "lack of agreement or harmony",
+      "synonyms": [
+        "strife"
+      ]
+    },
+    {
+      "id": "oewn-07196206-n",
+      "partOfSpeech": "n",
+      "definition": "disagreement among those expected to cooperate",
+      "synonyms": [
+        "dissension"
+      ]
+    },
+    {
+      "id": "oewn-04991947-n",
+      "partOfSpeech": "n",
+      "definition": "a harsh mixture of sounds",
+      "synonyms": [
+        "discordance"
+      ]
+    },
+    {
+      "id": "oewn-01172665-n",
+      "partOfSpeech": "n",
+      "definition": "strife resulting from a lack of agreement",
+      "synonyms": [
+        "discordance"
+      ]
+    },
+    {
+      "id": "oewn-02724418-v",
+      "partOfSpeech": "v",
+      "definition": "be different from one another",
+      "synonyms": [
+        "disagree",
+        "disaccord"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+language en
+lemma comparing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of examining resemblances"
+    examples ("they made a comparison of noise levels" "the fractions selected for comparison must require pupils to consider both numerator and denominator")
+    id oewn-00143485-n
+    partOfSpeech n
+    synonyms (comparison)
+source "oewn:2024"

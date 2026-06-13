@@ -1,0 +1,39 @@
+{
+  "lemma": "dialog",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07150914-n",
+      "partOfSpeech": "n",
+      "definition": "a conversation between two persons",
+      "synonyms": [
+        "dialogue",
+        "duologue"
+      ]
+    },
+    {
+      "id": "oewn-07023657-n",
+      "partOfSpeech": "n",
+      "definition": "the lines spoken by characters in drama or fiction",
+      "synonyms": [
+        "dialogue"
+      ]
+    },
+    {
+      "id": "oewn-06377836-n",
+      "partOfSpeech": "n",
+      "definition": "a literary composition in the form of a conversation between two people",
+      "examples": [
+        "he has read Plato's Dialogues in the original Greek"
+      ],
+      "synonyms": [
+        "dialogue"
+      ]
+    }
+  ]
+}

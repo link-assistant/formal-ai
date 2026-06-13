@@ -1,0 +1,14 @@
+Q2407
+  aliases
+    ru ("Си++")
+    zh ("C加加")
+  descriptions
+    en "general-purpose programming language"
+    hi "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+    ru "язык программирования"
+    zh "通用高階程式語言"
+  id Q2407
+  labels
+    hi "सी++"
+  type item
+success 1

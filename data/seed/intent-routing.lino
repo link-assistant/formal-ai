@@ -1,19 +1,19 @@
 intent_routing
-  intent "intent_greeting"
-    slug "greeting"
+  intent intent_greeting
+    slug greeting
     response_link "response:greeting"
-    keyword "hi"
-    keyword "hello"
-    keyword "hey"
+    keyword hi
+    keyword hello
+    keyword hey
     phrase "how are you"
     phrase "how are you doing"
     phrase "how do you do"
     phrase "how is it going"
     phrase "how s it going"
     phrase "how are things"
-    keyword "привет"
-    keyword "здравствуйте"
-    keyword "шалом"
+    keyword привет
+    keyword здравствуйте
+    keyword шалом
     phrase "шабат шалом"
     phrase "как дела"
     phrase "как твои дела"
@@ -24,10 +24,10 @@ intent_routing
     phrase "здравствуйте как ваши дела"
     phrase "как поживаешь"
     phrase "как вы поживаете"
-    keyword "नमस्ते"
-    keyword "नमस्कार"
-    keyword "सलाम"
-    keyword "हाय"
+    keyword नमस्ते
+    keyword नमस्कार
+    keyword सलाम
+    keyword हाय
     phrase "राम राम"
     phrase "कैसे हो"
     phrase "आप कैसे हैं"
@@ -35,43 +35,43 @@ intent_routing
     phrase "क्या हाल है"
     phrase "आपका क्या हाल है"
     phrase "सब कैसा चल रहा है"
-    keyword "你好"
-    keyword "您好"
-    keyword "嗨"
-    keyword "哈喽"
-    phrase "早上好"
-    phrase "早安"
-    phrase "你好吗"
-    phrase "你还好吗"
-    phrase "你怎么样"
-    phrase "您怎么样"
-    phrase "最近怎么样"
-    phrase "过得怎么样"
-    token "greet"
-  intent "intent_farewell"
-    slug "farewell"
+    keyword 你好
+    keyword 您好
+    keyword 嗨
+    keyword 哈喽
+    phrase 早上好
+    phrase 早安
+    phrase 你好吗
+    phrase 你还好吗
+    phrase 你怎么样
+    phrase 您怎么样
+    phrase 最近怎么样
+    phrase 过得怎么样
+    token greet
+  intent intent_farewell
+    slug farewell
     response_link "response:farewell"
-    keyword "bye"
-    keyword "goodbye"
-    keyword "пока"
+    keyword bye
+    keyword goodbye
+    keyword пока
     phrase "до свидания"
-    phrase "досвидания"
-    keyword "ciao"
-    keyword "tschüss"
-    keyword "再见"
-    keyword "拜拜"
-    keyword "回见"
-    phrase "改天见"
-    phrase "后会有期"
-    keyword "अलविदा"
-    keyword "विदा"
-    keyword "बाय"
-    keyword "टाटा"
+    phrase досвидания
+    keyword ciao
+    keyword tschüss
+    keyword 再见
+    keyword 拜拜
+    keyword 回见
+    phrase 改天见
+    phrase 后会有期
+    keyword अलविदा
+    keyword विदा
+    keyword बाय
+    keyword टाटा
     phrase "फिर मिलेंगे"
-  intent "intent_courtesy_response"
-    slug "courtesy_response"
+  intent intent_courtesy_response
+    slug courtesy_response
     response_link "response:courtesy_response"
-    keyword "thanks"
+    keyword thanks
     phrase "thank you"
     phrase "i am fine thank you"
     phrase "i am fine thanks"
@@ -87,8 +87,8 @@ intent_routing
     phrase "good thanks"
     phrase "doing well thank you"
     phrase "doing well thanks"
-    keyword "спасибо"
-    keyword "благодарю"
+    keyword спасибо
+    keyword благодарю
     phrase "у меня все хорошо спасибо"
     phrase "у меня всё хорошо спасибо"
     phrase "все хорошо спасибо"
@@ -99,29 +99,47 @@ intent_routing
     phrase "ого чёто начал соображать"
     phrase "ого чё то начал соображать"
     phrase "ого что то начал соображать"
-    keyword "धन्यवाद"
-    keyword "शुक्रिया"
+    keyword धन्यवाद
+    keyword शुक्रिया
     phrase "मैं ठीक हूँ धन्यवाद"
     phrase "ठीक हूँ धन्यवाद"
     phrase "मैं अच्छा हूँ धन्यवाद"
-    keyword "谢谢"
-    phrase "我很好谢谢"
+    keyword 谢谢
+    phrase 我很好谢谢
     phrase "我很好 谢谢"
-    phrase "好的谢谢"
+    phrase 好的谢谢
     phrase "好的 谢谢"
-  intent "intent_test_status"
-    slug "test_status"
+  intent intent_assistant_free_time
+    slug assistant_free_time
+    response_link "response:assistant_free_time"
+    phrase "what do you do in your free time"
+    phrase "what do you do in free time"
+    phrase "how do you spend your free time"
+    phrase "what do you do when you are not working"
+    phrase "что делаешь в свободное время"
+    phrase "что ты делаешь в свободное время"
+    phrase "чем занимаешься в свободное время"
+    phrase "чем ты занимаешься в свободное время"
+    phrase "что делаешь когда свободен"
+    phrase "खाली समय में क्या करते हो"
+    phrase "आप खाली समय में क्या करते हैं"
+    phrase "फुर्सत में क्या करते हो"
+    phrase 你空闲时间做什么
+    phrase 你有空的时候做什么
+    phrase 你业余时间做什么
+  intent intent_test_status
+    slug test_status
     response_link "response:test_status"
-    keyword "test"
-    keyword "ping"
-    keyword "pong"
-    keyword "testing"
-    keyword "тест"
-    keyword "пинг"
-    keyword "टेस्ट"
-    keyword "परीक्षण"
-    keyword "测试"
-    keyword "測試"
+    keyword test
+    keyword ping
+    keyword pong
+    keyword testing
+    keyword тест
+    keyword пинг
+    keyword टेस्ट
+    keyword परीक्षण
+    keyword 测试
+    keyword 測試
     phrase "test passed"
     phrase "testing 123"
     phrase "are you there"
@@ -137,23 +155,23 @@ intent_routing
     phrase "मैं यहां हूं"
     phrase "क्या आप वहाँ हैं"
     phrase "क्या आप वहां हैं"
-    phrase "测试通过"
-    phrase "測試通過"
-    phrase "我在这里"
-    phrase "我在這裡"
-    phrase "你在吗"
-    phrase "您在吗"
-    phrase "你在嗎"
-    phrase "您在嗎"
-    combo "test+passed"
-    combo "test+here"
-    combo "testing+123"
-    combo "ping+test"
-    combo "тест+пройден"
-    combo "тест+здесь"
-    combo "परीक्षण+सफल"
-  intent "intent_assistant_name"
-    slug "assistant_name"
+    phrase 测试通过
+    phrase 測試通過
+    phrase 我在这里
+    phrase 我在這裡
+    phrase 你在吗
+    phrase 您在吗
+    phrase 你在嗎
+    phrase 您在嗎
+    combo test+passed
+    combo test+here
+    combo testing+123
+    combo ping+test
+    combo тест+пройден
+    combo тест+здесь
+    combo परीक्षण+सफल
+  intent intent_assistant_name
+    slug assistant_name
     response_link "response:assistant_name"
     phrase "what is your name"
     phrase "what s your name"
@@ -166,16 +184,16 @@ intent_routing
     phrase "у тебя есть имя"
     phrase "आपका नाम क्या है"
     phrase "तुम्हारा नाम क्या है"
-    phrase "你叫什么名字"
-    phrase "您叫什么名字"
-    phrase "你的名字是什么"
-    phrase "你有名字吗"
-    combo "what+your+name"
-    combo "you+have+name"
-    combo "call+you"
-    combo "как+тебя+зовут"
-  intent "intent_identity"
-    slug "identity"
+    phrase 你叫什么名字
+    phrase 您叫什么名字
+    phrase 你的名字是什么
+    phrase 你有名字吗
+    combo what+your+name
+    combo you+have+name
+    combo call+you
+    combo как+тебя+зовут
+  intent intent_identity
+    slug identity
     response_link "response:identity"
     phrase "who are you"
     phrase "what are you"
@@ -195,7 +213,7 @@ intent_routing
     phrase "расскажи мне о себе"
     phrase "расскажи про себя"
     phrase "опиши себя"
-    phrase "представься"
+    phrase представься
     phrase "давай знакомиться"
     phrase "давай познакомимся"
     phrase "давайте познакомимся"
@@ -207,62 +225,62 @@ intent_routing
     phrase "चलो परिचय करते हैं"
     phrase "आइए परिचय करें"
     phrase "चलो एक दूसरे को जानें"
-    phrase "你是谁"
-    phrase "您是谁"
-    phrase "你是什么"
-    phrase "介绍一下你自己"
-    phrase "告诉我你自己"
-    phrase "我们认识一下吧"
-    phrase "认识一下吧"
-    phrase "让我们认识一下"
-    combo "who+you"
-    combo "what+you"
-    combo "tell+yourself"
-    combo "introduce+yourself"
-    combo "let+s+acquainted"
-    combo "lets+acquainted"
-    combo "let+us+acquainted"
-    combo "know+each+other"
-    combo "кто+ты"
-    combo "что+ты"
-    combo "расскажи+себе"
-    combo "опиши+себя"
-    combo "давай+знакомиться"
-    combo "давай+познакомимся"
-    combo "давайте+познакомимся"
-    combo "चलो+परिचय"
-    combo "आइए+परिचय"
-    combo "who+formal+ai"
-    combo "what+formal+ai"
-  intent "intent_write_program"
-    slug "write_program"
+    phrase 你是谁
+    phrase 您是谁
+    phrase 你是什么
+    phrase 介绍一下你自己
+    phrase 告诉我你自己
+    phrase 我们认识一下吧
+    phrase 认识一下吧
+    phrase 让我们认识一下
+    combo who+you
+    combo what+you
+    combo tell+yourself
+    combo introduce+yourself
+    combo let+s+acquainted
+    combo lets+acquainted
+    combo let+us+acquainted
+    combo know+each+other
+    combo кто+ты
+    combo что+ты
+    combo расскажи+себе
+    combo опиши+себя
+    combo давай+знакомиться
+    combo давай+познакомимся
+    combo давайте+познакомимся
+    combo चलो+परिचय
+    combo आइए+परिचय
+    combo who+formal+ai
+    combo what+formal+ai
+  intent intent_write_program
+    slug write_program
     response_link "response:write_program"
-    keyword "hello"
-    keyword "world"
-    keyword "хелло"
-    keyword "ворлд"
-  intent "intent_translation"
-    slug "translation"
+    keyword hello
+    keyword world
+    keyword хелло
+    keyword ворлд
+  intent intent_translation
+    slug translation
     response_link "response:translation"
-  intent "intent_algorithm"
-    slug "algorithm"
+  intent intent_algorithm
+    slug algorithm
     response_link "response:algorithm"
-  intent "intent_software_project_plan"
-    slug "software_project_plan"
+  intent intent_software_project_plan
+    slug software_project_plan
     response_link "response:software_project_plan"
-    combo "write+extension"
-    combo "build+extension"
-    combo "create+bot"
-    combo "implement+app"
-    combo "develop+tool"
-  intent "intent_software_project_implementation"
-    slug "software_project_implementation"
+    combo write+extension
+    combo build+extension
+    combo create+bot
+    combo implement+app
+    combo develop+tool
+  intent intent_software_project_implementation
+    slug software_project_implementation
     response_link "response:software_project_implementation"
     phrase "approve plan"
     phrase "generate code"
     phrase "convert to code"
-  intent "intent_meta_explanation"
-    slug "meta_explanation"
+  intent intent_meta_explanation
+    slug meta_explanation
     response_link "response:meta_explanation"
     phrase "how do you work"
     phrase "how does this work"
@@ -282,30 +300,30 @@ intent_routing
     phrase "в чём идея твоей разработки"
     phrase "в чем идея твоей разработки"
     phrase "идея твоей разработки"
-    combo "how+you+work"
-    combo "show+how+work"
-    combo "покажи+работаешь"
-    combo "как+работаешь"
-    combo "принцип+работы"
-    combo "модель+мира"
-    combo "идея+разработки"
-  intent "intent_concept_lookup"
-    slug "concept_lookup"
+    combo how+you+work
+    combo show+how+work
+    combo покажи+работаешь
+    combo как+работаешь
+    combo принцип+работы
+    combo модель+мира
+    combo идея+разработки
+  intent intent_concept_lookup
+    slug concept_lookup
     response_link "response:concept_lookup"
-  intent "intent_concept_lookup_in_context"
-    slug "concept_lookup_in_context"
+  intent intent_concept_lookup_in_context
+    slug concept_lookup_in_context
     response_link "response:concept_lookup_in_context"
-  intent "intent_recall_name"
-    slug "recall_name"
+  intent intent_recall_name
+    slug recall_name
     response_link "response:recall_name"
-  intent "intent_clarification"
-    slug "clarification"
+  intent intent_clarification
+    slug clarification
     response_link "response:clarification"
     phrase "не понял"
     phrase "не понимаю"
     phrase "не поняла"
     phrase "не понятно"
-    phrase "непонятно"
+    phrase непонятно
     phrase "i don't understand"
     phrase "i dont understand"
     phrase "i didn't understand"
@@ -320,13 +338,13 @@ intent_routing
     phrase "i am confused"
     phrase "समझ नहीं आया"
     phrase "समझ नहीं आई"
-    phrase "我不明白"
-    phrase "我不懂"
-    phrase "听不懂"
-  intent "intent_http_fetch"
-    slug "http_fetch"
+    phrase 我不明白
+    phrase 我不懂
+    phrase 听不懂
+  intent intent_http_fetch
+    slug http_fetch
     response_link "response:http_fetch"
-    token "fetch"
+    token fetch
     phrase "make a request to"
     phrase "send a request to"
     phrase "http request to"
@@ -336,21 +354,21 @@ intent_routing
     phrase "сделай запрос на"
     phrase "выполни запрос к"
     phrase "выполни запрос на"
-    phrase "запроси"
+    phrase запроси
     phrase "http запрос к"
-  intent "intent_url_navigate"
-    slug "url_navigate"
+  intent intent_url_navigate
+    slug url_navigate
     response_link "response:url_navigate"
     phrase "navigate to"
     phrase "go to"
-    phrase "visit"
+    phrase visit
     phrase "browse to"
-    phrase "browse"
-    phrase "show"
+    phrase browse
+    phrase show
     phrase "show me"
-    phrase "display"
-    phrase "load"
-    phrase "open"
+    phrase display
+    phrase load
+    phrase open
     phrase "open url"
     phrase "open the url"
     phrase "open site"
@@ -359,27 +377,27 @@ intent_routing
     phrase "open the page"
     phrase "open the website"
     phrase "take me to"
-    phrase "preview"
-    phrase "view"
+    phrase preview
+    phrase view
     phrase "перейди на"
     phrase "переходи на"
     phrase "перейдите на"
-    phrase "открой"
+    phrase открой
     phrase "открой сайт"
     phrase "открой страницу"
     phrase "открой ссылку"
     phrase "открой урл"
-    phrase "покажи"
+    phrase покажи
     phrase "покажи сайт"
     phrase "покажи страницу"
-    phrase "загрузи"
+    phrase загрузи
     phrase "загрузи страницу"
-    phrase "посети"
+    phrase посети
     phrase "зайди на"
-    phrase "просмотри"
-    phrase "отобрази"
-  intent "intent_web_search"
-    slug "web_search"
+    phrase просмотри
+    phrase отобрази
+  intent intent_web_search
+    slug web_search
     response_link "response:web_search"
     phrase "search the web for"
     phrase "search the internet for"
@@ -387,11 +405,11 @@ intent_routing
     phrase "web search for"
     phrase "найди в интернете"
     phrase "поищи в интернете"
-  intent "intent_unknown"
-    slug "unknown"
+  intent intent_unknown
+    slug unknown
     response_link "response:unknown"
   article "the "
   article "a "
   article "an "
-  trace_prefix "answer_"
-  trace_prefix "trace_"
+  trace_prefix answer_
+  trace_prefix trace_

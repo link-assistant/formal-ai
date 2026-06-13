@@ -1,0 +1,26 @@
+language en
+lemma chinese
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or pertaining to China or its peoples or cultures"
+    examples ("Chinese food")
+    id oewn-02976327-a
+    partOfSpeech a
+  entry
+    definition "of or relating to or characteristic of the island republic on Taiwan or its residents or their language"
+    examples ("the Taiwanese capital is Taipeh")
+    id oewn-03134068-a
+    partOfSpeech a
+    synonyms (Taiwanese Formosan)
+  entry
+    definition "any of the Sino-Tibetan languages spoken in China; regarded as dialects of a single language (even though they are mutually unintelligible) because they share an ideographic writing system"
+    id oewn-06942519-n
+    partOfSpeech n
+  entry
+    definition "a native or inhabitant of Communist China or of Nationalist China"
+    id oewn-09717504-n
+    partOfSpeech n
+source "oewn:2024"

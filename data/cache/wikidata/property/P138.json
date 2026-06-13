@@ -1,0 +1,158 @@
+{
+  "entities": {
+    "P138": {
+      "type": "property",
+      "datatype": "wikibase-item",
+      "id": "P138",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "得名自"
+        },
+        "en": {
+          "language": "en",
+          "value": "named after"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "названо в честь"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नामकरण का आधार"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "启发该主体名称的实体或事件，或同名者（至少在一种语言中）。限定词“适用于名称”（P5168）可用于指明具体是哪一个。"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "объект, персона или событие, чьё имя/название послужило основой для данного элемента"
+        },
+        "en": {
+          "language": "en",
+          "value": "entity or event that inspired the subject's name, or namesake (in at least one language). Qualifier \"applies to name\" (P5168) can be used to indicate which one"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "назван в честь"
+          },
+          {
+            "language": "ru",
+            "value": "названа в честь"
+          },
+          {
+            "language": "ru",
+            "value": "в честь"
+          },
+          {
+            "language": "ru",
+            "value": "имени"
+          },
+          {
+            "language": "ru",
+            "value": "носит имя"
+          },
+          {
+            "language": "ru",
+            "value": "эпоним"
+          },
+          {
+            "language": "ru",
+            "value": "название в честь"
+          },
+          {
+            "language": "ru",
+            "value": "происходит от"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "命名来源"
+          },
+          {
+            "language": "zh",
+            "value": "词源"
+          },
+          {
+            "language": "zh",
+            "value": "得名"
+          },
+          {
+            "language": "zh",
+            "value": "冠名者"
+          },
+          {
+            "language": "zh",
+            "value": "名称由来"
+          },
+          {
+            "language": "zh",
+            "value": "得名自"
+          },
+          {
+            "language": "zh",
+            "value": "命名自"
+          },
+          {
+            "language": "zh",
+            "value": "命名由来"
+          },
+          {
+            "language": "zh",
+            "value": "同名者"
+          },
+          {
+            "language": "zh",
+            "value": "命名者"
+          },
+          {
+            "language": "zh",
+            "value": "名称来源"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "eponym"
+          },
+          {
+            "language": "en",
+            "value": "named for"
+          },
+          {
+            "language": "en",
+            "value": "namesake"
+          },
+          {
+            "language": "en",
+            "value": "etymology"
+          },
+          {
+            "language": "en",
+            "value": "toponym"
+          },
+          {
+            "language": "en",
+            "value": "name after"
+          },
+          {
+            "language": "en",
+            "value": "named in honor of"
+          },
+          {
+            "language": "en",
+            "value": "name origin"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

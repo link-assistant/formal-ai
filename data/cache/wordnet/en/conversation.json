@@ -1,0 +1,16 @@
+{
+  "lemma": "conversation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07148409-n",
+      "partOfSpeech": "n",
+      "definition": "the use of speech for informal exchange of views or ideas or information etc."
+    }
+  ]
+}

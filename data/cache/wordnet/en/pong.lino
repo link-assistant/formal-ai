@@ -1,0 +1,12 @@
+language en
+lemma pong
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an unpleasant smell"
+    id oewn-05723097-n
+    partOfSpeech n
+    synonyms (niff)
+source "oewn:2024"

@@ -1,0 +1,134 @@
+{
+  "lemma": "can",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02950393-n",
+      "partOfSpeech": "n",
+      "definition": "airtight sealed metal container for food or drink or paint etc.",
+      "synonyms": [
+        "tin",
+        "tin can"
+      ]
+    },
+    {
+      "id": "oewn-13788130-n",
+      "partOfSpeech": "n",
+      "definition": "the quantity contained in a can",
+      "synonyms": [
+        "canful"
+      ]
+    },
+    {
+      "id": "oewn-07281481-n",
+      "partOfSpeech": "n",
+      "definition": "a buoy with a round bottom and conical top",
+      "synonyms": [
+        "can buoy"
+      ]
+    },
+    {
+      "id": "oewn-05566889-n",
+      "partOfSpeech": "n",
+      "definition": "the fleshy part of the human body that you sit on",
+      "examples": [
+        "he deserves a good kick in the butt",
+        "are you going to sit on your fanny and do nothing?"
+      ],
+      "synonyms": [
+        "buttocks",
+        "nates",
+        "arse",
+        "butt",
+        "backside",
+        "bum",
+        "buns",
+        "fundament",
+        "hindquarters",
+        "hind end",
+        "keister",
+        "posterior",
+        "prat",
+        "rear",
+        "rear end",
+        "rump",
+        "stern",
+        "seat",
+        "tail",
+        "tail end",
+        "tooshie",
+        "tush",
+        "bottom",
+        "behind",
+        "derriere",
+        "fanny",
+        "ass"
+      ]
+    },
+    {
+      "id": "oewn-04453655-n",
+      "partOfSpeech": "n",
+      "definition": "a plumbing fixture for defecation and urination",
+      "synonyms": [
+        "toilet",
+        "commode",
+        "crapper",
+        "pot",
+        "potty",
+        "stool",
+        "throne"
+      ]
+    },
+    {
+      "id": "oewn-04453410-n",
+      "partOfSpeech": "n",
+      "definition": "a room or building equipped with one or more toilets",
+      "synonyms": [
+        "toilet",
+        "lavatory",
+        "lav",
+        "john",
+        "privy",
+        "bathroom"
+      ]
+    },
+    {
+      "id": "oewn-00214220-v",
+      "partOfSpeech": "v",
+      "definition": "preserve in a can or tin",
+      "examples": [
+        "tinned foods are not very tasty"
+      ],
+      "synonyms": [
+        "tin",
+        "put up"
+      ]
+    },
+    {
+      "id": "oewn-02407967-v",
+      "partOfSpeech": "v",
+      "definition": "terminate the employment of; discharge from an office or position",
+      "examples": [
+        "The boss fired his secretary today",
+        "The company terminated 25% of its workers"
+      ],
+      "synonyms": [
+        "displace",
+        "fire",
+        "give notice",
+        "dismiss",
+        "give the axe",
+        "send away",
+        "sack",
+        "force out",
+        "give the sack",
+        "terminate"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+language en
+lemma motherfucker
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "insulting terms of address for people who are stupid or irritating or ridiculous"
+    id oewn-09834593-n
+    partOfSpeech n
+    synonyms (asshole bastard cocksucker dickhead shit "mother fucker" prick whoreson "son of a bitch" SOB)
+source "oewn:2024"

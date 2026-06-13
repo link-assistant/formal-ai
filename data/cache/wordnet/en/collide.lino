@@ -1,0 +1,24 @@
+language en
+lemma collide
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "be incompatible; be or come into conflict"
+    examples ("These colors clash")
+    id oewn-02673757-v
+    partOfSpeech v
+    synonyms (clash jar)
+  entry
+    definition "cause to collide"
+    examples ("The physicists collided the particles")
+    id oewn-01565514-v
+    partOfSpeech v
+  entry
+    definition "crash together with violent impact"
+    examples ("The cars collided" "Two meteors clashed")
+    id oewn-01563925-v
+    partOfSpeech v
+    synonyms (clash)
+source "oewn:2024"

@@ -1,0 +1,25 @@
+view
+  id M-61e49c7e2754
+  lemma predicate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(logic) what is predicated of the subject of a proposition; the second term in a proposition is predicated of the first term by means of the copula"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of the two main constituents of a sentence; the predicate contains the verb and its complements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make the (grammatical) predicate in a proposition"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "affirm or declare as an attribute or quality of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "involve as a necessary condition of consequence; as in logic"
+    provenance (wordnet)

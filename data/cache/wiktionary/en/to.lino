@@ -1,0 +1,70 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (ajar open)
+      definitions
+        entry
+          definition "Toward a closed, touching or engaging position."
+          example "Please push the door to."
+        entry
+          definition "Into the wind."
+      partOfSpeech adverb
+      synonyms (closed shut)
+    entry
+      definitions
+        entry
+          definition "Indicating destination: In the direction of, and arriving at."
+          example "We are walking to the shop."
+        entry
+          definition "Used to indicate the target or recipient of an action."
+          example "He devoted himself to education."
+        entry
+          definition "Used to indicate result of action."
+          example "His face was beaten to a pulp."
+        entry
+          definition "Used to indicate a resulting feeling or emotion."
+          example "To everyone's great relief, the tuneless carol singers finally ceased their warbling."
+        entry
+          definition "Used after an adjective to indicate its application."
+          example "similar to ..., relevant to ..., pertinent to ..., I was nice to him, he was cruel to her, I am used to walking."
+        entry
+          definition "Denotes the end of a range."
+          example "It takes 2 to 4 weeks to process typical applications."
+        entry
+          definition "As a."
+          example "With God to friend (with God as a friend);   with The Devil to fiend (with the Devil as a foe);   lambs slaughtered to lake (lambs slaughtered as a sacrifice);   took her to wife (took her as a wife);   was sold to slave (was sold as a slave)."
+        entry
+          definition "Used to indicate a ratio or comparison."
+          example "I have ten dollars to your four."
+        entry
+          definition "Used to indicate that the preceding term is to be raised to the power of the following value; indicates exponentiation."
+          example "Three squared or three to the second power is nine."
+        entry
+          definition "(time) Preceding."
+          example "ten to ten = 9:50; We're going to leave at ten to (the hour)."
+        entry
+          definition "Used to describe what something consists of or contains."
+          example "Anyone could do this job; there's nothing to it."
+        entry
+          definition At.
+          example "Stay where you're to and I'll come find you, b'y."
+      partOfSpeech preposition
+  phonetic "/tʉː/"
+  phonetics
+    entry
+      audio ""
+      text "/tʉː/"
+    entry
+      audio ""
+      text "/tʉː/"
+    entry
+      audio ""
+      text "/tuː/"
+    entry
+      audio ""
+      text "/tu/"
+  sourceUrls ("https://en.wiktionary.org/wiki/to")
+  word to

@@ -1,0 +1,103 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (pole)
+      definitions
+        entry
+          definition "The numeric symbol that represents the cardinal number zero."
+          example "In unary and k-adic notation in general, zero is the empty string."
+        entry
+          definition "The digit 0 in the decimal, binary, and all other base numbering systems."
+          example "One million has six zeroes."
+        entry
+          definition "Nothing, or none."
+          example "He knows zero about humour."
+        entry
+          definition "The value of a magnitude corresponding to the cardinal number zero."
+          example "The electromagnetic field does not drop all of the way to zero before a reversal."
+        entry
+          definition "The point on a scale at which numbering or measurement originates."
+          example "The temperature outside is ten degrees below zero."
+        entry
+          definition "A value of the independent variables of a function, for which the function is equal to zero."
+          example "The derivative of a continuous, differentiable function that twice crosses the axis must have a zero."
+        entry
+          definition "The additive identity element of a monoid or greater algebraic structure, particularly a group or ring."
+          example "Since a commutative zero is the inverse of any additive identity, it must be unique when it exists."
+        entry
+          definition "A person of little or no importance."
+          example "They rudely treated him like a zero."
+        entry
+          definition "A Mitsubishi A6M Zero, a long range fighter aircraft operated by the Japanese Navy Air Service from 1940 to 1945."
+        entry
+          definition "A setting of calibrated instruments such as a firearm."
+        entry
+          definition "A security which has a zero coupon (paying no periodic interest)."
+          example "The takeovers were financed by issuing zeroes."
+      partOfSpeech noun
+      synonyms ("slashed zero" "additive identity" nadir "bugger all" "fuck all" nada naught nil nothing nought nowt "null" "sod all" "sweet FA" "sweet Fanny Adams" zilch zip cipher cipher nobody nonentity origin "zero point" root)
+    entry
+      definitions
+        entry
+          definition "To set a measuring instrument to zero; to calibrate instrument scale to valid zero."
+          example "Zero the fluorometer with the same solvent used in extraction."
+        entry
+          definition "To change a memory location or range to values of zero; to set a variable in a computer program to zero."
+          example "Results were inconsistent because an array wasn’t zeroed during initialization."
+        entry
+          definition "To cause or set some value or amount to be zero."
+          example "They tried to zero the budget by the end of the quarter."
+        entry
+          definition "To eliminate; to delete; to overwrite with zeros."
+        entry
+          definition "To disappear"
+      partOfSpeech verb
+      synonyms ("zero out" tare)
+    entry
+      definitions
+        entry
+          definition "No, not any"
+          example "She showed zero respect."
+        entry
+          definition "Of a cloud ceiling, limiting vision to 50 feet (15 meters) or less."
+        entry
+          definition "Of horizontal visibility, limited to 165 feet (50.3 meters) or less."
+        entry
+          definition "Present at an abstract level, but not realized in the surface form."
+          example 'The stem of "kobieta" with the zero ending is "kobiet".'
+      partOfSpeech adjective
+      synonyms (no)
+    entry
+      definitions
+        entry
+          definition "The cardinal number occurring before one and that denotes no quantity or amount at all, represented in Arabic numerals as 0."
+          example "A cheque for zero dollars and zero cents crashed the computers on division by zero."
+      partOfSpeech numeral
+      synonyms ("0" cipher "goose egg" love naught nil no nought "null")
+  phonetic "/ˈzɪəɹəʊ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/zero-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75858300"
+      text "/ˈzɪəɹəʊ/"
+    entry
+      audio ""
+      text "/ˈzɪəɹəʊ/"
+    entry
+      audio ""
+      text "/ˈzɪəɹəʊ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/zero-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=867613"
+      text "/ˈzi(ˌ)ɹoʊ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/zero")
+  word zero

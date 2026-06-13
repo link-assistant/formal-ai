@@ -1,0 +1,45 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A character or glyph representing an idea, concept or object."
+          example "$ is the symbol for dollars in the US and some other countries."
+        entry
+          definition "A thing considered the embodiment of a concept or object."
+          example "The lion is the symbol of courage; the lamb is the symbol of meekness or patience."
+        entry
+          definition "A type of noun whereby the form refers to the same entity independently of the context; a symbol arbitrarily denotes a referent. See also icon and index."
+        entry
+          definition "A summary of a dogmatic statement of faith."
+          example "The Apostles, Nicene Creed and the confessional books of Protestantism, such as the Augsburg Confession of Lutheranism are considered symbols."
+        entry
+          definition "The numerical expression which defines a plane's position relative to the assumed axes."
+        entry
+          definition "That which is thrown into a common fund; hence, an appointed or accustomed duty."
+        entry
+          definition "Share; allotment."
+        entry
+          definition "An internal identifier used by a debugger to relate parts of the compiled program to the corresponding names in the source code."
+        entry
+          definition "A signalling event on a communications channel; a signal that cannot be further divided into meaningful information."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To symbolize."
+      partOfSpeech verb
+  phonetic "/ˈsɪmbəl/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/symbol-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755228"
+      text "/ˈsɪmbəl/"
+  sourceUrls ("https://en.wiktionary.org/wiki/symbol")
+  word symbol

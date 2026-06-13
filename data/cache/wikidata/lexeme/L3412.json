@@ -1,0 +1,267 @@
+{
+  "entities": {
+    "L3412": {
+      "pageid": 55166775,
+      "ns": 146,
+      "title": "Lexeme:L3412",
+      "lastrevid": 2308072284,
+      "modified": "2025-02-07T06:11:58Z",
+      "type": "lexeme",
+      "id": "L3412",
+      "lemmas": {
+        "en": {
+          "language": "en",
+          "value": "between"
+        }
+      },
+      "lexicalCategory": "Q4833830",
+      "language": "Q1860",
+      "claims": {
+        "P11130": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P11130",
+              "hash": "2a3bf7a5fa0bb6e3809efe8eb2a0abf4b6324723",
+              "datavalue": {
+                "value": "between",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$30f48df9-4751-be7b-7a4f-8d2cdf075161",
+            "rank": "normal"
+          }
+        ],
+        "P7575": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P7575",
+              "hash": "3ec6f88e665e2b7ce57cb9278a43240b9dc54f9b",
+              "datavalue": {
+                "value": "between",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$8a620309-49c3-23c5-87f7-a6b4391e244a",
+            "rank": "normal"
+          }
+        ],
+        "P5402": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5402",
+              "hash": "6129e7418c056c111bf12a9ede5cb2c81435ff53",
+              "datavalue": {
+                "value": {
+                  "entity-type": "lexeme",
+                  "numeric-id": 333826,
+                  "id": "L333826"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-lexeme"
+            },
+            "type": "statement",
+            "id": "L3412$E2BD574F-3D2E-4B0B-8016-9BF0FA6C2E0F",
+            "rank": "normal"
+          }
+        ],
+        "P5912": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P5912",
+              "hash": "da0b38a69e8773c8aa401bf5cab660a67b19bb6a",
+              "datavalue": {
+                "value": "148951",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$E1931386-0B79-41D2-BCE2-E7F308B71854",
+            "rank": "normal"
+          }
+        ],
+        "P12573": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12573",
+              "hash": "d21af30380bfc1e7d3007d5d726d09e70c8c7d41",
+              "datavalue": {
+                "value": "1451",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$958FEA60-91F7-453A-B826-3570FC0EE01C",
+            "rank": "normal"
+          }
+        ],
+        "P12675": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P12675",
+              "hash": "dae2d02c3bddbb2526625b9f89eb0ab8f9e03788",
+              "datavalue": {
+                "value": "844",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$5C50DE21-155F-4D29-96AE-B34CD142CE5A",
+            "rank": "normal"
+          }
+        ],
+        "P13163": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P13163",
+              "hash": "fb5c8a35bf2fccefa040fc7ca71681591c3e0e79",
+              "datavalue": {
+                "value": "B5220200",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$FD570990-0D55-482B-AF2B-7F4937AC08C5",
+            "rank": "normal"
+          }
+        ],
+        "P13258": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P13258",
+              "hash": "f78b036c35006d4158037aa445f07b24735d98a5",
+              "datavalue": {
+                "value": "8047852",
+                "type": "string"
+              },
+              "datatype": "external-id"
+            },
+            "type": "statement",
+            "id": "L3412$4B0702DF-11D3-4E63-859B-C9BB58CF4A16",
+            "rank": "normal"
+          }
+        ]
+      },
+      "forms": [
+        {
+          "id": "L3412-F1",
+          "representations": {
+            "en": {
+              "language": "en",
+              "value": "between"
+            }
+          },
+          "grammaticalFeatures": [],
+          "claims": {}
+        }
+      ],
+      "senses": [
+        {
+          "id": "L3412-S1",
+          "glosses": {
+            "en": {
+              "language": "en",
+              "value": "spatial position in relation to two objects, on each side of the subject"
+            }
+          },
+          "claims": {
+            "P5972": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "9c3585f73ce1c299ba58b2b37dc547aa7f123300",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L302428-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L3412-S1$5bb00340-4ef1-7968-31c3-cfe8ec59c243",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "1a02dc7d287598bc1712495e30d861331ac34fce",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L7409-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L3412-S1$96219296-61F9-4A6A-8AAB-FF98D59F0D19",
+                "rank": "normal"
+              },
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5972",
+                  "hash": "5355db1756abba50ea2a403805ea6a231bdef31d",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "sense",
+                      "id": "L7408-S1"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-sense"
+                },
+                "type": "statement",
+                "id": "L3412-S1$3452FDCD-6B6C-4159-8C64-9B77683F9416",
+                "rank": "normal"
+              }
+            ],
+            "P5137": [
+              {
+                "mainsnak": {
+                  "snaktype": "value",
+                  "property": "P5137",
+                  "hash": "442ce7b17e77ad9d4153439f9f75f253efec49b7",
+                  "datavalue": {
+                    "value": {
+                      "entity-type": "item",
+                      "numeric-id": 25557141,
+                      "id": "Q25557141"
+                    },
+                    "type": "wikibase-entityid"
+                  },
+                  "datatype": "wikibase-item"
+                },
+                "type": "statement",
+                "id": "L3412-S1$94c2e8fc-4fde-58f1-137f-a6d3b776de75",
+                "rank": "normal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,83 @@
+{
+  "lemma": "delivery",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00318033-n",
+      "partOfSpeech": "n",
+      "definition": "the act of delivering or distributing something (as goods or mail)",
+      "examples": [
+        "his reluctant delivery of bad news"
+      ],
+      "synonyms": [
+        "bringing"
+      ]
+    },
+    {
+      "id": "oewn-07335222-n",
+      "partOfSpeech": "n",
+      "definition": "the event of giving birth",
+      "examples": [
+        "she had a difficult delivery"
+      ]
+    },
+    {
+      "id": "oewn-07085523-n",
+      "partOfSpeech": "n",
+      "definition": "your characteristic style or manner of expressing yourself orally",
+      "examples": [
+        "his manner of speaking was quite abrupt",
+        "her speech was barren of southernisms",
+        "I detected a slight accent in his speech"
+      ],
+      "synonyms": [
+        "manner of speaking",
+        "speech"
+      ]
+    },
+    {
+      "id": "oewn-01110658-n",
+      "partOfSpeech": "n",
+      "definition": "the voluntary transfer of something (title or possession) from one party to another",
+      "synonyms": [
+        "livery",
+        "legal transfer"
+      ]
+    },
+    {
+      "id": "oewn-00107092-n",
+      "partOfSpeech": "n",
+      "definition": "the act of throwing a baseball or softball by the pitcher towards home plate, which initiates play by giving the batter a chance to hit it",
+      "synonyms": [
+        "pitch"
+      ]
+    },
+    {
+      "id": "oewn-00094303-n",
+      "partOfSpeech": "n",
+      "definition": "recovery or preservation from loss or danger",
+      "examples": [
+        "work is the deliverance of mankind",
+        "a surgeon's job is the saving of lives"
+      ],
+      "synonyms": [
+        "rescue",
+        "deliverance",
+        "saving"
+      ]
+    },
+    {
+      "id": "oewn-00043279-n",
+      "partOfSpeech": "n",
+      "definition": "the act of delivering a child",
+      "synonyms": [
+        "obstetrical delivery"
+      ]
+    }
+  ]
+}

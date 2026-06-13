@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q2303697": {
+      "type": "item",
+      "id": "Q2303697",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sorting"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "сортировка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "क्रमिक अध्ययन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "排序"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "action of arranging objects into order"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "упорядочивание или группировка"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "इंटरनेट पर जानकारी खोजने की प्रक्रिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "將一串資料按其值的大小排列的動作"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sort"
+          },
+          {
+            "language": "en",
+            "value": "ordering"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "упорядочивание"
+          },
+          {
+            "language": "ru",
+            "value": "тасовка"
+          },
+          {
+            "language": "ru",
+            "value": "растасовка"
+          },
+          {
+            "language": "ru",
+            "value": "распределение"
+          },
+          {
+            "language": "ru",
+            "value": "группировка"
+          },
+          {
+            "language": "ru",
+            "value": "определение"
+          },
+          {
+            "language": "ru",
+            "value": "разделение"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,60 @@
+language en
+lemma programme
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an announcement of the events that will occur as part of a theatrical or sporting event"
+    examples ("you can't tell the players without a program")
+    id oewn-06761180-n
+    partOfSpeech n
+    synonyms (program)
+  entry
+    definition "an integrated course of academic studies"
+    examples ("he was admitted to a new program at the university")
+    id oewn-06689161-n
+    partOfSpeech n
+    synonyms ("course of study" program curriculum syllabus)
+  entry
+    definition "a radio or television show"
+    examples ("did you see his program last night?")
+    id oewn-06631935-n
+    partOfSpeech n
+    synonyms (broadcast program)
+  entry
+    definition "(computer science) a sequence of instructions that a computer can interpret and execute"
+    examples ("the program required several hundred lines of code")
+    id oewn-06581154-n
+    partOfSpeech n
+    synonyms (program "computer program" "computer programme")
+  entry
+    definition "a system of projects or services intended to meet a public need"
+    examples ("he proposed an elaborate program of public works" "working mothers rely on the day care program")
+    id oewn-05907694-n
+    partOfSpeech n
+    synonyms (program)
+  entry
+    definition "a series of steps to be carried out or goals to be accomplished"
+    examples ("they drew up a six-step plan" "they discussed plans for a new bond issue")
+    id oewn-05907175-n
+    partOfSpeech n
+    synonyms (plan program)
+  entry
+    definition "a performance (or series of performances) at a public presentation"
+    examples ("the program lasted more than two hours")
+    id oewn-00552252-n
+    partOfSpeech n
+    synonyms (program)
+  entry
+    definition "write a computer program"
+    id oewn-01751525-v
+    partOfSpeech v
+    synonyms (program)
+  entry
+    definition "arrange a program of or for"
+    examples ("program the 80th birthday party")
+    id oewn-00796926-v
+    partOfSpeech v
+    synonyms (program)
+source "oewn:2024"

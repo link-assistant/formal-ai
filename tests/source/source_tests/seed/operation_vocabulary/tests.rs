@@ -3,12 +3,7 @@ use std::collections::BTreeSet;
 use super::operation_vocabulary;
 
 fn supported_languages() -> BTreeSet<String> {
-    crate::seed::agent_info()
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages")
-        .split('|')
-        .map(ToOwned::to_owned)
-        .collect()
+    crate::seed::supported_languages().into_iter().collect()
 }
 
 #[test]
@@ -25,11 +20,32 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         "replace",
         "reverse_words",
         "extract_email",
+        "extract_url",
+        "extract_number",
         "count_occurrences",
         "count_unique_words",
+        "count_words",
+        "count_lines",
+        "count_characters",
         "deduplicate_lines",
         "sort_lines",
+        "sort_words",
         "path_argument",
+        "title_case",
+        "sentence_case",
+        "snake_case",
+        "kebab_case",
+        "camel_case",
+        "pascal_case",
+        "remove_punctuation",
+        "strip_empty_lines",
+        "join_lines",
+        "reverse_lines",
+        "number_lines",
+        "indent_lines",
+        "outdent_lines",
+        "comment_lines",
+        "uncomment_lines",
         "reverse_sort",
         "cancel_reverse_sort",
         "function",
@@ -44,6 +60,13 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         "distinct_numbers",
         "differ",
         "threshold",
+        "sort",
+        "reverse",
+        "sum",
+        "product",
+        "minimum",
+        "maximum",
+        "code_request",
     ] {
         assert!(
             canonicals.contains(expected),

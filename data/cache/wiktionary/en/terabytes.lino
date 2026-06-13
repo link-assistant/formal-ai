@@ -1,0 +1,14 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "One trillion (1012, or 1,000,000,000,000) bytes. SI symbol: TB."
+        entry
+          definition "Imprecisely, a tebibyte or 10244 (1,099,511,627,776) bytes. SI symbol: TiB, computing symbol: TB."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/terabyte" "https://en.wiktionary.org/wiki/terabytes")
+  word terabytes

@@ -1,0 +1,48 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A thing that has physical existence."
+        entry
+          definition "Objective; the goal, end or purpose of something."
+        entry
+          definition "(grammar) The noun phrase which is an internal complement of a verb phrase or a prepositional phrase. In a verb phrase with a transitive action verb, it is typically the receiver of the action."
+        entry
+          definition "A person or thing toward which an emotion is directed."
+          example "Mary Jane had been the object of Peter's affection for years."
+        entry
+          definition "An instantiation of a class or structure."
+        entry
+          definition "An element within a category upon which functions operate. Thus, a category consists of a set of element objects and the functions that operate on them."
+        entry
+          definition "Sight; show; appearance; aspect."
+      partOfSpeech noun
+      synonyms (target article item thing)
+    entry
+      definitions
+        entry
+          definition "To disagree with or oppose something or someone; (especially in a Court of Law) to raise an objection."
+          example "I object to the proposal to build a new airport terminal."
+        entry
+          definition "To offer in opposition as a criminal charge or by way of accusation or reproach; to adduce as an objection or adverse reason."
+        entry
+          definition "To set before or against; to bring into opposition; to oppose."
+      partOfSpeech verb
+  phonetic "/ˈɒb.d͡ʒɛkt/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈɒb.d͡ʒɛkt/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/object-us-noun.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227705"
+      text "/ˈɑb.d͡ʒɛkt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/object")
+  word object

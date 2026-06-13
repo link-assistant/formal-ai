@@ -1,0 +1,25 @@
+{
+  "lemma": "brainstorm",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05815314-n",
+      "partOfSpeech": "n",
+      "definition": "the clear (and often sudden) understanding of a complex situation",
+      "synonyms": [
+        "insight",
+        "brainwave"
+      ]
+    },
+    {
+      "id": "oewn-00631885-v",
+      "partOfSpeech": "v",
+      "definition": "try to solve a problem by thinking intensely about it"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "entities": {
+    "Q25267": {
+      "type": "item",
+      "id": "Q25267",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "degree Celsius"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "градус Цельсия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सेल्सियस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "攝氏度"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of Celsius temperature"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица температуры на основе свойств воды"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Celsius"
+          },
+          {
+            "language": "en",
+            "value": "°C"
+          },
+          {
+            "language": "en",
+            "value": "centigrade"
+          },
+          {
+            "language": "en",
+            "value": "℃"
+          },
+          {
+            "language": "en",
+            "value": "degree centigrade"
+          },
+          {
+            "language": "en",
+            "value": "degrees Celsius"
+          },
+          {
+            "language": "en",
+            "value": "degrees centigrade"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "°C"
+          },
+          {
+            "language": "ru",
+            "value": "°С"
+          },
+          {
+            "language": "ru",
+            "value": "Цельсия"
+          },
+          {
+            "language": "ru",
+            "value": "температурная шкала Цельсия"
+          },
+          {
+            "language": "ru",
+            "value": "шкала Цельсия"
+          },
+          {
+            "language": "ru",
+            "value": "℃"
+          },
+          {
+            "language": "ru",
+            "value": "Цельсия шкала"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "सेंटीग्रेड"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "°C"
+          },
+          {
+            "language": "zh",
+            "value": "℃"
+          },
+          {
+            "language": "zh",
+            "value": "攝氏"
+          },
+          {
+            "language": "zh",
+            "value": "摄氏度"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

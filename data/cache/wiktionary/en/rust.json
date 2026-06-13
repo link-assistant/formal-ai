@@ -1,0 +1,117 @@
+[
+  {
+    "word": "rust",
+    "phonetic": "/ɹʌst/",
+    "phonetics": [
+      {
+        "text": "/ɹʌst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/rust-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1770040",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The deteriorated state of iron or steel as a result of moisture and oxidation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The rust on my bicycle chain made cycling to work very dangerous."
+          },
+          {
+            "definition": "A similar substance based on another metal (usually with qualification, such as \"copper rust\").",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "aerugo. Green or blue-green copper rust; verdigris. (American Heritage Dictionary, 1973)"
+          },
+          {
+            "definition": "A reddish-brown color.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A disease of plants caused by a reddish-brown fungus.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Damage caused to stamps and album pages by a fungal infection.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/rust"
+    ]
+  },
+  {
+    "word": "rust",
+    "phonetic": "/ɹʌst/",
+    "phonetics": [
+      {
+        "text": "/ɹʌst/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/rust-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1770040",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To oxidize, especially of iron or steel.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The patio furniture had rusted in the wind-driven spray."
+          },
+          {
+            "definition": "To cause to oxidize.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The wind-driven spray had thoroughly rusted the patio furniture."
+          },
+          {
+            "definition": "To be affected with the parasitic fungus called rust.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To (cause to) degenerate in idleness; to make or become dull or impaired by inaction.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "corrode",
+          "oxidise",
+          "oxidize"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/rust"
+    ]
+  }
+]

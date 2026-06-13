@@ -1,0 +1,13 @@
+language en
+lemma website
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a computer connected to the internet that maintains a series of web pages on the World Wide Web; a computer connected to the internet that maintains a series of web pages on the World Wide Web"
+    examples ("the Israeli web site was damaged by hostile hackers")
+    id oewn-06370600-n
+    partOfSpeech n
+    synonyms ("web site" "internet site" site)
+source "oewn:2024"

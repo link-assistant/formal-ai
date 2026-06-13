@@ -1,0 +1,13 @@
+view
+  id M-85bd553077e0
+  lemma uppercase
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to capital letters which were kept in the top half of a compositor's type case"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of the large alphabetic characters used as the first letter in writing or printing proper names and sometimes for emphasis"
+    provenance (wordnet)

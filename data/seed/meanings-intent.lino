@@ -1,946 +1,896 @@
 meanings
-  meaning "assistant"
-    gloss "the deterministic symbolic AI that answers the user — it speaks about itself and produces every answer"
-    wiktionary "assistant"
-    defined_by "answer"
-    defined_by "self_reference"
-    defined_by "entity"
-    role "conversational_entity"
-    lexeme "en"
-      word "assistant"
-        description "English noun for the deterministic symbolic AI that answers the user; the bare surface for the assistant concept."
-      word "ai assistant"
-        description "English phrase naming the assistant as an AI-driven helper; an explicit surface for the assistant concept."
-    lexeme "ru"
-      word "ассистент"
-        description "Russian noun (romanized assistent) for an assistant; the Russian surface for the assistant concept."
-      word "помощник"
-        description "Russian noun (romanized pomoshchnik) for a helper; an alternative Russian surface for the assistant concept."
-    lexeme "hi"
-      word "सहायक"
-        description "Hindi noun (romanized sahayak) for a helper or assistant; the Hindi surface for the assistant concept."
-    lexeme "zh"
-      word "助手"
-        description "Chinese noun (pinyin zhushou) for an assistant or helper; the Chinese surface for the assistant concept."
-      word "助理"
-        description "Chinese noun (pinyin zhuli) for an assistant or aide; an alternative Chinese surface for the assistant concept."
-  meaning "user"
-    gloss "the person who addresses the assistant — the author of every inquiry"
-    wiktionary "user"
-    defined_by "inquiry"
-    defined_by "entity"
-    role "conversational_entity"
-    lexeme "en"
-      word "user"
-        description "English noun for the person who addresses the assistant; the surface for the user concept."
-    lexeme "ru"
-      word "пользователь"
-        description "Russian noun (romanized polzovatel) for a user; the Russian surface for the user concept."
-    lexeme "hi"
-      word "उपयोगकर्ता"
-        description "Hindi noun (romanized upayogkarta) for a user; the Hindi surface for the user concept."
-    lexeme "zh"
-      word "用户"
-        description "Chinese noun (pinyin yonghu) for a user; the Chinese surface for the user concept."
-  meaning "inquiry"
-    gloss "a question or request a user makes, expecting an answer from the assistant"
-    wiktionary "inquiry"
-    defined_by "answer"
-    defined_by "user"
-    role "conversational_act"
-    lexeme "en"
-      word "inquiry"
-        description "English noun for a question or request expecting an answer; the surface for the inquiry concept."
-      word "question"
-        description "English noun for a sentence that asks for information; a synonym surface for the inquiry concept."
-      word "request"
-        description "English noun for an act of asking the assistant to do something; an alternative surface for the inquiry concept."
-    lexeme "ru"
-      word "вопрос"
-        description "Russian noun (romanized vopros) for a question; the Russian surface for the inquiry concept."
-      word "запрос"
-        description "Russian noun (romanized zapros) for a request or query; an alternative Russian surface for the inquiry concept."
-    lexeme "hi"
-      word "प्रश्न"
-        description "Hindi noun (romanized prashn) for a question; the Hindi surface for the inquiry concept."
-      word "अनुरोध"
-        description "Hindi noun (romanized anurodh) for a request; an alternative Hindi surface for the inquiry concept."
-    lexeme "zh"
-      word "询问"
-        description "Chinese noun and verb (pinyin xunwen) for an inquiry or to ask; the Chinese surface for the inquiry concept."
-      word "请求"
-        description "Chinese noun and verb (pinyin qingqiu) for a request; an alternative Chinese surface for the inquiry concept."
-  meaning "answer"
-    gloss "the reply the assistant returns to an inquiry"
-    wiktionary "answer"
-    defined_by "inquiry"
-    defined_by "assistant"
-    role "conversational_act"
-    lexeme "en"
-      word "answer"
-        description "English noun for the reply the assistant returns to an inquiry; the surface for the answer concept."
-      word "response"
-        description "English noun for a reaction or reply to an inquiry; a synonym surface for the answer concept."
-      word "reply"
-        description "English noun for what is said back in answer to an inquiry; an alternative surface for the answer concept."
-    lexeme "ru"
-      word "ответ"
-        description "Russian noun (romanized otvet) for an answer or reply; the Russian surface for the answer concept."
-    lexeme "hi"
-      word "उत्तर"
-        description "Hindi noun (romanized uttar) for an answer; the Hindi surface for the answer concept."
-      word "जवाब"
-        description "Hindi noun (romanized javab) for a reply; an alternative Hindi surface for the answer concept."
-    lexeme "zh"
-      word "回答"
-        description "Chinese noun and verb (pinyin huida) for an answer or to answer; the Chinese surface for the answer concept."
-      word "答复"
-        description "Chinese noun and verb (pinyin dafu) for a reply or to reply; an alternative Chinese surface for the answer concept."
-  meaning "self_reference"
-    gloss "a reference the assistant makes to itself — the grammatical object of questions about the assistant"
-    wiktionary "self"
-    defined_by "assistant"
-    role "conversational_concept"
-    lexeme "en"
-      word "yourself"
-        description "English reflexive pronoun addressing the assistant itself; a surface for the self-reference concept."
-      word "myself"
-        description "English reflexive pronoun by which the assistant refers to itself; a surface for the self-reference concept."
-    lexeme "ru"
-      word "себе"
-        description "Russian reflexive pronoun (romanized sebe) in the dative or prepositional case meaning to or about oneself; a surface for the self-reference concept."
-      word "себя"
-        description "Russian reflexive pronoun (romanized sebya) in the accusative or genitive case meaning oneself; a surface for the self-reference concept."
-    lexeme "hi"
-      word "स्वयं"
-        description "Hindi reflexive pronoun (romanized svayam) meaning oneself; a surface for the self-reference concept."
-      word "खुद"
-        description "Hindi reflexive pronoun (romanized khud) meaning oneself; an alternative surface for the self-reference concept."
-    lexeme "zh"
-      word "自己"
-        description "Chinese reflexive pronoun (pinyin ziji) meaning oneself; the Chinese surface for the self-reference concept."
-  meaning "capability"
-    gloss "something the assistant is able to do — a feature it can perform in answer to a request"
-    wiktionary "capability"
-    defined_by "assistant"
-    defined_by "answer"
-    role "conversational_concept"
-    lexeme "en"
-      word "capability"
-        description "English noun for something the assistant is able to do; the surface for the capability concept."
-      word "ability"
-        description "English noun for the capacity to perform something; a synonym surface for the capability concept."
-    lexeme "ru"
-      word "возможность"
-        description "Russian noun (romanized vozmozhnost) for a possibility or capability; the Russian surface for the capability concept."
-      word "умение"
-        description "Russian noun (romanized umeniye) for a skill or ability; an alternative Russian surface for the capability concept."
-    lexeme "hi"
-      word "क्षमता"
-        description "Hindi noun (romanized kshamata) for a capability or capacity; the Hindi surface for the capability concept."
-    lexeme "zh"
-      word "能力"
-        description "Chinese noun (pinyin nengli) for an ability or capability; the Chinese surface for the capability concept."
-      word "功能"
-        description "Chinese noun (pinyin gongneng) for a function or feature; an alternative Chinese surface for the capability concept."
-  meaning "knowledge"
-    gloss "what the assistant knows — the facts available to it"
-    wiktionary "knowledge"
-    defined_by "assistant"
-    defined_by "fact"
-    role "conversational_concept"
-    lexeme "en"
-      word "knowledge"
-        description "English noun for what the assistant knows; the surface for the knowledge concept."
-    lexeme "ru"
-      word "знание"
-        description "Russian noun (romanized znaniye) for knowledge; the Russian surface for the knowledge concept."
-    lexeme "hi"
-      word "ज्ञान"
-        description "Hindi noun (romanized gyan) for knowledge; the Hindi surface for the knowledge concept."
-    lexeme "zh"
-      word "知识"
-        description "Chinese noun (pinyin zhishi) for knowledge; the Chinese surface for the knowledge concept."
-  meaning "fact"
-    gloss "a known true statement that the assistant can recall as part of its knowledge"
-    wiktionary "fact"
-    defined_by "knowledge"
-    role "conversational_concept"
-    role "knowledge_inventory_noun"
-    lexeme "en"
-      word "fact"
-        description "English noun for a known true statement the assistant can recall; the singular surface for the fact concept."
-      word "facts"
-        description "English plural noun for known true statements; the plural surface for the fact concept."
-    lexeme "ru"
-      word "факт"
-        description "Russian noun (romanized fakt) for a fact; the singular Russian surface for the fact concept."
-      word "факты"
-        description "Russian plural noun (romanized fakty) for facts; the plural Russian surface for the fact concept."
-    lexeme "hi"
-      word "तथ्य"
-        description "Hindi noun (romanized tathya) for a fact; the Hindi surface for the fact concept."
-    lexeme "zh"
-      word "事实"
-        description "Chinese noun (pinyin shishi) for a fact; the simplified Chinese surface for the fact concept."
-      word "事實"
-        description "Chinese noun (pinyin shishi) for a fact; the traditional Chinese surface for the fact concept."
-  meaning "knowledge_inventory_probe"
-    gloss "an interrogative or enumerating cue that asks the assistant to surface the items it holds"
-    wiktionary "enumerate"
-    defined_by "inquiry"
-    role "knowledge_inventory_interrogative"
-    lexeme "en"
-      word "what"
-        description "English interrogative pronoun opening a request to name the items the assistant holds."
-      word "which"
-        description "English interrogative determiner selecting among the items the assistant holds."
-      word "list"
-        description "English verb asking the assistant to enumerate the items it holds."
-      word "show"
-        description "English verb asking the assistant to display the items it holds."
-    lexeme "ru"
-      word "какие"
-        description "Russian interrogative determiner (romanized kakie) asking which items the assistant holds."
-      word "что"
-        description "Russian interrogative pronoun (romanized chto) asking what the assistant holds."
-      word "перечисли"
-        description "Russian imperative verb (romanized perechisli) asking the assistant to enumerate the items it holds."
-      word "покажи"
-        description "Russian imperative verb (romanized pokazhi) asking the assistant to display the items it holds."
-      word "назови"
-        description "Russian imperative verb (romanized nazovi) asking the assistant to name the items it holds."
-    lexeme "hi"
-      word "कौन"
-        description "Hindi interrogative (romanized kaun) asking which items the assistant holds."
-      word "क्या"
-        description "Hindi interrogative (romanized kya) asking what the assistant holds."
-      word "सूची"
-        description "Hindi noun (romanized soochee) for a list, asking the assistant to enumerate the items it holds."
-      word "सूचीबद्ध"
-        description "Hindi adjective (romanized soocheebaddh) meaning listed, asking the assistant to enumerate the items it holds."
-      word "बताओ"
-        description "Hindi imperative verb (romanized batao) asking the assistant to tell the items it holds."
-      word "दिखाओ"
-        description "Hindi imperative verb (romanized dikhao) asking the assistant to show the items it holds."
-    lexeme "zh"
-      word "哪些"
-        description "Chinese interrogative (pinyin naxie) selecting which items the assistant holds."
-      word "什么"
-        description "Chinese interrogative (pinyin shenme) asking what the assistant holds; simplified surface."
-      word "什麼"
-        description "Chinese interrogative (pinyin shenme) asking what the assistant holds; traditional surface."
-      word "你知道"
-        description "Chinese phrase (pinyin ni zhidao) meaning you-know, asking what the assistant holds."
-      word "您知道"
-        description "Chinese phrase (pinyin nin zhidao) meaning you-know (polite), asking what the assistant holds."
-      word "你有"
-        description "Chinese phrase (pinyin ni you) meaning you-have, asking what the assistant holds."
-      word "您有"
-        description "Chinese phrase (pinyin nin you) meaning you-have (polite), asking what the assistant holds."
-  meaning "assistant_knowing"
-    gloss "second-person attribution of knowing or having — the assistant being the one that holds the knowledge"
-    wiktionary "know"
-    defined_by "knowledge"
-    defined_by "assistant"
-    role "knowledge_possession"
-    lexeme "en"
-      word "you know"
-        description "English second-person phrase attributing the knowing to the assistant."
-      word "do you know"
-        description "English second-person interrogative phrase attributing the knowing to the assistant."
-      word "you have"
-        description "English second-person phrase attributing possession of the knowledge to the assistant."
-      word "available to you"
-        description "English phrase describing knowledge accessible to the assistant."
-      word "in your knowledge"
-        description "English phrase locating the facts inside the assistant's knowledge."
-      word "known to you"
-        description "English phrase attributing the known facts to the assistant."
-    lexeme "ru"
-      word "ты знаешь"
-        description "Russian second-person phrase (romanized ty znaesh) attributing the knowing to the assistant."
-      word "знаешь"
-        description "Russian second-person verb (romanized znaesh) attributing the knowing to the assistant."
-      word "тебе известно"
-        description "Russian phrase (romanized tebe izvestno) meaning it-is-known-to-you, attributing the knowing to the assistant."
-      word "тебе известны"
-        description "Russian phrase (romanized tebe izvestny) meaning they-are-known-to-you, attributing the knowing to the assistant."
-      word "тебе известен"
-        description "Russian phrase (romanized tebe izvesten) meaning it-is-known-to-you (masculine), attributing the knowing to the assistant."
-      word "у тебя есть"
-        description "Russian phrase (romanized u tebya est) meaning you-have, attributing possession to the assistant."
-      word "твои знания"
-        description "Russian phrase (romanized tvoi znaniya) meaning your-knowledge, attributing the knowledge to the assistant."
-      word "что ты знаешь"
-        description "Russian phrase (romanized chto ty znaesh) meaning what-you-know, attributing the knowing to the assistant."
-    lexeme "hi"
-      word "तुम"
-        description "Hindi second-person pronoun (romanized tum) attributing the knowing to the assistant."
-      word "आप"
-        description "Hindi second-person pronoun (romanized aap, polite) attributing the knowing to the assistant."
-      word "जानते"
-        description "Hindi verb (romanized jaante) meaning know (masculine), attributing the knowing to the assistant."
-      word "जानती"
-        description "Hindi verb (romanized jaantee) meaning know (feminine), attributing the knowing to the assistant."
-      word "आपके"
-        description "Hindi possessive (romanized aapke) meaning your, attributing possession to the assistant."
-      word "तुम्हारे"
-        description "Hindi possessive (romanized tumhaare) meaning your, attributing possession to the assistant."
-    lexeme "zh"
-      word "你知道"
-        description "Chinese phrase (pinyin ni zhidao) meaning you-know, attributing the knowing to the assistant."
-      word "您知道"
-        description "Chinese phrase (pinyin nin zhidao) meaning you-know (polite), attributing the knowing to the assistant."
-      word "你有"
-        description "Chinese phrase (pinyin ni you) meaning you-have, attributing possession to the assistant."
-      word "您有"
-        description "Chinese phrase (pinyin nin you) meaning you-have (polite), attributing possession to the assistant."
-  meaning "knowledge_inventory_query"
-    gloss "a complete standalone phrasing that asks the assistant what it knows about the world, even without the word fact"
-    wiktionary "knowledge"
-    defined_by "knowledge"
-    defined_by "fact"
-    role "knowledge_inventory_phrase"
-    lexeme "en"
-      word "what do you know in general"
-        description "English standalone phrasing asking the assistant for its general knowledge inventory."
-      word "what do you know about the world"
-        description "English standalone phrasing asking the assistant for its knowledge about the world."
-      word "what is known to you"
-        description "English standalone phrasing asking the assistant for everything it knows."
-      word "what knowledge do you have"
-        description "English standalone phrasing asking the assistant to surface the knowledge it holds."
-    lexeme "ru"
-      word "что тебе вообще известно"
-        description "Russian standalone phrasing (romanized chto tebe voobshche izvestno) asking the assistant for everything it knows."
-      word "что тебе известно"
-        description "Russian standalone phrasing (romanized chto tebe izvestno) asking the assistant what it knows."
-      word "что ты вообще знаешь"
-        description "Russian standalone phrasing (romanized chto ty voobshche znaesh) asking the assistant for its general knowledge."
-      word "что ты знаешь об окружающем мире"
-        description "Russian standalone phrasing (romanized chto ty znaesh ob okruzhayushchem mire) asking the assistant about the surrounding world."
-      word "известно об окружающем мире"
-        description "Russian standalone phrasing (romanized izvestno ob okruzhayushchem mire) asking what is known about the surrounding world."
-      word "знаешь про окружающий мир"
-        description "Russian standalone phrasing (romanized znaesh pro okruzhayushchiy mir) asking what the assistant knows about the surrounding world."
-      word "знаешь об окружающем мире"
-        description "Russian standalone phrasing (romanized znaesh ob okruzhayushchem mire) asking what the assistant knows about the surrounding world."
-    lexeme "hi"
-      word "आप क्या जानते हैं"
-        description "Hindi standalone phrasing (romanized aap kya jaante hain) asking what the assistant knows."
-      word "तुम क्या जानते हो"
-        description "Hindi standalone phrasing (romanized tum kya jaante ho) asking what the assistant knows."
-      word "आपको क्या पता है"
-        description "Hindi standalone phrasing (romanized aapko kya pata hai) asking what is known to the assistant."
-    lexeme "zh"
-      word "你知道什么"
-        description "Chinese standalone phrasing (pinyin ni zhidao shenme) asking what the assistant knows; simplified surface."
-      word "您知道什么"
-        description "Chinese standalone phrasing (pinyin nin zhidao shenme) asking what the assistant knows (polite); simplified surface."
-      word "你知道哪些"
-        description "Chinese standalone phrasing (pinyin ni zhidao naxie) asking which items the assistant knows."
-  meaning "introduction"
-    gloss "presenting who one is — the assistant describing itself in answer to a get-acquainted request"
-    wiktionary "introduction"
-    defined_by "self_reference"
-    defined_by "answer"
-    role "conversational_concept"
-    lexeme "en"
-      word "introduction"
-        description "English noun for presenting who one is; the surface for the introduction concept."
-    lexeme "ru"
-      word "знакомство"
-        description "Russian noun (romanized znakomstvo) for an acquaintance or introduction; the Russian surface for the introduction concept."
-    lexeme "hi"
-      word "परिचय"
-        description "Hindi noun (romanized parichay) for an introduction or acquaintance; the Hindi surface for the introduction concept."
-    lexeme "zh"
-      word "介绍"
-        description "Chinese noun and verb (pinyin jieshao) for an introduction or to introduce; the Chinese surface for the introduction concept."
-  meaning "clarification"
-    gloss "making clear something the user did not understand — an answer that resolves confusion about a prior turn"
-    wiktionary "clarification"
-    defined_by "inquiry"
-    defined_by "answer"
-    role "conversational_concept"
-    lexeme "en"
-      word "clarification"
-        description "English noun for making clear something not understood; the surface for the clarification concept."
-    lexeme "ru"
-      word "разъяснение"
-        description "Russian noun (romanized razyasneniye) for a clarification or explanation; the Russian surface for the clarification concept."
-    lexeme "hi"
-      word "स्पष्टीकरण"
-        description "Hindi noun (romanized spashtikaran) for a clarification; the Hindi surface for the clarification concept."
-    lexeme "zh"
-      word "澄清"
-        description "Chinese noun and verb (pinyin chengqing) for a clarification or to clarify; the Chinese surface for the clarification concept."
-  meaning "understanding"
-    gloss "grasping the meaning of something; its absence is what a clarification request signals"
-    wiktionary "understanding"
-    defined_by "clarification"
-    defined_by "knowledge"
-    role "conversational_concept"
-    lexeme "en"
-      word "understanding"
-        description "English noun for grasping the meaning of something; the surface for the understanding concept."
-    lexeme "ru"
-      word "понимание"
-        description "Russian noun (romanized ponimaniye) for understanding; the Russian surface for the understanding concept."
-    lexeme "hi"
-      word "समझ"
-        description "Hindi noun (romanized samajh) for understanding; the Hindi surface for the understanding concept."
-    lexeme "zh"
-      word "理解"
-        description "Chinese noun and verb (pinyin lijie) for understanding or to understand; the Chinese surface for the understanding concept."
-  meaning "clarification_request"
-    gloss "the user signalling they did not understand the assistant and asking it to make the prior answer clear"
-    wiktionary "understand"
-    defined_by "clarification"
-    defined_by "understanding"
-    defined_by "inquiry"
-    role "clarification_request"
-    lexeme "en"
-      word "i don t understand"
-        description "English phrase a speaker uses to signal they do not understand and to ask the assistant to make the prior answer clear; an apostrophe-spaced spelling of I dont understand."
-      word "i dont understand"
-        description "English phrase a speaker uses to signal they do not understand the assistant; an apostrophe-free spelling variant."
-      word "i didn t understand"
-        description "English phrase a speaker uses to signal they did not understand the prior answer; a past-tense apostrophe-spaced variant."
-      word "i didnt understand"
-        description "English phrase a speaker uses to signal they did not understand the prior answer; a past-tense apostrophe-free variant."
-      word "don t understand"
-        description "English phrase a speaker uses to signal a lack of understanding; a subjectless apostrophe-spaced variant."
-      word "dont understand"
-        description "English phrase a speaker uses to signal a lack of understanding; a subjectless apostrophe-free variant."
-      word "didn t understand"
-        description "English phrase a speaker uses to signal they did not understand; a subjectless past-tense apostrophe-spaced variant."
-      word "didnt understand"
-        description "English phrase a speaker uses to signal they did not understand; a subjectless past-tense apostrophe-free variant."
-      word "what do you mean"
-        description "English phrase a speaker uses to ask the assistant to clarify what it meant; a surface for the clarification request."
-      word "i m confused"
-        description "English phrase a speaker uses to express confusion and seek clarification; an apostrophe-spaced spelling of I am confused."
-      word "im confused"
-        description "English phrase a speaker uses to express confusion and seek clarification; a contracted spelling variant."
-      word "i am confused"
-        description "English phrase a speaker uses to express confusion and seek clarification; the full uncontracted form."
-    lexeme "ru"
-      word "не понял"
-        description "Russian phrase (romanized ne ponyal) a male speaker uses to say I did not understand and seek clarification."
-      word "не понимаю"
-        description "Russian phrase (romanized ne ponimayu) a speaker uses to say I do not understand and seek clarification."
-      word "не поняла"
-        description "Russian phrase (romanized ne ponyala) a female speaker uses to say I did not understand and seek clarification."
-      word "не понятно"
-        description "Russian phrase (romanized ne ponyatno) a speaker uses to say it is not clear; a spaced spelling of the impersonal form."
-      word "непонятно"
-        description "Russian word (romanized neponyatno) a speaker uses to say it is unclear; the joined spelling of the impersonal form."
-    lexeme "hi"
-      word "समझ नहीं आया"
-        description "Hindi phrase (romanized samajh nahin aaya) a speaker uses to say it was not understood; a masculine-agreement variant signalling a clarification request."
-      word "समझ नहीं आई"
-        description "Hindi phrase (romanized samajh nahin aai) a speaker uses to say it was not understood; a feminine-agreement variant signalling a clarification request."
-    lexeme "zh"
-      word "我不明白"
-        description "Chinese phrase (pinyin wo bu mingbai) a speaker uses to say I do not understand and seek clarification."
-      word "我不懂"
-        description "Chinese phrase (pinyin wo bu dong) a speaker uses to say I do not get it; a more colloquial clarification request."
-      word "听不懂"
-        description "Chinese phrase (pinyin ting bu dong) a speaker uses to say I cannot understand what is heard; a clarification request about something said."
-  meaning "capability_query"
-    gloss "the user asking what the assistant is able to do — a request to enumerate its capabilities"
-    wiktionary "capability"
-    defined_by "capability"
-    defined_by "inquiry"
-    role "capability_query"
-    lexeme "en"
-      word "what can you do"
-        description "English phrase a speaker uses to ask what the assistant is capable of; the canonical surface for the capability query."
-      word "what you can do"
-        description "English phrase a speaker uses to ask after the assistant's capabilities; a word-order variant of what can you do."
-      word "what are your capabilities"
-        description "English phrase a speaker uses to ask the assistant to enumerate its capabilities; a formal surface for the capability query."
-      word "what are you capable of"
-        description "English phrase a speaker uses to ask what the assistant is able to do; a synonym surface for the capability query."
-      word "what do you do"
-        description "English phrase a speaker uses to ask about the assistant's function or role; a broad surface for the capability query."
-      word "show me what you can do"
-        description "English phrase a speaker uses to ask the assistant to demonstrate its capabilities; an imperative surface for the capability query."
-      word "what features do you have"
-        description "English phrase a speaker uses to ask which features the assistant offers; a feature-framed surface for the capability query."
-      word "how can you help"
-        description "English phrase a speaker uses to ask in what ways the assistant can help; a help-framed surface for the capability query."
-      word "what are your features"
-        description "English phrase a speaker uses to ask the assistant to list its features; a feature-framed surface for the capability query."
-    lexeme "ru"
-      word "что ты умеешь"
-        description "Russian phrase (romanized chto ty umeesh) a speaker uses to ask what the assistant can do; the canonical surface for the capability query."
-      word "чем ты можешь"
-        description "Russian phrase (romanized chem ty mozhesh) a speaker uses to ask with what the assistant can help; a surface for the capability query."
-      word "чём ты можешь"
-        description "Russian phrase (romanized chyom ty mozhesh) a speaker uses to ask in what the assistant can help; a yo-spelled variant for the capability query."
-      word "что ты можешь"
-        description "Russian phrase (romanized chto ty mozhesh) a speaker uses to ask what the assistant can do; a can-framed surface for the capability query."
-      word "что умеет"
-        description "Russian phrase (romanized chto umeet) a speaker uses to ask what it can do; a third-person subjectless surface for the capability query."
-      word "что можешь"
-        description "Russian phrase (romanized chto mozhesh) a speaker uses to ask what you can do; a subjectless surface for the capability query."
-      word "в чем ты можешь быть полезен"
-        description "Russian phrase (romanized v chem ty mozhesh byt polezen) a speaker uses to ask in what way the assistant can be useful; a usefulness-framed surface for the capability query."
-      word "в чём ты можешь быть полезен"
-        description "Russian phrase (romanized v chyom ty mozhesh byt polezen) a speaker uses to ask in what way the assistant can be useful; a yo-spelled variant for the capability query."
-      word "твои возможности"
-        description "Russian phrase (romanized tvoi vozmozhnosti) a speaker uses to ask after your capabilities; a noun-phrase surface for the capability query."
-      word "что за дичь"
-        description "Russian slang phrase (romanized chto za dich) a speaker uses to exclaim what is this nonsense; a colloquial surface treated as a capability query."
-      word "что это такое"
-        description "Russian phrase (romanized chto eto takoye) a speaker uses to ask what this is; a what-is-it surface treated as a capability query."
-      word "что происходит"
-        description "Russian phrase (romanized chto proiskhodit) a speaker uses to ask what is going on; a surface treated as a capability query."
-      word "что ты делаешь"
-        description "Russian phrase (romanized chto ty delaesh) a speaker uses to ask what the assistant does; a do-framed surface for the capability query."
-    lexeme "hi"
-      word "आप क्या कर सकते"
-        description "Hindi phrase (romanized aap kya kar sakte) a speaker uses to ask what the assistant can do; a polite-form surface for the capability query."
-      word "तुम क्या कर सकते"
-        description "Hindi phrase (romanized tum kya kar sakte) a speaker uses to ask what you can do; an informal-form surface for the capability query."
-      word "क्या क्या कर सकते"
-        description "Hindi phrase (romanized kya kya kar sakte) a speaker uses to ask what all you can do; a surface enumerating capabilities."
-    lexeme "zh"
-      word "你能做什么"
-        description "Chinese phrase (pinyin ni neng zuo shenme) a speaker uses to ask what the assistant can do; the canonical surface for the capability query."
-      word "你会做什么"
-        description "Chinese phrase (pinyin ni hui zuo shenme) a speaker uses to ask what the assistant knows how to do; a skill-framed surface for the capability query."
-      word "你有什么功能"
-        description "Chinese phrase (pinyin ni you shenme gongneng) a speaker uses to ask what features the assistant has; a feature-framed surface for the capability query."
-      word "你能干什么"
-        description "Chinese phrase (pinyin ni neng gan shenme) a speaker uses to ask what the assistant can do; a colloquial surface for the capability query."
-  meaning "capability_query_more"
-    gloss "the user asking what else the assistant can do — a follow-up that requests capabilities beyond those already named"
-    wiktionary "else"
-    defined_by "capability_query"
-    defined_by "capability"
-    role "capability_query_more"
-    lexeme "en"
-      word "what else can you do"
-        description "English phrase a speaker uses to ask what further things the assistant can do beyond those already named; the canonical surface for the follow-up capability query."
-      word "what else do you do"
-        description "English phrase a speaker uses to ask what other things the assistant does; a synonym surface for the follow-up capability query."
-      word "what other things can you do"
-        description "English phrase a speaker uses to ask for additional capabilities; an explicit surface for the follow-up capability query."
-    lexeme "ru"
-      word "что ещё ты умеешь"
-        description "Russian phrase (romanized chto eshchyo ty umeesh) a speaker uses to ask what else the assistant can do; a yo-spelled surface for the follow-up capability query."
-      word "что еще ты умеешь"
-        description "Russian phrase (romanized chto eshche ty umeesh) a speaker uses to ask what else the assistant can do; an e-spelled variant for the follow-up capability query."
-      word "что ещё можешь"
-        description "Russian phrase (romanized chto eshchyo mozhesh) a speaker uses to ask what else you can do; a subjectless yo-spelled surface for the follow-up capability query."
-      word "что еще можешь"
-        description "Russian phrase (romanized chto eshche mozhesh) a speaker uses to ask what else you can do; a subjectless e-spelled variant for the follow-up capability query."
-      word "что ты ещё умеешь"
-        description "Russian phrase (romanized chto ty eshchyo umeesh) a speaker uses to ask what else the assistant can do; a yo-spelled word-order variant for the follow-up capability query."
-      word "что ты еще умеешь"
-        description "Russian phrase (romanized chto ty eshche umeesh) a speaker uses to ask what else the assistant can do; an e-spelled word-order variant for the follow-up capability query."
-    lexeme "hi"
-      word "और आप क्या कर सकते"
-        description "Hindi phrase (romanized aur aap kya kar sakte) a speaker uses to ask what else the assistant can do; a polite-form surface for the follow-up capability query."
-      word "और क्या कर सकते"
-        description "Hindi phrase (romanized aur kya kar sakte) a speaker uses to ask what else you can do; a surface for the follow-up capability query."
-    lexeme "zh"
-      word "你还能做什么"
-        description "Chinese phrase (pinyin ni hai neng zuo shenme) a speaker uses to ask what else the assistant can do; the canonical surface for the follow-up capability query."
-      word "你还会做什么"
-        description "Chinese phrase (pinyin ni hai hui zuo shenme) a speaker uses to ask what else the assistant knows how to do; a skill-framed surface for the follow-up capability query."
-  meaning "self_fact_query"
-    gloss "the user asking the assistant to list the facts it knows about itself"
-    wiktionary "fact"
-    defined_by "fact"
-    defined_by "self_reference"
-    defined_by "inquiry"
-    role "self_fact_query"
-    lexeme "en"
-      word "facts you know about yourself"
-        description "English phrase a speaker uses to ask the assistant to list the facts it knows about itself; the canonical surface for the self-fact query."
-      word "facts about yourself"
-        description "English phrase a speaker uses to ask for facts concerning the assistant itself; a shorter surface for the self-fact query."
-      word "self facts"
-        description "English phrase a speaker uses as a terse label for facts the assistant knows about itself; a compact surface for the self-fact query."
-      word "list all facts you know about yourself"
-        description "English phrase a speaker uses to ask the assistant to enumerate every fact it knows about itself; an imperative surface for the self-fact query."
-    lexeme "ru"
-      word "какие факты ты знаешь о себе"
-        description "Russian phrase (romanized kakie fakty ty znaesh o sebe) a speaker uses to ask which facts the assistant knows about itself; the canonical surface for the self-fact query."
-      word "факты о себе"
-        description "Russian phrase (romanized fakty o sebe) a speaker uses to ask for facts about oneself; a shorter surface for the self-fact query."
-    lexeme "hi"
-      word "अपने बारे में तथ्य"
-        description "Hindi phrase (romanized apne baare mein tathya) a speaker uses to ask for facts about the assistant itself; the canonical surface for the self-fact query."
-      word "स्वयं के बारे में तथ्य"
-        description "Hindi phrase (romanized svayam ke baare mein tathya) a speaker uses to ask for facts about oneself; a more formal surface for the self-fact query."
-    lexeme "zh"
-      word "关于你自己的事实"
-        description "Chinese phrase (pinyin guanyu ni ziji de shishi) a speaker uses to ask for facts about the assistant itself; the canonical surface for the self-fact query."
-      word "自我事实"
-        description "Chinese phrase (pinyin ziwo shishi) a speaker uses as a terse label for facts about oneself; a compact surface for the self-fact query."
-  meaning "self_introduction_request"
-    gloss "the user asking the assistant to introduce itself or to get acquainted"
-    wiktionary "introduce"
-    defined_by "introduction"
-    defined_by "self_reference"
-    defined_by "inquiry"
-    role "self_introduction_request"
-    lexeme "en"
-      word "tell me about yourself"
-        description "English phrase a speaker uses to ask the assistant to describe itself; the canonical surface for the self-introduction request."
-      word "introduce yourself"
-        description "English phrase a speaker uses to ask the assistant to present who it is; an imperative surface for the self-introduction request."
-      word "let s get acquainted"
-        description "English phrase a speaker uses to propose getting acquainted; an apostrophe-spaced spelling of lets get acquainted."
-      word "lets get acquainted"
-        description "English phrase a speaker uses to propose getting acquainted; an apostrophe-free spelling variant for the self-introduction request."
-      word "let us get acquainted"
-        description "English phrase a speaker uses to propose getting acquainted; the full uncontracted form for the self-introduction request."
-      word "let s get to know each other"
-        description "English phrase a speaker uses to propose mutual acquaintance; a longer surface for the self-introduction request."
-    lexeme "ru"
-      word "расскажи о себе"
-        description "Russian phrase (romanized rasskazhi o sebe) a speaker uses to ask the assistant to tell about itself; the canonical surface for the self-introduction request."
-      word "расскажи мне о себе"
-        description "Russian phrase (romanized rasskazhi mne o sebe) a speaker uses to ask the assistant to tell me about itself; an explicit-object surface for the self-introduction request."
-      word "расскажи про себя"
-        description "Russian phrase (romanized rasskazhi pro sebya) a speaker uses to ask the assistant to tell about itself; a pro-framed variant for the self-introduction request."
-      word "опиши себя"
-        description "Russian phrase (romanized opishi sebya) a speaker uses to ask the assistant to describe itself; a describe-framed surface for the self-introduction request."
-      word "представься"
-        description "Russian phrase (romanized predstavsya) a speaker uses to ask the assistant to introduce itself; an imperative surface for the self-introduction request."
-      word "давай знакомиться"
-        description "Russian phrase (romanized davay znakomitsya) a speaker uses to propose getting acquainted; an informal surface for the self-introduction request."
-      word "давай познакомимся"
-        description "Russian phrase (romanized davay poznakomimsya) a speaker uses to propose that we get acquainted; an informal surface for the self-introduction request."
-      word "давайте познакомимся"
-        description "Russian phrase (romanized davayte poznakomimsya) a speaker uses to politely propose that we get acquainted; a polite-form surface for the self-introduction request."
-    lexeme "hi"
-      word "अपने बारे में बताओ"
-        description "Hindi phrase (romanized apne baare mein batao) a speaker uses to ask the assistant to tell about itself; the canonical surface for the self-introduction request."
-      word "अपना परिचय दो"
-        description "Hindi phrase (romanized apna parichay do) a speaker uses to ask the assistant to give its introduction; an introduce-framed surface for the self-introduction request."
-      word "चलो परिचय करते हैं"
-        description "Hindi phrase (romanized chalo parichay karte hain) a speaker uses to propose let us get acquainted; an informal surface for the self-introduction request."
-      word "आइए परिचय करें"
-        description "Hindi phrase (romanized aaiye parichay karen) a speaker uses to politely propose that we get acquainted; a polite-form surface for the self-introduction request."
-      word "चलो एक दूसरे को जानें"
-        description "Hindi phrase (romanized chalo ek dusre ko jaanen) a speaker uses to propose that we get to know each other; a mutual-acquaintance surface for the self-introduction request."
-    lexeme "zh"
-      word "介绍一下你自己"
-        description "Chinese phrase (pinyin jieshao yixia ni ziji) a speaker uses to ask the assistant to introduce itself; the canonical surface for the self-introduction request."
-      word "告诉我你自己"
-        description "Chinese phrase (pinyin gaosu wo ni ziji) a speaker uses to ask the assistant to tell me about itself; a tell-framed surface for the self-introduction request."
-      word "介紹一下你自己"
-        description "Chinese phrase (pinyin jieshao yixia ni ziji) a speaker uses to ask the assistant to introduce itself; the traditional-character variant for the self-introduction request."
-      word "告訴我你自己"
-        description "Chinese phrase (pinyin gaosu wo ni ziji) a speaker uses to ask the assistant to tell me about itself; the traditional-character variant for the self-introduction request."
-      word "我们认识一下"
-        description "Chinese phrase (pinyin women renshi yixia) a speaker uses to propose that we get acquainted; a surface for the self-introduction request."
-      word "认识一下吧"
-        description "Chinese phrase (pinyin renshi yixia ba) a speaker uses to suggest getting acquainted; a softer-particle surface for the self-introduction request."
-      word "让我们认识一下"
-        description "Chinese phrase (pinyin rang women renshi yixia) a speaker uses to propose let us get acquainted; a let-framed surface for the self-introduction request."
-  meaning "conversation_summary_directive"
-    gloss "the verb or noun that asks the assistant to condense the running dialogue into a short summary"
-    wiktionary "summarize"
-    defined_by "inquiry"
-    defined_by "answer"
-    role "conversation_summary_directive"
-    lexeme "en"
-      word "summarize"
-        description "English verb asking for a condensed account; the canonical American-spelling surface for the conversation-summary directive."
-      word "summarise"
-        description "English verb asking for a condensed account; the British-spelling surface for the conversation-summary directive."
-      word "summary"
-        description "English noun naming the condensed account itself; the bare-noun surface for the conversation-summary directive."
-    lexeme "ru"
-      word "суммируй"
-        description "Russian verb (romanized summiruy) asking the assistant to sum up the dialogue; the informal imperative surface for the conversation-summary directive."
-      word "суммируйте"
-        description "Russian verb (romanized summiruyte) asking the assistant to sum up the dialogue; the polite-plural imperative surface for the conversation-summary directive."
-      word "резюмируй"
-        description "Russian verb (romanized rezyumiruy) asking the assistant to summarize the dialogue; the informal imperative surface for the conversation-summary directive."
-      word "резюмируйте"
-        description "Russian verb (romanized rezyumiruyte) asking the assistant to summarize the dialogue; the polite-plural imperative surface for the conversation-summary directive."
-      word "резюме"
-        description "Russian noun (romanized rezyume) naming a summary; the bare-noun surface for the conversation-summary directive."
-    lexeme "hi"
-      word "सारांश"
-        description "Hindi noun (romanized saaraansh) naming a summary; the bare-noun surface for the conversation-summary directive."
-      word "संक्षेप"
-        description "Hindi noun (romanized sankshep) naming a condensation or abstract; an alternative surface for the conversation-summary directive."
-      word "सारांशित"
-        description "Hindi verb stem (romanized saaraanshit) meaning summarized; the verb surface for the conversation-summary directive."
-    lexeme "zh"
-      word "总结"
-        description "Chinese verb or noun (pinyin zongjie) meaning to summarize or a summary; the simplified-character surface for the conversation-summary directive."
-      word "總結"
-        description "Chinese verb or noun (pinyin zongjie) meaning to summarize or a summary; the traditional-character surface for the conversation-summary directive."
-      word "概括"
-        description "Chinese verb (pinyin gaikuo) meaning to sum up or generalize; an alternative surface for the conversation-summary directive."
-      word "摘要"
-        description "Chinese noun (pinyin zhaiyao) meaning an abstract or summary; an alternative surface for the conversation-summary directive."
-      word "归纳"
-        description "Chinese verb (pinyin guina) meaning to summarize or induce; the simplified-character surface for the conversation-summary directive."
-      word "歸納"
-        description "Chinese verb (pinyin guina) meaning to summarize or induce; the traditional-character surface for the conversation-summary directive."
-  meaning "conversation_reference"
-    gloss "the noun naming the running dialogue between the user and the assistant — the object a summary request points at"
-    wiktionary "conversation"
-    defined_by "inquiry"
-    defined_by "answer"
-    role "conversation_reference"
-    lexeme "en"
-      word "conversation"
-        description "English noun for the running dialogue between the user and the assistant; the canonical object of a conversation-summary request."
-      word "chat"
-        description "English noun for an informal conversation; an alternative object surface for a conversation-summary request."
-      word "dialogue"
-        description "English noun for an exchange of turns between participants; an alternative object surface for a conversation-summary request."
-      word "dialog"
-        description "English noun for an exchange of turns; the American-spelling object surface for a conversation-summary request."
-      word "discussion"
-        description "English noun for a conversation about a topic; an alternative object surface for a conversation-summary request."
-    lexeme "ru"
-      word "беседа"
-        description "Russian noun (romanized beseda) for a conversation; the nominative object surface for a conversation-summary request."
-      word "беседы"
-        description "Russian noun (romanized besedy) for a conversation; the genitive surface for a conversation-summary request."
-      word "беседу"
-        description "Russian noun (romanized besedu) for a conversation; the accusative surface for a conversation-summary request."
-      word "беседе"
-        description "Russian noun (romanized besede) for a conversation; the prepositional surface for a conversation-summary request."
-      word "разговор"
-        description "Russian noun (romanized razgovor) for a conversation; the nominative object surface for a conversation-summary request."
-      word "разговора"
-        description "Russian noun (romanized razgovora) for a conversation; the genitive surface for a conversation-summary request."
-      word "разговоре"
-        description "Russian noun (romanized razgovore) for a conversation; the prepositional surface for a conversation-summary request."
-      word "разговором"
-        description "Russian noun (romanized razgovorom) for a conversation; the instrumental surface for a conversation-summary request."
-      word "чат"
-        description "Russian noun (romanized chat) for an online chat; the nominative object surface for a conversation-summary request."
-      word "чата"
-        description "Russian noun (romanized chata) for an online chat; the genitive surface for a conversation-summary request."
-      word "чате"
-        description "Russian noun (romanized chate) for an online chat; the prepositional surface for a conversation-summary request."
-      word "диалог"
-        description "Russian noun (romanized dialog) for a dialogue; an alternative object surface for a conversation-summary request."
-      word "диалога"
-        description "Russian noun (romanized dialoga) for a dialogue; the genitive surface for a conversation-summary request."
-    lexeme "hi"
-      word "बातचीत"
-        description "Hindi noun (romanized baatcheet) for a conversation; the canonical object surface for a conversation-summary request."
-      word "संवाद"
-        description "Hindi noun (romanized samvaad) for a dialogue; an alternative object surface for a conversation-summary request."
-      word "वार्तालाप"
-        description "Hindi noun (romanized vaartaalaap) for a conversation or discourse; an alternative object surface for a conversation-summary request."
-    lexeme "zh"
-      word "对话"
-        description "Chinese noun (pinyin duihua) for a dialogue or conversation; the simplified-character object surface for a conversation-summary request."
-      word "對話"
-        description "Chinese noun (pinyin duihua) for a dialogue or conversation; the traditional-character object surface for a conversation-summary request."
-      word "聊天"
-        description "Chinese noun or verb (pinyin liaotian) for chatting; an informal object surface for a conversation-summary request."
-      word "会话"
-        description "Chinese noun (pinyin huihua) for a conversation or session; the simplified-character object surface for a conversation-summary request."
-      word "會話"
-        description "Chinese noun (pinyin huihua) for a conversation or session; the traditional-character object surface for a conversation-summary request."
-      word "谈话"
-        description "Chinese noun (pinyin tanhua) for a talk or conversation; the simplified-character object surface for a conversation-summary request."
-      word "談話"
-        description "Chinese noun (pinyin tanhua) for a talk or conversation; the traditional-character object surface for a conversation-summary request."
-  meaning "conversation_summary_phrase"
-    gloss "a complete standalone phrasing that asks the assistant to recount or summarize what the dialogue has covered"
-    wiktionary "conversation"
-    defined_by "inquiry"
-    defined_by "conversation_reference"
-    role "conversation_summary_phrase"
-    lexeme "en"
-      word "what have we talked about"
-        description "English standalone phrasing asking the assistant to recall the topics of the running conversation."
-      word "what did we talk about"
-        description "English standalone phrasing asking the assistant to recall what the conversation covered."
-      word "what have we discussed"
-        description "English standalone phrasing asking the assistant to recall what has been discussed."
-      word "summary of our chat"
-        description "English standalone phrasing naming a summary of the running chat; matches even when it does not lead the prompt."
-      word "summary of our conversation"
-        description "English standalone phrasing naming a summary of the running conversation; matches even when it does not lead the prompt."
-      word "summarize so far"
-        description "English standalone phrasing asking the assistant to summarize the conversation up to this point (American spelling)."
-      word "summarise so far"
-        description "English standalone phrasing asking the assistant to summarize the conversation up to this point (British spelling)."
-    lexeme "ru"
-      word "о чём мы разговаривали"
-        description "Russian standalone phrasing (romanized o chyom my razgovarivali) asking what the conversation was about; the yo-spelled surface."
-      word "о чем мы разговаривали"
-        description "Russian standalone phrasing (romanized o chem my razgovarivali) asking what the conversation was about; the ye-spelled surface."
-      word "о чём мы говорили"
-        description "Russian standalone phrasing (romanized o chyom my govorili) asking what we talked about; the yo-spelled surface."
-      word "о чем мы говорили"
-        description "Russian standalone phrasing (romanized o chem my govorili) asking what we talked about; the ye-spelled surface."
-    lexeme "hi"
-      word "हमने किस बारे में बात की"
-        description "Hindi standalone phrasing (romanized humne kis baare mein baat ki) asking what the conversation was about."
-      word "हमने क्या बात की"
-        description "Hindi standalone phrasing (romanized humne kya baat ki) asking what we talked about."
-    lexeme "zh"
-      word "我们聊了什么"
-        description "Chinese standalone phrasing (pinyin women liao le shenme) asking what the conversation covered; simplified surface."
-      word "我们谈了什么"
-        description "Chinese standalone phrasing (pinyin women tan le shenme) asking what we talked about; simplified surface."
-      word "我们说了什么"
-        description "Chinese standalone phrasing (pinyin women shuo le shenme) asking what we said; simplified surface."
-      word "我們聊了什麼"
-        description "Chinese standalone phrasing (pinyin women liao le shenme) asking what the conversation covered; traditional surface."
-  meaning "conversation_summary_courtesy"
-    gloss "a polite or elliptical frame that asks the assistant to summarize without naming the conversation object directly"
-    wiktionary "summary"
-    defined_by "inquiry"
-    defined_by "conversation_summary_directive"
-    role "conversation_summary_courtesy"
-    lexeme "en"
-      word "give me a summary"
-        description "English polite frame asking the assistant to produce a summary; an objectless courtesy surface for the conversation-summary request."
-      word "can you summarize"
-        description "English polite frame asking whether the assistant can summarize; an objectless courtesy surface (American spelling)."
-      word "can you summarise"
-        description "English polite frame asking whether the assistant can summarize; an objectless courtesy surface (British spelling)."
-      word "please summarize"
-        description "English polite frame asking the assistant to summarize; an objectless courtesy surface (American spelling)."
-      word "please summarise"
-        description "English polite frame asking the assistant to summarize; an objectless courtesy surface (British spelling)."
-    lexeme "ru"
-      word "подведи итог"
-        description "Russian polite frame (romanized podvedi itog) asking the assistant to sum up; an objectless courtesy surface for the conversation-summary request."
-      word "подведи итоги"
-        description "Russian polite frame (romanized podvedi itogi) asking the assistant to sum up the results; a plural-object courtesy surface."
-      word "краткое резюме"
-        description "Russian phrase (romanized kratkoye rezyume) asking for a brief summary; an objectless courtesy surface for the conversation-summary request."
-      word "сделай резюме"
-        description "Russian phrase (romanized sdelay rezyume) asking the assistant to make a summary; an objectless courtesy surface."
-      word "краткое содержание"
-        description "Russian phrase (romanized kratkoye soderzhaniye) asking for a brief account; an objectless courtesy surface for the conversation-summary request."
-    lexeme "hi"
-      word "सार दो"
-        description "Hindi phrase (romanized saar do) asking the assistant to give the gist; an objectless courtesy surface for the conversation-summary request."
-      word "सारांश दो"
-        description "Hindi phrase (romanized saaraansh do) asking the assistant to give a summary; an objectless courtesy surface."
-      word "संक्षेप में बताओ"
-        description "Hindi phrase (romanized sankshep mein batao) asking the assistant to tell briefly; an objectless courtesy surface for the conversation-summary request."
-    lexeme "zh"
-      word "帮我总结"
-        description "Chinese phrase (pinyin bang wo zongjie) asking the assistant to help summarize; an objectless courtesy surface; simplified surface."
-      word "帮我概括"
-        description "Chinese phrase (pinyin bang wo gaikuo) asking the assistant to help sum up; an objectless courtesy surface; simplified surface."
-      word "请总结"
-        description "Chinese phrase (pinyin qing zongjie) politely asking the assistant to summarize; an objectless courtesy surface; simplified surface."
-      word "请概括"
-        description "Chinese phrase (pinyin qing gaikuo) politely asking the assistant to sum up; an objectless courtesy surface; simplified surface."
-      word "总结一下"
-        description "Chinese phrase (pinyin zongjie yixia) asking the assistant to do a quick summary; an objectless courtesy surface; simplified surface."
-      word "概括一下"
-        description "Chinese phrase (pinyin gaikuo yixia) asking the assistant to do a quick sum-up; an objectless courtesy surface; simplified surface."
-  meaning "who_is_question"
-    gloss "a who-is question about a person or named entity — who is X, кто такой X, X कौन है, X是谁. It is recognised so the assistant can report a knowledge-base miss and offer a typo correction instead of inventing a biography. Two roles split by slot encode the word order: who_question_lead fronts the interrogative (English and Russian, head-initial) and is detected with starts_with, while who_question_tail postposes it (Hindi and Chinese, head-final) and is detected with ends_with. The entity itself is pulled out separately by the concept-query extractor, so the order within each role does not matter — any matching lead or tail is enough."
-    wiktionary "who"
-    defined_by "inquiry"
-    role "who_question_lead"
-    role "who_question_tail"
-    lexeme "en"
-      word "who is …"
-        description "English interrogative lead; starts_with who is (trailing space), the entity follows."
-      word "who was …"
-        description "English interrogative lead; starts_with who was (trailing space), the entity follows."
-      word "who are …"
-        description "English interrogative lead; starts_with who are (trailing space), the entity follows."
-    lexeme "ru"
-      word "кто такой …"
-        description "Russian interrogative lead (romanized kto takoy); the masculine who-is frame, the entity follows."
-      word "кто такая …"
-        description "Russian interrogative lead (romanized kto takaya); the feminine who-is frame, the entity follows."
-      word "кто это …"
-        description "Russian interrogative lead (romanized kto eto, who is this); the entity follows."
-      word "кто …"
-        description "Russian bare interrogative lead (romanized kto, who); the entity follows."
-    lexeme "hi"
-      word "… कौन है"
-        description "Hindi interrogative tail (romanized kaun hai, who is); head-final, the entity precedes; ends_with the tail (leading space)."
-      word "… कौन हैं"
-        description "Hindi polite interrogative tail (romanized kaun hain, who are); head-final, the entity precedes."
-    lexeme "zh"
-      word "…是谁"
-        description "Chinese interrogative tail (pinyin shi shei, is who); head-final, the entity precedes; simplified surface."
-      word "…是誰"
-        description "Chinese interrogative tail (pinyin shi shei, is who); head-final, the entity precedes; traditional surface."
-  meaning "interrogative_opener"
-    gloss "the generic interrogative opener — the class of question words (the wh-words) that front a content question rather than a yes or no question. When a prompt opens with one of these the intent classifier reads it as a Question. English and Russian are head-initial, so the question word starts the prompt and is detected with starts_with; a trailing space follows the bare word, so what marks what is the capital but not whatever, and who marks who are you but not whoever. Hindi and Chinese are head-final, so their question words need not begin the sentence; they are carried here for language coverage but are never matched positionally. The surfaces are bare single words rather than openers with slots, so any one of them at the front is enough to classify the prompt as a question."
-    wiktionary "interrogative"
-    defined_by "inquiry"
-    role "interrogative_opener"
-    lexeme "en"
-      word "what"
-        description "English interrogative pronoun; head-initial opener, starts_with what (trailing space) marks a content question."
-      word "who"
-        description "English interrogative pronoun for a person; head-initial opener, starts_with who (trailing space)."
-      word "why"
-        description "English interrogative adverb of reason; head-initial opener, starts_with why (trailing space)."
-      word "where"
-        description "English interrogative adverb of place; head-initial opener, starts_with where (trailing space)."
-      word "when"
-        description "English interrogative adverb of time; head-initial opener, starts_with when (trailing space)."
-      word "how"
-        description "English interrogative adverb of manner; head-initial opener, starts_with how (trailing space)."
-      word "which"
-        description "English interrogative determiner selecting among alternatives; head-initial opener, starts_with which (trailing space)."
-    lexeme "ru"
-      word "что"
-        description "Russian interrogative pronoun (romanized chto, what); head-initial opener, starts_with что (trailing space)."
-      word "кто"
-        description "Russian interrogative pronoun (romanized kto, who); head-initial opener, starts_with кто (trailing space)."
-      word "почему"
-        description "Russian interrogative adverb of reason (romanized pochemu, why); head-initial opener, starts_with почему (trailing space)."
-      word "где"
-        description "Russian interrogative adverb of place (romanized gde, where); head-initial opener, starts_with где (trailing space)."
-      word "когда"
-        description "Russian interrogative adverb of time (romanized kogda, when); head-initial opener, starts_with когда (trailing space)."
-      word "как"
-        description "Russian interrogative adverb of manner (romanized kak, how); head-initial opener, starts_with как (trailing space)."
-    lexeme "hi"
-      word "क्या"
-        description "Hindi interrogative (romanized kya, what); carried for language coverage — Hindi is head-final, so the opener is not matched positionally."
-      word "कौन"
-        description "Hindi interrogative (romanized kaun, who); carried for coverage, not matched positionally (head-final)."
-      word "क्यों"
-        description "Hindi interrogative (romanized kyon, why); carried for coverage, not matched positionally (head-final)."
-      word "कहाँ"
-        description "Hindi interrogative (romanized kahan, where); carried for coverage, not matched positionally (head-final)."
-      word "कब"
-        description "Hindi interrogative (romanized kab, when); carried for coverage, not matched positionally (head-final)."
-      word "कैसे"
-        description "Hindi interrogative (romanized kaise, how); carried for coverage, not matched positionally (head-final)."
-      word "कौनसा"
-        description "Hindi interrogative (romanized kaunsa, which); carried for coverage, not matched positionally (head-final)."
-    lexeme "zh"
-      word "什么"
-        description "Chinese interrogative (pinyin shenme, what); carried for coverage, not matched positionally (head-final); simplified surface."
-      word "谁"
-        description "Chinese interrogative (pinyin shei, who); carried for coverage, not matched positionally (head-final); simplified surface."
-      word "为什么"
-        description "Chinese interrogative (pinyin weishenme, why); carried for coverage, not matched positionally (head-final); simplified surface."
-      word "哪里"
-        description "Chinese interrogative (pinyin nali, where); carried for coverage, not matched positionally (head-final); simplified surface."
-      word "何时"
-        description "Chinese interrogative (pinyin heshi, when); carried for coverage, not matched positionally (head-final)."
-      word "如何"
-        description "Chinese interrogative (pinyin ruhe, how); carried for coverage, not matched positionally (head-final)."
-      word "哪个"
-        description "Chinese interrogative (pinyin nage, which); carried for coverage, not matched positionally (head-final); simplified surface."
+  assistant
+    defined-by answer
+    defined-by self_reference
+    defined-by entity
+    role conversational_entity
+    lexeme en
+      surface
+        text assistant
+      surface
+        text "ai assistant"
+    lexeme ru
+      surface
+        text ассистент
+      surface
+        text помощник
+    lexeme hi
+      surface
+        text सहायक
+    lexeme zh
+      surface
+        text 助手
+      surface
+        text 助理
+  user
+    defined-by inquiry
+    defined-by entity
+    role conversational_entity
+    lexeme en
+      surface
+        text user
+    lexeme ru
+      surface
+        text пользователь
+    lexeme hi
+      surface
+        text उपयोगकर्ता
+    lexeme zh
+      surface
+        text 用户
+  inquiry
+    defined-by answer
+    defined-by user
+    role conversational_act
+    lexeme en
+      surface
+        text inquiry
+      surface
+        text question
+      surface
+        text request
+    lexeme ru
+      surface
+        text вопрос
+      surface
+        text запрос
+    lexeme hi
+      surface
+        text प्रश्न
+      surface
+        text अनुरोध
+    lexeme zh
+      surface
+        text 询问
+      surface
+        text 请求
+  answer
+    defined-by inquiry
+    defined-by assistant
+    role conversational_act
+    lexeme en
+      surface
+        text answer
+      surface
+        text response
+      surface
+        text reply
+    lexeme ru
+      surface
+        text ответ
+    lexeme hi
+      surface
+        text उत्तर
+      surface
+        text जवाब
+    lexeme zh
+      surface
+        text 回答
+      surface
+        text 答复
+  self_reference
+    defined-by assistant
+    role conversational_concept
+    lexeme en
+      surface
+        text yourself
+      surface
+        text myself
+    lexeme ru
+      surface
+        text себе
+      surface
+        text себя
+    lexeme hi
+      surface
+        text स्वयं
+      surface
+        text खुद
+    lexeme zh
+      surface
+        text 自己
+  capability
+    defined-by assistant
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
+        text capability
+      surface
+        text ability
+    lexeme ru
+      surface
+        text возможность
+      surface
+        text умение
+    lexeme hi
+      surface
+        text क्षमता
+    lexeme zh
+      surface
+        text 能力
+      surface
+        text 功能
+  knowledge
+    defined-by assistant
+    defined-by fact
+    role conversational_concept
+    lexeme en
+      surface
+        text knowledge
+    lexeme ru
+      surface
+        text знание
+    lexeme hi
+      surface
+        text ज्ञान
+    lexeme zh
+      surface
+        text 知识
+  fact
+    defined-by knowledge
+    role conversational_concept
+    role knowledge_inventory_noun
+    lexeme en
+      surface
+        text fact
+      surface
+        text facts
+    lexeme ru
+      surface
+        text факт
+      surface
+        text факты
+    lexeme hi
+      surface
+        text तथ्य
+    lexeme zh
+      surface
+        text 事实
+      surface
+        text 事實
+  knowledge_inventory_probe
+    defined-by inquiry
+    role knowledge_inventory_interrogative
+    lexeme en
+      surface
+        text what
+      surface
+        text which
+      surface
+        text list
+      surface
+        text show
+    lexeme ru
+      surface
+        text какие
+      surface
+        text что
+      surface
+        text перечисли
+      surface
+        text покажи
+      surface
+        text назови
+    lexeme hi
+      surface
+        text कौन
+      surface
+        text क्या
+      surface
+        text सूची
+      surface
+        text सूचीबद्ध
+      surface
+        text बताओ
+      surface
+        text दिखाओ
+    lexeme zh
+      surface
+        text 哪些
+      surface
+        text 什么
+      surface
+        text 什麼
+      surface
+        text 你知道
+      surface
+        text 您知道
+      surface
+        text 你有
+      surface
+        text 您有
+  assistant_knowing
+    defined-by knowledge
+    defined-by assistant
+    role knowledge_possession
+    lexeme en
+      surface
+        text "you know"
+      surface
+        text "do you know"
+      surface
+        text "you have"
+      surface
+        text "available to you"
+      surface
+        text "in your knowledge"
+      surface
+        text "known to you"
+    lexeme ru
+      surface
+        text "ты знаешь"
+      surface
+        text знаешь
+      surface
+        text "тебе известно"
+      surface
+        text "тебе известны"
+      surface
+        text "тебе известен"
+      surface
+        text "у тебя есть"
+      surface
+        text "твои знания"
+      surface
+        text "что ты знаешь"
+    lexeme hi
+      surface
+        text तुम
+      surface
+        text आप
+      surface
+        text जानते
+      surface
+        text जानती
+      surface
+        text आपके
+      surface
+        text तुम्हारे
+    lexeme zh
+      surface
+        text 你知道
+      surface
+        text 您知道
+      surface
+        text 你有
+      surface
+        text 您有
+  knowledge_inventory_query
+    defined-by knowledge
+    defined-by fact
+    role knowledge_inventory_phrase
+    lexeme en
+      surface
+        text "what do you know in general"
+      surface
+        text "what do you know about the world"
+      surface
+        text "what is known to you"
+      surface
+        text "what knowledge do you have"
+    lexeme ru
+      surface
+        text "что тебе вообще известно"
+      surface
+        text "что тебе известно"
+      surface
+        text "что ты вообще знаешь"
+      surface
+        text "что ты знаешь об окружающем мире"
+      surface
+        text "известно об окружающем мире"
+      surface
+        text "знаешь про окружающий мир"
+      surface
+        text "знаешь об окружающем мире"
+    lexeme hi
+      surface
+        text "आप क्या जानते हैं"
+      surface
+        text "तुम क्या जानते हो"
+      surface
+        text "आपको क्या पता है"
+    lexeme zh
+      surface
+        text 你知道什么
+      surface
+        text 您知道什么
+      surface
+        text 你知道哪些
+  introduction
+    defined-by self_reference
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
+        text introduction
+    lexeme ru
+      surface
+        text знакомство
+    lexeme hi
+      surface
+        text परिचय
+    lexeme zh
+      surface
+        text 介绍
+  clarification
+    defined-by inquiry
+    defined-by answer
+    role conversational_concept
+    lexeme en
+      surface
+        text clarification
+    lexeme ru
+      surface
+        text разъяснение
+    lexeme hi
+      surface
+        text स्पष्टीकरण
+    lexeme zh
+      surface
+        text 澄清
+  understanding
+    defined-by clarification
+    defined-by knowledge
+    role conversational_concept
+    lexeme en
+      surface
+        text understanding
+    lexeme ru
+      surface
+        text понимание
+    lexeme hi
+      surface
+        text समझ
+    lexeme zh
+      surface
+        text 理解
+  clarification_request
+    defined-by clarification
+    defined-by understanding
+    defined-by inquiry
+    role clarification_request
+    lexeme en
+      surface
+        text "i don t understand"
+      surface
+        text "i dont understand"
+      surface
+        text "i didn t understand"
+      surface
+        text "i didnt understand"
+      surface
+        text "don t understand"
+      surface
+        text "dont understand"
+      surface
+        text "didn t understand"
+      surface
+        text "didnt understand"
+      surface
+        text "what do you mean"
+      surface
+        text "i m confused"
+      surface
+        text "im confused"
+      surface
+        text "i am confused"
+    lexeme ru
+      surface
+        text "не понял"
+      surface
+        text "не понимаю"
+      surface
+        text "не поняла"
+      surface
+        text "не понятно"
+      surface
+        text непонятно
+    lexeme hi
+      surface
+        text "समझ नहीं आया"
+      surface
+        text "समझ नहीं आई"
+    lexeme zh
+      surface
+        text 我不明白
+      surface
+        text 我不懂
+      surface
+        text 听不懂
+  capability_query
+    defined-by capability
+    defined-by inquiry
+    role capability_query
+    lexeme en
+      surface
+        text "what can you do"
+      surface
+        text "what you can do"
+      surface
+        text "what are your capabilities"
+      surface
+        text "what are you capable of"
+      surface
+        text "what do you do"
+      surface
+        text "show me what you can do"
+      surface
+        text "what features do you have"
+      surface
+        text "how can you help"
+      surface
+        text "what are your features"
+    lexeme ru
+      surface
+        text "что ты умеешь"
+      surface
+        text "чем ты можешь"
+      surface
+        text "чём ты можешь"
+      surface
+        text "что ты можешь"
+      surface
+        text "что умеет"
+      surface
+        text "что можешь"
+      surface
+        text "в чем ты можешь быть полезен"
+      surface
+        text "в чём ты можешь быть полезен"
+      surface
+        text "твои возможности"
+      surface
+        text "что за дичь"
+      surface
+        text "что это такое"
+      surface
+        text "что происходит"
+      surface
+        text "что ты делаешь"
+    lexeme hi
+      surface
+        text "आप क्या कर सकते"
+      surface
+        text "तुम क्या कर सकते"
+      surface
+        text "क्या क्या कर सकते"
+    lexeme zh
+      surface
+        text 你能做什么
+      surface
+        text 你会做什么
+      surface
+        text 你有什么功能
+      surface
+        text 你能干什么
+  capability_query_more
+    defined-by capability_query
+    defined-by capability
+    role capability_query_more
+    lexeme en
+      surface
+        text "what else can you do"
+      surface
+        text "what else do you do"
+      surface
+        text "what other things can you do"
+    lexeme ru
+      surface
+        text "что ещё ты умеешь"
+      surface
+        text "что еще ты умеешь"
+      surface
+        text "что ещё можешь"
+      surface
+        text "что еще можешь"
+      surface
+        text "что ты ещё умеешь"
+      surface
+        text "что ты еще умеешь"
+    lexeme hi
+      surface
+        text "और आप क्या कर सकते"
+      surface
+        text "और क्या कर सकते"
+    lexeme zh
+      surface
+        text 你还能做什么
+      surface
+        text 你还会做什么
+  self_fact_query
+    defined-by fact
+    defined-by self_reference
+    defined-by inquiry
+    role self_fact_query
+    lexeme en
+      surface
+        text "facts you know about yourself"
+      surface
+        text "facts about yourself"
+      surface
+        text "self facts"
+      surface
+        text "list all facts you know about yourself"
+    lexeme ru
+      surface
+        text "какие факты ты знаешь о себе"
+      surface
+        text "факты о себе"
+    lexeme hi
+      surface
+        text "अपने बारे में तथ्य"
+      surface
+        text "स्वयं के बारे में तथ्य"
+    lexeme zh
+      surface
+        text 关于你自己的事实
+      surface
+        text 自我事实
+  self_introduction_request
+    defined-by introduction
+    defined-by self_reference
+    defined-by inquiry
+    role self_introduction_request
+    lexeme en
+      surface
+        text "tell me about yourself"
+      surface
+        text "introduce yourself"
+      surface
+        text "let s get acquainted"
+      surface
+        text "lets get acquainted"
+      surface
+        text "let us get acquainted"
+      surface
+        text "let s get to know each other"
+    lexeme ru
+      surface
+        text "расскажи о себе"
+      surface
+        text "расскажи мне о себе"
+      surface
+        text "расскажи про себя"
+      surface
+        text "опиши себя"
+      surface
+        text представься
+      surface
+        text "давай знакомиться"
+      surface
+        text "давай познакомимся"
+      surface
+        text "давайте познакомимся"
+    lexeme hi
+      surface
+        text "अपने बारे में बताओ"
+      surface
+        text "अपना परिचय दो"
+      surface
+        text "चलो परिचय करते हैं"
+      surface
+        text "आइए परिचय करें"
+      surface
+        text "चलो एक दूसरे को जानें"
+    lexeme zh
+      surface
+        text 介绍一下你自己
+      surface
+        text 告诉我你自己
+      surface
+        text 介紹一下你自己
+      surface
+        text 告訴我你自己
+      surface
+        text 我们认识一下
+      surface
+        text 认识一下吧
+      surface
+        text 让我们认识一下
+  conversation_summary_directive
+    defined-by inquiry
+    defined-by answer
+    role conversation_summary_directive
+    lexeme en
+      surface
+        text summarize
+      surface
+        text summarise
+      surface
+        text summary
+    lexeme ru
+      surface
+        text суммируй
+      surface
+        text суммируйте
+      surface
+        text резюмируй
+      surface
+        text резюмируйте
+      surface
+        text резюме
+    lexeme hi
+      surface
+        text सारांश
+      surface
+        text संक्षेप
+      surface
+        text सारांशित
+    lexeme zh
+      surface
+        text 总结
+      surface
+        text 總結
+      surface
+        text 概括
+      surface
+        text 摘要
+      surface
+        text 归纳
+      surface
+        text 歸納
+  conversation_reference
+    defined-by inquiry
+    defined-by answer
+    role conversation_reference
+    lexeme en
+      surface
+        text conversation
+      surface
+        text chat
+      surface
+        text dialogue
+      surface
+        text dialog
+      surface
+        text discussion
+    lexeme ru
+      surface
+        text беседа
+      surface
+        text беседы
+      surface
+        text беседу
+      surface
+        text беседе
+      surface
+        text разговор
+      surface
+        text разговора
+      surface
+        text разговоре
+      surface
+        text разговором
+      surface
+        text чат
+      surface
+        text чата
+      surface
+        text чате
+      surface
+        text диалог
+      surface
+        text диалога
+    lexeme hi
+      surface
+        text बातचीत
+      surface
+        text संवाद
+      surface
+        text वार्तालाप
+    lexeme zh
+      surface
+        text 对话
+      surface
+        text 對話
+      surface
+        text 聊天
+      surface
+        text 会话
+      surface
+        text 會話
+      surface
+        text 谈话
+      surface
+        text 談話
+  conversation_summary_phrase
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_summary_phrase
+    lexeme en
+      surface
+        text "what have we talked about"
+      surface
+        text "what did we talk about"
+      surface
+        text "what have we discussed"
+      surface
+        text "summary of our chat"
+      surface
+        text "summary of our conversation"
+      surface
+        text "summarize so far"
+      surface
+        text "summarise so far"
+    lexeme ru
+      surface
+        text "о чём мы разговаривали"
+      surface
+        text "о чем мы разговаривали"
+      surface
+        text "о чём мы говорили"
+      surface
+        text "о чем мы говорили"
+    lexeme hi
+      surface
+        text "हमने किस बारे में बात की"
+      surface
+        text "हमने क्या बात की"
+    lexeme zh
+      surface
+        text 我们聊了什么
+      surface
+        text 我们谈了什么
+      surface
+        text 我们说了什么
+      surface
+        text 我們聊了什麼
+  conversation_summary_courtesy
+    defined-by inquiry
+    defined-by conversation_summary_directive
+    role conversation_summary_courtesy
+    lexeme en
+      surface
+        text "give me a summary"
+      surface
+        text "can you summarize"
+      surface
+        text "can you summarise"
+      surface
+        text "please summarize"
+      surface
+        text "please summarise"
+    lexeme ru
+      surface
+        text "подведи итог"
+      surface
+        text "подведи итоги"
+      surface
+        text "краткое резюме"
+      surface
+        text "сделай резюме"
+      surface
+        text "краткое содержание"
+    lexeme hi
+      surface
+        text "सार दो"
+      surface
+        text "सारांश दो"
+      surface
+        text "संक्षेप में बताओ"
+    lexeme zh
+      surface
+        text 帮我总结
+      surface
+        text 帮我概括
+      surface
+        text 请总结
+      surface
+        text 请概括
+      surface
+        text 总结一下
+      surface
+        text 概括一下
+  who_is_question
+    defined-by inquiry
+    role who_question_lead
+    role who_question_tail
+    lexeme en
+      surface
+        text "who is …"
+      surface
+        text "who was …"
+      surface
+        text "who are …"
+    lexeme ru
+      surface
+        text "кто такой …"
+      surface
+        text "кто такая …"
+      surface
+        text "кто это …"
+      surface
+        text "кто …"
+    lexeme hi
+      surface
+        text "… कौन है"
+      surface
+        text "… कौन हैं"
+    lexeme zh
+      surface
+        text …是谁
+      surface
+        text …是誰
+  interrogative_opener
+    defined-by inquiry
+    role interrogative_opener
+    lexeme en
+      surface
+        text what
+      surface
+        text who
+      surface
+        text why
+      surface
+        text where
+      surface
+        text when
+      surface
+        text how
+      surface
+        text which
+    lexeme ru
+      surface
+        text что
+      surface
+        text кто
+      surface
+        text почему
+      surface
+        text где
+      surface
+        text когда
+      surface
+        text как
+    lexeme hi
+      surface
+        text क्या
+      surface
+        text कौन
+      surface
+        text क्यों
+      surface
+        text कहाँ
+      surface
+        text कब
+      surface
+        text कैसे
+      surface
+        text कौनसा
+    lexeme zh
+      surface
+        text 什么
+      surface
+        text 谁
+      surface
+        text 为什么
+      surface
+        text 哪里
+      surface
+        text 何时
+      surface
+        text 如何
+      surface
+        text 哪个

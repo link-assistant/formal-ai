@@ -1,0 +1,195 @@
+language en
+lemma line
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a formation of people or things one beside another"
+    examples ("the line of soldiers advanced with their bayonets fixed" "they were arrayed in line of battle" "the cast stood in line for the curtain call")
+    id oewn-08447525-n
+    partOfSpeech n
+  entry
+    definition "a mark that is long relative to its width"
+    examples ("He drew a line on the chart")
+    id oewn-06812755-n
+    partOfSpeech n
+  entry
+    definition "a formation of people or things one behind another"
+    examples ("the line stretched clear around the corner" "you must wait in a long line at the checkout counter")
+    id oewn-08447160-n
+    partOfSpeech n
+  entry
+    definition "a length (straight or curved) without breadth or thickness; the trace of a moving point"
+    id oewn-13886392-n
+    partOfSpeech n
+  entry
+    definition "text consisting of a row of words written across a page or computer screen"
+    examples ("the letter consisted of three short lines" "there are six lines in every stanza")
+    id oewn-07025650-n
+    partOfSpeech n
+  entry
+    definition "a single frequency (or very narrow band) of radiation in a spectrum"
+    id oewn-11495037-n
+    partOfSpeech n
+  entry
+    definition "a fortified position (especially one marking the most forward position of troops)"
+    examples ("they attacked the enemy's line")
+    id oewn-08611842-n
+    partOfSpeech n
+  entry
+    definition "a course of reasoning aimed at demonstrating a truth or falsehood; the methodical process of logical reasoning"
+    examples ("I can't follow your line of reasoning")
+    id oewn-05781046-n
+    partOfSpeech n
+    synonyms (argumentation "logical argument" argument "line of reasoning")
+  entry
+    definition "a conductor for transmitting electrical or optical signals or electric power"
+    id oewn-02937552-n
+    partOfSpeech n
+    synonyms (cable "transmission line")
+  entry
+    definition "a connected series of events or actions or developments"
+    examples ("the government took a firm course" "historians can only point out those lines for which evidence is available")
+    id oewn-08393816-n
+    partOfSpeech n
+    synonyms (course)
+  entry
+    definition "a spatial location defined by a real or imaginary unidimensional extent"
+    id oewn-08610818-n
+    partOfSpeech n
+  entry
+    definition "a slight depression or fold in the smoothness of a surface"
+    examples ("his face has many lines" "ironing gets rid of most wrinkles")
+    id oewn-13928798-n
+    partOfSpeech n
+    synonyms (wrinkle furrow crease crinkle seam)
+  entry
+    definition "a pipe used to transport liquids or gases"
+    examples ("a pipeline runs from the wells to the seaport")
+    id oewn-03952601-n
+    partOfSpeech n
+    synonyms (pipeline)
+  entry
+    definition "the road consisting of railroad track and roadbed"
+    id oewn-03676598-n
+    partOfSpeech n
+    synonyms ("railway line" "rail line")
+  entry
+    definition "a telephone connection"
+    id oewn-04409192-n
+    partOfSpeech n
+    synonyms ("telephone line" "phone line" "telephone circuit" "subscriber line")
+  entry
+    definition "acting in conformity"
+    examples ("in line with" "he got out of line" "toe the line")
+    id oewn-01206784-n
+    partOfSpeech n
+  entry
+    definition "the hereditary derivation of an individual"
+    examples ("his entire lineage has been warriors")
+    id oewn-08118903-n
+    partOfSpeech n
+    synonyms (lineage "line of descent" descent bloodline "blood line" blood pedigree ancestry origin parentage stemma stock)
+  entry
+    definition "something (as a cord or rope) that is long and thin and flexible"
+    examples ("a washing line")
+    id oewn-03676175-n
+    partOfSpeech n
+  entry
+    definition "the principal activity in your life that you do to earn money"
+    examples ("he's not in my line of business")
+    id oewn-00583425-n
+    partOfSpeech n
+    synonyms (occupation business job "line of work")
+  entry
+    definition "in games or sports; a mark indicating positions or bounds of the playing area"
+    id oewn-08611480-n
+    partOfSpeech n
+  entry
+    definition "(often plural) a means of communication or access"
+    examples ("it must go through official channels" "lines of communication were set up between the two firms")
+    id oewn-06270774-n
+    partOfSpeech n
+    synonyms (channel "communication channel")
+  entry
+    definition "a particular kind of product or merchandise"
+    examples ("a nice line of shoes")
+    id oewn-03676994-n
+    partOfSpeech n
+    synonyms ("product line" "line of products" "line of merchandise" "business line" "line of business")
+  entry
+    definition "a commercial organization serving as a common carrier"
+    id oewn-03676799-n
+    partOfSpeech n
+  entry
+    definition "space for one line of print (one column wide and 1/14 inch deep) used to measure advertising"
+    id oewn-13735108-n
+    partOfSpeech n
+    synonyms ("agate line")
+  entry
+    definition "the maximum credit that a customer is allowed"
+    id oewn-13400586-n
+    partOfSpeech n
+    synonyms ("credit line" "line of credit" "bank line" "personal credit line" "personal line of credit")
+  entry
+    definition "a succession of notes forming a distinctive sequence"
+    examples ("she was humming an air from Beethoven")
+    id oewn-07041860-n
+    partOfSpeech n
+    synonyms (tune melody air strain "melodic line" "melodic phrase")
+  entry
+    definition "persuasive but insincere talk that is usually intended to deceive or impress"
+    examples ("‘let me show you my etchings’ is a rather worn line" "he has a smooth line but I didn't fall for it" "that salesman must have practiced his fast line of talk")
+    id oewn-07026095-n
+    partOfSpeech n
+  entry
+    definition "a short personal letter"
+    examples ("drop me a line when you get there")
+    id oewn-06638793-n
+    partOfSpeech n
+    synonyms (note "short letter" billet)
+  entry
+    definition "a conceptual separation or distinction"
+    examples ("there is a narrow line between sanity and insanity")
+    id oewn-05756783-n
+    partOfSpeech n
+    synonyms ("dividing line" demarcation contrast)
+  entry
+    definition "mechanical system in a factory whereby an article is conveyed through sites at which successive operations are performed on it"
+    id oewn-04014761-n
+    partOfSpeech n
+    synonyms ("production line" "assembly line")
+  entry
+    definition "be in line with; form a line along"
+    examples ("trees line the riverbank")
+    id oewn-02709399-v
+    partOfSpeech v
+    synonyms ("run along")
+  entry
+    definition "cover the interior of"
+    examples ("line the gloves" "line a chimney")
+    id oewn-01273348-v
+    partOfSpeech v
+  entry
+    definition "make a mark or lines on a surface"
+    examples ("draw a line" "trace the outline of a figure in the sand")
+    id oewn-01585566-v
+    partOfSpeech v
+    synonyms (trace draw describe delineate)
+  entry
+    definition "mark with lines"
+    examples ("sorrow had lined his face")
+    id oewn-01278925-v
+    partOfSpeech v
+  entry
+    definition "fill plentifully"
+    examples ("line one's pockets")
+    id oewn-00455090-v
+    partOfSpeech v
+  entry
+    definition "reinforce with fabric"
+    examples ("lined books are more enduring")
+    id oewn-00223419-v
+    partOfSpeech v
+source "oewn:2024"

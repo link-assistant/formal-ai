@@ -1,0 +1,17 @@
+Q4916
+  aliases
+    ru ("евро (валюта)")
+    zh ("歐羅" "欧元")
+  descriptions
+    en "currency of most countries in the European Union"
+    hi "यूरोपीय संघ में अधिकांश देशों की मुद्रा"
+    ru "официальная валюта большинства стран еврозоны (Евросоюза)"
+    zh "歐洲部分國家的共同貨幣"
+  id Q4916
+  labels
+    en euro
+    hi "यूरो"
+    ru "евро"
+    zh "歐元"
+  type item
+success 1

@@ -1,0 +1,19 @@
+Q42106
+  aliases
+    en (synonyms synonymum synonymous poecilonym "word with the same meaning")
+    hi ("पर्याय" "समानार्थी शब्द")
+    ru ("синоним")
+    zh ("同义字" "同义语" "同意词" "同义异形" "同義異形" "同義詞")
+  descriptions
+    en "word or phrase that means exactly or nearly the same as another word or phrase in the same language"
+    hi "ऐसे शब्द जिनके अर्थ समान हों"
+    ru "слова, различные по звучанию и написанию, но имеющие похожее лексическое значение"
+    zh "與其他詞語表達相同或相近意思的詞語"
+  id Q42106
+  labels
+    en synonym
+    hi "पर्यायवाची"
+    ru "синонимы"
+    zh "同义词"
+  type item
+success 1

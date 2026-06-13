@@ -1,0 +1,17 @@
+Q11574
+  aliases
+    en (s seconds sec. sec)
+    ru ("с" "сек")
+    zh ("秒钟" "秒鐘")
+  descriptions
+    en "SI unit of time, defined as 9 192 631 770 periods of the ground-state hyperfine transitions of caesium-133"
+    ru "единица времени"
+    zh "國際單位制時間單位，定義為銫133基態超精細躍遷的9192631770個週期"
+  id Q11574
+  labels
+    en second
+    hi "सैकण्ड"
+    ru "секунда"
+    zh "秒"
+  type item
+success 1

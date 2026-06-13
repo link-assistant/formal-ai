@@ -1,0 +1,59 @@
+[
+  {
+    "word": "month",
+    "phonetic": "/mʌnθ/",
+    "phonetics": [
+      {
+        "text": "/mʌnθ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/month-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9014202",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/mʌnθ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/month-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=874107",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A period into which a year is divided, historically based on the phases of the moon.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "July is my favourite month."
+          },
+          {
+            "definition": "A period of 30 days, 31 days, or some alternation thereof.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We went on holiday for two months."
+          },
+          {
+            "definition": "(in the plural) A woman's period; menstrual discharge.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/month"
+    ]
+  }
+]

@@ -1,0 +1,81 @@
+[
+  {
+    "word": "hours",
+    "phonetic": "/ˈaʊɚz/",
+    "phonetics": [
+      {
+        "text": "/ˈaʊɚz/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈaʊə(ɹ)z/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈaʊɚz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/hours-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227556",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A time period of sixty minutes; one twenty-fourth of a day.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I spent an hour at lunch."
+          },
+          {
+            "definition": "A season, moment, or time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The hour grows late and I must go home."
+          },
+          {
+            "definition": "(in the plural) Used after a two-digit hour and a two-digit minute to indicate time.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(in the plural) The set times of prayer, the canonical hours, the offices or services prescribed for these, or a book containing them.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A distance that can be traveled in one hour.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This place is an hour away from where I live."
+          }
+        ],
+        "synonyms": [
+          "stound",
+          "h",
+          "hr",
+          "h",
+          "hrs"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/hour",
+      "https://en.wiktionary.org/wiki/hours"
+    ]
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q1570700": {
+      "type": "item",
+      "id": "Q1570700",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "word sense"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "смысл слова"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "词义"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "one of the meanings of a word"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "word meaning"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "осмысление"
+          },
+          {
+            "language": "ru",
+            "value": "осмысленность"
+          },
+          {
+            "language": "ru",
+            "value": "значение"
+          },
+          {
+            "language": "ru",
+            "value": "толкование"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

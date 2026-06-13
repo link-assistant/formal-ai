@@ -1,0 +1,33 @@
+[
+  {
+    "word": "typescript",
+    "phonetic": "/ˈtʌɪpskɹɪpt/",
+    "phonetics": [
+      {
+        "text": "/ˈtʌɪpskɹɪpt/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Typewritten material, especially such a copy of a manuscript",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/typescript"
+    ]
+  }
+]

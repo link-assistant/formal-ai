@@ -1,0 +1,68 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Something done so as to accomplish a purpose."
+        entry
+          definition "A way of motion or functioning."
+          example "Knead bread with a rocking action."
+        entry
+          definition "Fast-paced activity."
+          example "a movie full of exciting action"
+        entry
+          definition "A mechanism; a moving part or assembly."
+          example "a rifle action"
+        entry
+          definition "The mechanism, that is the set of moving mechanical parts, of a keyboard instrument, like a piano, which transfers the motion of the key to the sound-making device."
+        entry
+          definition "The distance separating the strings and the fretboard on a guitar."
+        entry
+          definition "Sexual intercourse."
+          example "She gave him some action."
+        entry
+          definition Combat.
+          example "He saw some action in the Korean War."
+        entry
+          definition "A charge or other process in a law court (also called lawsuit and actio)."
+        entry
+          definition "A mapping from a pairing of mathematical objects to one of them, respecting their individual structures. The pairing is typically a Cartesian product or a tensor product. The object that is not part of the output is said to act on the other object. In any given context, action is used as an abbreviation for a more fully named notion, like group action or left group action."
+        entry
+          definition "The product of energy and time, especially the product of the Lagrangian and time."
+        entry
+          definition "The event or connected series of events, either real or imaginary, forming the subject of a play, poem, or other composition; the unfolding of the drama of events."
+        entry
+          definition "(painting and sculpture) The attitude or position of the several parts of the body as expressive of the sentiment or passion depicted."
+        entry
+          definition "Spin put on the bowling ball."
+        entry
+          definition "A share in the capital stock of a joint-stock company, or in the public funds."
+      partOfSpeech noun
+      synonyms (deed)
+    entry
+      definitions
+        entry
+          definition "To act on a request etc, in order to put it into effect."
+        entry
+          definition "To initiate a legal action against someone."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "Demanding or signifying the start of something, usually an act or scene of a theatric performance."
+          example "The director yelled ‘Action!’ before the camera started rolling."
+      partOfSpeech interjection
+  phonetic "/ˈæk.ʃən/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/action-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227724"
+      text "/ˈæk.ʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/action")
+  word action

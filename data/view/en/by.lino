@@ -1,0 +1,13 @@
+view
+  id M-b8895604660f
+  lemma by
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "so as to pass a given point"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in reserve; not for immediate use"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-f0ebc1d77350
+  lemma dashboard
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "protective covering consisting of a panel to protect people from the splashing water or mud etc."
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "instrument panel on an automobile or airplane containing dials and controls"
+    provenance (wordnet)

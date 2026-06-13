@@ -1,0 +1,125 @@
+[
+  {
+    "word": "lets",
+    "phonetic": "/lɛts/",
+    "phonetics": [
+      {
+        "text": "/lɛts/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The allowing of possession of a property etc. in exchange for rent.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To allow to, not to prevent (+ infinitive, but usually without to).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "After he knocked for hours, I decided to let him come in."
+          },
+          {
+            "definition": "To leave.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let me alone!"
+          },
+          {
+            "definition": "To allow the release of (a fluid).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The physicians let about a pint of his blood, but to no avail."
+          },
+          {
+            "definition": "To allow possession of (a property etc.) in exchange for rent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I decided to let the farmhouse to a couple while I was working abroad."
+          },
+          {
+            "definition": "To give, grant, or assign, as a work, privilege, or contract; often with out.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to let the building of a bridge;  to let out the lathing and the plastering"
+          },
+          {
+            "definition": "Used to introduce an imperative in the first or third person.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Let P be the point where AB and OX intersect."
+          },
+          {
+            "definition": "To cause (+ bare infinitive).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Can you let me know what time you'll be arriving?"
+          }
+        ],
+        "synonyms": [
+          "allow",
+          "permit"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An obstacle or hindrance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The hindrance caused by the net during serve, only if the ball falls legally.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To hinder, prevent, impede, hamper, cumber; to obstruct (someone or something).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To prevent someone from doing something; also to prevent something from happening.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To tarry or delay.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/let",
+      "https://en.wiktionary.org/wiki/lets"
+    ]
+  }
+]

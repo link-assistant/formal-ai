@@ -1,0 +1,94 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An exclamation to get attention."
+          example "Hey! Listen!"
+        entry
+          definition "A protest or reprimand."
+          example "Hey! Stop that!"
+        entry
+          definition "An expression of surprise."
+          example "Hey! This is new!"
+        entry
+          definition "An informal greeting, similar to hi."
+          example "Hey! How's it going?"
+        entry
+          definition "A request for repetition or explanation; an expression of confusion."
+          example "Hey? How's that?"
+        entry
+          definition "A meaningless beat marker or extra, filler syllable in song lyrics."
+          example 'The chorus is "nana na na, nana na na hey hey hey, goodbye".'
+      partOfSpeech interjection
+      synonyms (oi yo blimey "gee whiz" yowzah eh huh hi howdy wotcher)
+  phonetic "/heɪ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75271853"
+      text "/heɪ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=268428"
+      text "/heɪ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/hey")
+  word hey
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(country dancing) A choreographic figure in which three or more dancers weave between one another, passing by left and right shoulder alternately."
+      partOfSpeech noun
+  phonetic "/heɪ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75271853"
+      text "/heɪ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=268428"
+      text "/heɪ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/hey")
+  word hey
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The name of the fifth letter of many Semitic alphabets (Phoenician, Aramaic, Hebrew, Syriac, Arabic and others)."
+        entry
+          definition "The name of the first letter of the Old South Arabian abjad."
+      partOfSpeech noun
+  phonetic "/heɪ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75271853"
+      text "/heɪ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/hey-us.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=268428"
+      text "/heɪ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/he" "https://en.wiktionary.org/wiki/hey")
+  word hey

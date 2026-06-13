@@ -1,0 +1,17 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A device or program capable of performing transformations on a data stream or signal."
+          example "Audio and video codecs are important in making multimedia files small enough to distribute and simple to play back."
+      partOfSpeech noun
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/codec-uk.mp3"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=9503113"
+  sourceUrls ("https://en.wiktionary.org/wiki/codec")
+  word codec

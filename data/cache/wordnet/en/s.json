@@ -1,0 +1,67 @@
+{
+  "lemma": "s",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14680398-n",
+      "partOfSpeech": "n",
+      "definition": "an abundant tasteless odorless multivalent nonmetallic element; best known in yellow crystals; occurs in many sulphide and sulphate minerals and even in native form (especially in volcanic regions)",
+      "synonyms": [
+        "sulfur",
+        "sulphur",
+        "atomic number 16"
+      ]
+    },
+    {
+      "id": "oewn-15259923-n",
+      "partOfSpeech": "n",
+      "definition": "1/60 of a minute; the basic unit of time adopted under the Systeme International d'Unites",
+      "synonyms": [
+        "second",
+        "sec"
+      ]
+    },
+    {
+      "id": "oewn-13855574-n",
+      "partOfSpeech": "n",
+      "definition": "the cardinal compass point that is at 180 degrees",
+      "synonyms": [
+        "south",
+        "due south",
+        "southward"
+      ]
+    },
+    {
+      "id": "oewn-13658719-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of conductance equal to the reciprocal of an ohm",
+      "synonyms": [
+        "mho",
+        "siemens",
+        "reciprocal ohm"
+      ]
+    },
+    {
+      "id": "oewn-06846162-n",
+      "partOfSpeech": "n",
+      "definition": "the 19th letter of the Roman alphabet"
+    },
+    {
+      "id": "oewn-05019769-n",
+      "partOfSpeech": "n",
+      "definition": "(thermodynamics) a thermodynamic quantity representing the amount of energy in a system that is no longer available for doing mechanical work",
+      "examples": [
+        "entropy increases as matter and energy in the universe degrade to an ultimate state of inert uniformity"
+      ],
+      "synonyms": [
+        "randomness",
+        "entropy"
+      ]
+    }
+  ]
+}

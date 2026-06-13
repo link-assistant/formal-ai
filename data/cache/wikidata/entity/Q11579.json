@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q11579": {
+      "type": "item",
+      "id": "Q11579",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "kelvin"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "кельвин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "कैल्विन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "开尔文"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of thermodynamic temperature"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица температуры, одна из семи основных в СИ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "國際單位制中量度温度的基本單位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "K"
+          },
+          {
+            "language": "en",
+            "value": "Kelvin degrees"
+          },
+          {
+            "language": "en",
+            "value": "degrees Kelvin"
+          },
+          {
+            "language": "en",
+            "value": "°K"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "шкала Кельвина"
+          },
+          {
+            "language": "ru",
+            "value": "градус Кельвина"
+          },
+          {
+            "language": "ru",
+            "value": "К"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "開氏"
+          },
+          {
+            "language": "zh",
+            "value": "K"
+          },
+          {
+            "language": "zh",
+            "value": "克耳文"
+          },
+          {
+            "language": "zh",
+            "value": "開爾文"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

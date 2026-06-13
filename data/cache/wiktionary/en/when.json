@@ -1,0 +1,167 @@
+[
+  {
+    "word": "when",
+    "phonetic": "/ʍɛn/",
+    "phonetics": [
+      {
+        "text": "/ʍɛn/",
+        "audio": ""
+      },
+      {
+        "text": "/ʍɛn/",
+        "audio": ""
+      },
+      {
+        "text": "/wɛn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/when-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9028963",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/wɛn/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/when-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=37583407",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The time at which something happens.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A good article will cover the who, the what, the when, the where, the why and the how."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "(interrogative) At what time? At which time? Upon which occasion or circumstance? Used to introduce direct or indirect questions about time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you know when they arrived?"
+          },
+          {
+            "definition": "At an earlier time and under different, usually less favorable, circumstances.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He's mister high and mighty now, but I remember him when."
+          },
+          {
+            "definition": "(relative) At which, on which, during which: often omitted or replaced with that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "That was the day when the Twin Towers fell."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "pronoun",
+        "definitions": [
+          {
+            "definition": "(interrogative) What time; which time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Since when do I need your permission?"
+          },
+          {
+            "definition": "The time that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I recall when they were called the Greys."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "conjunction",
+        "definitions": [
+          {
+            "definition": "At (or as soon as) that time that; at the (or any and every) time that; if.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A player wins when [as soon as, or at any time that, if] she has four cards of the same suit."
+          },
+          {
+            "definition": "During the time that; at the time of the action of the following clause or participle phrase.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Be careful when crossing the street."
+          },
+          {
+            "definition": "At what time; at which time.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I am here till Friday, when [i.e. at which time] I leave for Senegal."
+          },
+          {
+            "definition": "Since; given the fact that; considering that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I don't see the point of putting up Christmas decorations when I am the only person who is going to see them."
+          },
+          {
+            "definition": "Whereas; although; at the same time as; in spite of the fact that.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He keeps changing things when the existing system works perfectly well."
+          }
+        ],
+        "synonyms": [
+          "as soon as",
+          "immediately",
+          "once",
+          "whenever",
+          "while",
+          "whilst",
+          "whenever",
+          "given that",
+          "seeing that",
+          "but",
+          "where",
+          "whereas"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "That's enough, a command to stop adding something, especially an ingredient of food or drink.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Expressing impatience. (Compare what.)",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/when"
+    ]
+  }
+]

@@ -1,6 +1,6 @@
 //! Behavior-rule inspection tests.
 
-use formal_ai::{agent_info, FormalAiEngine, SymbolicAnswer};
+use formal_ai::{FormalAiEngine, SymbolicAnswer};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
@@ -38,20 +38,55 @@ fn behavior_rules_list_possessive_list_phrase_covers_supported_languages() {
             prompt: "显示你的规则列表",
         },
     ];
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages");
+    let supported_languages = formal_ai::supported_languages();
 
-    for language in supported_languages
-        .split('|')
-        .filter(|lang| !lang.is_empty())
-    {
+    for language in supported_languages.iter().map(String::as_str) {
         assert!(
             cases
                 .iter()
                 .any(|case| case.language == language),
             "missing behavior_rules_list possessive-list regression case for supported language {language}"
+        );
+    }
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "behavior_rules_list",
+            "expected behavior_rules_list for {} prompt {:?}, got {}",
+            case.language, case.prompt, response.intent
+        );
+        assert!(response.answer.contains("rule_greeting"));
+        assert!(response.answer.contains("rule_unknown"));
+    }
+}
+
+#[test]
+fn behavior_rules_short_list_phrase_covers_supported_languages() {
+    let cases = [
+        PromptCase {
+            language: "en",
+            prompt: "Show rules",
+        },
+        PromptCase {
+            language: "ru",
+            prompt: "Покажи правила",
+        },
+        PromptCase {
+            language: "hi",
+            prompt: "नियम दिखाओ",
+        },
+        PromptCase {
+            language: "zh",
+            prompt: "显示规则",
+        },
+    ];
+    let supported_languages = formal_ai::supported_languages();
+
+    for language in supported_languages.iter().map(String::as_str) {
+        assert!(
+            cases.iter().any(|case| case.language == language),
+            "missing behavior_rules_list short-rule-list regression case for supported language {language}"
         );
     }
 
@@ -95,15 +130,9 @@ fn behavior_rules_list_answer_is_localized_for_supported_languages() {
             rejected: "Behavior rules I can inspect",
         },
     ];
-    let info = agent_info();
-    let supported_languages = info
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages");
+    let supported_languages = formal_ai::supported_languages();
 
-    for language in supported_languages
-        .split('|')
-        .filter(|lang| !lang.is_empty())
-    {
+    for language in supported_languages.iter().map(String::as_str) {
         assert!(
             cases
                 .iter()

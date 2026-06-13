@@ -7,10 +7,10 @@
 //! alone — not Rust code — decides which surface forms route to which
 //! fact, in any of the four supported languages.
 //!
-//! `wikidata` carries one or more `|`-separated Q-IDs that anchor the fact
-//! to the structured knowledge graph; each Q-ID is appended to the event
-//! log as a separate `wikidata` event so evidence links surface as
-//! `wikidata:Qxxx`.
+//! `wikidata` carries one or more Q-IDs as a parenthesized link list that
+//! anchors the fact to the structured knowledge graph; each Q-ID is appended
+//! to the event log as a separate `wikidata` event so evidence links surface
+//! as `wikidata:Qxxx`.
 //!
 //! `localized` (optional) carries per-language overrides of `summary`,
 //! `source`, and `source_kind`. The solver picks the override matching the

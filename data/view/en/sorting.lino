@@ -1,0 +1,17 @@
+view
+  id M-4a66c6a986d0
+  lemma sorting
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an operation that segregates items into groups according to a specified criterion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the basic cognitive process of arranging into classes or categories"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "grouping by class or kind or size"
+    provenance (wordnet)

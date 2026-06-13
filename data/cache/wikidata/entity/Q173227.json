@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Q173227": {
+      "type": "item",
+      "id": "Q173227",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "physical constant"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "физическая константа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भौतिक नियतांक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "物理常數"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "physical quantity that is generally believed to be both universal in nature and constant in time"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "физическая величина, имеющая одно и то же значение в разных условиях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "物理量通常被認為是普遍的並且在時間上是恆定的"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "fundamental constant"
+          },
+          {
+            "language": "en",
+            "value": "fundamental physical constant"
+          },
+          {
+            "language": "en",
+            "value": "universal constant"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "физические константы"
+          },
+          {
+            "language": "ru",
+            "value": "электрическая константа"
+          },
+          {
+            "language": "ru",
+            "value": "константы физические"
+          },
+          {
+            "language": "ru",
+            "value": "мировые постоянные"
+          },
+          {
+            "language": "ru",
+            "value": "фундаментальная физическая постоянная"
+          },
+          {
+            "language": "ru",
+            "value": "физические постоянные"
+          },
+          {
+            "language": "ru",
+            "value": "универсальные физические постоянные"
+          },
+          {
+            "language": "ru",
+            "value": "фундаментальные константы"
+          },
+          {
+            "language": "ru",
+            "value": "фундаментальная физическая константа"
+          },
+          {
+            "language": "ru",
+            "value": "фундаментальные физические константы"
+          },
+          {
+            "language": "ru",
+            "value": "физическая постоянная"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "भौतिक स्थिरांक"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "物理學常數"
+          },
+          {
+            "language": "zh",
+            "value": "自然常数"
+          },
+          {
+            "language": "zh",
+            "value": "基本物理常数"
+          },
+          {
+            "language": "zh",
+            "value": "物理学常量"
+          },
+          {
+            "language": "zh",
+            "value": "物理常量"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

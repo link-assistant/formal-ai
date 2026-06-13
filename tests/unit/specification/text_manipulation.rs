@@ -4,7 +4,7 @@
 //! formalized intent and composed substitution rules instead of per-input
 //! answer fixtures.
 
-use formal_ai::{ExecutionSurface, SolverConfig, UniversalSolver};
+use formal_ai::{ConversationTurn, ExecutionSurface, SolverConfig, UniversalSolver};
 use std::collections::BTreeSet;
 
 fn text_solver() -> UniversalSolver {
@@ -17,12 +17,7 @@ fn text_solver() -> UniversalSolver {
 }
 
 fn supported_languages() -> BTreeSet<String> {
-    formal_ai::seed::agent_info()
-        .get("supported_languages")
-        .expect("agent-info must define supported_languages")
-        .split('|')
-        .map(ToOwned::to_owned)
-        .collect()
+    formal_ai::supported_languages().into_iter().collect()
 }
 
 #[test]
@@ -58,6 +53,212 @@ fn rewrite_replace_recomputes_for_arbitrary_input_text() {
     assert_ne!(first.answer, second.answer);
     assert!(first.links_notation.contains("rule_replace_text"));
     assert!(second.links_notation.contains("rule_replace_text"));
+}
+
+#[test]
+fn russian_follow_up_replace_edits_previous_assistant_code_artifact() {
+    let solver = text_solver();
+    let first_prompt = "Напиши мне Hello World программу на Rust";
+    let first = solver.solve(first_prompt);
+    assert_eq!(first.intent, "write_program");
+    assert!(first.answer.contains("println!(\"Hello, world!\");"));
+
+    let response = solver.solve_with_history(
+        "Я хчоу что бы ты заменил \"Hello World\" на \"Bye world\"",
+        &[
+            ConversationTurn::user(first_prompt),
+            ConversationTurn::assistant(first.answer),
+        ],
+    );
+
+    assert_eq!(response.intent, "text_manipulation");
+    assert!(response.answer.contains("```rust"));
+    assert!(response.answer.contains("println!(\"Bye world!\");"));
+    assert!(!response.answer.contains("Hello, world!"));
+    assert!(response.links_notation.contains("rule_replace_text"));
+}
+
+#[test]
+fn replacement_requests_ignore_word_punctuation_across_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Replace \"Hello World\" with \"Bye world\": \"Hello, world!\"",
+        },
+        Case {
+            language: "ru",
+            prompt: "Замени \"Hello World\" на \"Bye world\": \"Hello, world!\"",
+        },
+        Case {
+            language: "hi",
+            prompt: "\"Hello World\" को \"Bye world\" से बदलें: \"Hello, world!\"",
+        },
+        Case {
+            language: "zh",
+            prompt: "替换 \"Hello World\" 为 \"Bye world\": \"Hello, world!\"",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} replacement should route to text manipulation",
+            case.language
+        );
+        assert_eq!(
+            response.answer, "Bye world!",
+            "{} replacement should ignore comma/case differences between words",
+            case.language
+        );
+        assert!(
+            response.links_notation.contains("rule_replace_text"),
+            "{} replacement should record replacement rule",
+            case.language
+        );
+    }
+}
+
+#[test]
+fn replacement_request_matrix_covers_prompt_order_quotes_punctuation_and_unicode() {
+    struct Case {
+        label: &'static str,
+        prompt: &'static str,
+        answer: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            label: "from-first double quotes",
+            prompt: "Replace \"cat\" with \"dog\": \"cat sat with cat\"",
+            answer: "dog sat with dog",
+        },
+        Case {
+            label: "from-first single quotes",
+            prompt: "Replace 'cat' with 'dog' in this text: 'wild cat naps'",
+            answer: "wild dog naps",
+        },
+        Case {
+            label: "input-first smart quotes",
+            prompt: "In “cat sat”, replace “cat” with “dog”",
+            answer: "dog sat",
+        },
+        Case {
+            label: "input-first Russian guillemets",
+            prompt: "В тексте «Hello, world!» замени «Hello World» на «Bye world»",
+            answer: "Bye world!",
+        },
+        Case {
+            label: "input-first Hindi backticks",
+            prompt: "इस पाठ `red blue red` में `red` को `green` से बदलें",
+            answer: "green blue green",
+        },
+        Case {
+            label: "input-first Chinese corner quotes",
+            prompt: "在「你好，世界！」中把「你好 世界」替换为「再见 世界」",
+            answer: "再见 世界！",
+        },
+        Case {
+            label: "mixed exact and punctuation multi-word matches",
+            prompt:
+                "Replace \"invoice id\" with \"ticket ID\": \"Invoice-ID invoice_id invoice id\"",
+            answer: "ticket ID ticket ID ticket ID",
+        },
+        Case {
+            label: "Cyrillic case and punctuation",
+            prompt: "Замени \"привет мир\" на \"пока мир\": \"Привет, мир! привет-мир\"",
+            answer: "пока мир! пока мир",
+        },
+        Case {
+            label: "Chinese punctuation and exact multi-word mix",
+            prompt: "替换 \"alpha beta\" 为 \"gamma\": \"alpha/beta alpha beta\"",
+            answer: "gamma gamma",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} should route to text manipulation, got {} with answer {}",
+            case.label, response.intent, response.answer
+        );
+        assert_eq!(
+            response.answer, case.answer,
+            "{} should produce the generalized replacement result",
+            case.label
+        );
+        assert!(
+            response.links_notation.contains("rule_replace_text"),
+            "{} should still be backed by a substitution replacement rule",
+            case.label
+        );
+    }
+}
+
+#[test]
+fn replacement_follow_up_variants_edit_previous_assistant_artifacts() {
+    struct Case {
+        label: &'static str,
+        previous: &'static str,
+        prompt: &'static str,
+        expected: &'static str,
+        forbidden: &'static str,
+    }
+
+    let solver = text_solver();
+    let cases = [
+        Case {
+            label: "plain text follow-up with punctuation mismatch",
+            previous: "Hello, world!\nHello World",
+            prompt: "Replace \"Hello World\" with \"Bye world\"",
+            expected: "Bye world!\nBye world",
+            forbidden: "Hello",
+        },
+        Case {
+            label: "Russian code-artifact follow-up with guillemets",
+            previous: "```rust\nfn main() {\n    println!(\"Hello, world!\");\n}\n```",
+            prompt: "В предыдущем ответе замени «Hello World» на «Bye world»",
+            expected: "println!(\"Bye world!\");",
+            forbidden: "Hello, world!",
+        },
+        Case {
+            label: "Hindi markdown follow-up with backticks",
+            previous: "- red blue\n- red-blue",
+            prompt: "`red blue` को `green` से बदलें",
+            expected: "- green\n- green",
+            forbidden: "red",
+        },
+    ];
+
+    for case in cases {
+        let response =
+            solver.solve_with_history(case.prompt, &[ConversationTurn::assistant(case.previous)]);
+        assert_eq!(
+            response.intent, "text_manipulation",
+            "{} should use the previous assistant artifact as input",
+            case.label
+        );
+        assert!(
+            response.answer.contains(case.expected),
+            "{} should include expected edited artifact, got {}",
+            case.label,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(case.forbidden),
+            "{} should remove the replaced text, got {}",
+            case.label,
+            response.answer
+        );
+    }
 }
 
 #[test]
@@ -259,6 +460,90 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
             rule: "rule_replace_text",
         },
         Case {
+            operation: "remove_text",
+            language: "en",
+            prompt: "Remove \"TODO: \" from \"TODO: fix\"",
+            answer: "fix",
+            rule: "rule_remove_text",
+        },
+        Case {
+            operation: "remove_text",
+            language: "ru",
+            prompt: "Удали \"TODO: \" из \"TODO: fix\"",
+            answer: "fix",
+            rule: "rule_remove_text",
+        },
+        Case {
+            operation: "remove_text",
+            language: "hi",
+            prompt: "\"TODO: \" टेक्स्ट से हटाएं: \"TODO: fix\"",
+            answer: "fix",
+            rule: "rule_remove_text",
+        },
+        Case {
+            operation: "remove_text",
+            language: "zh",
+            prompt: "删除 \"TODO: \" 文本: \"TODO: fix\"",
+            answer: "fix",
+            rule: "rule_remove_text",
+        },
+        Case {
+            operation: "append_text",
+            language: "en",
+            prompt: "Append \"!\" to \"Ada\"",
+            answer: "Ada!",
+            rule: "rule_append_text",
+        },
+        Case {
+            operation: "append_text",
+            language: "ru",
+            prompt: "Добавь в конец \"!\" к \"Ada\"",
+            answer: "Ada!",
+            rule: "rule_append_text",
+        },
+        Case {
+            operation: "append_text",
+            language: "hi",
+            prompt: "अंत में \"!\" जोड़ें: \"Ada\"",
+            answer: "Ada!",
+            rule: "rule_append_text",
+        },
+        Case {
+            operation: "append_text",
+            language: "zh",
+            prompt: "追加 \"!\" 文本: \"Ada\"",
+            answer: "Ada!",
+            rule: "rule_append_text",
+        },
+        Case {
+            operation: "prepend_text",
+            language: "en",
+            prompt: "Prepend \"Dr. \" to \"Ada\"",
+            answer: "Dr. Ada",
+            rule: "rule_prepend_text",
+        },
+        Case {
+            operation: "prepend_text",
+            language: "ru",
+            prompt: "Добавь в начало \"Dr. \" к \"Ada\"",
+            answer: "Dr. Ada",
+            rule: "rule_prepend_text",
+        },
+        Case {
+            operation: "prepend_text",
+            language: "hi",
+            prompt: "शुरुआत में \"Dr. \" जोड़ें: \"Ada\"",
+            answer: "Dr. Ada",
+            rule: "rule_prepend_text",
+        },
+        Case {
+            operation: "prepend_text",
+            language: "zh",
+            prompt: "前置 \"Dr. \" 文本: \"Ada\"",
+            answer: "Dr. Ada",
+            rule: "rule_prepend_text",
+        },
+        Case {
             operation: "reverse_words",
             language: "en",
             prompt: "Reverse words: \"one two three\"",
@@ -426,6 +711,62 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
             answer: "a\nb",
             rule: "rule_sort_lines",
         },
+        Case {
+            operation: "trim_whitespace",
+            language: "en",
+            prompt: "Trim whitespace: \"  Ada  \"",
+            answer: "Ada",
+            rule: "rule_trim_whitespace",
+        },
+        Case {
+            operation: "trim_whitespace",
+            language: "ru",
+            prompt: "Убери пробелы по краям: \"  Ada  \"",
+            answer: "Ada",
+            rule: "rule_trim_whitespace",
+        },
+        Case {
+            operation: "trim_whitespace",
+            language: "hi",
+            prompt: "स्पेस हटाएं: \"  Ada  \"",
+            answer: "Ada",
+            rule: "rule_trim_whitespace",
+        },
+        Case {
+            operation: "trim_whitespace",
+            language: "zh",
+            prompt: "去除首尾空白: \"  Ada  \"",
+            answer: "Ada",
+            rule: "rule_trim_whitespace",
+        },
+        Case {
+            operation: "normalize_whitespace",
+            language: "en",
+            prompt: "Normalize whitespace: \"Ada   Lovelace\nAI\"",
+            answer: "Ada Lovelace AI",
+            rule: "rule_normalize_whitespace",
+        },
+        Case {
+            operation: "normalize_whitespace",
+            language: "ru",
+            prompt: "Нормализуй пробелы: \"Ada   Lovelace\nAI\"",
+            answer: "Ada Lovelace AI",
+            rule: "rule_normalize_whitespace",
+        },
+        Case {
+            operation: "normalize_whitespace",
+            language: "hi",
+            prompt: "खाली स्थान सामान्य करें: \"Ada   Lovelace\nAI\"",
+            answer: "Ada Lovelace AI",
+            rule: "rule_normalize_whitespace",
+        },
+        Case {
+            operation: "normalize_whitespace",
+            language: "zh",
+            prompt: "规范化空白: \"Ada   Lovelace\nAI\"",
+            answer: "Ada Lovelace AI",
+            rule: "rule_normalize_whitespace",
+        },
     ];
 
     let supported = supported_languages();
@@ -433,12 +774,17 @@ fn native_text_operation_verbs_trigger_in_every_supported_language() {
         "uppercase",
         "lowercase",
         "replace",
+        "remove_text",
+        "append_text",
+        "prepend_text",
         "reverse_words",
         "extract_email",
         "count_occurrences",
         "count_unique_words",
         "deduplicate_lines",
         "sort_lines",
+        "trim_whitespace",
+        "normalize_whitespace",
     ] {
         let covered = cases
             .iter()

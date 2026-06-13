@@ -1,0 +1,82 @@
+{
+  "lemma": "over",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15283505-n",
+      "partOfSpeech": "n",
+      "definition": "(cricket) the division of play during which six balls are bowled at the batsman by one player from the other team from the same end of the pitch"
+    },
+    {
+      "id": "oewn-00228167-r",
+      "partOfSpeech": "r",
+      "definition": "at or to a point across intervening space etc.",
+      "examples": [
+        "come over and see us some time",
+        "over there"
+      ]
+    },
+    {
+      "id": "oewn-00228294-r",
+      "partOfSpeech": "r",
+      "definition": "throughout an area",
+      "examples": [
+        "he is known the world over"
+      ]
+    },
+    {
+      "id": "oewn-00228075-r",
+      "partOfSpeech": "r",
+      "definition": "throughout a period of time",
+      "examples": [
+        "stay over the weekend"
+      ],
+      "synonyms": [
+        "o'er"
+      ]
+    },
+    {
+      "id": "oewn-00228375-r",
+      "partOfSpeech": "r",
+      "definition": "beyond the top or upper surface or edge; forward from an upright position",
+      "examples": [
+        "a roof that hangs over"
+      ]
+    },
+    {
+      "id": "oewn-00199469-r",
+      "partOfSpeech": "r",
+      "definition": "over the entire area",
+      "examples": [
+        "the wallpaper was covered all over with flowers",
+        "she ached all over",
+        "everything was dusted over with a fine layer of soot"
+      ],
+      "synonyms": [
+        "all over"
+      ]
+    },
+    {
+      "id": "oewn-01006696-s",
+      "partOfSpeech": "s",
+      "definition": "having come or been brought to a conclusion",
+      "examples": [
+        "the harvesting was complete",
+        "the affair is over, ended, finished",
+        "the abruptly terminated interview"
+      ],
+      "synonyms": [
+        "complete",
+        "concluded",
+        "ended",
+        "all over",
+        "terminated"
+      ]
+    }
+  ]
+}

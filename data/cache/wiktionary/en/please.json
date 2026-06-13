@@ -1,0 +1,171 @@
+[
+  {
+    "word": "please",
+    "phonetic": "/pliːz/",
+    "phonetics": [
+      {
+        "text": "/pliːz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9023308",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/pliz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1118858",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To make happy or satisfy; to give pleasure to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her presentation pleased the executives."
+          },
+          {
+            "definition": "To desire; to will; to be pleased by.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Just do as you please."
+          }
+        ],
+        "synonyms": [
+          "desire",
+          "will",
+          "satisfy"
+        ],
+        "antonyms": [
+          "annoy",
+          "disgust",
+          "displease",
+          "irritate"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/please"
+    ]
+  },
+  {
+    "word": "please",
+    "phonetic": "/pliːz/",
+    "phonetics": [
+      {
+        "text": "/pliːz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9023308",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/pliz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1118858",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Used to make a polite request.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Could you tell me the time, please?"
+          },
+          {
+            "definition": "Used as an affirmative to an offer.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "—May I help you? —Please."
+          },
+          {
+            "definition": "An expression of annoyance or impatience.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Oh, please, do we have to hear that again?"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/please"
+    ]
+  },
+  {
+    "word": "please",
+    "phonetic": "/pliːz/",
+    "phonetics": [
+      {
+        "text": "/pliːz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=9023308",
+        "license": {
+          "name": "BY 3.0 US",
+          "url": "https://creativecommons.org/licenses/by/3.0/us"
+        }
+      },
+      {
+        "text": "/pliz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/please-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1118858",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "(Cincinnati) Said as a request to repeat information.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "come again",
+          "excuse me",
+          "pardon me",
+          "what"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/please"
+    ]
+  }
+]

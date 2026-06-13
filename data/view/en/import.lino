@@ -1,0 +1,37 @@
+view
+  id M-0ee798863102
+  lemma import
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "commodities (goods or services) bought from a foreign country"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an imported person brought from a foreign country"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the message that is intended or expressed or signified"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a meaning that is not expressly stated but can be inferred"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "having important effects or influence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring in from abroad"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer (electronic data) into a database or document"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "indicate or signify"
+    provenance (wordnet)

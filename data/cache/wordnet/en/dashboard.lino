@@ -1,0 +1,17 @@
+language en
+lemma dashboard
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "protective covering consisting of a panel to protect people from the splashing water or mud etc."
+    id oewn-04288513-n
+    partOfSpeech n
+    synonyms (splashboard splasher)
+  entry
+    definition "instrument panel on an automobile or airplane containing dials and controls"
+    id oewn-03167888-n
+    partOfSpeech n
+    synonyms (fascia)
+source "oewn:2024"

@@ -1,0 +1,124 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition 'A unit of mass equal to 16 avoirdupois ounces (= 453.592 37 g). Today this value is the most common meaning of "pound" as a unit of weight.'
+          synonyms (lb)
+        entry
+          definition "A unit of mass equal to 12 troy ounces (≈ 373.242 g). Today, this is a common unit of weight when measuring precious metals, and is little used elsewhere."
+          synonyms ("lb t")
+        entry
+          definition "The symbol # (octothorpe, hash)"
+          synonyms (hash sharp)
+        entry
+          definition "The unit of currency used in the United Kingdom and its dependencies. It is divided into 100 pence."
+          synonyms (GBP nicker "pound sterling" quid "£")
+        entry
+          definition "Any of various units of currency used in Egypt and Lebanon, and formerly in the Republic of Ireland, Cyprus and Israel."
+          synonyms (punt)
+        entry
+          definition "Any of various units of currency formerly used in the United States."
+          example "the Rhode Island pound; the New Hampshire pound"
+        entry
+          definition "Abbreviation for pound-force, a unit of force/weight. Using this abbreviation to describe pound-force is inaccurate and unscientific."
+      partOfSpeech noun
+      synonyms (GBP nicker "pound sterling" quid "£" hash sharp lb "lb t" punt)
+  phonetic "/paʊnd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755195"
+      text "/paʊnd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/pound")
+  word pound
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A place for the detention of stray or wandering animals. An animal shelter."
+        entry
+          definition "A place for the detention of automobiles that have been illegally parked, abandoned, etc. Short form of impound."
+        entry
+          definition "A section of a canal between two adjacent locks."
+          synonyms (reach)
+        entry
+          definition "A kind of fishing net, having a large enclosure with a narrow entrance into which fish are directed by wings spreading outward."
+      partOfSpeech noun
+      synonyms (reach)
+    entry
+      definitions
+        entry
+          definition "To confine in, or as in, a pound; to impound."
+      partOfSpeech verb
+  phonetic "/paʊnd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755195"
+      text "/paʊnd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/pound")
+  word pound
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A hard blow."
+          synonyms (pounding)
+      partOfSpeech noun
+      synonyms (pounding)
+    entry
+      definitions
+        entry
+          definition "To strike hard, usually repeatedly."
+        entry
+          definition "To crush to pieces; to pulverize."
+        entry
+          definition "To eat or drink very quickly."
+          example "You really pounded that beer!"
+        entry
+          definition "To pitch consistently to a certain location."
+          example "The pitcher has been pounding the outside corner all night."
+        entry
+          definition "(of a body part, generally heart, blood, or head) To beat strongly or throb."
+          example "As I tiptoed past the sleeping dog, my heart was pounding but I remained silent."
+        entry
+          definition "To penetrate sexually, with vigour."
+          example "I was pounding her all night!"
+        entry
+          definition "To advance heavily with measured steps."
+        entry
+          definition "To make a jarring noise, as when running."
+          example "The engine pounds."
+        entry
+          definition "To wager a pound on."
+      partOfSpeech verb
+      synonyms (pulverate triturate bolt chug down drill "get up in" nail poke hammer pelt)
+  phonetic "/paʊnd/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/pound-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1755195"
+      text "/paʊnd/"
+  sourceUrls ("https://en.wiktionary.org/wiki/pound")
+  word pound

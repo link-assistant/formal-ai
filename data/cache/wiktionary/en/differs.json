@@ -1,0 +1,40 @@
+[
+  {
+    "word": "differs",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "Not to have the same traits or characteristics; to be unalike or distinct.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "These shoes only differ from those ones in having slightly longer laces."
+          },
+          {
+            "definition": "(people, groups, etc.) To have diverging opinions, disagree.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To be separated in quantity.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The numbers 3 and 21 differ by 18."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/differ",
+      "https://en.wiktionary.org/wiki/differs"
+    ]
+  }
+]

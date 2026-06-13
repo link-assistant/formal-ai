@@ -1,0 +1,226 @@
+{
+  "lemma": "biggest",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01385012-a",
+      "partOfSpeech": "a",
+      "definition": "above average in size or number or quantity or magnitude or extent",
+      "examples": [
+        "a large city",
+        "set out for the big city",
+        "a large sum",
+        "a big (or large) barn",
+        "a large family",
+        "big businesses",
+        "a big expenditure",
+        "a large number of newspapers",
+        "a big group of scientists",
+        "large areas of the world"
+      ],
+      "synonyms": [
+        "large",
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-01279982-s",
+      "partOfSpeech": "s",
+      "definition": "significant",
+      "examples": [
+        "graduation was a big day in his life"
+      ],
+      "synonyms": [
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-01514159-s",
+      "partOfSpeech": "s",
+      "definition": "serious or severe",
+      "examples": [
+        "a bad headache",
+        "in a big rage",
+        "had a big (or bad) shock",
+        "a bad earthquake",
+        "a bad storm"
+      ],
+      "synonyms": [
+        "bad",
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-01455863-s",
+      "partOfSpeech": "s",
+      "definition": "loud and firm",
+      "examples": [
+        "a big voice",
+        "big bold piano sounds"
+      ],
+      "synonyms": [
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-00581973-s",
+      "partOfSpeech": "s",
+      "definition": "conspicuous in position or importance",
+      "examples": [
+        "a big figure in the movement",
+        "big man on campus",
+        "he's very large in financial circles",
+        "a prominent citizen"
+      ],
+      "synonyms": [
+        "big",
+        "large",
+        "prominent"
+      ]
+    },
+    {
+      "id": "oewn-02411163-s",
+      "partOfSpeech": "s",
+      "definition": "prodigious",
+      "examples": [
+        "big spender",
+        "big eater",
+        "heavy investor"
+      ],
+      "synonyms": [
+        "big",
+        "heavy"
+      ]
+    },
+    {
+      "id": "oewn-01896819-s",
+      "partOfSpeech": "s",
+      "definition": "exhibiting self-importance",
+      "examples": [
+        "big talk"
+      ],
+      "synonyms": [
+        "boastful",
+        "braggart",
+        "bragging",
+        "braggy",
+        "big",
+        "cock-a-hoop",
+        "crowing",
+        "self-aggrandizing",
+        "self-aggrandising"
+      ]
+    },
+    {
+      "id": "oewn-01896254-s",
+      "partOfSpeech": "s",
+      "definition": "feeling self-importance",
+      "examples": [
+        "too big for his britches",
+        "had a swelled head",
+        "he was swelled with pride"
+      ],
+      "synonyms": [
+        "big",
+        "swelled",
+        "vainglorious"
+      ]
+    },
+    {
+      "id": "oewn-01491979-s",
+      "partOfSpeech": "s",
+      "definition": "(of animals) fully developed",
+      "examples": [
+        "an adult animal",
+        "a grown woman"
+      ],
+      "synonyms": [
+        "adult",
+        "big",
+        "full-grown",
+        "fully grown",
+        "grown",
+        "grownup"
+      ]
+    },
+    {
+      "id": "oewn-01195323-s",
+      "partOfSpeech": "s",
+      "definition": "marked by intense physical force",
+      "examples": [
+        "a big wind"
+      ],
+      "synonyms": [
+        "big"
+      ]
+    },
+    {
+      "id": "oewn-01118400-s",
+      "partOfSpeech": "s",
+      "definition": "generous and understanding and tolerant",
+      "examples": [
+        "a heart big enough to hold no grudges",
+        "that's very big of you to be so forgiving",
+        "a large and generous spirit",
+        "a large heart",
+        "magnanimous toward his enemies"
+      ],
+      "synonyms": [
+        "big",
+        "large",
+        "magnanimous"
+      ]
+    },
+    {
+      "id": "oewn-01115129-s",
+      "partOfSpeech": "s",
+      "definition": "given or giving freely",
+      "examples": [
+        "was a big tipper",
+        "the bounteous goodness of God",
+        "bountiful compliments",
+        "a freehanded host",
+        "a handsome allowance",
+        "Saturday's child is loving and giving",
+        "a liberal backer of the arts",
+        "a munificent gift",
+        "her fond and openhanded grandfather"
+      ],
+      "synonyms": [
+        "big",
+        "bighearted",
+        "bounteous",
+        "bountiful",
+        "freehanded",
+        "handsome",
+        "giving",
+        "liberal",
+        "openhanded"
+      ]
+    },
+    {
+      "id": "oewn-00174652-s",
+      "partOfSpeech": "s",
+      "definition": "in an advanced stage of pregnancy",
+      "examples": [
+        "was big with child",
+        "was great with child"
+      ],
+      "synonyms": [
+        "big",
+        "enceinte",
+        "expectant",
+        "gravid",
+        "great",
+        "large",
+        "heavy",
+        "with child"
+      ]
+    }
+  ]
+}

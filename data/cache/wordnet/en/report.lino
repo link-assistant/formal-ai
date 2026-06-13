@@ -1,0 +1,80 @@
+language en
+lemma report
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a written document describing the findings of some individual or group"
+    examples ("this accords with the recent study by Hill and Dale")
+    id oewn-07233130-n
+    partOfSpeech n
+    synonyms (study "written report")
+  entry
+    definition "the act of informing by verbal report"
+    examples ("he heard reports that they were causing trouble" "by all accounts they were a happy couple")
+    id oewn-07232584-n
+    partOfSpeech n
+    synonyms (account)
+  entry
+    definition "a short account of the news"
+    examples ("the report of his speech" "the story was on the 11 o'clock news" "the account of his speech that was given on the evening news made the governor furious")
+    id oewn-06694296-n
+    partOfSpeech n
+    synonyms ("news report" story account "write up")
+  entry
+    definition "a sharp explosive sound (especially the sound of a gun firing)"
+    examples ("they heard a violent report followed by silence")
+    id oewn-07406116-n
+    partOfSpeech n
+  entry
+    definition "a written evaluation of a student's scholarship and deportment"
+    examples ("his father signed his report card")
+    id oewn-07234960-n
+    partOfSpeech n
+    synonyms ("report card")
+  entry
+    definition "an essay (especially one written as an assignment)"
+    examples ("he got an A on his composition")
+    id oewn-06421395-n
+    partOfSpeech n
+    synonyms (composition paper theme)
+  entry
+    definition "the general estimation that the public has for a person"
+    examples ("he acquired a reputation as an actor before he started writing" "he was a person of bad report")
+    id oewn-06216934-n
+    partOfSpeech n
+    synonyms (reputation)
+  entry
+    definition "to give an account or representation of in words"
+    examples ("Discreet Italian police described it in a manner typically continental")
+    id oewn-00967067-v
+    partOfSpeech v
+    synonyms (describe account)
+  entry
+    definition "announce as the result of an investigation or experience or finding"
+    examples ("Dozens of incidents of wife beatings are reported daily in this city" "The team reported significant advances in their research")
+    id oewn-00968841-v
+    partOfSpeech v
+  entry
+    definition "announce one's presence"
+    examples ("I report to work every day at 9 o'clock")
+    id oewn-00967719-v
+    partOfSpeech v
+  entry
+    definition "make known to the authorities"
+    examples ("One student reported the other to the principal")
+    id oewn-00967422-v
+    partOfSpeech v
+  entry
+    definition "be responsible for reporting the details of, as in journalism"
+    examples ("Snow reported on China in the 1950's" "The cub reporter covered New York City")
+    id oewn-00969130-v
+    partOfSpeech v
+    synonyms (cover)
+  entry
+    definition "complain about; make a charge against"
+    examples ("I reported her to the supervisor")
+    id oewn-00967574-v
+    partOfSpeech v
+source "oewn:2024"

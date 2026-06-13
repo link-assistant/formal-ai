@@ -1,0 +1,48 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The distance measured along the longest dimension of an object."
+        entry
+          definition Duration.
+        entry
+          definition "The length of a horse, used to indicate the distance between horses at the end of a race."
+        entry
+          definition "Distance between the two ends of a line segment."
+        entry
+          definition "The distance down the pitch that the ball bounces on its way to the batsman."
+        entry
+          definition "Total extent."
+          example "the length of a book"
+        entry
+          definition "Part of something that is long; a physical piece of something."
+          example "a length of rope"
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To lengthen."
+      partOfSpeech verb
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/length-au.mp3"
+      license
+        name "BY-SA 4.0"
+        url "https://creativecommons.org/licenses/by-sa/4.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=75899916"
+    entry
+      audio ""
+      text "/lɛn(t)θ/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/length-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227687"
+      text "/lɛn(t)θ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/length")
+  word length

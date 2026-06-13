@@ -14,6 +14,8 @@ mod definition_merge;
 mod feature_capability;
 mod meta_explanation;
 mod natural_language_tools;
+mod number_riddle;
+mod numeric_list;
 mod playwright_script;
 mod program_blueprint;
 mod program_synthesis;
@@ -22,6 +24,7 @@ mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
+mod text_edit_ops;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;
@@ -39,6 +42,8 @@ pub use definition_merge::{try_definition_merge, try_definition_merge_by_default
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
+pub use number_riddle::try_number_riddle;
+pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
@@ -46,7 +51,7 @@ pub use research_table::try_research_comparison_table;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
-pub use text_manipulation::try_text_manipulation;
+pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,
@@ -649,7 +654,8 @@ pub fn try_translation(
                 .iter()
                 .any(|marker| normalized.contains(format!(" {marker}").as_str()))
     };
-    let is_translation_request = head_initial_command || head_final_command || is_define_in_links();
+    let define_in_links = is_define_in_links();
+    let is_translation_request = head_initial_command || head_final_command || define_in_links;
     if !is_translation_request {
         return None;
     }
@@ -709,7 +715,15 @@ pub fn try_translation(
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
         let target_surface = translation.primary_surface().map(str::to_owned);
         let gap = target_surface.is_none();
-        (target_surface, translation.meaning.slug(), gap)
+        let mut meaning_id = translation.meaning.slug();
+        if define_in_links && !translation.meaning.is_wikidata_backed() {
+            if let Some(seed_meaning) =
+                crate::translation::seed_meaning_for_surface(&surface, source_slug)
+            {
+                meaning_id = seed_meaning.slug();
+            }
+        }
+        (target_surface, meaning_id, gap)
     } else {
         // Fallback: hash the surface fragment so the trace still has a
         // stable id. The pipeline error itself is not propagated to the

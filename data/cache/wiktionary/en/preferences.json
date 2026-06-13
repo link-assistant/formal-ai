@@ -1,0 +1,76 @@
+[
+  {
+    "word": "preferences",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The selection of one thing or person over others (with the main adposition being \"for\" in relation to the thing or person, but possibly also \"of\")",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He has a preference for crisp wines."
+          },
+          {
+            "definition": "The option to so select, and the one selected.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Can I keep my preferences when I upgrade to the new version of this application?"
+          },
+          {
+            "definition": "The state of being preferred over others.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A strong liking or personal valuation.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A preferential bias; partiality; discrimination.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "forechoice"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To give preferential treatment to; to give a preference to.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The user-specified settings of parameters in interactive computer software",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/preference",
+      "https://en.wiktionary.org/wiki/preferences"
+    ]
+  }
+]

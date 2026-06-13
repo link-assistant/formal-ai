@@ -1,0 +1,53 @@
+view
+  id M-a8340b2e583d
+  lemma command
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an authoritative direction or instruction to do something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a military unit or region under the control of a single officer"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the power or authority to command"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "availability for use"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a position of highest authority"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "great skillfulness and knowledge of some subject or activity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a line of code written as part of a computer program"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be in command of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make someone do something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "demand as one's due"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "look down on"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "exercise authoritative control or power over"
+    provenance (wordnet)

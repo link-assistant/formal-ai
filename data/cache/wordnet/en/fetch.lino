@@ -1,0 +1,28 @@
+language en
+lemma fetch
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the action of fetching"
+    id oewn-00040654-n
+    partOfSpeech n
+  entry
+    definition "go or come after and bring or take back"
+    examples ("Get me those books over there, please" "Could you bring the wine?" "The dog fetched the hat")
+    id oewn-01435927-v
+    partOfSpeech v
+    synonyms (bring get convey)
+  entry
+    definition "be sold for a certain price"
+    examples ("The painting brought $10,000" "The old print fetched a high price at the auction")
+    id oewn-02252172-v
+    partOfSpeech v
+    synonyms ("bring in" bring)
+  entry
+    definition remove
+    examples ("The devil will fetch you!")
+    id oewn-01436307-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,91 @@
+{
+  "entities": {
+    "Q128": {
+      "type": "item",
+      "id": "Q128",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Wednesday"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "среда"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "बुधवार"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期三"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "day of the week"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "день недели между вторником и четвергом"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सप्ताह का दिन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "星期中的日子"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Wed"
+          },
+          {
+            "language": "en",
+            "value": "We"
+          },
+          {
+            "language": "en",
+            "value": "W"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ср"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "बुध"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "禮拜三"
+          },
+          {
+            "language": "zh",
+            "value": "礼拜三"
+          },
+          {
+            "language": "zh",
+            "value": "週三"
+          },
+          {
+            "language": "zh",
+            "value": "周三"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

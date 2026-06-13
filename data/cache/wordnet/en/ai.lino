@@ -1,0 +1,28 @@
+language en
+lemma ai
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an agency of the United States Army responsible for providing timely and relevant and accurate and synchronized intelligence to tactical and operational and strategic level commanders"
+    id oewn-08412639-n
+    partOfSpeech n
+    synonyms ("Army Intelligence")
+  entry
+    definition "a sloth that has three long claws on each forefoot and each hindfoot"
+    id oewn-02460039-n
+    partOfSpeech n
+    synonyms ("three-toed sloth" "Bradypus tridactylus")
+  entry
+    definition "the branch of computer science that deal with writing computer programs that can solve problems creatively"
+    examples ("workers in AI hope to imitate or duplicate intelligence in computers and robots")
+    id oewn-06142654-n
+    partOfSpeech n
+    synonyms ("artificial intelligence")
+  entry
+    definition "the introduction of semen into the oviduct or uterus by some means other than sexual intercourse"
+    id oewn-00847013-n
+    partOfSpeech n
+    synonyms ("artificial insemination")
+source "oewn:2024"

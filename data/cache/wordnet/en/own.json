@@ -1,0 +1,38 @@
+{
+  "lemma": "own",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01773236-s",
+      "partOfSpeech": "s",
+      "definition": "belonging to or on behalf of a specified person (especially yourself); preceded by a possessive",
+      "examples": [
+        "for your own use",
+        "do your own thing",
+        "she makes her own clothes",
+        "‘ain’ is Scottish"
+      ],
+      "synonyms": [
+        "ain"
+      ]
+    },
+    {
+      "id": "oewn-02209474-v",
+      "partOfSpeech": "v",
+      "definition": "have ownership or possession of",
+      "examples": [
+        "He owns three houses in Florida",
+        "How many cars does she have?"
+      ],
+      "synonyms": [
+        "have",
+        "possess"
+      ]
+    }
+  ]
+}

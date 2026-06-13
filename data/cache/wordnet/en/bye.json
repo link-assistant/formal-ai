@@ -1,0 +1,46 @@
+{
+  "lemma": "bye",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07191150-n",
+      "partOfSpeech": "n",
+      "definition": "an automatic advance to the next round in a tournament without playing an opponent",
+      "examples": [
+        "he had a bye in the first round"
+      ],
+      "synonyms": [
+        "pass"
+      ]
+    },
+    {
+      "id": "oewn-06642117-n",
+      "partOfSpeech": "n",
+      "definition": "a farewell remark",
+      "examples": [
+        "they said their good-byes"
+      ],
+      "synonyms": [
+        "adieu",
+        "adios",
+        "arrivederci",
+        "auf wiedersehen",
+        "au revoir",
+        "bye-bye",
+        "cheerio",
+        "good-by",
+        "goodby",
+        "good-bye",
+        "goodbye",
+        "good day",
+        "sayonara",
+        "so long"
+      ]
+    }
+  ]
+}

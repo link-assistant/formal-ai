@@ -1,0 +1,564 @@
+L3865
+  claims
+    P11138
+      entry
+        id L3865$F9BD8EE1-4F45-4CEC-B92C-53DED928F955
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1471055"
+          hash b699c7a4c2d1775325ac32ddffd8df04d3d13dfc
+          property P11138
+          snaktype value
+        rank normal
+        type statement
+    P11481
+      entry
+        id L3865$D66FAC89-C4A5-4878-852E-3B5685A61E3B
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value bpbmzta
+          hash 163790c693290c5f7a848096a3031fc4343f0c86
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+      entry
+        id L3865$934F5B9F-1FE0-4BBD-9AAD-6B9D9A20B527
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 6y5wari
+          hash 625a7327b45c263b4827bcc1ab1c28d56cdafab4
+          property P11481
+          snaktype value
+        rank normal
+        type statement
+    P12448
+      entry
+        id L3865$A8E74699-83EF-41DD-8DF5-4C40E0269221
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value ID_00005642
+          hash 3eab3674e33383217b02b735e5286f348e470e65
+          property P12448
+          snaktype value
+        rank normal
+        type statement
+    P12510
+      entry
+        id L3865$8205D5A3-8FEF-44A3-9349-5053A70BAC26
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "6741440564"
+          hash 6d9a041ca3d40faab9156ab4250e18b668a2331b
+          property P12510
+          snaktype value
+        rank normal
+        type statement
+    P12573
+      entry
+        id L3865$3B1BA640-BC24-4E81-B811-985408EEDDE9
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1684"
+          hash d22511b52d8f21103e762817c2fb4dd77cb15013
+          property P12573
+          snaktype value
+        rank normal
+        type statement
+    P12675
+      entry
+        id L3865$E16F4B33-7285-4EB5-8711-2C71F9B67E73
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1063"
+          hash 1b162ea3ae1bcd7fbbfae234806e8203eba2c564
+          property P12675
+          snaktype value
+        rank normal
+        type statement
+    P12690
+      entry
+        id L3865$9536ACFE-C368-40EF-8923-CAC39D8D7BA1
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "1228559"
+          hash 368b0b599cc4783c40749eb348f90595b6d82d5b
+          property P12690
+          snaktype value
+        rank normal
+        type statement
+    P12718
+      entry
+        id L3865$B07625C1-34F0-4AC1-9C9F-324128E07499
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0006949
+          hash 20e5120b84a0fb0fad9d9b39678a39e2827952ab
+          property P12718
+          snaktype value
+        rank normal
+        type statement
+    P12724
+      entry
+        id L3865$B05AC743-0CF7-499E-A820-41ECFD02E712
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0006604
+          hash 14158d43d87a8a849e7a15e9d6970d1017f312bd
+          property P12724
+          snaktype value
+        rank normal
+        type statement
+    P12726
+      entry
+        id L3865$F5EA0B10-4F28-4EE2-B38A-65D56B57052F
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0008642
+          hash cbb27c3860146ff72bf3d3a8381e560ac6f0ff21
+          property P12726
+          snaktype value
+        rank normal
+        type statement
+    P12739
+      entry
+        id L3865$9169695B-A7D4-4D80-A7C4-191FA2BF3FEF
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 0099870
+          hash 24aa5653b134f9e0759f7cada57e02dadff86625
+          property P12739
+          snaktype value
+        rank normal
+        type statement
+    P12868
+      entry
+        id L3865$0700A97F-C88C-4044-B79C-ECA0D839C416
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value 918_2
+          hash d851559cf454d289431e380ed3b1455b0ac12cb0
+          property P12868
+          snaktype value
+        rank normal
+        type statement
+    P13258
+      entry
+        id L3865$51021E3F-C0E1-402A-9718-6DA9A43A6AC9
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "8049551"
+          hash c04c100a922ff02a288acc8b73d89fbb800354c4
+          property P13258
+          snaktype value
+        rank normal
+        type statement
+    P31
+      entry
+        id L3865$21527132-4b87-f45a-0b26-58c0f2fbf487
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q489168
+              numeric-id 489168
+          hash 412b2827af1307a36cf05bb5a6bd1f21bf464026
+          property P31
+          snaktype value
+        rank normal
+        references
+          entry
+            hash fd049576a949de4f9f8abb432adfd221bf78cdb6
+            snaks
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q66791448
+                      numeric-id 66791448
+                  hash 655a0e0c7b62d384000f19bc4e6c3dab2645c9bb
+                  property P248
+                  snaktype value
+              P304
+                entry
+                  datatype string
+                  datavalue
+                    type string
+                    value "54"
+                  hash e00d208f26c44665d130257ff9b7e7c84062d19f
+                  property P304
+                  snaktype value
+            snaks-order (P248 P304)
+        type statement
+      entry
+        id L3865$45575a72-412b-8ff1-c4e9-3408ef5adbb5
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q1520033
+              numeric-id 1520033
+          hash f3d5b9de668dd84a43947fa048d09823529a0335
+          property P31
+          snaktype value
+        rank normal
+        references
+          entry
+            hash 91e9bbaec63b9a6c6c5f69c11759a5239ce4fbee
+            snaks
+              P248
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q66791448
+                      numeric-id 66791448
+                  hash 655a0e0c7b62d384000f19bc4e6c3dab2645c9bb
+                  property P248
+                  snaktype value
+              P304
+                entry
+                  datatype string
+                  datavalue
+                    type string
+                    value 54-55
+                  hash 26da36728546142e26fa1be831a298c83fcb13a7
+                  property P304
+                  snaktype value
+            snaks-order (P248 P304)
+        type statement
+      entry
+        id L3865$e1f87adc-42ca-5f04-f687-b6df4ba09161
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q116447555
+              numeric-id 116447555
+          hash a83703c3e2d9aeda7588099857eafb8cda61711c
+          property P31
+          snaktype value
+        rank normal
+        type statement
+    P5275
+      entry
+        id L3865$34C383F0-F9FA-487F-ADE9-663D8156774D
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "22888"
+          hash 8ec3c134815b463249385ef017ea66975f1cdc8c
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5402
+      entry
+        id L3865$C56AE804-BB4E-49C7-8D13-2B35E725E382
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L21739
+              numeric-id 21739
+          hash 04685a26559c589a23db06418171effce1d7e528
+          property P5402
+          snaktype value
+        rank normal
+        type statement
+    P5831
+      entry
+        id L3865$4f340889-439a-fc84-d15a-f9866570e164
+        mainsnak
+          datatype monolingualtext
+          datavalue
+            type monolingualtext
+            value
+              language en
+              text "We made sandwiches with the bread we bought from the bakery."
+          hash b27f089058a919ca4e4d6977168a6bff64f019bc
+          property P5831
+          snaktype value
+        qualifiers
+          P6072
+            entry
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L3865-S1
+              hash 0b8bb77e98f985f9f154441a86e00ee85df1283a
+              property P6072
+              snaktype value
+        qualifiers-order (P6072)
+        rank normal
+        type statement
+  forms
+    entry
+      claims
+        P443
+          entry
+            id L3865-F1$475AD60D-A57D-46F4-A998-C831A0F361A5
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-uk-bread.ogg
+              hash 31519d5d389ec10958b6d1768e41b9dd1241bc6e
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7979
+                      numeric-id 7979
+                  hash c22ed230107969afc0ac70ee5e257e90104129b7
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+          entry
+            id L3865-F1$5C33E612-3EF0-4A2C-8665-0C9920DE3AFA
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value En-us-bread.ogg
+              hash 155e9d9e1ac6136db607aa0b5bcdbd4993a7ce49
+              property P443
+              snaktype value
+            qualifiers
+              P5237
+                entry
+                  datatype wikibase-item
+                  datavalue
+                    type wikibase-entityid
+                    value
+                      entity-type item
+                      id Q7976
+                      numeric-id 7976
+                  hash 6c54ff643a290ae5f9b384b3d255bf3708481de3
+                  property P5237
+                  snaktype value
+            qualifiers-order (P5237)
+            rank normal
+            type statement
+      grammaticalFeatures (Q110786)
+      id L3865-F1
+      representations
+        en
+          language en
+          value bread
+    entry
+      grammaticalFeatures (Q146786)
+      id L3865-F2
+      representations
+        en
+          language en
+          value breads
+  id L3865
+  language Q1860
+  lastrevid 2498924614
+  lemmas
+    en bread
+  lexicalCategory Q1084
+  modified "2026-05-28T21:40:33Z"
+  ns 146
+  pageid 55199519
+  senses
+    entry
+      claims
+        P18
+          entry
+            id L3865-S1$0B36854C-56BC-4868-9EF7-6C151DE6D83A
+            mainsnak
+              datatype commonsMedia
+              datavalue
+                type string
+                value "Pitir nan.JPG"
+              hash 7e0968db5e01fb24816752da0fd8e94740fafe4e
+              property P18
+              snaktype value
+            rank normal
+            type statement
+        P5137
+          entry
+            id L3865-S1$92b0f29a-4730-992d-ce41-ebdc9eab29b8
+            mainsnak
+              datatype wikibase-item
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type item
+                  id Q7802
+                  numeric-id 7802
+              hash 93681311ad2bd4aca7d97b8a9ee8a90e1d2460e8
+              property P5137
+              snaktype value
+            rank normal
+            type statement
+        P5972
+          entry
+            id L3865-S1$90403e30-4346-f125-c8e7-6bd8d4694ad8
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L226809-S1
+              hash 2b6c7bb82c9b4c59fc9fe3e0607e55c975ad3737
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$7b763d50-42c8-970c-36f6-23fe2b2dbc3c
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1868-S1
+              hash b159033b0b542bb9408d3653bfc31052f9741458
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$5fd864bf-4ddc-cf8c-10f7-a9337bbdd1b7
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L2284-S1
+              hash 8e16d6937efd14e62f448aa9a1ad8425f2e59286
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$2dad0eec-4c9c-57f4-6865-1121c8f77a6f
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L7832-S1
+              hash 49c86b3ac2ba883536cb49c8e5e1e3df8b8ed965
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$46d9d1ea-4d82-f323-8b3b-57a635f07e71
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L679739-S1
+              hash d69e362e4701285ebc57425b558b87ed27d4a68f
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$8F58C89B-73A1-4E4E-926F-7AD12C014D22
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1491544-S1
+              hash 202eaf4e036d520a0e249e147366101477c8760b
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+          entry
+            id L3865-S1$240907FE-01A6-4B0D-B816-30C92D79C04A
+            mainsnak
+              datatype wikibase-sense
+              datavalue
+                type wikibase-entityid
+                value
+                  entity-type sense
+                  id L1493055-S1
+              hash bb2cd303910c3aaa0f92f5835c717f6329687e5a
+              property P5972
+              snaktype value
+            rank normal
+            type statement
+      glosses
+        en
+          language en
+          value "baked food made from grain and (usually) yeast"
+        eo
+          language eo
+          value pano
+        ru
+          language ru
+          value "хлеб"
+        tg
+          language tg
+          value "нон"
+      id L3865-S1
+  title "Lexeme:L3865"
+  type lexeme
+success 1

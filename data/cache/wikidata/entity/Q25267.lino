@@ -1,0 +1,17 @@
+Q25267
+  aliases
+    en (Celsius "°C" centigrade "℃" "degree centigrade" "degrees Celsius" "degrees centigrade")
+    hi ("सेंटीग्रेड")
+    ru ("°C" "°С" "Цельсия" "температурная шкала Цельсия" "шкала Цельсия" "℃" "Цельсия шкала")
+    zh ("°C" "℃" "攝氏" "摄氏度")
+  descriptions
+    en "SI unit of Celsius temperature"
+    ru "единица температуры на основе свойств воды"
+  id Q25267
+  labels
+    en "degree Celsius"
+    hi "सेल्सियस"
+    ru "градус Цельсия"
+    zh "攝氏度"
+  type item
+success 1

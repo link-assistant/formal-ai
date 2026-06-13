@@ -1,0 +1,16 @@
+Q36253
+  aliases
+    ru ("протяженность" "длиной" "ширина")
+    zh ("長度" "長度單位" "寬度" "長" "宽" "长度单位")
+  descriptions
+    en "measured dimension of an object in a physical space"
+    hi "किसी वास्तु की लम्बाई"
+    ru "линейная характеристика объекта"
+  id Q36253
+  labels
+    en length
+    hi "लंबाई"
+    ru "длина"
+    zh "长度"
+  type item
+success 1

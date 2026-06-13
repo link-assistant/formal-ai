@@ -1,0 +1,25 @@
+language en
+lemma reply
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a statement (either spoken or written) that is made to reply to a question or request or criticism or accusation"
+    examples ("I waited several days for his answer" "he wrote replies to several of his critics")
+    id oewn-06758700-n
+    partOfSpeech n
+    synonyms (answer response)
+  entry
+    definition "the speech act of continuing a conversational exchange"
+    examples ("he growled his reply")
+    id oewn-07214225-n
+    partOfSpeech n
+    synonyms (response)
+  entry
+    definition "react verbally"
+    examples ("She didn't want to answer" "answer the question" "We answered that we would accept the invitation")
+    id oewn-00817348-v
+    partOfSpeech v
+    synonyms (answer respond)
+source "oewn:2024"

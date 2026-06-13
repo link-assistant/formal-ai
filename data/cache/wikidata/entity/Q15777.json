@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "Q15777": {
+      "type": "item",
+      "id": "Q15777",
+      "labels": {
+        "ru": {
+          "language": "ru",
+          "value": "Си"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "C语言"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "general-purpose programming language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "सामान्य प्रयोजन प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "通用編程語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "C programming language"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "C (язык программирования)"
+          },
+          {
+            "language": "ru",
+            "value": ".c"
+          },
+          {
+            "language": "ru",
+            "value": "С (язык программирования)"
+          },
+          {
+            "language": "ru",
+            "value": "C (язык)"
+          },
+          {
+            "language": "ru",
+            "value": "язык программирования C"
+          },
+          {
+            "language": "ru",
+            "value": "язык C"
+          },
+          {
+            "language": "ru",
+            "value": "язык Си"
+          },
+          {
+            "language": "ru",
+            "value": "язык С"
+          },
+          {
+            "language": "ru",
+            "value": "язык программирования Си"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "丙語言"
+          },
+          {
+            "language": "zh",
+            "value": "C語言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

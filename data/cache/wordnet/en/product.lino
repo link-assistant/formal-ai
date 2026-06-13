@@ -1,0 +1,41 @@
+language en
+lemma product
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "items for sale to the individual consumer"
+    examples ("good business depends on having good merchandise" "that store offers a variety of products")
+    id oewn-03754377-n
+    partOfSpeech n
+    synonyms (merchandise ware)
+  entry
+    definition "an artifact that has been created by someone or some process"
+    examples ("they improve their product every year" "they export most of their agricultural production")
+    id oewn-04014270-n
+    partOfSpeech n
+    synonyms (production)
+  entry
+    definition "a quantity obtained by multiplication"
+    examples ("the product of 2 and 3 is 6")
+    id oewn-05868214-n
+    partOfSpeech n
+    synonyms ("mathematical product")
+  entry
+    definition "a chemical substance formed as a result of a chemical reaction"
+    examples ("a product of lime and nitric acid")
+    id oewn-15022266-n
+    partOfSpeech n
+  entry
+    definition "a consequence of someone's efforts or of a particular set of circumstances"
+    examples ("skill is the product of hours of practice" "his reaction was the product of hunger and fatigue")
+    id oewn-11435956-n
+    partOfSpeech n
+  entry
+    definition "the set of elements common to two or more sets"
+    examples ("the set of red hats is the intersection of the set of hats and the set of red things")
+    id oewn-08015510-n
+    partOfSpeech n
+    synonyms (intersection "Cartesian product")
+source "oewn:2024"

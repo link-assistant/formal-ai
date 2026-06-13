@@ -1,0 +1,27 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The act or process of calculating."
+        entry
+          definition "The result of calculating."
+        entry
+          definition "Reckoning, estimate."
+          example "By my calculation, we should be there by midnight."
+        entry
+          definition "An expectation based on circumstances."
+      partOfSpeech noun
+      synonyms (sum computation evaluation reckoning estimate guess measurement reckoning)
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/calculations-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=2453404"
+  sourceUrls ("https://en.wiktionary.org/wiki/calculation" "https://en.wiktionary.org/wiki/calculations")
+  word calculations

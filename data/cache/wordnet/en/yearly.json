@@ -1,0 +1,46 @@
+{
+  "lemma": "yearly",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06438138-n",
+      "partOfSpeech": "n",
+      "definition": "a reference book that is published regularly once every year",
+      "synonyms": [
+        "annual",
+        "yearbook"
+      ]
+    },
+    {
+      "id": "oewn-00082087-r",
+      "partOfSpeech": "r",
+      "definition": "without missing a year",
+      "examples": [
+        "they travel to China annually"
+      ],
+      "synonyms": [
+        "annually",
+        "every year",
+        "each year"
+      ]
+    },
+    {
+      "id": "oewn-01976215-s",
+      "partOfSpeech": "s",
+      "definition": "occurring or payable every year",
+      "examples": [
+        "an annual trip to Paris",
+        "yearly medical examinations",
+        "annual (or yearly) income"
+      ],
+      "synonyms": [
+        "annual"
+      ]
+    }
+  ]
+}

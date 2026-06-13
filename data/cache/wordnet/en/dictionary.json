@@ -1,0 +1,19 @@
+{
+  "lemma": "dictionary",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06430544-n",
+      "partOfSpeech": "n",
+      "definition": "a reference book containing an alphabetical list of words with information about them",
+      "synonyms": [
+        "lexicon"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+language en
+lemma up
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "being or moving higher in position or greater in some value; being above a former position or level"
+    examples ("the anchor is up" "the sun is up" "he lay face up" "he is up by a pawn" "the market is up" "the corn is up")
+    id oewn-02499848-a
+    partOfSpeech a
+  entry
+    definition "spatially or metaphorically from a lower to a higher position"
+    examples ("look up!" "the music surged up" "the fragments flew upwards" "prices soared upwards" "upwardly mobile")
+    id oewn-00096883-r
+    partOfSpeech r
+    synonyms (upwards upward upwardly)
+  entry
+    definition "to a higher intensity"
+    examples ("he turned up the volume")
+    id oewn-00097561-r
+    partOfSpeech r
+  entry
+    definition "nearer to the speaker"
+    examples ("he walked up and grabbed my lapels")
+    id oewn-00097471-r
+    partOfSpeech r
+  entry
+    definition "to a more central or a more northerly place"
+    examples ("was transferred up to headquarters" "up to Canada for a vacation")
+    id oewn-00097310-r
+    partOfSpeech r
+  entry
+    definition "to a later time"
+    examples ("they moved the meeting date up" "from childhood upward")
+    id oewn-00097186-r
+    partOfSpeech r
+    synonyms (upwards upward)
+  entry
+    definition "out of bed"
+    examples ("are they astir yet?" "up by seven each morning")
+    id oewn-00188413-s
+    partOfSpeech s
+    synonyms (astir)
+  entry
+    definition "getting higher or more vigorous"
+    examples ("it's an up market" "an improving economy")
+    id oewn-02496786-s
+    partOfSpeech s
+    synonyms (improving)
+  entry
+    definition "extending or moving toward a higher place"
+    examples ("the up staircase" "a general upward movement of fish")
+    id oewn-02495166-s
+    partOfSpeech s
+    synonyms (upward)
+  entry
+    definition "(usually followed by ‘on’ or ‘for’) in readiness"
+    examples ("he was up on his homework" "had to be up for the game")
+    id oewn-01850926-s
+    partOfSpeech s
+  entry
+    definition open
+    examples ("the windows are up")
+    id oewn-01210818-s
+    partOfSpeech s
+  entry
+    definition "(used of computers) operating properly"
+    examples ("how soon will the computers be up?")
+    id oewn-01095688-s
+    partOfSpeech s
+  entry
+    definition "used up"
+    examples ("time is up")
+    id oewn-01007834-s
+    partOfSpeech s
+  entry
+    definition raise
+    examples ("up the ante")
+    id oewn-00154774-v
+    partOfSpeech v
+source "oewn:2024"

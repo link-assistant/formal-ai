@@ -1,0 +1,13 @@
+language en
+lemma anywhere
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "at or in or to any place"
+    examples ("you can find this food anywhere")
+    id oewn-00025699-r
+    partOfSpeech r
+    synonyms (anyplace)
+source "oewn:2024"

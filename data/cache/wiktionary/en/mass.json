@@ -1,0 +1,149 @@
+[
+  {
+    "word": "mass",
+    "phonetic": "/mæs/",
+    "phonetics": [
+      {
+        "text": "/mæs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mass-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=399085",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(physical) Matter, material.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A large quantity; a sum.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To form or collect into a mass; to form into a collective body; to bring together into masses; to assemble.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To have a certain mass.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I mass 70 kilograms."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Involving a mass of things; concerning a large quantity or number.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There is evidence of mass extinctions in the distant past."
+          },
+          {
+            "definition": "Involving a mass of people; of, for, or by the masses.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Mass unemployment resulted from the financial collapse."
+          }
+        ],
+        "synonyms": [
+          "weigh"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mass"
+    ]
+  },
+  {
+    "word": "mass",
+    "phonetic": "/mæs/",
+    "phonetics": [
+      {
+        "text": "/mæs/",
+        "audio": ""
+      },
+      {
+        "text": "/mæs/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/mass-2-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=399085",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The Eucharist, now especially in Roman Catholicism.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Celebration of the Eucharist.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(usually as the Mass) The sacrament of the Eucharist.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A musical setting of parts of the mass.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To celebrate mass.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mass"
+    ]
+  }
+]

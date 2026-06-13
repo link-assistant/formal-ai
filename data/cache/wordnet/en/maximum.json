@@ -1,0 +1,49 @@
+{
+  "lemma": "maximum",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01498873-a",
+      "partOfSpeech": "a",
+      "definition": "the greatest or most complete or best possible",
+      "examples": [
+        "maximal expansion",
+        "maximum pressure"
+      ],
+      "synonyms": [
+        "maximal"
+      ]
+    },
+    {
+      "id": "oewn-13798337-n",
+      "partOfSpeech": "n",
+      "definition": "the largest possible quantity",
+      "synonyms": [
+        "upper limit"
+      ]
+    },
+    {
+      "id": "oewn-05132193-n",
+      "partOfSpeech": "n",
+      "definition": "the greatest possible degree",
+      "examples": [
+        "he tried his utmost"
+      ],
+      "synonyms": [
+        "utmost",
+        "uttermost",
+        "level best"
+      ]
+    },
+    {
+      "id": "oewn-08615688-n",
+      "partOfSpeech": "n",
+      "definition": "the point on a curve where the tangent changes from positive on the left to negative on the right"
+    }
+  ]
+}

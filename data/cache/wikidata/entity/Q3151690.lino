@@ -1,0 +1,14 @@
+Q3151690
+  aliases
+    zh ("今日")
+  descriptions
+    en "current day"
+    ru "текущий, настоящий день"
+    zh "目前的這天"
+  id Q3151690
+  labels
+    en today
+    ru "сегодня"
+    zh "今天"
+  type item
+success 1

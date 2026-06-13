@@ -1,0 +1,124 @@
+[
+  {
+    "word": "rub",
+    "phonetic": "/ɹʌb/",
+    "phonetics": [
+      {
+        "text": "/ɹʌb/",
+        "audio": ""
+      },
+      {
+        "text": "/ɹʌb/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/rub-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1157527",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An act of rubbing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Give that lamp a good rub and see if any genies come out"
+          },
+          {
+            "definition": "A difficulty or problem.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A quip or sarcastic remark.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In the game of crown green bowls, any obstacle by which a bowl is diverted from its normal course.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any substance designed to be applied by rubbing.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a heat rub intended for muscular strains"
+          }
+        ],
+        "synonyms": [
+          "catch",
+          "glitch",
+          "hiccup",
+          "hitch",
+          "kink",
+          "snag"
+        ],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To move (one object) while maintaining contact with another object over some area, with pressure and friction.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I rubbed my hands together for warmth."
+          },
+          {
+            "definition": "To rub something against (a second thing).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I rubbed the glass with the cloth."
+          },
+          {
+            "definition": "To be rubbed against something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "My shoes are beginning to rub."
+          },
+          {
+            "definition": "To spread a substance thinly over; to smear.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "meat rubbed with spices before barbecuing"
+          },
+          {
+            "definition": "To move or pass with difficulty.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to rub through woods, as huntsmen"
+          },
+          {
+            "definition": "To scour; to burnish; to polish; to brighten; to cleanse; often with up or over.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "to rub up silver"
+          },
+          {
+            "definition": "To hinder; to cross; to thwart.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(bowls) To touch the jack with the bowl.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/rub"
+    ]
+  }
+]

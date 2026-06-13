@@ -1,0 +1,149 @@
+{
+  "lemma": "exercise",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00625978-n",
+      "partOfSpeech": "n",
+      "definition": "the activity of exerting your muscles in various ways to keep fit",
+      "examples": [
+        "the doctor recommended regular exercise",
+        "he did some exercising",
+        "the physical exertion required by his work kept him fit"
+      ],
+      "synonyms": [
+        "exercising",
+        "physical exercise",
+        "physical exertion",
+        "workout"
+      ]
+    },
+    {
+      "id": "oewn-00948944-n",
+      "partOfSpeech": "n",
+      "definition": "the act of using",
+      "examples": [
+        "he warned against the use of narcotic drugs",
+        "skilled in the utilization of computers"
+      ],
+      "synonyms": [
+        "use",
+        "usage",
+        "utilization",
+        "utilisation",
+        "employment"
+      ]
+    },
+    {
+      "id": "oewn-00896250-n",
+      "partOfSpeech": "n",
+      "definition": "systematic training by multiple repetitions",
+      "examples": [
+        "practice makes perfect"
+      ],
+      "synonyms": [
+        "practice",
+        "drill",
+        "practice session",
+        "recitation"
+      ]
+    },
+    {
+      "id": "oewn-00731217-n",
+      "partOfSpeech": "n",
+      "definition": "a task performed or problem solved in order to develop skill or understanding",
+      "examples": [
+        "you must work the examples at the end of each chapter in the textbook"
+      ],
+      "synonyms": [
+        "example"
+      ]
+    },
+    {
+      "id": "oewn-07469062-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) a ceremony that involves processions and speeches",
+      "examples": [
+        "academic exercises"
+      ]
+    },
+    {
+      "id": "oewn-00034873-n",
+      "partOfSpeech": "n",
+      "definition": "an action, often used negatively and without consequences",
+      "examples": [
+        "an exercise in futility",
+        "an exercise in cheap talk"
+      ]
+    },
+    {
+      "id": "oewn-01168409-v",
+      "partOfSpeech": "v",
+      "definition": "put to use",
+      "examples": [
+        "exert one's power or influence"
+      ],
+      "synonyms": [
+        "exert"
+      ]
+    },
+    {
+      "id": "oewn-02574587-v",
+      "partOfSpeech": "v",
+      "definition": "carry out or practice; as of jobs and professions",
+      "examples": [
+        "practice law"
+      ],
+      "synonyms": [
+        "practice",
+        "practise",
+        "do"
+      ]
+    },
+    {
+      "id": "oewn-00100305-v",
+      "partOfSpeech": "v",
+      "definition": "give a workout to",
+      "examples": [
+        "Some parents exercise their infants",
+        "My personal trainer works me hard",
+        "work one's muscles",
+        "this puzzle will exercise your mind"
+      ],
+      "synonyms": [
+        "work",
+        "work out"
+      ]
+    },
+    {
+      "id": "oewn-00099475-v",
+      "partOfSpeech": "v",
+      "definition": "do physical exercise",
+      "examples": [
+        "She works out in the gym every day"
+      ],
+      "synonyms": [
+        "work out"
+      ]
+    },
+    {
+      "id": "oewn-00607488-v",
+      "partOfSpeech": "v",
+      "definition": "learn by repetition",
+      "examples": [
+        "We drilled French verbs every day",
+        "Pianists practice scales"
+      ],
+      "synonyms": [
+        "drill",
+        "practice",
+        "practise"
+      ]
+    }
+  ]
+}

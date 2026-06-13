@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q7802": {
+      "type": "item",
+      "id": "Q7802",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "bread"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "डबलरोटी"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "хлеб"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "麵包"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "baked food made of flour, water and other ingredients"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "пищевой продукт"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "由麵粉製作烘烤而成的食物"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आटे से तैयार प्रधान भोजन"
+        }
+      },
+      "aliases": {
+        "zh": [
+          {
+            "language": "zh",
+            "value": "面包"
+          },
+          {
+            "language": "zh",
+            "value": "麭"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "bun"
+          },
+          {
+            "language": "en",
+            "value": "breads"
+          },
+          {
+            "language": "en",
+            "value": "buns"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

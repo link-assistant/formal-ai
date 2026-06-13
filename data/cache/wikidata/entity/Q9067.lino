@@ -1,0 +1,18 @@
+Q9067
+  aliases
+    en ("Hungarian language" Magyar "Magyar language" "Modern Hungarian" "Modern Hungarian language" hu)
+    hi ("हंगेरियन भाषा" "तुलु भाषा")
+    ru ("мадьярский язык")
+  descriptions
+    en "Ugric language mainly spoken in Hungary and surrounding countries"
+    hi "यूग्रिक भाषा"
+    ru "язык венгров, принадлежит к финно-угорской семье языков"
+    zh "乌拉尔语系乌戈尔语支語言"
+  id Q9067
+  labels
+    en Hungarian
+    hi "हंगेरियाई भाषा"
+    ru "венгерский язык"
+    zh "匈牙利語"
+  type item
+success 1

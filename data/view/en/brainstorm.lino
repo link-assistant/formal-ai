@@ -1,0 +1,13 @@
+view
+  id M-64d31739a8bb
+  lemma brainstorm
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the clear (and often sudden) understanding of a complex situation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "try to solve a problem by thinking intensely about it"
+    provenance (wordnet)

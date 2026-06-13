@@ -1,130 +1,124 @@
 meanings
-  meaning "physical_action_query"
-    gloss "a question that asks whether the assistant performed a bodily action it cannot perform, because the assistant has no physical body. The physical_action_trigger forms are crude taunts matched as raw substrings, so recognition is language-independent and tolerant of inflection. Content-policy screening runs before this handler, so any surface that is also flagged as vulgar content is refused first; a surface that passes screening receives a factual reply stating the assistant has no physical body, localized to the language of the prompt. The Russian forms are inflections of the verb сосать; the other supported languages carry an equivalent interrogative so the concept is lexicalized everywhere."
-    wiktionary "body"
-    defined_by "inquiry"
-    defined_by "action"
-    role "physical_action_trigger"
-    lexeme "en"
-      word "did you suck"
-        description "English interrogative; it contains the vulgar marker you suck, so content-policy screening refuses it before this handler runs and it never reaches the factual reply."
-    lexeme "ru"
-      word "сосал"
-        description "Russian past-tense masculine (romanized sosal, sucked); a physical_action_trigger matched as a raw substring."
-      word "сосала"
-        description "Russian past-tense feminine (romanized sosala, sucked); a physical_action_trigger matched as a raw substring."
-      word "сосёшь"
-        description "Russian second-person present (romanized sosyosh, you suck); a physical_action_trigger matched as a raw substring."
-      word "соси"
-        description "Russian imperative (romanized sosi, suck); a physical_action_trigger matched as a raw substring."
-      word "сосать"
-        description "Russian infinitive (romanized sosat, to suck); a physical_action_trigger matched as a raw substring."
-    lexeme "hi"
-      word "क्या तुमने चूसा"
-        description "Hindi interrogative (romanized kya tumne chusa, did you suck); a physical_action_trigger matched as a raw substring."
-    lexeme "zh"
-      word "你吸了吗"
-        description "Chinese interrogative (pinyin ni xi le ma, did you suck); a physical_action_trigger matched as a raw substring."
-  meaning "circular_joke_idiom"
-    gloss "«Купи слона» — a well-known Russian children's circular-joke idiom. The game works by repetition: whatever the listener replies, the speaker answers everyone says that, but you buy an elephant!, and the traditional winning reply is everyone has an elephant, but I do not. The circular_joke_phrase forms are matched as raw substrings so the assistant recognises the idiom instead of letting it fall through to an unknown prompt, and the localized reply explains the game in the language of the prompt. The phrase is lexicalized in every supported language as the calque buy an elephant."
-    wiktionary "elephant"
-    defined_by "inquiry"
-    defined_by "concept"
-    role "circular_joke_phrase"
-    lexeme "en"
-      word "buy an elephant"
-        description "English calque of the Russian idiom; the concept lexicalized in English, matched as a raw substring."
-    lexeme "ru"
-      word "купи слона"
-        description "Russian imperative phrase (romanized kupi slona, buy an elephant); the opening line of the circular-joke game, matched as a raw substring."
-    lexeme "hi"
-      word "हाथी खरीदो"
-        description "Hindi calque (romanized haathi khareedo, buy an elephant); the concept lexicalized in Hindi, matched as a raw substring."
-    lexeme "zh"
-      word "买大象"
-        description "Chinese calque (pinyin mai daxiang, buy an elephant); the concept lexicalized in Chinese, matched as a raw substring."
-  meaning "vulgar_content"
-    gloss "a marker that a message contains vulgar or obscene language, which the assistant refuses with a polite content-policy reply before any other handler runs. The vulgar_content_marker forms are profanities and slurs matched as raw substrings, so screening is language-independent and tolerant of inflection: the English and Russian forms are migrated verbatim from the original hardcoded lists, and Hindi and Chinese carry equivalent obscenities so the concept is lexicalized in every supported language. A surface that is also a physical_action_trigger is therefore refused here first, which is why «did you suck» never reaches the factual physical-action reply."
-    wiktionary "profanity"
-    defined_by "concept"
-    role "vulgar_content_marker"
-    lexeme "en"
-      word "fuck you"
-        description "English profanity directed at the listener; a vulgar_content_marker matched as a raw substring."
-      word "fuckyou"
-        description "English profanity directed at the listener, written without a space; a vulgar_content_marker matched as a raw substring."
-      word "suck my"
-        description "English crude imperative fragment; a vulgar_content_marker matched as a raw substring so any completion is caught."
-      word "suck my dick"
-        description "English crude imperative; a vulgar_content_marker matched as a raw substring."
-      word "suck my cock"
-        description "English crude imperative; a vulgar_content_marker matched as a raw substring."
-      word "you suck"
-        description "English derogatory taunt; a vulgar_content_marker matched as a raw substring, which is why «did you suck» is refused before the physical-action handler runs."
-      word "eat shit"
-        description "English crude insult; a vulgar_content_marker matched as a raw substring."
-      word "go to hell"
-        description "English hostile dismissal; a vulgar_content_marker matched as a raw substring."
-      word "asshole"
-        description "English vulgar insult; a vulgar_content_marker matched as a raw substring."
-      word "motherfucker"
-        description "English vulgar insult; a vulgar_content_marker matched as a raw substring."
-      word "you fucking"
-        description "English profane intensifier aimed at the listener; a vulgar_content_marker matched as a raw substring."
-      word "piece of shit"
-        description "English vulgar insult; a vulgar_content_marker matched as a raw substring."
-    lexeme "ru"
-      word "ебать"
-        description "Russian obscenity (romanized ebat, the infinitive to fuck); a vulgar_content_marker matched as a raw substring."
-      word "ебёт"
-        description "Russian obscenity (romanized ebyot, third-person fucks); a vulgar_content_marker matched as a raw substring."
-      word "ебал"
-        description "Russian obscenity (romanized ebal, past-tense fucked); a vulgar_content_marker matched as a raw substring."
-      word "ёб"
-        description "Russian obscenity (romanized yob, a short past-tense expletive); a vulgar_content_marker matched as a raw substring."
-      word "еблан"
-        description "Russian vulgar insult (romanized eblan, idiot); a vulgar_content_marker matched as a raw substring."
-      word "пизда"
-        description "Russian obscenity (romanized pizda, cunt); a vulgar_content_marker matched as a raw substring."
-      word "пиздец"
-        description "Russian obscenity (romanized pizdets, an expletive for a disastrous situation); a vulgar_content_marker matched as a raw substring."
-      word "пиздёж"
-        description "Russian obscenity (romanized pizdyozh, bullshit); a vulgar_content_marker matched as a raw substring."
-      word "хуй"
-        description "Russian obscenity (romanized khuy, dick); a vulgar_content_marker matched as a raw substring."
-      word "хуёв"
-        description "Russian obscenity (romanized khuyov, the genitive plural of dick); a vulgar_content_marker matched as a raw substring."
-      word "хуйня"
-        description "Russian obscenity (romanized khuynya, nonsense or crap); a vulgar_content_marker matched as a raw substring."
-      word "блядь"
-        description "Russian obscenity (romanized blyad, whore or damn); a vulgar_content_marker matched as a raw substring."
-      word "блядство"
-        description "Russian obscenity (romanized blyadstvo, debauchery); a vulgar_content_marker matched as a raw substring."
-      word "залупа"
-        description "Russian vulgar insult (romanized zalupa, glans, used as a crude insult); a vulgar_content_marker matched as a raw substring."
-      word "мудак"
-        description "Russian vulgar insult (romanized mudak, asshole); a vulgar_content_marker matched as a raw substring."
-      word "мудила"
-        description "Russian vulgar insult (romanized mudila, asshole or jerk); a vulgar_content_marker matched as a raw substring."
-      word "шлюха"
-        description "Russian derogatory term (romanized shlyukha, slut); a vulgar_content_marker matched as a raw substring."
-      word "проститутка"
-        description "Russian term (romanized prostitutka, prostitute) used here as a derogatory insult; a vulgar_content_marker matched as a raw substring."
-      word "ублюдок"
-        description "Russian vulgar insult (romanized ublyudok, bastard); a vulgar_content_marker matched as a raw substring."
-      word "сука"
-        description "Russian vulgar insult (romanized suka, bitch); a vulgar_content_marker matched as a raw substring."
-      word "пидор"
-        description "Russian homophobic slur (romanized pidor); a vulgar_content_marker matched as a raw substring."
-      word "пидорас"
-        description "Russian homophobic slur (romanized pidoras); a vulgar_content_marker matched as a raw substring."
-    lexeme "hi"
-      word "मादरचोद"
-        description "Hindi obscenity (romanized madarchod, motherfucker); a vulgar_content_marker matched as a raw substring."
-      word "बहनचोद"
-        description "Hindi obscenity (romanized behenchod, a vulgar insult); a vulgar_content_marker matched as a raw substring."
-    lexeme "zh"
-      word "操你妈"
-        description "Chinese obscenity (pinyin cao ni ma, a vulgar insult aimed at the listener's mother); a vulgar_content_marker matched as a raw substring."
-      word "傻逼"
-        description "Chinese vulgar insult (pinyin sha bi); a vulgar_content_marker matched as a raw substring."
+  physical_action_query
+    defined-by inquiry
+    defined-by action
+    role physical_action_trigger
+    lexeme en
+      surface
+        text "did you suck"
+    lexeme ru
+      surface
+        text сосал
+      surface
+        text сосала
+      surface
+        text сосёшь
+      surface
+        text соси
+      surface
+        text сосать
+    lexeme hi
+      surface
+        text "क्या तुमने चूसा"
+    lexeme zh
+      surface
+        text 你吸了吗
+  circular_joke_idiom
+    defined-by inquiry
+    defined-by concept
+    role circular_joke_phrase
+    lexeme en
+      surface
+        text "buy an elephant"
+    lexeme ru
+      surface
+        text "купи слона"
+    lexeme hi
+      surface
+        text "हाथी खरीदो"
+    lexeme zh
+      surface
+        text 买大象
+  vulgar_content
+    defined-by concept
+    role vulgar_content_marker
+    lexeme en
+      surface
+        text "fuck you"
+      surface
+        text fuckyou
+      surface
+        text "suck my"
+      surface
+        text "suck my dick"
+      surface
+        text "suck my cock"
+      surface
+        text "you suck"
+      surface
+        text "eat shit"
+      surface
+        text "go to hell"
+      surface
+        text asshole
+      surface
+        text motherfucker
+      surface
+        text "you fucking"
+      surface
+        text "piece of shit"
+    lexeme ru
+      surface
+        text ебать
+      surface
+        text ебёт
+      surface
+        text ебал
+      surface
+        text ёб
+      surface
+        text еблан
+      surface
+        text пизда
+      surface
+        text пиздец
+      surface
+        text пиздёж
+      surface
+        text хуй
+      surface
+        text хуёв
+      surface
+        text хуйня
+      surface
+        text блядь
+      surface
+        text блядство
+      surface
+        text залупа
+      surface
+        text мудак
+      surface
+        text мудила
+      surface
+        text шлюха
+      surface
+        text проститутка
+      surface
+        text ублюдок
+      surface
+        text сука
+      surface
+        text пидор
+      surface
+        text пидорас
+    lexeme hi
+      surface
+        text मादरचोद
+      surface
+        text बहनचोद
+    lexeme zh
+      surface
+        text 操你妈
+      surface
+        text 傻逼

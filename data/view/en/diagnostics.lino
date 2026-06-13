@@ -1,0 +1,9 @@
+view
+  id M-dd3faa50298e
+  lemma diagnostics
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the branch of medical science dealing with the classification of disease"
+    provenance (wordnet)

@@ -1,0 +1,24 @@
+language en
+lemma yearly
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a reference book that is published regularly once every year"
+    id oewn-06438138-n
+    partOfSpeech n
+    synonyms (annual yearbook)
+  entry
+    definition "without missing a year"
+    examples ("they travel to China annually")
+    id oewn-00082087-r
+    partOfSpeech r
+    synonyms (annually "every year" "each year")
+  entry
+    definition "occurring or payable every year"
+    examples ("an annual trip to Paris" "yearly medical examinations" "annual (or yearly) income")
+    id oewn-01976215-s
+    partOfSpeech s
+    synonyms (annual)
+source "oewn:2024"

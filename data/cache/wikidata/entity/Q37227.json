@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "Q37227": {
+      "type": "item",
+      "id": "Q37227",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Go"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Go"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "programming language developed by Google and the open-source community"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "компилируемый многопоточный язык программирования"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "प्रोग्रामिंग भाषा"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "編程語言"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Go programming language"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "Go語言"
+          },
+          {
+            "language": "zh",
+            "value": "Go语言"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,60 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An act of rubbing."
+          example "Give that lamp a good rub and see if any genies come out"
+        entry
+          definition "A difficulty or problem."
+        entry
+          definition "A quip or sarcastic remark."
+        entry
+          definition "In the game of crown green bowls, any obstacle by which a bowl is diverted from its normal course."
+        entry
+          definition "Any substance designed to be applied by rubbing."
+          example "a heat rub intended for muscular strains"
+      partOfSpeech noun
+      synonyms (catch glitch hiccup hitch kink snag)
+    entry
+      definitions
+        entry
+          definition "To move (one object) while maintaining contact with another object over some area, with pressure and friction."
+          example "I rubbed my hands together for warmth."
+        entry
+          definition "To rub something against (a second thing)."
+          example "I rubbed the glass with the cloth."
+        entry
+          definition "To be rubbed against something."
+          example "My shoes are beginning to rub."
+        entry
+          definition "To spread a substance thinly over; to smear."
+          example "meat rubbed with spices before barbecuing"
+        entry
+          definition "To move or pass with difficulty."
+          example "to rub through woods, as huntsmen"
+        entry
+          definition "To scour; to burnish; to polish; to brighten; to cleanse; often with up or over."
+          example "to rub up silver"
+        entry
+          definition "To hinder; to cross; to thwart."
+        entry
+          definition "(bowls) To touch the jack with the bowl."
+      partOfSpeech verb
+  phonetic "/ɹʌb/"
+  phonetics
+    entry
+      audio ""
+      text "/ɹʌb/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/rub-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1157527"
+      text "/ɹʌb/"
+  sourceUrls ("https://en.wiktionary.org/wiki/rub")
+  word rub

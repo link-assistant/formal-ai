@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q201": {
+      "type": "item",
+      "id": "Q201",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "3"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "३"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自然數"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "three"
+          },
+          {
+            "language": "en",
+            "value": "Ⅲ"
+          },
+          {
+            "language": "en",
+            "value": "ⅲ"
+          },
+          {
+            "language": "en",
+            "value": "number 3"
+          },
+          {
+            "language": "en",
+            "value": "number three"
+          },
+          {
+            "language": "en",
+            "value": "tri"
+          },
+          {
+            "language": "en",
+            "value": "the number 3"
+          },
+          {
+            "language": "en",
+            "value": "3 (number)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "три"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "三"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

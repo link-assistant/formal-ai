@@ -1,0 +1,36 @@
+[
+  {
+    "word": "megabytes",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "One million (106) bytes.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "1,048,576 bytes; a mebibyte.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "MB",
+          "㎆"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/megabyte",
+      "https://en.wiktionary.org/wiki/megabytes"
+    ]
+  }
+]

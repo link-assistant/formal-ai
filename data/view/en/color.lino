@@ -1,0 +1,61 @@
+view
+  id M-e1f2b1ddc06a
+  lemma color
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having or capable of producing colors"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a visual attribute of things that results from the light they emit or transmit or reflect"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "interest and variety and intensity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the timbre of a musical sound"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an outward or token appearance or form that is deliberately misleading"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any material used for its color"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(physics) the characteristic of quarks that determines their role in the strong interaction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the appearance of objects (or light sources) described in terms of a person's perception of their hue and lightness (or brightness) and saturation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add color to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "affect as in thought or feeling"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "modify or bias"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decorate with colors"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a deceptive explanation or excuse for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "change color, often in an undesired manner"
+    provenance (wordnet)

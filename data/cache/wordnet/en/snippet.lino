@@ -1,0 +1,12 @@
+language en
+lemma snippet
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a small piece of anything (especially a piece that has been snipped off)"
+    id oewn-04257136-n
+    partOfSpeech n
+    synonyms (snip snipping)
+source "oewn:2024"

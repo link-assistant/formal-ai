@@ -1,0 +1,103 @@
+{
+  "lemma": "remember",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00609334-v",
+      "partOfSpeech": "v",
+      "definition": "recall knowledge from memory; have a recollection",
+      "examples": [
+        "I can't remember saying any such thing",
+        "I can't think what her last name was",
+        "can you remember her phone number?",
+        "Do you remember that he once loved you?",
+        "call up memories"
+      ],
+      "synonyms": [
+        "retrieve",
+        "recall",
+        "call back",
+        "call up",
+        "recollect",
+        "think"
+      ]
+    },
+    {
+      "id": "oewn-00611237-v",
+      "partOfSpeech": "v",
+      "definition": "keep in mind for attention or consideration",
+      "examples": [
+        "Remember the Alamo",
+        "Remember to call your mother every day!",
+        "Think of the starving children in India!"
+      ],
+      "synonyms": [
+        "think of"
+      ]
+    },
+    {
+      "id": "oewn-00612810-v",
+      "partOfSpeech": "v",
+      "definition": "recapture the past; indulge in memories",
+      "examples": [
+        "he remembered how he used to pick flowers"
+      ],
+      "synonyms": [
+        "think back"
+      ]
+    },
+    {
+      "id": "oewn-02361566-v",
+      "partOfSpeech": "v",
+      "definition": "show appreciation to",
+      "examples": [
+        "He remembered her in his will"
+      ]
+    },
+    {
+      "id": "oewn-00884323-v",
+      "partOfSpeech": "v",
+      "definition": "mention favorably, as in prayer",
+      "examples": [
+        "remember me in your prayers"
+      ]
+    },
+    {
+      "id": "oewn-00884044-v",
+      "partOfSpeech": "v",
+      "definition": "mention as by way of greeting or to indicate friendship",
+      "examples": [
+        "Remember me to your wife"
+      ],
+      "synonyms": [
+        "commend"
+      ]
+    },
+    {
+      "id": "oewn-00613356-v",
+      "partOfSpeech": "v",
+      "definition": "exercise, or have the power of, memory",
+      "examples": [
+        "After the shelling, many people lost the ability to remember",
+        "some remember better than others"
+      ]
+    },
+    {
+      "id": "oewn-00613035-v",
+      "partOfSpeech": "v",
+      "definition": "call to remembrance; keep alive the memory of someone or something, as in a ceremony",
+      "examples": [
+        "We remembered the 50th anniversary of the liberation of Auschwitz",
+        "Remember the dead of the First World War"
+      ],
+      "synonyms": [
+        "commemorate"
+      ]
+    }
+  ]
+}

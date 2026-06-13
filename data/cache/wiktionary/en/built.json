@@ -1,0 +1,119 @@
+[
+  {
+    "word": "built",
+    "phonetic": "/ˈbɪlt/",
+    "phonetics": [
+      {
+        "text": "/ˈbɪlt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/built-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1243861",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To form (something) by combining materials or parts.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To develop or give form to (something) according to a plan or process.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To increase or strengthen (something) by adding gradually to.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To establish a basis for (something).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To form by combining materials or parts.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To develop in magnitude or extent.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To construct (software) by compiling its source code.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(of source code) To be converted into software by compilation, usually with minimal human intervention.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This code won't build any more. Have you made any changes?"
+          }
+        ],
+        "synonyms": [
+          "create",
+          "base",
+          "found",
+          "ground",
+          "construct",
+          "erect",
+          "build up",
+          "enlarge",
+          "increase",
+          "strengthen"
+        ],
+        "antonyms": [
+          "demolish",
+          "destroy",
+          "ruin",
+          "wreck",
+          "decrease",
+          "dissipate",
+          "weaken"
+        ]
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Shape; build; form of structure.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "the built of a ship"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Well-built, muscular or toned.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/build",
+      "https://en.wiktionary.org/wiki/built"
+    ]
+  }
+]

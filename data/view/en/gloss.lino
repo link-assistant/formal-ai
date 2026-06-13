@@ -1,0 +1,37 @@
+view
+  id M-dfdbd982532e
+  lemma gloss
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an explanation or definition of an obscure word in a text"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an alphabetical list of technical terms in some specialized field of knowledge; usually published as an appendix to a text on that field"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the property of being smooth and shiny"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an outward or token appearance or form that is deliberately misleading"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a shine or gloss to, usually by rubbing"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide interlinear explanations for words or phrases"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide an interlinear translation of a word or phrase"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give a deceptive explanation or excuse for"
+    provenance (wordnet)

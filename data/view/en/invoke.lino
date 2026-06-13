@@ -1,0 +1,17 @@
+view
+  id M-b72fff70cc2c
+  lemma invoke
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "summon into action or bring into existence, often as if by magic"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cite as an authority; resort to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "request earnestly (something from somebody); ask for aid or protection"
+    provenance (wordnet)

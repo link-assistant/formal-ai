@@ -1,0 +1,21 @@
+view
+  id M-7d39220a05a7
+  lemma research
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "systematic investigation to establish facts"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a search for knowledge"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attempt to find out in a systematically and scientific manner"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "inquire into"
+    provenance (wordnet)

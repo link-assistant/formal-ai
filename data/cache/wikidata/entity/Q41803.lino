@@ -1,0 +1,17 @@
+Q41803
+  aliases
+    en (g gm gramme grams)
+    ru ("г")
+    zh ("公克")
+  descriptions
+    en "unit of mass equal to 1/1000th of a kilogram"
+    ru "единица измерения массы, одна из основных в СГС"
+    zh "重量单位"
+  id Q41803
+  labels
+    en gram
+    hi "ग्राम"
+    ru "грамм"
+    zh "克"
+  type item
+success 1

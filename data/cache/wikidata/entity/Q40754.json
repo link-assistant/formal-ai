@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Q40754": {
+      "type": "item",
+      "id": "Q40754",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "subtraction"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "вычитание"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "घटाना"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "減法"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "process of subtracting a number from another (minuend−subtrahend=difference); mathematical operation that represents the operation of removing objects from a collection"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चार बुनियादी अंकगणित संचालनों में से एक।"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "二元運算"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "subtract"
+          },
+          {
+            "language": "en",
+            "value": "decrease"
+          },
+          {
+            "language": "en",
+            "value": "take away"
+          },
+          {
+            "language": "en",
+            "value": "deduct"
+          },
+          {
+            "language": "en",
+            "value": "minus"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "вычитаемое"
+          },
+          {
+            "language": "ru",
+            "value": "уменьшаемое"
+          },
+          {
+            "language": "ru",
+            "value": "минус (бинарная операция)"
+          },
+          {
+            "language": "ru",
+            "value": "- (операция)"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "减"
+          },
+          {
+            "language": "zh",
+            "value": "减法"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

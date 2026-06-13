@@ -1,0 +1,312 @@
+{
+  "lemma": "driven",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02531814-s",
+      "partOfSpeech": "s",
+      "definition": "compelled forcibly by an outside agency",
+      "examples": [
+        "mobs goaded by blind hatred"
+      ],
+      "synonyms": [
+        "goaded"
+      ]
+    },
+    {
+      "id": "oewn-01563142-s",
+      "partOfSpeech": "s",
+      "definition": "urged or forced to action through moral pressure",
+      "examples": [
+        "felt impelled to take a stand against the issue"
+      ],
+      "synonyms": [
+        "impelled"
+      ]
+    },
+    {
+      "id": "oewn-00105498-s",
+      "partOfSpeech": "s",
+      "definition": "strongly motivated to succeed",
+      "synonyms": [
+        "compulsive",
+        "determined"
+      ]
+    },
+    {
+      "id": "oewn-01934845-v",
+      "partOfSpeech": "v",
+      "definition": "operate or control a vehicle",
+      "examples": [
+        "drive a car or bus",
+        "Can you drive this four-wheel truck?"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01934070-v",
+      "partOfSpeech": "v",
+      "definition": "travel or be transported in a vehicle",
+      "examples": [
+        "We drove to the university every morning",
+        "They motored to London for the theater"
+      ],
+      "synonyms": [
+        "drive",
+        "motor"
+      ]
+    },
+    {
+      "id": "oewn-02060895-v",
+      "partOfSpeech": "v",
+      "definition": "cause someone or something to move by driving",
+      "examples": [
+        "She drove me to school every day",
+        "We drove the car to the garage"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01519166-v",
+      "partOfSpeech": "v",
+      "definition": "force into or from an action or state, either physically or metaphorically",
+      "examples": [
+        "She rammed her mind into focus",
+        "He drives me mad"
+      ],
+      "synonyms": [
+        "force",
+        "drive",
+        "ram"
+      ]
+    },
+    {
+      "id": "oewn-02511007-v",
+      "partOfSpeech": "v",
+      "definition": "to compel or force or urge relentlessly or exert coercive pressure on, or motivate strongly",
+      "examples": [
+        "She is driven by her passion"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01508789-v",
+      "partOfSpeech": "v",
+      "definition": "cause to move back by force or influence",
+      "examples": [
+        "repel the enemy",
+        "push back the urge to smoke",
+        "beat back the invaders"
+      ],
+      "synonyms": [
+        "repel",
+        "drive",
+        "repulse",
+        "force back",
+        "push back",
+        "beat back"
+      ]
+    },
+    {
+      "id": "oewn-01649842-v",
+      "partOfSpeech": "v",
+      "definition": "compel somebody to do something, often against their own will or judgment",
+      "examples": [
+        "She finally drove him to change jobs"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01514891-v",
+      "partOfSpeech": "v",
+      "definition": "push, propel, or press with force",
+      "examples": [
+        "Drive a nail into the wall"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01512216-v",
+      "partOfSpeech": "v",
+      "definition": "cause to move rapidly by striking or throwing with force",
+      "examples": [
+        "drive the ball far out into the field"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-02412046-v",
+      "partOfSpeech": "v",
+      "definition": "strive and make an effort to reach a goal",
+      "examples": [
+        "She tugged for years to make a decent living",
+        "We have to push a little to make the deadline!",
+        "She is driving away at her doctoral thesis"
+      ],
+      "synonyms": [
+        "tug",
+        "labor",
+        "labour",
+        "push",
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01028984-v",
+      "partOfSpeech": "v",
+      "definition": "move into a desired direction of discourse",
+      "examples": [
+        "What are you driving at?"
+      ],
+      "synonyms": [
+        "drive",
+        "get",
+        "aim"
+      ]
+    },
+    {
+      "id": "oewn-02748107-v",
+      "partOfSpeech": "v",
+      "definition": "have certain properties when driven",
+      "examples": [
+        "This car rides smoothly",
+        "My new truck drives well"
+      ],
+      "synonyms": [
+        "drive",
+        "ride"
+      ]
+    },
+    {
+      "id": "oewn-02413411-v",
+      "partOfSpeech": "v",
+      "definition": "work as a driver",
+      "examples": [
+        "He drives a bread truck",
+        "She drives for the taxi company in Newark"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-02061580-v",
+      "partOfSpeech": "v",
+      "definition": "move by being propelled by a force",
+      "examples": [
+        "The car drove around the corner"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01943412-v",
+      "partOfSpeech": "v",
+      "definition": "urge forward",
+      "examples": [
+        "drive the cows into the barn"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01934453-v",
+      "partOfSpeech": "v",
+      "definition": "proceed along in a vehicle",
+      "examples": [
+        "We drive the turnpike to work"
+      ],
+      "synonyms": [
+        "drive",
+        "take"
+      ]
+    },
+    {
+      "id": "oewn-01410558-v",
+      "partOfSpeech": "v",
+      "definition": "strike with a driver, as in teeing off",
+      "examples": [
+        "drive a golf ball"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01410376-v",
+      "partOfSpeech": "v",
+      "definition": "hit very hard, as by swinging a bat horizontally",
+      "examples": [
+        "drive a ball"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01313624-v",
+      "partOfSpeech": "v",
+      "definition": "excavate horizontally",
+      "examples": [
+        "drive a tunnel"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01184038-v",
+      "partOfSpeech": "v",
+      "definition": "cause to function by supplying the force or power for or by controlling",
+      "examples": [
+        "The amplifier drives the tube",
+        "steam drives the engines",
+        "this device drives the disks for the computer"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01145082-v",
+      "partOfSpeech": "v",
+      "definition": "(hunting) search for game",
+      "examples": [
+        "drive the forest"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    },
+    {
+      "id": "oewn-01144916-v",
+      "partOfSpeech": "v",
+      "definition": "(hunting) chase from cover into more open ground",
+      "examples": [
+        "drive the game"
+      ],
+      "synonyms": [
+        "drive"
+      ]
+    }
+  ]
+}

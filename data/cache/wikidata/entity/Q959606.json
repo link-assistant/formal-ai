@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q959606": {
+      "type": "item",
+      "id": "Q959606",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "compound interest"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Сложные проценты"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चक्रवृद्धि ब्याज"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "复利"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "when interest is added to the principal of a deposit or loan, so that, from that moment on, the interest that has been added also earns interest"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "當將利息添加到存款或貸款的本金中時，從那時起，已添加的利息也將獲得利息"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Капитализация процентов"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "复息"
+          },
+          {
+            "language": "zh",
+            "value": "複息"
+          },
+          {
+            "language": "zh",
+            "value": "複利"
+          },
+          {
+            "language": "zh",
+            "value": "利滚利"
+          },
+          {
+            "language": "zh",
+            "value": "複利息"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

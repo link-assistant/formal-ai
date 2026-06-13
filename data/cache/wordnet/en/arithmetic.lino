@@ -1,0 +1,17 @@
+language en
+lemma arithmetic
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "relating to or involving arithmetic"
+    examples ("arithmetical computations")
+    id oewn-03056383-a
+    partOfSpeech a
+    synonyms (arithmetical)
+  entry
+    definition "the branch of pure mathematics dealing with the theory of numerical calculations"
+    id oewn-06013397-n
+    partOfSpeech n
+source "oewn:2024"

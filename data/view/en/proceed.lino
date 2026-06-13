@@ -1,0 +1,25 @@
+view
+  id M-e9d638dc0dd2
+  lemma proceed
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "continue talking"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move ahead; travel onward in time or space"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "follow a procedure or take a course"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "follow a certain course"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "continue a certain state, condition, or activity"
+    provenance (wordnet)

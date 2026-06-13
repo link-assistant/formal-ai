@@ -1,0 +1,25 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "Spinning or rotary motion given to a ball around the vertical axis, as in billiards or bowling."
+          example "You can't hit it directly, but maybe if you give it some english."
+        entry
+          definition "An unusual or unexpected interpretation of a text or idea, a spin, a nuance."
+      partOfSpeech noun
+      synonyms (side sidespin spin)
+  phonetic "/ˈɪŋ.ɡlɪʃ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/english-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227458"
+      text "/ˈɪŋ.ɡlɪʃ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/english")
+  word english

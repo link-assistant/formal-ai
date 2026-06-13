@@ -1,0 +1,119 @@
+[
+  {
+    "word": "follows",
+    "phonetic": "/ˈfɒləʊz/",
+    "phonetics": [
+      {
+        "text": "/ˈfɒləʊz/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈfɑloʊz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/follows-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1661656",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "(sometimes attributive) In billiards and similar games, a stroke causing a ball to follow another ball after hitting it.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "a follow shot"
+          },
+          {
+            "definition": "The act of following another user's online activity.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To go after; to pursue; to move behind in the same path or direction.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Follow that car!"
+          },
+          {
+            "definition": "To go or come after in a sequence.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "B follows A in the alphabet."
+          },
+          {
+            "definition": "To carry out (orders, instructions, etc.).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Follow these instructions to the letter."
+          },
+          {
+            "definition": "To live one's life according to (religion, teachings, etc).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To understand, to pay attention to.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Do you follow me?"
+          },
+          {
+            "definition": "To watch, to keep track of (reports of) some event or person.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I followed the incumbent throughout the election."
+          },
+          {
+            "definition": "To subscribe to see content from an account on a social media platform.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you want to see more of our articles, follow us on Twitter."
+          },
+          {
+            "definition": "To be a logical consequence of something.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "If you don't practise proper hygiene, illness is sure to follow."
+          },
+          {
+            "definition": "To walk in, as a road or course; to attend upon closely, as a profession or calling.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "ensue",
+          "pursue",
+          "tail",
+          "trail",
+          "succeed"
+        ],
+        "antonyms": [
+          "guide",
+          "lead",
+          "precede",
+          "unfollow"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/follow",
+      "https://en.wiktionary.org/wiki/follows"
+    ]
+  }
+]

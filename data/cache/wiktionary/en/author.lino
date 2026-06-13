@@ -1,0 +1,35 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The originator or creator of a work, especially of a literary composition."
+          example "Have you read any Corinthian authors?"
+        entry
+          definition "Someone who writes books for a living."
+        entry
+          definition "One's authority for something: an informant."
+      partOfSpeech noun
+      synonyms (artist bookwright creator fabulator subcreator writer)
+    entry
+      definitions
+        entry
+          definition "(sometimes proscribed) To create a work as its author."
+      partOfSpeech verb
+  phonetic "/ˈɔː.θə/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈɔː.θə/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/author-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1239936"
+      text "/ˈɔ.θɚ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/author")
+  word author

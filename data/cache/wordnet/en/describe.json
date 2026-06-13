@@ -1,0 +1,63 @@
+{
+  "lemma": "describe",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00989103-v",
+      "partOfSpeech": "v",
+      "definition": "give a description of",
+      "examples": [
+        "He drew an elaborate plan of attack"
+      ],
+      "synonyms": [
+        "depict",
+        "draw"
+      ]
+    },
+    {
+      "id": "oewn-00967067-v",
+      "partOfSpeech": "v",
+      "definition": "to give an account or representation of in words",
+      "examples": [
+        "Discreet Italian police described it in a manner typically continental"
+      ],
+      "synonyms": [
+        "report",
+        "account"
+      ]
+    },
+    {
+      "id": "oewn-01585566-v",
+      "partOfSpeech": "v",
+      "definition": "make a mark or lines on a surface",
+      "examples": [
+        "draw a line",
+        "trace the outline of a figure in the sand"
+      ],
+      "synonyms": [
+        "trace",
+        "draw",
+        "line",
+        "delineate"
+      ]
+    },
+    {
+      "id": "oewn-00654017-v",
+      "partOfSpeech": "v",
+      "definition": "identify as in botany or biology, for example",
+      "synonyms": [
+        "identify",
+        "discover",
+        "key",
+        "key out",
+        "distinguish",
+        "name"
+      ]
+    }
+  ]
+}

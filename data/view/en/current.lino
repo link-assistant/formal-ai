@@ -1,0 +1,21 @@
+view
+  id M-47c4d60660af
+  lemma current
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "occurring in or belonging to the present time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a flow of electricity through a conductor"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a steady flow of a fluid (usually from natural causes)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "dominant course (suggestive of running water) of successive events or ideas"
+    provenance (wordnet)

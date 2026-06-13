@@ -1,0 +1,81 @@
+[
+  {
+    "word": "two",
+    "phonetic": "/tuː/",
+    "phonetics": [
+      {
+        "text": "/tuː/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/two-uk.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=77606649",
+        "license": {
+          "name": "BY-SA 4.0",
+          "url": "https://creativecommons.org/licenses/by-sa/4.0"
+        }
+      },
+      {
+        "text": "/tu/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/two-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=718799",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit/figure 2.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The number 2202 contains three twos."
+          },
+          {
+            "definition": "A two-dollar bill.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A child aged two.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "This toy is suitable for the twos and threes."
+          },
+          {
+            "definition": "A playing card featuring two pips.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value equal to 2; this many dots (••).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a set or group with two elements.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/two"
+    ]
+  }
+]

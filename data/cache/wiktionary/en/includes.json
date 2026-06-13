@@ -1,0 +1,76 @@
+[
+  {
+    "word": "includes",
+    "phonetic": "/ɪnˈkluːdz/",
+    "phonetics": [
+      {
+        "text": "/ɪnˈkluːdz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/includes-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=2423285",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A piece of source code or other content that is dynamically retrieved for inclusion in another item.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "To bring into a group, class, set, or total as a (new) part or member.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I will purchase the vacation package if you will include car rental."
+          },
+          {
+            "definition": "To contain, as parts of a whole; to comprehend.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Does this volume of Shakespeare include his sonnets?"
+          },
+          {
+            "definition": "To enclose, confine.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To conclude; to terminate.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To use a directive that allows the use of source code from another file.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "You have to include the strings library to use this function."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "exclude"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/include",
+      "https://en.wiktionary.org/wiki/includes"
+    ]
+  }
+]

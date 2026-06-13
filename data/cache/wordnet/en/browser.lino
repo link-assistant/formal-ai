@@ -1,0 +1,16 @@
+language en
+lemma browser
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a viewer who looks around casually without seeking anything in particular"
+    id oewn-09897053-n
+    partOfSpeech n
+  entry
+    definition "a program used to view HTML documents"
+    id oewn-06583477-n
+    partOfSpeech n
+    synonyms ("web browser")
+source "oewn:2024"

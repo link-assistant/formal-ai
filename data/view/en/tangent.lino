@@ -1,0 +1,29 @@
+view
+  id M-50fc5cedeff9
+  lemma tangent
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A straight line touching a curve at a single point without crossing it there."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A function of an angle that gives the ratio of the sine to the cosine, in either the real or complex numbers. Symbols: tan, tg."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A topic nearly unrelated to the main topic, but having a point in common with it."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A small metal blade in a clavichord that strikes the strings to produce sound."
+    provenance (wiktionary)
+  sense
+    part_of_speech adjective
+    gloss "Touching a curve at a single point but not crossing it at that point."
+    provenance (wiktionary)
+  sense
+    part_of_speech adjective
+    gloss "Of a topic, only loosely related to a main topic."
+    provenance (wiktionary)

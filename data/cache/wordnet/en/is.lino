@@ -1,0 +1,79 @@
+language en
+lemma is
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "have the quality of being; (copula, used with an adjective or a predicate noun)"
+    examples ("John is rich" "This is not a good answer")
+    id oewn-02610777-v
+    partOfSpeech v
+    synonyms (be)
+  entry
+    definition "be identical to; be someone or something"
+    examples ("The president of the company is John Smith" "This is my house")
+    id oewn-02622439-v
+    partOfSpeech v
+    synonyms (be)
+  entry
+    definition "occupy a certain position or area; be somewhere"
+    examples ("Where is my umbrella?" "The toolshed is in the back" "What is behind this behavior?")
+    id oewn-02661230-v
+    partOfSpeech v
+    synonyms (be)
+  entry
+    definition "have an existence, be extant"
+    examples ("Is there a God?")
+    id oewn-02609706-v
+    partOfSpeech v
+    synonyms (exist be)
+  entry
+    definition "be identical or equivalent to"
+    examples ("One dollar equals 1,000 rubles these days!")
+    id oewn-02670846-v
+    partOfSpeech v
+    synonyms (equal be)
+  entry
+    definition "form or compose"
+    examples ("This money is my only income" "The stone wall was the backdrop for the performance" "These constitute my entire belonging" "The children made up the chorus" "This sum represents my entire income for a year" "These few men comprise his entire army")
+    id oewn-02626667-v
+    partOfSpeech v
+    synonyms (constitute represent "make up" comprise be)
+  entry
+    definition "work in a specific place, with a specific subject, or in a specific function"
+    examples ("He is a herpetologist" "She is our resident philosopher")
+    id oewn-02450790-v
+    partOfSpeech v
+    synonyms (be follow)
+  entry
+    definition "represent, as of a character on stage"
+    examples ("Derek Jacobi was Hamlet")
+    id oewn-02703567-v
+    partOfSpeech v
+    synonyms (embody be personify)
+  entry
+    definition "spend or use time"
+    examples ("I may be an hour")
+    id oewn-02273091-v
+    partOfSpeech v
+    synonyms (be)
+  entry
+    definition "have life, be alive"
+    examples ("Our great leader is no more" "My grandfather lived until the end of war")
+    id oewn-02620216-v
+    partOfSpeech v
+    synonyms (be live)
+  entry
+    definition "to remain unmolested, undisturbed, or uninterrupted — used only in infinitive form"
+    examples ("let her be")
+    id oewn-02750695-v
+    partOfSpeech v
+    synonyms (be)
+  entry
+    definition "be priced at"
+    examples ("These shoes cost $100")
+    id oewn-02708368-v
+    partOfSpeech v
+    synonyms (cost be)
+source "oewn:2024"

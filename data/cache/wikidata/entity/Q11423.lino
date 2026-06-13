@@ -1,0 +1,17 @@
+Q11423
+  aliases
+    en (weight)
+    zh ("质量")
+  descriptions
+    en "property of matter to resist changes of the state of motion and to attract other bodies"
+    hi "M=vd"
+    ru "мера инертности тела"
+    zh "用來描述物理學中物質的絕對量"
+  id Q11423
+  labels
+    en mass
+    hi "द्रव्यमान"
+    ru "масса"
+    zh "質量"
+  type item
+success 1

@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "Q1401131": {
+      "type": "item",
+      "id": "Q1401131",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "noun phrase"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "именная группа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संज्ञा वाक्यांश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "名词短语"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "phrase the head of which is a noun"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тип фразы, не содержащей глагола"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "NP"
+          },
+          {
+            "language": "en",
+            "value": "nominal phrase"
+          },
+          {
+            "language": "en",
+            "value": "noun or noun phrase"
+          },
+          {
+            "language": "en",
+            "value": "noun (word or phrase)"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "ИГ"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "名詞片語"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "Q152415": {
+      "type": "item",
+      "id": "Q152415",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "sine"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "синус"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ज्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "正弦"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "type of trigonometric function; ratio between the lengths of the opposite side and the hypotenuse in a right triangle"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "тригонометрическая функция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "गणित में ज्या (Sine), एक त्रिकोणमितीय फलन का नाम है। समकोण त्रिभुज में समकोण के अलावा एक कोण x है तो, ज्या (x) = कोण x के सामने की भुजा की माप / कर्ण की माप￼"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "數學專用名詞"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "sin"
+          },
+          {
+            "language": "en",
+            "value": "sine function"
+          },
+          {
+            "language": "en",
+            "value": "sin function"
+          },
+          {
+            "language": "en",
+            "value": "sinus"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "синус угла"
+          },
+          {
+            "language": "ru",
+            "value": "функция синуса"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "正弦比"
+          },
+          {
+            "language": "zh",
+            "value": "正弦函数"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

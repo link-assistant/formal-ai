@@ -1,0 +1,16 @@
+language en
+lemma prefix
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an affix that is added in front of the word"
+    id oewn-06319294-n
+    partOfSpeech n
+  entry
+    definition "attach a prefix to"
+    examples ("prefixed words")
+    id oewn-01300547-v
+    partOfSpeech v
+source "oewn:2024"

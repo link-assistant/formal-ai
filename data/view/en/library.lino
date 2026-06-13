@@ -1,0 +1,25 @@
+view
+  id M-63c0cd2cf7e2
+  lemma library
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a room where books are kept"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a collection of literary documents or records kept for reference or borrowing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a depository built to contain books and other materials for reading and study"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computing) a collection of standard programs and subroutines that are stored and available for immediate use"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a building that houses a collection of books and other materials"
+    provenance (wordnet)

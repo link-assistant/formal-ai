@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q155": {
+      "type": "item",
+      "id": "Q155",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "巴西"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्राज़ील"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Бразилия"
+        },
+        "en": {
+          "language": "en",
+          "value": "Brazil"
+        }
+      },
+      "descriptions": {
+        "zh": {
+          "language": "zh",
+          "value": "南美洲國家"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "страна в Южной Америке"
+        },
+        "en": {
+          "language": "en",
+          "value": "country in South America"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "दक्षिण अमेरिका महाद्वीप में स्थित देश"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Estados Unidos del Brazil"
+          },
+          {
+            "language": "ru",
+            "value": "Brasil"
+          },
+          {
+            "language": "ru",
+            "value": "Федеративная Республика Бразилия"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Federative Republic of Brazil"
+          },
+          {
+            "language": "en",
+            "value": "Brasil"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

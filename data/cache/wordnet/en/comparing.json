@@ -1,0 +1,23 @@
+{
+  "lemma": "comparing",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00143485-n",
+      "partOfSpeech": "n",
+      "definition": "the act of examining resemblances",
+      "examples": [
+        "they made a comparison of noise levels",
+        "the fractions selected for comparison must require pupils to consider both numerator and denominator"
+      ],
+      "synonyms": [
+        "comparison"
+      ]
+    }
+  ]
+}

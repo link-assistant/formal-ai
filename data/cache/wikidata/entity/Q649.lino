@@ -1,0 +1,17 @@
+Q649
+  aliases
+    en ("Moscow, Russia" "Moskva Federal City, Russia" "Moscow, USSR" "Moskva, Russia" "City of Moscow" "Moscow, Russian Federation" "Moscow, Soviet Union" "Moscow, Russian SFSR" "Москва" "Moskva, Rossiya" Mosky "Moskovĭ" Moskvi Moskve "Moskvë")
+    ru ("Первопрестольная" "Порт пяти морей" "Москва (город)" "Москва, Россия" "Москва (Россия)" "Третий Рим" "Нерезиновая" "МСК" "Златоглавая" "Белокаменная")
+  descriptions
+    en "capital and most populous city of Russia"
+    hi "रूस देश की राजधानी"
+    ru "cтолица и крупнейший город России, город федерального значения РФ"
+    zh "俄羅斯聯邦的首都"
+  id Q649
+  labels
+    en Moscow
+    hi "मास्को"
+    ru "Москва"
+    zh "莫斯科"
+  type item
+success 1

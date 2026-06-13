@@ -1,0 +1,47 @@
+{
+  "lemma": "advantage",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05163204-n",
+      "partOfSpeech": "n",
+      "definition": "the quality of having a superior or more favorable position",
+      "examples": [
+        "the experience gave him the advantage over me"
+      ],
+      "synonyms": [
+        "vantage"
+      ]
+    },
+    {
+      "id": "oewn-13631669-n",
+      "partOfSpeech": "n",
+      "definition": "(tennis) first point scored after deuce"
+    },
+    {
+      "id": "oewn-05150110-n",
+      "partOfSpeech": "n",
+      "definition": "benefit resulting from some event or action",
+      "examples": [
+        "it turned out to my advantage",
+        "reaping the rewards of generosity"
+      ],
+      "synonyms": [
+        "reward"
+      ]
+    },
+    {
+      "id": "oewn-02518934-v",
+      "partOfSpeech": "v",
+      "definition": "give an advantage to",
+      "examples": [
+        "This system advantages the rich"
+      ]
+    }
+  ]
+}

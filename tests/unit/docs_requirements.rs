@@ -1,6 +1,7 @@
 use std::fs;
 use std::path::Path;
 
+use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
 #[test]
@@ -598,22 +599,25 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ],
     );
 
-    let environments = read(root.join("data/seed/environments.lino"));
-    assert_contains_all(
-        "data/seed/environments.lino",
-        &environments,
-        &[
-            "default native doublets-rs link store",
-            "default_native_link_store()?.import_memory_links_notation",
-        ],
+    let rust_library = environment_records()
+        .into_iter()
+        .find(|environment| environment.id == "rust_library")
+        .expect("rust library environment should be declared in seed directory");
+    assert!(
+        rust_library
+            .memory_store
+            .contains("default native doublets-rs link store"),
+        "rust_library environment should describe the native doublets store"
+    );
+    assert!(
+        rust_library
+            .bundle_import_command
+            .contains("default_native_link_store()?.import_memory_links_notation"),
+        "rust_library environment should trace native bundle import"
     );
 
-    let agent_info = read(root.join("data/seed/agent-info.lino"));
-    assert_contains_all(
-        "data/seed/agent-info.lino",
-        &agent_info,
-        &["field \"supported_languages\"", "value \"en|ru|hi|zh\""],
-    );
+    let supported_languages = supported_languages();
+    assert_eq!(supported_languages, ["en", "ru", "hi", "zh"]);
     for (language_marker, code) in [
         ("language: \"en\" English", "en"),
         ("language: \"ru\" Russian", "ru"),
@@ -621,7 +625,7 @@ fn issue_278_default_native_doublets_store_is_traceable() {
         ("language: \"zh\" Chinese", "zh"),
     ] {
         assert!(
-            agent_info.contains(code),
+            supported_languages.iter().any(|language| language == code),
             "missing issue #278 coverage for {language_marker}"
         );
     }
@@ -707,6 +711,144 @@ fn issue_368_readme_documents_agentic_cli_setup() {
     assert!(
         !server_api.contains("export OPENAI_BASE_URL=\"http://127.0.0.1:8080/v1\""),
         "agent docs should use the supported OpenCode-style provider config"
+    );
+}
+
+#[test]
+fn issue_398_pr_review_standards_are_recorded_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #398 PR Review Standards",
+            "latest requirement overrides any earlier one",
+            "| R278 ",
+            "| R279 ",
+            "| R280 ",
+            "| R281 ",
+            "| R282 ",
+            "| R283 ",
+            "data/overrides/",
+            "(cache or live API) then overrides",
+            "seed_lino_files_have_no_empty_redefinition_fields",
+            "overrides_are_disciplined_and_non_redundant",
+            "scripts/migrate-empty-facet-fields.rs",
+        ],
+    );
+
+    let overrides_readme = read(root.join("data/overrides/README.md"));
+    assert_contains_all(
+        "data/overrides/README.md",
+        &overrides_readme,
+        &[
+            "grounding override layer",
+            "then",
+            "overrides",
+            "Recorded reason",
+            "Never redundant",
+        ],
+    );
+}
+
+#[test]
+fn issue_408_text_edit_benchmark_scope_documents_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #408 Text And Code Editing Requirements",
+            "| R293 ",
+            "| R294 ",
+            "| R295 ",
+            "| R296 ",
+            "| R297 ",
+            "docs/case-studies/issue-408/README.md",
+        ],
+    );
+
+    let roadmap = read(root.join("ROADMAP.md"));
+    assert_contains_all(
+        "ROADMAP.md",
+        &roadmap,
+        &[
+            "Issue #408 Text And Code Editing - current PR",
+            "repository-local 10% floor of 3 checks",
+            "1,440 of 1,440",
+        ],
+    );
+
+    let vision = read(root.join("VISION.md"));
+    assert_contains_all(
+        "VISION.md",
+        &vision,
+        &[
+            "benchmark claim is manifest-backed",
+            "text-manipulation-suite.lino",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Issue #408 text/code editing path",
+            "text-manipulation-suite.lino",
+            "1,440/1,440 pass-count ratchet",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-408/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/README.md",
+        &case_study,
+        &[
+            "# Issue 408 Case Study",
+            "repository-local edit benchmark profile",
+            "minimum_pass_count = 1440",
+            "1,440-case profile",
+            "tests/unit/specification/text_manipulation_benchmarks.rs",
+            "data/benchmarks/text-manipulation-suite.lino",
+            "40 additional",
+        ],
+    );
+
+    let research = read(root.join("docs/case-studies/issue-408/raw-data/online-research.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-408/raw-data/online-research.md",
+        &research,
+        &[
+            "Benchmark Sources Referenced By PR 416",
+            "Additional Popular LLM Benchmarks (20)",
+            "Additional Current/Common LLM Benchmarks (20)",
+            "repository-local edit variations per source",
+            "1,440 profile checks",
+            "HumanEval",
+            "MMLU",
+            "HELM",
+            "ARC",
+            "TruthfulQA",
+            "CommonsenseQA",
+            "IFEval",
+        ],
+    );
+
+    let benchmark_tests =
+        read(root.join("tests/unit/specification/text_manipulation_benchmarks.rs"));
+    assert_contains_all(
+        "tests/unit/specification/text_manipulation_benchmarks.rs",
+        &benchmark_tests,
+        &[
+            "issue_408_text_code_edit_profile_passes_local_ratchet",
+            "minimum_pass_count",
+            "variations_per_source",
+        ],
     );
 }
 

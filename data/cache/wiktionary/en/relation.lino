@@ -1,0 +1,43 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The manner in which two things may be associated."
+          example "The relation between diet and health is complex."
+        entry
+          definition "A member of one's family."
+          example "Yes, he's a relation of mine, but only a distant one."
+        entry
+          definition "The act of relating a story."
+          example "Your relation of the events is different from mine."
+        entry
+          definition "A set of ordered tuples."
+        entry
+          definition "Specifically, a set of ordered pairs."
+          example "Equality is a symmetric relation, while divisibility is not."
+        entry
+          definition "A set of ordered tuples retrievable by a relational database; a table."
+          example "This relation uses the customer's social security number as a key."
+        entry
+          definition "A statement of equality of two products of generators, used in the presentation of a group."
+        entry
+          definition "A subobject of a product of objects."
+        entry
+          definition "(usually collocated: sexual relation) The act of intercourse."
+      partOfSpeech noun
+      synonyms (recount telling correspondence relative connection link relationship)
+  phonetic "/ɹɪˈleɪʃən/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/relation-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1157488"
+      text "/ɹɪˈleɪʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/relation")
+  word relation

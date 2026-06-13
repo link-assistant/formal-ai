@@ -1,0 +1,17 @@
+view
+  id M-5d34e1137cf7
+  lemma respond
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show a response or a reaction to something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "react verbally"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "respond favorably or as hoped"
+    provenance (wordnet)

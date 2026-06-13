@@ -1,0 +1,35 @@
+language en
+lemma backup
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an accumulation caused by clogging or a stoppage"
+    examples ("a traffic backup on the main street" "he discovered a backup in the toilet")
+    id oewn-13458354-n
+    partOfSpeech n
+  entry
+    definition "someone who takes the place of another (as when things get dangerous or difficult)"
+    examples ("the star had a stand-in for dangerous scenes" "we need extra employees for summer fill-ins")
+    id oewn-10667676-n
+    partOfSpeech n
+    synonyms (stand-in substitute relief reliever fill-in)
+  entry
+    definition "a musical part (vocal or instrumental) that supports or provides background for other musical parts"
+    id oewn-07045239-n
+    partOfSpeech n
+    synonyms (accompaniment "musical accompaniment" support)
+  entry
+    definition "(computer science) a copy of a file or directory on a separate storage device"
+    examples ("he made a backup in case the original was accidentally damaged or erased")
+    id oewn-02774845-n
+    partOfSpeech n
+    synonyms ("computer backup")
+  entry
+    definition "the act of providing approval and support"
+    examples ("his vigorous backing of the conservatives got him in trouble with progressives")
+    id oewn-01216376-n
+    partOfSpeech n
+    synonyms (backing championship patronage)
+source "oewn:2024"

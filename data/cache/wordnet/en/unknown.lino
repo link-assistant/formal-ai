@@ -1,0 +1,51 @@
+language en
+lemma unknown
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not known"
+    examples ("an unknown amount" "an unknown island" "an unknown writer" "an unknown source")
+    id oewn-01379820-a
+    partOfSpeech a
+  entry
+    definition "an unknown and unexplored region"
+    examples ("they came like angels out of the unknown")
+    id oewn-08649671-n
+    partOfSpeech n
+    synonyms ("unknown region" "terra incognita")
+  entry
+    definition "anyone who does not belong in the environment in which they are found"
+    id oewn-10680441-n
+    partOfSpeech n
+    synonyms (stranger alien)
+  entry
+    definition "a variable whose values are solutions of an equation"
+    id oewn-07286353-n
+    partOfSpeech n
+    synonyms ("unknown quantity")
+  entry
+    definition "being or having an unknown or unnamed source"
+    examples ("a poem by an unknown author" "corporations responsible to nameless owners" "an unnamed donor")
+    id oewn-00121594-s
+    partOfSpeech s
+    synonyms (nameless unidentified unnamed)
+  entry
+    definition "not known to exist"
+    examples ("things obscurely felt surged up from unknown depths")
+    id oewn-02379193-s
+    partOfSpeech s
+  entry
+    definition "not famous or acclaimed"
+    examples ("an obscure family" "unsung heroes of the war")
+    id oewn-01126357-s
+    partOfSpeech s
+    synonyms (obscure unsung)
+  entry
+    definition "not known before"
+    examples ("used many strange words" "saw many strange faces in the crowd" "don't let anyone unknown into the house")
+    id oewn-00969942-s
+    partOfSpeech s
+    synonyms (strange)
+source "oewn:2024"

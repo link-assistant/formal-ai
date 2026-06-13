@@ -1,0 +1,17 @@
+Q2303697
+  aliases
+    en (sort ordering)
+    ru ("упорядочивание" "тасовка" "растасовка" "распределение" "группировка" "определение" "разделение")
+  descriptions
+    en "action of arranging objects into order"
+    hi "इंटरनेट पर जानकारी खोजने की प्रक्रिया"
+    ru "упорядочивание или группировка"
+    zh "將一串資料按其值的大小排列的動作"
+  id Q2303697
+  labels
+    en sorting
+    hi "क्रमिक अध्ययन"
+    ru "сортировка"
+    zh "排序"
+  type item
+success 1

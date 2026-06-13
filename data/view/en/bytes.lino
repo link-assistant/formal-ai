@@ -1,0 +1,13 @@
+view
+  id M-fd86065d84df
+  lemma bytes
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A short sequence of bits (binary digits) that can be operated on as a unit by a computer; the smallest usable machine word."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(most commonly) A unit of computing storage equal to eight bits, which can represent any of 256 distinct values."
+    provenance (wiktionary)

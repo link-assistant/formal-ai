@@ -1,0 +1,12 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The middle tone in either one of the sets of seven white keys on a keyboard or a set of seven strings on a stringed instrument."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/c" "https://en.wiktionary.org/wiki/cs")
+  word cs

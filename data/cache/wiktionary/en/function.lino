@@ -1,0 +1,60 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "What something does or is used for."
+          synonyms (aim intention purpose role use)
+        entry
+          definition "A professional or official position."
+          synonyms (occupation office part role)
+        entry
+          definition "An official or social occasion."
+          synonyms (affair occasion "social function" "social occasion")
+        entry
+          definition "Something which is dependent on or stems from another thing; a result or concomitant."
+        entry
+          definition "A relation where one thing is dependent on another for its existence, value, or significance."
+        entry
+          definition "A relation in which each element of the domain is associated with exactly one element of the codomain."
+          synonyms (map mapping "mathematical function" operator transformation)
+        entry
+          definition "A routine that receives zero or more arguments and may return a result."
+          synonyms (func funct procedure routine subprogram subroutine)
+        entry
+          definition "The physiological activity of an organ or body part."
+        entry
+          definition "The characteristic behavior of a chemical compound."
+        entry
+          definition "The role of a social practice in the continued existence of the group."
+      partOfSpeech noun
+      synonyms (affair occasion "social function" "social occasion" aim intention purpose role use func funct procedure routine subprogram subroutine map mapping "mathematical function" operator transformation occupation office part role)
+    entry
+      antonyms (malfunction)
+      definitions
+        entry
+          definition "To have a function."
+          synonyms (officiate serve)
+        entry
+          antonyms (malfunction)
+          definition "To carry out a function; to be in action."
+          synonyms (go operate run work)
+      partOfSpeech verb
+      synonyms (go operate run work officiate serve)
+  phonetic "/ˈfʌŋ(k)ʃən/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈfʌŋ(k)ʃən/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/function-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1762944"
+      text "/ˈfʌŋkʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/function")
+  word function

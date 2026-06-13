@@ -1,0 +1,116 @@
+{
+  "lemma": "programme",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06761180-n",
+      "partOfSpeech": "n",
+      "definition": "an announcement of the events that will occur as part of a theatrical or sporting event",
+      "examples": [
+        "you can't tell the players without a program"
+      ],
+      "synonyms": [
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-06689161-n",
+      "partOfSpeech": "n",
+      "definition": "an integrated course of academic studies",
+      "examples": [
+        "he was admitted to a new program at the university"
+      ],
+      "synonyms": [
+        "course of study",
+        "program",
+        "curriculum",
+        "syllabus"
+      ]
+    },
+    {
+      "id": "oewn-06631935-n",
+      "partOfSpeech": "n",
+      "definition": "a radio or television show",
+      "examples": [
+        "did you see his program last night?"
+      ],
+      "synonyms": [
+        "broadcast",
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-06581154-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a sequence of instructions that a computer can interpret and execute",
+      "examples": [
+        "the program required several hundred lines of code"
+      ],
+      "synonyms": [
+        "program",
+        "computer program",
+        "computer programme"
+      ]
+    },
+    {
+      "id": "oewn-05907694-n",
+      "partOfSpeech": "n",
+      "definition": "a system of projects or services intended to meet a public need",
+      "examples": [
+        "he proposed an elaborate program of public works",
+        "working mothers rely on the day care program"
+      ],
+      "synonyms": [
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-05907175-n",
+      "partOfSpeech": "n",
+      "definition": "a series of steps to be carried out or goals to be accomplished",
+      "examples": [
+        "they drew up a six-step plan",
+        "they discussed plans for a new bond issue"
+      ],
+      "synonyms": [
+        "plan",
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-00552252-n",
+      "partOfSpeech": "n",
+      "definition": "a performance (or series of performances) at a public presentation",
+      "examples": [
+        "the program lasted more than two hours"
+      ],
+      "synonyms": [
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-01751525-v",
+      "partOfSpeech": "v",
+      "definition": "write a computer program",
+      "synonyms": [
+        "program"
+      ]
+    },
+    {
+      "id": "oewn-00796926-v",
+      "partOfSpeech": "v",
+      "definition": "arrange a program of or for",
+      "examples": [
+        "program the 80th birthday party"
+      ],
+      "synonyms": [
+        "program"
+      ]
+    }
+  ]
+}

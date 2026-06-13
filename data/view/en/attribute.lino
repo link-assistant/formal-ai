@@ -1,0 +1,21 @@
+view
+  id M-6556ce3d972b
+  lemma attribute
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a construct whereby objects or individuals can be distinguished"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an abstraction belonging to or characteristic of an entity"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "attribute or credit to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decide as to where something belongs in a scheme"
+    provenance (wordnet)

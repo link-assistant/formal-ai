@@ -1,0 +1,37 @@
+{
+  "lemma": "discussion",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07152793-n",
+      "partOfSpeech": "n",
+      "definition": "an extended communication (often interactive) dealing with some particular topic",
+      "examples": [
+        "the book contains an excellent discussion of modal logic",
+        "his treatment of the race question is badly biased"
+      ],
+      "synonyms": [
+        "treatment",
+        "discourse"
+      ]
+    },
+    {
+      "id": "oewn-07155367-n",
+      "partOfSpeech": "n",
+      "definition": "an exchange of views on some topic",
+      "examples": [
+        "we had a good discussion",
+        "we had a word or two about it"
+      ],
+      "synonyms": [
+        "give-and-take",
+        "word"
+      ]
+    }
+  ]
+}

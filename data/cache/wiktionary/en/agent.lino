@@ -1,0 +1,37 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      antonyms (patient recipient undergoer)
+      definitions
+        entry
+          definition "One who exerts power, or has the power to act"
+        entry
+          definition "One who acts for, or in the place of, another (the principal), by authority from him/her; someone entrusted to do the business of another"
+        entry
+          definition "A person who looks for work for another person"
+        entry
+          definition "Someone who works for an intelligence agency"
+        entry
+          definition "An active power or cause or substance; something which has the power to produce an effect"
+        entry
+          definition "In the client-server model, the part of the system that performs information preparation and exchange on behalf of a client or server. Especially in the phrase “intelligent agent” it implies some kind of autonomous process which can communicate with other agents to perform some collective task on behalf of one or more humans."
+        entry
+          definition '(grammar) The participant of a situation that carries out the action in this situation, e.g. "the boy" in the sentences "The boy kicked the ball" and "The ball was kicked by the boy".'
+        entry
+          definition "A cheat who is assisted by dishonest casino staff."
+      partOfSpeech noun
+      synonyms (actor performer manager rep representative)
+  phonetic "/ˈeɪ.dʒənt/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/agent-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1749699"
+      text "/ˈeɪ.dʒənt/"
+  sourceUrls ("https://en.wiktionary.org/wiki/agent")
+  word agent

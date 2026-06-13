@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q12418": {
+      "type": "item",
+      "id": "Q12418",
+      "labels": {
+        "zh": {
+          "language": "zh",
+          "value": "蒙娜丽莎"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Мона Лиза"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मॉना लिसा"
+        },
+        "en": {
+          "language": "en",
+          "value": "Mona Lisa"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "oil painting by Leonardo da Vinci in the Louvre, Paris"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "达·芬奇画作"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "картина Леонардо да Винчи"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लिओनार्दो दा विंची के द्वारा कृत एक चित्र (1517)"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "La Gioconda"
+          },
+          {
+            "language": "en",
+            "value": "Monna Lisa"
+          },
+          {
+            "language": "en",
+            "value": "The Mona Lisa"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Джоконда"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

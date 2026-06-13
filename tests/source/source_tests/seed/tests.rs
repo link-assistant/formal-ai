@@ -25,6 +25,7 @@ fn multilingual_responses_contain_four_languages() {
     for expected in [
         "greeting",
         "courtesy_response",
+        "assistant_free_time",
         "test_status",
         "identity",
         "assistant_name",
@@ -261,5 +262,27 @@ fn parse_bundle_recovers_intent_routing_via_inner_parser() {
     assert!(
         intent_count >= 5,
         "expected at least 5 intent routes after round-trip, got {intent_count}",
+    );
+}
+
+#[test]
+fn parse_lino_preserves_hash_inside_single_quoted_colon_values() {
+    let tree = parse_lino(
+        "root\n  source: 'Entity[\"Language#Tag\", \"English::385w8\"]' # trailing comment\n  next ok",
+    );
+    let root = tree
+        .children
+        .iter()
+        .find(|child| child.name == "root")
+        .expect("root node should parse");
+    let source = root
+        .children
+        .iter()
+        .find(|child| child.name == "source")
+        .expect("source field should parse");
+    assert_eq!(source.id, "'Entity[\"Language#Tag\", \"English::385w8\"]'",);
+    assert!(
+        root.children.iter().any(|child| child.name == "next"),
+        "trailing comment should not swallow the following line",
     );
 }

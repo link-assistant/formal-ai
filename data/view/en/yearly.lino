@@ -1,0 +1,17 @@
+view
+  id M-c58abb9e3be2
+  lemma yearly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a reference book that is published regularly once every year"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "without missing a year"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "occurring or payable every year"
+    provenance (wordnet)

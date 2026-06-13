@@ -1,11 +1,11 @@
 coreference
-  pronoun "it"
+  pronoun it
     context " it "
     context " it?"
     context " it."
     context "compare it"
     starts_with "it "
-  pronoun "results"
+  pronoun results
     context " result "
     context " result?"
     context " result."
@@ -14,14 +14,14 @@ coreference
     context " results."
     starts_with "result "
     starts_with "results "
-  pronoun "program"
+  pronoun program
     context " program "
     context " program?"
     context " program."
     context " programme "
     starts_with "program "
     starts_with "programme "
-  pronoun "результаты"
+  pronoun результаты
     context " результат "
     context " результата "
     context " результаты "
@@ -29,53 +29,53 @@ coreference
     starts_with "результат "
     starts_with "результаты "
     starts_with "результатов "
-  pronoun "программа"
+  pronoun программа
     context " программа "
     context " программу "
     context " программы "
     starts_with "программа "
     starts_with "программу "
-  pronoun "परिणाम"
+  pronoun परिणाम
     context " परिणाम "
     context " परिणामों "
     context " नतीजा "
     context " नतीजे "
     starts_with "परिणाम "
     starts_with "परिणामों "
-  pronoun "प्रोग्राम"
+  pronoun प्रोग्राम
     context " प्रोग्राम "
     starts_with "प्रोग्राम "
-  pronoun "结果"
-    context "结果"
-    starts_with "结果"
-  pronoun "程序"
-    context "程序"
-    starts_with "程序"
+  pronoun 结果
+    context 结果
+    starts_with 结果
+  pronoun 程序
+    context 程序
+    starts_with 程序
   antecedent "Program artifact"
-    alias "program"
-    alias "programme"
-    alias "программа"
-    alias "программу"
-    alias "программы"
-    alias "प्रोग्राम"
-    alias "程序"
-    intent "coreference_program_artifact"
+    alias program
+    alias programme
+    alias программа
+    alias программу
+    alias программы
+    alias प्रोग्राम
+    alias 程序
+    intent coreference_program_artifact
     body "The referent is the active program artifact from the prior turn."
   antecedent "Program results"
-    alias "result"
-    alias "results"
-    alias "результат"
-    alias "результаты"
-    alias "результатов"
-    alias "परिणाम"
-    alias "परिणामों"
-    alias "结果"
-    intent "coreference_program_results"
+    alias result
+    alias results
+    alias результат
+    alias результаты
+    alias результатов
+    alias परिणाम
+    alias परिणामों
+    alias 结果
+    intent coreference_program_results
     body "The referent is the output/results produced by the active program artifact."
-  antecedent "Rust"
-    alias "rust"
-    alias "раст"
-    alias "रस्ट"
-    wikidata "Q575650"
-    intent "coreference_rust"
+  antecedent Rust
+    alias rust
+    alias раст
+    alias रस्ट
+    wikidata Q575650
+    intent coreference_rust
     body "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, borrowing, and stronger compile-time checks so memory-safety errors are caught before the program runs while retaining native-code performance."

@@ -1,0 +1,67 @@
+{
+  "lemma": "no",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02276242-a",
+      "partOfSpeech": "a",
+      "definition": "(quantifier) used with either mass nouns or plural count nouns for indicating a complete or almost complete lack or zero quantity of",
+      "examples": [
+        "we have no bananas",
+        "no eggs left and no money to buy any",
+        "have you no decency?",
+        "did it with no help",
+        "I'll get you there in no time"
+      ]
+    },
+    {
+      "id": "oewn-14671900-n",
+      "partOfSpeech": "n",
+      "definition": "a radioactive transuranic element synthesized by bombarding curium with carbon ions; 7 isotopes are known",
+      "synonyms": [
+        "nobelium",
+        "atomic number 102"
+      ]
+    },
+    {
+      "id": "oewn-07219764-n",
+      "partOfSpeech": "n",
+      "definition": "a negative",
+      "examples": [
+        "his no was loud and clear"
+      ]
+    },
+    {
+      "id": "oewn-00051219-r",
+      "partOfSpeech": "r",
+      "definition": "referring to the degree to which a certain quality is present",
+      "examples": [
+        "he was no heavier than a child"
+      ],
+      "synonyms": [
+        "no more"
+      ]
+    },
+    {
+      "id": "oewn-00024946-r",
+      "partOfSpeech": "r",
+      "definition": "not in any degree or manner; not at all",
+      "examples": [
+        "he is no better today"
+      ]
+    },
+    {
+      "id": "oewn-00024715-r",
+      "partOfSpeech": "r",
+      "definition": "used to express refusal or denial or disagreement etc. or especially to emphasize a negative statement",
+      "examples": [
+        "no, you are wrong"
+      ]
+    }
+  ]
+}

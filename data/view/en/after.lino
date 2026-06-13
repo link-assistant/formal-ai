@@ -1,0 +1,17 @@
+view
+  id M-ca1a623a879f
+  lemma after
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "happening at a time subsequent to a reference time"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "behind or in the rear"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "located farther aft"
+    provenance (wordnet)

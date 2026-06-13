@@ -1,0 +1,39 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "The people living within a political or geographical boundary."
+          example "The population of New Jersey will not stand for this!"
+        entry
+          definition "(by extension) The people with a given characteristic."
+          example "India has the third-largest population of English-speakers in the world."
+        entry
+          definition "A count of the number of residents within a political or geographical boundary such as a town, a nation or the world."
+          example "The town’s population is only 243."
+        entry
+          definition "A collection of organisms of a particular species, sharing a particular characteristic of interest, most often that of living in a given area."
+          example "A seasonal migration annually changes the populations in two or more biotopes drastically, many twice in opposite senses."
+        entry
+          definition "A group of units (persons, objects, or other items) enumerated in a census or from which a sample is drawn."
+        entry
+          definition "The act of filling initially empty items in a collection."
+          example "John clicked the Search button and waited for the population of the list to complete."
+      partOfSpeech noun
+  phonetic "/ˌpɒpjʊˈleɪʃən/"
+  phonetics
+    entry
+      audio ""
+      text "/ˌpɒpjʊˈleɪʃən/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/population-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1661685"
+      text "/pɒpjuːˈleɪʃən/"
+  sourceUrls ("https://en.wiktionary.org/wiki/population")
+  word population

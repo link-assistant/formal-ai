@@ -1,19 +1,19 @@
 personas
-  trigger "pretend you are|act as|roleplay|explain like you are|притворись что ты|представь что ты|играй роль|कल्पना करो कि तुम|भूमिका निभाओ|假装你是|扮演|角色扮演"
+  trigger ("pretend you are" "act as" "roleplay" "explain like you are" "притворись что ты" "представь что ты" "играй роль" "कल्पना करो कि तुम" "भूमिका निभाओ" "假装你是" "扮演" "角色扮演")
   default_persona "requested persona"
   body_template "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>"
   fallback_body "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."
   persona "Albert Einstein"
-    aliases "einstein|альберт эйнштейн|эйнштейн|आइंस्टीन|爱因斯坦"
-    wikidata "Q937"
+    aliases ("einstein" "альберт эйнштейн" "эйнштейн" "आइंस्टीन" "爱因斯坦")
+    wikidata Q937
   persona "Ada Lovelace"
-    aliases "ada lovelace|ада лавлейс|लवलेस|阿达·洛夫莱斯|洛夫莱斯"
-    wikidata "Q7259"
-  persona "teacher"
-    aliases "teacher|учитель|учительница|शिक्षक|老师|教师"
-  topic "algorithm"
-    detection_keywords "algorithm|algorithms|алгоритм|алгоритмы|एल्गोरिदम|算法"
+    aliases ("ada lovelace" "ада лавлейс" "लवलेस" "阿达·洛夫莱斯" "洛夫莱斯")
+    wikidata Q7259
+  persona teacher
+    aliases ("teacher" "учитель" "учительница" "शिक्षक" "老师" "教师")
+  topic algorithm
+    detection_keywords ("algorithm" "algorithms" "алгоритм" "алгоритмы" "एल्गोरिदम" "算法")
     body "an algorithm is a precise sequence of steps, so a reliable explanation names the inputs, the ordered operations, and the expected result."
-  topic "time_dilation"
-    detection_keywords "time dilation|растяжение времени|замедление времени|समय फैलाव|时间膨胀|时间延缓"
+  topic time_dilation
+    detection_keywords ("time dilation" "растяжение времени" "замедление времени" "समय फैलाव" "时间膨胀" "时间延缓")
     body "time dilation means clocks can measure different elapsed times when observers move differently or sit in different gravitational fields."

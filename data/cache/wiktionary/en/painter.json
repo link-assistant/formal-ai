@@ -1,0 +1,132 @@
+[
+  {
+    "word": "painter",
+    "phonetic": "/ˈpeɪntə/",
+    "phonetics": [
+      {
+        "text": "/ˈpeɪntə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈpeɪntɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1780254",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "An artist who paints pictures.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A laborer or workman who paints surfaces using a paintbrush or other means.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/painter"
+    ]
+  },
+  {
+    "word": "painter",
+    "phonetic": "/ˈpeɪntə/",
+    "phonetics": [
+      {
+        "text": "/ˈpeɪntə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈpeɪntɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1780254",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A chain or rope used to attach the shank of an anchor to the side of a ship when not in use.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A rope connected to the bow of a boat, used to attach it to e.g. a jetty or another boat.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/painter"
+    ]
+  },
+  {
+    "word": "painter",
+    "phonetic": "/ˈpeɪntə/",
+    "phonetics": [
+      {
+        "text": "/ˈpeɪntə/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈpeɪntɚ/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/painter-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1780254",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A mountain lion.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/painter"
+    ]
+  }
+]

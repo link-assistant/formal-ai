@@ -1,0 +1,128 @@
+[
+  {
+    "word": "capital",
+    "phonetic": "/ˈkæp.ɪ.təl/",
+    "phonetics": [
+      {
+        "text": "/ˈkæp.ɪ.təl/",
+        "audio": ""
+      },
+      {
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/capital-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1648213",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Already-produced durable goods available for use as a factor of production, such as steam shovels (equipment) and office buildings (structures).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Money and wealth. The means to acquire goods and services, especially in a non-barter system.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He does not have enough capital to start a business."
+          },
+          {
+            "definition": "A city designated as a legislative seat by the government or some other authority, often the city in which the government is located; otherwise the most important city within a country or a subdivision of it.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The Welsh government claims that Cardiff is Europe’s youngest capital."
+          },
+          {
+            "definition": "The most important city in the field specified.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "An uppercase letter.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The uppermost part of a column.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Knowledge; awareness; proficiency.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Interpreters need a good amount of cultural capital in order to function efficiently in the profession."
+          },
+          {
+            "definition": "(by extension) The chief or most important thing.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [
+          "caps",
+          "majuscule"
+        ],
+        "antonyms": [
+          "minuscule"
+        ]
+      },
+      {
+        "partOfSpeech": "adjective",
+        "definitions": [
+          {
+            "definition": "Of prime importance.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Chief, in a political sense, as being the seat of the general government of a state or nation.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "London and Paris are capital cities."
+          },
+          {
+            "definition": "Excellent.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "That is a capital idea!"
+          },
+          {
+            "definition": "Involving punishment by death.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Uppercase.",
+            "synonyms": [],
+            "antonyms": [
+              "lower-case"
+            ],
+            "example": "One begins a sentence with a capital letter."
+          },
+          {
+            "definition": "Of or relating to the head.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": [
+          "lower-case"
+        ]
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/capital"
+    ]
+  }
+]

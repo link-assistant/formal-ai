@@ -1,0 +1,19 @@
+P5137
+  aliases
+    en (denotes sense means "sense item" item "item of this sense" "sense has this item" "sense's main topic")
+    hi ("आयटम" "अर्थ")
+    ru ("смысл" "означает" "значение" "значит")
+    zh ("該義項的項目" "意義項目" "項目" "意义项目" "项目" "義項項目" "义项项目" "该词义专用项目" "义项" "含义" "义项对应项")
+  datatype wikibase-item
+  descriptions
+    en "concept corresponding to this sense of a lexeme. Use only on lexeme senses; do not use on items or properties"
+    ru "связывает смысл лексемы с соответствующим понятием. Не используйте для элементов и свойств"
+    zh "与该词位义项相对应的概念： 仅限在“词位义项”上使用；严禁用于普通项（Item）或属性"
+  id P5137
+  labels
+    en "item for this sense"
+    hi "इस अर्थ के लिए आइटम"
+    ru "элемент для значения"
+    zh "对应此义项的项目"
+  type property
+success 1

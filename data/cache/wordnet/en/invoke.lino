@@ -1,0 +1,25 @@
+language en
+lemma invoke
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "summon into action or bring into existence, often as if by magic"
+    examples ("raise the specter of unemployment" "he conjured wild birds in the air" "call down the spirits from the mountain")
+    id oewn-01633150-v
+    partOfSpeech v
+    synonyms (raise conjure "conjure up" evoke stir "call down" arouse "bring up" "put forward" "call forth")
+  entry
+    definition "cite as an authority; resort to"
+    examples ("He invoked the law that would save him" "I appealed to the law of 1900" "She invoked an ancient law")
+    id oewn-01026873-v
+    partOfSpeech v
+    synonyms (appeal)
+  entry
+    definition "request earnestly (something from somebody); ask for aid or protection"
+    examples ("appeal to somebody for help" "Invoke God in times of trouble")
+    id oewn-00757492-v
+    partOfSpeech v
+    synonyms (appeal)
+source "oewn:2024"

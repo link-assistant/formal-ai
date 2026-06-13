@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "P5972": {
+      "type": "property",
+      "datatype": "wikibase-sense",
+      "id": "P5972",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "translation"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "перевод"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "翻譯"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "sense (meaning) of a lexeme in another language that corresponds exactly to this sense (meaning) of the lexeme"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "значение лексемы на другом языке, точно соответствующее данному значению лексемы"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "与该词语的意义完全对应的另一种语言中词语的意义"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "translations"
+          },
+          {
+            "language": "en",
+            "value": "foreign language synonym"
+          },
+          {
+            "language": "en",
+            "value": "synonym in foreign language"
+          },
+          {
+            "language": "en",
+            "value": "synonym in another language"
+          },
+          {
+            "language": "en",
+            "value": "synonym in other language"
+          },
+          {
+            "language": "en",
+            "value": "translates as"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "译文"
+          },
+          {
+            "language": "zh",
+            "value": "外语同义词"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

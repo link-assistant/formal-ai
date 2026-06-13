@@ -1,0 +1,17 @@
+view
+  id M-64febd3e331f
+  lemma reminder
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a message that helps you remember something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an experience that causes you to remember something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone who gives a warning so that a mistake can be avoided"
+    provenance (wordnet)

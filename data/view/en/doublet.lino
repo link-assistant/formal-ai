@@ -1,0 +1,9 @@
+view
+  id M-cb383e6d739e
+  lemma doublet
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a man's close-fitting jacket; worn during the Renaissance"
+    provenance (wordnet)

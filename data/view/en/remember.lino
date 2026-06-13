@@ -1,0 +1,37 @@
+view
+  id M-54a860e441d8
+  lemma remember
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "recall knowledge from memory; have a recollection"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "keep in mind for attention or consideration"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "recapture the past; indulge in memories"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show appreciation to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mention favorably, as in prayer"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "mention as by way of greeting or to indicate friendship"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "exercise, or have the power of, memory"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "call to remembrance; keep alive the memory of someone or something, as in a ceremony"
+    provenance (wordnet)

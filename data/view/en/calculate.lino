@@ -1,0 +1,29 @@
+view
+  id M-43c114f24321
+  lemma calculate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a mathematical calculation or computation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "judge to be probable"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "keep an account of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "predict in advance"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "specifically design a product, event, or activity for a certain public"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have faith or confidence in"
+    provenance (wordnet)

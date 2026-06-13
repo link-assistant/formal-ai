@@ -1,0 +1,73 @@
+{
+  "entities": {
+    "Q11197": {
+      "type": "item",
+      "id": "Q11197",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "logarithm"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "логарифм"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लघुगणक"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "對數"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "inverse of the exponential function, which maps products to sums"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "функция, обратная к показательной"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "冪運算的逆運算"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "log"
+          },
+          {
+            "language": "en",
+            "value": "logarithmic function"
+          },
+          {
+            "language": "en",
+            "value": "logarithm function"
+          },
+          {
+            "language": "en",
+            "value": "logarithms"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "логарифмическая функция"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "对数"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q98815142": {
+      "type": "item",
+      "id": "Q98815142",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "hello"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "хелло"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "हैलो"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "Hello"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "salutation or greeting in the English language"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "приветствие в немецком языке"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अंग्रेज़ी भाषा में अभिवादन या नमस्कार"
+        }
+      },
+      "aliases": {
+        "ru": [
+          {
+            "language": "ru",
+            "value": "хеллоу"
+          },
+          {
+            "language": "ru",
+            "value": "хэлло"
+          },
+          {
+            "language": "ru",
+            "value": "халлоу"
+          },
+          {
+            "language": "ru",
+            "value": "привет"
+          },
+          {
+            "language": "ru",
+            "value": "халло"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "हेलो"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

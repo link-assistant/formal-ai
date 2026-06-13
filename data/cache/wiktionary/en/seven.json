@@ -1,0 +1,65 @@
+[
+  {
+    "word": "seven",
+    "phonetic": "/ˈsɛv.ən/",
+    "phonetics": [
+      {
+        "text": "/ˈsɛv.ən/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈsɛv.ən/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/seven-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=537396",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The digit/figure 7 or an occurrence thereof.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "He wrote three sevens on the paper."
+          },
+          {
+            "definition": "A card bearing seven pips.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "numeral",
+        "definitions": [
+          {
+            "definition": "A numerical value equal to 7; the number following six and preceding eight. This many dots: (•••••••).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Describing a group or set with seven elements.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/seven"
+    ]
+  }
+]

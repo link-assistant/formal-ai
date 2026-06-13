@@ -1,0 +1,42 @@
+language en
+lemma progress
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "gradual improvement or growth or development"
+    examples ("advancement of knowledge" "great progress in the arts")
+    id oewn-00250368-n
+    partOfSpeech n
+    synonyms (advancement)
+  entry
+    definition "the act of moving forward (as toward a goal)"
+    id oewn-00282894-n
+    partOfSpeech n
+    synonyms (progression procession advance advancement "forward motion" "onward motion")
+  entry
+    definition "a movement forward"
+    examples ("he listened for the progress of the troops")
+    id oewn-07459865-n
+    partOfSpeech n
+    synonyms (progression advance)
+  entry
+    definition "develop in a positive way"
+    examples ("He progressed well in school" "My plants are coming along" "Plans are shaping up")
+    id oewn-00249545-v
+    partOfSpeech v
+    synonyms ("come on" "come along" advance "get on" "get along" "shape up")
+  entry
+    definition "move forward, also in the metaphorical sense"
+    examples ("Time marches on")
+    id oewn-01996535-v
+    partOfSpeech v
+    synonyms (advance "pass on" "move on" "march on" "go on")
+  entry
+    definition "form or accumulate steadily"
+    examples ("Resistance to the manager's plan built up quickly" "Pressure is building up at the Indian-Pakistani border")
+    id oewn-00253876-v
+    partOfSpeech v
+    synonyms ("build up" "work up" build)
+source "oewn:2024"

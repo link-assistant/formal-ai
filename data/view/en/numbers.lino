@@ -1,0 +1,13 @@
+view
+  id M-7605f5f5d67d
+  lemma numbers
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the fourth book of the Old Testament; contains a record of the number of Israelites who followed Moses out of Egypt"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an illegal daily lottery"
+    provenance (wordnet)

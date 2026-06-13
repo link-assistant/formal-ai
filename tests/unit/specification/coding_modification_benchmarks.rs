@@ -209,14 +209,15 @@ fn split_records(text: &str) -> Vec<String> {
     let mut records = Vec::new();
     let mut current = Vec::new();
     for line in text.lines() {
+        let line = line.trim_end();
         if line.trim().is_empty() {
-            if !current.is_empty() {
-                records.push(current.join("\n"));
-                current.clear();
-            }
-        } else {
-            current.push(line.trim_end().to_owned());
+            continue;
         }
+        if !line.starts_with(char::is_whitespace) && !current.is_empty() {
+            records.push(current.join("\n"));
+            current.clear();
+        }
+        current.push(line.to_owned());
     }
     if !current.is_empty() {
         records.push(current.join("\n"));

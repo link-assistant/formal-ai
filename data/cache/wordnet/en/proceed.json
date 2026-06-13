@@ -1,0 +1,84 @@
+{
+  "lemma": "proceed",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00783045-v",
+      "partOfSpeech": "v",
+      "definition": "continue talking",
+      "examples": [
+        "‘I know it's hard,’ he continued, ‘but there is no choice’",
+        "carry on — pretend we are not in the room"
+      ],
+      "synonyms": [
+        "continue",
+        "go on",
+        "carry on"
+      ]
+    },
+    {
+      "id": "oewn-01999581-v",
+      "partOfSpeech": "v",
+      "definition": "move ahead; travel onward in time or space",
+      "examples": [
+        "We proceeded towards Washington",
+        "She continued in the direction of the hills",
+        "We are moving ahead in time now"
+      ],
+      "synonyms": [
+        "go forward",
+        "continue",
+        "move ahead"
+      ]
+    },
+    {
+      "id": "oewn-02377696-v",
+      "partOfSpeech": "v",
+      "definition": "follow a procedure or take a course",
+      "examples": [
+        "We should go farther in this matter",
+        "She went through a lot of trouble",
+        "go about the world in a certain manner",
+        "Messages must go through diplomatic channels"
+      ],
+      "synonyms": [
+        "go",
+        "move"
+      ]
+    },
+    {
+      "id": "oewn-00342215-v",
+      "partOfSpeech": "v",
+      "definition": "follow a certain course",
+      "examples": [
+        "The inauguration went well",
+        "how did your interview go?"
+      ],
+      "synonyms": [
+        "go"
+      ]
+    },
+    {
+      "id": "oewn-02690747-v",
+      "partOfSpeech": "v",
+      "definition": "continue a certain state, condition, or activity",
+      "examples": [
+        "Keep on working!",
+        "We continued to work into the night",
+        "Keep smiling",
+        "We went on working until well past midnight"
+      ],
+      "synonyms": [
+        "continue",
+        "go on",
+        "go along",
+        "keep"
+      ]
+    }
+  ]
+}

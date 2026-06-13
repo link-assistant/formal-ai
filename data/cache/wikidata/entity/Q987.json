@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "Q987": {
+      "type": "item",
+      "id": "Q987",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "New Delhi"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "नई दिल्ली"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Нью-Дели"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "新德里"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "capital city of India"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "столица Индии"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भारत की राजधानी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印度首都"
+        }
+      },
+      "aliases": {
+        "hi": [
+          {
+            "language": "hi",
+            "value": "नयी दिल्ली"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "Nayi Dilli"
+          },
+          {
+            "language": "en",
+            "value": "New Delhi Municipal Council Area"
+          },
+          {
+            "language": "en",
+            "value": "NDMC area"
+          },
+          {
+            "language": "en",
+            "value": "Nai Dilli"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Новый Дели"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

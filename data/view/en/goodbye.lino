@@ -1,0 +1,9 @@
+view
+  id M-bdeebf6eac2e
+  lemma goodbye
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a farewell remark"
+    provenance (wordnet)

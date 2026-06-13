@@ -29,6 +29,107 @@ fn link_calculator_path_is_skipped_for_bare_dot_expressions() {
 }
 
 #[test]
+fn placeholder_unknown_equations_are_delegated_to_link_calculator() {
+    let equation_templates = [
+        ("u + 2 = 4", "2"),
+        ("2 + u = 4", "2"),
+        ("4 = u + 2", "2"),
+        ("u - 2 = 4", "6"),
+        ("10 - u = 4", "6"),
+        ("u * 2 = 8", "4"),
+        ("2 * u = 8", "4"),
+        ("u / 2 = 4", "8"),
+        ("(u + 2) * 3 = 12", "2"),
+        ("3 * (u + 2) = 12", "2"),
+        ("u + u = 10", "5"),
+        ("2 * u + 3 = 11", "4"),
+        ("3 + 2 * u = 11", "4"),
+        ("10 = u / 3 + 1", "27"),
+        ("u / 3 + 1 = 10", "27"),
+        ("u + 2.5 = 4", "1.5"),
+        ("u - 0.5 = 2", "2.5"),
+        ("2 * (u - 1) = 6", "4"),
+        ("(u - 1) / 3 = 2", "7"),
+        ("-u + 10 = 4", "6"),
+        ("u + (-2) = 4", "6"),
+        ("2 * u - 4 = 0", "2"),
+        ("0 = 2 * u - 4", "2"),
+        ("u + 0 = 7", "7"),
+        ("1 * u = 9", "9"),
+    ];
+
+    for marker in ["?", "*"] {
+        for (template, expected_value) in equation_templates {
+            let expression = template.replace('u', marker);
+            let evaluation = evaluate_calculation(&expression)
+                .unwrap_or_else(|error| panic!("{expression:?} should solve: {error:?}"));
+            assert_eq!(
+                evaluation.engine,
+                CalculationEngine::LinkCalculator,
+                "{expression:?} should be delegated to link-calculator"
+            );
+            assert_eq!(
+                evaluation.formatted,
+                format!("{marker} = {expected_value}"),
+                "{expression:?} should solve the placeholder unknown"
+            );
+            assert!(
+                !evaluation.steps.is_empty(),
+                "{expression:?} should expose upstream derivation steps"
+            );
+        }
+    }
+}
+
+#[test]
+fn upstream_equation_categories_are_delegated_with_steps() {
+    for (expression, expected, required_step) in [
+        ("2 * ? + 3 = 11", "? = 4", "Solve linear equation:"),
+        ("2 * * + 3 = 11", "* = 4", "Solve linear equation:"),
+        (
+            "2 * x + 3 * y = 12",
+            "x = 6 - 1.5*y",
+            "Solve linear equation:",
+        ),
+        (
+            "x^2 - 5 * x + 6 = 0",
+            "x = 2 or x = 3",
+            "Solve polynomial equation:",
+        ),
+        ("? * ? = 4", "? = -2 or ? = 2", "Solve polynomial equation:"),
+        ("* * * = 4", "* = -2 or * = 2", "Solve polynomial equation:"),
+    ] {
+        let evaluation = evaluate_calculation(expression)
+            .unwrap_or_else(|error| panic!("{expression:?} should solve: {error:?}"));
+        assert_eq!(
+            evaluation.engine,
+            CalculationEngine::LinkCalculator,
+            "{expression:?} should be delegated to link-calculator"
+        );
+        assert_eq!(
+            evaluation.formatted, expected,
+            "{expression:?} should return the upstream equation result"
+        );
+        assert!(
+            evaluation
+                .lino
+                .as_deref()
+                .is_some_and(|lino| lino.contains('=')),
+            "{expression:?} should preserve upstream LINO: {:?}",
+            evaluation.lino
+        );
+        assert!(
+            evaluation
+                .steps
+                .iter()
+                .any(|step| step.starts_with(required_step)),
+            "{expression:?} should expose upstream derivation steps: {:?}",
+            evaluation.steps
+        );
+    }
+}
+
+#[test]
 fn arithmetic_word_tables_match_seed() {
     // src/arithmetic.rs is compiled into the wasm worker (no_std, no build.rs),
     // so its spelled-word→value tables are materialized at author time into

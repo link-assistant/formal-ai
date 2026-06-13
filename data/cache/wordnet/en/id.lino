@@ -1,0 +1,22 @@
+language en
+lemma id
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a state in the Rocky Mountains"
+    id oewn-09103738-n
+    partOfSpeech n
+    synonyms (Idaho "Gem State" Id.)
+  entry
+    definition "(psychoanalysis) primitive instincts and energies underlying all psychic activity"
+    id oewn-05621577-n
+    partOfSpeech n
+  entry
+    definition "a card or badge used to identify the bearer"
+    examples ("you had to show your ID in order to get in")
+    id oewn-06900328-n
+    partOfSpeech n
+    synonyms (I.D.)
+source "oewn:2024"

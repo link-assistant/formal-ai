@@ -1,0 +1,70 @@
+[
+  {
+    "word": "mm",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "interjection",
+        "definitions": [
+          {
+            "definition": "An expression used to show contentment for something",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Mmm, this is a tasty pie!"
+          },
+          {
+            "definition": "An expression used to show thought or reflection",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Mmm, I see what you mean."
+          },
+          {
+            "definition": "An expression used to show being muffled or not able to speak clearly, as well as \"mmph\".",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Yes.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A period into which a year is divided, historically based on the phases of the moon.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "July is my favourite month."
+          },
+          {
+            "definition": "A period of 30 days, 31 days, or some alternation thereof.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We went on holiday for two months."
+          },
+          {
+            "definition": "(in the plural) A woman's period; menstrual discharge.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mm",
+      "https://en.wiktionary.org/wiki/mmm",
+      "https://en.wiktionary.org/wiki/month"
+    ]
+  }
+]

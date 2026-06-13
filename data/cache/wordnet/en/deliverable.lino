@@ -1,0 +1,16 @@
+language en
+lemma deliverable
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "suitable for or ready for delivery"
+    id oewn-02721174-a
+    partOfSpeech a
+  entry
+    definition "something that can be provided as the product of development"
+    examples ("under this contract the deliverables include both software and hardware")
+    id oewn-03178402-n
+    partOfSpeech n
+source "oewn:2024"

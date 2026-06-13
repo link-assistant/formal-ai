@@ -1,0 +1,100 @@
+{
+  "lemma": "unknown",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01379820-a",
+      "partOfSpeech": "a",
+      "definition": "not known",
+      "examples": [
+        "an unknown amount",
+        "an unknown island",
+        "an unknown writer",
+        "an unknown source"
+      ]
+    },
+    {
+      "id": "oewn-08649671-n",
+      "partOfSpeech": "n",
+      "definition": "an unknown and unexplored region",
+      "examples": [
+        "they came like angels out of the unknown"
+      ],
+      "synonyms": [
+        "unknown region",
+        "terra incognita"
+      ]
+    },
+    {
+      "id": "oewn-10680441-n",
+      "partOfSpeech": "n",
+      "definition": "anyone who does not belong in the environment in which they are found",
+      "synonyms": [
+        "stranger",
+        "alien"
+      ]
+    },
+    {
+      "id": "oewn-07286353-n",
+      "partOfSpeech": "n",
+      "definition": "a variable whose values are solutions of an equation",
+      "synonyms": [
+        "unknown quantity"
+      ]
+    },
+    {
+      "id": "oewn-00121594-s",
+      "partOfSpeech": "s",
+      "definition": "being or having an unknown or unnamed source",
+      "examples": [
+        "a poem by an unknown author",
+        "corporations responsible to nameless owners",
+        "an unnamed donor"
+      ],
+      "synonyms": [
+        "nameless",
+        "unidentified",
+        "unnamed"
+      ]
+    },
+    {
+      "id": "oewn-02379193-s",
+      "partOfSpeech": "s",
+      "definition": "not known to exist",
+      "examples": [
+        "things obscurely felt surged up from unknown depths"
+      ]
+    },
+    {
+      "id": "oewn-01126357-s",
+      "partOfSpeech": "s",
+      "definition": "not famous or acclaimed",
+      "examples": [
+        "an obscure family",
+        "unsung heroes of the war"
+      ],
+      "synonyms": [
+        "obscure",
+        "unsung"
+      ]
+    },
+    {
+      "id": "oewn-00969942-s",
+      "partOfSpeech": "s",
+      "definition": "not known before",
+      "examples": [
+        "used many strange words",
+        "saw many strange faces in the crowd",
+        "don't let anyone unknown into the house"
+      ],
+      "synonyms": [
+        "strange"
+      ]
+    }
+  ]
+}

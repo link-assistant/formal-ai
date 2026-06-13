@@ -1,0 +1,17 @@
+view
+  id M-99f2f31c244f
+  lemma calculation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the procedure of calculating; determining something by mathematical or logical methods"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "problem solving that involves numbers or quantities"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "planning something carefully and intentionally"
+    provenance (wordnet)

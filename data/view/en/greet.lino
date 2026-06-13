@@ -1,0 +1,21 @@
+view
+  id M-6333abfd62f8
+  lemma greet
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "express greetings upon meeting someone"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "send greetings to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "react to in a certain way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be perceived by"
+    provenance (wordnet)

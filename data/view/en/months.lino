@@ -1,0 +1,17 @@
+view
+  id M-5db6f862dfb1
+  lemma months
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A period into which a year is divided, historically based on the phases of the moon."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A period of 30 days, 31 days, or some alternation thereof."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "(in the plural) A woman's period; menstrual discharge."
+    provenance (wiktionary)

@@ -1,0 +1,23 @@
+language en
+lemma respond
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "show a response or a reaction to something"
+    id oewn-00719282-v
+    partOfSpeech v
+    synonyms (react)
+  entry
+    definition "react verbally"
+    examples ("She didn't want to answer" "answer the question" "We answered that we would accept the invitation")
+    id oewn-00817348-v
+    partOfSpeech v
+    synonyms (answer reply)
+  entry
+    definition "respond favorably or as hoped"
+    examples ("The cancer responded to the aggressive therapy")
+    id oewn-00720661-v
+    partOfSpeech v
+source "oewn:2024"

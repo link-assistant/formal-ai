@@ -1,0 +1,13 @@
+view
+  id M-b0cffe760b5f
+  lemma desktop
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the top of a desk"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) the area of the screen in graphical user interfaces against which icons and windows appear"
+    provenance (wordnet)

@@ -1,0 +1,60 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A relationship or relation (to something)."
+        entry
+          definition "A measurement one can compare to."
+        entry
+          definition "Information about a person, provided by someone (a referee) with whom they are well acquainted."
+        entry
+          definition "A person who provides this information; a referee."
+        entry
+          definition "A reference work."
+        entry
+          definition "That which serves as a reference work."
+        entry
+          definition "The act of referring: a submitting for information or decision."
+        entry
+          definition "A relation between objects in which one object designates, or acts as a means by which to connect to or link to, another object."
+        entry
+          definition "(academic writing) A short written identification of a previously published work which is used as a source for a text."
+        entry
+          definition "(academic writing) A previously published written work thus indicated; a source."
+        entry
+          definition "An object containing information which refers to data stored elsewhere, as opposed to containing the data itself."
+        entry
+          definition "(character entity) A special sequence used to represent complex characters in markup languages, such as ™ for the ™ symbol."
+        entry
+          definition Appeal.
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "To provide a list of references for (a text)."
+          example "You must thoroughly reference your paper before submitting it."
+        entry
+          definition "To refer to, to use as a reference."
+          example "Reference the dictionary for word meanings."
+        entry
+          definition "To mention, to cite."
+          example "In his speech, the candidate obliquely referenced the past failures of his opponent."
+        entry
+          definition "To contain the value that is a memory address of some value stored in memory."
+          example "The given pointer will reference the actual generated data."
+      partOfSpeech verb
+  phonetic "/ˈɹɛf.(ə)ɹəns/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/reference-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1684715"
+      text "/ˈɹɛf.(ə)ɹəns/"
+  sourceUrls ("https://en.wiktionary.org/wiki/reference")
+  word reference

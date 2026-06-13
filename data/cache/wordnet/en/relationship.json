@@ -1,0 +1,44 @@
+{
+  "lemma": "relationship",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13802931-n",
+      "partOfSpeech": "n",
+      "definition": "a relation between people; (‘relationship’ is often used where ‘relation’ would serve, as in ‘the relationship between inflation and unemployment’, but the preferred usage of ‘relationship’ is for human relations or states of relatedness)",
+      "examples": [
+        "the relationship between mothers and their children"
+      ],
+      "synonyms": [
+        "human relationship"
+      ]
+    },
+    {
+      "id": "oewn-13951421-n",
+      "partOfSpeech": "n",
+      "definition": "a state of connectedness between people (especially an emotional connection)",
+      "examples": [
+        "he didn't want his wife to know of the relationship"
+      ]
+    },
+    {
+      "id": "oewn-13951701-n",
+      "partOfSpeech": "n",
+      "definition": "a state involving mutual dealings between people or parties or countries"
+    },
+    {
+      "id": "oewn-13834819-n",
+      "partOfSpeech": "n",
+      "definition": "(anthropology) relatedness or connection by blood or marriage or adoption",
+      "synonyms": [
+        "kinship",
+        "family relationship"
+      ]
+    }
+  ]
+}

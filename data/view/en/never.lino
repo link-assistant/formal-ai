@@ -1,0 +1,9 @@
+view
+  id M-b7c7bc1c992d
+  lemma never
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "not at all; certainly not; not in any circumstances; not ever; at no time in the past or future"
+    provenance (wordnet)

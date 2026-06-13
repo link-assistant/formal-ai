@@ -1,0 +1,433 @@
+# Canonical reserved-role registry (issue #398, PR #399).
+#
+# Every `role <name>` value used anywhere in data/seed/meanings*.lino is
+# declared here exactly once. A role is a reserved predicate over
+# meanings; this registry is its single definition so it can never
+# collide with — or drift from — the meaning graph. Regenerate with
+# `python3 scripts/generate-role-registry.py`; CI keeps it in lockstep.
+#
+# kind meaning   -> the role name is also a defined meaning slug
+# kind predicate -> the role name is a reserved role-only identifier
+roles
+  answer_rationale_lead
+    kind predicate
+  architecture_concept
+    kind meaning
+  arithmetic_operator_word
+    kind predicate
+  assistant_mechanism_inquiry
+    kind meaning
+  assistant_self_reference
+    kind meaning
+  behavior_rule_edit_directive
+    kind predicate
+  binary_relation_property
+    kind predicate
+  calculation_basis_reference
+    kind predicate
+  calculation_domain_term
+    kind predicate
+  calculation_request_cue
+    kind predicate
+  calculation_result_query_cue
+    kind predicate
+  calculator_tool_name
+    kind predicate
+  calendar_day_reference
+    kind predicate
+  calendar_direction_next
+    kind predicate
+  calendar_direction_previous
+    kind predicate
+  calendar_event
+    kind predicate
+  calendar_question
+    kind predicate
+  calendar_schedule_action
+    kind predicate
+  calendar_time
+    kind predicate
+  calendar_timezone_alias
+    kind predicate
+  calendar_today
+    kind meaning
+  calendar_weekday
+    kind predicate
+  capability_query
+    kind meaning
+  capability_query_more
+    kind meaning
+  cardinal_number_word
+    kind predicate
+  causal_interrogative
+    kind meaning
+  circular_joke_phrase
+    kind predicate
+  clarification_request
+    kind meaning
+  clause_continuation_marker
+    kind meaning
+  code_method_noun
+    kind predicate
+  common_typo
+    kind meaning
+  comparison_difference_cue
+    kind predicate
+  comparison_table_noun
+    kind predicate
+  comparison_table_trigger
+    kind predicate
+  compositional_genitive_head
+    kind predicate
+  compositional_lemma
+    kind predicate
+  compositional_phrase
+    kind predicate
+  compounding_action_cue
+    kind predicate
+  compounding_frequency_cue
+    kind predicate
+  conversation_reference
+    kind meaning
+  conversation_summary_courtesy
+    kind meaning
+  conversation_summary_directive
+    kind meaning
+  conversation_summary_phrase
+    kind meaning
+  conversation_topic_opener
+    kind meaning
+  conversational_act
+    kind predicate
+  conversational_concept
+    kind predicate
+  conversational_entity
+    kind predicate
+  conversion_action_cue
+    kind predicate
+  currency_eur_reference
+    kind predicate
+  currency_rub_reference
+    kind predicate
+  currency_usd_reference
+    kind predicate
+  definition_artifact_request
+    kind meaning
+  definition_command
+    kind meaning
+  definition_merge_action
+    kind meaning
+  definition_merge_marker
+    kind meaning
+  definition_merge_tail_boundary
+    kind meaning
+  detail_modifier
+    kind meaning
+  enumeration_constraint
+    kind meaning
+  enumeration_request_opener
+    kind meaning
+  exchange_rate_reference
+    kind predicate
+  explanation_request_lead
+    kind predicate
+  fact_relation
+    kind predicate
+  feature_action_arithmetic
+    kind meaning
+  feature_action_planning
+    kind meaning
+  feature_capability_alias
+    kind predicate
+  feature_capability_question
+    kind meaning
+  final_amount_reference
+    kind predicate
+  followup_instruction_verb
+    kind meaning
+  game_tracker_domain
+    kind meaning
+  game_tracker_mechanic
+    kind meaning
+  hello_world_reference
+    kind predicate
+  http_fetch
+    kind meaning
+  implementation_language_noun
+    kind meaning
+  implementation_language_preposition
+    kind meaning
+  interest_cue
+    kind predicate
+  interrogative_opener
+    kind meaning
+  investment_cue
+    kind predicate
+  knowledge_inventory_interrogative
+    kind predicate
+  knowledge_inventory_noun
+    kind predicate
+  knowledge_inventory_phrase
+    kind predicate
+  knowledge_possession
+    kind predicate
+  knowledge_relation
+    kind meaning
+  knowledge_subject
+    kind meaning
+  knowledge_value
+    kind meaning
+  lexical_meta
+    kind predicate
+  links_notation_format
+    kind meaning
+  links_root
+    kind predicate
+  live_rate_freshness_cue
+    kind predicate
+  local_shell_request_cue
+    kind predicate
+  math_function_name
+    kind predicate
+  measurement_concept
+    kind predicate
+  measurement_unit
+    kind predicate
+  mechanism_inquiry
+    kind meaning
+  mechanism_predicate
+    kind meaning
+  monetary_concept
+    kind predicate
+  network_capability_cue
+    kind predicate
+  non_referential_subject
+    kind meaning
+  nondeterministic_marker
+    kind predicate
+  numeric_concept
+    kind predicate
+  ontology_category
+    kind predicate
+  ontology_root
+    kind predicate
+  ontology_type
+    kind predicate
+  operating_principle
+    kind meaning
+  output_display_request
+    kind meaning
+  physical_action_trigger
+    kind predicate
+  physical_dimension
+    kind predicate
+  playwright_script_cue
+    kind predicate
+  playwright_tool_name
+    kind predicate
+  politeness_cue
+    kind predicate
+  prior_answer_reference
+    kind meaning
+  procedural_request
+    kind meaning
+  procedural_task_modifier
+    kind meaning
+  program_artifact
+    kind predicate
+  program_genus
+    kind predicate
+  program_kind
+    kind predicate
+  program_language
+    kind meaning
+  program_language_alias
+    kind predicate
+  program_modification
+    kind predicate
+  program_request
+    kind predicate
+  program_synthesis
+    kind meaning
+  program_synthesis_action
+    kind predicate
+  program_synthesis_domain
+    kind predicate
+  program_synthesis_signal
+    kind predicate
+  program_synthesis_subject
+    kind predicate
+  program_synthesis_task
+    kind predicate
+  program_task
+    kind meaning
+  program_task_alias
+    kind predicate
+  proof_claim_scaffold
+    kind predicate
+  proof_concept_determinism
+    kind predicate
+  proof_concept_godel
+    kind predicate
+  proof_directive
+    kind predicate
+  proof_marker
+    kind predicate
+  proof_request_lead
+    kind predicate
+  quantity_conversion_cue
+    kind predicate
+  research_criterion
+    kind predicate
+  research_evaluation_domain
+    kind meaning
+  research_evidence_domain
+    kind meaning
+  research_prompt_signal
+    kind meaning
+  research_question_opener
+    kind meaning
+  research_superlative_modifier
+    kind meaning
+  rule_listing_phrase
+    kind predicate
+  rule_listing_request
+    kind predicate
+  rule_listing_scope
+    kind predicate
+  rule_listing_subject
+    kind predicate
+  script_authoring_verb
+    kind predicate
+  script_or_code_artifact
+    kind predicate
+  self_fact_query
+    kind meaning
+  self_introduction_request
+    kind meaning
+  semantic_annotation_artifact
+    kind predicate
+  semantic_facet_kind
+    kind predicate
+  semantic_grounding_artifact
+    kind predicate
+  shell_capability_cue
+    kind predicate
+  skill_teaching_response_verb
+    kind predicate
+  skill_teaching_trigger_lead
+    kind predicate
+  skill_when_then_pair
+    kind predicate
+  software_approval
+    kind meaning
+  software_approval_trigger
+    kind meaning
+  software_artifact
+    kind meaning
+  software_artifact_kind
+    kind predicate
+  software_authoring_action
+    kind predicate
+  software_bash_command
+    kind meaning
+  software_delivery
+    kind meaning
+  software_delivery_mode
+    kind predicate
+  software_feature
+    kind meaning
+  software_followup
+    kind meaning
+  software_followup_demonstration
+    kind meaning
+  software_followup_execution
+    kind meaning
+  software_followup_verification
+    kind meaning
+  software_implementation_language
+    kind predicate
+  software_language
+    kind meaning
+  software_requirement_category
+    kind predicate
+  software_step_granularity
+    kind meaning
+  summary_classification_cue
+    kind predicate
+  summary_statement_kind
+    kind meaning
+  tabletop_game_tracker
+    kind meaning
+  tool_argument_marker
+    kind meaning
+  tool_invocation_cue
+    kind meaning
+  topic_scan_stop_word
+    kind meaning
+  translation_action
+    kind predicate
+  translation_into_marker
+    kind meaning
+  translation_language
+    kind predicate
+  translation_language_genus
+    kind predicate
+  translation_object_marker
+    kind meaning
+  translation_property
+    kind predicate
+  translation_source_direction
+    kind predicate
+  translation_source_marker
+    kind predicate
+  translation_target_direction
+    kind predicate
+  translation_target_marker
+    kind predicate
+  translation_unquoted_frame
+    kind meaning
+  url_navigate
+    kind meaning
+  vulgar_content_marker
+    kind predicate
+  web_medium
+    kind predicate
+  web_navigation_concept
+    kind predicate
+  web_search_action
+    kind predicate
+  web_search_concept
+    kind predicate
+  web_search_explicit_prefix
+    kind predicate
+  web_search_history_signal
+    kind predicate
+  web_search_imperative_lead
+    kind predicate
+  web_search_news_recency
+    kind predicate
+  web_search_news_subject
+    kind predicate
+  web_search_query_leading_noise
+    kind predicate
+  web_search_query_trailing_noise
+    kind predicate
+  web_search_signal
+    kind predicate
+  web_search_source_only
+    kind predicate
+  web_search_strong_action
+    kind predicate
+  web_search_tool_name
+    kind predicate
+  web_search_topic_marker
+    kind predicate
+  who_question_lead
+    kind predicate
+  who_question_tail
+    kind predicate
+  wikidata_entity_anchor
+    kind predicate
+  year_unit_cue
+    kind predicate

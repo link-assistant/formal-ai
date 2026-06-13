@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q6452715": {
+      "type": "item",
+      "id": "Q6452715",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "yes"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "да"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "是"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "linguistic particle or adverb used to show agreement, acceptance, consensus, appreciation or an affirmative opinion"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "утвердительная частица"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "表示狀態，代表肯定"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "positive choice"
+          },
+          {
+            "language": "en",
+            "value": "affirmed"
+          },
+          {
+            "language": "en",
+            "value": "carried"
+          },
+          {
+            "language": "en",
+            "value": "passed"
+          },
+          {
+            "language": "en",
+            "value": "successful"
+          },
+          {
+            "language": "en",
+            "value": "aye"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

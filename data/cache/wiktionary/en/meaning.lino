@@ -1,0 +1,74 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "(of words or symbols) The entity, perception, feeling or concept thereby represented or evoked."
+        entry
+          definition "The value, purpose, importance, point or significance (of something beyond the fact of that thing's existence)."
+          example "the meaning of life"
+        entry
+          definition "The object or concept that a word or phrase denotes, or that which a sentence says."
+        entry
+          definition Intention.
+      partOfSpeech noun
+      synonyms (sense definition)
+  phonetic "/ˈmiːnɪŋ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/meaning-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1244052"
+      text "/ˈmiːnɪŋ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/meaning")
+  word meaning
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To lament."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "To intend."
+        entry
+          definition "To convey (a meaning)."
+        entry
+          definition "To have conviction in (something said or expressed); to be sincere in (what one says)."
+          example "Does she really mean what she said to him last night?"
+        entry
+          definition "To cause or produce (a given result); to bring about (a given result)."
+          example "One faltering step means certain death."
+        entry
+          definition "(usually with to) To be of some level of importance."
+          example "Formality and titles mean nothing in their circle."
+      partOfSpeech verb
+      synonyms ("bring about" cause "lead to" "result in" convey indicate signify imply intend serious)
+    entry
+      definitions
+        entry
+          definition "Having a (specified) intention."
+        entry
+          definition "Expressing some intention or significance; meaningful."
+      partOfSpeech adjective
+  phonetic "/ˈmiːnɪŋ/"
+  phonetics
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/meaning-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1244052"
+      text "/ˈmiːnɪŋ/"
+  sourceUrls ("https://en.wiktionary.org/wiki/mean" "https://en.wiktionary.org/wiki/meaning")
+  word meaning

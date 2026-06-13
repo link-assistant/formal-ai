@@ -1,0 +1,9 @@
+view
+  id M-488190c1b36f
+  lemma codec
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A device or program capable of performing transformations on a data stream or signal."
+    provenance (wiktionary)

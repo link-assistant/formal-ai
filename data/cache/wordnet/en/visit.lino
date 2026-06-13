@@ -1,0 +1,77 @@
+language en
+lemma visit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of going to see some person or place or thing for a short time"
+    examples ("he dropped by for a visit")
+    id oewn-01235721-n
+    partOfSpeech n
+  entry
+    definition "a meeting arranged by the visitor to see someone (such as a doctor or lawyer) for treatment or advice"
+    examples ("he scheduled a visit to the dentist")
+    id oewn-08402011-n
+    partOfSpeech n
+  entry
+    definition "the act of visiting in an official capacity (as for an inspection)"
+    id oewn-01235407-n
+    partOfSpeech n
+  entry
+    definition "the act of going to see some person in a professional capacity"
+    examples ("a visit to the dentist")
+    id oewn-01235249-n
+    partOfSpeech n
+  entry
+    definition "a temporary stay (e.g., as a guest)"
+    id oewn-01057284-n
+    partOfSpeech n
+    synonyms (sojourn)
+  entry
+    definition "go to see a place, as for entertainment"
+    examples ("We went to see the Eiffel Tower in the morning")
+    id oewn-02498679-v
+    partOfSpeech v
+    synonyms (see)
+  entry
+    definition "go to certain places as for sightseeing"
+    examples ("Did you ever visit Paris?")
+    id oewn-01847631-v
+    partOfSpeech v
+    synonyms ("travel to")
+  entry
+    definition "pay a brief visit"
+    examples ("The mayor likes to call on some of the prominent citizens")
+    id oewn-02493222-v
+    partOfSpeech v
+    synonyms ("call in" call)
+  entry
+    definition "come to see in an official or professional capacity"
+    examples ("The governor visited the prison" "The grant administrator visited the laboratory")
+    id oewn-01847990-v
+    partOfSpeech v
+    synonyms (inspect)
+  entry
+    definition "impose something unpleasant"
+    examples ("The principal visited his rage on the students")
+    id oewn-00750288-v
+    partOfSpeech v
+    synonyms (inflict "bring down" impose)
+  entry
+    definition "talk socially without exchanging too much information"
+    examples ("the men were sitting in the cafe and shooting the breeze")
+    id oewn-01040538-v
+    partOfSpeech v
+    synonyms ("chew the fat" "shoot the breeze" chat confabulate confab chitchat chit-chat chatter chaffer natter gossip jaw claver)
+  entry
+    definition "stay with as a guest"
+    examples ("Every summer, we visited our relatives in the country for a month")
+    id oewn-02625504-v
+    partOfSpeech v
+  entry
+    definition assail
+    examples ("He was visited with a terrible illness that killed him quickly")
+    id oewn-00261028-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,99 @@
+L41576
+  claims
+    P12510
+      entry
+        id L41576$80F6630A-623A-4A21-953E-08014C5A88F8
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "4299660167"
+          hash 1717c8c15d4bb1d81d28853e0137abb900900baa
+          property P12510
+          snaktype value
+        rank normal
+        type statement
+    P5275
+      entry
+        id L41576$EA11B112-CEFE-417E-B393-588810917E84
+        mainsnak
+          datatype external-id
+          datavalue
+            type string
+            value "160845"
+          hash 90496d27eb3d0a2e1db950c4f8fb83b5154d9cd7
+          property P5275
+          snaktype value
+        rank normal
+        type statement
+    P5402
+      entry
+        id L41576$F5C183B1-EE96-442D-8FD2-6EC87B182D40
+        mainsnak
+          datatype wikibase-lexeme
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type lexeme
+              id L5785
+              numeric-id 5785
+          hash edcc7c409a32b84eaae4ce2821600047b5170df7
+          property P5402
+          snaktype value
+        rank normal
+        type statement
+  forms
+    entry
+      grammaticalFeatures (Q3910936)
+      id L41576-F1
+      representations
+        en
+          language en
+          value reference
+    entry
+      grammaticalFeatures (Q110786 Q3910936 Q51929074)
+      id L41576-F2
+      representations
+        en
+          language en
+          value references
+    entry
+      grammaticalFeatures (Q1392475)
+      id L41576-F3
+      representations
+        en
+          language en
+          value referenced
+    entry
+      grammaticalFeatures (Q10345583)
+      id L41576-F4
+      representations
+        en
+          language en
+          value referencing
+    entry
+      grammaticalFeatures (Q1230649)
+      id L41576-F5
+      representations
+        en
+          language en
+          value referenced
+  id L41576
+  language Q1860
+  lastrevid 2337052661
+  lemmas
+    en reference
+  lexicalCategory Q24905
+  modified "2025-04-11T20:53:13Z"
+  ns 146
+  pageid 60534824
+  senses
+    entry
+      glosses
+        en
+          language en
+          value "refer to"
+      id L41576-S1
+  title "Lexeme:L41576"
+  type lexeme
+success 1

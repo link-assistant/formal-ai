@@ -1,0 +1,13 @@
+view
+  id M-15f7e2e362a9
+  lemma topic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the subject matter of a conversation or discussion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "some situation or event that is thought about"
+    provenance (wordnet)

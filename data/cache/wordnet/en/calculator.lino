@@ -1,0 +1,17 @@
+language en
+lemma calculator
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an expert at calculation (or at operating calculating machines)"
+    id oewn-09906486-n
+    partOfSpeech n
+    synonyms (reckoner figurer estimator computer)
+  entry
+    definition "a small machine that is used for mathematical calculations; can be mechanical or electronic"
+    id oewn-02942270-n
+    partOfSpeech n
+    synonyms ("calculating machine")
+source "oewn:2024"

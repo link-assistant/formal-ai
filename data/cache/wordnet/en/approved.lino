@@ -1,0 +1,13 @@
+language en
+lemma approved
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "established by authority; given authoritative approval"
+    examples ("a list of approved candidates")
+    id oewn-00180335-s
+    partOfSpeech s
+    synonyms (sanctioned)
+source "oewn:2024"

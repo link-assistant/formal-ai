@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Q203": {
+      "type": "item",
+      "id": "Q203",
+      "labels": {
+        "hi": {
+          "language": "hi",
+          "value": "५"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "natural number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "संख्या"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "five"
+          },
+          {
+            "language": "en",
+            "value": "number 5"
+          },
+          {
+            "language": "en",
+            "value": "number five"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "пять"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "五"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

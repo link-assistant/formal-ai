@@ -1,0 +1,12 @@
+language en
+lemma hp
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of power equal to 746 watts"
+    id oewn-13666489-n
+    partOfSpeech n
+    synonyms (horsepower H.P.)
+source "oewn:2024"

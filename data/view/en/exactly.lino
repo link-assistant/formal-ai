@@ -1,0 +1,17 @@
+view
+  id M-2fbd6c7c6d9b
+  lemma exactly
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "indicating exactness or preciseness"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "just as it should be"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in a precise manner"
+    provenance (wordnet)

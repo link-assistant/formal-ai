@@ -1,0 +1,12 @@
+language en
+lemma tracking
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the pursuit (of a person or animal) by following tracks or marks they left behind"
+    id oewn-00321110-n
+    partOfSpeech n
+    synonyms (trailing)
+source "oewn:2024"

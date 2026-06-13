@@ -1,0 +1,33 @@
+view
+  id M-b10708bc523c
+  lemma approval
+  language en
+  sources (wiktionary wordnet)
+  sense
+    part_of_speech noun
+    gloss "the formal act of approving"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a feeling of liking something or someone good"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "acceptance as satisfactory"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a message expressing a favorable opinion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "An expression granting permission; an indication of agreement with a proposal; an acknowledgement that a person, thing or event meets requirements."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "An expression of favorable acceptance and encouragement; a compliment that also condones."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Something mailed by a seller to a collector to match their stated interests; the collector can approve of or return the item."
+    provenance (wiktionary)

@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q11573": {
+      "type": "item",
+      "id": "Q11573",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "metre"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "метр"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "米"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "SI unit of length"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица измерения длины и расстояния"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "国际单位制基本长度单位"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "metres"
+          },
+          {
+            "language": "en",
+            "value": "mètre"
+          },
+          {
+            "language": "en",
+            "value": "meter"
+          },
+          {
+            "language": "en",
+            "value": "meters"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "公尺"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

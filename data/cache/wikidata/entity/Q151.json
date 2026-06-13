@@ -1,0 +1,65 @@
+{
+  "entities": {
+    "Q151": {
+      "type": "item",
+      "id": "Q151",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Wiktionary"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Викисловарь"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "维基词典"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "विकिकोश"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "free online multilingual dictionary"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "свободно пополняемый многофункциональный многоязычный словарь и тезаурус, основанный на вики-движке"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एक मुक्त शब्दकोश"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "自由的多語言詞典"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Wiktionary, the free dictionary"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "WT"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "विक्षनरी"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

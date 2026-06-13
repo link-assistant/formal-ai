@@ -1,0 +1,13 @@
+Q161053
+  aliases
+    en ("Ruby language" "Ruby programming language" rb)
+    ru (.rbw "Рубин" "Язык программирования Рубин" .rb Rubyn "Руби IDE")
+    zh ("Ruby語言")
+  descriptions
+    en "general-purpose programming language"
+    hi "प्रोग्रामिंग भाषा"
+    ru "интерпретируемый язык программирования"
+    zh "編程語言"
+  id Q161053
+  type item
+success 1

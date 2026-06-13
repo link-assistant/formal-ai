@@ -1,0 +1,39 @@
+{
+  "lemma": "notification",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01189953-n",
+      "partOfSpeech": "n",
+      "definition": "an accusation of crime made by a grand jury on its own initiative",
+      "synonyms": [
+        "presentment"
+      ]
+    },
+    {
+      "id": "oewn-07227084-n",
+      "partOfSpeech": "n",
+      "definition": "informing by words",
+      "synonyms": [
+        "telling",
+        "apprisal"
+      ]
+    },
+    {
+      "id": "oewn-07200328-n",
+      "partOfSpeech": "n",
+      "definition": "a request for payment",
+      "examples": [
+        "the notification stated the grace period and the penalties for defaulting"
+      ],
+      "synonyms": [
+        "notice"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "To or towards the inside of."
+          example "Mary danced into the house."
+        entry
+          definition "To or towards the region of."
+          example "The eagle flew off into the wide blue sky."
+        entry
+          definition "Against, especially with force or violence."
+          example "I wasn't careful, and walked into a wall"
+        entry
+          definition "Indicates transition into another form or substance."
+          example "I carved the piece of driftwood into a sculpture of a whale."
+        entry
+          definition "After the start of."
+          example "About 20 minutes into the flight, the pilot reported a fire on board."
+        entry
+          definition "Interested in or attracted to."
+          example "My date for tonight has black hair, and I'm into that."
+        entry
+          definition "Expressing the operation of multiplication."
+          example "Five into three is fifteen."
+        entry
+          definition 'Expressing the operation of division, with the denominator given first. Usually with "goes".'
+          example "24 goes into 48 how many times?"
+        entry
+          definition "Investigating the subject (of)."
+          example "There have been calls for research into the pesticides that are blamed for the decline in bee populations."
+      partOfSpeech preposition
+  phonetic "/ˈɪn.tuː/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈɪn.tuː/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/into-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1218986"
+    entry
+      audio ""
+      text "/ˈɪn.tu/"
+  sourceUrls ("https://en.wiktionary.org/wiki/into")
+  word into

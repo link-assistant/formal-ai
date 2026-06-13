@@ -1,0 +1,21 @@
+view
+  id M-14508cda16ab
+  lemma admin
+  language en
+  sources (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "Administration, or administrative work."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A systems administrator; one who maintains a computer system or network."
+    provenance (wiktionary)
+  sense
+    part_of_speech noun
+    gloss "A user of a discussion forum, web site, etc. with privileges allowing them to control or restrict the activity of other uses."
+    provenance (wiktionary)
+  sense
+    part_of_speech verb
+    gloss "To serve as an administrator for or of."
+    provenance (wiktionary)

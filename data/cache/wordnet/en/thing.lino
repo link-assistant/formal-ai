@@ -1,0 +1,67 @@
+language en
+lemma thing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a special situation"
+    examples ("this thing has got to end" "it is a remarkable thing")
+    id oewn-13967020-n
+    partOfSpeech n
+  entry
+    definition "an action"
+    examples ("how could you do such a thing?")
+    id oewn-00034778-n
+    partOfSpeech n
+  entry
+    definition "a special abstraction"
+    examples ("a thing of the spirit" "things of the heart")
+    id oewn-05863569-n
+    partOfSpeech n
+  entry
+    definition "an artifact"
+    examples ("how does this thing work?")
+    id oewn-04431353-n
+    partOfSpeech n
+  entry
+    definition "an event"
+    examples ("a funny thing happened on the way to the …")
+    id oewn-07304554-n
+    partOfSpeech n
+  entry
+    definition "a vaguely specified concern"
+    examples ("several matters to attend to" "it is none of your affair" "things are going well")
+    id oewn-05679169-n
+    partOfSpeech n
+    synonyms (matter affair)
+  entry
+    definition "a statement regarded as an object"
+    examples ("to say the same thing in other terms" "how can you say such a thing?")
+    id oewn-06736657-n
+    partOfSpeech n
+  entry
+    definition "an entity that is not named specifically"
+    examples ("I couldn't tell what the thing was")
+    id oewn-04431553-n
+    partOfSpeech n
+  entry
+    definition "any attribute or quality considered as having its own existence"
+    examples ("the thing I like about her is …")
+    id oewn-04624646-n
+    partOfSpeech n
+  entry
+    definition "a special objective"
+    examples ("the thing is to stay in bounds")
+    id oewn-05993067-n
+    partOfSpeech n
+  entry
+    definition "a persistent illogical feeling of desire or aversion"
+    examples ("he has a thing about seafood" "she has a thing about him")
+    id oewn-07495496-n
+    partOfSpeech n
+  entry
+    definition "a separate and self-contained entity"
+    id oewn-00002452-n
+    partOfSpeech n
+source "oewn:2024"

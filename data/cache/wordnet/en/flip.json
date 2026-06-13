@@ -1,0 +1,212 @@
+{
+  "lemma": "flip",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-92448268-n",
+      "partOfSpeech": "n",
+      "definition": "a suite of internet protocols, which provide Security transparency, security and network management.",
+      "examples": [
+        "FLIP is a connectionless protocol designed to support transparency, group communication, secure communication and easy network management."
+      ],
+      "synonyms": [
+        "fast local internet protocol"
+      ]
+    },
+    {
+      "id": "oewn-00440424-n",
+      "partOfSpeech": "n",
+      "definition": "an acrobatic feat in which the feet roll over the head (either forward or backward) and return",
+      "synonyms": [
+        "somersault",
+        "somerset",
+        "summersault",
+        "summerset",
+        "somersaulting"
+      ]
+    },
+    {
+      "id": "oewn-07931127-n",
+      "partOfSpeech": "n",
+      "definition": "hot or cold alcoholic mixed drink containing a beaten egg"
+    },
+    {
+      "id": "oewn-01248753-n",
+      "partOfSpeech": "n",
+      "definition": "a sudden, quick movement",
+      "examples": [
+        "with a flip of the wrist",
+        "the fish flipped over"
+      ]
+    },
+    {
+      "id": "oewn-01248633-n",
+      "partOfSpeech": "n",
+      "definition": "the act of flipping a coin",
+      "synonyms": [
+        "toss"
+      ]
+    },
+    {
+      "id": "oewn-00444788-n",
+      "partOfSpeech": "n",
+      "definition": "a dive in which the diver somersaults before entering the water"
+    },
+    {
+      "id": "oewn-00106640-n",
+      "partOfSpeech": "n",
+      "definition": "(sports) the act of throwing the ball to another member of your team",
+      "examples": [
+        "the pass was fumbled"
+      ],
+      "synonyms": [
+        "pass",
+        "toss"
+      ]
+    },
+    {
+      "id": "oewn-02003151-s",
+      "partOfSpeech": "s",
+      "definition": "marked by casual disrespect",
+      "examples": [
+        "a flip answer to serious question",
+        "the student was kept in for impudent behavior"
+      ],
+      "synonyms": [
+        "impudent",
+        "insolent",
+        "snotty-nosed"
+      ]
+    },
+    {
+      "id": "oewn-01897072-v",
+      "partOfSpeech": "v",
+      "definition": "lightly throw to see which side comes up",
+      "examples": [
+        "I don't know what to do — I may as well flip a coin!"
+      ],
+      "synonyms": [
+        "toss"
+      ]
+    },
+    {
+      "id": "oewn-01512805-v",
+      "partOfSpeech": "v",
+      "definition": "cause to go on or to be engaged or set in operation",
+      "examples": [
+        "switch on the light",
+        "throw the lever"
+      ],
+      "synonyms": [
+        "throw",
+        "switch"
+      ]
+    },
+    {
+      "id": "oewn-02157453-v",
+      "partOfSpeech": "v",
+      "definition": "look through a book or other written material",
+      "examples": [
+        "He thumbed through the report",
+        "She leafed through the volume"
+      ],
+      "synonyms": [
+        "flick",
+        "thumb",
+        "riffle",
+        "leaf",
+        "riff"
+      ]
+    },
+    {
+      "id": "oewn-01897594-v",
+      "partOfSpeech": "v",
+      "definition": "toss with a sharp movement so as to cause to turn over in the air",
+      "synonyms": [
+        "twitch"
+      ]
+    },
+    {
+      "id": "oewn-01897458-v",
+      "partOfSpeech": "v",
+      "definition": "cause to move with a flick",
+      "examples": [
+        "he flicked his Bic"
+      ],
+      "synonyms": [
+        "flick"
+      ]
+    },
+    {
+      "id": "oewn-01515257-v",
+      "partOfSpeech": "v",
+      "definition": "throw or toss with a light motion",
+      "examples": [
+        "flip me the beachball",
+        "toss me newspaper"
+      ],
+      "synonyms": [
+        "toss",
+        "sky",
+        "pitch"
+      ]
+    },
+    {
+      "id": "oewn-01244178-v",
+      "partOfSpeech": "v",
+      "definition": "move with a flick or light motion"
+    },
+    {
+      "id": "oewn-01225522-v",
+      "partOfSpeech": "v",
+      "definition": "turn upside down, or throw so as to reverse",
+      "examples": [
+        "flip over the pork chop",
+        "turn over the pancakes"
+      ],
+      "synonyms": [
+        "flip over",
+        "turn over"
+      ]
+    },
+    {
+      "id": "oewn-00719845-v",
+      "partOfSpeech": "v",
+      "definition": "react in an excited, delighted, or surprised way",
+      "examples": [
+        "he flipped when he heard that he was accepted into Princeton University"
+      ],
+      "synonyms": [
+        "flip out"
+      ]
+    },
+    {
+      "id": "oewn-00585887-v",
+      "partOfSpeech": "v",
+      "definition": "go mad, go crazy",
+      "examples": [
+        "He flipped when he heard that he was being laid off"
+      ],
+      "synonyms": [
+        "flip out"
+      ]
+    },
+    {
+      "id": "oewn-00121486-v",
+      "partOfSpeech": "v",
+      "definition": "reverse (a direction, attitude, or course of action)",
+      "synonyms": [
+        "interchange",
+        "tack",
+        "switch",
+        "alternate",
+        "flip-flop"
+      ]
+    }
+  ]
+}

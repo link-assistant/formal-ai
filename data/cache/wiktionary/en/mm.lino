@@ -1,0 +1,31 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "An expression used to show contentment for something"
+          example "Mmm, this is a tasty pie!"
+        entry
+          definition "An expression used to show thought or reflection"
+          example "Mmm, I see what you mean."
+        entry
+          definition 'An expression used to show being muffled or not able to speak clearly, as well as "mmph".'
+        entry
+          definition Yes.
+      partOfSpeech interjection
+    entry
+      definitions
+        entry
+          definition "A period into which a year is divided, historically based on the phases of the moon."
+          example "July is my favourite month."
+        entry
+          definition "A period of 30 days, 31 days, or some alternation thereof."
+          example "We went on holiday for two months."
+        entry
+          definition "(in the plural) A woman's period; menstrual discharge."
+      partOfSpeech noun
+  sourceUrls ("https://en.wiktionary.org/wiki/mm" "https://en.wiktionary.org/wiki/mmm" "https://en.wiktionary.org/wiki/month")
+  word mm
