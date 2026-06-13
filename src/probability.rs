@@ -6,6 +6,9 @@
 //! timestamp supplied by the caller, and can be replayed into the same event
 //! log / link-store projection as the rest of the solver trace.
 
+use std::cmp::Ordering;
+use std::collections::BTreeMap;
+
 use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
@@ -279,6 +282,59 @@ impl ProbabilityStore {
             .count()
     }
 
+    /// Reuse the nearest stored target's evidence when `target` has none of its
+    /// own — the symbolic counterpart of the paper's cosine-similarity `SS`
+    /// fallback over stored situations.
+    ///
+    /// Among the distinct targets that carry usable evidence under the same
+    /// offline/Markov filters (excluding `target` itself), this returns the one
+    /// whose [`symbolic_cosine_similarity`] to `target` is highest and at least
+    /// `threshold`. Ties are broken by target name so the choice is
+    /// deterministic. Returns `None` when nothing clears the threshold.
+    #[must_use]
+    pub fn nearest_similar_evidence(
+        &self,
+        target: &str,
+        offline: bool,
+        markov_from: Option<&str>,
+        threshold: f32,
+    ) -> Option<SimilarEvidence> {
+        let mut seen: Vec<&str> = Vec::new();
+        let mut best: Option<SimilarEvidence> = None;
+        for evidence in &self.records {
+            let other = evidence.target.as_str();
+            if other == target || seen.contains(&other) {
+                continue;
+            }
+            seen.push(other);
+            let count = self.target_evidence_count(other, offline, markov_from);
+            if count == 0 {
+                continue;
+            }
+            let similarity = symbolic_cosine_similarity(target, other);
+            if similarity < threshold {
+                continue;
+            }
+            let candidate = SimilarEvidence {
+                matched_target: other.to_owned(),
+                weight: self.target_weight(other, offline, markov_from),
+                count,
+                similarity,
+            };
+            let replace = best.as_ref().map_or(true, |current| {
+                match similarity.total_cmp(&current.similarity) {
+                    Ordering::Greater => true,
+                    Ordering::Equal => candidate.matched_target < current.matched_target,
+                    Ordering::Less => false,
+                }
+            });
+            if replace {
+                best = Some(candidate);
+            }
+        }
+        best
+    }
+
     #[must_use]
     pub fn to_links_notation(&self) -> String {
         let mut blocks = vec![format_lino_record(
@@ -339,6 +395,19 @@ impl ProbabilityStore {
     }
 }
 
+/// Evidence borrowed from the nearest stored target by the `SS` fallback.
+#[derive(Debug, Clone, PartialEq)]
+pub struct SimilarEvidence {
+    /// The stored target whose evidence is being reused.
+    pub matched_target: String,
+    /// The matched target's accumulated utility `U` (before similarity scaling).
+    pub weight: f32,
+    /// The matched target's evidence count `C`.
+    pub count: usize,
+    /// Symbolic cosine similarity between the queried and matched targets.
+    pub similarity: f32,
+}
+
 /// A candidate whose posterior can be ranked by symbolic probability evidence.
 #[derive(Debug, Clone, PartialEq)]
 pub struct ProbabilityCandidate {
@@ -383,6 +452,63 @@ pub struct ProbabilityRankingConfig {
     /// times than this threshold has its learned evidence withheld and falls
     /// back to its structural prior. `None` disables the gate.
     pub min_transition_count: Option<usize>,
+    /// Similarity threshold for the inexact-state fallback (the paper's `SS`).
+    /// When a candidate has *no* exact evidence of its own, the ranker reuses
+    /// the nearest stored target whose symbolic cosine similarity to the
+    /// candidate is at least this threshold, scaling the borrowed utility by the
+    /// similarity. `None` disables the fallback, so only exact evidence counts.
+    pub similarity_threshold: Option<f32>,
+}
+
+impl ProbabilityRankingConfig {
+    /// Overlay the paper's decision-policy hyperparameters (`CU`/`TU`/`TC`/`SS`)
+    /// onto this config, leaving the deterministic transport knobs
+    /// (`temperature`, `offline`, `markov_from`) untouched. This is the seam
+    /// every call site uses to honour a centrally configured
+    /// [`ProbabilityDecisionPolicy`] without re-spelling each field.
+    #[must_use]
+    pub const fn with_decision_policy(mut self, policy: ProbabilityDecisionPolicy) -> Self {
+        self.counted_utility = policy.counted_utility;
+        self.min_transition_utility = policy.min_transition_utility;
+        self.min_transition_count = policy.min_transition_count;
+        self.similarity_threshold = policy.similarity_threshold;
+        self
+    }
+
+    /// Extract the decision-policy hyperparameters from this config.
+    #[must_use]
+    pub const fn decision_policy(&self) -> ProbabilityDecisionPolicy {
+        ProbabilityDecisionPolicy {
+            counted_utility: self.counted_utility,
+            min_transition_utility: self.min_transition_utility,
+            min_transition_count: self.min_transition_count,
+            similarity_threshold: self.similarity_threshold,
+        }
+    }
+}
+
+/// Interpretable decision-policy hyperparameters from Kolonin's paper.
+///
+/// These are the `CU`/`TU`/`TC`/`SS` knobs of "Interpretable Experiential
+/// Learning" (arXiv:2605.00940), grouped as one `Copy` unit so a single policy
+/// can be threaded through every ranking call site instead of being re-spelled
+/// field by field.
+///
+/// The default is the paper's recommended baseline (`CU=False`, `TU=0`,
+/// `TC=1`, no similarity fallback), which is exactly the additive behaviour
+/// this module shipped before the policy existed, so a defaulted policy is a
+/// no-op overlay.
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
+pub struct ProbabilityDecisionPolicy {
+    /// Counted-utility switch `CU`: rank by `argmax(U·C)` instead of `argmax(U)`.
+    pub counted_utility: bool,
+    /// Transition-utility threshold `TU`: withhold evidence below this utility.
+    pub min_transition_utility: Option<f32>,
+    /// Transition-count threshold `TC`: withhold evidence below this count.
+    pub min_transition_count: Option<usize>,
+    /// Inexact-state similarity threshold `SS`: reuse the nearest stored target's
+    /// evidence (scaled by similarity) when a candidate has none of its own.
+    pub similarity_threshold: Option<f32>,
 }
 
 /// One ranked candidate with inspectable prior/evidence/posterior fields.
@@ -398,6 +524,11 @@ pub struct RankedProbabilityCandidate {
     pub prior_score: f32,
     pub evidence_weight: f32,
     pub evidence_count: usize,
+    /// Provenance of the evidence behind this candidate: `1.0` when it is the
+    /// candidate's own (exact) evidence, or the symbolic cosine similarity
+    /// `< 1.0` when it was borrowed from the nearest stored target through the
+    /// `SS` fallback. Surfaced so a fallback-driven decision stays interpretable.
+    pub similarity: f32,
     pub posterior_score: f32,
     pub probability: f32,
 }
@@ -453,23 +584,49 @@ pub fn rank_probability_candidates(
         counted_utility,
         min_transition_utility,
         min_transition_count,
+        similarity_threshold,
     } = config;
     let markov_from = markov_from.as_deref();
     let mut ranked = candidates
         .iter()
         .map(|candidate| {
-            let raw_weight = store.target_weight(&candidate.target, offline, markov_from);
-            let raw_count = store.target_evidence_count(&candidate.target, offline, markov_from);
+            let direct_weight = store.target_weight(&candidate.target, offline, markov_from);
+            let direct_count = store.target_evidence_count(&candidate.target, offline, markov_from);
+            // State-similarity fallback (SS): when a target carries no direct
+            // evidence we borrow it from the most similar previously seen target,
+            // attenuated by the symbolic cosine similarity between their names.
+            // This mirrors the paper's `SS` inexact-match path without changing
+            // any directly-evidenced decision.
+            let (raw_weight, raw_count, similarity) = if direct_count == 0 {
+                if let Some(found) = similarity_threshold.and_then(|threshold| {
+                    store.nearest_similar_evidence(
+                        &candidate.target,
+                        offline,
+                        markov_from,
+                        threshold,
+                    )
+                }) {
+                    (
+                        found.weight * found.similarity,
+                        found.count,
+                        found.similarity,
+                    )
+                } else {
+                    (direct_weight, direct_count, 1.0)
+                }
+            } else {
+                (direct_weight, direct_count, 1.0)
+            };
             // Transition utility/count thresholds (TU/TC): an under-evidenced
             // transition is not trusted as a learned candidate, so its evidence
             // is withheld and the candidate falls back to its structural prior.
             let below_utility =
                 min_transition_utility.is_some_and(|threshold| raw_weight < threshold);
             let below_count = min_transition_count.is_some_and(|threshold| raw_count < threshold);
-            let (evidence_weight, evidence_count) = if below_utility || below_count {
-                (0.0, 0)
+            let (evidence_weight, evidence_count, similarity) = if below_utility || below_count {
+                (0.0, 0, 1.0)
             } else {
-                (raw_weight, raw_count)
+                (raw_weight, raw_count, similarity)
             };
             // Counted-utility policy (CU): scale the learned utility by how many
             // times the transition was confirmed (`U` becomes `U * C`).
@@ -484,6 +641,7 @@ pub fn rank_probability_candidates(
                 prior_score: candidate.prior_score,
                 evidence_weight,
                 evidence_count,
+                similarity,
                 posterior_score,
                 probability: 0.0,
             }
@@ -576,4 +734,60 @@ fn usize_to_f32(value: usize) -> f32 {
 /// avoid precision loss for absurdly large symbolic histories.
 fn count_to_f32(value: usize) -> f32 {
     f32::from(u16::try_from(value).unwrap_or(u16::MAX))
+}
+
+/// Deterministic bag-of-words cosine similarity between two symbolic targets.
+///
+/// This is the non-neural counterpart of the paper's `SS` state-similarity
+/// score. Names are tokenized on any non-alphanumeric boundary and lowercased,
+/// then compared as multisets of tokens. The result lies in `0.0..=1.0`; it is
+/// `0.0` when either side has no tokens and `1.0` for identical token bags.
+#[must_use]
+pub fn symbolic_cosine_similarity(a: &str, b: &str) -> f32 {
+    let left = tokenize_symbolic(a);
+    let right = tokenize_symbolic(b);
+    if left.is_empty() || right.is_empty() {
+        return 0.0;
+    }
+    let left_counts = bag_of_words(&left);
+    let right_counts = bag_of_words(&right);
+    let mut dot = 0.0f32;
+    for (token, left_count) in &left_counts {
+        if let Some(right_count) = right_counts.get(token) {
+            dot = count_to_f32(*left_count).mul_add(count_to_f32(*right_count), dot);
+        }
+    }
+    let left_norm = vector_norm(&left_counts);
+    let right_norm = vector_norm(&right_counts);
+    if left_norm <= f32::EPSILON || right_norm <= f32::EPSILON {
+        return 0.0;
+    }
+    (dot / (left_norm * right_norm)).clamp(0.0, 1.0)
+}
+
+fn tokenize_symbolic(value: &str) -> Vec<String> {
+    value
+        .split(|character: char| !character.is_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .map(str::to_lowercase)
+        .collect()
+}
+
+fn bag_of_words(tokens: &[String]) -> BTreeMap<String, usize> {
+    let mut counts = BTreeMap::new();
+    for token in tokens {
+        *counts.entry(token.clone()).or_insert(0) += 1;
+    }
+    counts
+}
+
+fn vector_norm(counts: &BTreeMap<String, usize>) -> f32 {
+    let sum_of_squares = counts
+        .values()
+        .map(|count| {
+            let value = count_to_f32(*count);
+            value * value
+        })
+        .sum::<f32>();
+    sum_of_squares.sqrt()
 }
