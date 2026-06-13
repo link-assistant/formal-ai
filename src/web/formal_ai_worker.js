@@ -13363,6 +13363,760 @@ function priorSoftwareProjectMeaning(history) {
   return user ? formalizeSoftwareProjectRequest(user) : null;
 }
 
+const INSTALL_FORMAT_MARKDOWN = "markdown";
+const INSTALL_FORMAT_SHELL = "shell_script";
+const INSTALL_FORMAT_POWERSHELL = "powershell_script";
+
+const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
+  {
+    id: "collect_corpus",
+    output: "representative problem-class examples",
+    verifier: "case-study corpus preserved",
+  },
+  {
+    id: "derive_surfaces",
+    output: "source and target surface ontology",
+    verifier: "source/target format detection",
+  },
+  {
+    id: "extract_ir",
+    output: "shared intermediate representation",
+    verifier: "ordered command preservation fixture",
+  },
+  {
+    id: "synthesize_operations",
+    output: "recognizers, extractors, renderers, and validators",
+    verifier: "round-trip surface invariants",
+  },
+  {
+    id: "project_targets",
+    output: "target-specific Markdown, shell, and PowerShell renderers",
+    verifier: "per-target rendering fixture",
+  },
+  {
+    id: "mirror_runtimes",
+    output: "Rust and browser-worker projections of the same algorithm",
+    verifier: "cross-runtime parity checks",
+  },
+  {
+    id: "promote_capability",
+    output: "reusable coding-task construction pattern",
+    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+  },
+];
+
+const INSTALL_CODING_SURFACE_PROJECTIONS = [
+  {
+    slug: "coding_catalog",
+    projection: "task spec -> parameterized template -> CST/compile check",
+  },
+  {
+    slug: "program_synthesis",
+    projection: "semantic function tree -> source program -> sandbox tests",
+  },
+  {
+    slug: "program_blueprint",
+    projection: "capability set -> blueprint recipe -> honest code projection",
+  },
+  {
+    slug: "numeric_list",
+    projection: "operation/data/language IR -> generated code plus evaluated result",
+  },
+  {
+    slug: "rule_synthesis",
+    projection: "operation/target binding -> candidate rule -> verification fixture",
+  },
+  {
+    slug: "installation_conversion",
+    projection: "installation surfaces -> install-step IR -> target renderers",
+  },
+];
+
+function installationContainsAny(value, needles) {
+  return needles.some((needle) => String(value || "").includes(needle));
+}
+
+function isInstallationConversionRequest(normalized) {
+  const asksConversion = installationContainsAny(normalized, [
+    "convert",
+    "conversion",
+    "transform",
+    "turn",
+    "translate",
+    "back to",
+    "конверт",
+    "преобраз",
+    "перевед",
+    "बदल",
+    "परिवर्त",
+    "रूपांतर",
+    "कन्वर्ट",
+    "转换",
+    "轉換",
+    "转成",
+    "轉成",
+    "转为",
+    "轉為",
+    "翻译",
+    "翻譯",
+  ]);
+  const namesInstallSurface = installationContainsAny(normalized, [
+    "readme",
+    "markdown",
+    "installation guide",
+    "install guide",
+    "deployment guide",
+    "deploy guide",
+    "installation script",
+    "install script",
+    "deployment script",
+    "deploy script",
+    "руководство по установ",
+    "инструкц",
+    "установ",
+    "स्थापना",
+    "इंस्टॉल",
+    "इंस्टॉलेशन",
+    "安装",
+    "安裝",
+    "部署",
+  ]);
+  const namesScriptSurface = installationContainsAny(normalized, [
+    " sh ",
+    " bash",
+    "shell",
+    "powershell",
+    "pwsh",
+    "ps1",
+    "script",
+    "скрипт",
+    "скрипта",
+    "脚本",
+    "腳本",
+  ]);
+  return asksConversion && namesInstallSurface && namesScriptSurface;
+}
+
+function installationFencedBlocks(text) {
+  const blocks = [];
+  let currentInfo = null;
+  let currentBody = [];
+  for (const line of String(text || "").split(/\r?\n/)) {
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith("```")) {
+      if (currentInfo !== null) {
+        blocks.push({
+          info: currentInfo,
+          body: currentBody.join("\n").replace(/\n+$/g, ""),
+        });
+        currentInfo = null;
+        currentBody = [];
+      } else {
+        currentInfo = trimmed.slice(3).trim().split(/\s+/, 1)[0].toLowerCase();
+      }
+      continue;
+    }
+    if (currentInfo !== null) currentBody.push(line);
+  }
+  return blocks;
+}
+
+function isInstallationShellFence(info) {
+  return ["bash", "sh", "shell", "zsh"].includes(String(info || ""));
+}
+
+function isInstallationPowerShellFence(info) {
+  return ["powershell", "pwsh", "ps1"].includes(String(info || ""));
+}
+
+function detectInstallationSourceFormat(prompt, normalized) {
+  const fences = installationFencedBlocks(prompt);
+  const explicitPowerShell = installationContainsAny(normalized, [
+    "this powershell",
+    "powershell installation script",
+    "powershell script back",
+    "ps1 script",
+  ]);
+  const explicitShell = installationContainsAny(normalized, [
+    "this shell",
+    "this bash",
+    "shell installation script",
+    "shell script back",
+    "bash script back",
+  ]);
+  const explicitMarkdown = installationContainsAny(normalized, [
+    "this readme",
+    "readme.md installation guide",
+    "readme installation guide",
+    "this markdown",
+    "markdown installation guide",
+  ]);
+  if (explicitPowerShell) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (explicitShell) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (explicitMarkdown) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  if (fences.some((block) => isInstallationPowerShellFence(block.info))) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (fences.some((block) => isInstallationShellFence(block.info))) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (fences.some((block) => block.info === "markdown" || block.info === "md")) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  return INSTALL_FORMAT_MARKDOWN;
+}
+
+function pushInstallationTarget(targets, target) {
+  if (!targets.includes(target)) targets.push(target);
+}
+
+function detectInstallationTargetFormats(normalized, sourceFormat) {
+  const targets = [];
+  if (
+    installationContainsAny(normalized, [
+      "back to a readme",
+      "back to readme",
+      "to a readme",
+      "to readme",
+      "to markdown",
+      "markdown guide",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "both sh and powershell",
+      "both bash and powershell",
+      "sh and powershell",
+      "bash and powershell",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "into a sh script",
+      "to a sh script",
+      "into sh",
+      "to sh",
+      "into a shell script",
+      "to a shell script",
+      "into a bash script",
+      "to a bash script",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+  }
+  if (
+    sourceFormat !== INSTALL_FORMAT_POWERSHELL &&
+    installationContainsAny(normalized, [
+      "into a powershell script",
+      "to a powershell script",
+      "into powershell",
+      "to powershell",
+      "to ps1",
+      "into ps1",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (targets.length === 0) {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    } else {
+      pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+    }
+  }
+  return targets;
+}
+
+function extractInstallationSourceText(prompt, sourceFormat) {
+  const fences = installationFencedBlocks(prompt);
+  const matching = fences.find((block) => {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      return block.info === "markdown" || block.info === "md";
+    }
+    if (sourceFormat === INSTALL_FORMAT_SHELL) return isInstallationShellFence(block.info);
+    return isInstallationPowerShellFence(block.info);
+  });
+  if (matching) return matching.body;
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) return String(prompt || "");
+  if (fences.length > 0) return fences[0].body;
+  return String(prompt || "");
+}
+
+function normalizeInstallationScriptLine(line) {
+  return String(line || "").trim().replace(/^\$ /, "").replace(/^PS> /, "").trim();
+}
+
+function shouldSkipInstallationScriptLine(line) {
+  return (
+    line === "" ||
+    line.startsWith("#!") ||
+    line.startsWith("#") ||
+    line === "set -e" ||
+    line === "set -eu" ||
+    line === "set -euo pipefail" ||
+    line === "$ErrorActionPreference = 'Stop'"
+  );
+}
+
+// Provenance of a candidate line. Mirrors the Rust `Provenance` enum: code
+// spans/fences are author-marked code (weak shape check), bare lines must prove
+// themselves structurally.
+const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
+const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
+
+const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "with",
+  "into",
+  "from",
+  "your",
+  "you",
+  "our",
+  "this",
+  "that",
+  "these",
+  "those",
+  "then",
+  "will",
+  "should",
+  "must",
+  "please",
+  "manually",
+]);
+
+// True when the token is shaped like an executable name or a path to one rather
+// than a natural-language word. Commands are lowercase by convention, so an
+// uppercase or non-ASCII lead immediately reads as prose.
+function isInstallationExecutableHead(token) {
+  if (!token) return false;
+  const first = token[0];
+  const startsOk = /[a-z0-9./]/.test(first);
+  if (!startsOk) return false;
+  return /^[a-z0-9./_+-]+$/.test(token);
+}
+
+function installationHasShellOperator(command) {
+  return (
+    command.includes(" | ") ||
+    command.includes("&&") ||
+    command.includes("||") ||
+    command.includes(" ; ")
+  );
+}
+
+function installationReadsAsProse(tokens) {
+  return tokens.some((token) => {
+    const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
+    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+  });
+}
+
+// Decide whether `command` is an install/deploy command by reasoning about its
+// structure and provenance instead of matching a fixed tool whitelist. Any
+// well-formed command line is accepted regardless of which tool it invokes,
+// while prose lines are rejected even when they mention a tool.
+function looksLikeInstallationCommand(command, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const trimmed = String(command || "").trim();
+  if (!trimmed) return false;
+
+  // A raw prose line that embeds a code span ("Run `npm install`.") is prose:
+  // the inline/fence collectors already lifted the real command out.
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE && trimmed.includes("`")) return false;
+
+  const tokens = trimmed.split(/\s+/);
+  const head = tokens[0].toLowerCase();
+  if (!isInstallationExecutableHead(head)) return false;
+
+  // Shell composition is unambiguous command shape regardless of provenance.
+  if (installationHasShellOperator(trimmed)) return true;
+
+  // An executable-looking head can still front a wrapped prose note; English
+  // function words betray it.
+  if (installationReadsAsProse(tokens)) return false;
+
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE) {
+    return tokens.length >= 2 || head.includes("/");
+  }
+  return true;
+}
+
+function pushInstallationCommand(commands, candidate, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const command = String(candidate || "").trim();
+  if (!command || !looksLikeInstallationCommand(command, provenance)) return;
+  if (!commands.includes(command)) commands.push(command);
+}
+
+function collectInstallationInlineCommands(source, commands) {
+  const text = String(source || "");
+  let inTick = false;
+  let candidate = "";
+  for (const character of text) {
+    if (character === "`") {
+      if (inTick) {
+        // Inline code spans are author-marked code: trust the shape.
+        pushInstallationCommand(commands, candidate.trim(), INSTALL_PROVENANCE_CODE_SPAN);
+        candidate = "";
+        inTick = false;
+      } else {
+        inTick = true;
+      }
+      continue;
+    }
+    if (inTick) candidate += character;
+  }
+}
+
+function collectInstallationBulletCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    let trimmed = line.trim();
+    trimmed = trimmed.replace(/^[-*+\d]+[.) ]*/, "").trim();
+    if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length > 2) {
+      // The whole bullet is a single code span: code provenance.
+      pushInstallationCommand(commands, trimmed.slice(1, -1), INSTALL_PROVENANCE_CODE_SPAN);
+    } else {
+      // Raw document line with no code markup: prove it structurally.
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_BARE_LINE);
+    }
+  }
+}
+
+function collectInstallationScriptCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    const trimmed = normalizeInstallationScriptLine(line);
+    // Lines inside a shell/PowerShell fence are code by construction.
+    if (!shouldSkipInstallationScriptLine(trimmed))
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_CODE_SPAN);
+  }
+}
+
+// Translate a single verb token into an action category. Keyed on the verb
+// itself (not the surrounding tool), so the same lexicon serves every program.
+// Returns the marker "run" for generic launcher verbs so the caller can prefer
+// a more concrete object.
+function classifyInstallationVerb(token) {
+  switch (token) {
+    case "clone":
+      return "Clone the repository";
+    case "cd":
+    case "chdir":
+    case "pushd":
+      return "Enter the project directory";
+    case "install":
+    case "add":
+    case "ci":
+    case "restore":
+    case "sync":
+    case "bootstrap":
+    case "vendor":
+    case "i":
+      return "Install dependencies";
+    case "test":
+    case "check":
+    case "lint":
+    case "doctor":
+    case "verify":
+    case "validate":
+    case "version":
+    case "pytest":
+    case "jest":
+    case "mocha":
+    case "vitest":
+    case "tox":
+      return "Run the verification command";
+    case "build":
+    case "compile":
+    case "configure":
+    case "make":
+    case "package":
+    case "dist":
+    case "bundle":
+    case "cmake":
+    case "gradle":
+    case "ninja":
+    case "msbuild":
+      return "Build the project";
+    case "run":
+    case "serve":
+    case "start":
+    case "up":
+    case "exec":
+    case "dev":
+    case "launch":
+    case "watch":
+      return "run";
+    default:
+      return null;
+  }
+}
+
+// Structural view of a command: the program (last path segment of the
+// executable), the ordered non-flag argument tokens, and whether a version/help
+// probe flag is present.
+function parseInstallationCommand(command) {
+  let tokens = String(command || "").trim().split(/\s+/).filter(Boolean);
+  while (tokens.length && (tokens[0] === "sudo" || tokens[0] === "env" || tokens[0] === "command")) {
+    tokens = tokens.slice(1);
+  }
+  const rawProgram = tokens.shift() || "";
+  let program = rawProgram.split("/").pop().toLowerCase();
+
+  let rest = tokens;
+  if ((program === "python" || program === "python3" || program === "py") && rest[0] === "-m" && rest[1]) {
+    program = rest[1].toLowerCase();
+    rest = rest.slice(2);
+  }
+
+  const args = [];
+  let isProbe = false;
+  for (const token of rest) {
+    const bare = token.replace(/^['"]+/, "").replace(/['"]+$/, "");
+    if (["--version", "-v", "-V", "--help", "-h"].includes(bare)) {
+      isProbe = true;
+      continue;
+    }
+    if (bare.startsWith("-")) continue;
+    args.push(bare.toLowerCase());
+  }
+  return { program, args, isProbe };
+}
+
+// Derive a human-readable step description from the parsed verb/object of the
+// command rather than matching the whole string against a substring table.
+function describeInstallationCommand(command) {
+  const parsed = parseInstallationCommand(command);
+  if (parsed.isProbe) return "Verify the installation";
+
+  let genericRun = false;
+  for (const argument of parsed.args) {
+    const action = classifyInstallationVerb(argument);
+    if (action === "run") {
+      genericRun = true;
+    } else if (action) {
+      return action;
+    }
+  }
+  const programAction = classifyInstallationVerb(parsed.program);
+  if (programAction === "run") {
+    genericRun = true;
+  } else if (programAction) {
+    return programAction;
+  }
+  if (genericRun) return "Start the application";
+
+  // Fall back to a description synthesized from the program/verb so unseen but
+  // well-formed commands still read meaningfully.
+  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
+  return `Run ${parsed.program}`;
+}
+
+function extractInstallationSteps(source, sourceFormat) {
+  const commands = [];
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+    for (const block of installationFencedBlocks(source)) {
+      if (isInstallationShellFence(block.info) || isInstallationPowerShellFence(block.info)) {
+        collectInstallationScriptCommands(block.body, commands);
+      }
+    }
+    collectInstallationInlineCommands(source, commands);
+    collectInstallationBulletCommands(source, commands);
+  } else {
+    collectInstallationScriptCommands(source, commands);
+  }
+  return commands.map((command, index) => ({
+    id: `S${index + 1}`,
+    description: describeInstallationCommand(command),
+    command,
+  }));
+}
+
+function extractInstallationProject(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  const marker = " for ";
+  const start = lower.indexOf(marker);
+  if (start < 0) return "the project";
+  const tail = source.slice(start + marker.length);
+  const stopMatch = tail.match(/[\s,:;\n]/);
+  const stop = stopMatch ? stopMatch.index : tail.length;
+  const project = tail.slice(0, stop).trim();
+  return project.includes("/") || project.includes("-") ? project : "the project";
+}
+
+function installationMeaningKey(conversion) {
+  const parts = [`source=${conversion.sourceFormat}`, `project=${conversion.project}`];
+  for (const target of conversion.targetFormats) parts.push(`target=${target}`);
+  for (const step of conversion.steps) parts.push(`command=${step.command}`);
+  return parts.join(";");
+}
+
+function installationEvidence(conversion) {
+  const evidence = [
+    "formalization:install_steps_ir",
+    `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
+    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    `installation_conversion:source_format:${conversion.sourceFormat}`,
+    `installation_conversion:project:${conversion.project}`,
+  ];
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
+  }
+  for (const target of conversion.targetFormats) {
+    evidence.push(`installation_conversion:target_format:${target}`);
+  }
+  for (const step of conversion.steps) {
+    evidence.push(`installation_conversion:step:${step.id}:${step.command}`);
+  }
+  evidence.push("installation_conversion:validation:ordered_commands_preserved");
+  return evidence;
+}
+
+function renderInstallationLino(conversion) {
+  const lines = ["installation_conversion_request"];
+  lines.push(`  source_format ${conversion.sourceFormat}`);
+  for (const target of conversion.targetFormats) lines.push(`  target_format ${target}`);
+  lines.push(`  project ${linoString(conversion.project)}`);
+  lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
+  lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
+  lines.push(
+    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
+  );
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    lines.push(`  construction_stage ${linoString(stage.id)}`);
+    lines.push(`  stage_output ${linoString(stage.output)}`);
+    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`  coding_surface ${linoString(surface.slug)}`);
+    lines.push(`  surface_projection ${linoString(surface.projection)}`);
+  }
+  for (const step of conversion.steps) {
+    lines.push(`  step ${linoString(step.id)}`);
+    lines.push(`  description ${linoString(step.description)}`);
+    lines.push(`  command ${linoString(step.command)}`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationMetaAlgorithm() {
+  const lines = ["Meta algorithm for constructing conversion algorithms:"];
+  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
+    lines.push(
+      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
+    );
+  });
+  lines.push("");
+  lines.push("Existing coding solutions producible by the same meta algorithm:");
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  }
+  return lines.join("\n");
+}
+
+function renderInstallationMarkdownGuide(conversion) {
+  const lines = ["README.md installation guide:", "", "## Installation", ""];
+  conversion.steps.forEach((step, index) => {
+    lines.push(`${index + 1}. ${step.description}.`);
+    lines.push("");
+    lines.push("   ```sh");
+    lines.push(`   ${step.command}`);
+    lines.push("   ```");
+  });
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationShellScript(conversion) {
+  const lines = ["Bash script:", "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationPowerShellScript(conversion) {
+  const lines = ["PowerShell script:", "```powershell", "$ErrorActionPreference = 'Stop'", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationConversion(conversion) {
+  const lines = [
+    `Converted installation instructions for ${conversion.project}.`,
+    "",
+    "Formalized meaning:",
+    "```lino",
+    renderInstallationLino(conversion).trimEnd(),
+    "```",
+    "",
+    "Conversion algorithm:",
+    "1. Detect the source surface and requested target surface(s).",
+    "2. Extract command-like install/deploy steps in original order.",
+    "3. Render every target from the same install-step IR.",
+    "4. Preserve commands verbatim so the conversion can round-trip.",
+    "",
+    renderInstallationMetaAlgorithm(),
+  ];
+  for (const target of conversion.targetFormats) {
+    lines.push("");
+    if (target === INSTALL_FORMAT_MARKDOWN) {
+      lines.push(renderInstallationMarkdownGuide(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_SHELL) {
+      lines.push(renderInstallationShellScript(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_POWERSHELL) {
+      lines.push(renderInstallationPowerShellScript(conversion).trimEnd());
+    }
+  }
+  return lines.join("\n").trimEnd();
+}
+
+function tryInstallationConversion(prompt, normalized) {
+  if (!isInstallationConversionRequest(normalized)) return null;
+  const sourceFormat = detectInstallationSourceFormat(prompt, normalized);
+  const targetFormats = detectInstallationTargetFormats(normalized, sourceFormat);
+  const sourceText = extractInstallationSourceText(prompt, sourceFormat);
+  let steps = extractInstallationSteps(sourceText, sourceFormat);
+  if (steps.length === 0 && sourceFormat === INSTALL_FORMAT_MARKDOWN && sourceText !== String(prompt || "")) {
+    steps = extractInstallationSteps(prompt, sourceFormat);
+  }
+  if (steps.length === 0) return null;
+  const conversion = {
+    sourceFormat,
+    targetFormats,
+    project: extractInstallationProject(prompt),
+    steps,
+  };
+  return {
+    intent: "installation_conversion",
+    content: renderInstallationConversion(conversion),
+    confidence: 0.84,
+    evidence: installationEvidence(conversion),
+  };
+}
+
 function trySoftwareProjectRequest(prompt, history = []) {
   const normalized = normalizePrompt(prompt);
   if (isSoftwareApprovalPrompt(normalized)) {
@@ -36105,6 +36859,11 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    // Issue #423: README/install-guide to shell/PowerShell conversion is a
+    // narrower script request than generic program synthesis. Keep it ahead of
+    // writeProgram so "convert this README to a script" preserves the source
+    // instructions instead of producing an unrelated starter script.
+    { name: "tryInstallationConversion", run: () => tryInstallationConversion(prompt, normalized) },
     {
       name: "tryWriteProgramConcrete",
       run: () => {
