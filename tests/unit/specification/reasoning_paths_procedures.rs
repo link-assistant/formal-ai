@@ -311,7 +311,7 @@ fn procedural_elaboration_followup_rebinds_to_prior_how_to() {
 
     let history = [
         ConversationTurn::user(how_to_prompt),
-        ConversationTurn::assistant(plan.answer.clone()),
+        ConversationTurn::assistant(plan.answer),
     ];
     let follow_up = solver.solve_with_history("Can you give me specific instructions?", &history);
 
@@ -402,7 +402,7 @@ fn procedural_elaboration_followup_covers_supported_languages() {
         );
         let history = [
             ConversationTurn::user(case.how_to),
-            ConversationTurn::assistant(plan.answer.clone()),
+            ConversationTurn::assistant(plan.answer),
         ];
         let follow_up = solver.solve_with_history(case.elaboration, &history);
         assert_eq!(
