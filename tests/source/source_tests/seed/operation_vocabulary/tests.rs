@@ -161,6 +161,27 @@ fn operation_vocabulary_exposes_declared_inverse_pairs() {
 }
 
 #[test]
+fn operation_vocabulary_reverse_sort_matches_invert_phrasings() {
+    // Issue #427: "Сделай инверсию сортировки." (make the inversion of the sort)
+    // must be recognized as a descending sort across every supported language.
+    let vocabulary = operation_vocabulary();
+    for prompt in [
+        "сделай инверсию сортировки",
+        "инвертируй сортировку",
+        "invert the sort",
+        "invert sort",
+        "उलट क्रम में करो",
+        "反转排序",
+        "颠倒排序",
+    ] {
+        assert!(
+            vocabulary.matches("reverse_sort", &prompt.to_lowercase()),
+            "reverse_sort must match {prompt:?}"
+        );
+    }
+}
+
+#[test]
 fn operation_vocabulary_cancel_reverse_sort_matches_native_phrasings() {
     let vocabulary = operation_vocabulary();
     for prompt in [

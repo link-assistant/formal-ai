@@ -1,4 +1,9 @@
 meanings
+  tool_concept_lookup
+    defined-by tool
+    lexeme en
+      surface
+        text "tool concept lookup"
   tool_conversation_recall
     defined-by tool
     lexeme en
