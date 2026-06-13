@@ -900,6 +900,55 @@ fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     );
 }
 
+#[test]
+fn issue_444_benchmark_catalog_lists_every_touched_suite() {
+    // The maintainer asked for a single docs page that collects the list of all
+    // benchmarks the repository has ever touched. Pin that catalog so a new
+    // suite cannot be added under data/benchmarks/ without being indexed here.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let catalog = read(root.join("docs/benchmarks.md"));
+    assert_contains_all(
+        "docs/benchmarks.md",
+        &catalog,
+        &[
+            "# Benchmark Catalog",
+            // Every suite fixture under data/benchmarks/ must be indexed.
+            "industry-suite.lino",
+            "coding-modification-suite.lino",
+            "text-manipulation-suite.lino",
+            "procedural-howto-suite.lino",
+            // Issue provenance the maintainer asked us to scan.
+            "#103",
+            "#304",
+            "#317",
+            "#362",
+            "#408",
+            "#444",
+            // A representative source from each suite.
+            "HumanEval",
+            "CanItEdit",
+            "CoEdIT",
+            "IFEval",
+            // Licensing and anti-memorization conventions.
+            "Apache-2.0",
+            "Anti-memorization",
+        ],
+    );
+
+    // Guard against a suite fixture existing on disk but missing from the index.
+    let benchmarks_dir = root.join("data/benchmarks");
+    for entry in fs::read_dir(&benchmarks_dir).expect("data/benchmarks should be readable") {
+        let entry = entry.expect("benchmark dir entry");
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if name.ends_with(".lino") {
+            assert!(
+                catalog.contains(&name),
+                "docs/benchmarks.md should index benchmark fixture: {name}"
+            );
+        }
+    }
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
