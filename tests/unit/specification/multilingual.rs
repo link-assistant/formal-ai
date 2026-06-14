@@ -764,6 +764,12 @@ fn russian_mixed_units_question_returns_unit_incompatibility_intent() {
 }
 
 #[test]
+fn russian_length_mass_question_returns_unit_incompatibility_intent() {
+    let response = answer("Сколько метров в килограмме?");
+    assert_eq!(response.intent, "unit_incompatibility");
+}
+
+#[test]
 fn russian_trick_riddle_returns_unknown_intent() {
     let response = answer(
         "Стоит четырёхэтажный дом, в каждом этаже по восьми окон, \
