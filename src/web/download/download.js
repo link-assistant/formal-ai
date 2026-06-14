@@ -840,7 +840,7 @@
       { class: "download-topbar" },
       h(
         "a",
-        { class: "brand", href: "../", "data-testid": "back-to-app" },
+        { class: "brand", href: "../app/", "data-testid": "back-to-app" },
         h("span", { class: "brand-mark", "aria-hidden": "true", text: "◆" }),
         h("span", { text: "formal-ai" }),
       ),
