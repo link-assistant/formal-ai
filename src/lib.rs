@@ -51,6 +51,7 @@ pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod text_formalization;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -164,6 +165,12 @@ pub use telegram::{
 pub use telegram_runtime::{
     run_telegram_polling, run_telegram_polling_with_transport, run_telegram_webhook_server,
     CurlTelegramTransport, TelegramPollingRuntimeError, TelegramTransport,
+};
+pub use text_formalization::{
+    formalize_sentence, formalize_tale, tale_knowledge_base, Annotation, Assertion, Concept,
+    Context, Directory, Entity, Extraction, Extractor, KbFormat, KnowledgeBase, Lexicon, Link,
+    Modal, Predicate, PredicateRef, PrimitiveCoverage, Procedure, ProtocolDocument, Provenance,
+    Query, QueryError, Temporal, Term,
 };
 pub use unknown_opener::unknown_answer_variation_for;
 pub use web_engine_core::{
