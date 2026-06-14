@@ -148,6 +148,47 @@ fn sources_registry_lists_every_ingested_source() {
     }
 }
 
+/// Issue #444: the external trusted services the procedural how-to handler may
+/// consult (wikiHow, Stack Exchange, the `MediaWiki` family, GitHub) must be
+/// enumerated in the registry as an `external_trusted` group, each carrying the
+/// settings key the UI toggles bind to and a `default_enabled` flag. This keeps
+/// the "available services" list data-driven and the settings opt-in/opt-out
+/// section in sync with a single source of truth.
+#[test]
+fn external_trusted_services_are_registered_with_settings_toggles() {
+    let path = repo_root().join("data/seed/sources-registry.lino");
+    let registry = std::fs::read_to_string(&path)
+        .expect("data/seed/sources-registry.lino must exist and be UTF-8");
+
+    // (source id, settings key the settings UI toggle binds to)
+    let services = [
+        ("wikihow", "externalServiceWikihow"),
+        ("stackexchange", "externalServiceStackExchange"),
+        ("wikibooks", "externalServiceMediawikiFamily"),
+        ("wikiversity", "externalServiceMediawikiFamily"),
+        ("wikivoyage", "externalServiceMediawikiFamily"),
+        ("github", "externalServiceGithub"),
+    ];
+
+    for (source, settings_key) in services {
+        assert!(
+            registry.contains(&format!("source {source}")),
+            "sources-registry.lino does not list the external trusted source `{source}`"
+        );
+        assert!(
+            registry.contains(&format!("settings_key {settings_key}")),
+            "external trusted source `{source}` must declare settings_key `{settings_key}`"
+        );
+    }
+
+    for field in ["service_group external_trusted", "default_enabled "] {
+        assert!(
+            registry.contains(field),
+            "sources-registry.lino is missing `{field}` on the external trusted services"
+        );
+    }
+}
+
 /// The `data/view/` merge layer must exist, be deterministic, carry per-field
 /// provenance, and match its builder (no drift). `--check` reruns the build in
 /// memory, reconfirms `M-…` id determinism, and runs the merge-threshold
