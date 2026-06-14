@@ -9,11 +9,12 @@ use lino_arguments::Parser;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
-    import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
-    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
-    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, MessageContent, ResponsesRequest, SolverConfig,
-    TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
+    formalize_sentence, formalize_tale, import_memory_full, knowledge_links_notation,
+    merged_bundle, parse_bundle, render_github_log_plan, run_telegram_polling,
+    run_telegram_webhook_server, seed_files, suggest_memory_migrations, BundleInfo,
+    ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, KbFormat,
+    MemoryStore, MessageContent, ResponsesRequest, SolverConfig, TelegramPollingConfig,
+    UniversalSolver, DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -71,6 +72,13 @@ enum Command {
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
+    },
+    /// Translate text into a knowledge base following the formal protocol
+    /// (issue #468): print the curated tale, or run the constrained extractor
+    /// over a single sentence. Every primitive reduces to plain links.
+    Formalize {
+        #[command(subcommand)]
+        action: FormalizeAction,
     },
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
@@ -281,6 +289,52 @@ struct GithubLogsOptions {
     branch: Option<String>,
 }
 
+#[derive(Debug, Subcommand)]
+enum FormalizeAction {
+    /// Render the curated «Сказка о рыбаке и рыбке» knowledge base, which
+    /// exercises all nine primitives.
+    Tale {
+        #[arg(long, value_enum, default_value_t = KbFormatArg::Lino)]
+        format: KbFormatArg,
+    },
+    /// Run the constrained, closed-class extractor over a single sentence.
+    /// Prints the resulting knowledge base, or exits non-zero when the sentence
+    /// falls outside the template or lexicon (the extractor never guesses).
+    Extract {
+        /// The sentence to formalize, e.g. the article's worked example
+        /// «Пётр открыл магазин в Москве в 2019 году.».
+        #[arg(long)]
+        sentence: String,
+
+        /// Document identifier recorded in provenance and annotations.
+        #[arg(long, default_value = "doc-0001")]
+        doc_id: String,
+
+        #[arg(long, value_enum, default_value_t = KbFormatArg::Lino)]
+        format: KbFormatArg,
+    },
+}
+
+#[derive(Debug, Clone, Copy, ValueEnum)]
+enum KbFormatArg {
+    /// Structured, readable Links Notation (one record per primitive).
+    Lino,
+    /// The protocol's canonical pretty-printed JSON wire format.
+    Json,
+    /// The fully reduced doublet (link) stream.
+    Links,
+}
+
+impl From<KbFormatArg> for KbFormat {
+    fn from(value: KbFormatArg) -> Self {
+        match value {
+            KbFormatArg::Lino => Self::Lino,
+            KbFormatArg::Json => Self::Json,
+            KbFormatArg::Links => Self::Links,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum OutputFormat {
     Text,
@@ -348,6 +402,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Formalize { action } => run_formalize(action)?,
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -392,6 +447,30 @@ fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
                 eprintln!("  {}", capture.file);
             }
         }
+    }
+    Ok(())
+}
+
+fn run_formalize(action: FormalizeAction) -> Result<(), Box<dyn Error>> {
+    match action {
+        FormalizeAction::Tale { format } => {
+            println!("{}", formalize_tale(format.into()));
+        }
+        FormalizeAction::Extract {
+            sentence,
+            doc_id,
+            format,
+        } => match formalize_sentence(&doc_id, &sentence, format.into()) {
+            Some(rendered) => println!("{rendered}"),
+            None => {
+                return Err(format!(
+                    "the sentence {sentence:?} is outside the deterministic extractor's template \
+                     or lexicon; it does not guess. See `formal-ai formalize tale` for a curated \
+                     example."
+                )
+                .into());
+            }
+        },
     }
     Ok(())
 }
