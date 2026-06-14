@@ -508,6 +508,7 @@ fn run_chat(
                 instructions: None,
                 temperature: None,
                 stream: false,
+                ..ResponsesRequest::default()
             };
             println!(
                 "{}",

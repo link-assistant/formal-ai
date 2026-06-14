@@ -63,8 +63,8 @@ pub use agent::{
     PlannedAgentAction,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessage,
-    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock, AnthropicUsage,
+    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicContentBlock,
+    AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
 };
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
@@ -117,8 +117,9 @@ pub use probability::{
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
     create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    FunctionCall, MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
-    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage, ToolCall,
+    FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall, ResponseObject,
+    ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage, ResponseUsage,
+    ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,

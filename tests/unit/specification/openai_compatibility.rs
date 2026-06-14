@@ -96,12 +96,14 @@ fn responses_endpoint_returns_completed_response() {
         instructions: None,
         temperature: Some(0.0),
         stream: false,
+        ..ResponsesRequest::default()
     };
     let response = create_response(&request);
     assert_eq!(response.object, "response");
     assert_eq!(response.status, "completed");
-    assert_eq!(response.output[0].role, "assistant");
-    assert_eq!(response.output[0].content[0].kind, "output_text");
+    let messages = response.output_messages();
+    assert_eq!(messages[0].role, "assistant");
+    assert_eq!(messages[0].content[0].kind, "output_text");
 }
 
 #[test]
@@ -314,6 +316,7 @@ fn responses_api_attaches_trace_link() {
         instructions: None,
         temperature: None,
         stream: false,
+        ..ResponsesRequest::default()
     };
     let response = create_response(&request);
     let serialized = serde_json::to_string(&response).unwrap();

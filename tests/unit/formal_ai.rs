@@ -422,15 +422,17 @@ fn responses_api_shape_contains_output_text() {
         instructions: None,
         temperature: None,
         stream: false,
+        ..ResponsesRequest::default()
     };
 
     let response = create_response(&request);
 
     assert_eq!(response.object, "response");
     assert_eq!(response.status, "completed");
-    assert_eq!(response.output[0].role, "assistant");
-    assert_eq!(response.output[0].content[0].kind, "output_text");
-    assert!(response.output[0].content[0].text.contains("```rust"));
+    let messages = response.output_messages();
+    assert_eq!(messages[0].role, "assistant");
+    assert_eq!(messages[0].content[0].kind, "output_text");
+    assert!(messages[0].content[0].text.contains("```rust"));
 }
 
 #[test]
