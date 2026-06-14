@@ -58,6 +58,12 @@ jobs:
       tag: ${{ steps.pick.outputs.tag }}
       should_build: ${{ steps.pick.outputs.should_build }}
     steps:
+      # Check out the repo so the resolve logic lives in a unit-tested script
+      # (scripts/desktop-release-resolve.sh) instead of being inlined here. The
+      # script only needs to *exist*; it queries the GitHub API for everything
+      # else, so checking out the default ref is sufficient.
+      - uses: actions/checkout@v6
+
       - name: Resolve tag and whether desktop assets are needed
         id: pick
         env:
@@ -67,58 +73,13 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           REPO: ${{ github.repository }}
           WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          set -euo pipefail
-          tag=""
-          should_build=true
-          emit_outputs() {
-            echo "tag=$tag" >> "$GITHUB_OUTPUT"
-            echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
-          }
-          case "$EVENT" in
-            release) tag="$RELEASE_TAG" ;;
-            workflow_dispatch) tag="${INPUT_TAG:-}" ;;
-          esac
-
-          if [ "$EVENT" = "workflow_run" ]; then
-            if [ -z "${WORKFLOW_RUN_HEAD_SHA:-}" ]; then
-              should_build=false
-              echo "workflow_run payload did not include a head SHA; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-
-            tag_candidates="$(mktemp)"
-            gh api "repos/$REPO/tags?per_page=100" --paginate \
-              --jq ".[] | select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\") | .name" > "$tag_candidates"
-            tag="$(grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' "$tag_candidates" | head -n 1 || true)"
-
-            if [ -z "$tag" ]; then
-              should_build=false
-              echo "No release tag points at workflow_run head SHA $WORKFLOW_RUN_HEAD_SHA; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-
-            if ! gh release view "$tag" --repo "$REPO" --json tagName >/dev/null; then
-              should_build=false
-              echo "No GitHub release exists for workflow_run tag $tag; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-          fi
-
-          if [ -z "$tag" ]; then
-            tag="$(gh release view --repo "$REPO" --json tagName --jq .tagName)"
-          fi
-          echo "Resolved release tag: $tag"
-          existing="$(gh release view "$tag" --repo "$REPO" --json assets \
-            --jq '[.assets[].name | select(startswith("formal-ai-desktop-"))] | length' || echo 0)"
-          if [ "$EVENT" = "workflow_run" ] && [ "${existing:-0}" -gt 0 ]; then
-            should_build=false
-            echo "Release $tag already has $existing desktop assets; skipping automatic build."
-          fi
-          emit_outputs
+        # Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
+        # commit whose first parent is the completed CI head SHA, so matching the
+        # tag to the head SHA directly always failed and desktop assets were
+        # never built. desktop-release-resolve.sh resolves the latest release
+        # instead (with a defensive exact-SHA tier and an idempotency guard) and
+        # emits verbose ::group:: diagnostics for future debugging.
+        run: bash scripts/desktop-release-resolve.sh
 
   build:
     name: Build ${{ matrix.label }}

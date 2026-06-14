@@ -697,26 +697,69 @@ fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifa
 }
 
 #[test]
-fn desktop_release_workflow_run_targets_completed_release_tag() {
+fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
+    // Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
+    // commit (its first parent is the completed CI head SHA) and is pushed with
+    // GITHUB_TOKEN, so GitHub never starts a CI run for it and suppresses the
+    // `release` event. The previous resolve logic required a tag whose commit
+    // EQUALS the workflow_run head SHA -- a match that could never happen -- so
+    // the build was skipped and every /download entry read "Not available in
+    // latest release".
+    //
+    // The corrected resolve logic lives in scripts/desktop-release-resolve.sh
+    // (behaviorally covered by desktop_release_resolve.rs). This guard pins the
+    // workflow wiring and the absence of the old, broken skip path.
     let workflow = desktop_release_workflow();
     let resolve = job_block(&workflow, "resolve");
     let pick = workflow_step_block(resolve, "Resolve tag and whether desktop assets are needed");
+    let resolve_script = fs::read_to_string(format!(
+        "{}/scripts/desktop-release-resolve.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n");
 
     assert!(
         pick.contains("WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}"),
-        "workflow_run desktop builds should use the completed CI run head SHA"
+        "workflow_run desktop builds should pass the completed CI run head SHA to the resolve script"
     );
     assert!(
-        pick.contains("repos/$REPO/tags?per_page=100"),
-        "workflow_run desktop builds should inspect repository tags instead of only the latest release"
+        pick.contains("bash scripts/desktop-release-resolve.sh"),
+        "the resolve step should delegate to the unit-tested resolve script"
     );
     assert!(
-        pick.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
-        "workflow_run desktop builds should find the tag that points at the completed CI SHA"
+        resolve.contains("actions/checkout@v6"),
+        "the resolve job must check out the repo so the resolve script is available"
+    );
+
+    // The old, broken behavior must not come back: never skip merely because no
+    // tag points at the head SHA (the auto-release tag never does).
+    assert!(
+        !workflow.contains("No release tag points at workflow_run head SHA"),
+        "issue #479 regression: must not skip when no tag matches the head SHA"
     );
     assert!(
-        pick.contains("No GitHub release exists for workflow_run tag"),
-        "workflow_run desktop builds should skip when the matching release is missing instead of building a stale latest release"
+        !resolve_script.contains("No release tag points at workflow_run head SHA"),
+        "issue #479 regression: the resolve script must not reinstate the head-SHA skip"
+    );
+
+    // The corrected script must fall back to the latest release and keep the
+    // self-healing idempotency guard.
+    assert!(
+        resolve_script.contains("latest_release_tag()"),
+        "resolve script should fall back to the latest published release"
+    );
+    assert!(
+        resolve_script.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
+        "resolve script should keep the defensive exact-SHA tier"
+    );
+    assert!(
+        resolve_script.contains("formal-ai-desktop-"),
+        "resolve script should count existing desktop assets for the idempotency guard"
+    );
+    assert!(
+        resolve_script.contains("::group::"),
+        "resolve script should emit grouped verbose diagnostics for future debugging"
     );
 }
 

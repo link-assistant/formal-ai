@@ -6,6 +6,7 @@ mod check_crate_package_size;
 mod check_file_size;
 #[path = "../../../scripts/create-github-release.rs"]
 mod create_github_release;
+mod desktop_release_resolve;
 #[path = "../../../scripts/rust-paths.rs"]
 mod rust_paths;
 mod source_test_placement;
