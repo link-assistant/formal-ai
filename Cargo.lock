@@ -1662,9 +1662,9 @@ dependencies = [
 
 [[package]]
 name = "meta-language"
-version = "0.40.0"
+version = "0.45.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "090634cd21053a06228ffa3c5f0ccd3f025157a67b8be4b85cfdcaffd3b0f98c"
+checksum = "d852403d0742c2644990eb7b8835431ad0429cb39373c47ed0f8ca7119a5b105"
 dependencies = [
  "clap",
  "csv",
