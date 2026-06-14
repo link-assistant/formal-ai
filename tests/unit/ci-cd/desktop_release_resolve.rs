@@ -4,7 +4,7 @@
 //! build desktop assets for and whether a build is needed. The original logic
 //! required a tag whose commit EQUALS the completed CI run's head SHA. But the
 //! automated release tags a CHILD "chore: release vX.Y.Z" commit (its first
-//! parent is the head SHA) and is pushed with GITHUB_TOKEN, so:
+//! parent is the head SHA) and is pushed with `GITHUB_TOKEN`, so:
 //!   * no tag ever points at the head SHA -> the match failed -> the build was
 //!     skipped -> no assets were uploaded, and
 //!   * every /download entry read "Not available in latest release".
@@ -52,7 +52,10 @@ struct ResolveOutput {
 }
 
 /// Write a mock `gh` executable that mirrors the real CLI surface the resolve
-/// script touches, driven entirely by MOCK_* environment variables.
+/// script touches, driven entirely by `MOCK_*` environment variables.
+// The mock is a raw shell string; its `${VAR}` expansions look like format
+// arguments to clippy but are deliberately plain shell, not Rust formatting.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn write_mock_gh(dir: &Path) {
     let mock = r#"#!/usr/bin/env bash
 # Mock `gh` for desktop-release-resolve.sh tests. Canned responses via MOCK_*.
@@ -104,7 +107,7 @@ fn unique_tmp(label: &str) -> PathBuf {
 }
 
 /// Run the resolve script with the given event environment and mocked `gh`,
-/// returning the parsed GITHUB_OUTPUT plus captured streams.
+/// returning the parsed `GITHUB_OUTPUT` plus captured streams.
 fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock) -> ResolveOutput {
     let tmp = unique_tmp(label);
     let bin = tmp.join("bin");
