@@ -19,5 +19,7 @@ bump: patch
   never embedded in the engine.
 - A traceability test (`issue_468_agentic_coding_case_study_is_traceable` in
   `tests/unit/docs_requirements_issue_468.rs`) pins `REQUIREMENTS.md` rows
-  R306–R319, the case study `README.md`, `formal-protocol-mapping.md`, and the
-  `server-api.md` §4e agentic-loop section to the live implementation.
+  R306–R319, the case study `README.md`, `formal-protocol-mapping.md`, the
+  `server-api.md` §4e agentic-loop section, and the two worked examples
+  (`examples/issue_468_agentic_loop.rs`, `examples/issue_468_formalize_text.rs`)
+  to the live implementation.

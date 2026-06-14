@@ -88,6 +88,31 @@ fn issue_468_agentic_coding_case_study_is_traceable() {
             "formal-ai agent",
         ],
     );
+
+    // The worked examples the docs and PR reference must keep existing and keep
+    // their entry points — guards against the docs pointing at renamed/removed code.
+    let loop_example = read(root.join("examples/issue_468_agentic_loop.rs"));
+    assert_contains_all(
+        "examples/issue_468_agentic_loop.rs",
+        &loop_example,
+        &[
+            "run_agentic_task",
+            "outcome.transcript()",
+            "Сказка о рыбаке и рыбке",
+        ],
+    );
+
+    let formalize_example = read(root.join("examples/issue_468_formalize_text.rs"));
+    assert_contains_all(
+        "examples/issue_468_formalize_text.rs",
+        &formalize_example,
+        &[
+            "formalize_text_to_links",
+            "CANONICAL_FISHERMAN_SYNOPSIS",
+            "covers_all_nine()",
+            "total_records()",
+        ],
+    );
 }
 
 fn read(path: impl AsRef<Path>) -> String {
