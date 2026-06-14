@@ -9,6 +9,12 @@
 //! assemble the structure, then export it to the requested format. The plan is
 //! localized to the prompt language so a Russian PDF request gets a Russian plan.
 
+use std::fmt::Write as _;
+
+use crate::document_formats::{
+    convert_document_format, cross_format_document_concepts, supported_document_formats,
+    DocumentConversion, DOCUMENT_FORMAT_ENGINE,
+};
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
@@ -63,6 +69,9 @@ pub fn try_document_request(
     if mentions_software_artifact(&lowercased) {
         return None;
     }
+    if let Some(answer) = try_document_conversion_request(prompt, &lowercased, log) {
+        return Some(answer);
+    }
     if !mentions_authoring_action(&lowercased) {
         return None;
     }
@@ -84,6 +93,324 @@ pub fn try_document_request(
         &body,
         0.6,
     ))
+}
+
+fn try_document_conversion_request(
+    prompt: &str,
+    lowercased: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !mentions_conversion_action(lowercased) {
+        return None;
+    }
+
+    let mentions = format_mentions(lowercased);
+    let (source_format, target_format) = conversion_formats(lowercased, &mentions)?;
+    let source_text = extract_document_source_text(prompt)?;
+    let conversion = convert_document_format(source_format, target_format, &source_text)?;
+
+    log.append(
+        "document_conversion_engine",
+        DOCUMENT_FORMAT_ENGINE.to_owned(),
+    );
+    log.append(
+        "document_conversion_source_format",
+        conversion.source_format.clone(),
+    );
+    log.append(
+        "document_conversion_target_format",
+        conversion.target_format.clone(),
+    );
+    log.append(
+        "document_conversion_concepts",
+        cross_format_document_concepts().join(","),
+    );
+    log.append(
+        "document_conversion_output_bytes",
+        conversion.output.len().to_string(),
+    );
+    if let Some(package_bytes) = conversion.package_bytes.as_ref() {
+        log.append(
+            "document_conversion_package_bytes",
+            package_bytes.len().to_string(),
+        );
+    }
+
+    let body = render_conversion_answer(&conversion);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "document_format_conversion",
+        "response:document_format_conversion",
+        &body,
+        0.85,
+    ))
+}
+
+pub(super) fn looks_like_document_conversion_request(prompt: &str, lowercased: &str) -> bool {
+    mentions_conversion_action(lowercased)
+        && conversion_formats(lowercased, &format_mentions(lowercased)).is_some()
+        && extract_document_source_text(prompt).is_some()
+}
+
+fn mentions_conversion_action(lowercased: &str) -> bool {
+    const ACTIONS: &[&str] = &[
+        "convert",
+        "translate",
+        "transform",
+        "render",
+        "export",
+        "turn into",
+        "turn this into",
+        "change into",
+        "конверт",
+        "преобраз",
+        "переведи",
+        "перевести",
+        "экспорт",
+        "बदल",
+        "रूपांतर",
+        "转换",
+        "转成",
+        "变成",
+        "导出",
+    ];
+    ACTIONS.iter().any(|needle| lowercased.contains(needle))
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct FormatMention {
+    index: usize,
+    format: &'static str,
+}
+
+fn format_mentions(lowercased: &str) -> Vec<FormatMention> {
+    const ALIASES: &[(&str, &str)] = &[
+        ("plain text", "txt"),
+        ("plaintext", "txt"),
+        ("txt", "txt"),
+        ("markdown", "Markdown"),
+        ("md", "Markdown"),
+        ("html", "HTML"),
+        ("htm", "HTML"),
+        ("pdf", "PDF"),
+        ("docx", "DOCX"),
+        ("word document", "DOCX"),
+        ("wordprocessingml", "DOCX"),
+    ];
+
+    let mut mentions = Vec::new();
+    for (alias, format) in ALIASES {
+        mentions.extend(
+            find_alias_positions(lowercased, alias)
+                .into_iter()
+                .map(|index| FormatMention { index, format }),
+        );
+    }
+    mentions.sort_by_key(|mention| mention.index);
+    mentions.dedup_by(|left, right| left.index == right.index && left.format == right.format);
+    mentions
+}
+
+fn conversion_formats<'a>(
+    lowercased: &str,
+    mentions: &'a [FormatMention],
+) -> Option<(&'a str, &'a str)> {
+    let explicit_source = mentions
+        .iter()
+        .find(|mention| has_direction_marker_before(lowercased, mention.index, SOURCE_MARKERS))
+        .map(|mention| mention.format);
+    let explicit_target = mentions
+        .iter()
+        .find(|mention| has_direction_marker_before(lowercased, mention.index, TARGET_MARKERS))
+        .map(|mention| mention.format);
+
+    match (explicit_source, explicit_target) {
+        (Some(source), Some(target)) if source != target => Some((source, target)),
+        (Some(source), _) => mentions
+            .iter()
+            .rev()
+            .find(|mention| mention.format != source)
+            .map(|mention| (source, mention.format)),
+        (_, Some(target)) => mentions
+            .iter()
+            .find(|mention| mention.format != target)
+            .map(|mention| (mention.format, target)),
+        _ => {
+            let source = mentions.first()?.format;
+            mentions
+                .iter()
+                .rev()
+                .find(|mention| mention.format != source)
+                .map(|mention| (source, mention.format))
+        }
+    }
+}
+
+const SOURCE_MARKERS: &[&str] = &["from ", "source ", "из ", "с ", "от ", "से ", "从"];
+
+const TARGET_MARKERS: &[&str] = &[
+    "to ",
+    "into ",
+    "as ",
+    "target ",
+    "в ",
+    "на ",
+    "में ",
+    "को ",
+    "为",
+    "成",
+    "到",
+];
+
+fn has_direction_marker_before(haystack: &str, index: usize, markers: &[&str]) -> bool {
+    let before = haystack[..index].trim_end();
+    markers
+        .iter()
+        .any(|marker| before.ends_with(marker.trim_end()))
+}
+
+fn find_alias_positions(haystack: &str, alias: &str) -> Vec<usize> {
+    let mut positions = Vec::new();
+    let mut offset = 0usize;
+    while let Some(relative) = haystack[offset..].find(alias) {
+        let index = offset + relative;
+        let end = index + alias.len();
+        if is_token_boundary(haystack, index, end) {
+            positions.push(index);
+        }
+        offset = end;
+    }
+    positions
+}
+
+fn is_token_boundary(haystack: &str, start: usize, end: usize) -> bool {
+    let before = haystack[..start].chars().next_back();
+    let after = haystack[end..].chars().next();
+    !before.is_some_and(is_ascii_word_char) && !after.is_some_and(is_ascii_word_char)
+}
+
+const fn is_ascii_word_char(character: char) -> bool {
+    character.is_ascii_alphanumeric() || character == '_' || character == '-'
+}
+
+fn extract_document_source_text(prompt: &str) -> Option<String> {
+    first_fenced_code_block(prompt)
+        .or_else(|| quoted_segments(prompt).last().cloned())
+        .or_else(|| text_after_colon(prompt))
+        .and_then(non_empty)
+}
+
+fn first_fenced_code_block(text: &str) -> Option<String> {
+    let fence_start = text.find("```")?;
+    let after_fence = &text[fence_start + 3..];
+    let content_start = after_fence
+        .find('\n')
+        .map_or(fence_start + 3, |newline| fence_start + 3 + newline + 1);
+    let content = &text[content_start..];
+    let fence_end = content.find("```")?;
+    Some(content[..fence_end].trim_matches('\n').to_owned())
+}
+
+fn text_after_colon(text: &str) -> Option<String> {
+    text.find(':')
+        .or_else(|| text.find('：'))
+        .map(|index| text[index + 1..].trim().to_owned())
+}
+
+fn quoted_segments(text: &str) -> Vec<String> {
+    let mut segments = Vec::new();
+    let mut cursor = 0usize;
+    while cursor < text.len() {
+        let Some((relative_start, open, close)) =
+            text[cursor..]
+                .char_indices()
+                .find_map(|(index, character)| {
+                    quote_close_for(character).map(|close| (index, character, close))
+                })
+        else {
+            break;
+        };
+        let content_start = cursor + relative_start + open.len_utf8();
+        let Some(relative_end) = text[content_start..].find(close) else {
+            break;
+        };
+        let content_end = content_start + relative_end;
+        segments.push(text[content_start..content_end].to_owned());
+        cursor = content_end + close.len_utf8();
+    }
+    segments
+}
+
+const fn quote_close_for(open: char) -> Option<char> {
+    match open {
+        '\'' => Some('\''),
+        '"' => Some('"'),
+        '`' => Some('`'),
+        '«' => Some('»'),
+        '“' => Some('”'),
+        '‘' => Some('’'),
+        '「' => Some('」'),
+        '『' => Some('』'),
+        _ => None,
+    }
+}
+
+fn non_empty(value: String) -> Option<String> {
+    (!value.trim().is_empty()).then_some(value)
+}
+
+fn render_conversion_answer(conversion: &DocumentConversion) -> String {
+    let mut body = String::new();
+    let _ = writeln!(
+        body,
+        "Document format conversion via link-foundation/meta-language ({DOCUMENT_FORMAT_ENGINE})."
+    );
+    let _ = writeln!(
+        body,
+        "Source: {}; target: {}.",
+        conversion.source_format, conversion.target_format
+    );
+    let _ = writeln!(
+        body,
+        "Supported document formats: {}.",
+        supported_document_formats().join(", ")
+    );
+    if !conversion.target_capabilities.native_concepts.is_empty() {
+        let _ = writeln!(
+            body,
+            "Native target concepts: {}.",
+            conversion.target_capabilities.native_concepts.join(", ")
+        );
+    }
+    if !conversion.target_capabilities.fallbacks.is_empty() {
+        let _ = writeln!(body, "Documented target fallbacks:");
+        for (concept, fallback) in &conversion.target_capabilities.fallbacks {
+            let _ = writeln!(body, "- {concept} -> {fallback}");
+        }
+    }
+    if let Some(package_bytes) = conversion.package_bytes.as_ref() {
+        let _ = writeln!(
+            body,
+            "Package layer: {} bytes in the DOCX OPC stored-entry profile.",
+            package_bytes.len()
+        );
+    }
+
+    let fence = output_fence(&conversion.target_format);
+    let _ = write!(body, "\n```{fence}\n{}\n```", conversion.output.trim_end());
+    body
+}
+
+fn output_fence(format: &str) -> &'static str {
+    match format {
+        "HTML" => "html",
+        "Markdown" => "markdown",
+        "PDF" => "pdf",
+        "DOCX" => "xml",
+        "txt" => "text",
+        _ => "",
+    }
 }
 
 /// True when the prompt names a software artifact, in which case the request is a
@@ -337,7 +664,10 @@ fn render_plan_en(format: DocFormat) -> String {
          deterministic symbolic solver: I cannot research arbitrary live data on \
          the web and I do not render binary files directly, so I decompose the \
          task into the formal plan the universal algorithm produces (decompose → \
-         tests → drafts → composition):\n\n\
+         tests → drafts → composition). The document workflow uses \
+         link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX \
+         representation/conversion, with concept profiles for headings, \
+         paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n\
          1. Scope the document and its criteria: which items to include and which \
          attributes distinguish them.\n\
          2. Collect the list of items from verifiable sources and record links to \

@@ -622,6 +622,10 @@ pub fn try_translation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if document_request::looks_like_document_conversion_request(prompt, normalized) {
+        return None;
+    }
+
     let target = detect_target_language(normalized);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in

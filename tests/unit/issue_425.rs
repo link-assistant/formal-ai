@@ -2,7 +2,102 @@
 //! task. The solver should recognize the request and return the universal
 //! algorithm's formal plan instead of falling through to the unknown response.
 
-use formal_ai::FormalAiEngine;
+use formal_ai::{
+    convert_document_format, document_format_capabilities, document_package_is_recognized,
+    document_profile_is_recognized, supported_document_formats, FormalAiEngine,
+    DOCUMENT_FORMAT_ENGINE,
+};
+
+#[test]
+fn latest_meta_language_document_formats_are_available() {
+    let formats = supported_document_formats();
+    for expected in ["txt", "Markdown", "HTML", "PDF", "DOCX"] {
+        assert!(
+            formats.contains(&expected),
+            "meta-language document formats should include {expected}: {formats:?}"
+        );
+    }
+
+    let html = document_format_capabilities("HTML").expect("HTML profile");
+    assert!(html.native_concepts.contains(&"strong".to_owned()));
+    assert!(html.native_concepts.contains(&"hyperlink".to_owned()));
+
+    let pdf = document_format_capabilities("PDF").expect("PDF profile");
+    assert!(pdf.native_concepts.contains(&"strong".to_owned()));
+    assert_eq!(
+        pdf.fallbacks
+            .iter()
+            .find(|(concept, _)| concept == "hyperlink")
+            .map(|(_, fallback)| fallback.as_str()),
+        Some("rendered as its visible text, unstyled (URL dropped)")
+    );
+
+    let docx = document_format_capabilities("DOCX").expect("DOCX profile");
+    assert!(docx.native_concepts.contains(&"emphasis".to_owned()));
+    assert_eq!(
+        docx.fallbacks
+            .iter()
+            .find(|(concept, _)| concept == "hyperlink")
+            .map(|(_, fallback)| fallback.as_str()),
+        Some("rendered as its visible text, unstyled (URL dropped)")
+    );
+
+    let txt = document_format_capabilities("txt").expect("txt profile");
+    assert_eq!(
+        txt.fallbacks
+            .iter()
+            .find(|(concept, _)| concept == "strong")
+            .map(|(_, fallback)| fallback.as_str()),
+        Some("rendered as unstyled plain text")
+    );
+}
+
+#[test]
+fn meta_language_converts_markdown_to_pdf_and_docx_representations() {
+    let source = "# Status\n\nThe **system** is ready.";
+
+    let pdf = convert_document_format("Markdown", "PDF", source).expect("Markdown to PDF");
+    assert_eq!(pdf.source_format, "Markdown");
+    assert_eq!(pdf.target_format, "PDF");
+    assert!(
+        pdf.output.starts_with("%PDF-"),
+        "PDF conversion should render a PDF document, got: {}",
+        pdf.output
+    );
+    assert!(
+        document_profile_is_recognized("PDF", &pdf.output),
+        "PDF conversion should be recognized by the meta-language PDF profile"
+    );
+
+    let docx = convert_document_format("Markdown", "DOCX", source).expect("Markdown to DOCX");
+    assert_eq!(docx.target_format, "DOCX");
+    assert!(
+        docx.output.contains("<w:document"),
+        "DOCX conversion should render WordprocessingML, got: {}",
+        docx.output
+    );
+    assert!(
+        docx.output.contains("<w:b/>"),
+        "DOCX conversion should preserve strong/bold runs, got: {}",
+        docx.output
+    );
+    assert!(
+        document_profile_is_recognized("DOCX", &docx.output),
+        "DOCX conversion should be recognized by the meta-language DOCX profile"
+    );
+    let package_bytes = docx
+        .package_bytes
+        .as_deref()
+        .expect("DOCX conversion should include package bytes");
+    assert!(
+        package_bytes.starts_with(b"PK"),
+        "DOCX package should be an OPC ZIP archive"
+    );
+    assert!(
+        document_package_is_recognized("DOCX", package_bytes),
+        "DOCX package should be recognized by the meta-language package profile"
+    );
+}
 
 #[test]
 fn russian_pdf_document_request_returns_plan() {
@@ -51,6 +146,140 @@ fn english_document_request_returns_plan() {
         response.answer.contains("PDF"),
         "english plan should name the PDF format, got: {}",
         response.answer
+    );
+    assert!(
+        response.answer.contains("link-foundation/meta-language"),
+        "english plan should expose the meta-language document workflow, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("txt, Markdown, HTML, PDF, and DOCX"),
+        "english plan should name the supported document formats, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn natural_language_markdown_to_html_conversion_uses_meta_language() {
+    let response = FormalAiEngine.answer(
+        "Convert this Markdown document to HTML: \"# Status\n\nThe system is **ready** for *launch*.\"",
+    );
+
+    assert_eq!(response.intent, "document_format_conversion");
+    assert!(
+        response.answer.contains(DOCUMENT_FORMAT_ENGINE),
+        "conversion answer should name the meta-language engine, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("<h1>Status</h1>"),
+        "conversion should preserve the heading as HTML, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("<strong>ready</strong>"),
+        "conversion should preserve strong/bold text, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("document_conversion_engine meta_language"),
+        "conversion should record the engine in trace links, got: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn natural_language_to_from_conversion_selects_document_formats() {
+    let response = FormalAiEngine
+        .answer("Convert to HTML from Markdown: \"# Status\n\nThe system is ready.\"");
+
+    assert_eq!(response.intent, "document_format_conversion");
+    assert!(
+        response.answer.contains("Source: Markdown; target: HTML."),
+        "conversion should read source/target markers, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("<h1>Status</h1>"),
+        "conversion should render HTML from the Markdown source, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn translate_markdown_to_html_routes_to_document_conversion() {
+    let response = FormalAiEngine.answer(
+        "Translate Markdown to HTML: \"# Status\n\nVisit [the site](https://example.com).\"",
+    );
+
+    assert_eq!(response.intent, "document_format_conversion");
+    assert!(
+        response
+            .answer
+            .contains("<a href=\"https://example.com\">the site</a>"),
+        "document translation should use the meta-language format layer, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("document_conversion_engine meta_language"),
+        "conversion should record the meta-language document workflow, got: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn natural_language_markdown_to_txt_conversion_reports_lossy_fallbacks() {
+    let response =
+        FormalAiEngine.answer("Convert Markdown to txt: \"# Status\n\nThe **system** is ready.\"");
+
+    assert_eq!(response.intent, "document_format_conversion");
+    assert!(
+        response.answer.contains("The system is ready."),
+        "txt conversion should keep the prose, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("strong -> rendered as unstyled plain text"),
+        "txt conversion should report the strong/bold fallback, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("**system**"),
+        "txt conversion should drop Markdown styling, got: {}",
+        response.answer
+    );
+}
+
+#[test]
+fn natural_language_markdown_to_docx_conversion_reports_package_layer() {
+    let response =
+        FormalAiEngine.answer("Convert Markdown to DOCX: \"# Status\n\nThe **system** is ready.\"");
+
+    assert_eq!(response.intent, "document_format_conversion");
+    assert!(
+        response.answer.contains("Package layer:"),
+        "DOCX conversion should expose the package layer, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("<w:document"),
+        "DOCX conversion should show the WordprocessingML representation, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("document_conversion_package_bytes"),
+        "conversion trace should include DOCX package size evidence, got: {}",
+        response.links_notation
     );
 }
 

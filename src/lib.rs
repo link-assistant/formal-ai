@@ -9,6 +9,7 @@ pub(crate) mod calculation_word_problem;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
+pub mod document_formats;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -69,6 +70,12 @@ pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
+};
+pub use document_formats::{
+    canonical_document_format_label, convert_document_format, cross_format_document_concepts,
+    document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
+    supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
+    DOCUMENT_FORMAT_ENGINE,
 };
 pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 pub use event_log::{Event, EventLog};
