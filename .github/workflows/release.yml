@@ -31,8 +31,12 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  # Always cancel superseded runs so only the latest commit is tested.
-  cancel-in-progress: true
+  # Cancel superseded runs on PR branches to save CI minutes, but never cancel a
+  # run on main: that branch drives the release pipeline (crates.io publish, tag
+  # creation, desktop builds, Pages deploy), and cancelling it mid-flight can
+  # leave a release half-published. desktop-release.yml uses cancel-in-progress:
+  # false for the same reason (issue #479).
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
   CARGO_TERM_COLOR: always
@@ -820,7 +824,9 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant')
       )
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
+    # reference, which compiles the dependency tree on a cold cargo cache.
+    timeout-minutes: 20
     permissions:
       contents: read
       pages: write
@@ -847,6 +853,47 @@ jobs:
       - name: Build web vendor bundle
         run: bun run build:web
 
+      # === API DOCS (/docs/api) ===
+      # The documentation hub (/docs/) links to a Rust API reference at
+      # /docs/api/. Generate it with `cargo doc` here and copy it into the Pages
+      # artifact below so it deploys alongside the rest of the site (issue #479).
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo registry
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Generate Rust API docs (cargo doc)
+        run: |
+          # Document just the library (lib name: formal_ai). --no-deps keeps the
+          # output small and fast; RUSTDOCFLAGS is unset so doc-link warnings do
+          # not fail the deploy.
+          cargo doc --no-deps --lib
+          # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
+          # redirect so /docs/api/ lands on the crate root instead of 404ing.
+          cat > target/doc/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="utf-8" />
+              <meta http-equiv="refresh" content="0; url=formal_ai/index.html" />
+              <link rel="canonical" href="formal_ai/index.html" />
+              <title>formal-ai API reference</title>
+            </head>
+            <body>
+              <p>Redirecting to the <a href="formal_ai/index.html">formal-ai API reference</a>&hellip;</p>
+            </body>
+          </html>
+          HTML
+
       - name: Sync data/seed into src/web/seed (deployment mirror)
         run: scripts/sync-seed.sh
 
@@ -863,6 +910,14 @@ jobs:
 
       - name: Stamp GitHub Pages artifact
         run: scripts/stamp-pages-artifact.sh src/web "${{ github.sha }}" "${{ github.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+
+      - name: Copy Rust API docs into the Pages artifact (/docs/api)
+        run: |
+          # Copy after stamping: rustdoc's HTML carries no version placeholders,
+          # and copying post-stamp keeps stamp-pages-artifact.sh from scanning
+          # the (large) generated tree.
+          mkdir -p src/web/docs/api
+          cp -R target/doc/. src/web/docs/api/
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5

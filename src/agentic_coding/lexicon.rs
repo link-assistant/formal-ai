@@ -336,9 +336,9 @@ impl Lexicon {
                 .iter()
                 .filter(|needle| tokens.iter().any(|token| token == *needle))
                 .count();
-            // `div_ceil` is avoided to keep the crate buildable on the declared
-            // MSRV (1.70); this is the integer ceiling of `len / 2`.
-            let threshold = (work.signature.len() + 1) / 2;
+            // Integer ceiling of `len / 2` (`div_ceil` is stable since Rust
+            // 1.73, well within the crate's 1.77 MSRV).
+            let threshold = work.signature.len().div_ceil(2);
             if hits >= threshold && best.map_or(true, |(_, top)| hits > top) {
                 best = Some((work, hits));
             }

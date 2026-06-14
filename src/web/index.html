@@ -4,21 +4,49 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="formal-ai-version" content="__FORMAL_AI_VERSION__" />
+    <meta
+      name="description"
+      content="formal-ai — a local, in-process formal-reasoning agent. Open the web app, read the documentation, or download the desktop app for macOS, Windows, and Linux."
+    />
+    <!--
+      The landing page is a fully self-contained chooser (issue #479): it makes
+      no cross-origin requests, so a strict same-origin CSP applies. All state
+      (theme + UI language) is persisted as Links Notation via preferences.js,
+      shared with the app at /app/, the docs at /docs/ and the /download/ page.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self';"
+    />
     <title>formal-ai</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="styles.css?v=__FORMAL_AI_ASSET_VERSION__" />
+    <link rel="stylesheet" href="landing.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script src="vendor.bundle.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script>
-      window.FORMAL_AI_ASSET_VERSION = "__FORMAL_AI_ASSET_VERSION__";
-    </script>
-    <script src="seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script src="preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script src="i18n.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script src="syntax-highlight.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script src="memory.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
-    <script src="app.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <main id="landing-app" class="page-shell" data-testid="landing-app">
+      <noscript>
+        <section class="hero">
+          <h1>formal-ai</h1>
+          <p class="summary">
+            A local, in-process formal-reasoning agent.
+          </p>
+          <ul>
+            <li><a href="app/">Open the web app</a></li>
+            <li><a href="docs/">Read the documentation</a></li>
+            <li><a href="download/">Download the desktop app</a></li>
+          </ul>
+        </section>
+      </noscript>
+    </main>
+
+    <!--
+      preferences.js exposes window.FormalAiPreferences (the same
+      Links-Notation-backed localStorage the chat app uses). landing.js renders
+      the chooser into #landing-app and reuses that store so the theme/locale a
+      visitor picks here is shared with every other page.
+    -->
+    <script src="preferences.js"></script>
+    <script src="site-chrome.js"></script>
+    <script src="landing.js"></script>
   </body>
 </html>
