@@ -1,3 +1,4 @@
+mod agentic_coding;
 mod assistant_name;
 mod courtesy_response;
 mod data_files;
