@@ -23,9 +23,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::engine::{estimate_tokens, stable_id, DEFAULT_MODEL};
-use crate::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, MessageContent,
-};
+use crate::protocol::{create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage};
 use crate::solver::UniversalSolver;
 
 /// An Anthropic `POST /v1/messages` request body.
@@ -95,17 +93,14 @@ impl AnthropicMessagesRequest {
         if let Some(system) = self.system.as_ref() {
             let text = anthropic_content_to_text(system);
             if !text.trim().is_empty() {
-                messages.push(ChatMessage {
-                    role: String::from("system"),
-                    content: MessageContent::Text(text),
-                });
+                messages.push(ChatMessage::new("system", text));
             }
         }
         for message in &self.messages {
-            messages.push(ChatMessage {
-                role: message.role.clone(),
-                content: MessageContent::Text(anthropic_content_to_text(&message.content)),
-            });
+            messages.push(ChatMessage::new(
+                message.role.clone(),
+                anthropic_content_to_text(&message.content),
+            ));
         }
         ChatCompletionRequest {
             model: self.model.clone(),

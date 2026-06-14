@@ -13,8 +13,8 @@ use formal_ai::{
     merged_bundle, parse_bundle, render_github_log_plan, run_telegram_polling,
     run_telegram_webhook_server, seed_files, suggest_memory_migrations, BundleInfo,
     ChatCompletionRequest, ChatMessage, ExecutionSurface, GithubLogCollectorConfig, KbFormat,
-    MemoryStore, MessageContent, ResponsesRequest, SolverConfig, TelegramPollingConfig,
-    UniversalSolver, DEFAULT_MODEL,
+    MemoryStore, ResponsesRequest, SolverConfig, TelegramPollingConfig, UniversalSolver,
+    DEFAULT_MODEL,
 };
 
 #[derive(Parser, Debug)]
@@ -525,10 +525,7 @@ fn run_chat(
         OutputFormat::Chat => {
             let request = ChatCompletionRequest {
                 model: Some(String::from(DEFAULT_MODEL)),
-                messages: vec![ChatMessage {
-                    role: String::from("user"),
-                    content: MessageContent::Text(String::from(prompt)),
-                }],
+                messages: vec![ChatMessage::user(prompt)],
                 temperature: None,
                 stream: false,
                 tools: Vec::new(),

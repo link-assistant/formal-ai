@@ -89,10 +89,71 @@ impl ChatCompletionRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
+    #[serde(default)]
     pub content: MessageContent,
+    /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tool_calls: Vec<ToolCall>,
+    /// For a `tool` role message: the id of the tool call this result answers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
+    /// For a `tool` role message: the name of the tool that produced the result.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+impl ChatMessage {
+    /// A message with the given `role` and plain-text `content`.
+    #[must_use]
+    pub fn new(role: impl Into<String>, content: impl Into<String>) -> Self {
+        Self {
+            role: role.into(),
+            content: MessageContent::Text(content.into()),
+            ..Self::default()
+        }
+    }
+
+    /// A `user` message carrying `text`.
+    #[must_use]
+    pub fn user(text: impl Into<String>) -> Self {
+        Self::new("user", text)
+    }
+
+    /// An `assistant` message carrying `text`.
+    #[must_use]
+    pub fn assistant(text: impl Into<String>) -> Self {
+        Self::new("assistant", text)
+    }
+
+    /// An `assistant` message requesting `tool_calls` (no textual content).
+    #[must_use]
+    pub fn assistant_tool_calls(tool_calls: Vec<ToolCall>) -> Self {
+        Self {
+            role: String::from("assistant"),
+            tool_calls,
+            ..Self::default()
+        }
+    }
+
+    /// A `tool` message carrying the `result` for the call `tool_call_id` made
+    /// against the tool `name`.
+    #[must_use]
+    pub fn tool_result(
+        tool_call_id: impl Into<String>,
+        name: impl Into<String>,
+        result: impl Into<String>,
+    ) -> Self {
+        Self {
+            role: String::from("tool"),
+            content: MessageContent::Text(result.into()),
+            tool_call_id: Some(tool_call_id.into()),
+            name: Some(name.into()),
+            ..Self::default()
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -100,6 +161,12 @@ pub struct ChatMessage {
 pub enum MessageContent {
     Text(String),
     Parts(Vec<MessageContentPart>),
+}
+
+impl Default for MessageContent {
+    fn default() -> Self {
+        Self::Text(String::new())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -122,6 +189,46 @@ impl MessageContent {
                 .join("\n"),
         }
     }
+}
+
+/// A tool call an assistant turn is requesting (OpenAI `tool_calls` shape).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ToolCall {
+    pub id: String,
+    #[serde(rename = "type", default = "tool_call_kind")]
+    pub kind: String,
+    pub function: FunctionCall,
+}
+
+fn tool_call_kind() -> String {
+    String::from("function")
+}
+
+impl ToolCall {
+    /// A `function` tool call with the given `id`, function `name` and
+    /// JSON-encoded `arguments`.
+    #[must_use]
+    pub fn function(
+        id: impl Into<String>,
+        name: impl Into<String>,
+        arguments: impl Into<String>,
+    ) -> Self {
+        Self {
+            id: id.into(),
+            kind: tool_call_kind(),
+            function: FunctionCall {
+                name: name.into(),
+                arguments: arguments.into(),
+            },
+        }
+    }
+}
+
+/// The function `name` plus JSON-encoded `arguments` of a [`ToolCall`].
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FunctionCall {
+    pub name: String,
+    pub arguments: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -242,10 +349,7 @@ fn chat_completion_from_symbolic(
         model,
         choices: vec![ChatChoice {
             index: 0,
-            message: ChatMessage {
-                role: String::from("assistant"),
-                content: MessageContent::Text(symbolic_answer.answer),
-            },
+            message: ChatMessage::assistant(symbolic_answer.answer),
             finish_reason: String::from("stop"),
         }],
         usage: TokenUsage {

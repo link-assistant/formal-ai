@@ -118,8 +118,8 @@ pub use probability::{
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
     create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
-    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
+    FunctionCall, MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
+    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,

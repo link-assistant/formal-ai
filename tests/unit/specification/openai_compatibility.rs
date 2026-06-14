@@ -7,7 +7,7 @@
 
 use formal_ai::{
     create_chat_completion, create_response, handle_api_request, handle_api_request_with_auth,
-    ApiAuthConfig, ChatCompletionRequest, ChatMessage, MessageContent, ResponsesRequest,
+    ApiAuthConfig, ChatCompletionRequest, ChatMessage, ResponsesRequest,
 };
 
 // ---------------------------------------------------------------------------
@@ -18,10 +18,7 @@ use formal_ai::{
 fn chat_completion_round_trips_user_prompt_to_assistant_response() {
     let request = ChatCompletionRequest {
         model: Some(String::from("formal-symbolic-production")),
-        messages: vec![ChatMessage {
-            role: String::from("user"),
-            content: MessageContent::Text(String::from("Hi")),
-        }],
+        messages: vec![ChatMessage::user("Hi")],
         temperature: Some(0.0),
         stream: false,
         tools: Vec::new(),
@@ -52,6 +49,7 @@ fn chat_completion_accepts_multipart_content() {
         messages: vec![ChatMessage {
             role: String::from("user"),
             content: serde_json::from_value(parts).unwrap(),
+            ..Default::default()
         }],
         temperature: None,
         stream: false,
@@ -73,10 +71,7 @@ fn chat_completion_accepts_multipart_content() {
 fn chat_completion_reports_token_usage() {
     let request = ChatCompletionRequest {
         model: None,
-        messages: vec![ChatMessage {
-            role: String::from("user"),
-            content: MessageContent::Text(String::from("Hello")),
-        }],
+        messages: vec![ChatMessage::user("Hello")],
         temperature: None,
         stream: false,
         tools: Vec::new(),
@@ -202,18 +197,9 @@ fn chat_completion_supports_multi_turn_conversation() {
     let request = ChatCompletionRequest {
         model: None,
         messages: vec![
-            ChatMessage {
-                role: String::from("user"),
-                content: MessageContent::Text(String::from("My name is Ada.")),
-            },
-            ChatMessage {
-                role: String::from("assistant"),
-                content: MessageContent::Text(String::from("Nice to meet you, Ada.")),
-            },
-            ChatMessage {
-                role: String::from("user"),
-                content: MessageContent::Text(String::from("What is my name?")),
-            },
+            ChatMessage::user("My name is Ada."),
+            ChatMessage::assistant("Nice to meet you, Ada."),
+            ChatMessage::user("What is my name?"),
         ],
         temperature: None,
         stream: false,
@@ -239,24 +225,11 @@ fn chat_completion_applies_behavior_rule_from_prior_messages() {
     let request = ChatCompletionRequest {
         model: None,
         messages: vec![
-            ChatMessage {
-                role: String::from("user"),
-                content: MessageContent::Text(String::from(
-                    "When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`",
-                )),
-            },
-            ChatMessage {
-                role: String::from("assistant"),
-                content: MessageContent::Text(String::from(
-                    "Behavior rule recorded for this dialog.",
-                )),
-            },
-            ChatMessage {
-                role: String::from("user"),
-                content: MessageContent::Text(String::from(
-                    "Какая у тебя модель личности?",
-                )),
-            },
+            ChatMessage::user(
+                "When I say `Какая у тебя модель личности?`, answer `У меня символьная модель личности.`",
+            ),
+            ChatMessage::assistant("Behavior rule recorded for this dialog."),
+            ChatMessage::user("Какая у тебя модель личности?"),
         ],
         temperature: None,
         stream: false,
