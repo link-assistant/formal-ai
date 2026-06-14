@@ -124,6 +124,47 @@ fn synthesis_change_preserves_supported_language_detection_contract() {
 }
 
 #[test]
+fn detects_language_from_mixed_script_definition_prompt() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected: Language,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "What is vulkan layer?",
+            expected: Language::English,
+        },
+        Case {
+            language: "ru",
+            prompt: "Что такое vulkan layer",
+            expected: Language::Russian,
+        },
+        Case {
+            language: "hi",
+            prompt: "यह क्या है vulkan layer?",
+            expected: Language::Hindi,
+        },
+        Case {
+            language: "zh",
+            prompt: "这是什么 vulkan layer?",
+            expected: Language::Chinese,
+        },
+    ];
+
+    for case in cases {
+        assert_eq!(
+            detect_language(case.prompt),
+            case.expected,
+            "{}",
+            case.language
+        );
+    }
+}
+
+#[test]
 fn decomposed_sub_results_are_composed_for_algebra() {
     let response =
         synthesis_solver().solve("If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?");

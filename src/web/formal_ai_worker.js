@@ -5524,18 +5524,35 @@ function detectLanguageSlug(text) {
   let devanagari = 0;
   let cjk = 0;
   let other = 0;
+  let firstScript = null;
   for (const character of String(text || "")) {
     const code = character.codePointAt(0);
-    if (/[a-z]/i.test(character)) latin += 1;
-    else if (code >= 0x0400 && code <= 0x04ff) cyrillic += 1;
-    else if (code >= 0x0900 && code <= 0x097f) devanagari += 1;
-    else if (code >= 0x4e00 && code <= 0x9fff) cjk += 1;
-    else if (/\p{L}/u.test(character)) other += 1;
+    if (/[a-z]/i.test(character)) {
+      latin += 1;
+      if (!firstScript) firstScript = "latin";
+    } else if (code >= 0x0400 && code <= 0x04ff) {
+      cyrillic += 1;
+      if (!firstScript) firstScript = "cyrillic";
+    } else if (code >= 0x0900 && code <= 0x097f) {
+      devanagari += 1;
+      if (!firstScript) firstScript = "devanagari";
+    } else if (code >= 0x4e00 && code <= 0x9fff) {
+      cjk += 1;
+      if (!firstScript) firstScript = "cjk";
+    } else if (/\p{L}/u.test(character)) {
+      other += 1;
+      if (!firstScript) firstScript = "other";
+    }
   }
   const total = latin + cyrillic + devanagari + cjk + other;
   if (total === 0) return "en";
   if (other > latin && other >= cyrillic && other >= devanagari && other >= cjk) {
     return "unknown";
+  }
+  if (latin > 0) {
+    if (firstScript === "cyrillic" && cyrillic >= Math.max(devanagari, cjk)) return "ru";
+    if (firstScript === "devanagari" && devanagari >= Math.max(cyrillic, cjk)) return "hi";
+    if (firstScript === "cjk" && cjk >= Math.max(cyrillic, devanagari)) return "zh";
   }
   if (cyrillic >= Math.max(latin, devanagari, cjk) && cyrillic > 0) return "ru";
   if (devanagari >= Math.max(latin, cyrillic, cjk) && devanagari > 0) return "hi";
