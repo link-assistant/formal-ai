@@ -472,4 +472,3 @@ Wired into the rest of the repository by:
   article example, the doublet count, coverage-of-nine, the query, and the
   extractor's never-guess discipline.
 - `changelog.d/` — a `minor` fragment recording the new module and capability.
-```
