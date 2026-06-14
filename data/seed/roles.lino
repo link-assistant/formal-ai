@@ -231,6 +231,8 @@ roles
     kind predicate
   prior_answer_reference
     kind meaning
+  procedural_elaboration
+    kind meaning
   procedural_request
     kind meaning
   procedural_task_modifier

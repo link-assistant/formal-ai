@@ -1,4 +1,39 @@
 meanings
+  thurs
+    defined-by word_surface
+    lexeme en
+      surface
+        text "thurs"
+  time_dilation
+    defined-by topic
+    lexeme en
+      surface
+        text "time dilation"
+  title
+    defined-by concept
+    lexeme en
+      surface
+        text "title"
+  title_case
+    defined-by operation
+    lexeme en
+      surface
+        text "title case"
+  tool_append_memory
+    defined-by tool
+    lexeme en
+      surface
+        text "tool append memory"
+  tool_brainstorm
+    defined-by tool
+    lexeme en
+      surface
+        text "tool brainstorm"
+  tool_calculator
+    defined-by tool
+    lexeme en
+      surface
+        text "tool calculator"
   tool_concept_lookup
     defined-by tool
     lexeme en
@@ -84,6 +119,11 @@ meanings
     lexeme en
       surface
         text "trace"
+  travel_guide
+    defined-by kind
+    lexeme en
+      surface
+        text "travel guide"
   trim
     defined-by concept
     lexeme en
@@ -94,6 +134,11 @@ meanings
     lexeme en
       surface
         text "trim whitespace"
+  true
+    defined-by concept
+    lexeme en
+      surface
+        text "true"
   ts
     defined-by word_surface
     lexeme en
@@ -159,11 +204,21 @@ meanings
     lexeme en
       surface
         text "whitespace"
+  wikibooks
+    defined-by source
+    lexeme en
+      surface
+        text "wikibooks"
   wikidata
     defined-by source
     lexeme en
       surface
         text "wikidata"
+  wikihow
+    defined-by source
+    lexeme en
+      surface
+        text "wikihow"
   wikipedia
     defined-by source_kind
     lexeme en
@@ -189,6 +244,16 @@ meanings
     lexeme en
       surface
         text "wikipedia summary endpoint template"
+  wikiversity
+    defined-by source
+    lexeme en
+      surface
+        text "wikiversity"
+  wikivoyage
+    defined-by source
+    lexeme en
+      surface
+        text "wikivoyage"
   wiktionary
     defined-by source_kind
     lexeme en

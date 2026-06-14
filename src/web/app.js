@@ -972,6 +972,23 @@ function buildRecallReport({ events, term, scope, currentConversationId, trigger
   return { content: lines.join("\n"), matches: groupList };
 }
 
+// Issue #444: the assistant may consult a small set of external *trusted*
+// services (wikiHow, Stack Exchange, the MediaWiki sister projects, GitHub) when
+// it answers procedural "how to X" prompts and project lookups. The maintainer
+// asked for a settings section to opt in or out of each one. This single
+// data-driven catalog drives the preference defaults, the worker prefs payload,
+// the reset descriptors, and the settings panel checkboxes, so adding a new
+// trusted service later means appending one row here (plus an i18n label) rather
+// than editing six call sites. `key` mirrors the `settings_key` recorded in
+// `data/seed/sources-registry.lino`; every service is opt-out (default enabled),
+// so existing behavior is preserved unless the user turns one off.
+const EXTERNAL_TRUSTED_SERVICES = [
+  { key: "externalServiceWikihow", label: "settings.externalServiceWikihow" },
+  { key: "externalServiceStackExchange", label: "settings.externalServiceStackExchange" },
+  { key: "externalServiceMediawikiFamily", label: "settings.externalServiceMediawikiFamily" },
+  { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
+];
+
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
@@ -1013,6 +1030,10 @@ const PREFERENCE_DEFAULTS = {
   //                          optional region (error handling, comments) present.
   blueprintComposition: "composed",
   experimentalOcr: false,
+  // Issue #444: external trusted-service opt-outs. Defined data-driven from
+  // EXTERNAL_TRUSTED_SERVICES; every service ships enabled (opt-out model) so the
+  // assistant keeps consulting them unless the user disables one in settings.
+  ...Object.fromEntries(EXTERNAL_TRUSTED_SERVICES.map((service) => [service.key, true])),
   associativeProjectPromotion: true,
   theme: "auto",
   location: "",
@@ -5136,6 +5157,20 @@ function App() {
   const [experimentalOcr, setExperimentalOcr] = useState(
     Boolean(initialPreferences.current.experimentalOcr),
   );
+  // Issue #444: one boolean per external trusted service, kept in a single map so
+  // the catalog stays the only place that enumerates the services. A missing
+  // stored value defaults to enabled (opt-out model).
+  const [externalServices, setExternalServices] = useState(() =>
+    Object.fromEntries(
+      EXTERNAL_TRUSTED_SERVICES.map((service) => [
+        service.key,
+        initialPreferences.current[service.key] !== false,
+      ]),
+    ),
+  );
+  const setExternalService = useCallback((key, value) => {
+    setExternalServices((prev) => ({ ...prev, [key]: Boolean(value) }));
+  }, []);
   const [associativeProjectPromotion, setAssociativeProjectPromotion] = useState(
     initialPreferences.current.associativeProjectPromotion !== false,
   );
@@ -5884,6 +5919,7 @@ function App() {
       definitionFusion,
       blueprintComposition,
       experimentalOcr,
+      ...externalServices,
       associativeProjectPromotion,
       theme: themePreference,
       uiSkin,
@@ -5918,6 +5954,7 @@ function App() {
     definitionFusion,
     blueprintComposition,
     experimentalOcr,
+    externalServices,
     associativeProjectPromotion,
     themePreference,
     uiSkin,
@@ -6007,6 +6044,13 @@ function App() {
     experimentalOcrRef.current = experimentalOcr;
   }, [experimentalOcr]);
 
+  // Issue #444: mirror the external trusted-service toggles into a ref so the
+  // worker prefs payload (assembled outside React render) reads the live values.
+  const externalServicesRef = useRef(externalServices);
+  useEffect(() => {
+    externalServicesRef.current = externalServices;
+  }, [externalServices]);
+
   const associativeProjectPromotionRef = useRef(associativeProjectPromotion);
   useEffect(() => {
     associativeProjectPromotionRef.current = associativeProjectPromotion;
@@ -6084,6 +6128,9 @@ function App() {
       definitionFusion: definitionFusionRef.current,
       blueprintComposition: blueprintCompositionRef.current,
       experimentalOcr: experimentalOcrRef.current,
+      // Issue #444: forward every external trusted-service opt-out so the worker
+      // can skip a disabled service's live fetch.
+      ...externalServicesRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
       theme: themePreferenceRef.current,
@@ -6726,6 +6773,14 @@ function App() {
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
+    // Issue #444: one reset descriptor per external trusted service so the
+    // "modified settings" reset bar lists any service the user turned off.
+    ...EXTERNAL_TRUSTED_SERVICES.map((service) => ({
+      key: service.key,
+      value: externalServices[service.key],
+      set: (next) => setExternalService(service.key, next),
+      label: service.label,
+    })),
     { key: "uiLanguage", value: uiLanguagePreference, set: setUiLanguagePreference, label: "settings.language" },
     { key: "responseLanguage", value: responseLanguage, set: setResponseLanguage, label: "settings.responseLanguage" },
     { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
@@ -7684,6 +7739,41 @@ function App() {
                   title: OCR_DOWNLOAD_WARNING,
                 },
                 t("settings.experimentalOcr.warning"),
+              ),
+            ),
+            // Issue #444: external trusted-services opt-in/opt-out section. The
+            // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
+            // catalog stays the single source of truth; each service is enabled
+            // by default and the user can opt out of any one.
+            h(
+              "div",
+              {
+                className: "setting-row setting-row-external-services",
+                "data-testid": "settings-external-services",
+              },
+              h(
+                "p",
+                { className: "setting-section-title" },
+                t("settings.externalServices"),
+              ),
+              h(
+                "p",
+                { className: "setting-section-note" },
+                t("settings.externalServices.note"),
+              ),
+              ...EXTERNAL_TRUSTED_SERVICES.map((service) =>
+                h(
+                  "label",
+                  { className: "setting-check", key: service.key },
+                  h("input", {
+                    type: "checkbox",
+                    checked: externalServices[service.key] !== false,
+                    "data-testid": `setting-${service.key}`,
+                    onChange: (event) =>
+                      setExternalService(service.key, event.target.checked),
+                  }),
+                  h("span", null, t(service.label)),
+                ),
               ),
             ),
             h(
