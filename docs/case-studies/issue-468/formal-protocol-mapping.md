@@ -1,211 +1,265 @@
 # The Nine Primitives as Links
 
 > Companion to [`README.md`](README.md). This document discharges requirement
-> **R311**: it shows, primitive by primitive, that the protocol's nine typed
-> primitives reduce to plain links (doublets) — *everything is a link* — and
-> points at the exact code that performs each reduction.
+> **R311**: it shows, primitive by primitive, that the protocol's nine primitives
+> are emitted **directly as Links Notation records** — *everything is a link* —
+> and points at the exact code that emits each one. There is no typed-struct
+> intermediate and no separate "reduction" step: the formalizer writes Links
+> Notation, the project's own meta-language, from the start.
 
-A **link** (doublet) is a named directed edge `source → target`. In a fully
-reduced, untyped links store a link is just an ordered pair; the project keeps an
-`id` on each pair so the reduction stays legible
-([`Link`](../../../src/text_formalization/links.rs) — `links.rs:27`). The role of
-an edge (subject, predicate, time, …) lives in the link id's suffix, *not* in a
-schema, so the typed view and the link view are the same data.
+## What a Links Notation record is, and why it is a link
 
-Three renderings are produced from one `KnowledgeBase`, and they agree:
+The formalizer
+[`formalize_text_to_links`](../../../src/agentic_coding/formalize.rs) builds the
+whole knowledge base by calling one helper for every primitive:
 
-| Rendering | Method | Shape |
-|---|---|---|
-| Typed JSON (the protocol wire format) | `to_json` / `to_json_pretty` | `{doc_id, directory?, annotations}` |
-| Structured Links Notation | `to_lino` (`lino.rs`) | one record per primitive |
-| **Fully reduced doublet stream** | `to_links` / `to_links_lino` (`links.rs`) | a flat list of `source → target` edges |
+```rust
+format_lino_record(kind, &[(key, value), …])  // src/links_format.rs
+```
 
-The JSON round-trips losslessly (`KnowledgeBase::from_json` ∘ `to_json` is the
-identity, pinned by test), and the doublet stream is deterministic: identical
-bases produce identical link sets in identical order, so the **count** can be
-pinned. For the curated Tale that count is **115**
-(`KnowledgeBase::link_count`).
+which produces a record of the shape
+
+```
+kind
+  key "value"
+  key "value"
+```
+
+In Links Notation (`lino_objects_codec`) that record **is a link**: a node headed
+by `kind`, whose body is an ordered set of `key "value"` associations — and each
+association is itself a doublet, a directed edge from the record to a value under
+the role `key`. So a `concept` record is a link whose `id` association names the
+concept and whose remaining associations are its fields; the knowledge base is a
+forest of such links. Nothing in the output is a Rust struct or a
+protocol-specific JSON object — the maintainer's instruction (*"we can use only
+formalization using meta-language, that is already in our code base"*) is met
+literally: the primitives are born as links.
+
+`format_lino_record` sanitizes every value (carriage return, newline, tab →
+escapes) and delegates to `lino_objects_codec::format::format_indented_ordered`,
+the same Links Notation writer the memory and seed subsystems use, so the output
+is consistent with the rest of the project.
+
+## The header record
+
+Every knowledge base opens with one `knowledge_base` record that names the
+document, declares the primitive scheme, stamps the generator, and reports the
+per-primitive counts:
+
+```
+knowledge_base
+  id "tale:fisherman-and-fish"
+  source "Сказка о рыбаке и рыбке"
+  primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"
+  generator "formal-ai/agentic-coding/formalize@links-v1"
+  concepts "3"
+  entities "4"
+  predicates "6"
+  assertions "7"
+  procedures "1"
+  contexts "2"
+  temporals "3"
+  modals "3"
+  annotations "7"
+```
+
+The `primitive_scheme` field is the `PRIMITIVE_KINDS` array verbatim, so the
+header itself declares the nine-primitive contract the rest of the document
+fulfils.
 
 ---
 
-## The reduction, primitive by primitive
+## The nine primitives, record by record
 
-Each section gives the protocol fields, the link edges they reduce to, and the
-function that emits them. Literal values become shared nodes
-`lit:<datatype>:<value>` so equal literals collapse to one node
-(`Term::node_id` — `primitives.rs:564`; `literal_node` — `links.rs:66`).
+Each section gives the record `kind`, the fields it carries (the `key "value"`
+associations), and a real record from the canonical synopsis. Every field set is
+emitted by the per-kind loops in
+[`formalize_text_to_links`](../../../src/agentic_coding/formalize.rs).
 
-### 1. Concept — `concept_links` (`links.rs:88`)
+### 1. Concept
 
-Fields `id, label, type, attributes` →
+Fields `id, label, type, source`. Concepts come from the recognised work's
+lexicon (`type "trait"`, `source "lexicon:<doc>"`) or are abstracted from a
+recognised object (`type "extracted"`, `source "<doc>"`).
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Concept` |
-| `lnk:<id>:label` | `<id>` → `lit:string:<label>` |
-| `lnk:<id>:kind` | `<id>` → `lit:string:<type>` *(only if set)* |
-| `lnk:<id>:attr:<k>` | `<id>` → `lit:string:<v>` *(per attribute)* |
+```
+concept
+  id "concept:greed"
+  label "жадность"
+  type "trait"
+  source "lexicon:tale:fisherman-and-fish"
+```
 
-### 2. Entity — `entity_links` (`links.rs:116`)
+### 2. Entity
 
-Fields `id, label, canonical_forms, attributes` →
+Fields `id, label, source`. Entities are the distinct subjects/objects the
+lexicon recognised in the text. The set is de-duplicated and id-sorted (a
+`BTreeMap`), so the same entity is one link no matter how often it is mentioned —
+the canonical-form fan the maintainer is wary of in "entities" never appears;
+there is only the node and its associations.
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Entity` |
-| `lnk:<id>:label` | `<id>` → `lit:string:<label>` |
-| `lnk:<id>:form:<i>` | `<id>` → `lit:string:<form>` *(per canonical form)* |
-| `lnk:<id>:attr:<k>` | `<id>` → `lit:string:<v>` *(per attribute)* |
+```
+entity
+  id "ent:old_man"
+  label "старик"
+  source "tale:fisherman-and-fish"
+```
 
-The canonical-forms list — the very *"surface forms / synonyms"* the maintainer
-is wary of in "entities" — is nothing but a fan of `:form:<i>` edges off the same
-node. There is no entity *object*, only the node and its edges.
+### 3. Predicate / Relation
 
-### 3. Predicate / Relation — `predicate_links` (`links.rs:144`)
+Fields `id, label, source`. One link per distinct relation the lexicon matched.
 
-Fields `id, name, arity, semantics` →
+```
+predicate
+  id "pred:catch"
+  label "поймал"
+  source "tale:fisherman-and-fish"
+```
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Predicate` |
-| `lnk:<id>:name` | `<id>` → `lit:string:<name>` |
-| `lnk:<id>:arity` | `<id>` → `lit:number:<arity>` |
-| `lnk:<id>:semantics` | `<id>` → `lit:string:<semantics>` *(only if set)* |
+### 4. Assertion — the atomic block
 
-### 4. Assertion — `Assertion::to_links` (`links.rs:261`)
+Fields `id, subject, subject_kind, predicate, object, object_kind`, then the
+optional qualifiers `time`, `modal`, `context`, `natural_language`, and always
+`annotation` + `provenance`. This is where *everything is a link* earns its keep:
+the protocol's atomic fact is a single link whose `subject`/`predicate`/`object`
+associations point at the entity, predicate, and concept links it relates, and
+whose qualifiers are ordinary associations — no reification, no nested record.
 
-The protocol's *irreducible* atomic block — `id, subject, predicate, object(s),
-modality, time, context, confidence, provenance` — is exactly where "everything
-is a link" has to earn its keep. It reduces to:
+```
+assertion
+  id "a:0"
+  subject "ent:old_man"
+  subject_kind "entity"
+  predicate "pred:catch"
+  object "ent:golden_fish"
+  object_kind "entity"
+  time "temporal:в-начале-сказки"
+  context "ctx:seaside"
+  annotation "ann:0"
+  provenance "tale:fisherman-and-fish@0:28"
+```
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Assertion` |
-| `lnk:<id>:subject` | `<id>` → `subject.node_id()` |
-| `lnk:<id>:predicate` | `<id>` → `<predicate id>` |
-| `lnk:<id>:object:<i>` | `<id>` → `object.node_id()` *(per object)* |
-| `lnk:<id>:time` | `<id>` → `time:<kind>:<value>` *(only if set)* |
-| `lnk:<id>:context` | `<id>` → `<context id>` *(only if set)* |
-| `lnk:<id>:modal` | `<id>` → `modal:<kind>` |
-| `lnk:<id>:confidence` | `<id>` → `lit:number:<confidence>` |
-| `lnk:<id>:provenance` | `<id>` → `prov:<doc>:<start>-<end>` *(only if set)* |
+Two things matter:
 
-So an assertion **is** its star of outgoing edges. Two consequences matter:
+- **Grounded triples are structured.** When the closed-class lexicon recognises a
+  subject-predicate-object triple, `subject`/`predicate`/`object` are links into
+  the entity/predicate catalogue and `object_kind` records whether the object is
+  an `entity`, a `concept`, or a bare `literal` (assertion `a:5`'s object
+  `"стать владычицей морской"` is a `literal`; `a:1`'s object `concept:ransom` is
+  a `concept`).
+- **Ungrounded sentences stay honest.** When the lexicon does *not* recognise a
+  triple, the assertion still ships — `subject "—"`, `predicate "pred:states"`,
+  the raw sentence as the `object`, plus a `natural_language` association — so the
+  fact is recorded with its span but no relation is invented, and no spurious
+  entity/predicate catalogue link is fabricated. The recogniser never guesses.
 
-- **Nesting is free.** A `Term::AssertionRef` object reduces its `:object:<i>`
-  edge to *another assertion's node id* (`Term::node_id` — `primitives.rs:564`),
-  so a higher-order assertion ("the old woman demanded *that the fish make her a
-  ruler*") is just an edge whose target is another assertion node. No special
-  case (article §12).
-- **Qualifiers are edges, not nested records.** Modality, time, context,
-  confidence, and provenance — the metadata RDF needs reification or RDF-star to
-  attach — are here *ordinary outgoing edges* of the assertion node. That is the
-  whole point of the reduction (see §7 of the README for the RDF-star parallel).
+### 5. Procedure
 
-### 5. Procedure — `procedure_links` (`links.rs:170`)
+Fields `id, signature, description, trigger, source`. A procedure is the work's
+escalation rule; its `trigger` association points at a predicate link, so the
+inference rule lives in the same link store as the facts it acts on.
 
-Fields `id, signature, body, triggers` →
+```
+procedure
+  id "proc:escalate"
+  signature "escalate(wish) -> larger_wish"
+  description "после исполнения желания следующее требование возрастает"
+  trigger "pred:grant"
+  source "lexicon:tale:fisherman-and-fish"
+```
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Procedure` |
-| `lnk:<id>:signature` | `<id>` → `lit:string:<signature>` |
-| `lnk:<id>:body` | `<id>` → `lit:string:<body>` |
-| `lnk:<id>:trigger:<i>` | `<id>` → `<trigger predicate id>` *(per trigger)* |
+### 6. Context
 
-A trigger edge points at a **predicate node**, so the rule "predicate `pred:grant`
-fires procedure `proc:escalate`" is one edge in the same graph as the facts — the
-inference rules live in the link store next to the data they act on.
+Fields `id, label, description`. An assertion binds to a context by id (the
+`context` association above), so a situation/validity bound is one link referenced
+by many assertions.
 
-### 6. Context — `context_links` (`links.rs:196`)
+```
+context
+  id "ctx:seaside"
+  label "У синего моря"
+  description "место действия сказки"
+```
 
-Fields `id, label, description, properties` →
+### 7. Temporal
 
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Context` |
-| `lnk:<id>:label` | `<id>` → `lit:string:<label>` *(only if set)* |
-| `lnk:<id>:description` | `<id>` → `lit:string:<description>` *(only if set)* |
-| `lnk:<id>:prop:<k>` | `<id>` → `lit:string:<v>` *(per property, e.g. `location`)* |
+Fields `id, expression, kind`. The unified time value is its own link; an
+assertion's `time` association points at it, so two assertions at the same time
+share one temporal link.
 
-An assertion binds to a context by id (the `:context` edge above), so the
-article's per-assertion `{"id": "ctx:loc", "properties": {"location": "Москва"}}`
-is one node with `:prop:location` edges, referenced by one `:context` edge.
+```
+temporal
+  id "temporal:в-начале-сказки"
+  expression "в начале сказки"
+  kind "relative"
+```
 
-### 7. Temporal — `temporal_node` (`links.rs:71`)
+### 8. Modal
 
-The unified time value is not a record but a **node identifier** that the
-assertion's `:time` edge points at:
+Fields `id, kind, degree`. Modality is a link too; an assertion's `modal`
+association points at it. A commitment (degree `0.95`) differs from a desire
+(degree `0.9`) only in which modal link the assertion references.
 
-| Variant | node id |
-|---|---|
-| `Instant{value}` | `time:instant:<value>` |
-| `Interval{start,end}` | `time:interval:<start>..<end>` |
-| `Relative{value}` | `time:relative:<value>` |
+```
+modal
+  id "modal:commitment"
+  kind "commitment"
+  degree "0.95"
+```
 
-Equal instants collapse to the same node, so "two assertions at 2019" share a
-time node — temporal aggregation is just shared-target lookup.
+### 9. Annotation
 
-### 8. Modal — inline on the assertion (`links.rs:307`)
+Fields `id, doc, span, text, language`. Annotations ground a fact in its source:
+one link per sentence, with **character** offsets (not byte offsets, so Cyrillic
+is safe) and the detected language. Annotations are produced for *every* sentence
+of *any* input, so this primitive is fully general — never guessed. The
+assertion's `provenance` association (`<doc>@<start>:<end>`) points into the same
+span space.
 
-Modality reduces to the assertion's `:modal` edge (`<id>` → `modal:<kind>`) and
-its `:confidence` edge (`<id>` → `lit:number:<confidence>`). The protocol mandates
-a modality and confidence on **every** assertion, so these two edges are always
-present (`Modal::default` is `assertion`/`1.0` — `primitives.rs:344`). A
-*possibility* ("the fish *might* make her a ruler", confidence 0.5) differs from a
-plain assertion only in the target of one edge.
-
-### 9. Annotation — `annotation_links` (`links.rs:228`)
-
-Fields `id, source_doc, offsets, language, tokenization` →
-
-| Edge id | source → target |
-|---|---|
-| `lnk:<id>:type` | `<id>` → `Annotation` |
-| `lnk:<id>:source` | `<id>` → `<source doc>` |
-| `lnk:<id>:span` | `<id>` → `span:<start>-<end>` |
-| `lnk:<id>:language` | `<id>` → `lit:string:<language>` *(only if set)* |
-| `lnk:<id>:token:<i>` | `<id>` → `lit:string:<token>` *(per token)* |
-
-The grounding of a fact in source text — *"this assertion came from characters
-0–37 of doc-0001, in Russian"* — is, again, a node and its edges; provenance on
-the assertion side (`prov:<doc>:<start>-<end>`) points into the same span space.
+```
+annotation
+  id "ann:0"
+  doc "tale:fisherman-and-fish"
+  span "0:28"
+  text "Старик поймал золотую рыбку."
+  language "ru"
+```
 
 ---
 
-## Whole-base reduction and the count
+## The whole base, and the count
 
-`KnowledgeBase::to_links` (`links.rs:335`) concatenates the per-primitive
-reductions in a fixed order — concepts, entities, predicates, procedures,
-contexts, annotations, then assertions — into **one** ordered doublet stream that
-fully reconstructs the base. `to_links_lino` (`links.rs:349`) serializes that
-stream in the same Links Notation the rest of the crate emits, and `link_count`
-(`links.rs:356`) is its length.
-
-For the curated Tale (`tale_knowledge_base`) the stream is **115 links**. That
-number is pinned by a regression test, so any change to a primitive's reduction —
-or any drift in the curated KB — trips the test rather than passing silently.
+`formalize_text_to_links` emits the records in a fixed order — header, concepts
+(id-sorted), entities, predicates, procedures, contexts, temporals, modals,
+annotations, then assertions — into one Links Notation document. The emission is
+deterministic: identical input produces an identical document, so the **record
+count** can be pinned. For the canonical synopsis it is **37 records** (1 header +
+3 concepts + 4 entities + 6 predicates + 1 procedure + 2 contexts + 3 temporals +
+3 modals + 7 annotations + 7 assertions), and `summary.covers_all_nine()` is
+`true`. Both are pinned by `tests/unit/agentic_coding.rs`, so any drift in a
+primitive's fields or in the curated synopsis trips a test rather than passing
+silently.
 
 ```
-$ formal-ai formalize tale --format links | head
-lnk:concept:greed:type
-  source "concept:greed"
-  target "Concept"
-lnk:concept:greed:label
-  source "concept:greed"
-  target "lit:string:жадность"
-lnk:concept:greed:kind
-  source "concept:greed"
-  target "lit:string:trait"
+$ cargo run --example issue_468_formalize_text | tail -3
+covered: concept, entity, predicate, assertion, procedure, context, temporal, modal, annotation
+covers all nine: true
+total records: 37
 ```
+
+The same document is what the agentic loop's final `run_command` verification step
+checks, and what an agentic CLI receives as the final assistant message — the
+planner reports it as "37 records realising all nine protocol primitives" (see
+[`README.md`](README.md) §5).
 
 ## Why this settles "as is" vs "everything is a link"
 
 The maintainer asked to implement the protocol *as is* despite disagreeing with
-entities and ontologies, *because for us everything is a link*. The two are not a
-compromise here: the typed primitives (`primitives.rs`) are the protocol's own
-field set, serialized to the article's own JSON; the doublet stream (`links.rs`)
-is the same nine primitives with every field expanded into `source → target`
-edges. Neither view is privileged — they are computed from the same
-`KnowledgeBase`, and the JSON view round-trips losslessly. The protocol is
-honored exactly, **and** it is shown to be, underneath, nothing but links.
+entities and ontologies, *because for us everything is a link*. There is no
+tension to resolve and no compromise: the nine primitives are present with their
+protocol fields, **and** each one is literally a Links Notation record — a link
+whose associations are doublets. The protocol is honored exactly, and it is
+honored *in the project's own meta-language*, with no typed-struct or
+protocol-specific JSON layer in between. That is a stronger reading of "everything
+is a link" than a bolt-on reduction would give: the primitives never exist as
+anything but links.

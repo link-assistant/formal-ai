@@ -1,16 +1,18 @@
 # Issue 468 Case Study
 
-> **Status:** Protocol implemented "as is" and reduced to links in PR #469.
-> **Type:** Documentation + enhancement (new `text_formalization` module + case study).
+> **Status:** Agentic-coding loop shipped in PR #469 — the Formal AI server solves
+> the issue's example task in agentic mode, across all three OpenAI-shaped surfaces.
+> **Type:** Documentation + enhancement (new `src/agentic_coding/` capability + case study).
 > **Primary source:** [Формальный протокол для перевода текстов в базу знаний](https://telegra.ph/Formalnyj-protokol-dlya-perevoda-tekstov-v-bazu-znanij-06-10) (Igor Martynov, January 2026)
 
 - **Issue:** <https://github.com/link-assistant/formal-ai/issues/468>
 - **Pull request:** <https://github.com/link-assistant/formal-ai/pull/469>
-- **Protocol → links mapping:** [`formal-protocol-mapping.md`](formal-protocol-mapping.md)
+- **Nine primitives as links:** [`formal-protocol-mapping.md`](formal-protocol-mapping.md)
+- **Machine-readable recipe:** [`data/meta/agentic-coding-recipe.lino`](../../../data/meta/agentic-coding-recipe.lino)
 - **Source-protocol summary (cited):** [`raw-data/article-summary.md`](raw-data/article-summary.md)
 - **Online research (cited):** [`raw-data/online-research.md`](raw-data/online-research.md)
-- **Worked example:** [`examples/issue_468_text_formalization.rs`](../../../examples/issue_468_text_formalization.rs)
-- **Module:** [`src/text_formalization/`](../../../src/text_formalization/)
+- **Worked examples:** [`examples/issue_468_agentic_loop.rs`](../../../examples/issue_468_agentic_loop.rs) (the full loop) and [`examples/issue_468_formalize_text.rs`](../../../examples/issue_468_formalize_text.rs) (the formalizer)
+- **Capability module:** [`src/agentic_coding/`](../../../src/agentic_coding/)
 
 All raw artifacts referenced below live in [`raw-data/`](raw-data/).
 
@@ -18,64 +20,95 @@ All raw artifacts referenced below live in [`raw-data/`](raw-data/).
 
 ## 1. Summary
 
-Issue #468 asks the project to **code, into the application, the capability to
-translate texts into a knowledge base** following a concrete protocol — Igor
-Martynov's *"Formal protocol for translating texts into a knowledge base"* — with
-the canonical input being Pushkin's **«Сказка о рыбаке и рыбке»** ("The Tale of
-the Fisherman and the Fish"). The protocol defines **nine primitives** (Concept,
-Entity, Predicate/Relation, Assertion, Procedure, Context, Temporal, Modal,
-Annotation), an **assertion-centric** representation, a **JSON wire format**, a
-**declarative query**, and a deliberate **operational-format-vs-ontology-schema**
-distinction. The maintainer's comment adds the case-study deliverable (collect
-data → deep analysis + online research → enumerate every requirement → solution
-plans with a component survey → land it all in the single PR #469) and one
-binding instruction:
+The issue **title** is the requirement: *"Our system should be able to solve such
+tasks in agentic mode."* The maintainer's comment is explicit that the
+text-formalization protocol in the issue body is **an example of a task** the
+system should solve from the prompt, and that the **core task** is the agentic
+capability itself:
+
+> *"the core task is in the comment, we need to make sure our Formal AI is able to
+> solve the task in agentic coding mode … start locally our OpenAI API compatible
+> server, configure it with [link-assistant/agent] … So our Formal AI system
+> should have enough skills (meta algorithm, rust code) to actually call all the
+> tools from any agentic CLI, understand errors from tools, and so on, call bash
+> commands, do web fetch and web search, to actually complete the task."*
+
+So this case study is about an **agentic-coding loop**, demonstrated on the issue's
+own example task — formalizing Pushkin's **«Сказка о рыбаке и рыбке»** ("The Tale
+of the Fisherman and the Fish") into a knowledge base. Two binding constraints
+shape the design:
 
 > *"I personally [do] not agree with entities and ontologies (because for us
-> everything is a link), while we don't agree with requirements we still should
-> by default implement them as is."*
+> everything is a link), while we don't agree with requirements we still should by
+> default implement them as is."*
 
-The central finding is that the two halves of that instruction are **not in
-tension** — they are the same artifact viewed twice. We implement the nine
-primitives **exactly as specified** (typed Rust structs, the article's JSON
-field-for-field), *and* we show that **every one of them reduces to plain
-links/doublets** — a `source → target` edge stream — so the protocol is honored
-"as is" while the project's standing position that *everything is a link* is
-demonstrated rather than asserted. The two views are byte-checked against each
-other in tests.
+> *"Also don't use claude or codex to connect them to our Formal AI, as that may
+> interrupt your own process, and also break execution of other tasks."*
 
-The deliverables are therefore code **and** documentation, fully traceable:
+The first means the knowledge base the task produces is emitted in **Links
+Notation** — the project's own meta-language, *"that is already in our code
+base"* — so the protocol's nine primitives are **realized as links**, not as
+typed-struct entities/ontologies. The second means external CLIs (`claude`,
+`codex`) are pointed **at** the server as front-ends; they are never wired **into**
+the Formal AI engine.
 
-1. A new [`src/text_formalization/`](../../../src/text_formalization/) module: the
-   nine [primitive types](../../../src/text_formalization/primitives.rs), the
-   [`KnowledgeBase`](../../../src/text_formalization/knowledge_base.rs) aggregate
-   with its canonical JSON wire `ProtocolDocument`, a structured
-   [Links-Notation](../../../src/text_formalization/lino.rs) view, the fully
-   reduced [doublet stream](../../../src/text_formalization/links.rs), a
-   declarative conjunctive [`Query`](../../../src/text_formalization/query.rs)
-   (article §9), a curated [tale](../../../src/text_formalization/tale.rs)
-   knowledge base exercising all nine primitives, and a constrained, closed-class
-   [`Extractor`](../../../src/text_formalization/extract.rs).
-2. A `formal-ai formalize` CLI subcommand (`tale` / `extract`) and a worked
-   [example](../../../examples/issue_468_text_formalization.rs).
-3. [`formal-protocol-mapping.md`](formal-protocol-mapping.md): every primitive
-   and every assertion qualifier mapped to its link/doublet realization, with the
-   `source → target` shape spelled out per primitive.
-4. This case study: collected data, deep analysis, online research, the
-   exhaustive requirement list **R306–R319**, and a solution plan plus prior-art
-   survey for each.
-5. Regression tests (`tests/unit/text_formalization.rs`) pinning the JSON
-   round-trip against the article's own example, the doublet count, the
-   coverage-of-nine, and the extractor's *never-guess* discipline, so none of the
-   above can silently regress.
+What ships in PR #469 is the whole loop, running offline and deterministically:
+
+1. **The server brain** — a deterministic [planner](../../../src/agentic_coding/planner.rs)
+   (`plan_chat_step`) that reads the conversation so far and the tools the agentic
+   CLI advertised, and decides the next step: a state machine
+   `web_search → web_fetch → write_file(formalize) → run_command(verify) → final`.
+   It is a pure function of the message history — no sampling, no neural inference.
+2. **Three surfaces, one planner** — the planner backs `/v1/chat/completions`,
+   `/v1/messages` (what `claude` speaks), and `/v1/responses` (what `codex`
+   speaks), so the loop *"call[s] all the tools from any agentic CLI"*
+   ([`src/protocol.rs`](../../../src/protocol.rs), `src/anthropic.rs`).
+3. **Two gates** — tools are refused unless `agent_mode` is opted in *and* each
+   requested tool passes a per-tool permission gate
+   (`pkg_agentic_coding` in [`src/associative_package.rs`](../../../src/associative_package.rs)),
+   so there is no hidden autonomous action.
+4. **The client** — an in-repo [driver](../../../src/agentic_coding/driver.rs)
+   (`run_agentic_task`) plays the external agentic CLI: it advertises
+   `DRIVER_TOOLS`, executes every emitted tool call (`web_search`/`web_fetch`
+   against an offline [corpus](../../../src/agentic_coding/corpus.rs),
+   `write_file`/`run_command` in a sandboxed `AgentWorkspace`), feeds each result
+   back, *understands tool errors*, and loops until the server returns the finished
+   knowledge base — bounded by a hard `MAX_TURNS` cap.
+5. **The example task's output** — the
+   [formalizer](../../../src/agentic_coding/formalize.rs)
+   (`formalize_text_to_links`) turns the fetched source text into a Links Notation
+   knowledge base in which **all nine protocol primitives are links** (concept,
+   entity, predicate, assertion, procedure, context, temporal, modal, annotation).
+
+The deliverables are code **and** documentation, fully traceable:
+
+1. The [`src/agentic_coding/`](../../../src/agentic_coding/) module: the planner,
+   the driver, the offline corpus, the closed-class
+   [lexicon](../../../src/agentic_coding/lexicon.rs), and the Links Notation
+   formalizer.
+2. The `formal-ai agent` CLI subcommand (`src/main.rs`) and two worked examples.
+3. A machine-readable [recipe](../../../data/meta/agentic-coding-recipe.lino) of the
+   meta-algorithm, grounded by a test so the recipe always matches the live code.
+4. [`formal-protocol-mapping.md`](formal-protocol-mapping.md): each of the nine
+   primitives shown as a Links Notation record.
+5. This case study: collected data, deep analysis, online research, the exhaustive
+   requirement list **R306–R319**, and a solution plan plus prior-art survey for
+   each.
+6. Regression tests (`tests/unit/agentic_coding.rs`,
+   `tests/unit/agentic_surfaces.rs`,
+   `tests/unit/specification/agentic_meta_algorithm.rs`) pinning the loop on every
+   surface, the formalizer's record count and coverage-of-nine, and the recipe's
+   fidelity to the code.
 
 What is **out of current scope, stated honestly** (not hidden): general
 open-domain natural-language extraction — the article's §7 learned pipeline (POS
 tagging, dependency parsing, semantic role labeling, NER, coreference) — requires
-neural inference, which is a project NON-GOAL. The deterministic extractor
-therefore covers exactly one explicit sentence template and **never guesses**;
-the general capability is scoped as future work in §6 (R313) with the prior art
-surveyed in §7.
+neural inference, which is a project NON-GOAL. The formalizer therefore annotates
+*every* sentence (fully general) but only emits a *structured* assertion when a
+closed-class lexicon recognises the triple; unrecognised sentences become honest
+natural-language assertions that carry the raw span and **never guess** a relation
+(§4.6). Live network access is likewise out of scope in CI: the driver resolves
+web tools against a fixed offline corpus, so the whole loop is reproducible.
 
 ---
 
@@ -86,16 +119,18 @@ under [`raw-data/`](raw-data/):
 
 | File | What it is |
 |---|---|
-| [`raw-data/issue-468.json`](raw-data/issue-468.json) | The issue as filed (`gh issue view 468 --json …`). Labels: `documentation`, `enhancement`. Body (Russian) specifies the nine primitives and links the source article. |
-| [`raw-data/issue-468-comments.json`](raw-data/issue-468-comments.json) | The single maintainer comment — the case-study deliverable, the "everything is a link" position, the "implement as is" instruction, and the "don't wire external CLIs into Formal AI" constraint. |
-| [`raw-data/pr-469.json`](raw-data/pr-469.json) | The draft pull request this work lands in. |
-| [`raw-data/article-summary.md`](raw-data/article-summary.md) | A paraphrased-and-cited summary of the source telegra.ph protocol: the nine primitives with their exact fields, the authoritative JSON example (quoted), the assertion BNF, the worked-example sentence, the §9 declarative query, the §12 nested-assertion form, the §10 metrics, and the §7 NL pipeline. |
+| [`raw-data/issue-468.json`](raw-data/issue-468.json) | The issue as filed (`gh issue view 468 --json …`). Labels: `documentation`, `enhancement`. Title: the agentic-mode requirement. Body (Russian) specifies the nine primitives and links the source article. |
+| [`raw-data/issue-468-comments.json`](raw-data/issue-468-comments.json) | The maintainer comment — the authoritative reframing (the example-vs-core-task distinction, the agentic-mode brief, the case-study deliverable, the "everything is a link" position, and the "don't wire external CLIs into Formal AI" constraint). |
+| [`raw-data/pr-469.json`](raw-data/pr-469.json) | The pull request this work lands in. |
+| [`raw-data/article-summary.md`](raw-data/article-summary.md) | A paraphrased-and-cited summary of the source telegra.ph protocol: the nine primitives with their fields, the authoritative JSON example (quoted), the assertion BNF, the worked-example sentence, the §9 declarative query, the §12 nested-assertion form, the §10 metrics, and the §7 NL pipeline. This is the **spec for the example task**. |
 | [`raw-data/online-research.md`](raw-data/online-research.md) | Summarized-and-cited research grounding each primitive in established practice: AMR, OpenIE, RDF reification / RDF-star / named graphs, Wikidata qualifiers, FrameNet/PropBank, the general NL→KB pipeline, the associative "everything is a link" model, and the Tale's own provenance. |
 
 Per [NON-GOALS.md](../../../NON-GOALS.md) (*"Research notes should not copy large
 external texts; they should summarize and cite sources"*), both research files
 quote only short definitional phrases and link every claim to its source. The
-Tale text itself is public-domain (Pushkin, 1833) and is referenced, not bulk-copied.
+Tale text itself is public-domain (Pushkin, 1833) and is referenced, not
+bulk-copied; the formalizer's canonical input is a plain-prose synopsis in the
+project's own wording ([`data/agentic-coding/fisherman-synopsis.txt`](../../../data/agentic-coding/fisherman-synopsis.txt)), **not** Pushkin's verse.
 
 ---
 
@@ -104,197 +139,228 @@ Tale text itself is public-domain (Pushkin, 1833) and is referenced, not bulk-co
 Every requirement extracted from the issue body **and** the maintainer comment
 (the two together are the complete specification). These are recorded in
 [`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as **R306–R319** under *"Issue #468
-Text-To-Knowledge Formalization"*.
+Agentic-Coding Mode"*.
 
 | ID | Requirement (intent) | Status |
 |---|---|---|
-| **R306** | Code into the application the capability to translate texts into a knowledge base per the protocol, with «Сказка о рыбаке и рыбке» as the canonical input. | Done — `src/text_formalization/` + the curated `tale_knowledge_base()`; surfaced via `formal-ai formalize tale`. |
-| **R307** | Realize the **nine primitives** with their exact fields (Concept, Entity, Predicate, Assertion, Procedure, Context, Temporal, Modal, Annotation). | Done — `src/text_formalization/primitives.rs`; field-for-field with the article (§4.1 below). |
-| **R308** | Make the representation **assertion-centric**: assertions are the units for search, inference, and aggregation — including a declarative query. | Done — `Assertion` is the atomic block; `Query` realizes the article §9 declarative form (`src/text_formalization/query.rs`). |
-| **R309** | Keep the **operational format distinct from an ontology schema**: assertions + procedures + modality + provenance carry the facts; Concept/Predicate declarations remain a fact-free reference directory. | Done — `Directory` (catalogue) vs `annotations` (assertions) in `ProtocolDocument`; the directory is omitted from JSON when empty. |
-| **R310** | Carry the per-assertion qualifiers the protocol names: **modality, time, context, confidence, provenance**. | Done — `Assertion` fields + `Modal`/`Temporal`/`Context`/`Provenance` types; exercised by the tale (§4.3). |
-| **R311** | Honor *"everything is a link"*: implement the primitives **as is**, and additionally **demonstrate every primitive reduces to plain links/doublets**. | Done — `to_lino()` (structured) + `to_links()` (reduced doublet stream) + JSON, all three byte-checked to agree; [`formal-protocol-mapping.md`](formal-protocol-mapping.md). |
-| **R312** | Provide a **curated knowledge base for the Tale** that exercises all nine primitives end to end. | Done — `tale_knowledge_base()`; `coverage().covers_all_nine() == true` (3 concepts, 5 entities, 7 predicates, 7 assertions, 1 procedure, 4 contexts, 2 temporals, 7 modals, 1 annotation). |
-| **R313** | Provide a **deterministic extractor** for the article's worked example, and scope **general open-domain extraction** honestly (it needs neural inference — a project NON-GOAL). | Done — closed-class `Extractor` reproduces «Пётр открыл магазин в Москве в 2019 году.» exactly and returns `None` on anything outside its template/lexicon; general extraction scoped as future work (§6) with prior art surveyed (§7). |
-| **R314** | Address the title's **"agentic mode"**: document how the system would drive an agentic CLI / OpenAI-compatible server to solve such tasks, while honoring the explicit constraint *not to wire external CLIs (claude/codex) into Formal AI*. | Done — §5 documents the agentic-mode flow and its boundary; the deterministic protocol core ships now, the autonomous end-to-end loop is scoped as future work without violating the constraint. |
+| **R306** | Code into the application the capability to solve the example task — translating texts into a knowledge base per the protocol, with «Сказка о рыбаке и рыбке» as the canonical input. | Done — `formalize_text_to_links` (`src/agentic_coding/formalize.rs`) drives the example task end to end; surfaced through `formal-ai agent` (`src/main.rs`) and re-exported from `src/agentic_coding/mod.rs`. |
+| **R307** | Realize the **nine protocol primitives** (Concept, Entity, Predicate, Assertion, Procedure, Context, Temporal, Modal, Annotation). | Done — the nine kinds are `PRIMITIVE_KINDS`; each is emitted as a Links Notation record by the formalizer (§4.5). For the canonical synopsis `summary.covers_all_nine()` is `true`, pinned in `tests/unit/agentic_coding.rs`. The full article field set is the spec in `raw-data/article-summary.md`; the formalizer populates the deterministically-extractable subset. |
+| **R308** | Make the representation **assertion-centric**: assertions are the units for search, inference, and aggregation. | Done — each fact is one atomic `assertion` record whose `subject`/`predicate`/`object` associations are links into the entity/predicate/concept catalogue and whose qualifiers are ordinary associations; search/inference/aggregation run over that assertion store (the crate's general Links Notation tooling), not a bespoke query engine. |
+| **R309** | Keep the **operational format distinct from an ontology schema**: assertions + procedures + modality + provenance carry the facts; Concept/Predicate declarations remain a fact-free reference directory. | Done — text-derived assertions carry a `provenance` association into the source span, while lexicon-sourced catalogue records (concept/procedure/context) are tagged `source "lexicon:<doc>"`, keeping the reference directory structurally distinct from the facts. |
+| **R310** | Carry the per-assertion qualifiers the protocol names: **modality, time, context, confidence, provenance**. | Done — assertion records carry optional `time` / `modal` / `context` associations plus `annotation` + `provenance`; the `temporal` and `modal` primitives (the latter with a `degree`) are emitted as their own links and referenced by id (§4.5, [`formal-protocol-mapping.md`](formal-protocol-mapping.md)). |
+| **R311** | Honor *"everything is a link"*: implement the primitives **as is**, in the meta-language already in the code base. | Done — every primitive is emitted directly as a Links Notation record via `format_lino_record` (`src/links_format.rs`); there is no typed-struct or protocol-JSON layer. Mapped primitive by primitive in [`formal-protocol-mapping.md`](formal-protocol-mapping.md). |
+| **R312** | Demonstrate the scheme on «Сказка о рыбаке и рыбке», exercising all nine primitives end to end. | Done — formalizing the canonical synopsis yields **37 records** (1 header + 3 concepts + 4 entities + 6 predicates + 1 procedure + 2 contexts + 3 temporals + 3 modals + 7 annotations + 7 assertions); both the count and coverage-of-nine are pinned in `tests/unit/agentic_coding.rs`. |
+| **R313** | Provide **deterministic extraction** for the example, and scope **general open-domain extraction** honestly (it needs neural inference — a project NON-GOAL). | Done — every sentence becomes an annotation with real character offsets; a closed-class lexicon (`src/agentic_coding/lexicon.rs`, data in `data/agentic-coding/fisherman-lexicon.lino`) turns recognised subject-predicate-object triples into structured assertions, and unrecognised sentences become honest natural-language assertions that never guess; general extraction is scoped as future work (§4.6/§7). |
+| **R314** | Address the title's **"agentic mode"**: the system must solve the task by being driven by an agentic CLI against the OpenAI-compatible server — calling tools, understanding errors, web search/fetch, bash — while honoring the constraint *not to wire external CLIs (claude/codex) into Formal AI*. | **Done — this is the core task and it ships.** The planner drives the loop across all three OpenAI-shaped surfaces (§4.1–§4.4); the in-repo driver exercises it offline; external CLIs are documented as front-ends *against* `formal-ai serve`, not embedded (§5). |
 | **R315** | **Collect issue data** into `docs/case-studies/issue-468/`. | Done — §2 and [`raw-data/`](raw-data/). |
 | **R316** | **Deep case-study analysis**, including **online research** for additional facts. | Done — §4 (analysis) + [`raw-data/online-research.md`](raw-data/online-research.md) (8 cited sources). |
 | **R317** | **List each and all requirements** from the issue. | Done — this table (R306–R319) plus the prose enumeration below. |
 | **R318** | Propose **solutions and solution plans per requirement**, checking **existing components/libraries**. | Done — §6 (per-requirement plans) + §7 (prior-art survey). |
-| **R319** | **Plan and execute everything in the single PR #469.** | Done — the module, CLI, example, tests, this case study, the mapping doc, the `raw-data/` captures, the `REQUIREMENTS.md` rows, and the changelog fragment all land in PR #469. |
+| **R319** | **Plan and execute everything in the single PR #469.** | Done — the module, CLI, examples, recipe, tests, this case study, the mapping doc, the `raw-data/` captures, the `REQUIREMENTS.md` rows, and the changelog fragments all land in PR #469. |
 
 ### Why these fourteen and not more
 
 The issue body is one specification paragraph plus a primitive list; the comment
-is the case-study brief plus constraints. R306 is the literal "code it into the
-app" ask; R307 is the primitive list; R308 is *"Assertions — единицы, по которым
-делаем поиск, выводы, агрегации"* ("assertions are the units for search,
-inference, aggregation"); R309 is the *"Чем отличается от онтологии"* ("how it
-differs from an ontology") paragraph; R310 is the explicit `Assertion` field set
-(modality/time/context/confidence/provenance). R311 is the comment's
-everything-is-a-link position combined with "implement as is". R312–R313 are the
-two concrete demonstrations the body asks to *"проверить работоспособность"*
-("check that the scheme works") — one curated, one extracted. R314 is the issue
-**title** ("agentic mode") read against the comment's constraint. R315–R319 are
-the comment's five-part case-study brief. No requirement is implied beyond these
-without over-reading the text. The optional *"test on AI benchmarks"* sentence is
-recorded here as explicitly deferred (it depends on the agentic loop of R314) and
-is not promoted to a requirement, to avoid overclaiming.
+reframes the body as an *example task* and states the *core* agentic-mode ask plus
+the case-study brief and constraints. R306 is the "code the capability" ask; R307
+is the primitive list; R308 is *"Assertions — единицы, по которым делаем поиск,
+выводы, агрегации"*; R309 is the *"Чем отличается от онтологии"* paragraph; R310 is
+the explicit assertion qualifier set; R311 is the everything-is-a-link position
+combined with "implement as is". R312–R313 are the body's request to *"проверить
+работоспособность"* ("check that the scheme works") — one demonstrated on the
+canonical input, one on the extraction discipline. **R314 is the issue title — the
+core task — read against the comment's constraint.** R315–R319 are the comment's
+five-part case-study brief. The optional *"test on AI benchmarks"* sentence is
+recorded as cross-referenced, not promoted to a requirement (§7), to avoid
+overclaiming.
 
 ---
 
 ## 4. Deep Analysis
 
-### 4.1 The nine primitives, field-for-field
+### 4.1 The agentic loop: a server brain and a client
 
-The article specifies each primitive's fields; the module mirrors them exactly.
-The mapping is one-to-one (see `src/text_formalization/primitives.rs`):
+The loop has two halves. The **server brain** is `plan_chat_step`
+(`src/agentic_coding/planner.rs`): given the messages so far and the tool names
+the CLI advertised, it returns the next `AgenticPlan` — either `ToolCalls` (emit
+these calls and wait) or `Final` (the knowledge base inline). It is a deterministic
+state machine:
 
-| Protocol primitive | Article fields | Rust type | Notes |
-|---|---|---|---|
-| **Concept** | `id, label, type, attributes` | `Concept` | `type` → `concept_type` (Rust keyword); attributes are ordered key/values. |
-| **Entity** | `id, label, canonical_forms, attributes` | `Entity` | `canonical_forms` is the surface-form list (synonyms/aliases). |
-| **Predicate / Relation** | `id, name, arity, semantics` | `Predicate` | `semantics` is the optional formula/type string. |
-| **Assertion** | `id, subject, predicate, object(s), modality, time, context, confidence, provenance` | `Assertion` | the atomic block; `object` is a list of `Term`s (entity / concept / literal / **assertion reference** for nesting). |
-| **Procedure** | `id, signature, body, triggers` | `Procedure` | `triggers` are predicate ids that fire the rule. |
-| **Context** | situation / validity bounds | `Context` | id + label + description + ordered properties (e.g. `location = Москва`). |
-| **Temporal** | `instant / interval / relative` | `Temporal` enum | three variants; `calendar_year()` projects an `Instant` year for querying. |
-| **Modal** | `belief / obligation / possibility / …` | `Modal` | `kind` + `confidence`; default is a plain `assertion` at confidence `1.0`. |
-| **Annotation** | source ref + `offsets` + `language` + `tokenization` | `Annotation` | grounds an assertion in a `[start, end]` character span of the source. |
+```text
+web_search → web_fetch → write_file(formalize) → run_command(verify) → final
+```
 
-The JSON serialization (`ProtocolDocument`) is field-for-field the article's own
-example. The clinching evidence is a **round-trip test**: the article's verbatim
-JSON example parses into `ProtocolDocument` and re-serializes to the same value,
-so the wire format is conformant, not merely inspired by the article.
+Each step is taken only if (a) the conversation does not already contain a tool
+result for that capability and (b) the CLI advertised a tool with that capability.
+`classify_tool` maps whatever names a CLI uses (`web_search`, `web_fetch`,
+`write_file`, `run_command`, `bash`, `shell`, …) onto a `Capability`
+(`Search`/`Fetch`/`Write`/`Run`) by substring, so the planner adapts to *any*
+subset of tools a given CLI exposes — the literal reading of *"call all the tools
+from any agentic CLI"*. The plan is pinned by the constants `SEARCH_QUERY`,
+`CANONICAL_SOURCE_URL`, and `KB_PATH`.
 
-### 4.2 Assertion-centric, not ontology-centric (R308 / R309)
+The **client** is `run_agentic_task` (`src/agentic_coding/driver.rs`). It plays the
+external agentic CLI in-repo: advertises `DRIVER_TOOLS`
+(`["web_search", "web_fetch", "write_file", "run_command"]`), sends a chat request,
+and whenever the server answers with `tool_calls` it *executes* each call —
+`web_search`/`web_fetch` against the offline corpus, `write_file`/`run_command`
+against one reused sandboxed `AgentWorkspace` — appends the assistant turn followed
+by the `tool` results (order matters: the planner maps each result's
+`tool_call_id` back to a prior assistant `tool_calls` turn), and loops until
+`finish_reason: "stop"`. The loop is bounded by `MAX_TURNS = 12` (the recipe needs
+five), so an unbounded reasoning loop is impossible — a stated NON-GOAL.
 
-The article is explicit that this is **not** an ontology: *"Онтология — это набор
-типов и связей (schema). Наш формат — операционный: Assertions + процедуры +
-модальность + provenance. Онтология остаётся как справочник."* The module
-encodes that split structurally: `ProtocolDocument` carries a `directory` (the
-fact-free catalogue of Concept/Entity/Predicate/Procedure/Context/Annotation
-declarations) and an `annotations` array (the assertions — the facts). The
-directory is **omitted from the JSON when empty**, so a pure-assertion document
-is exactly `{doc_id, annotations}` — the operational format with no schema
-overhead. Search/inference/aggregation run over assertions: the `Query` type is a
-conjunctive filter over the assertion stream, realizing the article's §9
-declarative form (`SELECT ?x WHERE subject = … AND predicate = … AND
-ctx.location = … AND time.year = …`).
+### 4.2 One planner, three surfaces
 
-### 4.3 The Tale exercises every primitive (R312)
+The maintainer wants the system to be driven by *"any agentic CLI"*. Different CLIs
+speak different OpenAI-shaped dialects: `codex` speaks the Responses API
+(`/v1/responses`), `claude` speaks Anthropic Messages (`/v1/messages`), and
+`opencode` / `link-assistant/agent` speak Chat Completions
+(`/v1/chat/completions`). A single `agentic_outcome` decision in
+`src/protocol.rs` — *refuse / plan / fall-through* — backs all three, so the loop
+behaves identically everywhere:
 
-`tale_knowledge_base()` is the curated proof that the representation is
-expressive enough for the issue's canonical input. It encodes the moral arc of
-«Сказка о рыбаке и рыбке» as 7 assertions over 5 entities (old man, old woman,
-golden fish, sea, trough), 7 predicates, and 3 abstract concepts (greed, wish,
-ransom), and it deliberately reaches for the harder primitives:
+- A `ToolCalls` plan becomes an assistant turn with `finish_reason: "tool_calls"`
+  on Chat Completions, a `tool_use` content block with `stop_reason: "tool_use"`
+  on Anthropic Messages, and a `function_call` output item on Responses.
+- A fed-back tool result is *understood* in each protocol's own idiom — a `tool`
+  message, an Anthropic `tool_result` block carried on a `user` message, or an
+  OpenAI `function_call_output` item — and translated into the shared message
+  shape so the loop **advances** rather than restarting.
 
-- **Temporal** — `a:catch` and `a:release` carry *relative* time ("at the start
-  of the tale", "after he caught it").
-- **Context** — `a:catch` is bound to `ctx:seaside`; `a:final` to `ctx:final`
-  ("return to the initial state"), capturing the validity-bounds idea.
-- **Modal** — `b:make_ruler` is a *possibility* (confidence 0.5); `a:demand_sea`
-  is a *desire* (0.9); the rest are plain assertions. This is exactly the
-  belief/obligation/possibility spectrum the article names.
-- **Nested assertion (§12)** — `a:demand_sea`'s object is **not** an entity but a
-  reference to another assertion (`b:make_ruler`): "the old woman demanded *[that
-  the fish make her a ruler]*". Higher-order assertions fall out of `Term` having
-  an `AssertionRef` variant.
-- **Procedure** — `proc:escalate` is triggered by `pred:grant`, modeling the
-  tale's escalation rule.
-- **Annotation + Provenance** — `a:catch` is grounded in a source span and
-  records the curating extractor in its provenance.
+`tests/unit/agentic_surfaces.rs` (9 tests) pins this mirror on the Messages and
+Responses surfaces, including the `input_json_delta` streaming shape an agentic CLI
+assembles tool calls from.
 
-`coverage().covers_all_nine()` returns `true`, and the exact counts are pinned by
-a test so the curated KB cannot lose a primitive unnoticed.
+### 4.3 Two gates, no hidden autonomy
 
-### 4.4 Everything is a link (R311)
+Tool execution is gated twice (`agentic_outcome`, `src/protocol.rs`). First,
+`agent_mode` must be opted in — without it every tool is refused with a policy
+message (`agent_mode_required_for_tools`). Second, each requested tool must pass a
+per-tool permission gate. The default package set installs `pkg_agentic_coding`
+(`src/associative_package.rs`), a permission-only package granting the
+client-executed `web_fetch` / `write_file` / `run_command` capabilities
+(`web_search` comes from the core package). Granting these *by default* enables no
+hidden action, because `agent_mode` remains the real guard: an agent that has not
+opted in can call nothing. This is the "agentic mode is strictly opt-in" posture
+the NON-GOALS demand — no autonomous action without an explicit, auditable switch.
 
-The maintainer's position — *"for us everything is a link"* — is demonstrated, not
-argued. `KnowledgeBase::to_links()` reduces the **entire** knowledge base to a
-flat stream of `Link { id, source, target }` doublets: each concept becomes
-`concept → Concept` / `concept → label` edges; each assertion becomes
-`assertion → subject`, `assertion → predicate`, `assertion → object:i`,
-`assertion → time`, `assertion → context`, `assertion → modal`,
-`assertion → confidence`, `assertion → provenance` edges; literals become
-`lit:<datatype>:<value>` nodes. For the Tale this is **115 doublets**, and
-`to_links_lino()` serializes them in the same Links Notation the rest of the
-crate emits. The three views — structured `.lino`, protocol JSON, and the reduced
-doublet stream — are all derived from the same `KnowledgeBase`, and the JSON view
-round-trips losslessly, so "implement the primitives as is" and "everything is a
-link" are the **same** object rendered three ways. The per-primitive reduction is
-tabulated in [`formal-protocol-mapping.md`](formal-protocol-mapping.md).
+### 4.4 Understanding tool errors
 
-### 4.5 Why general extraction is out of scope, and what is in scope (R313)
+The issue asks the system to *"understand errors from tools"*. The planner's
+`looks_like_error` heuristic treats a tool result containing `error` / `failed` /
+`not found` / `404` as untrustworthy: such a fetch result is **not** adopted as the
+source text. The formalizer then falls back to the canonical synopsis, so the loop
+still completes with a stable, all-nine-primitive knowledge base. The offline
+corpus exercises this directly: `web_fetch` of an unknown URL returns
+`web_fetch error: 404 not found …`, exactly as a real 404 would, and the loop
+recovers deterministically.
 
-The article's §7 describes the general pipeline: tokenization → POS → dependency
-parse → semantic role labeling → NER → coreference → assertion assembly. Every
-step after tokenization is a **learned-model** problem; doing it well is exactly
-what large language models are for, and `formal-ai` performs **no neural-network
-inference** by design (`NON-GOALS.md`). Pretending otherwise would mean a brittle
-hand-rolled parser masquerading as general NL understanding. Instead, the module
-ships a **constrained, closed-class** extractor: it recognizes one explicit
-sentence template (`<Subject> <Predicate> <Object> в <Location> в <Year>`) over a
-fixed lexicon, reproduces the article's worked example exactly, and returns
-`None` for **anything** outside that template or lexicon. It never guesses. This
-is the honest deterministic core; the general capability is the agentic-mode work
-of §5/R314 and the neuro-symbolic future work of §7 — named, not buried.
+### 4.5 The example task's output: nine primitives as links (R311/R312)
 
-### 4.6 What the online research adds
+The fetched source text is formalized by `formalize_text_to_links`. The maintainer's
+*"everything is a link"* is realized literally: every record is emitted directly as
+Links Notation by `format_lino_record`, so each of the nine primitives **is** a link
+(a node headed by its kind, whose `key "value"` associations are doublets). For the
+canonical synopsis the document is **37 records** and `covers_all_nine()` is `true`:
 
-[`raw-data/online-research.md`](raw-data/online-research.md) grounds each design
-choice in established practice and confirms the protocol is a reasonable synthesis
-rather than an outlier: the assertion ≈ AMR/OpenIE **triple**; statement-level
-modality/time/context/confidence/provenance ≈ **RDF reification / RDF-star /
-named graphs** and **Wikidata qualifiers + references**; the Predicate directory ≈
-**FrameNet/PropBank** predicate inventories; and the reduction to doublets ≈ the
-associative *"everything is a link"* model the project already runs on. Nothing in
-the literature contradicts the protocol; the qualifier set it names is precisely
-what deployed knowledge graphs (Wikidata) found necessary in practice.
+```
+knowledge_base
+  id "tale:fisherman-and-fish"
+  primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"
+  …
+assertion
+  id "a:0"
+  subject "ent:old_man"
+  subject_kind "entity"
+  predicate "pred:catch"
+  object "ent:golden_fish"
+  object_kind "entity"
+  time "temporal:в-начале-сказки"
+  context "ctx:seaside"
+  annotation "ann:0"
+  provenance "tale:fisherman-and-fish@0:28"
+```
+
+The assertion is the atomic block: its `subject`/`predicate`/`object` associations
+are links into the entity/predicate catalogue, and its qualifiers (`time`, `modal`,
+`context`) are ordinary associations pointing at the temporal/modal/context links —
+no reification, no nested record. The full primitive-by-primitive mapping is in
+[`formal-protocol-mapping.md`](formal-protocol-mapping.md).
+
+### 4.6 Closed-class extraction, honest fallback (R313)
+
+The article's §7 general pipeline (tokenization → POS → dependency parse → SRL →
+NER → coreference) is a chain of **learned-model** problems, and `formal-ai`
+performs **no neural inference** by design (`NON-GOALS.md`). Faking it with a
+brittle hand-rolled parser masquerading as general understanding would be the
+dishonest path. Instead the formalizer is split by confidence:
+
+- **Annotations are fully general.** Every sentence of *any* input becomes an
+  `annotation` link with real **character** offsets (Cyrillic-safe) — never guessed.
+- **Assertions are grounded or honest.** A closed-class lexicon (stored as data in
+  `data/agentic-coding/fisherman-lexicon.lino`) recognises subject-predicate-object
+  triples; recognised triples become structured assertions. An *unrecognised*
+  sentence still produces an assertion — `subject "—"`, `predicate "pred:states"`,
+  the raw sentence as the object, plus a `natural_language` association — so the
+  fact is recorded with its span but **no relation is invented**.
+
+The general capability is named as future work (§7), not buried.
+
+### 4.7 What the online research adds
+
+[`raw-data/online-research.md`](raw-data/online-research.md) grounds the example
+task's design in established practice: the assertion ≈ AMR/OpenIE **triple**;
+statement-level modality/time/context/confidence/provenance ≈ **RDF reification /
+RDF-star / named graphs** and **Wikidata qualifiers + references**; the Predicate
+directory ≈ **FrameNet/PropBank** predicate inventories; and the realization as
+doublets ≈ the associative *"everything is a link"* model the project already runs
+on. Nothing in the literature contradicts the protocol; the qualifier set it names
+is precisely what a deployed knowledge graph (Wikidata) found necessary in practice.
 
 ---
 
-## 5. Agentic Mode — the title, the constraint, and the boundary (R314)
+## 5. Agentic Mode — the surfaces, the constraint, the boundary (R314)
 
-The issue **title** is *"Our system should be able to solve such tasks in agentic
-mode."* The comment sketches the intended mechanism: stand up the project's
-OpenAI-compatible server, point an agentic CLI ([`link-assistant/agent`](https://github.com/link-assistant/agent),
-falling back to `gemini-cli`) at it, and have Formal AI *"call all the tools from
-any agentic CLI, understand errors from tools, … call bash commands, … web fetch
-and web search, to actually complete the task"* — i.e. autonomously produce the
-knowledge base from the raw text.
+This is the core task, and it ships. The intended mechanism from the comment —
+stand up the OpenAI-compatible server, point an agentic CLI at it, and let Formal
+AI call tools to complete the task — is realized as the loop of §4. Here is how an
+**external** CLI is pointed at it, and where the boundary sits.
 
-This case study honors the title while respecting the comment's **explicit
-boundary**:
+The server already exposes the three OpenAI-shaped surfaces an agentic CLI targets
+as its model backend; [`docs/desktop/server-api.md`](../../desktop/server-api.md)
+documents how to point each CLI at `formal-ai serve`:
+
+- **`codex`** → the Responses API (`/v1/responses`); see server-api.md §4a.
+- **`opencode`** and **[`link-assistant/agent`](https://github.com/link-assistant/agent)**
+  → Chat Completions (`/v1/chat/completions`); see §4b / §4c.
+- **`claude`** → Anthropic Messages (`/v1/messages`); see §4d.
+
+In every case the CLI runs the loop: it advertises its tools, the server emits the
+next tool call, the CLI executes it (its own real web/file/command tools) and feeds
+the result back, until the server returns the finished knowledge base. The in-repo
+driver (§4.1) is the offline, deterministic stand-in for exactly this client so the
+whole thing runs in CI.
+
+**The boundary.** The comment is explicit:
 
 > *"Also don't use claude or codex to connect them to our Formal AI, as that may
 > interrupt your own process, and also break execution of other tasks."*
 
-So the autonomous end-to-end loop is **documented and scoped, not wired up**. The
-agentic-mode flow, once built, is:
+So external CLIs are front-ends *against* the server — they drive it; they are
+never imported, spawned, or embedded by the engine. The driver that exercises the
+loop in CI is the project's *own* code, not a wrapper around `claude`/`codex`.
 
-1. **Serve** — `formal-ai serve` already exposes the OpenAI-compatible endpoints
-   (`src/server.rs`, `src/protocol.rs`); an agentic CLI can target it as its
-   model backend.
-2. **Tool surface** — the project already has the symbolic tool primitives the
-   loop needs: bash/command execution (`src/agent.rs` `AgentWorkspace`), web
-   fetch/search (`src/web_engine_core.rs`, `src/web_search_core.rs`), and GitHub
-   evidence collection (`src/github_logs.rs`). The agentic loop is *orchestration*
-   over these, not new capability.
-3. **Formalize** — each agent turn's text is reduced to assertions by the very
-   `text_formalization` module shipped here; the curated/extracted KB is the
-   reference target a learned loop would be scored against.
-4. **Reconstruct** — the comment's fallback ("use claude/codex JSON sessions to
-   reconstruct reasoning steps") becomes a *replay* problem: an agent's saved JSON
-   session is a sequence of tool calls that can be re-expressed as assertions +
-   procedures in exactly this format, so Formal AI can learn the *flow* without
-   being *driven* by the external model at runtime — preserving the boundary.
-
-What ships **now** is the deterministic substrate that makes (3) and (4)
-well-defined: a concrete, testable target format. The learned orchestration of
-(1)–(2) that would make the loop fully autonomous is the future work, named so it
-is not mistaken for already-done.
+**Reconstruction from saved traces (reference only).** The comment also notes that
+if the loop fails one *"can use locally available claude and codex (ask them to
+output JSON for reference, or take their saved json sessions) … to actually
+reconstruct all reasoning steps."* That is a *reference* workflow: a saved agent
+session is a sequence of tool calls that can be read back to reconstruct the
+reasoning, and — because each call maps onto the same `web_search`/`web_fetch`/
+`write_file`/`run_command` capabilities the planner already models — it can be
+replayed as a transcript for comparison. It is explicitly **not** a runtime
+dependency: nothing in `src/agentic_coding/` calls an external model, by design and
+per the constraint.
 
 ---
 
@@ -303,126 +369,110 @@ is not mistaken for already-done.
 Each plan names the chosen approach and the existing component it reuses, per
 R318. The survey those choices draw on is §7.
 
-### R306 / R307 / R310 — Code the protocol with its nine primitives and qualifiers
-**Approach (chosen, done):** a dedicated `src/text_formalization/` module of typed
-structs, one per primitive, with builder methods and `serde` derives matching the
-article's JSON field names. **Existing components reused:** `serde`/`serde_json`
-(already crate dependencies) for the wire format; the crate's own
-`links_format::format_lino_record` for Links-Notation rendering — the same helper
-the memory/seed subsystems use, so the output is consistent with the rest of the
-project. **Alternative considered:** a generic property-graph crate (e.g.
-`petgraph`) — rejected because the protocol's value is its *named, typed* fields,
-which a generic graph would erase; the reduction to a generic graph is provided
-*on top* (`to_links()`) rather than *instead*.
+### R314 — Agentic mode (the core task)
+**Approach (chosen, done):** a deterministic planner (`plan_chat_step`) wired into
+the shared `agentic_outcome` decision so all three OpenAI-shaped surfaces emit and
+consume tool calls identically, plus an in-repo driver + offline corpus that
+exercise the full `search → fetch → write → run → final` loop offline. **Existing
+components reused:** the crate's `AgentWorkspace` (sandboxed command/file
+execution), the existing OpenAI-compatible server (`src/protocol.rs`,
+`src/anthropic.rs`), and the associative-package permission model
+(`pkg_agentic_coding`). **Constraint honored:** external CLIs drive the server;
+none is embedded. **Alternative considered:** spawning `claude`/`codex` as a
+subprocess — rejected outright by the maintainer's boundary.
 
-### R308 — Assertion-centric representation + declarative query
-**Approach (chosen, done):** `Assertion` is the atomic unit; `Query` is a
-conjunctive filter with a small parser for the article's §9 textual form. **Existing
-component reused:** the crate's existing `links_query` module is the precedent for
-"parse a tiny query language over a link store"; `Query` follows its shape
-(builder + `parse` + `Error` enum) rather than inventing a new idiom. **Alternative
-considered:** embedding a full SPARQL engine — rejected as wildly disproportionate
-to a conjunctive equality/threshold filter and contrary to the dependency-light,
-WASM-safe posture.
+### R306 / R307 / R310 / R311 — The example task as links
+**Approach (chosen, done):** a deterministic `formalize_text_to_links` that emits
+the nine primitives **directly** as Links Notation records via the crate's own
+`format_lino_record` — the same helper the memory/seed subsystems use, so the
+output is consistent with the rest of the project. **Alternative considered:** the
+typed-struct + JSON module a previous draft hand-coded — rejected because it
+contradicted *"everything is a link"* and *"meta-language already in our code
+base"*; it was removed in favor of direct Links Notation emission.
+
+### R308 — Assertion-centric representation
+**Approach (chosen, done):** the assertion is the atomic record; its
+subject/predicate/object are links into the catalogue and its qualifiers are
+associations. Search/inference/aggregation run over the emitted Links Notation
+store with the crate's general links tooling rather than a bespoke query engine,
+keeping the formalizer focused on producing the store.
 
 ### R309 — Operational format vs ontology schema
-**Approach (chosen, done):** structural separation in `ProtocolDocument`
-(`directory` catalogue vs `annotations` facts), with the directory `skip`-ped from
-JSON when empty so the operational format carries no schema weight. No external
-component needed; this is a serialization-shape decision.
+**Approach (chosen, done):** a structural `source` vs `provenance` distinction —
+lexicon-sourced catalogue records are tagged `source "lexicon:<doc>"`, text-derived
+assertions carry `provenance "<doc>@<start>:<end>"` — so the fact-free reference
+directory is separable from the facts without a schema layer.
 
-### R311 — Everything is a link
-**Approach (chosen, done):** a `to_links()` reduction emitting `Link{id,source,
-target}` doublets for every primitive and every assertion slot, plus
-`to_links_lino()` to serialize them. The structured `.lino`, the JSON, and the
-doublet stream are three renderings of one `KnowledgeBase`, byte-checked to agree.
-**Existing component reused:** the project's own doublet model (`DoubletLink`,
-`link_store`) is the conceptual target; the reduction maps the protocol onto it.
-**Alternative considered:** an RDF/RDF-star export — noted in
-[`formal-protocol-mapping.md`](formal-protocol-mapping.md) as a natural future
-bridge (the doublet stream is isomorphic to reified RDF triples) but not shipped,
-to avoid an `rdf` dependency for a demonstration.
-
-### R312 — Curated Tale knowledge base
-**Approach (chosen, done):** `tale_knowledge_base()` hand-curates the Tale to
-exercise all nine primitives, with a coverage assertion pinned by test. This is
-the "does the scheme actually work" demonstration the issue body asks for, on the
-issue's own canonical input.
-
-### R313 — Deterministic extractor + general extraction scoped
-**Approach (chosen, done):** a closed-class, template-bound `Extractor` that
-reproduces the article's worked example and never guesses (returns `None` off-
-template). **Why not general extraction:** it requires neural inference (a project
-NON-GOAL); §4.5 and §7 explain and survey the alternative. **Existing components
-surveyed as the future reuse path:** spaCy/Stanza (POS/dependency/NER), AllenNLP
-(SRL/coreference), the AMR parsers, and OpenIE systems — all named in §7 as what a
-learned loop would call, consistent with the agentic-mode design of §5.
-
-### R314 — Agentic mode, within the constraint
-**Approach (chosen, done):** document the flow and its boundary (§5); ship the
-deterministic target format now; scope the autonomous loop as future work without
-wiring external CLIs into Formal AI. **Existing components reused (already in the
-repo):** `src/server.rs` (OpenAI-compatible serving), `src/agent.rs`
-(workspace/command execution), `src/web_*_core.rs` (fetch/search). **External
-reuse target named:** `link-assistant/agent` as the agentic CLI front-end, with
-`gemini-cli` as the documented fallback — invoked *against* the server, not
-*embedded into* Formal AI, per the constraint.
+### R312 / R313 — Demonstrate on the Tale; scope general extraction
+**Approach (chosen, done):** formalize the canonical synopsis (37 records, all nine
+primitives, pinned by test) as the worked demonstration; split extraction by
+confidence (general annotations, grounded-or-honest assertions) so nothing is
+faked. **Existing components surveyed as the future reuse path:** spaCy/Stanza,
+AllenNLP, AMR parsers, OpenIE systems — named in §7 as what a learned loop would
+call.
 
 ### R315 / R316 / R317 / R318 / R319 — The case-study brief
 **Approach (chosen, done):** §2 collects the data; §4 + the research file do the
-deep analysis with online research; §3 enumerates R306–R319; §6 + §7 give the
-plans and survey; and every artifact lands in the single PR #469. **Existing
-component reused:** the case-study layout and the `raw-data/online-research.md`
-convention established by issue-451 / issue-408, copied here for consistency.
+deep analysis with online research; §3 enumerates R306–R319; §6 + §7 give the plans
+and survey; and every artifact lands in the single PR #469. **Existing component
+reused:** the case-study layout and the `raw-data/online-research.md` convention
+established by issue-451 / issue-408.
 
 ---
 
 ## 7. Existing Components / Prior Art Surveyed (R318)
 
-What the field already built for text-to-knowledge formalization, and what
-`formal-ai` reuses, re-expresses, or names as a future reuse target. Full
-citations are in [`raw-data/online-research.md`](raw-data/online-research.md).
+What the field already built, and what `formal-ai` reuses, re-expresses, or names
+as a future reuse target. Full citations are in
+[`raw-data/online-research.md`](raw-data/online-research.md).
+
+### Agentic-mode front-ends (the core task)
+- [`link-assistant/agent`](https://github.com/link-assistant/agent),
+  [`opencode`](https://github.com/sst/opencode), `codex`, and `claude` — agentic
+  CLIs that target an OpenAI-compatible backend. They are the front-end reuse target
+  for R314, invoked against `formal-ai serve` (the three surfaces of §5), *not*
+  wired into the engine (constraint).
+
+### Agentic-coding benchmarks (the optional "test on benchmarks" note)
+- The repository's central [`docs/benchmarks.md`](../../benchmarks.md) already
+  catalogs the agentic-coding-shaped suites — **BFCL** (tool/function calling),
+  **SWE-bench** (repository task completion), **LiveCodeBench**, **CanItEdit**, and
+  **HumanEvalFix**. The issue's optional "test on AI benchmarks" sentence maps onto
+  these existing entries; this case study cross-references them rather than
+  fabricating a new suite, consistent with the benchmarks doc's strict-catalog rule.
 
 ### Meaning representations (the assertion)
 - **Abstract Meaning Representation (AMR)** — rooted, labeled sentence graphs with
-  PropBank predicate senses. The `Assertion` (subject/predicate/object over a
-  predicate directory) is the same triple idea; AMR is the richer, learned target
-  a neural loop would emit. *Surveyed as the future extraction target, not embedded.*
+  PropBank predicate senses. The assertion (subject/predicate/object over a
+  predicate directory) is the same triple idea; AMR is the richer, learned target a
+  neural loop would emit. *Surveyed as the future extraction target, not embedded.*
 - **Open Information Extraction (OpenIE / Stanford OpenIE)** — schema-free
-  `(arg1, relation, arg2)` triples straight from text. This is precisely the
-  assertion shape; OpenIE is the closest existing *general* extractor and is named
-  as the reuse path for R313's future work.
+  `(arg1, relation, arg2)` triples straight from text — precisely the assertion
+  shape, and the closest existing *general* extractor; named as the reuse path for
+  R313's future work.
 
 ### Statement-level metadata (the qualifiers)
 - **RDF reification, RDF-star (RDF 1.2), named graphs** — the standard ways to
-  attach metadata (time, source, certainty) to a statement. The `Assertion`'s
-  modality/time/context/confidence/provenance fields are the same need; the
-  `to_links()` doublet stream is isomorphic to a reified-triple encoding, so an
-  RDF-star export is a natural future bridge (noted, not shipped).
+  attach metadata (time, source, certainty) to a statement; the assertion's
+  qualifier associations are the same need, and the Links Notation realization is
+  isomorphic to a reified-triple encoding (a natural future bridge, noted not
+  shipped).
 - **Wikidata qualifiers + references** — the largest deployed knowledge graph
-  attaches `point in time`, `determination method`, and `reference` to statements.
-  This is direct empirical support that the protocol's qualifier set is the
-  *right* set: a production KB independently found the same fields necessary.
+  attaches `point in time`, `determination method`, and `reference` to statements:
+  direct empirical support that the protocol's qualifier set is the *right* set.
 
 ### Predicate inventories (the directory)
-- **FrameNet, PropBank, VerbNet** — curated predicate/role inventories. The
-  `Predicate` directory (fact-free declarations with `semantics`) is the same
-  reference-catalogue role; these are the reuse targets if the predicate set is
-  ever grounded against a standard inventory.
+- **FrameNet, PropBank, VerbNet** — curated predicate/role inventories; the
+  predicate catalogue plays the same reference-directory role, and these are the
+  reuse targets if it is ever grounded against a standard inventory.
 
 ### The associative substrate (everything is a link)
-- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) —
-  the native doublet store the project already runs on; `to_links()` targets this
-  exact `source → target` model.
-- **RDF triple stores / property graphs (Neo4j)** — the general-purpose
-  realizations of "knowledge as a graph". The doublet reduction shows the protocol
-  maps cleanly onto either; neither is embedded, to stay dependency-light.
-
-### Agentic-mode front-ends (the title)
-- [`link-assistant/agent`](https://github.com/link-assistant/agent) and
-  [`gemini-cli`](https://github.com/google-gemini/gemini-cli) — agentic CLIs that
-  can target an OpenAI-compatible backend. Named as the front-end reuse target for
-  R314, invoked against `formal-ai serve`, *not* wired into the engine (constraint).
+- [`linksplatform/doublets-rs`](https://github.com/linksplatform/doublets-rs) — the
+  native doublet store the project runs on; Links Notation records *are* this
+  `source → target` model.
+- **RDF triple stores / property graphs (Neo4j)** — general realizations of
+  "knowledge as a graph"; the protocol maps cleanly onto either, neither embedded
+  (dependency-light).
 
 **Net conclusion:** for every requirement, either a project component already
 realizes it (and is now cited), or a specific, named external component is the
@@ -436,11 +486,13 @@ shipped.
 
 | Risk | Why it matters here | Mitigation in this PR |
 |---|---|---|
-| **Overclaiming general extraction** | A hand-rolled parser could be mistaken for general NL understanding. | The extractor is explicitly closed-class and returns `None` off-template; §4.5 + R313 state the boundary; a test pins the never-guess behavior. |
-| **"As is" vs "everything is a link" read as contradictory** | The maintainer disagrees with entities/ontologies but asked to implement them anyway. | Both are shipped as **one** object: typed primitives *and* their doublet reduction, byte-checked to agree, so neither side is compromised. |
-| **Violating the external-CLI constraint** | Wiring claude/codex into Formal AI could "interrupt your own process". | The agentic loop is documented and scoped (§5), not wired; external CLIs are named as front-ends *against the server*, not embedded. |
-| **Curated KB drifting from the protocol** | A hand-curated Tale could quietly diverge from the article's JSON shape. | The JSON wire format round-trips the article's **own** example in a test; the Tale serializes through the same `ProtocolDocument`. |
-| **Russian-language brittleness** | Cyrillic offsets/tokenization can break on byte vs char boundaries. | Annotations use **character** offsets; the extractor tokenizes on Unicode alphanumerics; tests use the article's Cyrillic example directly. |
+| **Violating the external-CLI constraint** | Wiring claude/codex into Formal AI could "interrupt your own process". | The loop is driven by the project's own deterministic driver; external CLIs are documented as front-ends *against* the server (§5), never embedded — no `src/agentic_coding/` code calls an external model. |
+| **Hidden autonomous action** | Tool execution without an explicit switch would be unacceptable (NON-GOAL). | Two gates: `agent_mode` is the real guard (tools refused without it) and a per-tool permission gate; granting capabilities by default enables nothing while agent mode is off (§4.3). |
+| **Unbounded reasoning loops** | An agentic loop that never terminates is a NON-GOAL. | A hard `MAX_TURNS = 12` cap (the recipe needs five); the driver returns `hit_turn_cap` and the CLI surfaces it as an error rather than spinning. |
+| **Overclaiming general extraction** | A hand-rolled parser could be mistaken for general NL understanding. | Extraction is split by confidence: general annotations, grounded-or-honest assertions that never guess (§4.6); the closed-class lexicon is data, and the discipline is pinned by tests. |
+| **"As is" vs "everything is a link" read as contradictory** | The maintainer disagrees with entities/ontologies but asked to implement them anyway. | Resolved by emitting the primitives *as* Links Notation records — they never exist as anything but links (§4.5), so the protocol is honored in the project's own meta-language. |
+| **Docs drifting from the code** | A case study describing a deleted module would mislead. | A grounded recipe (`data/meta/agentic-coding-recipe.lino`) and a traceability test pin every constant, tool, stage, function, primitive, bound, and surface to the live source. |
+| **Russian-language brittleness** | Cyrillic offsets/tokenization can break on byte vs char boundaries. | Annotations use **character** offsets; tests use the Cyrillic synopsis directly. |
 
 Documenting these honestly is itself the practice `NON-GOALS.md` demands:
 *"Case studies should not become marketing pages."*
@@ -452,23 +504,31 @@ Documenting these honestly is itself the practice `NON-GOALS.md` demands:
 ```
 docs/case-studies/issue-468/
 ├── README.md                     # this analysis
-├── formal-protocol-mapping.md    # nine primitives → links/doublets mapping (R311)
+├── formal-protocol-mapping.md    # nine primitives → Links Notation records (R311)
 └── raw-data/                     # third-party captures (lint-exempt)
     ├── issue-468.json            # the issue as filed
-    ├── issue-468-comments.json   # the maintainer comment (the case-study brief + constraints)
+    ├── issue-468-comments.json   # the maintainer comment (the reframing + brief + constraints)
     ├── pr-469.json               # the pull request
-    ├── article-summary.md        # summarized + cited source protocol
+    ├── article-summary.md        # summarized + cited source protocol (the example-task spec)
     └── online-research.md        # summarized + cited online research (R316)
 ```
 
 Wired into the rest of the repository by:
 
-- `src/text_formalization/` — the nine primitives, JSON/lino/doublet codecs, the
-  query, the curated tale, and the extractor (R306–R313).
-- `src/main.rs` — the `formal-ai formalize` subcommand (R306).
-- `examples/issue_468_text_formalization.rs` — the worked end-to-end tour.
+- `src/agentic_coding/` — the planner (server brain), the driver + offline corpus
+  (client), the closed-class lexicon, and the Links Notation formalizer
+  (R306–R314).
+- `src/protocol.rs` / `src/anthropic.rs` — the shared agentic decision across the
+  Chat Completions, Responses, and Anthropic Messages surfaces (R314).
+- `src/associative_package.rs` — `pkg_agentic_coding`, the per-tool permission gate
+  (R314).
+- `src/main.rs` — the `formal-ai agent` subcommand (R306/R314).
+- `data/meta/agentic-coding-recipe.lino` — the grounded meta-algorithm recipe.
+- `examples/issue_468_agentic_loop.rs` / `examples/issue_468_formalize_text.rs` —
+  the worked end-to-end loop and the formalizer tour.
 - `REQUIREMENTS.md` — rows **R306–R319** (R317).
-- `tests/unit/text_formalization.rs` — pins the JSON round-trip against the
-  article example, the doublet count, coverage-of-nine, the query, and the
-  extractor's never-guess discipline.
-- `changelog.d/` — a `minor` fragment recording the new module and capability.
+- `tests/unit/agentic_coding.rs`, `tests/unit/agentic_surfaces.rs`,
+  `tests/unit/specification/agentic_meta_algorithm.rs` — pin the loop on every
+  surface, the formalizer's record count and coverage-of-nine, and the recipe's
+  fidelity to the code.
+- `changelog.d/` — fragments recording the new capability.
