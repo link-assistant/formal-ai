@@ -1,6 +1,7 @@
 extern crate alloc;
 
 pub mod agent;
+pub mod agentic_coding;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
@@ -63,8 +64,8 @@ pub use agent::{
     PlannedAgentAction,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessage,
-    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock, AnthropicUsage,
+    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicContentBlock,
+    AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
 };
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
@@ -123,8 +124,9 @@ pub use probability::{
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
     create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
-    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
+    FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall, ResponseObject,
+    ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage, ResponseUsage,
+    ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,
