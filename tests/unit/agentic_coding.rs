@@ -5,9 +5,9 @@
 //! behaviour on text the closed lexicon does not recognise.
 
 use formal_ai::agentic_coding::{
-    coverage_line, formalize_text_to_links, plan_chat_step, AgenticPlan, PlannedToolCall,
-    CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS,
-    SEARCH_QUERY,
+    corpus, coverage_line, formalize_text_to_links, plan_chat_step, run_agentic_task, AgenticPlan,
+    PlannedToolCall, CANONICAL_FISHERMAN_SYNOPSIS, CANONICAL_SOURCE_URL, DRIVER_TOOLS,
+    FISHERMAN_DOC_ID, KB_PATH, PRIMITIVE_KINDS, SEARCH_QUERY,
 };
 use formal_ai::{
     create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, SolverConfig, ToolCall,
@@ -392,4 +392,111 @@ fn server_returns_final_knowledge_base_once_the_recipe_is_exhausted() {
     let body = choice.message.content.plain_text();
     assert!(body.contains("knowledge_base"));
     assert!(body.contains("nine protocol primitives"));
+}
+
+// --- Offline web corpus (what web_search/web_fetch resolve against) ---------
+
+#[test]
+fn corpus_search_surfaces_the_canonical_source() {
+    // A query mentioning the tale matches the corpus page and lists its url so the
+    // agent can fetch it next.
+    let results = corpus::web_search("Пушкин Сказка о рыбаке и рыбке полный текст");
+    assert!(results.contains(CANONICAL_SOURCE_URL));
+    assert!(results.contains("Викитека"));
+}
+
+#[test]
+fn corpus_search_reports_no_results_for_an_unrelated_query() {
+    let results = corpus::web_search("weather forecast tomorrow");
+    assert!(results.starts_with("web_search: no results"));
+}
+
+#[test]
+fn corpus_fetch_returns_the_canonical_synopsis_for_the_known_url() {
+    // The fetch body is exactly the formalizer's fallback text, so a successful
+    // fetch and the offline fallback produce the same knowledge base.
+    assert_eq!(
+        corpus::web_fetch(CANONICAL_SOURCE_URL),
+        CANONICAL_FISHERMAN_SYNOPSIS
+    );
+}
+
+#[test]
+fn corpus_fetch_reports_a_404_for_an_unknown_url() {
+    // An unknown url yields an error string the planner's heuristic recognises,
+    // exercising the "understand errors from tools" requirement.
+    let body = corpus::web_fetch("https://example.com/missing");
+    assert!(body.contains("404"));
+    assert!(body.contains("https://example.com/missing"));
+}
+
+// --- In-repo agentic driver (the offline "agentic CLI") ---------------------
+
+#[test]
+fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
+    // The driver plays an external agentic CLI: it advertises the four tools,
+    // executes every tool call the server emits against the offline corpus and a
+    // sandboxed workspace, feeds results back, and loops until the server returns
+    // the finished knowledge base. This is the end-to-end "agentic coding mode".
+    let outcome = run_agentic_task(
+        "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base \
+         covering all nine protocol primitives.",
+    )
+    .expect("the sandbox workspace should be created");
+
+    assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+
+    // The recipe executes exactly the four tools, in canonical order.
+    let executed: Vec<&str> = outcome
+        .steps
+        .iter()
+        .map(|step| step.tool.as_str())
+        .collect();
+    assert_eq!(executed, DRIVER_TOOLS.to_vec());
+
+    // The final answer is the formalizer's report plus the knowledge base inline.
+    assert!(outcome.final_answer.contains("nine protocol primitives"));
+    assert!(outcome.final_answer.contains("knowledge_base"));
+    assert!(outcome.final_answer.contains(KB_PATH));
+    // One server round-trip per tool call plus the final answer turn.
+    assert_eq!(outcome.turns, outcome.steps.len() + 1);
+}
+
+#[test]
+fn driver_fetches_the_canonical_source_and_writes_the_knowledge_base() {
+    let outcome = run_agentic_task(
+        "Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.",
+    )
+    .expect("the sandbox workspace should be created");
+
+    // Step 2 fetches the canonical url and gets the synopsis back, not a 404.
+    let fetch = &outcome.steps[1];
+    assert_eq!(fetch.tool, "web_fetch");
+    assert!(fetch.arguments.contains(CANONICAL_SOURCE_URL));
+    assert!(fetch.result.contains("Старик поймал золотую рыбку."));
+
+    // Step 3 writes the formalized knowledge base to the expected path.
+    let write = &outcome.steps[2];
+    assert_eq!(write.tool, "write_file");
+    assert!(write.arguments.contains(KB_PATH));
+    assert!(write.result.starts_with("wrote "));
+
+    // Step 4 reads the file back and sees the knowledge-base header — proof the
+    // command ran inside the workspace and observed the written bytes.
+    let run = &outcome.steps[3];
+    assert_eq!(run.tool, "run_command");
+    assert!(run.result.contains("knowledge_base"));
+    assert!(run.result.contains("tale:fisherman-and-fish"));
+}
+
+#[test]
+fn driver_is_deterministic() {
+    // No clock, no randomness, no network: the same task yields byte-identical
+    // transcripts and final answers run to run.
+    let task = "formalize the fisherman tale into links notation";
+    let first = run_agentic_task(task).expect("workspace");
+    let second = run_agentic_task(task).expect("workspace");
+    assert_eq!(first.steps, second.steps);
+    assert_eq!(first.final_answer, second.final_answer);
+    assert_eq!(first.turns, second.turns);
 }

@@ -6,6 +6,7 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
@@ -16,6 +17,12 @@ use formal_ai::{
     MemoryStore, ResponsesRequest, SolverConfig, TelegramPollingConfig, UniversalSolver,
     DEFAULT_MODEL,
 };
+
+/// The default task the `agent` subcommand drives: the canonical issue-#468
+/// formalization. The wording carries the keywords the server's planner uses to
+/// recognise the task.
+const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и рыбке» into a Links Notation \
+                                  knowledge base covering all nine protocol primitives.";
 
 #[derive(Parser, Debug)]
 #[command(
@@ -79,6 +86,21 @@ enum Command {
     Formalize {
         #[command(subcommand)]
         action: FormalizeAction,
+    },
+    /// Drive the full agentic-coding loop offline (issue #468). The in-repo
+    /// driver plays the role of an external agentic CLI against our
+    /// OpenAI-compatible server: it advertises tools, executes every emitted
+    /// tool call (web search/fetch against an offline corpus, file writes and
+    /// commands in a sandboxed workspace), feeds results back, and loops until
+    /// the server returns the finished Links Notation knowledge base.
+    Agent {
+        /// The task to solve. Defaults to the canonical issue-#468 task.
+        #[arg(long, default_value = DEFAULT_AGENT_TASK)]
+        task: String,
+
+        /// Print the full tool-call transcript before the final answer.
+        #[arg(long, default_value_t = false)]
+        transcript: bool,
     },
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
@@ -403,6 +425,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
         Command::Formalize { action } => run_formalize(action)?,
+        Command::Agent { task, transcript } => run_agent(&task, transcript)?,
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -472,6 +495,23 @@ fn run_formalize(action: FormalizeAction) -> Result<(), Box<dyn Error>> {
             }
         },
     }
+    Ok(())
+}
+
+fn run_agent(task: &str, transcript: bool) -> Result<(), Box<dyn Error>> {
+    let outcome = run_agentic_task(task)?;
+    if transcript {
+        print!("{}", outcome.transcript());
+        println!();
+    }
+    if outcome.hit_turn_cap {
+        return Err(format!(
+            "the agentic loop did not finish within its turn cap after {} tool call(s)",
+            outcome.steps.len()
+        )
+        .into());
+    }
+    println!("{}", outcome.final_answer);
     Ok(())
 }
 

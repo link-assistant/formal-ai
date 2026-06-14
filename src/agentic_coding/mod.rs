@@ -18,10 +18,15 @@
 //! extraction is grounded in a closed lexicon (see [`lexicon`]) and the planner is
 //! a pure, deterministic function of the message history.
 
+pub mod corpus;
+pub mod driver;
 pub mod formalize;
 pub(crate) mod lexicon;
 pub mod planner;
 
+pub use driver::{
+    run_agentic_task, run_agentic_task_in, DriverOutcome, DriverToolStep, DRIVER_TOOLS,
+};
 pub use formalize::{
     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
