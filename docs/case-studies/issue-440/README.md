@@ -98,6 +98,8 @@ Local checks run on June 14, 2026:
 - `cargo clippy --all-targets --all-features` ([log](raw-data/cargo-clippy.log))
 - `rust-script scripts/check-file-size.rs`
   ([log](raw-data/check-file-size.log))
+- `rust-script scripts/check-changelog-fragment.rs`
+  ([log](raw-data/check-changelog-fragment.log))
 - `git diff --check` ([log](raw-data/git-diff-check.log))
 - `npm ci --prefix tests/e2e` ([log](raw-data/npm-ci-e2e.log))
 - `npm run check:i18n --prefix tests/e2e`
