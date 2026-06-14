@@ -14664,9 +14664,8 @@ const WRITE_PROGRAM_TASKS = {
   },
   list_files: {
     label: "list files in the current directory",
-    // Verified output for the documented sample directory containing exactly
-    // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
-    // byte order, so the output is identical across languages (issue #312).
+    // Fallback output for the Rust-flavoured sample. Rendered answers resolve
+    // list-file samples from each language's `saveAs` name (issue #440).
     output: "Cargo.toml\nREADME.md\nmain.rs",
   },
   list_files_arg: {
@@ -31092,13 +31091,17 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(no output)",
     sandboxFailed: (message) => `Execution status: failed in sandbox - ${message}.`,
     notRun: (language, reason) =>
-      `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
+      `Execution status: not run - ${reason}.`,
+    copyInstruction: (language) =>
+      `Copy the snippet into a ${language} environment to verify.`,
     noFilesystem: (language) =>
       `the browser sandbox has no filesystem access for this ${language} program`,
     noToolchain: (language) => `the browser sandbox cannot invoke a ${language} toolchain`,
-    sampleDirectory:
-      "The output depends on the directory; for a sample directory holding " +
-      "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    sampleDirectory: (files) =>
+      `The sample output below is for a clean directory containing exactly ${markdownFileList(
+        files,
+        "and",
+      )} and no extra files:`,
     expectedOutput: "Expected output after verification:",
   },
   ru: {
@@ -31112,14 +31115,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(нет вывода)",
     sandboxFailed: (message) => `Статус выполнения: сбой в песочнице - ${message}.`,
     notRun: (language, reason) =>
-      `Статус выполнения: не запущено - ${reason}. Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
+      `Статус выполнения: не запущено - ${reason}.`,
+    copyInstruction: (language) =>
+      `Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
     noFilesystem: (language) =>
       `у браузерной песочницы нет доступа к файловой системе для этой программы на ${language}`,
     noToolchain: (language) =>
       `браузерная песочница не может вызвать инструментарий ${language}`,
-    sampleDirectory:
-      "Вывод зависит от каталога; для образца каталога, содержащего ровно " +
-      "`Cargo.toml`, `README.md` и `main.rs`, он такой:",
+    sampleDirectory: (files) =>
+      `Ниже показан вывод для чистого каталога, содержащего ровно ${markdownFileList(
+        files,
+        "и",
+      )}, и никаких других файлов:`,
     expectedOutput: "Ожидаемый вывод после проверки:",
   },
   hi: {
@@ -31133,14 +31140,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(कोई आउटपुट नहीं)",
     sandboxFailed: (message) => `निष्पादन स्थिति: सैंडबॉक्स में विफल - ${message}.`,
     notRun: (language, reason) =>
-      `निष्पादन स्थिति: नहीं चला - ${reason}. सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
+      `निष्पादन स्थिति: नहीं चला - ${reason}.`,
+    copyInstruction: (language) =>
+      `सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
     noFilesystem: (language) =>
       `इस ${language} प्रोग्राम के लिए ब्राउज़र सैंडबॉक्स में फ़ाइल सिस्टम तक पहुँच नहीं है`,
     noToolchain: (language) =>
       `ब्राउज़र सैंडबॉक्स ${language} टूलचेन को आमंत्रित नहीं कर सकता`,
-    sampleDirectory:
-      "आउटपुट निर्देशिका पर निर्भर करता है; ठीक `Cargo.toml`, `README.md` और " +
-      "`main.rs` रखने वाली एक नमूना निर्देशिका के लिए यह है:",
+    sampleDirectory: (files) =>
+      `नीचे दिया गया नमूना आउटपुट ऐसी साफ डायरेक्टरी के लिए है जिसमें ठीक ${markdownFileList(
+        files,
+        "और",
+      )} हों और कोई अतिरिक्त फाइल न हो:`,
     expectedOutput: "सत्यापन के बाद अपेक्षित आउटपुट:",
   },
   zh: {
@@ -31153,17 +31164,49 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "（无输出）",
     sandboxFailed: (message) => `执行状态：沙箱中失败 - ${message}。`,
     notRun: (language, reason) =>
-      `执行状态：未运行 - ${reason}。将代码片段复制到 ${language} 环境中以验证。`,
+      `执行状态：未运行 - ${reason}。`,
+    copyInstruction: (language) => `将代码片段复制到 ${language} 环境中以验证。`,
     noFilesystem: (language) => `浏览器沙箱无法为此 ${language} 程序访问文件系统`,
     noToolchain: (language) => `浏览器沙箱无法调用 ${language} 工具链`,
-    sampleDirectory:
-      "输出取决于目录；对于恰好包含 `Cargo.toml`、`README.md` 和 `main.rs` 的示例目录，它是：",
+    sampleDirectory: (files) =>
+      `下面的示例输出适用于一个只包含 ${markdownFileList(files, "和")} 且没有其他文件的干净目录：`,
     expectedOutput: "验证后的预期输出：",
   },
 };
 
 function writeProgramStrings(language) {
   return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;
+}
+
+function markdownFileList(files, conjunction) {
+  const quoted = files.map((file) => `\`${file}\``);
+  if (quoted.length <= 1) return quoted.join("");
+  return `${quoted.slice(0, -1).join(", ")} ${conjunction} ${quoted[quoted.length - 1]}`;
+}
+
+function listFilesTaskDirection(task) {
+  switch (task) {
+    case "list_files":
+    case "list_files_arg":
+      return "ascending";
+    case "list_files_reverse_sort":
+    case "list_files_arg_reverse_sort":
+      return "descending";
+    default:
+      return "";
+  }
+}
+
+function listFilesSampleFiles(languageInfo) {
+  return ["README.md", "data.txt", languageInfo.saveAs].sort();
+}
+
+function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
+  const direction = listFilesTaskDirection(task);
+  if (!direction) return taskInfo.output;
+  const files = listFilesSampleFiles(languageInfo);
+  if (direction === "descending") files.reverse();
+  return files.join("\n");
 }
 
 function writeProgramExecutionLines(language, task, code, output, strings) {
@@ -31192,14 +31235,9 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   }
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
-  const lines = [i18n.notRun(language, reason)];
-  if (
-    task === "list_files" ||
-    task === "list_files_arg" ||
-    task === "list_files_reverse_sort" ||
-    task === "list_files_arg_reverse_sort"
-  ) {
-    lines.push(i18n.sampleDirectory);
+  const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
+  if (listFilesTaskDirection(task)) {
+    lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));
   } else {
     lines.push(i18n.expectedOutput);
   }
@@ -32732,6 +32770,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS[task];
+  const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
@@ -32744,7 +32783,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push("```");
   lines.push("");
   lines.push(
-    ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
+    ...writeProgramExecutionLines(language, task, template, expectedOutput, i18n),
   );
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up

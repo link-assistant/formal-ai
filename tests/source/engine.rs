@@ -752,12 +752,13 @@ fn write_program_answer(
     // the user through running code (`prior_code_response`), the verbose setup
     // steps are omitted and replaced by a short "test it the same way" note so
     // follow-up edits stay concise.
+    let expected_output = spec.expected_output();
     format!(
         "{}\n\n```{}\n{}\n```\n\n{}\n\n{}\n\n{}",
         write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, spec.task.output, language),
+        execution_report(&spec.language.execution, &expected_output, language),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
     )
