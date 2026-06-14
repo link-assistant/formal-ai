@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::associative_package::{default_package_store, PackagePermissionDecision};
 use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 use crate::solver::{ConversationTurn, UniversalSolver};
@@ -316,18 +317,95 @@ pub fn create_chat_completion_with_solver(
     solver: &UniversalSolver,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
-    let symbolic_answer = if request.requests_tool_execution() {
+
+    if request.requests_tool_execution() {
         if !solver.config.agent_mode {
-            tool_call_refusal_answer()
-        } else if let Some(denial) = first_tool_permission_denial(request) {
-            tool_permission_refusal_answer(&denial)
-        } else {
-            solver.solve_with_history(&prompt, &history)
+            return chat_completion_from_symbolic(request, &prompt, tool_call_refusal_answer());
         }
-    } else {
-        solver.solve_with_history(&prompt, &history)
-    };
+        if let Some(denial) = first_tool_permission_denial(request) {
+            return chat_completion_from_symbolic(
+                request,
+                &prompt,
+                tool_permission_refusal_answer(&denial),
+            );
+        }
+        // Agent mode with tools permitted: the deterministic agentic planner
+        // drives the loop, emitting `tool_calls` or a final answer. An
+        // unrecognised task yields `None` and falls through to the solver.
+        let owned_names = request.requested_tool_names();
+        let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+        if let Some(plan) = plan_chat_step(&request.messages, &tool_names) {
+            return chat_completion_from_plan(request, &prompt, plan);
+        }
+    }
+
+    let symbolic_answer = solver.solve_with_history(&prompt, &history);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+/// Build a chat completion from a deterministic [`AgenticPlan`]. A
+/// [`AgenticPlan::ToolCalls`] plan emits an assistant turn carrying `tool_calls`
+/// with `finish_reason: "tool_calls"`; a [`AgenticPlan::Final`] plan emits plain
+/// assistant text with `finish_reason: "stop"`.
+fn chat_completion_from_plan(
+    request: &ChatCompletionRequest,
+    prompt: &str,
+    plan: AgenticPlan,
+) -> ChatCompletion {
+    let model = request
+        .model
+        .clone()
+        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let prompt_tokens = estimate_tokens(prompt);
+
+    let (message, finish_reason, completion_tokens) = match plan {
+        AgenticPlan::ToolCalls(calls) => {
+            let completion_tokens = calls
+                .iter()
+                .map(|call| {
+                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments))
+                })
+                .sum();
+            let tool_calls = calls
+                .into_iter()
+                .enumerate()
+                .map(|(index, call)| {
+                    let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
+                    ToolCall::function(stable_id("call", &seed), call.tool, call.arguments)
+                })
+                .collect();
+            (
+                ChatMessage::assistant_tool_calls(tool_calls),
+                String::from("tool_calls"),
+                completion_tokens,
+            )
+        }
+        AgenticPlan::Final(answer) => {
+            let completion_tokens = estimate_tokens(&answer);
+            (
+                ChatMessage::assistant(answer),
+                String::from("stop"),
+                completion_tokens,
+            )
+        }
+    };
+
+    ChatCompletion {
+        id: stable_id("chatcmpl", prompt),
+        object: String::from("chat.completion"),
+        created: 0,
+        model,
+        choices: vec![ChatChoice {
+            index: 0,
+            message,
+            finish_reason,
+        }],
+        usage: TokenUsage {
+            prompt_tokens,
+            completion_tokens,
+            total_tokens: prompt_tokens.saturating_add(completion_tokens),
+        },
+    }
 }
 
 fn chat_completion_from_symbolic(
