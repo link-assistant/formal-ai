@@ -692,13 +692,25 @@ test.describe('multilingual chat surface', () => {
     });
 
     const cases = [
-      'what is OpenStreerMap',
-      'что такое OpenStreerMap',
-      'OpenStreerMap क्या है',
-      'OpenStreerMap是什么',
+      {
+        prompt: 'what is OpenStreerMap',
+        closestMatchNote: 'Closest match from Wikipedia search',
+      },
+      {
+        prompt: 'что такое OpenStreerMap',
+        closestMatchNote: 'Ближайшее совпадение по поиску Wikipedia',
+      },
+      {
+        prompt: 'OpenStreerMap क्या है',
+        closestMatchNote: 'Wikipedia खोज में सबसे नज़दीकी मिलान',
+      },
+      {
+        prompt: 'OpenStreerMap是什么',
+        closestMatchNote: 'Wikipedia 搜索的最接近匹配',
+      },
     ];
 
-    for (const prompt of cases) {
+    for (const { prompt, closestMatchNote } of cases) {
       const before = apiCalls.length;
       const last = await sendPrompt(page, prompt);
       const calls = apiCalls.slice(before);
@@ -706,7 +718,7 @@ test.describe('multilingual chat surface', () => {
       await expect(last).toContainText('OpenStreetMap');
       await expect(last).toContainText('collaborative map database');
       await expect(last).toContainText('wikipedia.org');
-      await expect(last).toContainText('Closest match from Wikipedia search');
+      await expect(last).toContainText(closestMatchNote);
       await expect(last).not.toContainText(UNKNOWN_ANSWER_MARKER);
       expect(calls.some((call) => call.kind === 'search')).toBeTruthy();
       expect(

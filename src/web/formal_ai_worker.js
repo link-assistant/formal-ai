@@ -5518,6 +5518,48 @@ function translateCompositionalSurface(surface, source, target) {
   return translateRussianWordSequence(words);
 }
 
+const QUESTION_LANGUAGE_MARKERS = {
+  ru: [
+    "\u0447\u0442\u043e",
+    "\u043a\u0430\u043a",
+    "\u043a\u0442\u043e",
+    "\u0433\u0434\u0435",
+    "\u043a\u043e\u0433\u0434\u0430",
+    "\u043f\u043e\u0447\u0435\u043c\u0443",
+  ],
+  hi: [
+    "\u0915\u094d\u092f\u093e",
+    "\u0915\u094c\u0928",
+    "\u0915\u0939\u093e\u0901",
+    "\u0915\u092c",
+    "\u0915\u0948\u0938\u0947",
+    "\u0915\u094d\u092f\u094b\u0902",
+  ],
+  zh: [
+    "\u4ec0\u4e48",
+    "\u5417",
+    "\u600e\u4e48",
+    "\u8c01",
+    "\u54ea",
+  ],
+};
+
+function detectQuestionMarkerLanguage(text, counts) {
+  const normalized = String(text || "").toLocaleLowerCase();
+  let best = null;
+  for (const candidate of [
+    { slug: "ru", count: counts.cyrillic },
+    { slug: "hi", count: counts.devanagari },
+    { slug: "zh", count: counts.cjk },
+  ]) {
+    if (candidate.count <= 0) continue;
+    const markers = QUESTION_LANGUAGE_MARKERS[candidate.slug] || [];
+    if (!markers.some((marker) => normalized.includes(marker))) continue;
+    if (!best || candidate.count > best.count) best = candidate;
+  }
+  return best ? best.slug : null;
+}
+
 function detectLanguageSlug(text) {
   let latin = 0;
   let cyrillic = 0;
@@ -5550,6 +5592,8 @@ function detectLanguageSlug(text) {
     return "unknown";
   }
   if (latin > 0) {
+    const markerLanguage = detectQuestionMarkerLanguage(text, { cyrillic, devanagari, cjk });
+    if (markerLanguage) return markerLanguage;
     if (firstScript === "cyrillic" && cyrillic >= Math.max(devanagari, cjk)) return "ru";
     if (firstScript === "devanagari" && devanagari >= Math.max(cyrillic, cjk)) return "hi";
     if (firstScript === "cjk" && cjk >= Math.max(cyrillic, devanagari)) return "zh";

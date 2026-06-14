@@ -143,13 +143,28 @@ fn detects_language_from_mixed_script_definition_prompt() {
             expected: Language::Russian,
         },
         Case {
+            language: "ru",
+            prompt: "vulkan layer что такое",
+            expected: Language::Russian,
+        },
+        Case {
             language: "hi",
             prompt: "यह क्या है vulkan layer?",
             expected: Language::Hindi,
         },
         Case {
+            language: "hi",
+            prompt: "vulkan layer क्या है?",
+            expected: Language::Hindi,
+        },
+        Case {
             language: "zh",
             prompt: "这是什么 vulkan layer?",
+            expected: Language::Chinese,
+        },
+        Case {
+            language: "zh",
+            prompt: "vulkan layer是什么?",
             expected: Language::Chinese,
         },
     ];

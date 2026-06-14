@@ -41,8 +41,9 @@ impl Language {
 /// Detect the dominant language of a prompt.
 ///
 /// Counts characters in known Unicode blocks. Latin-only text is treated as
-/// English by default; when a supported non-Latin prompt starts the command and
-/// later includes Latin identifiers, the starting prompt script is preserved.
+/// English by default; when a supported non-Latin prompt starts the command or
+/// contains a local question marker alongside Latin identifiers, that prompt
+/// language is preserved.
 /// Pure scripts in unsupported blocks (Arabic, Hebrew, etc.) are returned as
 /// `Unknown` so the loop can record an explicit `language:unknown` event.
 #[must_use]
@@ -87,6 +88,9 @@ pub fn detect(prompt: &str) -> Language {
         return Language::Unknown;
     }
     if latin > 0 {
+        if let Some(language) = marker_language(prompt, cyrillic, devanagari, cjk) {
+            return language;
+        }
         match first_script {
             Some(Script::Cyrillic) if cyrillic >= devanagari.max(cjk) => {
                 return Language::Russian;
@@ -108,4 +112,58 @@ pub fn detect(prompt: &str) -> Language {
         return Language::Chinese;
     }
     Language::English
+}
+
+fn marker_language(
+    prompt: &str,
+    cyrillic: usize,
+    devanagari: usize,
+    cjk: usize,
+) -> Option<Language> {
+    let normalized = prompt.to_lowercase();
+    let mut best = None;
+    for (script, count, language) in [
+        (Script::Cyrillic, cyrillic, Language::Russian),
+        (Script::Devanagari, devanagari, Language::Hindi),
+        (Script::Cjk, cjk, Language::Chinese),
+    ] {
+        if count == 0 || !contains_question_marker(&normalized, script) {
+            continue;
+        }
+        match best {
+            Some((best_count, _)) if count <= best_count => {}
+            _ => best = Some((count, language)),
+        }
+    }
+    best.map(|(_, language)| language)
+}
+
+fn contains_question_marker(prompt: &str, script: Script) -> bool {
+    let markers: &[&str] = match script {
+        Script::Cyrillic => &[
+            "\u{0447}\u{0442}\u{043e}",
+            "\u{043a}\u{0430}\u{043a}",
+            "\u{043a}\u{0442}\u{043e}",
+            "\u{0433}\u{0434}\u{0435}",
+            "\u{043a}\u{043e}\u{0433}\u{0434}\u{0430}",
+            "\u{043f}\u{043e}\u{0447}\u{0435}\u{043c}\u{0443}",
+        ],
+        Script::Devanagari => &[
+            "\u{0915}\u{094d}\u{092f}\u{093e}",
+            "\u{0915}\u{094c}\u{0928}",
+            "\u{0915}\u{0939}\u{093e}\u{0901}",
+            "\u{0915}\u{092c}",
+            "\u{0915}\u{0948}\u{0938}\u{0947}",
+            "\u{0915}\u{094d}\u{092f}\u{094b}\u{0902}",
+        ],
+        Script::Cjk => &[
+            "\u{4ec0}\u{4e48}",
+            "\u{5417}",
+            "\u{600e}\u{4e48}",
+            "\u{8c01}",
+            "\u{54ea}",
+        ],
+        Script::Latin | Script::Other => &[],
+    };
+    markers.iter().any(|marker| prompt.contains(marker))
 }

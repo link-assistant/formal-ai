@@ -33,10 +33,12 @@ The Rust and JS paths had the same behavior, so the fix had to preserve parity.
 
 ## Fix
 
-Language detection now records the first alphabetic script. When a prompt starts
-in a supported non-Latin script and later includes Latin letters, the detector
-preserves the supported starting script as the prompt language. The existing
-dominant-script fallback still handles monolingual and other mixed-script cases.
+Language detection now records the first alphabetic script and checks for
+supported-language question markers. When a prompt starts in a supported
+non-Latin script, or when a term-first prompt includes local question words, the
+detector preserves that prompt language even if the Latin term has more letters.
+The existing dominant-script fallback still handles monolingual and other
+mixed-script cases.
 
 The change is mirrored in:
 
@@ -48,11 +50,14 @@ The change is mirrored in:
 Added regression coverage:
 
 - `detects_language_from_mixed_script_definition_prompt` pins
-  `Что такое vulkan layer` as Russian in the Rust language contract.
+  `Что такое vulkan layer` and term-first mixed-script variants as the expected
+  supported languages in the Rust language contract.
 - `tests/e2e/tests/issue-441.spec.js` drives the exact prompt through the web UI
   with a mocked Wikipedia REST summary and asserts the first summary lookup goes
   to `ru.wikipedia.org`, the answer is `intent:wikipedia_lookup`, and evidence
   contains `language:ru`.
+- The existing multilingual fuzzy-search e2e case now asserts the localized
+  closest-match note for mixed-script Russian, Hindi, and Chinese prompts.
 
 The first attempted targeted Rust run in this workspace did not reach the test
 assertion because dependency compilation filled the container filesystem with
