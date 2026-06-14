@@ -6,6 +6,8 @@ RUN cargo build --release --locked
 
 FROM konard/box-dind:2.1.1
 
+LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
+
 ENV HOME=/home/box \
     FORMAL_AI_IMAGE_VARIANT=dind \
     FORMAL_AI_START_ISOLATION=docker \

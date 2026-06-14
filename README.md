@@ -11,7 +11,7 @@ The current implementation covers the surface area requested in issue #1:
 - HTTP API server with `/v1/chat/completions` and `/v1/responses`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
-- Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
+- Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
@@ -227,6 +227,14 @@ curl -s http://127.0.0.1:8080/telegram/webhook \
 Docker-in-Docker Telegram bot image:
 
 ```bash
+TELEGRAM_BOT_TOKEN=123:abc docker compose up
+
+docker run --rm --privileged \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  -v formal-ai-docker:/var/lib/docker \
+  ghcr.io/link-assistant/formal-ai:latest
+
+# Local build fallback:
 docker build -t formal-ai .
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
@@ -239,6 +247,13 @@ docker run --rm --runtime=sysbox-runc \
   -v formal-ai-docker:/var/lib/docker \
   formal-ai
 ```
+
+Prebuilt image quick start: the released image is
+`ghcr.io/link-assistant/formal-ai:latest`, so the only required setting for a
+polling Telegram bot is `TELEGRAM_BOT_TOKEN`. The root `compose.yaml` uses that
+image by default and preserves the inner Docker daemon under the named
+`formal-ai-docker` volume. Set `FORMAL_AI_DOCKER_IMAGE` to run a locally built
+image or an optional Docker Hub mirror with the same compose file.
 
 The root image is intentionally the only supported Docker runtime: it inherits
 from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and

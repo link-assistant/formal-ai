@@ -865,8 +865,13 @@ The same `FormalAiEngine` answers prompts in every surface:
   exposes a preload bridge for API, graph, full-memory, and permission status.
 - **Telegram bot** — `POST /telegram/webhook` (webhook) or
   `formal-ai telegram` (long polling).
-- **Docker-in-Docker Telegram image** — the root `Dockerfile` builds the
-  Rust binary, copies it into `konard/box-dind:2.1.1`, keeps
+- **Prepared Telegram Docker image** — releases publish the root `Dockerfile`
+  to GitHub Container Registry as `ghcr.io/link-assistant/formal-ai:latest`.
+  The repository root `compose.yaml` runs that image with only
+  `TELEGRAM_BOT_TOKEN` required, while `FORMAL_AI_DOCKER_IMAGE` lets operators
+  point the same compose file at a local build or mirror. The image builds the
+  Docker-in-Docker Telegram image: it builds the Rust binary, copies it into
+  `konard/box-dind:2.1.1`, keeps
   `/usr/local/bin/dind-entrypoint.sh` as the entrypoint, and defaults to
   `formal-ai telegram --mode polling`. Commands that need nested execution
   use the bundled `$ --isolated docker --auto-remove-docker-container --`

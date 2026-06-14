@@ -1,0 +1,15 @@
+services:
+  telegram-bot:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    restart: unless-stopped
+    privileged: true
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN to your Telegram bot token}
+      FORMAL_AI_TELEGRAM_ALLOWED_UPDATES: ${FORMAL_AI_TELEGRAM_ALLOWED_UPDATES:-message,edited_message}
+      FORMAL_AI_TELEGRAM_TIMEOUT: ${FORMAL_AI_TELEGRAM_TIMEOUT:-30}
+      FORMAL_AI_TELEGRAM_LIMIT: ${FORMAL_AI_TELEGRAM_LIMIT:-100}
+    volumes:
+      - formal-ai-docker:/var/lib/docker
+
+volumes:
+  formal-ai-docker:
