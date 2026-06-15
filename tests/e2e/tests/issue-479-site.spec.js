@@ -72,6 +72,41 @@ test.describe('Issue #479 — landing page (/) chooser', () => {
     await expect(page.locator('[data-testid="brand-home"]')).toHaveAttribute('href', './');
   });
 
+  test('surfaces the source code as a big button in the hero', async ({ page }) => {
+    // Issue #479 (maintainer follow-up): the source code on the landing must be
+    // a *big button*, not a small footer link. It lives in the hero, mirrors the
+    // /download page's .primary-download shape (an action eyebrow above a strong
+    // label), points at the repository, and opens in a new tab.
+    const cta = page.locator('[data-testid="source-cta"]');
+    await expect(cta).toBeVisible();
+    await expect(cta).toHaveAttribute(
+      'href',
+      'https://github.com/link-assistant/formal-ai',
+    );
+    await expect(cta).toHaveAttribute('target', '_blank');
+    await expect(cta).toHaveAttribute('rel', /noopener/);
+
+    // The big-button structure: a small uppercase action eyebrow above a strong
+    // label, just like .primary-download on /download.
+    await expect(cta.locator('.source-cta-eyebrow')).toHaveText('Open source');
+    await expect(cta.locator('.source-cta-label')).toHaveText('Source on GitHub');
+
+    // It is a genuinely large target, not an inline text link.
+    const box = await cta.boundingBox();
+    expect(box, 'the source CTA should have a rendered bounding box').not.toBeNull();
+    expect(box.height).toBeGreaterThanOrEqual(56);
+    expect(box.width).toBeGreaterThanOrEqual(180);
+
+    // The old small footer "Source on GitHub" link is gone — the source code is
+    // surfaced only as the big hero button now.
+    await expect(page.locator('.landing-footer .support-links')).toHaveCount(0);
+
+    // It localizes with the rest of the chooser.
+    await page.locator('.locale-switch button[data-value="ru"]').click();
+    await expect(cta.locator('.source-cta-eyebrow')).toHaveText('Открытый код');
+    await expect(cta.locator('.source-cta-label')).toHaveText('Исходный код на GitHub');
+  });
+
   test('the web-app card opens the app, which boots under <base href="../">', async ({ page }) => {
     await page.locator('[data-testid="nav-app"]').click();
     await expect(page).toHaveURL(/\/app\/$/);

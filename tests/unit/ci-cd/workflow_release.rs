@@ -658,6 +658,75 @@ fn issue_479_site_is_restructured_into_landing_app_docs_download() {
     );
 }
 
+/// Issue #479 (maintainer follow-up): "make sure the source code on the landing
+/// is a big button". The shared chooser (site-chrome.js, used by / and /docs/)
+/// must render the repository link as a prominent hero call-to-action mirroring
+/// the /download page's `.primary-download` button — NOT as the small footer
+/// text link it used to be. We assert against the rendering source so the
+/// guarantee holds even when the e2e suite is not run.
+#[test]
+fn issue_479_landing_surfaces_source_code_as_a_big_button() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let chrome = fs::read_to_string(format!("{manifest_dir}/src/web/site-chrome.js"))
+        .expect("src/web/site-chrome.js should exist");
+
+    // The big button: an anchor with the dedicated class + test id, opening the
+    // repository in a new tab with a safe rel.
+    assert!(
+        chrome.contains("class: \"source-cta\""),
+        "site-chrome.js should render the source link as a .source-cta big button"
+    );
+    assert!(
+        chrome.contains("\"data-testid\": \"source-cta\""),
+        "the source-cta button needs a stable data-testid for e2e/regression coverage"
+    );
+    assert!(
+        chrome.contains("href: config.repoUrl"),
+        "the source-cta button should point at the configured repository URL"
+    );
+    // The .primary-download-style structure: an action eyebrow above a strong
+    // label, both localized.
+    for needle in [
+        "class: \"source-cta-eyebrow\"",
+        "class: \"source-cta-label\"",
+        "text: text(locale, \"sourceEyebrow\")",
+        "text: text(locale, \"footerSource\")",
+    ] {
+        assert!(
+            chrome.contains(needle),
+            "site-chrome.js source-cta should contain `{needle}`"
+        );
+    }
+
+    // The button replaces — not supplements — the old small footer link. The
+    // footer no longer renders a `support-links` source link.
+    assert!(
+        !chrome.contains("class: \"support-links\""),
+        "the small footer support-links source link should be gone now the big button exists"
+    );
+
+    // The new action eyebrow is translated for every supported locale.
+    for eyebrow in ["Open source", "Открытый код", "开源", "ओपन सोर्स"] {
+        assert!(
+            chrome.contains(eyebrow),
+            "site-chrome.js LABELS should define the sourceEyebrow translation `{eyebrow}`"
+        );
+    }
+
+    // The big-button styles exist in the landing stylesheet (loaded by / and
+    // /docs/), emulating the /download page's .primary-download.
+    let landing_css = fs::read_to_string(format!("{manifest_dir}/src/web/landing.css"))
+        .expect("src/web/landing.css should exist");
+    assert!(
+        landing_css.contains(".source-cta {"),
+        "landing.css should style the .source-cta big button"
+    );
+    assert!(
+        landing_css.contains(".source-cta:hover"),
+        "landing.css should give the .source-cta button a hover state like .primary-download"
+    );
+}
+
 /// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
 /// deploy-demo job generates it with `cargo doc` and copies it into the Pages
 /// artifact — and the copy must run *after* stamping (rustdoc HTML carries no

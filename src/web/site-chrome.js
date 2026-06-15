@@ -31,6 +31,7 @@
       themeDark: "Dark",
       footerVersion: "Version",
       footerSource: "Source on GitHub",
+      sourceEyebrow: "Open source",
     },
     ru: {
       language: "Язык",
@@ -40,6 +41,7 @@
       themeDark: "Тёмная",
       footerVersion: "Версия",
       footerSource: "Исходный код на GitHub",
+      sourceEyebrow: "Открытый код",
     },
     zh: {
       language: "语言",
@@ -49,6 +51,7 @@
       themeDark: "深色",
       footerVersion: "版本",
       footerSource: "GitHub 源代码",
+      sourceEyebrow: "开源",
     },
     hi: {
       language: "भाषा",
@@ -58,6 +61,7 @@
       themeDark: "डार्क",
       footerVersion: "संस्करण",
       footerSource: "GitHub पर सोर्स कोड",
+      sourceEyebrow: "ओपन सोर्स",
     },
   };
 
@@ -206,7 +210,7 @@
   //   rootId:       string  — id of the <main> to render into
   //   topbarClass:  string  — class for the <header> top bar
   //   brandHref:    string  — where the brand link points (home)
-  //   repoUrl:      string  — footer "Source on GitHub" target
+  //   repoUrl:      string  — hero "Source on GitHub" big-button target
   //   exposeAs:     string  — window global to publish the api on (for e2e)
   //   destinations: [{ id, href, external?, icon, titleKey, descKey, actionKey }]
   //   copy:         { <locale>: { heading, eyebrow, summary, ...cardKeys } }
@@ -305,6 +309,32 @@
         ),
       );
 
+      // The source-code entry point is a big, prominent call-to-action button in
+      // the hero (issue #479: the maintainer asked that "the source code on the
+      // landing is a big button", not a small footer link). It reuses the exact
+      // <span>(action) + <strong>(label) shape of the /download page's
+      // .primary-download button, mirroring how vk-bot-desktop surfaces its
+      // primary action, and opens the repository in a new tab.
+      var sourceCta = config.repoUrl
+        ? h(
+            "a",
+            {
+              class: "source-cta",
+              href: config.repoUrl,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              "data-testid": "source-cta",
+            },
+            h("span", { class: "source-cta-icon", "aria-hidden": "true", text: "</>" }),
+            h(
+              "span",
+              { class: "source-cta-text" },
+              h("span", { class: "source-cta-eyebrow", text: text(locale, "sourceEyebrow") }),
+              h("strong", { class: "source-cta-label", text: text(locale, "footerSource") }),
+            ),
+          )
+        : null;
+
       var hero = h(
         "section",
         { class: "hero" },
@@ -315,6 +345,7 @@
           "data-testid": config.rootId + "-summary",
           text: text(locale, "summary"),
         }),
+        sourceCta,
       );
 
       var cards = h(
@@ -325,6 +356,9 @@
         }),
       );
 
+      // The footer no longer carries a small "Source on GitHub" text link — the
+      // source code is surfaced as the big .source-cta button in the hero above
+      // (issue #479). The footer keeps only the stamped version label.
       var version = readVersion();
       var footer = h(
         "footer",
@@ -336,11 +370,6 @@
               text: text(locale, "footerVersion") + " " + version,
             })
           : null,
-        h(
-          "div",
-          { class: "support-links" },
-          h("a", { href: config.repoUrl, text: text(locale, "footerSource") }),
-        ),
       );
 
       root.appendChild(topbar);
