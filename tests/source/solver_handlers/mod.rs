@@ -9,9 +9,11 @@ mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;
 mod calendar;
+mod calendar_ics;
 mod compound_interest;
 mod definition_merge;
 mod feature_capability;
+mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
 mod numeric_list;
@@ -23,6 +25,7 @@ mod self_awareness;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
+mod text_edit_ops;
 mod text_manipulation;
 mod user_intent;
 mod web_requests;
@@ -34,10 +37,11 @@ pub use benchmark_prompts::{
     try_brainstorming_request, try_conversation_topic_request, try_coreference_request,
     try_fact_lookup, try_roleplay_request, try_summarization_request,
 };
-pub use calendar::try_calendar_reasoning;
+pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
 pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
@@ -48,7 +52,7 @@ pub use research_table::try_research_comparison_table;
 pub use self_awareness::SelfAwarenessRuntime;
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
-pub use text_manipulation::try_text_manipulation;
+pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};
 pub use user_intent::{
     try_capabilities, try_clarification, try_ill_formed, try_opinion_question, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_shell_refusal,

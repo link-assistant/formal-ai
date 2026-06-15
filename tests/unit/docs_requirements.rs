@@ -4,6 +4,8 @@ use std::path::Path;
 use formal_ai::{environment_records, supported_languages};
 use walkdir::{DirEntry, WalkDir};
 
+mod benchmarks;
+
 #[test]
 fn issue_12_vision_documents_are_present_and_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
@@ -821,8 +823,19 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
         return true;
     }
 
+    // Verbatim external captures archived alongside a case study (the issue/PR
+    // JSON snapshots under `docs/case-studies/<issue>/raw-data`) are third-party
+    // text, not authored repository documentation. They are quoted as-is, so
+    // they may legitimately contain deferred-implementation wording that this
+    // lint forbids in the project's own prose (for example an issue author
+    // asking for a quick prototype before committing to a full design).
+    let relative = relative_path(root, entry.path());
+    if relative.starts_with("docs/case-studies/") && relative.ends_with("/raw-data") {
+        return true;
+    }
+
     matches!(
-        relative_path(root, entry.path()).as_str(),
+        relative.as_str(),
         "ci-logs"
             | "logs"
             | "tests/e2e/playwright-report"

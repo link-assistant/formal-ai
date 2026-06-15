@@ -176,6 +176,17 @@ impl AgentWorkspace {
         &self.root
     }
 
+    /// The result of the most recently run command, if any.
+    ///
+    /// A short-lived plan uses [`Self::finish`] to collect every result at once,
+    /// but a long-lived workspace (the agentic driver reuses one across a whole
+    /// tool-call loop) needs to observe each command's output *between* steps,
+    /// before `finish` consumes the workspace.
+    #[must_use]
+    pub fn last_command_result(&self) -> Option<&AgentCommandResult> {
+        self.command_results.last()
+    }
+
     pub fn create_file(&mut self, path: &str, content: &str) {
         let result = self.write_file(path, content);
         self.record_fs_action(AgentActionKind::CreateFile, path, result);

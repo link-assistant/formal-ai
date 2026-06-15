@@ -208,6 +208,63 @@ mod tests {
 }
 ```
 
+## Project Conventions (recurring maintainer recommendations)
+
+These conventions recur in almost every issue review. They are collected here so
+contributors — human and AI — can apply them up front instead of rediscovering
+them in review. They reflect the project's vision: a deterministic, symbolic
+agent whose every answer is a projection of an append-only event log, with no
+hardcoded prompt→answer tables.
+
+1. **Mirror parity (Rust ↔ JS worker).** Every reasoning path in the Rust engine
+   (`src/*.rs`) has a twin in the browser worker `src/web/formal_ai_worker.js`,
+   so the CLI, library, HTTP server, Telegram bot, and website all answer the
+   same prompt identically. A behavioural change in one **must** be mirrored in
+   the other in the same PR. Name and comment the twin so the parity is obvious
+   (e.g. "Mirrors `try_x` in `src/solver_handler_x.rs`").
+
+2. **Data-driven seed, no per-language word lists in code (issue #386).** All
+   multilingual phrases, surfaces, concept summaries, and the tool registry live
+   in `data/seed/*.lino`. Recognisers ask the lexicon for a *meaning* by role
+   (`lexicon().meanings_with_role(ROLE_…)`); they never hardcode per-language
+   phrase arrays. Add a new cue by editing the `.lino` file and declaring the
+   role, not by branching on literal strings.
+
+3. **Roles are declared, then generated.** When you add a meaning with a new
+   `role`, declare it as a `ROLE_*` constant in `src/seed/roles/*.rs`, re-export
+   it from `src/seed.rs`, and regenerate the registry with
+   `python3 scripts/generate-role-registry.py` (keeps `data/seed/roles.lino` in
+   lockstep; enforced by `reference_closure` tests).
+
+4. **Supported-language coverage.** New conversational cues should cover the
+   project's supported languages (currently en, ru, hi, zh). The
+   `tests/e2e/scripts/check-*.mjs` guards fail a one-language change.
+
+5. **Fix everywhere, not just the reported spot.** If a defect has more than one
+   site (most do, because of mirror parity), fix all of them in the one PR.
+
+6. **Reproduce first, then fix.** Add a failing test that reproduces the issue
+   before implementing the fix; a bug fix without a reproducing regression test
+   is treated as incomplete.
+
+7. **When data is insufficient, add tracing.** If there is not enough signal to
+   find a root cause, add debug output / a verbose mode (default **off**) and
+   keep it in the code so the next iteration has the data.
+
+8. **Case study per issue.** Download the issue's logs and data into
+   `docs/case-studies/issue-{id}/` (raw JSON under `raw-data/`) and write a
+   `README.md` that reconstructs the timeline, enumerates every requirement,
+   finds the root cause(s), surveys prior art / existing libraries, and records
+   the implemented fix and its verification.
+
+9. **Report upstream when relevant.** If an issue is rooted in another
+   repository we can file against, open an issue there with a reproducible
+   example, a workaround, and a suggested fix.
+
+10. **One PR per issue.** Plan and execute everything for an issue in a single
+    pull request; commit atomic, individually useful steps so interrupted work
+    stays preserved.
+
 ## Pull Request Process
 
 1. Ensure all tests pass locally

@@ -1,0 +1,6 @@
+meta-language = "0.40.0"    # A self-describing links-network core for lossless language representation
+hooo = "0.10.0"             # Propositional logic with exponentials
+flowlang = "0.3.29"         # A dataflow oriented programming meta-language in JSON supporting functions written in rust, python,…
+sus_compiler = "0.3.10"     # Compiler for the SUS Hardware Design Language
+ebml-iterable = "0.6.3"     # This crate provides an iterator over EBML encoded data.  The items provided by the iterator are Tag…
+... and 2 crates more (use --limit N to see more)

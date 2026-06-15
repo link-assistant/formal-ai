@@ -97,14 +97,18 @@ const ORIGINAL_PHRASES = [
   "list all behavior rules",
   "show behavior rules",
   "show all behavior rules",
+  "show rules",
   "what behavior rules",
   "existing behavior rules",
   "список правил поведения",
   "покажи правила поведения",
+  "покажи правила",
   "какие правила поведения",
   "व्यवहार के नियम",
   "व्यवहार नियम सूचीबद्ध करें",
+  "नियम दिखाओ",
   "行为规则",
+  "显示规则",
   "列出行为规则",
 ];
 
@@ -126,7 +130,7 @@ for (const [dim, role] of [
 ]) {
   const wanted = [];
   for (const lang of ["en", "ru", "hi", "zh"]) wanted.push(...ORIGINAL[lang][dim]);
-  const got = sandbox.calendarWordsForRole(role);
+  const got = sandbox.wordsForRole(role);
   check(`role ${role} union reproduces original ${dim} vocabulary`, eqSet(got, wanted),
     eqSet(got, wanted) ? "" : `got=${JSON.stringify([...new Set(got)].sort())}`);
   // per-language partition must also match (no cross-language leakage)
@@ -137,9 +141,9 @@ for (const [dim, role] of [
   }
 }
 check(`role ${ROLE.phrase} union reproduces original phrase set`,
-  eqSet(sandbox.calendarWordsForRole(ROLE.phrase), ORIGINAL_PHRASES),
-  eqSet(sandbox.calendarWordsForRole(ROLE.phrase), ORIGINAL_PHRASES)
-    ? "" : `got=${JSON.stringify([...new Set(sandbox.calendarWordsForRole(ROLE.phrase))].sort())}`);
+  eqSet(sandbox.wordsForRole(ROLE.phrase), ORIGINAL_PHRASES),
+  eqSet(sandbox.wordsForRole(ROLE.phrase), ORIGINAL_PHRASES)
+    ? "" : `got=${JSON.stringify([...new Set(sandbox.wordsForRole(ROLE.phrase))].sort())}`);
 
 // --- (2) reconstruct the ORIGINAL recognizer and prove byte-identical routing --
 // matchesBehaviorRulesListSeedPattern is UNCHANGED by the conversion, so reuse

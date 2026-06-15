@@ -180,6 +180,7 @@ fn self_facts_query_works_for_russian_speakers() {
 fn behavior_rules_list_works_for_russian_speakers() {
     for prompt in [
         "Список правил поведения",
+        "Покажи правила",
         "Покажи правила поведения",
         "Какие правила поведения",
         "Покажи список своих правил",

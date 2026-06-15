@@ -114,10 +114,18 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await switchToManualMode(page);
   });
 
-  test('top menu uses a lab emoji for the diagnostics toggle', async ({ page }) => {
+  test('top menu uses icon metadata for the diagnostics toggle', async ({ page }) => {
     const diagnosticsToggle = page.locator('.diagnostics-toggle');
     await expect(diagnosticsToggle).toBeVisible();
-    await expect(diagnosticsToggle.locator('.btn-icon')).toHaveText('🧪');
+    await expect(diagnosticsToggle.locator('.btn-icon')).toHaveAttribute(
+      'data-icon-pack',
+      'fontawesome',
+    );
+    await expect(diagnosticsToggle.locator('.btn-icon')).toHaveAttribute(
+      'data-icon-font-name',
+      'fa-flask-vial',
+    );
+    await expect(diagnosticsToggle.locator('.btn-icon')).not.toContainText('🧪');
   });
 
   test('top menu links to the GitHub source code', async ({ page }) => {

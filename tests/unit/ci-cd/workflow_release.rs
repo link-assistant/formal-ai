@@ -304,7 +304,12 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
 #[test]
 fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
-    let index_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    // The interactive app moved to /app/ (issue #479); its cache-busted runtime
+    // assets now live in src/web/app/index.html. The site root index.html is the
+    // landing-page chooser, which only carries the stamped formal-ai version.
+    let landing_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
+    let app_index_html =
+        fs::read_to_string(format!("{manifest_dir}/src/web/app/index.html")).unwrap();
     let tests_index =
         fs::read_to_string(format!("{manifest_dir}/src/web/tests/index.html")).unwrap();
     let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
@@ -328,11 +333,13 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
         "app.js?v=__FORMAL_AI_ASSET_VERSION__",
     ] {
         assert!(
-            index_html.contains(asset),
-            "index.html should version local asset {asset}"
+            app_index_html.contains(asset),
+            "app/index.html should version local asset {asset}"
         );
     }
-    assert!(index_html.contains("window.FORMAL_AI_ASSET_VERSION"));
+    assert!(app_index_html.contains("window.FORMAL_AI_ASSET_VERSION"));
+    // The landing page (site root) advertises the stamped formal-ai version.
+    assert!(landing_html.contains("__FORMAL_AI_VERSION__"));
     assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
@@ -381,15 +388,26 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
         "default Pages URL should include the repository subpath and trailing slash"
     );
 
-    for (path, spec) in [
-        ("tests/e2e/tests/demo.spec.js", demo_spec.as_str()),
+    // The app moved to /app/ (issue #479), so the Pages baseURL targets /app/.
+    // The app specs navigate with a relative './' (→ /app/), while connectivity
+    // reaches its sibling harness with a relative '../tests/' (→ /tests/). Both
+    // are relative, so the /formal-ai/ repository subpath is always preserved;
+    // an absolute '/…' would drop it.
+    for (path, spec, expected_nav) in [
+        (
+            "tests/e2e/tests/demo.spec.js",
+            demo_spec.as_str(),
+            "page.goto('./')",
+        ),
         (
             "tests/e2e/tests/multilingual.spec.js",
             multilingual_spec.as_str(),
+            "page.goto('./')",
         ),
         (
             "tests/e2e/tests/connectivity.spec.js",
             connectivity_spec.as_str(),
+            "page.goto('../tests/')",
         ),
     ] {
         assert!(
@@ -397,8 +415,83 @@ fn pages_e2e_navigation_preserves_repository_subpath() {
             "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
         );
         assert!(
-            spec.contains("page.goto('./')") || spec.contains("page.goto('./tests/')"),
-            "{path} should navigate with ./ so Pages tests stay under the repository subpath"
+            spec.contains(expected_nav),
+            "{path} should navigate with a relative {expected_nav} so Pages tests stay under the repository subpath"
+        );
+    }
+}
+
+#[test]
+fn test_job_skips_non_code_changes() {
+    // Issue #442: the `test` job ran whenever the `changelog` job was *skipped*.
+    // `changelog` is skipped precisely when there are no code changes (docs-only
+    // commits, .gitkeep edits, changelog-fragment-only commits), so the
+    // `needs.changelog.result == 'skipped'` clause turned "nothing relevant
+    // changed" into "run the entire test suite". This regression guard pins the
+    // corrected gating: `test` keys off the detect-changes outputs, exactly like
+    // `lint` and `coverage`, and never resurrects the changelog-skip escape.
+    let workflow = release_workflow();
+    let test = job_block(&workflow, "test");
+
+    assert!(
+        !test.contains("needs.changelog.result == 'skipped'"),
+        "test job must not run merely because the changelog check was skipped; \
+         a skipped changelog means there were no code changes (issue #442)"
+    );
+    assert!(
+        !test.contains("needs.changelog.result == 'success'"),
+        "test job should be decoupled from the changelog check and gate on the \
+         change detector instead (issue #442)"
+    );
+    assert!(
+        test.contains("needs: [detect-changes]"),
+        "test job should depend on detect-changes so it can gate on its outputs"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.any-code-changed == 'true'"),
+        "test job should run when code files changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.rs-changed == 'true'"),
+        "test job should run when Rust sources changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.toml-changed == 'true'"),
+        "test job should run when Cargo manifests changed"
+    );
+    assert!(
+        test.contains("needs.detect-changes.outputs.workflow-changed == 'true'"),
+        "test job should run when the CI workflow itself changed"
+    );
+    assert!(
+        test.contains("github.event_name == 'push'")
+            && test.contains("github.event_name == 'workflow_dispatch'"),
+        "test job should still always run on push and manual dispatch"
+    );
+    assert!(
+        test.contains("always() && !cancelled()"),
+        "test job needs always() so the skipped detect-changes dependency does \
+         not cascade on workflow_dispatch"
+    );
+}
+
+#[test]
+fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
+    // Generalises issue #442 across every change-gated job: none of them should
+    // treat a *skipped* changelog/version check as a signal to run. A skipped
+    // upstream check means "no code changed", which must never widen coverage.
+    let workflow = release_workflow();
+    for job_name in ["lint", "test", "coverage", "test-e2e-local"] {
+        let job = job_block(&workflow, job_name);
+        // Inspect only effective YAML (skip `#` comment lines) so the rationale
+        // comments that quote the old buggy clause don't trip the guard.
+        let has_skip_dependency = job
+            .lines()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .any(|line| line.contains("result == 'skipped'"));
+        assert!(
+            !has_skip_dependency,
+            "{job_name} job must not run because an upstream check was skipped (issue #442)"
         );
     }
 }
@@ -418,7 +511,9 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("manual-release", 30),
         ("changelog-pr", 10),
         ("test-e2e-local", 15),
-        ("deploy-demo", 15),
+        // deploy-demo also runs `cargo doc` for the /docs/api reference (issue
+        // #479), which compiles the dependency tree on a cold cargo cache.
+        ("deploy-demo", 20),
         ("test-e2e-pages", 15),
     ];
 
@@ -437,6 +532,102 @@ fn release_workflow_jobs_have_explicit_timeouts() {
             "{job_name} should declare {expected:?}"
         );
     }
+}
+
+/// Issue #479 restructured the site into a landing chooser at `/`, the app at
+/// `/app/`, the docs hub at `/docs/`, and the download page at `/download/`.
+/// These are the static invariants that keep the relocated app working and the
+/// chooser wired up — things the e2e suite cannot easily assert (the app's
+/// `<base href>`, the desktop wrapper target).
+#[test]
+fn issue_479_site_is_restructured_into_landing_app_docs_download() {
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let read = |rel: &str| {
+        fs::read_to_string(format!("{manifest_dir}/{rel}"))
+            .unwrap_or_else(|_| panic!("{rel} should exist after the issue #479 restructure"))
+    };
+
+    // The interactive app moved off the site root to /app/. Its document MUST
+    // carry <base href="../"> so every relative asset/worker/seed URL still
+    // resolves to the shared site root (under Pages' /formal-ai/ prefix and the
+    // desktop static server alike).
+    let app_index = read("src/web/app/index.html");
+    assert!(
+        app_index.contains("<base href=\"../\" />") || app_index.contains("<base href=\"../\">"),
+        "src/web/app/index.html must declare <base href=\"../\"> so its relative assets resolve to the site root"
+    );
+    assert!(
+        app_index.contains("app.js?v=__FORMAL_AI_ASSET_VERSION__"),
+        "the relocated app should still load the cache-busted app bundle"
+    );
+
+    // The site root is now the landing-page chooser, wired to the shared
+    // preference store + chrome and offering the three in-site routes.
+    let landing = read("src/web/index.html");
+    for script in ["preferences.js", "site-chrome.js", "landing.js"] {
+        assert!(
+            landing.contains(&format!("src=\"{script}\"")),
+            "the landing page should load {script}"
+        );
+    }
+    for route in ["app/", "docs/", "download/"] {
+        assert!(
+            landing.contains(&format!("href=\"{route}\"")),
+            "the landing page <noscript> fallback should link to {route}"
+        );
+    }
+
+    // The documentation hub is a sibling page rendered by docs.js.
+    let docs_index = read("src/web/docs/index.html");
+    assert!(
+        docs_index.contains("docs.js"),
+        "the docs hub should render via docs.js"
+    );
+
+    // The desktop wrapper opens the app at its new /app/ location.
+    let desktop_main = read("desktop/main.cjs");
+    assert!(
+        desktop_main.contains("/app/index.html?desktop=1"),
+        "the desktop wrapper should load the app from /app/"
+    );
+}
+
+/// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
+/// deploy-demo job generates it with `cargo doc` and copies it into the Pages
+/// artifact — and the copy must run *after* stamping (rustdoc HTML carries no
+/// version placeholders, so copying post-stamp keeps the large generated tree
+/// out of the placeholder scan).
+#[test]
+fn deploy_demo_generates_api_docs_and_copies_them_after_stamping() {
+    let workflow = release_workflow();
+    let deploy = job_block(&workflow, "deploy-demo");
+
+    assert!(
+        deploy.contains("cargo doc --no-deps --lib"),
+        "deploy-demo should build the Rust API docs with cargo doc"
+    );
+    assert!(
+        deploy.contains("cp -R target/doc/. src/web/docs/api/"),
+        "deploy-demo should copy the generated docs into src/web/docs/api/"
+    );
+
+    let stamp_pos = deploy
+        .find("Stamp GitHub Pages artifact")
+        .expect("deploy-demo should stamp the Pages artifact");
+    let copy_pos = deploy
+        .find("Copy Rust API docs into the Pages artifact")
+        .expect("deploy-demo should copy the API docs");
+    assert!(
+        stamp_pos < copy_pos,
+        "the API-docs copy must run after the stamp step so rustdoc HTML is not scanned for placeholders"
+    );
+
+    // cargo doc emits the crate root under target/doc/formal_ai/ (lib name
+    // formal_ai); a redirect at the doc root keeps /docs/api/ from 404ing.
+    assert!(
+        deploy.contains("url=formal_ai/index.html"),
+        "a redirect should point /docs/api/ at the crate root"
+    );
 }
 
 #[test]
@@ -622,26 +813,69 @@ fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifa
 }
 
 #[test]
-fn desktop_release_workflow_run_targets_completed_release_tag() {
+fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
+    // Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
+    // commit (its first parent is the completed CI head SHA) and is pushed with
+    // GITHUB_TOKEN, so GitHub never starts a CI run for it and suppresses the
+    // `release` event. The previous resolve logic required a tag whose commit
+    // EQUALS the workflow_run head SHA -- a match that could never happen -- so
+    // the build was skipped and every /download entry read "Not available in
+    // latest release".
+    //
+    // The corrected resolve logic lives in scripts/desktop-release-resolve.sh
+    // (behaviorally covered by desktop_release_resolve.rs). This guard pins the
+    // workflow wiring and the absence of the old, broken skip path.
     let workflow = desktop_release_workflow();
     let resolve = job_block(&workflow, "resolve");
     let pick = workflow_step_block(resolve, "Resolve tag and whether desktop assets are needed");
+    let resolve_script = fs::read_to_string(format!(
+        "{}/scripts/desktop-release-resolve.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n");
 
     assert!(
         pick.contains("WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}"),
-        "workflow_run desktop builds should use the completed CI run head SHA"
+        "workflow_run desktop builds should pass the completed CI run head SHA to the resolve script"
     );
     assert!(
-        pick.contains("repos/$REPO/tags?per_page=100"),
-        "workflow_run desktop builds should inspect repository tags instead of only the latest release"
+        pick.contains("bash scripts/desktop-release-resolve.sh"),
+        "the resolve step should delegate to the unit-tested resolve script"
     );
     assert!(
-        pick.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
-        "workflow_run desktop builds should find the tag that points at the completed CI SHA"
+        resolve.contains("actions/checkout@v6"),
+        "the resolve job must check out the repo so the resolve script is available"
+    );
+
+    // The old, broken behavior must not come back: never skip merely because no
+    // tag points at the head SHA (the auto-release tag never does).
+    assert!(
+        !workflow.contains("No release tag points at workflow_run head SHA"),
+        "issue #479 regression: must not skip when no tag matches the head SHA"
     );
     assert!(
-        pick.contains("No GitHub release exists for workflow_run tag"),
-        "workflow_run desktop builds should skip when the matching release is missing instead of building a stale latest release"
+        !resolve_script.contains("No release tag points at workflow_run head SHA"),
+        "issue #479 regression: the resolve script must not reinstate the head-SHA skip"
+    );
+
+    // The corrected script must fall back to the latest release and keep the
+    // self-healing idempotency guard.
+    assert!(
+        resolve_script.contains("latest_release_tag()"),
+        "resolve script should fall back to the latest published release"
+    );
+    assert!(
+        resolve_script.contains(r#"select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\")"#),
+        "resolve script should keep the defensive exact-SHA tier"
+    );
+    assert!(
+        resolve_script.contains("formal-ai-desktop-"),
+        "resolve script should count existing desktop assets for the idempotency guard"
+    );
+    assert!(
+        resolve_script.contains("::group::"),
+        "resolve script should emit grouped verbose diagnostics for future debugging"
     );
 }
 

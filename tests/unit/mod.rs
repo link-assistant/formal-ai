@@ -1,11 +1,18 @@
+mod agentic_coding;
+mod agentic_surfaces;
 mod assistant_name;
 mod courtesy_response;
 mod data_files;
 mod docker_runtime;
 mod docs_requirements;
+mod docs_requirements_issue_451;
+mod docs_requirements_issue_468;
 mod formal_ai;
 mod github_logs;
+mod installation_conversion;
 mod issue_337;
+mod issue_403;
+mod issue_425;
 mod local_surface;
 mod memory_maintenance;
 mod multilingual_variations;
@@ -21,6 +28,7 @@ mod software_project;
 mod specification;
 mod test_status;
 mod total_closure;
+mod user_journeys;
 mod web_requests;
 
 #[path = "ci-cd/mod.rs"]

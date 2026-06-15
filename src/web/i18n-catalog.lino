@@ -151,6 +151,17 @@ en
     experimentalOcr
       label "Experimental OCR"
       warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
+    externalServices
+      label "External trusted services"
+      note "Choose which trusted services the assistant may consult for procedural how-to answers and project lookups. Each one is on by default; turn off any you would rather not contact."
+    externalServiceWikihow
+      label "wikiHow procedures"
+    externalServiceStackExchange
+      label "Stack Exchange answers"
+    externalServiceMediawikiFamily
+      label "Wikibooks, Wikiversity & Wikivoyage"
+    externalServiceGithub
+      label "GitHub project docs"
     language
       label "Language"
       auto "Auto"
@@ -171,6 +182,15 @@ en
       flat "Flat"
       glass "Glass"
       contrast "Contrast"
+    toolbarIconPack
+      label "Toolbar icons"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "Names"
     chatStyle
       label "Chat style"
       cards "Cards"
@@ -376,6 +396,17 @@ ru
     experimentalOcr
       label "Экспериментальный OCR"
       warning "При первом использовании скачивается около 6 MB: оболочка OCR, worker, ядро WebAssembly и английские traineddata."
+    externalServices
+      label "Внешние доверенные сервисы"
+      note "Выберите, к каким доверенным сервисам ассистент может обращаться для пошаговых инструкций и поиска по проектам. Каждый включён по умолчанию; отключите те, к которым обращаться не нужно."
+    externalServiceWikihow
+      label "Инструкции wikiHow"
+    externalServiceStackExchange
+      label "Ответы Stack Exchange"
+    externalServiceMediawikiFamily
+      label "Wikibooks, Wikiversity и Wikivoyage"
+    externalServiceGithub
+      label "Документация проектов GitHub"
     language
       label "Язык"
       auto "Авто"
@@ -396,6 +427,15 @@ ru
       flat "Плоский"
       glass "Стекло"
       contrast "Контраст"
+    toolbarIconPack
+      label "Иконки панели"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "Названия"
     chatStyle
       label "Стиль чата"
       cards "Карточки"
@@ -591,6 +631,17 @@ zh
     experimentalOcr
       label "实验性 OCR"
       warning "首次使用会下载约 6 MB：OCR 包装层、worker、WebAssembly 核心和英语训练数据。"
+    externalServices
+      label "外部可信服务"
+      note "选择助手在回答操作指南和查找项目时可以访问哪些可信服务。每项默认开启；如不希望访问，可将其关闭。"
+    externalServiceWikihow
+      label "wikiHow 操作指南"
+    externalServiceStackExchange
+      label "Stack Exchange 回答"
+    externalServiceMediawikiFamily
+      label "Wikibooks、Wikiversity 和 Wikivoyage"
+    externalServiceGithub
+      label "GitHub 项目文档"
     language
       label "语言"
       auto "自动"
@@ -611,6 +662,15 @@ zh
       flat "扁平"
       glass "玻璃"
       contrast "高对比"
+    toolbarIconPack
+      label "工具栏图标"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "名称"
     chatStyle
       label "聊天样式"
       cards "卡片"
@@ -812,6 +872,17 @@ hi
     experimentalOcr
       label "Experimental OCR"
       warning "पहली बार इस्तेमाल पर लगभग 6 MB डाउनलोड होता है: OCR wrapper, worker, WebAssembly core, और English traineddata."
+    externalServices
+      label "बाहरी विश्वसनीय सेवाएँ"
+      note "चुनें कि सहायक प्रक्रियात्मक how-to उत्तरों और प्रोजेक्ट खोज के लिए किन विश्वसनीय सेवाओं से संपर्क कर सकता है। प्रत्येक डिफ़ॉल्ट रूप से चालू है; जिनसे संपर्क नहीं चाहते उन्हें बंद कर दें।"
+    externalServiceWikihow
+      label "wikiHow प्रक्रियाएँ"
+    externalServiceStackExchange
+      label "Stack Exchange उत्तर"
+    externalServiceMediawikiFamily
+      label "Wikibooks, Wikiversity और Wikivoyage"
+    externalServiceGithub
+      label "GitHub प्रोजेक्ट दस्तावेज़"
     language
       label "भाषा"
       auto "ऑटो"
@@ -832,6 +903,15 @@ hi
       flat "फ्लैट"
       glass "ग्लास"
       contrast "कॉन्ट्रास्ट"
+    toolbarIconPack
+      label "टूलबार आइकन"
+      fontawesome "Font Awesome"
+      materialSymbols "Material Symbols"
+      bootstrapIcons "Bootstrap Icons"
+      ionicons "Ionicons"
+      remixIcon "Remix Icon"
+      tablerIcons "Tabler Icons"
+      names "नाम"
     chatStyle
       label "चैट शैली"
       cards "कार्ड"

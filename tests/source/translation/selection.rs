@@ -152,6 +152,7 @@ pub fn select_formalization_candidate_with_probability_store(
             temperature: config.temperature,
             offline,
             markov_from: None,
+            ..ProbabilityRankingConfig::default()
         },
     );
     let probabilities = candidates

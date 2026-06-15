@@ -1,12 +1,9 @@
-use formal_ai::{create_chat_completion, ChatCompletionRequest, ChatMessage, MessageContent};
+use formal_ai::{create_chat_completion, ChatCompletionRequest, ChatMessage};
 
 fn main() {
     let request = ChatCompletionRequest {
         model: None,
-        messages: vec![ChatMessage {
-            role: String::from("user"),
-            content: MessageContent::Text(String::from("Write me hello world program in Rust")),
-        }],
+        messages: vec![ChatMessage::user("Write me hello world program in Rust")],
         temperature: None,
         stream: false,
         tools: Vec::new(),

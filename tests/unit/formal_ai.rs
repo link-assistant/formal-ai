@@ -3,7 +3,7 @@ use formal_ai::{
     export_memory_bundle, export_memory_links_notation, extract_memory_from_bundle,
     handle_api_request, knowledge_links_notation, merged_bundle, parse_bundle,
     parse_memory_links_notation, seed_files, ChatCompletionRequest, ChatMessage, ConversationTurn,
-    FormalAiEngine, MemoryEvent, MemoryStore, MessageContent, ResponsesRequest, UniversalSolver,
+    FormalAiEngine, MemoryEvent, MemoryStore, ResponsesRequest, UniversalSolver,
 };
 use lino_objects_codec::format::parse_indented;
 
@@ -393,10 +393,7 @@ fn software_project_approval_returns_implementation_starter() {
 fn chat_completion_has_openai_compatible_shape() {
     let request = ChatCompletionRequest {
         model: Some(String::from("formal-symbolic-production")),
-        messages: vec![ChatMessage {
-            role: String::from("user"),
-            content: MessageContent::Text(String::from("Hello")),
-        }],
+        messages: vec![ChatMessage::user("Hello")],
         temperature: None,
         stream: false,
         tools: Vec::new(),
@@ -425,15 +422,17 @@ fn responses_api_shape_contains_output_text() {
         instructions: None,
         temperature: None,
         stream: false,
+        ..ResponsesRequest::default()
     };
 
     let response = create_response(&request);
 
     assert_eq!(response.object, "response");
     assert_eq!(response.status, "completed");
-    assert_eq!(response.output[0].role, "assistant");
-    assert_eq!(response.output[0].content[0].kind, "output_text");
-    assert!(response.output[0].content[0].text.contains("```rust"));
+    let messages = response.output_messages();
+    assert_eq!(messages[0].role, "assistant");
+    assert_eq!(messages[0].content[0].kind, "output_text");
+    assert!(messages[0].content[0].text.contains("```rust"));
 }
 
 #[test]

@@ -389,6 +389,48 @@ meanings
     lexeme zh
       surface
         text 今天
+  calendar_tomorrow
+    grounded-in Q1209716
+    defined-by calendar_day
+    role calendar_relative_date
+    lexeme en
+      surface
+        text tomorrow
+      surface
+        text "the next day"
+    lexeme ru
+      surface
+        text завтра
+      surface
+        text "на завтра"
+    lexeme hi
+      surface
+        text कल
+      surface
+        text आनेवाला कल
+    lexeme zh
+      surface
+        text 明天
+      surface
+        text 明日
+  calendar_day_after_tomorrow
+    grounded-in Q1036448
+    defined-by calendar_day
+    role calendar_relative_date
+    lexeme en
+      surface
+        text "day after tomorrow"
+      surface
+        text "the day after tomorrow"
+    lexeme ru
+      surface
+        text послезавтра
+    lexeme hi
+      surface
+        text परसों
+    lexeme zh
+      surface
+        text 后天
   calendar_interrogative
     defined-by calendar_day
     role calendar_question
@@ -432,3 +474,157 @@ meanings
         text 告诉
       surface
         text 显示
+  calendar_schedule_action
+    defined-by calendar_day
+    role calendar_schedule_action
+    lexeme en
+      surface
+        text schedule
+      surface
+        text "schedule me"
+      surface
+        text "book"
+      surface
+        text "book on the"
+      surface
+        text "put on the calendar"
+      surface
+        text "put on my calendar"
+      surface
+        text "add to the calendar"
+      surface
+        text "add to my calendar"
+    lexeme ru
+      surface
+        text забей
+      surface
+        text "забей мне"
+      surface
+        text поставь
+      surface
+        text "поставь мне"
+      surface
+        text поставить
+      surface
+        text "поставить мне"
+      surface
+        text создай
+      surface
+        text "создай событие"
+      surface
+        text добавь
+      surface
+        text "добавь в календарь"
+      surface
+        text "на встречу"
+    lexeme hi
+      surface
+        text "शेड्यूल करें"
+      surface
+        text "कैलेंडर में जोड़ें"
+    lexeme zh
+      surface
+        text 安排
+      surface
+        text 添加到日历
+  calendar_event
+    defined-by calendar_day
+    role calendar_event
+    lexeme en
+      surface
+        text "meeting"
+      surface
+        text call
+      surface
+        text event
+    lexeme ru
+      surface
+        text встреча
+      surface
+        text встречи
+      surface
+        text встречу
+      surface
+        text событие
+      surface
+        text события
+      surface
+        text созвон
+      surface
+        text созвона
+      surface
+        text созвоны
+      surface
+        text созвону
+      surface
+        text звонок
+      surface
+        text звонка
+    lexeme hi
+      surface
+        text मीटिंग
+      surface
+        text "घटना"
+    lexeme zh
+      surface
+        text 会议
+      surface
+        text 事件
+      surface
+        text 通话
+  calendar_clock_time
+    defined-by calendar_day
+    role calendar_time
+    lexeme en
+      surface
+        text "17:00"
+      surface
+        text "5 pm"
+      surface
+        text "5pm"
+      surface
+        text "at 17:00"
+    lexeme ru
+      surface
+        text "17:00"
+      surface
+        text "в 17:00"
+      surface
+        text "17.00"
+      surface
+        text вечером
+      surface
+        text "в 17"
+    lexeme hi
+      surface
+        text "शाम 5 बजे"
+    lexeme zh
+      surface
+        text 下午5点
+  calendar_timezone_alias
+    defined-by calendar_day
+    role calendar_timezone_alias
+    lexeme ru
+      surface
+        text "по грузии"
+      surface
+        text "по тбилиси"
+      surface
+        text "грузинское время"
+    lexeme en
+      surface
+        text "tbilisi time"
+      surface
+        text "georgia time"
+      surface
+        text "Asia/Tbilisi"
+    lexeme hi
+      surface
+        text "जॉर्जिया समय"
+      surface
+        text "त्बिलिसी समय"
+    lexeme zh
+      surface
+        text 格鲁吉亚时间
+      surface
+        text 第比利斯时间

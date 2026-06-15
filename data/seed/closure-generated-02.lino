@@ -1,4 +1,274 @@
 meanings
+  pattern_concept_prefix_meaning_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix meaning of"
+  pattern_concept_prefix_nazovi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix nazovi"
+  pattern_concept_prefix_obyasni
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix obyasni"
+  pattern_concept_prefix_opishi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opishi"
+  pattern_concept_prefix_opredelenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix opredelenie"
+  pattern_concept_prefix_rasskazhi_mne_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne o"
+  pattern_concept_prefix_rasskazhi_mne_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne pro"
+  pattern_concept_prefix_rasskazhi_mne_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi mne za"
+  pattern_concept_prefix_rasskazhi_o
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi o"
+  pattern_concept_prefix_rasskazhi_pro
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi pro"
+  pattern_concept_prefix_rasskazhi_za
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix rasskazhi za"
+  pattern_concept_prefix_shenmejiao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmejiao"
+  pattern_concept_prefix_shenmeshi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi simplified"
+  pattern_concept_prefix_shenmeshi_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shenmeshi traditional"
+  pattern_concept_prefix_shuoshuo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix shuoshuo"
+  pattern_concept_prefix_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix smysl"
+  pattern_concept_prefix_tell_me_about
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me about"
+  pattern_concept_prefix_tell_me_what
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix tell me what"
+  pattern_concept_prefix_v_chem_smysl
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl"
+  pattern_concept_prefix_v_chem_smysl_alt
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix v chem smysl alt"
+  pattern_concept_prefix_what_do
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what do"
+  pattern_concept_prefix_what_does
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does"
+  pattern_concept_prefix_what_does_mean
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what does mean"
+  pattern_concept_prefix_what_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is"
+  pattern_concept_prefix_what_is_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is a"
+  pattern_concept_prefix_what_is_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is an"
+  pattern_concept_prefix_what_is_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix what is the"
+  pattern_concept_prefix_whats
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats"
+  pattern_concept_prefix_whats_a
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats a"
+  pattern_concept_prefix_whats_an
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats an"
+  pattern_concept_prefix_whats_the
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix whats the"
+  pattern_concept_prefix_who_is
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who is"
+  pattern_concept_prefix_who_was
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix who was"
+  pattern_concept_prefix_znachenie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix znachenie"
+  pattern_concept_suffix_de_yisi_shi_shenme_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix de yisi shi shenme simplified"
+  pattern_concept_suffix_ka_arth
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth"
+  pattern_concept_suffix_ka_arth_batao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix ka arth batao"
+  pattern_concept_suffix_kaun_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kaun hai"
+  pattern_concept_suffix_kaun_hain
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kaun hain"
+  pattern_concept_suffix_kya_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kya hai"
+  pattern_concept_suffix_kya_hota_hai
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kya hota hai"
+  pattern_concept_suffix_kya_matlab
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix kya matlab"
+  pattern_concept_suffix_se_kya_matlab
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix se kya matlab"
+  pattern_concept_suffix_shenmeyisi_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shenmeyisi simplified"
+  pattern_concept_suffix_shi_shei_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shei simplified"
+  pattern_concept_suffix_shi_shei_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shei traditional"
+  pattern_concept_suffix_shi_shenme_simplified
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shenme simplified"
+  pattern_concept_suffix_shi_shenme_traditional
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept suffix shi shenme traditional"
+  pattern_courtesy_keyword_blagodaryu
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword blagodaryu"
+  pattern_courtesy_keyword_dhanyavad
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword dhanyavad"
+  pattern_courtesy_keyword_spasibo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword spasibo"
+  pattern_courtesy_keyword_thanks
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword thanks"
+  pattern_courtesy_keyword_xiexie
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy keyword xiexie"
+  pattern_courtesy_phrase_fine_thank_you
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern courtesy phrase fine thank you"
   pattern_courtesy_phrase_horosho_spasibo
     defined-by prompt_pattern
     lexeme en
@@ -459,6 +729,16 @@ meanings
     lexeme en
       surface
         text "possessive list"
+  prepend
+    defined-by phrase
+    lexeme en
+      surface
+        text "prepend"
+  prepend_text
+    defined-by operation
+    lexeme en
+      surface
+        text "prepend text"
   program_plan_rules
     defined-by concept
     lexeme en
@@ -489,6 +769,16 @@ meanings
     lexeme en
       surface
         text "proposal only"
+  punctuation
+    defined-by concept
+    lexeme en
+      surface
+        text "punctuation"
+  qa_network
+    defined-by kind
+    lexeme en
+      surface
+        text "qa network"
   react-chat-ui
     defined-by name
     lexeme en
@@ -509,11 +799,41 @@ meanings
     lexeme en
       surface
         text "relative meta logic"
+  remove_punctuation
+    defined-by operation
+    lexeme en
+      surface
+        text "remove punctuation"
+  remove_text
+    defined-by operation
+    lexeme en
+      surface
+        text "remove text"
   reserved-role
     defined-by concept
     lexeme en
       surface
         text "reserved role"
+  response_assistant_free_time_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time en"
+  response_assistant_free_time_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time hi"
+  response_assistant_free_time_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time ru"
+  response_assistant_free_time_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response assistant free time zh"
   response_assistant_name_en
     defined-by response_template
     lexeme en
@@ -884,6 +1204,11 @@ meanings
     lexeme en
       surface
         text "response unknown zh"
+  reverse_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse lines"
   reverse_sort
     defined-by operation
     lexeme en
@@ -954,26 +1279,46 @@ meanings
     lexeme en
       surface
         text "self improvement loop"
+  sentence_case
+    defined-by operation
+    lexeme en
+      surface
+        text "sentence case"
   shell-helpers
     defined-by category
     lexeme en
       surface
         text "shell helpers"
+  short_rule_list
+    defined-by coverage_group
+    lexeme en
+      surface
+        text "short rule list"
   signal-processing
     defined-by category
     lexeme en
       surface
         text "signal processing"
-  smallest
+  snake
+    defined-by concept
+    lexeme en
+      surface
+        text "snake"
+  snake_case
     defined-by phrase
     lexeme en
       surface
-        text "smallest"
+        text "snake case"
   software-design
     defined-by category
     lexeme en
       surface
         text "software design"
+  software_docs
+    defined-by kind
+    lexeme en
+      surface
+        text "software docs"
   software_project_implementation
     defined-by concept
     lexeme en
@@ -989,11 +1334,26 @@ meanings
     lexeme en
       surface
         text "sort lines"
+  sort_words
+    defined-by operation
+    lexeme en
+      surface
+        text "sort words"
   sqrt
     defined-by word_surface
     lexeme en
       surface
         text "sqrt"
+  stackexchange
+    defined-by source
+    lexeme en
+      surface
+        text "stackexchange"
+  strip_empty_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "strip empty lines"
   structured-knowledge
     defined-by category
     lexeme en
@@ -1034,218 +1394,3 @@ meanings
     lexeme en
       surface
         text "thu"
-  thurs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thurs"
-  time_dilation
-    defined-by topic
-    lexeme en
-      surface
-        text "time dilation"
-  tool_append_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool append memory"
-  tool_brainstorm
-    defined-by tool
-    lexeme en
-      surface
-        text "tool brainstorm"
-  tool_calculator
-    defined-by tool
-    lexeme en
-      surface
-        text "tool calculator"
-  tool_concept_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool concept lookup"
-  tool_conversation_recall
-    defined-by tool
-    lexeme en
-      surface
-        text "tool conversation recall"
-  tool_coreference
-    defined-by tool
-    lexeme en
-      surface
-        text "tool coreference"
-  tool_eval_js
-    defined-by tool
-    lexeme en
-      surface
-        text "tool eval js"
-  tool_export_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool export memory"
-  tool_fact_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool fact lookup"
-  tool_http_fetch
-    defined-by tool
-    lexeme en
-      surface
-        text "tool http fetch"
-  tool_import_memory
-    defined-by tool
-    lexeme en
-      surface
-        text "tool import memory"
-  tool_intent_routing
-    defined-by tool
-    lexeme en
-      surface
-        text "tool intent routing"
-  tool_read_local_file
-    defined-by tool
-    lexeme en
-      surface
-        text "tool read local file"
-  tool_roleplay
-    defined-by tool
-    lexeme en
-      surface
-        text "tool roleplay"
-  tool_summarize_conversation
-    defined-by tool
-    lexeme en
-      surface
-        text "tool summarize conversation"
-  tool_url_navigate
-    defined-by tool
-    lexeme en
-      surface
-        text "tool url navigate"
-  tool_web_search
-    defined-by tool
-    lexeme en
-      surface
-        text "tool web search"
-  tool_wikipedia_lookup
-    defined-by tool
-    lexeme en
-      surface
-        text "tool wikipedia lookup"
-  tool_write_program
-    defined-by tool
-    lexeme en
-      surface
-        text "tool write program"
-  trace_
-    defined-by identifier
-    lexeme en
-      surface
-        text "trace"
-  ts
-    defined-by word_surface
-    lexeme en
-      surface
-        text "ts"
-  tue
-    defined-by word_surface
-    lexeme en
-      surface
-        text "tue"
-  ui
-    defined-by category
-    lexeme en
-      surface
-        text "ui"
-  unknown_reasoning_question
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning question"
-  unknown_reasoning_trace
-    defined-by intent
-    lexeme en
-      surface
-        text "unknown reasoning trace"
-  usd
-    defined-by word_surface
-    lexeme en
-      surface
-        text "usd"
-  visual-property
-    defined-by category
-    lexeme en
-      surface
-        text "visual property"
-  vscode
-    defined-by environment
-    lexeme en
-      surface
-        text "vscode"
-  vscode_local_sync
-    defined-by flow
-    lexeme en
-      surface
-        text "vscode local sync"
-  web-search
-    defined-by word_surface
-    lexeme en
-      surface
-        text "web search"
-  webvm
-    defined-by word_surface
-    lexeme en
-      surface
-        text "webvm"
-  wikidata
-    defined-by source
-    lexeme en
-      surface
-        text "wikidata"
-  wikipedia
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wikipedia"
-  wikipedia_article_question
-    defined-by intent
-    lexeme en
-      surface
-        text "wikipedia article question"
-  wikipedia_fallback_language
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia fallback language"
-  wikipedia_lookup
-    defined-by name
-    lexeme en
-      surface
-        text "wikipedia lookup"
-  wikipedia_summary_endpoint_template
-    defined-by field
-    lexeme en
-      surface
-        text "wikipedia summary endpoint template"
-  wiktionary
-    defined-by source_kind
-    lexeme en
-      surface
-        text "wiktionary"
-  wordnet
-    defined-by source
-    lexeme en
-      surface
-        text "wordnet"
-  write_program
-    defined-by intent
-    lexeme en
-      surface
-        text "write program"
-  your
-    defined-by word_surface
-    lexeme en
-      surface
-        text "your"

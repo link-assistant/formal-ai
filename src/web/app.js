@@ -28,6 +28,8 @@ const UNKNOWN_ANSWER =
   "I don't know how to answer that yet. I cannot answer that from local Links Notation rules yet. To inspect what I can do, send `List behavior rules`, then `Show behavior rule unknown`. To teach this dialog a response, send: When I say `your prompt`, answer `your answer`. If this still needs a shared Links Notation seed fact or rule after those checks, use Report issue with the reasoning trace, or export memory to keep a dialog-local rule durable.";
 const IDENTITY_ANSWER =
   "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
+const ASSISTANT_FREE_TIME_ANSWER =
+  "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.";
 const ASSISTANT_NAME_ANSWER =
   "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
 const COURTESY_ACKNOWLEDGEMENTS = [
@@ -970,6 +972,23 @@ function buildRecallReport({ events, term, scope, currentConversationId, trigger
   return { content: lines.join("\n"), matches: groupList };
 }
 
+// Issue #444: the assistant may consult a small set of external *trusted*
+// services (wikiHow, Stack Exchange, the MediaWiki sister projects, GitHub) when
+// it answers procedural "how to X" prompts and project lookups. The maintainer
+// asked for a settings section to opt in or out of each one. This single
+// data-driven catalog drives the preference defaults, the worker prefs payload,
+// the reset descriptors, and the settings panel checkboxes, so adding a new
+// trusted service later means appending one row here (plus an i18n label) rather
+// than editing six call sites. `key` mirrors the `settings_key` recorded in
+// `data/seed/sources-registry.lino`; every service is opt-out (default enabled),
+// so existing behavior is preserved unless the user turns one off.
+const EXTERNAL_TRUSTED_SERVICES = [
+  { key: "externalServiceWikihow", label: "settings.externalServiceWikihow" },
+  { key: "externalServiceStackExchange", label: "settings.externalServiceStackExchange" },
+  { key: "externalServiceMediawikiFamily", label: "settings.externalServiceMediawikiFamily" },
+  { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
+];
+
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
@@ -1011,6 +1030,10 @@ const PREFERENCE_DEFAULTS = {
   //                          optional region (error handling, comments) present.
   blueprintComposition: "composed",
   experimentalOcr: false,
+  // Issue #444: external trusted-service opt-outs. Defined data-driven from
+  // EXTERNAL_TRUSTED_SERVICES; every service ships enabled (opt-out model) so the
+  // assistant keeps consulting them unless the user disables one in settings.
+  ...Object.fromEntries(EXTERNAL_TRUSTED_SERVICES.map((service) => [service.key, true])),
   associativeProjectPromotion: true,
   theme: "auto",
   location: "",
@@ -1044,6 +1067,7 @@ const PREFERENCE_DEFAULTS = {
   chatStyle: "cards",
   composerStyle: "flat",
   composerAction: "attach",
+  toolbarIconPack: "fontawesome",
 };
 
 // Issue #386: precompute the formatted default values so the issue report can
@@ -1075,6 +1099,15 @@ const UI_SKINS = ["flat", "glass", "contrast"];
 const CHAT_STYLES = ["cards", "compact", "bubbles"];
 const COMPOSER_STYLES = ["flat", "glass-soft", "glass-clear", "bubble"];
 const COMPOSER_ACTIONS = ["attach", "plus"];
+const TOOLBAR_ICON_PACKS = [
+  "fontawesome",
+  "material-symbols",
+  "bootstrap-icons",
+  "ionicons",
+  "remix-icon",
+  "tabler-icons",
+  "names",
+];
 const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // Issue #340: blueprint program-composition strategies. "composed" projects the
 // program from the detected capabilities; "documented" always emits the full
@@ -1334,6 +1367,12 @@ function normalizeComposerAction(value) {
     : PREFERENCE_DEFAULTS.composerAction;
 }
 
+function normalizeToolbarIconPack(value) {
+  return TOOLBAR_ICON_PACKS.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.toolbarIconPack;
+}
+
 function normalizeDefinitionFusion(value) {
   return DEFINITION_FUSION_MODES.includes(value)
     ? value
@@ -1356,6 +1395,255 @@ function normalizePreferredLanguage(value) {
   return PREFERRED_RESPONSE_LANGUAGES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.preferredLanguage;
+}
+
+const TOOLBAR_ICON_FONT_NAMES = {
+  fontawesome: {
+    sourceCode: "fa-code",
+    download: "fa-download",
+    reportIssue: "fa-bug",
+    exportMemory: "fa-file-export",
+    importMemory: "fa-file-import",
+    resetMemory: "fa-broom",
+    diagnostics: "fa-flask-vial",
+    chat: "fa-comment-dots",
+    agent: "fa-robot",
+    demo: "fa-clapperboard",
+    attachFiles: "fa-paperclip",
+  },
+  "material-symbols": {
+    sourceCode: "code",
+    download: "download",
+    reportIssue: "bug_report",
+    exportMemory: "upload_file",
+    importMemory: "file_download",
+    resetMemory: "cleaning_services",
+    diagnostics: "science",
+    chat: "chat_bubble",
+    agent: "smart_toy",
+    demo: "movie",
+    attachFiles: "attach_file",
+  },
+  "bootstrap-icons": {
+    sourceCode: "bi-code-slash",
+    download: "bi-download",
+    reportIssue: "bi-bug",
+    exportMemory: "bi-file-earmark-arrow-up",
+    importMemory: "bi-file-earmark-arrow-down",
+    resetMemory: "bi-eraser",
+    diagnostics: "bi-flask",
+    chat: "bi-chat-dots",
+    agent: "bi-robot",
+    demo: "bi-play-btn",
+    attachFiles: "bi-paperclip",
+  },
+  ionicons: {
+    sourceCode: "code-slash-outline",
+    download: "download-outline",
+    reportIssue: "bug-outline",
+    exportMemory: "cloud-upload-outline",
+    importMemory: "cloud-download-outline",
+    resetMemory: "brush-outline",
+    diagnostics: "flask-outline",
+    chat: "chatbubble-ellipses-outline",
+    agent: "hardware-chip-outline",
+    demo: "videocam-outline",
+    attachFiles: "attach-outline",
+  },
+  "remix-icon": {
+    sourceCode: "ri-code-s-slash-line",
+    download: "ri-download-line",
+    reportIssue: "ri-bug-line",
+    exportMemory: "ri-file-upload-line",
+    importMemory: "ri-file-download-line",
+    resetMemory: "ri-brush-3-line",
+    diagnostics: "ri-flask-line",
+    chat: "ri-chat-3-line",
+    agent: "ri-robot-2-line",
+    demo: "ri-movie-line",
+    attachFiles: "ri-attachment-line",
+  },
+  "tabler-icons": {
+    sourceCode: "IconCode",
+    download: "IconDownload",
+    reportIssue: "IconBug",
+    exportMemory: "IconFileExport",
+    importMemory: "IconFileImport",
+    resetMemory: "IconEraser",
+    diagnostics: "IconFlask",
+    chat: "IconMessageCircle",
+    agent: "IconRobot",
+    demo: "IconMovie",
+    attachFiles: "IconPaperclip",
+  },
+  names: {
+    sourceCode: "Code",
+    download: "Download",
+    reportIssue: "Bug",
+    exportMemory: "Export",
+    importMemory: "Import",
+    resetMemory: "Reset",
+    diagnostics: "Diagnostics",
+    chat: "Chat",
+    agent: "Agent",
+    demo: "Demo",
+    attachFiles: "Attach",
+  },
+};
+
+const TOOLBAR_ICON_SHORT_NAMES = {
+  sourceCode: "Code",
+  download: "Down",
+  reportIssue: "Bug",
+  exportMemory: "Out",
+  importMemory: "In",
+  resetMemory: "Clear",
+  diagnostics: "Diag",
+  chat: "Chat",
+  agent: "Agent",
+  demo: "Demo",
+  attachFiles: "File",
+};
+
+const TOOLBAR_ICON_SHAPES = {
+  sourceCode: [
+    ["path", { d: "M8.5 8.5 5 12l3.5 3.5" }],
+    ["path", { d: "m15.5 8.5 3.5 3.5-3.5 3.5" }],
+    ["path", { d: "m13.5 6-3 12" }],
+  ],
+  download: [
+    ["path", { d: "M12 5v10" }],
+    ["path", { d: "m8 11 4 4 4-4" }],
+    ["path", { d: "M5 19h14" }],
+  ],
+  reportIssue: [
+    ["path", { d: "M8 9h8v6a4 4 0 0 1-8 0V9Z" }],
+    ["path", { d: "M9 9 7 6" }],
+    ["path", { d: "m15 9 2-3" }],
+    ["path", { d: "M12 8V5" }],
+    ["path", { d: "M6 13H3.5" }],
+    ["path", { d: "M20.5 13H18" }],
+    ["path", { d: "M7 18l-2 2" }],
+    ["path", { d: "m17 18 2 2" }],
+    ["path", { d: "M10 13h.01" }],
+    ["path", { d: "M14 13h.01" }],
+  ],
+  exportMemory: [
+    ["path", { d: "M6 3h8l4 4v14H6V3Z" }],
+    ["path", { d: "M14 3v5h4" }],
+    ["path", { d: "M12 17V9" }],
+    ["path", { d: "m8.5 12.5 3.5-3.5 3.5 3.5" }],
+  ],
+  importMemory: [
+    ["path", { d: "M6 3h8l4 4v14H6V3Z" }],
+    ["path", { d: "M14 3v5h4" }],
+    ["path", { d: "M12 9v8" }],
+    ["path", { d: "m8.5 13.5 3.5 3.5 3.5-3.5" }],
+  ],
+  resetMemory: [
+    ["path", { d: "m15 4-7 7" }],
+    ["path", { d: "m7 12 5 5" }],
+    ["path", { d: "m5 14 5 5" }],
+    ["path", { d: "m9 10 5 5" }],
+    ["path", { d: "M4 20h16" }],
+  ],
+  diagnostics: [
+    ["path", { d: "M10 4h4" }],
+    ["path", { d: "M11 4v5l-5 8a3 3 0 0 0 2.5 4h7a3 3 0 0 0 2.5-4l-5-8V4" }],
+    ["path", { d: "M8 16h8" }],
+  ],
+  chat: [
+    ["path", { d: "M5 6h14v9H9l-4 4V6Z" }],
+    ["path", { d: "M8.5 10.5h7" }],
+    ["path", { d: "M8.5 13h4" }],
+  ],
+  agent: [
+    ["path", { d: "M8 9h8v8H8V9Z" }],
+    ["path", { d: "M12 9V5" }],
+    ["path", { d: "M9.5 5h5" }],
+    ["path", { d: "M6 12H4" }],
+    ["path", { d: "M20 12h-2" }],
+    ["path", { d: "M10 12h.01" }],
+    ["path", { d: "M14 12h.01" }],
+    ["path", { d: "M10 15h4" }],
+  ],
+  demo: [
+    ["path", { d: "M4 7h16v12H4V7Z" }],
+    ["path", { d: "M4 11h16" }],
+    ["path", { d: "m7 7 2-4" }],
+    ["path", { d: "m12 7 2-4" }],
+    ["path", { d: "m17 7 2-4" }],
+    ["path", { d: "m10 14 4 2-4 2v-4Z" }],
+  ],
+  attachFiles: [
+    ["path", { d: "m8 12 5.5-5.5a3 3 0 0 1 4.25 4.25l-7.25 7.25a5 5 0 0 1-7.07-7.07L10 4.36" }],
+    ["path", { d: "m9.5 14.5 6-6" }],
+  ],
+};
+
+function toolbarIconFontName(action, pack) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  return (
+    TOOLBAR_ICON_FONT_NAMES[normalizedPack]?.[action] ||
+    TOOLBAR_ICON_FONT_NAMES.fontawesome[action] ||
+    action
+  );
+}
+
+function toolbarIconFontClass(action, pack) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  const name = toolbarIconFontName(action, normalizedPack);
+  if (normalizedPack === "fontawesome") return `fa-solid ${name}`;
+  if (normalizedPack === "material-symbols") return `material-symbols-outlined ${name}`;
+  if (normalizedPack === "bootstrap-icons") return `bi ${name}`;
+  if (normalizedPack === "remix-icon") return `ri ${name}`;
+  if (normalizedPack === "tabler-icons") return `ti ${name}`;
+  return name;
+}
+
+function ToolbarIcon({ action, pack, className = "btn-icon" }) {
+  const normalizedPack = normalizeToolbarIconPack(pack);
+  const fontName = toolbarIconFontName(action, normalizedPack);
+  const fontClass = toolbarIconFontClass(action, normalizedPack);
+  const baseClass = `${className} toolbar-icon icon-pack-${normalizedPack}`;
+  if (normalizedPack === "names") {
+    return h(
+      "span",
+      {
+        className: `${baseClass} toolbar-icon-name`,
+        "aria-hidden": "true",
+        "data-icon-pack": normalizedPack,
+        "data-icon-font-name": fontName,
+        "data-icon-font-class": fontClass,
+      },
+      TOOLBAR_ICON_SHORT_NAMES[action] || fontName,
+    );
+  }
+  const shape = TOOLBAR_ICON_SHAPES[action] || TOOLBAR_ICON_SHAPES.chat;
+  return h(
+    "span",
+    {
+      className: baseClass,
+      "aria-hidden": "true",
+      "data-icon-pack": normalizedPack,
+      "data-icon-font-name": fontName,
+      "data-icon-font-class": fontClass,
+    },
+    h(
+      "svg",
+      {
+        className: "toolbar-icon-svg",
+        viewBox: "0 0 24 24",
+        focusable: "false",
+      },
+      shape.map(([tag, attrs], index) =>
+        h(tag, {
+          ...attrs,
+          key: `${action}-${index}`,
+        }),
+      ),
+    ),
+  );
 }
 
 function i18nApi() {
@@ -1433,6 +1721,7 @@ function collectUserContext({
   chatStyle,
   composerStyle,
   composerAction,
+  toolbarIconPack,
   locationPreference,
   assistantName,
   guessProbability,
@@ -1458,6 +1747,7 @@ function collectUserContext({
     chatStyle,
     composerStyle,
     composerAction,
+    toolbarIconPack,
     browserLanguage: nav.language || "",
     browserLanguages: browserLanguages.join(", "),
     locale: resolvedLocale(),
@@ -1572,6 +1862,10 @@ function appendUserContextBlock(lines, context) {
   }
   if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
     push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  const toolbarIconPack = safe.toolbarIconPack || PREFERENCE_DEFAULTS.toolbarIconPack;
+  if (toolbarIconPack !== PREFERENCE_DEFAULTS.toolbarIconPack) {
+    push("Toolbar icon pack", toolbarIconPack);
   }
   // Issue #386: the inference-only location ("time zone / locale only") is the
   // default, so it is omitted. An explicit preference is reported above.
@@ -2255,6 +2549,34 @@ function isIdentityPrompt(normalized) {
   );
 }
 
+function isLocalAssistantFreeTimePrompt(normalized) {
+  return [
+    "what do you do in your free time",
+    "what do you do in free time",
+    "how do you spend your free time",
+    "what do you do when you are not working",
+    "что делаешь в свободное время",
+    "что ты делаешь в свободное время",
+    "чем занимаешься в свободное время",
+    "чем ты занимаешься в свободное время",
+    "что делаешь когда свободен",
+    "खाली समय में क्या करते हो",
+    "आप खाली समय में क्या करते हैं",
+    "फुर्सत में क्या करते हो",
+    "你空闲时间做什么",
+    "你有空的时候做什么",
+    "你业余时间做什么",
+  ].includes(normalized);
+}
+
+function localPromptLanguage(prompt) {
+  const raw = String(prompt || "");
+  if (/[\u0400-\u04ff]/u.test(raw)) return "ru";
+  if (/[\u0900-\u097f]/u.test(raw)) return "hi";
+  if (/[\u3400-\u9fff]/u.test(raw)) return "zh";
+  return "en";
+}
+
 function isAssistantNamePrompt(normalized) {
   const tokens = normalized ? normalized.split(/\s+/) : [];
   const has = (token) => tokens.includes(token);
@@ -2414,6 +2736,17 @@ function localBehaviorRuleRecords() {
       whenThen: `When the user asks \`Who are you?\` or \`Кто ты?\` then respond with the identity answer.`,
     },
     {
+      id: "rule_assistant_free_time",
+      topic: "small_talk",
+      intent: "assistant_free_time",
+      label: "Assistant free-time rule",
+      matches:
+        "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      response: ASSISTANT_FREE_TIME_ANSWER,
+      source: "local fallback",
+      whenThen: `When the user asks what I do in free time then respond with \`${ASSISTANT_FREE_TIME_ANSWER}\`.`,
+    },
+    {
       id: "rule_assistant_name",
       topic: "assistant_name",
       intent: "assistant_name",
@@ -2441,6 +2774,7 @@ function localBehaviorRuleRecords() {
 const LOCAL_BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
   "identity",
+  "small_talk",
   "assistant_name",
   "unknown_fallback",
 ];
@@ -2453,6 +2787,12 @@ function localBehaviorRuleTopicLabel(topic, language) {
   const labels = {
     greetings: { en: "Greetings", ru: "Приветствия", hi: "अभिवादन", zh: "问候" },
     identity: { en: "Identity", ru: "Идентичность", hi: "पहचान", zh: "身份" },
+    small_talk: {
+      en: "Small talk",
+      ru: "Светская беседа",
+      hi: "हल्की बातचीत",
+      zh: "闲聊",
+    },
     assistant_name: {
       en: "Assistant name",
       ru: "Имя ассистента",
@@ -2496,6 +2836,14 @@ function localRuleResponse(rule, language) {
     if (language === "hi") return "नमस्ते! मैं आपकी क्या मदद कर सकता हूँ?";
     if (language === "zh") return "你好，请问我可以帮你什么？";
   }
+  if (rule.id === "rule_assistant_free_time") {
+    return localLocalizedText(language, {
+      en: ASSISTANT_FREE_TIME_ANSWER,
+      ru: "У меня нет свободного времени в человеческом смысле. Между запросами я бездействую; когда диалог активен, помогаю с задачами, правилами и объяснениями.",
+      hi: "मेरे पास मनुष्यों जैसा खाली समय नहीं है. prompts के बीच मैं निष्क्रिय रहता हूँ; dialog सक्रिय हो तो tasks, rules और explanations में मदद करता हूँ.",
+      zh: "我没有人类意义上的空闲时间。两次提示之间我处于空闲状态；对话活跃时，我帮助处理任务、规则和解释。",
+    });
+  }
   if (rule.id === "rule_assistant_name") {
     return localLocalizedText(language, {
       en: "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting.",
@@ -2520,6 +2868,12 @@ function localRuleLabel(rule, language) {
       ru: "Правило идентичности",
       hi: "पहचान नियम",
       zh: "身份规则",
+    },
+    rule_assistant_free_time: {
+      en: "Assistant free-time rule",
+      ru: "Правило свободного времени ассистента",
+      hi: "सहायक खाली समय नियम",
+      zh: "助手空闲时间规则",
     },
     rule_assistant_name: {
       en: "Assistant name rule",
@@ -2551,6 +2905,12 @@ function localRuleMatches(rule, language) {
       hi: "`Who are you?`, `Кто ты?` और समान identity prompts",
       zh: "`Who are you?`、`Кто ты?` 以及等价身份提示",
     },
+    rule_assistant_free_time: {
+      en: "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      ru: "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы",
+      hi: "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases",
+      zh: "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语",
+    },
     rule_assistant_name: {
       en: "`What is your name?`, `Как твое имя?`, and equivalent name prompts",
       ru: "`What is your name?`, `Как твое имя?` и равнозначные вопросы об имени",
@@ -2578,6 +2938,11 @@ function localRuleWhenThen(rule, language) {
     if (language === "ru") return "Когда пользователь спрашивает `Who are you?` или `Кто ты?`, ответь сообщением об идентичности.";
     if (language === "hi") return "जब उपयोगकर्ता `Who are you?` या `Кто ты?` पूछे, तब identity answer दें.";
     if (language === "zh") return "当用户问 `Who are you?` 或 `Кто ты?` 时，回答身份说明。";
+  }
+  if (rule.id === "rule_assistant_free_time") {
+    if (language === "ru") return `Когда пользователь спрашивает, что я делаю в свободное время, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户问我空闲时间做什么时，回答 \`${response}\`。`;
   }
   if (rule.id === "rule_assistant_name") {
     if (language === "ru") return "Когда пользователь спрашивает `What is your name?` или `Как твое имя?`, ответь сообщением об имени ассистента; если настройка имени есть, включи настроенное имя.";
@@ -3188,15 +3553,19 @@ function tryLocalBehaviorRules(prompt, normalized, history, preferences = {}) {
 
 const LOCAL_BEHAVIOR_RULES_LIST_PATTERNS = [
   "show behavior rules",
+  "show rules",
   "show list of your rules",
   "list your rules",
   "покажи правила поведения",
+  "покажи правила",
   "покажи список своих правил",
   "перечисли свои правила",
   "व्यवहार के नियम सूचीबद्ध करें",
+  "नियम दिखाओ",
   "अपने नियमों की सूची दिखाओ",
   "अपने नियम गिनाओ",
   "列出行为规则",
+  "显示规则",
   "显示你的规则列表",
   "列出你的规则",
 ];
@@ -3525,6 +3894,16 @@ function localFallbackAnswer(prompt, history = [], preferences = {}) {
     return {
       intent: "greeting",
       content: "Hi, how may I help you?",
+    };
+  }
+
+  if (isLocalAssistantFreeTimePrompt(normalized)) {
+    return {
+      intent: "assistant_free_time",
+      content: localRuleResponse(
+        { id: "rule_assistant_free_time", response: ASSISTANT_FREE_TIME_ANSWER },
+        localPromptLanguage(prompt),
+      ),
     };
   }
 
@@ -4789,6 +5168,20 @@ function App() {
   const [experimentalOcr, setExperimentalOcr] = useState(
     Boolean(initialPreferences.current.experimentalOcr),
   );
+  // Issue #444: one boolean per external trusted service, kept in a single map so
+  // the catalog stays the only place that enumerates the services. A missing
+  // stored value defaults to enabled (opt-out model).
+  const [externalServices, setExternalServices] = useState(() =>
+    Object.fromEntries(
+      EXTERNAL_TRUSTED_SERVICES.map((service) => [
+        service.key,
+        initialPreferences.current[service.key] !== false,
+      ]),
+    ),
+  );
+  const setExternalService = useCallback((key, value) => {
+    setExternalServices((prev) => ({ ...prev, [key]: Boolean(value) }));
+  }, []);
   const [associativeProjectPromotion, setAssociativeProjectPromotion] = useState(
     initialPreferences.current.associativeProjectPromotion !== false,
   );
@@ -4806,6 +5199,9 @@ function App() {
   );
   const [composerAction, setComposerAction] = useState(
     normalizeComposerAction(initialPreferences.current.composerAction),
+  );
+  const [toolbarIconPack, setToolbarIconPack] = useState(
+    normalizeToolbarIconPack(initialPreferences.current.toolbarIconPack),
   );
   const [locationPreference, setLocationPreference] = useState(
     String(initialPreferences.current.location || ""),
@@ -5035,6 +5431,7 @@ function App() {
         chatStyle,
         composerStyle,
         composerAction,
+        toolbarIconPack,
         locationPreference,
         assistantName,
         guessProbability,
@@ -5051,6 +5448,7 @@ function App() {
       chatStyle,
       composerStyle,
       composerAction,
+      toolbarIconPack,
       locationPreference,
       assistantName,
       guessProbability,
@@ -5532,12 +5930,14 @@ function App() {
       definitionFusion,
       blueprintComposition,
       experimentalOcr,
+      ...externalServices,
       associativeProjectPromotion,
       theme: themePreference,
       uiSkin,
       chatStyle,
       composerStyle,
       composerAction,
+      toolbarIconPack,
       location: locationPreference,
       assistantName: normalizeAssistantName(assistantName),
       currentConversationId,
@@ -5565,12 +5965,14 @@ function App() {
     definitionFusion,
     blueprintComposition,
     experimentalOcr,
+    externalServices,
     associativeProjectPromotion,
     themePreference,
     uiSkin,
     chatStyle,
     composerStyle,
     composerAction,
+    toolbarIconPack,
     locationPreference,
     assistantName,
     currentConversationId,
@@ -5653,6 +6055,13 @@ function App() {
     experimentalOcrRef.current = experimentalOcr;
   }, [experimentalOcr]);
 
+  // Issue #444: mirror the external trusted-service toggles into a ref so the
+  // worker prefs payload (assembled outside React render) reads the live values.
+  const externalServicesRef = useRef(externalServices);
+  useEffect(() => {
+    externalServicesRef.current = externalServices;
+  }, [externalServices]);
+
   const associativeProjectPromotionRef = useRef(associativeProjectPromotion);
   useEffect(() => {
     associativeProjectPromotionRef.current = associativeProjectPromotion;
@@ -5730,6 +6139,9 @@ function App() {
       definitionFusion: definitionFusionRef.current,
       blueprintComposition: blueprintCompositionRef.current,
       experimentalOcr: experimentalOcrRef.current,
+      // Issue #444: forward every external trusted-service opt-out so the worker
+      // can skip a disabled service's live fetch.
+      ...externalServicesRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
       theme: themePreferenceRef.current,
@@ -6372,6 +6784,14 @@ function App() {
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
+    // Issue #444: one reset descriptor per external trusted service so the
+    // "modified settings" reset bar lists any service the user turned off.
+    ...EXTERNAL_TRUSTED_SERVICES.map((service) => ({
+      key: service.key,
+      value: externalServices[service.key],
+      set: (next) => setExternalService(service.key, next),
+      label: service.label,
+    })),
     { key: "uiLanguage", value: uiLanguagePreference, set: setUiLanguagePreference, label: "settings.language" },
     { key: "responseLanguage", value: responseLanguage, set: setResponseLanguage, label: "settings.responseLanguage" },
     { key: "preferredLanguage", value: preferredLanguage, set: setPreferredLanguage, label: "settings.preferredLanguage" },
@@ -6380,6 +6800,7 @@ function App() {
     { key: "chatStyle", value: chatStyle, set: setChatStyle, label: "settings.chatStyle" },
     { key: "composerStyle", value: composerStyle, set: setComposerStyle, label: "settings.composerStyle" },
     { key: "composerAction", value: composerAction, set: setComposerAction, label: "settings.composerAction" },
+    { key: "toolbarIconPack", value: toolbarIconPack, set: setToolbarIconPack, label: "settings.toolbarIconPack" },
     { key: "assistantName", value: assistantName, set: setAssistantName, label: "settings.assistantName" },
     { key: "location", value: locationPreference, set: setLocationPreference, label: "settings.location" },
   ];
@@ -6395,7 +6816,14 @@ function App() {
     }
   };
 
-  const composerActionIcon = composerAction === "plus" ? "+" : "📎";
+  const composerActionIcon =
+    composerAction === "plus"
+      ? "+"
+      : h(ToolbarIcon, {
+          action: "attachFiles",
+          pack: toolbarIconPack,
+          className: "composer-action-icon",
+        });
   const attachmentStatus =
     attachments.length > 0
       ? t("composer.attachments", { count: attachments.length })
@@ -6415,6 +6843,7 @@ function App() {
         `ui-skin-${uiSkin}`,
         `chat-style-${chatStyle}`,
         `composer-style-${composerStyle}`,
+        `toolbar-icon-pack-${toolbarIconPack}`,
         desktopStatus ? "desktop-shell" : "",
       ].filter(Boolean).join(" "),
     },
@@ -6503,7 +6932,7 @@ function App() {
             title: t("titles.sourceCode"),
             "aria-label": t("buttons.sourceCode"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+          h(ToolbarIcon, { action: "sourceCode", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.sourceCode")),
         ),
         h(
@@ -6516,7 +6945,7 @@ function App() {
             title: t("titles.download"),
             "aria-label": t("buttons.download"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "⬇️"),
+          h(ToolbarIcon, { action: "download", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.download")),
         ),
         h(
@@ -6531,7 +6960,7 @@ function App() {
             title: t("titles.reportIssue"),
             "aria-label": t("buttons.reportIssue"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+          h(ToolbarIcon, { action: "reportIssue", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.reportIssue")),
         ),
         h(
@@ -6545,7 +6974,7 @@ function App() {
             title: t("titles.exportMemory"),
             "aria-label": t("buttons.exportMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+          h(ToolbarIcon, { action: "exportMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.exportMemory")),
         ),
         h(
@@ -6559,7 +6988,7 @@ function App() {
             title: t("titles.importMemory"),
             "aria-label": t("buttons.importMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+          h(ToolbarIcon, { action: "importMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.importMemory")),
         ),
         h(
@@ -6573,7 +7002,7 @@ function App() {
             title: t("titles.resetMemory"),
             "aria-label": t("buttons.resetMemory"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+          h(ToolbarIcon, { action: "resetMemory", pack: toolbarIconPack }),
           h("span", { className: "btn-label" }, t("buttons.resetMemory")),
         ),
         h("input", {
@@ -6611,7 +7040,7 @@ function App() {
               ? t("buttons.diagnosticsOn")
               : t("buttons.diagnostics"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
+          h(ToolbarIcon, { action: "diagnostics", pack: toolbarIconPack }),
           h(
             "span",
             { className: "btn-label" },
@@ -6632,11 +7061,10 @@ function App() {
             "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
             onClick: () => setAgentMode((value) => !value),
           },
-          h(
-            "span",
-            { className: "btn-icon", "aria-hidden": "true" },
-            agentMode ? "🤖" : "💬",
-          ),
+          h(ToolbarIcon, {
+            action: agentMode ? "agent" : "chat",
+            pack: toolbarIconPack,
+          }),
           h(
             "span",
             { className: "btn-label" },
@@ -6656,7 +7084,7 @@ function App() {
               : t("titles.demoOff"),
             "aria-label": demoMode ? t("buttons.demoOn") : t("buttons.demo"),
           },
-          h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+          h(ToolbarIcon, { action: "demo", pack: toolbarIconPack }),
           h(
             "span",
             { className: "btn-label" },
@@ -6731,7 +7159,7 @@ function App() {
                 target: "_blank",
                 rel: "noopener noreferrer",
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "💻"),
+              h(ToolbarIcon, { action: "sourceCode", pack: toolbarIconPack }),
               h("span", null, t("buttons.sourceCode")),
             ),
             h(
@@ -6743,7 +7171,7 @@ function App() {
                 target: "_blank",
                 rel: "noopener noreferrer",
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🐛"),
+              h(ToolbarIcon, { action: "reportIssue", pack: toolbarIconPack }),
               h("span", null, t("buttons.reportIssue")),
             ),
             h(
@@ -6754,7 +7182,7 @@ function App() {
                 "data-testid": "drawer-memory-export",
                 onClick: handleExportMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📤"),
+              h(ToolbarIcon, { action: "exportMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.exportMemory")),
             ),
             h(
@@ -6765,7 +7193,7 @@ function App() {
                 "data-testid": "drawer-memory-import",
                 onClick: triggerImportMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "📥"),
+              h(ToolbarIcon, { action: "importMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.importMemory")),
             ),
             h(
@@ -6776,7 +7204,7 @@ function App() {
                 "data-testid": "drawer-memory-reset",
                 onClick: handleResetMemory,
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧹"),
+              h(ToolbarIcon, { action: "resetMemory", pack: toolbarIconPack }),
               h("span", null, t("buttons.resetMemory")),
             ),
             h(
@@ -6787,7 +7215,7 @@ function App() {
                 "aria-pressed": diagnosticsMode,
                 onClick: () => setDiagnosticsMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🧪"),
+              h(ToolbarIcon, { action: "diagnostics", pack: toolbarIconPack }),
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
@@ -6798,7 +7226,10 @@ function App() {
                 "aria-pressed": agentMode,
                 onClick: () => setAgentMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, agentMode ? "🤖" : "💬"),
+              h(ToolbarIcon, {
+                action: agentMode ? "agent" : "chat",
+                pack: toolbarIconPack,
+              }),
               h("span", null, agentMode ? t("buttons.agent") : t("buttons.chat")),
             ),
             h(
@@ -6809,7 +7240,7 @@ function App() {
                 "aria-pressed": demoMode,
                 onClick: () => setDemoMode((value) => !value),
               },
-              h("span", { className: "btn-icon", "aria-hidden": "true" }, "🎬"),
+              h(ToolbarIcon, { action: "demo", pack: toolbarIconPack }),
               h("span", null, demoMode ? t("buttons.demoOn") : t("buttons.demo")),
             ),
           ),
@@ -7321,6 +7752,41 @@ function App() {
                 t("settings.experimentalOcr.warning"),
               ),
             ),
+            // Issue #444: external trusted-services opt-in/opt-out section. The
+            // checkbox list is generated from EXTERNAL_TRUSTED_SERVICES so the
+            // catalog stays the single source of truth; each service is enabled
+            // by default and the user can opt out of any one.
+            h(
+              "div",
+              {
+                className: "setting-row setting-row-external-services",
+                "data-testid": "settings-external-services",
+              },
+              h(
+                "p",
+                { className: "setting-section-title" },
+                t("settings.externalServices"),
+              ),
+              h(
+                "p",
+                { className: "setting-section-note" },
+                t("settings.externalServices.note"),
+              ),
+              ...EXTERNAL_TRUSTED_SERVICES.map((service) =>
+                h(
+                  "label",
+                  { className: "setting-check", key: service.key },
+                  h("input", {
+                    type: "checkbox",
+                    checked: externalServices[service.key] !== false,
+                    "data-testid": `setting-${service.key}`,
+                    onChange: (event) =>
+                      setExternalService(service.key, event.target.checked),
+                  }),
+                  h("span", null, t(service.label)),
+                ),
+              ),
+            ),
             h(
               "label",
               { className: "setting-row" },
@@ -7425,6 +7891,29 @@ function App() {
                 h("option", { value: "flat" }, t("settings.uiSkin.flat")),
                 h("option", { value: "glass" }, t("settings.uiSkin.glass")),
                 h("option", { value: "contrast" }, t("settings.uiSkin.contrast")),
+              ),
+            ),
+            h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.toolbarIconPack")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-toolbar-icon-pack",
+                  value: toolbarIconPack,
+                  onChange: (event) =>
+                    setToolbarIconPack(
+                      normalizeToolbarIconPack(event.target.value),
+                    ),
+                },
+                h("option", { value: "fontawesome" }, t("settings.toolbarIconPack.fontawesome")),
+                h("option", { value: "material-symbols" }, t("settings.toolbarIconPack.materialSymbols")),
+                h("option", { value: "bootstrap-icons" }, t("settings.toolbarIconPack.bootstrapIcons")),
+                h("option", { value: "ionicons" }, t("settings.toolbarIconPack.ionicons")),
+                h("option", { value: "remix-icon" }, t("settings.toolbarIconPack.remixIcon")),
+                h("option", { value: "tabler-icons" }, t("settings.toolbarIconPack.tablerIcons")),
+                h("option", { value: "names" }, t("settings.toolbarIconPack.names")),
               ),
             ),
             h(
@@ -7681,7 +8170,11 @@ function App() {
                 "p",
                 { className: "composer-demo-hint", "data-testid": "composer-demo-hint" },
                 t("composer.demoHint.before"),
-                h("span", { className: "composer-demo-hint-icon", "aria-hidden": "true" }, "🎬"),
+                h(ToolbarIcon, {
+                  action: "demo",
+                  pack: toolbarIconPack,
+                  className: "composer-demo-hint-icon",
+                }),
                 t("composer.demoHint.after"),
               )
             : null,

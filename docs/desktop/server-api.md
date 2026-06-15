@@ -298,6 +298,52 @@ If you set a bearer token (see [§3](#3-authentication)), `claude` sends it as t
 `ANTHROPIC_API_KEY`; on a loopback-only server any non-empty value works when no
 token is required.
 
+### 4e. Agentic mode: the server drives a tool-calling loop (issue #468)
+
+Beyond answering a single prompt, the server can drive an **agentic tool-calling
+loop** on every surface above: the CLI advertises its tools, the server decides the
+next tool to call, the CLI executes it and feeds the result back, and the loop runs
+until the server returns the finished answer. This is the capability issue
+[#468](https://github.com/link-assistant/formal-ai/issues/468) asks for — *"call
+all the tools from any agentic CLI, understand errors from tools … web fetch and
+web search, to actually complete the task"* — exercised on the example task of
+formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.
+
+A single deterministic planner
+([`src/agentic_coding/planner.rs`](../../src/agentic_coding/planner.rs)) backs all
+three surfaces, so the loop behaves identically whichever CLI you point at the
+server:
+
+- **Chat Completions** (`opencode`, `agent`) — the assistant turn carries
+  `tool_calls` with `finish_reason: "tool_calls"`; the CLI replies with `tool`-role
+  messages.
+- **Responses** (`codex`) — the server emits a `function_call` output item; the CLI
+  replies with a `function_call_output` item.
+- **Anthropic Messages** (`claude`) — the server emits a `tool_use` content block
+  with `stop_reason: "tool_use"`; the CLI replies with a `tool_result` block on a
+  `user` message.
+
+**Strictly opt-in.** Tools are refused unless the request opts into agent mode
+*and* each requested tool passes a per-tool permission gate
+([`src/associative_package.rs`](../../src/associative_package.rs),
+`pkg_agentic_coding`). Without agent mode the server answers with a plain policy
+message and calls nothing — there is no hidden autonomous action. A non-agentic
+prompt falls through to the normal symbolic answer even when tools are advertised.
+
+**Offline reference client.** The repository ships its *own* deterministic client so
+the whole loop runs in CI without a network or an external CLI:
+
+```bash
+formal-ai agent --transcript   # runs search → fetch → write → run → final offline
+```
+
+The driver and offline corpus live in
+[`src/agentic_coding/`](../../src/agentic_coding/); the worked end-to-end loop is
+[`examples/issue_468_agentic_loop.rs`](../../examples/issue_468_agentic_loop.rs).
+External CLIs are pointed *at* this server as front-ends (the configs in §4a–§4d);
+they are never embedded in the engine. See the
+[issue #468 case study](../case-studies/issue-468/README.md) for the full design.
+
 ---
 
 ## 5. How the web UI reuses the same code

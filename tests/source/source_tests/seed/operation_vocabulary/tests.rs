@@ -20,11 +20,32 @@ fn operation_vocabulary_loads_every_canonical_operation() {
         "replace",
         "reverse_words",
         "extract_email",
+        "extract_url",
+        "extract_number",
         "count_occurrences",
         "count_unique_words",
+        "count_words",
+        "count_lines",
+        "count_characters",
         "deduplicate_lines",
         "sort_lines",
+        "sort_words",
         "path_argument",
+        "title_case",
+        "sentence_case",
+        "snake_case",
+        "kebab_case",
+        "camel_case",
+        "pascal_case",
+        "remove_punctuation",
+        "strip_empty_lines",
+        "join_lines",
+        "reverse_lines",
+        "number_lines",
+        "indent_lines",
+        "outdent_lines",
+        "comment_lines",
+        "uncomment_lines",
         "reverse_sort",
         "cancel_reverse_sort",
         "function",
@@ -135,6 +156,27 @@ fn operation_vocabulary_exposes_declared_inverse_pairs() {
         assert!(
             canonicals.contains(base),
             "{canonical} declares inverse {base}, which is not a known operation"
+        );
+    }
+}
+
+#[test]
+fn operation_vocabulary_reverse_sort_matches_invert_phrasings() {
+    // Issue #427: "Сделай инверсию сортировки." (make the inversion of the sort)
+    // must be recognized as a descending sort across every supported language.
+    let vocabulary = operation_vocabulary();
+    for prompt in [
+        "сделай инверсию сортировки",
+        "инвертируй сортировку",
+        "invert the sort",
+        "invert sort",
+        "उलट क्रम में करो",
+        "反转排序",
+        "颠倒排序",
+    ] {
+        assert!(
+            vocabulary.matches("reverse_sort", &prompt.to_lowercase()),
+            "reverse_sort must match {prompt:?}"
         );
     }
 }

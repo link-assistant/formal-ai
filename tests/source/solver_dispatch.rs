@@ -13,16 +13,17 @@ use crate::solver_handler_docs::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_reasoning,
-    try_capabilities, try_clarification, try_compound_interest, try_concept_lookup,
-    try_conversation_memory, try_conversation_topic_request, try_coreference_request,
-    try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
-    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_numeric_list, try_numeric_list_with_history, try_opinion_question,
-    try_program_synthesis, try_proof_request, try_proof_request_with_config,
-    try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
-    try_shell_refusal, try_software_project_followup, try_software_project_request,
-    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
+    try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
+    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
+    try_coreference_request, try_definition_merge, try_execution_failure, try_fact_lookup,
+    try_http_fetch, try_ill_formed, try_installation_conversion, try_javascript_execution,
+    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
+    try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
+    try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
+    try_roleplay_request, try_shell_refusal, try_software_project_followup,
+    try_software_project_request, try_source_conflict, try_source_refresh,
+    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
     try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
     SelfAwarenessRuntime,
 };
@@ -94,6 +95,7 @@ pub fn try_contextual_override(
             try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
         }
         "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
+        "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, |answer| {
@@ -134,6 +136,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("translation", try_translation),
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
+    ("calendar_create_event", try_calendar_create_event),
     ("compound_interest", try_compound_interest),
     // Issue #395: a concrete "<operation> these numbers in <language>, give me
     // the code and the result" request must produce generated code plus the
@@ -155,6 +158,10 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // failure trace instead of being silently transformed into a passing
     // hello-world snippet.
     ("execution_failure", try_execution_failure),
+    // Issue #423: README install/deploy guide <-> shell/PowerShell conversion
+    // is more specific than a generic "write script" request. It extracts an
+    // ordered install-command IR, then renders the requested target surfaces.
+    ("installation_conversion", try_installation_conversion),
     ("write_script", try_write_script),
     ("program_synthesis", try_program_synthesis),
     ("software_project", try_software_project_request),

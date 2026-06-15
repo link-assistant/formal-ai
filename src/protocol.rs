@@ -1,6 +1,9 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::associative_package::{default_package_store, PackagePermissionDecision};
 use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
 use crate::solver::{ConversationTurn, UniversalSolver};
@@ -89,10 +92,71 @@ impl ChatCompletionRequest {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct ChatMessage {
     pub role: String,
+    #[serde(default)]
     pub content: MessageContent,
+    /// Tool calls an `assistant` turn is requesting (OpenAI `tool_calls`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tool_calls: Vec<ToolCall>,
+    /// For a `tool` role message: the id of the tool call this result answers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
+    /// For a `tool` role message: the name of the tool that produced the result.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+impl ChatMessage {
+    /// A message with the given `role` and plain-text `content`.
+    #[must_use]
+    pub fn new(role: impl Into<String>, content: impl Into<String>) -> Self {
+        Self {
+            role: role.into(),
+            content: MessageContent::Text(content.into()),
+            ..Self::default()
+        }
+    }
+
+    /// A `user` message carrying `text`.
+    #[must_use]
+    pub fn user(text: impl Into<String>) -> Self {
+        Self::new("user", text)
+    }
+
+    /// An `assistant` message carrying `text`.
+    #[must_use]
+    pub fn assistant(text: impl Into<String>) -> Self {
+        Self::new("assistant", text)
+    }
+
+    /// An `assistant` message requesting `tool_calls` (no textual content).
+    #[must_use]
+    pub fn assistant_tool_calls(tool_calls: Vec<ToolCall>) -> Self {
+        Self {
+            role: String::from("assistant"),
+            tool_calls,
+            ..Self::default()
+        }
+    }
+
+    /// A `tool` message carrying the `result` for the call `tool_call_id` made
+    /// against the tool `name`.
+    #[must_use]
+    pub fn tool_result(
+        tool_call_id: impl Into<String>,
+        name: impl Into<String>,
+        result: impl Into<String>,
+    ) -> Self {
+        Self {
+            role: String::from("tool"),
+            content: MessageContent::Text(result.into()),
+            tool_call_id: Some(tool_call_id.into()),
+            name: Some(name.into()),
+            ..Self::default()
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -100,6 +164,12 @@ pub struct ChatMessage {
 pub enum MessageContent {
     Text(String),
     Parts(Vec<MessageContentPart>),
+}
+
+impl Default for MessageContent {
+    fn default() -> Self {
+        Self::Text(String::new())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -122,6 +192,46 @@ impl MessageContent {
                 .join("\n"),
         }
     }
+}
+
+/// A tool call an assistant turn is requesting (OpenAI `tool_calls` shape).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ToolCall {
+    pub id: String,
+    #[serde(rename = "type", default = "tool_call_kind")]
+    pub kind: String,
+    pub function: FunctionCall,
+}
+
+fn tool_call_kind() -> String {
+    String::from("function")
+}
+
+impl ToolCall {
+    /// A `function` tool call with the given `id`, function `name` and
+    /// JSON-encoded `arguments`.
+    #[must_use]
+    pub fn function(
+        id: impl Into<String>,
+        name: impl Into<String>,
+        arguments: impl Into<String>,
+    ) -> Self {
+        Self {
+            id: id.into(),
+            kind: tool_call_kind(),
+            function: FunctionCall {
+                name: name.into(),
+                arguments: arguments.into(),
+            },
+        }
+    }
+}
+
+/// The function `name` plus JSON-encoded `arguments` of a [`ToolCall`].
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct FunctionCall {
+    pub name: String,
+    pub arguments: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -148,7 +258,7 @@ pub struct TokenUsage {
     pub total_tokens: u32,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 pub struct ResponsesRequest {
     #[serde(default)]
     pub model: Option<String>,
@@ -160,6 +270,139 @@ pub struct ResponsesRequest {
     pub temperature: Option<f32>,
     #[serde(default)]
     pub stream: bool,
+    /// Function tools advertised on the Responses surface (`{type:"function",
+    /// name, parameters}` — flatter than Chat Completions). Issue #468.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tools: Vec<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_choice: Option<Value>,
+}
+
+impl ResponsesRequest {
+    /// Translate the Responses envelope into the shared [`ChatCompletionRequest`]
+    /// so the agentic planner (issue #468) drives `/v1/responses` exactly as it
+    /// drives `/v1/chat/completions`. `instructions` becomes a leading `system`
+    /// message; `input` items become chat messages, with `function_call` items
+    /// mapped to assistant `tool_calls` and `function_call_output` items to `tool`
+    /// results (so the planner can track progress); advertised `tools` /
+    /// `tool_choice` pass straight through (the planner reads names from either the
+    /// flat Responses shape or the nested Chat shape).
+    #[must_use]
+    pub fn to_chat_completion_request(&self) -> ChatCompletionRequest {
+        let mut messages = Vec::new();
+        if let Some(instructions) = self.instructions.as_deref() {
+            if !instructions.trim().is_empty() {
+                messages.push(ChatMessage::new("system", instructions.trim()));
+            }
+        }
+        let mut tool_names_by_id: HashMap<String, String> = HashMap::new();
+        append_response_input(&self.input, &mut messages, &mut tool_names_by_id);
+        ChatCompletionRequest {
+            model: self.model.clone(),
+            messages,
+            temperature: self.temperature,
+            stream: false,
+            tools: self.tools.clone(),
+            tool_choice: self.tool_choice.clone(),
+            functions: Vec::new(),
+            function_call: None,
+        }
+    }
+}
+
+/// Append the Responses `input` (a bare string, a single item, or an array of
+/// items) to the chat `messages` being built, threading a `call_id → tool name`
+/// map so each `function_call_output` can be labelled with the tool that produced
+/// it (the planner resolves capabilities by message `name` first).
+fn append_response_input(
+    input: &Value,
+    out: &mut Vec<ChatMessage>,
+    tool_names_by_id: &mut HashMap<String, String>,
+) {
+    match input {
+        Value::String(text) => {
+            if !text.trim().is_empty() {
+                out.push(ChatMessage::user(text.clone()));
+            }
+        }
+        Value::Array(items) => {
+            for item in items {
+                append_response_item(item, out, tool_names_by_id);
+            }
+        }
+        Value::Object(_) => append_response_item(input, out, tool_names_by_id),
+        _ => {}
+    }
+}
+
+/// Append a single Responses `input` item — a message, a `function_call`, or a
+/// `function_call_output` — to `out` as the equivalent chat message(s).
+fn append_response_item(
+    item: &Value,
+    out: &mut Vec<ChatMessage>,
+    tool_names_by_id: &mut HashMap<String, String>,
+) {
+    let item_type = item
+        .get("type")
+        .and_then(Value::as_str)
+        .unwrap_or("message");
+    match item_type {
+        "function_call" => {
+            let call_id = item
+                .get("call_id")
+                .or_else(|| item.get("id"))
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_owned();
+            let name = item
+                .get("name")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_owned();
+            let arguments = item
+                .get("arguments")
+                .and_then(Value::as_str)
+                .unwrap_or("{}")
+                .to_owned();
+            if !name.is_empty() {
+                tool_names_by_id.insert(call_id.clone(), name.clone());
+            }
+            out.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                call_id, name, arguments,
+            )]));
+        }
+        "function_call_output" => {
+            let call_id = item
+                .get("call_id")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_owned();
+            let output = item
+                .get("output")
+                .map_or_else(String::new, value_to_prompt_text);
+            let name = tool_names_by_id.get(&call_id).cloned();
+            out.push(ChatMessage {
+                role: String::from("tool"),
+                content: MessageContent::Text(output),
+                tool_call_id: Some(call_id),
+                name,
+                ..ChatMessage::default()
+            });
+        }
+        _ => {
+            let role = item
+                .get("role")
+                .and_then(Value::as_str)
+                .unwrap_or("user")
+                .to_owned();
+            let content = item
+                .get("content")
+                .map_or_else(String::new, value_to_prompt_text);
+            if !content.trim().is_empty() {
+                out.push(ChatMessage::new(role, content));
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -169,10 +412,70 @@ pub struct ResponseObject {
     pub created_at: u64,
     pub status: String,
     pub model: String,
-    pub output: Vec<ResponseOutputMessage>,
+    pub output: Vec<ResponseOutputItem>,
     pub usage: ResponseUsage,
     #[serde(default)]
     pub evidence_links: Vec<String>,
+}
+
+impl ResponseObject {
+    /// The assistant message items in `output` (text), skipping any tool calls.
+    #[must_use]
+    pub fn output_messages(&self) -> Vec<&ResponseOutputMessage> {
+        self.output
+            .iter()
+            .filter_map(|item| match item {
+                ResponseOutputItem::Message(message) => Some(message),
+                ResponseOutputItem::FunctionCall(_) => None,
+            })
+            .collect()
+    }
+
+    /// The function tool calls this response is requesting (issue #468 agentic
+    /// loop), if any. Non-empty exactly when the agentic planner emitted a step.
+    #[must_use]
+    pub fn function_calls(&self) -> Vec<&ResponseFunctionToolCall> {
+        self.output
+            .iter()
+            .filter_map(|item| match item {
+                ResponseOutputItem::FunctionCall(call) => Some(call),
+                ResponseOutputItem::Message(_) => None,
+            })
+            .collect()
+    }
+}
+
+/// One item in a Responses `output` array: an assistant message or a tool call.
+///
+/// A `FunctionCall` is a tool the client must execute (issue #468). Serialized
+/// untagged so each item keeps its native OpenAI shape — a message carries
+/// `type:"message"` and a call carries `type:"function_call"`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ResponseOutputItem {
+    /// A function tool call (`type:"function_call"`).
+    FunctionCall(ResponseFunctionToolCall),
+    /// An assistant message (`type:"message"`).
+    Message(ResponseOutputMessage),
+}
+
+/// A function tool call emitted on the Responses surface (`type:"function_call"`).
+///
+/// It mirrors the Chat Completions `tool_calls` shape so an agentic CLI can execute
+/// it and feed the result back as a `function_call_output` item.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ResponseFunctionToolCall {
+    pub id: String,
+    #[serde(rename = "type", default = "function_call_kind")]
+    pub kind: String,
+    pub call_id: String,
+    pub name: String,
+    pub arguments: String,
+    pub status: String,
+}
+
+fn function_call_kind() -> String {
+    String::from("function_call")
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -209,18 +512,120 @@ pub fn create_chat_completion_with_solver(
     solver: &UniversalSolver,
 ) -> ChatCompletion {
     let (prompt, history) = chat_prompt_and_history(&request.messages);
-    let symbolic_answer = if request.requests_tool_execution() {
-        if !solver.config.agent_mode {
-            tool_call_refusal_answer()
-        } else if let Some(denial) = first_tool_permission_denial(request) {
-            tool_permission_refusal_answer(&denial)
-        } else {
-            solver.solve_with_history(&prompt, &history)
+
+    match agentic_outcome(request, solver.config.agent_mode) {
+        AgenticOutcome::Refused(answer) => {
+            return chat_completion_from_symbolic(request, &prompt, answer)
         }
-    } else {
-        solver.solve_with_history(&prompt, &history)
-    };
+        AgenticOutcome::Planned(plan) => return chat_completion_from_plan(request, &prompt, plan),
+        AgenticOutcome::Fallthrough => {}
+    }
+
+    let symbolic_answer = solver.solve_with_history(&prompt, &history);
     chat_completion_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+/// The deterministic agentic decision for a tool-bearing request. Shared by every
+/// OpenAI-shaped surface — `/v1/chat/completions`, `/v1/messages`, and
+/// `/v1/responses` — so the issue #468 agentic loop behaves identically across all
+/// three. Pure and deterministic: same `request` + `agent_mode` ⇒ same outcome.
+enum AgenticOutcome {
+    /// Tools were requested but refused — either agent mode is off (the real
+    /// guard) or a requested tool failed the per-tool permission gate.
+    Refused(SymbolicAnswer),
+    /// The planner produced the next deterministic step (`tool_calls` or final).
+    Planned(AgenticPlan),
+    /// Not an agentic request — no tools were requested, or the task is not one
+    /// the planner recognises — so the caller should answer symbolically.
+    Fallthrough,
+}
+
+/// Decide the [`AgenticOutcome`] for `request` under the given `agent_mode`,
+/// applying the two gates (agent mode, then per-tool permissions) before letting
+/// [`plan_chat_step`] drive the loop. An unrecognised task yields
+/// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
+fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
+    if !request.requests_tool_execution() {
+        return AgenticOutcome::Fallthrough;
+    }
+    if !agent_mode {
+        return AgenticOutcome::Refused(tool_call_refusal_answer());
+    }
+    if let Some(denial) = first_tool_permission_denial(request) {
+        return AgenticOutcome::Refused(tool_permission_refusal_answer(&denial));
+    }
+    // Agent mode with tools permitted: the deterministic agentic planner drives
+    // the loop, emitting `tool_calls` or a final answer. An unrecognised task
+    // yields `None` and falls through to the solver.
+    let owned_names = request.requested_tool_names();
+    let tool_names: Vec<&str> = owned_names.iter().map(String::as_str).collect();
+    plan_chat_step(&request.messages, &tool_names)
+        .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned)
+}
+
+/// Build a chat completion from a deterministic [`AgenticPlan`]. A
+/// [`AgenticPlan::ToolCalls`] plan emits an assistant turn carrying `tool_calls`
+/// with `finish_reason: "tool_calls"`; a [`AgenticPlan::Final`] plan emits plain
+/// assistant text with `finish_reason: "stop"`.
+fn chat_completion_from_plan(
+    request: &ChatCompletionRequest,
+    prompt: &str,
+    plan: AgenticPlan,
+) -> ChatCompletion {
+    let model = request
+        .model
+        .clone()
+        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let prompt_tokens = estimate_tokens(prompt);
+
+    let (message, finish_reason, completion_tokens) = match plan {
+        AgenticPlan::ToolCalls(calls) => {
+            let completion_tokens = calls
+                .iter()
+                .map(|call| {
+                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments))
+                })
+                .sum();
+            let tool_calls = calls
+                .into_iter()
+                .enumerate()
+                .map(|(index, call)| {
+                    let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
+                    ToolCall::function(stable_id("call", &seed), call.tool, call.arguments)
+                })
+                .collect();
+            (
+                ChatMessage::assistant_tool_calls(tool_calls),
+                String::from("tool_calls"),
+                completion_tokens,
+            )
+        }
+        AgenticPlan::Final(answer) => {
+            let completion_tokens = estimate_tokens(&answer);
+            (
+                ChatMessage::assistant(answer),
+                String::from("stop"),
+                completion_tokens,
+            )
+        }
+    };
+
+    ChatCompletion {
+        id: stable_id("chatcmpl", prompt),
+        object: String::from("chat.completion"),
+        created: 0,
+        model,
+        choices: vec![ChatChoice {
+            index: 0,
+            message,
+            finish_reason,
+        }],
+        usage: TokenUsage {
+            prompt_tokens,
+            completion_tokens,
+            total_tokens: prompt_tokens.saturating_add(completion_tokens),
+        },
+    }
 }
 
 fn chat_completion_from_symbolic(
@@ -242,10 +647,7 @@ fn chat_completion_from_symbolic(
         model,
         choices: vec![ChatChoice {
             index: 0,
-            message: ChatMessage {
-                role: String::from("assistant"),
-                content: MessageContent::Text(symbolic_answer.answer),
-            },
+            message: ChatMessage::assistant(symbolic_answer.answer),
             finish_reason: String::from("stop"),
         }],
         usage: TokenUsage {
@@ -269,8 +671,80 @@ pub fn create_response_with_solver(
     solver: &UniversalSolver,
 ) -> ResponseObject {
     let prompt = response_prompt(request);
+    let chat_request = request.to_chat_completion_request();
+    match agentic_outcome(&chat_request, solver.config.agent_mode) {
+        AgenticOutcome::Refused(answer) => return response_from_symbolic(request, &prompt, answer),
+        AgenticOutcome::Planned(plan) => return response_from_plan(request, &prompt, plan),
+        AgenticOutcome::Fallthrough => {}
+    }
     let symbolic_answer = solver.solve(&prompt);
     response_from_symbolic(request, &prompt, symbolic_answer)
+}
+
+/// Build a Responses object from a deterministic [`AgenticPlan`] — the Responses
+/// mirror of [`chat_completion_from_plan`]. A [`AgenticPlan::ToolCalls`] plan emits
+/// `function_call` output items (the same stable `call` ids the chat surface uses);
+/// a [`AgenticPlan::Final`] plan emits a single assistant message.
+fn response_from_plan(
+    request: &ResponsesRequest,
+    prompt: &str,
+    plan: AgenticPlan,
+) -> ResponseObject {
+    let model = request
+        .model
+        .clone()
+        .unwrap_or_else(|| String::from(DEFAULT_MODEL));
+    let input_tokens = estimate_tokens(prompt);
+
+    let (output, output_tokens) = match plan {
+        AgenticPlan::ToolCalls(calls) => {
+            let mut items = Vec::with_capacity(calls.len());
+            let mut output_tokens = 0u32;
+            for (index, call) in calls.into_iter().enumerate() {
+                output_tokens = output_tokens.saturating_add(
+                    estimate_tokens(&call.tool).saturating_add(estimate_tokens(&call.arguments)),
+                );
+                let seed = format!("{prompt}|{index}|{}|{}", call.tool, call.arguments);
+                items.push(ResponseOutputItem::FunctionCall(ResponseFunctionToolCall {
+                    id: stable_id("fc", &seed),
+                    kind: function_call_kind(),
+                    call_id: stable_id("call", &seed),
+                    name: call.tool,
+                    arguments: call.arguments,
+                    status: String::from("completed"),
+                }));
+            }
+            (items, output_tokens)
+        }
+        AgenticPlan::Final(answer) => {
+            let output_tokens = estimate_tokens(&answer);
+            let message = ResponseOutputItem::Message(ResponseOutputMessage {
+                id: stable_id("msg", &answer),
+                kind: String::from("message"),
+                role: String::from("assistant"),
+                content: vec![ResponseOutputContent {
+                    kind: String::from("output_text"),
+                    text: answer,
+                }],
+            });
+            (vec![message], output_tokens)
+        }
+    };
+
+    ResponseObject {
+        id: stable_id("resp", prompt),
+        object: String::from("response"),
+        created_at: 0,
+        status: String::from("completed"),
+        model,
+        output,
+        usage: ResponseUsage {
+            input_tokens,
+            output_tokens,
+            total_tokens: input_tokens.saturating_add(output_tokens),
+        },
+        evidence_links: Vec::new(),
+    }
 }
 
 fn response_from_symbolic(
@@ -291,7 +765,7 @@ fn response_from_symbolic(
         created_at: 0,
         status: String::from("completed"),
         model,
-        output: vec![ResponseOutputMessage {
+        output: vec![ResponseOutputItem::Message(ResponseOutputMessage {
             id: stable_id("msg", &symbolic_answer.answer),
             kind: String::from("message"),
             role: String::from("assistant"),
@@ -299,7 +773,7 @@ fn response_from_symbolic(
                 kind: String::from("output_text"),
                 text: symbolic_answer.answer,
             }],
-        }],
+        })],
         usage: ResponseUsage {
             input_tokens,
             output_tokens,

@@ -10,21 +10,24 @@ use crate::event_log::EventLog;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::ConversationTurn;
 use crate::solver_handler_docs::try_docs_method_explanation;
-use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
+use crate::solver_handler_how::{
+    try_how_it_works, try_how_to_procedure, try_procedural_how_to_followup,
+};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{
-    try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_reasoning,
-    try_capabilities, try_clarification, try_compound_interest, try_concept_lookup,
-    try_conversation_memory, try_conversation_topic_request, try_coreference_request,
-    try_definition_merge, try_execution_failure, try_fact_lookup, try_http_fetch, try_ill_formed,
+    try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
+    try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
+    try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
+    try_coreference_request, try_definition_merge, try_document_request, try_execution_failure,
+    try_fact_lookup, try_http_fetch, try_ill_formed, try_installation_conversion,
     try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
-    try_network_query, try_numeric_list, try_numeric_list_with_history, try_opinion_question,
-    try_program_synthesis, try_proof_request, try_proof_request_with_config,
+    try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
+    try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
     try_shell_refusal, try_software_project_followup, try_software_project_request,
     try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
-    SelfAwarenessRuntime,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -94,6 +97,7 @@ pub fn try_contextual_override(
             try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
         }
         "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
+        "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         _ => return ContextualOutcome::NotHandled,
     };
     answer.map_or(ContextualOutcome::Skip, |answer| {
@@ -116,6 +120,13 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("research_comparison_table", try_research_comparison_table),
     ("docs_method_explanation", try_docs_method_explanation),
     ("procedural_how_to", try_how_to_procedure),
+    // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
+    // give me specific instructions?") carries no "how to" lead-in of its own.
+    // It must rebind to the procedure recovered from the prior turn rather than
+    // fall to the unknown opener, so it sits right after the procedural handler
+    // and above the general lookups. It only fires when the previous user turn
+    // was itself a how-to request, so unrelated prompts are untouched.
+    ("procedural_how_to_followup", try_procedural_how_to_followup),
     ("conversation_memory", try_conversation_memory),
     // Issue #341: a decomposed agent step like "test it by scraping
     // wikipedia.org and show me the top 10 most frequent words" must stay
@@ -134,6 +145,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("translation", try_translation),
     ("capabilities", try_capabilities),
     ("calendar_reasoning", try_calendar_reasoning),
+    ("calendar_create_event", try_calendar_create_event),
     ("compound_interest", try_compound_interest),
     // Issue #395: a concrete "<operation> these numbers in <language>, give me
     // the code and the result" request must produce generated code plus the
@@ -142,6 +154,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // reductions. It runs before `arithmetic` (which would otherwise claim the
     // numeric prompt) and before the generic, result-less `algorithm` handler.
     ("numeric_list", try_numeric_list),
+    ("number_constraint_reasoning", try_number_riddle),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
     ("definition_merge", try_definition_merge),
@@ -155,8 +168,17 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // failure trace instead of being silently transformed into a passing
     // hello-world snippet.
     ("execution_failure", try_execution_failure),
+    // Issue #423: README install/deploy guide <-> shell/PowerShell conversion
+    // is more specific than a generic "write script" request. It extracts an
+    // ordered install-command IR, then renders the requested target surfaces.
+    ("installation_conversion", try_installation_conversion),
     ("write_script", try_write_script),
     ("program_synthesis", try_program_synthesis),
+    // Issue #425: "make me a PDF / document / report with <subject>" is a
+    // document-generation task, not a software build. It runs before
+    // `software_project` so a document request is not mistaken for code, and it
+    // converts the would-be unknown response into the universal-algorithm plan.
+    ("document_generation_plan", try_document_request),
     ("software_project", try_software_project_request),
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),

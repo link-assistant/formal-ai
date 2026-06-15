@@ -51,6 +51,8 @@ const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
 const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
 const FALLBACK_COURTESY_RESPONSE_ANSWER =
   "Glad to hear it. What would you like to do next?";
+const FALLBACK_ASSISTANT_FREE_TIME_ANSWER =
+  "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.";
 const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
   "Glad to hear it.",
   "You're welcome.",
@@ -87,6 +89,12 @@ let MULTILINGUAL_ANSWERS = {
       variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
       acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
       followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    },
+  },
+  assistant_free_time: {
+    en: {
+      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
     },
   },
   identity: {
@@ -309,6 +317,31 @@ let INTENT_ROUTING = {
       combos: [],
     },
     {
+      id: "intent_assistant_free_time",
+      slug: "assistant_free_time",
+      responseLink: "response:assistant_free_time",
+      keywords: [],
+      phrases: [
+        "what do you do in your free time",
+        "what do you do in free time",
+        "how do you spend your free time",
+        "what do you do when you are not working",
+        "что делаешь в свободное время",
+        "что ты делаешь в свободное время",
+        "чем занимаешься в свободное время",
+        "чем ты занимаешься в свободное время",
+        "что делаешь когда свободен",
+        "खाली समय में क्या करते हो",
+        "आप खाली समय में क्या करते हैं",
+        "फुर्सत में क्या करते हो",
+        "你空闲时间做什么",
+        "你有空的时候做什么",
+        "你业余时间做什么",
+      ],
+      tokens: [],
+      combos: [],
+    },
+    {
       id: "intent_test_status",
       slug: "test_status",
       responseLink: "response:test_status",
@@ -474,6 +507,12 @@ function fallbackEntry(intent) {
       variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
       acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
       followUps: FALLBACK_COURTESY_FOLLOW_UPS,
+    };
+  }
+  if (intent === "assistant_free_time") {
+    return {
+      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
+      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
     };
   }
   if (intent === "identity") {
@@ -1959,78 +1998,142 @@ function formatArithmeticResult(value) {
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
 
+function escapeCalculationMarkdown(value) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/\*/g, "\\*")
+    .replace(/_/g, "\\_");
+}
+
+const EQUATION_EPSILON = 1e-10;
+
+function equationNearlyZero(value) {
+  return Math.abs(value) <= EQUATION_EPSILON;
+}
+
+function isEquationUnknownPlaceholder(character) {
+  return character === "?" || character === "*";
+}
+
+function parseEquationNumber(input, state, constant) {
+  const start = state.position;
+  let hasDigit = false;
+  let hasDot = false;
+  while (/[0-9.]/.test(input[state.position] || "")) {
+    if (input[state.position] === ".") {
+      if (hasDot) break;
+      hasDot = true;
+    } else {
+      hasDigit = true;
+    }
+    state.position += 1;
+  }
+  if (!hasDigit) throw new Error("expression could not be parsed");
+  const value = Number(input.slice(start, state.position));
+  if (!Number.isFinite(value)) throw new Error("expression could not be parsed");
+  return constant(value);
+}
+
+function parseEquationVariable(input, state, onName) {
+  const start = state.position;
+  if (isEquationUnknownPlaceholder(input[state.position] || "")) {
+    state.position += 1;
+  } else {
+    while (/[\p{L}_]/u.test(input[state.position] || "")) {
+      state.position += 1;
+    }
+  }
+  const name = input.slice(start, state.position);
+  if (!name) throw new Error("expression could not be parsed");
+  onName(name);
+  return name;
+}
+
+function linearConstant(value) {
+  return { terms: Object.create(null), constant: value };
+}
+
+function linearVariable(name) {
+  const terms = Object.create(null);
+  terms[name] = 1;
+  return { terms, constant: 0 };
+}
+
+function linearEntries(value) {
+  return Object.entries(value.terms).filter((entry) => !equationNearlyZero(entry[1]));
+}
+
+function linearHasVariable(value) {
+  return linearEntries(value).length > 0;
+}
+
+function linearAdd(left, right) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(left)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  for (const [name, coefficient] of linearEntries(right)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  return { terms, constant: left.constant + right.constant };
+}
+
+function linearSubtract(left, right) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(left)) {
+    terms[name] = (terms[name] || 0) + coefficient;
+  }
+  for (const [name, coefficient] of linearEntries(right)) {
+    terms[name] = (terms[name] || 0) - coefficient;
+  }
+  return { terms, constant: left.constant - right.constant };
+}
+
+function linearScale(value, scalar) {
+  const terms = Object.create(null);
+  for (const [name, coefficient] of linearEntries(value)) {
+    terms[name] = coefficient * scalar;
+  }
+  return { terms, constant: value.constant * scalar };
+}
+
+function linearMultiply(left, right) {
+  if (linearHasVariable(left) && linearHasVariable(right)) {
+    throw new Error("non-linear equation");
+  }
+  if (linearHasVariable(left)) return linearScale(left, right.constant);
+  if (linearHasVariable(right)) return linearScale(right, left.constant);
+  return linearConstant(left.constant * right.constant);
+}
+
+function linearDivide(left, right) {
+  if (linearHasVariable(right)) throw new Error("variable denominator");
+  if (equationNearlyZero(right.constant)) throw new Error("division by zero");
+  return linearScale(left, 1 / right.constant);
+}
+
 function parseLinearExpression(input) {
-  let position = 0;
-  let variable = null;
+  const state = { position: 0 };
+  const variables = [];
 
   function peek() {
-    return input[position] || "";
+    return input[state.position] || "";
   }
 
   function skipWhitespace() {
-    while (/\s/.test(peek())) position += 1;
+    while (/\s/.test(peek())) state.position += 1;
   }
 
   function consume(expected) {
     if (peek() === expected) {
-      position += 1;
+      state.position += 1;
       return true;
     }
     return false;
   }
 
-  function constant(value) {
-    return { coefficient: 0, constant: value };
-  }
-
-  function variableValue() {
-    return { coefficient: 1, constant: 0 };
-  }
-
-  function hasVariable(value) {
-    return Math.abs(value.coefficient) > Number.EPSILON;
-  }
-
-  function add(left, right) {
-    return {
-      coefficient: left.coefficient + right.coefficient,
-      constant: left.constant + right.constant,
-    };
-  }
-
-  function subtract(left, right) {
-    return {
-      coefficient: left.coefficient - right.coefficient,
-      constant: left.constant - right.constant,
-    };
-  }
-
-  function multiply(left, right) {
-    if (hasVariable(left) && hasVariable(right)) {
-      throw new Error("non-linear equation");
-    }
-    if (hasVariable(left)) {
-      return {
-        coefficient: left.coefficient * right.constant,
-        constant: left.constant * right.constant,
-      };
-    }
-    if (hasVariable(right)) {
-      return {
-        coefficient: right.coefficient * left.constant,
-        constant: right.constant * left.constant,
-      };
-    }
-    return constant(left.constant * right.constant);
-  }
-
-  function divide(left, right) {
-    if (hasVariable(right)) throw new Error("variable denominator");
-    if (Math.abs(right.constant) <= Number.EPSILON) throw new Error("division by zero");
-    return {
-      coefficient: left.coefficient / right.constant,
-      constant: left.constant / right.constant,
-    };
+  function rememberVariable(name) {
+    if (!variables.includes(name)) variables.push(name);
   }
 
   function parseExpression() {
@@ -2038,9 +2141,9 @@ function parseLinearExpression(input) {
     while (true) {
       skipWhitespace();
       if (consume("+")) {
-        value = add(value, parseTerm());
+        value = linearAdd(value, parseTerm());
       } else if (consume("-") || consume("−")) {
-        value = subtract(value, parseTerm());
+        value = linearSubtract(value, parseTerm());
       } else {
         return value;
       }
@@ -2052,9 +2155,9 @@ function parseLinearExpression(input) {
     while (true) {
       skipWhitespace();
       if (consume("*") || consume("×") || consume("·")) {
-        value = multiply(value, parseFactor());
+        value = linearMultiply(value, parseFactor());
       } else if (consume("/") || consume("÷")) {
-        value = divide(value, parseFactor());
+        value = linearDivide(value, parseFactor());
       } else {
         return value;
       }
@@ -2064,54 +2167,44 @@ function parseLinearExpression(input) {
   function parseFactor() {
     skipWhitespace();
     if (consume("+")) return parseFactor();
-    if (consume("-") || consume("−")) {
-      const value = parseFactor();
-      return { coefficient: -value.coefficient, constant: -value.constant };
-    }
+    if (consume("-") || consume("−")) return linearScale(parseFactor(), -1);
     if (consume("(")) {
       const value = parseExpression();
       skipWhitespace();
       if (!consume(")")) throw new Error("unbalanced parentheses");
       return value;
     }
-    if (/[0-9.]/.test(peek())) return parseNumber();
-    if (/\p{L}/u.test(peek())) return parseVariable();
-    throw new Error("expression could not be parsed");
-  }
-
-  function parseNumber() {
-    const start = position;
-    let hasDigit = false;
-    let hasDot = false;
-    while (/[0-9.]/.test(peek())) {
-      if (peek() === ".") {
-        if (hasDot) break;
-        hasDot = true;
-      } else {
-        hasDigit = true;
-      }
-      position += 1;
+    if (/[0-9.]/.test(peek())) return parseEquationNumber(input, state, linearConstant);
+    if (/\p{L}/u.test(peek()) || isEquationUnknownPlaceholder(peek())) {
+      return linearVariable(parseEquationVariable(input, state, rememberVariable));
     }
-    if (!hasDigit) throw new Error("expression could not be parsed");
-    const value = Number(input.slice(start, position));
-    if (!Number.isFinite(value)) throw new Error("expression could not be parsed");
-    return constant(value);
-  }
-
-  function parseVariable() {
-    const start = position;
-    while (/[\p{L}_]/u.test(peek())) position += 1;
-    const name = input.slice(start, position);
-    if (!name) throw new Error("expression could not be parsed");
-    if (variable && variable !== name) throw new Error("multiple variables");
-    variable = name;
-    return variableValue();
+    throw new Error("expression could not be parsed");
   }
 
   const value = parseExpression();
   skipWhitespace();
-  if (position !== input.length) throw new Error("expression could not be parsed");
-  return { value, variable };
+  if (state.position !== input.length) throw new Error("expression could not be parsed");
+  return { value, variables };
+}
+
+function formatLinearSymbolicSolution(constant, terms) {
+  const parts = [];
+  if (!equationNearlyZero(constant)) {
+    parts.push(formatArithmeticResult(constant));
+  }
+  for (const [variable, coefficient] of terms) {
+    if (equationNearlyZero(coefficient)) continue;
+    const absolute = Math.abs(coefficient);
+    const body = equationNearlyZero(absolute - 1)
+      ? variable
+      : `${formatArithmeticResult(absolute)}*${variable}`;
+    if (parts.length === 0) {
+      parts.push(coefficient < 0 ? `-${body}` : body);
+    } else {
+      parts.push(`${coefficient < 0 ? "-" : "+"} ${body}`);
+    }
+  }
+  return parts.length > 0 ? parts.join(" ") : "0";
 }
 
 function solveLinearEquation(expression) {
@@ -2119,16 +2212,264 @@ function solveLinearEquation(expression) {
   if (parts.length !== 2) throw new Error("expression could not be parsed");
   const left = parseLinearExpression(parts[0]);
   const right = parseLinearExpression(parts[1]);
+  const variableOrder = left.variables.concat(
+    right.variables.filter((name) => !left.variables.includes(name)),
+  );
+  const combined = linearSubtract(left.value, right.value);
+  const activeVariables = variableOrder.filter((name) =>
+    !equationNearlyZero(combined.terms[name] || 0),
+  );
+  const variable =
+    activeVariables.find((name) => isEquationUnknownPlaceholder(name)) ||
+    activeVariables[0];
+  if (!variable) throw new Error("expression could not be parsed");
+  const coefficient = combined.terms[variable] || 0;
+  if (equationNearlyZero(coefficient)) throw new Error("expression could not be parsed");
+
+  const constant = -combined.constant / coefficient;
+  const symbolicTerms = [];
+  for (const name of activeVariables) {
+    if (name === variable) continue;
+    symbolicTerms.push([name, -(combined.terms[name] || 0) / coefficient]);
+  }
+  const hasSymbolicTerms = symbolicTerms.some((entry) => !equationNearlyZero(entry[1]));
+  const rendered = hasSymbolicTerms
+    ? formatLinearSymbolicSolution(constant, symbolicTerms)
+    : formatArithmeticResult(constant);
+  return `${variable} = ${rendered}`;
+}
+
+function polynomialConstant(value) {
+  const coefficients = Object.create(null);
+  if (!equationNearlyZero(value)) coefficients[0] = value;
+  return { coefficients };
+}
+
+function polynomialVariable() {
+  const coefficients = Object.create(null);
+  coefficients[1] = 1;
+  return { coefficients };
+}
+
+function polynomialCoefficient(poly, degree) {
+  return poly.coefficients[degree] || 0;
+}
+
+function polynomialEntries(poly) {
+  return Object.entries(poly.coefficients)
+    .map(([degree, coefficient]) => [Number(degree), coefficient])
+    .filter((entry) => !equationNearlyZero(entry[1]));
+}
+
+function polynomialDegree(poly) {
+  return polynomialEntries(poly).reduce(
+    (degree, entry) => Math.max(degree, entry[0]),
+    0,
+  );
+}
+
+function polynomialAdd(left, right) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(left)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  for (const [degree, coefficient] of polynomialEntries(right)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  return { coefficients };
+}
+
+function polynomialSubtract(left, right) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(left)) {
+    coefficients[degree] = (coefficients[degree] || 0) + coefficient;
+  }
+  for (const [degree, coefficient] of polynomialEntries(right)) {
+    coefficients[degree] = (coefficients[degree] || 0) - coefficient;
+  }
+  return { coefficients };
+}
+
+function polynomialScale(poly, scalar) {
+  const coefficients = Object.create(null);
+  for (const [degree, coefficient] of polynomialEntries(poly)) {
+    coefficients[degree] = coefficient * scalar;
+  }
+  return { coefficients };
+}
+
+function polynomialMultiply(left, right) {
+  const coefficients = Object.create(null);
+  for (const [leftDegree, leftCoefficient] of polynomialEntries(left)) {
+    for (const [rightDegree, rightCoefficient] of polynomialEntries(right)) {
+      const degree = leftDegree + rightDegree;
+      coefficients[degree] =
+        (coefficients[degree] || 0) + leftCoefficient * rightCoefficient;
+    }
+  }
+  return { coefficients };
+}
+
+function polynomialDivide(left, right) {
+  if (polynomialDegree(right) !== 0) throw new Error("variable denominator");
+  const denominator = polynomialCoefficient(right, 0);
+  if (equationNearlyZero(denominator)) throw new Error("division by zero");
+  return polynomialScale(left, 1 / denominator);
+}
+
+function polynomialPower(poly, exponent) {
+  if (
+    polynomialDegree(exponent) !== 0 ||
+    !Number.isInteger(polynomialCoefficient(exponent, 0)) ||
+    polynomialCoefficient(exponent, 0) < 0 ||
+    polynomialCoefficient(exponent, 0) > 6
+  ) {
+    throw new Error("unsupported polynomial exponent");
+  }
+  let result = polynomialConstant(1);
+  for (let i = 0; i < polynomialCoefficient(exponent, 0); i += 1) {
+    result = polynomialMultiply(result, poly);
+  }
+  return result;
+}
+
+function parsePolynomialExpression(input) {
+  const state = { position: 0 };
+  let variable = null;
+
+  function peek() {
+    return input[state.position] || "";
+  }
+
+  function skipWhitespace() {
+    while (/\s/.test(peek())) state.position += 1;
+  }
+
+  function consume(expected) {
+    if (peek() === expected) {
+      state.position += 1;
+      return true;
+    }
+    return false;
+  }
+
+  function rememberVariable(name) {
+    if (variable && variable !== name) throw new Error("multiple variables");
+    variable = name;
+  }
+
+  function parseExpression() {
+    let value = parseTerm();
+    while (true) {
+      skipWhitespace();
+      if (consume("+")) {
+        value = polynomialAdd(value, parseTerm());
+      } else if (consume("-") || consume("−")) {
+        value = polynomialSubtract(value, parseTerm());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseTerm() {
+    let value = parseUnary();
+    while (true) {
+      skipWhitespace();
+      if (consume("*") || consume("×") || consume("·")) {
+        value = polynomialMultiply(value, parseUnary());
+      } else if (consume("/") || consume("÷")) {
+        value = polynomialDivide(value, parseUnary());
+      } else {
+        return value;
+      }
+    }
+  }
+
+  function parseUnary() {
+    skipWhitespace();
+    if (consume("+")) return parseUnary();
+    if (consume("-") || consume("−")) return polynomialScale(parseUnary(), -1);
+    return parsePower();
+  }
+
+  function parsePower() {
+    let value = parsePrimary();
+    skipWhitespace();
+    if (consume("^")) {
+      value = polynomialPower(value, parseUnary());
+    }
+    return value;
+  }
+
+  function parsePrimary() {
+    skipWhitespace();
+    if (consume("(")) {
+      const value = parseExpression();
+      skipWhitespace();
+      if (!consume(")")) throw new Error("unbalanced parentheses");
+      return value;
+    }
+    if (/[0-9.]/.test(peek())) return parseEquationNumber(input, state, polynomialConstant);
+    if (/\p{L}/u.test(peek()) || isEquationUnknownPlaceholder(peek())) {
+      parseEquationVariable(input, state, rememberVariable);
+      return polynomialVariable();
+    }
+    throw new Error("expression could not be parsed");
+  }
+
+  const value = parseExpression();
+  skipWhitespace();
+  if (state.position !== input.length) throw new Error("expression could not be parsed");
+  return { value, variable };
+}
+
+function evaluatePolynomial(poly, value) {
+  return polynomialEntries(poly).reduce(
+    (total, entry) => total + entry[1] * value ** entry[0],
+    0,
+  );
+}
+
+function findPolynomialRealRoots(poly) {
+  const roots = [];
+  for (let denominator = 1; denominator <= 20; denominator += 1) {
+    for (let numerator = -200; numerator <= 200; numerator += 1) {
+      const candidate = numerator / denominator;
+      if (roots.some((root) => Math.abs(root - candidate) < 1e-8)) continue;
+      if (Math.abs(evaluatePolynomial(poly, candidate)) < 1e-8) {
+        roots.push(candidate);
+      }
+    }
+  }
+  return roots.sort((left, right) => left - right);
+}
+
+function solvePolynomialEquation(expression) {
+  const parts = String(expression).split("=");
+  if (parts.length !== 2) throw new Error("expression could not be parsed");
+  const left = parsePolynomialExpression(parts[0]);
+  const right = parsePolynomialExpression(parts[1]);
+  if (!left.variable && !right.variable) throw new Error("expression could not be parsed");
+  if (left.variable && right.variable && left.variable !== right.variable) {
+    throw new Error("expression could not be parsed");
+  }
   const variable = left.variable || right.variable;
-  if (!variable || (left.variable && right.variable && left.variable !== right.variable)) {
-    throw new Error("expression could not be parsed");
+  const combined = polynomialSubtract(left.value, right.value);
+  if (polynomialDegree(combined) < 2) throw new Error("expression could not be parsed");
+  const roots = findPolynomialRealRoots(combined);
+  if (roots.length === 0) throw new Error("expression could not be parsed");
+  return roots
+    .map((root) => `${variable} = ${formatArithmeticResult(root)}`)
+    .join(" or ");
+}
+
+function solveEquation(expression) {
+  try {
+    return solveLinearEquation(expression);
+  } catch (_linearError) {
+    return solvePolynomialEquation(expression);
   }
-  const coefficient = left.value.coefficient - right.value.coefficient;
-  if (Math.abs(coefficient) <= Number.EPSILON) {
-    throw new Error("expression could not be parsed");
-  }
-  const value = (right.value.constant - left.value.constant) / coefficient;
-  return `${variable} = ${formatArithmeticResult(value)}`;
 }
 
 function hasArithmeticWordOperator(expression) {
@@ -2558,6 +2899,48 @@ function calculatorDomainSignals() {
 }
 
 function extractArithmeticExpression(prompt) {
+  return extractArithmeticExpressionInternal(prompt, true);
+}
+
+function calculationRequestPrefixes() {
+  return wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
+    containsCjk(surface) ? surface : `${surface} `,
+  );
+}
+
+function hasEmbeddedCalculationPrefixBoundary(value, start) {
+  if (start === 0) return true;
+  const previous = Array.from(String(value || "").slice(0, start)).pop() || "";
+  return !/[\p{L}\p{N}]/u.test(previous);
+}
+
+function embeddedCalculationRequestSlices(prompt, prefixes) {
+  const text = String(prompt || "");
+  const lower = text.toLowerCase();
+  const matches = [];
+  for (const prefix of prefixes) {
+    let searchStart = 0;
+    while (searchStart < lower.length) {
+      const start = lower.indexOf(prefix, searchStart);
+      if (start === -1) break;
+      if (containsCjk(prefix) || hasEmbeddedCalculationPrefixBoundary(text, start)) {
+        matches.push({ start, length: prefix.length });
+      }
+      searchStart = start + Math.max(prefix.length, 1);
+    }
+  }
+  matches.sort((left, right) => left.start - right.start || right.length - left.length);
+  const seen = new Set();
+  return matches
+    .filter((match) => {
+      if (seen.has(match.start)) return false;
+      seen.add(match.start);
+      return true;
+    })
+    .map((match) => text.slice(match.start));
+}
+
+function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
   const interpretations = [];
@@ -2570,10 +2953,9 @@ function extractArithmeticExpression(prompt) {
   // order, and the Chinese cues are stored longest first, so a more specific
   // cue strips before a shorter one it contains. Mirrors
   // strip_calculation_wrappers in src/calculation.rs.
-  const prefixes = wordsForRole(ROLE_CALCULATION_REQUEST_CUE).map((surface) =>
-    containsCjk(surface) ? surface : `${surface} `,
-  );
+  const prefixes = calculationRequestPrefixes();
   let working = trimmed;
+  let strippedLeadingCue = false;
   let changed = true;
   while (changed) {
     changed = false;
@@ -2582,6 +2964,7 @@ function extractArithmeticExpression(prompt) {
       working = stripped.value;
       if (stripped.interpretation) interpretations.push(stripped.interpretation);
       changed = true;
+      strippedLeadingCue = true;
     }
   }
   working = working.replace(/[?.!]+$/g, "").trim();
@@ -2620,6 +3003,12 @@ function extractArithmeticExpression(prompt) {
     }
   }
   if (!working) return null;
+  if (allowEmbedded && !strippedLeadingCue) {
+    for (const slice of embeddedCalculationRequestSlices(trimmed, prefixes)) {
+      const extracted = extractArithmeticExpressionInternal(slice, false);
+      if (extracted) return extracted;
+    }
+  }
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
@@ -2650,7 +3039,7 @@ function extractArithmeticExpression(prompt) {
   if (evaluateCurrencyConversionExpression(working) !== null) {
     return extracted;
   }
-  const allowed = /^[0-9+\-*/%().=\s_×·÷−,a-zA-Z]+$/;
+  const allowed = /^[0-9+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return extracted;
 }
@@ -2763,6 +3152,10 @@ function isAssistantNamePrompt(normalized, rawPrompt) {
 
 function isGreetingPrompt(normalized, rawPrompt) {
   return matchesIntentRoute(normalized, rawPrompt, "intent_greeting");
+}
+
+function isAssistantFreeTimePrompt(normalized, rawPrompt) {
+  return matchesIntentRoute(normalized, rawPrompt, "intent_assistant_free_time");
 }
 
 function isFarewellPrompt(normalized, rawPrompt) {
@@ -3023,6 +3416,7 @@ function escapeBehaviorRuleValue(value) {
 function behaviorRuleRecords() {
   const greeting = answerFor("greeting", "en");
   const farewell = answerFor("farewell", "en");
+  const assistantFreeTime = answerFor("assistant_free_time", "en");
   const identity = answerFor("identity", "en");
   const assistantName = answerFor("assistant_name", "en");
   return [
@@ -3035,6 +3429,17 @@ function behaviorRuleRecords() {
       response: greeting,
       source: "data/seed/intent-routing.lino + multilingual responses",
       whenThen: `When the user says \`Hi\`, \`Hello\`, or \`Hey\` then respond with \`${greeting}\`.`,
+    },
+    {
+      id: "rule_assistant_free_time",
+      topic: "small_talk",
+      intent: "assistant_free_time",
+      label: "Assistant free-time rule",
+      matches:
+        "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      response: assistantFreeTime,
+      source: "data/seed/intent-routing.lino + multilingual responses",
+      whenThen: `When the user asks what I do in free time then respond with \`${assistantFreeTime}\`.`,
     },
     {
       id: "rule_farewell",
@@ -3110,6 +3515,7 @@ function behaviorRuleRecords() {
 
 const BEHAVIOR_RULE_TOPIC_ORDER = [
   "greetings",
+  "small_talk",
   "farewells",
   "identity",
   "assistant_name",
@@ -3130,6 +3536,13 @@ function behaviorRuleTopicLabel(topic, language) {
         ru: "Приветствия",
         hi: "अभिवादन",
         zh: "问候",
+      });
+    case "small_talk":
+      return localizedText(language, {
+        en: "Small talk",
+        ru: "Светская беседа",
+        hi: "हल्की बातचीत",
+        zh: "闲聊",
       });
     case "farewells":
       return localizedText(language, {
@@ -3257,6 +3670,8 @@ function localizedRuleResponse(rule, language) {
       return answerFor("greeting", language);
     case "rule_farewell":
       return answerFor("farewell", language);
+    case "rule_assistant_free_time":
+      return answerFor("assistant_free_time", language);
     case "rule_identity":
       return answerFor("identity", language);
     case "rule_assistant_name":
@@ -3301,6 +3716,12 @@ function localizedRuleLabel(rule, language) {
       ru: "Правило прощания",
       hi: "विदाई नियम",
       zh: "告别规则",
+    },
+    rule_assistant_free_time: {
+      en: "Assistant free-time rule",
+      ru: "Правило свободного времени ассистента",
+      hi: "सहायक खाली समय नियम",
+      zh: "助手空闲时间规则",
     },
     rule_identity: {
       en: "Identity rule",
@@ -3351,6 +3772,12 @@ function localizedRuleMatches(rule, language) {
       ru: "`bye`, `goodbye`, `poka` и многоязычные seed-фразы прощания",
       hi: "`bye`, `goodbye`, `poka` और बहुभाषी farewell seed phrases",
       zh: "`bye`、`goodbye`、`poka` 以及多语言告别 seed 短语",
+    },
+    rule_assistant_free_time: {
+      en: "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases",
+      ru: "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы",
+      hi: "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases",
+      zh: "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语",
     },
     rule_identity: {
       en: "`Who are you?`, `Кто ты?`, and equivalent identity prompts",
@@ -3403,6 +3830,11 @@ function localizedRuleWhenThen(rule, language) {
     if (language === "ru") return `Когда пользователь говорит \`bye\`, \`goodbye\`, \`poka\` или многоязычную фразу прощания, ответь \`${response}\`.`;
     if (language === "hi") return `जब उपयोगकर्ता \`bye\`, \`goodbye\`, \`poka\` या बहुभाषी farewell phrase कहे, तब \`${response}\` उत्तर दें.`;
     if (language === "zh") return `当用户说 \`bye\`、\`goodbye\`、\`poka\` 或多语言告别短语时，回答 \`${response}\`。`;
+  }
+  if (rule.id === "rule_assistant_free_time") {
+    if (language === "ru") return `Когда пользователь спрашивает, что я делаю в свободное время, ответь \`${response}\`.`;
+    if (language === "hi") return `जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब \`${response}\` उत्तर दें.`;
+    if (language === "zh") return `当用户问我空闲时间做什么时，回答 \`${response}\`。`;
   }
   if (rule.id === "rule_identity") {
     if (language === "ru") return `Когда пользователь спрашивает \`Who are you?\` или \`Кто ты?\`, ответь \`${response}\`.`;
@@ -6067,14 +6499,17 @@ function tryArithmetic(prompt) {
         formatted = percentOfResult;
         backend = "js-percent-of";
       } else if (isEquation) {
-        formatted = solveLinearEquation(expression);
+        formatted = solveEquation(expression);
+        backend = "js-equation-fallback";
       } else {
         formatted = formatArithmeticResult(evaluateArithmetic(expression));
       }
     }
+    const renderedExpression = escapeCalculationMarkdown(expression.trim());
+    const renderedFormatted = escapeCalculationMarkdown(formatted);
     const calculationLine = isEquation
-      ? `${expression.trim()} => ${formatted}`
-      : `${expression.trim()} = ${formatted}`;
+      ? `${renderedExpression} => ${renderedFormatted}`
+      : `${renderedExpression} = ${renderedFormatted}`;
     const sections = [];
     if (reasoningSteps.length > 0) {
       sections.push(
@@ -7919,23 +8354,43 @@ function numericListProgramSource(program) {
 // only inherit from a prior *user* turn that was itself a genuine numeric-list
 // coding request — it names an operation, a supported language, and lists at
 // least two numbers — so unrelated chatter never leaks a language.
+// Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.") names
+// an operation but no numbers of its own — it refers to the list from the
+// previous numeric-list turn. We therefore inherit the list from the most
+// recent operation turn that carried a concrete list, while the language / code
+// request keep coming from the most recent turn that named a language (issue
+// #412). Splitting the two lets a number-less invert-sort inherit both even when
+// they were established in different turns. Mirrors numeric_list_history_context
+// in src/solver_handlers/numeric_list/mod.rs.
 function numericListHistoryContext(history) {
-  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  if (!Array.isArray(history))
+    return { slug: null, codeRequested: false, items: [] };
+  let slug = null;
+  let codeRequested = false;
+  let items = [];
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const turn = history[i];
     if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
     const content = String(turn.content || "");
     const normalized = normalizePrompt(content);
     if (!detectNumericListOperation(normalized)) continue;
-    const slug = programLanguageFromPrompt(normalized);
-    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
-    if (parseNumericListNumbers(content).length < 2) continue;
-    return {
-      slug,
-      codeRequested: operationMatchesSlug("code_request", normalized),
-    };
+    const numbers = parseNumericListNumbers(content);
+    if (numbers.length < 2) continue;
+    // The most recent numeric-list turn with a concrete list seeds the
+    // inherited list (issue #427).
+    if (items.length === 0) items = numbers;
+    // Language + code request come from the most recent turn naming a supported
+    // language (issue #412).
+    if (!slug) {
+      const candidate = programLanguageFromPrompt(normalized);
+      if (candidate && WRITE_PROGRAM_LANGUAGES[candidate]) {
+        slug = candidate;
+        codeRequested = operationMatchesSlug("code_request", normalized);
+      }
+    }
+    if (items.length > 0 && slug) break;
   }
-  return { slug: null, codeRequested: false };
+  return { slug, codeRequested, items };
 }
 
 function tryNumericList(prompt, history) {
@@ -7953,7 +8408,10 @@ function tryNumericList(prompt, history) {
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
   const inherited = numericListHistoryContext(history);
-  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+  const hasInheritance =
+    Boolean(inherited.slug) ||
+    inherited.codeRequested ||
+    inherited.items.length > 0;
 
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
@@ -7974,7 +8432,13 @@ function tryNumericList(prompt, history) {
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const items = parseNumericListItems(prompt, canonical);
+  let items = parseNumericListItems(prompt, canonical);
+  // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
+  // names no numbers of its own — inherit the list from the previous
+  // numeric-list turn so the operation has data to act on.
+  if (items.length === 0 && inherited.items.length > 0) {
+    items = inherited.items;
+  }
   if (items.length < 2) return null;
   if (
     numericListFamily(canonical) === "list_reduction" &&
@@ -8093,10 +8557,15 @@ function quoteCloseFor(open) {
   if (open === "'") return "'";
   if (open === '"') return '"';
   if (open === "`") return "`";
+  if (open === "«") return "»";
+  if (open === "“") return "”";
+  if (open === "‘") return "’";
+  if (open === "「") return "」";
+  if (open === "『") return "』";
   return "";
 }
 
-function quotedTextSegments(text) {
+function quotedTextSpans(text) {
   const segments = [];
   let cursor = 0;
   const source = String(text || "");
@@ -8114,10 +8583,18 @@ function quotedTextSegments(text) {
     const contentStart = found + 1;
     const contentEnd = source.indexOf(close, contentStart);
     if (contentEnd < 0) break;
-    segments.push(source.slice(contentStart, contentEnd));
+    segments.push({
+      text: source.slice(contentStart, contentEnd),
+      start: found,
+      end: contentEnd + close.length,
+    });
     cursor = contentEnd + 1;
   }
   return segments;
+}
+
+function quotedTextSegments(text) {
+  return quotedTextSpans(text).map((segment) => segment.text);
 }
 
 function textAfterColon(prompt) {
@@ -8127,62 +8604,254 @@ function textAfterColon(prompt) {
   return text
     .slice(index + 1)
     .trim()
-    .replace(/^["'`]+|["'`]+$/g, "")
+    .replace(/^[«»“”‘’「」『』"'`]+|[«»“”‘’「」『』"'`]+$/g, "")
     .trim();
 }
 
+function isReplaceTextPrompt(normalized) {
+  const text = String(normalized || "");
+  return (
+    text.includes("replace") ||
+    text.includes("instead") ||
+    text.includes("вместо") ||
+    text.includes("замен") ||
+    text.includes("बदल") ||
+    text.includes("替换")
+  );
+}
+
+function lastAssistantTextArtifact(history) {
+  if (!Array.isArray(history)) return "";
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    const turn = history[index];
+    if (!turn || turn.role !== "assistant") continue;
+    const content = String(turn.content || turn.text || turn.message || "");
+    if (content.trim()) return content;
+  }
+  return "";
+}
+
+function containsReplacementKeyword(text) {
+  return isReplaceTextPrompt(normalizePrompt(text));
+}
+
+function inputContextBeforeFirstQuote(text) {
+  if (containsReplacementKeyword(text)) return false;
+  const normalized = normalizePrompt(text);
+  const raw = String(text || "").toLowerCase();
+  return (
+    normalized.endsWith("in") ||
+    normalized.includes("text") ||
+    normalized.includes("текст") ||
+    raw.includes("पाठ") ||
+    raw.includes("टेक्स्ट") ||
+    raw.includes("在") ||
+    raw.includes("文本") ||
+    raw.includes("内容")
+  );
+}
+
+function containsInputContinuation(text) {
+  const normalized = normalizePrompt(text);
+  const raw = String(text || "").toLowerCase();
+  return (
+    normalized.includes("in") ||
+    normalized.includes("text") ||
+    normalized.includes("текст") ||
+    raw.includes("में") ||
+    raw.includes("中")
+  );
+}
+
+function looksLikeInputFirstReplacement(prompt, quoted) {
+  if (quoted.length < 3) return false;
+  const source = String(prompt || "");
+  const beforeFirst = source.slice(0, quoted[0].start);
+  const betweenFirstSecond = source.slice(quoted[0].end, quoted[1].start);
+  const betweenSecondThird = source.slice(quoted[1].end, quoted[2].start);
+  return (
+    inputContextBeforeFirstQuote(beforeFirst) ||
+    containsReplacementKeyword(betweenFirstSecond) ||
+    (containsInputContinuation(betweenFirstSecond) &&
+      containsReplacementKeyword(betweenSecondThird))
+  );
+}
+
+function textOperationMatches(slug, normalized) {
+  return operationVocabulary().some(
+    (operation) => operation.slug === slug && operationFormMatches(normalized, operation),
+  );
+}
+
 function appendSimpleTextOperations(normalized, operations) {
-  if (normalized.includes("lowercase") || normalized.includes("lower case")) {
+  if (textOperationMatches("lowercase", normalized)) {
     operations.push({ slug: "lowercase" });
-  } else if (normalized.includes("uppercase") || normalized.includes("upper case")) {
+  } else if (textOperationMatches("uppercase", normalized)) {
     operations.push({ slug: "uppercase" });
   }
-  if (normalized.includes("reverse words") || normalized.includes("reverse the words")) {
+  if (textOperationMatches("reverse_words", normalized)) {
     operations.push({ slug: "reverse_words" });
   }
-  if (
-    normalized.includes("extract") &&
-    (normalized.includes("email") || normalized.includes("e mail"))
-  ) {
+  if (textOperationMatches("extract_email", normalized)) {
     operations.push({ slug: "extract_email" });
   }
-  if (
-    normalized.includes("deduplicate lines") ||
-    normalized.includes("dedupe lines") ||
-    (normalized.includes("deduplicate") && normalized.includes("line"))
-  ) {
+  if (textOperationMatches("extract_url", normalized)) {
+    operations.push({ slug: "extract_url" });
+  }
+  if (textOperationMatches("extract_number", normalized)) {
+    operations.push({ slug: "extract_number" });
+  }
+  if (textOperationMatches("deduplicate_lines", normalized)) {
     operations.push({ slug: "deduplicate_lines" });
   }
-  if (
-    normalized.includes("sort lines") ||
-    normalized.includes("sort the lines") ||
-    (normalized.includes("sort") && normalized.includes("line"))
-  ) {
+  if (textOperationMatches("sort_lines", normalized)) {
     operations.push({ slug: "sort_lines" });
   }
-  if (normalized.includes("count unique words") || normalized.includes("count distinct words")) {
+  if (textOperationMatches("sort_words", normalized)) {
+    operations.push({ slug: "sort_words" });
+  }
+  if (textOperationMatches("trim_whitespace", normalized)) {
+    operations.push({ slug: "trim_whitespace" });
+  }
+  if (textOperationMatches("normalize_whitespace", normalized)) {
+    operations.push({ slug: "normalize_whitespace" });
+  }
+  if (textOperationMatches("title_case", normalized)) {
+    operations.push({ slug: "title_case" });
+  }
+  if (textOperationMatches("sentence_case", normalized)) {
+    operations.push({ slug: "sentence_case" });
+  }
+  if (textOperationMatches("snake_case", normalized)) {
+    operations.push({ slug: "snake_case" });
+  }
+  if (textOperationMatches("kebab_case", normalized)) {
+    operations.push({ slug: "kebab_case" });
+  }
+  if (textOperationMatches("camel_case", normalized)) {
+    operations.push({ slug: "camel_case" });
+  }
+  if (textOperationMatches("pascal_case", normalized)) {
+    operations.push({ slug: "pascal_case" });
+  }
+  if (textOperationMatches("strip_empty_lines", normalized)) {
+    operations.push({ slug: "strip_empty_lines" });
+  }
+  if (textOperationMatches("join_lines", normalized)) {
+    operations.push({ slug: "join_lines" });
+  }
+  if (textOperationMatches("reverse_lines", normalized)) {
+    operations.push({ slug: "reverse_lines" });
+  }
+  if (textOperationMatches("number_lines", normalized)) {
+    operations.push({ slug: "number_lines" });
+  }
+  if (textOperationMatches("indent_lines", normalized)) {
+    operations.push({ slug: "indent_lines" });
+  }
+  if (textOperationMatches("outdent_lines", normalized)) {
+    operations.push({ slug: "outdent_lines" });
+  }
+  if (textOperationMatches("uncomment_lines", normalized)) {
+    operations.push({ slug: "uncomment_lines" });
+  } else if (textOperationMatches("comment_lines", normalized)) {
+    operations.push({ slug: "comment_lines" });
+  }
+  if (textOperationMatches("remove_punctuation", normalized)) {
+    operations.push({ slug: "remove_punctuation" });
+  }
+  if (textOperationMatches("count_unique_words", normalized)) {
     operations.push({ slug: "count_unique_words" });
+  } else if (textOperationMatches("count_words", normalized)) {
+    operations.push({ slug: "count_words" });
+  }
+  if (textOperationMatches("count_lines", normalized)) {
+    operations.push({ slug: "count_lines" });
+  }
+  if (textOperationMatches("count_characters", normalized)) {
+    operations.push({ slug: "count_characters" });
   }
 }
 
-function parseTextManipulationRequest(prompt, normalized) {
-  const quoted = quotedTextSegments(prompt);
+function looksLikeInputFirstUnaryTextEdit(prompt, quoted) {
+  if (quoted.length < 2) return false;
+  const source = String(prompt || "");
+  const beforeFirst = source.slice(0, quoted[0].start);
+  return inputContextBeforeFirstQuote(beforeFirst);
+}
+
+function parseRemoveTextRequest(prompt, history, quoted) {
+  if (!quoted.length) return null;
+  if (quoted.length >= 2 && looksLikeInputFirstUnaryTextEdit(prompt, quoted)) {
+    return { input: quoted[0].text, needle: quoted[1].text };
+  }
+  const input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || lastAssistantTextArtifact(history);
+  if (!input) return null;
+  return { input, needle: quoted[0].text };
+}
+
+function parseAffixTextRequest(prompt, history, quoted) {
+  if (!quoted.length) return null;
+  if (quoted.length >= 2 && looksLikeInputFirstUnaryTextEdit(prompt, quoted)) {
+    return { input: quoted[0].text, affix: quoted[1].text };
+  }
+  const input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || lastAssistantTextArtifact(history);
+  if (!input) return null;
+  return { input, affix: quoted[0].text };
+}
+
+function isAgentTextRequest(normalized) {
+  return (
+    normalized.includes("[agent]") ||
+    normalized.includes("enable agent") ||
+    normalized.includes("agent mode")
+  );
+}
+
+function parseTextManipulationRequest(prompt, normalized, history = []) {
+  if (isAgentTextRequest(normalized)) return null;
+  const quoted = quotedTextSpans(prompt);
   const operations = [];
+  const fallbackInput = lastAssistantTextArtifact(history);
   let input = "";
-  if (normalized.includes("replace")) {
+  if (isReplaceTextPrompt(normalized)) {
     if (quoted.length < 2) return null;
-    operations.push({ slug: "replace_text", from: quoted[0], to: quoted[1] });
-    input = quoted[2] || textAfterColon(prompt);
+    if (quoted.length >= 3 && looksLikeInputFirstReplacement(prompt, quoted)) {
+      operations.push({ slug: "replace_text", from: quoted[1].text, to: quoted[2].text });
+      input = quoted[0].text;
+    } else {
+      operations.push({ slug: "replace_text", from: quoted[0].text, to: quoted[1].text });
+      input = (quoted[2] && quoted[2].text) || textAfterColon(prompt) || fallbackInput;
+    }
   } else if (normalized.includes("count occurrences")) {
     if (quoted.length < 1) return null;
-    operations.push({ slug: "count_occurrences", needle: quoted[0] });
-    input = quoted[1] || textAfterColon(prompt);
+    operations.push({ slug: "count_occurrences", needle: quoted[0].text });
+    input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || fallbackInput;
+  } else if (textOperationMatches("remove_text", normalized) && !matchesSpecificRemoveOperation(normalized)) {
+    const parsed = parseRemoveTextRequest(prompt, history, quoted);
+    if (!parsed) return null;
+    operations.push({ slug: "remove_text", needle: parsed.needle });
+    input = parsed.input;
+  } else if (textOperationMatches("append_text", normalized)) {
+    const parsed = parseAffixTextRequest(prompt, history, quoted);
+    if (!parsed) return null;
+    operations.push({ slug: "append_text", suffix: parsed.affix });
+    input = parsed.input;
+  } else if (textOperationMatches("prepend_text", normalized)) {
+    const parsed = parseAffixTextRequest(prompt, history, quoted);
+    if (!parsed) return null;
+    operations.push({ slug: "prepend_text", prefix: parsed.affix });
+    input = parsed.input;
   } else {
-    input = quoted[0] || textAfterColon(prompt);
+    input = (quoted[0] && quoted[0].text) || textAfterColon(prompt) || fallbackInput;
     appendSimpleTextOperations(normalized, operations);
   }
   if (!input || operations.length === 0) return null;
   return { input, operations };
+}
+
+function matchesSpecificRemoveOperation(normalized) {
+  return textOperationMatches("remove_punctuation", normalized) || textOperationMatches("strip_empty_lines", normalized);
 }
 
 function cleanEmailCandidate(candidate) {
@@ -8203,6 +8872,24 @@ function looksLikeEmail(candidate) {
   );
 }
 
+function cleanUrlCandidate(candidate) {
+  return String(candidate || "")
+    .replace(/^[`"'<>()[\]{},;]+|[`"'<>()[\]{},;]+$/g, "")
+    .replace(/[.!?:]+$/g, "");
+}
+
+function looksLikeUrl(candidate) {
+  const text = String(candidate || "");
+  return text.startsWith("http://") || text.startsWith("https://") || text.startsWith("www.");
+}
+
+function extractNumbers(input) {
+  const numbers = [];
+  const pattern = /(^|[^\p{L}\p{N}])([+-]?\d+(?:\.\d+)?)(?=$|[^\p{L}\p{N}])/gu;
+  for (const match of String(input || "").matchAll(pattern)) numbers.push(match[2]);
+  return numbers;
+}
+
 function countUniqueWords(input) {
   return new Set(
     String(input || "")
@@ -8210,6 +8897,13 @@ function countUniqueWords(input) {
       .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
       .filter(Boolean),
   ).size;
+}
+
+function countWords(input) {
+  return String(input || "")
+    .split(/\s+/)
+    .map((word) => word.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, ""))
+    .filter(Boolean).length;
 }
 
 function deduplicateLines(input) {
@@ -8224,6 +8918,209 @@ function deduplicateLines(input) {
   return lines;
 }
 
+function caseWords(input) {
+  return normalizedWordSpans(input).map((span) => span.word);
+}
+
+function capitalizeWord(word) {
+  const letters = Array.from(String(word || "").toLowerCase());
+  if (!letters.length) return "";
+  return `${letters[0].toUpperCase()}${letters.slice(1).join("")}`;
+}
+
+function titleCase(input) {
+  return caseWords(input).map(capitalizeWord).join(" ");
+}
+
+function textSentenceCase(input) {
+  let capitalized = false;
+  let output = "";
+  for (const character of Array.from(String(input || "").toLowerCase())) {
+    if (!capitalized && /[\p{L}\p{N}]/u.test(character)) {
+      output += character.toUpperCase();
+      capitalized = true;
+    } else {
+      output += character;
+    }
+  }
+  return output;
+}
+
+function delimiterCase(input, delimiter) {
+  return caseWords(input).join(delimiter);
+}
+
+function camelCase(input) {
+  const words = caseWords(input);
+  if (!words.length) return "";
+  return `${words[0]}${words.slice(1).map(capitalizeWord).join("")}`;
+}
+
+function pascalCase(input) {
+  return caseWords(input).map(capitalizeWord).join("");
+}
+
+function stripEmptyLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim());
+}
+
+function joinLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
+function numberLines(input) {
+  return String(input || "")
+    .split(/\r?\n/)
+    .map((line, index) => `${index + 1}. ${line}`);
+}
+
+function reverseLines(input) {
+  return String(input || "").split(/\r?\n/).reverse().join("\n");
+}
+
+function commentLines(input) {
+  return String(input || "").split(/\r?\n/).map((line) => `// ${line}`).join("\n");
+}
+
+function uncommentLine(line) {
+  const text = String(line || "");
+  const match = text.match(/^(\s*)(\/\/ |\/\/|# |#)(.*)$/);
+  return match ? `${match[1]}${match[3]}` : text;
+}
+
+function uncommentLines(input) {
+  return String(input || "").split(/\r?\n/).map(uncommentLine).join("\n");
+}
+
+function removePunctuation(input) {
+  return Array.from(String(input || ""))
+    .filter((character) => /[\p{L}\p{N}\s]/u.test(character))
+    .join("");
+}
+
+function sortWords(input) {
+  return String(input || "").split(/\s+/).filter(Boolean).sort().join(" ");
+}
+
+function outdentLine(line) {
+  const text = String(line || "");
+  if (text.startsWith("    ")) return text.slice(4);
+  if (text.startsWith("\t")) return text.slice(1);
+  return text;
+}
+
+function normalizedWordSpans(text) {
+  const spans = [];
+  const source = String(text || "");
+  let start = -1;
+  let end = 0;
+  let word = "";
+  for (let index = 0; index < source.length;) {
+    const character = Array.from(source.slice(index))[0];
+    const next = index + character.length;
+    if (/[\p{L}\p{N}]/u.test(character)) {
+      if (start < 0) start = index;
+      word += character.toLowerCase();
+      end = next;
+    } else if (start >= 0) {
+      spans.push({ word, start, end });
+      start = -1;
+      word = "";
+    }
+    index = next;
+  }
+  if (start >= 0) spans.push({ word, start, end });
+  return spans;
+}
+
+function replaceWordSequence(input, from, to) {
+  return replaceRanges(input, wordSequenceMatchRanges(input, from, []), to) || "";
+}
+
+function exactMatchRanges(input, from) {
+  const source = String(input || "");
+  const needle = String(from || "");
+  if (!needle) return [];
+  const ranges = [];
+  let cursor = 0;
+  while (cursor <= source.length) {
+    const start = source.indexOf(needle, cursor);
+    if (start < 0) break;
+    const end = start + needle.length;
+    ranges.push({ start, end });
+    cursor = end;
+  }
+  return ranges;
+}
+
+function rangesOverlap(left, right) {
+  return left.start < right.end && right.start < left.end;
+}
+
+function wordSequenceMatchRanges(input, from, excluded = []) {
+  const needle = normalizedWordSpans(from).map((span) => span.word);
+  if (!needle.length) return [];
+  const haystack = normalizedWordSpans(input);
+  if (haystack.length < needle.length) return [];
+  const ranges = [];
+  let index = 0;
+  while (index + needle.length <= haystack.length) {
+    const matches = needle.every((word, offset) => haystack[index + offset].word === word);
+    if (matches) {
+      const start = haystack[index].start;
+      const end = haystack[index + needle.length - 1].end;
+      const range = { start, end };
+      if (!excluded.some((blocked) => rangesOverlap(range, blocked))) {
+        ranges.push(range);
+      }
+      index += needle.length;
+    } else {
+      index += 1;
+    }
+  }
+  return ranges;
+}
+
+function replaceRanges(input, ranges, to) {
+  if (!ranges.length) return "";
+  const source = String(input);
+  const ordered = [...ranges].sort((left, right) => left.start - right.start || left.end - right.end);
+  let output = "";
+  let cursor = 0;
+  let replaced = false;
+  for (const range of ordered) {
+    if (range.start < cursor) continue;
+    output += source.slice(cursor, range.start) + to;
+    cursor = range.end;
+    replaced = true;
+  }
+  return replaced ? output + source.slice(cursor) : "";
+}
+
+function replaceText(input, from, to) {
+  const source = String(input);
+  const direct = source.split(from).join(to);
+  if (!from) return direct;
+  const exactRanges = exactMatchRanges(source, from);
+  if (exactRanges.length) {
+    if (normalizedWordSpans(from).length > 1) {
+      const ranges = [
+        ...exactRanges,
+        ...wordSequenceMatchRanges(source, from, exactRanges),
+      ];
+      return replaceRanges(source, ranges, to) || direct;
+    }
+    return direct;
+  }
+  return replaceWordSequence(source, from, to) || direct;
+}
+
 function applyTextOperation(operation, input) {
   switch (operation.slug) {
     case "uppercase":
@@ -8231,7 +9128,13 @@ function applyTextOperation(operation, input) {
     case "lowercase":
       return String(input).toLowerCase();
     case "replace_text":
-      return String(input).split(operation.from).join(operation.to);
+      return replaceText(input, operation.from, operation.to);
+    case "remove_text":
+      return replaceText(input, operation.needle, "");
+    case "append_text":
+      return `${String(input)}${operation.suffix || ""}`;
+    case "prepend_text":
+      return `${operation.prefix || ""}${String(input)}`;
     case "reverse_words":
       return String(input).split(/\s+/).filter(Boolean).reverse().join(" ");
     case "extract_email":
@@ -8240,14 +9143,64 @@ function applyTextOperation(operation, input) {
         .map(cleanEmailCandidate)
         .filter(looksLikeEmail)
         .join("\n");
+    case "extract_url":
+      return String(input)
+        .split(/\s+/)
+        .map(cleanUrlCandidate)
+        .filter(looksLikeUrl)
+        .join("\n");
+    case "extract_number":
+      return extractNumbers(input).join("\n");
     case "count_occurrences":
       return operation.needle ? String(input).split(operation.needle).length - 1 : "0";
     case "count_unique_words":
       return String(countUniqueWords(input));
+    case "count_words":
+      return String(countWords(input));
+    case "count_lines":
+      return String(String(input).split(/\r?\n/).length);
+    case "count_characters":
+      return String(Array.from(String(input)).length);
     case "deduplicate_lines":
       return deduplicateLines(input).join("\n");
     case "sort_lines":
       return String(input).split(/\r?\n/).sort().join("\n");
+    case "sort_words":
+      return sortWords(input);
+    case "trim_whitespace":
+      return String(input).trim();
+    case "normalize_whitespace":
+      return String(input).split(/\s+/).filter(Boolean).join(" ");
+    case "title_case":
+      return titleCase(input);
+    case "sentence_case":
+      return textSentenceCase(input);
+    case "snake_case":
+      return delimiterCase(input, "_");
+    case "kebab_case":
+      return delimiterCase(input, "-");
+    case "camel_case":
+      return camelCase(input);
+    case "pascal_case":
+      return pascalCase(input);
+    case "remove_punctuation":
+      return removePunctuation(input);
+    case "strip_empty_lines":
+      return stripEmptyLines(input).join("\n");
+    case "join_lines":
+      return joinLines(input);
+    case "reverse_lines":
+      return reverseLines(input);
+    case "number_lines":
+      return numberLines(input).join("\n");
+    case "indent_lines":
+      return String(input).split(/\r?\n/).map((line) => `    ${line}`).join("\n");
+    case "outdent_lines":
+      return String(input).split(/\r?\n/).map(outdentLine).join("\n");
+    case "comment_lines":
+      return commentLines(input);
+    case "uncomment_lines":
+      return uncommentLines(input);
     default:
       return String(input);
   }
@@ -8271,8 +9224,8 @@ function buildTextManipulationChain(input, operations) {
   return { result: current, steps };
 }
 
-function tryTextManipulation(prompt, normalized) {
-  const request = parseTextManipulationRequest(prompt, normalized);
+function tryTextManipulation(prompt, normalized, history = []) {
+  const request = parseTextManipulationRequest(prompt, normalized, history);
   if (!request) return null;
   const chain = buildTextManipulationChain(request.input, request.operations);
   const ruleChain = chain.steps.map((step) => step.ruleId).join(">");
@@ -8793,7 +9746,509 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+// --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
+// Must be defined before tryCalendarReasoning. All recognition uses wordsForRole(ROLE_*)
+// + containsCalendarTerm (or the documented loose includes for directions/questions/fallbacks)
+// exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
+// Rust current_utc_date (create does not inherit the browser userContext tz used only by
+// the "today" path). Returns the same {intent, content, confidence, evidence} shape.
+function mentionsCalendarCreateRequest(normalized) {
+  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A clock time anchors the event just as well as a day word; the lexicon
+  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
+  const hasClock =
+    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) || extractClockTime(normalized) !== null;
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
+  // anchors the event to a specific day just as well as a day number or a
+  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
+  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
+  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A genuine scheduling request anchors to a concrete date/time cue: a
+  // day-reference word, a clock time, or a relative-date word. Bare digits
+  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
+  // date signal — they were the source of false positives that hijacked
+  // installation-conversion prompts such as
+  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
+  if (!hasDateSignal) return false;
+  const hasAction =
+    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
+    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
+      containsCalendarTerm(normalized, w),
+    );
+  if (hasAction) return true;
+  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
+  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
+  const hasScheduleVerb = [
+    "забей",
+    "поставь",
+    "создай",
+    "добавь",
+    "schedule",
+    "book",
+    "add to",
+  ].some((verb) => containsCalendarTerm(normalized, verb));
+  // The date/time anchor is already guaranteed by hasDateSignal above, so a
+  // recognized schedule verb is enough to confirm a create request here.
+  return hasScheduleVerb;
+}
+
+function extractDayNumber(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_DAY_REFERENCE)) {
+    if (!containsCalendarTerm(normalized, word)) continue;
+    const pos = normalized.indexOf(word);
+    if (pos !== -1) {
+      const prefix = normalized.slice(0, pos);
+      let digits = "";
+      for (let i = prefix.length - 1; i >= 0; i--) {
+        const ch = prefix[i];
+        if (/\d/.test(ch)) digits = ch + digits;
+        else if (digits) break;
+      }
+      const n = parseInt(digits, 10);
+      if (n >= 1 && n <= 31) return n;
+    }
+  }
+  // bare leading number
+  let num = "";
+  for (const ch of normalized) {
+    if (/\d/.test(ch)) num += ch;
+    else if (num) break;
+  }
+  const n = parseInt(num, 10);
+  if (n >= 1 && n <= 31) return n;
+  return null;
+}
+
+function computeTargetDateWithRollover(base, day) {
+  let y = base.year,
+    m = base.month,
+    d = day;
+  if (d < base.day) {
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
+  if (d > maxDay) d = maxDay;
+  return [y, m, d];
+}
+
+// Resolve a relative-date word to a whole-day offset from today. The surfaces
+// and their languages live in data/seed/meanings-calendar.lino; this code knows
+// only the role and the stable English meaning slugs that name the offset
+// (calendar_tomorrow → +1 day, calendar_day_after_tomorrow → +2 days). Mirrors
+// the Rust relative_date_offset (issue #435).
+function relativeDateOffset(normalized) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_RELATIVE_DATE)) {
+    const matches = meaning.words.some((word) =>
+      containsCalendarTerm(normalized, word),
+    );
+    if (!matches) continue;
+    if (meaning.slug === "calendar_tomorrow") return 1;
+    if (meaning.slug === "calendar_day_after_tomorrow") return 2;
+    return null;
+  }
+  return null;
+}
+
+// Apply a whole-day offset to a {year, month, day} base via UTC date math.
+// Mirrors date_from_unix_days(base.days_since_unix_epoch + offset) in Rust.
+function offsetCalendarDate(base, offset) {
+  const d = new Date(Date.UTC(base.year, base.month - 1, base.day + offset));
+  return [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()];
+}
+
+// Fallback title built from the matched event noun ("созвон" → "Созвон",
+// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
+// phrase was given. Mirrors the Rust extract_event_title (issue #435).
+function extractEventTitle(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_EVENT)) {
+    if (containsCalendarTerm(normalized, word)) return capitalizeFirst(word);
+  }
+  return null;
+}
+
+function extractClockTime(normalized) {
+  const bytes = normalized.split("");
+  for (let i = 0; i < bytes.length - 2; i++) {
+    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
+      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      let j = i + 2;
+      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
+      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
+        const min = parseInt(bytes[j] + bytes[j + 1], 10);
+        if (h <= 23 && min <= 59) {
+          if (h === 0) h = 0;
+          if (h === 24) h = 0;
+          return [h, min];
+        }
+      }
+    }
+  }
+  const vPos = normalized.indexOf("в ");
+  if (vPos !== -1) {
+    const tail = normalized.slice(vPos + 2);
+    let num = "";
+    for (const ch of tail) {
+      if (/\d/.test(ch)) num += ch;
+      else if (num) break;
+    }
+    const h = parseInt(num, 10);
+    if (h <= 23) return [h, 0];
+  }
+  return null;
+}
+
+function resolveTimezone(normalized) {
+  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (hit) return "Asia/Tbilisi";
+  if (
+    normalized.includes("asia/tbilisi") ||
+    normalized.includes("tbilisi") ||
+    normalized.includes("по грузии")
+  )
+    return "Asia/Tbilisi";
+  return null;
+}
+
+function defaultTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "घटना";
+  if (language === "zh") return "事件";
+  return "Event";
+}
+
+function capitalizeFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+// Trim a candidate title down to its subject: stop at the first time/date/zone
+// boundary, sentence punctuation, or day number, then capitalize. Mirrors the
+// Rust tidy_title.
+function tidyTitle(candidate) {
+  let end = candidate.length;
+  for (const boundary of [
+    " on the ",
+    " on ",
+    " at ",
+    " в ",
+    " по ",
+    " на ",
+    " 在 ",
+    "下午",
+    "上午",
+    " को ",
+    " शाम",
+  ]) {
+    const pos = candidate.indexOf(boundary);
+    if (pos !== -1) end = Math.min(end, pos);
+  }
+  const punct = candidate.search(/[.!?,]/);
+  if (punct !== -1) end = Math.min(end, punct);
+  const digit = candidate.search(/\d/);
+  if (digit !== -1) end = Math.min(end, digit);
+  const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
+  if (!trimmed) return null;
+  // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
+  // title — reject it so the caller falls back to the event noun (issue #435).
+  if (
+    wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(
+      (word) => word.toLowerCase() === trimmed.toLowerCase(),
+    )
+  )
+    return null;
+  return capitalizeFirst(trimmed);
+}
+
+// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
+// or lead (Chinese has no word spaces) the subject so the .ics SUMMARY keeps
+// only the event and its participant. Mirrors the Rust strip_action_words.
+function stripActionWords(value) {
+  let out = value;
+  for (const fragment of [
+    "शेड्यूल करें",
+    "कैलेंडर में जोड़ें",
+    "बनाएँ",
+    "बनाओ",
+    "安排",
+    "添加到日历",
+    "创建",
+  ]) {
+    out = out.split(fragment).join("");
+  }
+  return out.split(/\s+/).filter(Boolean).join(" ");
+}
+
+function extractTitle(normalized) {
+  for (const marker of [
+    "на ",
+    "for ",
+    "встречу ",
+    "meeting with ",
+    "call with ",
+    "के साथ ",
+    "和",
+  ]) {
+    const pos = normalized.indexOf(marker);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + marker.length).trim();
+      const title = tidyTitle(rest);
+      if (title) return title;
+    }
+  }
+  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+    const pos = normalized.indexOf(verb);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + verb.length).trimStart();
+      const title = tidyTitle(rest);
+      if (title && title.length < 60) return title;
+    }
+  }
+  return null;
+}
+
+// --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function pad4(value) {
+  return String(value).padStart(4, "0");
+}
+
+function isoDate(year, month, day) {
+  return `${pad4(year)}-${pad2(month)}-${pad2(day)}`;
+}
+
+function startStamp(year, month, day, hour, minute) {
+  return `${pad4(year)}${pad2(month)}${pad2(day)}T${pad2(hour)}${pad2(minute)}00`;
+}
+
+function daysInMonth(year, month) {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+  }
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+
+function addMinutes(year, month, day, hour, minute, minutes) {
+  const total = hour * 60 + minute + minutes;
+  let dayCarry = Math.floor(total / (24 * 60));
+  const newMinute = total % 60;
+  const newHour = Math.floor(total / 60) % 24;
+  let y = year,
+    m = month,
+    d = day;
+  while (dayCarry > 0) {
+    if (d < daysInMonth(y, m)) {
+      d += 1;
+    } else {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    dayCarry -= 1;
+  }
+  return [y, m, d, newHour, newMinute];
+}
+
+function icsEscape(value) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsDtstamp() {
+  const d = new Date();
+  return (
+    `${pad4(d.getUTCFullYear())}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`
+  );
+}
+
+function buildIcs(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  const uid = `${start}-${event.timeZone}@formal-ai`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//formal-ai//calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDtstamp()}`,
+    `DTSTART;TZID=${event.timeZone}:${start}`,
+    `DTEND;TZID=${event.timeZone}:${end}`,
+    `SUMMARY:${icsEscape(event.title)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n") + "\r\n";
+}
+
+function buildGoogleCalendarUrl(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(event.title)}` +
+    `&dates=${start}/${end}` +
+    `&ctz=${encodeURIComponent(event.timeZone)}`
+  );
+}
+
+function renderCreateConfirmation(language, event, ics, googleUrl) {
+  const iso = isoDate(event.year, event.month, event.day);
+  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
+  const tz = event.timeZone;
+  const title = event.title;
+  const minutes = event.durationMinutes;
+  if (language === "ru") {
+    return (
+      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
+      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
+      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
+      `Ответьте «да», чтобы подтвердить.`
+    );
+  }
+  if (language === "hi") {
+    return (
+      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
+      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
+      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
+      `पुष्टि के लिए «हाँ» उत्तर दें।`
+    );
+  }
+  if (language === "zh") {
+    return (
+      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
+      `将此 .ics 文件导入任何日历：\n${ics}\n` +
+      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
+      `回复「是」以确认。`
+    );
+  }
+  return (
+    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
+    `Import this .ics file into any calendar:\n${ics}\n` +
+    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
+    `Reply 'yes' to confirm.`
+  );
+}
+
+function currentUtcCalendarBase() {
+  const d = new Date();
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
+}
+
+function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
+  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const base = currentUtcCalendarBase();
+  const language = detectLanguage(prompt);
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
+  // event to a day offset from today (issue #435). It takes priority over a
+  // bare day number so "поставь созвон на завтра" lands on tomorrow rather
+  // than today's date.
+  const relativeOffset = relativeDateOffset(normalized);
+  let year, month, d;
+  if (relativeOffset !== null) {
+    [year, month, d] = offsetCalendarDate(base, relativeOffset);
+  } else {
+    const day = extractDayNumber(normalized) || base.day;
+    [year, month, d] = computeTargetDateWithRollover(base, day);
+  }
+  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const tz = resolveTimezone(normalized) || "UTC";
+  // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
+  // back to the matched event noun ("созвон" → "Созвон") before the localized
+  // default, so a title-less request still proposes a meaningful event.
+  const title =
+    extractTitle(normalized) ||
+    extractEventTitle(normalized) ||
+    defaultTitle(language);
+  const event = {
+    title,
+    year,
+    month,
+    day: d,
+    hour,
+    minute,
+    timeZone: tz,
+    durationMinutes: 60,
+  };
+  const ics = buildIcs(event);
+  const googleUrl = buildGoogleCalendarUrl(event);
+  const body = renderCreateConfirmation(language, event, ics, googleUrl);
+  const evidence = [
+    "calendar:clock:browser",
+    `calendar:parsed_date:${isoDate(year, month, d)}`,
+    `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
+    `calendar:parsed_time_zone:${tz}`,
+    `calendar:parsed_title:${title}`,
+    `calendar:parsed_duration_minutes:${event.durationMinutes}`,
+  ];
+  if (relativeOffset !== null) {
+    evidence.push(`calendar:parsed_relative_offset:${relativeOffset}`);
+  }
+  if (normalized.includes("число") || normalized.includes("number")) {
+    evidence.push("calendar:parsed_via:day_number");
+  }
+  evidence.push(`calendar:ics:${ics}`);
+  evidence.push(`calendar:google_calendar_url:${googleUrl}`);
+  evidence.push(`language:${language}`);
+  return {
+    intent: "calendar_create_event",
+    content: body,
+    confidence: 0.95,
+    evidence,
+  };
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+  // gate (and before the current-day question) so that "18 число ... забей / поставь"
+  // claims are handled by the action path and do not fall through to the existing
+  // weekday-only logic. Mirrors src/solver_handlers/calendar.rs exactly.
+  const create = tryCalendarCreateEvent(prompt, normalized, userContext);
+  if (create) return create;
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
     const resolved = currentCalendarDate(userContext);
@@ -12018,6 +13473,760 @@ function priorSoftwareProjectMeaning(history) {
   return user ? formalizeSoftwareProjectRequest(user) : null;
 }
 
+const INSTALL_FORMAT_MARKDOWN = "markdown";
+const INSTALL_FORMAT_SHELL = "shell_script";
+const INSTALL_FORMAT_POWERSHELL = "powershell_script";
+
+const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
+  {
+    id: "collect_corpus",
+    output: "representative problem-class examples",
+    verifier: "case-study corpus preserved",
+  },
+  {
+    id: "derive_surfaces",
+    output: "source and target surface ontology",
+    verifier: "source/target format detection",
+  },
+  {
+    id: "extract_ir",
+    output: "shared intermediate representation",
+    verifier: "ordered command preservation fixture",
+  },
+  {
+    id: "synthesize_operations",
+    output: "recognizers, extractors, renderers, and validators",
+    verifier: "round-trip surface invariants",
+  },
+  {
+    id: "project_targets",
+    output: "target-specific Markdown, shell, and PowerShell renderers",
+    verifier: "per-target rendering fixture",
+  },
+  {
+    id: "mirror_runtimes",
+    output: "Rust and browser-worker projections of the same algorithm",
+    verifier: "cross-runtime parity checks",
+  },
+  {
+    id: "promote_capability",
+    output: "reusable coding-task construction pattern",
+    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+  },
+];
+
+const INSTALL_CODING_SURFACE_PROJECTIONS = [
+  {
+    slug: "coding_catalog",
+    projection: "task spec -> parameterized template -> CST/compile check",
+  },
+  {
+    slug: "program_synthesis",
+    projection: "semantic function tree -> source program -> sandbox tests",
+  },
+  {
+    slug: "program_blueprint",
+    projection: "capability set -> blueprint recipe -> honest code projection",
+  },
+  {
+    slug: "numeric_list",
+    projection: "operation/data/language IR -> generated code plus evaluated result",
+  },
+  {
+    slug: "rule_synthesis",
+    projection: "operation/target binding -> candidate rule -> verification fixture",
+  },
+  {
+    slug: "installation_conversion",
+    projection: "installation surfaces -> install-step IR -> target renderers",
+  },
+];
+
+function installationContainsAny(value, needles) {
+  return needles.some((needle) => String(value || "").includes(needle));
+}
+
+function isInstallationConversionRequest(normalized) {
+  const asksConversion = installationContainsAny(normalized, [
+    "convert",
+    "conversion",
+    "transform",
+    "turn",
+    "translate",
+    "back to",
+    "конверт",
+    "преобраз",
+    "перевед",
+    "बदल",
+    "परिवर्त",
+    "रूपांतर",
+    "कन्वर्ट",
+    "转换",
+    "轉換",
+    "转成",
+    "轉成",
+    "转为",
+    "轉為",
+    "翻译",
+    "翻譯",
+  ]);
+  const namesInstallSurface = installationContainsAny(normalized, [
+    "readme",
+    "markdown",
+    "installation guide",
+    "install guide",
+    "deployment guide",
+    "deploy guide",
+    "installation script",
+    "install script",
+    "deployment script",
+    "deploy script",
+    "руководство по установ",
+    "инструкц",
+    "установ",
+    "स्थापना",
+    "इंस्टॉल",
+    "इंस्टॉलेशन",
+    "安装",
+    "安裝",
+    "部署",
+  ]);
+  const namesScriptSurface = installationContainsAny(normalized, [
+    " sh ",
+    " bash",
+    "shell",
+    "powershell",
+    "pwsh",
+    "ps1",
+    "script",
+    "скрипт",
+    "скрипта",
+    "脚本",
+    "腳本",
+  ]);
+  return asksConversion && namesInstallSurface && namesScriptSurface;
+}
+
+function installationFencedBlocks(text) {
+  const blocks = [];
+  let currentInfo = null;
+  let currentBody = [];
+  for (const line of String(text || "").split(/\r?\n/)) {
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith("```")) {
+      if (currentInfo !== null) {
+        blocks.push({
+          info: currentInfo,
+          body: currentBody.join("\n").replace(/\n+$/g, ""),
+        });
+        currentInfo = null;
+        currentBody = [];
+      } else {
+        currentInfo = trimmed.slice(3).trim().split(/\s+/, 1)[0].toLowerCase();
+      }
+      continue;
+    }
+    if (currentInfo !== null) currentBody.push(line);
+  }
+  return blocks;
+}
+
+function isInstallationShellFence(info) {
+  return ["bash", "sh", "shell", "zsh"].includes(String(info || ""));
+}
+
+function isInstallationPowerShellFence(info) {
+  return ["powershell", "pwsh", "ps1"].includes(String(info || ""));
+}
+
+function detectInstallationSourceFormat(prompt, normalized) {
+  const fences = installationFencedBlocks(prompt);
+  const explicitPowerShell = installationContainsAny(normalized, [
+    "this powershell",
+    "powershell installation script",
+    "powershell script back",
+    "ps1 script",
+  ]);
+  const explicitShell = installationContainsAny(normalized, [
+    "this shell",
+    "this bash",
+    "shell installation script",
+    "shell script back",
+    "bash script back",
+  ]);
+  const explicitMarkdown = installationContainsAny(normalized, [
+    "this readme",
+    "readme.md installation guide",
+    "readme installation guide",
+    "this markdown",
+    "markdown installation guide",
+  ]);
+  if (explicitPowerShell) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (explicitShell) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (explicitMarkdown) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  if (fences.some((block) => isInstallationPowerShellFence(block.info))) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (fences.some((block) => isInstallationShellFence(block.info))) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (fences.some((block) => block.info === "markdown" || block.info === "md")) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  return INSTALL_FORMAT_MARKDOWN;
+}
+
+function pushInstallationTarget(targets, target) {
+  if (!targets.includes(target)) targets.push(target);
+}
+
+function detectInstallationTargetFormats(normalized, sourceFormat) {
+  const targets = [];
+  if (
+    installationContainsAny(normalized, [
+      "back to a readme",
+      "back to readme",
+      "to a readme",
+      "to readme",
+      "to markdown",
+      "markdown guide",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "both sh and powershell",
+      "both bash and powershell",
+      "sh and powershell",
+      "bash and powershell",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "into a sh script",
+      "to a sh script",
+      "into sh",
+      "to sh",
+      "into a shell script",
+      "to a shell script",
+      "into a bash script",
+      "to a bash script",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+  }
+  if (
+    sourceFormat !== INSTALL_FORMAT_POWERSHELL &&
+    installationContainsAny(normalized, [
+      "into a powershell script",
+      "to a powershell script",
+      "into powershell",
+      "to powershell",
+      "to ps1",
+      "into ps1",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (targets.length === 0) {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    } else {
+      pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+    }
+  }
+  return targets;
+}
+
+function extractInstallationSourceText(prompt, sourceFormat) {
+  const fences = installationFencedBlocks(prompt);
+  const matching = fences.find((block) => {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      return block.info === "markdown" || block.info === "md";
+    }
+    if (sourceFormat === INSTALL_FORMAT_SHELL) return isInstallationShellFence(block.info);
+    return isInstallationPowerShellFence(block.info);
+  });
+  if (matching) return matching.body;
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) return String(prompt || "");
+  if (fences.length > 0) return fences[0].body;
+  return String(prompt || "");
+}
+
+function normalizeInstallationScriptLine(line) {
+  return String(line || "").trim().replace(/^\$ /, "").replace(/^PS> /, "").trim();
+}
+
+function shouldSkipInstallationScriptLine(line) {
+  return (
+    line === "" ||
+    line.startsWith("#!") ||
+    line.startsWith("#") ||
+    line === "set -e" ||
+    line === "set -eu" ||
+    line === "set -euo pipefail" ||
+    line === "$ErrorActionPreference = 'Stop'"
+  );
+}
+
+// Provenance of a candidate line. Mirrors the Rust `Provenance` enum: code
+// spans/fences are author-marked code (weak shape check), bare lines must prove
+// themselves structurally.
+const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
+const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
+
+const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "with",
+  "into",
+  "from",
+  "your",
+  "you",
+  "our",
+  "this",
+  "that",
+  "these",
+  "those",
+  "then",
+  "will",
+  "should",
+  "must",
+  "please",
+  "manually",
+]);
+
+// True when the token is shaped like an executable name or a path to one rather
+// than a natural-language word. Commands are lowercase by convention, so an
+// uppercase or non-ASCII lead immediately reads as prose.
+function isInstallationExecutableHead(token) {
+  if (!token) return false;
+  const first = token[0];
+  const startsOk = /[a-z0-9./]/.test(first);
+  if (!startsOk) return false;
+  return /^[a-z0-9./_+-]+$/.test(token);
+}
+
+function installationHasShellOperator(command) {
+  return (
+    command.includes(" | ") ||
+    command.includes("&&") ||
+    command.includes("||") ||
+    command.includes(" ; ")
+  );
+}
+
+function installationReadsAsProse(tokens) {
+  return tokens.some((token) => {
+    const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
+    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+  });
+}
+
+// Decide whether `command` is an install/deploy command by reasoning about its
+// structure and provenance instead of matching a fixed tool whitelist. Any
+// well-formed command line is accepted regardless of which tool it invokes,
+// while prose lines are rejected even when they mention a tool.
+function looksLikeInstallationCommand(command, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const trimmed = String(command || "").trim();
+  if (!trimmed) return false;
+
+  // A raw prose line that embeds a code span ("Run `npm install`.") is prose:
+  // the inline/fence collectors already lifted the real command out.
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE && trimmed.includes("`")) return false;
+
+  const tokens = trimmed.split(/\s+/);
+  const head = tokens[0].toLowerCase();
+  if (!isInstallationExecutableHead(head)) return false;
+
+  // Shell composition is unambiguous command shape regardless of provenance.
+  if (installationHasShellOperator(trimmed)) return true;
+
+  // An executable-looking head can still front a wrapped prose note; English
+  // function words betray it.
+  if (installationReadsAsProse(tokens)) return false;
+
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE) {
+    return tokens.length >= 2 || head.includes("/");
+  }
+  return true;
+}
+
+function pushInstallationCommand(commands, candidate, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const command = String(candidate || "").trim();
+  if (!command || !looksLikeInstallationCommand(command, provenance)) return;
+  if (!commands.includes(command)) commands.push(command);
+}
+
+function collectInstallationInlineCommands(source, commands) {
+  const text = String(source || "");
+  let inTick = false;
+  let candidate = "";
+  for (const character of text) {
+    if (character === "`") {
+      if (inTick) {
+        // Inline code spans are author-marked code: trust the shape.
+        pushInstallationCommand(commands, candidate.trim(), INSTALL_PROVENANCE_CODE_SPAN);
+        candidate = "";
+        inTick = false;
+      } else {
+        inTick = true;
+      }
+      continue;
+    }
+    if (inTick) candidate += character;
+  }
+}
+
+function collectInstallationBulletCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    let trimmed = line.trim();
+    trimmed = trimmed.replace(/^[-*+\d]+[.) ]*/, "").trim();
+    if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length > 2) {
+      // The whole bullet is a single code span: code provenance.
+      pushInstallationCommand(commands, trimmed.slice(1, -1), INSTALL_PROVENANCE_CODE_SPAN);
+    } else {
+      // Raw document line with no code markup: prove it structurally.
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_BARE_LINE);
+    }
+  }
+}
+
+function collectInstallationScriptCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    const trimmed = normalizeInstallationScriptLine(line);
+    // Lines inside a shell/PowerShell fence are code by construction.
+    if (!shouldSkipInstallationScriptLine(trimmed))
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_CODE_SPAN);
+  }
+}
+
+// Translate a single verb token into an action category. Keyed on the verb
+// itself (not the surrounding tool), so the same lexicon serves every program.
+// Returns the marker "run" for generic launcher verbs so the caller can prefer
+// a more concrete object.
+function classifyInstallationVerb(token) {
+  switch (token) {
+    case "clone":
+      return "Clone the repository";
+    case "cd":
+    case "chdir":
+    case "pushd":
+      return "Enter the project directory";
+    case "install":
+    case "add":
+    case "ci":
+    case "restore":
+    case "sync":
+    case "bootstrap":
+    case "vendor":
+    case "i":
+      return "Install dependencies";
+    case "test":
+    case "check":
+    case "lint":
+    case "doctor":
+    case "verify":
+    case "validate":
+    case "version":
+    case "pytest":
+    case "jest":
+    case "mocha":
+    case "vitest":
+    case "tox":
+      return "Run the verification command";
+    case "build":
+    case "compile":
+    case "configure":
+    case "make":
+    case "package":
+    case "dist":
+    case "bundle":
+    case "cmake":
+    case "gradle":
+    case "ninja":
+    case "msbuild":
+      return "Build the project";
+    case "run":
+    case "serve":
+    case "start":
+    case "up":
+    case "exec":
+    case "dev":
+    case "launch":
+    case "watch":
+      return "run";
+    default:
+      return null;
+  }
+}
+
+// Structural view of a command: the program (last path segment of the
+// executable), the ordered non-flag argument tokens, and whether a version/help
+// probe flag is present.
+function parseInstallationCommand(command) {
+  let tokens = String(command || "").trim().split(/\s+/).filter(Boolean);
+  while (tokens.length && (tokens[0] === "sudo" || tokens[0] === "env" || tokens[0] === "command")) {
+    tokens = tokens.slice(1);
+  }
+  const rawProgram = tokens.shift() || "";
+  let program = rawProgram.split("/").pop().toLowerCase();
+
+  let rest = tokens;
+  if ((program === "python" || program === "python3" || program === "py") && rest[0] === "-m" && rest[1]) {
+    program = rest[1].toLowerCase();
+    rest = rest.slice(2);
+  }
+
+  const args = [];
+  let isProbe = false;
+  for (const token of rest) {
+    const bare = token.replace(/^['"]+/, "").replace(/['"]+$/, "");
+    if (["--version", "-v", "-V", "--help", "-h"].includes(bare)) {
+      isProbe = true;
+      continue;
+    }
+    if (bare.startsWith("-")) continue;
+    args.push(bare.toLowerCase());
+  }
+  return { program, args, isProbe };
+}
+
+// Derive a human-readable step description from the parsed verb/object of the
+// command rather than matching the whole string against a substring table.
+function describeInstallationCommand(command) {
+  const parsed = parseInstallationCommand(command);
+  if (parsed.isProbe) return "Verify the installation";
+
+  let genericRun = false;
+  for (const argument of parsed.args) {
+    const action = classifyInstallationVerb(argument);
+    if (action === "run") {
+      genericRun = true;
+    } else if (action) {
+      return action;
+    }
+  }
+  const programAction = classifyInstallationVerb(parsed.program);
+  if (programAction === "run") {
+    genericRun = true;
+  } else if (programAction) {
+    return programAction;
+  }
+  if (genericRun) return "Start the application";
+
+  // Fall back to a description synthesized from the program/verb so unseen but
+  // well-formed commands still read meaningfully.
+  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
+  return `Run ${parsed.program}`;
+}
+
+function extractInstallationSteps(source, sourceFormat) {
+  const commands = [];
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+    for (const block of installationFencedBlocks(source)) {
+      if (isInstallationShellFence(block.info) || isInstallationPowerShellFence(block.info)) {
+        collectInstallationScriptCommands(block.body, commands);
+      }
+    }
+    collectInstallationInlineCommands(source, commands);
+    collectInstallationBulletCommands(source, commands);
+  } else {
+    collectInstallationScriptCommands(source, commands);
+  }
+  return commands.map((command, index) => ({
+    id: `S${index + 1}`,
+    description: describeInstallationCommand(command),
+    command,
+  }));
+}
+
+function extractInstallationProject(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  const marker = " for ";
+  const start = lower.indexOf(marker);
+  if (start < 0) return "the project";
+  const tail = source.slice(start + marker.length);
+  const stopMatch = tail.match(/[\s,:;\n]/);
+  const stop = stopMatch ? stopMatch.index : tail.length;
+  const project = tail.slice(0, stop).trim();
+  return project.includes("/") || project.includes("-") ? project : "the project";
+}
+
+function installationMeaningKey(conversion) {
+  const parts = [`source=${conversion.sourceFormat}`, `project=${conversion.project}`];
+  for (const target of conversion.targetFormats) parts.push(`target=${target}`);
+  for (const step of conversion.steps) parts.push(`command=${step.command}`);
+  return parts.join(";");
+}
+
+function installationEvidence(conversion) {
+  const evidence = [
+    "formalization:install_steps_ir",
+    `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
+    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    `installation_conversion:source_format:${conversion.sourceFormat}`,
+    `installation_conversion:project:${conversion.project}`,
+  ];
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
+  }
+  for (const target of conversion.targetFormats) {
+    evidence.push(`installation_conversion:target_format:${target}`);
+  }
+  for (const step of conversion.steps) {
+    evidence.push(`installation_conversion:step:${step.id}:${step.command}`);
+  }
+  evidence.push("installation_conversion:validation:ordered_commands_preserved");
+  return evidence;
+}
+
+function renderInstallationLino(conversion) {
+  const lines = ["installation_conversion_request"];
+  lines.push(`  source_format ${conversion.sourceFormat}`);
+  for (const target of conversion.targetFormats) lines.push(`  target_format ${target}`);
+  lines.push(`  project ${linoString(conversion.project)}`);
+  lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
+  lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
+  lines.push(
+    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
+  );
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    lines.push(`  construction_stage ${linoString(stage.id)}`);
+    lines.push(`  stage_output ${linoString(stage.output)}`);
+    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`  coding_surface ${linoString(surface.slug)}`);
+    lines.push(`  surface_projection ${linoString(surface.projection)}`);
+  }
+  for (const step of conversion.steps) {
+    lines.push(`  step ${linoString(step.id)}`);
+    lines.push(`  description ${linoString(step.description)}`);
+    lines.push(`  command ${linoString(step.command)}`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationMetaAlgorithm() {
+  const lines = ["Meta algorithm for constructing conversion algorithms:"];
+  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
+    lines.push(
+      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
+    );
+  });
+  lines.push("");
+  lines.push("Existing coding solutions producible by the same meta algorithm:");
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  }
+  return lines.join("\n");
+}
+
+function renderInstallationMarkdownGuide(conversion) {
+  const lines = ["README.md installation guide:", "", "## Installation", ""];
+  conversion.steps.forEach((step, index) => {
+    lines.push(`${index + 1}. ${step.description}.`);
+    lines.push("");
+    lines.push("   ```sh");
+    lines.push(`   ${step.command}`);
+    lines.push("   ```");
+  });
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationShellScript(conversion) {
+  const lines = ["Bash script:", "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationPowerShellScript(conversion) {
+  const lines = ["PowerShell script:", "```powershell", "$ErrorActionPreference = 'Stop'", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationConversion(conversion) {
+  const lines = [
+    `Converted installation instructions for ${conversion.project}.`,
+    "",
+    "Formalized meaning:",
+    "```lino",
+    renderInstallationLino(conversion).trimEnd(),
+    "```",
+    "",
+    "Conversion algorithm:",
+    "1. Detect the source surface and requested target surface(s).",
+    "2. Extract command-like install/deploy steps in original order.",
+    "3. Render every target from the same install-step IR.",
+    "4. Preserve commands verbatim so the conversion can round-trip.",
+    "",
+    renderInstallationMetaAlgorithm(),
+  ];
+  for (const target of conversion.targetFormats) {
+    lines.push("");
+    if (target === INSTALL_FORMAT_MARKDOWN) {
+      lines.push(renderInstallationMarkdownGuide(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_SHELL) {
+      lines.push(renderInstallationShellScript(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_POWERSHELL) {
+      lines.push(renderInstallationPowerShellScript(conversion).trimEnd());
+    }
+  }
+  return lines.join("\n").trimEnd();
+}
+
+function tryInstallationConversion(prompt, normalized) {
+  if (!isInstallationConversionRequest(normalized)) return null;
+  const sourceFormat = detectInstallationSourceFormat(prompt, normalized);
+  const targetFormats = detectInstallationTargetFormats(normalized, sourceFormat);
+  const sourceText = extractInstallationSourceText(prompt, sourceFormat);
+  let steps = extractInstallationSteps(sourceText, sourceFormat);
+  if (steps.length === 0 && sourceFormat === INSTALL_FORMAT_MARKDOWN && sourceText !== String(prompt || "")) {
+    steps = extractInstallationSteps(prompt, sourceFormat);
+  }
+  if (steps.length === 0) return null;
+  const conversion = {
+    sourceFormat,
+    targetFormats,
+    project: extractInstallationProject(prompt),
+    steps,
+  };
+  return {
+    intent: "installation_conversion",
+    content: renderInstallationConversion(conversion),
+    confidence: 0.84,
+    evidence: installationEvidence(conversion),
+  };
+}
+
 function trySoftwareProjectRequest(prompt, history = []) {
   const normalized = normalizePrompt(prompt);
   if (isSoftwareApprovalPrompt(normalized)) {
@@ -12455,9 +14664,8 @@ const WRITE_PROGRAM_TASKS = {
   },
   list_files: {
     label: "list files in the current directory",
-    // Verified output for the documented sample directory containing exactly
-    // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
-    // byte order, so the output is identical across languages (issue #312).
+    // Fallback output for the Rust-flavoured sample. Rendered answers resolve
+    // list-file samples from each language's `saveAs` name (issue #440).
     output: "Cargo.toml\nREADME.md\nmain.rs",
   },
   list_files_arg: {
@@ -13033,186 +15241,577 @@ const MODIFIER_NODE = "request:modifier";
 // a hardcoded per-language word list in code.
 const OPERATION_VOCABULARY_LINO = [
   "operation_vocabulary",
-  '  operation "uppercase"',
-  '    language "en"',
-  '      phrase "uppercase"',
+  "  operation uppercase",
+  "    language en",
+  "      phrase uppercase",
   '      phrase "upper case"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "верхний регистр"',
   '      phrase "заглавными буквами"',
   '      phrase "прописными буквами"',
-  '      combo "верхний+регистр"',
-  '    language "hi"',
+  "      combo верхний+регистр",
+  "    language hi",
   '      phrase "बड़े अक्षर"',
-  '      phrase "अपरकेस"',
-  '    language "zh"',
-  '      phrase "大写"',
-  '  operation "lowercase"',
-  '    language "en"',
-  '      phrase "lowercase"',
+  "      phrase अपरकेस",
+  "    language zh",
+  "      phrase 大写",
+  "  operation lowercase",
+  "    language en",
+  "      phrase lowercase",
   '      phrase "lower case"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "нижний регистр"',
   '      phrase "строчными буквами"',
-  '      combo "нижний+регистр"',
-  '    language "hi"',
+  "      combo нижний+регистр",
+  "    language hi",
   '      phrase "छोटे अक्षर"',
-  '      phrase "लोअरकेस"',
-  '    language "zh"',
-  '      phrase "小写"',
-  '  operation "replace"',
-  '    language "en"',
-  '      phrase "replace"',
-  '    language "ru"',
-  '      phrase "замен"',
-  '    language "hi"',
-  '      phrase "बदल"',
-  '    language "zh"',
-  '      phrase "替换"',
-  '  operation "reverse_words"',
-  '    language "en"',
+  "      phrase लोअरकेस",
+  "    language zh",
+  "      phrase 小写",
+  "  operation replace",
+  "    language en",
+  "      phrase replace",
+  "    language ru",
+  "      phrase замен",
+  "    language hi",
+  "      phrase बदल",
+  "    language zh",
+  "      phrase 替换",
+  "  operation remove_text",
+  "    language en",
+  "      phrase remove",
+  "      phrase delete",
+  '      phrase "remove text"',
+  '      phrase "delete text"',
+  "      combo remove+text",
+  "      combo delete+text",
+  "    language ru",
+  "      phrase удали",
+  "      phrase удалить",
+  "      combo удали+текст",
+  "      combo удалить+текст",
+  "      combo убери+текст",
+  "    language hi",
+  "      combo पाठ+हटा",
+  "      combo टेक्स्ट+हटा",
+  "    language zh",
+  "      phrase 删除文本",
+  "      phrase 移除文本",
+  "      combo 删除+文本",
+  "  operation append_text",
+  "    language en",
+  "      phrase append",
+  '      phrase "append text"',
+  '      phrase "add to end"',
+  "      combo append+text",
+  "    language ru",
+  '      phrase "добавь в конец"',
+  "      combo добавить+конец",
+  "    language hi",
+  "      combo अंत+जोड़",
+  "      combo आखिर+जोड़",
+  "    language zh",
+  "      phrase 追加",
+  "      phrase 追加文本",
+  "      phrase 末尾添加",
+  "      combo 追加+文本",
+  "  operation prepend_text",
+  "    language en",
+  "      phrase prepend",
+  '      phrase "prepend text"',
+  '      phrase "add to start"',
+  "      combo prepend+text",
+  "    language ru",
+  '      phrase "добавь в начало"',
+  "      combo добавить+начало",
+  "    language hi",
+  "      combo शुरुआत+जोड़",
+  "      combo शुरू+जोड़",
+  "    language zh",
+  "      phrase 前置",
+  "      phrase 前置文本",
+  "      phrase 开头添加",
+  "      combo 前面+添加",
+  "  operation reverse_words",
+  "    language en",
   '      phrase "reverse words"',
   '      phrase "reverse the words"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "обратный порядок слов"',
-  '      combo "переверни+слова"',
-  '      combo "обрати+слова"',
-  '      combo "разверни+слова"',
-  '    language "hi"',
+  "      combo переверни+слова",
+  "      combo обрати+слова",
+  "      combo разверни+слова",
+  "    language hi",
   '      phrase "शब्दों को उल्टा"',
-  '      combo "शब्द+उल्टा"',
-  '    language "zh"',
-  '      phrase "反转单词"',
-  '      phrase "倒转单词"',
-  '      phrase "颠倒单词"',
-  '  operation "extract_email"',
-  '    language "en"',
-  '      combo "extract+email"',
-  '      combo "extract+e-mail"',
-  '    language "ru"',
-  '      combo "извлеки+имейл"',
-  '      combo "извлеки+почт"',
-  '      combo "извлечь+имейл"',
-  '      combo "найди+имейл"',
-  '    language "hi"',
-  '      combo "ईमेल+निकाल"',
-  '    language "zh"',
-  '      phrase "提取邮箱"',
-  '      phrase "提取电子邮件"',
-  '      phrase "提取邮件"',
-  '  operation "count_occurrences"',
-  '    language "en"',
+  "      combo शब्द+उल्टा",
+  "    language zh",
+  "      phrase 反转单词",
+  "      phrase 倒转单词",
+  "      phrase 颠倒单词",
+  "  operation extract_email",
+  "    language en",
+  "      combo extract+email",
+  "      combo extract+e-mail",
+  "    language ru",
+  "      combo извлеки+имейл",
+  "      combo извлеки+почт",
+  "      combo извлечь+имейл",
+  "      combo найди+имейл",
+  "    language hi",
+  "      combo ईमेल+निकाल",
+  "    language zh",
+  "      phrase 提取邮箱",
+  "      phrase 提取电子邮件",
+  "      phrase 提取邮件",
+  "  operation extract_url",
+  "    language en",
+  '      phrase "extract urls"',
+  '      phrase "extract links"',
+  "      combo extract+url",
+  "      combo extract+link",
+  "    language ru",
+  "      combo извлеки+url",
+  "      combo извлеки+ссылк",
+  "      combo найди+ссылк",
+  "    language hi",
+  "      combo लिंक+निकाल",
+  "      combo यूआरएल+निकाल",
+  "    language zh",
+  "      phrase 提取链接",
+  "      phrase 提取网址",
+  "      combo 提取+url",
+  "  operation extract_number",
+  "    language en",
+  '      phrase "extract numbers"',
+  "      combo extract+number",
+  "      combo extract+numbers",
+  "    language ru",
+  "      combo извлеки+числ",
+  "      combo найди+числ",
+  "    language hi",
+  "      combo संख्या+निकाल",
+  "      combo नंबर+निकाल",
+  "    language zh",
+  "      phrase 提取数字",
+  "      phrase 提取数值",
+  "  operation count_occurrences",
+  "    language en",
   '      phrase "count occurrences"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "количество вхождений"',
-  '      combo "посчитай+вхождени"',
-  '      combo "подсчитай+вхождени"',
-  '      combo "сколько+раз"',
-  '    language "hi"',
+  "      combo посчитай+вхождени",
+  "      combo подсчитай+вхождени",
+  "      combo сколько+раз",
+  "    language hi",
   '      phrase "कितनी बार"',
-  '      combo "बार+गिन"',
-  '    language "zh"',
-  '      phrase "出现次数"',
-  '      phrase "统计出现"',
-  '      phrase "计算出现"',
-  '  operation "count_unique_words"',
-  '    language "en"',
+  "      combo बार+गिन",
+  "    language zh",
+  "      phrase 出现次数",
+  "      phrase 统计出现",
+  "      phrase 计算出现",
+  "  operation count_unique_words",
+  "    language en",
   '      phrase "count unique words"',
   '      phrase "count distinct words"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "количество уникальных слов"',
-  '      combo "уникальн+слов"',
-  '      combo "различн+слов"',
-  '    language "hi"',
-  '      combo "अद्वितीय+शब्द"',
-  '      combo "विशिष्ट+शब्द"',
-  '    language "zh"',
-  '      phrase "唯一单词"',
-  '      phrase "不同单词"',
-  '      phrase "统计唯一"',
-  '  operation "deduplicate_lines"',
-  '    language "en"',
+  "      combo уникальн+слов",
+  "      combo различн+слов",
+  "    language hi",
+  "      combo अद्वितीय+शब्द",
+  "      combo विशिष्ट+शब्द",
+  "    language zh",
+  "      phrase 唯一单词",
+  "      phrase 不同单词",
+  "      phrase 统计唯一",
+  "  operation count_words",
+  "    language en",
+  '      phrase "count words"',
+  '      phrase "word count"',
+  "    language ru",
+  '      phrase "количество слов"',
+  "      combo посчитай+слова",
+  "    language hi",
+  "      combo शब्द+गिन",
+  '      phrase "शब्दों की संख्या"',
+  "    language zh",
+  "      phrase 统计单词",
+  "      phrase 单词数量",
+  "  operation count_lines",
+  "    language en",
+  '      phrase "count lines"',
+  '      phrase "line count"',
+  "    language ru",
+  '      phrase "количество строк"',
+  "      combo посчитай+строки",
+  "    language hi",
+  "      combo लाइन+गिन",
+  '      phrase "लाइनों की संख्या"',
+  "    language zh",
+  "      phrase 统计行",
+  "      phrase 行数",
+  "  operation count_characters",
+  "    language en",
+  '      phrase "count characters"',
+  '      phrase "character count"',
+  '      phrase "count chars"',
+  "    language ru",
+  '      phrase "количество символов"',
+  "      combo посчитай+символ",
+  "    language hi",
+  "      combo अक्षर+गिन",
+  "      combo वर्ण+गिन",
+  "    language zh",
+  "      phrase 统计字符",
+  "      phrase 字符数",
+  "  operation deduplicate_lines",
+  "    language en",
   '      phrase "deduplicate lines"',
   '      phrase "dedupe lines"',
-  '      combo "deduplicate+line"',
-  '    language "ru"',
-  '      combo "дубликат+строк"',
-  '      combo "дедупликац+строк"',
-  '    language "hi"',
-  '      combo "डुप्लिकेट+लाइन"',
-  '      combo "दोहराव+लाइन"',
-  '    language "zh"',
-  '      phrase "去重行"',
-  '      phrase "行去重"',
-  '      phrase "删除重复行"',
-  '  operation "sort"',
-  '    language "en"',
-  '      phrase "sort"',
-  '    language "ru"',
-  '      phrase "сортир"',
-  '      phrase "упорядоч"',
-  '    language "hi"',
-  '      phrase "क्रमबद्ध"',
-  '      phrase "क्रमित"',
-  '      phrase "सॉर्ट"',
-  '    language "zh"',
-  '      phrase "排序"',
-  '      phrase "排列"',
-  '  operation "sort_lines"',
-  '    language "en"',
+  "      combo deduplicate+line",
+  "    language ru",
+  "      combo дубликат+строк",
+  "      combo дедупликац+строк",
+  "    language hi",
+  "      combo डुप्लिकेट+लाइन",
+  "      combo दोहराव+लाइन",
+  "    language zh",
+  "      phrase 去重行",
+  "      phrase 行去重",
+  "      phrase 删除重复行",
+  "  operation sort",
+  "    language en",
+  "      phrase sort",
+  "    language ru",
+  "      phrase сортир",
+  "      phrase упорядоч",
+  "    language hi",
+  "      phrase क्रमबद्ध",
+  "      phrase क्रमित",
+  "      phrase सॉर्ट",
+  "    language zh",
+  "      phrase 排序",
+  "      phrase 排列",
+  "  operation sort_lines",
+  "    language en",
   '      phrase "sort lines"',
   '      phrase "sort the lines"',
-  '      combo "sort+line"',
-  '    language "ru"',
-  '      combo "сортир+строк"',
-  '    language "hi"',
-  '      combo "लाइन+क्रमबद्ध"',
-  '      combo "लाइनों+क्रमबद्ध"',
-  '    language "zh"',
-  '      phrase "排序行"',
-  '      phrase "行排序"',
-  '      phrase "对行排序"',
-  '  operation "path_argument"',
-  '    language "en"',
+  "      combo sort+line",
+  "    language ru",
+  "      combo сортир+строк",
+  "    language hi",
+  "      combo लाइन+क्रमबद्ध",
+  "      combo लाइनों+क्रमबद्ध",
+  "    language zh",
+  "      phrase 排序行",
+  "      phrase 行排序",
+  "      phrase 对行排序",
+  "  operation sort_words",
+  "    language en",
+  '      phrase "sort words"',
+  '      phrase "sort the words"',
+  "      combo sort+words",
+  "    language ru",
+  "      combo сортир+слова",
+  "      combo упорядоч+слова",
+  "    language hi",
+  "      combo शब्द+क्रमबद्ध",
+  "      combo शब्दों+क्रमबद्ध",
+  "    language zh",
+  "      phrase 排序单词",
+  "      phrase 单词排序",
+  "  operation trim_whitespace",
+  "    language en",
+  '      phrase "trim whitespace"',
+  '      phrase "strip whitespace"',
+  "      combo trim+whitespace",
+  "    language ru",
+  '      phrase "убери пробелы по краям"',
+  "      combo убрать+пробелы",
+  "      combo обрежь+пробелы",
+  "    language hi",
+  "      combo खाली+स्थान+हटा",
+  "      combo स्पेस+हटा",
+  "    language zh",
+  "      phrase 去除首尾空白",
+  "      phrase 修剪空白",
+  "      combo 去除+空白",
+  "  operation normalize_whitespace",
+  "    language en",
+  '      phrase "normalize whitespace"',
+  '      phrase "collapse whitespace"',
+  "      combo normalize+whitespace",
+  "      combo collapse+whitespace",
+  "    language ru",
+  '      phrase "нормализуй пробелы"',
+  '      phrase "схлопни пробелы"',
+  "      combo нормализуй+пробелы",
+  "    language hi",
+  "      combo खाली+स्थान+सामान्य",
+  "      combo स्पेस+सामान्य",
+  "    language zh",
+  "      phrase 规范化空白",
+  "      phrase 合并空白",
+  "      combo 合并+空白",
+  "  operation title_case",
+  "    language en",
+  '      phrase "title case"',
+  '      phrase "capitalize words"',
+  "      combo title+case",
+  "    language ru",
+  '      phrase "заглавные слова"',
+  "      combo каждое+слово+заглавн",
+  "    language hi",
+  '      phrase "शीर्षक केस"',
+  "      combo शब्द+बड़े",
+  "    language zh",
+  "      phrase 标题大小写",
+  "      combo 单词+大写",
+  "  operation sentence_case",
+  "    language en",
+  '      phrase "sentence case"',
+  "      combo sentence+case",
+  "    language ru",
+  '      phrase "как предложение"',
+  "      combo регистр+предложения",
+  "    language hi",
+  '      phrase "वाक्य केस"',
+  "      combo वाक्य+केस",
+  "    language zh",
+  "      phrase 句子大小写",
+  "      combo 句子+大小写",
+  "  operation snake_case",
+  "    language en",
+  '      phrase "snake case"',
+  "      phrase snake_case",
+  "      combo snake+case",
+  "    language ru",
+  '      phrase "snake case"',
+  "      combo змеиный+регистр",
+  "    language hi",
+  '      phrase "स्नेक केस"',
+  "      combo स्नेक+केस",
+  "    language zh",
+  "      phrase 蛇形命名",
+  "      phrase snake_case",
+  "  operation kebab_case",
+  "    language en",
+  '      phrase "kebab case"',
+  "      phrase kebab-case",
+  "      combo kebab+case",
+  "    language ru",
+  '      phrase "kebab case"',
+  "      combo кебаб+регистр",
+  "    language hi",
+  '      phrase "केबाब केस"',
+  "      combo केबाब+केस",
+  "    language zh",
+  "      phrase 短横线命名",
+  "      phrase kebab-case",
+  "  operation camel_case",
+  "    language en",
+  '      phrase "camel case"',
+  "      phrase camelCase",
+  "      combo camel+case",
+  "    language ru",
+  '      phrase "camel case"',
+  "      combo верблюжий+регистр",
+  "    language hi",
+  '      phrase "कैमल केस"',
+  "      combo कैमल+केस",
+  "    language zh",
+  "      phrase 驼峰命名",
+  "      phrase camelCase",
+  "  operation pascal_case",
+  "    language en",
+  '      phrase "pascal case"',
+  "      phrase PascalCase",
+  "      combo pascal+case",
+  "    language ru",
+  '      phrase "pascal case"',
+  "      combo паскаль+регистр",
+  "    language hi",
+  '      phrase "पास्कल केस"',
+  "      combo पास्कल+केस",
+  "    language zh",
+  "      phrase 帕斯卡命名",
+  "      phrase PascalCase",
+  "  operation remove_punctuation",
+  "    language en",
+  '      phrase "remove punctuation"',
+  '      phrase "strip punctuation"',
+  "      combo remove+punctuation",
+  "    language ru",
+  '      phrase "удали пунктуацию"',
+  "      combo убрать+пунктуац",
+  "    language hi",
+  "      combo विराम+हटा",
+  "      combo punctuation+हटा",
+  "    language zh",
+  "      phrase 删除标点",
+  "      phrase 去除标点",
+  "  operation strip_empty_lines",
+  "    language en",
+  '      phrase "strip empty lines"',
+  '      phrase "remove empty lines"',
+  "      combo empty+lines+remove",
+  "    language ru",
+  '      phrase "удали пустые строки"',
+  "      combo пустые+строки+удали",
+  "    language hi",
+  '      phrase "खाली लाइनें हटाओ"',
+  "      combo खाली+लाइनें+हटा",
+  "    language zh",
+  "      phrase 删除空行",
+  "      phrase 移除空行",
+  "  operation join_lines",
+  "    language en",
+  '      phrase "join lines"',
+  '      phrase "merge lines"',
+  "      combo join+lines",
+  "    language ru",
+  '      phrase "объедини строки"',
+  "      combo объединить+строки",
+  "    language hi",
+  '      phrase "लाइनें जोड़ो"',
+  "      combo लाइनें+जोड़",
+  "    language zh",
+  "      phrase 合并行",
+  "      phrase 连接行",
+  "  operation reverse_lines",
+  "    language en",
+  '      phrase "reverse lines"',
+  '      phrase "reverse the lines"',
+  "      combo reverse+lines",
+  "    language ru",
+  "      combo переверни+строки",
+  "      combo разверни+строки",
+  "    language hi",
+  "      combo लाइनें+उल्टा",
+  "      combo लाइन+उल्टा",
+  "    language zh",
+  "      phrase 反转行",
+  "      phrase 倒转行",
+  "  operation number_lines",
+  "    language en",
+  '      phrase "number lines"',
+  '      phrase "add line numbers"',
+  "      combo line+numbers",
+  "    language ru",
+  '      phrase "пронумеруй строки"',
+  "      combo номера+строк",
+  "    language hi",
+  '      phrase "लाइनों को नंबर दो"',
+  "      combo लाइन+नंबर",
+  "    language zh",
+  "      phrase 给行编号",
+  "      phrase 添加行号",
+  "  operation indent_lines",
+  "    language en",
+  '      phrase "indent lines"',
+  '      phrase "indent the lines"',
+  "      combo indent+lines",
+  "    language ru",
+  '      phrase "добавь отступ"',
+  "      combo отступ+строки",
+  "    language hi",
+  '      phrase "लाइनों को इंडेंट करो"',
+  "      combo लाइन+इंडेंट",
+  "    language zh",
+  "      phrase 缩进行",
+  "      phrase 添加缩进",
+  "  operation outdent_lines",
+  "    language en",
+  '      phrase "outdent lines"',
+  '      phrase "remove indentation"',
+  "      combo outdent+lines",
+  "    language ru",
+  '      phrase "убери отступ"',
+  "      combo убрать+отступ",
+  "    language hi",
+  '      phrase "इंडेंट हटाओ"',
+  "      combo इंडेंट+हटा",
+  "    language zh",
+  "      phrase 减少缩进",
+  "      phrase 移除缩进",
+  "  operation comment_lines",
+  "    language en",
+  '      phrase "comment lines"',
+  '      phrase "comment the lines"',
+  "      combo add+comments",
+  "    language ru",
+  '      phrase "закомментируй строки"',
+  "      combo добавить+комментарии",
+  "    language hi",
+  "      combo लाइन+comment",
+  "      combo टिप्पणी+जोड़",
+  "    language zh",
+  "      phrase 注释行",
+  "      phrase 添加注释",
+  "  operation uncomment_lines",
+  "    language en",
+  '      phrase "uncomment lines"',
+  '      phrase "remove line comments"',
+  "      combo remove+comments",
+  "    language ru",
+  '      phrase "раскомментируй строки"',
+  "      combo убрать+комментарии",
+  "    language hi",
+  "      combo टिप्पणी+हटा",
+  "      combo comment+हटा",
+  "    language zh",
+  "      phrase 取消注释",
+  "      phrase 删除注释",
+  "  operation path_argument",
+  "    language en",
   '      phrase "path argument"',
   '      phrase "path as an argument"',
-  '      combo "path+argument"',
-  '    language "ru"',
-  '      combo "путь+аргумент"',
-  '      combo "путь+аргумента"',
-  '      combo "путь+аргументом"',
-  '    language "hi"',
+  "      combo path+argument",
+  "    language ru",
+  "      combo путь+аргумент",
+  "      combo путь+аргумента",
+  "      combo путь+аргументом",
+  "    language hi",
   '      phrase "पथ को तर्क"',
-  '      combo "पथ+तर्क"',
-  '    language "zh"',
-  '      phrase "路径作为参数"',
-  '      combo "路径+参数"',
-  '  operation "reverse_sort"',
-  '    language "en"',
+  "      combo पथ+तर्क",
+  "    language zh",
+  "      phrase 路径作为参数",
+  "      combo 路径+参数",
+  "  operation reverse_sort",
+  "    language en",
   '      phrase "reverse sort"',
   '      phrase "reverse sorted"',
   '      phrase "sort in reverse order"',
   '      phrase "sort the results in reverse order"',
   '      phrase "reverse order"',
   '      phrase "descending order"',
-  '      combo "sort+reverse"',
-  '      combo "sort+descending"',
-  '    language "ru"',
+  '      phrase "invert the sort"',
+  '      phrase "invert the sorting"',
+  '      phrase "invert sort"',
+  "      combo sort+reverse",
+  "      combo sort+descending",
+  "      combo invert+sort",
+  "    language ru",
   '      phrase "в обратном порядке"',
-  '      combo "сортиров+обратн"',
-  '      combo "отсортир+обратн"',
-  '    language "hi"',
+  "      combo сортиров+обратн",
+  "      combo отсортир+обратн",
+  "      combo инверс+сортиров",
+  "      combo инверт+сортиров",
+  "    language hi",
   '      phrase "उल्टे क्रम"',
-  '      combo "क्रमबद्ध+उल्टे"',
-  '      combo "क्रमबद्ध+उल्टा"',
-  '    language "zh"',
-  '      phrase "相反顺序排序"',
-  '      combo "排序+相反"',
-  '      combo "排序+反向"',
-  '      combo "排序+倒序"',
-  '  operation "cancel_reverse_sort"',
-  '    inverse "reverse_sort"',
-  '    language "en"',
+  "      combo क्रमबद्ध+उल्टे",
+  "      combo क्रमबद्ध+उल्टा",
+  "      combo उलट+क्रम",
+  "    language zh",
+  "      phrase 相反顺序排序",
+  "      combo 排序+相反",
+  "      combo 排序+反向",
+  "      combo 排序+倒序",
+  "      combo 反转+排序",
+  "      combo 颠倒+排序",
+  "  operation cancel_reverse_sort",
+  "    inverse reverse_sort",
+  "    language en",
   '      phrase "cancel sort"',
   '      phrase "cancel the sort"',
   '      phrase "cancel sorting"',
@@ -13227,283 +15826,283 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "remove the sorting"',
   '      phrase "no sorting"',
   '      phrase "without sorting"',
-  '      combo "cancel+sort"',
-  '      combo "undo+sort"',
-  '      combo "remove+sort"',
-  '    language "ru"',
+  "      combo cancel+sort",
+  "      combo undo+sort",
+  "      combo remove+sort",
+  "    language ru",
   '      phrase "отмени сортировку"',
   '      phrase "отмените сортировку"',
   '      phrase "убери сортировку"',
   '      phrase "уберите сортировку"',
   '      phrase "без сортировки"',
-  '      combo "отмени+сортиров"',
-  '      combo "отмените+сортиров"',
-  '      combo "отменить+сортиров"',
-  '      combo "убери+сортиров"',
-  '      combo "уберите+сортиров"',
-  '      combo "убрать+сортиров"',
-  '      combo "без+сортиров"',
-  '    language "hi"',
+  "      combo отмени+сортиров",
+  "      combo отмените+сортиров",
+  "      combo отменить+сортиров",
+  "      combo убери+сортиров",
+  "      combo уберите+сортиров",
+  "      combo убрать+сортиров",
+  "      combo без+сортиров",
+  "    language hi",
   '      phrase "सॉर्ट हटाओ"',
   '      phrase "क्रम हटाओ"',
   '      phrase "सॉर्ट रद्द करो"',
-  '      combo "सॉर्ट+हटा"',
-  '      combo "क्रमबद्ध+हटा"',
-  '      combo "सॉर्ट+रद्द"',
-  '    language "zh"',
-  '      phrase "取消排序"',
-  '      phrase "撤销排序"',
-  '      phrase "去掉排序"',
-  '      phrase "取消排序顺序"',
-  '      combo "取消+排序"',
-  '      combo "撤销+排序"',
-  '  operation "function"',
-  '    language "en"',
-  '      phrase "function"',
-  '    language "ru"',
-  '      phrase "функция"',
-  '      phrase "функцию"',
-  '      phrase "функции"',
-  '    language "hi"',
-  '      phrase "फ़ंक्शन"',
-  '      phrase "फंक्शन"',
-  '    language "zh"',
-  '      phrase "函数"',
-  '  operation "implement"',
-  '    language "en"',
-  '      phrase "implement"',
-  '    language "ru"',
-  '      phrase "реализуй"',
-  '      phrase "реализовать"',
-  '      phrase "реализуйте"',
-  '    language "hi"',
+  "      combo सॉर्ट+हटा",
+  "      combo क्रमबद्ध+हटा",
+  "      combo सॉर्ट+रद्द",
+  "    language zh",
+  "      phrase 取消排序",
+  "      phrase 撤销排序",
+  "      phrase 去掉排序",
+  "      phrase 取消排序顺序",
+  "      combo 取消+排序",
+  "      combo 撤销+排序",
+  "  operation function",
+  "    language en",
+  "      phrase function",
+  "    language ru",
+  "      phrase функция",
+  "      phrase функцию",
+  "      phrase функции",
+  "    language hi",
+  "      phrase फ़ंक्शन",
+  "      phrase फंक्शन",
+  "    language zh",
+  "      phrase 函数",
+  "  operation implement",
+  "    language en",
+  "      phrase implement",
+  "    language ru",
+  "      phrase реализуй",
+  "      phrase реализовать",
+  "      phrase реализуйте",
+  "    language hi",
   '      phrase "लागू करें"',
   '      phrase "लागू करो"',
-  '    language "zh"',
-  '      phrase "实现"',
-  '  operation "write"',
-  '    language "en"',
-  '      phrase "write"',
-  '    language "ru"',
-  '      phrase "напиши"',
-  '      phrase "напишите"',
-  '      phrase "написать"',
-  '    language "hi"',
-  '      phrase "लिखें"',
-  '      phrase "लिखो"',
-  '    language "zh"',
-  '      phrase "编写"',
-  '      phrase "写"',
-  '  operation "return"',
-  '    language "en"',
-  '      phrase "return"',
-  '    language "ru"',
-  '      phrase "верни"',
-  '      phrase "верните"',
-  '      phrase "возвращает"',
-  '    language "hi"',
-  '      phrase "लौटाएँ"',
-  '      phrase "लौटाएं"',
+  "    language zh",
+  "      phrase 实现",
+  "  operation write",
+  "    language en",
+  "      phrase write",
+  "    language ru",
+  "      phrase напиши",
+  "      phrase напишите",
+  "      phrase написать",
+  "    language hi",
+  "      phrase लिखें",
+  "      phrase लिखो",
+  "    language zh",
+  "      phrase 编写",
+  "      phrase 写",
+  "  operation return",
+  "    language en",
+  "      phrase return",
+  "    language ru",
+  "      phrase верни",
+  "      phrase верните",
+  "      phrase возвращает",
+  "    language hi",
+  "      phrase लौटाएँ",
+  "      phrase लौटाएं",
   '      phrase "वापस करें"',
-  '    language "zh"',
-  '      phrase "返回"',
-  '  operation "tuple"',
-  '    language "en"',
-  '      phrase "tuple"',
-  '    language "ru"',
-  '      phrase "кортеж"',
-  '    language "hi"',
-  '      phrase "टपल"',
-  '    language "zh"',
-  '      phrase "元组"',
-  '  operation "numbers"',
-  '    language "en"',
-  '      phrase "numbers"',
-  '      phrase "number"',
-  '    language "ru"',
-  '      phrase "числа"',
-  '      phrase "чисел"',
-  '    language "hi"',
-  '      phrase "संख्याएँ"',
-  '      phrase "संख्याएं"',
-  '      phrase "संख्या"',
-  '    language "zh"',
-  '      phrase "数字"',
-  '      phrase "数值"',
-  '  operation "vowels"',
-  '    language "en"',
-  '      phrase "vowels"',
-  '      phrase "vowel"',
-  '    language "ru"',
-  '      phrase "гласные"',
-  '      phrase "гласных"',
-  '    language "hi"',
-  '      phrase "स्वर"',
-  '      phrase "स्वरों"',
-  '    language "zh"',
-  '      phrase "元音"',
-  '  operation "count_vowels"',
-  '    language "en"',
+  "    language zh",
+  "      phrase 返回",
+  "  operation tuple",
+  "    language en",
+  "      phrase tuple",
+  "    language ru",
+  "      phrase кортеж",
+  "    language hi",
+  "      phrase टपल",
+  "    language zh",
+  "      phrase 元组",
+  "  operation numbers",
+  "    language en",
+  "      phrase numbers",
+  "      phrase number",
+  "    language ru",
+  "      phrase числа",
+  "      phrase чисел",
+  "    language hi",
+  "      phrase संख्याएँ",
+  "      phrase संख्याएं",
+  "      phrase संख्या",
+  "    language zh",
+  "      phrase 数字",
+  "      phrase 数值",
+  "  operation vowels",
+  "    language en",
+  "      phrase vowels",
+  "      phrase vowel",
+  "    language ru",
+  "      phrase гласные",
+  "      phrase гласных",
+  "    language hi",
+  "      phrase स्वर",
+  "      phrase स्वरों",
+  "    language zh",
+  "      phrase 元音",
+  "  operation count_vowels",
+  "    language en",
   '      phrase "count vowels"',
   '      phrase "number of vowels"',
-  '      phrase "count_vowels"',
-  '    language "ru"',
+  "      phrase count_vowels",
+  "    language ru",
   '      phrase "посчитай гласные"',
   '      phrase "количество гласных"',
-  '    language "hi"',
+  "    language hi",
   '      phrase "स्वर गिनें"',
   '      phrase "स्वरों की संख्या"',
-  '    language "zh"',
-  '      phrase "统计元音"',
-  '      phrase "元音数量"',
-  '  operation "similar_elements"',
-  '    language "en"',
+  "    language zh",
+  "      phrase 统计元音",
+  "      phrase 元音数量",
+  "  operation similar_elements",
+  "    language en",
   '      phrase "similar elements"',
-  '      phrase "similar_elements"',
-  '    language "ru"',
+  "      phrase similar_elements",
+  "    language ru",
   '      phrase "общие элементы"',
   '      phrase "похожие элементы"',
-  '    language "hi"',
+  "    language hi",
   '      phrase "समान तत्व"',
-  '    language "zh"',
-  '      phrase "相同元素"',
-  '      phrase "相似元素"',
-  '  operation "distinct_numbers"',
-  '    language "en"',
+  "    language zh",
+  "      phrase 相同元素",
+  "      phrase 相似元素",
+  "  operation distinct_numbers",
+  "    language en",
   '      phrase "distinct numbers"',
-  '    language "ru"',
+  "    language ru",
   '      phrase "различные числа"',
   '      phrase "разных числа"',
-  '    language "hi"',
+  "    language hi",
   '      phrase "अलग संख्याएँ"',
   '      phrase "अलग संख्याएं"',
-  '    language "zh"',
-  '      phrase "不同数字"',
-  '      phrase "不同数值"',
-  '  operation "differ"',
-  '    language "en"',
-  '      phrase "differ"',
-  '    language "ru"',
-  '      phrase "отличаются"',
-  '      phrase "разница"',
-  '    language "hi"',
-  '      phrase "अंतर"',
-  '    language "zh"',
-  '      phrase "相差"',
-  '      phrase "差"',
-  '  operation "threshold"',
-  '    language "en"',
-  '      phrase "threshold"',
-  '    language "ru"',
-  '      phrase "порог"',
-  '      phrase "порога"',
-  '    language "hi"',
-  '      phrase "सीमा"',
-  '    language "zh"',
-  '      phrase "阈值"',
-  '  operation "reverse"',
-  '    language "en"',
-  '      phrase "reverse"',
-  '      phrase "flip"',
-  '    language "ru"',
-  '      phrase "переверни"',
-  '      phrase "перевернуть"',
-  '      phrase "разверни"',
-  '      phrase "развернуть"',
+  "    language zh",
+  "      phrase 不同数字",
+  "      phrase 不同数值",
+  "  operation differ",
+  "    language en",
+  "      phrase differ",
+  "    language ru",
+  "      phrase отличаются",
+  "      phrase разница",
+  "    language hi",
+  "      phrase अंतर",
+  "    language zh",
+  "      phrase 相差",
+  "      phrase 差",
+  "  operation threshold",
+  "    language en",
+  "      phrase threshold",
+  "    language ru",
+  "      phrase порог",
+  "      phrase порога",
+  "    language hi",
+  "      phrase सीमा",
+  "    language zh",
+  "      phrase 阈值",
+  "  operation reverse",
+  "    language en",
+  "      phrase reverse",
+  "      phrase flip",
+  "    language ru",
+  "      phrase переверни",
+  "      phrase перевернуть",
+  "      phrase разверни",
+  "      phrase развернуть",
   '      phrase "задом наперёд"',
-  '    language "hi"',
-  '      phrase "उलट"',
-  '      phrase "पलट"',
-  '    language "zh"',
-  '      phrase "反转"',
-  '      phrase "倒转"',
-  '      phrase "颠倒"',
-  '  operation "sum"',
-  '    language "en"',
+  "    language hi",
+  "      phrase उलट",
+  "      phrase पलट",
+  "    language zh",
+  "      phrase 反转",
+  "      phrase 倒转",
+  "      phrase 颠倒",
+  "  operation sum",
+  "    language en",
   '      phrase "sum of"',
   '      phrase "sum the"',
   '      phrase "sum up"',
   '      phrase "total of"',
-  '      combo "add+up"',
-  '    language "ru"',
-  '      phrase "сумм"',
-  '      phrase "сложи"',
-  '      phrase "складыва"',
-  '      phrase "суммируй"',
-  '    language "hi"',
-  '      phrase "योग"',
-  '      phrase "जोड़"',
-  '    language "zh"',
-  '      phrase "求和"',
-  '      phrase "总和"',
-  '      phrase "相加"',
-  '      phrase "之和"',
-  '  operation "product"',
-  '    language "en"',
+  "      combo add+up",
+  "    language ru",
+  "      phrase сумм",
+  "      phrase сложи",
+  "      phrase складыва",
+  "      phrase суммируй",
+  "    language hi",
+  "      phrase योग",
+  "      phrase जोड़",
+  "    language zh",
+  "      phrase 求和",
+  "      phrase 总和",
+  "      phrase 相加",
+  "      phrase 之和",
+  "  operation product",
+  "    language en",
   '      phrase "product of"',
-  '      phrase "multiply"',
-  '      combo "multiply+together"',
-  '    language "ru"',
-  '      phrase "произведение"',
-  '      phrase "перемнож"',
-  '      phrase "умнож"',
-  '    language "hi"',
-  '      phrase "गुणनफल"',
-  '      phrase "गुणा"',
-  '    language "zh"',
-  '      phrase "乘积"',
-  '      phrase "相乘"',
-  '      phrase "之积"',
-  '  operation "minimum"',
-  '    language "en"',
-  '      phrase "minimum"',
-  '      phrase "smallest"',
-  '      phrase "lowest"',
-  '    language "ru"',
-  '      phrase "минимум"',
-  '      phrase "минимальн"',
-  '      phrase "наименьш"',
-  '    language "hi"',
-  '      phrase "न्यूनतम"',
+  "      phrase multiply",
+  "      combo multiply+together",
+  "    language ru",
+  "      phrase произведение",
+  "      phrase перемнож",
+  "      phrase умнож",
+  "    language hi",
+  "      phrase गुणनफल",
+  "      phrase गुणा",
+  "    language zh",
+  "      phrase 乘积",
+  "      phrase 相乘",
+  "      phrase 之积",
+  "  operation minimum",
+  "    language en",
+  "      phrase minimum",
+  "      phrase smallest",
+  "      phrase lowest",
+  "    language ru",
+  "      phrase минимум",
+  "      phrase минимальн",
+  "      phrase наименьш",
+  "    language hi",
+  "      phrase न्यूनतम",
   '      phrase "सबसे छोटी"',
   '      phrase "सबसे छोटा"',
-  '    language "zh"',
-  '      phrase "最小"',
-  '  operation "maximum"',
-  '    language "en"',
-  '      phrase "maximum"',
-  '      phrase "largest"',
-  '      phrase "biggest"',
-  '      phrase "highest"',
-  '    language "ru"',
-  '      phrase "максимум"',
-  '      phrase "максимальн"',
-  '      phrase "наибольш"',
-  '    language "hi"',
-  '      phrase "अधिकतम"',
+  "    language zh",
+  "      phrase 最小",
+  "  operation maximum",
+  "    language en",
+  "      phrase maximum",
+  "      phrase largest",
+  "      phrase biggest",
+  "      phrase highest",
+  "    language ru",
+  "      phrase максимум",
+  "      phrase максимальн",
+  "      phrase наибольш",
+  "    language hi",
+  "      phrase अधिकतम",
   '      phrase "सबसे बड़ी"',
   '      phrase "सबसे बड़ा"',
-  '    language "zh"',
-  '      phrase "最大"',
-  '  operation "code_request"',
-  '    language "en"',
-  '      phrase "code"',
-  '      phrase "program"',
-  '      phrase "script"',
-  '      phrase "snippet"',
-  '    language "ru"',
-  '      phrase "код"',
-  '      phrase "программ"',
-  '      phrase "скрипт"',
-  '    language "hi"',
-  '      phrase "कोड"',
-  '      phrase "प्रोग्राम"',
-  '      phrase "स्क्रिप्ट"',
-  '    language "zh"',
-  '      phrase "代码"',
-  '      phrase "代碼"',
-  '      phrase "程序"',
-  '      phrase "程式"',
+  "    language zh",
+  "      phrase 最大",
+  "  operation code_request",
+  "    language en",
+  "      phrase code",
+  "      phrase program",
+  "      phrase script",
+  "      phrase snippet",
+  "    language ru",
+  "      phrase код",
+  "      phrase программ",
+  "      phrase скрипт",
+  "    language hi",
+  "      phrase कोड",
+  "      phrase प्रोग्राम",
+  "      phrase स्क्रिप्ट",
+  "    language zh",
+  "      phrase 代码",
+  "      phrase 代碼",
+  "      phrase 程序",
+  "      phrase 程式",
 ].join("\n");
 
 let cachedOperationVocabulary = null;
@@ -13735,17 +16334,17 @@ const MEANINGS_LINO = [
   "    role hello_world_reference",
   "    lexeme en",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "    lexeme ru",
   "      surface",
-  "        text \"привет мир\"",
+  '        text "привет мир"',
   "      surface",
-  "        text \"хелло ворлд\"",
+  '        text "хелло ворлд"',
   "    lexeme hi",
   "      surface",
-  "        text \"नमस्ते दुनिया\"",
+  '        text "नमस्ते दुनिया"',
   "      surface",
-  "        text \"हैलो वर्ल्ड\"",
+  '        text "हैलो वर्ल्ड"',
   "    lexeme zh",
   "      surface",
   "        text 你好世界",
@@ -14133,15 +16732,15 @@ const MEANINGS_LINO = [
   "    role numeric_concept",
   "    lexeme en",
   "      surface",
-  "        text \"cardinal number\"",
+  '        text "cardinal number"',
   "      surface",
   "        text number",
   "    lexeme ru",
   "      surface",
-  "        text \"количественное число\"",
+  '        text "количественное число"',
   "    lexeme hi",
   "      surface",
-  "        text \"गणन संख्या\"",
+  '        text "गणन संख्या"',
   "    lexeme zh",
   "      surface",
   "        text 基数",
@@ -14375,13 +16974,13 @@ const MEANINGS_LINO = [
   "    role physical_dimension",
   "    lexeme en",
   "      surface",
-  "        text \"data storage\"",
+  '        text "data storage"',
   "    lexeme ru",
   "      surface",
-  "        text \"хранение данных\"",
+  '        text "хранение данных"',
   "    lexeme hi",
   "      surface",
-  "        text \"डेटा भंडारण\"",
+  '        text "डेटा भंडारण"',
   "    lexeme zh",
   "      surface",
   "        text 数据存储",
@@ -15172,7 +17771,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text weekday",
   "      surface",
-  "        text \"week day\"",
+  '        text "week day"',
   "    lexeme ru",
   "      surface",
   "        text день",
@@ -15249,31 +17848,31 @@ const MEANINGS_LINO = [
   "      surface",
   "        text after",
   "      surface",
-  "        text \"comes after\"",
+  '        text "comes after"',
   "      surface",
-  "        text \"day after\"",
+  '        text "day after"',
   "      surface",
-  "        text \"next day\"",
+  '        text "next day"',
   "      surface",
-  "        text \"following day\"",
+  '        text "following day"',
   "      surface",
-  "        text \"following weekday\"",
+  '        text "following weekday"',
   "      surface",
   "        text follows",
   "    lexeme ru",
   "      surface",
   "        text после",
   "      surface",
-  "        text \"наступает после\"",
+  '        text "наступает после"',
   "      surface",
-  "        text \"следующий день\"",
+  '        text "следующий день"',
   "      surface",
   "        text следующая",
   "      surface",
-  "        text \"следом за\"",
+  '        text "следом за"',
   "    lexeme hi",
   "      surface",
-  "        text \"के बाद\"",
+  '        text "के बाद"',
   "      surface",
   "        text बाद",
   "      surface",
@@ -15296,29 +17895,29 @@ const MEANINGS_LINO = [
   "      surface",
   "        text before",
   "      surface",
-  "        text \"comes before\"",
+  '        text "comes before"',
   "      surface",
-  "        text \"day before\"",
+  '        text "day before"',
   "      surface",
-  "        text \"previous day\"",
+  '        text "previous day"',
   "      surface",
-  "        text \"previous weekday\"",
+  '        text "previous weekday"',
   "      surface",
   "        text precedes",
   "    lexeme ru",
   "      surface",
   "        text перед",
   "      surface",
-  "        text \"предыдущий день\"",
+  '        text "предыдущий день"',
   "      surface",
   "        text предыдущая",
   "      surface",
   "        text предшествует",
   "    lexeme hi",
   "      surface",
-  "        text \"से पहले\"",
+  '        text "से पहले"',
   "      surface",
-  "        text \"के पहले\"",
+  '        text "के पहले"',
   "      surface",
   "        text पहले",
   "      surface",
@@ -15348,6 +17947,48 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 今天",
+  "  calendar_tomorrow",
+  "    grounded-in Q1209716",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  "        text tomorrow",
+  "      surface",
+  '        text "the next day"',
+  "    lexeme ru",
+  "      surface",
+  "        text завтра",
+  "      surface",
+  '        text "на завтра"',
+  "    lexeme hi",
+  "      surface",
+  "        text कल",
+  "      surface",
+  "        text आनेवाला कल",
+  "    lexeme zh",
+  "      surface",
+  "        text 明天",
+  "      surface",
+  "        text 明日",
+  "  calendar_day_after_tomorrow",
+  "    grounded-in Q1036448",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  '        text "day after tomorrow"',
+  "      surface",
+  '        text "the day after tomorrow"',
+  "    lexeme ru",
+  "      surface",
+  "        text послезавтра",
+  "    lexeme hi",
+  "      surface",
+  "        text परसों",
+  "    lexeme zh",
+  "      surface",
+  "        text 后天",
   "  calendar_interrogative",
   "    defined-by calendar_day",
   "    role calendar_question",
@@ -15357,7 +17998,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text which",
   "      surface",
-  "        text \"tell me\"",
+  '        text "tell me"',
   "      surface",
   "        text show",
   "      surface",
@@ -15391,6 +18032,160 @@ const MEANINGS_LINO = [
   "        text 告诉",
   "      surface",
   "        text 显示",
+  "  calendar_schedule_action",
+  "    defined-by calendar_day",
+  "    role calendar_schedule_action",
+  "    lexeme en",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  '        text "schedule me"',
+  "      surface",
+  '        text "book"',
+  "      surface",
+  '        text "book on the"',
+  "      surface",
+  '        text "put on the calendar"',
+  "      surface",
+  '        text "put on my calendar"',
+  "      surface",
+  '        text "add to the calendar"',
+  "      surface",
+  '        text "add to my calendar"',
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  '        text "забей мне"',
+  "      surface",
+  "        text поставь",
+  "      surface",
+  '        text "поставь мне"',
+  "      surface",
+  "        text поставить",
+  "      surface",
+  '        text "поставить мне"',
+  "      surface",
+  "        text создай",
+  "      surface",
+  '        text "создай событие"',
+  "      surface",
+  "        text добавь",
+  "      surface",
+  '        text "добавь в календарь"',
+  "      surface",
+  '        text "на встречу"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शेड्यूल करें"',
+  "      surface",
+  '        text "कैलेंडर में जोड़ें"',
+  "    lexeme zh",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 添加到日历",
+  "  calendar_event",
+  "    defined-by calendar_day",
+  "    role calendar_event",
+  "    lexeme en",
+  "      surface",
+  '        text "meeting"',
+  "      surface",
+  "        text call",
+  "      surface",
+  "        text event",
+  "    lexeme ru",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречи",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text события",
+  "      surface",
+  "        text созвон",
+  "      surface",
+  "        text созвона",
+  "      surface",
+  "        text созвоны",
+  "      surface",
+  "        text созвону",
+  "      surface",
+  "        text звонок",
+  "      surface",
+  "        text звонка",
+  "    lexeme hi",
+  "      surface",
+  "        text मीटिंग",
+  "      surface",
+  '        text "घटना"',
+  "    lexeme zh",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 事件",
+  "      surface",
+  "        text 通话",
+  "  calendar_clock_time",
+  "    defined-by calendar_day",
+  "    role calendar_time",
+  "    lexeme en",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "5 pm"',
+  "      surface",
+  '        text "5pm"',
+  "      surface",
+  '        text "at 17:00"',
+  "    lexeme ru",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "в 17:00"',
+  "      surface",
+  '        text "17.00"',
+  "      surface",
+  "        text вечером",
+  "      surface",
+  '        text "в 17"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शाम 5 बजे"',
+  "    lexeme zh",
+  "      surface",
+  "        text 下午5点",
+  "  calendar_timezone_alias",
+  "    defined-by calendar_day",
+  "    role calendar_timezone_alias",
+  "    lexeme ru",
+  "      surface",
+  '        text "по грузии"',
+  "      surface",
+  '        text "по тбилиси"',
+  "      surface",
+  '        text "грузинское время"',
+  "    lexeme en",
+  "      surface",
+  '        text "tbilisi time"',
+  "      surface",
+  '        text "georgia time"',
+  "      surface",
+  '        text "Asia/Tbilisi"',
+  "    lexeme hi",
+  "      surface",
+  '        text "जॉर्जिया समय"',
+  "      surface",
+  '        text "त्बिलिसी समय"',
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
   "meanings",
   "  money",
   "    grounded-in Q1368",
@@ -15423,15 +18218,15 @@ const MEANINGS_LINO = [
   "    role exchange_rate_reference",
   "    lexeme en",
   "      surface",
-  "        text \"exchange rate\"",
+  '        text "exchange rate"',
   "      surface",
-  "        text \"currency rate\"",
+  '        text "currency rate"',
   "    lexeme ru",
   "      surface",
   "        text курс",
   "    lexeme hi",
   "      surface",
-  "        text \"विनिमय दर\"",
+  '        text "विनिमय दर"',
   "    lexeme zh",
   "      surface",
   "        text 汇率",
@@ -15516,26 +18311,26 @@ const MEANINGS_LINO = [
   "      surface",
   "        text calculations",
   "      surface",
-  "        text \"do you use\"",
+  '        text "do you use"',
   "      surface",
-  "        text \"used for\"",
+  '        text "used for"',
   "      surface",
-  "        text \"your rate\"",
+  '        text "your rate"',
   "    lexeme ru",
   "      surface",
-  "        text \"при расчет\"",
+  '        text "при расчет"',
   "      surface",
-  "        text \"при расчёт\"",
+  '        text "при расчёт"',
   "      surface",
-  "        text \"в расчет\"",
+  '        text "в расчет"',
   "      surface",
-  "        text \"в расчёт\"",
+  '        text "в расчёт"',
   "      surface",
-  "        text \"для расчет\"",
+  '        text "для расчет"',
   "      surface",
-  "        text \"для расчёт\"",
+  '        text "для расчёт"',
   "      surface",
-  "        text \"у тебя\"",
+  '        text "у тебя"',
   "      surface",
   "        text использ",
   "      surface",
@@ -15560,15 +18355,15 @@ const MEANINGS_LINO = [
   "    role numeric_concept",
   "    lexeme en",
   "      surface",
-  "        text \"arithmetic operation\"",
+  '        text "arithmetic operation"',
   "      surface",
   "        text operator",
   "    lexeme ru",
   "      surface",
-  "        text \"арифметическая операция\"",
+  '        text "арифметическая операция"',
   "    lexeme hi",
   "      surface",
-  "        text \"अंकगणितीय संक्रिया\"",
+  '        text "अंकगणितीय संक्रिया"',
   "    lexeme zh",
   "      surface",
   "        text 算术运算",
@@ -15616,7 +18411,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text times",
   "      surface",
-  "        text \"multiplied by\"",
+  '        text "multiplied by"',
   "      surface",
   "        text *",
   "    lexeme ru",
@@ -15625,7 +18420,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text умножь",
   "      surface",
-  "        text \"умножить на\"",
+  '        text "умножить на"',
   "    lexeme hi",
   "      surface",
   "        text गुणा",
@@ -15638,14 +18433,14 @@ const MEANINGS_LINO = [
   "    role arithmetic_operator_word",
   "    lexeme en",
   "      surface",
-  "        text \"divided by\"",
+  '        text "divided by"',
   "      surface",
   "        text /",
   "    lexeme ru",
   "      surface",
-  "        text \"разделить на\"",
+  '        text "разделить на"',
   "      surface",
-  "        text \"делить на\"",
+  '        text "делить на"',
   "    lexeme hi",
   "      surface",
   "        text भाग",
@@ -15665,7 +18460,7 @@ const MEANINGS_LINO = [
   "        text %",
   "    lexeme ru",
   "      surface",
-  "        text \"по модулю\"",
+  '        text "по модулю"',
   "    lexeme hi",
   "      surface",
   "        text मॉड्यूलो",
@@ -15678,23 +18473,23 @@ const MEANINGS_LINO = [
   "    role calculation_request_cue",
   "    lexeme en",
   "      surface",
-  "        text \"please calculate\"",
+  '        text "please calculate"',
   "      surface",
-  "        text \"please compute\"",
+  '        text "please compute"',
   "      surface",
-  "        text \"can you calculate\"",
+  '        text "can you calculate"',
   "      surface",
-  "        text \"can you compute\"",
+  '        text "can you compute"',
   "      surface",
-  "        text \"could you calculate\"",
+  '        text "could you calculate"',
   "      surface",
-  "        text \"could you compute\"",
+  '        text "could you compute"',
   "      surface",
-  "        text \"what is\"",
+  '        text "what is"',
   "      surface",
   "        text \"what's\"",
   "      surface",
-  "        text \"what does\"",
+  '        text "what does"',
   "      surface",
   "        text calculate",
   "      surface",
@@ -15702,12 +18497,12 @@ const MEANINGS_LINO = [
   "      surface",
   "        text evaluate",
   "      surface",
-  "        text \"how much is\"",
+  '        text "how much is"',
   "      surface",
   "        text solve",
   "    lexeme ru",
   "      surface",
-  "        text \"сколько будет\"",
+  '        text "сколько будет"',
   "      surface",
   "        text посчитай",
   "      surface",
@@ -15733,9 +18528,9 @@ const MEANINGS_LINO = [
   "        text 计算",
   "    lexeme hi",
   "      surface",
-  "        text \"कृपया गणना करें\"",
+  '        text "कृपया गणना करें"',
   "      surface",
-  "        text \"गणना करें\"",
+  '        text "गणना करें"',
   "  politeness",
   "    grounded-in Q281287",
   "    defined-by property",
@@ -15744,7 +18539,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text please",
   "      surface",
-  "        text \"for me\"",
+  '        text "for me"',
   "    lexeme ru",
   "      surface",
   "        text пожалуйста",
@@ -15777,11 +18572,11 @@ const MEANINGS_LINO = [
   "        text 等于几",
   "    lexeme hi",
   "      surface",
-  "        text \"कितना है\"",
+  '        text "कितना है"',
   "      surface",
-  "        text \"क्या है\"",
+  '        text "क्या है"',
   "      surface",
-  "        text \"की गणना करें\"",
+  '        text "की गणना करें"',
   "  quantity_conversion",
   "    grounded-in Q618655",
   "    defined-by action",
@@ -15819,13 +18614,13 @@ const MEANINGS_LINO = [
   "    role numeric_concept",
   "    lexeme en",
   "      surface",
-  "        text \"mathematical function\"",
+  '        text "mathematical function"',
   "    lexeme ru",
   "      surface",
-  "        text \"математическая функция\"",
+  '        text "математическая функция"',
   "    lexeme hi",
   "      surface",
-  "        text \"गणितीय फलन\"",
+  '        text "गणितीय फलन"',
   "    lexeme zh",
   "      surface",
   "        text 数学函数",
@@ -15837,10 +18632,10 @@ const MEANINGS_LINO = [
   "      surface",
   "        text sqrt",
   "      surface",
-  "        text \"square root\"",
+  '        text "square root"',
   "    lexeme ru",
   "      surface",
-  "        text \"квадратный корень\"",
+  '        text "квадратный корень"',
   "      surface",
   "        text корень",
   "    lexeme hi",
@@ -15929,13 +18724,13 @@ const MEANINGS_LINO = [
   "      surface",
   "        text ln",
   "      surface",
-  "        text \"natural logarithm\"",
+  '        text "natural logarithm"',
   "    lexeme ru",
   "      surface",
-  "        text \"натуральный логарифм\"",
+  '        text "натуральный логарифм"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्राकृतिक लघुगणक\"",
+  '        text "प्राकृतिक लघुगणक"',
   "    lexeme zh",
   "      surface",
   "        text 自然对数",
@@ -16043,7 +18838,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text population",
   "      surface",
-  "        text \"how many people\"",
+  '        text "how many people"',
   "    lexeme ru",
   "      surface",
   "        text население",
@@ -16079,19 +18874,19 @@ const MEANINGS_LINO = [
   "    role fact_relation",
   "    lexeme en",
   "      surface",
-  "        text \"official language\"",
+  '        text "official language"',
   "      surface",
-  "        text \"what language\"",
+  '        text "what language"',
   "    lexeme ru",
   "      surface",
-  "        text \"государственный язык\"",
+  '        text "государственный язык"',
   "      surface",
-  "        text \"официальный язык\"",
+  '        text "официальный язык"',
   "    lexeme hi",
   "      surface",
   "        text राजभाषा",
   "      surface",
-  "        text \"आधिकारिक भाषा\"",
+  '        text "आधिकारिक भाषा"',
   "    lexeme zh",
   "      surface",
   "        text 官方语言",
@@ -16119,23 +18914,23 @@ const MEANINGS_LINO = [
   "    role fact_relation",
   "    lexeme en",
   "      surface",
-  "        text \"who wrote\"",
+  '        text "who wrote"',
   "      surface",
   "        text author",
   "      surface",
-  "        text \"written by\"",
+  '        text "written by"',
   "    lexeme ru",
   "      surface",
-  "        text \"кто написал\"",
+  '        text "кто написал"',
   "      surface",
   "        text написал",
   "      surface",
   "        text автор",
   "    lexeme hi",
   "      surface",
-  "        text \"किसने लिखी\"",
+  '        text "किसने लिखी"',
   "      surface",
-  "        text \"किसने लिखा\"",
+  '        text "किसने लिखा"',
   "      surface",
   "        text लेखक",
   "    lexeme zh",
@@ -16149,7 +18944,7 @@ const MEANINGS_LINO = [
   "    role fact_relation",
   "    lexeme en",
   "      surface",
-  "        text \"who painted\"",
+  '        text "who painted"',
   "      surface",
   "        text painted",
   "      surface",
@@ -16158,14 +18953,14 @@ const MEANINGS_LINO = [
   "        text artist",
   "    lexeme ru",
   "      surface",
-  "        text \"кто написал\"",
+  '        text "кто написал"',
   "      surface",
   "        text написал",
   "      surface",
   "        text художник",
   "    lexeme hi",
   "      surface",
-  "        text \"किसने बनाई\"",
+  '        text "किसने बनाई"',
   "      surface",
   "        text चित्रकार",
   "      surface",
@@ -16213,21 +19008,21 @@ const MEANINGS_LINO = [
   "    role fact_relation",
   "    lexeme en",
   "      surface",
-  "        text \"speed of light\"",
+  '        text "speed of light"',
   "      surface",
-  "        text \"what is\"",
+  '        text "what is"',
   "      surface",
-  "        text \"how fast\"",
+  '        text "how fast"',
   "    lexeme ru",
   "      surface",
-  "        text \"скорость света\"",
+  '        text "скорость света"',
   "      surface",
   "        text какова",
   "      surface",
-  "        text \"чему равна\"",
+  '        text "чему равна"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्रकाश की गति\"",
+  '        text "प्रकाश की गति"',
   "      surface",
   "        text कितनी",
   "    lexeme zh",
@@ -16267,19 +19062,19 @@ const MEANINGS_LINO = [
   "    role software_followup_verification",
   "    lexeme en",
   "      surface",
-  "        text \"test it\"",
+  '        text "test it"',
   "      surface",
-  "        text \"test the\"",
+  '        text "test the"',
   "      surface",
-  "        text \"test this\"",
+  '        text "test this"',
   "      surface",
   "        text verify",
   "      surface",
-  "        text \"check it\"",
+  '        text "check it"',
   "      surface",
-  "        text \"check that\"",
+  '        text "check that"',
   "      surface",
-  "        text \"run the tests\"",
+  '        text "run the tests"',
   "    lexeme ru",
   "      surface",
   "        text протестируй",
@@ -16308,17 +19103,17 @@ const MEANINGS_LINO = [
   "    role software_followup_execution",
   "    lexeme en",
   "      surface",
-  "        text \"run it\"",
+  '        text "run it"',
   "      surface",
-  "        text \"run this\"",
+  '        text "run this"',
   "      surface",
-  "        text \"run the\"",
+  '        text "run the"',
   "      surface",
-  "        text \"execute it\"",
+  '        text "execute it"',
   "      surface",
-  "        text \"execute the\"",
+  '        text "execute the"',
   "      surface",
-  "        text \"try it\"",
+  '        text "try it"',
   "    lexeme ru",
   "      surface",
   "        text запусти",
@@ -16339,13 +19134,13 @@ const MEANINGS_LINO = [
   "    role software_followup_demonstration",
   "    lexeme en",
   "      surface",
-  "        text \"demo it\"",
+  '        text "demo it"',
   "      surface",
-  "        text \"show me\"",
+  '        text "show me"',
   "      surface",
-  "        text \"show the\"",
+  '        text "show the"',
   "      surface",
-  "        text \"print the\"",
+  '        text "print the"',
   "    lexeme ru",
   "      surface",
   "        text покажи",
@@ -16363,25 +19158,25 @@ const MEANINGS_LINO = [
   "    role output_display_request",
   "    lexeme en",
   "      surface",
-  "        text \"show me …\"",
+  '        text "show me …"',
   "      surface",
-  "        text \"show …\"",
+  '        text "show …"',
   "      surface",
-  "        text \"print …\"",
+  '        text "print …"',
   "      surface",
-  "        text \"display …\"",
+  '        text "display …"',
   "    lexeme ru",
   "      surface",
-  "        text \"покажи мне …\"",
+  '        text "покажи мне …"',
   "      surface",
-  "        text \"покажи …\"",
+  '        text "покажи …"',
   "      surface",
-  "        text \"выведи …\"",
+  '        text "выведи …"',
   "    lexeme hi",
   "      surface",
-  "        text \"मुझे दिखाओ …\"",
+  '        text "मुझे दिखाओ …"',
   "      surface",
-  "        text \"दिखाओ …\"",
+  '        text "दिखाओ …"',
   "    lexeme zh",
   "      surface",
   "        text 给我看…",
@@ -16432,7 +19227,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text спроектируй",
   "      surface",
-  "        text \"создай дизайн\"",
+  '        text "создай дизайн"',
   "    lexeme hi",
   "      surface",
   "        text डिज़ाइन",
@@ -16448,12 +19243,12 @@ const MEANINGS_LINO = [
   "        text scaffold",
   "    lexeme ru",
   "      surface",
-  "        text \"создай каркас\"",
+  '        text "создай каркас"',
   "      surface",
-  "        text \"сгенерируй каркас\"",
+  '        text "сгенерируй каркас"',
   "    lexeme hi",
   "      surface",
-  "        text \"ढाँचा बनाओ\"",
+  '        text "ढाँचा बनाओ"',
   "    lexeme zh",
   "      surface",
   "        text 搭建",
@@ -16464,17 +19259,17 @@ const MEANINGS_LINO = [
   "    role software_artifact",
   "    lexeme en",
   "      surface",
-  "        text \"software artifact\"",
+  '        text "software artifact"',
   "      surface",
   "        text deliverable",
   "    lexeme ru",
   "      surface",
-  "        text \"программный продукт\"",
+  '        text "программный продукт"',
   "      surface",
   "        text артефакт",
   "    lexeme hi",
   "      surface",
-  "        text \"सॉफ़्टवेयर कलाकृति\"",
+  '        text "सॉफ़्टवेयर कलाकृति"',
   "    lexeme zh",
   "      surface",
   "        text 软件制品",
@@ -16483,13 +19278,13 @@ const MEANINGS_LINO = [
   "    role software_artifact_kind",
   "    lexeme en",
   "      surface",
-  "        text \"browser extension\"",
+  '        text "browser extension"',
   "    lexeme ru",
   "      surface",
-  "        text \"расширение браузера\"",
+  '        text "расширение браузера"',
   "    lexeme hi",
   "      surface",
-  "        text \"ब्राउज़र एक्सटेंशन\"",
+  '        text "ब्राउज़र एक्सटेंशन"',
   "    lexeme zh",
   "      surface",
   "        text 浏览器扩展",
@@ -16498,17 +19293,17 @@ const MEANINGS_LINO = [
   "    role software_artifact_kind",
   "    lexeme en",
   "      surface",
-  "        text \"command line tool\"",
+  '        text "command line tool"',
   "      surface",
-  "        text \"cli tool\"",
+  '        text "cli tool"',
   "    lexeme ru",
   "      surface",
-  "        text \"консольная утилита\"",
+  '        text "консольная утилита"',
   "      surface",
-  "        text \"утилита командной строки\"",
+  '        text "утилита командной строки"',
   "    lexeme hi",
   "      surface",
-  "        text \"कमांड लाइन टूल\"",
+  '        text "कमांड लाइन टूल"',
   "    lexeme zh",
   "      surface",
   "        text 命令行工具",
@@ -16517,28 +19312,28 @@ const MEANINGS_LINO = [
   "    role software_artifact_kind",
   "    lexeme en",
   "      surface",
-  "        text \"github action\"",
+  '        text "github action"',
   "    lexeme ru",
   "      surface",
-  "        text \"действие github\"",
+  '        text "действие github"',
   "    lexeme hi",
   "      surface",
-  "        text \"गिटहब एक्शन\"",
+  '        text "गिटहब एक्शन"',
   "    lexeme zh",
   "      surface",
-  "        text \"github 操作\"",
+  '        text "github 操作"',
   "  artifact_mobile_app",
   "    defined-by software_artifact",
   "    role software_artifact_kind",
   "    lexeme en",
   "      surface",
-  "        text \"mobile app\"",
+  '        text "mobile app"',
   "    lexeme ru",
   "      surface",
-  "        text \"мобильное приложение\"",
+  '        text "мобильное приложение"',
   "    lexeme hi",
   "      surface",
-  "        text \"मोबाइल ऐप\"",
+  '        text "मोबाइल ऐप"',
   "    lexeme zh",
   "      surface",
   "        text 移动应用",
@@ -16547,13 +19342,13 @@ const MEANINGS_LINO = [
   "    role software_artifact_kind",
   "    lexeme en",
   "      surface",
-  "        text \"web app\"",
+  '        text "web app"',
   "    lexeme ru",
   "      surface",
-  "        text \"веб приложение\"",
+  '        text "веб приложение"',
   "    lexeme hi",
   "      surface",
-  "        text \"वेब ऐप\"",
+  '        text "वेब ऐप"',
   "    lexeme zh",
   "      surface",
   "        text 网页应用",
@@ -16579,7 +19374,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text extension",
   "      surface",
-  "        text \"add on\"",
+  '        text "add on"',
   "      surface",
   "        text addon",
   "    lexeme ru",
@@ -16605,7 +19400,7 @@ const MEANINGS_LINO = [
   "        text dashboard",
   "    lexeme ru",
   "      surface",
-  "        text \"панель управления\"",
+  '        text "панель управления"',
   "      surface",
   "        text дашборд",
   "    lexeme hi",
@@ -16658,7 +19453,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text сайт",
   "      surface",
-  "        text \"веб сайт\"",
+  '        text "веб сайт"',
   "    lexeme hi",
   "      surface",
   "        text वेबसाइट",
@@ -16875,7 +19670,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text экспорт",
   "      surface",
-  "        text \"резервная копия\"",
+  '        text "резервная копия"',
   "      surface",
   "        text отчёт",
   "    lexeme hi",
@@ -17110,15 +19905,15 @@ const MEANINGS_LINO = [
   "    role software_delivery_mode",
   "    lexeme en",
   "      surface",
-  "        text \"manual instruction\"",
+  '        text "manual instruction"',
   "      surface",
-  "        text \"manual instructions\"",
+  '        text "manual instructions"',
   "      surface",
   "        text instruction",
   "      surface",
   "        text instructions",
   "      surface",
-  "        text \"no code\"",
+  '        text "no code"',
   "    lexeme ru",
   "      surface",
   "        text инструкция",
@@ -17143,21 +19938,21 @@ const MEANINGS_LINO = [
   "      surface",
   "        text execute",
   "      surface",
-  "        text \"run command\"",
+  '        text "run command"',
   "      surface",
-  "        text \"run commands\"",
+  '        text "run commands"',
   "      surface",
-  "        text \"run it\"",
+  '        text "run it"',
   "      surface",
   "        text webvm",
   "    lexeme ru",
   "      surface",
   "        text выполни",
   "      surface",
-  "        text \"запусти команду\"",
+  '        text "запусти команду"',
   "    lexeme hi",
   "      surface",
-  "        text \"निष्पादित करें\"",
+  '        text "निष्पादित करें"',
   "      surface",
   "        text चलाएँ",
   "    lexeme zh",
@@ -17202,13 +19997,13 @@ const MEANINGS_LINO = [
   "    role software_language",
   "    lexeme en",
   "      surface",
-  "        text \"programming language\"",
+  '        text "programming language"',
   "    lexeme ru",
   "      surface",
-  "        text \"язык программирования\"",
+  '        text "язык программирования"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्रोग्रामिंग भाषा\"",
+  '        text "प्रोग्रामिंग भाषा"',
   "    lexeme zh",
   "      surface",
   "        text 编程语言",
@@ -17303,13 +20098,13 @@ const MEANINGS_LINO = [
   "    role tabletop_game_tracker",
   "    lexeme en",
   "      surface",
-  "        text \"tabletop game tracker\"",
+  '        text "tabletop game tracker"',
   "    lexeme ru",
   "      surface",
-  "        text \"трекер настольной игры\"",
+  '        text "трекер настольной игры"',
   "    lexeme hi",
   "      surface",
-  "        text \"टेबलटॉप गेम ट्रैकर\"",
+  '        text "टेबलटॉप गेम ट्रैकर"',
   "    lexeme zh",
   "      surface",
   "        text 桌游追踪器",
@@ -17331,7 +20126,7 @@ const MEANINGS_LINO = [
   "        text owlbear",
   "    lexeme ru",
   "      surface",
-  "        text \"настольная игра\"",
+  '        text "настольная игра"',
   "      surface",
   "        text фишка",
   "      surface",
@@ -17420,25 +20215,25 @@ const MEANINGS_LINO = [
   "      surface",
   "        text approved",
   "      surface",
-  "        text \"approve plan\"",
+  '        text "approve plan"',
   "      surface",
   "        text yes",
   "      surface",
-  "        text \"yes proceed\"",
+  '        text "yes proceed"',
   "      surface",
   "        text proceed",
   "      surface",
-  "        text \"go ahead\"",
+  '        text "go ahead"',
   "      surface",
-  "        text \"looks good\"",
+  '        text "looks good"',
   "      surface",
-  "        text \"do it\"",
+  '        text "do it"',
   "      surface",
-  "        text \"start implementation\"",
+  '        text "start implementation"',
   "      surface",
-  "        text \"generate code\"",
+  '        text "generate code"',
   "      surface",
-  "        text \"convert to code\"",
+  '        text "convert to code"',
   "    lexeme ru",
   "      surface",
   "        text одобряю",
@@ -17454,7 +20249,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text हाँ",
   "      surface",
-  "        text \"आगे बढ़ो\"",
+  '        text "आगे बढ़ो"',
   "    lexeme zh",
   "      surface",
   "        text 批准",
@@ -17467,19 +20262,19 @@ const MEANINGS_LINO = [
   "    role software_step_granularity",
   "    lexeme en",
   "      surface",
-  "        text \"each step\"",
+  '        text "each step"',
   "      surface",
-  "        text \"step by step\"",
+  '        text "step by step"',
   "    lexeme ru",
   "      surface",
-  "        text \"каждый шаг\"",
+  '        text "каждый шаг"',
   "      surface",
   "        text пошагово",
   "    lexeme hi",
   "      surface",
-  "        text \"हर चरण\"",
+  '        text "हर चरण"',
   "      surface",
-  "        text \"चरण दर चरण\"",
+  '        text "चरण दर चरण"',
   "    lexeme zh",
   "      surface",
   "        text 每一步",
@@ -17528,17 +20323,17 @@ const MEANINGS_LINO = [
   "    role program_synthesis",
   "    lexeme en",
   "      surface",
-  "        text \"program synthesis\"",
+  '        text "program synthesis"',
   "      surface",
-  "        text \"function synthesis\"",
+  '        text "function synthesis"',
   "    lexeme ru",
   "      surface",
-  "        text \"синтез программ\"",
+  '        text "синтез программ"',
   "      surface",
-  "        text \"синтез функции\"",
+  '        text "синтез функции"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्रोग्राम संश्लेषण\"",
+  '        text "प्रोग्राम संश्लेषण"',
   "    lexeme zh",
   "      surface",
   "        text 程序合成",
@@ -17717,15 +20512,15 @@ const MEANINGS_LINO = [
   "    role program_synthesis_signal",
   "    lexeme en",
   "      surface",
-  "        text \"distinct numbers\"",
+  '        text "distinct numbers"',
   "    lexeme ru",
   "      surface",
-  "        text \"различные числа\"",
+  '        text "различные числа"',
   "      surface",
-  "        text \"разные числа\"",
+  '        text "разные числа"',
   "    lexeme hi",
   "      surface",
-  "        text \"अलग संख्याएँ\"",
+  '        text "अलग संख्याएँ"',
   "    lexeme zh",
   "      surface",
   "        text 不同的数字",
@@ -17783,15 +20578,15 @@ const MEANINGS_LINO = [
   "    role program_synthesis_signal",
   "    lexeme en",
   "      surface",
-  "        text \"similar elements\"",
+  '        text "similar elements"',
   "    lexeme ru",
   "      surface",
-  "        text \"похожие элементы\"",
+  '        text "похожие элементы"',
   "      surface",
-  "        text \"одинаковые элементы\"",
+  '        text "одинаковые элементы"',
   "    lexeme hi",
   "      surface",
-  "        text \"समान तत्व\"",
+  '        text "समान तत्व"',
   "    lexeme zh",
   "      surface",
   "        text 相似元素",
@@ -17801,17 +20596,17 @@ const MEANINGS_LINO = [
   "    role program_synthesis_signal",
   "    lexeme en",
   "      surface",
-  "        text \"count vowels\"",
+  '        text "count vowels"',
   "      surface",
-  "        text \"number of vowels\"",
+  '        text "number of vowels"',
   "    lexeme ru",
   "      surface",
-  "        text \"количество гласных\"",
+  '        text "количество гласных"',
   "      surface",
-  "        text \"число гласных\"",
+  '        text "число гласных"',
   "    lexeme hi",
   "      surface",
-  "        text \"स्वरों की संख्या\"",
+  '        text "स्वरों की संख्या"',
   "    lexeme zh",
   "      surface",
   "        text 元音数量",
@@ -17874,7 +20669,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text assistant",
   "      surface",
-  "        text \"ai assistant\"",
+  '        text "ai assistant"',
   "    lexeme ru",
   "      surface",
   "        text ассистент",
@@ -18092,34 +20887,34 @@ const MEANINGS_LINO = [
   "    role knowledge_possession",
   "    lexeme en",
   "      surface",
-  "        text \"you know\"",
+  '        text "you know"',
   "      surface",
-  "        text \"do you know\"",
+  '        text "do you know"',
   "      surface",
-  "        text \"you have\"",
+  '        text "you have"',
   "      surface",
-  "        text \"available to you\"",
+  '        text "available to you"',
   "      surface",
-  "        text \"in your knowledge\"",
+  '        text "in your knowledge"',
   "      surface",
-  "        text \"known to you\"",
+  '        text "known to you"',
   "    lexeme ru",
   "      surface",
-  "        text \"ты знаешь\"",
+  '        text "ты знаешь"',
   "      surface",
   "        text знаешь",
   "      surface",
-  "        text \"тебе известно\"",
+  '        text "тебе известно"',
   "      surface",
-  "        text \"тебе известны\"",
+  '        text "тебе известны"',
   "      surface",
-  "        text \"тебе известен\"",
+  '        text "тебе известен"',
   "      surface",
-  "        text \"у тебя есть\"",
+  '        text "у тебя есть"',
   "      surface",
-  "        text \"твои знания\"",
+  '        text "твои знания"',
   "      surface",
-  "        text \"что ты знаешь\"",
+  '        text "что ты знаешь"',
   "    lexeme hi",
   "      surface",
   "        text तुम",
@@ -18148,35 +20943,35 @@ const MEANINGS_LINO = [
   "    role knowledge_inventory_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"what do you know in general\"",
+  '        text "what do you know in general"',
   "      surface",
-  "        text \"what do you know about the world\"",
+  '        text "what do you know about the world"',
   "      surface",
-  "        text \"what is known to you\"",
+  '        text "what is known to you"',
   "      surface",
-  "        text \"what knowledge do you have\"",
+  '        text "what knowledge do you have"',
   "    lexeme ru",
   "      surface",
-  "        text \"что тебе вообще известно\"",
+  '        text "что тебе вообще известно"',
   "      surface",
-  "        text \"что тебе известно\"",
+  '        text "что тебе известно"',
   "      surface",
-  "        text \"что ты вообще знаешь\"",
+  '        text "что ты вообще знаешь"',
   "      surface",
-  "        text \"что ты знаешь об окружающем мире\"",
+  '        text "что ты знаешь об окружающем мире"',
   "      surface",
-  "        text \"известно об окружающем мире\"",
+  '        text "известно об окружающем мире"',
   "      surface",
-  "        text \"знаешь про окружающий мир\"",
+  '        text "знаешь про окружающий мир"',
   "      surface",
-  "        text \"знаешь об окружающем мире\"",
+  '        text "знаешь об окружающем мире"',
   "    lexeme hi",
   "      surface",
-  "        text \"आप क्या जानते हैं\"",
+  '        text "आप क्या जानते हैं"',
   "      surface",
-  "        text \"तुम क्या जानते हो\"",
+  '        text "तुम क्या जानते हो"',
   "      surface",
-  "        text \"आपको क्या पता है\"",
+  '        text "आपको क्या पता है"',
   "    lexeme zh",
   "      surface",
   "        text 你知道什么",
@@ -18239,45 +21034,45 @@ const MEANINGS_LINO = [
   "    role clarification_request",
   "    lexeme en",
   "      surface",
-  "        text \"i don t understand\"",
+  '        text "i don t understand"',
   "      surface",
-  "        text \"i dont understand\"",
+  '        text "i dont understand"',
   "      surface",
-  "        text \"i didn t understand\"",
+  '        text "i didn t understand"',
   "      surface",
-  "        text \"i didnt understand\"",
+  '        text "i didnt understand"',
   "      surface",
-  "        text \"don t understand\"",
+  '        text "don t understand"',
   "      surface",
-  "        text \"dont understand\"",
+  '        text "dont understand"',
   "      surface",
-  "        text \"didn t understand\"",
+  '        text "didn t understand"',
   "      surface",
-  "        text \"didnt understand\"",
+  '        text "didnt understand"',
   "      surface",
-  "        text \"what do you mean\"",
+  '        text "what do you mean"',
   "      surface",
-  "        text \"i m confused\"",
+  '        text "i m confused"',
   "      surface",
-  "        text \"im confused\"",
+  '        text "im confused"',
   "      surface",
-  "        text \"i am confused\"",
+  '        text "i am confused"',
   "    lexeme ru",
   "      surface",
-  "        text \"не понял\"",
+  '        text "не понял"',
   "      surface",
-  "        text \"не понимаю\"",
+  '        text "не понимаю"',
   "      surface",
-  "        text \"не поняла\"",
+  '        text "не поняла"',
   "      surface",
-  "        text \"не понятно\"",
+  '        text "не понятно"',
   "      surface",
   "        text непонятно",
   "    lexeme hi",
   "      surface",
-  "        text \"समझ नहीं आया\"",
+  '        text "समझ नहीं आया"',
   "      surface",
-  "        text \"समझ नहीं आई\"",
+  '        text "समझ नहीं आई"',
   "    lexeme zh",
   "      surface",
   "        text 我不明白",
@@ -18291,57 +21086,57 @@ const MEANINGS_LINO = [
   "    role capability_query",
   "    lexeme en",
   "      surface",
-  "        text \"what can you do\"",
+  '        text "what can you do"',
   "      surface",
-  "        text \"what you can do\"",
+  '        text "what you can do"',
   "      surface",
-  "        text \"what are your capabilities\"",
+  '        text "what are your capabilities"',
   "      surface",
-  "        text \"what are you capable of\"",
+  '        text "what are you capable of"',
   "      surface",
-  "        text \"what do you do\"",
+  '        text "what do you do"',
   "      surface",
-  "        text \"show me what you can do\"",
+  '        text "show me what you can do"',
   "      surface",
-  "        text \"what features do you have\"",
+  '        text "what features do you have"',
   "      surface",
-  "        text \"how can you help\"",
+  '        text "how can you help"',
   "      surface",
-  "        text \"what are your features\"",
+  '        text "what are your features"',
   "    lexeme ru",
   "      surface",
-  "        text \"что ты умеешь\"",
+  '        text "что ты умеешь"',
   "      surface",
-  "        text \"чем ты можешь\"",
+  '        text "чем ты можешь"',
   "      surface",
-  "        text \"чём ты можешь\"",
+  '        text "чём ты можешь"',
   "      surface",
-  "        text \"что ты можешь\"",
+  '        text "что ты можешь"',
   "      surface",
-  "        text \"что умеет\"",
+  '        text "что умеет"',
   "      surface",
-  "        text \"что можешь\"",
+  '        text "что можешь"',
   "      surface",
-  "        text \"в чем ты можешь быть полезен\"",
+  '        text "в чем ты можешь быть полезен"',
   "      surface",
-  "        text \"в чём ты можешь быть полезен\"",
+  '        text "в чём ты можешь быть полезен"',
   "      surface",
-  "        text \"твои возможности\"",
+  '        text "твои возможности"',
   "      surface",
-  "        text \"что за дичь\"",
+  '        text "что за дичь"',
   "      surface",
-  "        text \"что это такое\"",
+  '        text "что это такое"',
   "      surface",
-  "        text \"что происходит\"",
+  '        text "что происходит"',
   "      surface",
-  "        text \"что ты делаешь\"",
+  '        text "что ты делаешь"',
   "    lexeme hi",
   "      surface",
-  "        text \"आप क्या कर सकते\"",
+  '        text "आप क्या कर सकते"',
   "      surface",
-  "        text \"तुम क्या कर सकते\"",
+  '        text "तुम क्या कर सकते"',
   "      surface",
-  "        text \"क्या क्या कर सकते\"",
+  '        text "क्या क्या कर सकते"',
   "    lexeme zh",
   "      surface",
   "        text 你能做什么",
@@ -18357,29 +21152,29 @@ const MEANINGS_LINO = [
   "    role capability_query_more",
   "    lexeme en",
   "      surface",
-  "        text \"what else can you do\"",
+  '        text "what else can you do"',
   "      surface",
-  "        text \"what else do you do\"",
+  '        text "what else do you do"',
   "      surface",
-  "        text \"what other things can you do\"",
+  '        text "what other things can you do"',
   "    lexeme ru",
   "      surface",
-  "        text \"что ещё ты умеешь\"",
+  '        text "что ещё ты умеешь"',
   "      surface",
-  "        text \"что еще ты умеешь\"",
+  '        text "что еще ты умеешь"',
   "      surface",
-  "        text \"что ещё можешь\"",
+  '        text "что ещё можешь"',
   "      surface",
-  "        text \"что еще можешь\"",
+  '        text "что еще можешь"',
   "      surface",
-  "        text \"что ты ещё умеешь\"",
+  '        text "что ты ещё умеешь"',
   "      surface",
-  "        text \"что ты еще умеешь\"",
+  '        text "что ты еще умеешь"',
   "    lexeme hi",
   "      surface",
-  "        text \"और आप क्या कर सकते\"",
+  '        text "और आप क्या कर सकते"',
   "      surface",
-  "        text \"और क्या कर सकते\"",
+  '        text "और क्या कर सकते"',
   "    lexeme zh",
   "      surface",
   "        text 你还能做什么",
@@ -18392,23 +21187,23 @@ const MEANINGS_LINO = [
   "    role self_fact_query",
   "    lexeme en",
   "      surface",
-  "        text \"facts you know about yourself\"",
+  '        text "facts you know about yourself"',
   "      surface",
-  "        text \"facts about yourself\"",
+  '        text "facts about yourself"',
   "      surface",
-  "        text \"self facts\"",
+  '        text "self facts"',
   "      surface",
-  "        text \"list all facts you know about yourself\"",
+  '        text "list all facts you know about yourself"',
   "    lexeme ru",
   "      surface",
-  "        text \"какие факты ты знаешь о себе\"",
+  '        text "какие факты ты знаешь о себе"',
   "      surface",
-  "        text \"факты о себе\"",
+  '        text "факты о себе"',
   "    lexeme hi",
   "      surface",
-  "        text \"अपने बारे में तथ्य\"",
+  '        text "अपने बारे में तथ्य"',
   "      surface",
-  "        text \"स्वयं के बारे में तथ्य\"",
+  '        text "स्वयं के बारे में तथ्य"',
   "    lexeme zh",
   "      surface",
   "        text 关于你自己的事实",
@@ -18421,45 +21216,45 @@ const MEANINGS_LINO = [
   "    role self_introduction_request",
   "    lexeme en",
   "      surface",
-  "        text \"tell me about yourself\"",
+  '        text "tell me about yourself"',
   "      surface",
-  "        text \"introduce yourself\"",
+  '        text "introduce yourself"',
   "      surface",
-  "        text \"let s get acquainted\"",
+  '        text "let s get acquainted"',
   "      surface",
-  "        text \"lets get acquainted\"",
+  '        text "lets get acquainted"',
   "      surface",
-  "        text \"let us get acquainted\"",
+  '        text "let us get acquainted"',
   "      surface",
-  "        text \"let s get to know each other\"",
+  '        text "let s get to know each other"',
   "    lexeme ru",
   "      surface",
-  "        text \"расскажи о себе\"",
+  '        text "расскажи о себе"',
   "      surface",
-  "        text \"расскажи мне о себе\"",
+  '        text "расскажи мне о себе"',
   "      surface",
-  "        text \"расскажи про себя\"",
+  '        text "расскажи про себя"',
   "      surface",
-  "        text \"опиши себя\"",
+  '        text "опиши себя"',
   "      surface",
   "        text представься",
   "      surface",
-  "        text \"давай знакомиться\"",
+  '        text "давай знакомиться"',
   "      surface",
-  "        text \"давай познакомимся\"",
+  '        text "давай познакомимся"',
   "      surface",
-  "        text \"давайте познакомимся\"",
+  '        text "давайте познакомимся"',
   "    lexeme hi",
   "      surface",
-  "        text \"अपने बारे में बताओ\"",
+  '        text "अपने बारे में बताओ"',
   "      surface",
-  "        text \"अपना परिचय दो\"",
+  '        text "अपना परिचय दो"',
   "      surface",
-  "        text \"चलो परिचय करते हैं\"",
+  '        text "चलो परिचय करते हैं"',
   "      surface",
-  "        text \"आइए परिचय करें\"",
+  '        text "आइए परिचय करें"',
   "      surface",
-  "        text \"चलो एक दूसरे को जानें\"",
+  '        text "चलो एक दूसरे को जानें"',
   "    lexeme zh",
   "      surface",
   "        text 介绍一下你自己",
@@ -18587,33 +21382,33 @@ const MEANINGS_LINO = [
   "    role conversation_summary_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"what have we talked about\"",
+  '        text "what have we talked about"',
   "      surface",
-  "        text \"what did we talk about\"",
+  '        text "what did we talk about"',
   "      surface",
-  "        text \"what have we discussed\"",
+  '        text "what have we discussed"',
   "      surface",
-  "        text \"summary of our chat\"",
+  '        text "summary of our chat"',
   "      surface",
-  "        text \"summary of our conversation\"",
+  '        text "summary of our conversation"',
   "      surface",
-  "        text \"summarize so far\"",
+  '        text "summarize so far"',
   "      surface",
-  "        text \"summarise so far\"",
+  '        text "summarise so far"',
   "    lexeme ru",
   "      surface",
-  "        text \"о чём мы разговаривали\"",
+  '        text "о чём мы разговаривали"',
   "      surface",
-  "        text \"о чем мы разговаривали\"",
+  '        text "о чем мы разговаривали"',
   "      surface",
-  "        text \"о чём мы говорили\"",
+  '        text "о чём мы говорили"',
   "      surface",
-  "        text \"о чем мы говорили\"",
+  '        text "о чем мы говорили"',
   "    lexeme hi",
   "      surface",
-  "        text \"हमने किस बारे में बात की\"",
+  '        text "हमने किस बारे में बात की"',
   "      surface",
-  "        text \"हमने क्या बात की\"",
+  '        text "हमने क्या बात की"',
   "    lexeme zh",
   "      surface",
   "        text 我们聊了什么",
@@ -18629,33 +21424,33 @@ const MEANINGS_LINO = [
   "    role conversation_summary_courtesy",
   "    lexeme en",
   "      surface",
-  "        text \"give me a summary\"",
+  '        text "give me a summary"',
   "      surface",
-  "        text \"can you summarize\"",
+  '        text "can you summarize"',
   "      surface",
-  "        text \"can you summarise\"",
+  '        text "can you summarise"',
   "      surface",
-  "        text \"please summarize\"",
+  '        text "please summarize"',
   "      surface",
-  "        text \"please summarise\"",
+  '        text "please summarise"',
   "    lexeme ru",
   "      surface",
-  "        text \"подведи итог\"",
+  '        text "подведи итог"',
   "      surface",
-  "        text \"подведи итоги\"",
+  '        text "подведи итоги"',
   "      surface",
-  "        text \"краткое резюме\"",
+  '        text "краткое резюме"',
   "      surface",
-  "        text \"сделай резюме\"",
+  '        text "сделай резюме"',
   "      surface",
-  "        text \"краткое содержание\"",
+  '        text "краткое содержание"',
   "    lexeme hi",
   "      surface",
-  "        text \"सार दो\"",
+  '        text "सार दो"',
   "      surface",
-  "        text \"सारांश दो\"",
+  '        text "सारांश दो"',
   "      surface",
-  "        text \"संक्षेप में बताओ\"",
+  '        text "संक्षेप में बताओ"',
   "    lexeme zh",
   "      surface",
   "        text 帮我总结",
@@ -18675,25 +21470,25 @@ const MEANINGS_LINO = [
   "    role who_question_tail",
   "    lexeme en",
   "      surface",
-  "        text \"who is …\"",
+  '        text "who is …"',
   "      surface",
-  "        text \"who was …\"",
+  '        text "who was …"',
   "      surface",
-  "        text \"who are …\"",
+  '        text "who are …"',
   "    lexeme ru",
   "      surface",
-  "        text \"кто такой …\"",
+  '        text "кто такой …"',
   "      surface",
-  "        text \"кто такая …\"",
+  '        text "кто такая …"',
   "      surface",
-  "        text \"кто это …\"",
+  '        text "кто это …"',
   "      surface",
-  "        text \"кто …\"",
+  '        text "кто …"',
   "    lexeme hi",
   "      surface",
-  "        text \"… कौन है\"",
+  '        text "… कौन है"',
   "      surface",
-  "        text \"… कौन हैं\"",
+  '        text "… कौन हैं"',
   "    lexeme zh",
   "      surface",
   "        text …是谁",
@@ -18767,65 +21562,65 @@ const MEANINGS_LINO = [
   "    role mechanism_inquiry",
   "    lexeme en",
   "      surface",
-  "        text \"how it works\"",
+  '        text "how it works"',
   "      surface",
-  "        text \"how does it work\"",
+  '        text "how does it work"',
   "      surface",
-  "        text \"how does …\"",
+  '        text "how does …"',
   "      surface",
-  "        text \"how do …\"",
+  '        text "how do …"',
   "      surface",
-  "        text \"how did …\"",
+  '        text "how did …"',
   "      surface",
-  "        text \"how is …\"",
+  '        text "how is …"',
   "      surface",
-  "        text \"how … works\"",
+  '        text "how … works"',
   "      surface",
-  "        text \"how … work\"",
+  '        text "how … work"',
   "    lexeme ru",
   "      surface",
-  "        text \"как это работает\"",
+  '        text "как это работает"',
   "      surface",
-  "        text \"как оно работает\"",
+  '        text "как оно работает"',
   "      surface",
-  "        text \"как устроен …\"",
+  '        text "как устроен …"',
   "      surface",
-  "        text \"как устроена …\"",
+  '        text "как устроена …"',
   "      surface",
-  "        text \"как устроено …\"",
+  '        text "как устроено …"',
   "      surface",
-  "        text \"как устроены …\"",
+  '        text "как устроены …"',
   "      surface",
-  "        text \"как работает …\"",
+  '        text "как работает …"',
   "      surface",
-  "        text \"как работают …\"",
+  '        text "как работают …"',
   "      surface",
-  "        text \"как … работает\"",
+  '        text "как … работает"',
   "      surface",
-  "        text \"как … работают\"",
+  '        text "как … работают"',
   "      surface",
-  "        text \"… как работает\"",
+  '        text "… как работает"',
   "      surface",
-  "        text \"… как работают\"",
+  '        text "… как работают"',
   "    lexeme hi",
   "      surface",
-  "        text \"यह कैसे काम करता है\"",
+  '        text "यह कैसे काम करता है"',
   "      surface",
-  "        text \"यह कैसे काम करती है\"",
+  '        text "यह कैसे काम करती है"',
   "      surface",
-  "        text \"यह कैसे काम करता\"",
+  '        text "यह कैसे काम करता"',
   "      surface",
-  "        text \"… कैसे काम करता है\"",
+  '        text "… कैसे काम करता है"',
   "      surface",
-  "        text \"… कैसे काम करती है\"",
+  '        text "… कैसे काम करती है"',
   "      surface",
-  "        text \"… कैसे काम करते हैं\"",
+  '        text "… कैसे काम करते हैं"',
   "      surface",
-  "        text \"… कैसे काम करता\"",
+  '        text "… कैसे काम करता"',
   "      surface",
-  "        text \"… कैसे काम करती\"",
+  '        text "… कैसे काम करती"',
   "      surface",
-  "        text \"… कैसे काम करते\"",
+  '        text "… कैसे काम करते"',
   "    lexeme zh",
   "      surface",
   "        text 这是如何工作的",
@@ -18840,23 +21635,23 @@ const MEANINGS_LINO = [
   "      surface",
   "        text 它怎么工作",
   "      surface",
-  "        text \"… 是如何工作的\"",
+  '        text "… 是如何工作的"',
   "      surface",
   "        text …是如何工作的",
   "      surface",
-  "        text \"… 是怎么工作的\"",
+  '        text "… 是怎么工作的"',
   "      surface",
   "        text …是怎么工作的",
   "      surface",
-  "        text \"… 如何工作\"",
+  '        text "… 如何工作"',
   "      surface",
   "        text …如何工作",
   "      surface",
-  "        text \"… 怎么工作\"",
+  '        text "… 怎么工作"',
   "      surface",
   "        text …怎么工作",
   "      surface",
-  "        text \"… 的工作原理是什么\"",
+  '        text "… 的工作原理是什么"',
   "      surface",
   "        text …的工作原理是什么",
   "  procedural_request",
@@ -18865,106 +21660,106 @@ const MEANINGS_LINO = [
   "    role procedural_request",
   "    lexeme en",
   "      surface",
-  "        text \"please tell me how to …\"",
+  '        text "please tell me how to …"',
   "      surface",
-  "        text \"please show me how to …\"",
+  '        text "please show me how to …"',
   "      surface",
-  "        text \"tell me how to …\"",
+  '        text "tell me how to …"',
   "      surface",
-  "        text \"show me how to …\"",
+  '        text "show me how to …"',
   "      surface",
-  "        text \"what are the steps to …\"",
+  '        text "what are the steps to …"',
   "      surface",
-  "        text \"what steps do i need to …\"",
+  '        text "what steps do i need to …"',
   "      surface",
-  "        text \"what steps do we need to …\"",
+  '        text "what steps do we need to …"',
   "      surface",
-  "        text \"how should i …\"",
+  '        text "how should i …"',
   "      surface",
-  "        text \"how should we …\"",
+  '        text "how should we …"',
   "      surface",
-  "        text \"how could i …\"",
+  '        text "how could i …"',
   "      surface",
-  "        text \"how could we …\"",
+  '        text "how could we …"',
   "      surface",
-  "        text \"how would i …\"",
+  '        text "how would i …"',
   "      surface",
-  "        text \"how would we …\"",
+  '        text "how would we …"',
   "      surface",
-  "        text \"how can i …\"",
+  '        text "how can i …"',
   "      surface",
-  "        text \"how can we …\"",
+  '        text "how can we …"',
   "      surface",
-  "        text \"how do i …\"",
+  '        text "how do i …"',
   "      surface",
-  "        text \"how do we …\"",
+  '        text "how do we …"',
   "      surface",
-  "        text \"how to do …\"",
+  '        text "how to do …"',
   "        action do",
   "      surface",
-  "        text \"how to …\"",
+  '        text "how to …"',
   "    lexeme ru",
   "      surface",
-  "        text \"как сделать …\"",
+  '        text "как сделать …"',
   "        action do",
   "      surface",
-  "        text \"как делать …\"",
+  '        text "как делать …"',
   "        action do",
   "      surface",
-  "        text \"как выполнить …\"",
+  '        text "как выполнить …"',
   "        action perform",
   "      surface",
-  "        text \"как реализовать …\"",
+  '        text "как реализовать …"',
   "        action implement",
   "      surface",
-  "        text \"как создать …\"",
+  '        text "как создать …"',
   "        action create",
   "      surface",
-  "        text \"как написать …\"",
+  '        text "как написать …"',
   "        action write",
   "    lexeme hi",
   "      surface",
-  "        text \"कैसे करें …\"",
+  '        text "कैसे करें …"',
   "        action do",
   "      surface",
-  "        text \"कैसे करे …\"",
+  '        text "कैसे करे …"',
   "        action do",
   "      surface",
-  "        text \"कैसे लागू करें …\"",
+  '        text "कैसे लागू करें …"',
   "        action implement",
   "      surface",
-  "        text \"कैसे बनाएं …\"",
+  '        text "कैसे बनाएं …"',
   "        action create",
   "      surface",
-  "        text \"कैसे बनाएँ …\"",
+  '        text "कैसे बनाएँ …"',
   "        action create",
   "      surface",
-  "        text \"कैसे लिखें …\"",
+  '        text "कैसे लिखें …"',
   "        action write",
   "    lexeme zh",
   "      surface",
-  "        text \"如何做 …\"",
+  '        text "如何做 …"',
   "        action do",
   "      surface",
-  "        text \"怎么做 …\"",
+  '        text "怎么做 …"',
   "        action do",
   "      surface",
-  "        text \"如何实现 …\"",
+  '        text "如何实现 …"',
   "        action implement",
   "      surface",
-  "        text \"怎么实现 …\"",
+  '        text "怎么实现 …"',
   "        action implement",
   "      surface",
-  "        text \"如何创建 …\"",
+  '        text "如何创建 …"',
   "        action create",
   "      surface",
-  "        text \"怎么创建 …\"",
+  '        text "怎么创建 …"',
   "        action create",
   "      surface",
-  "        text \"如何写 …\"",
+  '        text "如何写 …"',
   "        action write",
   "      surface",
-  "        text \"怎么写 …\"",
+  '        text "怎么写 …"',
   "        action write",
   "  mechanism_predicate",
   "    defined-by action",
@@ -18972,27 +21767,27 @@ const MEANINGS_LINO = [
   "    role mechanism_predicate",
   "    lexeme en",
   "      surface",
-  "        text \"… work\"",
+  '        text "… work"',
   "      surface",
-  "        text \"… works\"",
+  '        text "… works"',
   "      surface",
-  "        text \"… structured\"",
+  '        text "… structured"',
   "      surface",
-  "        text \"… organized\"",
+  '        text "… organized"',
   "      surface",
-  "        text \"… organised\"",
+  '        text "… organised"',
   "      surface",
-  "        text \"… built\"",
+  '        text "… built"',
   "    lexeme ru",
   "      surface",
-  "        text \"… работает\"",
+  '        text "… работает"',
   "      surface",
-  "        text \"… устроен\"",
+  '        text "… устроен"',
   "    lexeme hi",
   "      surface",
-  "        text \"… काम करता है\"",
+  '        text "… काम करता है"',
   "      surface",
-  "        text \"… बना है\"",
+  '        text "… बना है"',
   "    lexeme zh",
   "      surface",
   "        text …工作",
@@ -19004,25 +21799,25 @@ const MEANINGS_LINO = [
   "    role detail_modifier",
   "    lexeme en",
   "      surface",
-  "        text \"… in detail\"",
+  '        text "… in detail"',
   "      surface",
-  "        text \"… internally\"",
+  '        text "… internally"',
   "      surface",
-  "        text \"… exactly\"",
+  '        text "… exactly"',
   "      surface",
-  "        text \"… please\"",
+  '        text "… please"',
   "    lexeme ru",
   "      surface",
-  "        text \"… подробнее\"",
+  '        text "… подробнее"',
   "      surface",
-  "        text \"… подробно\"",
+  '        text "… подробно"',
   "      surface",
-  "        text \"… пожалуйста\"",
+  '        text "… пожалуйста"',
   "    lexeme hi",
   "      surface",
-  "        text \"… विस्तार से\"",
+  '        text "… विस्तार से"',
   "      surface",
-  "        text \"… कृपया\"",
+  '        text "… कृपया"',
   "    lexeme zh",
   "      surface",
   "        text …详细",
@@ -19048,13 +21843,13 @@ const MEANINGS_LINO = [
   "      surface",
   "        text do",
   "      surface",
-  "        text \"does …\"",
+  '        text "does …"',
   "      surface",
-  "        text \"do …\"",
+  '        text "do …"',
   "      surface",
-  "        text \"to …\"",
+  '        text "to …"',
   "      surface",
-  "        text \"you …\"",
+  '        text "you …"',
   "    lexeme ru",
   "      surface",
   "        text это",
@@ -19088,42 +21883,132 @@ const MEANINGS_LINO = [
   "    role procedural_task_modifier",
   "    lexeme en",
   "      surface",
-  "        text \"… step by step\"",
+  '        text "… step by step"',
   "      surface",
-  "        text \"… in steps\"",
+  '        text "… in steps"',
   "      surface",
-  "        text \"… with steps\"",
+  '        text "… with steps"',
   "      surface",
-  "        text \"… for me\"",
+  '        text "… for me"',
   "      surface",
-  "        text \"… please\"",
+  '        text "… please"',
   "    lexeme ru",
   "      surface",
-  "        text \"… напиши по шагам\"",
+  '        text "… напиши по шагам"',
   "      surface",
-  "        text \"… по шагам\"",
+  '        text "… по шагам"',
   "      surface",
-  "        text \"… пошагово\"",
+  '        text "… пошагово"',
   "      surface",
-  "        text \"… пожалуйста\"",
+  '        text "… пожалуйста"',
   "    lexeme hi",
   "      surface",
-  "        text \"… चरणों में लिखो\"",
+  '        text "… चरणों में लिखो"',
   "      surface",
-  "        text \"… चरणों में बताओ\"",
+  '        text "… चरणों में बताओ"',
   "      surface",
-  "        text \"… कदम दर कदम\"",
+  '        text "… कदम दर कदम"',
   "      surface",
-  "        text \"… कृपया\"",
+  '        text "… कृपया"',
   "    lexeme zh",
   "      surface",
-  "        text \"… 按步骤写\"",
+  '        text "… 按步骤写"',
   "      surface",
-  "        text \"… 按步骤说明\"",
+  '        text "… 按步骤说明"',
   "      surface",
-  "        text \"… 一步一步写\"",
+  '        text "… 一步一步写"',
   "      surface",
-  "        text \"… 请\"",
+  '        text "… 请"',
+  "  procedural_elaboration",
+  "    defined-by inquiry",
+  "    defined-by procedural_request",
+  "    role procedural_elaboration",
+  "    lexeme en",
+  "      surface",
+  '        text "specific instructions"',
+  "      surface",
+  '        text "specific steps"',
+  "      surface",
+  '        text "detailed instructions"',
+  "      surface",
+  '        text "detailed steps"',
+  "      surface",
+  '        text "exact steps"',
+  "      surface",
+  '        text "exact instructions"',
+  "      surface",
+  '        text "the steps"',
+  "      surface",
+  '        text "step by step"',
+  "      surface",
+  '        text "step-by-step"',
+  "      surface",
+  '        text "more specific"',
+  "      surface",
+  '        text "more detail"',
+  "      surface",
+  '        text "more details"',
+  "      surface",
+  '        text "in detail"',
+  "      surface",
+  '        text "elaborate"',
+  "    lexeme ru",
+  "      surface",
+  '        text "конкретные инструкции"',
+  "      surface",
+  '        text "конкретные шаги"',
+  "      surface",
+  '        text "подробные инструкции"',
+  "      surface",
+  '        text "подробные шаги"',
+  "      surface",
+  '        text "точные шаги"',
+  "      surface",
+  '        text "пошагово"',
+  "      surface",
+  '        text "по шагам"',
+  "      surface",
+  '        text "поподробнее"',
+  "      surface",
+  '        text "подробнее"',
+  "      surface",
+  '        text "более конкретно"',
+  "      surface",
+  '        text "конкретнее"',
+  "    lexeme hi",
+  "      surface",
+  '        text "विशिष्ट निर्देश"',
+  "      surface",
+  '        text "विस्तृत निर्देश"',
+  "      surface",
+  '        text "विस्तृत चरण"',
+  "      surface",
+  '        text "सटीक चरण"',
+  "      surface",
+  '        text "चरण दर चरण"',
+  "      surface",
+  '        text "कदम दर कदम"',
+  "      surface",
+  '        text "अधिक विस्तार"',
+  "      surface",
+  '        text "और विस्तार"',
+  "    lexeme zh",
+  "      surface",
+  "        text 具体说明",
+  "      surface",
+  "        text 具体步骤",
+  "      surface",
+  "        text 详细步骤",
+  "      surface",
+  "        text 详细说明",
+  "      surface",
+  "        text 确切步骤",
+  "      surface",
+  "        text 一步一步",
+  "      surface",
+  "        text 更具体",
+  "      surface",
+  "        text 更详细",
   "  common_typo",
   "    defined-by relation",
   "    role common_typo",
@@ -19250,21 +22135,21 @@ const MEANINGS_LINO = [
   "    role answer_rationale_lead",
   "    lexeme en",
   "      surface",
-  "        text \"why …\"",
+  '        text "why …"',
   "      surface",
-  "        text \"why did you answer\"",
+  '        text "why did you answer"',
   "    lexeme ru",
   "      surface",
-  "        text \"почему …\"",
+  '        text "почему …"',
   "      surface",
-  "        text \"почему ты ответил\"",
+  '        text "почему ты ответил"',
   "      surface",
-  "        text \"почему ты так ответил\"",
+  '        text "почему ты так ответил"',
   "      surface",
-  "        text \"почему вы ответили\"",
+  '        text "почему вы ответили"',
   "    lexeme hi",
   "      surface",
-  "        text \"ऐसा जवाब क्यों दिया\"",
+  '        text "ऐसा जवाब क्यों दिया"',
   "    lexeme zh",
   "      surface",
   "        text 为什么这样回答",
@@ -19278,7 +22163,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text your",
   "      surface",
-  "        text \"formal ai\"",
+  '        text "formal ai"',
   "    lexeme ru",
   "      surface",
   "        text ты",
@@ -19308,43 +22193,43 @@ const MEANINGS_LINO = [
   "    role assistant_mechanism_inquiry",
   "    lexeme en",
   "      surface",
-  "        text \"how do you work\"",
+  '        text "how do you work"',
   "      surface",
-  "        text \"how does this work\"",
+  '        text "how does this work"',
   "      surface",
-  "        text \"how does it work\"",
+  '        text "how does it work"',
   "      surface",
-  "        text \"show me how you work\"",
+  '        text "show me how you work"',
   "      surface",
-  "        text \"explain how you work\"",
+  '        text "explain how you work"',
   "    lexeme ru",
   "      surface",
-  "        text \"как ты работаешь\"",
+  '        text "как ты работаешь"',
   "      surface",
-  "        text \"покажи как ты работаешь\"",
+  '        text "покажи как ты работаешь"',
   "      surface",
-  "        text \"расскажи как ты работаешь\"",
+  '        text "расскажи как ты работаешь"',
   "      surface",
-  "        text \"объясни как ты работаешь\"",
+  '        text "объясни как ты работаешь"',
   "      surface",
-  "        text \"как ты устроен\"",
+  '        text "как ты устроен"',
   "      surface",
-  "        text \"покажи как ты устроен\"",
+  '        text "покажи как ты устроен"',
   "      surface",
-  "        text \"какая у тебя модель окружающего мира\"",
+  '        text "какая у тебя модель окружающего мира"',
   "      surface",
-  "        text \"модель окружающего мира\"",
+  '        text "модель окружающего мира"',
   "      surface",
-  "        text \"идея твоей разработки\"",
+  '        text "идея твоей разработки"',
   "      surface",
-  "        text \"идея твоего проекта\"",
+  '        text "идея твоего проекта"',
   "      surface",
-  "        text \"зачем тебя разработ\"",
+  '        text "зачем тебя разработ"',
   "    lexeme hi",
   "      surface",
-  "        text \"तुम कैसे काम करते हो\"",
+  '        text "तुम कैसे काम करते हो"',
   "      surface",
-  "        text \"आप कैसे काम करते हैं\"",
+  '        text "आप कैसे काम करते हैं"',
   "    lexeme zh",
   "      surface",
   "        text 你是怎么工作的",
@@ -19356,13 +22241,13 @@ const MEANINGS_LINO = [
   "    role operating_principle",
   "    lexeme en",
   "      surface",
-  "        text \"operating principle\"",
+  '        text "operating principle"',
   "    lexeme ru",
   "      surface",
-  "        text \"принцип работы\"",
+  '        text "принцип работы"',
   "    lexeme hi",
   "      surface",
-  "        text \"कार्य सिद्धांत\"",
+  '        text "कार्य सिद्धांत"',
   "    lexeme zh",
   "      surface",
   "        text 工作原理",
@@ -19374,61 +22259,61 @@ const MEANINGS_LINO = [
   "      surface",
   "        text llm",
   "      surface",
-  "        text \"large language model\"",
+  '        text "large language model"',
   "      surface",
-  "        text \"language model\"",
+  '        text "language model"',
   "      surface",
-  "        text \"openai api\"",
+  '        text "openai api"',
   "      surface",
   "        text openai",
   "      surface",
-  "        text \"neural inference\"",
+  '        text "neural inference"',
   "      surface",
-  "        text \"neural network\"",
+  '        text "neural network"',
   "      surface",
-  "        text \"links notation rules\"",
+  '        text "links notation rules"',
   "      surface",
-  "        text \"local rules\"",
+  '        text "local rules"',
   "      surface",
-  "        text \"world model\"",
+  '        text "world model"',
   "      surface",
-  "        text \"model of the world\"",
+  '        text "model of the world"',
   "    lexeme ru",
   "      surface",
   "        text бям",
   "      surface",
-  "        text \"языковая модель\"",
+  '        text "языковая модель"',
   "      surface",
-  "        text \"языковой моделью\"",
+  '        text "языковой моделью"',
   "      surface",
   "        text нейросет",
   "      surface",
   "        text нейрон",
   "      surface",
-  "        text \"локальных правил\"",
+  '        text "локальных правил"',
   "      surface",
-  "        text \"локальных правилах\"",
+  '        text "локальных правилах"',
   "      surface",
-  "        text \"область знаний\"",
+  '        text "область знаний"',
   "      surface",
-  "        text \"модель окружающего мира\"",
+  '        text "модель окружающего мира"',
   "      surface",
-  "        text \"модель мира\"",
+  '        text "модель мира"',
   "      surface",
-  "        text \"принцип работы\"",
+  '        text "принцип работы"',
   "      surface",
-  "        text \"идея твоей разработки\"",
+  '        text "идея твоей разработки"',
   "      surface",
-  "        text \"идея твоего проекта\"",
+  '        text "идея твоего проекта"',
   "      surface",
-  "        text \"зачем тебя разработ\"",
+  '        text "зачем тебя разработ"',
   "      surface",
   "        text ссылк",
   "    lexeme hi",
   "      surface",
   "        text न्यूरल",
   "      surface",
-  "        text \"भाषा मॉडल\"",
+  '        text "भाषा मॉडल"',
   "    lexeme zh",
   "      surface",
   "        text 神经",
@@ -19444,7 +22329,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text url",
   "      surface",
-  "        text \"web page\"",
+  '        text "web page"',
   "      surface",
   "        text website",
   "    lexeme ru",
@@ -19460,7 +22345,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text वेबसाइट",
   "      surface",
-  "        text \"वेब पेज\"",
+  '        text "वेब पेज"',
   "      surface",
   "        text लिंक",
   "    lexeme zh",
@@ -19477,85 +22362,85 @@ const MEANINGS_LINO = [
   "    role http_fetch",
   "    lexeme en",
   "      surface",
-  "        text \"fetch …\"",
+  '        text "fetch …"',
   "      surface",
-  "        text \"fetch url …\"",
+  '        text "fetch url …"',
   "      surface",
-  "        text \"http fetch …\"",
+  '        text "http fetch …"',
   "      surface",
-  "        text \"request …\"",
+  '        text "request …"',
   "      surface",
-  "        text \"make request to …\"",
+  '        text "make request to …"',
   "      surface",
-  "        text \"send request to …\"",
+  '        text "send request to …"',
   "      surface",
-  "        text \"make a request to\"",
+  '        text "make a request to"',
   "      surface",
-  "        text \"make an http request to\"",
+  '        text "make an http request to"',
   "      surface",
-  "        text \"send a request to\"",
+  '        text "send a request to"',
   "      surface",
-  "        text \"send an http request to\"",
+  '        text "send an http request to"',
   "      surface",
-  "        text \"http request to\"",
+  '        text "http request to"',
   "      surface",
-  "        text \"http get to\"",
+  '        text "http get to"',
   "      surface",
-  "        text \"fetch the url\"",
+  '        text "fetch the url"',
   "      surface",
-  "        text \"fetch this url\"",
+  '        text "fetch this url"',
   "      surface",
-  "        text \"fetch the page\"",
+  '        text "fetch the page"',
   "    lexeme ru",
   "      surface",
-  "        text \"сделай запрос …\"",
+  '        text "сделай запрос …"',
   "      surface",
-  "        text \"сделай http запрос …\"",
+  '        text "сделай http запрос …"',
   "      surface",
-  "        text \"выполни запрос …\"",
+  '        text "выполни запрос …"',
   "      surface",
-  "        text \"выполни http запрос …\"",
+  '        text "выполни http запрос …"',
   "      surface",
-  "        text \"запроси …\"",
+  '        text "запроси …"',
   "      surface",
-  "        text \"получи …\"",
+  '        text "получи …"',
   "      surface",
-  "        text \"http запрос к …\"",
+  '        text "http запрос к …"',
   "      surface",
-  "        text \"http запрос на …\"",
+  '        text "http запрос на …"',
   "      surface",
-  "        text \"сделать запрос к …\"",
+  '        text "сделать запрос к …"',
   "      surface",
-  "        text \"выполнить запрос к …\"",
+  '        text "выполнить запрос к …"',
   "      surface",
-  "        text \"сделай запрос к\"",
+  '        text "сделай запрос к"',
   "      surface",
-  "        text \"сделай запрос на\"",
+  '        text "сделай запрос на"',
   "      surface",
-  "        text \"сделай http запрос к\"",
+  '        text "сделай http запрос к"',
   "      surface",
-  "        text \"сделай http запрос на\"",
+  '        text "сделай http запрос на"',
   "      surface",
-  "        text \"выполни запрос к\"",
+  '        text "выполни запрос к"',
   "      surface",
-  "        text \"выполни запрос на\"",
+  '        text "выполни запрос на"',
   "      surface",
-  "        text \"выполни http запрос к\"",
+  '        text "выполни http запрос к"',
   "      surface",
-  "        text \"выполни http запрос на\"",
+  '        text "выполни http запрос на"',
   "      surface",
-  "        text \"запрос к\"",
+  '        text "запрос к"',
   "      surface",
-  "        text \"запрос на\"",
+  '        text "запрос на"',
   "      surface",
-  "        text \"http запрос к\"",
+  '        text "http запрос к"',
   "      surface",
-  "        text \"http запрос на\"",
+  '        text "http запрос на"',
   "    lexeme hi",
   "      surface",
-  "        text \"अनुरोध भेजें\"",
+  '        text "अनुरोध भेजें"',
   "      surface",
-  "        text \"अनुरोध करें\"",
+  '        text "अनुरोध करें"',
   "    lexeme zh",
   "      surface",
   "        text 发送请求",
@@ -19568,139 +22453,139 @@ const MEANINGS_LINO = [
   "    role url_navigate",
   "    lexeme en",
   "      surface",
-  "        text \"navigate to …\"",
+  '        text "navigate to …"',
   "      surface",
-  "        text \"navigate …\"",
+  '        text "navigate …"',
   "      surface",
-  "        text \"go to …\"",
+  '        text "go to …"',
   "      surface",
-  "        text \"goto …\"",
+  '        text "goto …"',
   "      surface",
-  "        text \"visit …\"",
+  '        text "visit …"',
   "      surface",
-  "        text \"browse to …\"",
+  '        text "browse to …"',
   "      surface",
-  "        text \"browse …\"",
+  '        text "browse …"',
   "      surface",
-  "        text \"show …\"",
+  '        text "show …"',
   "      surface",
-  "        text \"show me …\"",
+  '        text "show me …"',
   "      surface",
-  "        text \"display …\"",
+  '        text "display …"',
   "      surface",
-  "        text \"load …\"",
+  '        text "load …"',
   "      surface",
-  "        text \"open …\"",
+  '        text "open …"',
   "      surface",
-  "        text \"open url …\"",
+  '        text "open url …"',
   "      surface",
-  "        text \"open the url …\"",
+  '        text "open the url …"',
   "      surface",
-  "        text \"open site …\"",
+  '        text "open site …"',
   "      surface",
-  "        text \"open website …\"",
+  '        text "open website …"',
   "      surface",
-  "        text \"open page …\"",
+  '        text "open page …"',
   "      surface",
-  "        text \"open the page …\"",
+  '        text "open the page …"',
   "      surface",
-  "        text \"open the website …\"",
+  '        text "open the website …"',
   "      surface",
-  "        text \"take me to …\"",
+  '        text "take me to …"',
   "      surface",
-  "        text \"preview …\"",
+  '        text "preview …"',
   "      surface",
-  "        text \"view …\"",
+  '        text "view …"',
   "      surface",
-  "        text \"see …\"",
+  '        text "see …"',
   "      surface",
-  "        text \"get …\"",
+  '        text "get …"',
   "      surface",
-  "        text \"navigate to\"",
+  '        text "navigate to"',
   "      surface",
-  "        text \"go to\"",
+  '        text "go to"',
   "      surface",
   "        text goto",
   "      surface",
-  "        text \"browse to\"",
+  '        text "browse to"',
   "      surface",
-  "        text \"take me to\"",
+  '        text "take me to"',
   "      surface",
-  "        text \"open the page\"",
+  '        text "open the page"',
   "      surface",
-  "        text \"open the site\"",
+  '        text "open the site"',
   "      surface",
-  "        text \"open the website\"",
+  '        text "open the website"',
   "      surface",
-  "        text \"open the url\"",
+  '        text "open the url"',
   "      surface",
-  "        text \"open url\"",
+  '        text "open url"',
   "    lexeme ru",
   "      surface",
-  "        text \"перейди …\"",
+  '        text "перейди …"',
   "      surface",
-  "        text \"перейди на …\"",
+  '        text "перейди на …"',
   "      surface",
-  "        text \"переходи на …\"",
+  '        text "переходи на …"',
   "      surface",
-  "        text \"переходи …\"",
+  '        text "переходи …"',
   "      surface",
-  "        text \"перейдите на …\"",
+  '        text "перейдите на …"',
   "      surface",
-  "        text \"открой …\"",
+  '        text "открой …"',
   "      surface",
-  "        text \"открой сайт …\"",
+  '        text "открой сайт …"',
   "      surface",
-  "        text \"открой страницу …\"",
+  '        text "открой страницу …"',
   "      surface",
-  "        text \"открой ссылку …\"",
+  '        text "открой ссылку …"',
   "      surface",
-  "        text \"открой урл …\"",
+  '        text "открой урл …"',
   "      surface",
-  "        text \"покажи …\"",
+  '        text "покажи …"',
   "      surface",
-  "        text \"покажи сайт …\"",
+  '        text "покажи сайт …"',
   "      surface",
-  "        text \"покажи страницу …\"",
+  '        text "покажи страницу …"',
   "      surface",
-  "        text \"покажи мне …\"",
+  '        text "покажи мне …"',
   "      surface",
-  "        text \"загрузи …\"",
+  '        text "загрузи …"',
   "      surface",
-  "        text \"загрузи страницу …\"",
+  '        text "загрузи страницу …"',
   "      surface",
-  "        text \"посети …\"",
+  '        text "посети …"',
   "      surface",
-  "        text \"зайди на …\"",
+  '        text "зайди на …"',
   "      surface",
-  "        text \"зайди …\"",
+  '        text "зайди …"',
   "      surface",
-  "        text \"просмотри …\"",
+  '        text "просмотри …"',
   "      surface",
-  "        text \"отобрази …\"",
+  '        text "отобрази …"',
   "      surface",
-  "        text \"перейди на\"",
+  '        text "перейди на"',
   "      surface",
-  "        text \"переходи на\"",
+  '        text "переходи на"',
   "      surface",
-  "        text \"перейдите на\"",
+  '        text "перейдите на"',
   "      surface",
-  "        text \"открой сайт\"",
+  '        text "открой сайт"',
   "      surface",
-  "        text \"открой страницу\"",
+  '        text "открой страницу"',
   "      surface",
-  "        text \"открой ссылку\"",
+  '        text "открой ссылку"',
   "      surface",
-  "        text \"открой урл\"",
+  '        text "открой урл"',
   "      surface",
-  "        text \"покажи сайт\"",
+  '        text "покажи сайт"',
   "      surface",
-  "        text \"покажи страницу\"",
+  '        text "покажи страницу"',
   "      surface",
-  "        text \"зайди на\"",
+  '        text "зайди на"',
   "    lexeme hi",
   "      surface",
-  "        text \"पर जाएं\"",
+  '        text "पर जाएं"',
   "      surface",
   "        text खोलें",
   "      surface",
@@ -19722,19 +22607,19 @@ const MEANINGS_LINO = [
   "    role web_search_concept",
   "    lexeme en",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
-  "        text \"search the web\"",
+  '        text "search the web"',
   "    lexeme ru",
   "      surface",
-  "        text \"поиск в интернете\"",
+  '        text "поиск в интернете"',
   "      surface",
   "        text веб-поиск",
   "    lexeme hi",
   "      surface",
-  "        text \"वेब खोज\"",
+  '        text "वेब खोज"',
   "      surface",
-  "        text \"इंटरनेट पर खोज\"",
+  '        text "इंटरनेट पर खोज"',
   "    lexeme zh",
   "      surface",
   "        text 网络搜索",
@@ -19748,20 +22633,20 @@ const MEANINGS_LINO = [
   "    role web_medium",
   "    lexeme en",
   "      surface",
-  "        text \" web \"",
+  '        text " web "',
   "      surface",
-  "        text \" internet \"",
+  '        text " internet "',
   "      surface",
-  "        text \" online \"",
+  '        text " online "',
   "    lexeme ru",
   "      surface",
-  "        text \" интернете \"",
+  '        text " интернете "',
   "      surface",
-  "        text \" интернет \"",
+  '        text " интернет "',
   "      surface",
-  "        text \" онлайн \"",
+  '        text " онлайн "',
   "      surface",
-  "        text \" сети \"",
+  '        text " сети "',
   "    lexeme hi",
   "      surface",
   "        text इंटरनेट",
@@ -19791,16 +22676,16 @@ const MEANINGS_LINO = [
   "    role web_search_source_only",
   "    lexeme en",
   "      surface",
-  "        text \" wikipedia \"",
+  '        text " wikipedia "',
   "      surface",
-  "        text \" wikidata \"",
+  '        text " wikidata "',
   "      surface",
-  "        text \" wiktionary \"",
+  '        text " wiktionary "',
   "    lexeme ru",
   "      surface",
-  "        text \" википед\"",
+  '        text " википед"',
   "      surface",
-  "        text \" викиданн\"",
+  '        text " викиданн"',
   "      surface",
   "        text википедии",
   "    lexeme hi",
@@ -19824,46 +22709,46 @@ const MEANINGS_LINO = [
   "    role web_search_signal",
   "    lexeme en",
   "      surface",
-  "        text \" information \"",
+  '        text " information "',
   "      surface",
-  "        text \" info \"",
+  '        text " info "',
   "      surface",
-  "        text \" details \"",
+  '        text " details "',
   "      surface",
-  "        text \" data \"",
+  '        text " data "',
   "      surface",
-  "        text \" material \"",
+  '        text " material "',
   "      surface",
-  "        text \" materials \"",
+  '        text " materials "',
   "      surface",
-  "        text \" resource \"",
+  '        text " resource "',
   "      surface",
-  "        text \" resources \"",
+  '        text " resources "',
   "      surface",
-  "        text \" source \"",
+  '        text " source "',
   "      surface",
-  "        text \" sources \"",
+  '        text " sources "',
   "      surface",
-  "        text \" article \"",
+  '        text " article "',
   "      surface",
-  "        text \" articles \"",
+  '        text " articles "',
   "      surface",
-  "        text \" fact \"",
+  '        text " fact "',
   "      surface",
-  "        text \" facts \"",
+  '        text " facts "',
   "    lexeme ru",
   "      surface",
-  "        text \" информац\"",
+  '        text " информац"',
   "      surface",
-  "        text \" инфу \"",
+  '        text " инфу "',
   "      surface",
-  "        text \" сведения \"",
+  '        text " сведения "',
   "      surface",
-  "        text \" материал\"",
+  '        text " материал"',
   "      surface",
-  "        text \" данные \"",
+  '        text " данные "',
   "      surface",
-  "        text \" источник\"",
+  '        text " источник"',
   "    lexeme hi",
   "      surface",
   "        text जानकारी",
@@ -19903,12 +22788,12 @@ const MEANINGS_LINO = [
   "    role web_search_news_subject",
   "    lexeme en",
   "      surface",
-  "        text \" news \"",
+  '        text " news "',
   "      surface",
-  "        text \" headlines \"",
+  '        text " headlines "',
   "    lexeme ru",
   "      surface",
-  "        text \" новост\"",
+  '        text " новост"',
   "    lexeme hi",
   "      surface",
   "        text समाचार",
@@ -19928,22 +22813,22 @@ const MEANINGS_LINO = [
   "    role web_search_news_recency",
   "    lexeme en",
   "      surface",
-  "        text \" latest \"",
+  '        text " latest "',
   "      surface",
-  "        text \" current \"",
+  '        text " current "',
   "      surface",
-  "        text \" breaking \"",
+  '        text " breaking "',
   "      surface",
-  "        text \" today \"",
+  '        text " today "',
   "    lexeme ru",
   "      surface",
-  "        text \" последн\"",
+  '        text " последн"',
   "      surface",
-  "        text \" свеж\"",
+  '        text " свеж"',
   "      surface",
-  "        text \" актуальн\"",
+  '        text " актуальн"',
   "      surface",
-  "        text \" сегодня\"",
+  '        text " сегодня"',
   "    lexeme hi",
   "      surface",
   "        text नवीनतम",
@@ -19968,42 +22853,42 @@ const MEANINGS_LINO = [
   "    role web_search_imperative_lead",
   "    lexeme en",
   "      surface",
-  "        text \" search \"",
+  '        text " search "',
   "      surface",
-  "        text \" look up \"",
+  '        text " look up "',
   "      surface",
-  "        text \" lookup \"",
+  '        text " lookup "',
   "      surface",
-  "        text \" research \"",
+  '        text " research "',
   "      surface",
-  "        text \" investigate \"",
+  '        text " investigate "',
   "      surface",
-  "        text \"search for …\"",
+  '        text "search for …"',
   "      surface",
-  "        text \"search …\"",
+  '        text "search …"',
   "      surface",
-  "        text \"look up …\"",
+  '        text "look up …"',
   "      surface",
-  "        text \"lookup …\"",
+  '        text "lookup …"',
   "      surface",
-  "        text \"research …\"",
+  '        text "research …"',
   "      surface",
-  "        text \"investigate …\"",
+  '        text "investigate …"',
   "    lexeme ru",
   "      surface",
-  "        text \" поищи \"",
+  '        text " поищи "',
   "      surface",
-  "        text \" поиск \"",
+  '        text " поиск "',
   "      surface",
-  "        text \" поискать \"",
+  '        text " поискать "',
   "      surface",
-  "        text \" ищи \"",
+  '        text " ищи "',
   "      surface",
-  "        text \"поищи …\"",
+  '        text "поищи …"',
   "      surface",
-  "        text \"поискать …\"",
+  '        text "поискать …"',
   "      surface",
-  "        text \"ищи …\"",
+  '        text "ищи …"',
   "    lexeme hi",
   "      surface",
   "        text खोज",
@@ -20012,19 +22897,19 @@ const MEANINGS_LINO = [
   "      surface",
   "        text ढूँढ",
   "      surface",
-  "        text \"खोजो …\"",
+  '        text "खोजो …"',
   "      surface",
-  "        text \"खोजें …\"",
+  '        text "खोजें …"',
   "      surface",
-  "        text \"खोजिए …\"",
+  '        text "खोजिए …"',
   "      surface",
-  "        text \"ढूंढो …\"",
+  '        text "ढूंढो …"',
   "      surface",
-  "        text \"ढूँढो …\"",
+  '        text "ढूँढो …"',
   "      surface",
-  "        text \"ढूंढें …\"",
+  '        text "ढूंढें …"',
   "      surface",
-  "        text \"ढूँढें …\"",
+  '        text "ढूँढें …"',
   "    lexeme zh",
   "      surface",
   "        text 搜索",
@@ -20061,31 +22946,31 @@ const MEANINGS_LINO = [
   "    role web_search_imperative_lead",
   "    lexeme en",
   "      surface",
-  "        text \" find \"",
+  '        text " find "',
   "      surface",
-  "        text \"find …\"",
+  '        text "find …"',
   "    lexeme ru",
   "      surface",
-  "        text \" найди \"",
+  '        text " найди "',
   "      surface",
-  "        text \" найти \"",
+  '        text " найти "',
   "      surface",
-  "        text \" разыщи \"",
+  '        text " разыщи "',
   "      surface",
-  "        text \" узнай \"",
+  '        text " узнай "',
   "      surface",
-  "        text \"найди …\"",
+  '        text "найди …"',
   "      surface",
-  "        text \"найти …\"",
+  '        text "найти …"',
   "      surface",
-  "        text \"разыщи …\"",
+  '        text "разыщи …"',
   "      surface",
-  "        text \"узнай …\"",
+  '        text "узнай …"',
   "    lexeme hi",
   "      surface",
-  "        text \"पता लगाओ\"",
+  '        text "पता लगाओ"',
   "      surface",
-  "        text \"पता लगाओ …\"",
+  '        text "पता लगाओ …"',
   "    lexeme zh",
   "      surface",
   "        text 找到",
@@ -20098,21 +22983,21 @@ const MEANINGS_LINO = [
   "      surface",
   "        text duckduckgo",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
-  "        text \"search the internet\"",
+  '        text "search the internet"',
   "    lexeme ru",
   "      surface",
   "        text веб-поиск",
   "      surface",
-  "        text \"веб поиск\"",
+  '        text "веб поиск"',
   "      surface",
   "        text интернет",
   "    lexeme hi",
   "      surface",
-  "        text \"वेब खोज\"",
+  '        text "वेब खोज"',
   "      surface",
-  "        text \"इंटरनेट पर खोज\"",
+  '        text "इंटरनेट पर खोज"',
   "      surface",
   "        text इंटरनेट",
   "    lexeme zh",
@@ -20131,129 +23016,129 @@ const MEANINGS_LINO = [
   "    role web_search_explicit_prefix",
   "    lexeme en",
   "      surface",
-  "        text \"search the web for …\"",
+  '        text "search the web for …"',
   "      surface",
-  "        text \"search web for …\"",
+  '        text "search web for …"',
   "      surface",
-  "        text \"search the internet for …\"",
+  '        text "search the internet for …"',
   "      surface",
-  "        text \"search internet for …\"",
+  '        text "search internet for …"',
   "      surface",
-  "        text \"search online for …\"",
+  '        text "search online for …"',
   "      surface",
-  "        text \"search wikipedia for …\"",
+  '        text "search wikipedia for …"',
   "      surface",
-  "        text \"search wikidata for …\"",
+  '        text "search wikidata for …"',
   "      surface",
-  "        text \"search wiktionary for …\"",
+  '        text "search wiktionary for …"',
   "      surface",
-  "        text \"search for information about …\"",
+  '        text "search for information about …"',
   "      surface",
-  "        text \"search for information on …\"",
+  '        text "search for information on …"',
   "      surface",
-  "        text \"web search for …\"",
+  '        text "web search for …"',
   "      surface",
-  "        text \"find on the internet …\"",
+  '        text "find on the internet …"',
   "      surface",
-  "        text \"find online …\"",
+  '        text "find online …"',
   "      surface",
-  "        text \"find information about …\"",
+  '        text "find information about …"',
   "      surface",
-  "        text \"find information on …\"",
+  '        text "find information on …"',
   "      surface",
-  "        text \"find detailed information about …\"",
+  '        text "find detailed information about …"',
   "      surface",
-  "        text \"find detailed information on …\"",
+  '        text "find detailed information on …"',
   "      surface",
-  "        text \"find info about …\"",
+  '        text "find info about …"',
   "      surface",
-  "        text \"find info on …\"",
+  '        text "find info on …"',
   "      surface",
-  "        text \"look up information about …\"",
+  '        text "look up information about …"',
   "      surface",
-  "        text \"look up information on …\"",
+  '        text "look up information on …"',
   "      surface",
-  "        text \"look up info about …\"",
+  '        text "look up info about …"',
   "      surface",
-  "        text \"look up info on …\"",
+  '        text "look up info on …"',
   "      surface",
-  "        text \"look up online …\"",
+  '        text "look up online …"',
   "    lexeme ru",
   "      surface",
-  "        text \"найди в интернете …\"",
+  '        text "найди в интернете …"',
   "      surface",
-  "        text \"поищи в интернете …\"",
+  '        text "поищи в интернете …"',
   "      surface",
-  "        text \"поиск в интернете …\"",
+  '        text "поиск в интернете …"',
   "      surface",
-  "        text \"найди онлайн …\"",
+  '        text "найди онлайн …"',
   "      surface",
-  "        text \"поищи онлайн …\"",
+  '        text "поищи онлайн …"',
   "      surface",
-  "        text \"найди в сети …\"",
+  '        text "найди в сети …"',
   "      surface",
-  "        text \"поищи в сети …\"",
+  '        text "поищи в сети …"',
   "      surface",
-  "        text \"найди информацию в интернете о …\"",
+  '        text "найди информацию в интернете о …"',
   "      surface",
-  "        text \"найди информацию в интернете об …\"",
+  '        text "найди информацию в интернете об …"',
   "      surface",
-  "        text \"поищи информацию в интернете о …\"",
+  '        text "поищи информацию в интернете о …"',
   "      surface",
-  "        text \"поищи информацию в интернете об …\"",
+  '        text "поищи информацию в интернете об …"',
   "      surface",
-  "        text \"найди информацию о …\"",
+  '        text "найди информацию о …"',
   "      surface",
-  "        text \"найди информацию об …\"",
+  '        text "найди информацию об …"',
   "      surface",
-  "        text \"найди информацию про …\"",
+  '        text "найди информацию про …"',
   "      surface",
-  "        text \"найди информацию по …\"",
+  '        text "найди информацию по …"',
   "      surface",
-  "        text \"найти информацию о …\"",
+  '        text "найти информацию о …"',
   "      surface",
-  "        text \"найти информацию об …\"",
+  '        text "найти информацию об …"',
   "      surface",
-  "        text \"поищи информацию о …\"",
+  '        text "поищи информацию о …"',
   "      surface",
-  "        text \"поищи информацию об …\"",
+  '        text "поищи информацию об …"',
   "      surface",
-  "        text \"поищи информацию про …\"",
+  '        text "поищи информацию про …"',
   "      surface",
-  "        text \"поищи информацию по …\"",
+  '        text "поищи информацию по …"',
   "      surface",
-  "        text \"найди инфу о …\"",
+  '        text "найди инфу о …"',
   "      surface",
-  "        text \"найди инфу об …\"",
+  '        text "найди инфу об …"',
   "      surface",
-  "        text \"поищи инфу о …\"",
+  '        text "поищи инфу о …"',
   "      surface",
-  "        text \"поищи инфу об …\"",
+  '        text "поищи инфу об …"',
   "      surface",
-  "        text \"найди сведения о …\"",
+  '        text "найди сведения о …"',
   "      surface",
-  "        text \"найди сведения об …\"",
+  '        text "найди сведения об …"',
   "      surface",
-  "        text \"поищи сведения о …\"",
+  '        text "поищи сведения о …"',
   "      surface",
-  "        text \"поищи сведения об …\"",
+  '        text "поищи сведения об …"',
   "      surface",
-  "        text \"найди материалы о …\"",
+  '        text "найди материалы о …"',
   "      surface",
-  "        text \"найди материалы об …\"",
+  '        text "найди материалы об …"',
   "      surface",
-  "        text \"поищи материалы о …\"",
+  '        text "поищи материалы о …"',
   "      surface",
-  "        text \"поищи материалы об …\"",
+  '        text "поищи материалы об …"',
   "    lexeme hi",
   "      surface",
-  "        text \"इंटरनेट पर खोजें …\"",
+  '        text "इंटरनेट पर खोजें …"',
   "      surface",
-  "        text \"वेब पर खोजें …\"",
+  '        text "वेब पर खोजें …"',
   "      surface",
-  "        text \"ऑनलाइन खोजें …\"",
+  '        text "ऑनलाइन खोजें …"',
   "      surface",
-  "        text \"विकिपीडिया पर खोजें …\"",
+  '        text "विकिपीडिया पर खोजें …"',
   "    lexeme zh",
   "      surface",
   "        text 在网上搜索…",
@@ -20268,41 +23153,41 @@ const MEANINGS_LINO = [
   "    role web_search_topic_marker",
   "    lexeme en",
   "      surface",
-  "        text \" about …\"",
+  '        text " about …"',
   "      surface",
-  "        text \" on …\"",
+  '        text " on …"',
   "      surface",
-  "        text \" regarding …\"",
+  '        text " regarding …"',
   "      surface",
-  "        text \" concerning …\"",
+  '        text " concerning …"',
   "      surface",
-  "        text \" for …\"",
+  '        text " for …"',
   "    lexeme ru",
   "      surface",
-  "        text \" о …\"",
+  '        text " о …"',
   "      surface",
-  "        text \" об …\"",
+  '        text " об …"',
   "      surface",
-  "        text \" про …\"",
+  '        text " про …"',
   "      surface",
-  "        text \" по …\"",
+  '        text " по …"',
   "      surface",
-  "        text \" насчет …\"",
+  '        text " насчет …"',
   "      surface",
-  "        text \" относительно …\"",
+  '        text " относительно …"',
   "    lexeme hi",
   "      surface",
-  "        text \"… के बारे में\"",
+  '        text "… के बारे में"',
   "      surface",
-  "        text \"… के विषय में\"",
+  '        text "… के विषय में"',
   "      surface",
-  "        text \"… से संबंधित\"",
+  '        text "… से संबंधित"',
   "      surface",
-  "        text \"… पर\"",
+  '        text "… पर"',
   "      surface",
-  "        text \"… की जानकारी\"",
+  '        text "… की जानकारी"',
   "      surface",
-  "        text \"… की सूचना\"",
+  '        text "… की सूचना"',
   "    lexeme zh",
   "      surface",
   "        text 关于…",
@@ -20317,87 +23202,87 @@ const MEANINGS_LINO = [
   "    role web_search_query_leading_noise",
   "    lexeme en",
   "      surface",
-  "        text \"please …\"",
+  '        text "please …"',
   "      surface",
-  "        text \"can you …\"",
+  '        text "can you …"',
   "      surface",
-  "        text \"could you …\"",
+  '        text "could you …"',
   "      surface",
-  "        text \"would you …\"",
+  '        text "would you …"',
   "      surface",
-  "        text \"me …\"",
+  '        text "me …"',
   "      surface",
-  "        text \"the …\"",
+  '        text "the …"',
   "      surface",
-  "        text \"some …\"",
+  '        text "some …"',
   "      surface",
-  "        text \"detailed …\"",
+  '        text "detailed …"',
   "      surface",
-  "        text \"more …\"",
+  '        text "more …"',
   "      surface",
-  "        text \"current …\"",
+  '        text "current …"',
   "      surface",
-  "        text \"latest …\"",
+  '        text "latest …"',
   "      surface",
-  "        text \"information about …\"",
+  '        text "information about …"',
   "      surface",
-  "        text \"information on …\"",
+  '        text "information on …"',
   "      surface",
-  "        text \"info about …\"",
+  '        text "info about …"',
   "      surface",
-  "        text \"info on …\"",
+  '        text "info on …"',
   "      surface",
-  "        text \"details about …\"",
+  '        text "details about …"',
   "      surface",
-  "        text \"details on …\"",
+  '        text "details on …"',
   "      surface",
-  "        text \"data about …\"",
+  '        text "data about …"',
   "      surface",
-  "        text \"data on …\"",
+  '        text "data on …"',
   "    lexeme ru",
   "      surface",
-  "        text \"подробные …\"",
+  '        text "подробные …"',
   "      surface",
-  "        text \"информацию о …\"",
+  '        text "информацию о …"',
   "      surface",
-  "        text \"информацию об …\"",
+  '        text "информацию об …"',
   "      surface",
-  "        text \"инфу о …\"",
+  '        text "инфу о …"',
   "      surface",
-  "        text \"инфу об …\"",
+  '        text "инфу об …"',
   "      surface",
-  "        text \"сведения о …\"",
+  '        text "сведения о …"',
   "      surface",
-  "        text \"сведения об …\"",
+  '        text "сведения об …"',
   "      surface",
-  "        text \"материалы о …\"",
+  '        text "материалы о …"',
   "      surface",
-  "        text \"материалы об …\"",
+  '        text "материалы об …"',
   "      surface",
-  "        text \"материалы по …\"",
+  '        text "материалы по …"',
   "      surface",
-  "        text \"данные о …\"",
+  '        text "данные о …"',
   "      surface",
-  "        text \"данные об …\"",
+  '        text "данные об …"',
   "      surface",
-  "        text \"о …\"",
+  '        text "о …"',
   "      surface",
-  "        text \"об …\"",
+  '        text "об …"',
   "      surface",
-  "        text \"про …\"",
+  '        text "про …"',
   "      surface",
-  "        text \"по …\"",
+  '        text "по …"',
   "    lexeme hi",
   "      surface",
-  "        text \"कृपया …\"",
+  '        text "कृपया …"',
   "      surface",
-  "        text \"जानकारी …\"",
+  '        text "जानकारी …"',
   "      surface",
-  "        text \"सूचना …\"",
+  '        text "सूचना …"',
   "      surface",
-  "        text \"विवरण …\"",
+  '        text "विवरण …"',
   "      surface",
-  "        text \"सामग्री …\"",
+  '        text "सामग्री …"',
   "    lexeme zh",
   "      surface",
   "        text 关于…",
@@ -20412,99 +23297,99 @@ const MEANINGS_LINO = [
   "    role web_search_query_trailing_noise",
   "    lexeme en",
   "      surface",
-  "        text \"… online\"",
+  '        text "… online"',
   "      surface",
-  "        text \"… on the internet\"",
+  '        text "… on the internet"',
   "      surface",
-  "        text \"… on the web\"",
+  '        text "… on the web"',
   "      surface",
-  "        text \"… on wikipedia\"",
+  '        text "… on wikipedia"',
   "      surface",
-  "        text \"… in wikipedia\"",
+  '        text "… in wikipedia"',
   "      surface",
-  "        text \"… from wikipedia\"",
+  '        text "… from wikipedia"',
   "      surface",
-  "        text \"… information\"",
+  '        text "… information"',
   "      surface",
-  "        text \"… info\"",
+  '        text "… info"',
   "      surface",
-  "        text \"… details\"",
+  '        text "… details"',
   "      surface",
-  "        text \"… data\"",
+  '        text "… data"',
   "      surface",
-  "        text \"… material\"",
+  '        text "… material"',
   "      surface",
-  "        text \"… materials\"",
+  '        text "… materials"',
   "      surface",
-  "        text \"… resources\"",
+  '        text "… resources"',
   "      surface",
-  "        text \"… sources\"",
+  '        text "… sources"',
   "      surface",
-  "        text \"… articles\"",
+  '        text "… articles"',
   "      surface",
-  "        text \"… facts\"",
+  '        text "… facts"',
   "    lexeme ru",
   "      surface",
-  "        text \"… в интернете\"",
+  '        text "… в интернете"',
   "      surface",
-  "        text \"… онлайн\"",
+  '        text "… онлайн"',
   "      surface",
-  "        text \"… в сети\"",
+  '        text "… в сети"',
   "      surface",
-  "        text \"… в википедии\"",
+  '        text "… в википедии"',
   "      surface",
-  "        text \"… википедии\"",
+  '        text "… википедии"',
   "      surface",
-  "        text \"… информация\"",
+  '        text "… информация"',
   "      surface",
-  "        text \"… сведения\"",
+  '        text "… сведения"',
   "      surface",
-  "        text \"… материалы\"",
+  '        text "… материалы"',
   "      surface",
-  "        text \"… данные\"",
+  '        text "… данные"',
   "    lexeme hi",
   "      surface",
-  "        text \"… के बारे में\"",
+  '        text "… के बारे में"',
   "      surface",
-  "        text \"… के विषय में\"",
+  '        text "… के विषय में"',
   "      surface",
-  "        text \"… से संबंधित\"",
+  '        text "… से संबंधित"',
   "      surface",
-  "        text \"… पर\"",
+  '        text "… पर"',
   "      surface",
-  "        text \"… की जानकारी\"",
+  '        text "… की जानकारी"',
   "      surface",
-  "        text \"… की सूचना\"",
+  '        text "… की सूचना"',
   "      surface",
-  "        text \"… जानकारी\"",
+  '        text "… जानकारी"',
   "      surface",
-  "        text \"… सूचना\"",
+  '        text "… सूचना"',
   "      surface",
-  "        text \"… विवरण\"",
+  '        text "… विवरण"',
   "      surface",
-  "        text \"… सामग्री\"",
+  '        text "… सामग्री"',
   "      surface",
-  "        text \"… स्रोत\"",
+  '        text "… स्रोत"',
   "      surface",
-  "        text \"… विकिपीडिया में\"",
+  '        text "… विकिपीडिया में"',
   "      surface",
-  "        text \"… ऑनलाइन\"",
+  '        text "… ऑनलाइन"',
   "      surface",
-  "        text \"… इंटरनेट पर\"",
+  '        text "… इंटरनेट पर"',
   "      surface",
-  "        text \"… खोजो\"",
+  '        text "… खोजो"',
   "      surface",
-  "        text \"… खोजें\"",
+  '        text "… खोजें"',
   "      surface",
-  "        text \"… खोजिए\"",
+  '        text "… खोजिए"',
   "      surface",
-  "        text \"… ढूंढो\"",
+  '        text "… ढूंढो"',
   "      surface",
-  "        text \"… ढूँढो\"",
+  '        text "… ढूँढो"',
   "      surface",
-  "        text \"… ढूंढें\"",
+  '        text "… ढूंढें"',
   "      surface",
-  "        text \"… ढूँढें\"",
+  '        text "… ढूँढें"',
   "    lexeme zh",
   "      surface",
   "        text …的信息",
@@ -20552,127 +23437,127 @@ const MEANINGS_LINO = [
   "    role research_question_opener",
   "    lexeme en",
   "      surface",
-  "        text \"what is the …\"",
+  '        text "what is the …"',
   "      surface",
-  "        text \"what is a …\"",
+  '        text "what is a …"',
   "      surface",
-  "        text \"what is an …\"",
+  '        text "what is an …"',
   "      surface",
-  "        text \"what is …\"",
+  '        text "what is …"',
   "      surface",
-  "        text \"what are the …\"",
+  '        text "what are the …"',
   "      surface",
-  "        text \"what are …\"",
+  '        text "what are …"',
   "      surface",
-  "        text \"what s the …\"",
+  '        text "what s the …"',
   "      surface",
-  "        text \"what s a …\"",
+  '        text "what s a …"',
   "      surface",
-  "        text \"what s an …\"",
+  '        text "what s an …"',
   "      surface",
-  "        text \"what s …\"",
+  '        text "what s …"',
   "      surface",
-  "        text \"which is the …\"",
+  '        text "which is the …"',
   "      surface",
-  "        text \"which is a …\"",
+  '        text "which is a …"',
   "      surface",
-  "        text \"which is an …\"",
+  '        text "which is an …"',
   "      surface",
-  "        text \"which are the …\"",
+  '        text "which are the …"',
   "      surface",
-  "        text \"which are …\"",
+  '        text "which are …"',
   "      surface",
-  "        text \"which …\"",
+  '        text "which …"',
   "      surface",
-  "        text \"who is the …\"",
+  '        text "who is the …"',
   "      surface",
-  "        text \"who are the …\"",
+  '        text "who are the …"',
   "      surface",
-  "        text \"who …\"",
+  '        text "who …"',
   "      surface",
-  "        text \"where is the …\"",
+  '        text "where is the …"',
   "      surface",
-  "        text \"where are the …\"",
+  '        text "where are the …"',
   "      surface",
-  "        text \"where …\"",
+  '        text "where …"',
   "      surface",
-  "        text \"when is the …\"",
+  '        text "when is the …"',
   "      surface",
-  "        text \"when are the …\"",
+  '        text "when are the …"',
   "      surface",
-  "        text \"when …\"",
+  '        text "when …"',
   "      surface",
-  "        text \"why is the …\"",
+  '        text "why is the …"',
   "      surface",
-  "        text \"why are the …\"",
+  '        text "why are the …"',
   "      surface",
-  "        text \"why …\"",
+  '        text "why …"',
   "      surface",
-  "        text \"how is the …\"",
+  '        text "how is the …"',
   "      surface",
-  "        text \"how are the …\"",
+  '        text "how are the …"',
   "      surface",
-  "        text \"how …\"",
+  '        text "how …"',
   "      surface",
-  "        text \"can you tell me …\"",
+  '        text "can you tell me …"',
   "      surface",
-  "        text \"could you tell me …\"",
+  '        text "could you tell me …"',
   "      surface",
-  "        text \"do you know …\"",
+  '        text "do you know …"',
   "    lexeme ru",
   "      surface",
-  "        text \"что такое …\"",
+  '        text "что такое …"',
   "      surface",
-  "        text \"что за …\"",
+  '        text "что за …"',
   "      surface",
-  "        text \"какие …\"",
+  '        text "какие …"',
   "      surface",
-  "        text \"какой …\"",
+  '        text "какой …"',
   "      surface",
-  "        text \"какая …\"",
+  '        text "какая …"',
   "      surface",
-  "        text \"какое …\"",
+  '        text "какое …"',
   "      surface",
-  "        text \"кто такой …\"",
+  '        text "кто такой …"',
   "      surface",
-  "        text \"кто такая …\"",
+  '        text "кто такая …"',
   "      surface",
-  "        text \"кто …\"",
+  '        text "кто …"',
   "      surface",
-  "        text \"где …\"",
+  '        text "где …"',
   "      surface",
-  "        text \"когда …\"",
+  '        text "когда …"',
   "      surface",
-  "        text \"почему …\"",
+  '        text "почему …"',
   "      surface",
-  "        text \"зачем …\"",
+  '        text "зачем …"',
   "      surface",
-  "        text \"как …\"",
+  '        text "как …"',
   "      surface",
-  "        text \"расскажи мне …\"",
+  '        text "расскажи мне …"',
   "      surface",
-  "        text \"ты знаешь …\"",
+  '        text "ты знаешь …"',
   "    lexeme hi",
   "      surface",
-  "        text \"क्या होता है …\"",
+  '        text "क्या होता है …"',
   "      surface",
-  "        text \"क्या है …\"",
+  '        text "क्या है …"',
   "      surface",
-  "        text \"कौन है …\"",
+  '        text "कौन है …"',
   "      surface",
-  "        text \"कौन …\"",
+  '        text "कौन …"',
   "      surface",
-  "        text \"कहाँ है …\"",
+  '        text "कहाँ है …"',
   "      surface",
-  "        text \"कहाँ …\"",
+  '        text "कहाँ …"',
   "      surface",
-  "        text \"कब …\"",
+  '        text "कब …"',
   "      surface",
-  "        text \"क्यों …\"",
+  '        text "क्यों …"',
   "      surface",
-  "        text \"कैसे …\"",
+  '        text "कैसे …"',
   "      surface",
-  "        text \"बताओ …\"",
+  '        text "बताओ …"',
   "    lexeme zh",
   "      surface",
   "        text 什么是…",
@@ -20701,89 +23586,89 @@ const MEANINGS_LINO = [
   "    role research_superlative_modifier",
   "    lexeme en",
   "      surface",
-  "        text \" most \"",
+  '        text " most "',
   "      surface",
-  "        text \" best \"",
+  '        text " best "',
   "      surface",
-  "        text \" top \"",
+  '        text " top "',
   "      surface",
-  "        text \" leading \"",
+  '        text " leading "',
   "      surface",
-  "        text \" standard \"",
+  '        text " standard "',
   "      surface",
-  "        text \" de facto \"",
+  '        text " de facto "',
   "      surface",
-  "        text \" widely used \"",
+  '        text " widely used "',
   "      surface",
-  "        text \" commonly used \"",
+  '        text " commonly used "',
   "      surface",
-  "        text \" popular \"",
+  '        text " popular "',
   "      surface",
-  "        text \" recommended \"",
+  '        text " recommended "',
   "      surface",
-  "        text \" current \"",
+  '        text " current "',
   "      surface",
-  "        text \" latest \"",
+  '        text " latest "',
   "      surface",
-  "        text \" recent \"",
+  '        text " recent "',
   "      surface",
-  "        text \" state of the art \"",
+  '        text " state of the art "',
   "      surface",
-  "        text \" sota \"",
+  '        text " sota "',
   "      surface",
-  "        text \" should i use \"",
+  '        text " should i use "',
   "      surface",
-  "        text \" should we use \"",
+  '        text " should we use "',
   "      surface",
-  "        text \" should be used \"",
+  '        text " should be used "',
   "    lexeme ru",
   "      surface",
-  "        text \" лучший \"",
+  '        text " лучший "',
   "      surface",
-  "        text \" лучшая \"",
+  '        text " лучшая "',
   "      surface",
-  "        text \" лучшие \"",
+  '        text " лучшие "',
   "      surface",
-  "        text \" самый \"",
+  '        text " самый "',
   "      surface",
-  "        text \" самые \"",
+  '        text " самые "',
   "      surface",
-  "        text \" топ \"",
+  '        text " топ "',
   "      surface",
-  "        text \" ведущий \"",
+  '        text " ведущий "',
   "      surface",
-  "        text \" популярный \"",
+  '        text " популярный "',
   "      surface",
-  "        text \" стандартный \"",
+  '        text " стандартный "',
   "      surface",
-  "        text \" рекомендуемый \"",
+  '        text " рекомендуемый "',
   "      surface",
-  "        text \" текущий \"",
+  '        text " текущий "',
   "      surface",
-  "        text \" последний \"",
+  '        text " последний "',
   "      surface",
-  "        text \" недавний \"",
+  '        text " недавний "',
   "    lexeme hi",
   "      surface",
-  "        text \" सबसे अच्छा \"",
+  '        text " सबसे अच्छा "',
   "      surface",
-  "        text \" सर्वश्रेष्ठ \"",
+  '        text " सर्वश्रेष्ठ "',
   "      surface",
-  "        text \" शीर्ष \"",
+  '        text " शीर्ष "',
   "      surface",
-  "        text \" प्रमुख \"",
+  '        text " प्रमुख "',
   "      surface",
-  "        text \" मानक \"",
+  '        text " मानक "',
   "      surface",
-  "        text \" लोकप्रिय \"",
+  '        text " लोकप्रिय "',
   "      surface",
-  "        text \" अनुशंसित \"",
+  '        text " अनुशंसित "',
   "      surface",
-  "        text \" वर्तमान \"",
+  '        text " वर्तमान "',
   "      surface",
-  "        text \" नवीनतम \"",
+  '        text " नवीनतम "',
   "      surface",
-  "        text \" हाल ही का \"",
+  '        text " हाल ही का "',
   "    lexeme zh",
   "      surface",
   "        text 最好",
@@ -20810,65 +23695,65 @@ const MEANINGS_LINO = [
   "    role research_evidence_domain",
   "    lexeme en",
   "      surface",
-  "        text \" dataset \"",
+  '        text " dataset "',
   "      surface",
-  "        text \" datasets \"",
+  '        text " datasets "',
   "      surface",
-  "        text \" benchmark \"",
+  '        text " benchmark "',
   "      surface",
-  "        text \" benchmarks \"",
+  '        text " benchmarks "',
   "      surface",
-  "        text \" corpus \"",
+  '        text " corpus "',
   "      surface",
-  "        text \" corpora \"",
+  '        text " corpora "',
   "      surface",
-  "        text \" metric \"",
+  '        text " metric "',
   "      surface",
-  "        text \" metrics \"",
+  '        text " metrics "',
   "      surface",
-  "        text \" framework \"",
+  '        text " framework "',
   "      surface",
-  "        text \" frameworks \"",
+  '        text " frameworks "',
   "      surface",
-  "        text \" paper \"",
+  '        text " paper "',
   "      surface",
-  "        text \" papers \"",
+  '        text " papers "',
   "      surface",
-  "        text \" study \"",
+  '        text " study "',
   "      surface",
-  "        text \" studies \"",
+  '        text " studies "',
   "    lexeme ru",
   "      surface",
-  "        text \" датасет \"",
+  '        text " датасет "',
   "      surface",
-  "        text \" набор данных \"",
+  '        text " набор данных "',
   "      surface",
-  "        text \" бенчмарк \"",
+  '        text " бенчмарк "',
   "      surface",
-  "        text \" корпус \"",
+  '        text " корпус "',
   "      surface",
-  "        text \" метрика \"",
+  '        text " метрика "',
   "      surface",
-  "        text \" фреймворк \"",
+  '        text " фреймворк "',
   "      surface",
-  "        text \" статья \"",
+  '        text " статья "',
   "      surface",
-  "        text \" исследование \"",
+  '        text " исследование "',
   "    lexeme hi",
   "      surface",
-  "        text \" डेटासेट \"",
+  '        text " डेटासेट "',
   "      surface",
-  "        text \" बेंचमार्क \"",
+  '        text " बेंचमार्क "',
   "      surface",
-  "        text \" कॉर्पस \"",
+  '        text " कॉर्पस "',
   "      surface",
-  "        text \" मीट्रिक \"",
+  '        text " मीट्रिक "',
   "      surface",
-  "        text \" फ्रेमवर्क \"",
+  '        text " फ्रेमवर्क "',
   "      surface",
-  "        text \" पेपर \"",
+  '        text " पेपर "',
   "      surface",
-  "        text \" अध्ययन \"",
+  '        text " अध्ययन "',
   "    lexeme zh",
   "      surface",
   "        text 数据集",
@@ -20889,49 +23774,49 @@ const MEANINGS_LINO = [
   "    role research_evaluation_domain",
   "    lexeme en",
   "      surface",
-  "        text \" evaluation \"",
+  '        text " evaluation "',
   "      surface",
-  "        text \" evaluate \"",
+  '        text " evaluate "',
   "      surface",
-  "        text \" validation \"",
+  '        text " validation "',
   "      surface",
-  "        text \" validate \"",
+  '        text " validate "',
   "      surface",
-  "        text \" quality \"",
+  '        text " quality "',
   "      surface",
-  "        text \" translation \"",
+  '        text " translation "',
   "      surface",
-  "        text \" compare \"",
+  '        text " compare "',
   "      surface",
-  "        text \" comparison \"",
+  '        text " comparison "',
   "    lexeme ru",
   "      surface",
-  "        text \" оценка \"",
+  '        text " оценка "',
   "      surface",
-  "        text \" оценить \"",
+  '        text " оценить "',
   "      surface",
-  "        text \" валидация \"",
+  '        text " валидация "',
   "      surface",
-  "        text \" проверка \"",
+  '        text " проверка "',
   "      surface",
-  "        text \" качество \"",
+  '        text " качество "',
   "      surface",
-  "        text \" перевод \"",
+  '        text " перевод "',
   "      surface",
-  "        text \" сравнить \"",
+  '        text " сравнить "',
   "      surface",
-  "        text \" сравнение \"",
+  '        text " сравнение "',
   "    lexeme hi",
   "      surface",
-  "        text \" मूल्यांकन \"",
+  '        text " मूल्यांकन "',
   "      surface",
-  "        text \" सत्यापन \"",
+  '        text " सत्यापन "',
   "      surface",
-  "        text \" गुणवत्ता \"",
+  '        text " गुणवत्ता "',
   "      surface",
-  "        text \" अनुवाद \"",
+  '        text " अनुवाद "',
   "      surface",
-  "        text \" तुलना \"",
+  '        text " तुलना "',
   "    lexeme zh",
   "      surface",
   "        text 评估",
@@ -20951,125 +23836,125 @@ const MEANINGS_LINO = [
   "    role enumeration_request_opener",
   "    lexeme en",
   "      surface",
-  "        text \"list all …\"",
+  '        text "list all …"',
   "      surface",
-  "        text \"list every …\"",
+  '        text "list every …"',
   "      surface",
-  "        text \"list the …\"",
+  '        text "list the …"',
   "      surface",
-  "        text \"show all …\"",
+  '        text "show all …"',
   "      surface",
-  "        text \"show me all …\"",
+  '        text "show me all …"',
   "      surface",
-  "        text \"show me the …\"",
+  '        text "show me the …"',
   "      surface",
-  "        text \"give me all …\"",
+  '        text "give me all …"',
   "      surface",
-  "        text \"name all …\"",
+  '        text "name all …"',
   "      surface",
-  "        text \"enumerate all …\"",
+  '        text "enumerate all …"',
   "    lexeme ru",
   "      surface",
-  "        text \"перечисли всех …\"",
+  '        text "перечисли всех …"',
   "      surface",
-  "        text \"перечисли все …\"",
+  '        text "перечисли все …"',
   "      surface",
-  "        text \"список всех …\"",
+  '        text "список всех …"',
   "      surface",
-  "        text \"назови всех …\"",
+  '        text "назови всех …"',
   "    lexeme hi",
   "      surface",
-  "        text \"सभी …\"",
+  '        text "सभी …"',
   "      surface",
-  "        text \"हर …\"",
+  '        text "हर …"',
   "    lexeme zh",
   "      surface",
-  "        text \"列出所有 …\"",
+  '        text "列出所有 …"',
   "      surface",
-  "        text \"列出全部 …\"",
+  '        text "列出全部 …"',
   "      surface",
-  "        text \"显示所有 …\"",
+  '        text "显示所有 …"',
   "      surface",
-  "        text \"枚举所有 …\"",
+  '        text "枚举所有 …"',
   "  enumeration_constraint",
   "    defined-by relation",
   "    role enumeration_constraint",
   "    lexeme en",
   "      surface",
-  "        text \" with \"",
+  '        text " with "',
   "      surface",
-  "        text \" that \"",
+  '        text " that "',
   "      surface",
-  "        text \" who \"",
+  '        text " who "',
   "      surface",
-  "        text \" whose \"",
+  '        text " whose "',
   "      surface",
-  "        text \" where \"",
+  '        text " where "',
   "      surface",
-  "        text \" which \"",
+  '        text " which "',
   "      surface",
-  "        text \" having \"",
+  '        text " having "',
   "      surface",
-  "        text \" have \"",
+  '        text " have "',
   "      surface",
-  "        text \" has \"",
+  '        text " has "',
   "      surface",
-  "        text \" featuring \"",
+  '        text " featuring "',
   "      surface",
-  "        text \" capable of \"",
+  '        text " capable of "',
   "      surface",
-  "        text \" can \"",
+  '        text " can "',
   "      surface",
-  "        text \" for \"",
+  '        text " for "',
   "      surface",
-  "        text \" by \"",
+  '        text " by "',
   "      surface",
-  "        text \" in \"",
+  '        text " in "',
   "    lexeme ru",
   "      surface",
-  "        text \" с \"",
+  '        text " с "',
   "      surface",
-  "        text \" у которых \"",
+  '        text " у которых "',
   "      surface",
-  "        text \" которые \"",
+  '        text " которые "',
   "      surface",
-  "        text \" имеющие \"",
+  '        text " имеющие "',
   "      surface",
-  "        text \" имеющих \"",
+  '        text " имеющих "',
   "      surface",
-  "        text \" для \"",
+  '        text " для "',
   "      surface",
-  "        text \" в \"",
+  '        text " в "',
   "    lexeme hi",
   "      surface",
-  "        text \" जिनके \"",
+  '        text " जिनके "',
   "      surface",
-  "        text \" जिनमें \"",
+  '        text " जिनमें "',
   "      surface",
-  "        text \" जिसमें \"",
+  '        text " जिसमें "',
   "      surface",
-  "        text \" वाले \"",
+  '        text " वाले "',
   "      surface",
-  "        text \" के साथ \"",
+  '        text " के साथ "',
   "      surface",
-  "        text \" के लिए \"",
+  '        text " के लिए "',
   "      surface",
-  "        text \" में \"",
+  '        text " में "',
   "    lexeme zh",
   "      surface",
-  "        text \" 具有 \"",
+  '        text " 具有 "',
   "      surface",
-  "        text \" 有 \"",
+  '        text " 有 "',
   "      surface",
-  "        text \" 带有 \"",
+  '        text " 带有 "',
   "      surface",
-  "        text \" 可以 \"",
+  '        text " 可以 "',
   "      surface",
-  "        text \" 能 \"",
+  '        text " 能 "',
   "      surface",
-  "        text \" 在 \"",
+  '        text " 在 "',
   "      surface",
-  "        text \" 用于 \"",
+  '        text " 用于 "',
   "meanings",
   "  followup_instruction_verb",
   "    defined-by action",
@@ -21106,13 +23991,13 @@ const MEANINGS_LINO = [
   "        text расскажи",
   "    lexeme hi",
   "      surface",
-  "        text \"तुलना करो\"",
+  '        text "तुलना करो"',
   "      surface",
-  "        text \"सारांश दो\"",
+  '        text "सारांश दो"',
   "      surface",
   "        text समझाओ",
   "      surface",
-  "        text \"वर्णन करो\"",
+  '        text "वर्णन करो"',
   "      surface",
   "        text दिखाओ",
   "      surface",
@@ -21316,15 +24201,15 @@ const MEANINGS_LINO = [
   "    role translation_source_marker",
   "    lexeme en",
   "      surface",
-  "        text \"from english\"",
+  '        text "from english"',
   "    lexeme ru",
   "      surface",
-  "        text \"с английского\"",
+  '        text "с английского"',
   "    lexeme hi",
   "      surface",
-  "        text \"अंग्रेजी से\"",
+  '        text "अंग्रेजी से"',
   "      surface",
-  "        text \"अंग्रेज़ी से\"",
+  '        text "अंग्रेज़ी से"',
   "    lexeme zh",
   "      surface",
   "        text 从英语",
@@ -21336,13 +24221,13 @@ const MEANINGS_LINO = [
   "    role translation_source_marker",
   "    lexeme en",
   "      surface",
-  "        text \"from russian\"",
+  '        text "from russian"',
   "    lexeme ru",
   "      surface",
-  "        text \"с русского\"",
+  '        text "с русского"',
   "    lexeme hi",
   "      surface",
-  "        text \"रूसी से\"",
+  '        text "रूसी से"',
   "    lexeme zh",
   "      surface",
   "        text 从俄语",
@@ -21352,15 +24237,15 @@ const MEANINGS_LINO = [
   "    role translation_source_marker",
   "    lexeme en",
   "      surface",
-  "        text \"from hindi\"",
+  '        text "from hindi"',
   "    lexeme ru",
   "      surface",
-  "        text \"с хинди\"",
+  '        text "с хинди"',
   "    lexeme hi",
   "      surface",
-  "        text \"हिंदी से\"",
+  '        text "हिंदी से"',
   "      surface",
-  "        text \"हिन्दी से\"",
+  '        text "हिन्दी से"',
   "    lexeme zh",
   "      surface",
   "        text 从印地语",
@@ -21372,13 +24257,13 @@ const MEANINGS_LINO = [
   "    role translation_source_marker",
   "    lexeme en",
   "      surface",
-  "        text \"from chinese\"",
+  '        text "from chinese"',
   "    lexeme ru",
   "      surface",
-  "        text \"с китайского\"",
+  '        text "с китайского"',
   "    lexeme hi",
   "      surface",
-  "        text \"चीनी से\"",
+  '        text "चीनी से"',
   "    lexeme zh",
   "      surface",
   "        text 从中文",
@@ -21392,17 +24277,17 @@ const MEANINGS_LINO = [
   "    role translation_target_marker",
   "    lexeme en",
   "      surface",
-  "        text \"to english\"",
+  '        text "to english"',
   "    lexeme ru",
   "      surface",
-  "        text \"на английский\"",
+  '        text "на английский"',
   "      surface",
-  "        text \"на английском\"",
+  '        text "на английском"',
   "    lexeme hi",
   "      surface",
-  "        text \"अंग्रेजी में\"",
+  '        text "अंग्रेजी में"',
   "      surface",
-  "        text \"अंग्रेज़ी में\"",
+  '        text "अंग्रेज़ी में"',
   "    lexeme zh",
   "      surface",
   "        text 成英文",
@@ -21426,13 +24311,13 @@ const MEANINGS_LINO = [
   "    role translation_target_marker",
   "    lexeme en",
   "      surface",
-  "        text \"to russian\"",
+  '        text "to russian"',
   "    lexeme ru",
   "      surface",
-  "        text \"на русский\"",
+  '        text "на русский"',
   "    lexeme hi",
   "      surface",
-  "        text \"रूसी में\"",
+  '        text "रूसी में"',
   "    lexeme zh",
   "      surface",
   "        text 成俄语",
@@ -21456,15 +24341,15 @@ const MEANINGS_LINO = [
   "    role translation_target_marker",
   "    lexeme en",
   "      surface",
-  "        text \"to hindi\"",
+  '        text "to hindi"',
   "    lexeme ru",
   "      surface",
-  "        text \"на хинди\"",
+  '        text "на хинди"',
   "    lexeme hi",
   "      surface",
-  "        text \"हिंदी में\"",
+  '        text "हिंदी में"',
   "      surface",
-  "        text \"हिन्दी में\"",
+  '        text "हिन्दी में"',
   "    lexeme zh",
   "      surface",
   "        text 成印地语",
@@ -21488,13 +24373,13 @@ const MEANINGS_LINO = [
   "    role translation_target_marker",
   "    lexeme en",
   "      surface",
-  "        text \"to chinese\"",
+  '        text "to chinese"',
   "    lexeme ru",
   "      surface",
-  "        text \"на китайский\"",
+  '        text "на китайский"',
   "    lexeme hi",
   "      surface",
-  "        text \"चीनी में\"",
+  '        text "चीनी में"',
   "    lexeme zh",
   "      surface",
   "        text 成中文",
@@ -21526,10 +24411,10 @@ const MEANINGS_LINO = [
   "    role translation_unquoted_frame",
   "    lexeme en",
   "      surface",
-  "        text \"translate … to \"",
+  '        text "translate … to "',
   "    lexeme ru",
   "      surface",
-  "        text \"переведи … на \"",
+  '        text "переведи … на "',
   "    lexeme hi",
   "      surface",
   "        text अनुवाद",
@@ -21544,15 +24429,15 @@ const MEANINGS_LINO = [
   "    role translation_into_marker",
   "    lexeme en",
   "      surface",
-  "        text \"translate into\"",
+  '        text "translate into"',
   "    lexeme ru",
   "      surface",
-  "        text \"перевести на\"",
+  '        text "перевести на"',
   "    lexeme hi",
   "      surface",
-  "        text \" में अनुवाद\"",
+  '        text " में अनुवाद"',
   "      surface",
-  "        text \" मे अनुवाद\"",
+  '        text " मे अनुवाद"',
   "    lexeme zh",
   "      surface",
   "        text 翻译成",
@@ -21577,9 +24462,9 @@ const MEANINGS_LINO = [
   "        text слова",
   "    lexeme hi",
   "      surface",
-  "        text \" का \"",
+  '        text " का "',
   "      surface",
-  "        text \" को \"",
+  '        text " को "',
   "    lexeme zh",
   "      surface",
   "        text 把",
@@ -21596,7 +24481,7 @@ const MEANINGS_LINO = [
   "        text определи",
   "    lexeme hi",
   "      surface",
-  "        text \"परिभाषित करें\"",
+  '        text "परिभाषित करें"',
   "    lexeme zh",
   "      surface",
   "        text 定义",
@@ -21605,13 +24490,13 @@ const MEANINGS_LINO = [
   "    role links_notation_format",
   "    lexeme en",
   "      surface",
-  "        text \"links notation\"",
+  '        text "links notation"',
   "    lexeme ru",
   "      surface",
-  "        text \"в links\"",
+  '        text "в links"',
   "    lexeme hi",
   "      surface",
-  "        text \"लिंक्स नोटेशन\"",
+  '        text "लिंक्स नोटेशन"',
   "    lexeme zh",
   "      surface",
   "        text 链接表示法",
@@ -21682,7 +24567,7 @@ const MEANINGS_LINO = [
   "    role compositional_lemma",
   "    lexeme en",
   "      surface",
-  "        text \"thank you\"",
+  '        text "thank you"',
   "      surface",
   "        text thanks",
   "    lexeme ru",
@@ -22014,23 +24899,23 @@ const MEANINGS_LINO = [
   "    role compositional_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"Who are you?\"",
+  '        text "Who are you?"',
   "    lexeme ru",
   "      surface",
-  "        text \"кто ты\"",
+  '        text "кто ты"',
   "      surface",
-  "        text \"кто ты такой\"",
+  '        text "кто ты такой"',
   "      surface",
-  "        text \"кто ты такая\"",
+  '        text "кто ты такая"',
   "      surface",
-  "        text \"кто вы\"",
+  '        text "кто вы"',
   "      surface",
-  "        text \"кто вы такой\"",
+  '        text "кто вы такой"',
   "      surface",
-  "        text \"кто вы такая\"",
+  '        text "кто вы такая"',
   "    lexeme hi",
   "      surface",
-  "        text \"आप कौन हैं\"",
+  '        text "आप कौन हैं"',
   "    lexeme zh",
   "      surface",
   "        text 你是谁",
@@ -22039,15 +24924,15 @@ const MEANINGS_LINO = [
   "    role compositional_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"What is this?\"",
+  '        text "What is this?"',
   "    lexeme ru",
   "      surface",
-  "        text \"что это\"",
+  '        text "что это"',
   "      surface",
-  "        text \"что это такое\"",
+  '        text "что это такое"',
   "    lexeme hi",
   "      surface",
-  "        text \"यह क्या है\"",
+  '        text "यह क्या है"',
   "    lexeme zh",
   "      surface",
   "        text 这是什么",
@@ -22056,13 +24941,13 @@ const MEANINGS_LINO = [
   "    role compositional_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"how are you\"",
+  '        text "how are you"',
   "    lexeme ru",
   "      surface",
-  "        text \"как дела\"",
+  '        text "как дела"',
   "    lexeme hi",
   "      surface",
-  "        text \"आप कैसे हैं\"",
+  '        text "आप कैसे हैं"',
   "    lexeme zh",
   "      surface",
   "        text 你好吗",
@@ -22274,19 +25159,19 @@ const MEANINGS_LINO = [
   "    connotation concept",
   "    lexeme en",
   "      surface",
-  "        text \"semantic facet\"",
+  '        text "semantic facet"',
   "        notation word_surface",
   "        denotation semantic_facet",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"семантический аспект\"",
+  '        text "семантический аспект"',
   "        notation word_surface",
   "        denotation semantic_facet",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"अर्थ पक्ष\"",
+  '        text "अर्थ पक्ष"',
   "        notation word_surface",
   "        denotation semantic_facet",
   "        part_of_speech noun_phrase",
@@ -22379,7 +25264,7 @@ const MEANINGS_LINO = [
   "        part_of_speech noun",
   "    lexeme hi",
   "      surface",
-  "        text \"निरूपित अर्थ\"",
+  '        text "निरूपित अर्थ"',
   "        notation word_surface",
   "        denotation denotation",
   "        part_of_speech noun_phrase",
@@ -22453,19 +25338,19 @@ const MEANINGS_LINO = [
   "    role semantic_grounding_artifact",
   "    lexeme en",
   "      surface",
-  "        text \"external source\"",
+  '        text "external source"',
   "        notation word_surface",
   "        denotation external_knowledge_source",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"внешний источник\"",
+  '        text "внешний источник"',
   "        notation word_surface",
   "        denotation external_knowledge_source",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"बाहरी स्रोत\"",
+  '        text "बाहरी स्रोत"',
   "        notation word_surface",
   "        denotation external_knowledge_source",
   "        part_of_speech noun_phrase",
@@ -22481,19 +25366,19 @@ const MEANINGS_LINO = [
   "    role semantic_grounding_artifact",
   "    lexeme en",
   "      surface",
-  "        text \"cached source response\"",
+  '        text "cached source response"',
   "        notation word_surface",
   "        denotation cached_source_response",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"кэшированный ответ источника\"",
+  '        text "кэшированный ответ источника"',
   "        notation word_surface",
   "        denotation cached_source_response",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"कैश स्रोत उत्तर\"",
+  '        text "कैश स्रोत उत्तर"',
   "        notation word_surface",
   "        denotation cached_source_response",
   "        part_of_speech noun_phrase",
@@ -22515,19 +25400,19 @@ const MEANINGS_LINO = [
   "    connotation part_of_speech",
   "    lexeme en",
   "      surface",
-  "        text \"lexical form\"",
+  '        text "lexical form"',
   "        notation word_surface",
   "        denotation lexical_form",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"лексическая форма\"",
+  '        text "лексическая форма"',
   "        notation word_surface",
   "        denotation lexical_form",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"शाब्दिक रूप\"",
+  '        text "शाब्दिक रूप"',
   "        notation word_surface",
   "        denotation lexical_form",
   "        part_of_speech noun_phrase",
@@ -22547,19 +25432,19 @@ const MEANINGS_LINO = [
   "    connotation lexical_sense",
   "    lexeme en",
   "      surface",
-  "        text \"word surface\"",
+  '        text "word surface"',
   "        notation word_surface",
   "        denotation word_surface",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"словесная форма\"",
+  '        text "словесная форма"',
   "        notation word_surface",
   "        denotation word_surface",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"शब्द सतह\"",
+  '        text "शब्द सतह"',
   "        notation word_surface",
   "        denotation word_surface",
   "        part_of_speech noun_phrase",
@@ -22580,19 +25465,19 @@ const MEANINGS_LINO = [
   "    connotation lexical_form",
   "    lexeme en",
   "      surface",
-  "        text \"lexical sense\"",
+  '        text "lexical sense"',
   "        notation word_surface",
   "        denotation lexical_sense",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"лексическое значение\"",
+  '        text "лексическое значение"',
   "        notation word_surface",
   "        denotation lexical_sense",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"शाब्दिक अर्थ\"",
+  '        text "शाब्दिक अर्थ"',
   "        notation word_surface",
   "        denotation lexical_sense",
   "        part_of_speech noun_phrase",
@@ -22614,19 +25499,19 @@ const MEANINGS_LINO = [
   "    connotation lexical_form",
   "    lexeme en",
   "      surface",
-  "        text \"part of speech\"",
+  '        text "part of speech"',
   "        notation word_surface",
   "        denotation part_of_speech",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"часть речи\"",
+  '        text "часть речи"',
   "        notation word_surface",
   "        denotation part_of_speech",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"शब्द भेद\"",
+  '        text "शब्द भेद"',
   "        notation word_surface",
   "        denotation part_of_speech",
   "        part_of_speech noun_phrase",
@@ -22679,19 +25564,19 @@ const MEANINGS_LINO = [
   "    connotation noun",
   "    lexeme en",
   "      surface",
-  "        text \"noun phrase\"",
+  '        text "noun phrase"',
   "        notation word_surface",
   "        denotation noun_phrase",
   "        part_of_speech noun_phrase",
   "    lexeme ru",
   "      surface",
-  "        text \"именная группа\"",
+  '        text "именная группа"',
   "        notation word_surface",
   "        denotation noun_phrase",
   "        part_of_speech noun_phrase",
   "    lexeme hi",
   "      surface",
-  "        text \"संज्ञा पद\"",
+  '        text "संज्ञा पद"',
   "        notation word_surface",
   "        denotation noun_phrase",
   "        part_of_speech noun_phrase",
@@ -22749,10 +25634,10 @@ const MEANINGS_LINO = [
   "      sense L41576-S1 # wikidata refer to sense",
   "    lexeme ru",
   "      surface",
-  "        text \"действие ссылки\"",
+  '        text "действие ссылки"',
   "    lexeme hi",
   "      surface",
-  "        text \"संदर्भ क्रिया\"",
+  '        text "संदर्भ क्रिया"',
   "    lexeme zh",
   "      surface",
   "        text 引用动作",
@@ -22760,13 +25645,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"link action\"",
+  '        text "link action"',
   "    lexeme ru",
   "      surface",
-  "        text \"действие связи\"",
+  '        text "действие связи"',
   "    lexeme hi",
   "      surface",
-  "        text \"लिंक क्रिया\"",
+  '        text "लिंक क्रिया"',
   "    lexeme zh",
   "      surface",
   "        text 链接动作",
@@ -22774,13 +25659,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"any of reference\"",
+  '        text "any of reference"',
   "    lexeme ru",
   "      surface",
-  "        text \"любые ссылки\"",
+  '        text "любые ссылки"',
   "    lexeme hi",
   "      surface",
-  "        text \"कोई भी संदर्भ\"",
+  '        text "कोई भी संदर्भ"',
   "    lexeme zh",
   "      surface",
   "        text 任意引用",
@@ -22788,13 +25673,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"any of link\"",
+  '        text "any of link"',
   "    lexeme ru",
   "      surface",
-  "        text \"любые связи\"",
+  '        text "любые связи"',
   "    lexeme hi",
   "      surface",
-  "        text \"कोई भी लिंक\"",
+  '        text "कोई भी लिंक"',
   "    lexeme zh",
   "      surface",
   "        text 任意链接",
@@ -22802,13 +25687,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"repeatable from zero\"",
+  '        text "repeatable from zero"',
   "    lexeme ru",
   "      surface",
-  "        text \"повторяемое с нуля\"",
+  '        text "повторяемое с нуля"',
   "    lexeme hi",
   "      surface",
-  "        text \"शून्य से दोहरनीय\"",
+  '        text "शून्य से दोहरनीय"',
   "    lexeme zh",
   "      surface",
   "        text 从零可重复",
@@ -22816,13 +25701,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"zero or more\"",
+  '        text "zero or more"',
   "    lexeme ru",
   "      surface",
-  "        text \"ноль или больше\"",
+  '        text "ноль или больше"',
   "    lexeme hi",
   "      surface",
-  "        text \"शून्य या अधिक\"",
+  '        text "शून्य या अधिक"',
   "    lexeme zh",
   "      surface",
   "        text 零个或多个",
@@ -22836,7 +25721,7 @@ const MEANINGS_LINO = [
   "        text создает",
   "    lexeme hi",
   "      surface",
-  "        text \"बनाता है\"",
+  '        text "बनाता है"',
   "    lexeme zh",
   "      surface",
   "        text 生成",
@@ -22844,13 +25729,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"point at\"",
+  '        text "point at"',
   "    lexeme ru",
   "      surface",
-  "        text \"указывать на\"",
+  '        text "указывать на"',
   "    lexeme hi",
   "      surface",
-  "        text \"इशारा करना\"",
+  '        text "इशारा करना"',
   "    lexeme zh",
   "      surface",
   "        text 指向",
@@ -22933,7 +25818,7 @@ const MEANINGS_LINO = [
   "        text same",
   "    lexeme ru",
   "      surface",
-  "        text \"тот же\"",
+  '        text "тот же"',
   "    lexeme hi",
   "      surface",
   "        text समान",
@@ -22972,13 +25857,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"or else\"",
+  '        text "or else"',
   "    lexeme ru",
   "      surface",
-  "        text \"или иначе\"",
+  '        text "или иначе"',
   "    lexeme hi",
   "      surface",
-  "        text \"या अन्य\"",
+  '        text "या अन्य"',
   "    lexeme zh",
   "      surface",
   "        text 或者",
@@ -23000,13 +25885,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"is identity\"",
+  '        text "is identity"',
   "    lexeme ru",
   "      surface",
-  "        text \"есть тождество\"",
+  '        text "есть тождество"',
   "    lexeme hi",
   "      surface",
-  "        text \"पहचान है\"",
+  '        text "पहचान है"',
   "    lexeme zh",
   "      surface",
   "        text 是同一",
@@ -23014,13 +25899,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"is a kind of\"",
+  '        text "is a kind of"',
   "    lexeme ru",
   "      surface",
-  "        text \"является видом\"",
+  '        text "является видом"',
   "    lexeme hi",
   "      surface",
-  "        text \"का प्रकार है\"",
+  '        text "का प्रकार है"',
   "    lexeme zh",
   "      surface",
   "        text 是一种",
@@ -23056,13 +25941,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"held by\"",
+  '        text "held by"',
   "    lexeme ru",
   "      surface",
   "        text удерживается",
   "    lexeme hi",
   "      surface",
-  "        text \"द्वारा धारित\"",
+  '        text "द्वारा धारित"',
   "    lexeme zh",
   "      surface",
   "        text 持有于",
@@ -23146,7 +26031,7 @@ const MEANINGS_LINO = [
   "        text любой",
   "    lexeme hi",
   "      surface",
-  "        text \"कोई भी\"",
+  '        text "कोई भी"',
   "    lexeme zh",
   "      surface",
   "        text 任意",
@@ -23280,13 +26165,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"together with\"",
+  '        text "together with"',
   "    lexeme ru",
   "      surface",
-  "        text \"вместе с\"",
+  '        text "вместе с"',
   "    lexeme hi",
   "      surface",
-  "        text \"साथ में\"",
+  '        text "साथ में"',
   "    lexeme zh",
   "      surface",
   "        text 一起",
@@ -23319,7 +26204,7 @@ const MEANINGS_LINO = [
   "        text между",
   "    lexeme hi",
   "      surface",
-  "        text \"बीच में\"",
+  '        text "बीच में"',
   "    lexeme zh",
   "      surface",
   "        text 之间",
@@ -23327,18 +26212,18 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"semantic facet\"",
+  '        text "semantic facet"',
   "  lexical-sense: denotation concept # concept lexical-sense",
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"lexical sense\"",
+  '        text "lexical sense"',
   "  self-equation: semantic-facet same # concept self-equation",
   "    role semantic_facet_kind",
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"self equation\"",
+  '        text "self equation"',
   "    lexeme ru",
   "      surface",
   "        text самоуравнение",
@@ -23366,13 +26251,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"one symbol one meaning\"",
+  '        text "one symbol one meaning"',
   "    lexeme ru",
   "      surface",
-  "        text \"один символ одно значение\"",
+  '        text "один символ одно значение"',
   "    lexeme hi",
   "      surface",
-  "        text \"एक प्रतीक एक अर्थ\"",
+  '        text "एक प्रतीक एक अर्थ"',
   "    lexeme zh",
   "      surface",
   "        text 一符一义",
@@ -23380,13 +26265,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"sense split\"",
+  '        text "sense split"',
   "    lexeme ru",
   "      surface",
-  "        text \"разделение значений\"",
+  '        text "разделение значений"',
   "    lexeme hi",
   "      surface",
-  "        text \"अर्थ विभाजन\"",
+  '        text "अर्थ विभाजन"',
   "    lexeme zh",
   "      surface",
   "        text 义项拆分",
@@ -23394,13 +26279,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"river bank\"",
+  '        text "river bank"',
   "    lexeme ru",
   "      surface",
-  "        text \"речной берег\"",
+  '        text "речной берег"',
   "    lexeme hi",
   "      surface",
-  "        text \"नदी तट\"",
+  '        text "नदी तट"',
   "    lexeme zh",
   "      surface",
   "        text 河岸",
@@ -23408,13 +26293,13 @@ const MEANINGS_LINO = [
   "    role links_root",
   "    lexeme en",
   "      surface",
-  "        text \"financial bank\"",
+  '        text "financial bank"',
   "    lexeme ru",
   "      surface",
-  "        text \"финансовый банк\"",
+  '        text "финансовый банк"',
   "    lexeme hi",
   "      surface",
-  "        text \"वित्तीय बैंक\"",
+  '        text "वित्तीय बैंक"',
   "    lexeme zh",
   "      surface",
   "        text 银行",
@@ -23451,7 +26336,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text fruits",
   "      surface",
-  "        text \"edible fruit\"",
+  '        text "edible fruit"',
   "    lexeme ru",
   "      surface",
   "        text фрукт",
@@ -23473,17 +26358,17 @@ const MEANINGS_LINO = [
   "    role wikidata_entity_anchor",
   "    lexeme en",
   "      surface",
-  "        text \"sorting algorithm\"",
+  '        text "sorting algorithm"',
   "      surface",
-  "        text \"sorting algorithms\"",
+  '        text "sorting algorithms"',
   "      surface",
-  "        text \"sort algorithm\"",
+  '        text "sort algorithm"',
   "    lexeme ru",
   "      surface",
-  "        text \"алгоритм сортировки\"",
+  '        text "алгоритм сортировки"',
   "    lexeme hi",
   "      surface",
-  "        text \"सॉर्टिंग एल्गोरिदम\"",
+  '        text "सॉर्टिंग एल्गोरिदम"',
   "    lexeme zh",
   "      surface",
   "        text 排序算法",
@@ -23601,17 +26486,17 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"subclass of\"",
+  '        text "subclass of"',
   "      surface",
-  "        text \"is a kind of\"",
+  '        text "is a kind of"',
   "      surface",
-  "        text \"is a type of\"",
+  '        text "is a type of"',
   "      surface",
-  "        text \"is subclass of\"",
+  '        text "is subclass of"',
   "      surface",
-  "        text \"kind of\"",
+  '        text "kind of"',
   "      surface",
-  "        text \"type of\"",
+  '        text "type of"',
   "    lexeme ru",
   "      surface",
   "        text род",
@@ -23629,20 +26514,20 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"instance of\"",
+  '        text "instance of"',
   "      surface",
-  "        text \"is a\"",
+  '        text "is a"',
   "        action wikidata_property_subclass_of",
   "      surface",
-  "        text \"is an\"",
+  '        text "is an"',
   "        action wikidata_property_subclass_of",
   "      surface",
-  "        text \"is the\"",
+  '        text "is the"',
   "      surface",
-  "        text \"are a\"",
+  '        text "are a"',
   "        action wikidata_property_subclass_of",
   "      surface",
-  "        text \"are an\"",
+  '        text "are an"',
   "        action wikidata_property_subclass_of",
   "    lexeme ru",
   "      surface",
@@ -23661,19 +26546,19 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"part of\"",
+  '        text "part of"',
   "      surface",
-  "        text \"is part of\"",
+  '        text "is part of"',
   "      surface",
-  "        text \"belongs to\"",
+  '        text "belongs to"',
   "    lexeme ru",
   "      surface",
-  "        text \"является частью\"",
+  '        text "является частью"',
   "      surface",
   "        text часть",
   "    lexeme hi",
   "      surface",
-  "        text \"का हिस्सा\"",
+  '        text "का हिस्सा"',
   "    lexeme zh",
   "      surface",
   "        text 属于",
@@ -23683,9 +26568,9 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"has part\"",
+  '        text "has part"',
   "      surface",
-  "        text \"has a part\"",
+  '        text "has a part"',
   "      surface",
   "        text contains",
   "      surface",
@@ -23695,7 +26580,7 @@ const MEANINGS_LINO = [
   "        text содержит",
   "    lexeme hi",
   "      surface",
-  "        text \"शामिल है\"",
+  '        text "शामिल है"',
   "    lexeme zh",
   "      surface",
   "        text 包含",
@@ -23707,11 +26592,11 @@ const MEANINGS_LINO = [
   "      surface",
   "        text capital",
   "      surface",
-  "        text \"is the capital of\"",
+  '        text "is the capital of"',
   "      surface",
-  "        text \"is capital of\"",
+  '        text "is capital of"',
   "      surface",
-  "        text \"capital of\"",
+  '        text "capital of"',
   "    lexeme ru",
   "      surface",
   "        text столица",
@@ -23727,15 +26612,15 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"named after\"",
+  '        text "named after"',
   "      surface",
-  "        text \"is named after\"",
+  '        text "is named after"',
   "    lexeme ru",
   "      surface",
-  "        text \"назван в честь\"",
+  '        text "назван в честь"',
   "    lexeme hi",
   "      surface",
-  "        text \"के नाम पर\"",
+  '        text "के नाम पर"',
   "    lexeme zh",
   "      surface",
   "        text 命名自",
@@ -23769,15 +26654,15 @@ const MEANINGS_LINO = [
   "    role binary_relation_property",
   "    lexeme en",
   "      surface",
-  "        text \"item for this sense\"",
+  '        text "item for this sense"',
   "      surface",
   "        text means",
   "      surface",
-  "        text \"meaning of\"",
+  '        text "meaning of"',
   "      surface",
-  "        text \"meaning item\"",
+  '        text "meaning item"',
   "      surface",
-  "        text \"sense item\"",
+  '        text "sense item"',
   "    lexeme ru",
   "      surface",
   "        text означает",
@@ -23796,9 +26681,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text rules",
   "      surface",
-  "        text \"rule list\"",
+  '        text "rule list"',
   "      surface",
-  "        text \"rules list\"",
+  '        text "rules list"',
   "    lexeme ru",
   "      surface",
   "        text правил",
@@ -23907,7 +26792,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text собственные",
   "      surface",
-  "        text \"список правил\"",
+  '        text "список правил"',
   "    lexeme hi",
   "      surface",
   "        text अपने",
@@ -23916,7 +26801,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text आपके",
   "      surface",
-  "        text \"नियमों की सूची\"",
+  '        text "नियमों की सूची"',
   "    lexeme zh",
   "      surface",
   "        text 你的",
@@ -23934,32 +26819,40 @@ const MEANINGS_LINO = [
   "    role rule_listing_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"list behavior rules\"",
+  '        text "list behavior rules"',
   "      surface",
-  "        text \"list all behavior rules\"",
+  '        text "list all behavior rules"',
   "      surface",
-  "        text \"show behavior rules\"",
+  '        text "show behavior rules"',
   "      surface",
-  "        text \"show all behavior rules\"",
+  '        text "show all behavior rules"',
   "      surface",
-  "        text \"what behavior rules\"",
+  '        text "show rules"',
   "      surface",
-  "        text \"existing behavior rules\"",
+  '        text "what behavior rules"',
+  "      surface",
+  '        text "existing behavior rules"',
   "    lexeme ru",
   "      surface",
-  "        text \"список правил поведения\"",
+  '        text "список правил поведения"',
   "      surface",
-  "        text \"покажи правила поведения\"",
+  '        text "покажи правила поведения"',
   "      surface",
-  "        text \"какие правила поведения\"",
+  '        text "покажи правила"',
+  "      surface",
+  '        text "какие правила поведения"',
   "    lexeme hi",
   "      surface",
-  "        text \"व्यवहार के नियम\"",
+  '        text "व्यवहार के नियम"',
   "      surface",
-  "        text \"व्यवहार नियम सूचीबद्ध करें\"",
+  '        text "व्यवहार नियम सूचीबद्ध करें"',
+  "      surface",
+  '        text "नियम दिखाओ"',
   "    lexeme zh",
   "      surface",
   "        text 行为规则",
+  "      surface",
+  "        text 显示规则",
   "      surface",
   "        text 列出行为规则",
   "meanings",
@@ -23974,39 +26867,39 @@ const MEANINGS_LINO = [
   "      surface",
   "        text proof",
   "      surface",
-  "        text \"prove that …\"",
+  '        text "prove that …"',
   "      surface",
-  "        text \"prove …\"",
+  '        text "prove …"',
   "      surface",
-  "        text \"proof of …\"",
+  '        text "proof of …"',
   "      surface",
-  "        text \"proof that …\"",
+  '        text "proof that …"',
   "      surface",
-  "        text \"show that …\"",
+  '        text "show that …"',
   "      surface",
-  "        text \"demonstrate that …\"",
+  '        text "demonstrate that …"',
   "      surface",
-  "        text \"demonstrate …\"",
+  '        text "demonstrate …"',
   "      surface",
-  "        text \"can you prove that …\"",
+  '        text "can you prove that …"',
   "      surface",
-  "        text \"can you prove …\"",
+  '        text "can you prove …"',
   "      surface",
-  "        text \"could you prove that …\"",
+  '        text "could you prove that …"',
   "      surface",
-  "        text \"could you prove …\"",
+  '        text "could you prove …"',
   "      surface",
-  "        text \"please prove that …\"",
+  '        text "please prove that …"',
   "      surface",
-  "        text \"please prove …\"",
+  '        text "please prove …"',
   "      surface",
-  "        text \"give me a proof of …\"",
+  '        text "give me a proof of …"',
   "      surface",
-  "        text \"give me a proof that …\"",
+  '        text "give me a proof that …"',
   "      surface",
-  "        text \"give a proof of …\"",
+  '        text "give a proof of …"',
   "      surface",
-  "        text \"give a proof that …\"",
+  '        text "give a proof that …"',
   "    lexeme ru",
   "      surface",
   "        text докажи",
@@ -24017,30 +26910,30 @@ const MEANINGS_LINO = [
   "      surface",
   "        text доказательство",
   "      surface",
-  "        text \"докажи что …\"",
+  '        text "докажи что …"',
   "      surface",
-  "        text \"докажите что …\"",
+  '        text "докажите что …"',
   "      surface",
-  "        text \"доказать что …\"",
+  '        text "доказать что …"',
   "      surface",
-  "        text \"докажите …\"",
+  '        text "докажите …"',
   "      surface",
-  "        text \"докажи …\"",
+  '        text "докажи …"',
   "      surface",
-  "        text \"доказать …\"",
+  '        text "доказать …"',
   "      surface",
-  "        text \"доказательство …\"",
+  '        text "доказательство …"',
   "    lexeme hi",
   "      surface",
-  "        text \"साबित करो कि …\"",
+  '        text "साबित करो कि …"',
   "      surface",
-  "        text \"साबित कीजिए कि …\"",
+  '        text "साबित कीजिए कि …"',
   "      surface",
-  "        text \"साबित कर …\"",
+  '        text "साबित कर …"',
   "      surface",
-  "        text \"सिद्ध कीजिए कि …\"",
+  '        text "सिद्ध कीजिए कि …"',
   "      surface",
-  "        text \"सिद्ध करो कि …\"",
+  '        text "सिद्ध करो कि …"',
   "    lexeme zh",
   "      surface",
   "        text 证明…",
@@ -24052,39 +26945,39 @@ const MEANINGS_LINO = [
   "    role proof_request_lead",
   "    lexeme en",
   "      surface",
-  "        text \"can you prove…\"",
+  '        text "can you prove…"',
   "      surface",
-  "        text \"could you prove…\"",
+  '        text "could you prove…"',
   "      surface",
-  "        text \"please prove…\"",
+  '        text "please prove…"',
   "      surface",
-  "        text \"give me a proof…\"",
+  '        text "give me a proof…"',
   "      surface",
-  "        text \"give a proof…\"",
+  '        text "give a proof…"',
   "      surface",
-  "        text \"show that …\"",
+  '        text "show that …"',
   "      surface",
-  "        text \"demonstrate that …\"",
+  '        text "demonstrate that …"',
   "    lexeme ru",
   "      surface",
-  "        text \"можешь доказать…\"",
+  '        text "можешь доказать…"',
   "      surface",
-  "        text \"можете доказать…\"",
+  '        text "можете доказать…"',
   "      surface",
-  "        text \"сможешь доказать…\"",
+  '        text "сможешь доказать…"',
   "      surface",
-  "        text \"пожалуйста докажи…\"",
+  '        text "пожалуйста докажи…"',
   "      surface",
-  "        text \"пожалуйста докажите…\"",
+  '        text "пожалуйста докажите…"',
   "    lexeme hi",
   "      surface",
-  "        text \"क्या आप साबित कर सकते हैं…\"",
+  '        text "क्या आप साबित कर सकते हैं…"',
   "      surface",
-  "        text \"क्या आप सिद्ध कर सकते हैं…\"",
+  '        text "क्या आप सिद्ध कर सकते हैं…"',
   "      surface",
-  "        text \"कृपया सिद्ध कीजिए…\"",
+  '        text "कृपया सिद्ध कीजिए…"',
   "      surface",
-  "        text \"कृपया साबित कीजिए…\"",
+  '        text "कृपया साबित कीजिए…"',
   "    lexeme zh",
   "      surface",
   "        text 你能证明…",
@@ -24100,31 +26993,31 @@ const MEANINGS_LINO = [
   "    role proof_marker",
   "    lexeme en",
   "      surface",
-  "        text \" prove that \"",
+  '        text " prove that "',
   "      surface",
-  "        text \" proof of \"",
+  '        text " proof of "',
   "    lexeme ru",
   "      surface",
-  "        text \" докажи \"",
+  '        text " докажи "',
   "      surface",
-  "        text \" докажите \"",
+  '        text " докажите "',
   "      surface",
-  "        text \" доказать \"",
+  '        text " доказать "',
   "      surface",
-  "        text \" доказательство \"",
+  '        text " доказательство "',
   "    lexeme hi",
   "      surface",
-  "        text \"साबित कर\"",
+  '        text "साबित कर"',
   "      surface",
-  "        text \"साबित कीजिए\"",
+  '        text "साबित कीजिए"',
   "      surface",
-  "        text \"साबित कीजिये\"",
+  '        text "साबित कीजिये"',
   "      surface",
-  "        text \"सिद्ध कर\"",
+  '        text "सिद्ध कर"',
   "      surface",
-  "        text \"सिद्ध कीजिए\"",
+  '        text "सिद्ध कीजिए"',
   "      surface",
-  "        text \"सिद्ध कीजिये\"",
+  '        text "सिद्ध कीजिये"',
   "      surface",
   "        text प्रमाण",
   "    lexeme zh",
@@ -24170,6 +27063,23 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 决定论",
+  "  metatheory",
+  "    defined-by concept",
+  "    role proof_concept_metatheory",
+  "    lexeme en",
+  "      surface",
+  "        text metatheory",
+  "      surface",
+  "        text meta-theory",
+  "    lexeme ru",
+  "      surface",
+  "        text метатеория",
+  "    lexeme hi",
+  "      surface",
+  "        text परासिद्धांत",
+  "    lexeme zh",
+  "      surface",
+  "        text 元理论",
   "meanings",
   "  physical_action_query",
   "    defined-by inquiry",
@@ -24177,7 +27087,7 @@ const MEANINGS_LINO = [
   "    role physical_action_trigger",
   "    lexeme en",
   "      surface",
-  "        text \"did you suck\"",
+  '        text "did you suck"',
   "    lexeme ru",
   "      surface",
   "        text сосал",
@@ -24191,7 +27101,7 @@ const MEANINGS_LINO = [
   "        text сосать",
   "    lexeme hi",
   "      surface",
-  "        text \"क्या तुमने चूसा\"",
+  '        text "क्या तुमने चूसा"',
   "    lexeme zh",
   "      surface",
   "        text 你吸了吗",
@@ -24201,13 +27111,13 @@ const MEANINGS_LINO = [
   "    role circular_joke_phrase",
   "    lexeme en",
   "      surface",
-  "        text \"buy an elephant\"",
+  '        text "buy an elephant"',
   "    lexeme ru",
   "      surface",
-  "        text \"купи слона\"",
+  '        text "купи слона"',
   "    lexeme hi",
   "      surface",
-  "        text \"हाथी खरीदो\"",
+  '        text "हाथी खरीदो"',
   "    lexeme zh",
   "      surface",
   "        text 买大象",
@@ -24216,29 +27126,29 @@ const MEANINGS_LINO = [
   "    role vulgar_content_marker",
   "    lexeme en",
   "      surface",
-  "        text \"fuck you\"",
+  '        text "fuck you"',
   "      surface",
   "        text fuckyou",
   "      surface",
-  "        text \"suck my\"",
+  '        text "suck my"',
   "      surface",
-  "        text \"suck my dick\"",
+  '        text "suck my dick"',
   "      surface",
-  "        text \"suck my cock\"",
+  '        text "suck my cock"',
   "      surface",
-  "        text \"you suck\"",
+  '        text "you suck"',
   "      surface",
-  "        text \"eat shit\"",
+  '        text "eat shit"',
   "      surface",
-  "        text \"go to hell\"",
+  '        text "go to hell"',
   "      surface",
   "        text asshole",
   "      surface",
   "        text motherfucker",
   "      surface",
-  "        text \"you fucking\"",
+  '        text "you fucking"',
   "      surface",
-  "        text \"piece of shit\"",
+  '        text "piece of shit"',
   "    lexeme ru",
   "      surface",
   "        text ебать",
@@ -24301,39 +27211,39 @@ const MEANINGS_LINO = [
   "    role explanation_request_lead",
   "    lexeme en",
   "      surface",
-  "        text \"how …\"",
+  '        text "how …"',
   "      surface",
-  "        text \" how \"",
+  '        text " how "',
   "      surface",
-  "        text \"explain …\"",
+  '        text "explain …"',
   "      surface",
-  "        text \"describe …\"",
+  '        text "describe …"',
   "      surface",
-  "        text \"what does …\"",
+  '        text "what does …"',
   "      surface",
-  "        text \"what is …\"",
+  '        text "what is …"',
   "      surface",
-  "        text \"tell me about …\"",
+  '        text "tell me about …"',
   "      surface",
-  "        text \"how to use …\"",
+  '        text "how to use …"',
   "    lexeme ru",
   "      surface",
-  "        text \"как …\"",
+  '        text "как …"',
   "      surface",
-  "        text \" как \"",
+  '        text " как "',
   "      surface",
-  "        text \"объясни …\"",
+  '        text "объясни …"',
   "      surface",
-  "        text \"расскажи …\"",
+  '        text "расскажи …"',
   "      surface",
-  "        text \"что такое …\"",
+  '        text "что такое …"',
   "    lexeme hi",
   "      surface",
-  "        text \"कैसे काम\"",
+  '        text "कैसे काम"',
   "      surface",
   "        text समझाओ…",
   "      surface",
-  "        text \"क्या है …\"",
+  '        text "क्या है …"',
   "    lexeme zh",
   "      surface",
   "        text 如何工作",
@@ -24366,23 +27276,23 @@ const MEANINGS_LINO = [
   "    role skill_teaching_trigger_lead",
   "    lexeme en",
   "      surface",
-  "        text \"when i say\"",
+  '        text "when i say"',
   "      surface",
-  "        text \"when the user says\"",
+  '        text "when the user says"',
   "      surface",
-  "        text \"when the user asks\"",
+  '        text "when the user asks"',
   "      surface",
-  "        text \"if i ask\"",
+  '        text "if i ask"',
   "    lexeme ru",
   "      surface",
-  "        text \"когда я скажу\"",
+  '        text "когда я скажу"',
   "      surface",
-  "        text \"если я спрошу\"",
+  '        text "если я спрошу"',
   "    lexeme hi",
   "      surface",
-  "        text \"जब मैं कहूँ\"",
+  '        text "जब मैं कहूँ"',
   "      surface",
-  "        text \"अगर मैं पूछूँ\"",
+  '        text "अगर मैं पूछूँ"',
   "    lexeme zh",
   "      surface",
   "        text 当我说",
@@ -24420,19 +27330,19 @@ const MEANINGS_LINO = [
   "    role behavior_rule_edit_directive",
   "    lexeme en",
   "      surface",
-  "        text \"add behavior rule\"",
+  '        text "add behavior rule"',
   "      surface",
-  "        text \"update behavior rule\"",
+  '        text "update behavior rule"',
   "    lexeme ru",
   "      surface",
-  "        text \"добавь правило поведения\"",
+  '        text "добавь правило поведения"',
   "      surface",
-  "        text \"обнови правило поведения\"",
+  '        text "обнови правило поведения"',
   "    lexeme hi",
   "      surface",
-  "        text \"व्यवहार नियम जोड़ो\"",
+  '        text "व्यवहार नियम जोड़ो"',
   "      surface",
-  "        text \"व्यवहार नियम अपडेट करो\"",
+  '        text "व्यवहार नियम अपडेट करो"',
   "    lexeme zh",
   "      surface",
   "        text 添加行为规则",
@@ -24444,38 +27354,38 @@ const MEANINGS_LINO = [
   "    role skill_when_then_pair",
   "    lexeme en",
   "      surface",
-  "        text \"when … then \"",
+  '        text "when … then "',
   "      surface",
-  "        text \"when … do \"",
+  '        text "when … do "',
   "    lexeme ru",
   "      surface",
-  "        text \"когда … тогда \"",
+  '        text "когда … тогда "',
   "      surface",
-  "        text \"когда … делай \"",
+  '        text "когда … делай "',
   "      surface",
-  "        text \"когда … сделай \"",
+  '        text "когда … сделай "',
   "      surface",
-  "        text \"когда … отвечай \"",
+  '        text "когда … отвечай "',
   "      surface",
-  "        text \"когда … отвечать \"",
+  '        text "когда … отвечать "',
   "      surface",
-  "        text \"если … то \"",
+  '        text "если … то "',
   "    lexeme hi",
   "      surface",
-  "        text \"जब … तब \"",
+  '        text "जब … तब "',
   "      surface",
-  "        text \"जब … तो \"",
+  '        text "जब … तो "',
   "    lexeme zh",
   "      surface",
-  "        text \"当 … 时 \"",
+  '        text "当 … 时 "',
   "      surface",
-  "        text \"当 … 则 \"",
+  '        text "当 … 则 "',
   "      surface",
-  "        text \"当 … 回答 \"",
+  '        text "当 … 回答 "',
   "      surface",
-  "        text \"当 …时回答 \"",
+  '        text "当 …时回答 "',
   "      surface",
-  "        text \"当 …则回答 \"",
+  '        text "当 …则回答 "',
   "  nondeterministic_step",
   "    defined-by property",
   "    defined-by concept",
@@ -24488,7 +27398,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text non-deterministic",
   "      surface",
-  "        text \"arbitrary code\"",
+  '        text "arbitrary code"',
   "    lexeme ru",
   "      surface",
   "        text случайный",
@@ -24516,27 +27426,27 @@ const MEANINGS_LINO = [
   "      surface",
   "        text filesystem",
   "      surface",
-  "        text \"file system\"",
+  '        text "file system"',
   "      surface",
-  "        text \"list files\"",
+  '        text "list files"',
   "      surface",
-  "        text \"write file\"",
+  '        text "write file"',
   "      surface",
-  "        text \"delete file\"",
+  '        text "delete file"',
   "    lexeme ru",
   "      surface",
   "        text оболочка",
   "      surface",
-  "        text \"файловая система\"",
+  '        text "файловая система"',
   "      surface",
-  "        text \"список файлов\"",
+  '        text "список файлов"',
   "    lexeme hi",
   "      surface",
   "        text शेल",
   "      surface",
-  "        text \"फाइल सिस्टम\"",
+  '        text "फाइल सिस्टम"',
   "      surface",
-  "        text \"फाइलें सूचीबद्ध\"",
+  '        text "फाइलें सूचीबद्ध"',
   "    lexeme zh",
   "      surface",
   "        text 外壳",
@@ -24556,19 +27466,19 @@ const MEANINGS_LINO = [
   "      surface",
   "        text fetch",
   "      surface",
-  "        text \"web request\"",
+  '        text "web request"',
   "    lexeme ru",
   "      surface",
   "        text сеть",
   "      surface",
   "        text веб-запрос",
   "      surface",
-  "        text \"сетевой запрос\"",
+  '        text "сетевой запрос"',
   "    lexeme hi",
   "      surface",
   "        text नेटवर्क",
   "      surface",
-  "        text \"वेब अनुरोध\"",
+  '        text "वेब अनुरोध"',
   "    lexeme zh",
   "      surface",
   "        text 网络",
@@ -24624,7 +27534,7 @@ const MEANINGS_LINO = [
   "        text compound",
   "    lexeme ru",
   "      surface",
-  "        text \"сложный процент\"",
+  '        text "сложный процент"',
   "      surface",
   "        text капитализаци",
   "    lexeme hi",
@@ -24718,19 +27628,19 @@ const MEANINGS_LINO = [
   "      surface",
   "        text web",
   "      surface",
-  "        text \"current exchange\"",
+  '        text "current exchange"',
   "      surface",
-  "        text \"current rate\"",
+  '        text "current rate"',
   "      surface",
-  "        text \"exchange rate\"",
+  '        text "exchange rate"',
   "    lexeme ru",
   "      surface",
-  "        text \"текущий курс\"",
+  '        text "текущий курс"',
   "      surface",
-  "        text \"актуальный курс\"",
+  '        text "актуальный курс"',
   "    lexeme hi",
   "      surface",
-  "        text \"वर्तमान दर\"",
+  '        text "वर्तमान दर"',
   "    lexeme zh",
   "      surface",
   "        text 实时汇率",
@@ -24773,13 +27683,13 @@ const MEANINGS_LINO = [
   "    role final_amount_reference",
   "    lexeme en",
   "      surface",
-  "        text \"final amount\"",
+  '        text "final amount"',
   "    lexeme ru",
   "      surface",
-  "        text \"итоговая сумма\"",
+  '        text "итоговая сумма"',
   "    lexeme hi",
   "      surface",
-  "        text \"अंतिम राशि\"",
+  '        text "अंतिम राशि"',
   "    lexeme zh",
   "      surface",
   "        text 最终金额",
@@ -24853,48 +27763,48 @@ const MEANINGS_LINO = [
   "    role definition_merge_marker",
   "    lexeme en",
   "      surface",
-  "        text \"translated definitions for …\"",
+  '        text "translated definitions for …"',
   "      surface",
-  "        text \"translated definitions of …\"",
+  '        text "translated definitions of …"',
   "      surface",
-  "        text \"wikipedia definitions for …\"",
+  '        text "wikipedia definitions for …"',
   "      surface",
-  "        text \"wikipedia definitions of …\"",
+  '        text "wikipedia definitions of …"',
   "      surface",
-  "        text \"definitions for …\"",
+  '        text "definitions for …"',
   "      surface",
-  "        text \"definitions of …\"",
+  '        text "definitions of …"',
   "      surface",
-  "        text \"definition for …\"",
+  '        text "definition for …"',
   "      surface",
-  "        text \"definition of …\"",
+  '        text "definition of …"',
   "      surface",
-  "        text \"translations for …\"",
+  '        text "translations for …"',
   "      surface",
-  "        text \"translations of …\"",
+  '        text "translations of …"',
   "      surface",
-  "        text \"translation for …\"",
+  '        text "translation for …"',
   "      surface",
-  "        text \"translation of …\"",
+  '        text "translation of …"',
   "    lexeme ru",
   "      surface",
-  "        text \"переведенные определения для …\"",
+  '        text "переведенные определения для …"',
   "      surface",
-  "        text \"определения для …\"",
+  '        text "определения для …"',
   "      surface",
-  "        text \"определение …\"",
+  '        text "определение …"',
   "      surface",
-  "        text \"перевод …\"",
+  '        text "перевод …"',
   "    lexeme hi",
   "      surface",
-  "        text \"की परिभाषाएँ …\"",
+  '        text "की परिभाषाएँ …"',
   "      surface",
-  "        text \"का अनुवाद …\"",
+  '        text "का अनुवाद …"',
   "    lexeme zh",
   "      surface",
-  "        text \"的定义 …\"",
+  '        text "的定义 …"',
   "      surface",
-  "        text \"的翻译 …\"",
+  '        text "的翻译 …"',
   "  definition_merge_tail_boundary",
   "    defined-by relation",
   "    role definition_merge_tail_boundary",
@@ -24924,7 +27834,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text से",
   "      surface",
-  "        text \"के साथ\"",
+  '        text "के साथ"',
   "    lexeme zh",
   "      surface",
   "        text 从",
@@ -24990,19 +27900,19 @@ const MEANINGS_LINO = [
   "      surface",
   "        text web_search",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
   "        text web-search",
   "    lexeme ru",
   "      surface",
   "        text веб-поиск",
   "      surface",
-  "        text \"поиск в интернете\"",
+  '        text "поиск в интернете"',
   "    lexeme hi",
   "      surface",
-  "        text \"वेब खोज\"",
+  '        text "वेब खोज"',
   "      surface",
-  "        text \"इंटरनेट खोज\"",
+  '        text "इंटरनेट खोज"',
   "    lexeme zh",
   "      surface",
   "        text 网络搜索",
@@ -25015,23 +27925,23 @@ const MEANINGS_LINO = [
   "      surface",
   "        text local_shell",
   "      surface",
-  "        text \"local shell tool\"",
+  '        text "local shell tool"',
   "      surface",
-  "        text \"local shell api\"",
+  '        text "local shell api"',
   "      surface",
-  "        text \"call the shell tool\"",
+  '        text "call the shell tool"',
   "      surface",
-  "        text \"invoke the shell tool\"",
+  '        text "invoke the shell tool"',
   "    lexeme ru",
   "      surface",
-  "        text \"локальная оболочка\"",
+  '        text "локальная оболочка"',
   "      surface",
-  "        text \"вызови оболочку\"",
+  '        text "вызови оболочку"',
   "    lexeme hi",
   "      surface",
-  "        text \"लोकल शेल\"",
+  '        text "लोकल शेल"',
   "      surface",
-  "        text \"शेल टूल चलाओ\"",
+  '        text "शेल टूल चलाओ"',
   "    lexeme zh",
   "      surface",
   "        text 本地外壳",
@@ -25042,7 +27952,7 @@ const MEANINGS_LINO = [
   "    role tool_argument_marker",
   "    lexeme en",
   "      surface",
-  "        text \"with query\"",
+  '        text "with query"',
   "      surface",
   "        text query",
   "      surface",
@@ -25051,14 +27961,14 @@ const MEANINGS_LINO = [
   "        text for",
   "    lexeme ru",
   "      surface",
-  "        text \"с запросом\"",
+  '        text "с запросом"',
   "      surface",
   "        text для",
   "    lexeme hi",
   "      surface",
-  "        text \"क्वेरी के साथ\"",
+  '        text "क्वेरी के साथ"',
   "      surface",
-  "        text \"के लिए\"",
+  '        text "के लिए"',
   "    lexeme zh",
   "      surface",
   "        text 查询",
@@ -25070,94 +27980,94 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
-  "        text \"internet search\"",
+  '        text "internet search"',
   "      surface",
-  "        text \"search engines\"",
+  '        text "search engines"',
   "      surface",
-  "        text \"can you search the internet\"",
+  '        text "can you search the internet"',
   "      surface",
-  "        text \"can you search internet\"",
+  '        text "can you search internet"',
   "      surface",
-  "        text \"can you search the web\"",
+  '        text "can you search the web"',
   "      surface",
-  "        text \"can you search web\"",
+  '        text "can you search web"',
   "      surface",
-  "        text \"can you search online\"",
+  '        text "can you search online"',
   "      surface",
-  "        text \"do you have internet search\"",
+  '        text "do you have internet search"',
   "      surface",
-  "        text \"do you have web search\"",
+  '        text "do you have web search"',
   "      surface",
-  "        text \"do you have internet access\"",
+  '        text "do you have internet access"',
   "      surface",
-  "        text \"are you connected to search engines\"",
+  '        text "are you connected to search engines"',
   "      surface",
-  "        text \"can you use search engines\"",
+  '        text "can you use search engines"',
   "      surface",
-  "        text \"can you browse the web\"",
+  '        text "can you browse the web"',
   "    lexeme ru",
   "      surface",
   "        text веб-поиск",
   "      surface",
-  "        text \"веб поиск\"",
+  '        text "веб поиск"',
   "      surface",
-  "        text \"поиск в интернете\"",
+  '        text "поиск в интернете"',
   "      surface",
   "        text поисковик",
   "      surface",
-  "        text \"поисковые системы\"",
+  '        text "поисковые системы"',
   "      surface",
-  "        text \"можешь искать в интернете\"",
+  '        text "можешь искать в интернете"',
   "      surface",
-  "        text \"можешь искать интернет\"",
+  '        text "можешь искать интернет"',
   "      surface",
-  "        text \"умеешь искать в интернете\"",
+  '        text "умеешь искать в интернете"',
   "      surface",
-  "        text \"умеешь искать интернет\"",
+  '        text "умеешь искать интернет"',
   "      surface",
-  "        text \"можешь искать онлайн\"",
+  '        text "можешь искать онлайн"',
   "      surface",
-  "        text \"умеешь искать онлайн\"",
+  '        text "умеешь искать онлайн"',
   "      surface",
-  "        text \"у тебя есть веб-поиск\"",
+  '        text "у тебя есть веб-поиск"',
   "      surface",
-  "        text \"у тебя есть веб поиск\"",
+  '        text "у тебя есть веб поиск"',
   "      surface",
-  "        text \"у тебя есть поиск в интернете\"",
+  '        text "у тебя есть поиск в интернете"',
   "      surface",
-  "        text \"есть доступ к интернету\"",
+  '        text "есть доступ к интернету"',
   "      surface",
-  "        text \"подключен к поисковикам\"",
+  '        text "подключен к поисковикам"',
   "      surface",
-  "        text \"подключена к поисковикам\"",
+  '        text "подключена к поисковикам"',
   "      surface",
-  "        text \"подключен к поисковым системам\"",
+  '        text "подключен к поисковым системам"',
   "      surface",
-  "        text \"можешь пользоваться интернетом\"",
+  '        text "можешь пользоваться интернетом"',
   "    lexeme hi",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
-  "        text \"internet search\"",
+  '        text "internet search"',
   "      surface",
-  "        text \"search engine\"",
+  '        text "search engine"',
   "      surface",
-  "        text \"इंटरनेट पर खोज सकते\"",
+  '        text "इंटरनेट पर खोज सकते"',
   "      surface",
-  "        text \"ऑनलाइन खोज सकते\"",
+  '        text "ऑनलाइन खोज सकते"',
   "      surface",
-  "        text \"इंटरनेट खोज है\"",
+  '        text "इंटरनेट खोज है"',
   "      surface",
-  "        text \"वेब खोज है\"",
+  '        text "वेब खोज है"',
   "      surface",
-  "        text \"सर्च इंजन से जुड़े\"",
+  '        text "सर्च इंजन से जुड़े"',
   "      surface",
-  "        text \"खोज इंजन से जुड़े\"",
+  '        text "खोज इंजन से जुड़े"',
   "    lexeme zh",
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
   "        text 搜索引擎",
   "      surface",
@@ -25185,9 +28095,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text trace",
   "      surface",
-  "        text \"reasoning trace\"",
+  '        text "reasoning trace"',
   "      surface",
-  "        text \"show diagnostics\"",
+  '        text "show diagnostics"',
   "    lexeme ru",
   "      surface",
   "        text диагностика",
@@ -25216,7 +28126,7 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"agent mode\"",
+  '        text "agent mode"',
   "      surface",
   "        text agent",
   "      surface",
@@ -25225,7 +28135,7 @@ const MEANINGS_LINO = [
   "        text autonomous",
   "    lexeme ru",
   "      surface",
-  "        text \"agent mode\"",
+  '        text "agent mode"',
   "      surface",
   "        text агент",
   "      surface",
@@ -25234,14 +28144,14 @@ const MEANINGS_LINO = [
   "        text автоном",
   "    lexeme hi",
   "      surface",
-  "        text \"agent mode\"",
+  '        text "agent mode"',
   "      surface",
   "        text एजेंट",
   "      surface",
   "        text multi-step",
   "    lexeme zh",
   "      surface",
-  "        text \"agent mode\"",
+  '        text "agent mode"',
   "      surface",
   "        text 代理",
   "      surface",
@@ -25251,26 +28161,26 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"definition fusion\"",
+  '        text "definition fusion"',
   "      surface",
-  "        text \"merge definitions\"",
+  '        text "merge definitions"',
   "      surface",
-  "        text \"automatic definition\"",
+  '        text "automatic definition"',
   "    lexeme ru",
   "      surface",
-  "        text \"слияние определений\"",
+  '        text "слияние определений"',
   "      surface",
-  "        text \"объединение определений\"",
+  '        text "объединение определений"',
   "    lexeme hi",
   "      surface",
-  "        text \"definition fusion\"",
+  '        text "definition fusion"',
   "      surface",
-  "        text \"merge definitions\"",
+  '        text "merge definitions"',
   "      surface",
-  "        text \"परिभाषा विलय\"",
+  '        text "परिभाषा विलय"',
   "    lexeme zh",
   "      surface",
-  "        text \"definition fusion\"",
+  '        text "definition fusion"',
   "      surface",
   "        text 合并定义",
   "  feature_capability_configuration",
@@ -25282,21 +28192,21 @@ const MEANINGS_LINO = [
   "      surface",
   "        text configuration",
   "      surface",
-  "        text \"configure settings\"",
+  '        text "configure settings"',
   "      surface",
   "        text theme",
   "      surface",
   "        text language",
   "      surface",
-  "        text \"chat style\"",
+  '        text "chat style"',
   "      surface",
   "        text configure",
   "      surface",
   "        text preferences",
   "      surface",
-  "        text \"composer style\"",
+  '        text "composer style"',
   "      surface",
-  "        text \"ui skin\"",
+  '        text "ui skin"',
   "    lexeme ru",
   "      surface",
   "        text настройки",
@@ -25309,7 +28219,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text язык",
   "      surface",
-  "        text \"стиль чата\"",
+  '        text "стиль чата"',
   "      surface",
   "        text оформление",
   "      surface",
@@ -25345,40 +28255,40 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"export memory\"",
+  '        text "export memory"',
   "      surface",
-  "        text \"import memory\"",
+  '        text "import memory"',
   "      surface",
-  "        text \"memory export\"",
+  '        text "memory export"',
   "      surface",
-  "        text \"memory import\"",
+  '        text "memory import"',
   "    lexeme ru",
   "      surface",
-  "        text \"экспорт памяти\"",
+  '        text "экспорт памяти"',
   "      surface",
-  "        text \"импорт памяти\"",
+  '        text "импорт памяти"',
   "      surface",
-  "        text \"память экспорт\"",
+  '        text "память экспорт"',
   "      surface",
-  "        text \"память импорт\"",
+  '        text "память импорт"',
   "    lexeme hi",
   "      surface",
-  "        text \"memory export\"",
+  '        text "memory export"',
   "      surface",
-  "        text \"memory import\"",
+  '        text "memory import"',
   "      surface",
-  "        text \"स्मृति निर्यात\"",
+  '        text "स्मृति निर्यात"',
   "      surface",
-  "        text \"स्मृति आयात\"",
+  '        text "स्मृति आयात"',
   "    lexeme zh",
   "      surface",
   "        text 导出记忆",
   "      surface",
   "        text 导入记忆",
   "      surface",
-  "        text \"memory export\"",
+  '        text "memory export"',
   "      surface",
-  "        text \"memory import\"",
+  '        text "memory import"',
   "  feature_capability_greeting",
   "    defined-by concept",
   "    role feature_capability_alias",
@@ -25388,9 +28298,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text greetings",
   "      surface",
-  "        text \"say hello\"",
+  '        text "say hello"',
   "      surface",
-  "        text \"respond to hello\"",
+  '        text "respond to hello"',
   "    lexeme ru",
   "      surface",
   "        text приветствие",
@@ -25419,18 +28329,18 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "      surface",
-  "        text \"write code\"",
+  '        text "write code"',
   "      surface",
-  "        text \"generate code\"",
+  '        text "generate code"',
   "      surface",
-  "        text \"write program\"",
+  '        text "write program"',
   "      surface",
   "        text program",
   "    lexeme ru",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "      surface",
   "        text код",
   "      surface",
@@ -25439,7 +28349,7 @@ const MEANINGS_LINO = [
   "        text программа",
   "    lexeme hi",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "      surface",
   "        text code",
   "      surface",
@@ -25448,7 +28358,7 @@ const MEANINGS_LINO = [
   "        text प्रोग्राम",
   "    lexeme zh",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "      surface",
   "        text 代码",
   "      surface",
@@ -25458,14 +28368,14 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"concept lookup\"",
+  '        text "concept lookup"',
   "      surface",
   "        text concept",
   "      surface",
-  "        text \"wikipedia lookup\"",
+  '        text "wikipedia lookup"',
   "    lexeme ru",
   "      surface",
-  "        text \"поиск понятий\"",
+  '        text "поиск понятий"',
   "      surface",
   "        text понятие",
   "    lexeme hi",
@@ -25487,7 +28397,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text math",
   "      surface",
-  "        text \"2 + 2\"",
+  '        text "2 + 2"',
   "    lexeme ru",
   "      surface",
   "        text арифмет",
@@ -25496,7 +28406,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text посчитать",
   "      surface",
-  "        text \"2 + 2\"",
+  '        text "2 + 2"',
   "    lexeme hi",
   "      surface",
   "        text अंकगणित",
@@ -25505,7 +28415,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text math",
   "      surface",
-  "        text \"2 + 2\"",
+  '        text "2 + 2"',
   "    lexeme zh",
   "      surface",
   "        text 算术",
@@ -25514,7 +28424,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text 数学",
   "      surface",
-  "        text \"2 + 2\"",
+  '        text "2 + 2"',
   "  feature_capability_translation",
   "    defined-by concept",
   "    role feature_capability_alias",
@@ -25524,7 +28434,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text translate",
   "      surface",
-  "        text \"language translation\"",
+  '        text "language translation"',
   "    lexeme ru",
   "      surface",
   "        text перевод",
@@ -25557,7 +28467,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text recall",
   "      surface",
-  "        text \"conversation context\"",
+  '        text "conversation context"',
   "    lexeme ru",
   "      surface",
   "        text память",
@@ -25590,18 +28500,18 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"demo mode\"",
+  '        text "demo mode"',
   "      surface",
   "        text demo",
   "      surface",
-  "        text \"scripted demo\"",
+  '        text "scripted demo"',
   "    lexeme ru",
   "      surface",
   "        text демо",
   "      surface",
   "        text демо-режим",
   "      surface",
-  "        text \"сценарный демо\"",
+  '        text "сценарный демо"',
   "    lexeme hi",
   "      surface",
   "        text demo",
@@ -25617,33 +28527,33 @@ const MEANINGS_LINO = [
   "    role feature_capability_alias",
   "    lexeme en",
   "      surface",
-  "        text \"http fetch\"",
+  '        text "http fetch"',
   "      surface",
-  "        text \"fetch url\"",
+  '        text "fetch url"',
   "      surface",
-  "        text \"open url\"",
+  '        text "open url"',
   "      surface",
-  "        text \"navigate to url\"",
+  '        text "navigate to url"',
   "      surface",
-  "        text \"visit url\"",
+  '        text "visit url"',
   "      surface",
-  "        text \"url navigation\"",
+  '        text "url navigation"',
   "    lexeme ru",
   "      surface",
-  "        text \"http запрос\"",
+  '        text "http запрос"',
   "      surface",
-  "        text \"открыть url\"",
+  '        text "открыть url"',
   "      surface",
-  "        text \"перейти на\"",
+  '        text "перейти на"',
   "      surface",
-  "        text \"сделать запрос\"",
+  '        text "сделать запрос"',
   "      surface",
   "        text url-навигация",
   "      surface",
-  "        text \"url навигация\"",
+  '        text "url навигация"',
   "    lexeme hi",
   "      surface",
-  "        text \"http fetch\"",
+  '        text "http fetch"',
   "      surface",
   "        text url",
   "      surface",
@@ -25654,7 +28564,7 @@ const MEANINGS_LINO = [
   "        text यूआरएल",
   "    lexeme zh",
   "      surface",
-  "        text \"http fetch\"",
+  '        text "http fetch"',
   "      surface",
   "        text url",
   "      surface",
@@ -25668,9 +28578,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text javascript",
   "      surface",
-  "        text \"run javascript\"",
+  '        text "run javascript"',
   "      surface",
-  "        text \"execute javascript\"",
+  '        text "execute javascript"',
   "      surface",
   "        text js",
   "    lexeme ru",
@@ -25679,7 +28589,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text js",
   "      surface",
-  "        text \"выполнить javascript\"",
+  '        text "выполнить javascript"',
   "    lexeme hi",
   "      surface",
   "        text javascript",
@@ -25707,9 +28617,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text roleplay",
   "      surface",
-  "        text \"software project\"",
+  '        text "software project"',
   "      surface",
-  "        text \"project plan\"",
+  '        text "project plan"',
   "    lexeme ru",
   "      surface",
   "        text резюмировать",
@@ -25720,7 +28630,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text проект",
   "      surface",
-  "        text \"план проекта\"",
+  '        text "план проекта"',
   "    lexeme hi",
   "      surface",
   "        text summary",
@@ -25729,9 +28639,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text roleplay",
   "      surface",
-  "        text \"project plan\"",
+  '        text "project plan"',
   "      surface",
-  "        text \"परियोजना योजना\"",
+  '        text "परियोजना योजना"',
   "    lexeme zh",
   "      surface",
   "        text 总结",
@@ -25746,19 +28656,19 @@ const MEANINGS_LINO = [
   "    role feature_capability_question",
   "    lexeme en",
   "      surface",
-  "        text \"can you\"",
+  '        text "can you"',
   "      surface",
-  "        text \"can formal-ai\"",
+  '        text "can formal-ai"',
   "      surface",
-  "        text \"are you able\"",
+  '        text "are you able"',
   "      surface",
-  "        text \"are you connected\"",
+  '        text "are you connected"',
   "      surface",
-  "        text \"do you support\"",
+  '        text "do you support"',
   "      surface",
-  "        text \"do you have\"",
+  '        text "do you have"',
   "      surface",
-  "        text \"can i\"",
+  '        text "can i"',
   "    lexeme ru",
   "      surface",
   "        text можешь",
@@ -25767,9 +28677,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text поддерживаешь",
   "      surface",
-  "        text \"у тебя есть\"",
+  '        text "у тебя есть"',
   "      surface",
-  "        text \"есть ли\"",
+  '        text "есть ли"',
   "      surface",
   "        text доступен",
   "      surface",
@@ -25783,7 +28693,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text подключена",
   "      surface",
-  "        text \"можно ли\"",
+  '        text "можно ли"',
   "    lexeme hi",
   "      surface",
   "        text क्या",
@@ -25819,17 +28729,17 @@ const MEANINGS_LINO = [
   "    role feature_action_arithmetic",
   "    lexeme en",
   "      surface",
-  "        text \"can you calculate\"",
+  '        text "can you calculate"',
   "      surface",
-  "        text \"can you compute\"",
+  '        text "can you compute"',
   "    lexeme ru",
   "      surface",
-  "        text \"можешь вычислить\"",
+  '        text "можешь вычислить"',
   "      surface",
-  "        text \"можешь посчитать\"",
+  '        text "можешь посчитать"',
   "    lexeme hi",
   "      surface",
-  "        text \"क्या आप गणना कर सकते\"",
+  '        text "क्या आप गणना कर सकते"',
   "    lexeme zh",
   "      surface",
   "        text 你能计算",
@@ -25838,21 +28748,21 @@ const MEANINGS_LINO = [
   "    role feature_action_planning",
   "    lexeme en",
   "      surface",
-  "        text \"can you summarize\"",
+  '        text "can you summarize"',
   "      surface",
-  "        text \"can you brainstorm\"",
+  '        text "can you brainstorm"',
   "      surface",
-  "        text \"can you roleplay\"",
+  '        text "can you roleplay"',
   "    lexeme ru",
   "      surface",
-  "        text \"можешь резюмировать\"",
+  '        text "можешь резюмировать"',
   "      surface",
-  "        text \"можешь провести мозговой штурм\"",
+  '        text "можешь провести мозговой штурм"',
   "      surface",
-  "        text \"можешь сыграть роль\"",
+  '        text "можешь сыграть роль"',
   "    lexeme hi",
   "      surface",
-  "        text \"क्या आप सारांश कर सकते\"",
+  '        text "क्या आप सारांश कर सकते"',
   "    lexeme zh",
   "      surface",
   "        text 你能总结",
@@ -25900,9 +28810,9 @@ const MEANINGS_LINO = [
   "      surface",
   "        text build",
   "      surface",
-  "        text \"can you\"",
+  '        text "can you"',
   "      surface",
-  "        text \"could you\"",
+  '        text "could you"',
   "    lexeme ru",
   "      surface",
   "        text скрипт",
@@ -25950,21 +28860,21 @@ const MEANINGS_LINO = [
   "    role comparison_table_trigger",
   "    lexeme en",
   "      surface",
-  "        text \"comparison table\"",
+  '        text "comparison table"',
   "      surface",
   "        text compare",
   "      surface",
   "        text comparing",
   "    lexeme ru",
   "      surface",
-  "        text \"сравнительная таблица\"",
+  '        text "сравнительная таблица"',
   "      surface",
   "        text сравнить",
   "      surface",
   "        text сравнение",
   "    lexeme hi",
   "      surface",
-  "        text \"तुलना तालिका\"",
+  '        text "तुलना तालिका"',
   "      surface",
   "        text तुलना",
   "    lexeme zh",
@@ -26013,15 +28923,15 @@ const MEANINGS_LINO = [
   "    role research_prompt_signal",
   "    lexeme en",
   "      surface",
-  "        text \"search …\"",
+  '        text "search …"',
   "      surface",
-  "        text \"find information …\"",
+  '        text "find information …"',
   "      surface",
-  "        text \"look up information …\"",
+  '        text "look up information …"',
   "      surface",
-  "        text \"search for information\"",
+  '        text "search for information"',
   "      surface",
-  "        text \"web search\"",
+  '        text "web search"',
   "      surface",
   "        text research",
   "    lexeme ru",
@@ -26046,17 +28956,17 @@ const MEANINGS_LINO = [
   "    role research_criterion",
   "    lexeme en",
   "      surface",
-  "        text \"key difference\"",
+  '        text "key difference"',
   "      surface",
   "        text difference",
   "    lexeme ru",
   "      surface",
-  "        text \"ключевые различия\"",
+  '        text "ключевые различия"',
   "      surface",
   "        text различия",
   "    lexeme hi",
   "      surface",
-  "        text \"मुख्य अंतर\"",
+  '        text "मुख्य अंतर"',
   "      surface",
   "        text अंतर",
   "    lexeme zh",
@@ -26069,17 +28979,17 @@ const MEANINGS_LINO = [
   "    role research_criterion",
   "    lexeme en",
   "      surface",
-  "        text \"use case\"",
+  '        text "use case"',
   "      surface",
   "        text application",
   "    lexeme ru",
   "      surface",
-  "        text \"сценарии использования\"",
+  '        text "сценарии использования"',
   "      surface",
   "        text применение",
   "    lexeme hi",
   "      surface",
-  "        text \"उपयोग के मामले\"",
+  '        text "उपयोग के मामले"',
   "      surface",
   "        text अनुप्रयोग",
   "    lexeme zh",
@@ -26094,7 +29004,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text advantage",
   "      surface",
-  "        text \"pro \"",
+  '        text "pro "',
   "    lexeme ru",
   "      surface",
   "        text преимущества",
@@ -26117,7 +29027,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text disadvantage",
   "      surface",
-  "        text \" con \"",
+  '        text " con "',
   "    lexeme ru",
   "      surface",
   "        text недостатки",
@@ -26142,32 +29052,32 @@ const MEANINGS_LINO = [
   "      surface",
   "        text \"let's talk about …\"",
   "      surface",
-  "        text \"lets talk about …\"",
+  '        text "lets talk about …"',
   "      surface",
-  "        text \"can we talk about …\"",
+  '        text "can we talk about …"',
   "      surface",
-  "        text \"talk about …\"",
+  '        text "talk about …"',
   "    lexeme ru",
   "      surface",
-  "        text \"давай поговорим о …\"",
+  '        text "давай поговорим о …"',
   "      surface",
-  "        text \"давай поговорим об …\"",
+  '        text "давай поговорим об …"',
   "      surface",
-  "        text \"давайте поговорим о …\"",
+  '        text "давайте поговорим о …"',
   "      surface",
-  "        text \"давайте поговорим об …\"",
+  '        text "давайте поговорим об …"',
   "      surface",
-  "        text \"поговорим о …\"",
+  '        text "поговорим о …"',
   "        action scan",
   "      surface",
-  "        text \"поговорим об …\"",
+  '        text "поговорим об …"',
   "      surface",
-  "        text \"обсудим …\"",
+  '        text "обсудим …"',
   "    lexeme hi",
   "      surface",
-  "        text \"चलो बात करें …\"",
+  '        text "चलो बात करें …"',
   "      surface",
-  "        text \"बात करें …\"",
+  '        text "बात करें …"',
   "    lexeme zh",
   "      surface",
   "        text 聊聊…",
@@ -26179,19 +29089,19 @@ const MEANINGS_LINO = [
   "    role summary_statement_kind",
   "    lexeme en",
   "      surface",
-  "        text \"statement kind\"",
+  '        text "statement kind"',
   "      surface",
-  "        text \"sentence kind\"",
+  '        text "sentence kind"',
   "    lexeme ru",
   "      surface",
-  "        text \"вид утверждения\"",
+  '        text "вид утверждения"',
   "      surface",
-  "        text \"тип предложения\"",
+  '        text "тип предложения"',
   "    lexeme hi",
   "      surface",
-  "        text \"कथन का प्रकार\"",
+  '        text "कथन का प्रकार"',
   "      surface",
-  "        text \"वाक्य का प्रकार\"",
+  '        text "वाक्य का प्रकार"',
   "    lexeme zh",
   "      surface",
   "        text 陈述类型",
@@ -26202,17 +29112,17 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \"to install\"",
+  '        text "to install"',
   "      surface",
-  "        text \"install with\"",
+  '        text "install with"',
   "      surface",
   "        text installation",
   "      surface",
-  "        text \"npm install\"",
+  '        text "npm install"',
   "      surface",
-  "        text \"cargo install\"",
+  '        text "cargo install"',
   "      surface",
-  "        text \"pip install\"",
+  '        text "pip install"',
   "    lexeme ru",
   "      surface",
   "        text установить",
@@ -26222,7 +29132,7 @@ const MEANINGS_LINO = [
   "        text установите",
   "    lexeme hi",
   "      surface",
-  "        text \"इंस्टॉल करें\"",
+  '        text "इंस्टॉल करें"',
   "      surface",
   "        text स्थापना",
   "    lexeme zh",
@@ -26235,17 +29145,17 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \"for example\"",
+  '        text "for example"',
   "      surface",
-  "        text \"example:\"",
+  '        text "example:"',
   "      surface",
   "        text e.g.",
   "      surface",
-  "        text \"run --\"",
+  '        text "run --"',
   "      surface",
-  "        text \"$ \"",
+  '        text "$ "',
   "      surface",
-  "        text \"```\"",
+  '        text "```"',
   "    lexeme ru",
   "      surface",
   "        text выполни",
@@ -26253,9 +29163,9 @@ const MEANINGS_LINO = [
   "        text например",
   "    lexeme hi",
   "      surface",
-  "        text \"उदाहरण के लिए\"",
+  '        text "उदाहरण के लिए"',
   "      surface",
-  "        text \"उदाहरण:\"",
+  '        text "उदाहरण:"',
   "    lexeme zh",
   "      surface",
   "        text 例如",
@@ -26266,23 +29176,23 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \"written in \"",
+  '        text "written in "',
   "      surface",
-  "        text \"language:\"",
+  '        text "language:"',
   "      surface",
-  "        text \"is a \"",
+  '        text "is a "',
   "      surface",
-  "        text \"build with \"",
+  '        text "build with "',
   "    lexeme ru",
   "      surface",
-  "        text \"написан на \"",
+  '        text "написан на "',
   "      surface",
-  "        text \"на языке \"",
+  '        text "на языке "',
   "    lexeme hi",
   "      surface",
-  "        text \"में लिखा\"",
+  '        text "में लिखा"',
   "      surface",
-  "        text \"भाषा:\"",
+  '        text "भाषा:"',
   "    lexeme zh",
   "      surface",
   "        text 语言",
@@ -26293,9 +29203,9 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \" stars\"",
+  '        text " stars"',
   "      surface",
-  "        text \"github stars\"",
+  '        text "github stars"',
   "      surface",
   "        text ★",
   "      surface",
@@ -26320,31 +29230,31 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \"is for \"",
+  '        text "is for "',
   "      surface",
-  "        text \"is the ai\"",
+  '        text "is the ai"',
   "      surface",
-  "        text \"is an ai\"",
+  '        text "is an ai"',
   "      surface",
-  "        text \"is used to\"",
+  '        text "is used to"',
   "      surface",
-  "        text \"is meant to\"",
+  '        text "is meant to"',
   "      surface",
-  "        text \"is designed to\"",
+  '        text "is designed to"',
   "      surface",
-  "        text \"helps you\"",
+  '        text "helps you"',
   "      surface",
-  "        text \"lets you\"",
+  '        text "lets you"',
   "    lexeme ru",
   "      surface",
-  "        text \"это ии\"",
+  '        text "это ии"',
   "      surface",
   "        text предназнач",
   "    lexeme hi",
   "      surface",
-  "        text \"के लिए है\"",
+  '        text "के लिए है"',
   "      surface",
-  "        text \"मदद करता है\"",
+  '        text "मदद करता है"',
   "    lexeme zh",
   "      surface",
   "        text 用于",
@@ -26357,27 +29267,27 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \"use it when\"",
+  '        text "use it when"',
   "      surface",
-  "        text \"use this when\"",
+  '        text "use this when"',
   "      surface",
-  "        text \"when you need\"",
+  '        text "when you need"',
   "      surface",
-  "        text \"ideal for\"",
+  '        text "ideal for"',
   "      surface",
-  "        text \"useful when\"",
+  '        text "useful when"',
   "    lexeme ru",
   "      surface",
-  "        text \"используйте когда\"",
+  '        text "используйте когда"',
   "      surface",
-  "        text \"когда нужно\"",
+  '        text "когда нужно"',
   "      surface",
-  "        text \"идеально для\"",
+  '        text "идеально для"',
   "    lexeme hi",
   "      surface",
-  "        text \"जब आपको चाहिए\"",
+  '        text "जब आपको चाहिए"',
   "      surface",
-  "        text \"के लिए आदर्श\"",
+  '        text "के लिए आदर्श"',
   "    lexeme zh",
   "      surface",
   "        text 当你需要",
@@ -26388,27 +29298,27 @@ const MEANINGS_LINO = [
   "    role summary_classification_cue",
   "    lexeme en",
   "      surface",
-  "        text \" supports \"",
+  '        text " supports "',
   "      surface",
-  "        text \" provides \"",
+  '        text " provides "',
   "      surface",
-  "        text \" offers \"",
+  '        text " offers "',
   "      surface",
-  "        text \" exposes \"",
+  '        text " exposes "',
   "      surface",
-  "        text \" ships \"",
+  '        text " ships "',
   "      surface",
-  "        text \" orchestrates \"",
+  '        text " orchestrates "',
   "    lexeme ru",
   "      surface",
-  "        text \" предоставляет \"",
+  '        text " предоставляет "',
   "      surface",
-  "        text \" поддерживает \"",
+  '        text " поддерживает "',
   "    lexeme hi",
   "      surface",
-  "        text \"समर्थन करता है\"",
+  '        text "समर्थन करता है"',
   "      surface",
-  "        text \"प्रदान करता है\"",
+  '        text "प्रदान करता है"',
   "    lexeme zh",
   "      surface",
   "        text 支持",
@@ -26421,13 +29331,13 @@ const MEANINGS_LINO = [
   "    role program_language",
   "    lexeme en",
   "      surface",
-  "        text \"programming language\"",
+  '        text "programming language"',
   "    lexeme ru",
   "      surface",
-  "        text \"язык программирования\"",
+  '        text "язык программирования"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्रोग्रामिंग भाषा\"",
+  '        text "प्रोग्रामिंग भाषा"',
   "    lexeme zh",
   "      surface",
   "        text 编程语言",
@@ -26590,7 +29500,7 @@ const MEANINGS_LINO = [
   "      surface",
   "        text csharp",
   "      surface",
-  "        text \"c#\"",
+  '        text "c#"',
   "      surface",
   "        text cs",
   "      surface",
@@ -26603,7 +29513,7 @@ const MEANINGS_LINO = [
   "        text सीशार्प",
   "    lexeme zh",
   "      surface",
-  "        text \"c#\"",
+  '        text "c#"',
   "  program_language_ruby",
   "    grounded-in Q161053",
   "    defined-by program_language",
@@ -26627,13 +29537,13 @@ const MEANINGS_LINO = [
   "    role program_task",
   "    lexeme en",
   "      surface",
-  "        text \"coding task\"",
+  '        text "coding task"',
   "    lexeme ru",
   "      surface",
-  "        text \"задача программирования\"",
+  '        text "задача программирования"',
   "    lexeme hi",
   "      surface",
-  "        text \"प्रोग्रामिंग कार्य\"",
+  '        text "प्रोग्रामिंग कार्य"',
   "    lexeme zh",
   "      surface",
   "        text 编程任务",
@@ -26643,13 +29553,13 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"hello world\"",
+  '        text "hello world"',
   "    lexeme ru",
   "      surface",
-  "        text \"хелло ворлд\"",
+  '        text "хелло ворлд"',
   "    lexeme hi",
   "      surface",
-  "        text \"हैलो वर्ल्ड\"",
+  '        text "हैलो वर्ल्ड"',
   "    lexeme zh",
   "      surface",
   "        text 你好世界",
@@ -26658,23 +29568,23 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"count to three\"",
+  '        text "count to three"',
   "      surface",
-  "        text \"count to 3\"",
+  '        text "count to 3"',
   "      surface",
-  "        text \"counts to three\"",
+  '        text "counts to three"',
   "      surface",
-  "        text \"counts to 3\"",
+  '        text "counts to 3"',
   "    lexeme ru",
   "      surface",
-  "        text \"посчитай до трёх\"",
+  '        text "посчитай до трёх"',
   "      surface",
-  "        text \"посчитай до 3\"",
+  '        text "посчитай до 3"',
   "    lexeme hi",
   "      surface",
-  "        text \"तीन तक गिनें\"",
+  '        text "तीन तक गिनें"',
   "      surface",
-  "        text \"3 तक गिनें\"",
+  '        text "3 तक गिनें"',
   "    lexeme zh",
   "      surface",
   "        text 数到三",
@@ -26685,65 +29595,65 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"list files in the current directory\"",
+  '        text "list files in the current directory"',
   "      surface",
-  "        text \"list files in current directory\"",
+  '        text "list files in current directory"',
   "      surface",
-  "        text \"list files in the directory\"",
+  '        text "list files in the directory"',
   "      surface",
-  "        text \"list the files in the current directory\"",
+  '        text "list the files in the current directory"',
   "      surface",
-  "        text \"lists files in the current directory\"",
+  '        text "lists files in the current directory"',
   "      surface",
-  "        text \"lists the files in the current directory\"",
+  '        text "lists the files in the current directory"',
   "      surface",
-  "        text \"list files in a directory\"",
+  '        text "list files in a directory"',
   "      surface",
-  "        text \"list directory files\"",
+  '        text "list directory files"',
   "      surface",
-  "        text \"list files\"",
+  '        text "list files"',
   "      surface",
-  "        text \"lists files\"",
+  '        text "lists files"',
   "      surface",
-  "        text \"files in the current directory\"",
+  '        text "files in the current directory"',
   "      surface",
-  "        text \"files in current directory\"",
+  '        text "files in current directory"',
   "    lexeme ru",
   "      surface",
-  "        text \"список файлов в текущей директории\"",
+  '        text "список файлов в текущей директории"',
   "      surface",
-  "        text \"список файлов в текущем каталоге\"",
+  '        text "список файлов в текущем каталоге"',
   "      surface",
-  "        text \"список файлов в директории\"",
+  '        text "список файлов в директории"',
   "      surface",
-  "        text \"список файлов в каталоге\"",
+  '        text "список файлов в каталоге"',
   "      surface",
-  "        text \"выдаёт список файлов\"",
+  '        text "выдаёт список файлов"',
   "      surface",
-  "        text \"выдает список файлов\"",
+  '        text "выдает список файлов"',
   "      surface",
-  "        text \"выводит список файлов\"",
+  '        text "выводит список файлов"',
   "      surface",
-  "        text \"вывести список файлов\"",
+  '        text "вывести список файлов"',
   "      surface",
-  "        text \"вывод списка файлов\"",
+  '        text "вывод списка файлов"',
   "      surface",
-  "        text \"список файлов\"",
+  '        text "список файлов"',
   "      surface",
-  "        text \"файлы в текущей директории\"",
+  '        text "файлы в текущей директории"',
   "      surface",
-  "        text \"файлы в текущем каталоге\"",
+  '        text "файлы в текущем каталоге"',
   "    lexeme hi",
   "      surface",
-  "        text \"फ़ाइलों की सूची\"",
+  '        text "फ़ाइलों की सूची"',
   "      surface",
-  "        text \"फाइलों की सूची\"",
+  '        text "फाइलों की सूची"',
   "      surface",
-  "        text \"वर्तमान निर्देशिका की फ़ाइलें\"",
+  '        text "वर्तमान निर्देशिका की फ़ाइलें"',
   "      surface",
-  "        text \"वर्तमान निर्देशिका की फाइलें\"",
+  '        text "वर्तमान निर्देशिका की फाइलें"',
   "      surface",
-  "        text \"निर्देशिका की फ़ाइलें\"",
+  '        text "निर्देशिका की फ़ाइलें"',
   "    lexeme zh",
   "      surface",
   "        text 列出当前目录中的文件",
@@ -26762,27 +29672,27 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"list files in the directory given as a path argument\"",
+  '        text "list files in the directory given as a path argument"',
   "      surface",
-  "        text \"list files in a directory given as an argument\"",
+  '        text "list files in a directory given as an argument"',
   "      surface",
-  "        text \"list files in the directory passed as an argument\"",
+  '        text "list files in the directory passed as an argument"',
   "      surface",
-  "        text \"list files in a path argument\"",
+  '        text "list files in a path argument"',
   "      surface",
-  "        text \"list files with a path argument\"",
+  '        text "list files with a path argument"',
   "      surface",
-  "        text \"list files accepting a path argument\"",
+  '        text "list files accepting a path argument"',
   "    lexeme ru",
   "      surface",
-  "        text \"список файлов в каталоге переданном как аргумент\"",
+  '        text "список файлов в каталоге переданном как аргумент"',
   "      surface",
-  "        text \"список файлов в директории переданной как аргумент\"",
+  '        text "список файлов в директории переданной как аргумент"',
   "      surface",
-  "        text \"список файлов по пути из аргумента\"",
+  '        text "список файлов по пути из аргумента"',
   "    lexeme hi",
   "      surface",
-  "        text \"पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची\"",
+  '        text "पथ तर्क के रूप में दी गई निर्देशिका की फ़ाइलों की सूची"',
   "    lexeme zh",
   "      surface",
   "        text 列出作为路径参数给出的目录中的文件",
@@ -26793,23 +29703,23 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"list files in reverse order\"",
+  '        text "list files in reverse order"',
   "      surface",
-  "        text \"list files sorted in reverse order\"",
+  '        text "list files sorted in reverse order"',
   "      surface",
-  "        text \"list files in descending order\"",
+  '        text "list files in descending order"',
   "      surface",
-  "        text \"reverse sorted list files\"",
+  '        text "reverse sorted list files"',
   "    lexeme ru",
   "      surface",
-  "        text \"список файлов в обратном порядке\"",
+  '        text "список файлов в обратном порядке"',
   "      surface",
-  "        text \"список файлов с обратной сортировкой\"",
+  '        text "список файлов с обратной сортировкой"',
   "    lexeme hi",
   "      surface",
-  "        text \"फ़ाइलों की सूची उल्टे क्रम में\"",
+  '        text "फ़ाइलों की सूची उल्टे क्रम में"',
   "      surface",
-  "        text \"फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें\"",
+  '        text "फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"',
   "    lexeme zh",
   "      surface",
   "        text 按相反顺序列出文件",
@@ -26820,23 +29730,23 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"list files from a path argument in reverse order\"",
+  '        text "list files from a path argument in reverse order"',
   "      surface",
-  "        text \"list files with a path argument in reverse order\"",
+  '        text "list files with a path argument in reverse order"',
   "      surface",
-  "        text \"list files with a path argument sorted descending\"",
+  '        text "list files with a path argument sorted descending"',
   "      surface",
-  "        text \"reverse sorted list files with a path argument\"",
+  '        text "reverse sorted list files with a path argument"',
   "    lexeme ru",
   "      surface",
-  "        text \"список файлов по пути из аргумента в обратном порядке\"",
+  '        text "список файлов по пути из аргумента в обратном порядке"',
   "      surface",
-  "        text \"список файлов из аргумента с обратной сортировкой\"",
+  '        text "список файлов из аргумента с обратной сортировкой"',
   "    lexeme hi",
   "      surface",
-  "        text \"पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में\"",
+  '        text "पथ तर्क से फ़ाइलों की सूची उल्टे क्रम में"',
   "      surface",
-  "        text \"पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें\"",
+  '        text "पथ तर्क वाली फ़ाइलों को उल्टे क्रम में सूचीबद्ध करें"',
   "    lexeme zh",
   "      surface",
   "        text 按相反顺序列出路径参数中的文件",
@@ -26849,12 +29759,12 @@ const MEANINGS_LINO = [
   "      surface",
   "        text fizzbuzz",
   "      surface",
-  "        text \"fizz buzz\"",
+  '        text "fizz buzz"',
   "    lexeme ru",
   "      surface",
   "        text физзбазз",
   "      surface",
-  "        text \"физз базз\"",
+  '        text "физз базз"',
   "      surface",
   "        text физбаз",
   "    lexeme hi",
@@ -26870,25 +29780,25 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"factorial of 5\"",
+  '        text "factorial of 5"',
   "      surface",
-  "        text \"factorial of five\"",
+  '        text "factorial of five"',
   "      surface",
-  "        text \"5 factorial\"",
+  '        text "5 factorial"',
   "      surface",
-  "        text \"five factorial\"",
+  '        text "five factorial"',
   "    lexeme ru",
   "      surface",
-  "        text \"факториал 5\"",
+  '        text "факториал 5"',
   "      surface",
-  "        text \"факториал пяти\"",
+  '        text "факториал пяти"',
   "      surface",
-  "        text \"факториал числа 5\"",
+  '        text "факториал числа 5"',
   "    lexeme hi",
   "      surface",
-  "        text \"5 का फैक्टोरियल\"",
+  '        text "5 का फैक्टोरियल"',
   "      surface",
-  "        text \"पाँच का फैक्टोरियल\"",
+  '        text "पाँच का फैक्टोरियल"',
   "    lexeme zh",
   "      surface",
   "        text 5的阶乘",
@@ -26899,27 +29809,27 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"reverse a string\"",
+  '        text "reverse a string"',
   "      surface",
-  "        text \"reverse the string hello\"",
+  '        text "reverse the string hello"',
   "      surface",
-  "        text \"reverse hello\"",
+  '        text "reverse hello"',
   "      surface",
-  "        text \"reverse string hello\"",
+  '        text "reverse string hello"',
   "      surface",
-  "        text \"reverse the word hello\"",
+  '        text "reverse the word hello"',
   "    lexeme ru",
   "      surface",
-  "        text \"перевернуть строку\"",
+  '        text "перевернуть строку"',
   "      surface",
-  "        text \"перевернуть строку hello\"",
+  '        text "перевернуть строку hello"',
   "      surface",
-  "        text \"развернуть строку\"",
+  '        text "развернуть строку"',
   "    lexeme hi",
   "      surface",
-  "        text \"स्ट्रिंग को उलटें\"",
+  '        text "स्ट्रिंग को उलटें"',
   "      surface",
-  "        text \"स्ट्रिंग पलटें\"",
+  '        text "स्ट्रिंग पलटें"',
   "    lexeme zh",
   "      surface",
   "        text 反转字符串",
@@ -26932,29 +29842,29 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"sum of 1 to 10\"",
+  '        text "sum of 1 to 10"',
   "      surface",
-  "        text \"sum from 1 to 10\"",
+  '        text "sum from 1 to 10"',
   "      surface",
-  "        text \"sum the numbers 1 to 10\"",
+  '        text "sum the numbers 1 to 10"',
   "      surface",
-  "        text \"sum of numbers from 1 to 10\"",
+  '        text "sum of numbers from 1 to 10"',
   "      surface",
-  "        text \"sum 1 to 10\"",
+  '        text "sum 1 to 10"',
   "      surface",
-  "        text \"sum to ten\"",
+  '        text "sum to ten"',
   "    lexeme ru",
   "      surface",
-  "        text \"сумма от 1 до 10\"",
+  '        text "сумма от 1 до 10"',
   "      surface",
-  "        text \"сумма чисел от 1 до 10\"",
+  '        text "сумма чисел от 1 до 10"',
   "      surface",
-  "        text \"сумма чисел от одного до десяти\"",
+  '        text "сумма чисел от одного до десяти"',
   "    lexeme hi",
   "      surface",
-  "        text \"1 से 10 तक का योग\"",
+  '        text "1 से 10 तक का योग"',
   "      surface",
-  "        text \"1 से 10 तक योग\"",
+  '        text "1 से 10 तक योग"',
   "    lexeme zh",
   "      surface",
   "        text 1到10的和",
@@ -26967,51 +29877,51 @@ const MEANINGS_LINO = [
   "    role program_task_alias",
   "    lexeme en",
   "      surface",
-  "        text \"fibonacci sequence recursively\"",
+  '        text "fibonacci sequence recursively"',
   "      surface",
-  "        text \"fibonacci sequence\"",
+  '        text "fibonacci sequence"',
   "      surface",
-  "        text \"recursive fibonacci\"",
+  '        text "recursive fibonacci"',
   "      surface",
-  "        text \"fibonacci recursively\"",
+  '        text "fibonacci recursively"',
   "      surface",
-  "        text \"fibonacci function\"",
+  '        text "fibonacci function"',
   "      surface",
-  "        text \"fibonacci numbers\"",
+  '        text "fibonacci numbers"',
   "      surface",
-  "        text \"fibonacci number\"",
+  '        text "fibonacci number"',
   "      surface",
-  "        text \"10th fibonacci number\"",
+  '        text "10th fibonacci number"',
   "      surface",
-  "        text \"the 10th fibonacci number\"",
+  '        text "the 10th fibonacci number"',
   "      surface",
-  "        text \"tenth fibonacci number\"",
+  '        text "tenth fibonacci number"',
   "      surface",
-  "        text \"nth fibonacci number\"",
+  '        text "nth fibonacci number"',
   "    lexeme ru",
   "      surface",
-  "        text \"последовательность фибоначчи\"",
+  '        text "последовательность фибоначчи"',
   "      surface",
-  "        text \"числа фибоначчи\"",
+  '        text "числа фибоначчи"',
   "      surface",
-  "        text \"число фибоначчи\"",
+  '        text "число фибоначчи"',
   "      surface",
-  "        text \"рекурсивный фибоначчи\"",
+  '        text "рекурсивный фибоначчи"',
   "      surface",
-  "        text \"фибоначчи рекурсивно\"",
+  '        text "фибоначчи рекурсивно"',
   "      surface",
-  "        text \"10-е число фибоначчи\"",
+  '        text "10-е число фибоначчи"',
   "      surface",
-  "        text \"десятое число фибоначчи\"",
+  '        text "десятое число фибоначчи"',
   "    lexeme hi",
   "      surface",
-  "        text \"फ़िबोनाची अनुक्रम\"",
+  '        text "फ़िबोनाची अनुक्रम"',
   "      surface",
-  "        text \"फिबोनाची अनुक्रम\"",
+  '        text "फिबोनाची अनुक्रम"',
   "      surface",
-  "        text \"फ़िबोनाची संख्या\"",
+  '        text "फ़िबोनाची संख्या"',
   "      surface",
-  "        text \"फिबोनाची संख्या\"",
+  '        text "फिबोनाची संख्या"',
   "    lexeme zh",
   "      surface",
   "        text 斐波那契数列",
@@ -27096,6 +30006,13 @@ const ROLE_PROCEDURAL_REQUEST = "procedural_request";
 // these forms by meaning instead of hardcoding per-language modifier and typo
 // arrays.
 const ROLE_PROCEDURAL_TASK_MODIFIER = "procedural_task_modifier";
+// Issue #444: a follow-up that asks for the concrete steps of an active
+// procedure ("give me specific instructions", "step by step", "дай конкретные
+// инструкции", "具体步骤", …). Its surfaces live in data/seed/meanings-how.lino
+// (embedded in MEANINGS_LINO above); tryProceduralHowToFollowup asks the lexicon
+// for this role by meaning instead of hardcoding per-language phrase arrays.
+// Mirrors ROLE_PROCEDURAL_ELABORATION in src/seed/roles/intent.rs.
+const ROLE_PROCEDURAL_ELABORATION = "procedural_elaboration";
 const ROLE_COMMON_TYPO = "common_typo";
 // Issue #386 mechanism-subject cleanup roles — mirror the
 // ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
@@ -27326,6 +30243,18 @@ const ROLE_CALENDAR_DIRECTION_PREVIOUS = "calendar_direction_previous";
 const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
+
+// Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+// + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+// pattern as the existing weekday helpers.
+const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+const ROLE_CALENDAR_EVENT = "calendar_event";
+const ROLE_CALENDAR_TIME = "calendar_time";
+const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
+// Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
+// anchor a scheduled event to a day offset from today. Mirrors
+// ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.
+const ROLE_CALENDAR_RELATIVE_DATE = "calendar_relative_date";
 
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
@@ -28162,13 +31091,17 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(no output)",
     sandboxFailed: (message) => `Execution status: failed in sandbox - ${message}.`,
     notRun: (language, reason) =>
-      `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
+      `Execution status: not run - ${reason}.`,
+    copyInstruction: (language) =>
+      `Copy the snippet into a ${language} environment to verify.`,
     noFilesystem: (language) =>
       `the browser sandbox has no filesystem access for this ${language} program`,
     noToolchain: (language) => `the browser sandbox cannot invoke a ${language} toolchain`,
-    sampleDirectory:
-      "The output depends on the directory; for a sample directory holding " +
-      "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    sampleDirectory: (files) =>
+      `The sample output below is for a clean directory containing exactly ${markdownFileList(
+        files,
+        "and",
+      )} and no extra files:`,
     expectedOutput: "Expected output after verification:",
   },
   ru: {
@@ -28182,14 +31115,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(нет вывода)",
     sandboxFailed: (message) => `Статус выполнения: сбой в песочнице - ${message}.`,
     notRun: (language, reason) =>
-      `Статус выполнения: не запущено - ${reason}. Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
+      `Статус выполнения: не запущено - ${reason}.`,
+    copyInstruction: (language) =>
+      `Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
     noFilesystem: (language) =>
       `у браузерной песочницы нет доступа к файловой системе для этой программы на ${language}`,
     noToolchain: (language) =>
       `браузерная песочница не может вызвать инструментарий ${language}`,
-    sampleDirectory:
-      "Вывод зависит от каталога; для образца каталога, содержащего ровно " +
-      "`Cargo.toml`, `README.md` и `main.rs`, он такой:",
+    sampleDirectory: (files) =>
+      `Ниже показан вывод для чистого каталога, содержащего ровно ${markdownFileList(
+        files,
+        "и",
+      )}, и никаких других файлов:`,
     expectedOutput: "Ожидаемый вывод после проверки:",
   },
   hi: {
@@ -28203,14 +31140,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(कोई आउटपुट नहीं)",
     sandboxFailed: (message) => `निष्पादन स्थिति: सैंडबॉक्स में विफल - ${message}.`,
     notRun: (language, reason) =>
-      `निष्पादन स्थिति: नहीं चला - ${reason}. सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
+      `निष्पादन स्थिति: नहीं चला - ${reason}.`,
+    copyInstruction: (language) =>
+      `सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
     noFilesystem: (language) =>
       `इस ${language} प्रोग्राम के लिए ब्राउज़र सैंडबॉक्स में फ़ाइल सिस्टम तक पहुँच नहीं है`,
     noToolchain: (language) =>
       `ब्राउज़र सैंडबॉक्स ${language} टूलचेन को आमंत्रित नहीं कर सकता`,
-    sampleDirectory:
-      "आउटपुट निर्देशिका पर निर्भर करता है; ठीक `Cargo.toml`, `README.md` और " +
-      "`main.rs` रखने वाली एक नमूना निर्देशिका के लिए यह है:",
+    sampleDirectory: (files) =>
+      `नीचे दिया गया नमूना आउटपुट ऐसी साफ डायरेक्टरी के लिए है जिसमें ठीक ${markdownFileList(
+        files,
+        "और",
+      )} हों और कोई अतिरिक्त फाइल न हो:`,
     expectedOutput: "सत्यापन के बाद अपेक्षित आउटपुट:",
   },
   zh: {
@@ -28223,17 +31164,49 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "（无输出）",
     sandboxFailed: (message) => `执行状态：沙箱中失败 - ${message}。`,
     notRun: (language, reason) =>
-      `执行状态：未运行 - ${reason}。将代码片段复制到 ${language} 环境中以验证。`,
+      `执行状态：未运行 - ${reason}。`,
+    copyInstruction: (language) => `将代码片段复制到 ${language} 环境中以验证。`,
     noFilesystem: (language) => `浏览器沙箱无法为此 ${language} 程序访问文件系统`,
     noToolchain: (language) => `浏览器沙箱无法调用 ${language} 工具链`,
-    sampleDirectory:
-      "输出取决于目录；对于恰好包含 `Cargo.toml`、`README.md` 和 `main.rs` 的示例目录，它是：",
+    sampleDirectory: (files) =>
+      `下面的示例输出适用于一个只包含 ${markdownFileList(files, "和")} 且没有其他文件的干净目录：`,
     expectedOutput: "验证后的预期输出：",
   },
 };
 
 function writeProgramStrings(language) {
   return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;
+}
+
+function markdownFileList(files, conjunction) {
+  const quoted = files.map((file) => `\`${file}\``);
+  if (quoted.length <= 1) return quoted.join("");
+  return `${quoted.slice(0, -1).join(", ")} ${conjunction} ${quoted[quoted.length - 1]}`;
+}
+
+function listFilesTaskDirection(task) {
+  switch (task) {
+    case "list_files":
+    case "list_files_arg":
+      return "ascending";
+    case "list_files_reverse_sort":
+    case "list_files_arg_reverse_sort":
+      return "descending";
+    default:
+      return "";
+  }
+}
+
+function listFilesSampleFiles(languageInfo) {
+  return ["README.md", "data.txt", languageInfo.saveAs].sort();
+}
+
+function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
+  const direction = listFilesTaskDirection(task);
+  if (!direction) return taskInfo.output;
+  const files = listFilesSampleFiles(languageInfo);
+  if (direction === "descending") files.reverse();
+  return files.join("\n");
 }
 
 function writeProgramExecutionLines(language, task, code, output, strings) {
@@ -28262,19 +31235,32 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   }
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
-  const lines = [i18n.notRun(language, reason)];
-  if (
-    task === "list_files" ||
-    task === "list_files_arg" ||
-    task === "list_files_reverse_sort" ||
-    task === "list_files_arg_reverse_sort"
-  ) {
-    lines.push(i18n.sampleDirectory);
+  const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
+  if (listFilesTaskDirection(task)) {
+    lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));
   } else {
     lines.push(i18n.expectedOutput);
   }
   lines.push("```text", output, "```");
   return lines;
+}
+
+function inlineHelloWorldReplacement(prompt) {
+  const normalized = normalizePrompt(prompt);
+  if (!isReplaceTextPrompt(normalized)) return "";
+  const quoted = quotedTextSegments(prompt);
+  if (!quoted.length) return "";
+  const replacement =
+    quoted.length >= 2 && (normalized.includes("replace") || normalized.includes("замен"))
+      ? quoted[1]
+      : quoted[quoted.length - 1];
+  return replacement.trim() ? replacement : "";
+}
+
+function applyInlineHelloWorldOutputReplacement(prompt, task, content) {
+  if (task !== "hello_world") return content;
+  const replacement = inlineHelloWorldReplacement(prompt);
+  return replacement ? String(content).split("Hello, world!").join(replacement) : content;
 }
 
 // Issue #330 (R9): a localized plain-language "How it works" paragraph so the
@@ -29784,6 +32770,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS[task];
+  const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
@@ -29796,7 +32783,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push("```");
   lines.push("");
   lines.push(
-    ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
+    ...writeProgramExecutionLines(language, task, template, expectedOutput, i18n),
   );
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
@@ -29806,9 +32793,10 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push(programExplanationSection(task, responseLanguage));
   lines.push("");
   lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode));
+  const content = applyInlineHelloWorldOutputReplacement(prompt, task, lines.join("\n"));
   return {
     intent: "write_program",
-    content: lines.join("\n"),
+    content,
     confidence: 0.9,
     evidence: [
       `response:write_program:${task}:${language}`,
@@ -31134,7 +34122,17 @@ function tryDocsMethodExplanation(prompt, language) {
   };
 }
 
-async function tryProceduralHowTo(prompt, language) {
+// Issue #444: external *trusted* services are opt-out. A preference value of
+// exactly `false` disables the service; a missing/undefined value keeps it
+// enabled, so the assistant's default behavior is unchanged unless the user opts
+// out in settings. The `key` arguments mirror the `settings_key` recorded in
+// data/seed/sources-registry.lino and the EXTERNAL_TRUSTED_SERVICES catalog in
+// src/web/app.js, keeping the registry the single source of truth.
+function externalServiceEnabled(preferences, key) {
+  return !(preferences && preferences[key] === false);
+}
+
+async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
@@ -31143,15 +34141,25 @@ async function tryProceduralHowTo(prompt, language) {
   const pageTitle = wikiHowPageTitle(task.task);
   const apiUrl = wikiHowParseApiUrl(pageTitle);
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
+  // its live fetch entirely, emit a service_disabled marker, and route straight
+  // to the web-search fallback.
+  const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
   const evidence = [
     `procedural_how_to:request:${task.task}`,
     `procedural_how_to:action:${task.action}`,
     `procedural_how_to:stage:wikipedia`,
     `procedural_how_to:stage:wikidata`,
-    `procedural_how_to:stage:wikihow_api`,
-    `procedural_how_to:wikihow_candidate:${pageTitle}`,
-    `http_fetch:request:${apiUrl}`,
   ];
+  if (wikihowEnabled) {
+    evidence.push(
+      `procedural_how_to:stage:wikihow_api`,
+      `procedural_how_to:wikihow_candidate:${pageTitle}`,
+      `http_fetch:request:${apiUrl}`,
+    );
+  } else {
+    evidence.push("procedural_how_to:service_disabled:wikihow");
+  }
   for (const correction of task.corrections || []) {
     evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
   }
@@ -31159,11 +34167,16 @@ async function tryProceduralHowTo(prompt, language) {
     evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
   }
 
-  const wikiHow = await fetchWikiHowProcedure(pageTitle, evidence);
+  const wikiHow = wikihowEnabled
+    ? await fetchWikiHowProcedure(pageTitle, evidence)
+    : { ok: false, error: "service_disabled" };
+  const sourcePath = wikihowEnabled
+    ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+    : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
   const lines = [
     `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
     "",
-    "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.",
+    sourcePath,
     "",
   ];
 
@@ -31183,16 +34196,19 @@ async function tryProceduralHowTo(prompt, language) {
     lines.push("");
     lines.push(`[Source](${wikiHow.sourceUrl})`);
   } else {
-    evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    if (wikihowEnabled) {
+      evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    }
     evidence.push("procedural_how_to:stage:web_search");
+    const missNote = wikihowEnabled
+      ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
+      : "wikiHow is disabled in settings.";
     const webSearch = await tryWebSearch(`search the web for ${query}`, language);
     if (webSearch) {
       appendUniqueEvidence(evidence, webSearch.evidence);
       diagnostics = webSearch.diagnostics || null;
       formalizedObject = webSearch.formalizedObject || "";
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(`Fallback web search for \`${query}\`:`);
       lines.push("");
@@ -31203,9 +34219,7 @@ async function tryProceduralHowTo(prompt, language) {
         evidence.push(`web_search:provider:${provider.id}`);
       }
       evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(
         `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
@@ -31233,6 +34247,52 @@ async function tryProceduralHowTo(prompt, language) {
     wikihowCandidate: pageTitle,
     formalizedObject,
   };
+}
+
+// Recognise a request for the concrete steps of an active procedure by
+// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
+// Each surface of the procedural_elaboration meaning lives in
+// data/seed/meanings-how.lino (embedded in MEANINGS_LINO above); this code knows
+// only the concept. Mirrors is_procedural_elaboration_request in
+// src/solver_handler_how.rs.
+function isProceduralElaborationRequest(normalized) {
+  return lexiconMentionsRole(ROLE_PROCEDURAL_ELABORATION, normalized);
+}
+
+// The prior exchange must have been a how-to procedure: the previous user turn
+// re-parses as a procedural request and the assistant answered it. Mirrors the
+// last_assistant_turn + last_user_turn re-parse gate in
+// try_procedural_how_to_followup (src/solver_handler_how.rs).
+function priorProceduralHowToDialogue(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (!assistant) return null;
+  const user = lastHistoryTurn(history, "user");
+  if (!user) return null;
+  const task = extractProceduralHowToTask(normalizePrompt(user));
+  return task ? { user, task } : null;
+}
+
+// Issue #444: a bare follow-up such as "Can you give me specific instructions?"
+// carries no "how to" lead-in of its own and would otherwise dead-end at the
+// unknown opener. When the current prompt evidences the procedural_elaboration
+// meaning and the prior turn was an answered how-to request, re-run the original
+// discovery so the elaboration rebinds to the recovered task. Mirrors
+// try_procedural_how_to_followup in src/solver_handler_how.rs (mirror parity).
+async function tryProceduralHowToFollowup(prompt, language, history = [], preferences = {}) {
+  const canonical = normalizePrompt(prompt);
+  if (!isProceduralElaborationRequest(canonical)) return null;
+  const dialogue = priorProceduralHowToDialogue(history);
+  if (!dialogue) return null;
+  const procedure = await tryProceduralHowTo(dialogue.user, language, preferences);
+  if (!procedure) return null;
+  // Front-load the follow-up evidence so the rebind is visible in the trace,
+  // matching the log.append order on the Rust side.
+  procedure.evidence = [
+    `procedural_how_to:followup:${canonical}`,
+    `procedural_how_to:followup_task:${dialogue.task.task}`,
+    ...procedure.evidence,
+  ];
+  return procedure;
 }
 
 function stripHtml(value) {
@@ -33425,31 +36485,37 @@ function githubCommitDate(commits) {
   );
 }
 
-async function tryGithubRepositoryInfo(repo, language) {
+async function tryGithubRepositoryInfo(repo, language, preferences = {}) {
   const diagnostics = [];
   const errors = [];
   let repoData = null;
   let commits = null;
   let readme = null;
 
-  try {
-    repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
-  } catch (error) {
-    errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    commits = await fetchGithubJson(
-      githubApiRepositoryUrl(repo, "/commits?per_page=1"),
-      "commits",
-      diagnostics,
-    );
-  } catch (error) {
-    errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
-  } catch (error) {
-    errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+  // Issue #444: honor the GitHub opt-out. When disabled we skip every live
+  // api.github.com fetch and report that the trusted service was turned off in
+  // settings instead of contacting it.
+  const githubEnabled = externalServiceEnabled(preferences, "externalServiceGithub");
+  if (githubEnabled) {
+    try {
+      repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
+    } catch (error) {
+      errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      commits = await fetchGithubJson(
+        githubApiRepositoryUrl(repo, "/commits?per_page=1"),
+        "commits",
+        diagnostics,
+      );
+    } catch (error) {
+      errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
+    } catch (error) {
+      errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   const slug = repositorySlug(repo);
@@ -33467,15 +36533,19 @@ async function tryGithubRepositoryInfo(repo, language) {
   if (errors.length > 0) {
     payload.errors = errors;
   }
+  if (!githubEnabled) {
+    payload.note = "GitHub is disabled in settings; no live data was fetched.";
+  }
   const content = `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
   return {
     intent: "github_repo_info",
     content,
-    confidence: errors.length === 0 ? 0.92 : 0.55,
+    confidence: !githubEnabled ? 0.4 : errors.length === 0 ? 0.92 : 0.55,
     evidence: [
       `github_repo_info:repository:${slug}`,
-      `source:${repo.url}`,
-      "source:https://api.github.com",
+      ...(githubEnabled
+        ? [`source:${repo.url}`, "source:https://api.github.com"]
+        : ["github_repo_info:service_disabled:github"]),
       `language:${language}`,
       ...(errors.length > 0 ? errors.map((error) => `github_repo_info:error:${error}`) : []),
     ],
@@ -33994,6 +37064,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     const githubRepoInfo = await tryGithubRepositoryInfo(
       githubRepoInfoRequest,
       language,
+      preferences,
     );
     events.push(`handler:${githubRepoInfo.intent}`);
     steps.push({
@@ -34040,6 +37111,23 @@ async function solve(prompt, history, prefs, userContext = {}) {
       confidence: 1.0,
       evidence: [
         "rule:greeting",
+        `language:${language}`,
+        `variation:${randomize ? "random" : "canonical"}`,
+        `temperature:${temperature.toFixed(2)}`,
+      ],
+    }, formalizationContext);
+  }
+  if (isAssistantFreeTimePrompt(normalized, prompt)) {
+    events.push("rule:assistant_free_time");
+    steps.push({ step: "match_rule", detail: "assistant_free_time" });
+    const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
+    const randomize = preferences.greetingVariations !== false && temperature > 0;
+    return finalize(events, steps, toolCalls, {
+      intent: "assistant_free_time",
+      content: answerFor("assistant_free_time", language, { randomize: randomize }),
+      confidence: 1.0,
+      evidence: [
+        "rule:assistant_free_time",
         `language:${language}`,
         `variation:${randomize ? "random" : "canonical"}`,
         `temperature:${temperature.toFixed(2)}`,
@@ -34175,7 +37263,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
           : null;
       },
     },
-    { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized) },
+    { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized, history) },
     // Issue #395: a concrete "<operation> these numbers in <language>, give me
     // the code and the result" must produce generated code plus the
     // deterministically-computed result. It runs before program synthesis and
@@ -34190,6 +37278,11 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    // Issue #423: README/install-guide to shell/PowerShell conversion is a
+    // narrower script request than generic program synthesis. Keep it ahead of
+    // writeProgram so "convert this README to a script" preserves the source
+    // instructions instead of producing an unrelated starter script.
+    { name: "tryInstallationConversion", run: () => tryInstallationConversion(prompt, normalized) },
     {
       name: "tryWriteProgramConcrete",
       run: () => {
@@ -34338,7 +37431,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
   }
 
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
-  const procedure = await tryProceduralHowTo(prompt, language);
+  const procedure = await tryProceduralHowTo(prompt, language, preferences);
   if (procedure) {
     events.push(`handler:${procedure.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
@@ -34357,6 +37450,34 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     });
     return finalize(events, steps, toolCalls, procedure, formalizationContext);
+  }
+
+  // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
+  // give me specific instructions?") carries no "how to" lead-in of its own, so
+  // tryProceduralHowTo above returned null. Rebind it to the procedure recovered
+  // from the prior turn instead of letting it fall to web search / the unknown
+  // opener. Mirrors the procedural_how_to_followup slot in the Rust dispatch
+  // table, which sits right after procedural_how_to.
+  steps.push({ step: "invoke_tool", detail: "procedural_how_to_followup" });
+  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history, preferences);
+  if (procedureFollowup) {
+    events.push(`handler:${procedureFollowup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProceduralHowToFollowup" });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt,
+        language,
+        query: procedureFollowup.query || "",
+        wikihowCandidate: procedureFollowup.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: procedureFollowup.intent,
+        confidence: procedureFollowup.confidence,
+        formalizedObject: procedureFollowup.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
