@@ -451,6 +451,139 @@ fn desktop_release_lets_electron_builder_read_package_json_build_key() {
 }
 
 #[test]
+fn desktop_linux_deb_package_metadata_is_configured() {
+    // Desktop Release 27558290907 reached the Linux matrix but electron-builder
+    // stopped before producing .deb assets because the app manifest lacked the
+    // homepage, author email, and Linux maintainer fields required for Debian
+    // package metadata. Keep those fields explicit so Linux assets do not
+    // disappear from future releases.
+    let package_json = fs::read_to_string(format!(
+        "{}/desktop/package.json",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+    let package: serde_json::Value =
+        serde_json::from_str(&package_json).expect("desktop/package.json should be valid JSON");
+
+    let homepage = package
+        .get("homepage")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        homepage.starts_with("https://"),
+        "desktop/package.json should expose an https homepage for electron-builder Linux metadata"
+    );
+
+    let author_email = package
+        .get("author")
+        .and_then(|author| author.get("email"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        author_email.contains('@'),
+        "desktop/package.json should include author.email for electron-builder Linux metadata"
+    );
+
+    let maintainer = package
+        .get("build")
+        .and_then(|build| build.get("linux"))
+        .and_then(|linux| linux.get("maintainer"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        maintainer.contains('<') && maintainer.contains('@') && maintainer.contains('>'),
+        "desktop/package.json build.linux.maintainer should be an RFC-822 style maintainer for .deb output"
+    );
+}
+
+#[test]
+fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
+    // Electron Builder renders Linux x64 artifacts with target-specific aliases:
+    // AppImage uses x86_64 and Debian uses amd64. The download page, checksum
+    // tests, and release resolver all use the cross-platform x64 contract, so
+    // the release workflow normalizes the files before checksums and upload.
+    match Command::new("node").arg("--version").output() {
+        Ok(output) if output.status.success() => {}
+        _ => {
+            eprintln!("skipping: node not available");
+            return;
+        }
+    }
+
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let script = format!("{manifest_dir}/desktop/scripts/normalize-artifacts.mjs");
+    let tmp = std::env::temp_dir().join(format!(
+        "formal-ai-desktop-artifacts-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |duration| duration.as_nanos())
+    ));
+    fs::create_dir_all(&tmp).expect("create scratch release dir");
+
+    let source_names = [
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-amd64-9.9.9.deb",
+        "formal-ai-desktop-linux-x64-9.9.9.tar.gz",
+        "formal-ai-desktop-linux-arm64-9.9.9.deb",
+    ];
+    for name in source_names {
+        fs::write(tmp.join(name), b"artifact").expect("seed scratch release artifact");
+    }
+
+    let output = Command::new("node")
+        .arg(&script)
+        .arg(&tmp)
+        .output()
+        .expect("run desktop artifact normalizer");
+    let status_ok = output.status.success();
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+
+    let expected_names = [
+        "formal-ai-desktop-linux-x64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-x64-9.9.9.deb",
+        "formal-ai-desktop-linux-x64-9.9.9.tar.gz",
+        "formal-ai-desktop-linux-arm64-9.9.9.deb",
+    ];
+    let missing = expected_names
+        .iter()
+        .filter(|name| !tmp.join(name).exists())
+        .copied()
+        .collect::<Vec<_>>();
+    let stale = [
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-amd64-9.9.9.deb",
+    ]
+    .iter()
+    .filter(|name| tmp.join(name).exists())
+    .copied()
+    .collect::<Vec<_>>();
+    let _ = fs::remove_dir_all(&tmp);
+
+    assert!(
+        status_ok,
+        "normalizer exited with {status:?}\nstdout: {stdout}\nstderr: {stderr}",
+        status = output.status
+    );
+    assert!(
+        missing.is_empty(),
+        "normalizer should create every download-contract artifact, missing {missing:?}\nstdout: {stdout}\nstderr: {stderr}"
+    );
+    assert!(
+        stale.is_empty(),
+        "normalizer should remove Electron Builder alias names, still present {stale:?}\nstdout: {stdout}\nstderr: {stderr}"
+    );
+    assert!(
+        stdout.contains("x86_64") && stdout.contains("amd64") && stdout.contains("x64"),
+        "normalizer should log the Linux x64 alias rewrites, got stdout:\n{stdout}"
+    );
+}
+
+#[test]
 fn release_scripts_check_configured_release_artifacts() {
     let release_check = fs::read_to_string(format!(
         "{}/scripts/check-release-needed.rs",

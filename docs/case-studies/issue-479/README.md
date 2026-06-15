@@ -2,9 +2,10 @@
 
 > **Issue:** <https://github.com/link-assistant/formal-ai/issues/479> (`bug`, opened 2026-06-14T17:15:58Z by konard)
 > **First attempt:** <https://github.com/link-assistant/formal-ai/pull/480> — **MERGED**, but the fix stayed **dormant** (desktop apps remained unavailable) and its macOS screenshots were synthetic. The maintainer rejected it (issue comment, 2026-06-15).
-> **This pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completes the fix.
+> **Completion pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completed the first fix.
+> **Linux follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/487> (branch `issue-479-ff9c709d56dc`) — fixes the remaining Linux asset gap reported after PR #486.
 > **Case study date:** 2026-06-14, revised 2026-06-15 after the maintainer's "redo analysis" feedback.
-> **Status:** **All requirements addressed in PR #486.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. The site structure (`/`, `/app`, `/docs/api`, `/docs/*`, `/download`) is verified.
+> **Status:** **Original requirements addressed in PR #486; Linux follow-up addressed in PR #487.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, and partial-release rebuild guard needed after `v0.204.0` uploaded macOS/Windows assets but still missed Linux assets.
 > **Type:** CI/CD bug fix + documentation correction + cross-repo audit + this case study.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/); the full CI/CD template comparison is in [`template-comparison/REPORT.md`](template-comparison/REPORT.md).
@@ -12,11 +13,16 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | Artifact | Path |
 |---|---|
 | The issue, as filed | [`raw-data/issue-479.json`](raw-data/issue-479.json) |
-| The maintainer's rejection comment (the "redo analysis" feedback) | [`raw-data/issue-479-comments.json`](raw-data/issue-479-comments.json) |
+| The maintainer's rejection comments, including the later Linux follow-up | [`raw-data/issue-479-comments.json`](raw-data/issue-479-comments.json) |
 | The maintainer's screenshot — `/download` still broken at **v0.203.0** (the proof PR #480 was dormant) | [`raw-data/maintainer-rejection-screenshot.png`](raw-data/maintainer-rejection-screenshot.png) |
 | The originally-reported screenshot (the `/download` page in the bug state) | [`raw-data/issue-screenshot.png`](raw-data/issue-screenshot.png) |
 | Smoking-gun root-cause writeup (preserves the verbatim resolve-step log) | [`raw-data/root-cause-evidence.md`](raw-data/root-cause-evidence.md) |
 | Desktop Release run history (every run `skipped`) | [`raw-data/desktop-release-runs.json`](raw-data/desktop-release-runs.json) |
+| Latest Desktop Release run history for the Linux follow-up (`27558290907` failed, then `27563439476` skipped) | [`raw-data/desktop-release-runs-latest-20260615.json`](raw-data/desktop-release-runs-latest-20260615.json) |
+| Latest release asset inventory (`v0.204.0`: 10 assets total, 0 Linux assets) | [`raw-data/latest-release-v0.204.0-assets.json`](raw-data/latest-release-v0.204.0-assets.json) |
+| Failed Desktop Release log showing the Linux `.deb` metadata error | [`ci-logs/desktop-release-27558290907.log`](ci-logs/desktop-release-27558290907.log) |
+| PR #487 metadata and CI run capture | [`raw-data/pr-487.json`](raw-data/pr-487.json), [`raw-data/pr-487-ci-runs.json`](raw-data/pr-487-ci-runs.json) |
+| PR #487 Linux artifact-name normalizer | [`../../../desktop/scripts/normalize-artifacts.mjs`](../../../desktop/scripts/normalize-artifacts.mjs) |
 | Every release is asset-less (`desktop_assets: 0`) | [`raw-data/releases-asset-evidence.json`](raw-data/releases-asset-evidence.json) |
 | The first attempt (merged, incomplete) | [`raw-data/pr-480.json`](raw-data/pr-480.json) |
 | The resolve logic (head-SHA fix; merged in PR #480, now actually reached) | [`../../../scripts/desktop-release-resolve.sh`](../../../scripts/desktop-release-resolve.sh) |
@@ -30,6 +36,40 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | The best-practices reference (vk-bot-desktop snapshot, incl. the real screenshots) | [`raw-data/vk-bot-desktop-current/`](raw-data/vk-bot-desktop-current/) |
 
 ---
+
+## 0. PR #487 Linux Follow-up
+
+After PR #486 landed, the maintainer added a second 2026-06-15 issue comment:
+"After changes are applied linux app is not available still." Fresh release
+evidence confirms that state: the latest release, `v0.204.0`, has 10 uploaded
+assets, all provenance, macOS, or Windows files, and **zero**
+`formal-ai-desktop-linux-*` assets
+([`raw-data/latest-release-v0.204.0-assets.json`](raw-data/latest-release-v0.204.0-assets.json)).
+
+The failed Desktop Release run `27558290907` reached the Linux matrix, but both
+Linux jobs failed while building Debian output. The electron-builder error is
+specific: `desktop/package.json` lacked the project homepage, author email, and
+Linux `.deb` maintainer metadata (`ci-logs/desktop-release-27558290907.log`,
+lines 7390-7394). The same run still uploaded the successful macOS and Windows
+assets plus checksums, leaving `v0.204.0` partial.
+
+Local reproduction after adding the metadata completed the Linux build and
+exposed a naming mismatch that would still leave `/download` unable to resolve
+the x64 Linux files: Electron Builder emits x64 AppImage as
+`formal-ai-desktop-linux-x86_64-<version>.AppImage` and x64 Debian as
+`formal-ai-desktop-linux-amd64-<version>.deb`, while the site, checksum tests,
+and release resolver use `formal-ai-desktop-linux-x64-<version>.*`. PR #487
+adds a post-package normalizer so checksums and release uploads use the same
+`x64` contract across Linux `AppImage`, `.deb`, and `.tar.gz`.
+
+The next Desktop Release run, `27563439476` at 2026-06-15T17:15:21Z, was
+`skipped`. That exposed a second follow-up bug: the old automatic idempotency
+guard treated "some desktop assets exist" as complete, so macOS/Windows assets
+could permanently mask missing Linux assets. PR #487 changes the guard to
+enumerate the full expected desktop asset set (14 files: macOS 4, Windows 4,
+Linux 6) and skip only when every required filename is already on the release.
+A partial release now rebuilds, which lets the next Desktop Release self-heal
+missing Linux `AppImage`, `.deb`, and `.tar.gz` artifacts.
 
 ## 1. Executive Summary
 

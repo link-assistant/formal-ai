@@ -6,6 +6,8 @@
 #   formal-ai-desktop-windows-installer-<arch>-<version>.exe
 #   formal-ai-desktop-windows-portable-<arch>-<version>.exe
 #   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
+#   (Electron Builder emits x86_64/amd64 Linux x64 aliases; the build job
+#    normalizes them to x64 before checksums/uploads.)
 # plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
 # provenance attestations (verifiable with `gh attestation verify`).
 #
@@ -151,6 +153,10 @@ jobs:
           # page guidance about the first-launch Gatekeeper prompt on macOS.
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+
+      - name: Normalize desktop artifact names
+        working-directory: desktop
+        run: node scripts/normalize-artifacts.mjs
 
       - name: Collect artifacts and checksums
         id: collect
