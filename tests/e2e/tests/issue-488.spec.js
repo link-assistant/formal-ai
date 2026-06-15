@@ -1,6 +1,57 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
+const LANGUAGE_CASES = [
+  {
+    language: 'en',
+    name: 'English',
+    thinking: 'Thinking',
+    expand: 'Expand',
+    collapse: 'Collapse',
+    currentLabel: 'Current thinking step',
+    contextPrefix: 'Applied available context:',
+    firstStep: 'Received the user request.',
+    thinkingDetailLabel: 'Thinking detail',
+    thinkingDetailOptions: ['Brief', 'Standard', 'Detailed'],
+  },
+  {
+    language: 'ru',
+    name: 'Russian',
+    thinking: 'Мышление',
+    expand: 'Развернуть',
+    collapse: 'Свернуть',
+    currentLabel: 'Текущий шаг мышления',
+    contextPrefix: 'Применен доступный контекст:',
+    firstStep: 'Получен запрос пользователя.',
+    thinkingDetailLabel: 'Детализация мышления',
+    thinkingDetailOptions: ['Кратко', 'Стандартно', 'Подробно'],
+  },
+  {
+    language: 'hi',
+    name: 'Hindi',
+    thinking: 'सोच',
+    expand: 'फैलाएं',
+    collapse: 'समेटें',
+    currentLabel: 'मौजूदा सोच चरण',
+    contextPrefix: 'उपलब्ध context लागू किया:',
+    firstStep: 'उपयोगकर्ता का अनुरोध मिला.',
+    thinkingDetailLabel: 'सोच का विवरण',
+    thinkingDetailOptions: ['संक्षिप्त', 'मानक', 'विस्तृत'],
+  },
+  {
+    language: 'zh',
+    name: 'Chinese',
+    thinking: '思考',
+    expand: '展开',
+    collapse: '折叠',
+    currentLabel: '当前思考步骤',
+    contextPrefix: '已应用可用上下文',
+    firstStep: '已接收用户请求。',
+    thinkingDetailLabel: '思考详细程度',
+    thinkingDetailOptions: ['简略', '标准', '详细'],
+  },
+];
+
 async function bootManualChat(page) {
   await page.addInitScript(() => {
     try {
@@ -89,5 +140,52 @@ test.describe('Issue #488 - visible thinking preview', () => {
     await expect(
       page.locator('[data-testid="settings-reset-thinkingDetailLevel"]'),
     ).toBeVisible();
+  });
+
+  test('localizes thinking preview and detail settings across supported languages', async ({
+    page,
+  }) => {
+    await bootManualChat(page);
+
+    for (const locale of LANGUAGE_CASES) {
+      await page
+        .locator('[data-testid="setting-ui-language"]')
+        .selectOption(locale.language);
+      await expect(page.locator('html')).toHaveAttribute(
+        'lang',
+        locale.language,
+      );
+
+      const detailSelect = page.locator(
+        '[data-testid="setting-thinking-detail"]',
+      );
+      await expect(
+        detailSelect.locator('xpath=ancestor::label[1]'),
+      ).toContainText(locale.thinkingDetailLabel);
+      await expect(detailSelect.locator('option')).toHaveText(
+        locale.thinkingDetailOptions,
+      );
+
+      const assistantMessage = await sendPrompt(page, 'Hi');
+      const preview = assistantMessage.locator(
+        '[data-testid="thinking-preview"]',
+      );
+      await expect(preview).toHaveAttribute('aria-label', locale.thinking);
+
+      const toggle = preview.locator('[data-testid="thinking-preview-toggle"]');
+      await expect(toggle).toHaveText(locale.expand);
+      await expect(
+        preview.locator('[data-testid="thinking-preview-current"]'),
+      ).toHaveAttribute('aria-label', locale.currentLabel);
+      await expect(
+        preview.locator('[data-testid="thinking-preview-current"]'),
+      ).toContainText(locale.contextPrefix);
+
+      await toggle.click();
+      await expect(toggle).toHaveText(locale.collapse);
+      await expect(
+        preview.locator('[data-testid="thinking-expanded-list"]'),
+      ).toContainText(locale.firstStep);
+    }
   });
 });
