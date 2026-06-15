@@ -706,7 +706,8 @@ fn issue_479_landing_surfaces_source_code_as_a_big_button() {
     );
 
     // The new action eyebrow is translated for every supported locale.
-    for eyebrow in ["Open source", "Открытый код", "开源", "ओपन सोर्स"] {
+    for eyebrow in ["Open source", "Открытый код", "开源", "ओपन सोर्स"]
+    {
         assert!(
             chrome.contains(eyebrow),
             "site-chrome.js LABELS should define the sourceEyebrow translation `{eyebrow}`"
