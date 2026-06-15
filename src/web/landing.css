@@ -155,7 +155,7 @@ a {
 .locale-switch button:focus-visible,
 .theme-switch button:focus-visible,
 .nav-card:focus-visible,
-.support-links a:focus-visible {
+.source-cta:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
@@ -195,6 +195,63 @@ h1 {
   color: var(--muted);
   font-size: 1.18rem;
   line-height: 1.55;
+}
+
+/* The big "Source on GitHub" call-to-action (issue #479: the maintainer asked
+   that the source code on the landing be a big button, not a small footer
+   link). It mirrors the /download page's .primary-download button -- accent
+   fill, generous padding, a small action eyebrow above a strong label -- with a
+   monospace code glyph so it reads unmistakably as "view the source code". */
+.source-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  justify-self: start;
+  min-height: 64px;
+  margin-top: 4px;
+  border-radius: 10px;
+  padding: 14px 24px;
+  color: var(--on-accent);
+  background: var(--accent);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.source-cta:hover {
+  background: var(--accent-strong);
+}
+
+.source-cta:active {
+  transform: translateY(1px);
+}
+
+.source-cta-icon {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.source-cta-text {
+  display: grid;
+  gap: 3px;
+}
+
+.source-cta-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.source-cta-label {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 /* --- Navigation cards (the chooser) --------------------------------------- */
@@ -268,24 +325,12 @@ h1 {
   font-size: 0.92rem;
 }
 
-.support-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-}
-
-.support-links a {
-  color: var(--accent-strong);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.support-links a:hover {
-  text-decoration: underline;
-}
-
 @media (max-width: 640px) {
   h1 {
     font-size: 2.6rem;
+  }
+
+  .source-cta {
+    width: 100%;
   }
 }
