@@ -42,12 +42,52 @@ use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ThinkingStep {
+    pub id: String,
+    pub order: u32,
+    pub step: String,
+    pub detail: String,
+    pub level: String,
+    pub source_event: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parent_id: Option<String>,
+}
+
+impl ThinkingStep {
+    #[must_use]
+    pub fn new(
+        order: u32,
+        step: impl Into<String>,
+        detail: impl Into<String>,
+        level: impl Into<String>,
+        source_event: impl Into<String>,
+    ) -> Self {
+        let step = step.into();
+        let detail = detail.into();
+        let level = level.into();
+        let source_event = source_event.into();
+        let seed = format!("{order}:{step}:{detail}:{level}:{source_event}");
+        Self {
+            id: stable_id("thinking_step", &seed),
+            order,
+            step,
+            detail,
+            level,
+            source_event,
+            parent_id: None,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SymbolicAnswer {
     pub intent: String,
     pub answer: String,
     pub confidence: f32,
     pub evidence_links: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
 }
 
@@ -687,6 +727,21 @@ pub(crate) fn answer_links_notation(
         })
         .collect::<Vec<_>>()
         .join("; ");
+    let thinking_steps = log
+        .thinking_steps()
+        .iter()
+        .map(|step| {
+            format!(
+                "step_{} {} {} {} {}",
+                step.order,
+                sanitize_lino_value(&step.step),
+                sanitize_lino_value(&step.level),
+                sanitize_lino_value(&step.source_event),
+                sanitize_lino_value(&step.detail)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("; ");
     format_lino_record(
         &format!("answer_{}", stable_id("prompt", prompt)),
         &[
@@ -695,6 +750,7 @@ pub(crate) fn answer_links_notation(
             ("answer", String::from(answer)),
             ("trace", String::from(trace_id)),
             ("steps", steps),
+            ("thinking_steps", thinking_steps),
         ],
     )
 }

@@ -4090,6 +4090,25 @@ async function syncDesktopMemory(bridge, lino) {
   }
 }
 
+function normalizeApiThinkingStep(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const step = String(entry.step || entry.kind || entry.source_event || "fallback").trim();
+  const detail = String(entry.detail || entry.payload || entry.source_event || "").trim();
+  if (!step && !detail) return null;
+  const normalized = {
+    step: step || "fallback",
+    detail,
+  };
+  if (entry.id !== undefined) normalized.id = String(entry.id);
+  if (entry.order !== undefined) normalized.order = entry.order;
+  if (entry.level !== undefined) normalized.level = String(entry.level);
+  if (entry.source_event !== undefined) normalized.sourceEvent = String(entry.source_event);
+  if (entry.parent_id !== undefined && entry.parent_id !== null) {
+    normalized.parentId = String(entry.parent_id);
+  }
+  return normalized;
+}
+
 async function requestDesktopAnswer(text, history, desktopStatus, preferences = {}) {
   const apiBase = desktopStatus && desktopStatus.apiBase;
   if (!apiBase) {
@@ -4113,13 +4132,23 @@ async function requestDesktopAnswer(text, history, desktopStatus, preferences = 
   }
 
   const payload = await response.json();
-  const answerText =
+  const message =
     payload &&
     payload.choices &&
     payload.choices[0] &&
     payload.choices[0].message
-      ? String(payload.choices[0].message.content || "")
-      : "";
+      ? payload.choices[0].message
+      : {};
+  const answerText =
+    message && message.content !== undefined ? String(message.content || "") : "";
+  const apiThinkingSteps = Array.isArray(message.thinking_steps)
+    ? message.thinking_steps.map(normalizeApiThinkingStep).filter(Boolean)
+    : [];
+  const fallbackDesktopSteps = [
+    { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
+    { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
+    { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
+  ];
 
   return {
     intent: "desktop_http_chat",
@@ -4130,11 +4159,7 @@ async function requestDesktopAnswer(text, history, desktopStatus, preferences = 
       "api:/v1/chat/completions",
       desktopStatus.graphUrl ? "network:/v1/graph" : "",
     ].filter(Boolean),
-    steps: [
-      { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
-      { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
-      { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
-    ],
+    steps: apiThinkingSteps.length > 0 ? apiThinkingSteps : fallbackDesktopSteps,
     diagnostics: {
       providers: [
         {

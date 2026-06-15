@@ -8,7 +8,7 @@
 //! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
 //! uses so identifiers stay stable across surfaces.
 
-use crate::engine::stable_id;
+use crate::engine::{stable_id, ThinkingStep};
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 
@@ -92,6 +92,16 @@ impl EventLog {
         buffer
     }
 
+    /// Project raw solver events into user-readable, ordered thinking steps.
+    #[must_use]
+    pub fn thinking_steps(&self) -> Vec<ThinkingStep> {
+        self.events
+            .iter()
+            .enumerate()
+            .map(|(index, event)| thinking_step_from_event(index, event))
+            .collect()
+    }
+
     /// Replay every in-process event into a durable link store projection.
     ///
     /// This is additive: the original event log remains in-process, while
@@ -111,6 +121,57 @@ impl EventLog {
             })?;
         }
         Ok(self.events.len())
+    }
+}
+
+fn thinking_step_from_event(index: usize, event: &Event) -> ThinkingStep {
+    let (step, level) = thinking_step_projection(event.kind);
+    let detail = if event.payload.trim().is_empty() {
+        event.kind.to_owned()
+    } else {
+        event.payload.clone()
+    };
+    let order = u32::try_from(index).unwrap_or(u32::MAX);
+    ThinkingStep::new(order, step, detail, level, event.kind)
+}
+
+fn thinking_step_projection(kind: &str) -> (&'static str, &'static str) {
+    match kind {
+        "impulse" => ("impulse", "high"),
+        "language" | "language_from" => ("detect_language", "standard"),
+        "language_to" => ("resolve_response_language", "standard"),
+        "intent" | "specialized_handler" => ("dispatch_handler", "standard"),
+        "candidate" => ("route_attempt", "detailed"),
+        "validation" => ("rule_verification", "standard"),
+        "response" => ("deformalize", "high"),
+        "coreference" | "program_coreference" => ("coreference_binding", "standard"),
+        "modifier_detection" | "program_modifiers" => ("modifier_detection", "standard"),
+        "rule_construction" => ("rule_construction", "standard"),
+        "program_plan" | "program_parameters" => ("program_plan", "standard"),
+        "tool_call" | "tool_result" => ("invoke_tool", "standard"),
+        "search:local" | "cache_hit" | "concept_lookup:request" | "concept_lookup:hit" => {
+            ("scan_memory", "standard")
+        }
+        "prior_turn:user" | "prior_turn:assistant" | "user_context" => ("user_context", "detailed"),
+        "trace:simplification" | "trace" => ("fallback", "detailed"),
+        _ if kind.starts_with("formalization") || kind.starts_with("intent_formalization") => {
+            ("formalize", "standard")
+        }
+        _ if kind.starts_with("tool_") => ("invoke_tool", "standard"),
+        _ if kind.starts_with("web_search") || kind.starts_with("http_fetch") => {
+            ("http_chat", "standard")
+        }
+        _ if kind.starts_with("agent_mode") || kind == "action_log" => ("agent_plan", "standard"),
+        _ if kind.starts_with("reasoning:")
+            || kind.starts_with("fact_query:")
+            || kind.starts_with("source")
+            || kind.starts_with("wikidata") =>
+        {
+            ("scan_memory", "standard")
+        }
+        _ if kind.starts_with("calculation") => ("rule_verification", "standard"),
+        _ if kind.starts_with("policy:") => ("rule_verification", "standard"),
+        _ => ("fallback", "detailed"),
     }
 }
 

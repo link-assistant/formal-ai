@@ -78,7 +78,9 @@ pub use document_formats::{
     supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
     DOCUMENT_FORMAT_ENGINE,
 };
-pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+pub use engine::{
+    knowledge_links_notation, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,

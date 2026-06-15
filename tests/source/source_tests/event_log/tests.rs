@@ -32,6 +32,27 @@ fn steps_block_lists_events_in_insertion_order() {
 }
 
 #[test]
+fn thinking_steps_project_events_to_canonical_user_steps() {
+    let mut log = EventLog::new();
+    log.append("impulse", "Hi");
+    log.append("language", "en");
+    log.append("intent_formalization:route", "greeting");
+    log.append("validation", "accepted");
+    log.append("response", "response:greeting");
+
+    let steps = log.thinking_steps();
+
+    assert_eq!(steps.len(), 5);
+    assert_eq!(steps[0].order, 0);
+    assert_eq!(steps[0].step, "impulse");
+    assert_eq!(steps[1].step, "detect_language");
+    assert_eq!(steps[2].step, "formalize");
+    assert_eq!(steps[3].step, "rule_verification");
+    assert_eq!(steps[4].step, "deformalize");
+    assert_eq!(steps[4].source_event, "response");
+}
+
+#[test]
 fn event_log_replays_into_link_store() {
     let mut log = EventLog::new();
     log.append("impulse", "hello");

@@ -74,7 +74,9 @@ pub use associative_package::{
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
 };
-pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+pub use engine::{
+    knowledge_links_notation, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
