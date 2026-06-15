@@ -4281,6 +4281,17 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   const markdownRef = useRef(null);
   const [markdownCopied, setMarkdownCopied] = useState(false);
 
+  // React 19 compares `dangerouslySetInnerHTML` by object identity (React 18
+  // compared the inner `__html` string). A fresh `markdownHtml(...)` object on
+  // every render would therefore make React re-assign `innerHTML` each pass,
+  // wiping the `.code-block` wrappers that `enhanceCodeBlocks` grafts in below.
+  // Memoising by `message.content` keeps the object stable while the text is
+  // unchanged, so the out-of-band enhancements survive unrelated re-renders.
+  const markdownContent = useMemo(
+    () => markdownHtml(message.content),
+    [message.content],
+  );
+
   useEffect(() => {
     if (!iframeFullscreen) {
       return undefined;
@@ -4352,7 +4363,7 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
       h("div", {
         ref: markdownRef,
         className: "markdown-body",
-        dangerouslySetInnerHTML: markdownHtml(message.content),
+        dangerouslySetInnerHTML: markdownContent,
       }),
       message.iframeUrl
         ? h(
