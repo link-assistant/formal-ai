@@ -1,0 +1,199 @@
+﻿2026-06-15T19:56:11.7877315Z Current runner version: '2.335.1'
+2026-06-15T19:56:11.7903310Z ##[group]Runner Image Provisioner
+2026-06-15T19:56:11.7904266Z Hosted Compute Agent
+2026-06-15T19:56:11.7904946Z Version: 20260527.539
+2026-06-15T19:56:11.7905601Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+2026-06-15T19:56:11.7906417Z Build Date: 2026-05-27T21:39:57Z
+2026-06-15T19:56:11.7907376Z Worker ID: {495db05d-21e5-4c1c-97ba-fe9589369d3d}
+2026-06-15T19:56:11.7908116Z Azure Region: westus3
+2026-06-15T19:56:11.7908826Z ##[endgroup]
+2026-06-15T19:56:11.7910294Z ##[group]Operating System
+2026-06-15T19:56:11.7911054Z Ubuntu
+2026-06-15T19:56:11.7911597Z 24.04.4
+2026-06-15T19:56:11.7912100Z LTS
+2026-06-15T19:56:11.7912760Z ##[endgroup]
+2026-06-15T19:56:11.7913324Z ##[group]Runner Image
+2026-06-15T19:56:11.7913978Z Image: ubuntu-24.04
+2026-06-15T19:56:11.7914577Z Version: 20260607.184.1
+2026-06-15T19:56:11.7915894Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260607.184/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-15T19:56:11.7917903Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260607.184
+2026-06-15T19:56:11.7918929Z ##[endgroup]
+2026-06-15T19:56:11.7920165Z ##[group]GITHUB_TOKEN Permissions
+2026-06-15T19:56:11.7922160Z Attestations: write
+2026-06-15T19:56:11.7922867Z Contents: write
+2026-06-15T19:56:11.7923447Z Metadata: read
+2026-06-15T19:56:11.7924065Z ##[endgroup]
+2026-06-15T19:56:11.7926455Z Secret source: Actions
+2026-06-15T19:56:11.7927742Z Prepare workflow directory
+2026-06-15T19:56:11.8318252Z Prepare all required actions
+2026-06-15T19:56:11.8356860Z Getting action download info
+2026-06-15T19:56:12.2336232Z Download action repository 'actions/checkout@v6' (SHA:df4cb1c069e1874edd31b4311f1884172cec0e10)
+2026-06-15T19:56:12.8929288Z Complete job name: Resolve target release
+2026-06-15T19:56:12.9694713Z ##[group]Run actions/checkout@v6
+2026-06-15T19:56:12.9695677Z with:
+2026-06-15T19:56:12.9696202Z   repository: link-assistant/formal-ai
+2026-06-15T19:56:12.9701112Z   token: ***
+2026-06-15T19:56:12.9701632Z   ssh-strict: true
+2026-06-15T19:56:12.9702123Z   ssh-user: git
+2026-06-15T19:56:12.9702615Z   persist-credentials: true
+2026-06-15T19:56:12.9703152Z   clean: true
+2026-06-15T19:56:12.9703636Z   sparse-checkout-cone-mode: true
+2026-06-15T19:56:12.9704208Z   fetch-depth: 1
+2026-06-15T19:56:12.9704689Z   fetch-tags: false
+2026-06-15T19:56:12.9705181Z   show-progress: true
+2026-06-15T19:56:12.9705670Z   lfs: false
+2026-06-15T19:56:12.9706142Z   submodules: false
+2026-06-15T19:56:12.9706795Z   set-safe-directory: true
+2026-06-15T19:56:12.9707792Z ##[endgroup]
+2026-06-15T19:56:13.0685309Z Syncing repository: link-assistant/formal-ai
+2026-06-15T19:56:13.0687782Z ##[group]Getting Git version info
+2026-06-15T19:56:13.0688715Z Working directory is '/home/runner/work/formal-ai/formal-ai'
+2026-06-15T19:56:13.0689874Z [command]/usr/bin/git version
+2026-06-15T19:56:13.0845714Z git version 2.54.0
+2026-06-15T19:56:13.0903088Z ##[endgroup]
+2026-06-15T19:56:13.0917732Z Temporarily overriding HOME='/home/runner/work/_temp/469a3c84-51f6-4630-95a1-240a0e90f2fd' before making global git config changes
+2026-06-15T19:56:13.0920204Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-15T19:56:13.0922586Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-06-15T19:56:13.0975029Z Deleting the contents of '/home/runner/work/formal-ai/formal-ai'
+2026-06-15T19:56:13.0979306Z ##[group]Determining repository object format
+2026-06-15T19:56:13.0981573Z ##[endgroup]
+2026-06-15T19:56:13.0982679Z ##[group]Initializing the repository
+2026-06-15T19:56:13.0987083Z [command]/usr/bin/git init /home/runner/work/formal-ai/formal-ai
+2026-06-15T19:56:13.1108764Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-15T19:56:13.1110438Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-15T19:56:13.1112298Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-15T19:56:13.1113947Z hint: call:
+2026-06-15T19:56:13.1114985Z hint:
+2026-06-15T19:56:13.1116747Z hint: 	git config --global init.defaultBranch <name>
+2026-06-15T19:56:13.1118968Z hint:
+2026-06-15T19:56:13.1121280Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-15T19:56:13.1123619Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-15T19:56:13.1125552Z hint:
+2026-06-15T19:56:13.1126869Z hint: 	git branch -m <name>
+2026-06-15T19:56:13.1127995Z hint:
+2026-06-15T19:56:13.1129470Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-15T19:56:13.1132067Z Initialized empty Git repository in /home/runner/work/formal-ai/formal-ai/.git/
+2026-06-15T19:56:13.1135586Z [command]/usr/bin/git remote add origin https://github.com/link-assistant/formal-ai
+2026-06-15T19:56:13.1177677Z ##[endgroup]
+2026-06-15T19:56:13.1178709Z ##[group]Disabling automatic garbage collection
+2026-06-15T19:56:13.1180769Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-15T19:56:13.1210984Z ##[endgroup]
+2026-06-15T19:56:13.1212198Z ##[group]Setting up auth
+2026-06-15T19:56:13.1213315Z Removing SSH command configuration
+2026-06-15T19:56:13.1218913Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-15T19:56:13.1252624Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-15T19:56:13.1648806Z Removing HTTP extra header
+2026-06-15T19:56:13.1654136Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-15T19:56:13.1687959Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-15T19:56:13.1906239Z Removing includeIf entries pointing to credentials config files
+2026-06-15T19:56:13.1913501Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-15T19:56:13.1943074Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-15T19:56:13.2165107Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-15T19:56:13.2199768Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:13.2229928Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:13.2263482Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:13.2301391Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:13.2327805Z ##[endgroup]
+2026-06-15T19:56:13.2329006Z ##[group]Fetching the repository
+2026-06-15T19:56:13.2336367Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +6012d9d4fcdd0e592bef2cbacb40d121034fc8f9:refs/remotes/origin/main
+2026-06-15T19:56:17.5345724Z From https://github.com/link-assistant/formal-ai
+2026-06-15T19:56:17.5347400Z  * [new ref]         6012d9d4fcdd0e592bef2cbacb40d121034fc8f9 -> origin/main
+2026-06-15T19:56:17.5391892Z [command]/usr/bin/git branch --list --remote origin/main
+2026-06-15T19:56:17.5419467Z   origin/main
+2026-06-15T19:56:17.5427684Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-06-15T19:56:17.5450537Z 6012d9d4fcdd0e592bef2cbacb40d121034fc8f9
+2026-06-15T19:56:17.5454719Z ##[endgroup]
+2026-06-15T19:56:17.5455333Z ##[group]Determining the checkout info
+2026-06-15T19:56:17.5457043Z ##[endgroup]
+2026-06-15T19:56:17.5461501Z [command]/usr/bin/git sparse-checkout disable
+2026-06-15T19:56:17.5507295Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-15T19:56:17.5533715Z ##[group]Checking out the ref
+2026-06-15T19:56:17.5538480Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-15T19:56:18.1370247Z Switched to a new branch 'main'
+2026-06-15T19:56:18.1378638Z branch 'main' set up to track 'origin/main'.
+2026-06-15T19:56:18.1404718Z ##[endgroup]
+2026-06-15T19:56:18.1453544Z [command]/usr/bin/git log -1 --format=%H
+2026-06-15T19:56:18.1480456Z 6012d9d4fcdd0e592bef2cbacb40d121034fc8f9
+2026-06-15T19:56:18.1704901Z ##[group]Run bash scripts/desktop-release-resolve.sh
+2026-06-15T19:56:18.1705381Z [36;1mbash scripts/desktop-release-resolve.sh[0m
+2026-06-15T19:56:18.1906869Z shell: /usr/bin/bash -e {0}
+2026-06-15T19:56:18.1907258Z env:
+2026-06-15T19:56:18.1911829Z   GH_TOKEN: ***
+2026-06-15T19:56:18.1912138Z   EVENT: workflow_run
+2026-06-15T19:56:18.1912441Z   INPUT_TAG:
+2026-06-15T19:56:18.1912709Z   RELEASE_TAG:
+2026-06-15T19:56:18.1913020Z   REPO: link-assistant/formal-ai
+2026-06-15T19:56:18.1913499Z   WORKFLOW_RUN_HEAD_SHA: 43b5cfca1db16556d6edd030166c9fcc8acef0d7
+2026-06-15T19:56:18.1914013Z ##[endgroup]
+2026-06-15T19:56:18.2003877Z ##[group]desktop-release resolve inputs
+2026-06-15T19:56:18.2004739Z [desktop-release-resolve] event                 = workflow_run
+2026-06-15T19:56:18.2005607Z [desktop-release-resolve] input_tag             = <none>
+2026-06-15T19:56:18.2006340Z [desktop-release-resolve] release_tag           = <none>
+2026-06-15T19:56:18.2007580Z [desktop-release-resolve] repo                  = link-assistant/formal-ai
+2026-06-15T19:56:18.2008643Z [desktop-release-resolve] workflow_run_head_sha = 43b5cfca1db16556d6edd030166c9fcc8acef0d7
+2026-06-15T19:56:18.2009815Z ##[endgroup]
+2026-06-15T19:56:18.2010706Z ##[group]Tier 1: exact tag on head SHA 43b5cfca1db16556d6edd030166c9fcc8acef0d7
+2026-06-15T19:56:19.3539288Z [desktop-release-resolve] exact-match tag: <none>
+2026-06-15T19:56:19.3540473Z ##[endgroup]
+2026-06-15T19:56:19.3541138Z ##[group]Tier 2: latest published release (auto-release child commit)
+2026-06-15T19:56:19.9036741Z [desktop-release-resolve] latest release tag: v0.205.0
+2026-06-15T19:56:20.3030335Z [desktop-release-resolve] confirmed: v0.205.0 commit parent is the CI head SHA (auto-release child).
+2026-06-15T19:56:20.3031647Z ##[endgroup]
+2026-06-15T19:56:20.8227123Z [desktop-release-resolve] Resolved release tag: v0.205.0
+2026-06-15T19:56:20.8228958Z ##[group]Idempotency guard: required desktop assets on v0.205.0
+2026-06-15T19:56:21.3464099Z [desktop-release-resolve] release version: 0.205.0
+2026-06-15T19:56:21.3464883Z [desktop-release-resolve] existing desktop assets: 0
+2026-06-15T19:56:21.3465666Z [desktop-release-resolve] required desktop assets: 14
+2026-06-15T19:56:21.3466876Z [desktop-release-resolve] missing required desktop assets (14):
+2026-06-15T19:56:21.3467717Z   formal-ai-desktop-macos-arm64-0.205.0.dmg
+2026-06-15T19:56:21.3468391Z   formal-ai-desktop-macos-arm64-0.205.0.zip
+2026-06-15T19:56:21.3468899Z   formal-ai-desktop-macos-x64-0.205.0.dmg
+2026-06-15T19:56:21.3469388Z   formal-ai-desktop-macos-x64-0.205.0.zip
+2026-06-15T19:56:21.3469919Z   formal-ai-desktop-windows-installer-x64-0.205.0.exe
+2026-06-15T19:56:21.3470544Z   formal-ai-desktop-windows-installer-arm64-0.205.0.exe
+2026-06-15T19:56:21.3471221Z   formal-ai-desktop-windows-portable-x64-0.205.0.exe
+2026-06-15T19:56:21.3471938Z   formal-ai-desktop-windows-portable-arm64-0.205.0.exe
+2026-06-15T19:56:21.3472593Z   formal-ai-desktop-linux-x64-0.205.0.AppImage
+2026-06-15T19:56:21.3473219Z   formal-ai-desktop-linux-arm64-0.205.0.AppImage
+2026-06-15T19:56:21.3473906Z   formal-ai-desktop-linux-x64-0.205.0.deb
+2026-06-15T19:56:21.3474815Z   formal-ai-desktop-linux-arm64-0.205.0.deb
+2026-06-15T19:56:21.3475456Z   formal-ai-desktop-linux-x64-0.205.0.tar.gz
+2026-06-15T19:56:21.3476181Z   formal-ai-desktop-linux-arm64-0.205.0.tar.gz
+2026-06-15T19:56:21.3477996Z ##[endgroup]
+2026-06-15T19:56:21.3478786Z [desktop-release-resolve] result: tag='v0.205.0' should_build='true' resolution='workflow_run-child-of-head'
+2026-06-15T19:56:21.3680844Z Post job cleanup.
+2026-06-15T19:56:21.4508411Z [command]/usr/bin/git version
+2026-06-15T19:56:21.4545613Z git version 2.54.0
+2026-06-15T19:56:21.4586234Z Temporarily overriding HOME='/home/runner/work/_temp/cee0a6dd-ab0f-4e6b-9622-6c7d0c4b372f' before making global git config changes
+2026-06-15T19:56:21.4588017Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-15T19:56:21.4592790Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/formal-ai/formal-ai
+2026-06-15T19:56:21.4623106Z Removing SSH command configuration
+2026-06-15T19:56:21.4629660Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-15T19:56:21.4663797Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-15T19:56:21.4889359Z Removing HTTP extra header
+2026-06-15T19:56:21.4894947Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-15T19:56:21.4926699Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-15T19:56:21.5146307Z Removing includeIf entries pointing to credentials config files
+2026-06-15T19:56:21.5152624Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-15T19:56:21.5211233Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-06-15T19:56:21.5212500Z includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-06-15T19:56:21.5213803Z includeif.gitdir:/github/workspace/.git.path
+2026-06-15T19:56:21.5214812Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-15T19:56:21.5223058Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path
+2026-06-15T19:56:21.5245648Z /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5256438Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git.path /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5289524Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+2026-06-15T19:56:21.5311219Z /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5321496Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5353039Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-06-15T19:56:21.5373347Z /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5381597Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5411333Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-15T19:56:21.5431223Z /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5439945Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config
+2026-06-15T19:56:21.5471498Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-15T19:56:21.5696951Z Removing credentials config '/home/runner/work/_temp/git-credentials-3d456f21-3b38-4125-888c-957578bee66c.config'
+2026-06-15T19:56:21.5829187Z Evaluate and set job outputs
+2026-06-15T19:56:21.5835105Z Set output 'tag'
+2026-06-15T19:56:21.5837093Z Set output 'should_build'
+2026-06-15T19:56:21.5838245Z Cleaning up orphan processes
