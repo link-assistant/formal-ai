@@ -13,7 +13,7 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
         "Dockerfile",
         &dockerfile,
         &[
-            "FROM rust:1.82-slim AS builder",
+            "FROM rust:1.96-slim AS builder",
             "FROM konard/box-dind:2.1.1",
             "FORMAL_AI_IMAGE_VARIANT=dind",
             "FORMAL_AI_START_ISOLATION=docker",
