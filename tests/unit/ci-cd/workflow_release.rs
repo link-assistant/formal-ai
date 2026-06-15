@@ -525,12 +525,65 @@ fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
         "resolve script should keep the defensive exact-SHA tier"
     );
     assert!(
-        resolve_script.contains("formal-ai-desktop-"),
-        "resolve script should count existing desktop assets for the idempotency guard"
+        resolve_script.contains("expected_desktop_assets()"),
+        "resolve script should enumerate the complete required desktop asset set for the idempotency guard"
+    );
+    assert!(
+        resolve_script.contains("missing required desktop assets"),
+        "resolve script should report missing platform assets instead of treating a partial release as complete"
+    );
+    assert!(
+        resolve_script.contains("already-has-all-assets"),
+        "resolve script should skip only when every required desktop asset is present"
     );
     assert!(
         resolve_script.contains("::group::"),
         "resolve script should emit grouped verbose diagnostics for future debugging"
+    );
+}
+
+#[test]
+fn desktop_release_normalizes_linux_artifact_names_before_checksums() {
+    // Electron Builder emits Linux x64 artifacts as x86_64 AppImage and amd64
+    // .deb files. Normalize before checksums/upload so the release assets match
+    // src/web/download and scripts/desktop-release-resolve.sh.
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+    let normalize = workflow_step_block(build, "Normalize desktop artifact names");
+    let normalizer = fs::read_to_string(format!(
+        "{}/desktop/scripts/normalize-artifacts.mjs",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n");
+
+    let package_pos = build
+        .find("- name: Package desktop app")
+        .expect("desktop build should package the app");
+    let normalize_pos = build
+        .find("- name: Normalize desktop artifact names")
+        .expect("desktop build should normalize Electron Builder artifact aliases");
+    let collect_pos = build
+        .find("- name: Collect artifacts and checksums")
+        .expect("desktop build should collect checksums");
+    let upload_pos = build
+        .find("- name: Upload assets to release")
+        .expect("desktop build should upload release assets");
+
+    assert!(
+        package_pos < normalize_pos && normalize_pos < collect_pos && collect_pos < upload_pos,
+        "desktop artifacts must be normalized after packaging but before checksum generation and release upload"
+    );
+    assert!(
+        normalize.contains("working-directory: desktop")
+            && normalize.contains("node scripts/normalize-artifacts.mjs"),
+        "desktop workflow should run the normalizer from the desktop directory"
+    );
+    assert!(
+        normalizer.contains("linux-x86_64")
+            && normalizer.contains("linux-amd64")
+            && normalizer.contains("linux-x64"),
+        "normalizer should map Electron Builder Linux x64 aliases to the x64 download contract"
     );
 }
 

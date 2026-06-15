@@ -34,7 +34,8 @@
 #           confirms the parent relationship and records it in the log, but the
 #           build proceeds regardless so the page self-heals.
 # An idempotency / self-healing guard then skips the build only when the resolved
-# release already carries desktop assets.
+# release already carries every expected desktop asset. A partial release (for
+# example macOS/Windows present but Linux missing) must rebuild so it self-heals.
 #
 # ---------------------------------------------------------------------------
 # Inputs (environment)
@@ -76,6 +77,32 @@ emit_outputs() {
 
 latest_release_tag() {
   gh release view --repo "$REPO" --json tagName --jq .tagName 2>/dev/null || true
+}
+
+release_version_from_tag() {
+  local value="$1"
+  if [[ "$value" =~ (^|-)v?([0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?) ]]; then
+    printf '%s\n' "${BASH_REMATCH[2]}"
+  fi
+}
+
+expected_desktop_assets() {
+  local version="$1"
+  printf '%s\n' \
+    "formal-ai-desktop-macos-arm64-${version}.dmg" \
+    "formal-ai-desktop-macos-arm64-${version}.zip" \
+    "formal-ai-desktop-macos-x64-${version}.dmg" \
+    "formal-ai-desktop-macos-x64-${version}.zip" \
+    "formal-ai-desktop-windows-installer-x64-${version}.exe" \
+    "formal-ai-desktop-windows-installer-arm64-${version}.exe" \
+    "formal-ai-desktop-windows-portable-x64-${version}.exe" \
+    "formal-ai-desktop-windows-portable-arm64-${version}.exe" \
+    "formal-ai-desktop-linux-x64-${version}.AppImage" \
+    "formal-ai-desktop-linux-arm64-${version}.AppImage" \
+    "formal-ai-desktop-linux-x64-${version}.deb" \
+    "formal-ai-desktop-linux-arm64-${version}.deb" \
+    "formal-ai-desktop-linux-x64-${version}.tar.gz" \
+    "formal-ai-desktop-linux-arm64-${version}.tar.gz"
 }
 
 group "desktop-release resolve inputs"
@@ -171,24 +198,45 @@ fi
 log "Resolved release tag: ${tag}"
 
 # Idempotency / self-healing guard for automatic (workflow_run) builds: only
-# build when the resolved release is missing desktop assets. This:
-#   * avoids rebuilding assets that already exist (pipeline re-runs, or runs that
-#     did not cut a new release and fall back to the latest one), and
-#   * self-heals the backlog this bug created -- the first pipeline to complete
-#     after this fix lands sees the asset-less latest release and builds it.
+# skip when the resolved release already has the complete expected desktop
+# artifact set. This:
+#   * avoids rebuilding complete assets that already exist (pipeline re-runs, or
+#     runs that did not cut a new release and fall back to the latest one),
+#   * self-heals the original empty-asset backlog, and
+#   * self-heals partial releases such as v0.204.0, where macOS/Windows assets
+#     existed but Linux artifacts were still missing.
 # Manual `release`/`workflow_dispatch` runs intentionally rebuild (clobber) so a
 # maintainer can force a refresh.
-group "Idempotency guard: existing desktop assets on ${tag}"
-existing="$(gh release view "$tag" --repo "$REPO" --json assets \
-  --jq '[.assets[].name | select(startswith("formal-ai-desktop-"))] | length' 2>/dev/null || echo 0)"
-existing="${existing//[^0-9]/}"
-existing="${existing:-0}"
-log "existing desktop assets: ${existing}"
+group "Idempotency guard: required desktop assets on ${tag}"
+release_version="$(release_version_from_tag "$tag" || true)"
+if [ -z "$release_version" ]; then
+  log "Could not parse semver from ${tag}; leaving build enabled rather than risking a silent skip."
+else
+  existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-"))' 2>/dev/null || true)"
+  existing_count="$(printf '%s\n' "$existing_names" | sed '/^$/d' | wc -l | tr -d ' ')"
+  missing=()
+  while IFS= read -r expected; do
+    if ! printf '%s\n' "$existing_names" | grep -Fxq "$expected"; then
+      missing+=("$expected")
+    fi
+  done < <(expected_desktop_assets "$release_version")
+
+  log "release version: ${release_version}"
+  log "existing desktop assets: ${existing_count}"
+  log "required desktop assets: 14"
+  if [ ${#missing[@]} -eq 0 ]; then
+    log "all required desktop assets are present."
+  else
+    log "missing required desktop assets (${#missing[@]}):"
+    printf '  %s\n' "${missing[@]}"
+  fi
+fi
 endgroup
-if [ "$EVENT" = "workflow_run" ] && [ "$existing" -gt 0 ]; then
+if [ "$EVENT" = "workflow_run" ] && [ -n "${release_version:-}" ] && [ ${#missing[@]} -eq 0 ]; then
   should_build=false
-  resolution="${resolution}+already-has-assets"
-  log "Release ${tag} already has ${existing} desktop assets; skipping automatic build."
+  resolution="${resolution}+already-has-all-assets"
+  log "Release ${tag} already has the complete desktop asset set; skipping automatic build."
 fi
 
 emit_outputs

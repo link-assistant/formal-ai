@@ -451,6 +451,290 @@ fn desktop_release_lets_electron_builder_read_package_json_build_key() {
 }
 
 #[test]
+fn desktop_linux_deb_package_metadata_is_configured() {
+    // Desktop Release 27558290907 reached the Linux matrix but electron-builder
+    // stopped before producing .deb assets because the app manifest lacked the
+    // homepage, author email, and Linux maintainer fields required for Debian
+    // package metadata. Keep those fields explicit so Linux assets do not
+    // disappear from future releases.
+    let package_json = fs::read_to_string(format!(
+        "{}/desktop/package.json",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+    let package: serde_json::Value =
+        serde_json::from_str(&package_json).expect("desktop/package.json should be valid JSON");
+
+    let homepage = package
+        .get("homepage")
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        homepage.starts_with("https://"),
+        "desktop/package.json should expose an https homepage for electron-builder Linux metadata"
+    );
+
+    let author_email = package
+        .get("author")
+        .and_then(|author| author.get("email"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        author_email.contains('@'),
+        "desktop/package.json should include author.email for electron-builder Linux metadata"
+    );
+
+    let maintainer = package
+        .get("build")
+        .and_then(|build| build.get("linux"))
+        .and_then(|linux| linux.get("maintainer"))
+        .and_then(serde_json::Value::as_str)
+        .unwrap_or_default();
+    assert!(
+        maintainer.contains('<') && maintainer.contains('@') && maintainer.contains('>'),
+        "desktop/package.json build.linux.maintainer should be an RFC-822 style maintainer for .deb output"
+    );
+}
+
+#[test]
+fn desktop_macos_package_uses_vk_bot_signing_configuration() {
+    // PR #487 follow-up: the latest macOS DMG can download but opens as
+    // "damaged" on a real Mac. The working vk-bot-desktop release path does not
+    // merely disable certificate discovery; it enables hardened runtime,
+    // entitlements, notarization for Developer ID builds, and an explicit
+    // ad-hoc signing hook for no-Apple-account builds.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let package_json = fs::read_to_string(format!("{manifest_dir}/desktop/package.json")).unwrap();
+    let package: serde_json::Value =
+        serde_json::from_str(&package_json).expect("desktop/package.json should be valid JSON");
+    let mac = package
+        .get("build")
+        .and_then(|build| build.get("mac"))
+        .expect("desktop/package.json should configure build.mac");
+
+    assert_eq!(
+        mac.get("hardenedRuntime")
+            .and_then(serde_json::Value::as_bool),
+        Some(true),
+        "macOS builds should enable hardened runtime like vk-bot-desktop"
+    );
+    assert_eq!(
+        mac.get("notarize").and_then(serde_json::Value::as_bool),
+        Some(true),
+        "macOS Developer ID builds should opt into notarization; CI can disable it only for the ad-hoc fallback"
+    );
+    assert_eq!(
+        mac.get("entitlements").and_then(serde_json::Value::as_str),
+        Some("build/entitlements.mac.plist"),
+        "macOS builds should use the explicit entitlements file copied from the working reference"
+    );
+    assert_eq!(
+        mac.get("entitlementsInherit")
+            .and_then(serde_json::Value::as_str),
+        Some("build/entitlements.mac.plist"),
+        "macOS child processes should inherit the same entitlements"
+    );
+
+    let entitlements = fs::read_to_string(format!(
+        "{manifest_dir}/desktop/build/entitlements.mac.plist"
+    ))
+    .expect("macOS entitlements file should exist");
+    assert!(entitlements.contains("com.apple.security.cs.allow-jit"));
+    assert!(entitlements.contains("com.apple.security.cs.disable-library-validation"));
+
+    let signer = fs::read_to_string(format!("{manifest_dir}/desktop/scripts/adhoc-sign-mac.cjs"))
+        .expect("macOS ad-hoc signing hook should exist");
+    for required in [
+        "require('@electron/osx-sign')",
+        "MACOS_ADHOC_SIGN",
+        "identity: '-'",
+        "identityValidation: false",
+        "timestamp: 'none'",
+    ] {
+        assert!(
+            signer.contains(required),
+            "ad-hoc macOS signer should contain {required}"
+        );
+    }
+}
+
+#[test]
+fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
+    // The PR feedback included a real macOS "damaged and can't be opened"
+    // dialog. Guard against publishing that class of broken artifact by copying
+    // vk-bot-desktop's two-path macOS build: Developer ID + notarization when
+    // secrets are present, explicit ad-hoc signing otherwise, then verify the
+    // produced DMG before upload.
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+
+    let secrets = workflow_step_block(build, "Check macOS signing secrets");
+    for required in [
+        "matrix.ebflag == '--mac'",
+        "MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}",
+        "MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}",
+        "APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}",
+        "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
+        "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
+        "has_secrets=true",
+        "mode=signed",
+        "mode=adhoc",
+    ] {
+        assert!(
+            secrets.contains(required),
+            "macOS secret check should contain {required}"
+        );
+    }
+
+    let signed = workflow_step_block(build, "Package desktop app (macOS signed)");
+    for required in [
+        "steps.mac_secrets.outputs.has_secrets == 'true'",
+        "CSC_LINK: ${{ secrets.MAC_CSC_LINK }}",
+        "CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}",
+        "APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}",
+        "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
+        "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
+        "DEBUG: electron-builder,electron-notarize*",
+        "npx --no-install electron-builder ${{ matrix.ebflag }} --publish never",
+    ] {
+        assert!(
+            signed.contains(required),
+            "signed macOS build should contain {required}"
+        );
+    }
+
+    let adhoc = workflow_step_block(build, "Package desktop app (macOS ad-hoc)");
+    for required in [
+        "steps.mac_secrets.outputs.has_secrets != 'true'",
+        "CSC_IDENTITY_AUTO_DISCOVERY: \"false\"",
+        "MACOS_ADHOC_SIGN: \"1\"",
+        "DEBUG: electron-builder,electron-osx-sign*",
+        "-c.mac.notarize=false",
+        "-c.mac.sign=./scripts/adhoc-sign-mac.cjs",
+    ] {
+        assert!(
+            adhoc.contains(required),
+            "ad-hoc macOS build should contain {required}"
+        );
+    }
+
+    let smoke = workflow_step_block(build, "Smoke test macOS release artifacts");
+    for required in [
+        "matrix.ebflag == '--mac'",
+        "MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}",
+        "hdiutil attach",
+        "formal-ai Desktop.app",
+        "codesign --verify --deep --strict --verbose=2",
+        "spctl --assess --type execute --verbose=4",
+        "xcrun stapler validate",
+        "Signature=adhoc",
+    ] {
+        assert!(
+            smoke.contains(required),
+            "macOS smoke test should contain {required}"
+        );
+    }
+
+    let smoke_index = build
+        .find("- name: Smoke test macOS release artifacts")
+        .expect("macOS smoke step should exist");
+    let upload_index = build
+        .find("- name: Upload assets to release")
+        .expect("release upload step should exist");
+    assert!(
+        smoke_index < upload_index,
+        "macOS artifacts should be smoke-tested before they are uploaded to the release"
+    );
+}
+
+#[test]
+fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
+    // Electron Builder renders Linux x64 artifacts with target-specific aliases:
+    // AppImage uses x86_64 and Debian uses amd64. The download page, checksum
+    // tests, and release resolver all use the cross-platform x64 contract, so
+    // the release workflow normalizes the files before checksums and upload.
+    match Command::new("node").arg("--version").output() {
+        Ok(output) if output.status.success() => {}
+        _ => {
+            eprintln!("skipping: node not available");
+            return;
+        }
+    }
+
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let script = format!("{manifest_dir}/desktop/scripts/normalize-artifacts.mjs");
+    let tmp = std::env::temp_dir().join(format!(
+        "formal-ai-desktop-artifacts-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map_or(0, |duration| duration.as_nanos())
+    ));
+    fs::create_dir_all(&tmp).expect("create scratch release dir");
+
+    let source_names = [
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-amd64-9.9.9.deb",
+        "formal-ai-desktop-linux-x64-9.9.9.tar.gz",
+        "formal-ai-desktop-linux-arm64-9.9.9.deb",
+    ];
+    for name in source_names {
+        fs::write(tmp.join(name), b"artifact").expect("seed scratch release artifact");
+    }
+
+    let output = Command::new("node")
+        .arg(&script)
+        .arg(&tmp)
+        .output()
+        .expect("run desktop artifact normalizer");
+    let status_ok = output.status.success();
+    let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
+    let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+
+    let expected_names = [
+        "formal-ai-desktop-linux-x64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-x64-9.9.9.deb",
+        "formal-ai-desktop-linux-x64-9.9.9.tar.gz",
+        "formal-ai-desktop-linux-arm64-9.9.9.deb",
+    ];
+    let missing = expected_names
+        .iter()
+        .filter(|name| !tmp.join(name).exists())
+        .copied()
+        .collect::<Vec<_>>();
+    let stale = [
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage",
+        "formal-ai-desktop-linux-x86_64-9.9.9.AppImage.blockmap",
+        "formal-ai-desktop-linux-amd64-9.9.9.deb",
+    ]
+    .iter()
+    .filter(|name| tmp.join(name).exists())
+    .copied()
+    .collect::<Vec<_>>();
+    let _ = fs::remove_dir_all(&tmp);
+
+    assert!(
+        status_ok,
+        "normalizer exited with {status:?}\nstdout: {stdout}\nstderr: {stderr}",
+        status = output.status
+    );
+    assert!(
+        missing.is_empty(),
+        "normalizer should create every download-contract artifact, missing {missing:?}\nstdout: {stdout}\nstderr: {stderr}"
+    );
+    assert!(
+        stale.is_empty(),
+        "normalizer should remove Electron Builder alias names, still present {stale:?}\nstdout: {stdout}\nstderr: {stderr}"
+    );
+    assert!(
+        stdout.contains("x86_64") && stdout.contains("amd64") && stdout.contains("x64"),
+        "normalizer should log the Linux x64 alias rewrites, got stdout:\n{stdout}"
+    );
+}
+
+#[test]
 fn release_scripts_check_configured_release_artifacts() {
     let release_check = fs::read_to_string(format!(
         "{}/scripts/check-release-needed.rs",

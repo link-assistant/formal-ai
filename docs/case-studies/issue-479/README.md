@@ -2,9 +2,10 @@
 
 > **Issue:** <https://github.com/link-assistant/formal-ai/issues/479> (`bug`, opened 2026-06-14T17:15:58Z by konard)
 > **First attempt:** <https://github.com/link-assistant/formal-ai/pull/480> — **MERGED**, but the fix stayed **dormant** (desktop apps remained unavailable) and its macOS screenshots were synthetic. The maintainer rejected it (issue comment, 2026-06-15).
-> **This pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completes the fix.
+> **Completion pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completed the first fix.
+> **Linux/macOS follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/487> (branch `issue-479-ff9c709d56dc`) — fixes the remaining Linux asset gap reported after PR #486 and the later broken macOS DMG report.
 > **Case study date:** 2026-06-14, revised 2026-06-15 after the maintainer's "redo analysis" feedback.
-> **Status:** **All requirements addressed in PR #486.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. The site structure (`/`, `/app`, `/docs/api`, `/docs/*`, `/download`) is verified.
+> **Status:** **Original requirements addressed in PR #486; Linux/macOS follow-up addressed in PR #487.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, partial-release rebuild guard, and the `vk-bot-desktop` macOS signing/smoke-test method needed after `v0.204.0` uploaded macOS assets that downloaded but opened as "damaged".
 > **Type:** CI/CD bug fix + documentation correction + cross-repo audit + this case study.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/); the full CI/CD template comparison is in [`template-comparison/REPORT.md`](template-comparison/REPORT.md).
@@ -12,11 +13,18 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | Artifact | Path |
 |---|---|
 | The issue, as filed | [`raw-data/issue-479.json`](raw-data/issue-479.json) |
-| The maintainer's rejection comment (the "redo analysis" feedback) | [`raw-data/issue-479-comments.json`](raw-data/issue-479-comments.json) |
+| The maintainer's rejection comments, including the later Linux follow-up | [`raw-data/issue-479-comments.json`](raw-data/issue-479-comments.json) |
 | The maintainer's screenshot — `/download` still broken at **v0.203.0** (the proof PR #480 was dormant) | [`raw-data/maintainer-rejection-screenshot.png`](raw-data/maintainer-rejection-screenshot.png) |
 | The originally-reported screenshot (the `/download` page in the bug state) | [`raw-data/issue-screenshot.png`](raw-data/issue-screenshot.png) |
 | Smoking-gun root-cause writeup (preserves the verbatim resolve-step log) | [`raw-data/root-cause-evidence.md`](raw-data/root-cause-evidence.md) |
 | Desktop Release run history (every run `skipped`) | [`raw-data/desktop-release-runs.json`](raw-data/desktop-release-runs.json) |
+| Latest Desktop Release run history for the Linux follow-up (`27558290907` failed, then `27563439476` skipped) | [`raw-data/desktop-release-runs-latest-20260615.json`](raw-data/desktop-release-runs-latest-20260615.json) |
+| Latest release asset inventory (`v0.204.0`: 10 assets total, 0 Linux assets) | [`raw-data/latest-release-v0.204.0-assets.json`](raw-data/latest-release-v0.204.0-assets.json) |
+| Failed Desktop Release log showing the Linux `.deb` metadata error | [`ci-logs/desktop-release-27558290907.log`](ci-logs/desktop-release-27558290907.log) |
+| PR #487 metadata and CI run capture | [`raw-data/pr-487.json`](raw-data/pr-487.json), [`raw-data/pr-487-ci-runs.json`](raw-data/pr-487-ci-runs.json) |
+| PR #487 maintainer screenshot — macOS DMG opens as "damaged" | [`raw-data/pr-487-macos-broken-screenshot.png`](raw-data/pr-487-macos-broken-screenshot.png) |
+| PR #487 Linux artifact-name normalizer | [`../../../desktop/scripts/normalize-artifacts.mjs`](../../../desktop/scripts/normalize-artifacts.mjs) |
+| PR #487 macOS ad-hoc signer + entitlements | [`../../../desktop/scripts/adhoc-sign-mac.cjs`](../../../desktop/scripts/adhoc-sign-mac.cjs), [`../../../desktop/build/entitlements.mac.plist`](../../../desktop/build/entitlements.mac.plist) |
 | Every release is asset-less (`desktop_assets: 0`) | [`raw-data/releases-asset-evidence.json`](raw-data/releases-asset-evidence.json) |
 | The first attempt (merged, incomplete) | [`raw-data/pr-480.json`](raw-data/pr-480.json) |
 | The resolve logic (head-SHA fix; merged in PR #480, now actually reached) | [`../../../scripts/desktop-release-resolve.sh`](../../../scripts/desktop-release-resolve.sh) |
@@ -27,9 +35,69 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | The real macOS-screenshots provenance doc | [`../../../src/web/download/assets/screenshots/README.md`](../../../src/web/download/assets/screenshots/README.md) |
 | The macOS-screenshots e2e test | [`../../../tests/e2e/tests/issue-479.spec.js`](../../../tests/e2e/tests/issue-479.spec.js) |
 | The landing/docs chooser + big-button e2e test | [`../../../tests/e2e/tests/issue-479-site.spec.js`](../../../tests/e2e/tests/issue-479-site.spec.js) |
-| The best-practices reference (vk-bot-desktop snapshot, incl. the real screenshots) | [`raw-data/vk-bot-desktop-current/`](raw-data/vk-bot-desktop-current/) |
+| The best-practices reference (vk-bot-desktop snapshot, incl. real screenshots and signing method) | [`raw-data/vk-bot-desktop-current/`](raw-data/vk-bot-desktop-current/) |
 
 ---
+
+## 0. PR #487 Linux + macOS Follow-up
+
+After PR #486 landed, the maintainer added a second 2026-06-15 issue comment:
+"After changes are applied linux app is not available still." Fresh release
+evidence confirms that state: the latest release, `v0.204.0`, has 10 uploaded
+assets, all provenance, macOS, or Windows files, and **zero**
+`formal-ai-desktop-linux-*` assets
+([`raw-data/latest-release-v0.204.0-assets.json`](raw-data/latest-release-v0.204.0-assets.json)).
+
+The failed Desktop Release run `27558290907` reached the Linux matrix, but both
+Linux jobs failed while building Debian output. The electron-builder error is
+specific: `desktop/package.json` lacked the project homepage, author email, and
+Linux `.deb` maintainer metadata (`ci-logs/desktop-release-27558290907.log`,
+lines 7390-7394). The same run still uploaded the successful macOS and Windows
+assets plus checksums, leaving `v0.204.0` partial.
+
+Local reproduction after adding the metadata completed the Linux build and
+exposed a naming mismatch that would still leave `/download` unable to resolve
+the x64 Linux files: Electron Builder emits x64 AppImage as
+`formal-ai-desktop-linux-x86_64-<version>.AppImage` and x64 Debian as
+`formal-ai-desktop-linux-amd64-<version>.deb`, while the site, checksum tests,
+and release resolver use `formal-ai-desktop-linux-x64-<version>.*`. PR #487
+adds a post-package normalizer so checksums and release uploads use the same
+`x64` contract across Linux `AppImage`, `.deb`, and `.tar.gz`.
+
+The next Desktop Release run, `27563439476` at 2026-06-15T17:15:21Z, was
+`skipped`. That exposed a second follow-up bug: the old automatic idempotency
+guard treated "some desktop assets exist" as complete, so macOS/Windows assets
+could permanently mask missing Linux assets. PR #487 changes the guard to
+enumerate the full expected desktop asset set (14 files: macOS 4, Windows 4,
+Linux 6) and skip only when every required filename is already on the release.
+A partial release now rebuilds, which lets the next Desktop Release self-heal
+missing Linux `AppImage`, `.deb`, and `.tar.gz` artifacts.
+
+The maintainer then added PR feedback on 2026-06-15T18:13:29Z: "We also have
+broken macOS build" and attached a real macOS alert capture
+([`raw-data/pr-487-macos-broken-screenshot.png`](raw-data/pr-487-macos-broken-screenshot.png)).
+The dialog says `"formal-ai Desktop" is damaged and can't be opened. You should
+move it to the Trash.` The asset evidence shows this was the uploaded
+`v0.204.0` macOS ARM64 DMG (`downloadCount: 2` in
+[`raw-data/latest-release-v0.204.0-assets.json`](raw-data/latest-release-v0.204.0-assets.json)).
+
+The comparison with `konard/vk-bot-desktop` found the missing piece. Formal-ai
+only set `CSC_IDENTITY_AUTO_DISCOVERY=false`, while the working reference also
+configures `hardenedRuntime`, `notarize`, explicit entitlements, a guarded
+ad-hoc signing hook that calls `@electron/osx-sign` with `identity: "-"`, and a
+pre-upload DMG smoke test (`hdiutil attach`, `codesign --verify`, Developer ID
+`spctl`/`stapler` checks, or `Signature=adhoc` for no-Apple-account builds).
+Those reference files are mirrored under
+[`raw-data/vk-bot-desktop-current/release-signing/`](raw-data/vk-bot-desktop-current/release-signing/).
+
+PR #487 now copies that method instead of reinventing it:
+[`desktop/package.json`](../../../desktop/package.json) enables the macOS
+hardened runtime, notarization, and entitlements; [`desktop/scripts/adhoc-sign-mac.cjs`](../../../desktop/scripts/adhoc-sign-mac.cjs)
+performs explicit ad-hoc signing when Apple secrets are absent; and
+[`.github/workflows/desktop-release.yml`](../../../.github/workflows/desktop-release.yml)
+splits macOS packaging into signed and ad-hoc paths, then smoke-tests the DMG
+before uploading release assets. The regression tests are in
+[`tests/unit/ci-cd/release_publishing.rs`](../../../tests/unit/ci-cd/release_publishing.rs).
 
 ## 1. Executive Summary
 
@@ -214,7 +282,23 @@ The recurring late-job failure was the E2E-on-Pages job. [`scripts/wait-for-page
 
 **Root cause.** macOS Gatekeeper dialogs **cannot be triggered on a hosted macOS CI runner** (Gatekeeper only blocks apps quarantined by a real download), so PR #480 chose to *render* lookalikes. That approach produces images that are not genuine OS captures — exactly what the maintainer found unacceptable.
 
-**Fix (PR #486, `ff23e030`).** The genuine fix is to **reuse the real captures** from `vk-bot-desktop`, which ships with the **identical** `electron-builder` ad-hoc signing flow (`CSC_IDENTITY_AUTO_DISCOVERY=false`, no Apple Developer ID — exactly what formal-ai's `desktop-release.yml` does). The Gatekeeper dialog wording, layout, and buttons are byte-identical for `formal-ai Desktop`; **only the app name shown differs** (`"VK Bot Desktop"` vs `"formal-ai Desktop"`), and the localized `alt`/caption copy says so honestly. The three PNGs under `src/web/download/assets/screenshots/` are replaced with the real captures (mapped 1:1 to the System Settings steps); the synthetic generator + fixture are **deleted**; provenance — including the upstream-source mapping and a "do not re-introduce a synthetic generator" note — is documented in [`src/web/download/assets/screenshots/README.md`](../../../src/web/download/assets/screenshots/README.md). The upstream originals are mirrored at `raw-data/vk-bot-desktop-current/macos-screenshots/` for offline traceability.
+**Fix (PR #486, `ff23e030`; completed by PR #487's signing fix).** The genuine
+documentation fix is to **reuse the real captures** from `vk-bot-desktop`. The
+later PR #487 feedback showed that formal-ai had not actually copied the
+reference app's signing method yet: disabling certificate discovery alone was
+not enough and produced a "damaged" macOS app. PR #487 now copies the explicit
+ad-hoc signing hook (`identity: "-"`) and pre-upload smoke test, so formal-ai's
+no-Apple-account build path matches the real screenshot provenance. The
+Gatekeeper dialog wording, layout, and buttons are byte-identical for
+`formal-ai Desktop`; **only the app name shown differs** (`"VK Bot Desktop"` vs
+`"formal-ai Desktop"`), and the localized `alt`/caption copy says so honestly.
+The three PNGs under `src/web/download/assets/screenshots/` are replaced with
+the real captures (mapped 1:1 to the System Settings steps); the synthetic
+generator + fixture are **deleted**; provenance — including the upstream-source
+mapping and a "do not re-introduce a synthetic generator" note — is documented in
+[`src/web/download/assets/screenshots/README.md`](../../../src/web/download/assets/screenshots/README.md).
+The upstream originals are mirrored at
+`raw-data/vk-bot-desktop-current/macos-screenshots/` for offline traceability.
 
 ### 4.3 App-preview screenshots were obsolete (R2)
 
@@ -321,7 +405,12 @@ npx playwright test tests/issue-479-site.spec.js  # landing chooser (3 cards), b
 **Chosen:** regenerate all `app-preview-*` and `docs/screenshots/issue-347/download-*` PNGs via the project's existing Playwright preview pipeline.
 
 ### R3 / R3a — Real macOS Gatekeeper screenshots (shipped, PR #486)
-**Chosen:** **reuse the genuine captures** from `vk-bot-desktop` (identical ad-hoc signing → byte-identical dialogs, only the app name differs); delete the synthetic generator + fixture; document provenance + the upstream mapping; label the app-name difference honestly in the localized caption. **Existing components reused:** the sibling app's real screenshots; Playwright for the render-and-load e2e assertions.
+**Chosen:** **reuse the genuine captures** from `vk-bot-desktop` and copy its
+explicit ad-hoc signing method in PR #487 (byte-identical dialogs, only the app
+name differs); delete the synthetic generator + fixture; document provenance +
+the upstream mapping; label the app-name difference honestly in the localized
+caption. **Existing components reused:** the sibling app's real screenshots and
+macOS signing workflow; Playwright for the render-and-load e2e assertions.
 **Alternative considered and rejected:** *render lookalikes from an HTML fixture* — this was PR #480's approach and the maintainer explicitly rejected it as fake. Capturing real Gatekeeper dialogs on a hosted macOS runner is impossible (no scriptable Gatekeeper trigger), so reusing the sibling app's genuine captures is the only honest, deterministic option.
 
 ### R4 — vk-bot-desktop best practices (applied)
@@ -349,7 +438,12 @@ What the ecosystem already provides for each sub-problem, and what this PR reuse
 - **`electron-builder`** — the cross-platform packager producing `.dmg/.zip/.exe/.AppImage/.deb/.tar.gz`. Already used.
 
 ### Screenshots (R2, R3)
-- **The sibling app `konard/vk-bot-desktop`** — ships *real* macOS Gatekeeper captures under the identical ad-hoc-signing flow; reused directly (R3a). This is the "existing component" that replaces the rejected synthetic generator.
+- **The sibling app `konard/vk-bot-desktop`** — ships *real* macOS Gatekeeper
+  captures and a working macOS release flow with Developer ID/notarization when
+  secrets exist, explicit ad-hoc signing when they do not, and DMG smoke tests;
+  reused directly (R3a and PR #487 macOS follow-up). This is the "existing
+  component" that replaces the rejected synthetic generator and fixes the
+  broken formal-ai DMG path.
 - **[Playwright](https://playwright.dev/)** — powers the app-preview refresh and the e2e assertions (`naturalWidth > 0`, localized alt/caption, big-button bounding box).
 
 ### `/docs/api` and `/docs/*` (R5)

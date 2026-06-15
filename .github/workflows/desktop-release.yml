@@ -6,6 +6,8 @@
 #   formal-ai-desktop-windows-installer-<arch>-<version>.exe
 #   formal-ai-desktop-windows-portable-<arch>-<version>.exe
 #   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
+#   (Electron Builder emits x86_64/amd64 Linux x64 aliases; the build job
+#    normalizes them to x64 before checksums/uploads.)
 # plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
 # provenance attestations (verifiable with `gh attestation verify`).
 #
@@ -144,13 +146,144 @@ jobs:
         working-directory: desktop
         run: node scripts/prepare-resources.mjs
 
-      - name: Package desktop app
+      - name: Check macOS signing secrets
+        if: matrix.ebflag == '--mac'
+        id: mac_secrets
+        env:
+          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in MAC_CSC_LINK MAC_CSC_KEY_PASSWORD APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "mode=adhoc" >> "$GITHUB_OUTPUT"
+            echo "::warning::Missing required macOS signing/notarization secrets: ${missing[*]}"
+            echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."
+          else
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+            echo "mode=signed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package desktop app (Linux/Windows)
+        if: matrix.ebflag != '--mac'
         working-directory: desktop
         env:
-          # Ad-hoc signing only (no Apple Developer ID); matches the /download
-          # page guidance about the first-launch Gatekeeper prompt on macOS.
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+
+      - name: Package desktop app (macOS signed)
+        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'
+        working-directory: desktop
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          DEBUG: electron-builder,electron-notarize*
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+
+      - name: Package desktop app (macOS ad-hoc)
+        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          MACOS_ADHOC_SIGN: "1"
+          DEBUG: electron-builder,electron-osx-sign*
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+
+      - name: Normalize desktop artifact names
+        working-directory: desktop
+        run: node scripts/normalize-artifacts.mjs
+
+      - name: Smoke test macOS release artifacts
+        if: matrix.ebflag == '--mac'
+        working-directory: desktop
+        env:
+          MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          VERSION="$(node -p "require('./package.json').version")"
+          case "${{ matrix.label }}" in
+            macos-x64) ARCH="x64" ;;
+            macos-arm64) ARCH="arm64" ;;
+            *)
+              echo "::error::Unexpected macOS matrix label: ${{ matrix.label }}"
+              exit 1
+              ;;
+          esac
+
+          required_macos_artifacts=(
+            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"
+            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.zip"
+          )
+          for artifact in "${required_macos_artifacts[@]}"; do
+            if [ ! -f "$artifact" ]; then
+              echo "::error file=$artifact::Expected versioned macOS release artifact was not created."
+              ls -la release || true
+              exit 1
+            fi
+          done
+
+          for dmg in "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"; do
+            echo "Mounting DMG: $dmg"
+            mount_dir="$(mktemp -d)"
+            installed_app="$RUNNER_TEMP/formal-ai Desktop.app"
+
+            hdiutil attach "$dmg" -mountpoint "$mount_dir" -nobrowse -readonly
+            mounted_app="$mount_dir/formal-ai Desktop.app"
+
+            if [ ! -d "$mounted_app" ]; then
+              echo "::error file=$dmg::Mounted DMG does not contain formal-ai Desktop.app."
+              find "$mount_dir" -maxdepth 2 -print
+              hdiutil detach "$mount_dir"
+              exit 1
+            fi
+
+            rm -rf "$installed_app"
+            ditto "$mounted_app" "$installed_app"
+            hdiutil detach "$mount_dir"
+
+            app_info="$installed_app/Contents/Info.plist"
+            executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_info")"
+            bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_info")"
+
+            if [ "$bundle_id" != "ai.formal.desktop" ]; then
+              echo "::error file=$dmg::Unexpected macOS app bundle identifier: $bundle_id"
+              exit 1
+            fi
+
+            if [ ! -x "$installed_app/Contents/MacOS/$executable" ]; then
+              echo "::error file=$dmg::Mounted app executable is missing or not executable."
+              find "$installed_app/Contents" -maxdepth 3 -print
+              exit 1
+            fi
+
+            codesign --verify --deep --strict --verbose=2 "$installed_app"
+
+            if [ "$MACOS_BUILD_MODE" = "signed" ]; then
+              spctl --assess --type execute --verbose=4 "$installed_app"
+              xcrun stapler validate "$installed_app"
+            else
+              codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"
+              if ! grep -Fq 'Signature=adhoc' "$RUNNER_TEMP/formal-ai-macos-codesign.txt"; then
+                echo "::error file=$dmg::Expected ad-hoc macOS signature for no-Apple-account build."
+                exit 1
+              fi
+            fi
+          done
 
       - name: Collect artifacts and checksums
         id: collect
