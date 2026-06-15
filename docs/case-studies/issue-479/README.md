@@ -278,6 +278,7 @@ This is what makes layer 2's relaxed gate **safe**: a `workflow_run` from a non-
   - `desktop_release_runs_on_any_completed_main_pipeline_not_only_success` — asserts the gate no longer requires `conclusion == 'success'` (layer 2).
   - `wait_for_pages_deployment_is_marker_authoritative` — asserts the probe no longer greps the SHA out of the index body (layer 3).
   - `issue_479_landing_surfaces_source_code_as_a_big_button` — asserts the `.source-cta` markup exists (R6a).
+  - The module was split to respect the repo's 1000-line-per-`.rs` file-size CI gate: the shared YAML-slicing helpers now live in [`workflow_fixtures.rs`](../../../tests/unit/ci-cd/workflow_fixtures.rs), and the pre-existing artifact-publishing / Pages version-stamping assertions moved to [`release_publishing.rs`](../../../tests/unit/ci-cd/release_publishing.rs); the three new issue-#479 tests above stay in `workflow_release.rs`.
 - **`tests/e2e/tests/issue-479.spec.js`** (5 tests) — the three real screenshots render, load (`naturalWidth > 0`), carry localized alt text, and a caption, in en/ru/zh/hi.
 - **`tests/e2e/tests/issue-479-site.spec.js`** (9 tests) — the landing chooser (3 cards), the big source button, the docs hub (API + 3 prose cards), and localization.
 
