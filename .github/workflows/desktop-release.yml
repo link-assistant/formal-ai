@@ -16,9 +16,11 @@
 #                              GitHub suppresses the `release` event for them
 #                              (recursion guard). The workflow_run trigger below
 #                              covers that case automatically.
-#   * workflow_run           - after the "CI/CD Pipeline" completes successfully
-#                              on main, build desktop assets for the release tag
-#                              that points at the completed CI run head SHA
+#   * workflow_run           - after the "CI/CD Pipeline" completes on main (with
+#                              ANY conclusion except cancelled/skipped -- the
+#                              release is published in an early job, so a later job
+#                              failing must not suppress the desktop build), build
+#                              desktop assets for the resolved release tag
 #                              (idempotent: skips when assets already exist).
 #   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
 name: Desktop Release
@@ -49,11 +51,21 @@ jobs:
   resolve:
     name: Resolve target release
     runs-on: ubuntu-latest
-    # For workflow_run, only continue after a successful main-branch pipeline.
+    # For workflow_run, continue after ANY completed main-branch pipeline except
+    # cancelled/skipped runs (issue #479). We intentionally do NOT gate on
+    # conclusion == 'success': the auto-release publishes the GitHub release in an
+    # EARLY pipeline job, so a LATER job failing (e.g. the E2E Pages probe timing
+    # out) still leaves a real, asset-less release that desktop assets must heal.
+    # Gating on full-pipeline green meant one unrelated late failure suppressed
+    # every desktop build -> "Not available in latest release". The actual
+    # decision to build is delegated to scripts/desktop-release-resolve.sh, whose
+    # idempotency guard skips when the resolved release already carries desktop
+    # assets, so running on a non-success conclusion is safe and self-healing.
     if: >-
       github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
       should_build: ${{ steps.pick.outputs.should_build }}

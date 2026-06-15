@@ -20,7 +20,8 @@
     />
     <title>formal-ai documentation</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="../landing.css" />
+    <!-- Cache-busted with the deploy SHA exactly like / and /app/ (issue #479). -->
+    <link rel="stylesheet" href="../landing.css?v=__FORMAL_AI_ASSET_VERSION__" />
   </head>
   <body>
     <main id="docs-app" class="page-shell" data-testid="docs-app">
@@ -55,8 +56,8 @@
       switchers) the landing and download pages use, reusing the visitor's
       stored theme/locale via ../preferences.js. docs.js supplies the config.
     -->
-    <script src="../preferences.js"></script>
-    <script src="../site-chrome.js"></script>
-    <script src="docs.js"></script>
+    <script src="../preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="../site-chrome.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="docs.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
   </body>
 </html>

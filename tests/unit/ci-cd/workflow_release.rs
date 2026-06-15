@@ -155,6 +155,43 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
 }
 
 #[test]
+fn wait_for_pages_deployment_is_marker_authoritative() {
+    // Issue #479 (root cause, take 2): the live-Pages freshness probe used to
+    // require the raw deploy SHA to appear in the served index BODY
+    // (`grep -Fq "$expected_sha" "$index_file"`). That coupled the probe to every
+    // root page embedding the commit SHA verbatim. When the issue #479 landing
+    // page shipped at `/` WITHOUT cache-busted asset refs, the stamped index
+    // never contained the SHA, so the probe ran the full 300s and timed out --
+    // failing the whole pipeline and (via the desktop-release gate) suppressing
+    // every desktop build. The probe is now marker-authoritative: GitHub Pages
+    // deploys atomically, so deployment.json advertising "sha":"<expected_sha>"
+    // is sufficient proof the matching stamped index is live.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let wait_script = fs::read_to_string(format!(
+        "{manifest_dir}/scripts/wait-for-pages-deployment.sh"
+    ))
+    .unwrap();
+
+    // The marker SHA is the authoritative freshness signal.
+    assert!(
+        wait_script.contains("${expected_sha}") && wait_script.contains("\"$marker_file\""),
+        "wait script should require the deployment.json marker to advertise the expected SHA"
+    );
+    // The brittle "index body must contain the SHA" requirement must be gone.
+    assert!(
+        !wait_script.contains("-Fq \"$expected_sha\" \"$index_file\""),
+        "issue #479 regression: the probe must NOT hard-require the raw SHA in the index body -- \
+         a valid root page without cache-busted asset refs would hang the probe for the full timeout"
+    );
+    // But the defensive placeholder guards (catch a half-run stamp step) remain.
+    assert!(
+        wait_script.contains("__FORMAL_AI_ASSET_VERSION__")
+            && wait_script.contains("__FORMAL_AI_VERSION__"),
+        "wait script should still reject an index that retains un-stamped placeholders"
+    );
+}
+
+#[test]
 fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     // Issue #72: the deployed Pages site advertised `0.16.0` long after the
     // crate moved past it. The fix replaces a hardcoded literal with the
@@ -283,6 +320,11 @@ fn stamp_pages_artifact_replaces_formal_ai_version_placeholder() {
         "stamped index.html should not retain the asset version placeholder"
     );
     assert!(
+        rendered.contains("?v=deadbeef"),
+        "issue #479: the stamped landing index must embed the deploy asset version (SHA) on its \
+         asset refs so the Pages freshness probe and CDN cache-busting both see it, got:\n{rendered}"
+    );
+    assert!(
         rendered_tests.contains("content=\"9.9.9\""),
         "stamped tests/index.html should advertise the supplied formal-ai version, got:\n{rendered_tests}"
     );
@@ -306,7 +348,10 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     // The interactive app moved to /app/ (issue #479); its cache-busted runtime
     // assets now live in src/web/app/index.html. The site root index.html is the
-    // landing-page chooser, which only carries the stamped formal-ai version.
+    // landing-page chooser; it ALSO cache-busts its own assets with the deploy
+    // asset version (so the stamped index embeds the SHA the Pages probe waits
+    // for) but, unlike /app/, its strict CSP forbids an inline asset-version
+    // script, so the SHA rides on ?v= refs rather than window.FORMAL_AI_ASSET_VERSION.
     let landing_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
     let app_index_html =
         fs::read_to_string(format!("{manifest_dir}/src/web/app/index.html")).unwrap();
@@ -338,8 +383,22 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
         );
     }
     assert!(app_index_html.contains("window.FORMAL_AI_ASSET_VERSION"));
-    // The landing page (site root) advertises the stamped formal-ai version.
+    // The landing page (site root) advertises the stamped formal-ai version AND
+    // cache-busts every one of its own assets with the deploy asset version, so
+    // the stamped index embeds the SHA the Pages freshness probe waits for
+    // (issue #479 regression guard).
     assert!(landing_html.contains("__FORMAL_AI_VERSION__"));
+    for asset in [
+        "landing.css?v=__FORMAL_AI_ASSET_VERSION__",
+        "preferences.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "site-chrome.js?v=__FORMAL_AI_ASSET_VERSION__",
+        "landing.js?v=__FORMAL_AI_ASSET_VERSION__",
+    ] {
+        assert!(
+            landing_html.contains(asset),
+            "landing index.html should version local asset {asset} so the stamped page carries the deploy SHA"
+        );
+    }
     assert!(app_js.contains("withAssetVersion(\"formal_ai_worker.js\")"));
     assert!(seed_loader_js.contains("fetchText(withAssetVersion(file))"));
     assert!(worker_js.contains("importScripts(withAssetVersion(\"seed_loader.js\"))"));
@@ -562,14 +621,21 @@ fn issue_479_site_is_restructured_into_landing_app_docs_download() {
     );
 
     // The site root is now the landing-page chooser, wired to the shared
-    // preference store + chrome and offering the three in-site routes.
+    // preference store + chrome and offering the three in-site routes. Every
+    // script is cache-busted with ?v=__FORMAL_AI_ASSET_VERSION__ so the stamped
+    // index embeds the deploy SHA (issue #479: without this the Pages freshness
+    // probe never saw the SHA in the landing page and timed out the pipeline).
     let landing = read("src/web/index.html");
     for script in ["preferences.js", "site-chrome.js", "landing.js"] {
         assert!(
-            landing.contains(&format!("src=\"{script}\"")),
-            "the landing page should load {script}"
+            landing.contains(&format!("src=\"{script}?v=__FORMAL_AI_ASSET_VERSION__\"")),
+            "the landing page should load {script} cache-busted with the deploy asset version"
         );
     }
+    assert!(
+        landing.contains("landing.css?v=__FORMAL_AI_ASSET_VERSION__"),
+        "the landing page stylesheet should be cache-busted with the deploy asset version"
+    );
     for route in ["app/", "docs/", "download/"] {
         assert!(
             landing.contains(&format!("href=\"{route}\"")),
@@ -876,6 +942,36 @@ fn desktop_release_workflow_run_resolves_child_release_not_head_sha_tag() {
     assert!(
         resolve_script.contains("::group::"),
         "resolve script should emit grouped verbose diagnostics for future debugging"
+    );
+}
+
+#[test]
+fn desktop_release_runs_on_any_completed_main_pipeline_not_only_success() {
+    // Issue #479 (root cause, take 2): PR #480 fixed the resolve *script* but
+    // left the resolve *job* gated behind `workflow_run.conclusion == 'success'`.
+    // The auto-release publishes the GitHub release in an EARLY pipeline job, so
+    // any LATER job failing (e.g. the E2E Pages probe timing out) made the whole
+    // pipeline conclude `failure`, the gate skipped, and no desktop assets were
+    // ever built -- the fix stayed dormant and /download still read "Not
+    // available in latest release". The gate must run on ANY completed main-branch
+    // pipeline except cancelled/skipped, delegating the real build decision to the
+    // self-healing resolve script + its idempotency guard.
+    let workflow = desktop_release_workflow();
+    let resolve = job_block(&workflow, "resolve");
+
+    assert!(
+        resolve.contains("github.event.workflow_run.head_branch == 'main'"),
+        "desktop release should still only auto-build for main-branch pipelines"
+    );
+    assert!(
+        resolve.contains("github.event.workflow_run.conclusion != 'cancelled'")
+            && resolve.contains("github.event.workflow_run.conclusion != 'skipped'"),
+        "desktop release should run on any completed main pipeline except cancelled/skipped"
+    );
+    assert!(
+        !resolve.contains("github.event.workflow_run.conclusion == 'success'"),
+        "issue #479 regression: desktop release must NOT gate on full-pipeline success -- a late \
+         unrelated failure (e.g. E2E Pages timeout) would again suppress every desktop build"
     );
 }
 

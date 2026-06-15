@@ -20,7 +20,16 @@
     />
     <title>formal-ai</title>
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="landing.css" />
+    <!--
+      Every asset is cache-busted with ?v=__FORMAL_AI_ASSET_VERSION__ (the deploy
+      commit SHA, stamped by scripts/stamp-pages-artifact.sh) exactly like /app/.
+      This both defeats stale CDN/browser caches across deploys AND embeds the
+      deployment SHA into the served index, which the Pages freshness probe
+      (scripts/wait-for-pages-deployment.sh) relies on. The strict CSP above
+      forbids inline scripts, so the SHA is carried on these refs rather than an
+      inline window.FORMAL_AI_ASSET_VERSION assignment (issue #479).
+    -->
+    <link rel="stylesheet" href="landing.css?v=__FORMAL_AI_ASSET_VERSION__" />
   </head>
   <body>
     <main id="landing-app" class="page-shell" data-testid="landing-app">
@@ -45,8 +54,8 @@
       the chooser into #landing-app and reuses that store so the theme/locale a
       visitor picks here is shared with every other page.
     -->
-    <script src="preferences.js"></script>
-    <script src="site-chrome.js"></script>
-    <script src="landing.js"></script>
+    <script src="preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="site-chrome.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="landing.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
   </body>
 </html>
