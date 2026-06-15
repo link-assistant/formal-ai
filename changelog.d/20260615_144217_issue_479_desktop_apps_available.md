@@ -10,8 +10,10 @@ bump: minor
   required a tag pointing at `workflow_run.head_sha`) never matched and zero
   desktop assets were uploaded — every release since the path went live showed
   "Not available in latest release". The resolve script now targets the latest
-  published release with a defensive exact-SHA tier and an idempotency guard;
-  the `desktop-release` workflow no longer gates on full-pipeline
+  published release with a defensive exact-SHA tier and an idempotency guard,
+  and emits grouped verbose diagnostics (`[desktop-release-resolve]` logs) so
+  the resolution decision is auditable for future triage; the
+  `desktop-release` workflow no longer gates on full-pipeline
   `conclusion == 'success'` (the release is published early, so a later job
   failure used to suppress the whole desktop build); and
   `scripts/wait-for-pages-deployment.sh` is now marker-authoritative
