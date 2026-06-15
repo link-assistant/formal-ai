@@ -1,0 +1,4 @@
+# Refreshed 2026-06-15
+version = '0.10.3'
+dist-tags = { latest: '0.10.3' }
+{ 'web-search': 'bin/web-search.js' }

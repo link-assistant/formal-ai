@@ -341,7 +341,7 @@ impl<'a> LinearParser<'a> {
         self.input[self.position..].chars().next()
     }
 
-    fn advance(&mut self, character: char) {
+    const fn advance(&mut self, character: char) {
         self.position += character.len_utf8();
     }
 }

@@ -239,7 +239,7 @@ fn write_array_element(out: &mut String, indent: usize, value: &Value) {
 }
 
 fn write_line(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
-    out.extend(std::iter::repeat(' ').take(indent));
+    out.extend(std::iter::repeat_n(' ', indent));
     out.push_str(name);
     if let Some(value) = value {
         out.push(' ');

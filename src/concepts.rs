@@ -311,9 +311,10 @@ pub fn lookup_concept_query(query: &ConceptQuery) -> Option<ConceptLookup> {
     // Reversed ordering (context-first languages).
     if let Some(context) = query.context.as_deref() {
         if let Some(reversed) = rank_for_pair(context, Some(&query.term)) {
-            if direct.as_ref().map_or(true, |lookup| {
-                !lookup.context_match && reversed.context_match
-            }) {
+            if direct
+                .as_ref()
+                .is_none_or(|lookup| !lookup.context_match && reversed.context_match)
+            {
                 return Some(reversed);
             }
         }
