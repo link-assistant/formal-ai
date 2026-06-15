@@ -339,7 +339,7 @@ impl Lexicon {
             // Integer ceiling of `len / 2` (`div_ceil` is stable since Rust
             // 1.73, well within the crate's 1.77 MSRV).
             let threshold = work.signature.len().div_ceil(2);
-            if hits >= threshold && best.map_or(true, |(_, top)| hits > top) {
+            if hits >= threshold && best.is_none_or(|(_, top)| hits > top) {
                 best = Some((work, hits));
             }
         }

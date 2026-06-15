@@ -10,4 +10,5 @@ bump: minor
 - Refreshed the issue #410 case study to reflect that the upstream `web-search`/`web-capture` readiness blockers are resolved (`web-search` published at npm 0.10.3 / crates.io 0.3.1 with full provider parity; `web-capture` at npm 1.10.9 / crates.io 0.3.31).
 
 ### Fixed
+- Resolved Clippy lints newly reported by the latest stable toolchain (1.96) so `cargo clippy --all-targets --all-features` stays clean under `-Dwarnings`: added `const fn` where derivable, switched to `Option::is_none_or`, `std::iter::repeat_n`, `f64::midpoint`, and `u*::is_multiple_of`.
 - Preserved code-block enhancements (highlighting and copy buttons) under React 19 by memoizing rendered markdown by message content; React 19 compares `dangerouslySetInnerHTML` by object identity, which otherwise re-assigned `innerHTML` and wiped the out-of-band DOM enhancements on unrelated re-renders.

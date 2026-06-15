@@ -78,7 +78,7 @@ pub struct FormalizationSummary {
 
 impl FormalizationSummary {
     #[must_use]
-    pub fn covers_all_nine(&self) -> bool {
+    pub const fn covers_all_nine(&self) -> bool {
         self.covered.len() == PRIMITIVE_KINDS.len()
     }
 

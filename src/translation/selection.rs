@@ -19,7 +19,7 @@ pub struct FormalizationSelectionConfig {
 
 impl FormalizationSelectionConfig {
     #[must_use]
-    pub fn normalized(self) -> Self {
+    pub const fn normalized(self) -> Self {
         Self {
             temperature: finite_clamped(self.temperature, 0.0, 1.0),
             guess_probability: finite_clamped(self.guess_probability, 0.0, 1.0),
@@ -286,7 +286,7 @@ fn select_from_probabilities(
     }
 }
 
-fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
+const fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
     if value.is_finite() {
         value.clamp(min, max)
     } else {
@@ -313,7 +313,7 @@ fn ranked_indices(candidates: &[FormalizationCandidate], probabilities: &[f32]) 
     indices
 }
 
-fn probability_margin_epsilon(questioning_rigor: f32) -> f32 {
+const fn probability_margin_epsilon(questioning_rigor: f32) -> f32 {
     0.23f32.mul_add(finite_clamped(questioning_rigor, 0.0, 1.0), 0.02)
 }
 

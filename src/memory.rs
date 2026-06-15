@@ -142,7 +142,7 @@ impl MemoryStore {
             event
                 .conversation_id
                 .as_deref()
-                .map_or(true, |id| !deleted_ids.contains(id))
+                .is_none_or(|id| !deleted_ids.contains(id))
         });
         initial - self.events.len()
     }
@@ -171,12 +171,12 @@ impl MemoryStore {
     }
 
     #[must_use]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.events.len()
     }
 
     #[must_use]
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         self.events.is_empty()
     }
 

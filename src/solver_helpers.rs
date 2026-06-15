@@ -189,7 +189,7 @@ pub const fn is_prime(value: u64) -> bool {
     }
     let mut divisor: u64 = 2;
     while divisor.saturating_mul(divisor) <= value {
-        if value % divisor == 0 {
+        if value.is_multiple_of(divisor) {
             return false;
         }
         divisor += 1;
