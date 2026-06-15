@@ -14,10 +14,11 @@
 //
 // The macOS install section now embeds three REAL macOS 15 (Sequoia) Gatekeeper
 // dialogs captured from our sibling desktop app VK Bot Desktop
-// (https://github.com/konard/vk-bot-desktop), which ships with the identical
-// electron-builder ad-hoc signing, so the prompts are byte-identical for
-// formal-ai Desktop apart from the app name shown. They are committed under
-// src/web/download/assets/screenshots/ (provenance: that folder's README.md).
+// (https://github.com/konard/vk-bot-desktop). Formal-ai now copies the same
+// explicit electron-builder ad-hoc signing hook for no-Apple-account builds, so
+// the prompts are byte-identical for formal-ai Desktop apart from the app name
+// shown. They are committed under src/web/download/assets/screenshots/
+// (provenance: that folder's README.md).
 // These assertions prove the figures render, the images actually load (no broken
 // <img>), each carries a localized alt text, and the caption is present — in
 // every supported UI language.

@@ -22,12 +22,13 @@ macOS Gatekeeper cannot be triggered on a hosted macOS CI runner (it only blocks
 apps that were quarantined by a real download), so we cannot regenerate these
 programmatically in CI. Instead these are the **genuine** macOS Sequoia Gatekeeper
 captures from our sibling desktop app **VK Bot Desktop**, which ships with the
-**identical** `electron-builder` ad-hoc signing flow
-(`CSC_IDENTITY_AUTO_DISCOVERY=false`, no Apple Developer ID — exactly what
-`.github/workflows/desktop-release.yml` does for formal-ai). The dialog wording,
-layout and buttons are byte-identical for `formal-ai Desktop`; **only the app name
-shown in the prompt differs** (`"VK Bot Desktop"` vs `"formal-ai Desktop"`). The
-localized `alt`/caption copy in `download.js` says so.
+**same explicit** `electron-builder` ad-hoc signing hook (`identity: "-"`) when
+Apple Developer ID secrets are unavailable. PR #487 copied that method into
+formal-ai's `.github/workflows/desktop-release.yml`, including the ad-hoc signer
+and pre-upload DMG smoke test. The dialog wording, layout and buttons are
+byte-identical for `formal-ai Desktop`; **only the app name shown in the prompt
+differs** (`"VK Bot Desktop"` vs `"formal-ai Desktop"`). The localized
+`alt`/caption copy in `download.js` says so.
 
 Upstream sources (mirrored into this repo's case study for offline reference):
 

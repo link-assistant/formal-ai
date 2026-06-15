@@ -641,7 +641,8 @@
   // "copied from our code" at https://github.com/konard/vk-bot-desktop. Gatekeeper
   // cannot be triggered on a hosted macOS CI runner, so we reuse the genuine
   // captures from our sibling desktop app VK Bot Desktop, which ships with the
-  // identical electron-builder ad-hoc signing (CSC_IDENTITY_AUTO_DISCOVERY=false).
+  // same explicit electron-builder ad-hoc signing hook (identity "-") when no
+  // Apple Developer ID secrets are available.
   // The dialog wording, layout and buttons are byte-identical for formal-ai
   // Desktop; only the app name shown in the prompt differs ("VK Bot Desktop" vs
   // "formal-ai Desktop"). Provenance is documented in

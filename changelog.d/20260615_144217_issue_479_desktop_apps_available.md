@@ -22,6 +22,27 @@ bump: minor
   failing the pipeline. Landing/docs assets are cache-busted with
   `?v=__FORMAL_AI_ASSET_VERSION__` like `/app/`.
 
+- **Linux desktop assets recover after partial desktop releases (issue #479).**
+  The follow-up `v0.204.0` Desktop Release uploaded macOS and Windows assets
+  but no Linux assets because `electron-builder` rejected `.deb` metadata with
+  a missing homepage, author email, and Linux maintainer. The desktop package
+  manifest now provides that metadata, the workflow normalizes Electron
+  Builder's Linux x64 aliases (`x86_64` AppImage and `amd64` `.deb`) to the
+  `x64` names used by `/download`, and the automatic desktop-release
+  idempotency guard skips only when all 14 expected desktop assets are present.
+  Releases missing Linux `AppImage`, `.deb`, or `.tar.gz` artifacts rebuild
+  instead of staying permanently partial.
+
+- **macOS desktop DMGs are signed before upload (issue #479).** A PR follow-up
+  showed the `v0.204.0` macOS DMG opening as damaged because Formal AI only
+  disabled certificate discovery while the sibling `vk-bot-desktop` release
+  flow also enables hardened runtime, entitlements, notarization for signed
+  releases, and an explicit `@electron/osx-sign` ad-hoc fallback. The desktop
+  package now uses the same macOS signing configuration, the release workflow
+  selects the signed path when Apple signing secrets are present or the guarded
+  ad-hoc signer otherwise, and a pre-upload DMG smoke test verifies the copied
+  app bundle with `codesign`, `spctl`/`stapler`, or an ad-hoc signature check.
+
 - **macOS install screenshots are real captures, not synthetic renders
   (issue #479).** The `/download` macOS Gatekeeper figures are now genuine
   macOS 15 (Sequoia) captures from the sibling app `konard/vk-bot-desktop`,

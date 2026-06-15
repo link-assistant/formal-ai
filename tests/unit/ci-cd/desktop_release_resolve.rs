@@ -29,7 +29,7 @@ fn script_path() -> String {
 /// A canned `gh` CLI. Each field maps to one shape of `gh` invocation the
 /// resolve script makes; the mock dispatches on argv exactly like the real CLI.
 #[derive(Default)]
-struct GhMock {
+struct GhMock<'a> {
     /// Newline-joined tag names returned for `gh api .../tags ... --jq ...`
     /// (the Tier 1 exact-SHA candidates). Empty = no tag points at the head SHA.
     tags_jq_output: &'static str,
@@ -39,8 +39,9 @@ struct GhMock {
     parent_sha: &'static str,
     /// Whether `gh release view <tag> --json tagName` succeeds.
     release_exists: bool,
-    /// `gh release view <tag> --json assets --jq '... | length'`.
-    asset_count: u32,
+    /// Newline-joined `formal-ai-desktop-*` names returned for
+    /// `gh release view <tag> --json assets --jq ...`.
+    asset_names: &'a str,
 }
 
 struct ResolveOutput {
@@ -74,7 +75,12 @@ case "$sub" in
       if [ -n "$first" ] && [ "${first#--}" = "$first" ]; then
         # positional tag present -> existence or asset query
         case "$*" in
-          *"--json assets"*)  printf '%s\n' "${MOCK_ASSET_COUNT:-0}" ;;
+          *"--json assets"*)
+            if [[ "$*" == *"length"* ]]; then
+              [ -n "${MOCK_ASSET_NAMES:-}" ] && printf '%s\n' "${MOCK_ASSET_NAMES}" | sed '/^$/d' | wc -l || printf '0\n'
+            else
+              [ -n "${MOCK_ASSET_NAMES:-}" ] && printf '%s\n' "${MOCK_ASSET_NAMES}"
+            fi ;;
           *"--json tagName"*) [ "${MOCK_RELEASE_EXISTS:-1}" = "1" ] && { printf '{"tagName":"%s"}\n' "$first"; exit 0; } || exit 1 ;;
         esac
       else
@@ -108,7 +114,7 @@ fn unique_tmp(label: &str) -> PathBuf {
 
 /// Run the resolve script with the given event environment and mocked `gh`,
 /// returning the parsed `GITHUB_OUTPUT` plus captured streams.
-fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock) -> ResolveOutput {
+fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock<'_>) -> ResolveOutput {
     let tmp = unique_tmp(label);
     let bin = tmp.join("bin");
     fs::create_dir_all(&bin).expect("create scratch bin dir");
@@ -135,7 +141,7 @@ fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock) -> ResolveOutpu
             "MOCK_RELEASE_EXISTS",
             if mock.release_exists { "1" } else { "0" },
         )
-        .env("MOCK_ASSET_COUNT", mock.asset_count.to_string());
+        .env("MOCK_ASSET_NAMES", mock.asset_names);
     for (key, value) in env {
         cmd.env(key, value);
     }
@@ -167,6 +173,40 @@ fn bash_available() -> bool {
     Path::new("/bin/bash").exists()
 }
 
+fn expected_asset_names(version: &str) -> String {
+    [
+        format!("formal-ai-desktop-macos-arm64-{version}.dmg"),
+        format!("formal-ai-desktop-macos-arm64-{version}.zip"),
+        format!("formal-ai-desktop-macos-x64-{version}.dmg"),
+        format!("formal-ai-desktop-macos-x64-{version}.zip"),
+        format!("formal-ai-desktop-windows-installer-x64-{version}.exe"),
+        format!("formal-ai-desktop-windows-installer-arm64-{version}.exe"),
+        format!("formal-ai-desktop-windows-portable-x64-{version}.exe"),
+        format!("formal-ai-desktop-windows-portable-arm64-{version}.exe"),
+        format!("formal-ai-desktop-linux-x64-{version}.AppImage"),
+        format!("formal-ai-desktop-linux-arm64-{version}.AppImage"),
+        format!("formal-ai-desktop-linux-x64-{version}.deb"),
+        format!("formal-ai-desktop-linux-arm64-{version}.deb"),
+        format!("formal-ai-desktop-linux-x64-{version}.tar.gz"),
+        format!("formal-ai-desktop-linux-arm64-{version}.tar.gz"),
+    ]
+    .join("\n")
+}
+
+fn macos_and_windows_asset_names(version: &str) -> String {
+    [
+        format!("formal-ai-desktop-macos-arm64-{version}.dmg"),
+        format!("formal-ai-desktop-macos-arm64-{version}.zip"),
+        format!("formal-ai-desktop-macos-x64-{version}.dmg"),
+        format!("formal-ai-desktop-macos-x64-{version}.zip"),
+        format!("formal-ai-desktop-windows-installer-x64-{version}.exe"),
+        format!("formal-ai-desktop-windows-installer-arm64-{version}.exe"),
+        format!("formal-ai-desktop-windows-portable-x64-{version}.exe"),
+        format!("formal-ai-desktop-windows-portable-arm64-{version}.exe"),
+    ]
+    .join("\n")
+}
+
 #[test]
 fn auto_release_child_commit_triggers_build() {
     // The exact issue #479 reproduction: a successful CI run completes on the
@@ -189,7 +229,7 @@ fn auto_release_child_commit_triggers_build() {
             latest_tag: "v0.201.0",
             parent_sha: "0abd3f45parenthead", // child release descends from head SHA
             release_exists: true,
-            asset_count: 0,
+            asset_names: "",
         },
     );
     assert!(
@@ -208,7 +248,42 @@ fn auto_release_child_commit_triggers_build() {
 }
 
 #[test]
-fn workflow_run_skips_when_release_already_has_assets() {
+fn workflow_run_builds_when_release_is_missing_linux_assets() {
+    // Maintainer follow-up on 2026-06-15: Linux was still unavailable after the
+    // first issue #479 fixes. The live v0.204.0 release had macOS and Windows
+    // desktop assets but no `formal-ai-desktop-linux-*` assets. The old
+    // idempotency guard counted "any desktop assets" and skipped the automatic
+    // build, making the partial release permanent. A partial release must build
+    // so the next Desktop Release run can self-heal the missing matrix.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let partial_assets = macos_and_windows_asset_names("0.204.0");
+    let result = run_resolve(
+        "partial-linux-missing",
+        &[
+            ("EVENT", "workflow_run"),
+            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.204.0",
+            parent_sha: "0abd3f45parenthead",
+            release_exists: true,
+            asset_names: &partial_assets,
+        },
+    );
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(result.tag, "v0.204.0");
+    assert_eq!(
+        result.should_build, "true",
+        "a partial latest release that lacks Linux assets must be rebuilt"
+    );
+}
+
+#[test]
+fn workflow_run_skips_when_release_has_all_required_assets() {
     // Idempotency: re-running the pipeline (or a run that did not cut a new
     // release and falls back to the latest one) must not rebuild assets that
     // already exist.
@@ -216,6 +291,7 @@ fn workflow_run_skips_when_release_already_has_assets() {
         eprintln!("skipping: /bin/bash not available");
         return;
     }
+    let complete_assets = expected_asset_names("0.201.0");
     let result = run_resolve(
         "has-assets",
         &[
@@ -227,14 +303,14 @@ fn workflow_run_skips_when_release_already_has_assets() {
             latest_tag: "v0.201.0",
             parent_sha: "0abd3f45parenthead",
             release_exists: true,
-            asset_count: 6,
+            asset_names: &complete_assets,
         },
     );
     assert!(result.ok, "resolve script failed: {}", result.stderr);
     assert_eq!(result.tag, "v0.201.0");
     assert_eq!(
         result.should_build, "false",
-        "a release that already has desktop assets must not rebuild on workflow_run"
+        "a release that already has all required desktop assets must not rebuild on workflow_run"
     );
 }
 
@@ -257,7 +333,7 @@ fn workflow_run_uses_exact_tag_when_one_points_at_head_sha() {
             latest_tag: "v0.201.0",
             parent_sha: "",
             release_exists: true,
-            asset_count: 0,
+            asset_names: "",
         },
     );
     assert!(result.ok, "resolve script failed: {}", result.stderr);
@@ -284,7 +360,7 @@ fn workflow_run_skips_when_no_release_exists() {
             latest_tag: "",
             parent_sha: "",
             release_exists: false,
-            asset_count: 0,
+            asset_names: "",
         },
     );
     assert!(result.ok, "resolve script failed: {}", result.stderr);
@@ -326,7 +402,7 @@ fn release_event_builds_resolved_tag_even_with_existing_assets() {
         &[("EVENT", "release"), ("RELEASE_TAG", "v0.5.0")],
         &GhMock {
             release_exists: true,
-            asset_count: 4,
+            asset_names: "formal-ai-desktop-linux-x64-0.5.0.AppImage",
             ..GhMock::default()
         },
     );
@@ -351,7 +427,7 @@ fn workflow_dispatch_rebuilds_requested_tag() {
         &[("EVENT", "workflow_dispatch"), ("INPUT_TAG", "v0.4.0")],
         &GhMock {
             release_exists: true,
-            asset_count: 9,
+            asset_names: "formal-ai-desktop-linux-x64-0.4.0.AppImage",
             ..GhMock::default()
         },
     );
@@ -372,7 +448,7 @@ fn workflow_dispatch_without_tag_falls_back_to_latest() {
         &GhMock {
             latest_tag: "v0.201.0",
             release_exists: true,
-            asset_count: 0,
+            asset_names: "",
             ..GhMock::default()
         },
     );
