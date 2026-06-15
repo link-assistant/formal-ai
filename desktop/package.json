@@ -62,7 +62,11 @@
         "zip"
       ],
       "category": "public.app-category.productivity",
-      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}"
+      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}",
+      "hardenedRuntime": true,
+      "notarize": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
       "target": [

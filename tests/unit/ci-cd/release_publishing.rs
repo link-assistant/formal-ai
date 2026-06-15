@@ -497,6 +497,157 @@ fn desktop_linux_deb_package_metadata_is_configured() {
 }
 
 #[test]
+fn desktop_macos_package_uses_vk_bot_signing_configuration() {
+    // PR #487 follow-up: the latest macOS DMG can download but opens as
+    // "damaged" on a real Mac. The working vk-bot-desktop release path does not
+    // merely disable certificate discovery; it enables hardened runtime,
+    // entitlements, notarization for Developer ID builds, and an explicit
+    // ad-hoc signing hook for no-Apple-account builds.
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let package_json = fs::read_to_string(format!("{manifest_dir}/desktop/package.json")).unwrap();
+    let package: serde_json::Value =
+        serde_json::from_str(&package_json).expect("desktop/package.json should be valid JSON");
+    let mac = package
+        .get("build")
+        .and_then(|build| build.get("mac"))
+        .expect("desktop/package.json should configure build.mac");
+
+    assert_eq!(
+        mac.get("hardenedRuntime")
+            .and_then(serde_json::Value::as_bool),
+        Some(true),
+        "macOS builds should enable hardened runtime like vk-bot-desktop"
+    );
+    assert_eq!(
+        mac.get("notarize").and_then(serde_json::Value::as_bool),
+        Some(true),
+        "macOS Developer ID builds should opt into notarization; CI can disable it only for the ad-hoc fallback"
+    );
+    assert_eq!(
+        mac.get("entitlements").and_then(serde_json::Value::as_str),
+        Some("build/entitlements.mac.plist"),
+        "macOS builds should use the explicit entitlements file copied from the working reference"
+    );
+    assert_eq!(
+        mac.get("entitlementsInherit")
+            .and_then(serde_json::Value::as_str),
+        Some("build/entitlements.mac.plist"),
+        "macOS child processes should inherit the same entitlements"
+    );
+
+    let entitlements = fs::read_to_string(format!(
+        "{manifest_dir}/desktop/build/entitlements.mac.plist"
+    ))
+    .expect("macOS entitlements file should exist");
+    assert!(entitlements.contains("com.apple.security.cs.allow-jit"));
+    assert!(entitlements.contains("com.apple.security.cs.disable-library-validation"));
+
+    let signer = fs::read_to_string(format!("{manifest_dir}/desktop/scripts/adhoc-sign-mac.cjs"))
+        .expect("macOS ad-hoc signing hook should exist");
+    for required in [
+        "require('@electron/osx-sign')",
+        "MACOS_ADHOC_SIGN",
+        "identity: '-'",
+        "identityValidation: false",
+        "timestamp: 'none'",
+    ] {
+        assert!(
+            signer.contains(required),
+            "ad-hoc macOS signer should contain {required}"
+        );
+    }
+}
+
+#[test]
+fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
+    // The PR feedback included a real macOS "damaged and can't be opened"
+    // dialog. Guard against publishing that class of broken artifact by copying
+    // vk-bot-desktop's two-path macOS build: Developer ID + notarization when
+    // secrets are present, explicit ad-hoc signing otherwise, then verify the
+    // produced DMG before upload.
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+
+    let secrets = workflow_step_block(build, "Check macOS signing secrets");
+    for required in [
+        "matrix.ebflag == '--mac'",
+        "MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}",
+        "MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}",
+        "APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}",
+        "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
+        "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
+        "has_secrets=true",
+        "mode=signed",
+        "mode=adhoc",
+    ] {
+        assert!(
+            secrets.contains(required),
+            "macOS secret check should contain {required}"
+        );
+    }
+
+    let signed = workflow_step_block(build, "Package desktop app (macOS signed)");
+    for required in [
+        "steps.mac_secrets.outputs.has_secrets == 'true'",
+        "CSC_LINK: ${{ secrets.MAC_CSC_LINK }}",
+        "CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}",
+        "APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}",
+        "APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}",
+        "APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}",
+        "DEBUG: electron-builder,electron-notarize*",
+        "npx --no-install electron-builder ${{ matrix.ebflag }} --publish never",
+    ] {
+        assert!(
+            signed.contains(required),
+            "signed macOS build should contain {required}"
+        );
+    }
+
+    let adhoc = workflow_step_block(build, "Package desktop app (macOS ad-hoc)");
+    for required in [
+        "steps.mac_secrets.outputs.has_secrets != 'true'",
+        "CSC_IDENTITY_AUTO_DISCOVERY: \"false\"",
+        "MACOS_ADHOC_SIGN: \"1\"",
+        "DEBUG: electron-builder,electron-osx-sign*",
+        "-c.mac.notarize=false",
+        "-c.mac.sign=./scripts/adhoc-sign-mac.cjs",
+    ] {
+        assert!(
+            adhoc.contains(required),
+            "ad-hoc macOS build should contain {required}"
+        );
+    }
+
+    let smoke = workflow_step_block(build, "Smoke test macOS release artifacts");
+    for required in [
+        "matrix.ebflag == '--mac'",
+        "MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}",
+        "hdiutil attach",
+        "formal-ai Desktop.app",
+        "codesign --verify --deep --strict --verbose=2",
+        "spctl --assess --type execute --verbose=4",
+        "xcrun stapler validate",
+        "Signature=adhoc",
+    ] {
+        assert!(
+            smoke.contains(required),
+            "macOS smoke test should contain {required}"
+        );
+    }
+
+    let smoke_index = build
+        .find("- name: Smoke test macOS release artifacts")
+        .expect("macOS smoke step should exist");
+    let upload_index = build
+        .find("- name: Upload assets to release")
+        .expect("release upload step should exist");
+    assert!(
+        smoke_index < upload_index,
+        "macOS artifacts should be smoke-tested before they are uploaded to the release"
+    );
+}
+
+#[test]
 fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
     // Electron Builder renders Linux x64 artifacts with target-specific aliases:
     // AppImage uses x86_64 and Debian uses amd64. The download page, checksum
