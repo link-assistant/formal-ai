@@ -1,0 +1,12 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep diagnostics toggle shows trace
+
+[2m[WebServer] [22m(node:3276465) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › tests/demo.spec.js:609:3 › formal-ai demo UI › diagnostics toggle shows trace, intent, evidence, and thinking steps (1.4s)
+
+  1 passed (3.5s)

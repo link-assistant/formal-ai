@@ -1010,6 +1010,9 @@ const PREFERENCE_DEFAULTS = {
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
   greetingVariations: true,
+  // Issue #488: user-facing thinking can be compact or detailed without
+  // changing the raw diagnostics available to maintainers.
+  thinkingDetailLevel: "detailed",
   // Issue #82: user-tunable assistant behavior. The default still guesses
   // likely typo matches, while the sliders let cautious users ask first and
   // deterministic users turn random response variation off with temperature=0.
@@ -1113,6 +1116,7 @@ const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // program from the detected capabilities; "documented" always emits the full
 // annotated program with every optional region present.
 const BLUEPRINT_COMPOSITION_MODES = ["composed", "documented"];
+const THINKING_DETAIL_LEVELS = ["brief", "standard", "detailed"];
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -1383,6 +1387,12 @@ function normalizeBlueprintComposition(value) {
   return BLUEPRINT_COMPOSITION_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.blueprintComposition;
+}
+
+function normalizeThinkingDetailLevel(value) {
+  return THINKING_DETAIL_LEVELS.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.thinkingDetailLevel;
 }
 
 function normalizeResponseLanguageMode(value) {
@@ -1728,6 +1738,7 @@ function collectUserContext({
   temperature,
   followUpProbability,
   definitionFusion,
+  thinkingDetailLevel,
   experimentalOcr,
 }) {
   const browserLanguages = browserLanguagesList();
@@ -1767,6 +1778,7 @@ function collectUserContext({
     temperature: String(normalizeSliderPreference(temperature, 0)),
     followUpProbability: formatSliderValue(followUpProbability),
     definitionFusion,
+    thinkingDetailLevel,
     experimentalOcr: experimentalOcr ? "on" : "off",
     locationInference:
       locationPreference
@@ -1862,6 +1874,11 @@ function appendUserContextBlock(lines, context) {
   }
   if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
     push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  const thinkingDetailLevel =
+    safe.thinkingDetailLevel || PREFERENCE_DEFAULTS.thinkingDetailLevel;
+  if (thinkingDetailLevel !== PREFERENCE_DEFAULTS.thinkingDetailLevel) {
+    push("Thinking detail", thinkingDetailLevel);
   }
   const toolbarIconPack = safe.toolbarIconPack || PREFERENCE_DEFAULTS.toolbarIconPack;
   if (toolbarIconPack !== PREFERENCE_DEFAULTS.toolbarIconPack) {
@@ -2240,6 +2257,265 @@ function summarizeToolCall(call) {
     }
   }
   return parts.join(" • ");
+}
+
+function humanizeThinkingIdentifier(value) {
+  return String(value || "")
+    .replace(/^agent_\d+_/i, "")
+    .replace(/^try(?=[A-Z])/u, "")
+    .replace(/^handle(?=[A-Z])/u, "")
+    .replace(/([a-z0-9])([A-Z])/gu, "$1 $2")
+    .replace(/[_:.-]+/gu, " ")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function thinkingLanguageLabel(value, t) {
+  const code = String(value || "").toLowerCase().split(/[-_]/u)[0];
+  if (["en", "ru", "zh", "hi"].includes(code)) {
+    return t(`message.thinkingLanguage.${code}`);
+  }
+  return code || t("message.thinkingLanguage.unknown");
+}
+
+function thinkingRouteLabel(value, t) {
+  const label = humanizeThinkingIdentifier(value);
+  if (!label) return t("message.thinkingRoute.reply");
+  if (label === "greeting") return t("message.thinkingRoute.greeting");
+  if (label === "farewell") return t("message.thinkingRoute.farewell");
+  if (label === "unknown") return t("message.thinkingRoute.unknown");
+  return t("message.thinkingRoute.generic", { route: label });
+}
+
+function thinkingRuleLabel(value, t) {
+  const label = humanizeThinkingIdentifier(value);
+  if (!label) return t("message.thinkingRule.selected");
+  if (label === "greeting") return t("message.thinkingRule.greeting");
+  if (label === "farewell") return t("message.thinkingRule.farewell");
+  if (label === "unknown") return t("message.thinkingRule.unknown");
+  return label;
+}
+
+function thinkingToolLabel(value) {
+  const label = humanizeThinkingIdentifier(value);
+  return label || "local";
+}
+
+function truncateThinkingSummary(value) {
+  const text = String(value || "").trim();
+  if (text.length <= 96) return text;
+  return `${text.slice(0, 93).trimEnd()}...`;
+}
+
+function summarizeThinkingDetail(value) {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string") {
+    return truncateThinkingSummary(humanizeThinkingIdentifier(value));
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return `${value.length} item(s)`;
+  }
+  if (typeof value === "object") {
+    const keys = Object.keys(value).slice(0, 3).map(humanizeThinkingIdentifier);
+    return keys.length > 0 ? keys.join(", ") : "structured data";
+  }
+  return truncateThinkingSummary(value);
+}
+
+function naturalizeThinkingStep(entry, t) {
+  const rawStep = String(entry?.step || "step");
+  const step = rawStep.replace(/^agent_\d+_/i, "");
+  const detail = entry?.detail;
+
+  if (rawStep !== step) {
+    return t("message.thinkingStep.agentSubstep", {
+      summary: naturalizeThinkingStep({ step, detail }, t),
+    });
+  }
+
+  switch (step) {
+    case "impulse":
+      return t("message.thinkingStep.impulse");
+    case "formalize":
+      return t("message.thinkingStep.formalize");
+    case "formalize_resolved":
+      return t("message.thinkingStep.formalizeResolved");
+    case "detect_language":
+      return t("message.thinkingStep.detectLanguage", {
+        language: thinkingLanguageLabel(detail, t),
+      });
+    case "resolve_response_language":
+      return t("message.thinkingStep.resolveResponseLanguage", {
+        language: thinkingLanguageLabel(detail, t),
+      });
+    case "clarify_formalization":
+      return t("message.thinkingStep.clarifyFormalization");
+    case "dispatch_handler":
+      return t("message.thinkingStep.dispatchHandler", {
+        route: thinkingRouteLabel(detail, t),
+      });
+    case "match_rule":
+      return t("message.thinkingStep.matchRule", {
+        rule: thinkingRuleLabel(detail, t),
+      });
+    case "invoke_tool":
+      return t("message.thinkingStep.invokeTool", {
+        tool: thinkingToolLabel(detail),
+      });
+    case "fallback":
+      return t("message.thinkingStep.fallback");
+    case "user_context":
+      return t("message.thinkingStep.userContext", {
+        context: summarizeThinkingDetail(detail) || "browser context",
+      });
+    case "deformalize":
+      return t("message.thinkingStep.deformalize");
+    case "route_attempt":
+      return t("message.thinkingStep.routeAttempt", {
+        route: thinkingRouteLabel(detail, t),
+      });
+    case "coreference_binding":
+      return t("message.thinkingStep.coreferenceBinding");
+    case "modifier_detection":
+      return t("message.thinkingStep.modifierDetection");
+    case "rule_construction":
+      return t("message.thinkingStep.ruleConstruction");
+    case "rule_verification":
+      return t("message.thinkingStep.ruleVerification");
+    case "program_plan":
+      return t("message.thinkingStep.programPlan");
+    case "desktop_shell":
+      return t("message.thinkingStep.desktopShell");
+    case "http_chat":
+      return t("message.thinkingStep.httpChat");
+    case "memory":
+      return t("message.thinkingStep.memory");
+    case "agent_plan":
+      return t("message.thinkingStep.agentPlan");
+    case "trigger_button":
+      return t("message.thinkingStep.triggerButton", {
+        action: summarizeThinkingDetail(detail) || "button",
+      });
+    case "apply_message_command":
+      return t("message.thinkingStep.applyMessageCommand", {
+        command: summarizeThinkingDetail(detail) || "setting",
+      });
+    case "trigger_message_action":
+      return t("message.thinkingStep.triggerMessageAction", {
+        action: summarizeThinkingDetail(detail) || "action",
+      });
+    case "extract_term":
+      return t("message.thinkingStep.extractTerm");
+    case "scan_memory":
+      return t("message.thinkingStep.scanMemory");
+    case "group_by_conversation":
+      return t("message.thinkingStep.groupByConversation");
+    default: {
+      const readableStep = humanizeThinkingIdentifier(step) || "step";
+      const readableDetail = summarizeThinkingDetail(detail);
+      return t("message.thinkingStep.generic", {
+        step: readableStep,
+        detail: readableDetail ? `: ${readableDetail}` : "",
+      });
+    }
+  }
+}
+
+function thinkingStepKey(entry) {
+  return String(entry?.step || "").replace(/^agent_\d+_/i, "");
+}
+
+function filterThinkingEntriesForDetail(entries, detailLevel) {
+  const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  if (safeEntries.length <= 1) return safeEntries;
+  const level = normalizeThinkingDetailLevel(detailLevel);
+  if (level === "detailed") return safeEntries;
+  if (level === "brief") return safeEntries.slice(-1);
+
+  const standardSteps = new Set([
+    "impulse",
+    "detect_language",
+    "resolve_response_language",
+    "clarify_formalization",
+    "match_rule",
+    "fallback",
+    "user_context",
+    "deformalize",
+    "program_plan",
+    "desktop_shell",
+    "http_chat",
+    "memory",
+    "agent_plan",
+  ]);
+  const lastIndex = safeEntries.length - 1;
+  const filtered = safeEntries.filter(
+    (entry, index) =>
+      index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
+  );
+  return filtered.length > 0 ? filtered : safeEntries.slice(-1);
+}
+
+function filterThinkingSummariesForDetail(summaries, detailLevel) {
+  const safeSummaries = Array.isArray(summaries)
+    ? summaries.map((step) => String(step || "").trim()).filter(Boolean)
+    : [];
+  if (safeSummaries.length <= 1) return safeSummaries;
+  const level = normalizeThinkingDetailLevel(detailLevel);
+  if (level === "detailed") return safeSummaries;
+  if (level === "brief") return safeSummaries.slice(-1);
+  return safeSummaries.length > 4
+    ? [safeSummaries[0], ...safeSummaries.slice(-3)]
+    : safeSummaries;
+}
+
+function buildThinkingPreviewSteps(
+  structuredSteps,
+  answer,
+  source,
+  t,
+  detailLevel,
+) {
+  if (Array.isArray(structuredSteps) && structuredSteps.length > 0) {
+    return filterThinkingEntriesForDetail(structuredSteps, detailLevel)
+      .map((entry) => naturalizeThinkingStep(entry, t))
+      .filter(Boolean);
+  }
+  return filterThinkingSummariesForDetail(
+    [
+      t("message.thinkingStep.fallbackNormalize"),
+      t("message.thinkingStep.fallbackIntent", {
+        intent: humanizeThinkingIdentifier(answer?.intent || "unknown"),
+      }),
+      t("message.thinkingStep.fallbackRender", {
+        source: humanizeThinkingIdentifier(source || "fallback"),
+      }),
+    ],
+    detailLevel,
+  );
+}
+
+function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
+  if (message?.role !== "assistant") return [];
+  const diagnosticsSteps = Array.isArray(message.diagnosticsSteps)
+    ? message.diagnosticsSteps
+    : [];
+  if (diagnosticsSteps.length > 0) {
+    return buildThinkingPreviewSteps(
+      diagnosticsSteps,
+      message,
+      message.thinkingPreviewSource || message.intent || "local",
+      t,
+      detailLevel,
+    );
+  }
+  return filterThinkingSummariesForDetail(
+    message.thinkingPreviewSteps ?? [],
+    detailLevel,
+  );
 }
 
 function createMessage(role, content, extra = {}) {
@@ -4632,9 +4908,101 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
   );
 }
 
-function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
+function ThinkingPreview({ steps, t }) {
+  const [expanded, setExpanded] = useState(false);
+  const safeSteps = Array.isArray(steps)
+    ? steps.map((step) => String(step || "").trim()).filter(Boolean)
+    : [];
+  if (safeSteps.length === 0) return null;
+
+  const current = safeSteps[safeSteps.length - 1];
+  const previous = safeSteps.length > 1 ? safeSteps[safeSteps.length - 2] : "";
+
+  return h(
+    "section",
+    {
+      className: [
+        "thinking-preview",
+        expanded ? "is-expanded" : "is-collapsed",
+      ].join(" "),
+      "data-testid": "thinking-preview",
+      "aria-label": t("message.thinking"),
+    },
+    h(
+      "div",
+      { className: "thinking-preview-header" },
+      h(
+        "strong",
+        { className: "thinking-preview-title" },
+        t("message.thinking"),
+      ),
+      h(
+        "button",
+        {
+          type: "button",
+          className: "thinking-preview-toggle",
+          "data-testid": "thinking-preview-toggle",
+          "aria-expanded": expanded ? "true" : "false",
+          onClick: () => setExpanded((value) => !value),
+        },
+        expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand"),
+      ),
+    ),
+    expanded
+      ? h(
+          "ol",
+          {
+            className: "thinking-preview-list",
+            "data-testid": "thinking-expanded-list",
+          },
+          safeSteps.map((step, index) =>
+            h("li", { key: `${index}-${step}` }, step),
+          ),
+        )
+      : h(
+          "div",
+          {
+            className: "thinking-preview-collapsed",
+            "data-testid": "thinking-collapsed",
+          },
+          previous
+            ? h(
+                "p",
+                {
+                  className: "thinking-preview-previous",
+                  "data-testid": "thinking-preview-previous",
+                  "aria-label": t("message.thinkingPrevious"),
+                },
+                previous,
+              )
+            : null,
+          h(
+            "p",
+            {
+              className: "thinking-preview-current",
+              "data-testid": "thinking-preview-current",
+              "aria-label": t("message.thinkingCurrent"),
+            },
+            current,
+          ),
+        ),
+  );
+}
+
+function Message({
+  message,
+  diagnosticsMode,
+  reportIssueUrl,
+  thinkingDetailLevel,
+  t,
+}) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const thinkingPreviewSteps = buildMessageThinkingPreviewSteps(
+    message,
+    t,
+    thinkingDetailLevel,
+  );
   const diagnosticsSteps = diagnosticsMode
     ? (message.diagnosticsSteps ?? [])
     : [];
@@ -4744,6 +5112,9 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
         className: "markdown-body",
         dangerouslySetInnerHTML: markdownContent,
       }),
+      thinkingPreviewSteps.length
+        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
+        : null,
       message.iframeUrl
         ? h(
             "div",
@@ -5105,6 +5476,9 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+  const [thinkingDetailLevel, setThinkingDetailLevel] = useState(
+    normalizeThinkingDetailLevel(initialPreferences.current.thinkingDetailLevel),
+  );
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -5438,6 +5812,7 @@ function App() {
         temperature,
         followUpProbability,
         definitionFusion,
+        thinkingDetailLevel,
         experimentalOcr,
       }),
     [
@@ -5455,6 +5830,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      thinkingDetailLevel,
       experimentalOcr,
       colorSchemeTick,
     ],
@@ -5929,6 +6305,7 @@ function App() {
       followUpProbability,
       definitionFusion,
       blueprintComposition,
+      thinkingDetailLevel,
       experimentalOcr,
       ...externalServices,
       associativeProjectPromotion,
@@ -5964,6 +6341,7 @@ function App() {
     followUpProbability,
     definitionFusion,
     blueprintComposition,
+    thinkingDetailLevel,
     experimentalOcr,
     externalServices,
     associativeProjectPromotion,
@@ -6252,10 +6630,19 @@ function App() {
           `Select symbolic intent ${answer.intent || "unknown"}`,
           `Render deterministic answer from ${source}`,
         ];
+    const thinkingPreviewSteps = buildThinkingPreviewSteps(
+      structuredSteps,
+      answer,
+      source,
+      t,
+      thinkingDetailLevel,
+    );
     const message = createMessage("assistant", answer.content, {
       intent: answer.intent,
       evidence,
       thinkingSteps,
+      thinkingPreviewSteps,
+      thinkingPreviewSource: source,
       diagnosticsSteps: structuredSteps,
       diagnosticsToolCalls: structuredToolCalls,
       // Issue #180: forward the web_search diagnostics envelope so the
@@ -6309,7 +6696,7 @@ function App() {
       // Refresh the sidebar so a brand-new conversation appears immediately.
       refreshConversations();
     });
-  }, [ensureConversation, refreshConversations]);
+  }, [ensureConversation, refreshConversations, t, thinkingDetailLevel]);
 
   const conversationHistory = useCallback(
     () =>
@@ -6352,6 +6739,9 @@ function App() {
           setBlueprintComposition(
             normalizeBlueprintComposition(command.value),
           );
+          break;
+        case "thinkingDetailLevel":
+          setThinkingDetailLevel(normalizeThinkingDetailLevel(command.value));
           break;
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
@@ -6783,6 +7173,7 @@ function App() {
     { key: "greetingVariations", value: greetingVariations, set: setGreetingVariations, label: "settings.variations" },
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
+    { key: "thinkingDetailLevel", value: thinkingDetailLevel, set: setThinkingDetailLevel, label: "settings.thinkingDetail" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
     // Issue #444: one reset descriptor per external trusted service so the
     // "modified settings" reset bar lists any service the user turned off.
@@ -7729,6 +8120,37 @@ function App() {
               ),
             ),
             h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.thinkingDetail")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-thinking-detail",
+                  value: thinkingDetailLevel,
+                  onChange: (event) =>
+                    setThinkingDetailLevel(
+                      normalizeThinkingDetailLevel(event.target.value),
+                    ),
+                },
+                h(
+                  "option",
+                  { value: "brief" },
+                  t("settings.thinkingDetail.brief"),
+                ),
+                h(
+                  "option",
+                  { value: "standard" },
+                  t("settings.thinkingDetail.standard"),
+                ),
+                h(
+                  "option",
+                  { value: "detailed" },
+                  t("settings.thinkingDetail.detailed"),
+                ),
+              ),
+            ),
+            h(
               "div",
               { className: "setting-row setting-row-ocr" },
               h(
@@ -8131,6 +8553,7 @@ function App() {
               key: message.id,
               message,
               diagnosticsMode,
+              thinkingDetailLevel,
               t,
               reportIssueUrl:
                 shouldOfferMessageReport(message)
@@ -8143,7 +8566,15 @@ function App() {
                 "article",
                 { className: "message assistant pending" },
                 h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
-                h("div", { className: "message-body" }, h("div", { className: "typing" }, t("status.working"))),
+                h(
+                  "div",
+                  { className: "message-body" },
+                  h("div", { className: "typing" }, t("status.working")),
+                  h(ThinkingPreview, {
+                    steps: [t("message.thinkingStep.working")],
+                    t,
+                  }),
+                ),
               )
             : null,
           h("div", { ref: transcriptEndRef }),
