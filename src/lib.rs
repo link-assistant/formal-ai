@@ -79,7 +79,8 @@ pub use document_formats::{
     DOCUMENT_FORMAT_ENGINE,
 };
 pub use engine::{
-    knowledge_links_notation, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
+    thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
 };
 pub use event_log::{Event, EventLog};
 pub use github_logs::{

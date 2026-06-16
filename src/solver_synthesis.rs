@@ -521,7 +521,7 @@ fn finalize_composed_candidate(
     let evidence_links = build_evidence_links(prompt, log, &candidate.response_link);
     let links_notation =
         answer_links_notation(prompt, &candidate.intent, &candidate.answer, log, &trace_id);
-    let thinking_steps = log.thinking_steps();
+    let thinking_steps = log.thinking_steps_for_answer(&candidate.answer);
     SymbolicAnswer {
         intent: candidate.intent.clone(),
         answer: candidate.answer.clone(),
