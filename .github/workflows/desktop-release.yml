@@ -271,6 +271,12 @@ jobs:
               exit 1
             fi
 
+            if [ ! -f "$installed_app/Contents/_CodeSignature/CodeResources" ]; then
+              echo "::error file=$dmg::Mounted app is missing its signed CodeResources envelope."
+              find "$installed_app/Contents/_CodeSignature" -maxdepth 1 -print 2>/dev/null || true
+              exit 1
+            fi
+
             codesign --verify --deep --strict --verbose=2 "$installed_app"
 
             if [ "$MACOS_BUILD_MODE" = "signed" ]; then

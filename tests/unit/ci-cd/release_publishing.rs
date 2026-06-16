@@ -546,10 +546,20 @@ fn desktop_macos_package_uses_vk_bot_signing_configuration() {
         .expect("macOS ad-hoc signing hook should exist");
     for required in [
         "require('@electron/osx-sign')",
+        "node:child_process",
         "MACOS_ADHOC_SIGN",
         "identity: '-'",
         "identityValidation: false",
         "timestamp: 'none'",
+        "/usr/bin/codesign",
+        "--force",
+        "--timestamp=none",
+        "--deep",
+        "--options",
+        "runtime",
+        "upstreamOptionsForFile(appPath)",
+        "--entitlements",
+        "--verify",
     ] {
         assert!(
             signer.contains(required),
@@ -624,6 +634,7 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}",
         "hdiutil attach",
         "formal-ai Desktop.app",
+        "Contents/_CodeSignature/CodeResources",
         "codesign --verify --deep --strict --verbose=2",
         "spctl --assess --type execute --verbose=4",
         "xcrun stapler validate",
