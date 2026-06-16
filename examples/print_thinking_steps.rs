@@ -29,11 +29,7 @@ fn main() {
         let answer = UniversalSolver::default().solve(prompt);
         println!("\n=== PROMPT: {prompt:?} (intent={}) ===", answer.intent);
         for step in &answer.thinking_steps {
-            let parent = step
-                .parent_id
-                .as_deref()
-                .map(|_| "  ↳")
-                .unwrap_or("   ");
+            let parent = step.parent_id.as_deref().map_or("   ", |_| "  ↳");
             println!(
                 "{parent}[{:>2}] kind={:<26} step={:<22} lvl={:<8} summary={:?}",
                 step.order, step.source_event, step.step, step.level, step.summary

@@ -287,6 +287,16 @@ pub fn naturalize_thinking_step(step: &str, detail: &str) -> String {
                 "Verify the result against the rules.".to_owned()
             }
         }
+        "policy_refusal" => {
+            if has_detail {
+                format!(
+                    "Decline the request under the {} policy.",
+                    humanize_meta_identifier(&trimmed)
+                )
+            } else {
+                "Decline the request under the safety policy.".to_owned()
+            }
+        }
         "rule_construction" => "Build a local behavior rule.".to_owned(),
         "coreference_binding" => "Resolve what the follow-up refers to.".to_owned(),
         "modifier_detection" => "Detect modifiers in the request.".to_owned(),

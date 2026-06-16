@@ -840,7 +840,7 @@ fn tool_call_refusal_answer() -> SymbolicAnswer {
         evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
         thinking_steps: policy_thinking_steps("agent_mode_required_for_tools"),
         links_notation: String::from(
-            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n  thinking_step \"rule_verification agent_mode_required_for_tools\"\n",
+            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n  thinking_step \"policy_refusal agent_mode_required_for_tools\"\n",
         ),
     }
 }
@@ -859,19 +859,13 @@ fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> Symbo
         evidence_links: vec![format!("policy:package_permission_required:{capability}")],
         thinking_steps: policy_thinking_steps(format!("package_permission_required:{capability}")),
         links_notation: format!(
-            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n  thinking_step \"rule_verification package_permission_required:{capability}\"\n"
+            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n  thinking_step \"policy_refusal package_permission_required:{capability}\"\n"
         ),
     }
 }
 
 fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
-    vec![ThinkingStep::new(
-        0,
-        "rule_verification",
-        detail,
-        "high",
-        "policy",
-    )]
+    vec![ThinkingStep::new(0, "policy_refusal", detail, "high", "policy")]
 }
 
 fn first_tool_permission_denial(

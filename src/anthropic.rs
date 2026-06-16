@@ -31,7 +31,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::engine::{stable_id, DEFAULT_MODEL};
+use crate::engine::{naturalize_thinking_step, stable_id, ThinkingStep, DEFAULT_MODEL};
 use crate::protocol::{
     create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, MessageContent,
     ToolCall,
@@ -60,6 +60,12 @@ pub struct AnthropicMessagesRequest {
     pub tools: Vec<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tool_choice: Option<Value>,
+    /// Anthropic extended-thinking config (`{"type":"enabled","budget_tokens":N}`).
+    /// When enabled, the response leads with a `thinking` content block carrying
+    /// the solver's concrete, naturalized reasoning trace (issue #488), exactly
+    /// as the real API surfaces extended thinking.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub thinking: Option<Value>,
 }
 
 /// One inbound Anthropic message (`role` + `content`).
@@ -91,6 +97,10 @@ pub struct AnthropicMessage {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub enum AnthropicContentBlock {
+    /// `{"type":"thinking","thinking":...,"signature":...}` — the extended-thinking
+    /// reasoning block (issue #488). Emitted before the answer only when the request
+    /// enables thinking, mirroring the real Anthropic API.
+    Thinking { thinking: String, signature: String },
     /// `{"type":"text","text":...}`
     Text { text: String },
     /// `{"type":"tool_use","id":...,"name":...,"input":{...}}`
@@ -107,6 +117,14 @@ impl AnthropicContentBlock {
     fn text(text: impl Into<String>) -> Self {
         Self::Text { text: text.into() }
     }
+
+    /// An extended-thinking `thinking` content block.
+    fn thinking(thinking: impl Into<String>, signature: impl Into<String>) -> Self {
+        Self::Thinking {
+            thinking: thinking.into(),
+            signature: signature.into(),
+        }
+    }
 }
 
 /// Anthropic token accounting (`input_tokens` / `output_tokens`).
@@ -117,6 +135,18 @@ pub struct AnthropicUsage {
 }
 
 impl AnthropicMessagesRequest {
+    /// Whether the client enabled extended thinking (`thinking.type == "enabled"`).
+    /// When true, [`create_anthropic_message_with_solver`] leads the response with
+    /// a concrete `thinking` content block (issue #488).
+    #[must_use]
+    pub fn wants_thinking(&self) -> bool {
+        self.thinking
+            .as_ref()
+            .and_then(|value| value.get("type"))
+            .and_then(Value::as_str)
+            .is_some_and(|kind| kind == "enabled")
+    }
+
     /// Translate the Anthropic envelope into the OpenAI `ChatCompletionRequest`
     /// the solver already understands. The top-level `system` becomes a leading
     /// `system` chat message. Each Anthropic message is translated block-aware
@@ -302,7 +332,9 @@ fn anthropic_tool_choice_to_openai(choice: &Value) -> Value {
 ///
 /// When the shared agentic loop asks for tools (`finish_reason: "tool_calls"`), the
 /// response carries `tool_use` content blocks and `stop_reason: "tool_use"`;
-/// otherwise it carries a single `text` block and `stop_reason: "end_turn"`.
+/// otherwise it carries a single `text` block and `stop_reason: "end_turn"`. When the
+/// request enables extended thinking, a concrete `thinking` content block carrying the
+/// solver's naturalized reasoning trace leads the response (issue #488).
 #[must_use]
 pub fn create_anthropic_message_with_solver(
     request: &AnthropicMessagesRequest,
@@ -317,7 +349,7 @@ pub fn create_anthropic_message_with_solver(
     let choice = completion.choices.first();
     let requests_tools = choice.is_some_and(|choice| choice.finish_reason == "tool_calls");
 
-    let (content, stop_reason, seed) = if requests_tools {
+    let (mut content, stop_reason, seed) = if requests_tools {
         let calls = choice
             .map(|choice| choice.message.tool_calls.clone())
             .unwrap_or_default();
@@ -339,6 +371,18 @@ pub fn create_anthropic_message_with_solver(
         )
     };
 
+    // Extended thinking: when the client enabled it, lead the response with a
+    // concrete `thinking` block built from the solver's naturalized reasoning
+    // trace, mirroring the real Anthropic API (issue #488).
+    if request.wants_thinking() {
+        let steps = choice
+            .map(|choice| choice.message.thinking_steps.as_slice())
+            .unwrap_or_default();
+        if let Some(block) = anthropic_thinking_block(steps) {
+            content.insert(0, block);
+        }
+    }
+
     AnthropicMessage {
         id: stable_id("msg", &seed),
         kind: String::from("message"),
@@ -352,6 +396,33 @@ pub fn create_anthropic_message_with_solver(
             output_tokens: completion.usage.completion_tokens,
         },
     }
+}
+
+/// Build the extended-thinking `thinking` content block from the solver's
+/// concrete reasoning trace (issue #488). Each step is rendered by its
+/// naturalized, human-readable `summary`; composite children are indented with a
+/// `↳` marker so the recursively composite structure survives into the Anthropic
+/// surface. The deterministic `signature` is a stable hash of the trace.
+fn anthropic_thinking_block(steps: &[ThinkingStep]) -> Option<AnthropicContentBlock> {
+    if steps.is_empty() {
+        return None;
+    }
+    let mut lines = Vec::with_capacity(steps.len());
+    for step in steps {
+        let sentence = if step.summary.is_empty() {
+            naturalize_thinking_step(&step.step, &step.detail)
+        } else {
+            step.summary.clone()
+        };
+        if step.parent_id.is_some() {
+            lines.push(format!("  ↳ {sentence}"));
+        } else {
+            lines.push(sentence);
+        }
+    }
+    let text = lines.join("\n");
+    let signature = stable_id("thinking_signature", &text);
+    Some(AnthropicContentBlock::thinking(text, signature))
 }
 
 /// Translate one OpenAI `tool_calls` entry into an Anthropic `tool_use` block,
@@ -409,9 +480,39 @@ pub fn anthropic_message_sse(message: &AnthropicMessage) -> String {
 /// Emit the `content_block_start` / `content_block_delta` / `content_block_stop`
 /// trio for one content block. A `text` block streams a `text_delta`; a `tool_use`
 /// block streams its `input` as a single `input_json_delta` (the Anthropic shape an
-/// agentic CLI expects when assembling a tool call).
+/// agentic CLI expects when assembling a tool call); a `thinking` block streams a
+/// `thinking_delta` followed by a `signature_delta` (issue #488).
 fn push_content_block_events(body: &mut String, index: usize, block: &AnthropicContentBlock) {
     match block {
+        AnthropicContentBlock::Thinking { thinking, signature } => {
+            push_sse_event(
+                body,
+                "content_block_start",
+                &json!({
+                    "type": "content_block_start",
+                    "index": index,
+                    "content_block": {"type": "thinking", "thinking": ""}
+                }),
+            );
+            push_sse_event(
+                body,
+                "content_block_delta",
+                &json!({
+                    "type": "content_block_delta",
+                    "index": index,
+                    "delta": {"type": "thinking_delta", "thinking": thinking}
+                }),
+            );
+            push_sse_event(
+                body,
+                "content_block_delta",
+                &json!({
+                    "type": "content_block_delta",
+                    "index": index,
+                    "delta": {"type": "signature_delta", "signature": signature}
+                }),
+            );
+        }
         AnthropicContentBlock::Text { text } => {
             push_sse_event(
                 body,

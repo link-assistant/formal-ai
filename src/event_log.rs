@@ -281,7 +281,7 @@ impl CalculationCluster {
         }
     }
 
-    fn has_data(&self) -> bool {
+    const fn has_data(&self) -> bool {
         self.result.is_some()
             || self.request.is_some()
             || self.engine.is_some()
