@@ -4,8 +4,9 @@
 > **First attempt:** <https://github.com/link-assistant/formal-ai/pull/480> — **MERGED**, but the fix stayed **dormant** (desktop apps remained unavailable) and its macOS screenshots were synthetic. The maintainer rejected it (issue comment, 2026-06-15).
 > **Completion pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completed the first fix.
 > **Linux/macOS follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/487> (branch `issue-479-ff9c709d56dc`) — fixes the remaining Linux asset gap reported after PR #486 and the later broken macOS DMG report.
+> **macOS CI follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/490> (branch `issue-479-845c9fad1bb5`) — fixes the ad-hoc macOS signing regression exposed after PR #487.
 > **Case study date:** 2026-06-14, revised 2026-06-15 after the maintainer's "redo analysis" feedback.
-> **Status:** **Original requirements addressed in PR #486; Linux/macOS follow-up addressed in PR #487.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, partial-release rebuild guard, and the `vk-bot-desktop` macOS signing/smoke-test method needed after `v0.204.0` uploaded macOS assets that downloaded but opened as "damaged".
+> **Status:** **Original requirements addressed in PR #486; Linux/Windows release publishing addressed in PR #487; macOS ad-hoc signing follow-up addressed in PR #490.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, partial-release rebuild guard, and the `vk-bot-desktop` macOS signing/smoke-test method needed after `v0.204.0` uploaded macOS assets that downloaded but opened as "damaged". PR #490 fixes the new CI evidence from `v0.205.0`: Linux and Windows uploaded successfully, but both macOS jobs failed before upload because ad-hoc bundles were not correctly signed/sealed.
 > **Type:** CI/CD bug fix + documentation correction + cross-repo audit + this case study.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/); the full CI/CD template comparison is in [`template-comparison/REPORT.md`](template-comparison/REPORT.md).
@@ -23,6 +24,9 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | Failed Desktop Release log showing the Linux `.deb` metadata error | [`ci-logs/desktop-release-27558290907.log`](ci-logs/desktop-release-27558290907.log) |
 | PR #487 metadata and CI run capture | [`raw-data/pr-487.json`](raw-data/pr-487.json), [`raw-data/pr-487-ci-runs.json`](raw-data/pr-487-ci-runs.json) |
 | PR #487 maintainer screenshot — macOS DMG opens as "damaged" | [`raw-data/pr-487-macos-broken-screenshot.png`](raw-data/pr-487-macos-broken-screenshot.png) |
+| PR #490 live release evidence (`v0.205.0`: Linux/Windows present, macOS absent) | [`raw-data/latest-release-v0.205.0-after-pr487.json`](raw-data/latest-release-v0.205.0-after-pr487.json) |
+| PR #490 Desktop Release run metadata (`27572474798`: both macOS jobs failed) | [`raw-data/desktop-release-27572474798.json`](raw-data/desktop-release-27572474798.json) |
+| PR #490 failed macOS job logs | [`ci-logs/desktop-release-27572474798-macos-arm64.log`](ci-logs/desktop-release-27572474798-macos-arm64.log), [`ci-logs/desktop-release-27572474798-macos-x64.log`](ci-logs/desktop-release-27572474798-macos-x64.log) |
 | PR #487 Linux artifact-name normalizer | [`../../../desktop/scripts/normalize-artifacts.mjs`](../../../desktop/scripts/normalize-artifacts.mjs) |
 | PR #487 macOS ad-hoc signer + entitlements | [`../../../desktop/scripts/adhoc-sign-mac.cjs`](../../../desktop/scripts/adhoc-sign-mac.cjs), [`../../../desktop/build/entitlements.mac.plist`](../../../desktop/build/entitlements.mac.plist) |
 | Every release is asset-less (`desktop_assets: 0`) | [`raw-data/releases-asset-evidence.json`](raw-data/releases-asset-evidence.json) |
@@ -38,6 +42,44 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | The best-practices reference (vk-bot-desktop snapshot, incl. real screenshots and signing method) | [`raw-data/vk-bot-desktop-current/`](raw-data/vk-bot-desktop-current/) |
 
 ---
+
+## 0.5 PR #490 macOS Ad-hoc Signing Follow-up
+
+After PR #487 merged, the maintainer added a third 2026-06-15 issue comment:
+"After https://github.com/link-assistant/formal-ai/pull/487 is merged, there
+are now again no releases. Check CI/CD for false positives and errors, and fix
+them all." Fresh release evidence shows the release itself exists: `v0.205.0`
+was published at 2026-06-15T19:55:53Z.
+However, it is still partial. Linux x64/arm64 and Windows x64/arm64 assets were
+uploaded, but macOS `.dmg` and `.zip` assets are absent
+([`raw-data/latest-release-v0.205.0-after-pr487.json`](raw-data/latest-release-v0.205.0-after-pr487.json)).
+
+The live Desktop Release run `27572474798` confirms the remaining failure mode.
+The resolver picked `v0.205.0` correctly, Linux and Windows jobs succeeded, and
+the final checksum/provenance job succeeded. Both macOS jobs failed in the
+pre-upload smoke test:
+
+- `Build macos-arm64`: `codesign --verify --deep --strict --verbose=2` failed
+  with `/Users/runner/work/_temp/formal-ai Desktop.app: code has no resources
+  but signature indicates they must be present`
+  ([`ci-logs/desktop-release-27572474798-macos-arm64.log`](ci-logs/desktop-release-27572474798-macos-arm64.log),
+  lines 1213 and 1254).
+- `Build macos-x64`: the same smoke command failed with
+  `/Users/runner/work/_temp/formal-ai Desktop.app: code object is not signed at
+  all` for `x86_64`
+  ([`ci-logs/desktop-release-27572474798-macos-x64.log`](ci-logs/desktop-release-27572474798-macos-x64.log),
+  lines 1259 and 1300).
+
+PR #490 keeps the PR #487 smoke test and fixes the signer it exposed. The
+ad-hoc signing hook still delegates to `@electron/osx-sign`, then explicitly
+re-signs the final root `.app` bundle with `/usr/bin/codesign --force
+--options runtime --timestamp=none --sign -`, using the app entitlements from
+electron-builder's `optionsForFile(appPath)` signing options. It immediately
+verifies the bundle with the same strict `codesign --verify --deep --strict
+--verbose=2` command that the release smoke test runs after mounting the DMG.
+The workflow also checks for
+`Contents/_CodeSignature/CodeResources` before upload so a missing resource
+envelope fails with a targeted error.
 
 ## 0. PR #487 Linux + macOS Follow-up
 
