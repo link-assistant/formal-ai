@@ -36700,7 +36700,7 @@ function attachUserContext(answer, userContext) {
       ...(Array.isArray(answer.evidence) ? answer.evidence : []),
       ...evidence,
     ],
-    steps,
+    steps: withThinkingLevels(steps),
   });
 }
 
@@ -37644,6 +37644,44 @@ function deformalizeProjection(formalizationContext, answer) {
   };
 }
 
+// Issue #488: classify each reasoning step into a granularity tier so the
+// thinking preview can show only the high-level universal-algorithm phases at
+// the default ("standard") granularity and fold the mechanical sub-steps
+// (the symbolic formalization tuple, tool probes, calculator reductions, memory
+// scans, rule bookkeeping) into the opt-in "detailed" view. This mirrors the
+// Rust solver's `ThinkingStep::level` classification (see src/engine.rs and
+// src/event_log.rs) so the browser and native engines curate the trace
+// identically — the thinking is fully applied to the logic, not just the UI.
+const HIGH_LEVEL_THINKING_STEPS = new Set([
+  "impulse",
+  "detect_language",
+  "resolve_response_language",
+  "dispatch_handler",
+  "match_rule",
+  "clarify_formalization",
+  "program_plan",
+  "compute",
+  "deformalize",
+  "user_context",
+  "fallback",
+]);
+
+function thinkingStepLevel(step) {
+  const raw = String(step || "");
+  // Nested agent sub-reasoning always folds under its composite agent task.
+  if (/^agent_\d+_/i.test(raw)) return "detailed";
+  return HIGH_LEVEL_THINKING_STEPS.has(raw) ? "high" : "detailed";
+}
+
+function withThinkingLevels(steps) {
+  if (!Array.isArray(steps)) return [];
+  return steps.map((step) =>
+    step && typeof step === "object" && !step.level
+      ? Object.assign({}, step, { level: thinkingStepLevel(step.step) })
+      : step,
+  );
+}
+
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const interpretations = collectInterpretations(formalizationContext, answer);
   answer = applyVisibleInterpretations(answer, interpretations);
@@ -37651,10 +37689,16 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const projection = deformalizeProjection(formalizationContext, answer);
   events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
   steps.push({
     step: "deformalize",
     detail: projection.summary,
     projection,
+    answer: answerFirstLine,
   });
   const trace = events.map((event) => `trace:${event}`);
   const result = {
@@ -37662,7 +37706,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     content: answer.content,
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
-    steps,
+    steps: withThinkingLevels(steps),
     toolCalls,
   };
   if (answer.iframeUrl) {

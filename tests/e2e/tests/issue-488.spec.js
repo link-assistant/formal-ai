@@ -10,7 +10,7 @@ const LANGUAGE_CASES = [
     collapse: 'Collapse',
     currentLabel: 'Current thinking step',
     contextPrefix: 'Applied available context:',
-    firstStep: 'Received the user request.',
+    firstStep: 'Read the request:',
     thinkingDetailLabel: 'Thinking detail',
     thinkingDetailOptions: ['Brief', 'Standard', 'Detailed'],
   },
@@ -22,7 +22,7 @@ const LANGUAGE_CASES = [
     collapse: 'Свернуть',
     currentLabel: 'Текущий шаг мышления',
     contextPrefix: 'Применен доступный контекст:',
-    firstStep: 'Получен запрос пользователя.',
+    firstStep: 'Прочитать запрос:',
     thinkingDetailLabel: 'Детализация мышления',
     thinkingDetailOptions: ['Кратко', 'Стандартно', 'Подробно'],
   },
@@ -34,7 +34,7 @@ const LANGUAGE_CASES = [
     collapse: 'समेटें',
     currentLabel: 'मौजूदा सोच चरण',
     contextPrefix: 'उपलब्ध context लागू किया:',
-    firstStep: 'उपयोगकर्ता का अनुरोध मिला.',
+    firstStep: 'अनुरोध पढ़ें:',
     thinkingDetailLabel: 'सोच का विवरण',
     thinkingDetailOptions: ['संक्षिप्त', 'मानक', 'विस्तृत'],
   },
@@ -46,7 +46,7 @@ const LANGUAGE_CASES = [
     collapse: '折叠',
     currentLabel: '当前思考步骤',
     contextPrefix: '已应用可用上下文',
-    firstStep: '已接收用户请求。',
+    firstStep: '读取请求',
     thinkingDetailLabel: '思考详细程度',
     thinkingDetailOptions: ['简略', '标准', '详细'],
   },
@@ -111,8 +111,10 @@ test.describe('Issue #488 - visible thinking preview', () => {
     await expect(
       preview.locator('[data-testid="thinking-preview-current"]'),
     ).toContainText('Applied available context:');
+    // The naturalized preview must never leak raw snake_case meta-language step
+    // identifiers (issue #488 pipeline stage 2 humanizes every step).
     await expect(preview).not.toContainText(
-      /match_rule|dispatch_handler|deformalize|formalize/i,
+      /match_rule|dispatch_handler|invoke_tool|detect_language/i,
     );
 
     await toggle.click();
@@ -122,15 +124,29 @@ test.describe('Issue #488 - visible thinking preview', () => {
       '[data-testid="thinking-expanded-list"]',
     );
     await expect(expandedList).toBeVisible();
+    // Default detail level is "detailed": every concrete reasoning step shows,
+    // each surfacing real content (the prompt, the matched rule, the composed
+    // answer) instead of a generic category label.
     expect(await expandedList.locator('li').count()).toBeGreaterThanOrEqual(6);
-    await expect(expandedList).toContainText('Received the user request.');
-    await expect(expandedList).toContainText('Matched the greeting rule.');
-    await expect(expandedList).toContainText(
-      'Prepared the answer in readable text.',
-    );
+    await expect(expandedList).toContainText('Read the request:');
+    await expect(expandedList).toContainText('Match the greeting rule.');
+    await expect(expandedList).toContainText('Compose the answer:');
     await expect(expandedList).not.toContainText(
-      /match_rule|dispatch_handler|deformalize|formalize/i,
+      /match_rule|dispatch_handler|invoke_tool|detect_language/i,
     );
+
+    // Configurable granularity (issue #488): "standard" recursively folds the
+    // low-level / symbolic children (the formalize tuple, the tool probe) out of
+    // view and keeps only the high-level universal-algorithm phases plus the
+    // final step.
+    await page
+      .locator('[data-testid="setting-thinking-detail"]')
+      .selectOption('standard');
+    await expect(expandedList.locator('li')).toHaveCount(5);
+    await expect(expandedList).toContainText('Read the request:');
+    await expect(expandedList).toContainText('Match the greeting rule.');
+    await expect(expandedList).toContainText('Applied available context:');
+    await expect(expandedList).not.toContainText(/symbolic form/i);
 
     await page
       .locator('[data-testid="setting-thinking-detail"]')

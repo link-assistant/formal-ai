@@ -2326,24 +2326,54 @@ function summarizeThinkingDetail(value) {
   return truncateThinkingSummary(value);
 }
 
+// Preserve a concrete detail value verbatim (the user's prompt, the computed
+// result, the composed answer) while bounding its length, mirroring the Rust
+// `truncate_thinking_detail` helper (120 chars, ellipsis suffix). Unlike
+// `summarizeThinkingDetail` this does NOT lowercase or strip punctuation, so the
+// real content survives into the naturalized sentence.
+function thinkingDetailText(detail) {
+  if (detail === null || detail === undefined) return "";
+  const text = String(detail).trim();
+  if (text.length === 0) return "";
+  const chars = Array.from(text);
+  if (chars.length <= 120) return text;
+  return `${chars.slice(0, 119).join("").trimEnd()}…`;
+}
+
+// English indefinite article for a phrase, mirroring the Rust `indefinite_article`
+// helper so the English "Formalize the request as {article} {task} task." reads
+// grammatically. Languages without articles simply ignore the {article} param.
+function thinkingIndefiniteArticle(phrase) {
+  const first = String(phrase || "").trimStart().charAt(0).toLowerCase();
+  return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
+}
+
+// Translate a single structured thinking step into one concrete, human-readable
+// sentence in the active UI language. This is stage 2 of the issue #488 pipeline
+// ("translate the meta-language description into the target user language"):
+// every known step kind threads its *concrete* detail (the prompt, the computed
+// result, the looked-up entity, the composed answer) into a localized template,
+// so the trace reads as real reasoning rather than generic category labels.
+// Unknown kinds fall back to the meta-language `summary` the Rust solver already
+// computed, then to a generic humanized label.
 function naturalizeThinkingStep(entry, t) {
   const rawStep = String(entry?.step || "step");
   const step = rawStep.replace(/^agent_\d+_/i, "");
   const detail = entry?.detail;
+  const value = thinkingDetailText(detail);
+  const hasDetail = value.length > 0;
 
   if (rawStep !== step) {
     return t("message.thinkingStep.agentSubstep", {
-      summary: naturalizeThinkingStep({ step, detail }, t),
+      summary: naturalizeThinkingStep({ ...entry, step }, t),
     });
   }
 
   switch (step) {
     case "impulse":
-      return t("message.thinkingStep.impulse");
-    case "formalize":
-      return t("message.thinkingStep.formalize");
-    case "formalize_resolved":
-      return t("message.thinkingStep.formalizeResolved");
+      return hasDetail
+        ? t("message.thinkingStep.impulse", { prompt: value })
+        : t("message.thinkingStep.impulsePlain");
     case "detect_language":
       return t("message.thinkingStep.detectLanguage", {
         language: thinkingLanguageLabel(detail, t),
@@ -2352,50 +2382,152 @@ function naturalizeThinkingStep(entry, t) {
       return t("message.thinkingStep.resolveResponseLanguage", {
         language: thinkingLanguageLabel(detail, t),
       });
+    case "formalize": {
+      // The browser solver formalizes into a symbolic Links-notation tuple
+      // before the route is known, so surface that tuple concretely; the Rust
+      // solver instead reports the resolved task route (e.g. "greeting").
+      const tuple = entry?.formalization?.tuple;
+      if (tuple) {
+        return t("message.thinkingStep.formalizeTuple", {
+          tuple: thinkingDetailText(tuple),
+        });
+      }
+      if (!hasDetail) return t("message.thinkingStep.formalizePlain");
+      const task = humanizeThinkingIdentifier(detail);
+      return t("message.thinkingStep.formalize", {
+        task,
+        article: thinkingIndefiniteArticle(task),
+      });
+    }
+    case "formalize_resolved": {
+      const tuple = entry?.formalization?.tuple;
+      if (tuple) {
+        return t("message.thinkingStep.formalizeResolvedTuple", {
+          tuple: thinkingDetailText(tuple),
+        });
+      }
+      return hasDetail
+        ? t("message.thinkingStep.formalizeResolved", {
+            entity: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.formalizeResolvedPlain");
+    }
     case "clarify_formalization":
-      return t("message.thinkingStep.clarifyFormalization");
+      return hasDetail
+        ? t("message.thinkingStep.clarifyFormalization", { options: value })
+        : t("message.thinkingStep.clarifyFormalizationPlain");
     case "dispatch_handler":
-      return t("message.thinkingStep.dispatchHandler", {
-        route: thinkingRouteLabel(detail, t),
-      });
-    case "match_rule":
-      return t("message.thinkingStep.matchRule", {
-        rule: thinkingRuleLabel(detail, t),
-      });
-    case "invoke_tool":
-      return t("message.thinkingStep.invokeTool", {
-        tool: thinkingToolLabel(detail),
-      });
-    case "fallback":
-      return t("message.thinkingStep.fallback");
-    case "user_context":
-      return t("message.thinkingStep.userContext", {
-        context: summarizeThinkingDetail(detail) || "browser context",
-      });
-    case "deformalize":
-      return t("message.thinkingStep.deformalize");
+      return hasDetail
+        ? t("message.thinkingStep.dispatchHandler", {
+            route: thinkingRouteLabel(detail, t),
+          })
+        : t("message.thinkingStep.dispatchHandlerPlain");
     case "route_attempt":
-      return t("message.thinkingStep.routeAttempt", {
-        route: thinkingRouteLabel(detail, t),
-      });
+      return hasDetail
+        ? t("message.thinkingStep.routeAttempt", {
+            route: thinkingRouteLabel(detail, t),
+          })
+        : t("message.thinkingStep.routeAttemptPlain");
+    case "match_rule":
+      return hasDetail
+        ? t("message.thinkingStep.matchRule", {
+            rule: thinkingRuleLabel(detail, t),
+          })
+        : t("message.thinkingStep.matchRulePlain");
+    case "compute":
+      return hasDetail
+        ? t("message.thinkingStep.compute", { expression: value })
+        : t("message.thinkingStep.computePlain");
+    case "compute_engine":
+      return hasDetail
+        ? t("message.thinkingStep.computeEngine", {
+            engine: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.computeEnginePlain");
+    case "compute_expression":
+      return t("message.thinkingStep.computeExpression", { expression: value });
+    case "compute_steps":
+      return t("message.thinkingStep.computeSteps", { count: value });
+    case "lookup_fact":
+      return hasDetail
+        ? t("message.thinkingStep.lookupFact", {
+            fact: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.lookupFactPlain");
+    case "invoke_tool":
+      return hasDetail
+        ? t("message.thinkingStep.invokeTool", {
+            tool: thinkingToolLabel(detail),
+          })
+        : t("message.thinkingStep.invokeToolPlain");
+    case "rule_verification":
+      return hasDetail
+        ? t("message.thinkingStep.ruleVerification", {
+            rule: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.ruleVerificationPlain");
+    case "policy_refusal":
+      return hasDetail
+        ? t("message.thinkingStep.policyRefusal", {
+            policy: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.policyRefusalPlain");
+    case "rule_construction":
+      return t("message.thinkingStep.ruleConstruction");
     case "coreference_binding":
       return t("message.thinkingStep.coreferenceBinding");
     case "modifier_detection":
       return t("message.thinkingStep.modifierDetection");
-    case "rule_construction":
-      return t("message.thinkingStep.ruleConstruction");
-    case "rule_verification":
-      return t("message.thinkingStep.ruleVerification");
     case "program_plan":
-      return t("message.thinkingStep.programPlan");
-    case "desktop_shell":
-      return t("message.thinkingStep.desktopShell");
+      return hasDetail
+        ? t("message.thinkingStep.programPlan", {
+            plan: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.programPlanPlain");
+    case "scan_memory":
+      return hasDetail
+        ? t("message.thinkingStep.scanMemory", { term: value })
+        : t("message.thinkingStep.scanMemoryPlain");
+    case "deformalize": {
+      // Prefer the clean composed answer the browser solver attaches as
+      // `answer`; the Rust/API solver already sends the answer text as the
+      // detail. The raw worker `detail` is the symbolic projection summary
+      // (with the ⇒ glyph) reserved for the diagnostics panel, so it is not
+      // used here.
+      const answerText = thinkingDetailText(
+        entry?.answer !== undefined && entry?.answer !== null
+          ? entry.answer
+          : detail,
+      );
+      return answerText
+        ? t("message.thinkingStep.deformalize", { answer: answerText })
+        : t("message.thinkingStep.deformalizePlain");
+    }
+    case "agent_plan":
+      return hasDetail
+        ? t("message.thinkingStep.agentPlan", {
+            task: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.agentPlanPlain");
+    case "fallback":
+      return t("message.thinkingStep.fallback");
     case "http_chat":
       return t("message.thinkingStep.httpChat");
     case "memory":
       return t("message.thinkingStep.memory");
-    case "agent_plan":
-      return t("message.thinkingStep.agentPlan");
+    case "extract_term":
+      return t("message.thinkingStep.extractTerm");
+    case "group_by_conversation":
+      return t("message.thinkingStep.groupByConversation");
+    // ---- Browser-only steps (no Rust solver counterpart) ----
+    case "user_context":
+      return t("message.thinkingStep.userContext", {
+        context:
+          summarizeThinkingDetail(detail) ||
+          t("message.thinkingStep.userContextDefault"),
+      });
+    case "desktop_shell":
+      return t("message.thinkingStep.desktopShell");
     case "trigger_button":
       return t("message.thinkingStep.triggerButton", {
         action: summarizeThinkingDetail(detail) || "button",
@@ -2408,13 +2540,12 @@ function naturalizeThinkingStep(entry, t) {
       return t("message.thinkingStep.triggerMessageAction", {
         action: summarizeThinkingDetail(detail) || "action",
       });
-    case "extract_term":
-      return t("message.thinkingStep.extractTerm");
-    case "scan_memory":
-      return t("message.thinkingStep.scanMemory");
-    case "group_by_conversation":
-      return t("message.thinkingStep.groupByConversation");
     default: {
+      // Unknown step kind: prefer the concrete meta-language summary the Rust
+      // solver already computed (issue #488 pipeline stage 1), then fall back to
+      // a generic humanized label so nothing renders as a bare identifier.
+      const summary = String(entry?.summary || "").trim();
+      if (summary) return summary;
       const readableStep = humanizeThinkingIdentifier(step) || "step";
       const readableDetail = summarizeThinkingDetail(detail);
       return t("message.thinkingStep.generic", {
@@ -2436,6 +2567,23 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
   if (level === "detailed") return safeEntries;
   if (level === "brief") return safeEntries.slice(-1);
 
+  // Medium (default) granularity: show the high-level universal-algorithm
+  // phases plus the final step, recursively folding composite internals (the
+  // calculator trace, memory scans, tool calls) out of view. Prefer the
+  // structured `level` field the solver now emits ("high" for phases,
+  // "detailed" for nested children); fall back to a step-name allowlist for
+  // legacy entries that predate the level metadata.
+  const lastIndex = safeEntries.length - 1;
+  const hasLevels = safeEntries.some(
+    (entry) => typeof entry?.level === "string" && entry.level.length > 0,
+  );
+  if (hasLevels) {
+    const filtered = safeEntries.filter(
+      (entry, index) => index === lastIndex || entry?.level === "high",
+    );
+    return filtered.length > 0 ? filtered : safeEntries.slice(-1);
+  }
+
   const standardSteps = new Set([
     "impulse",
     "detect_language",
@@ -2451,7 +2599,6 @@ function filterThinkingEntriesForDetail(entries, detailLevel) {
     "memory",
     "agent_plan",
   ]);
-  const lastIndex = safeEntries.length - 1;
   const filtered = safeEntries.filter(
     (entry, index) =>
       index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
@@ -4099,6 +4246,7 @@ function normalizeApiThinkingStep(entry) {
     step: step || "fallback",
     detail,
   };
+  if (entry.summary !== undefined) normalized.summary = String(entry.summary);
   if (entry.id !== undefined) normalized.id = String(entry.id);
   if (entry.order !== undefined) normalized.order = entry.order;
   if (entry.level !== undefined) normalized.level = String(entry.level);
