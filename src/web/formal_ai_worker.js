@@ -10775,6 +10775,130 @@ function tryWhoIsQuestion(prompt) {
   };
 }
 
+// Issue #513 (visible fix for #511): recognize a request to run a shell/terminal
+// command. The detection rules are mirrored in the Rust solver
+// (`src/solver_terminal.rs`, `try_terminal_command`) so both engines stay at
+// parity. A recognized command returns an `agent_suggestion` intent that names
+// the detected command, explains agent mode, and — when agent mode is off —
+// offers to switch it on and grant the `shell` capability.
+const TERMINAL_PHRASES = [
+  "в терминале",
+  "в консоли",
+  "в командной строке",
+  "в шелле",
+  "in terminal",
+  "in the terminal",
+  "in a terminal",
+  "in console",
+  "in the console",
+  "in shell",
+  "in the shell",
+  "in a shell",
+  "terminal command",
+  "shell command",
+  "command line",
+  "command-line",
+];
+const TERMINAL_RUN_VERBS = [
+  "выполни",
+  "выполнить",
+  "запусти",
+  "запустить",
+  "run",
+  "execute",
+];
+const TERMINAL_SHELL_TOKENS = new Set([
+  "ls", "pwd", "cd", "cat", "echo", "mkdir", "rmdir", "rm", "cp", "mv", "touch",
+  "grep", "git", "npm", "npx", "node", "cargo", "python", "python3", "pip",
+  "curl", "wget", "chmod", "chown", "df", "du", "ps", "kill", "head", "tail",
+  "whoami", "uname", "export", "which", "sudo", "ssh", "tar", "find", "sed",
+  "awk", "make", "docker", "kubectl",
+]);
+
+function extractBacktickCommand(prompt) {
+  const first = prompt.indexOf("`");
+  if (first < 0) return null;
+  let start = first;
+  while (start < prompt.length && prompt[start] === "`") start += 1;
+  let end = start;
+  while (end < prompt.length && prompt[end] !== "`") end += 1;
+  if (end <= start) return null;
+  const command = prompt.slice(start, end).trim();
+  return command || null;
+}
+
+function leadingShellCommand(prompt) {
+  const trimmed = prompt.trim().replace(/^`+|`+$/g, "").trim();
+  const first = trimmed.split(/\s+/)[0] || "";
+  const normalized = (first.match(/^[A-Za-z0-9_-]+/) || [""])[0].toLowerCase();
+  return TERMINAL_SHELL_TOKENS.has(normalized) ? trimmed : null;
+}
+
+function detectTerminalCommand(prompt) {
+  const lower = prompt.toLowerCase();
+  const hasPhrase = TERMINAL_PHRASES.some((p) => lower.includes(p));
+  const tokens = lower.split(/[^\p{L}\p{N}_]+/u).filter(Boolean);
+  const tokenSet = new Set(tokens);
+  const hasVerb = TERMINAL_RUN_VERBS.some((v) => tokenSet.has(v));
+  const backtick = extractBacktickCommand(prompt);
+  const leading = leadingShellCommand(prompt);
+  if (backtick && (hasVerb || hasPhrase)) return backtick;
+  if (hasPhrase && hasVerb) return backtick || leading;
+  if (leading) return leading;
+  return null;
+}
+
+function terminalCommandBody(command, language, agentModeOn) {
+  if (language === "ru") {
+    if (agentModeOn) {
+      return (
+        `Похоже, вы просите выполнить команду в терминале: \`${command}\`.\n\n` +
+        "Режим агента включён. Если доступ к оболочке (shell) выдан, я могу " +
+        `выполнить \`${command}\`. Иначе выдайте доступ к \`shell\` в настройках.`
+      );
+    }
+    return (
+      `Похоже, вы просите выполнить команду в терминале: \`${command}\`.\n\n` +
+      "Чтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме " +
+      "чата (Chat) я только рассуждаю и не запускаю команды.\n\n" +
+      "Включить режим агента и выдать доступ к оболочке (shell), чтобы я мог " +
+      `выполнить \`${command}\`? Переключите режим на «Agent» на панели инструментов ` +
+      "(или «Full Auto» для автоматического выполнения)."
+    );
+  }
+  if (agentModeOn) {
+    return (
+      `It looks like you want to run a terminal command: \`${command}\`.\n\n` +
+      "Agent mode is on. If the `shell` capability is granted I can run " +
+      `\`${command}\`. Otherwise grant the \`shell\` capability in settings.`
+    );
+  }
+  return (
+    `It looks like you want to run a terminal command: \`${command}\`.\n\n` +
+    "Running shell commands requires Agent mode. In Chat mode I only reason " +
+    "about your request and do not execute commands.\n\n" +
+    "Switch to Agent mode and grant the `shell` capability so I can run " +
+    `\`${command}\`? Use the mode radio in the toolbar to pick \"Agent\" ` +
+    "(or \"Full Auto\" to run commands automatically)."
+  );
+}
+
+function tryTerminalCommand(prompt, language, preferences) {
+  const command = detectTerminalCommand(prompt);
+  if (!command) return null;
+  const agentModeOn = Boolean(preferences && preferences.agentMode);
+  return {
+    intent: "agent_suggestion",
+    content: terminalCommandBody(command, language, agentModeOn),
+    confidence: 0.6,
+    evidence: [
+      `terminal:command:${command}`,
+      "terminal:agent_suggestion:shell",
+      "response:agent_suggestion",
+    ],
+  };
+}
+
 // Wikipedia REST summary endpoint per language. Browser-friendly: CORS is
 // enabled by Wikimedia for these summary endpoints, so the worker can fetch
 // without a proxy from GitHub Pages.
@@ -37533,6 +37657,16 @@ async function solve(prompt, history, prefs, userContext = {}) {
     events.push(`handler:${whoIs.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
+  }
+
+  // Issue #513: recognize terminal-command requests (visible fix for #511)
+  // before the unknown fallback, so a shell request returns an agent_suggestion
+  // intent in both engines.
+  const terminal = tryTerminalCommand(prompt, language, preferences);
+  if (terminal) {
+    events.push(`handler:${terminal.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
+    return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
 
   events.push("fallback:unknown");
