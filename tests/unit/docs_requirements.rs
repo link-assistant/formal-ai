@@ -546,8 +546,13 @@ fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
             "| R324 ",
             "| R325 ",
             "| R326 ",
+            "| R327 ",
+            "| R328 ",
+            "| R329 ",
             "ghcr.io/link-assistant/formal-ai:latest",
             "compose.yaml",
+            "desktop/lib/service-control.cjs",
+            "docs/desktop/service-control.md",
         ],
     );
 
@@ -584,6 +589,20 @@ fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
             "ghcr.io/link-assistant/formal-ai:latest",
             "TELEGRAM_BOT_TOKEN",
             "formal-ai-telegram-docker:/var/lib/docker",
+        ],
+    );
+
+    let service_control = read(root.join("docs/desktop/service-control.md"));
+    assert_contains_all(
+        "docs/desktop/service-control.md",
+        &service_control,
+        &[
+            "One-click services",
+            "formal-ai-telegram",
+            "formal-ai-server",
+            "desktop/lib/service-control.cjs",
+            "docker compose --profile all up -d",
+            "formal-ai serve --host 0.0.0.0 --port 8080",
         ],
     );
 

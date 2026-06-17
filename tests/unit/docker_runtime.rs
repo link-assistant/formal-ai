@@ -87,6 +87,7 @@ fn compose_file_runs_prebuilt_telegram_image_with_minimum_configuration() {
 }
 
 #[test]
+#[allow(clippy::literal_string_with_formatting_args)]
 fn compose_file_offers_optional_openai_compatible_server_profile() {
     // Issue #438 (follow-up): the same compose file must also start the
     // OpenAI-compatible API server (agentic mode) on a server, under an opt-in
