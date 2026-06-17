@@ -17,6 +17,7 @@ const REQUIRED_KEYS = [
   'buttons.diagnosticsOn',
   'buttons.agent',
   'buttons.chat',
+  'buttons.fullAuto',
   'buttons.demo',
   'buttons.demoOn',
   'buttons.openMenu',
@@ -35,6 +36,8 @@ const REQUIRED_KEYS = [
   'titles.diagnosticsHide',
   'titles.agentOn',
   'titles.agentOff',
+  'titles.fullAuto',
+  'titles.modeGroup',
   'titles.demoOn',
   'titles.demoOff',
   'titles.menuOpen',
@@ -266,6 +269,7 @@ const REQUIRED_KEYS = [
   'settings.resetNone',
   'status.demoPlaying',
   'status.manual',
+  'status.mode',
   'status.nextDialogIn',
   'status.memoryUnavailable',
   'status.memoryExported',
@@ -366,6 +370,7 @@ const runtimeChecks = [
   ['zz', 'buttons.reportIssue', 'Report issue'],
   ['en', 'settings.language', 'Language'],
   ['en', 'status.nextDialogIn', 'Next dialog in 5s', { seconds: 5 }],
+  ['en', 'status.mode', 'Mode: Agent', { mode: 'Agent' }],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {
