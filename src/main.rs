@@ -10,11 +10,11 @@ use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
-    import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
-    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
-    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig, TelegramPollingConfig,
-    UniversalSolver, DEFAULT_MODEL,
+    import_memory_full, knowledge_links_notation, merged_bundle, naturalize_thinking_step,
+    parse_bundle, render_github_log_plan, run_telegram_polling, run_telegram_webhook_server,
+    seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
+    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig,
+    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
 };
 
 /// The default task the `agent` subcommand drives: the canonical issue-#468
@@ -47,6 +47,12 @@ enum Command {
         /// "What is IIR?". Defaults to `FORMAL_AI_DEFINITION_FUSION` or explicit.
         #[arg(long, value_enum)]
         definition_fusion: Option<DefinitionFusionMode>,
+
+        /// Print the solver's concrete, human-readable thinking steps before the
+        /// answer (text format only). Composite steps are shown nested under
+        /// their parent. The same trace the web UI and API surfaces expose.
+        #[arg(long, default_value_t = false)]
+        thinking: bool,
     },
     Dataset,
     Serve {
@@ -357,6 +363,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
         definition_fusion: None,
+        thinking: false,
     });
 
     match command {
@@ -364,7 +371,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             prompt,
             format,
             definition_fusion,
-        } => run_chat(&prompt, format, definition_fusion)?,
+            thinking,
+        } => run_chat(&prompt, format, definition_fusion, thinking)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Memory { action } => run_memory(action)?,
         Command::Bundle { action } => run_bundle(action)?,
@@ -472,15 +480,46 @@ fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> Universal
     UniversalSolver::new(config)
 }
 
+/// Render the solver's concrete thinking trace for the `--thinking` flag.
+///
+/// Each step is shown by its naturalized, human-readable `summary` (issue #488)
+/// — the same meta-language description the web UI and API surfaces expose —
+/// rather than its internal `step` slug. Composite steps are nested under their
+/// parent with a `↳` marker so the recursively composite (fractal) structure of
+/// the reasoning is visible on the CLI too.
+fn print_thinking_trace(answer: &SymbolicAnswer) {
+    if answer.thinking_steps.is_empty() {
+        return;
+    }
+    println!("Thinking:");
+    for step in &answer.thinking_steps {
+        let sentence = if step.summary.is_empty() {
+            naturalize_thinking_step(&step.step, &step.detail)
+        } else {
+            step.summary.clone()
+        };
+        if step.parent_id.is_some() {
+            println!("    ↳ {sentence}");
+        } else {
+            println!("  {sentence}");
+        }
+    }
+    println!();
+}
+
 fn run_chat(
     prompt: &str,
     format: OutputFormat,
     definition_fusion: Option<DefinitionFusionMode>,
+    thinking: bool,
 ) -> Result<(), Box<dyn Error>> {
     let solver = solver_for_chat(definition_fusion);
     match format {
         OutputFormat::Text => {
             let response = solver.solve(prompt);
+            if thinking {
+                print_thinking_trace(&response);
+            }
             println!("{}", response.answer);
         }
         OutputFormat::Chat => {

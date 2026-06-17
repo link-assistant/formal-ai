@@ -89,6 +89,32 @@ fn chat_completion_reports_token_usage() {
 }
 
 #[test]
+fn chat_completion_includes_ordered_thinking_steps() {
+    let request = ChatCompletionRequest {
+        model: None,
+        messages: vec![ChatMessage::user("Hi")],
+        temperature: None,
+        stream: false,
+        tools: Vec::new(),
+        tool_choice: None,
+        functions: Vec::new(),
+        function_call: None,
+    };
+
+    let completion = create_chat_completion(&request);
+    let steps = &completion.choices[0].message.thinking_steps;
+
+    assert!(
+        !steps.is_empty(),
+        "assistant message should expose thinking steps"
+    );
+    assert_eq!(steps[0].order, 0);
+    assert_eq!(steps[0].step, "impulse");
+    assert!(steps.iter().any(|step| step.step == "formalize"));
+    assert!(steps.iter().any(|step| step.step == "deformalize"));
+}
+
+#[test]
 fn responses_endpoint_returns_completed_response() {
     let request = ResponsesRequest {
         model: None,
@@ -104,6 +130,28 @@ fn responses_endpoint_returns_completed_response() {
     let messages = response.output_messages();
     assert_eq!(messages[0].role, "assistant");
     assert_eq!(messages[0].content[0].kind, "output_text");
+}
+
+#[test]
+fn responses_endpoint_includes_top_level_and_message_thinking_steps() {
+    let request = ResponsesRequest {
+        model: None,
+        input: serde_json::Value::String(String::from("Hi")),
+        instructions: None,
+        temperature: Some(0.0),
+        stream: false,
+        ..ResponsesRequest::default()
+    };
+
+    let response = create_response(&request);
+    let messages = response.output_messages();
+
+    assert!(!response.thinking_steps.is_empty());
+    assert_eq!(messages[0].thinking_steps, response.thinking_steps);
+    assert!(response
+        .thinking_steps
+        .iter()
+        .any(|step| step.source_event == "response"));
 }
 
 #[test]

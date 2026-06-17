@@ -5,7 +5,9 @@ use serde_json::Value;
 
 use crate::agentic_coding::planner::{plan_chat_step, AgenticPlan};
 use crate::associative_package::{default_package_store, PackagePermissionDecision};
-use crate::engine::{estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+use crate::engine::{
+    estimate_tokens, stable_id, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
 use crate::solver::{ConversationTurn, UniversalSolver};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -106,6 +108,9 @@ pub struct ChatMessage {
     /// For a `tool` role message: the name of the tool that produced the result.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Ordered solver-thinking projection attached to assistant answers.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thinking_steps: Vec<ThinkingStep>,
 }
 
 impl ChatMessage {
@@ -416,6 +421,8 @@ pub struct ResponseObject {
     pub usage: ResponseUsage,
     #[serde(default)]
     pub evidence_links: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thinking_steps: Vec<ThinkingStep>,
 }
 
 impl ResponseObject {
@@ -485,6 +492,8 @@ pub struct ResponseOutputMessage {
     pub kind: String,
     pub role: String,
     pub content: Vec<ResponseOutputContent>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thinking_steps: Vec<ThinkingStep>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -639,6 +648,8 @@ fn chat_completion_from_symbolic(
         .unwrap_or_else(|| String::from(DEFAULT_MODEL));
     let prompt_tokens = estimate_tokens(prompt);
     let completion_tokens = estimate_tokens(&symbolic_answer.answer);
+    let mut message = ChatMessage::assistant(symbolic_answer.answer);
+    message.thinking_steps = symbolic_answer.thinking_steps;
 
     ChatCompletion {
         id: stable_id("chatcmpl", prompt),
@@ -647,7 +658,7 @@ fn chat_completion_from_symbolic(
         model,
         choices: vec![ChatChoice {
             index: 0,
-            message: ChatMessage::assistant(symbolic_answer.answer),
+            message,
             finish_reason: String::from("stop"),
         }],
         usage: TokenUsage {
@@ -726,6 +737,7 @@ fn response_from_plan(
                     kind: String::from("output_text"),
                     text: answer,
                 }],
+                thinking_steps: Vec::new(),
             });
             (vec![message], output_tokens)
         }
@@ -744,6 +756,7 @@ fn response_from_plan(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: Vec::new(),
+        thinking_steps: Vec::new(),
     }
 }
 
@@ -758,6 +771,7 @@ fn response_from_symbolic(
         .unwrap_or_else(|| String::from(DEFAULT_MODEL));
     let input_tokens = estimate_tokens(prompt);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
+    let thinking_steps = symbolic_answer.thinking_steps.clone();
 
     ResponseObject {
         id: stable_id("resp", prompt),
@@ -773,6 +787,7 @@ fn response_from_symbolic(
                 kind: String::from("output_text"),
                 text: symbolic_answer.answer,
             }],
+            thinking_steps: thinking_steps.clone(),
         })],
         usage: ResponseUsage {
             input_tokens,
@@ -780,6 +795,7 @@ fn response_from_symbolic(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: symbolic_answer.evidence_links,
+        thinking_steps,
     }
 }
 
@@ -822,8 +838,9 @@ fn tool_call_refusal_answer() -> SymbolicAnswer {
         ),
         confidence: 1.0,
         evidence_links: vec![String::from("policy:agent_mode_required_for_tools")],
+        thinking_steps: policy_thinking_steps("agent_mode_required_for_tools"),
         links_notation: String::from(
-            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n",
+            "tool_call_refusal\n  policy \"agent_mode_required_for_tools\"\n  thinking_step \"policy_refusal agent_mode_required_for_tools\"\n",
         ),
     }
 }
@@ -840,10 +857,21 @@ fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> Symbo
         ),
         confidence: 1.0,
         evidence_links: vec![format!("policy:package_permission_required:{capability}")],
+        thinking_steps: policy_thinking_steps(format!("package_permission_required:{capability}")),
         links_notation: format!(
-            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n"
+            "tool_call_refusal\n  policy \"package_permission_required\"\n  capability \"{capability}\"\n  thinking_step \"policy_refusal package_permission_required:{capability}\"\n"
         ),
     }
+}
+
+fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
+    vec![ThinkingStep::new(
+        0,
+        "policy_refusal",
+        detail,
+        "high",
+        "policy",
+    )]
 }
 
 fn first_tool_permission_denial(

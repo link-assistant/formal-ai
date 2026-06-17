@@ -269,3 +269,41 @@ fn telegram_answers_include_trace_link() {
         "Telegram answers should advertise a trace link"
     );
 }
+
+#[test]
+fn telegram_answers_surface_concrete_thinking_as_expandable_blockquote() {
+    // Issue #488: the deep-thinking UX is not UI-only. On Telegram the solver's
+    // concrete reasoning is surfaced through the platform's native
+    // `<blockquote expandable>` (collapsed by default, expands on tap) appended
+    // after the answer, so the answer still leads and the trace footer remains.
+    let json = webhook(&serde_json::json!({
+        "update_id": 16,
+        "message": {
+            "message_id": 16,
+            "date": 0,
+            "chat": {"id": 23, "type": "private"},
+            "text": "Hi"
+        }
+    }));
+    let text = json["text"].as_str().unwrap();
+    assert!(
+        text.starts_with("Hi, how may I help you?"),
+        "the answer must still lead the message, got: {text}"
+    );
+    assert!(
+        text.contains("<blockquote expandable>"),
+        "reasoning should render as a Telegram expandable blockquote, got: {text}"
+    );
+    assert!(
+        text.contains("</blockquote>"),
+        "the expandable blockquote must be closed, got: {text}"
+    );
+    assert!(
+        text.contains("/trace "),
+        "the trace footer must remain present, got: {text}"
+    );
+    assert!(
+        text.len() <= 4096,
+        "the reply (answer + thinking + trace) must stay within Telegram's limit"
+    );
+}

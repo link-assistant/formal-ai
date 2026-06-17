@@ -53,6 +53,7 @@ pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod thinking;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -78,7 +79,10 @@ pub use document_formats::{
     supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
     DOCUMENT_FORMAT_ENGINE,
 };
-pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+pub use engine::{
+    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
+    thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,

@@ -64,6 +64,9 @@ fn anthropic_messages_emits_tool_use_block_in_agent_mode() {
         AnthropicContentBlock::Text { text } => {
             panic!("expected a tool_use block, got text: {text}")
         }
+        AnthropicContentBlock::Thinking { .. } => {
+            panic!("thinking not requested, so no thinking block should be emitted")
+        }
     }
 }
 
@@ -111,6 +114,9 @@ fn anthropic_tool_result_block_advances_the_loop() {
         AnthropicContentBlock::Text { text } => {
             panic!("expected a web_fetch tool_use block, got text: {text}")
         }
+        AnthropicContentBlock::Thinking { .. } => {
+            panic!("thinking not requested, so no thinking block should be emitted")
+        }
     }
 }
 
@@ -141,6 +147,9 @@ fn anthropic_messages_refuses_tools_without_agent_mode() {
         }
         AnthropicContentBlock::ToolUse { name, .. } => {
             panic!("expected a text refusal block, got tool_use: {name}")
+        }
+        AnthropicContentBlock::Thinking { .. } => {
+            panic!("thinking not requested, so no thinking block should be emitted")
         }
     }
 }
@@ -180,6 +189,89 @@ fn anthropic_tool_use_streams_as_input_json_delta() {
     assert!(
         sse.contains("\"stop_reason\":\"tool_use\""),
         "message_delta should report the tool_use stop reason"
+    );
+}
+
+#[test]
+fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
+    // When the client enables extended thinking, the Anthropic reply must lead with
+    // a `thinking` content block carrying the solver's concrete, naturalized
+    // reasoning trace (issue #488) — the same trace every other surface exposes —
+    // followed by the plain `text` answer. The turn still ends with `end_turn`.
+    let request: AnthropicMessagesRequest = serde_json::from_value(serde_json::json!({
+        "model": "claude-sonnet-4-5",
+        "max_tokens": 1024,
+        "thinking": {"type": "enabled", "budget_tokens": 1024},
+        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+    }))
+    .unwrap();
+
+    let message = create_anthropic_message_with_solver(&request, &UniversalSolver::default());
+
+    assert_eq!(message.stop_reason, "end_turn");
+    assert_eq!(
+        message.content.len(),
+        2,
+        "expected a thinking block then a text block"
+    );
+    match &message.content[0] {
+        AnthropicContentBlock::Thinking {
+            thinking,
+            signature,
+        } => {
+            assert!(
+                thinking.contains("Read the request"),
+                "thinking must open with the concrete impulse step, got: {thinking}"
+            );
+            assert!(
+                thinking.contains("The capital of France is Paris."),
+                "thinking must surface the concrete composed answer, got: {thinking}"
+            );
+            assert!(!signature.is_empty(), "thinking block needs a signature");
+        }
+        other => panic!("expected a thinking block first, got: {other:?}"),
+    }
+    match &message.content[1] {
+        AnthropicContentBlock::Text { text } => {
+            assert!(
+                text.contains("Paris"),
+                "the answer text block should carry the answer, got: {text}"
+            );
+        }
+        other => panic!("expected the answer text block second, got: {other:?}"),
+    }
+}
+
+#[test]
+fn anthropic_extended_thinking_streams_thinking_then_signature_delta() {
+    // Streaming a `thinking` block must use the Anthropic `thinking_delta` then
+    // `signature_delta` events (issue #488), exactly as the real API does.
+    let request: AnthropicMessagesRequest = serde_json::from_value(serde_json::json!({
+        "model": "claude-sonnet-4-5",
+        "stream": true,
+        "thinking": {"type": "enabled", "budget_tokens": 1024},
+        "messages": [{"role": "user", "content": "What is the capital of France?"}]
+    }))
+    .unwrap();
+
+    let message = create_anthropic_message_with_solver(&request, &UniversalSolver::default());
+    let sse = anthropic_message_sse(&message);
+
+    assert!(
+        sse.contains("\"type\":\"thinking\""),
+        "missing thinking block start"
+    );
+    assert!(
+        sse.contains("thinking_delta"),
+        "thinking must stream a thinking_delta"
+    );
+    assert!(
+        sse.contains("signature_delta"),
+        "thinking must stream a signature_delta"
+    );
+    assert!(
+        sse.contains("The capital of France is Paris."),
+        "streamed thinking should carry the concrete reasoning"
     );
 }
 
