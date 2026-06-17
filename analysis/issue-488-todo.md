@@ -42,39 +42,59 @@ The concreteness exists in the data but is destroyed at projection + render time
 - R13 Case study compiled in `docs/case-studies/issue-488` (with research + plans).
 - R14 Everything in one PR (#489).
 
+## Architecture change (maintainer: "It is ok to change architecture to make it perfect.")
+
+- [x] Promote thinking to a first-class concern: extract the `ThinkingStep` model
+      and the shared naturalizer into a dedicated `src/thinking.rs` module (re-exported
+      via `crate::engine`), instead of burying them inside `engine.rs`. This keeps each
+      file within the per-file line budget and makes "thinking" architectural, not an
+      engine implementation detail. Mirror is `tests/source/thinking.rs` (byte-identical).
+
 ## Subtask 1 — Concrete naturalization in the CORE and every non-UI surface
 
-- [ ] Add a concrete `summary` (meta-language description) field to the core
+- [x] Add a concrete `summary` (meta-language description) field to the core
       `ThinkingStep` model so non-UI surfaces get concreteness for free (R5, R7, R8).
-- [ ] Add a single shared `naturalize_thinking_step(step, detail)` function in the
+- [x] Add a single shared `naturalize_thinking_step(step, detail)` function in the
       core that surfaces real content: prompt text, detected language, route/intent,
       computed `expr = result`, looked-up entity, invoked tool, answer preview (R5, R7).
-- [ ] Rework `EventLog::thinking_steps()` to emit CURATED, CONCRETE steps:
+- [x] Rework `EventLog::thinking_steps()` to emit CURATED, CONCRETE steps:
       introduce specific kinds (`compute`, `lookup_fact`, ...), clean `detail`,
       drop pure-noise events, de-duplicate consecutive repeats (R5, R9).
-- [ ] Assign `level` so the universal-algorithm phases are `high` and internals are
+- [x] Assign `level` so the universal-algorithm phases are `high` and internals are
       `detailed`, so min granularity == high-level direction only (R10, R12).
-- [ ] Preserve the raw diagnostics trace for maintainers (unchanged evidence links).
-- [ ] Surface concrete thinking on the CLI (`formal-ai chat --thinking`) in text mode (R8).
-- [ ] Carry `summary` through OpenAI-compatible chat/responses + Anthropic outputs (R7, R8).
-- [ ] Make refusal/policy thinking steps concrete too (R5).
-- [ ] Mirror EVERY core change into `src/web/formal_ai_worker.js` (summary + curated steps).
-- [ ] Mirror EVERY `src/*.rs` edit into `tests/source/*.rs` (keep appended `mod tests;`).
+- [x] Preserve the raw diagnostics trace for maintainers (unchanged evidence links).
+- [x] Surface concrete thinking on the CLI (`formal-ai chat --thinking`) in text mode (R8).
+- [x] Carry `summary` through OpenAI-compatible chat/responses + Anthropic outputs (R7, R8).
+- [x] Surface concrete thinking on the Telegram bot via the platform's native
+      `<blockquote expandable>` (collapsed by default, expands on tap), budget-guarded
+      so the answer still leads and the reply stays within Telegram's 4096-char limit (R8).
+- [x] Make refusal/policy thinking steps concrete too (R5).
+- [x] Mirror EVERY core change into `src/web/formal_ai_worker.js` (summary + curated steps).
+- [x] Mirror EVERY `src/*.rs` edit into `tests/source/*.rs` (keep appended `mod tests;`).
 
 ## Subtask 2 — Concrete, localized, composite presentation (UI) + tests + docs
 
-- [ ] Rewrite `naturalizeThinkingStep` in `app.js` to surface concrete `detail`
+- [x] Rewrite `naturalizeThinkingStep` in `app.js` to surface concrete `detail`
       (interpolate cleaned params; fall back to core `summary`) (R5, R7).
-- [ ] Add/extend i18n templates for en, ru, hi, zh with concrete interpolation (R7).
-- [ ] Keep collapsed-latest + faded-previous + expand-all behavior intact (R1, R2, R3, R6).
-- [ ] Keep the granularity setting meaningful against the new levels (R9, R10).
-- [ ] Render composite parent/child relationships where present (R11).
-- [ ] Verify concrete output across task classes: greeting, calculation (en/ru),
+- [x] Add/extend i18n templates for en, ru, hi, zh with concrete interpolation (R7).
+- [x] Keep collapsed-latest + faded-previous + expand-all behavior intact (R1, R2, R3, R6).
+- [x] Keep the granularity setting meaningful against the new levels (R9, R10).
+- [x] Render composite parent/child relationships where present (R11).
+- [x] Verify concrete output across task classes: greeting, calculation (en/ru),
       translation, coding, QA/lookup, unknown (R12).
-- [ ] Update the case study in `docs/case-studies/issue-488` with the new design (R13).
-- [ ] Add a `changelog.d/` fragment and bump the package version for release.
-- [ ] Update/extend tests: source mirror tests, `openai_compatibility.rs`,
+- [x] Update the case study in `docs/case-studies/issue-488` with the new design (R13).
+- [x] Add a `changelog.d/` fragment and bump the package version for release.
+- [x] Update/extend tests: source mirror tests, `openai_compatibility.rs`,
       e2e `issue-488.spec.js`; add concreteness assertions (e.g. compute summary
       contains the computed result) (R5).
-- [ ] Run full local verification (fmt, clippy, cargo test, e2e checks, file-size).
+- [x] Run full local verification (fmt, clippy, cargo test, e2e checks, file-size).
 - [ ] Merge latest default branch, refresh PR description, `gh pr ready 489`.
+
+## Design boundary (documented, not a gap)
+
+Two-stage pipeline (R7): reasoning step → English meta-language `summary` → target
+user language. Localization into the user's language is a **UI** concern (the browser's
+`naturalizeThinkingStep` uses the i18n catalog). Non-UI surfaces (CLI `--thinking`, the
+OpenAI/Anthropic APIs, and the Telegram bot) render the English `summary` as-is — they
+have no per-user locale catalog. This is the intended architecture, so "concrete by
+default" holds on every surface while localization stays where the catalog lives.

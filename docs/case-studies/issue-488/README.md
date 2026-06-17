@@ -31,6 +31,9 @@
 | R488-7 | Let users control thinking granularity. | Settings now include a localized `Thinking detail` select (`brief`, `standard`, `detailed`) that reshapes previews without changing raw diagnostics. |
 | R488-8 | Compile a case study and use existing components/libraries. | This directory preserves raw data and research; the implementation reuses the app's existing React renderer, i18n catalog, and structured solver steps. |
 | R488-9 | Apply thinking beyond UI-only state to solver/API logic. | `ThinkingStep` is now first-class solver output derived from `EventLog`, serialized through Links Notation, Chat Completions, Responses, and consumed by the desktop HTTP UI path. |
+| R488-10 | Thinking steps must be **concrete by default** (maintainer feedback). | A shared `naturalize_thinking_step(step, detail)` turns each meta-language event into a concrete English sentence that names the real content — the prompt, the detected language, the chosen route, the computed `expr = result`, the looked-up entity, the composed answer — instead of a generic category label. The core `ThinkingStep` carries this as a `summary` field so every surface renders the same concrete reasoning. |
+| R488-11 | Apply to the **broadest possible** set of surfaces, not only the browser UI. | The same concrete reasoning is surfaced on the CLI (`formal-ai chat --thinking`), the OpenAI-compatible Chat Completions / Responses APIs, the Anthropic Messages API, the browser worker/app, and the Telegram bot (via the platform's native `<blockquote expandable>`). |
+| R488-12 | Change architecture where it makes the result perfect (maintainer feedback). | Thinking is promoted to a first-class concern in its own `src/thinking.rs` module (model + naturalizer), re-exported via `crate::engine`, rather than living inside `engine.rs`. This keeps each file within the per-file line budget and makes "thinking" architectural rather than an engine implementation detail. |
 
 ## Subtasks
 
@@ -56,6 +59,51 @@ The follow-up PR review identified a second gap: the first pass was mostly a bro
 - Added light/dark CSS for the preview without changing the existing diagnostics panels.
 - Added i18n catalog entries and checker coverage for English, Russian, Chinese, and Hindi.
 - Added `tests/source/source_tests/event_log/tests.rs`, OpenAI compatibility assertions, and `tests/e2e/tests/issue-488.spec.js` coverage for the solver projection, API transport, and browser preview.
+
+### Concrete-by-default round (maintainer feedback)
+
+Maintainer feedback after the first round: *"Thinking steps should be more concrete
+by default. Apply each requirement to the entire code base... broadest possible sense.
+It is ok to change architecture to make it perfect."* The root cause (see
+`../../analysis/issue-488-todo.md` and `experiments/`) was that the concreteness lived
+in the data but was destroyed at projection + render time: the Rust projection emitted
+noisy meta-language identifiers, and the browser naturalizer mapped a step *kind* to a
+generic template while **discarding `detail`**. The follow-up work:
+
+- Promoted thinking to a first-class concern in a dedicated `src/thinking.rs` module
+  (the `ThinkingStep` model plus the shared naturalizer), re-exported through
+  `crate::engine`. This is the architecture change the maintainer authorized; it keeps
+  every file within the repository's per-file line budget. The mirror is the
+  byte-identical `tests/source/thinking.rs`.
+- Added `naturalize_thinking_step(step, detail)` — the deterministic
+  `(step, detail) -> concrete English sentence` translator that is the single source of
+  truth for every surface. `ThinkingStep::new` calls it to populate the `summary` field,
+  so concreteness is produced once and reused everywhere.
+- Reworked `EventLog::thinking_steps()` into a curated projection: specific step kinds,
+  cleaned `detail`, dropped pure-noise events, and `level` assignment so the
+  universal-algorithm phases are `high` and internals are `detailed` (min granularity
+  shows only high-level direction).
+- Made the policy/refusal step concrete (it now names the policy that applied).
+- Surfaced the concrete reasoning on the **Telegram** bot through the platform's native
+  `<blockquote expandable>` (Bot API 7.0+): collapsed by default, expands on tap. The
+  blockquote is appended after the answer and is budget-guarded — dropped entirely if
+  answer + thinking + trace would exceed Telegram's 4096-character limit — so the answer
+  always leads and the message never overflows. Each step sentence is HTML-escaped for
+  the HTML parse mode. See `examples/issue_488_telegram_thinking.rs` and
+  `raw-data/telegram-thinking-example.log`.
+- Mirrored the concreteness into the browser: `src/web/formal_ai_worker.js` emits the
+  curated projection with levels, and `naturalizeThinkingStep` in `src/web/app.js`
+  interpolates the concrete `detail` (and additionally localizes it).
+
+#### Design boundary: meta-language vs. localization
+
+The pipeline (R7) is `reasoning step -> English meta-language summary -> target user
+language`. The final localization stage is a **UI** concern: the browser's
+`naturalizeThinkingStep` translates the summary using the i18n catalog. Non-UI surfaces
+(CLI `--thinking`, the OpenAI/Anthropic APIs, and the Telegram bot) render the English
+`summary` as-is, because they have no per-user locale catalog. This is the intended
+architecture — "concrete by default" holds on every surface, while localization stays
+where the catalog lives.
 
 ## Verification
 

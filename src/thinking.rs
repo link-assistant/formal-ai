@@ -1,13 +1,16 @@
 //! Human-readable "thinking" steps (issue #488).
 //!
 //! This module owns the [`ThinkingStep`] model and the deterministic
-//! `(step, detail) -> concrete English sentence` naturalizer that every surface
-//! shares: the core `EventLog` projection, the CLI `--thinking` output, the
-//! OpenAI/Anthropic API responses, and — mirrored in
-//! `src/web/formal_ai_worker.js` — the browser worker. Keeping it in its own
-//! module (rather than inside `engine.rs`) keeps each file focused and within the
-//! repository's per-file line budget while making "thinking" a first-class
-//! concern of the architecture rather than an engine implementation detail.
+//! `(step, detail) -> concrete English sentence` naturalizer that every native
+//! surface shares: the core `EventLog` projection, the CLI `--thinking` output,
+//! the OpenAI/Anthropic API responses, and the Telegram bot. The browser mirrors
+//! the same two stages in JavaScript — the curated projection in
+//! `src/web/formal_ai_worker.js` and the naturalizer (`naturalizeThinkingStep`,
+//! which additionally localizes into the user's language) in `src/web/app.js`.
+//! Keeping it in its own module (rather than inside `engine.rs`) keeps each file
+//! focused and within the repository's per-file line budget while making
+//! "thinking" a first-class concern of the architecture rather than an engine
+//! implementation detail.
 
 use serde::{Deserialize, Serialize};
 
