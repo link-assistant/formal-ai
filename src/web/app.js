@@ -4127,6 +4127,32 @@ function desktopBridge() {
   return window.FormalAiDesktop;
 }
 
+// Issue #438 (follow-up): only the Electron desktop shell exposes the
+// start/stop service handlers. The browser/VS Code surfaces lack them, so the
+// Services panel is gated on the bridge actually carrying serviceStatus.
+function desktopServiceBridge() {
+  const bridge = desktopBridge();
+  if (!bridge || typeof bridge.serviceStatus !== "function") {
+    return null;
+  }
+  return bridge;
+}
+
+// Human-readable summary for a single managed service state so the UI label and
+// the indicator dot stay in lockstep.
+function serviceStateLabel(state) {
+  return (
+    {
+      running: "running",
+      stopped: "stopped",
+      absent: "stopped",
+      "missing-config": "needs token",
+      "docker-unavailable": "Docker unavailable",
+      error: "error",
+    }[String(state || "")] || String(state || "unknown")
+  );
+}
+
 function normalizeDesktopStatus(status) {
   if (!status || typeof status !== "object") {
     return null;
@@ -5842,6 +5868,16 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
+  // Issue #438 (follow-up): one-click start/stop of the prepared Docker
+  // containers (Telegram bot + OpenAI-compatible server). `serviceStatus` holds
+  // the latest snapshot from the desktop bridge; `serviceBusy` names the service
+  // currently starting/stopping so its buttons disable; `telegramToken` backs the
+  // inline token field the bot needs before it can start.
+  const [serviceStatus, setServiceStatus] = useState(null);
+  const [serviceBusy, setServiceBusy] = useState("");
+  const [serviceError, setServiceError] = useState("");
+  const [telegramToken, setTelegramToken] = useState("");
+  const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(false);
   // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
   // of a single Q&A. Persisted across reloads via preferences.
   const [agentMode, setAgentMode] = useState(
@@ -6034,6 +6070,93 @@ function App() {
     // agent-permission toggle changes (default-deny until opted in).
     syncDesktopToolGrants(desktopBridge(), agentMode);
   }, [agentMode, desktopStatus]);
+
+  // Issue #438 (follow-up): poll the desktop bridge for the prepared-container
+  // status so the Services panel reflects running/stopped without a manual
+  // refresh, and expose it for the one-click buttons.
+  const refreshServiceStatus = useCallback(async () => {
+    const bridge = desktopServiceBridge();
+    if (!bridge) {
+      return null;
+    }
+    try {
+      const snapshot = await bridge.serviceStatus();
+      setServiceStatus(snapshot && typeof snapshot === "object" ? snapshot : null);
+      return snapshot;
+    } catch (error) {
+      setServiceError(error && error.message ? error.message : String(error));
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    const bridge = desktopServiceBridge();
+    if (!bridge) {
+      return undefined;
+    }
+    let active = true;
+    const tick = () => {
+      if (active) {
+        refreshServiceStatus();
+      }
+    };
+    tick();
+    const timer = setInterval(tick, 5000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, [refreshServiceStatus]);
+
+  const handleStartService = useCallback(
+    async (key) => {
+      const bridge = desktopServiceBridge();
+      if (!bridge || typeof bridge.startService !== "function") {
+        return;
+      }
+      setServiceBusy(key);
+      setServiceError("");
+      try {
+        const request = { service: key };
+        if (key === "telegram") {
+          request.token = telegramToken.trim();
+        }
+        const result = await bridge.startService(request);
+        if (result && result.ok === false && result.reason) {
+          setServiceError(result.reason);
+        }
+      } catch (error) {
+        setServiceError(error && error.message ? error.message : String(error));
+      } finally {
+        setServiceBusy("");
+        await refreshServiceStatus();
+      }
+    },
+    [telegramToken, refreshServiceStatus],
+  );
+
+  const handleStopService = useCallback(
+    async (key) => {
+      const bridge = desktopServiceBridge();
+      if (!bridge || typeof bridge.stopService !== "function") {
+        return;
+      }
+      setServiceBusy(key);
+      setServiceError("");
+      try {
+        const result = await bridge.stopService({ service: key });
+        if (result && result.ok === false && result.reason) {
+          setServiceError(result.reason);
+        }
+      } catch (error) {
+        setServiceError(error && error.message ? error.message : String(error));
+      } finally {
+        setServiceBusy("");
+        await refreshServiceStatus();
+      }
+    },
+    [refreshServiceStatus],
+  );
 
   useEffect(() => {
     // R5d: expose a thin hook so the local tool router (and the desktop e2e
@@ -7965,6 +8088,123 @@ function App() {
                     desktopToolPermission,
                   ),
                 ),
+              ),
+            })
+          : null,
+        serviceStatus
+          ? h(CollapsibleSection, {
+              title: "Services",
+              testId: "sidebar-services",
+              collapsed: sidebarServicesCollapsed,
+              onToggle: () => setSidebarServicesCollapsed((value) => !value),
+              className: "desktop-services-section",
+              children: h(
+                "div",
+                { className: "desktop-services-panel", "data-testid": "desktop-services-panel" },
+                serviceStatus.dockerAvailable === false
+                  ? h(
+                      "p",
+                      {
+                        className: "desktop-services-note",
+                        "data-testid": "desktop-services-docker-missing",
+                      },
+                      "Docker is not available. Install Docker Desktop to start the prepared containers.",
+                    )
+                  : null,
+                ...(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(
+                  (service) => {
+                    const running = Boolean(service.running);
+                    const busy = serviceBusy === service.key;
+                    const dockerReady = serviceStatus.dockerAvailable !== false;
+                    return h(
+                      "div",
+                      {
+                        key: service.key,
+                        className: "desktop-service",
+                        "data-testid": `desktop-service-${service.key}`,
+                        "data-state": service.state,
+                      },
+                      h(
+                        "div",
+                        { className: "desktop-service-head" },
+                        h("span", {
+                          className: `desktop-service-dot${running ? " is-running" : ""}`,
+                          "data-testid": `desktop-service-dot-${service.key}`,
+                        }),
+                        h("span", { className: "desktop-service-label" }, service.label),
+                        h(
+                          "span",
+                          {
+                            className: "desktop-service-state",
+                            "data-testid": `desktop-service-state-${service.key}`,
+                          },
+                          serviceStateLabel(service.state),
+                        ),
+                      ),
+                      service.key === "telegram" && !running
+                        ? h("input", {
+                            type: "password",
+                            className: "desktop-service-token",
+                            "data-testid": "desktop-service-telegram-token",
+                            placeholder: "TELEGRAM_BOT_TOKEN",
+                            value: telegramToken,
+                            autoComplete: "off",
+                            spellCheck: false,
+                            onChange: (event) => setTelegramToken(event.target.value),
+                          })
+                        : null,
+                      running && service.url
+                        ? h(
+                            "a",
+                            {
+                              className: "desktop-service-url",
+                              href: service.url,
+                              target: "_blank",
+                              rel: "noopener noreferrer",
+                              "data-testid": `desktop-service-url-${service.key}`,
+                            },
+                            compactUrl(service.url),
+                          )
+                        : null,
+                      h(
+                        "div",
+                        { className: "desktop-service-actions" },
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "desktop-service-start",
+                            "data-testid": `desktop-service-start-${service.key}`,
+                            disabled: running || busy || !dockerReady,
+                            onClick: () => handleStartService(service.key),
+                          },
+                          busy ? "Starting…" : "Start",
+                        ),
+                        h(
+                          "button",
+                          {
+                            type: "button",
+                            className: "desktop-service-stop",
+                            "data-testid": `desktop-service-stop-${service.key}`,
+                            disabled: !running || busy,
+                            onClick: () => handleStopService(service.key),
+                          },
+                          busy ? "Stopping…" : "Stop",
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                serviceError
+                  ? h(
+                      "p",
+                      {
+                        className: "desktop-services-error",
+                        "data-testid": "desktop-services-error",
+                      },
+                      serviceError,
+                    )
+                  : null,
               ),
             })
           : null,

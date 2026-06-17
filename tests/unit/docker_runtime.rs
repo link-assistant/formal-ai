@@ -15,6 +15,7 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
         &[
             "FROM rust:1.96-slim AS builder",
             "FROM konard/box-dind:2.1.1",
+            "LABEL org.opencontainers.image.source=\"https://github.com/link-assistant/formal-ai\"",
             "FORMAL_AI_IMAGE_VARIANT=dind",
             "FORMAL_AI_START_ISOLATION=docker",
             "FORMAL_AI_START_RUNNER=\"$ --isolated docker --auto-remove-docker-container --\"",
@@ -63,6 +64,52 @@ fn docker_microservice_seed_declares_dind_start_command_contract() {
             "docker_microservice tools should include `{expected}`: {record:?}",
         );
     }
+}
+
+#[test]
+fn compose_file_runs_prebuilt_telegram_image_with_minimum_configuration() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let compose = fs::read_to_string(root.join("compose.yaml"))
+        .expect("compose.yaml should document the prebuilt Telegram bot image startup");
+
+    assert_contains_all(
+        "compose.yaml",
+        &compose,
+        &[
+            "telegram-bot:",
+            "${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}",
+            "privileged: true",
+            "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN to your Telegram bot token}",
+            "FORMAL_AI_TELEGRAM_ALLOWED_UPDATES",
+            "formal-ai-telegram-docker:/var/lib/docker",
+        ],
+    );
+}
+
+#[test]
+#[allow(clippy::literal_string_with_formatting_args)]
+fn compose_file_offers_optional_openai_compatible_server_profile() {
+    // Issue #438 (follow-up): the same compose file must also start the
+    // OpenAI-compatible API server (agentic mode) on a server, under an opt-in
+    // profile so `docker compose up` keeps starting only the Telegram bot. The
+    // container name matches the one the desktop app starts/stops with one click.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let compose = fs::read_to_string(root.join("compose.yaml"))
+        .expect("compose.yaml should document the optional OpenAI-compatible server");
+
+    assert_contains_all(
+        "compose.yaml",
+        &compose,
+        &[
+            "server:",
+            "container_name: formal-ai-server",
+            "profiles: [\"server\", \"all\"]",
+            "[\"formal-ai\", \"serve\", \"--host\", \"0.0.0.0\", \"--port\", \"${FORMAL_AI_SERVER_PORT:-8080}\"]",
+            "127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}:${FORMAL_AI_SERVER_PORT:-8080}",
+            // each DinD service uses its own inner-Docker volume.
+            "formal-ai-server-docker:/var/lib/docker",
+        ],
+    );
 }
 
 fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {

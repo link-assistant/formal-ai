@@ -11,6 +11,7 @@ const { URL } = require("node:url");
 
 const { createToolRouter } = require("./lib/tool-router.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
+const { createServiceControl } = require("./lib/service-control.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
 const API_AUTH_ENV_KEYS = [
@@ -395,6 +396,79 @@ function runInSandbox({ image, tool, command }) {
     });
   });
 }
+
+// Issue #438 (follow-up): one-click start/stop of the prepared Telegram bot and
+// OpenAI-compatible server containers. `runDocker` shells out to the real
+// `docker` CLI and collects its result; `createServiceControl` owns the
+// lifecycle logic (argument vectors, running-state probes, stale-container
+// reaping) so the same contract is exercised by node:test without a daemon.
+function runDocker(args) {
+  return new Promise((resolve) => {
+    let child = null;
+    try {
+      child = childProcess.spawn("docker", args, {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      resolve({ code: 1, stdout: "", stderr: error && error.message ? error.message : String(error) });
+      return;
+    }
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.once("error", (error) => {
+      resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
+    });
+    child.once("exit", (code) => {
+      resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
+    });
+  });
+}
+
+const serviceControl = createServiceControl({
+  env: process.env,
+  runDocker,
+  dockerAvailable: dockerIsAvailable,
+});
+
+// The renderer's Services panel drives these handlers: status for the indicators,
+// start/stop for the one-click buttons. Each returns a plain status object the UI
+// renders directly (running/stopped/missing-config/docker-unavailable).
+ipcMain.handle("formalAiDesktop:serviceStatus", () => serviceControl.statusAll());
+ipcMain.handle("formalAiDesktop:startService", (_event, request) => {
+  const key = request && request.service ? String(request.service) : "";
+  const token = request && typeof request.token === "string" ? request.token : "";
+  try {
+    return serviceControl.start(key, { token });
+  } catch (error) {
+    return Promise.resolve({
+      ok: false,
+      key,
+      state: "error",
+      running: false,
+      reason: error && error.message ? error.message : String(error),
+    });
+  }
+});
+ipcMain.handle("formalAiDesktop:stopService", (_event, request) => {
+  const key = request && request.service ? String(request.service) : "";
+  try {
+    return serviceControl.stop(key);
+  } catch (error) {
+    return Promise.resolve({
+      ok: false,
+      key,
+      state: "error",
+      running: false,
+      reason: error && error.message ? error.message : String(error),
+    });
+  }
+});
 
 const toolRouter = createToolRouter({
   fetchImpl: globalThis.fetch,

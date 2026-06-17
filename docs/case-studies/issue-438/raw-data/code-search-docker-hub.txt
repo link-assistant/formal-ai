@@ -1,0 +1,12 @@
+link-assistant/formal-ai:docs/case-studies/issue-84/README.md: gh run view 25961456440 --repo link-assistant/formal-ai --log-failed \
+link-assistant/formal-ai:docs/case-studies/issue-84/README.md: verifies that `Wait for Crate availability on Crates.io`, Docker Hub publishing setup, and
+link-assistant/formal-ai:docs/case-studies/issue-390/raw-data/ci-cd-26954637153-key-lines.txt: 14219	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0306781Z formal-ai@0.177.0 is visible on crates.io after attempt 1
+link-assistant/formal-ai:docs/case-studies/issue-390/raw-data/ci-cd-26954637153-key-lines.txt: 14228	Auto Release	UNKNOWN STEP	2026-06-04T13:35:34.0348355Z ^[[36;1m  disable_dockerhub "Docker Hub publishing disabled: DOCKERHUB_IMAGE repository variable is not set"^[[0m
+link-assistant/formal-ai:docs/case-studies/issue-428/raw-data/meta-language-release-v0.40.0-body.md: - The release workflow (`.github/workflows/release.yml`) now gates crate-availability waiting, Docker Hub publishing and GitHub release creation on either an already-published crate or `publish_result=success`, so a deferred (rate-limited) crate upload no longer produces partial downstream release artifacts and the same version is retried automatically on the next push to `main`.
+link-assistant/formal-ai:docs/case-studies/issue-428/raw-data/meta-language-release-v0.40.0-body.md: - Expanded `PARITY_FIXTURES` with upstream-provenanced internal ecosystem corpora for links-notation, link-cli, lino-objects-codec, relative-meta-logic, formal-ai, and meta-expression.
+link-assistant/formal-ai:tests/unit/ci-cd/workflow_release.rs: "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
+link-assistant/formal-ai:tests/unit/ci-cd/workflow_release.rs: "workflow should expose an opt-in Docker Hub image variable"
+link-assistant/formal-ai:docs/case-studies/issue-121/template-snapshots/rust-template-release.diff: - name: Configure Docker Hub publishing
+link-assistant/formal-ai:docs/case-studies/issue-121/template-snapshots/rust-template-release.diff: +      - name: Read formal-ai version from Cargo.toml
+link-assistant/formal-ai:.github/workflows/release.yml: - name: Publish Docker image to Docker Hub
+link-assistant/formal-ai:.github/workflows/release.yml: - name: Read formal-ai version from Cargo.toml
