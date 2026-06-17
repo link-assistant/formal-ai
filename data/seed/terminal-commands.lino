@@ -1,0 +1,120 @@
+# Terminal-command trigger vocabulary (issue #513, visible fix for #511).
+#
+# The symbolic solver recognizes prompts that ask to run a shell/terminal
+# command and answers with the `agent_suggestion` intent (see
+# `data/seed/multilingual-responses.lino`). The natural-language triggers that
+# drive that detection live here — never as hardcoded `const` arrays in engine
+# code — so a user can retune detection by editing seed data alone.
+#
+# Both the Rust solver (`src/seed/terminal_commands.rs` ->
+# `src/solver_terminal.rs`) and the JavaScript worker
+# (`src/web/formal_ai_worker.js`, the inline mirror kept byte-identical by
+# `experiments/issue-513-sync-worker-terminal.mjs`) parse this same document, so
+# the two engines stay at parity.
+terminal_commands
+  # Phrases that explicitly mention a terminal/shell/console context. Matched as
+  # substrings, so they work for both space-delimited (en/ru/hi) and
+  # non-space-delimited (zh) scripts.
+  terminal_phrases
+    language ru
+      phrase "в терминале"
+      phrase "в консоли"
+      phrase "в командной строке"
+      phrase "в шелле"
+    language en
+      phrase "in terminal"
+      phrase "in the terminal"
+      phrase "in a terminal"
+      phrase "in console"
+      phrase "in the console"
+      phrase "in shell"
+      phrase "in the shell"
+      phrase "in a shell"
+      phrase "terminal command"
+      phrase "shell command"
+      phrase "command line"
+      phrase command-line
+    language hi
+      phrase "टर्मिनल में"
+      phrase "टर्मिनल पर"
+      phrase "कमांड लाइन"
+      phrase "शेल में"
+    language zh
+      phrase 在终端
+      phrase 终端中
+      phrase 终端里
+      phrase 命令行
+      phrase 在命令行
+      phrase "在 shell"
+      phrase 在shell
+  # Verbs that request execution of a command, matched against word tokens.
+  # Space-delimited scripts (en/ru/hi) tokenize cleanly; Chinese verbs are
+  # matched separately as substrings via `cjk_run_verbs`.
+  run_verbs
+    language ru
+      verb выполни
+      verb выполнить
+      verb запусти
+      verb запустить
+    language en
+      verb run
+      verb execute
+    language hi
+      verb चलाओ
+      verb चलाएं
+      verb चलाएँ
+      verb चलाइए
+      verb निष्पादित
+  # Chinese run/execute verbs. Chinese text has no word boundaries, so these are
+  # matched as substrings of the lowercased prompt.
+  cjk_run_verbs
+    verb 运行
+    verb 执行
+    verb 跑一下
+    verb 跑下
+  # Common leading shell tokens that strongly imply a terminal command when the
+  # prompt itself begins with one (e.g. `ls ~` or `git status`).
+  shell_tokens
+    token ls
+    token pwd
+    token cd
+    token cat
+    token echo
+    token mkdir
+    token rmdir
+    token rm
+    token cp
+    token mv
+    token touch
+    token grep
+    token git
+    token npm
+    token npx
+    token node
+    token cargo
+    token python
+    token python3
+    token pip
+    token curl
+    token wget
+    token chmod
+    token chown
+    token df
+    token du
+    token ps
+    token kill
+    token head
+    token tail
+    token whoami
+    token uname
+    token export
+    token which
+    token sudo
+    token ssh
+    token tar
+    token find
+    token sed
+    token awk
+    token make
+    token docker
+    token kubectl

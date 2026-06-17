@@ -29,3 +29,11 @@ bump: minor
   template up and fill in the detected command, so the natural-language wording
   is sourced from seed data rather than living in code (addresses #513 review
   feedback).
+- The terminal-command *trigger* vocabulary is no longer hardcoded either. The
+  terminal/shell phrases, run verbs, Chinese run verbs, and leading shell tokens
+  now live in the new `data/seed/terminal-commands.lino`. The Rust solver parses
+  it via `src/seed/terminal_commands.rs`
+  (`seed::terminal_command_vocabulary`), and the JS worker embeds a
+  byte-identical inline mirror kept in lockstep by
+  `experiments/issue-513-sync-worker-terminal.mjs` (the same convention as the
+  operation vocabulary, #386). A `--check` mode guards the parity in CI.

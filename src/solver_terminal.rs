@@ -10,78 +10,17 @@
 //!
 //! The detection rules are intentionally mirrored in the JavaScript worker
 //! (`src/web/formal_ai_worker.js`, `tryTerminalCommand`) so both engines stay
-//! at parity.
+//! at parity. The trigger vocabulary itself (terminal/shell phrases, run verbs,
+//! Chinese run verbs, leading shell tokens) is **not** hardcoded here: it lives
+//! in `data/seed/terminal-commands.lino` and is parsed by
+//! [`seed::terminal_command_vocabulary`], so detection is data-driven and the
+//! project rule against hardcoded natural language in the solver is upheld.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::Language;
-use crate::seed;
+use crate::seed::{self, TerminalCommandVocabulary};
 use crate::solver_handlers::finalize_simple;
-
-/// Phrases that explicitly mention a terminal/shell/console context. These are
-/// matched as substrings, so they work for both space-delimited (en/ru/hi) and
-/// non-space-delimited (zh) scripts.
-const TERMINAL_PHRASES: &[&str] = &[
-    "в терминале",
-    "в консоли",
-    "в командной строке",
-    "в шелле",
-    "in terminal",
-    "in the terminal",
-    "in a terminal",
-    "in console",
-    "in the console",
-    "in shell",
-    "in the shell",
-    "in a shell",
-    "terminal command",
-    "shell command",
-    "command line",
-    "command-line",
-    // Hindi
-    "टर्मिनल में",
-    "टर्मिनल पर",
-    "कमांड लाइन",
-    "शेल में",
-    // Chinese
-    "在终端",
-    "终端中",
-    "终端里",
-    "命令行",
-    "在命令行",
-    "在 shell",
-    "在shell",
-];
-
-/// Verbs that request execution of a command, matched against word tokens.
-/// Space-delimited scripts (en/ru/hi) tokenize cleanly; Chinese verbs are
-/// matched separately as substrings via [`CJK_RUN_VERBS`].
-const RUN_VERBS: &[&str] = &[
-    "выполни",
-    "выполнить",
-    "запусти",
-    "запустить",
-    "run",
-    "execute",
-    // Hindi
-    "चलाओ",
-    "चलाएं",
-    "चलाएँ",
-    "चलाइए",
-    "निष्पादित",
-];
-
-/// Chinese run/execute verbs. Chinese text has no word boundaries, so these are
-/// matched as substrings of the lowercased prompt.
-const CJK_RUN_VERBS: &[&str] = &["运行", "执行", "跑一下", "跑下"];
-
-/// Common leading shell tokens that strongly imply a terminal command.
-const SHELL_TOKENS: &[&str] = &[
-    "ls", "pwd", "cd", "cat", "echo", "mkdir", "rmdir", "rm", "cp", "mv", "touch", "grep", "git",
-    "npm", "npx", "node", "cargo", "python", "python3", "pip", "curl", "wget", "chmod", "chown",
-    "df", "du", "ps", "kill", "head", "tail", "whoami", "uname", "export", "which", "sudo", "ssh",
-    "tar", "find", "sed", "awk", "make", "docker", "kubectl",
-];
 
 /// Extract the first backtick-delimited span, if any (single or fenced).
 fn extract_backtick_command(prompt: &str) -> Option<String> {
@@ -118,8 +57,9 @@ fn word_tokens(lower: &str) -> Vec<String> {
 }
 
 /// Return the leading shell command (the prompt itself) when it starts with a
-/// recognized shell token, e.g. `ls ~` or `git status`.
-fn leading_shell_command(prompt: &str) -> Option<String> {
+/// recognized shell token, e.g. `ls ~` or `git status`. The token set comes
+/// from `data/seed/terminal-commands.lino`.
+fn leading_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let trimmed = prompt.trim().trim_matches('`').trim();
     let first = trimmed.split_whitespace().next()?;
     let normalized: String = first
@@ -127,7 +67,7 @@ fn leading_shell_command(prompt: &str) -> Option<String> {
         .take_while(|c| c.is_alphanumeric() || *c == '_' || *c == '-')
         .collect::<String>()
         .to_lowercase();
-    if SHELL_TOKENS.contains(&normalized.as_str()) {
+    if vocab.shell_tokens.iter().any(|t| t == &normalized) {
         Some(trimmed.to_owned())
     } else {
         None
@@ -135,14 +75,18 @@ fn leading_shell_command(prompt: &str) -> Option<String> {
 }
 
 /// Detect a terminal-command request and, if found, return the command text.
-fn detect_terminal_command(prompt: &str) -> Option<String> {
+/// All trigger vocabulary is read from the seed-backed `vocab`.
+fn detect_terminal_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let has_phrase = TERMINAL_PHRASES.iter().any(|p| lower.contains(p));
+    let has_phrase = vocab.terminal_phrases.iter().any(|p| lower.contains(p));
     let tokens = word_tokens(&lower);
-    let has_verb = RUN_VERBS.iter().any(|v| tokens.iter().any(|t| t == v))
-        || CJK_RUN_VERBS.iter().any(|v| lower.contains(v));
+    let has_verb = vocab
+        .run_verbs
+        .iter()
+        .any(|v| tokens.iter().any(|t| t == v))
+        || vocab.cjk_run_verbs.iter().any(|v| lower.contains(v));
     let backtick = extract_backtick_command(prompt);
-    let leading = leading_shell_command(prompt);
+    let leading = leading_shell_command(prompt, vocab);
 
     // Classify as a terminal request when:
     //  - a backtick command is paired with a run verb or a terminal phrase, or
@@ -181,7 +125,8 @@ pub fn try_terminal_command(
     language: Language,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let command = detect_terminal_command(prompt)?;
+    let vocab = seed::terminal_command_vocabulary();
+    let command = detect_terminal_command(prompt, &vocab)?;
     log.append("terminal:command", command.clone());
     log.append("terminal:agent_suggestion", "shell".to_owned());
     let body = terminal_body(&command, language);
