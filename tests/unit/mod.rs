@@ -12,6 +12,7 @@ mod github_logs;
 mod installation_conversion;
 mod issue_337;
 mod issue_403;
+mod issue_513;
 mod issue_425;
 mod local_surface;
 mod memory_maintenance;
