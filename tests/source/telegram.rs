@@ -19,6 +19,19 @@ const FORMAL_AI_VERSION: &str = env!("CARGO_PKG_VERSION");
 const DEFAULT_POLL_TIMEOUT_SECONDS: u32 = 30;
 const DEFAULT_POLL_LIMIT: u32 = 100;
 const POLL_CONNECT_TIMEOUT_PADDING_SECONDS: u32 = 10;
+/// Minimum gap between consecutive `editMessageText` calls on the same chat
+/// (issue #488). Telegram throttles bots to roughly one message-affecting
+/// operation per chat per second; this debounce keeps the progressive thinking
+/// stream within that budget without surprising the user with bursts.
+const TELEGRAM_THINKING_EDIT_DEBOUNCE_MS: u64 = 1_200;
+/// Cap on the number of intermediate edits we stream while the answer is being
+/// composed (issue #488). With the debounce above this keeps the visible
+/// "thinking" phase under ~5 s, matching the upper bound the issue asks for.
+const TELEGRAM_THINKING_MAX_EDITS: usize = 4;
+/// Initial placeholder shown the moment the thinking bubble appears on
+/// Telegram, before the first thinking step is rendered. Mirrors the web UI's
+/// "Reading the request…" pending phase (issue #488).
+const TELEGRAM_THINKING_INITIAL_PLACEHOLDER: &str = "<i>\u{1F4AD} Reading the request…</i>";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct TelegramWebhookReply {
@@ -27,6 +40,45 @@ pub struct TelegramWebhookReply {
     pub text: String,
     pub parse_mode: &'static str,
     pub reply_parameters: TelegramReplyParameters,
+}
+
+/// One debounced `editMessageText` call that progressively reveals the
+/// solver's thinking inside Telegram (issue #488).
+///
+/// Each edit replaces the live thinking message with a richer snapshot of the
+/// solver's reasoning; the runtime sleeps `delay_before_ms` between edits so
+/// the stream stays within Telegram's per-chat rate limits and still feels
+/// "alive" rather than a single instant dump.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TelegramThinkingEdit {
+    pub text: String,
+    pub parse_mode: &'static str,
+    pub delay_before_ms: u64,
+}
+
+impl TelegramThinkingEdit {
+    /// Encode the edit as the JSON body Telegram's `editMessageText` expects.
+    /// `chat_id` and `message_id` are supplied by the runtime once the initial
+    /// `sendMessage` reports the live thinking message's id.
+    #[must_use]
+    pub fn to_edit_message_body(&self, chat_id: i64, message_id: i64) -> String {
+        let mut value = serde_json::Map::new();
+        value.insert(String::from("chat_id"), serde_json::Value::from(chat_id));
+        value.insert(
+            String::from("message_id"),
+            serde_json::Value::from(message_id),
+        );
+        value.insert(
+            String::from("text"),
+            serde_json::Value::from(self.text.clone()),
+        );
+        value.insert(
+            String::from("parse_mode"),
+            serde_json::Value::from(self.parse_mode),
+        );
+        serde_json::to_string(&serde_json::Value::Object(value))
+            .unwrap_or_else(|_| String::from("{}"))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -157,15 +209,29 @@ pub fn handle_telegram_webhook(
 }
 
 fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
+    compose_telegram_reply(message).reply
+}
+
+/// Final reply text plus the thinking steps that produced it (issue #488).
+///
+/// The polling code needs both the rendered answer (final edit) and the
+/// thinking steps (progressive intermediate edits), so this struct keeps them
+/// together and lets the solver run once per Telegram update.
+struct TelegramReplyBundle {
+    reply: TelegramWebhookReply,
+    thinking_steps: Vec<ThinkingStep>,
+}
+
+fn compose_telegram_reply(message: &TelegramMessage) -> TelegramReplyBundle {
     let raw_text = message.text.as_deref().or(message.caption.as_deref());
 
-    let (reply_text, trace_id, thinking) =
+    let (reply_text, trace_id, thinking, steps) =
         raw_text.filter(|text| !text.trim().is_empty()).map_or_else(
-            || (String::from(TEXT_ONLY_MESSAGE), None, None),
+            || (String::from(TEXT_ONLY_MESSAGE), None, None, Vec::new()),
             |prompt| {
                 let trimmed = prompt.trim();
                 if is_version_command(trimmed) {
-                    return (version_reply_text(), None, None);
+                    return (version_reply_text(), None, None, Vec::new());
                 }
                 let symbolic = telegram_solver().solve(trimmed);
                 let trace = symbolic
@@ -173,7 +239,7 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
                     .iter()
                     .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
                 let thinking = telegram_thinking_blockquote(&symbolic.thinking_steps);
-                (symbolic.answer, trace, thinking)
+                (symbolic.answer, trace, thinking, symbolic.thinking_steps)
             },
         );
 
@@ -195,14 +261,17 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
         text.push_str(&footer);
     }
 
-    TelegramWebhookReply {
-        method: "sendMessage",
-        chat_id: message.chat.id,
-        text,
-        parse_mode: "HTML",
-        reply_parameters: TelegramReplyParameters {
-            message_id: message.message_id,
+    TelegramReplyBundle {
+        reply: TelegramWebhookReply {
+            method: "sendMessage",
+            chat_id: message.chat.id,
+            text,
+            parse_mode: "HTML",
+            reply_parameters: TelegramReplyParameters {
+                message_id: message.message_id,
+            },
         },
+        thinking_steps: steps,
     }
 }
 
@@ -365,6 +434,15 @@ impl TelegramPollingConfig {
     }
 
     #[must_use]
+    pub fn edit_message_text_url(&self) -> String {
+        format!(
+            "{}/bot{}/editMessageText",
+            self.api_base.trim_end_matches('/'),
+            self.token
+        )
+    }
+
+    #[must_use]
     pub const fn http_timeout_seconds(&self) -> u32 {
         self.timeout_seconds
             .saturating_add(POLL_CONNECT_TIMEOUT_PADDING_SECONDS)
@@ -405,12 +483,25 @@ struct GetUpdatesResponse {
 }
 
 /// A reply built from a Telegram update that should be sent back through `sendMessage`.
+///
+/// On chats where the bot can post follow-up messages (polling mode), the
+/// initial `sendMessage` posts the live thinking placeholder; the
+/// `progressive_edits` chain then progressively reveals more reasoning via
+/// `editMessageText` until the final edit replaces the bubble with the
+/// composed answer (issue #488). The runtime sleeps each edit's
+/// `delay_before_ms` between calls so the stream stays within Telegram's
+/// per-chat rate limits.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct TelegramPollingReply {
     pub chat_id: i64,
     pub text: String,
     pub parse_mode: &'static str,
     pub reply_parameters: TelegramReplyParameters,
+    /// Progressive `editMessageText` chain that walks the user through the
+    /// solver's reasoning before the final answer lands. Skipped during
+    /// serialization because it is runtime metadata, not a Telegram API field.
+    #[serde(skip)]
+    pub progressive_edits: Vec<TelegramThinkingEdit>,
 }
 
 impl TelegramPollingReply {
@@ -419,6 +510,22 @@ impl TelegramPollingReply {
     pub fn to_send_message_body(&self) -> String {
         serde_json::to_string(self).unwrap_or_else(|_| String::from("{}"))
     }
+}
+
+/// Extract `result.message_id` from a Telegram `sendMessage` response body.
+///
+/// The runtime targets the extracted id with follow-up `editMessageText`
+/// calls (issue #488). Returns `None` when the response is missing/malformed —
+/// callers then skip the progressive thinking stream and keep the initial
+/// placeholder rather than risk garbled state.
+#[must_use]
+pub fn extract_sent_message_id(body: &str) -> Option<i64> {
+    let value: serde_json::Value = serde_json::from_str(body).ok()?;
+    value.get("ok").and_then(serde_json::Value::as_bool)?;
+    value
+        .get("result")
+        .and_then(|result| result.get("message_id"))
+        .and_then(serde_json::Value::as_i64)
 }
 
 /// Parsed slice of a Telegram `getUpdates` response.
@@ -472,13 +579,83 @@ pub fn parse_get_updates_response(body: &str) -> Result<ParsedUpdatesBatch, Tele
 }
 
 fn reply_for_polling_message(message: &TelegramMessage) -> TelegramPollingReply {
-    let webhook = reply_for_message(message);
+    let bundle = compose_telegram_reply(message);
+    let progressive_edits = build_progressive_thinking_edits(
+        &bundle.thinking_steps,
+        bundle.reply.text.clone(),
+        bundle.reply.parse_mode,
+    );
     TelegramPollingReply {
-        chat_id: webhook.chat_id,
-        text: webhook.text,
-        parse_mode: webhook.parse_mode,
-        reply_parameters: webhook.reply_parameters,
+        chat_id: bundle.reply.chat_id,
+        // Issue #488: on the polling surface the live thinking placeholder is
+        // the initial message; the rendered answer arrives via the final
+        // `editMessageText`. When progressive edits are present the placeholder
+        // replaces the answer text in the initial `sendMessage` body.
+        text: if progressive_edits.is_empty() {
+            bundle.reply.text
+        } else {
+            String::from(TELEGRAM_THINKING_INITIAL_PLACEHOLDER)
+        },
+        parse_mode: bundle.reply.parse_mode,
+        reply_parameters: bundle.reply.reply_parameters,
+        progressive_edits,
     }
+}
+
+/// Build the progressive `editMessageText` chain (issue #488).
+///
+/// Splits the solver's thinking steps into at most
+/// `TELEGRAM_THINKING_MAX_EDITS` snapshots, where each snapshot reveals one
+/// more group of steps than the previous, then ends with a final edit that
+/// replaces the live bubble with the fully composed answer (which already
+/// carries the collapsed expandable blockquote when it fits within
+/// Telegram's 4096-character budget).
+///
+/// Returns an empty vector when there are no steps to stream so callers can
+/// stay on the single-`sendMessage` fast path.
+fn build_progressive_thinking_edits(
+    steps: &[ThinkingStep],
+    final_text: String,
+    parse_mode: &'static str,
+) -> Vec<TelegramThinkingEdit> {
+    if steps.is_empty() {
+        return Vec::new();
+    }
+
+    let mut edits = Vec::new();
+    let total = steps.len();
+    let cap = TELEGRAM_THINKING_MAX_EDITS.min(total);
+    let mut last_visible = 0;
+    for snapshot_index in 0..cap {
+        let visible = ((snapshot_index + 1) * total).div_ceil(cap).min(total);
+        if visible == last_visible {
+            continue;
+        }
+        last_visible = visible;
+        let Some(text) = telegram_thinking_blockquote(&steps[..visible]) else {
+            continue;
+        };
+        // Edits whose text would exceed Telegram's 4096-char limit are
+        // dropped; the live bubble keeps the latest legal snapshot until the
+        // final answer lands.
+        if text.len() > TELEGRAM_MAX_MESSAGE_LEN {
+            continue;
+        }
+        edits.push(TelegramThinkingEdit {
+            text,
+            parse_mode,
+            delay_before_ms: TELEGRAM_THINKING_EDIT_DEBOUNCE_MS,
+        });
+    }
+    // Final edit: hand off from the live thinking bubble to the composed
+    // answer (which already includes the collapsed thinking blockquote when
+    // it fits within Telegram's 4096-char budget).
+    edits.push(TelegramThinkingEdit {
+        text: final_text,
+        parse_mode,
+        delay_before_ms: TELEGRAM_THINKING_EDIT_DEBOUNCE_MS,
+    });
+    edits
 }
 
 fn serialize_string_array(values: &[String]) -> String {

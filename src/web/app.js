@@ -5081,15 +5081,80 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
   );
 }
 
-function ThinkingPreview({ steps, t }) {
+// Issue #488: while the worker is still computing the answer there is no live
+// per-step stream to display, but the pending bubble should still feel alive —
+// an expert reasoning out loud surfaces "what they're working on right now"
+// every couple of seconds. The hook accumulates a fixed sequence of generic
+// expert-shaped phases (read → formalize → look up → compose) over ~2 s steps
+// and stops once the answer arrives. Each new phase appends to the visible
+// steps array so the rotated-scrolling animation in `ThinkingPreview` re-fires
+// the same way it would for real solver steps.
+function usePendingThinkingPhases(isActive, t) {
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const phrases = useMemo(
+    () => [
+      t("message.thinkingStep.pendingReading"),
+      t("message.thinkingStep.pendingFormalizing"),
+      t("message.thinkingStep.pendingDispatching"),
+      t("message.thinkingStep.pendingComposing"),
+      t("message.thinkingStep.working"),
+    ],
+    [t],
+  );
+  useEffect(() => {
+    if (!isActive) {
+      setPhaseIndex(0);
+      return undefined;
+    }
+    if (phaseIndex >= phrases.length - 1) {
+      return undefined;
+    }
+    const timer = setTimeout(() => setPhaseIndex((value) => value + 1), 1800);
+    return () => clearTimeout(timer);
+  }, [isActive, phaseIndex, phrases.length]);
+  if (!isActive) return [];
+  return phrases.slice(0, phaseIndex + 1);
+}
+
+// Issue #488: render the pending assistant message — while processing, the
+// thinking preview IS the visible part of the message (no separate "working"
+// caption), and the preview pulls from a hook that adds expert-shaped phases
+// over time so the rotated-scrolling animation actually has something to rotate
+// even though the worker itself does not yet stream per-step messages.
+function PendingAssistantBubble({ t }) {
+  const pendingPhases = usePendingThinkingPhases(true, t);
+  return h(
+    "article",
+    { className: "message assistant pending" },
+    h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
+    h(
+      "div",
+      { className: "message-body" },
+      h(ThinkingPreview, {
+        steps: pendingPhases,
+        t,
+        isPending: true,
+      }),
+    ),
+  );
+}
+
+function ThinkingPreview({ steps, t, isPending = false }) {
   const [expanded, setExpanded] = useState(false);
   const safeSteps = Array.isArray(steps)
     ? steps.map((step) => String(step || "").trim()).filter(Boolean)
     : [];
+  // Issue #488: track the index of the current step so a change in the latest
+  // step triggers the rotated-scrolling CSS animation (current step slides up
+  // into place; the previous step half-shows above with the gradient fade).
+  const lastIndex = safeSteps.length - 1;
+  const current = lastIndex >= 0 ? safeSteps[lastIndex] : "";
+  const previous = lastIndex > 0 ? safeSteps[lastIndex - 1] : "";
+  // Use a stable but per-step key so React re-mounts the current/previous
+  // <p> nodes when the step changes — that re-mount is what re-triggers the
+  // CSS `@keyframes thinking-rotate-in` animation.
+  const animationKey = `${lastIndex}-${current}`;
   if (safeSteps.length === 0) return null;
-
-  const current = safeSteps[safeSteps.length - 1];
-  const previous = safeSteps.length > 1 ? safeSteps[safeSteps.length - 2] : "";
 
   return h(
     "section",
@@ -5097,9 +5162,14 @@ function ThinkingPreview({ steps, t }) {
       className: [
         "thinking-preview",
         expanded ? "is-expanded" : "is-collapsed",
-      ].join(" "),
+        isPending ? "is-pending" : "",
+      ]
+        .filter(Boolean)
+        .join(" "),
       "data-testid": "thinking-preview",
+      "data-pending": isPending ? "true" : null,
       "aria-label": t("message.thinking"),
+      "aria-live": isPending ? "polite" : null,
     },
     h(
       "div",
@@ -5107,6 +5177,16 @@ function ThinkingPreview({ steps, t }) {
       h(
         "strong",
         { className: "thinking-preview-title" },
+        // Issue #488: show a subtle "live" affordance while pending so the user
+        // understands the trace is updating in real time (the dot pulses via
+        // CSS; the visible label stays unchanged for screen readers).
+        isPending
+          ? h("span", {
+              className: "thinking-preview-live-dot",
+              "aria-hidden": "true",
+              "data-testid": "thinking-preview-live-dot",
+            })
+          : null,
         t("message.thinking"),
       ),
       h(
@@ -5142,6 +5222,7 @@ function ThinkingPreview({ steps, t }) {
             ? h(
                 "p",
                 {
+                  key: `prev-${animationKey}`,
                   className: "thinking-preview-previous",
                   "data-testid": "thinking-preview-previous",
                   "aria-label": t("message.thinkingPrevious"),
@@ -5152,6 +5233,7 @@ function ThinkingPreview({ steps, t }) {
           h(
             "p",
             {
+              key: `curr-${animationKey}`,
               className: "thinking-preview-current",
               "data-testid": "thinking-preview-current",
               "aria-label": t("message.thinkingCurrent"),
@@ -5280,14 +5362,17 @@ function Message({
           ),
         ),
       ),
+      // Issue #488: render thinking ABOVE the answer body. Reasoning logically
+      // precedes the answer (and during streaming it is the only visible part of
+      // the message), so it belongs at the top of the message body, not below it.
+      thinkingPreviewSteps.length
+        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
+        : null,
       h("div", {
         ref: markdownRef,
         className: "markdown-body",
         dangerouslySetInnerHTML: markdownContent,
       }),
-      thinkingPreviewSteps.length
-        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
-        : null,
       message.iframeUrl
         ? h(
             "div",
@@ -8735,20 +8820,7 @@ function App() {
             }),
           ),
           pending
-            ? h(
-                "article",
-                { className: "message assistant pending" },
-                h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
-                h(
-                  "div",
-                  { className: "message-body" },
-                  h("div", { className: "typing" }, t("status.working")),
-                  h(ThinkingPreview, {
-                    steps: [t("message.thinkingStep.working")],
-                    t,
-                  }),
-                ),
-              )
+            ? h(PendingAssistantBubble, { t })
             : null,
           h("div", { ref: transcriptEndRef }),
         ),

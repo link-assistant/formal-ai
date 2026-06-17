@@ -1568,6 +1568,10 @@ body.is-resizing-context {
   gap: 3px;
   margin-top: 7px;
   min-width: 0;
+  /* Issue #488: clip the rotated-scrolling animation so the previous line
+     does not visibly translate out of the bubble before the gradient fade
+     swallows it. */
+  overflow: hidden;
 }
 
 .thinking-preview-previous,
@@ -1576,6 +1580,12 @@ body.is-resizing-context {
   min-width: 0;
   line-height: 1.45;
   overflow-wrap: anywhere;
+  /* Issue #488: keep the layout single-line so the rotated-scrolling
+     illusion (1.5 visible lines: top half of the previous step + the
+     current step) is honoured even when a step wraps to multiple lines. */
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .thinking-preview-previous {
@@ -1585,10 +1595,77 @@ body.is-resizing-context {
   opacity: 0.72;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  /* Issue #488: when a new step arrives the React key for `previous`
+     changes, which re-mounts the <p> and (because animations only run on
+     mount/key-change) replays this keyframe — that is the rotated
+     scrolling illusion the issue asks for. */
+  animation: thinking-rotate-previous 320ms ease-out both;
 }
 
 .thinking-preview-current {
   color: #334650;
+  animation: thinking-rotate-current 320ms ease-out both;
+}
+
+@keyframes thinking-rotate-current {
+  from {
+    transform: translateY(0.8em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-rotate-previous {
+  from {
+    transform: translateY(0.6em);
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-previous,
+  .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #488: pulsing dot next to the "Thinking" title while the assistant
+   is mid-response, so the live trace is visibly live. */
+.thinking-preview-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #2f9a6f;
+  vertical-align: middle;
+  animation: thinking-live-dot 1100ms ease-in-out infinite;
+}
+
+@keyframes thinking-live-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-live-dot {
+    animation: none !important;
+    opacity: 0.85;
+  }
 }
 
 .thinking-preview-list {
