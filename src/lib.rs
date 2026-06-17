@@ -53,6 +53,7 @@ pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod thinking;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
