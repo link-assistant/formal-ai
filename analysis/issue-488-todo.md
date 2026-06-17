@@ -88,7 +88,10 @@ The concreteness exists in the data but is destroyed at projection + render time
       e2e `issue-488.spec.js`; add concreteness assertions (e.g. compute summary
       contains the computed result) (R5).
 - [x] Run full local verification (fmt, clippy, cargo test, e2e checks, file-size).
-- [ ] Merge latest default branch, refresh PR description, `gh pr ready 489`.
+- [x] Merge latest default branch, refresh PR description, `gh pr ready 489`.
+      (`origin/main` already fully merged; PR description refreshed; CI green —
+      Lint on the tip, Test/E2E/Coverage green on the code-identical parent;
+      PR marked ready for review.)
 
 ## Design boundary (documented, not a gap)
 
