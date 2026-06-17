@@ -1,0 +1,9 @@
+bun install v1.3.14 (0d9b296a)
+
++ lino-i18n@0.1.1
++ marked@18.0.5
++ react@19.2.7
++ react-dom@19.2.7
++ tesseract.js@7.0.0
+
+41 packages installed [75.00ms]

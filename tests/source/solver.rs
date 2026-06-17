@@ -667,6 +667,7 @@ impl UniversalSolver {
 
         let evidence_links = build_evidence_links(prompt, &log, &response_link);
         let links_notation = answer_links_notation(prompt, &intent, &base_answer, &log, &trace_id);
+        let thinking_steps = log.thinking_steps();
         let answer =
             append_diagnostic_trace(self.config.diagnostic_mode, base_answer, &links_notation);
 
@@ -675,6 +676,7 @@ impl UniversalSolver {
             answer,
             confidence: confidence_for(&rule, validation_choice.as_ref()),
             evidence_links,
+            thinking_steps,
             links_notation,
         }
     }
@@ -821,11 +823,13 @@ impl UniversalSolver {
         let evidence_links = build_evidence_links(prompt, log, &response_link);
         let links_notation =
             answer_links_notation(prompt, &inner.intent, &decorated, log, &trace_id);
+        let thinking_steps = log.thinking_steps();
         Some(SymbolicAnswer {
             intent: inner.intent,
             answer: decorated,
             confidence: inner.confidence,
             evidence_links,
+            thinking_steps,
             links_notation,
         })
     }
