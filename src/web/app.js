@@ -1051,6 +1051,13 @@ const PREFERENCE_DEFAULTS = {
   // sequential sub-tasks and runs each through the existing solver; a future
   // iteration will wire it to docker / WebVM execution.
   agentMode: false,
+  // Issue #513: three-way operating mode replacing the binary agent toggle.
+  //   "chat"     — single-turn reasoning, no command execution;
+  //   "agent"    — multi-step plan + execute, capabilities gated on grant;
+  //   "fullAuto" — agent mode that runs permitted commands automatically.
+  // The legacy `agentMode` boolean is derived as `mode !== "chat"` so existing
+  // readers (worker prefs, desktop tool grants) keep working unchanged.
+  mode: "chat",
   // Issue #94: "auto" follows navigator.languages; explicit values use the
   // supported UI language catalog.
   uiLanguage: "auto",
@@ -1117,6 +1124,18 @@ const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // annotated program with every optional region present.
 const BLUEPRINT_COMPOSITION_MODES = ["composed", "documented"];
 const THINKING_DETAIL_LEVELS = ["brief", "standard", "detailed"];
+// Issue #513: the three-way operating modes shown in the toolbar radio group.
+const MODE_OPTIONS = ["chat", "agent", "fullAuto"];
+const MODE_LABEL_KEYS = {
+  chat: "buttons.chat",
+  agent: "buttons.agent",
+  fullAuto: "buttons.fullAuto",
+};
+const MODE_TITLE_KEYS = {
+  chat: "titles.agentOff",
+  agent: "titles.agentOn",
+  fullAuto: "titles.fullAuto",
+};
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -1399,6 +1418,20 @@ function normalizeResponseLanguageMode(value) {
   return RESPONSE_LANGUAGE_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.responseLanguage;
+}
+
+// Issue #513: resolve the persisted operating mode. Falls back to the legacy
+// `agentMode` boolean so users who saved preferences before the radio existed
+// keep their agent opt-in (true -> "agent"), and unknown values reset to chat.
+function normalizeMode(value, legacyAgentMode) {
+  // A newer client that writes mode="chat" also writes the derived agentMode as
+  // false, so the only way to see mode="chat" alongside a truthy legacy
+  // agentMode is a pre-#513 preference store that only had `agentMode "on"`
+  // (mode defaulting to "chat"). In that case upgrade to the agent radio.
+  if (MODE_OPTIONS.includes(value) && !(value === "chat" && legacyAgentMode)) {
+    return value;
+  }
+  return legacyAgentMode ? "agent" : PREFERENCE_DEFAULTS.mode;
 }
 
 function normalizePreferredLanguage(value) {
@@ -5842,11 +5875,17 @@ function App() {
     normalizeAssistantName(initialPreferences.current.assistantName),
   );
   const [desktopStatus, setDesktopStatus] = useState(null);
-  // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
-  // of a single Q&A. Persisted across reloads via preferences.
-  const [agentMode, setAgentMode] = useState(
-    initialPreferences.current.agentMode,
+  // Issue #27 / #513: the operating mode runs the user's prompt as a single
+  // Q&A ("chat"), a multi-step plan ("agent"), or an auto-executing agent
+  // ("fullAuto"). Persisted across reloads via preferences. The legacy
+  // `agentMode` boolean is derived so existing readers keep working.
+  const [mode, setMode] = useState(
+    normalizeMode(
+      initialPreferences.current.mode,
+      initialPreferences.current.agentMode,
+    ),
   );
+  const agentMode = mode !== "chat";
   // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
   // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -6576,6 +6615,7 @@ function App() {
       location: locationPreference,
       assistantName: normalizeAssistantName(assistantName),
       currentConversationId,
+      mode,
       agentMode,
       uiLanguage: uiLanguagePreference,
       responseLanguage,
@@ -6612,6 +6652,7 @@ function App() {
     locationPreference,
     assistantName,
     currentConversationId,
+    mode,
     agentMode,
     uiLanguagePreference,
     responseLanguage,
@@ -6708,6 +6749,12 @@ function App() {
     agentModeRef.current = agentMode;
   }, [agentMode]);
 
+  // Issue #513: mirror the three-way operating mode for the worker prefs payload.
+  const modeRef = useRef(mode);
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
   const themePreferenceRef = useRef(themePreference);
   useEffect(() => {
     themePreferenceRef.current = themePreference;
@@ -6780,6 +6827,7 @@ function App() {
       ...externalServicesRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
+      mode: modeRef.current,
       theme: themePreferenceRef.current,
       uiLanguage: uiLanguagePreferenceRef.current,
       responseLanguage: responseLanguageRef.current,
@@ -6985,7 +7033,18 @@ function App() {
           setDemoMode(Boolean(command.value));
           break;
         case "agentMode":
-          setAgentMode(Boolean(command.value));
+          // Issue #513: the legacy natural-language "agent mode on/off" command
+          // maps onto the three-way mode (preserving full-auto when already set).
+          setMode((current) =>
+            command.value
+              ? current === "fullAuto"
+                ? "fullAuto"
+                : "agent"
+              : "chat",
+          );
+          break;
+        case "mode":
+          setMode(normalizeMode(command.value));
           break;
         case "greetingVariations":
           setGreetingVariations(Boolean(command.value));
@@ -7410,6 +7469,11 @@ function App() {
       ? t("status.nextDialogIn", { seconds: demoCountdown })
       : t("status.demoPlaying")
     : t("status.manual");
+  // Issue #513: localized labels for the three-way operating-mode radio group
+  // and the status indicator that reflects the active mode.
+  const modeLabel = (option) => t(MODE_LABEL_KEYS[option]);
+  const modeTitle = (option) => t(MODE_TITLE_KEYS[option]);
+  const modeStatusText = t("status.mode", { mode: modeLabel(mode) });
   const reportContext = {
     messages,
     workerState,
@@ -7566,6 +7630,17 @@ function App() {
           },
           demoStatus,
         ),
+        h(
+          "span",
+          {
+            className: `mode-status mode-status-${mode}`,
+            "data-testid": "mode-status",
+            "data-mode": mode,
+            "data-menu-priority": "7",
+            role: "status",
+          },
+          modeStatusText,
+        ),
         diagnosticsMode
           ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
           : null,
@@ -7697,27 +7772,35 @@ function App() {
           ),
         ),
         h(
-          "button",
+          "div",
           {
-            type: "button",
-            className: "agent-toggle",
-            "data-testid": "agent-toggle",
+            className: "mode-radio",
+            "data-testid": "mode-radio",
             "data-menu-priority": "4",
-            "aria-pressed": agentMode,
-            title: agentMode
-              ? t("titles.agentOn")
-              : t("titles.agentOff"),
-            "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
-            onClick: () => setAgentMode((value) => !value),
+            role: "radiogroup",
+            "aria-label": t("titles.modeGroup"),
           },
-          h(ToolbarIcon, {
-            action: agentMode ? "agent" : "chat",
-            pack: toolbarIconPack,
-          }),
-          h(
-            "span",
-            { className: "btn-label" },
-            agentMode ? t("buttons.agent") : t("buttons.chat"),
+          MODE_OPTIONS.map((option) =>
+            h(
+              "button",
+              {
+                key: option,
+                type: "button",
+                className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
+                "data-testid": `mode-option-${option}`,
+                "data-mode": option,
+                role: "radio",
+                "aria-checked": mode === option,
+                title: modeTitle(option),
+                "aria-label": modeLabel(option),
+                onClick: () => setMode(option),
+              },
+              h(ToolbarIcon, {
+                action: option === "chat" ? "chat" : "agent",
+                pack: toolbarIconPack,
+              }),
+              h("span", { className: "btn-label" }, modeLabel(option)),
+            ),
           ),
         ),
         h(
@@ -7868,18 +7951,34 @@ function App() {
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
-              "button",
+              "div",
               {
-                type: "button",
-                className: "drawer-action",
-                "aria-pressed": agentMode,
-                onClick: () => setAgentMode((value) => !value),
+                className: "drawer-action drawer-mode-radio",
+                "data-testid": "drawer-mode-radio",
+                role: "radiogroup",
+                "aria-label": t("titles.modeGroup"),
               },
-              h(ToolbarIcon, {
-                action: agentMode ? "agent" : "chat",
-                pack: toolbarIconPack,
-              }),
-              h("span", null, agentMode ? t("buttons.agent") : t("buttons.chat")),
+              MODE_OPTIONS.map((option) =>
+                h(
+                  "button",
+                  {
+                    key: option,
+                    type: "button",
+                    className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
+                    "data-testid": `drawer-mode-option-${option}`,
+                    "data-mode": option,
+                    role: "radio",
+                    "aria-checked": mode === option,
+                    title: modeTitle(option),
+                    onClick: () => setMode(option),
+                  },
+                  h(ToolbarIcon, {
+                    action: option === "chat" ? "chat" : "agent",
+                    pack: toolbarIconPack,
+                  }),
+                  h("span", null, modeLabel(option)),
+                ),
+              ),
             ),
             h(
               "button",

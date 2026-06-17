@@ -58,13 +58,26 @@ module.exports = defineConfig({
     '**/issue-479.spec.js',
     '**/issue-479-site.spec.js',
     '**/issue-488.spec.js',
+    '**/issue-513.spec.js',
   ],
+  // Per-test cap. A single app spec navigates, waits for the worker to boot,
+  // and asserts on one answer — comfortably under 30s even on a cold worker.
   timeout: 30_000,
+  // Whole-suite cap so a hung worker or server can never wedge CI indefinitely;
+  // it aborts the run instead of waiting for the job-level kill. Sized for the
+  // full local matrix (~50 specs, retries:1) with headroom for the build step.
+  globalTimeout: 15 * 60_000,
+  // Fail individual web-first assertions fast (default is 5s) so flakes surface
+  // quickly rather than each burning the full per-test budget.
+  expect: { timeout: 10_000 },
   retries: 1,
   reporter: [['html', { open: 'never' }], ['list']],
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
+    // Bound navigation/action waits so a stuck page errors promptly.
+    navigationTimeout: 15_000,
+    actionTimeout: 10_000,
   },
   webServer: {
     // The seed mirror under src/web/seed/ is generated from the canonical

@@ -201,7 +201,7 @@ test.describe('Issue #335 - composite Wikipedia research in agent mode', () => {
   test('reported prompt uses focused searches instead of one broad no-result query', async ({
     page,
   }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(page, REPORTED_PROMPT);
 
     await expect(last).toContainText('Agent plan');

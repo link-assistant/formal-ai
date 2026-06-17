@@ -58,7 +58,7 @@
 
 .ui-skin-contrast .mode-toggle,
 .ui-skin-contrast .diagnostics-toggle,
-.ui-skin-contrast .agent-toggle,
+.ui-skin-contrast .mode-option,
 .ui-skin-contrast .mobile-menu-toggle,
 .ui-skin-contrast .drawer-close,
 .ui-skin-contrast .drawer-action,
@@ -151,7 +151,7 @@
 :root[data-theme="dark"] .ui-skin-contrast .tool,
 :root[data-theme="dark"] .ui-skin-contrast .mode-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .diagnostics-toggle,
-:root[data-theme="dark"] .ui-skin-contrast .agent-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .mode-option,
 :root[data-theme="dark"] .ui-skin-contrast .mobile-menu-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .drawer-close,
 :root[data-theme="dark"] .ui-skin-contrast .drawer-action,
@@ -213,7 +213,7 @@
   :root:not([data-theme="light"]) .ui-skin-contrast .tool,
   :root:not([data-theme="light"]) .ui-skin-contrast .mode-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .diagnostics-toggle,
-  :root:not([data-theme="light"]) .ui-skin-contrast .agent-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .mode-option,
   :root:not([data-theme="light"]) .ui-skin-contrast .mobile-menu-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .drawer-close,
   :root:not([data-theme="light"]) .ui-skin-contrast .drawer-action,
@@ -364,6 +364,16 @@ button {
   flex: 0 0 auto;
 }
 
+/* Issue #513: the active-mode status badge reads like the demo-mode badge so the
+ * toolbar's status labels stay visually consistent. */
+.mode-status {
+  color: #40515f;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
 .desktop-status {
   flex: 0 1 auto;
   max-width: min(360px, 38vw);
@@ -381,7 +391,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.agent-toggle,
+.mode-option,
 .mobile-menu-toggle,
 .sidebar-toggle,
 .drawer-close,
@@ -401,7 +411,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.agent-toggle,
+.mode-option,
 .mobile-menu-toggle,
 .sidebar-toggle,
 .report-button,
@@ -414,6 +424,20 @@ button {
   min-height: 38px;
   padding: 0 12px;
   white-space: nowrap;
+}
+
+/* Issue #513: the binary agent toggle became a three-way mode radio group.
+ * The options sit in a single segmented control so the active mode reads as a
+ * connected switch rather than three independent buttons. */
+.mode-radio,
+.drawer-mode-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drawer-mode-radio {
+  flex-wrap: wrap;
 }
 
 /* Issue #409: toolbar buttons carry a local icon + label so the label can be
@@ -615,7 +639,8 @@ button {
 
 .mode-toggle[aria-pressed="true"],
 .diagnostics-toggle[aria-pressed="true"],
-.agent-toggle[aria-pressed="true"],
+.mode-option[aria-checked="true"],
+.mode-option.is-active,
 .mobile-menu-toggle[aria-pressed="true"],
 .send-button {
   border-color: #175f4f;
@@ -2297,7 +2322,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2322,7 +2347,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2337,9 +2362,13 @@ textarea:disabled {
     gap: 10px;
   }
 
+  /* Issue #513: the mode status label is a text status badge like the demo and
+   * memory badges, so it leaves the icon-only action row at the same width they
+   * do. This also keeps the row single-line for the Issue #94 wrap check. */
   .demo-status,
   .desktop-status,
-  .memory-status {
+  .memory-status,
+  .mode-status {
     display: none;
   }
 }
@@ -2395,7 +2424,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2675,7 +2704,7 @@ textarea:disabled {
    * fits on a 360px-wide handset alongside the hamburger toggle. */
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .memory-button {
     padding: 0 8px;
@@ -2755,7 +2784,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .mode-toggle,
 :root[data-theme="dark"] .diagnostics-toggle,
-:root[data-theme="dark"] .agent-toggle,
+:root[data-theme="dark"] .mode-option,
 :root[data-theme="dark"] .mobile-menu-toggle,
 :root[data-theme="dark"] .sidebar-toggle,
 :root[data-theme="dark"] .source-code-button,
@@ -3140,7 +3169,8 @@ textarea:disabled {
 
 :root[data-theme="dark"] .mode-toggle[aria-pressed="true"],
 :root[data-theme="dark"] .diagnostics-toggle[aria-pressed="true"],
-:root[data-theme="dark"] .agent-toggle[aria-pressed="true"],
+:root[data-theme="dark"] .mode-option[aria-checked="true"],
+:root[data-theme="dark"] .mode-option.is-active,
 :root[data-theme="dark"] .mobile-menu-toggle[aria-pressed="true"],
 :root[data-theme="dark"] .send-button {
   border-color: #2c8f71;
@@ -3216,7 +3246,7 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .mode-toggle,
   :root:not([data-theme="light"]) .diagnostics-toggle,
-  :root:not([data-theme="light"]) .agent-toggle,
+  :root:not([data-theme="light"]) .mode-option,
   :root:not([data-theme="light"]) .mobile-menu-toggle,
   :root:not([data-theme="light"]) .sidebar-toggle,
   :root:not([data-theme="light"]) .source-code-button,
@@ -3601,7 +3631,8 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .mode-toggle[aria-pressed="true"],
   :root:not([data-theme="light"]) .diagnostics-toggle[aria-pressed="true"],
-  :root:not([data-theme="light"]) .agent-toggle[aria-pressed="true"],
+  :root:not([data-theme="light"]) .mode-option[aria-checked="true"],
+  :root:not([data-theme="light"]) .mode-option.is-active,
   :root:not([data-theme="light"]) .mobile-menu-toggle[aria-pressed="true"],
   :root:not([data-theme="light"]) .send-button {
     border-color: #2c8f71;

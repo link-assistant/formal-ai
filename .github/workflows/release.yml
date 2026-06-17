@@ -226,6 +226,13 @@ jobs:
       - name: Check web app for hook TDZ ordering bugs
         run: npm run --prefix tests/e2e check:web-tdz
 
+      # The terminal-command trigger vocabulary lives in
+      # data/seed/terminal-commands.lino; the JS worker embeds a byte-identical
+      # inline mirror. This fails if the two drift, so the worker can never
+      # silently re-hardcode trigger phrases that have moved into seed data.
+      - name: Check terminal vocabulary worker mirror is in sync with seed
+        run: node experiments/issue-513-sync-worker-terminal.mjs --check
+
       # The VS Code extension host libraries (config/bridge/webview-html/
       # chat-view/server-process) and the manifest are pure JS exercised by
       # node's built-in test runner plus a static smoke check. They read only

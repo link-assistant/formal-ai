@@ -103,7 +103,10 @@ test.describe('Issue #337 - GitHub repository extraction prompt', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-    await expect(page.locator('[data-testid="agent-toggle"] .btn-label')).toHaveText('Agent');
+    await expect(page.locator('[data-testid="mode-option-agent"]')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
   });
 
   test('returns repository facts as JSON instead of capability and unknown responses', async ({

@@ -223,12 +223,46 @@ hardcoded prompt→answer tables.
    the other in the same PR. Name and comment the twin so the parity is obvious
    (e.g. "Mirrors `try_x` in `src/solver_handler_x.rs`").
 
-2. **Data-driven seed, no per-language word lists in code (issue #386).** All
-   multilingual phrases, surfaces, concept summaries, and the tool registry live
-   in `data/seed/*.lino`. Recognisers ask the lexicon for a *meaning* by role
-   (`lexicon().meanings_with_role(ROLE_…)`); they never hardcode per-language
-   phrase arrays. Add a new cue by editing the `.lino` file and declaring the
-   role, not by branching on literal strings.
+2. **Data-driven seed, no hardcoded natural language in code (issues #386,
+   #513).** Natural language is *data*, never a string literal in the engine.
+   This applies to **both directions** of every reasoning path:
+   - **Triggers / detection.** All multilingual phrases, surfaces, run verbs,
+     shell tokens, concept summaries, and the tool registry live in
+     `data/seed/*.lino`. Recognisers ask the lexicon for a *meaning* by role
+     (`lexicon().meanings_with_role(ROLE_…)`) or load a named vocabulary
+     (e.g. `seed::terminal_command_vocabulary()`); they never hardcode
+     per-language phrase arrays or branch on literal user phrasings.
+   - **Responses / output.** Every user-facing answer string is a template in
+     `data/seed/multilingual-responses.lino` looked up by intent
+     (`seed::response_for(intent, lang)` in Rust, `answerFor(...)` in the
+     worker). Code fills placeholders like `{command}`; it does not embed the
+     surrounding prose.
+
+   The principle is **meanings ↔ naturalization**: a *meaning* (a slug grounded
+   in seed data) can be *naturalized* into a natural-language surface, and any
+   natural-language word can be *formalized* back into a meaning. Code only ever
+   moves meanings around; the words live in the seed. Add a new cue or answer by
+   editing the `.lino` file and declaring the role/intent — not by typing a
+   phrase into `src/*.rs` or `formal_ai_worker.js`.
+
+   This is enforced by CI, not just convention:
+   - **Total reference-closure gate** (`tests/unit/total_closure.rs` →
+     `scripts/audit-total-closure.py`, run by `cargo test --tests`). Every bare
+     value token in any `data/seed/*.lino` must resolve to a defined meaning, a
+     declared role, a cached dictionary lemma, or a Wikidata id. New vocabulary
+     that resolves to nothing fails the build. Ground new tokens by running
+     `python3 scripts/close-total.py` (idempotent; emits each unresolved token
+     as a first-class meaning under `data/seed/closure-generated-*.lino`) until
+     `python3 scripts/audit-total-closure.py` reports `unresolved_distinct: 0`.
+   - **Worker-mirror parity checks.** Where the JS worker embeds a byte-identical
+     inline mirror of a seed vocabulary, a `--check` guard fails the build on
+     drift (e.g. the “Check terminal vocabulary worker mirror is in sync with
+     seed” CI step runs
+     `node experiments/issue-513-sync-worker-terminal.mjs --check`). Regenerate
+     the mirror by running the same script without `--check`.
+
+   See `docs/design/no-hardcoded-natural-language.md` for the full rationale,
+   the meanings ↔ naturalization model, and a worked example.
 
 3. **Roles are declared, then generated.** When you add a meaning with a new
    `role`, declare it as a `ROLE_*` constant in `src/seed/roles/*.rs`, re-export

@@ -75,7 +75,7 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
   test('agent mode converts the final amount from step 1 in step 2', async ({
     page,
   }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const message = await sendPrompt(page, FULL_PROMPT);
 
     await expect(message).toContainText('Agent plan (2 steps)');
@@ -116,7 +116,7 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
           'wasm worker',
         );
 
-        await languagePage.locator('[data-testid="agent-toggle"]').click();
+        await languagePage.locator('[data-testid="mode-option-agent"]').click();
         const message = await sendPrompt(languagePage, FULL_PROMPT);
 
         await expect(message, language).toContainText('Agent plan (2 steps)');

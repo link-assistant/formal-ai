@@ -63,7 +63,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Permission gated',
     );
 
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText(
       'Opted in',
     );

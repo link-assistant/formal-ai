@@ -2310,18 +2310,25 @@ test.describe('Issue #27: agent mode', () => {
     await switchToManualMode(page);
   });
 
-  test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
-    const toggle = page.locator('[data-testid="agent-toggle"]');
-    await expect(toggle).toBeVisible();
-    // Issue #409: the topbar buttons render an icon + label so the label
-    // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
-    await expect(toggle.locator('.btn-label')).toHaveText('Chat');
-    await toggle.click();
-    await expect(toggle.locator('.btn-label')).toHaveText('Agent');
+  test('Chat/Agent/Full-Auto radio is present and starts in Chat', async ({ page }) => {
+    // Issue #513: the binary agent toggle became a three-way radio group.
+    const group = page.locator('[data-testid="mode-radio"]');
+    await expect(group).toBeVisible();
+    await expect(page.locator('[data-testid="mode-option-chat"]')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.locator('[data-testid="mode-option-fullAuto"]')).toBeVisible();
+    await page.locator('[data-testid="mode-option-agent"]').click();
+    await expect(page.locator('[data-testid="mode-option-agent"]')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.locator('[data-testid="mode-status"]')).toContainText('Agent');
   });
 
   test('Agent mode decomposes a multi-step task and runs each step', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(
       page,
       'Hi; then what is 2 + 2; then who are you',
@@ -2338,7 +2345,7 @@ test.describe('Issue #27: agent mode', () => {
   });
 
   test('Agent mode preserves single-step prompts as plain Q&A', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(page, 'Hi');
     // No "; then …" — should run as a single step (chat-style answer).
     await expect(last).toContainText('Hi, how may I help you?');

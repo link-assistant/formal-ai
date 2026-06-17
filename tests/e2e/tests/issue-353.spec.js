@@ -83,7 +83,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     );
 
     // The agent toggle is the explicit opt-in for the permission-gated tool router.
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Opted in');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
       'Agent tools visible',
