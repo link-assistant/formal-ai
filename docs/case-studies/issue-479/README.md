@@ -5,8 +5,9 @@
 > **Completion pull request:** <https://github.com/link-assistant/formal-ai/pull/486> (branch `issue-479-51f54bbe54b1`) — completed the first fix.
 > **Linux/macOS follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/487> (branch `issue-479-ff9c709d56dc`) — fixes the remaining Linux asset gap reported after PR #486 and the later broken macOS DMG report.
 > **macOS CI follow-up pull request:** <https://github.com/link-assistant/formal-ai/pull/490> (branch `issue-479-845c9fad1bb5`) — fixes the ad-hoc macOS signing regression exposed after PR #487.
-> **Case study date:** 2026-06-14, revised 2026-06-15 after the maintainer's "redo analysis" feedback.
-> **Status:** **Original requirements addressed in PR #486; Linux/Windows release publishing addressed in PR #487; macOS ad-hoc signing follow-up addressed in PR #490.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, partial-release rebuild guard, and the `vk-bot-desktop` macOS signing/smoke-test method needed after `v0.204.0` uploaded macOS assets that downloaded but opened as "damaged". PR #490 fixes the new CI evidence from `v0.205.0`: Linux and Windows uploaded successfully, but both macOS jobs failed before upload because ad-hoc bundles were not correctly signed/sealed.
+> **macOS EB26 signing-skip pull request:** <https://github.com/link-assistant/formal-ai/pull/510> (branch `issue-479-8f9cd81c8ee9`) — fixes the electron-builder 26 control-flow change that skipped signing entirely (never invoking the PR #490 hook) unless `mac.identity="-"` is passed; exposed by `v0.206.0` still shipping no macOS assets.
+> **Case study date:** 2026-06-14, revised 2026-06-15 after the maintainer's "redo analysis" feedback, revised again 2026-06-17 after the "Still no release for macOS" comment.
+> **Status:** **Original requirements addressed in PR #486; Linux/Windows release publishing addressed in PR #487; macOS ad-hoc signing follow-up addressed in PR #490; the macOS EB26 signing-skip root cause addressed in PR #510.** The desktop build now actually runs (the deeper gating + Pages-probe root cause is fixed), the macOS screenshots are **real captures** from `konard/vk-bot-desktop` (not synthetic), and the source code on the landing page is a **big hero button**. PR #487 adds the Linux packaging metadata, Linux x64 artifact-name normalization, partial-release rebuild guard, and the `vk-bot-desktop` macOS signing/smoke-test method needed after `v0.204.0` uploaded macOS assets that downloaded but opened as "damaged". PR #490 fixes the `v0.205.0` evidence (Linux/Windows uploaded; both macOS jobs failed before upload because ad-hoc bundles were not correctly signed/sealed). PR #510 fixes the `v0.206.0` evidence: electron-builder **26**'s `findSigningIdentity()` skips signing entirely — never reaching the custom `mac.sign` hook PR #490 hardened — unless `-c.mac.identity=-` is passed, so all macOS jobs failed the pre-upload smoke test (see §0.6).
 > **Type:** CI/CD bug fix + documentation correction + cross-repo audit + this case study.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/); the full CI/CD template comparison is in [`template-comparison/REPORT.md`](template-comparison/REPORT.md).
@@ -27,6 +28,9 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | PR #490 live release evidence (`v0.205.0`: Linux/Windows present, macOS absent) | [`raw-data/latest-release-v0.205.0-after-pr487.json`](raw-data/latest-release-v0.205.0-after-pr487.json) |
 | PR #490 Desktop Release run metadata (`27572474798`: both macOS jobs failed) | [`raw-data/desktop-release-27572474798.json`](raw-data/desktop-release-27572474798.json) |
 | PR #490 failed macOS job logs | [`ci-logs/desktop-release-27572474798-macos-arm64.log`](ci-logs/desktop-release-27572474798-macos-arm64.log), [`ci-logs/desktop-release-27572474798-macos-x64.log`](ci-logs/desktop-release-27572474798-macos-x64.log) |
+| PR #510 live release evidence (`v0.206.0`: Linux/Windows present, macOS absent) | [`raw-data/latest-release-v0.206.0-after-pr490.json`](raw-data/latest-release-v0.206.0-after-pr490.json) |
+| PR #510 Desktop Release run metadata (`27600376260`: both macOS jobs failed, all others passed) | [`raw-data/desktop-release-27600376260.json`](raw-data/desktop-release-27600376260.json) |
+| PR #510 failed macOS job logs (signing skipped: no `afterSign` listener, hook never ran) | [`ci-logs/desktop-release-27600376260-macos-arm64.log`](ci-logs/desktop-release-27600376260-macos-arm64.log), [`ci-logs/desktop-release-27600376260-macos-x64.log`](ci-logs/desktop-release-27600376260-macos-x64.log) |
 | PR #487 Linux artifact-name normalizer | [`../../../desktop/scripts/normalize-artifacts.mjs`](../../../desktop/scripts/normalize-artifacts.mjs) |
 | PR #487 macOS ad-hoc signer + entitlements | [`../../../desktop/scripts/adhoc-sign-mac.cjs`](../../../desktop/scripts/adhoc-sign-mac.cjs), [`../../../desktop/build/entitlements.mac.plist`](../../../desktop/build/entitlements.mac.plist) |
 | Every release is asset-less (`desktop_assets: 0`) | [`raw-data/releases-asset-evidence.json`](raw-data/releases-asset-evidence.json) |
@@ -42,6 +46,56 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | The best-practices reference (vk-bot-desktop snapshot, incl. real screenshots and signing method) | [`raw-data/vk-bot-desktop-current/`](raw-data/vk-bot-desktop-current/) |
 
 ---
+
+## 0.6 PR #510 macOS EB26 Signing-Skip Root Cause
+
+After PR #490 merged, the maintainer added a fourth issue comment (2026-06-17):
+"Still no release for macOS". The fifth automatic release, `v0.206.0`, confirms
+the same partial state once more: 6 Linux + 4 Windows + 2 metadata files = 12
+assets, and **0 macOS** `.dmg`/`.zip`
+([`raw-data/latest-release-v0.206.0-after-pr490.json`](raw-data/latest-release-v0.206.0-after-pr490.json)).
+
+The live Desktop Release run `27600376260` (the run that built `v0.206.0`)
+isolates the failure: `Resolve target release` succeeded, both Linux jobs,
+both Windows jobs, and the final checksum/provenance job all succeeded, and
+**only the two macOS jobs failed** — again in the pre-upload smoke test with
+`Mounted app is missing its signed CodeResources envelope`
+([`raw-data/desktop-release-27600376260.json`](raw-data/desktop-release-27600376260.json),
+[`ci-logs/desktop-release-27600376260-macos-x64.log`](ci-logs/desktop-release-27600376260-macos-x64.log)
+line 1281).
+
+The PR #490 reseal logic was **never reached**. The macOS-x64 log shows the
+packaging step jumps straight from `• packaging platform=darwin arch=x64` to
+`• no event listeners found event=afterSign` to `• building target=macOS zip`
+— there is **no signing line at all**, and the `mac.sign` hook's
+`FORMAL_AI_MACOS_SIGN_DEBUG` output never appears
+([`ci-logs/desktop-release-27600376260-macos-x64.log`](ci-logs/desktop-release-27600376260-macos-x64.log)
+lines 1109-1130). electron-builder simply skipped signing.
+
+The root cause is an electron-builder **26** control-flow change. `MacPackager.sign()`
+(`packages/app-builder-lib/src/macPackager.ts`) calls `findSigningIdentity()`
+(`packages/app-builder-lib/src/targets/mac/MacTargetHelper.ts`). With no Apple
+certificate and `CSC_IDENTITY_AUTO_DISCOVERY=false`, the only branch that yields
+an `Identity` is the explicit ad-hoc qualifier `mac.identity === "-"`; every
+other path returns `null`, and `isSignAllowed()`
+(`packages/app-builder-lib/src/codeSign/macCodeSign.ts`) then **skips signing
+entirely — never invoking the custom `mac.sign` hook**. Under electron-builder
+**25** (what `konard/vk-bot-desktop` uses, and why "just copy the build logic"
+worked there) the hook still ran without that flag. PRs #487 and #490 added and
+hardened the reseal hook, but on EB26 the hook was dead code because the flag
+that activates it was missing.
+
+The fix is one mandatory flag on the ad-hoc build command:
+`-c.mac.identity=-`. With it, `findSigningIdentity()` resolves the ad-hoc
+identity, EB26 invokes `./scripts/adhoc-sign-mac.cjs`, and the existing reseal
++ verify logic produces the `Contents/_CodeSignature/CodeResources` envelope the
+smoke test requires. The regression is locked in by
+[`tests/unit/ci-cd/release_publishing.rs`](../../../tests/unit/ci-cd/release_publishing.rs),
+which now asserts `-c.mac.identity=-` is present on the ad-hoc command (without
+it, signing is skipped and the `.app` ships unsigned). The flag only takes
+effect once merged to `main`; the next auto-release (or a manual
+`workflow_dispatch` for `v0.206.0`) then self-heals the missing macOS assets via
+the idempotency guard.
 
 ## 0.5 PR #490 macOS Ad-hoc Signing Follow-up
 
