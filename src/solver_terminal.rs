@@ -17,7 +17,9 @@ use crate::event_log::EventLog;
 use crate::language::Language;
 use crate::solver_handlers::finalize_simple;
 
-/// Phrases that explicitly mention a terminal/shell/console context.
+/// Phrases that explicitly mention a terminal/shell/console context. These are
+/// matched as substrings, so they work for both space-delimited (en/ru/hi) and
+/// non-space-delimited (zh) scripts.
 const TERMINAL_PHRASES: &[&str] = &[
     "в терминале",
     "в консоли",
@@ -35,9 +37,24 @@ const TERMINAL_PHRASES: &[&str] = &[
     "shell command",
     "command line",
     "command-line",
+    // Hindi
+    "टर्मिनल में",
+    "टर्मिनल पर",
+    "कमांड लाइन",
+    "शेल में",
+    // Chinese
+    "在终端",
+    "终端中",
+    "终端里",
+    "命令行",
+    "在命令行",
+    "在 shell",
+    "在shell",
 ];
 
-/// Verbs that request execution of a command.
+/// Verbs that request execution of a command, matched against word tokens.
+/// Space-delimited scripts (en/ru/hi) tokenize cleanly; Chinese verbs are
+/// matched separately as substrings via [`CJK_RUN_VERBS`].
 const RUN_VERBS: &[&str] = &[
     "выполни",
     "выполнить",
@@ -45,7 +62,17 @@ const RUN_VERBS: &[&str] = &[
     "запустить",
     "run",
     "execute",
+    // Hindi
+    "चलाओ",
+    "चलाएं",
+    "चलाएँ",
+    "चलाइए",
+    "निष्पादित",
 ];
+
+/// Chinese run/execute verbs. Chinese text has no word boundaries, so these are
+/// matched as substrings of the lowercased prompt.
+const CJK_RUN_VERBS: &[&str] = &["运行", "执行", "跑一下", "跑下"];
 
 /// Common leading shell tokens that strongly imply a terminal command.
 const SHELL_TOKENS: &[&str] = &[
@@ -85,7 +112,7 @@ fn word_tokens(lower: &str) -> Vec<String> {
     lower
         .split(|c: char| !(c.is_alphanumeric() || c == '_'))
         .filter(|t| !t.is_empty())
-        .map(|t| t.to_owned())
+        .map(ToOwned::to_owned)
         .collect()
 }
 
@@ -111,7 +138,8 @@ fn detect_terminal_command(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let has_phrase = TERMINAL_PHRASES.iter().any(|p| lower.contains(p));
     let tokens = word_tokens(&lower);
-    let has_verb = RUN_VERBS.iter().any(|v| tokens.iter().any(|t| t == v));
+    let has_verb = RUN_VERBS.iter().any(|v| tokens.iter().any(|t| t == v))
+        || CJK_RUN_VERBS.iter().any(|v| lower.contains(v));
     let backtick = extract_backtick_command(prompt);
     let leading = leading_shell_command(prompt);
 
@@ -141,6 +169,21 @@ fn terminal_body(command: &str, language: Language) -> String {
              Включить режим агента и выдать доступ к оболочке (shell), чтобы я мог \
              выполнить `{command}`? Переключите режим на «Agent» на панели инструментов \
              (или «Full Auto» для автоматического выполнения)."
+        ),
+        Language::Hindi => format!(
+            "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\n\
+             शेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में \
+             मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\n\
+             एजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` \
+             चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें (या स्वचालित निष्पादन \
+             के लिए \"Full Auto\")।"
+        ),
+        Language::Chinese => format!(
+            "看起来您想在终端中运行一个命令：`{command}`。\n\n\
+             运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，\
+             我只会分析您的请求，而不会执行命令。\n\n\
+             切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？\
+             请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
         ),
         _ => format!(
             "It looks like you want to run a terminal command: `{command}`.\n\n\
@@ -172,39 +215,4 @@ pub fn try_terminal_command(
         &body,
         0.6,
     ))
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn detects_russian_terminal_request() {
-        assert_eq!(
-            detect_terminal_command("Выполни `ls ~` в терминале"),
-            Some("ls ~".to_owned())
-        );
-    }
-
-    #[test]
-    fn detects_english_terminal_request() {
-        assert_eq!(
-            detect_terminal_command("run `ls ~` in terminal"),
-            Some("ls ~".to_owned())
-        );
-    }
-
-    #[test]
-    fn detects_leading_shell_token() {
-        assert_eq!(
-            detect_terminal_command("git status"),
-            Some("git status".to_owned())
-        );
-    }
-
-    #[test]
-    fn ignores_plain_prose() {
-        assert_eq!(detect_terminal_command("what is the capital of France?"), None);
-        assert_eq!(detect_terminal_command("run a marathon next year"), None);
-    }
 }

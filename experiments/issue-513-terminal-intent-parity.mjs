@@ -59,6 +59,16 @@ check(
   detectTerminalCommand("git status"),
 );
 check(
+  "detects hi terminal request",
+  detectTerminalCommand("टर्मिनल में `ls ~` चलाओ") === "ls ~",
+  detectTerminalCommand("टर्मिनल में `ls ~` चलाओ"),
+);
+check(
+  "detects zh terminal request",
+  detectTerminalCommand("在终端中运行 `ls ~`") === "ls ~",
+  detectTerminalCommand("在终端中运行 `ls ~`"),
+);
+check(
   "ignores plain prose",
   detectTerminalCommand("run a marathon next year") === null,
   detectTerminalCommand("run a marathon next year"),
@@ -88,6 +98,16 @@ check(
   onState && onState.content.includes("Agent mode is on"),
   onState && onState.content,
 );
+
+const hi = tryTerminalCommand("टर्मिनल में `ls ~` चलाओ", "hi", { agentMode: false });
+check("hi intent is agent_suggestion", hi && hi.intent === "agent_suggestion", hi && hi.intent);
+check("hi names the command", hi && hi.content.includes("ls ~"), hi && hi.content);
+check("hi body is Hindi", hi && /[ऀ-ॿ]/.test(hi.content), hi && hi.content);
+
+const zh = tryTerminalCommand("在终端中运行 `ls ~`", "zh", { agentMode: false });
+check("zh intent is agent_suggestion", zh && zh.intent === "agent_suggestion", zh && zh.intent);
+check("zh names the command", zh && zh.content.includes("ls ~"), zh && zh.content);
+check("zh body is Chinese", zh && /[一-鿿]/.test(zh.content), zh && zh.content);
 
 const miss = tryTerminalCommand("what is the capital of France?", "en", {});
 check("plain question returns null", miss === null, JSON.stringify(miss));

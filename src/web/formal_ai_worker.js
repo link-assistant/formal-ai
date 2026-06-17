@@ -10798,6 +10798,19 @@ const TERMINAL_PHRASES = [
   "shell command",
   "command line",
   "command-line",
+  // Hindi
+  "टर्मिनल में",
+  "टर्मिनल पर",
+  "कमांड लाइन",
+  "शेल में",
+  // Chinese
+  "在终端",
+  "终端中",
+  "终端里",
+  "命令行",
+  "在命令行",
+  "在 shell",
+  "在shell",
 ];
 const TERMINAL_RUN_VERBS = [
   "выполни",
@@ -10806,7 +10819,15 @@ const TERMINAL_RUN_VERBS = [
   "запустить",
   "run",
   "execute",
+  // Hindi
+  "चलाओ",
+  "चलाएं",
+  "चलाएँ",
+  "चलाइए",
+  "निष्पादित",
 ];
+// Chinese has no word boundaries, so these verbs are matched as substrings.
+const TERMINAL_CJK_RUN_VERBS = ["运行", "执行", "跑一下", "跑下"];
 const TERMINAL_SHELL_TOKENS = new Set([
   "ls", "pwd", "cd", "cat", "echo", "mkdir", "rmdir", "rm", "cp", "mv", "touch",
   "grep", "git", "npm", "npx", "node", "cargo", "python", "python3", "pip",
@@ -10839,7 +10860,9 @@ function detectTerminalCommand(prompt) {
   const hasPhrase = TERMINAL_PHRASES.some((p) => lower.includes(p));
   const tokens = lower.split(/[^\p{L}\p{N}_]+/u).filter(Boolean);
   const tokenSet = new Set(tokens);
-  const hasVerb = TERMINAL_RUN_VERBS.some((v) => tokenSet.has(v));
+  const hasVerb =
+    TERMINAL_RUN_VERBS.some((v) => tokenSet.has(v)) ||
+    TERMINAL_CJK_RUN_VERBS.some((v) => lower.includes(v));
   const backtick = extractBacktickCommand(prompt);
   const leading = leadingShellCommand(prompt);
   if (backtick && (hasVerb || hasPhrase)) return backtick;
@@ -10864,6 +10887,40 @@ function terminalCommandBody(command, language, agentModeOn) {
       "Включить режим агента и выдать доступ к оболочке (shell), чтобы я мог " +
       `выполнить \`${command}\`? Переключите режим на «Agent» на панели инструментов ` +
       "(или «Full Auto» для автоматического выполнения)."
+    );
+  }
+  if (language === "hi") {
+    if (agentModeOn) {
+      return (
+        `ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: \`${command}\`।\n\n` +
+        "एजेंट मोड चालू है। यदि `shell` क्षमता प्रदान की गई है तो मैं " +
+        `\`${command}\` चला सकता हूँ। अन्यथा सेटिंग्स में \`shell\` क्षमता प्रदान करें।`
+      );
+    }
+    return (
+      `ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: \`${command}\`।\n\n` +
+      "शेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं " +
+      "केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\n" +
+      "एजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं " +
+      `\`${command}\` चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें ` +
+      "(या स्वचालित निष्पादन के लिए \"Full Auto\")।"
+    );
+  }
+  if (language === "zh") {
+    if (agentModeOn) {
+      return (
+        `看起来您想在终端中运行一个命令：\`${command}\`。\n\n` +
+        "智能体模式已开启。如果已授予 `shell` 权限，我就可以运行 " +
+        `\`${command}\`。否则请在设置中授予 \`shell\` 权限。`
+      );
+    }
+    return (
+      `看起来您想在终端中运行一个命令：\`${command}\`。\n\n` +
+      "运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会" +
+      "分析您的请求，而不会执行命令。\n\n" +
+      "切换到智能体模式并授予 `shell` 权限，以便我运行 " +
+      `\`${command}\`？请在工具栏的模式单选框中选择 \"Agent\"` +
+      "（或选择 \"Full Auto\" 自动运行命令）。"
     );
   }
   if (agentModeOn) {

@@ -27,6 +27,30 @@ fn english_terminal_request_is_not_unknown() {
 }
 
 #[test]
+fn hindi_terminal_request_is_not_unknown() {
+    // language: hi
+    let answer = FormalAiEngine.answer("टर्मिनल में `ls ~` चलाओ");
+    assert_eq!(answer.intent, "agent_suggestion", "answer: {answer:?}");
+    assert!(
+        answer.answer.contains("ls ~"),
+        "answer should name the command: {}",
+        answer.answer
+    );
+}
+
+#[test]
+fn chinese_terminal_request_is_not_unknown() {
+    // language: zh
+    let answer = FormalAiEngine.answer("在终端中运行 `ls ~`");
+    assert_eq!(answer.intent, "agent_suggestion", "answer: {answer:?}");
+    assert!(
+        answer.answer.contains("ls ~"),
+        "answer should name the command: {}",
+        answer.answer
+    );
+}
+
+#[test]
 fn leading_shell_token_is_recognized() {
     let answer = FormalAiEngine.answer("git status");
     assert_eq!(answer.intent, "agent_suggestion", "answer: {answer:?}");
