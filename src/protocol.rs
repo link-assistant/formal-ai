@@ -865,7 +865,13 @@ fn tool_permission_refusal_answer(decision: &PackagePermissionDecision) -> Symbo
 }
 
 fn policy_thinking_steps(detail: impl Into<String>) -> Vec<ThinkingStep> {
-    vec![ThinkingStep::new(0, "policy_refusal", detail, "high", "policy")]
+    vec![ThinkingStep::new(
+        0,
+        "policy_refusal",
+        detail,
+        "high",
+        "policy",
+    )]
 }
 
 fn first_tool_permission_denial(

@@ -484,7 +484,10 @@ pub fn anthropic_message_sse(message: &AnthropicMessage) -> String {
 /// `thinking_delta` followed by a `signature_delta` (issue #488).
 fn push_content_block_events(body: &mut String, index: usize, block: &AnthropicContentBlock) {
     match block {
-        AnthropicContentBlock::Thinking { thinking, signature } => {
+        AnthropicContentBlock::Thinking {
+            thinking,
+            signature,
+        } => {
             push_sse_event(
                 body,
                 "content_block_start",

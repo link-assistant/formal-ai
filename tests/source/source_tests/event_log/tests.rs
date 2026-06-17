@@ -92,8 +92,9 @@ fn thinking_steps_fold_calculation_trace_into_composite_compute_step() {
         .collect();
     assert_eq!(children.len(), 3, "engine + expression + steps children");
     assert!(children.iter().all(|child| child.level == "detailed"));
-    assert!(steps.iter().any(|step| step.step == "compute_expression"
-        && step.detail == "((8 / 100) * (50 USD))"));
+    assert!(steps
+        .iter()
+        .any(|step| step.step == "compute_expression" && step.detail == "((8 / 100) * (50 USD))"));
 
     // Internal acceptance bookkeeping is dropped from the curated view.
     assert!(
@@ -143,7 +144,10 @@ fn thinking_steps_drop_internal_bookkeeping_noise() {
     log.append("response", "response:greeting");
 
     let steps = log.thinking_steps();
-    let kinds: Vec<&str> = steps.iter().map(|step| step.source_event.as_str()).collect();
+    let kinds: Vec<&str> = steps
+        .iter()
+        .map(|step| step.source_event.as_str())
+        .collect();
     assert!(kinds.contains(&"impulse"));
     assert!(kinds.contains(&"response"));
     // None of the noisy internal kinds survive curation (allowlist approach).

@@ -215,7 +215,10 @@ fn anthropic_extended_thinking_leads_with_concrete_thinking_block() {
         "expected a thinking block then a text block"
     );
     match &message.content[0] {
-        AnthropicContentBlock::Thinking { thinking, signature } => {
+        AnthropicContentBlock::Thinking {
+            thinking,
+            signature,
+        } => {
             assert!(
                 thinking.contains("Read the request"),
                 "thinking must open with the concrete impulse step, got: {thinking}"

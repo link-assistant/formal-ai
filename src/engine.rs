@@ -214,7 +214,10 @@ pub fn naturalize_thinking_step(step: &str, detail: &str) -> String {
         }
         "formalize_resolved" => {
             if has_detail {
-                format!("Resolve the request to {}.", humanize_meta_identifier(&trimmed))
+                format!(
+                    "Resolve the request to {}.",
+                    humanize_meta_identifier(&trimmed)
+                )
             } else {
                 "Resolve the request to a concrete entity.".to_owned()
             }
@@ -282,7 +285,10 @@ pub fn naturalize_thinking_step(step: &str, detail: &str) -> String {
         }
         "rule_verification" => {
             if has_detail {
-                format!("Verify the result against the {} rule.", humanize_meta_identifier(&trimmed))
+                format!(
+                    "Verify the result against the {} rule.",
+                    humanize_meta_identifier(&trimmed)
+                )
             } else {
                 "Verify the result against the rules.".to_owned()
             }
