@@ -132,6 +132,31 @@ cargo test
 
 Result: all passed. Logs are saved under `raw-data/`.
 
+### Concrete-by-default round
+
+```sh
+cargo fmt --all -- --check
+RUSTFLAGS=-Dwarnings cargo clippy --all-targets --all-features
+cargo test                                 # 1467 passing (integration 40, source 424, unit 1003)
+cargo test --test unit semantic_grounding
+bun run build:web && git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js
+npm --prefix tests/e2e run check:i18n
+npm --prefix tests/e2e run check:language-parity
+npm --prefix tests/e2e run check:language-test-coverage
+npm --prefix tests/e2e run check:intent-coverage
+npm --prefix tests/e2e run check:web-tdz
+npm run vscode:test
+cargo run --example print_thinking_steps        # core: concrete summaries + fractal sub-steps + levels
+cargo run --example issue_488_telegram_thinking # Telegram: answer-first + expandable blockquote + trace
+```
+
+Result: all passed. `print_thinking_steps` shows the concrete `summary` for every
+step, the `high`/`detailed` levels, and the recursively composite (`↳`) sub-steps for
+the calculator; `issue_488_telegram_thinking` shows the answer leading, the concrete
+reasoning inside a native `<blockquote expandable>` (HTML-escaped), and the `/trace`
+footer, all within Telegram's 4096-character limit. The Telegram capture is saved in
+`raw-data/telegram-thinking-example.log`.
+
 ## Follow-Up
 
 The current worker returns structured steps when an answer completes; the pending preview therefore uses a neutral localized working step. Streaming true intermediate step deltas during a long-running worker request would require a worker progress event protocol and a stateful per-turn progress buffer. The solver/API model added here is compatible with that future protocol because each step already has stable order, detail level, and source-event metadata.
