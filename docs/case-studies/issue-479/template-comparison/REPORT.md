@@ -160,7 +160,29 @@ Both files are named `CI/CD Pipeline` and share the same DNA (changelog-fragment
 - Desktop hit in any template workflow: only `js/.github/workflows/example-app.yml` **L95-141** (`desktop-package`). It packages Electron across `[ubuntu, macos, windows]` but **uploads only as CI artifacts** (`upload-artifact@v7`, L136-141) — never to a Release, never resolving a tag from a SHA. No release-tag/head-SHA coupling -> **cannot** exhibit #479.
 - `release: published`-related jobs exist only in `js` (L370) and `csharp` (L344) and are *publishers*, not `workflow_run` consumers. C# `docs.yml` **L6-9** even documents avoiding the inverse anti-pattern ("never on `release: published` ... see issue #15"), matching the working repo's own decoupling.
 
-**Conclusion:** The #479 defect is working-repo-specific and already remediated. No upstream desktop-release bug to report.
+### PR #510 follow-up: the electron-builder 26 macOS signing-skip is also absent upstream
+
+The PR #510 root cause (electron-builder **26**'s `findSigningIdentity()` skips
+signing entirely — never invoking a custom `mac.sign` hook — unless
+`mac.identity === "-"`; see case-study §0.6) is **electron-builder-specific**.
+Checked against every template:
+
+- `grep -niE "electron-builder|mac\.identity|csc_|notarize|adhoc"` over all
+  fetched template workflows -> **0 matches**.
+- The only Electron packaging in any template is `js/example-app.yml`'s
+  `desktop-package` job (L95-141). It uses **Electron Forge**
+  (`npm run example:desktop:package`), **not electron-builder**, and performs
+  **no macOS code-signing at all** (no `CSC_*`, no `mac.identity`, no `--mac`,
+  no ad-hoc hook). It cannot reach `MacPackager.findSigningIdentity()`, so the
+  EB26 regression is structurally impossible there.
+
+**Conclusion:** Neither the #479 head-SHA defect nor the PR #510 EB26
+signing-skip defect exists in any template (no template uses electron-builder or
+signs macOS bundles). There is **no upstream bug to file** for either; the
+remediation lives only in the working repo's `desktop-release.yml`. The single
+actionable upstream item remains the optional hardened desktop-release workflow
+enhancement (below), which should ship the EB26-correct `-c.mac.identity=-`
+ad-hoc command if Electron + electron-builder is ever upstreamed.
 
 ---
 
@@ -199,6 +221,7 @@ Both files are named `CI/CD Pipeline` and share the same DNA (changelog-fragment
 - *Title:* "Provide an optional cross-platform desktop-release workflow + /download page"
 - *Body:* "Downstream `link-assistant/formal-ai` built a complete desktop pipeline (6-target matrix, SLSA attestation via `actions/attest-build-provenance`, consolidated `SHA256SUMS.txt`, `/download` page from the Releases API). Consider upstreaming. **Ship the FIXED resolve logic** from `scripts/desktop-release-resolve.sh` (resolve the latest published release — the auto-release tags a child `chore: release vX.Y.Z` commit whose first parent is the CI head SHA), **not** a naive `workflow_run.head_sha == tag commit` match, which caused formal-ai #479."
 - *Reproducible bug to avoid:* a `workflow_run` job doing `gh api repos/$REPO/tags --jq '.[] | select(.commit.sha=="'$HEAD_SHA'")'` returns empty whenever the tag sits on the auto-release child commit -> build skipped forever.
+- *Second reproducible bug to avoid (electron-builder 26):* an unsigned/ad-hoc macOS build must pass `-c.mac.identity=-`. On electron-builder **26**, `MacPackager.findSigningIdentity()` returns `null` for any qualifier other than `"-"` when no Apple certificate is present (even with `CSC_IDENTITY_AUTO_DISCOVERY=false`), so `isSignAllowed()` skips signing entirely and a custom `-c.mac.sign=<hook>` is **never invoked** — the produced `.app` ships with no `Contents/_CodeSignature/CodeResources`. This is a behavior change from electron-builder 25 (where the hook ran without the flag) and caused formal-ai #479's macOS-only failure at v0.205.0/v0.206.0. Minimal repro: `electron-builder --mac --publish never -c.mac.sign=./sign.cjs` on EB26 with no cert -> hook never runs; adding `-c.mac.identity=-` makes it run. Workaround/fix: always pass `-c.mac.identity=-` on the ad-hoc path.
 
 ---
 
