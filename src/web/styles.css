@@ -1164,6 +1164,110 @@ body.is-resizing-context {
   font-weight: 700;
 }
 
+/* Issue #438 (follow-up): one-click start/stop panel for the prepared Docker
+   containers (Telegram bot + OpenAI-compatible server). */
+.desktop-services-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-service {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #d6dde1;
+  border-radius: 8px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.desktop-service-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.desktop-service-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b4c0c8;
+  flex: 0 0 auto;
+}
+
+.desktop-service-dot.is-running {
+  background: #2faa6a;
+  box-shadow: 0 0 0 3px rgba(47, 170, 106, 0.18);
+}
+
+.desktop-service-label {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.desktop-service-state {
+  margin-left: auto;
+  font-size: 12px;
+  color: #657584;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.desktop-service-token {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  border: 1px solid #c8d2d8;
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.desktop-service-url {
+  color: #175f4f;
+  font-weight: 700;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-service-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-service-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid #c8d2d8;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: #f3f6f7;
+}
+
+.desktop-service-start {
+  background: #1f7a5b;
+  border-color: #1f7a5b;
+  color: #ffffff;
+}
+
+.desktop-service-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-services-note,
+.desktop-services-error {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-services-error {
+  color: #b3261e;
+  font-weight: 700;
+}
+
 .chat-panel {
   min-width: 0;
   min-height: 0;
