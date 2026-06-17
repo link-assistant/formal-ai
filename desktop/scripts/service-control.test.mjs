@@ -62,7 +62,7 @@ test("telegram run args keep the default command and inject the token", () => {
     "-e",
     "TELEGRAM_BOT_TOKEN=secret-token",
     "-v",
-    "formal-ai-docker:/var/lib/docker",
+    "formal-ai-telegram-docker:/var/lib/docker",
     DEFAULT_IMAGE,
   ]);
   // The default image command (formal-ai telegram --mode polling) is NOT
@@ -75,6 +75,10 @@ test("server run args publish a loopback port and override the command to serve"
   const args = services.server.buildRunArgs();
   assert.ok(args.includes("-p"));
   assert.ok(args.includes("127.0.0.1:8080:8080"));
+  // Each DinD service gets its own inner-Docker volume so two daemons never
+  // contend for one /var/lib/docker.
+  assert.ok(args.includes("formal-ai-server-docker:/var/lib/docker"));
+  assert.ok(!args.includes("formal-ai-telegram-docker:/var/lib/docker"));
   const tail = args.slice(args.indexOf(DEFAULT_IMAGE) + 1);
   assert.deepEqual(tail, ["formal-ai", "serve", "--host", "0.0.0.0", "--port", "8080"]);
 });

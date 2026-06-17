@@ -583,7 +583,7 @@ fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
             "telegram-bot:",
             "ghcr.io/link-assistant/formal-ai:latest",
             "TELEGRAM_BOT_TOKEN",
-            "formal-ai-docker:/var/lib/docker",
+            "formal-ai-telegram-docker:/var/lib/docker",
         ],
     );
 

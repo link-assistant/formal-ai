@@ -15,7 +15,10 @@
 
 const DEFAULT_IMAGE = "ghcr.io/link-assistant/formal-ai:latest";
 const DEFAULT_SERVER_PORT = 8080;
-const DOCKER_VOLUME = "formal-ai-docker:/var/lib/docker";
+// Each service gets its OWN inner-Docker volume: two DinD daemons cannot share a
+// single /var/lib/docker, so the bot and the server must not collide if both run.
+const TELEGRAM_VOLUME = "formal-ai-telegram-docker:/var/lib/docker";
+const SERVER_VOLUME = "formal-ai-server-docker:/var/lib/docker";
 
 // Resolve the image once so a locally built image or an optional Docker Hub
 // mirror can be substituted with the same `FORMAL_AI_DOCKER_IMAGE` override the
@@ -60,7 +63,7 @@ function serviceDefinitions(env = {}) {
           "-e",
           `TELEGRAM_BOT_TOKEN=${token}`,
           "-v",
-          DOCKER_VOLUME,
+          TELEGRAM_VOLUME,
           this.image,
         ];
       },
@@ -84,7 +87,7 @@ function serviceDefinitions(env = {}) {
           "-p",
           `127.0.0.1:${this.port}:${this.port}`,
           "-v",
-          DOCKER_VOLUME,
+          SERVER_VOLUME,
           this.image,
           "formal-ai",
           "serve",

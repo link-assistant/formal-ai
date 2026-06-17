@@ -1,6 +1,18 @@
+# Prepared formal-ai services. Both run from the single prepared image
+# (ghcr.io/link-assistant/formal-ai) and share an inner-Docker volume so the
+# agentic sandbox works without bind-mounting the host's docker.sock.
+#
+#   docker compose up -d                         # Telegram bot (default)
+#   docker compose --profile server up -d        # OpenAI-compatible API server
+#   docker compose --profile all up -d           # both at once
+#
+# The desktop app starts/stops the exact same containers with one click; see
+# docs/desktop/service-control.md.
 services:
   telegram-bot:
     image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-telegram
+    profiles: ["", "telegram", "all"]
     restart: unless-stopped
     privileged: true
     environment:
@@ -9,7 +21,22 @@ services:
       FORMAL_AI_TELEGRAM_TIMEOUT: ${FORMAL_AI_TELEGRAM_TIMEOUT:-30}
       FORMAL_AI_TELEGRAM_LIMIT: ${FORMAL_AI_TELEGRAM_LIMIT:-100}
     volumes:
-      - formal-ai-docker:/var/lib/docker
+      - formal-ai-telegram-docker:/var/lib/docker
+
+  # OpenAI-compatible API server for agentic mode. Opt-in via the `server`
+  # profile so `docker compose up` keeps starting only the Telegram bot.
+  server:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-server
+    profiles: ["server", "all"]
+    restart: unless-stopped
+    privileged: true
+    command: ["formal-ai", "serve", "--host", "0.0.0.0", "--port", "${FORMAL_AI_SERVER_PORT:-8080}"]
+    ports:
+      - "127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}:${FORMAL_AI_SERVER_PORT:-8080}"
+    volumes:
+      - formal-ai-server-docker:/var/lib/docker
 
 volumes:
-  formal-ai-docker:
+  formal-ai-telegram-docker:
+  formal-ai-server-docker:

@@ -877,6 +877,18 @@ The same `FormalAiEngine` answers prompts in every surface:
   use the bundled `$ --isolated docker --auto-remove-docker-container --`
   wrapper from `start-command`, which records logs under
   `/tmp/start-command/logs/`.
+- **One-click / one-line services** — the same prepared image runs two managed
+  containers: the Telegram bot (`formal-ai-telegram`, the default command) and
+  the OpenAI-compatible API server (`formal-ai-server`, `formal-ai serve` for
+  agentic mode, published on `127.0.0.1:8080`). The desktop app starts and stops
+  both with one click via the testable `desktop/lib/service-control.cjs` module
+  (an injected `runDocker` runner, exposed over IPC as
+  `formalAiDesktop:serviceStatus` / `startService` / `stopService`); a server
+  reproduces the identical containers with `docker compose --profile all up -d`
+  (or the documented raw `docker run` arguments). Each service uses its own
+  inner-Docker volume (`formal-ai-telegram-docker`, `formal-ai-server-docker`)
+  because two DinD daemons cannot share one `/var/lib/docker`. See
+  [docs/desktop/service-control.md](docs/desktop/service-control.md).
 - **Browser demo** — `src/web/formal_ai_worker.js` plus the WebAssembly
   worker built from `src/web/wasm-worker/src/lib.rs`.
 

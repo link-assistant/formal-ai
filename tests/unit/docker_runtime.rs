@@ -81,7 +81,32 @@ fn compose_file_runs_prebuilt_telegram_image_with_minimum_configuration() {
             "privileged: true",
             "TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN to your Telegram bot token}",
             "FORMAL_AI_TELEGRAM_ALLOWED_UPDATES",
-            "formal-ai-docker:/var/lib/docker",
+            "formal-ai-telegram-docker:/var/lib/docker",
+        ],
+    );
+}
+
+#[test]
+fn compose_file_offers_optional_openai_compatible_server_profile() {
+    // Issue #438 (follow-up): the same compose file must also start the
+    // OpenAI-compatible API server (agentic mode) on a server, under an opt-in
+    // profile so `docker compose up` keeps starting only the Telegram bot. The
+    // container name matches the one the desktop app starts/stops with one click.
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let compose = fs::read_to_string(root.join("compose.yaml"))
+        .expect("compose.yaml should document the optional OpenAI-compatible server");
+
+    assert_contains_all(
+        "compose.yaml",
+        &compose,
+        &[
+            "server:",
+            "container_name: formal-ai-server",
+            "profiles: [\"server\", \"all\"]",
+            "[\"formal-ai\", \"serve\", \"--host\", \"0.0.0.0\", \"--port\", \"${FORMAL_AI_SERVER_PORT:-8080}\"]",
+            "127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}:${FORMAL_AI_SERVER_PORT:-8080}",
+            // each DinD service uses its own inner-Docker volume.
+            "formal-ai-server-docker:/var/lib/docker",
         ],
     );
 }
