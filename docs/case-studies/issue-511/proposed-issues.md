@@ -16,9 +16,32 @@ reference [`solution-plans.md`](solution-plans.md).
 > **E0 — this PR (done):** case study, requirement inventory (R1–R20), solution plans,
 > and this epic. Delivers R19 + R20.
 
+**Status — issues created (via `gh`).** The milestones below are now live GitHub
+issues, each labeled `enhancement` and linked as a **sub-issue of #511**:
+
+| Milestone | Issue | Repository |
+|---|---|---|
+| E1 | [#513](https://github.com/link-assistant/formal-ai/issues/513) | `link-assistant/formal-ai` |
+| E2 | [#514](https://github.com/link-assistant/formal-ai/issues/514) | `link-assistant/formal-ai` |
+| E3 | [#515](https://github.com/link-assistant/formal-ai/issues/515) | `link-assistant/formal-ai` |
+| E4 | [#516](https://github.com/link-assistant/formal-ai/issues/516) | `link-assistant/formal-ai` |
+| E5 | [#517](https://github.com/link-assistant/formal-ai/issues/517) | `link-assistant/formal-ai` |
+| E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` |
+| E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` |
+| E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` |
+| Upstream gap (R16) | [agent#271](https://github.com/link-assistant/agent/issues/271) | `link-assistant/agent` |
+
+The upstream `agent-commander` read-only/plan gap is already tracked (and resolved for
+`claude`/`codex`/`opencode`/`qwen`/`gemini`) by
+[agent-commander#20](https://github.com/link-assistant/agent-commander/issues/20); the
+**residual** gap — that the `@link-assistant/agent` tool has no native permission system,
+so `--tool agent --read-only` is rejected — is filed at
+[agent#271](https://github.com/link-assistant/agent/issues/271).
+
 ---
 
 ## E1 — Terminal-command intent + three-way Mode radio (the visible fix)
+*(Issue [#513](https://github.com/link-assistant/formal-ai/issues/513))*
 - **Delivers:** R5, R6, and the scaffolding for R1.
 - **Why first:** smallest slice that **visibly fixes the screenshot** while keeping
   the suite hermetic (no Docker, no real CLI).
@@ -33,6 +56,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E0.
 
 ## E2 — Per-tool / per-command permission UI + onboarding message
+*(Issue [#514](https://github.com/link-assistant/formal-ai/issues/514))*
 - **Delivers:** R1, R2, R3, R4 (regression), R7, R8.
 - **Scope:**
   - Extend the grant payload from `{ all }` to a per-tool map (the tool router already
@@ -45,6 +69,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E1.
 
 ## E3 — Auto-start the local OpenAI-compatible server for agent mode
+*(Issue [#515](https://github.com/link-assistant/formal-ai/issues/515))*
 - **Delivers:** R11.
 - **Scope:** On entering agent/full-auto, ensure the local server (existing
   `FORMAL_AI_DESKTOP_SERVER` mode) is running — start + health-probe if down, reuse if
@@ -54,6 +79,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E1 (mode), parallelizable with E2.
 
 ## E4 — `AgentProvider` seam + in-process provider + agent-commander provider
+*(Issue [#516](https://github.com/link-assistant/formal-ai/issues/516))*
 - **Delivers:** R9, R12, R14b (in part).
 - **Scope:**
   - Introduce the `AgentProvider` interface; implement `InProcessProvider` over the
@@ -67,6 +93,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E2 (grants), E3 (server).
 
 ## E5 — Installable Formal-AI container (server + agent + agent-commander) & CLI setup
+*(Issue [#517](https://github.com/link-assistant/formal-ai/issues/517))*
 - **Delivers:** R10, R13, R14b, R17.
 - **Scope:**
   - Define the Formal-AI image (extending the `konard/box-dind` sandbox) bundling the
@@ -79,6 +106,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E4.
 
 ## E6 — Render Agent CLI (NDJSON) output into the existing chat UI
+*(Issue [#518](https://github.com/link-assistant/formal-ai/issues/518))*
 - **Delivers:** R14.
 - **Scope:** Adapter mapping agent-commander/OpenCode NDJSON events (assistant text,
   tool start/result, errors) onto the existing chat message + tool-call render path.
@@ -87,6 +115,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E4 (events), E5 (real stream).
 
 ## E7 — Full integration + e2e for the cold-start `ls ~` journey
+*(Issue [#519](https://github.com/link-assistant/formal-ai/issues/519))*
 - **Delivers:** R15, R18.
 - **Scope:** `tests/e2e/tests/issue-511*.spec.js` covering onboarding, per-command
   grant/deny, three-way mode switch, and `ls ~` returning a real listing rendered in
@@ -97,6 +126,7 @@ reference [`solution-plans.md`](solution-plans.md).
 - **Depends on:** E2, E6 (and E5 for the gated variant).
 
 ## E8 — Upstream feedback + best-practices write-up
+*(Issue [#520](https://github.com/link-assistant/formal-ai/issues/520))*
 - **Delivers:** R16, R17 (closeout).
 - **Scope:** File any agent-commander capability gaps found during E4–E7 (starting
   with enforceable read-only for the `agent` tool, if still missing) as issues on

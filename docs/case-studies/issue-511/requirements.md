@@ -146,10 +146,17 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R16 — Report missing agent-commander features upstream
 - **Source:** *"if some features are missing from agent-commander we should report
   it."*
-- **Priority:** P2 · **Status now:** Missing
+- **Priority:** P2 · **Status now:** **Filed** (upstream issues created via `gh`)
 - **Acceptance:** Any capability gap found during integration (e.g. the documented
-  *"not enforceable"* read-only mode for the `agent` tool) is filed as an issue on
-  `link-assistant/agent-commander` and linked here.
+  *"not enforceable"* read-only mode for the `agent` tool) is filed as an issue on the
+  appropriate upstream repository and linked here.
+- **Filed:** The per-tool read-only/plan enforcement gap was already raised and
+  resolved for `claude`/`codex`/`opencode`/`qwen`/`gemini` in
+  [`link-assistant/agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)
+  (closed). The **residual** gap — that `@link-assistant/agent` has no native
+  permission system, so `agent-commander --tool agent --read-only` is *rejected* — is
+  filed at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271).
+  Tracked in this repo by [E8 (#520)](https://github.com/link-assistant/formal-ai/issues/520).
 
 ### R17 — Follow hive-mind best practices for Agent CLI + agent-commander
 - **Source:** *"Check github.com/link-assistant/hive-mind for best practices for Agent

@@ -4,7 +4,7 @@
 > **Pull request (this work):** <https://github.com/link-assistant/formal-ai/pull/512> (branch `issue-511-26d6b8408464`)
 > **Case study date:** 2026-06-17
 > **Type:** Feature request + deep case study, requirements decomposition, and a sequenced implementation plan.
-> **Status:** Analysis + plan delivered. The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues**. Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
+> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream gap at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/).
 
@@ -21,7 +21,7 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | PR #512 metadata | [`raw-data/pr-512.json`](raw-data/pr-512.json) |
 | **Full requirement inventory (R1–R20)** | [`requirements.md`](requirements.md) |
 | **Per-requirement solution plans + reusable components** | [`solution-plans.md`](solution-plans.md) |
-| **Sequenced epic of implementation issues (E1–E10)** | [`proposed-issues.md`](proposed-issues.md) |
+| **Sequenced epic of implementation issues (E1–E8, created: #513–#520)** | [`proposed-issues.md`](proposed-issues.md) |
 
 ---
 
@@ -235,9 +235,11 @@ Each of these maps to a milestone in [`proposed-issues.md`](proposed-issues.md).
 - **Determinism / hermetic tests.** The default in-process provider keeps the test
   suite offline and deterministic (the project's hallmark, per issue #468); the real
   CLI provider is exercised by integration/e2e tests that can opt into the container.
-- **Report upstream gaps.** Missing capabilities in `agent-commander` (e.g. the
-  documented *"not enforceable"* read-only mode for the `agent` tool) are filed as
-  issues on that repo, not worked around silently.
+- **Report upstream gaps.** Missing capabilities are filed upstream, not worked around
+  silently. The documented *"not enforceable"* read-only mode for the `agent` tool is
+  filed at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271)
+  (the per-tool enforcement for the other CLIs was already shipped in
+  [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)).
 
 ---
 
@@ -260,12 +262,15 @@ is neither safe nor verifiable in one reviewable unit:
   plan + the first verifiable slice, then iterate**.
 
 Accordingly, this PR lands the **case study + requirement inventory + solution plans
-+ sequenced epic**, so the maintainer can approve the decomposition and the
-milestones can each ship and be verified on their own. The first implementation
-milestone (E1: the in-process terminal-command handler + three-way mode radio +
-onboarding message) is the smallest slice that *visibly fixes the screenshot* while
-keeping the suite hermetic, and is recommended to start immediately after this plan
-is accepted.
++ sequenced epic**, and the milestones have been **created as live GitHub issues**
+(via `gh`) — E1–E8 as [#513–#520](https://github.com/link-assistant/formal-ai/issues/513),
+each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream gap at
+[`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271) — so
+each milestone can ship and be verified on its own. The first implementation
+milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513): the
+in-process terminal-command handler + three-way mode radio + onboarding message) is
+the smallest slice that *visibly fixes the screenshot* while keeping the suite
+hermetic, and is recommended to start immediately.
 
 ---
 
