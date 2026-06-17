@@ -29,14 +29,31 @@ issues, each labeled `enhancement` and linked as a **sub-issue of #511**:
 | E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` |
 | E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` |
 | E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` |
-| Upstream gap (R16) | [agent#271](https://github.com/link-assistant/agent/issues/271) | `link-assistant/agent` |
+| Upstream gap (R16) — **resolved** | [agent#271](https://github.com/link-assistant/agent/issues/271) → [agent#272](https://github.com/link-assistant/agent/pull/272) (v0.24.0) | `link-assistant/agent` |
+| Upstream follow-up (R16) — map `agent` read-only | [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) | `link-assistant/agent-commander` |
+| Upstream follow-up (R16) — per-command approval relay | [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40) | `link-assistant/agent-commander` |
 
-The upstream `agent-commander` read-only/plan gap is already tracked (and resolved for
-`claude`/`codex`/`opencode`/`qwen`/`gemini`) by
-[agent-commander#20](https://github.com/link-assistant/agent-commander/issues/20); the
-**residual** gap — that the `@link-assistant/agent` tool has no native permission system,
-so `--tool agent --read-only` is rejected — is filed at
-[agent#271](https://github.com/link-assistant/agent/issues/271).
+**Upstream status (re-verified 2026-06-17 against the latest versions — `agent`
+v0.24.0, `agent-commander` v0.6.2):**
+- The per-tool read-only/plan gap for `claude`/`codex`/`opencode`/`qwen`/`gemini` was
+  resolved in
+  [agent-commander#20](https://github.com/link-assistant/agent-commander/issues/20).
+- The residual Agent-CLI gap — that `@link-assistant/agent` had no native permission
+  system, so `--tool agent --read-only` was rejected — was filed at
+  [agent#271](https://github.com/link-assistant/agent/issues/271) and is now
+  **resolved**: PR [agent#272](https://github.com/link-assistant/agent/pull/272)
+  (merged 2026-06-17, **v0.24.0**) added a native, enforceable `--permission-mode`
+  (`auto`/`plan`/`readonly`/`ask`), an OpenCode-compatible `--permission` JSON policy,
+  and a per-command JSON approval protocol — in **both JS and Rust**.
+- Re-verifying the latest versions surfaced that `agent-commander` v0.6.2 has **not
+  yet** exposed agent's new capability, so two follow-ups were filed:
+  [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39)
+  (map `--read-only`/`--plan-only` for the `agent` tool to native `--permission-mode
+  readonly`/`plan`) and
+  [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
+  (uniform per-command approval relay forwarding native
+  `permission_request`/`permission_response` frames across tools). These two are the
+  prerequisites for E4/E6 to drive the `agent` tool with read-only + approve-each-command.
 
 ---
 
@@ -87,10 +104,16 @@ so `--tool agent --read-only` is rejected — is filed at
   - Implement `CommanderProvider` that drives `link-assistant/agent` **through**
     `agent-commander` (dependency added), mapping per-tool grants → read-only/plan
     flags. Add the CI guard that no host `claude`/`codex` is ever spawned.
+- **Upstream prerequisite for the `agent` tool:** read-only + per-command approval for
+  `@link-assistant/agent` via agent-commander depend on
+  [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) and
+  [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
+  (the Agent CLI itself already supports both as of v0.24.0). The five other tools
+  enforce read-only today, so `CommanderProvider` can land against them first.
 - **Acceptance:** Read-only command executes via the in-process provider in tests; the
   commander provider is selectable and never invokes the CLI directly or the host
   subscriptions.
-- **Depends on:** E2 (grants), E3 (server).
+- **Depends on:** E2 (grants), E3 (server); for the `agent` tool, agent-commander#39/#40.
 
 ## E5 — Installable Formal-AI container (server + agent + agent-commander) & CLI setup
 *(Issue [#517](https://github.com/link-assistant/formal-ai/issues/517))*
@@ -128,10 +151,18 @@ so `--tool agent --read-only` is rejected — is filed at
 ## E8 — Upstream feedback + best-practices write-up
 *(Issue [#520](https://github.com/link-assistant/formal-ai/issues/520))*
 - **Delivers:** R16, R17 (closeout).
-- **Scope:** File any agent-commander capability gaps found during E4–E7 (starting
-  with enforceable read-only for the `agent` tool, if still missing) as issues on
+- **Scope:** Track the already-filed upstream gaps to closure and file any further
+  agent-commander capability gaps found during E4–E7 as issues on
   `link-assistant/agent-commander`; link them here. Finalize the best-practices doc.
-- **Acceptance:** Gaps filed + linked; best-practices doc merged.
+- **Already filed (2026-06-17, from this PR):** the Agent-CLI permission gap is resolved
+  upstream ([agent#271](https://github.com/link-assistant/agent/issues/271) →
+  [agent#272](https://github.com/link-assistant/agent/pull/272), v0.24.0); two
+  agent-commander follow-ups are open —
+  [#39](https://github.com/link-assistant/agent-commander/issues/39) (map `agent`
+  read-only) and
+  [#40](https://github.com/link-assistant/agent-commander/issues/40) (per-command
+  approval relay).
+- **Acceptance:** Gaps filed + linked + tracked to closure; best-practices doc merged.
 - **Depends on:** E4–E7 (findings).
 
 ---

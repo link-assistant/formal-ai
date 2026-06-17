@@ -146,17 +146,32 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R16 — Report missing agent-commander features upstream
 - **Source:** *"if some features are missing from agent-commander we should report
   it."*
-- **Priority:** P2 · **Status now:** **Filed** (upstream issues created via `gh`)
-- **Acceptance:** Any capability gap found during integration (e.g. the documented
-  *"not enforceable"* read-only mode for the `agent` tool) is filed as an issue on the
-  appropriate upstream repository and linked here.
-- **Filed:** The per-tool read-only/plan enforcement gap was already raised and
-  resolved for `claude`/`codex`/`opencode`/`qwen`/`gemini` in
-  [`link-assistant/agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)
-  (closed). The **residual** gap — that `@link-assistant/agent` has no native
-  permission system, so `agent-commander --tool agent --read-only` is *rejected* — is
-  filed at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271).
-  Tracked in this repo by [E8 (#520)](https://github.com/link-assistant/formal-ai/issues/520).
+- **Priority:** P2 · **Status now:** **Filed** (upstream issues created via `gh`; re-verified against latest versions 2026-06-17)
+- **Acceptance:** Any capability gap found during integration is filed as an issue on
+  the appropriate upstream repository and linked here.
+- **Filed / current state (re-verified against `agent` v0.24.0 and `agent-commander`
+  v0.6.2):**
+  1. **`agent` native permission system — DONE upstream.** The per-tool read-only/plan
+     enforcement gap was raised and resolved for `claude`/`codex`/`opencode`/`qwen`/
+     `gemini` in
+     [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)
+     (closed). The residual gap — that `@link-assistant/agent` had *no* native
+     permission system — was filed as
+     [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is now
+     **resolved**: PR [`agent#272`](https://github.com/link-assistant/agent/pull/272)
+     (merged 2026-06-17, shipped in **v0.24.0**) added a native, enforceable
+     `--permission-mode auto|plan|readonly|ask`, an OpenCode-compatible `--permission`
+     JSON policy, and a per-command JSON approval protocol — in both JS and Rust.
+  2. **`agent-commander` has not yet exposed it — two new issues filed.** Latest
+     `agent-commander` v0.6.2 still lists `agent` as *"not enforceable"* and rejects
+     `--tool agent --read-only`, and offers no per-command approval relay. Filed:
+     [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
+     (map `--read-only`/`--plan-only` for `agent` to native `--permission-mode
+     readonly`/`plan`) and
+     [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
+     (uniform per-command approval relay forwarding native
+     `permission_request`/`permission_response` frames across tools).
+  - Tracked in this repo by [E8 (#520)](https://github.com/link-assistant/formal-ai/issues/520).
 
 ### R17 — Follow hive-mind best practices for Agent CLI + agent-commander
 - **Source:** *"Check github.com/link-assistant/hive-mind for best practices for Agent

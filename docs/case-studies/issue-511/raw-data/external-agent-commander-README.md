@@ -1,3 +1,5 @@
+<!-- Snapshot of link-assistant/agent-commander README.md (v0.6.2) as of 2026-06-17 (issue #511 case study). Source of truth is the upstream repo; this copy keeps the analysis reproducible offline. -->
+
 # agent-commander
 
 [![npm version](https://img.shields.io/npm/v/agent-commander?label=npm&style=flat)](https://www.npmjs.com/package/agent-commander)

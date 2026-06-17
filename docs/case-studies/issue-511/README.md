@@ -4,7 +4,7 @@
 > **Pull request (this work):** <https://github.com/link-assistant/formal-ai/pull/512> (branch `issue-511-26d6b8408464`)
 > **Case study date:** 2026-06-17
 > **Type:** Feature request + deep case study, requirements decomposition, and a sequenced implementation plan.
-> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream gap at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
+> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream feedback (see §6/§R16) — the original Agent-CLI gap [`agent#271`](https://github.com/link-assistant/agent/issues/271) is now **resolved** (PR [`agent#272`](https://github.com/link-assistant/agent/pull/272), **v0.24.0**, native permission system), and two follow-up gaps were filed against `agent-commander` so it can expose that capability: [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39) and [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/).
 
@@ -15,8 +15,9 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | The originally-reported screenshot (the `unknown` answer in the desktop chat) | [`raw-data/issue-screenshot.png`](raw-data/issue-screenshot.png) |
 | Verbatim reasoning trace preserved from the issue | [`raw-data/reasoning-trace.md`](raw-data/reasoning-trace.md) |
 | Online research (the three named repos + upstream standards) | [`raw-data/online-research.md`](raw-data/online-research.md) |
-| `link-assistant/agent` README snapshot | [`raw-data/external-agent-README.md`](raw-data/external-agent-README.md) |
-| `link-assistant/agent-commander` README snapshot | [`raw-data/external-agent-commander-README.md`](raw-data/external-agent-commander-README.md) |
+| `link-assistant/agent` README snapshot (v0.24.0) | [`raw-data/external-agent-README.md`](raw-data/external-agent-README.md) |
+| `link-assistant/agent` permission-system doc snapshot (v0.24.0) | [`raw-data/external-agent-permissions.md`](raw-data/external-agent-permissions.md) |
+| `link-assistant/agent-commander` README snapshot (v0.6.2) | [`raw-data/external-agent-commander-README.md`](raw-data/external-agent-commander-README.md) |
 | `link-assistant/hive-mind` README snapshot | [`raw-data/external-hive-mind-README.md`](raw-data/external-hive-mind-README.md) |
 | PR #512 metadata | [`raw-data/pr-512.json`](raw-data/pr-512.json) |
 | **Full requirement inventory (R1–R20)** | [`requirements.md`](requirements.md) |
@@ -154,13 +155,18 @@ shipped infrastructure, not a green-field build.
 | Agent/Chat toggle + command (`agent mode`/`chat mode`) | ✅ | `app.js:482`, `app.js:7054` | Binary only; no `full auto`; not a radio group |
 | Agent-mode → grant sync to desktop bridge | ✅ | `app.js:3776` (`syncDesktopToolGrants`) | All-or-nothing; no per-command approve/deny prompts |
 | Chat-side "agent plan" decomposition | ✅ | `app.js:2099` `decomposeAgentTask`, `app.js:6424` `runAgentPlan` | Splits NL steps; does not execute real tools or render CLI output |
-| Multi-CLI control + read-only/plan enforcement + NDJSON | ✅ (external) | `link-assistant/agent-commander` | Not a dependency yet; no bridge in `desktop/` |
-| Thin autonomous coding CLI | ✅ (external) | `link-assistant/agent` | Not installed/managed by the desktop app |
+| Multi-CLI control + read-only/plan enforcement + NDJSON | ✅ (external) | `link-assistant/agent-commander` v0.6.2 | Not a dependency yet; no bridge in `desktop/`; `agent` read-only not yet mapped + no per-command relay → [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39), [#40](https://github.com/link-assistant/agent-commander/issues/40) |
+| Thin autonomous coding CLI + **native permission system** | ✅ (external) | `link-assistant/agent` v0.24.0 (`--permission-mode auto/plan/readonly/ask`, JSON per-command approval) | Not installed/managed by the desktop app |
 
 See [`raw-data/online-research.md`](raw-data/online-research.md) for the external-repo
-facts (incl. agent-commander's per-tool read-only flags and the Agent CLI's
-"no permission system" warning, which is *why* the approval layer must live outside
-the CLI).
+facts. **Re-verified 2026-06-17 (PR #512 feedback):** the Agent CLI **v0.24.0** now
+ships a *native, enforceable* permission system (read-only shell allowlist incl.
+`ls`/`pwd`/`cat`, and a `permission_request`/`permission_response` JSON protocol) — so
+the per-command approval the issue needs is available natively; the remaining gap is
+that `agent-commander` v0.6.2 has not yet exposed it (filed:
+[#39](https://github.com/link-assistant/agent-commander/issues/39),
+[#40](https://github.com/link-assistant/agent-commander/issues/40)). Isolation in the
+Docker container remains required (the CLI's default is still full-auto).
 
 ---
 
@@ -236,10 +242,18 @@ Each of these maps to a milestone in [`proposed-issues.md`](proposed-issues.md).
   suite offline and deterministic (the project's hallmark, per issue #468); the real
   CLI provider is exercised by integration/e2e tests that can opt into the container.
 - **Report upstream gaps.** Missing capabilities are filed upstream, not worked around
-  silently. The documented *"not enforceable"* read-only mode for the `agent` tool is
-  filed at [`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271)
-  (the per-tool enforcement for the other CLIs was already shipped in
-  [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)).
+  silently. The original *"not enforceable"* read-only mode for the `agent` tool was
+  filed at [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is now
+  **resolved** by [`agent#272`](https://github.com/link-assistant/agent/pull/272)
+  (**v0.24.0** — native permission system). Re-verifying the latest versions surfaced
+  that `agent-commander` v0.6.2 has not yet exposed agent's new capability, so two
+  follow-ups were filed:
+  [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
+  (map `--read-only` for `agent`) and
+  [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
+  (uniform per-command approval relay). The per-tool enforcement for the other CLIs was
+  already shipped in
+  [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20).
 
 ---
 
@@ -264,8 +278,11 @@ is neither safe nor verifiable in one reviewable unit:
 Accordingly, this PR lands the **case study + requirement inventory + solution plans
 + sequenced epic**, and the milestones have been **created as live GitHub issues**
 (via `gh`) — E1–E8 as [#513–#520](https://github.com/link-assistant/formal-ai/issues/513),
-each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream gap at
-[`link-assistant/agent#271`](https://github.com/link-assistant/agent/issues/271) — so
+each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream
+feedback — [`agent#271`](https://github.com/link-assistant/agent/issues/271) resolved
+by [`agent#272`](https://github.com/link-assistant/agent/pull/272) (v0.24.0) and the
+two follow-up gaps [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
+/ [`#40`](https://github.com/link-assistant/agent-commander/issues/40) — so
 each milestone can ship and be verified on its own. The first implementation
 milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513): the
 in-process terminal-command handler + three-way mode radio + onboarding message) is

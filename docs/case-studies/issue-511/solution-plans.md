@@ -127,6 +127,16 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
   agent-commander's read-only/plan flags (e.g. `--permission-mode plan`,
   `--sandbox read-only`, `OPENCODE_PERMISSION`, per its support matrix). The provider
   emits the same structured tool-call/result events the chat UI already consumes.
+- **Upstream dependency (re-verified 2026-06-17):** for the `agent` tool specifically,
+  read-only and per-command approval depend on `agent-commander` exposing the Agent
+  CLI's new (v0.24.0) native permission system —
+  [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
+  (read-only mapping) and
+  [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
+  (per-command approval relay). The five other tools (`claude`/`codex`/`opencode`/
+  `qwen`/`gemini`) already enforce read-only today, so `CommanderProvider` can ship
+  against them first and add the `agent` tool once #39/#40 land. Until then the
+  default **in-process** provider keeps the `ls ~` journey hermetic and offline.
 - **Test:** Integration test (container-gated) that `CommanderProvider` runs a
   read-only command through agent-commander and returns its output; a guard test that
   no code path spawns `agent`/`claude`/`codex` directly (grep-style assertion).
@@ -190,11 +200,26 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
 - **Test:** The specs themselves; wire them into the e2e CI job.
 
 ### R16 — Report missing agent-commander features upstream
-- **Reuse:** EXT support matrix (the `agent` tool's read-only mode is documented
-  *"not enforceable"*).
-- **Plan:** During integration, file any capability gap as an issue on
-  `link-assistant/agent-commander` (starting with enforceable read-only for the
-  `agent` tool, if still missing) and link it from this case study.
+- **Reuse:** EXT support matrix; the re-verification note in
+  [`raw-data/online-research.md`](raw-data/online-research.md) §2.
+- **Status (re-verified 2026-06-17 against `agent` v0.24.0 / `agent-commander`
+  v0.6.2):**
+  - The original Agent-CLI gap is **resolved upstream** —
+    [`agent#271`](https://github.com/link-assistant/agent/issues/271) →
+    [`agent#272`](https://github.com/link-assistant/agent/pull/272) (v0.24.0) added a
+    native, enforceable `--permission-mode auto|plan|readonly|ask` with a read-only
+    shell allowlist and a per-command JSON approval protocol (JS + Rust).
+  - The remaining gaps are in `agent-commander`, and **both are now filed**:
+    [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
+    (map `--read-only`/`--plan-only` for the `agent` tool to native
+    `--permission-mode readonly`/`plan`) and
+    [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
+    (uniform per-command approval relay forwarding native
+    `permission_request`/`permission_response` frames so a downstream app can drive a
+    single tool-agnostic approve-each-command loop).
+- **Plan:** Track these to closure; once #39 lands, the `agent` provider can request
+  read-only (`ls ~`) through `agent-commander`; once #40 lands, the desktop
+  per-command approval UI maps directly onto agent-commander's relayed events.
 - **Test:** N/A (process); tracked as a checklist item in E8.
 
 ### R17 — Follow hive-mind best practices
