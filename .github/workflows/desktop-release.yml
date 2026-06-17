@@ -6,6 +6,8 @@
 #   formal-ai-desktop-windows-installer-<arch>-<version>.exe
 #   formal-ai-desktop-windows-portable-<arch>-<version>.exe
 #   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
+#   (Electron Builder emits x86_64/amd64 Linux x64 aliases; the build job
+#    normalizes them to x64 before checksums/uploads.)
 # plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
 # provenance attestations (verifiable with `gh attestation verify`).
 #
@@ -16,9 +18,11 @@
 #                              GitHub suppresses the `release` event for them
 #                              (recursion guard). The workflow_run trigger below
 #                              covers that case automatically.
-#   * workflow_run           - after the "CI/CD Pipeline" completes successfully
-#                              on main, build desktop assets for the release tag
-#                              that points at the completed CI run head SHA
+#   * workflow_run           - after the "CI/CD Pipeline" completes on main (with
+#                              ANY conclusion except cancelled/skipped -- the
+#                              release is published in an early job, so a later job
+#                              failing must not suppress the desktop build), build
+#                              desktop assets for the resolved release tag
 #                              (idempotent: skips when assets already exist).
 #   * workflow_dispatch      - manual rebuild for a specific (or latest) tag.
 name: Desktop Release
@@ -49,15 +53,31 @@ jobs:
   resolve:
     name: Resolve target release
     runs-on: ubuntu-latest
-    # For workflow_run, only continue after a successful main-branch pipeline.
+    # For workflow_run, continue after ANY completed main-branch pipeline except
+    # cancelled/skipped runs (issue #479). We intentionally do NOT gate on
+    # conclusion == 'success': the auto-release publishes the GitHub release in an
+    # EARLY pipeline job, so a LATER job failing (e.g. the E2E Pages probe timing
+    # out) still leaves a real, asset-less release that desktop assets must heal.
+    # Gating on full-pipeline green meant one unrelated late failure suppressed
+    # every desktop build -> "Not available in latest release". The actual
+    # decision to build is delegated to scripts/desktop-release-resolve.sh, whose
+    # idempotency guard skips when the resolved release already carries desktop
+    # assets, so running on a non-success conclusion is safe and self-healing.
     if: >-
       github.event_name != 'workflow_run' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.head_branch == 'main')
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
     outputs:
       tag: ${{ steps.pick.outputs.tag }}
       should_build: ${{ steps.pick.outputs.should_build }}
     steps:
+      # Check out the repo so the resolve logic lives in a unit-tested script
+      # (scripts/desktop-release-resolve.sh) instead of being inlined here. The
+      # script only needs to *exist*; it queries the GitHub API for everything
+      # else, so checking out the default ref is sufficient.
+      - uses: actions/checkout@v6
+
       - name: Resolve tag and whether desktop assets are needed
         id: pick
         env:
@@ -67,58 +87,13 @@ jobs:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
           REPO: ${{ github.repository }}
           WORKFLOW_RUN_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          set -euo pipefail
-          tag=""
-          should_build=true
-          emit_outputs() {
-            echo "tag=$tag" >> "$GITHUB_OUTPUT"
-            echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
-          }
-          case "$EVENT" in
-            release) tag="$RELEASE_TAG" ;;
-            workflow_dispatch) tag="${INPUT_TAG:-}" ;;
-          esac
-
-          if [ "$EVENT" = "workflow_run" ]; then
-            if [ -z "${WORKFLOW_RUN_HEAD_SHA:-}" ]; then
-              should_build=false
-              echo "workflow_run payload did not include a head SHA; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-
-            tag_candidates="$(mktemp)"
-            gh api "repos/$REPO/tags?per_page=100" --paginate \
-              --jq ".[] | select(.commit.sha == \"$WORKFLOW_RUN_HEAD_SHA\") | .name" > "$tag_candidates"
-            tag="$(grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' "$tag_candidates" | head -n 1 || true)"
-
-            if [ -z "$tag" ]; then
-              should_build=false
-              echo "No release tag points at workflow_run head SHA $WORKFLOW_RUN_HEAD_SHA; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-
-            if ! gh release view "$tag" --repo "$REPO" --json tagName >/dev/null; then
-              should_build=false
-              echo "No GitHub release exists for workflow_run tag $tag; skipping desktop build."
-              emit_outputs
-              exit 0
-            fi
-          fi
-
-          if [ -z "$tag" ]; then
-            tag="$(gh release view --repo "$REPO" --json tagName --jq .tagName)"
-          fi
-          echo "Resolved release tag: $tag"
-          existing="$(gh release view "$tag" --repo "$REPO" --json assets \
-            --jq '[.assets[].name | select(startswith("formal-ai-desktop-"))] | length' || echo 0)"
-          if [ "$EVENT" = "workflow_run" ] && [ "${existing:-0}" -gt 0 ]; then
-            should_build=false
-            echo "Release $tag already has $existing desktop assets; skipping automatic build."
-          fi
-          emit_outputs
+        # Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
+        # commit whose first parent is the completed CI head SHA, so matching the
+        # tag to the head SHA directly always failed and desktop assets were
+        # never built. desktop-release-resolve.sh resolves the latest release
+        # instead (with a defensive exact-SHA tier and an idempotency guard) and
+        # emits verbose ::group:: diagnostics for future debugging.
+        run: bash scripts/desktop-release-resolve.sh
 
   build:
     name: Build ${{ matrix.label }}
@@ -171,13 +146,162 @@ jobs:
         working-directory: desktop
         run: node scripts/prepare-resources.mjs
 
-      - name: Package desktop app
+      - name: Check macOS signing secrets
+        if: matrix.ebflag == '--mac'
+        id: mac_secrets
+        env:
+          MAC_CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          MAC_CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in MAC_CSC_LINK MAC_CSC_KEY_PASSWORD APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "has_secrets=false" >> "$GITHUB_OUTPUT"
+            echo "mode=adhoc" >> "$GITHUB_OUTPUT"
+            echo "::warning::Missing required macOS signing/notarization secrets: ${missing[*]}"
+            echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."
+          else
+            echo "has_secrets=true" >> "$GITHUB_OUTPUT"
+            echo "mode=signed" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package desktop app (Linux/Windows)
+        if: matrix.ebflag != '--mac'
         working-directory: desktop
         env:
-          # Ad-hoc signing only (no Apple Developer ID); matches the /download
-          # page guidance about the first-launch Gatekeeper prompt on macOS.
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+
+      - name: Package desktop app (macOS signed)
+        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets == 'true'
+        working-directory: desktop
+        env:
+          CSC_LINK: ${{ secrets.MAC_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.MAC_CSC_KEY_PASSWORD }}
+          APPLE_API_KEY: ${{ secrets.APPLE_API_KEY }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+          DEBUG: electron-builder,electron-notarize*
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
+
+      # Issue #479: electron-builder 26 changed macOS signing control flow. Its
+      # MacPackager.sign() now calls findSigningIdentity(), which returns null --
+      # skipping signing entirely and NEVER invoking the custom `mac.sign` hook --
+      # unless a real identity is found OR `mac.identity` is exactly "-" (ad-hoc).
+      # See packages/app-builder-lib/src/targets/mac/MacTargetHelper.ts: only the
+      # `qualifier === "-"` branch yields an Identity when no certificate exists.
+      # Without `-c.mac.identity=-` the produced .app had no _CodeSignature, so the
+      # pre-upload smoke test failed with "missing its signed CodeResources
+      # envelope" and macOS assets were never published. Passing identity="-" makes
+      # electron-builder reach doSign(), which runs our ad-hoc hook (deep ad-hoc
+      # sign via @electron/osx-sign + an explicit root-bundle re-seal).
+      - name: Package desktop app (macOS ad-hoc)
+        if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          MACOS_ADHOC_SIGN: "1"
+          FORMAL_AI_MACOS_SIGN_DEBUG: "1"
+          DEBUG: electron-builder,electron-osx-sign*
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+
+      - name: Normalize desktop artifact names
+        working-directory: desktop
+        run: node scripts/normalize-artifacts.mjs
+
+      - name: Smoke test macOS release artifacts
+        if: matrix.ebflag == '--mac'
+        working-directory: desktop
+        env:
+          MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          VERSION="$(node -p "require('./package.json').version")"
+          case "${{ matrix.label }}" in
+            macos-x64) ARCH="x64" ;;
+            macos-arm64) ARCH="arm64" ;;
+            *)
+              echo "::error::Unexpected macOS matrix label: ${{ matrix.label }}"
+              exit 1
+              ;;
+          esac
+
+          required_macos_artifacts=(
+            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"
+            "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.zip"
+          )
+          for artifact in "${required_macos_artifacts[@]}"; do
+            if [ ! -f "$artifact" ]; then
+              echo "::error file=$artifact::Expected versioned macOS release artifact was not created."
+              ls -la release || true
+              exit 1
+            fi
+          done
+
+          for dmg in "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"; do
+            echo "Mounting DMG: $dmg"
+            mount_dir="$(mktemp -d)"
+            installed_app="$RUNNER_TEMP/formal-ai Desktop.app"
+
+            hdiutil attach "$dmg" -mountpoint "$mount_dir" -nobrowse -readonly
+            mounted_app="$mount_dir/formal-ai Desktop.app"
+
+            if [ ! -d "$mounted_app" ]; then
+              echo "::error file=$dmg::Mounted DMG does not contain formal-ai Desktop.app."
+              find "$mount_dir" -maxdepth 2 -print
+              hdiutil detach "$mount_dir"
+              exit 1
+            fi
+
+            rm -rf "$installed_app"
+            ditto "$mounted_app" "$installed_app"
+            hdiutil detach "$mount_dir"
+
+            app_info="$installed_app/Contents/Info.plist"
+            executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_info")"
+            bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_info")"
+
+            if [ "$bundle_id" != "ai.formal.desktop" ]; then
+              echo "::error file=$dmg::Unexpected macOS app bundle identifier: $bundle_id"
+              exit 1
+            fi
+
+            if [ ! -x "$installed_app/Contents/MacOS/$executable" ]; then
+              echo "::error file=$dmg::Mounted app executable is missing or not executable."
+              find "$installed_app/Contents" -maxdepth 3 -print
+              exit 1
+            fi
+
+            if [ ! -f "$installed_app/Contents/_CodeSignature/CodeResources" ]; then
+              echo "::error file=$dmg::Mounted app is missing its signed CodeResources envelope."
+              find "$installed_app/Contents/_CodeSignature" -maxdepth 1 -print 2>/dev/null || true
+              exit 1
+            fi
+
+            codesign --verify --deep --strict --verbose=2 "$installed_app"
+
+            if [ "$MACOS_BUILD_MODE" = "signed" ]; then
+              spctl --assess --type execute --verbose=4 "$installed_app"
+              xcrun stapler validate "$installed_app"
+            else
+              codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"
+              if ! grep -Fq 'Signature=adhoc' "$RUNNER_TEMP/formal-ai-macos-codesign.txt"; then
+                echo "::error file=$dmg::Expected ad-hoc macOS signature for no-Apple-account build."
+                exit 1
+              fi
+            fi
+          done
 
       - name: Collect artifacts and checksums
         id: collect

@@ -2,7 +2,9 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = process.env.E2E_PORT || 3499;
-const BASE_URL = `http://localhost:${PORT}`;
+const ORIGIN = `http://localhost:${PORT}`;
+// The web app lives under /app/ (issue #479); see playwright.local.config.js.
+const BASE_URL = `${ORIGIN}/app/`;
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -17,7 +19,7 @@ module.exports = defineConfig({
   webServer: {
     command:
       `bun --cwd ../.. run build:web && ../../scripts/sync-seed.sh && npx serve ../../src/web --listen ${PORT} --no-clipboard`,
-    url: BASE_URL,
+    url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,
   },

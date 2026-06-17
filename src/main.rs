@@ -6,15 +6,22 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
     create_response_with_solver, environment_records, export_memory_bundle, export_memory_full,
-    import_memory_full, knowledge_links_notation, merged_bundle, parse_bundle,
-    render_github_log_plan, run_telegram_polling, run_telegram_webhook_server, seed_files,
-    suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage, ExecutionSurface,
-    GithubLogCollectorConfig, MemoryStore, MessageContent, ResponsesRequest, SolverConfig,
-    TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
+    import_memory_full, knowledge_links_notation, merged_bundle, naturalize_thinking_step,
+    parse_bundle, render_github_log_plan, run_telegram_polling, run_telegram_webhook_server,
+    seed_files, suggest_memory_migrations, BundleInfo, ChatCompletionRequest, ChatMessage,
+    ExecutionSurface, GithubLogCollectorConfig, MemoryStore, ResponsesRequest, SolverConfig,
+    SymbolicAnswer, TelegramPollingConfig, UniversalSolver, DEFAULT_MODEL,
 };
+
+/// The default task the `agent` subcommand drives: the canonical issue-#468
+/// formalization. The wording carries the keywords the server's planner uses to
+/// recognise the task.
+const DEFAULT_AGENT_TASK: &str = "Formalize «Сказка о рыбаке и рыбке» into a Links Notation \
+                                  knowledge base covering all nine protocol primitives.";
 
 #[derive(Parser, Debug)]
 #[command(
@@ -40,6 +47,12 @@ enum Command {
         /// "What is IIR?". Defaults to `FORMAL_AI_DEFINITION_FUSION` or explicit.
         #[arg(long, value_enum)]
         definition_fusion: Option<DefinitionFusionMode>,
+
+        /// Print the solver's concrete, human-readable thinking steps before the
+        /// answer (text format only). Composite steps are shown nested under
+        /// their parent. The same trace the web UI and API surfaces expose.
+        #[arg(long, default_value_t = false)]
+        thinking: bool,
     },
     Dataset,
     Serve {
@@ -71,6 +84,21 @@ enum Command {
     GithubLogs {
         #[command(subcommand)]
         action: GithubLogsAction,
+    },
+    /// Drive the full agentic-coding loop offline (issue #468). The in-repo
+    /// driver plays the role of an external agentic CLI against our
+    /// OpenAI-compatible server: it advertises tools, executes every emitted
+    /// tool call (web search/fetch against an offline corpus, file writes and
+    /// commands in a sandboxed workspace), feeds results back, and loops until
+    /// the server returns the finished Links Notation knowledge base.
+    Agent {
+        /// The task to solve. Defaults to the canonical issue-#468 task.
+        #[arg(long, default_value = DEFAULT_AGENT_TASK)]
+        task: String,
+
+        /// Print the full tool-call transcript before the final answer.
+        #[arg(long, default_value_t = false)]
+        transcript: bool,
     },
     /// Run the Telegram bot client (long polling by default; webhook server is opt-in).
     Telegram {
@@ -335,6 +363,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
         definition_fusion: None,
+        thinking: false,
     });
 
     match command {
@@ -342,12 +371,14 @@ fn main() -> Result<(), Box<dyn Error>> {
             prompt,
             format,
             definition_fusion,
-        } => run_chat(&prompt, format, definition_fusion)?,
+            thinking,
+        } => run_chat(&prompt, format, definition_fusion, thinking)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Memory { action } => run_memory(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
+        Command::Agent { task, transcript } => run_agent(&task, transcript)?,
         Command::Serve { host, port } => run_telegram_webhook_server(&format!("{host}:{port}"))?,
         Command::Telegram {
             mode,
@@ -396,6 +427,23 @@ fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+fn run_agent(task: &str, transcript: bool) -> Result<(), Box<dyn Error>> {
+    let outcome = run_agentic_task(task)?;
+    if transcript {
+        print!("{}", outcome.transcript());
+        println!();
+    }
+    if outcome.hit_turn_cap {
+        return Err(format!(
+            "the agentic loop did not finish within its turn cap after {} tool call(s)",
+            outcome.steps.len()
+        )
+        .into());
+    }
+    println!("{}", outcome.final_answer);
+    Ok(())
+}
+
 impl GithubLogsOptions {
     fn into_config(self) -> GithubLogCollectorConfig {
         GithubLogCollectorConfig {
@@ -432,24 +480,52 @@ fn solver_for_chat(definition_fusion: Option<DefinitionFusionMode>) -> Universal
     UniversalSolver::new(config)
 }
 
+/// Render the solver's concrete thinking trace for the `--thinking` flag.
+///
+/// Each step is shown by its naturalized, human-readable `summary` (issue #488)
+/// — the same meta-language description the web UI and API surfaces expose —
+/// rather than its internal `step` slug. Composite steps are nested under their
+/// parent with a `↳` marker so the recursively composite (fractal) structure of
+/// the reasoning is visible on the CLI too.
+fn print_thinking_trace(answer: &SymbolicAnswer) {
+    if answer.thinking_steps.is_empty() {
+        return;
+    }
+    println!("Thinking:");
+    for step in &answer.thinking_steps {
+        let sentence = if step.summary.is_empty() {
+            naturalize_thinking_step(&step.step, &step.detail)
+        } else {
+            step.summary.clone()
+        };
+        if step.parent_id.is_some() {
+            println!("    ↳ {sentence}");
+        } else {
+            println!("  {sentence}");
+        }
+    }
+    println!();
+}
+
 fn run_chat(
     prompt: &str,
     format: OutputFormat,
     definition_fusion: Option<DefinitionFusionMode>,
+    thinking: bool,
 ) -> Result<(), Box<dyn Error>> {
     let solver = solver_for_chat(definition_fusion);
     match format {
         OutputFormat::Text => {
             let response = solver.solve(prompt);
+            if thinking {
+                print_thinking_trace(&response);
+            }
             println!("{}", response.answer);
         }
         OutputFormat::Chat => {
             let request = ChatCompletionRequest {
                 model: Some(String::from(DEFAULT_MODEL)),
-                messages: vec![ChatMessage {
-                    role: String::from("user"),
-                    content: MessageContent::Text(String::from(prompt)),
-                }],
+                messages: vec![ChatMessage::user(prompt)],
                 temperature: None,
                 stream: false,
                 tools: Vec::new(),
@@ -471,6 +547,7 @@ fn run_chat(
                 instructions: None,
                 temperature: None,
                 stream: false,
+                ..ResponsesRequest::default()
             };
             println!(
                 "{}",

@@ -1,0 +1,244 @@
+agentic_coding_meta_recipe
+  record_type "meta_recipe"
+  topic "agentic_coding"
+  title "Agentic-coding task loop"
+  summary "Machine-readable recipe for the deterministic agentic-coding loop (issue #468): how our Formal AI solves a task in agentic mode by emitting tool_calls, executing them, understanding tool errors, and looping to a finished Links Notation knowledge base — with no neural inference and no live network. The recipe is grounded: tests/unit/specification/agentic_meta_algorithm.rs asserts the real source still matches every constant, tool, capability, stage, function, primitive, bound, and exposure surface listed here, so this file always describes how the live agentic loop was produced."
+  generalization "To make the Formal AI solve a new task in agentic mode, instantiate the eight ordered steps below: recognise the task class from the latest user turn, pin the canonical plan as named constants, classify whatever tools the agentic CLI advertised into capabilities by substring (so any CLI works), plan each step as a pure function of conversation history (the search → fetch → write → run → final state machine), observe tool errors and fall back deterministically, wire the planner into the OpenAI-compatible server behind the agent-mode and permission gates, grant the client-executed tool capabilities through an associative package, and execute the loop with an offline driver and corpus bounded by a hard turn cap — then pin it all with a CLI subcommand, an example, and integration tests."
+step_recognise_task
+  record_type "meta_step"
+  order "1"
+  id "recognise_task"
+  title "Recognise the agentic task from the latest user turn"
+  detail "The planner reads only the most recent user message (latest_user_text) and classifies it with is_formalization_task against a small closed keyword set (FORMALIZATION_KEYWORDS). A non-matching turn yields None, so the server falls through to its ordinary symbolic solver and agentic coding stays strictly opt-in."
+  seed_file "src/agentic_coding/planner.rs"
+step_pin_constants
+  record_type "meta_step"
+  order "2"
+  id "pin_constants"
+  title "Pin the canonical plan as named constants"
+  detail "Expose the task's fixed plan as stable constants — SEARCH_QUERY, CANONICAL_SOURCE_URL, and KB_PATH — so the recipe is data, not scattered string literals, and the grounding test can verify each is declared."
+  seed_file "src/agentic_coding/planner.rs"
+step_classify_tools
+  record_type "meta_step"
+  order "3"
+  id "classify_tools"
+  title "Classify advertised tools into capabilities by substring"
+  detail "classify_tool maps whatever tool names the agentic CLI advertised onto the Capability enum (Search/Fetch/Write/Run) by substring, mirroring the naming conventions agentic CLIs use (web_search, web_fetch, write_file, run_command, bash, …). The planner therefore adapts to any subset of tools a given CLI exposes."
+  seed_file "src/agentic_coding/planner.rs"
+step_plan_each_step
+  record_type "meta_step"
+  order "4"
+  id "plan_each_step"
+  title "Plan each step as a pure function of conversation history"
+  detail "plan_chat_step is a deterministic state machine: web_search → web_fetch → write_file(formalize) → run_command(verify) → final. Each step is taken only if the conversation has no prior tool result for that capability and the CLI advertised a tool with it. Same history always yields the same plan; neural inference stays a NON-GOAL."
+  seed_file "src/agentic_coding/planner.rs"
+step_understand_errors
+  record_type "meta_step"
+  order "5"
+  id "understand_errors"
+  title "Understand tool errors and fall back deterministically"
+  detail "A fetch result that looks_like_error (error / failed / not found / 404) is not trusted as source text; the formalizer then falls back to the canonical synopsis so the loop still completes with a stable, all-nine-primitive knowledge base. This is the issue's `understand errors from tools` requirement."
+  seed_file "src/agentic_coding/planner.rs"
+step_wire_server
+  record_type "meta_step"
+  order "6"
+  id "wire_server"
+  title "Wire the planner into the OpenAI-compatible server behind two gates"
+  detail "create_chat_completion_with_solver refuses every tool unless agent_mode is opted in and the requested tools pass the permission gate; only then does it call plan_chat_step and turn the plan into a completion via chat_completion_from_plan — a ToolCalls plan becomes an assistant turn with finish_reason tool_calls, a Final plan becomes plain text with finish_reason stop."
+  seed_file "src/protocol.rs"
+step_grant_capabilities
+  record_type "meta_step"
+  order "7"
+  id "grant_capabilities"
+  title "Grant the client-executed tool capabilities through an associative package"
+  detail "default_associative_packages installs pkg_agentic_coding, a permission-only package granting the client-executed web_fetch, write_file, and run_command capabilities (web_search comes from the core package). agent_mode remains the real guard, so granting these by default enables no hidden autonomous action."
+  seed_file "src/associative_package.rs"
+step_execute_loop
+  record_type "meta_step"
+  order "8"
+  id "execute_loop"
+  title "Execute the loop with an offline driver and corpus, then expose it"
+  detail "run_agentic_task / run_agentic_task_in play an external agentic CLI: they advertise DRIVER_TOOLS, execute each emitted tool call (web_search/web_fetch against the offline corpus, write_file/run_command in a sandboxed AgentWorkspace), feed results back, and loop until finish_reason stop — bounded by MAX_TURNS. Expose it through a CLI subcommand, an example, and integration tests."
+  seed_file "src/agentic_coding/driver.rs"
+constant_search_query
+  record_type "meta_constant"
+  constant "SEARCH_QUERY"
+  source_file "src/agentic_coding/planner.rs"
+constant_canonical_source_url
+  record_type "meta_constant"
+  constant "CANONICAL_SOURCE_URL"
+  source_file "src/agentic_coding/planner.rs"
+constant_kb_path
+  record_type "meta_constant"
+  constant "KB_PATH"
+  source_file "src/agentic_coding/planner.rs"
+tool_web_search
+  record_type "meta_tool"
+  tool "web_search"
+  capability "Search"
+  permission "tool:web_search"
+  permission_package "pkg_formal_ai_core"
+tool_web_fetch
+  record_type "meta_tool"
+  tool "web_fetch"
+  capability "Fetch"
+  permission "tool:web_fetch"
+  permission_package "pkg_agentic_coding"
+tool_write_file
+  record_type "meta_tool"
+  tool "write_file"
+  capability "Write"
+  permission "tool:write_file"
+  permission_package "pkg_agentic_coding"
+tool_run_command
+  record_type "meta_tool"
+  tool "run_command"
+  capability "Run"
+  permission "tool:run_command"
+  permission_package "pkg_agentic_coding"
+stage_search
+  record_type "meta_stage"
+  stage "search"
+  order "1"
+stage_fetch
+  record_type "meta_stage"
+  stage "fetch"
+  order "2"
+stage_write
+  record_type "meta_stage"
+  stage "write"
+  order "3"
+stage_run
+  record_type "meta_stage"
+  stage "run"
+  order "4"
+stage_final
+  record_type "meta_stage"
+  stage "final"
+  order "5"
+fn_plan_chat_step
+  record_type "meta_function"
+  function "plan_chat_step"
+  source_file "src/agentic_coding/planner.rs"
+  kind "planner"
+fn_classify_tool
+  record_type "meta_function"
+  function "classify_tool"
+  source_file "src/agentic_coding/planner.rs"
+  kind "tool_classifier"
+fn_is_formalization_task
+  record_type "meta_function"
+  function "is_formalization_task"
+  source_file "src/agentic_coding/planner.rs"
+  kind "recogniser"
+fn_looks_like_error
+  record_type "meta_function"
+  function "looks_like_error"
+  source_file "src/agentic_coding/planner.rs"
+  kind "error_detector"
+fn_final_answer
+  record_type "meta_function"
+  function "final_answer"
+  source_file "src/agentic_coding/planner.rs"
+  kind "renderer"
+fn_formalize_text_to_links
+  record_type "meta_function"
+  function "formalize_text_to_links"
+  source_file "src/agentic_coding/formalize.rs"
+  kind "formalizer"
+fn_coverage_line
+  record_type "meta_function"
+  function "coverage_line"
+  source_file "src/agentic_coding/formalize.rs"
+  kind "reporter"
+fn_create_chat_completion_with_solver
+  record_type "meta_function"
+  function "create_chat_completion_with_solver"
+  source_file "src/protocol.rs"
+  kind "server_entrypoint"
+fn_chat_completion_from_plan
+  record_type "meta_function"
+  function "chat_completion_from_plan"
+  source_file "src/protocol.rs"
+  kind "plan_to_completion"
+fn_run_agentic_task
+  record_type "meta_function"
+  function "run_agentic_task"
+  source_file "src/agentic_coding/driver.rs"
+  kind "driver"
+fn_run_agentic_task_in
+  record_type "meta_function"
+  function "run_agentic_task_in"
+  source_file "src/agentic_coding/driver.rs"
+  kind "driver"
+fn_execute_tool_call
+  record_type "meta_function"
+  function "execute_tool_call"
+  source_file "src/agentic_coding/driver.rs"
+  kind "tool_executor"
+fn_corpus_web_search
+  record_type "meta_function"
+  function "web_search"
+  source_file "src/agentic_coding/corpus.rs"
+  kind "corpus"
+fn_corpus_web_fetch
+  record_type "meta_function"
+  function "web_fetch"
+  source_file "src/agentic_coding/corpus.rs"
+  kind "corpus"
+primitive_concept
+  record_type "meta_primitive"
+  primitive "concept"
+  order "1"
+primitive_entity
+  record_type "meta_primitive"
+  primitive "entity"
+  order "2"
+primitive_predicate
+  record_type "meta_primitive"
+  primitive "predicate"
+  order "3"
+primitive_assertion
+  record_type "meta_primitive"
+  primitive "assertion"
+  order "4"
+primitive_procedure
+  record_type "meta_primitive"
+  primitive "procedure"
+  order "5"
+primitive_context
+  record_type "meta_primitive"
+  primitive "context"
+  order "6"
+primitive_temporal
+  record_type "meta_primitive"
+  primitive "temporal"
+  order "7"
+primitive_modal
+  record_type "meta_primitive"
+  primitive "modal"
+  order "8"
+primitive_annotation
+  record_type "meta_primitive"
+  primitive "annotation"
+  order "9"
+bound_max_turns
+  record_type "meta_bound"
+  const "MAX_TURNS"
+  value "12"
+  source_file "src/agentic_coding/driver.rs"
+surface_cli_subcommand
+  record_type "meta_surface"
+  surface "cli_subcommand"
+  source_file "src/main.rs"
+  needle "fn run_agent"
+surface_example
+  record_type "meta_surface"
+  surface "example"
+  source_file "examples/issue_468_agentic_loop.rs"
+  needle "run_agentic_task"
+surface_integration_test
+  record_type "meta_surface"
+  surface "integration_test"
+  source_file "tests/unit/agentic_coding.rs"
+  needle "fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer"

@@ -1,0 +1,74 @@
+$ bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify
+Bundled 22 modules in 38ms
+
+  vendor.bundle.js  0.28 MB  (entry point)
+
+Bundled 23 modules in 12ms
+
+  ocr.bundle.js  18.57 KB  (entry point)
+
+sync-seed: agent-info.lino
+sync-seed: brainstorm-seeds.lino
+sync-seed: closure-generated-01.lino
+sync-seed: closure-generated-02.lino
+sync-seed: closure-generated-03.lino
+sync-seed: coding-idioms.lino
+sync-seed: concept-contexts.lino
+sync-seed: concepts.lino
+sync-seed: coreference.lino
+sync-seed: demo-dialogs.lino
+sync-seed: environments.lino
+sync-seed: facts.lino
+sync-seed: greetings.lino
+sync-seed: hello-world-programs.lino
+sync-seed: identity.lino
+sync-seed: intent-routing.lino
+sync-seed: language-detection.lino
+sync-seed: meanings-behavior-rules.lino
+sync-seed: meanings-calculator.lino
+sync-seed: meanings-calendar.lino
+sync-seed: meanings-coding-catalog.lino
+sync-seed: meanings-conversation.lino
+sync-seed: meanings-definition-merge.lino
+sync-seed: meanings-docs.lino
+sync-seed: meanings-facts.lino
+sync-seed: meanings-feature-capability.lino
+sync-seed: meanings-finance.lino
+sync-seed: meanings-how.lino
+sync-seed: meanings-intent.lino
+sync-seed: meanings-lexical-meta.lino
+sync-seed: meanings-links-root.lino
+sync-seed: meanings-meta.lino
+sync-seed: meanings-ontology.lino
+sync-seed: meanings-playwright.lino
+sync-seed: meanings-policy.lino
+sync-seed: meanings-program-synthesis.lino
+sync-seed: meanings-proof.lino
+sync-seed: meanings-research-table.lino
+sync-seed: meanings-semantic-meta.lino
+sync-seed: meanings-skill-compiler.lino
+sync-seed: meanings-software-project.lino
+sync-seed: meanings-summary.lino
+sync-seed: meanings-tool-access.lino
+sync-seed: meanings-translation.lino
+sync-seed: meanings-units.lino
+sync-seed: meanings-web-followup.lino
+sync-seed: meanings-web-navigation.lino
+sync-seed: meanings-web-research.lino
+sync-seed: meanings-web-search-query.lino
+sync-seed: meanings-web-search.lino
+sync-seed: meanings-wikidata.lino
+sync-seed: meanings.lino
+sync-seed: multilingual-responses.lino
+sync-seed: numeric-list-operations.lino
+sync-seed: operation-vocabulary.lino
+sync-seed: personas.lino
+sync-seed: program-cst-grammars.lino
+sync-seed: program-plan-rules.lino
+sync-seed: projects.lino
+sync-seed: prompt-patterns.lino
+sync-seed: roles.lino
+sync-seed: self-improvement-loop.lino
+sync-seed: sources-registry.lino
+sync-seed: summary-topics.lino
+sync-seed: tools.lino

@@ -1,0 +1,186 @@
+{
+  "defaults": [
+    "duckduckgo",
+    "google",
+    "bing",
+    "wikipedia"
+  ],
+  "providers": [
+    {
+      "id": "google",
+      "label": "Google",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": true,
+      "access": "hybrid"
+    },
+    {
+      "id": "bing",
+      "label": "Bing",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "hybrid"
+    },
+    {
+      "id": "duckduckgo",
+      "label": "DuckDuckGo",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "wikipedia",
+      "label": "Wikipedia",
+      "category": "knowledge",
+      "corsReadable": true,
+      "defaultForCategory": true,
+      "access": "api"
+    },
+    {
+      "id": "wikidata",
+      "label": "Wikidata",
+      "category": "knowledge",
+      "corsReadable": true,
+      "defaultForCategory": false,
+      "access": "api"
+    },
+    {
+      "id": "searx",
+      "label": "SearXNG",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "api"
+    },
+    {
+      "id": "crossref",
+      "label": "Crossref",
+      "category": "papers",
+      "corsReadable": true,
+      "defaultForCategory": true,
+      "access": "api"
+    },
+    {
+      "id": "openalex",
+      "label": "OpenAlex",
+      "category": "papers",
+      "corsReadable": true,
+      "defaultForCategory": false,
+      "access": "api"
+    },
+    {
+      "id": "github",
+      "label": "GitHub",
+      "category": "code",
+      "corsReadable": true,
+      "defaultForCategory": true,
+      "access": "api"
+    },
+    {
+      "id": "hackernews",
+      "label": "Hacker News",
+      "category": "code",
+      "corsReadable": true,
+      "defaultForCategory": false,
+      "access": "api"
+    },
+    {
+      "id": "arxiv",
+      "label": "arXiv",
+      "category": "papers",
+      "corsReadable": true,
+      "defaultForCategory": false,
+      "access": "api"
+    },
+    {
+      "id": "brave",
+      "label": "Brave Search",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "mojeek",
+      "label": "Mojeek",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "ecosia",
+      "label": "Ecosia",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "startpage",
+      "label": "Startpage",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "yahoo",
+      "label": "Yahoo Search",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "lite",
+      "label": "DuckDuckGo Lite",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "html"
+    },
+    {
+      "id": "wc:wikipedia",
+      "label": "web-capture (wikipedia)",
+      "category": "search",
+      "corsReadable": true,
+      "defaultForCategory": false,
+      "access": "component"
+    },
+    {
+      "id": "wc:duckduckgo",
+      "label": "web-capture (duckduckgo)",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "component"
+    },
+    {
+      "id": "wc:google",
+      "label": "web-capture (google)",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "component"
+    },
+    {
+      "id": "wc:bing",
+      "label": "web-capture (bing)",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "component"
+    },
+    {
+      "id": "wc:brave",
+      "label": "web-capture (brave)",
+      "category": "search",
+      "corsReadable": false,
+      "defaultForCategory": false,
+      "access": "component"
+    }
+  ]
+}

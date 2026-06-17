@@ -1,0 +1,101 @@
+src/solver_handlers/web_requests.rs:10:    WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
+src/solver_handlers/web_requests.rs:147:pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
+src/solver_handlers/web_requests.rs:151:/// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
+src/solver_handlers/web_requests.rs:153:pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
+src/solver_handlers/web_requests.rs:164:    for provider in WEB_SEARCH_PROVIDERS {
+src/solver_handlers/web_requests.rs:167:    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+src/solver_handlers/web_requests.rs:168:    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+src/solver_handlers/web_requests.rs:184:             fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), а \
+src/solver_handlers/web_requests.rs:189:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:199:             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+src/solver_handlers/web_requests.rs:204:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:213:             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+src/solver_handlers/web_requests.rs:222:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:231:             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and \
+src/solver_handlers/web_requests.rs:236:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:244:             with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
+src/solver_handlers/web_requests.rs:249:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:257:             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), so URLs that \
+src/solver_handlers/web_requests.rs:265:             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
+src/solver_handlers/web_requests.rs:382:    for provider in WEB_SEARCH_PROVIDERS {
+src/solver_handlers/web_requests.rs:385:    log.append("web_search:combined", format!("rrf:k={WEB_SEARCH_RRF_K}"));
+src/solver_handlers/web_requests.rs:387:    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+src/solver_handlers/web_requests.rs:396:             (k = {WEB_SEARCH_RRF_K}). Продвижение ассоциативных репозиториев \
+src/solver_handlers/web_requests.rs:406:             (k = {WEB_SEARCH_RRF_K}). Associative repository promotion can be \
+src/web_search_core.rs:5://! the same Reciprocal Rank Fusion constant, and the same per-category
+src/web_search_core.rs:33:pub const WEB_SEARCH_RRF_K: u32 = 60;
+src/web_search_core.rs:35:/// Maximum number of providers fired concurrently inside a single category.
+src/web_search_core.rs:46:/// Coarse category buckets used to schedule providers in parallel.
+src/web_search_core.rs:72:    pub category: ProviderCategory,
+src/web_search_core.rs:77:    /// `true` for the canonical default in each category (e.g. `DuckDuckGo`
+src/web_search_core.rs:79:    pub default_for_category: bool,
+src/web_search_core.rs:84:/// Order is significant: defaults come first inside each category so the
+src/web_search_core.rs:94:        category: ProviderCategory::Search,
+src/web_search_core.rs:96:        default_for_category: true,
+src/web_search_core.rs:101:        category: ProviderCategory::Search,
+src/web_search_core.rs:103:        default_for_category: false,
+src/web_search_core.rs:108:        category: ProviderCategory::Search,
+src/web_search_core.rs:110:        default_for_category: false,
+src/web_search_core.rs:115:        category: ProviderCategory::Search,
+src/web_search_core.rs:117:        default_for_category: false,
+src/web_search_core.rs:122:        category: ProviderCategory::Search,
+src/web_search_core.rs:124:        default_for_category: false,
+src/web_search_core.rs:129:        category: ProviderCategory::Search,
+src/web_search_core.rs:131:        default_for_category: false,
+src/web_search_core.rs:136:        category: ProviderCategory::Search,
+src/web_search_core.rs:138:        default_for_category: false,
+src/web_search_core.rs:143:        category: ProviderCategory::Search,
+src/web_search_core.rs:145:        default_for_category: false,
+src/web_search_core.rs:150:        category: ProviderCategory::Search,
+src/web_search_core.rs:152:        default_for_category: false,
+src/web_search_core.rs:157:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:159:        default_for_category: true,
+src/web_search_core.rs:164:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:166:        default_for_category: false,
+src/web_search_core.rs:171:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:173:        default_for_category: false,
+src/web_search_core.rs:178:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:180:        default_for_category: false,
+src/web_search_core.rs:185:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:187:        default_for_category: false,
+src/web_search_core.rs:192:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:194:        default_for_category: false,
+src/web_search_core.rs:199:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:201:        default_for_category: false,
+src/web_search_core.rs:206:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:208:        default_for_category: false,
+src/web_search_core.rs:213:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:215:        default_for_category: false,
+src/web_search_core.rs:220:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:222:        default_for_category: false,
+src/web_search_core.rs:227:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:229:        default_for_category: false,
+src/web_search_core.rs:234:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:236:        default_for_category: false,
+src/web_search_core.rs:241:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:243:        default_for_category: false,
+src/web_search_core.rs:248:        category: ProviderCategory::Knowledge,
+src/web_search_core.rs:250:        default_for_category: false,
+src/web_search_core.rs:255:        category: ProviderCategory::Papers,
+src/web_search_core.rs:257:        default_for_category: true,
+src/web_search_core.rs:262:        category: ProviderCategory::Papers,
+src/web_search_core.rs:264:        default_for_category: false,
+src/web_search_core.rs:269:        category: ProviderCategory::Papers,
+src/web_search_core.rs:271:        default_for_category: false,
+src/web_search_core.rs:276:        category: ProviderCategory::Code,
+src/web_search_core.rs:278:        default_for_category: true,
+src/web_search_core.rs:283:        category: ProviderCategory::Code,
+src/web_search_core.rs:285:        default_for_category: false,
+src/web_search_core.rs:290:        category: ProviderCategory::Code,
+src/web_search_core.rs:292:        default_for_category: false,
+src/web_search_core.rs:297:        category: ProviderCategory::Code,
+src/web_search_core.rs:299:        default_for_category: false,
+src/web_search_core.rs:304:        category: ProviderCategory::Code,
+src/web_search_core.rs:306:        default_for_category: false,
+src/web_search_core.rs:311:        category: ProviderCategory::Code,
+src/web_search_core.rs:313:        default_for_category: false,
+src/web_search_core.rs:327:pub const WEB_SEARCH_PROVIDERS: &[&str] = &[
+src/web_search_core.rs:339:pub fn default_search_plan_ids() -> Vec<String> {
+src/web_search_core.rs:340:    WEB_SEARCH_PROVIDERS
+src/web_search_core.rs:357:    for provider in WEB_SEARCH_PROVIDERS {
+src/web_search_core.rs:360:    lines.push(format!("web_search:combined:rrf:k={WEB_SEARCH_RRF_K}"));

@@ -12,6 +12,7 @@ mod calendar;
 mod calendar_ics;
 mod compound_interest;
 mod definition_merge;
+mod document_request;
 mod feature_capability;
 mod installation_conversion;
 mod meta_explanation;
@@ -41,6 +42,7 @@ pub use benchmark_prompts::{
 pub use calendar::{try_calendar_create_event, try_calendar_reasoning};
 pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
+pub use document_request::try_document_request;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
@@ -620,6 +622,10 @@ pub fn try_translation(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if document_request::looks_like_document_conversion_request(prompt, normalized) {
+        return None;
+    }
+
     let target = detect_target_language(normalized);
     // Issue #386: recognise a translation command by *meaning*, not by hardcoded
     // verbs. The translation-action stems live once in
@@ -958,11 +964,13 @@ pub fn finalize_simple(
     let trace_id = log.append("trace", intent.to_owned());
     let evidence_links = build_evidence_links(prompt, log, response_link);
     let links_notation = answer_links_notation(prompt, intent, body, log, &trace_id);
+    let thinking_steps = log.thinking_steps_for_answer(body);
     SymbolicAnswer {
         intent: intent.to_owned(),
         answer: body.to_owned(),
         confidence,
         evidence_links,
+        thinking_steps,
         links_notation,
     }
 }

@@ -339,8 +339,8 @@ fn contains_term(haystack: &str, needle: &str) -> bool {
     haystack.match_indices(needle).any(|(start, _)| {
         let before = haystack[..start].chars().next_back();
         let after = haystack[start + needle.len()..].chars().next();
-        before.map_or(true, |character| !is_word_character(character))
-            && after.map_or(true, |character| !is_word_character(character))
+        before.is_none_or(|character| !is_word_character(character))
+            && after.is_none_or(|character| !is_word_character(character))
     })
 }
 

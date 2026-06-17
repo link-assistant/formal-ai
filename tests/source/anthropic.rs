@@ -98,6 +98,7 @@ impl AnthropicMessagesRequest {
                 messages.push(ChatMessage {
                     role: String::from("system"),
                     content: MessageContent::Text(text),
+                    thinking_steps: Vec::new(),
                 });
             }
         }
@@ -105,6 +106,7 @@ impl AnthropicMessagesRequest {
             messages.push(ChatMessage {
                 role: message.role.clone(),
                 content: MessageContent::Text(anthropic_content_to_text(&message.content)),
+                thinking_steps: Vec::new(),
             });
         }
         ChatCompletionRequest {

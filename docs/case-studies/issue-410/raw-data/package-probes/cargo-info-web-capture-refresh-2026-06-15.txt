@@ -1,0 +1,9 @@
+# Refreshed 2026-06-15
+web-capture #web #capture #screenshot #markdown #html
+CLI and microservice to render web pages as HTML, Markdown, or PNG
+version: 0.3.31
+license: Unlicense
+rust-version: 1.96
+documentation: https://docs.rs/web-capture
+repository: https://github.com/link-assistant/web-capture
+crates.io: https://crates.io/crates/web-capture/0.3.31

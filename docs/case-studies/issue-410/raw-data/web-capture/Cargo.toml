@@ -1,0 +1,107 @@
+[package]
+name = "web-capture"
+version = "0.3.29"
+edition = "2021"
+description = "CLI and microservice to render web pages as HTML, Markdown, or PNG"
+license = "Unlicense"
+repository = "https://github.com/link-assistant/web-capture"
+documentation = "https://docs.rs/web-capture"
+readme = "README.md"
+keywords = ["web", "capture", "screenshot", "markdown", "html"]
+categories = ["command-line-utilities", "web-programming"]
+rust-version = "1.88"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "web-capture"
+path = "src/main.rs"
+
+[[test]]
+name = "unit"
+path = "tests/unit/mod.rs"
+
+[[test]]
+name = "integration"
+path = "tests/integration/mod.rs"
+
+[dependencies]
+# Browser automation using browser-commander from link-foundation
+browser-commander = "0.9"
+async-tungstenite = { version = "0.27", features = ["tokio-runtime"] }
+futures = "0.3"
+
+# Unified configuration from CLI args, env vars, and .lenv files
+lino-arguments = "0.3"
+
+# Async runtime
+tokio = { version = "1.0", features = ["full"] }
+
+# Web framework
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace"] }
+
+# HTTP client
+reqwest = { version = "0.12", features = ["cookies", "gzip", "brotli"] }
+
+# HTML parsing and manipulation
+scraper = "0.21"
+
+# HTML to Markdown conversion
+html2md = "0.2"
+html-to-markdown-rs = { version = "3.5.7", features = ["inline-images", "metadata", "serde"] }
+
+# Command line argument parsing
+clap = { version = "4.5", features = ["derive", "env"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# URL handling
+url = "2.5"
+
+# Encoding
+encoding_rs = "0.8"
+
+# Base64 for image data
+base64 = "0.22"
+
+# Regex for URL conversion
+regex = "1.11"
+
+# HTML entity decoding
+html-escape = "0.2"
+
+# ZIP archive creation
+zip = { version = "4.0", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+# Allow these lints that are too strict
+module_name_repetitions = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

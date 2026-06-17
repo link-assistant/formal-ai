@@ -1010,6 +1010,9 @@ const PREFERENCE_DEFAULTS = {
   // Issue #27: random greeting variations are opt-in but default to on so
   // newcomers see the multilingual surface immediately.
   greetingVariations: true,
+  // Issue #488: user-facing thinking can be compact or detailed without
+  // changing the raw diagnostics available to maintainers.
+  thinkingDetailLevel: "detailed",
   // Issue #82: user-tunable assistant behavior. The default still guesses
   // likely typo matches, while the sliders let cautious users ask first and
   // deterministic users turn random response variation off with temperature=0.
@@ -1113,6 +1116,7 @@ const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // program from the detected capabilities; "documented" always emits the full
 // annotated program with every optional region present.
 const BLUEPRINT_COMPOSITION_MODES = ["composed", "documented"];
+const THINKING_DETAIL_LEVELS = ["brief", "standard", "detailed"];
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -1383,6 +1387,12 @@ function normalizeBlueprintComposition(value) {
   return BLUEPRINT_COMPOSITION_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.blueprintComposition;
+}
+
+function normalizeThinkingDetailLevel(value) {
+  return THINKING_DETAIL_LEVELS.includes(value)
+    ? value
+    : PREFERENCE_DEFAULTS.thinkingDetailLevel;
 }
 
 function normalizeResponseLanguageMode(value) {
@@ -1728,6 +1738,7 @@ function collectUserContext({
   temperature,
   followUpProbability,
   definitionFusion,
+  thinkingDetailLevel,
   experimentalOcr,
 }) {
   const browserLanguages = browserLanguagesList();
@@ -1767,6 +1778,7 @@ function collectUserContext({
     temperature: String(normalizeSliderPreference(temperature, 0)),
     followUpProbability: formatSliderValue(followUpProbability),
     definitionFusion,
+    thinkingDetailLevel,
     experimentalOcr: experimentalOcr ? "on" : "off",
     locationInference:
       locationPreference
@@ -1862,6 +1874,11 @@ function appendUserContextBlock(lines, context) {
   }
   if (safe.followUpProbability !== DEFAULT_FOLLOW_UP_PROBABILITY_PERCENT) {
     push("Follow-up probability", `${safe.followUpProbability || "unknown"}%`);
+  }
+  const thinkingDetailLevel =
+    safe.thinkingDetailLevel || PREFERENCE_DEFAULTS.thinkingDetailLevel;
+  if (thinkingDetailLevel !== PREFERENCE_DEFAULTS.thinkingDetailLevel) {
+    push("Thinking detail", thinkingDetailLevel);
   }
   const toolbarIconPack = safe.toolbarIconPack || PREFERENCE_DEFAULTS.toolbarIconPack;
   if (toolbarIconPack !== PREFERENCE_DEFAULTS.toolbarIconPack) {
@@ -2240,6 +2257,412 @@ function summarizeToolCall(call) {
     }
   }
   return parts.join(" • ");
+}
+
+function humanizeThinkingIdentifier(value) {
+  return String(value || "")
+    .replace(/^agent_\d+_/i, "")
+    .replace(/^try(?=[A-Z])/u, "")
+    .replace(/^handle(?=[A-Z])/u, "")
+    .replace(/([a-z0-9])([A-Z])/gu, "$1 $2")
+    .replace(/[_:.-]+/gu, " ")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function thinkingLanguageLabel(value, t) {
+  const code = String(value || "").toLowerCase().split(/[-_]/u)[0];
+  if (["en", "ru", "zh", "hi"].includes(code)) {
+    return t(`message.thinkingLanguage.${code}`);
+  }
+  return code || t("message.thinkingLanguage.unknown");
+}
+
+function thinkingRouteLabel(value, t) {
+  const label = humanizeThinkingIdentifier(value);
+  if (!label) return t("message.thinkingRoute.reply");
+  if (label === "greeting") return t("message.thinkingRoute.greeting");
+  if (label === "farewell") return t("message.thinkingRoute.farewell");
+  if (label === "unknown") return t("message.thinkingRoute.unknown");
+  return t("message.thinkingRoute.generic", { route: label });
+}
+
+function thinkingRuleLabel(value, t) {
+  const label = humanizeThinkingIdentifier(value);
+  if (!label) return t("message.thinkingRule.selected");
+  if (label === "greeting") return t("message.thinkingRule.greeting");
+  if (label === "farewell") return t("message.thinkingRule.farewell");
+  if (label === "unknown") return t("message.thinkingRule.unknown");
+  return label;
+}
+
+function thinkingToolLabel(value) {
+  const label = humanizeThinkingIdentifier(value);
+  return label || "local";
+}
+
+function truncateThinkingSummary(value) {
+  const text = String(value || "").trim();
+  if (text.length <= 96) return text;
+  return `${text.slice(0, 93).trimEnd()}...`;
+}
+
+function summarizeThinkingDetail(value) {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string") {
+    return truncateThinkingSummary(humanizeThinkingIdentifier(value));
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return `${value.length} item(s)`;
+  }
+  if (typeof value === "object") {
+    const keys = Object.keys(value).slice(0, 3).map(humanizeThinkingIdentifier);
+    return keys.length > 0 ? keys.join(", ") : "structured data";
+  }
+  return truncateThinkingSummary(value);
+}
+
+// Preserve a concrete detail value verbatim (the user's prompt, the computed
+// result, the composed answer) while bounding its length, mirroring the Rust
+// `truncate_thinking_detail` helper (120 chars, ellipsis suffix). Unlike
+// `summarizeThinkingDetail` this does NOT lowercase or strip punctuation, so the
+// real content survives into the naturalized sentence.
+function thinkingDetailText(detail) {
+  if (detail === null || detail === undefined) return "";
+  const text = String(detail).trim();
+  if (text.length === 0) return "";
+  const chars = Array.from(text);
+  if (chars.length <= 120) return text;
+  return `${chars.slice(0, 119).join("").trimEnd()}…`;
+}
+
+// English indefinite article for a phrase, mirroring the Rust `indefinite_article`
+// helper so the English "Formalize the request as {article} {task} task." reads
+// grammatically. Languages without articles simply ignore the {article} param.
+function thinkingIndefiniteArticle(phrase) {
+  const first = String(phrase || "").trimStart().charAt(0).toLowerCase();
+  return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
+}
+
+// Translate a single structured thinking step into one concrete, human-readable
+// sentence in the active UI language. This is stage 2 of the issue #488 pipeline
+// ("translate the meta-language description into the target user language"):
+// every known step kind threads its *concrete* detail (the prompt, the computed
+// result, the looked-up entity, the composed answer) into a localized template,
+// so the trace reads as real reasoning rather than generic category labels.
+// Unknown kinds fall back to the meta-language `summary` the Rust solver already
+// computed, then to a generic humanized label.
+function naturalizeThinkingStep(entry, t) {
+  const rawStep = String(entry?.step || "step");
+  const step = rawStep.replace(/^agent_\d+_/i, "");
+  const detail = entry?.detail;
+  const value = thinkingDetailText(detail);
+  const hasDetail = value.length > 0;
+
+  if (rawStep !== step) {
+    return t("message.thinkingStep.agentSubstep", {
+      summary: naturalizeThinkingStep({ ...entry, step }, t),
+    });
+  }
+
+  switch (step) {
+    case "impulse":
+      return hasDetail
+        ? t("message.thinkingStep.impulse", { prompt: value })
+        : t("message.thinkingStep.impulsePlain");
+    case "detect_language":
+      return t("message.thinkingStep.detectLanguage", {
+        language: thinkingLanguageLabel(detail, t),
+      });
+    case "resolve_response_language":
+      return t("message.thinkingStep.resolveResponseLanguage", {
+        language: thinkingLanguageLabel(detail, t),
+      });
+    case "formalize": {
+      // The browser solver formalizes into a symbolic Links-notation tuple
+      // before the route is known, so surface that tuple concretely; the Rust
+      // solver instead reports the resolved task route (e.g. "greeting").
+      const tuple = entry?.formalization?.tuple;
+      if (tuple) {
+        return t("message.thinkingStep.formalizeTuple", {
+          tuple: thinkingDetailText(tuple),
+        });
+      }
+      if (!hasDetail) return t("message.thinkingStep.formalizePlain");
+      const task = humanizeThinkingIdentifier(detail);
+      return t("message.thinkingStep.formalize", {
+        task,
+        article: thinkingIndefiniteArticle(task),
+      });
+    }
+    case "formalize_resolved": {
+      const tuple = entry?.formalization?.tuple;
+      if (tuple) {
+        return t("message.thinkingStep.formalizeResolvedTuple", {
+          tuple: thinkingDetailText(tuple),
+        });
+      }
+      return hasDetail
+        ? t("message.thinkingStep.formalizeResolved", {
+            entity: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.formalizeResolvedPlain");
+    }
+    case "clarify_formalization":
+      return hasDetail
+        ? t("message.thinkingStep.clarifyFormalization", { options: value })
+        : t("message.thinkingStep.clarifyFormalizationPlain");
+    case "dispatch_handler":
+      return hasDetail
+        ? t("message.thinkingStep.dispatchHandler", {
+            route: thinkingRouteLabel(detail, t),
+          })
+        : t("message.thinkingStep.dispatchHandlerPlain");
+    case "route_attempt":
+      return hasDetail
+        ? t("message.thinkingStep.routeAttempt", {
+            route: thinkingRouteLabel(detail, t),
+          })
+        : t("message.thinkingStep.routeAttemptPlain");
+    case "match_rule":
+      return hasDetail
+        ? t("message.thinkingStep.matchRule", {
+            rule: thinkingRuleLabel(detail, t),
+          })
+        : t("message.thinkingStep.matchRulePlain");
+    case "compute":
+      return hasDetail
+        ? t("message.thinkingStep.compute", { expression: value })
+        : t("message.thinkingStep.computePlain");
+    case "compute_engine":
+      return hasDetail
+        ? t("message.thinkingStep.computeEngine", {
+            engine: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.computeEnginePlain");
+    case "compute_expression":
+      return t("message.thinkingStep.computeExpression", { expression: value });
+    case "compute_steps":
+      return t("message.thinkingStep.computeSteps", { count: value });
+    case "lookup_fact":
+      return hasDetail
+        ? t("message.thinkingStep.lookupFact", {
+            fact: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.lookupFactPlain");
+    case "invoke_tool":
+      return hasDetail
+        ? t("message.thinkingStep.invokeTool", {
+            tool: thinkingToolLabel(detail),
+          })
+        : t("message.thinkingStep.invokeToolPlain");
+    case "rule_verification":
+      return hasDetail
+        ? t("message.thinkingStep.ruleVerification", {
+            rule: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.ruleVerificationPlain");
+    case "policy_refusal":
+      return hasDetail
+        ? t("message.thinkingStep.policyRefusal", {
+            policy: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.policyRefusalPlain");
+    case "rule_construction":
+      return t("message.thinkingStep.ruleConstruction");
+    case "coreference_binding":
+      return t("message.thinkingStep.coreferenceBinding");
+    case "modifier_detection":
+      return t("message.thinkingStep.modifierDetection");
+    case "program_plan":
+      return hasDetail
+        ? t("message.thinkingStep.programPlan", {
+            plan: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.programPlanPlain");
+    case "scan_memory":
+      return hasDetail
+        ? t("message.thinkingStep.scanMemory", { term: value })
+        : t("message.thinkingStep.scanMemoryPlain");
+    case "deformalize": {
+      // Prefer the clean composed answer the browser solver attaches as
+      // `answer`; the Rust/API solver already sends the answer text as the
+      // detail. The raw worker `detail` is the symbolic projection summary
+      // (with the ⇒ glyph) reserved for the diagnostics panel, so it is not
+      // used here.
+      const answerText = thinkingDetailText(
+        entry?.answer !== undefined && entry?.answer !== null
+          ? entry.answer
+          : detail,
+      );
+      return answerText
+        ? t("message.thinkingStep.deformalize", { answer: answerText })
+        : t("message.thinkingStep.deformalizePlain");
+    }
+    case "agent_plan":
+      return hasDetail
+        ? t("message.thinkingStep.agentPlan", {
+            task: humanizeThinkingIdentifier(detail),
+          })
+        : t("message.thinkingStep.agentPlanPlain");
+    case "fallback":
+      return t("message.thinkingStep.fallback");
+    case "http_chat":
+      return t("message.thinkingStep.httpChat");
+    case "memory":
+      return t("message.thinkingStep.memory");
+    case "extract_term":
+      return t("message.thinkingStep.extractTerm");
+    case "group_by_conversation":
+      return t("message.thinkingStep.groupByConversation");
+    // ---- Browser-only steps (no Rust solver counterpart) ----
+    case "user_context":
+      return t("message.thinkingStep.userContext", {
+        context:
+          summarizeThinkingDetail(detail) ||
+          t("message.thinkingStep.userContextDefault"),
+      });
+    case "desktop_shell":
+      return t("message.thinkingStep.desktopShell");
+    case "trigger_button":
+      return t("message.thinkingStep.triggerButton", {
+        action: summarizeThinkingDetail(detail) || "button",
+      });
+    case "apply_message_command":
+      return t("message.thinkingStep.applyMessageCommand", {
+        command: summarizeThinkingDetail(detail) || "setting",
+      });
+    case "trigger_message_action":
+      return t("message.thinkingStep.triggerMessageAction", {
+        action: summarizeThinkingDetail(detail) || "action",
+      });
+    default: {
+      // Unknown step kind: prefer the concrete meta-language summary the Rust
+      // solver already computed (issue #488 pipeline stage 1), then fall back to
+      // a generic humanized label so nothing renders as a bare identifier.
+      const summary = String(entry?.summary || "").trim();
+      if (summary) return summary;
+      const readableStep = humanizeThinkingIdentifier(step) || "step";
+      const readableDetail = summarizeThinkingDetail(detail);
+      return t("message.thinkingStep.generic", {
+        step: readableStep,
+        detail: readableDetail ? `: ${readableDetail}` : "",
+      });
+    }
+  }
+}
+
+function thinkingStepKey(entry) {
+  return String(entry?.step || "").replace(/^agent_\d+_/i, "");
+}
+
+function filterThinkingEntriesForDetail(entries, detailLevel) {
+  const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  if (safeEntries.length <= 1) return safeEntries;
+  const level = normalizeThinkingDetailLevel(detailLevel);
+  if (level === "detailed") return safeEntries;
+  if (level === "brief") return safeEntries.slice(-1);
+
+  // Medium (default) granularity: show the high-level universal-algorithm
+  // phases plus the final step, recursively folding composite internals (the
+  // calculator trace, memory scans, tool calls) out of view. Prefer the
+  // structured `level` field the solver now emits ("high" for phases,
+  // "detailed" for nested children); fall back to a step-name allowlist for
+  // legacy entries that predate the level metadata.
+  const lastIndex = safeEntries.length - 1;
+  const hasLevels = safeEntries.some(
+    (entry) => typeof entry?.level === "string" && entry.level.length > 0,
+  );
+  if (hasLevels) {
+    const filtered = safeEntries.filter(
+      (entry, index) => index === lastIndex || entry?.level === "high",
+    );
+    return filtered.length > 0 ? filtered : safeEntries.slice(-1);
+  }
+
+  const standardSteps = new Set([
+    "impulse",
+    "detect_language",
+    "resolve_response_language",
+    "clarify_formalization",
+    "match_rule",
+    "fallback",
+    "user_context",
+    "deformalize",
+    "program_plan",
+    "desktop_shell",
+    "http_chat",
+    "memory",
+    "agent_plan",
+  ]);
+  const filtered = safeEntries.filter(
+    (entry, index) =>
+      index === lastIndex || standardSteps.has(thinkingStepKey(entry)),
+  );
+  return filtered.length > 0 ? filtered : safeEntries.slice(-1);
+}
+
+function filterThinkingSummariesForDetail(summaries, detailLevel) {
+  const safeSummaries = Array.isArray(summaries)
+    ? summaries.map((step) => String(step || "").trim()).filter(Boolean)
+    : [];
+  if (safeSummaries.length <= 1) return safeSummaries;
+  const level = normalizeThinkingDetailLevel(detailLevel);
+  if (level === "detailed") return safeSummaries;
+  if (level === "brief") return safeSummaries.slice(-1);
+  return safeSummaries.length > 4
+    ? [safeSummaries[0], ...safeSummaries.slice(-3)]
+    : safeSummaries;
+}
+
+function buildThinkingPreviewSteps(
+  structuredSteps,
+  answer,
+  source,
+  t,
+  detailLevel,
+) {
+  if (Array.isArray(structuredSteps) && structuredSteps.length > 0) {
+    return filterThinkingEntriesForDetail(structuredSteps, detailLevel)
+      .map((entry) => naturalizeThinkingStep(entry, t))
+      .filter(Boolean);
+  }
+  return filterThinkingSummariesForDetail(
+    [
+      t("message.thinkingStep.fallbackNormalize"),
+      t("message.thinkingStep.fallbackIntent", {
+        intent: humanizeThinkingIdentifier(answer?.intent || "unknown"),
+      }),
+      t("message.thinkingStep.fallbackRender", {
+        source: humanizeThinkingIdentifier(source || "fallback"),
+      }),
+    ],
+    detailLevel,
+  );
+}
+
+function buildMessageThinkingPreviewSteps(message, t, detailLevel) {
+  if (message?.role !== "assistant") return [];
+  const diagnosticsSteps = Array.isArray(message.diagnosticsSteps)
+    ? message.diagnosticsSteps
+    : [];
+  if (diagnosticsSteps.length > 0) {
+    return buildThinkingPreviewSteps(
+      diagnosticsSteps,
+      message,
+      message.thinkingPreviewSource || message.intent || "local",
+      t,
+      detailLevel,
+    );
+  }
+  return filterThinkingSummariesForDetail(
+    message.thinkingPreviewSteps ?? [],
+    detailLevel,
+  );
 }
 
 function createMessage(role, content, extra = {}) {
@@ -3814,6 +4237,26 @@ async function syncDesktopMemory(bridge, lino) {
   }
 }
 
+function normalizeApiThinkingStep(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const step = String(entry.step || entry.kind || entry.source_event || "fallback").trim();
+  const detail = String(entry.detail || entry.payload || entry.source_event || "").trim();
+  if (!step && !detail) return null;
+  const normalized = {
+    step: step || "fallback",
+    detail,
+  };
+  if (entry.summary !== undefined) normalized.summary = String(entry.summary);
+  if (entry.id !== undefined) normalized.id = String(entry.id);
+  if (entry.order !== undefined) normalized.order = entry.order;
+  if (entry.level !== undefined) normalized.level = String(entry.level);
+  if (entry.source_event !== undefined) normalized.sourceEvent = String(entry.source_event);
+  if (entry.parent_id !== undefined && entry.parent_id !== null) {
+    normalized.parentId = String(entry.parent_id);
+  }
+  return normalized;
+}
+
 async function requestDesktopAnswer(text, history, desktopStatus, preferences = {}) {
   const apiBase = desktopStatus && desktopStatus.apiBase;
   if (!apiBase) {
@@ -3837,13 +4280,23 @@ async function requestDesktopAnswer(text, history, desktopStatus, preferences = 
   }
 
   const payload = await response.json();
-  const answerText =
+  const message =
     payload &&
     payload.choices &&
     payload.choices[0] &&
     payload.choices[0].message
-      ? String(payload.choices[0].message.content || "")
-      : "";
+      ? payload.choices[0].message
+      : {};
+  const answerText =
+    message && message.content !== undefined ? String(message.content || "") : "";
+  const apiThinkingSteps = Array.isArray(message.thinking_steps)
+    ? message.thinking_steps.map(normalizeApiThinkingStep).filter(Boolean)
+    : [];
+  const fallbackDesktopSteps = [
+    { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
+    { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
+    { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
+  ];
 
   return {
     intent: "desktop_http_chat",
@@ -3854,11 +4307,7 @@ async function requestDesktopAnswer(text, history, desktopStatus, preferences = 
       "api:/v1/chat/completions",
       desktopStatus.graphUrl ? "network:/v1/graph" : "",
     ].filter(Boolean),
-    steps: [
-      { step: "desktop_shell", detail: "Electron preload bridge supplied local API status" },
-      { step: "http_chat", detail: "POST /v1/chat/completions on the local Rust server" },
-      { step: "memory", detail: "UI import/export stays on formal_ai_bundle" },
-    ],
+    steps: apiThinkingSteps.length > 0 ? apiThinkingSteps : fallbackDesktopSteps,
     diagnostics: {
       providers: [
         {
@@ -4632,9 +5081,183 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
   );
 }
 
-function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
+// Issue #488: while the worker is still computing the answer there is no live
+// per-step stream to display, but the pending bubble should still feel alive —
+// an expert reasoning out loud surfaces "what they're working on right now"
+// every couple of seconds. The hook accumulates a fixed sequence of generic
+// expert-shaped phases (read → formalize → look up → compose) over ~2 s steps
+// and stops once the answer arrives. Each new phase appends to the visible
+// steps array so the rotated-scrolling animation in `ThinkingPreview` re-fires
+// the same way it would for real solver steps.
+function usePendingThinkingPhases(isActive, t) {
+  const [phaseIndex, setPhaseIndex] = useState(0);
+  const phrases = useMemo(
+    () => [
+      t("message.thinkingStep.pendingReading"),
+      t("message.thinkingStep.pendingFormalizing"),
+      t("message.thinkingStep.pendingDispatching"),
+      t("message.thinkingStep.pendingComposing"),
+      t("message.thinkingStep.working"),
+    ],
+    [t],
+  );
+  useEffect(() => {
+    if (!isActive) {
+      setPhaseIndex(0);
+      return undefined;
+    }
+    if (phaseIndex >= phrases.length - 1) {
+      return undefined;
+    }
+    const timer = setTimeout(() => setPhaseIndex((value) => value + 1), 1800);
+    return () => clearTimeout(timer);
+  }, [isActive, phaseIndex, phrases.length]);
+  if (!isActive) return [];
+  return phrases.slice(0, phaseIndex + 1);
+}
+
+// Issue #488: render the pending assistant message — while processing, the
+// thinking preview IS the visible part of the message (no separate "working"
+// caption), and the preview pulls from a hook that adds expert-shaped phases
+// over time so the rotated-scrolling animation actually has something to rotate
+// even though the worker itself does not yet stream per-step messages.
+function PendingAssistantBubble({ t }) {
+  const pendingPhases = usePendingThinkingPhases(true, t);
+  return h(
+    "article",
+    { className: "message assistant pending" },
+    h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
+    h(
+      "div",
+      { className: "message-body" },
+      h(ThinkingPreview, {
+        steps: pendingPhases,
+        t,
+        isPending: true,
+      }),
+    ),
+  );
+}
+
+function ThinkingPreview({ steps, t, isPending = false }) {
+  const [expanded, setExpanded] = useState(false);
+  const safeSteps = Array.isArray(steps)
+    ? steps.map((step) => String(step || "").trim()).filter(Boolean)
+    : [];
+  // Issue #488: track the index of the current step so a change in the latest
+  // step triggers the rotated-scrolling CSS animation (current step slides up
+  // into place; the previous step half-shows above with the gradient fade).
+  const lastIndex = safeSteps.length - 1;
+  const current = lastIndex >= 0 ? safeSteps[lastIndex] : "";
+  const previous = lastIndex > 0 ? safeSteps[lastIndex - 1] : "";
+  // Use a stable but per-step key so React re-mounts the current/previous
+  // <p> nodes when the step changes — that re-mount is what re-triggers the
+  // CSS `@keyframes thinking-rotate-in` animation.
+  const animationKey = `${lastIndex}-${current}`;
+  if (safeSteps.length === 0) return null;
+
+  return h(
+    "section",
+    {
+      className: [
+        "thinking-preview",
+        expanded ? "is-expanded" : "is-collapsed",
+        isPending ? "is-pending" : "",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      "data-testid": "thinking-preview",
+      "data-pending": isPending ? "true" : null,
+      "aria-label": t("message.thinking"),
+      "aria-live": isPending ? "polite" : null,
+    },
+    h(
+      "div",
+      { className: "thinking-preview-header" },
+      h(
+        "strong",
+        { className: "thinking-preview-title" },
+        // Issue #488: show a subtle "live" affordance while pending so the user
+        // understands the trace is updating in real time (the dot pulses via
+        // CSS; the visible label stays unchanged for screen readers).
+        isPending
+          ? h("span", {
+              className: "thinking-preview-live-dot",
+              "aria-hidden": "true",
+              "data-testid": "thinking-preview-live-dot",
+            })
+          : null,
+        t("message.thinking"),
+      ),
+      h(
+        "button",
+        {
+          type: "button",
+          className: "thinking-preview-toggle",
+          "data-testid": "thinking-preview-toggle",
+          "aria-expanded": expanded ? "true" : "false",
+          onClick: () => setExpanded((value) => !value),
+        },
+        expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand"),
+      ),
+    ),
+    expanded
+      ? h(
+          "ol",
+          {
+            className: "thinking-preview-list",
+            "data-testid": "thinking-expanded-list",
+          },
+          safeSteps.map((step, index) =>
+            h("li", { key: `${index}-${step}` }, step),
+          ),
+        )
+      : h(
+          "div",
+          {
+            className: "thinking-preview-collapsed",
+            "data-testid": "thinking-collapsed",
+          },
+          previous
+            ? h(
+                "p",
+                {
+                  key: `prev-${animationKey}`,
+                  className: "thinking-preview-previous",
+                  "data-testid": "thinking-preview-previous",
+                  "aria-label": t("message.thinkingPrevious"),
+                },
+                previous,
+              )
+            : null,
+          h(
+            "p",
+            {
+              key: `curr-${animationKey}`,
+              className: "thinking-preview-current",
+              "data-testid": "thinking-preview-current",
+              "aria-label": t("message.thinkingCurrent"),
+            },
+            current,
+          ),
+        ),
+  );
+}
+
+function Message({
+  message,
+  diagnosticsMode,
+  reportIssueUrl,
+  thinkingDetailLevel,
+  t,
+}) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
   const thinkingSteps = diagnosticsMode ? (message.thinkingSteps ?? []) : [];
+  const thinkingPreviewSteps = buildMessageThinkingPreviewSteps(
+    message,
+    t,
+    thinkingDetailLevel,
+  );
   const diagnosticsSteps = diagnosticsMode
     ? (message.diagnosticsSteps ?? [])
     : [];
@@ -4659,6 +5282,17 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
   // Issue #330: progressive syntax highlighting + per-code-block copy buttons.
   const markdownRef = useRef(null);
   const [markdownCopied, setMarkdownCopied] = useState(false);
+
+  // React 19 compares `dangerouslySetInnerHTML` by object identity (React 18
+  // compared the inner `__html` string). A fresh `markdownHtml(...)` object on
+  // every render would therefore make React re-assign `innerHTML` each pass,
+  // wiping the `.code-block` wrappers that `enhanceCodeBlocks` grafts in below.
+  // Memoising by `message.content` keeps the object stable while the text is
+  // unchanged, so the out-of-band enhancements survive unrelated re-renders.
+  const markdownContent = useMemo(
+    () => markdownHtml(message.content),
+    [message.content],
+  );
 
   useEffect(() => {
     if (!iframeFullscreen) {
@@ -4728,10 +5362,16 @@ function Message({ message, diagnosticsMode, reportIssueUrl, t }) {
           ),
         ),
       ),
+      // Issue #488: render thinking ABOVE the answer body. Reasoning logically
+      // precedes the answer (and during streaming it is the only visible part of
+      // the message), so it belongs at the top of the message body, not below it.
+      thinkingPreviewSteps.length
+        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
+        : null,
       h("div", {
         ref: markdownRef,
         className: "markdown-body",
-        dangerouslySetInnerHTML: markdownHtml(message.content),
+        dangerouslySetInnerHTML: markdownContent,
       }),
       message.iframeUrl
         ? h(
@@ -5094,6 +5734,9 @@ function App() {
   const [diagnosticsMode, setDiagnosticsMode] = useState(
     initialPreferences.current.diagnosticsMode,
   );
+  const [thinkingDetailLevel, setThinkingDetailLevel] = useState(
+    normalizeThinkingDetailLevel(initialPreferences.current.thinkingDetailLevel),
+  );
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -5427,6 +6070,7 @@ function App() {
         temperature,
         followUpProbability,
         definitionFusion,
+        thinkingDetailLevel,
         experimentalOcr,
       }),
     [
@@ -5444,6 +6088,7 @@ function App() {
       temperature,
       followUpProbability,
       definitionFusion,
+      thinkingDetailLevel,
       experimentalOcr,
       colorSchemeTick,
     ],
@@ -5918,6 +6563,7 @@ function App() {
       followUpProbability,
       definitionFusion,
       blueprintComposition,
+      thinkingDetailLevel,
       experimentalOcr,
       ...externalServices,
       associativeProjectPromotion,
@@ -5953,6 +6599,7 @@ function App() {
     followUpProbability,
     definitionFusion,
     blueprintComposition,
+    thinkingDetailLevel,
     experimentalOcr,
     externalServices,
     associativeProjectPromotion,
@@ -6241,10 +6888,19 @@ function App() {
           `Select symbolic intent ${answer.intent || "unknown"}`,
           `Render deterministic answer from ${source}`,
         ];
+    const thinkingPreviewSteps = buildThinkingPreviewSteps(
+      structuredSteps,
+      answer,
+      source,
+      t,
+      thinkingDetailLevel,
+    );
     const message = createMessage("assistant", answer.content, {
       intent: answer.intent,
       evidence,
       thinkingSteps,
+      thinkingPreviewSteps,
+      thinkingPreviewSource: source,
       diagnosticsSteps: structuredSteps,
       diagnosticsToolCalls: structuredToolCalls,
       // Issue #180: forward the web_search diagnostics envelope so the
@@ -6298,7 +6954,7 @@ function App() {
       // Refresh the sidebar so a brand-new conversation appears immediately.
       refreshConversations();
     });
-  }, [ensureConversation, refreshConversations]);
+  }, [ensureConversation, refreshConversations, t, thinkingDetailLevel]);
 
   const conversationHistory = useCallback(
     () =>
@@ -6341,6 +6997,9 @@ function App() {
           setBlueprintComposition(
             normalizeBlueprintComposition(command.value),
           );
+          break;
+        case "thinkingDetailLevel":
+          setThinkingDetailLevel(normalizeThinkingDetailLevel(command.value));
           break;
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
@@ -6772,6 +7431,7 @@ function App() {
     { key: "greetingVariations", value: greetingVariations, set: setGreetingVariations, label: "settings.variations" },
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
+    { key: "thinkingDetailLevel", value: thinkingDetailLevel, set: setThinkingDetailLevel, label: "settings.thinkingDetail" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
     // Issue #444: one reset descriptor per external trusted service so the
     // "modified settings" reset bar lists any service the user turned off.
@@ -7718,6 +8378,37 @@ function App() {
               ),
             ),
             h(
+              "label",
+              { className: "setting-row" },
+              h("span", null, t("settings.thinkingDetail")),
+              h(
+                "select",
+                {
+                  "data-testid": "setting-thinking-detail",
+                  value: thinkingDetailLevel,
+                  onChange: (event) =>
+                    setThinkingDetailLevel(
+                      normalizeThinkingDetailLevel(event.target.value),
+                    ),
+                },
+                h(
+                  "option",
+                  { value: "brief" },
+                  t("settings.thinkingDetail.brief"),
+                ),
+                h(
+                  "option",
+                  { value: "standard" },
+                  t("settings.thinkingDetail.standard"),
+                ),
+                h(
+                  "option",
+                  { value: "detailed" },
+                  t("settings.thinkingDetail.detailed"),
+                ),
+              ),
+            ),
+            h(
               "div",
               { className: "setting-row setting-row-ocr" },
               h(
@@ -8120,6 +8811,7 @@ function App() {
               key: message.id,
               message,
               diagnosticsMode,
+              thinkingDetailLevel,
               t,
               reportIssueUrl:
                 shouldOfferMessageReport(message)
@@ -8128,12 +8820,7 @@ function App() {
             }),
           ),
           pending
-            ? h(
-                "article",
-                { className: "message assistant pending" },
-                h("div", { className: "avatar", "aria-hidden": "true" }, "FA"),
-                h("div", { className: "message-body" }, h("div", { className: "typing" }, t("status.working"))),
-              )
+            ? h(PendingAssistantBubble, { t })
             : null,
           h("div", { ref: transcriptEndRef }),
         ),

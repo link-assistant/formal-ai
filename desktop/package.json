@@ -3,6 +3,11 @@
   "version": "0.153.0",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
+  "homepage": "https://link-assistant.github.io/formal-ai/",
+  "author": {
+    "name": "link-assistant",
+    "email": "link-assistant@users.noreply.github.com"
+  },
   "main": "main.cjs",
   "scripts": {
     "dev": "electron .",
@@ -15,8 +20,8 @@
     "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
-    "electron": "^31.7.7",
-    "electron-builder": "^24.13.3"
+    "electron": "^42.4.0",
+    "electron-builder": "^26.15.3"
   },
   "build": {
     "appId": "ai.formal.desktop",
@@ -48,6 +53,7 @@
         "tar.gz"
       ],
       "category": "Utility",
+      "maintainer": "link-assistant <link-assistant@users.noreply.github.com>",
       "artifactName": "formal-ai-desktop-linux-${arch}-${version}.${ext}"
     },
     "mac": {
@@ -56,7 +62,11 @@
         "zip"
       ],
       "category": "public.app-category.productivity",
-      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}"
+      "artifactName": "formal-ai-desktop-macos-${arch}-${version}.${ext}",
+      "hardenedRuntime": true,
+      "notarize": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
     },
     "win": {
       "target": [

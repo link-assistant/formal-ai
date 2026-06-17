@@ -335,7 +335,9 @@ async function createMainWindow() {
   const apiQuery = desktopStatus.apiBase
     ? `&api=${encodeURIComponent(desktopStatus.apiBase)}`
     : "";
-  await mainWindow.loadURL(`${staticBase}/index.html?desktop=1${apiQuery}`);
+  // The web app now lives under /app/ (issue #479): the site root is the
+  // landing page chooser, so the desktop wrapper loads the app directly.
+  await mainWindow.loadURL(`${staticBase}/app/index.html?desktop=1${apiQuery}`);
 }
 
 async function shutdown() {

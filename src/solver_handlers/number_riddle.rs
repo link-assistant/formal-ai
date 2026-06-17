@@ -201,12 +201,12 @@ fn phrase_has_boundary(text: &str, index: usize, phrase: &str) -> bool {
     let before_ok = text[..index]
         .chars()
         .next_back()
-        .map_or(true, |character| !character.is_alphanumeric());
+        .is_none_or(|character| !character.is_alphanumeric());
     let after_index = index + phrase.len();
     let after_ok = text[after_index..]
         .chars()
         .next()
-        .map_or(true, |character| !character.is_alphanumeric());
+        .is_none_or(|character| !character.is_alphanumeric());
     before_ok && after_ok && !is_negated_strict_bound(text, index, phrase)
 }
 

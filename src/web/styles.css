@@ -1255,6 +1255,23 @@ body.is-resizing-context {
 .markdown-body {
   line-height: 1.5;
   overflow-wrap: anywhere;
+  --code-surface: #f8fafc;
+  --code-header-surface: #eef3f8;
+  --code-border: #d7e0ea;
+  --code-text: #1f2937;
+  --code-muted: #526173;
+  --code-button-bg: #ffffff;
+  --code-button-border: #cbd5e1;
+  --code-button-hover-bg: #e5edf5;
+  --code-copy-done-text: #166534;
+  --code-copy-done-bg: #dcfce7;
+  --code-copy-done-border: #86efac;
+  --hljs-comment: #667085;
+  --hljs-keyword: #9f1239;
+  --hljs-string: #0f766e;
+  --hljs-number: #a16207;
+  --hljs-type: #166534;
+  --hljs-title: #6d28d9;
 }
 
 .markdown-body p {
@@ -1294,8 +1311,9 @@ body.is-resizing-context {
   overflow: auto;
   border-radius: 8px;
   padding: 12px;
-  background: #111827;
-  color: #f7fafc;
+  background: var(--code-surface);
+  color: var(--code-text);
+  border: 1px solid var(--code-border);
   line-height: 1.45;
 }
 
@@ -1314,9 +1332,10 @@ body.is-resizing-context {
 .markdown-body .code-block {
   position: relative;
   margin: 8px 0;
+  border: 1px solid var(--code-border);
   border-radius: 8px;
   overflow: hidden;
-  background: #111827;
+  background: var(--code-surface);
 }
 
 .markdown-body .code-block:first-child {
@@ -1333,20 +1352,21 @@ body.is-resizing-context {
   justify-content: space-between;
   gap: 8px;
   padding: 6px 10px;
-  background: #0b111d;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  background: var(--code-header-surface);
+  border-bottom: 1px solid var(--code-border);
   font-size: 12px;
 }
 
 .markdown-body .code-block-lang {
-  color: #9fb0c3;
+  color: var(--code-muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .markdown-body .code-block > pre {
   margin: 0;
+  border: 0;
   border-radius: 0;
 }
 
@@ -1369,20 +1389,20 @@ body.is-resizing-context {
 
 .code-copy-button {
   padding: 3px 9px;
-  color: #cdd9e5;
-  background: rgba(148, 163, 184, 0.16);
-  border-color: rgba(148, 163, 184, 0.28);
+  color: var(--code-text);
+  background: var(--code-button-bg);
+  border-color: var(--code-button-border);
 }
 
 .code-copy-button:hover {
-  background: rgba(148, 163, 184, 0.3);
-  color: #ffffff;
+  background: var(--code-button-hover-bg);
+  color: var(--code-text);
 }
 
 .code-copy-button.is-copied {
-  color: #d1fadf;
-  background: rgba(34, 197, 94, 0.28);
-  border-color: rgba(34, 197, 94, 0.5);
+  color: var(--code-copy-done-text);
+  background: var(--code-copy-done-bg);
+  border-color: var(--code-copy-done-border);
 }
 
 .message-copy-button {
@@ -1406,36 +1426,35 @@ body.is-resizing-context {
   background: rgba(34, 197, 94, 0.16);
 }
 
-/* Syntax-highlight token palette. The code background is dark in both themes,
-   so a single palette tuned for the dark surface keeps contrast consistent. */
+/* Syntax-highlight token palette follows the active code surface. */
 .markdown-body code.hljs {
-  color: #e6edf3;
+  color: var(--code-text);
 }
 
 .markdown-body .hljs-comment {
-  color: #8b98a5;
+  color: var(--hljs-comment);
   font-style: italic;
 }
 
 .markdown-body .hljs-keyword {
-  color: #ff7b72;
+  color: var(--hljs-keyword);
 }
 
 .markdown-body .hljs-string {
-  color: #a5d6ff;
+  color: var(--hljs-string);
 }
 
 .markdown-body .hljs-number,
 .markdown-body .hljs-literal {
-  color: #f0b072;
+  color: var(--hljs-number);
 }
 
 .markdown-body .hljs-type {
-  color: #7ee787;
+  color: var(--hljs-type);
 }
 
 .markdown-body .hljs-title {
-  color: #d2a8ff;
+  color: var(--hljs-title);
 }
 
 .markdown-body a.external-link {
@@ -1499,6 +1518,166 @@ body.is-resizing-context {
 
 .thinking-steps li + li {
   margin-top: 4px;
+}
+
+.thinking-preview {
+  margin-top: 10px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #4b5e6b;
+  font-size: 13px;
+}
+
+.thinking-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.thinking-preview-title {
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.thinking-preview-toggle {
+  flex: 0 0 auto;
+  border: 1px solid #cbd6db;
+  border-radius: 6px;
+  padding: 3px 9px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.thinking-preview-toggle:hover {
+  border-color: #86b8a7;
+  background: #edf7f3;
+}
+
+.thinking-preview-collapsed {
+  display: grid;
+  gap: 3px;
+  margin-top: 7px;
+  min-width: 0;
+  /* Issue #488: clip the rotated-scrolling animation so the previous line
+     does not visibly translate out of the bubble before the gradient fade
+     swallows it. */
+  overflow: hidden;
+}
+
+.thinking-preview-previous,
+.thinking-preview-current {
+  margin: 0;
+  min-width: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  /* Issue #488: keep the layout single-line so the rotated-scrolling
+     illusion (1.5 visible lines: top half of the previous step + the
+     current step) is honoured even when a step wraps to multiple lines. */
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.thinking-preview-previous {
+  max-height: 0.75em;
+  overflow: hidden;
+  color: #667684;
+  opacity: 0.72;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  /* Issue #488: when a new step arrives the React key for `previous`
+     changes, which re-mounts the <p> and (because animations only run on
+     mount/key-change) replays this keyframe — that is the rotated
+     scrolling illusion the issue asks for. */
+  animation: thinking-rotate-previous 320ms ease-out both;
+}
+
+.thinking-preview-current {
+  color: #334650;
+  animation: thinking-rotate-current 320ms ease-out both;
+}
+
+@keyframes thinking-rotate-current {
+  from {
+    transform: translateY(0.8em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-rotate-previous {
+  from {
+    transform: translateY(0.6em);
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-previous,
+  .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #488: pulsing dot next to the "Thinking" title while the assistant
+   is mid-response, so the live trace is visibly live. */
+.thinking-preview-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #2f9a6f;
+  vertical-align: middle;
+  animation: thinking-live-dot 1100ms ease-in-out infinite;
+}
+
+@keyframes thinking-live-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-live-dot {
+    animation: none !important;
+    opacity: 0.85;
+  }
+}
+
+.thinking-preview-list {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.thinking-preview-list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .diagnostics-steps,
@@ -2639,7 +2818,9 @@ textarea:disabled {
 :root[data-theme="dark"] .setting-check,
 :root[data-theme="dark"] .setting-warning,
 :root[data-theme="dark"] .composer-attachment-status,
-:root[data-theme="dark"] .thinking-steps {
+:root[data-theme="dark"] .thinking-steps,
+:root[data-theme="dark"] .thinking-preview,
+:root[data-theme="dark"] .thinking-preview-previous {
   color: #b7b0a7;
 }
 
@@ -2720,6 +2901,26 @@ textarea:disabled {
 :root[data-theme="dark"] .markdown-body :not(pre) > code,
 :root[data-theme="dark"] textarea:disabled {
   background: #272b2a;
+}
+
+:root[data-theme="dark"] .markdown-body {
+  --code-surface: #111827;
+  --code-header-surface: #0b111d;
+  --code-border: rgba(148, 163, 184, 0.22);
+  --code-text: #e6edf3;
+  --code-muted: #9fb0c3;
+  --code-button-bg: rgba(148, 163, 184, 0.16);
+  --code-button-border: rgba(148, 163, 184, 0.28);
+  --code-button-hover-bg: rgba(148, 163, 184, 0.3);
+  --code-copy-done-text: #d1fadf;
+  --code-copy-done-bg: rgba(34, 197, 94, 0.28);
+  --code-copy-done-border: rgba(34, 197, 94, 0.5);
+  --hljs-comment: #8b98a5;
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-number: #f0b072;
+  --hljs-type: #7ee787;
+  --hljs-title: #d2a8ff;
 }
 
 :root[data-theme="dark"] .evidence-list span {
@@ -2809,8 +3010,28 @@ textarea:disabled {
   border-top-color: #343a3d;
 }
 
+:root[data-theme="dark"] .thinking-preview {
+  border-top-color: #343a3d;
+}
+
 :root[data-theme="dark"] .thinking-steps strong {
   color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .thinking-preview-title,
+:root[data-theme="dark"] .thinking-preview-current {
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .thinking-preview-toggle {
+  border-color: #4a524e;
+  background: #202322;
+  color: #8ed9bf;
+}
+
+:root[data-theme="dark"] .thinking-preview-toggle:hover {
+  border-color: #6cc5a6;
+  background: #28332f;
 }
 
 :root[data-theme="dark"] .formalization-view {
@@ -3054,7 +3275,9 @@ textarea:disabled {
   :root:not([data-theme="light"]) .setting-check,
   :root:not([data-theme="light"]) .setting-warning,
   :root:not([data-theme="light"]) .composer-attachment-status,
-  :root:not([data-theme="light"]) .thinking-steps {
+  :root:not([data-theme="light"]) .thinking-steps,
+  :root:not([data-theme="light"]) .thinking-preview,
+  :root:not([data-theme="light"]) .thinking-preview-previous {
     color: #b7b0a7;
   }
 
@@ -3135,6 +3358,26 @@ textarea:disabled {
   :root:not([data-theme="light"]) .markdown-body :not(pre) > code,
   :root:not([data-theme="light"]) textarea:disabled {
     background: #272b2a;
+  }
+
+  :root:not([data-theme="light"]) .markdown-body {
+    --code-surface: #111827;
+    --code-header-surface: #0b111d;
+    --code-border: rgba(148, 163, 184, 0.22);
+    --code-text: #e6edf3;
+    --code-muted: #9fb0c3;
+    --code-button-bg: rgba(148, 163, 184, 0.16);
+    --code-button-border: rgba(148, 163, 184, 0.28);
+    --code-button-hover-bg: rgba(148, 163, 184, 0.3);
+    --code-copy-done-text: #d1fadf;
+    --code-copy-done-bg: rgba(34, 197, 94, 0.28);
+    --code-copy-done-border: rgba(34, 197, 94, 0.5);
+    --hljs-comment: #8b98a5;
+    --hljs-keyword: #ff7b72;
+    --hljs-string: #a5d6ff;
+    --hljs-number: #f0b072;
+    --hljs-type: #7ee787;
+    --hljs-title: #d2a8ff;
   }
 
   :root:not([data-theme="light"]) .evidence-list span {
@@ -3223,8 +3466,28 @@ textarea:disabled {
     border-top-color: #343a3d;
   }
 
+  :root:not([data-theme="light"]) .thinking-preview {
+    border-top-color: #343a3d;
+  }
+
   :root:not([data-theme="light"]) .thinking-steps strong {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-title,
+  :root:not([data-theme="light"]) .thinking-preview-current {
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-toggle {
+    border-color: #4a524e;
+    background: #202322;
+    color: #8ed9bf;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-toggle:hover {
+    border-color: #6cc5a6;
+    background: #28332f;
   }
 
   :root:not([data-theme="light"]) .formalization-view {

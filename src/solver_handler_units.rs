@@ -87,7 +87,7 @@ fn contains_unit_word(normalized: &str, unit: &str) -> bool {
     if !unit.is_ascii() && !crate::coding::contains_cjk(unit) {
         return normalized.contains(unit);
     }
-    let boundary_ok = |ch: Option<char>| ch.map_or(true, |c| !c.is_alphabetic());
+    let boundary_ok = |ch: Option<char>| ch.is_none_or(|c| !c.is_alphabetic());
     let mut search_from = 0;
     while let Some(offset) = normalized[search_from..].find(unit) {
         let start = search_from + offset;

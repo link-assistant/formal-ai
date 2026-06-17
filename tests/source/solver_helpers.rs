@@ -625,6 +625,7 @@ pub fn is_write_script_request(normalized: &str) -> bool {
 
 pub fn format_write_script_execution(program: ProgramSpec) -> String {
     let execution = &program.language.execution;
+    let expected_output = program.expected_output();
     let cmd = execution.check_command.map_or_else(
         || format!("Run command: `{}`", execution.run_command),
         |check| {
@@ -645,7 +646,7 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         execution.environment,
         cmd,
         output_label,
-        program.task.output,
+        expected_output,
         execution.notes
     )
 }

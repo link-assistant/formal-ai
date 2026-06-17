@@ -2,7 +2,12 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = process.env.E2E_PORT || 3456;
-const BASE_URL = `http://localhost:${PORT}`;
+const ORIGIN = `http://localhost:${PORT}`;
+// The web app moved from / to /app/ (issue #479); the site root is now the
+// landing page. Pointing baseURL at /app/ keeps every relative goto('./') in
+// the app specs aimed at the app, while absolute paths like /download/ and
+// relative ../tests/ continue to reach their siblings unchanged.
+const BASE_URL = `${ORIGIN}/app/`;
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -49,6 +54,10 @@ module.exports = defineConfig({
     '**/issue-404.spec.js',
     '**/issue-409.spec.js',
     '**/issue-435.spec.js',
+    '**/issue-440.spec.js',
+    '**/issue-479.spec.js',
+    '**/issue-479-site.spec.js',
+    '**/issue-488.spec.js',
   ],
   timeout: 30_000,
   retries: 1,
@@ -62,7 +71,7 @@ module.exports = defineConfig({
     // data/seed/ tree on every server start so we never serve stale data.
     command:
       `bun --cwd ../.. run build:web && ../../scripts/sync-seed.sh && npx serve ../../src/web --listen ${PORT} --no-clipboard`,
-    url: BASE_URL,
+    url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,
   },

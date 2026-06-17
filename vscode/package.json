@@ -133,7 +133,7 @@
     "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
-    "@vscode/test-web": "^0.0.56",
-    "@vscode/vsce": "^2.24.0"
+    "@vscode/test-web": "^0.0.80",
+    "@vscode/vsce": "^3.9.2"
   }
 }

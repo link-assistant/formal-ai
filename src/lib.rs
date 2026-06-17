@@ -1,6 +1,7 @@
 extern crate alloc;
 
 pub mod agent;
+pub mod agentic_coding;
 pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
@@ -9,6 +10,7 @@ pub(crate) mod calculation_word_problem;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
+pub mod document_formats;
 pub mod engine;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
@@ -51,6 +53,7 @@ pub mod substitution;
 pub mod summarization;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod thinking;
 pub mod translation;
 pub(crate) mod unknown_opener;
 pub mod web_engine_core;
@@ -62,15 +65,24 @@ pub use agent::{
     PlannedAgentAction,
 };
 pub use anthropic::{
-    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicMessage,
-    AnthropicMessageInput, AnthropicMessagesRequest, AnthropicTextBlock, AnthropicUsage,
+    anthropic_message_sse, create_anthropic_message_with_solver, AnthropicContentBlock,
+    AnthropicMessage, AnthropicMessageInput, AnthropicMessagesRequest, AnthropicUsage,
 };
 pub use associative_package::{
     default_associative_packages, default_package_store, AssociativePackage, PackageDependency,
     PackageHandler, PackageImportError, PackageInstallError, PackagePermission,
     PackagePermissionDecision, PackageReplay, PackageStore, PackageTrigger,
 };
-pub use engine::{knowledge_links_notation, FormalAiEngine, SymbolicAnswer, DEFAULT_MODEL};
+pub use document_formats::{
+    canonical_document_format_label, convert_document_format, cross_format_document_concepts,
+    document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
+    supported_document_formats, DocumentConversion, DocumentFormatCapabilities,
+    DOCUMENT_FORMAT_ENGINE,
+};
+pub use engine::{
+    humanize_meta_identifier, knowledge_links_notation, naturalize_thinking_step,
+    thinking_language_label, FormalAiEngine, SymbolicAnswer, ThinkingStep, DEFAULT_MODEL,
+};
 pub use event_log::{Event, EventLog};
 pub use github_logs::{
     collect_github_logs, collect_github_logs_with_runner, github_log_capture_plan,
@@ -116,8 +128,9 @@ pub use probability::{
 pub use protocol::{
     create_chat_completion, create_chat_completion_with_solver, create_response,
     create_response_with_solver, ChatChoice, ChatCompletion, ChatCompletionRequest, ChatMessage,
-    MessageContent, MessageContentPart, ResponseObject, ResponseOutputContent,
-    ResponseOutputMessage, ResponseUsage, ResponsesRequest, TokenUsage,
+    FunctionCall, MessageContent, MessageContentPart, ResponseFunctionToolCall, ResponseObject,
+    ResponseOutputContent, ResponseOutputItem, ResponseOutputMessage, ResponseUsage,
+    ResponsesRequest, TokenUsage, ToolCall,
 };
 pub use seed::{
     agent_info, concepts as seed_concepts, environment_directory, environment_records,

@@ -1,0 +1,1283 @@
+Build macos-arm64	UNKNOWN STEP	﻿2026-06-16T07:06:06.8487480Z Current runner version: '2.335.1'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8503260Z ##[group]Runner Image Provisioner
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8503820Z Hosted Compute Agent
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8504230Z Version: 20260527.539
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8504660Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8505140Z Build Date: 2026-05-27T21:39:57Z
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8505590Z Worker ID: {c021e82d-da88-428e-8193-d1a809240c35}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8506060Z Azure Region: westus
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8506450Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8507340Z ##[group]Operating System
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8507740Z macOS
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8508060Z 14.8.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8508490Z 23J520
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8508830Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8509190Z ##[group]Runner Image
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8509590Z Image: macos-14-arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8509960Z Version: 20260608.0118.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8510820Z Included Software: https://github.com/actions/runner-images/blob/macos-14-arm64/20260608.0118/images/macos/macos-14-arm64-Readme.md
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8511850Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-14-arm64%2F20260608.0118
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8512680Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8513590Z ##[group]GITHUB_TOKEN Permissions
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8515070Z Attestations: write
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8515470Z Contents: write
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8515850Z Metadata: read
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8516250Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8517720Z Secret source: Actions
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8518180Z Prepare workflow directory
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8835710Z Prepare all required actions
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:06.8867860Z Getting action download info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:07.3724110Z Download action repository 'actions/checkout@v6' (SHA:df4cb1c069e1874edd31b4311f1884172cec0e10)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:07.9784380Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:29eef336d9b2848a0b548edc03f92a220660cdb8)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:08.2572140Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:08.3411150Z Download action repository 'actions/setup-node@v6' (SHA:48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:08.4319980Z Download action repository 'actions/attest-build-provenance@v2' (SHA:e8998f949152b193b063cb0ec769d69d929409be)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:08.8197510Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:09.0392870Z Getting action download info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:09.2084070Z Download action repository 'actions/attest-build-provenance@1176ef556905f349f669722abf30bce1a6e16e01' (SHA:1176ef556905f349f669722abf30bce1a6e16e01)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:09.5846010Z Download action repository 'actions/attest@ce27ba3b4a9a139d9a20a4a07d69fabb52f1e5bc' (SHA:ce27ba3b4a9a139d9a20a4a07d69fabb52f1e5bc)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:09.9923950Z Complete job name: Build macos-arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0641800Z ##[group]Run actions/checkout@v6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0643200Z with:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0644040Z   ref: v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0646120Z   repository: link-assistant/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0652570Z   token: ***
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0653130Z   ssh-strict: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0653710Z   ssh-user: git
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0654260Z   persist-credentials: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0654870Z   clean: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0655590Z   sparse-checkout-cone-mode: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0656330Z   fetch-depth: 1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0656930Z   fetch-tags: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0657510Z   show-progress: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0658070Z   lfs: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0658580Z   submodules: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0659150Z   set-safe-directory: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.0660170Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2094940Z Syncing repository: link-assistant/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2100390Z ##[group]Getting Git version info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2103630Z Working directory is '/Users/runner/work/formal-ai/formal-ai'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2107670Z [command]/opt/homebrew/bin/git version
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2346380Z git version 2.54.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2485980Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2496320Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/089dad11-6492-405e-879a-f577e2fdcb05/.gitconfig'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2498430Z Temporarily overriding HOME='/Users/runner/work/_temp/089dad11-6492-405e-879a-f577e2fdcb05' before making global git config changes
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2502700Z Adding repository directory to the temporary git global config as a safe directory
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2509110Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/formal-ai/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2556830Z Deleting the contents of '/Users/runner/work/formal-ai/formal-ai'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.2559640Z ##[group]Determining repository object format
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.5814010Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.5916910Z ##[group]Initializing the repository
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6022480Z [command]/opt/homebrew/bin/git init /Users/runner/work/formal-ai/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6221240Z hint: Using 'master' as the name for the initial branch. This default branch name
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6224280Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6225680Z hint: to use in all of your new repositories, which will suppress this warning,
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6237980Z hint: call:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6242180Z hint:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6243430Z hint: 	git config --global init.defaultBranch <name>
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6244340Z hint:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6245160Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6247090Z hint: 'development'. The just-created branch can be renamed via this command:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6250710Z hint:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6251420Z hint: 	git branch -m <name>
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6252100Z hint:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6253000Z hint: Disable this message with "git config set advice.defaultBranchName false"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6254320Z Initialized empty Git repository in /Users/runner/work/formal-ai/formal-ai/.git/
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6256860Z [command]/opt/homebrew/bin/git remote add origin https://github.com/link-assistant/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6426960Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6451050Z ##[group]Disabling automatic garbage collection
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6497780Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6535060Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6537960Z ##[group]Setting up auth
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6559610Z Removing SSH command configuration
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6580330Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.6590880Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.7613330Z Removing HTTP extra header
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.7614390Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.7646460Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.8418430Z Removing includeIf entries pointing to credentials config files
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.8421980Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.8472010Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9751350Z [command]/opt/homebrew/bin/git config --file /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9753420Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/Users/runner/work/formal-ai/formal-ai/.git.path /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9755680Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/Users/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9799580Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9871200Z [command]/opt/homebrew/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9913800Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9914410Z ##[group]Fetching the repository
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:10.9915360Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +refs/heads/v0.206.0*:refs/remotes/origin/v0.206.0* +refs/tags/v0.206.0*:refs/tags/v0.206.0*
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7322300Z From https://github.com/link-assistant/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7322800Z  * [new tag]         v0.206.0   -> v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7391120Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7391780Z ##[group]Determining the checkout info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7395560Z [command]/opt/homebrew/bin/git branch --list --remote origin/v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7457090Z [command]/opt/homebrew/bin/git tag --list v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7517330Z v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7520160Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7524620Z [command]/opt/homebrew/bin/git sparse-checkout disable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7594670Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7641480Z ##[group]Checking out the ref
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:16.7644470Z [command]/opt/homebrew/bin/git checkout --progress --force refs/tags/v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8486990Z Updating files:  91% (4316/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8568380Z Updating files:  92% (4342/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8654650Z Updating files:  93% (4389/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8739210Z Updating files:  94% (4436/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8822300Z Updating files:  95% (4484/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.8921930Z Updating files:  96% (4531/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9003840Z Updating files:  97% (4578/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9093720Z Updating files:  98% (4625/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9184380Z Updating files:  99% (4672/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9290120Z Updating files: 100% (4719/4719)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9322350Z Updating files: 100% (4719/4719), done.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9322810Z HEAD is now at 9ff27f8 chore: release v0.206.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9389180Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9526530Z [command]/opt/homebrew/bin/git log -1 --format=%H
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9555860Z 9ff27f857d8be7521ffaea369b96afb066aadaf1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9957490Z ##[group]Run dtolnay/rust-toolchain@stable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9957750Z with:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9957910Z   toolchain: stable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:17.9958110Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0074670Z ##[group]Run : parse toolchain version
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0075180Z ^[[36;1m: parse toolchain version^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0075420Z ^[[36;1mif [[ -z $toolchain ]]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0075880Z ^[[36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0076410Z ^[[36;1m  echo "'toolchain' is a required input" >&2^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0076700Z ^[[36;1m  exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0076980Z ^[[36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0077360Z ^[[36;1m  if [[ macOS == macOS ]]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0082730Z ^[[36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0083140Z ^[[36;1m  else^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0083450Z ^[[36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0084240Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0084490Z ^[[36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0084930Z ^[[36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0085290Z ^[[36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0085750Z ^[[36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0086150Z ^[[36;1melse^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0086340Z ^[[36;1m  echo "toolchain=$toolchain" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0086580Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0154560Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0154910Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0155060Z   toolchain: stable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0155230Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0829860Z ##[group]Run : construct rustup command line
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0830330Z ^[[36;1m: construct rustup command line^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0830720Z ^[[36;1mecho "targets=$(for t in ${targets//,/ }; do echo -n ' --target' $t; done)" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0831270Z ^[[36;1mecho "components=$(for c in ${components//,/ }; do echo -n ' --component' $c; done)" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0831670Z ^[[36;1mecho "downgrade=" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0903250Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0903580Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0903750Z   targets: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0903920Z   components: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.0904080Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1306490Z ##[group]Run : set $CARGO_HOME
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1307390Z ^[[36;1m: set $CARGO_HOME^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1309320Z ^[[36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1390580Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1390970Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1769470Z ##[group]Run : install rustup if needed
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1769800Z ^[[36;1m: install rustup if needed^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1770090Z ^[[36;1mif ! command -v rustup &>/dev/null; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1770740Z ^[[36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1771330Z ^[[36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1771570Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1829370Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1829680Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1829850Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.1830080Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2173820Z ##[group]Run rustup toolchain install stable --profile minimal --no-self-update
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2174370Z ^[[36;1mrustup toolchain install stable --profile minimal --no-self-update^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2251050Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2251360Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2251560Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2251800Z   RUSTUP_PERMIT_COPY_RENAME: 1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.2251990Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.5589150Z info: syncing channel updates for stable-aarch64-apple-darwin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6682080Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6772950Z info: self-update is disabled for this build of rustup
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6773520Z   stable-aarch64-apple-darwin unchanged - rustc 1.96.0 (ac68faa20 2026-05-25)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6788350Z info: any updates to rustup will need to be fetched with your system package manager
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6788660Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6832170Z ##[group]Run rustup default stable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6832450Z ^[[36;1mrustup default stable^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6892420Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6893280Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6893740Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.6894570Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7214890Z info: using existing install for stable-aarch64-apple-darwin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7247070Z info: default toolchain set to stable-aarch64-apple-darwin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7247320Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7321330Z   stable-aarch64-apple-darwin unchanged - rustc 1.96.0 (ac68faa20 2026-05-25)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7322630Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7393960Z ##[group]Run : create cachekey
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7394240Z ^[[36;1m: create cachekey^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7394660Z ^[[36;1mDATE=$(rustc +stable --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7395210Z ^[[36;1mHASH=$(rustc +stable --version --verbose | sed -ne 's/^commit-hash: //p')^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7395640Z ^[[36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7451680Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7451970Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7452180Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.7452390Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9206680Z ##[group]Run : disable incremental compilation
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9207070Z ^[[36;1m: disable incremental compilation^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9207370Z ^[[36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9207680Z ^[[36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9207920Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9307210Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9307560Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9307750Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9307970Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9721200Z ##[group]Run : enable colors in Cargo output
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9721600Z ^[[36;1m: enable colors in Cargo output^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9721900Z ^[[36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9722200Z ^[[36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9722480Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9802570Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9803360Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9803890Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9804810Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:18.9805120Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0172700Z ##[group]Run : enable Cargo sparse registry
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0173090Z ^[[36;1m: enable Cargo sparse registry^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0173400Z ^[[36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0173990Z ^[[36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0174630Z ^[[36;1m  if rustc +stable --version --verbose | grep -q '^release: 1\.6[89]\.'; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0175430Z ^[[36;1m    touch "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0175940Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0187410Z ^[[36;1m  elif rustc +stable --version --verbose | grep -q '^release: 1\.6[67]\.'; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0187960Z ^[[36;1m    touch "/Users/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0188420Z ^[[36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0188700Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0188860Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0250280Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0250620Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0250810Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0251040Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0251230Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.0251430Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1152380Z ##[group]Run : work around spurious network errors in curl 8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1152810Z ^[[36;1m: work around spurious network errors in curl 8.0^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1153570Z ^[[36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1154100Z ^[[36;1mif rustc +stable --version --verbose | grep -q '^release: 1\.7[01]\.'; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1154490Z ^[[36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1154810Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1209270Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1209590Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1209780Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1209990Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1210180Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1210360Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1692450Z ##[group]Run rustc +stable --version --verbose
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1692880Z ^[[36;1mrustc +stable --version --verbose^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1778900Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1779220Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1779400Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1779680Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1779880Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.1780060Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2243540Z rustc 1.96.0 (ac68faa20 2026-05-25)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2244440Z binary: rustc
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2245040Z commit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2245780Z commit-date: 2026-05-25
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2246310Z host: aarch64-apple-darwin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2246900Z release: 1.96.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.2263570Z LLVM version: 22.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5411560Z ##[group]Run actions/cache@v5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5411830Z with:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5412000Z   path: ~/.cargo/registry
+Build macos-arm64	UNKNOWN STEP	~/.cargo/git
+Build macos-arm64	UNKNOWN STEP	target
+Build macos-arm64	UNKNOWN STEP	
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5412430Z   key: desktop-macos-arm64-cargo-ee76613f7e21987e1f1556be87e1fa58adecb77d6a979a9f5eefe630a99af6e4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5412860Z   enableCrossOsArchive: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413070Z   fail-on-cache-miss: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413260Z   lookup-only: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413500Z   save-always: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413650Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413800Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5413990Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5414160Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.5414320Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.9908910Z Cache not found for input keys: desktop-macos-arm64-cargo-ee76613f7e21987e1f1556be87e1fa58adecb77d6a979a9f5eefe630a99af6e4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.9977320Z ##[group]Run cargo build --release --bin formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:19.9978820Z ^[[36;1mcargo build --release --bin formal-ai^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0032750Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0033050Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0033220Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0033510Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0033720Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.0033930Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:20.2600520Z ^[[1m^[[92m    Updating^[[0m crates.io index
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.7619270Z ^[[1m^[[92m Downloading^[[0m crates ...
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.8231850Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.6.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.8404060Z ^[[1m^[[92m  Downloaded^[[0m heck v0.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.8591350Z ^[[1m^[[92m  Downloaded^[[0m tinyvec_macros v0.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.8867630Z ^[[1m^[[92m  Downloaded^[[0m num_cpus v1.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.9328740Z ^[[1m^[[92m  Downloaded^[[0m want v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:21.9718670Z ^[[1m^[[92m  Downloaded^[[0m version_check v0.9.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.0225370Z ^[[1m^[[92m  Downloaded^[[0m rancor v0.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.0507330Z ^[[1m^[[92m  Downloaded^[[0m writeable v0.6.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1131830Z ^[[1m^[[92m  Downloaded^[[0m icu_properties v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1233920Z ^[[1m^[[92m  Downloaded^[[0m zmij v1.0.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1318750Z ^[[1m^[[92m  Downloaded^[[0m hyper-rustls v0.27.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1462120Z ^[[1m^[[92m  Downloaded^[[0m iana-time-zone v0.1.65
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1587010Z ^[[1m^[[92m  Downloaded^[[0m icu_provider v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1726660Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer_data v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.1871110Z ^[[1m^[[92m  Downloaded^[[0m zerotrie v0.2.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2007930Z ^[[1m^[[92m  Downloaded^[[0m leak_slice v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2057140Z ^[[1m^[[92m  Downloaded^[[0m lingua-chinese-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2123550Z ^[[1m^[[92m  Downloaded^[[0m jobserver v0.1.34
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2184150Z ^[[1m^[[92m  Downloaded^[[0m kanaria v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2364050Z ^[[1m^[[92m  Downloaded^[[0m lindera-dictionary v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2455410Z ^[[1m^[[92m  Downloaded^[[0m lindera v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2555840Z ^[[1m^[[92m  Downloaded^[[0m regex-automata v0.4.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2797730Z ^[[1m^[[92m  Downloaded^[[0m js-sys v0.3.98
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2864750Z ^[[1m^[[92m  Downloaded^[[0m indexmap v2.14.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.2962570Z ^[[1m^[[92m  Downloaded^[[0m itertools v0.14.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.3090910Z ^[[1m^[[92m  Downloaded^[[0m idna v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.3198780Z ^[[1m^[[92m  Downloaded^[[0m zerocopy v0.8.48
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.4024510Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-php v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.4427280Z ^[[1m^[[92m  Downloaded^[[0m icu_properties_data v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.4812090Z ^[[1m^[[92m  Downloaded^[[0m csv v1.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.5189720Z ^[[1m^[[92m  Downloaded^[[0m hyper v1.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.5433260Z ^[[1m^[[92m  Downloaded^[[0m lingua-bengali-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.5573040Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-vb-dotnet v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.5848360Z ^[[1m^[[92m  Downloaded^[[0m meta-language v0.45.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.6270080Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ruby v0.23.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.6622190Z ^[[1m^[[92m  Downloaded^[[0m zerovec v0.11.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.6822480Z ^[[1m^[[92m  Downloaded^[[0m lindera-jieba v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.6864950Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-sequel v0.3.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.7217600Z ^[[1m^[[92m  Downloaded^[[0m tokio v1.52.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8036560Z ^[[1m^[[92m  Downloaded^[[0m json5_nodes v2.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8148450Z ^[[1m^[[92m  Downloaded^[[0m is_terminal_polyfill v1.70.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8221640Z ^[[1m^[[92m  Downloaded^[[0m ipnet v2.12.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8319990Z ^[[1m^[[92m  Downloaded^[[0m include_dir_macros v0.7.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8380710Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-cpp v0.23.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8773060Z ^[[1m^[[92m  Downloaded^[[0m idna_adapter v1.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:22.8838510Z ^[[1m^[[92m  Downloaded^[[0m web-sys v0.3.98
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.1962460Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-swift v0.7.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.2430500Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs v0.8.35
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.2851940Z ^[[1m^[[92m  Downloaded^[[0m ident_case v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.2877890Z ^[[1m^[[92m  Downloaded^[[0m tracing v0.1.44
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.3150390Z ^[[1m^[[92m  Downloaded^[[0m lazy_static v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.3206840Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-typescript v0.23.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.3784680Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-kotlin-ng v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.4357050Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c-sharp v0.23.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5036080Z ^[[1m^[[92m  Downloaded^[[0m itoa v1.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5107820Z ^[[1m^[[92m  Downloaded^[[0m include_dir v0.7.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5130530Z ^[[1m^[[92m  Downloaded^[[0m winnow v1.0.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5351920Z ^[[1m^[[92m  Downloaded^[[0m platform-trees v0.3.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5486670Z ^[[1m^[[92m  Downloaded^[[0m rustls v0.23.40
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.5745480Z ^[[1m^[[92m  Downloaded^[[0m rustix v1.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.6322430Z ^[[1m^[[92m  Downloaded^[[0m libc v0.2.186
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.7018300Z ^[[1m^[[92m  Downloaded^[[0m quinn-proto v0.11.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.7180300Z ^[[1m^[[92m  Downloaded^[[0m regex-syntax v0.8.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.7368590Z ^[[1m^[[92m  Downloaded^[[0m icu_normalizer v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.7530510Z ^[[1m^[[92m  Downloaded^[[0m fst v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.7902350Z ^[[1m^[[92m  Downloaded^[[0m icu_collections v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.8094670Z ^[[1m^[[92m  Downloaded^[[0m hyper-util v0.1.20
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.8265280Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-rust v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.8469550Z ^[[1m^[[92m  Downloaded^[[0m icu_locale_core v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.8634820Z ^[[1m^[[92m  Downloaded^[[0m ring v0.17.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.9565740Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-xml v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.9656520Z ^[[1m^[[92m  Downloaded^[[0m syn v2.0.117
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:23.9922700Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-scala v0.25.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.0740390Z ^[[1m^[[92m  Downloaded^[[0m httparse v1.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.0823820Z ^[[1m^[[92m  Downloaded^[[0m http-body-util v0.1.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.0874320Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.9.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.0958260Z ^[[1m^[[92m  Downloaded^[[0m ts-parser-perl v1.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.1607310Z ^[[1m^[[92m  Downloaded^[[0m mio v1.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.1810560Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-pascal v0.10.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.1969590Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-c v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2100330Z ^[[1m^[[92m  Downloaded^[[0m zerovec-derive v0.11.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2164440Z ^[[1m^[[92m  Downloaded^[[0m zerofrom v0.1.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2196650Z ^[[1m^[[92m  Downloaded^[[0m wyz v0.5.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2234690Z ^[[1m^[[92m  Downloaded^[[0m whatlang v0.18.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2340990Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro-support v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2413770Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-macro v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2438420Z ^[[1m^[[92m  Downloaded^[[0m rand v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2540090Z ^[[1m^[[92m  Downloaded^[[0m rand v0.9.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2620450Z ^[[1m^[[92m  Downloaded^[[0m memchr v2.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2748480Z ^[[1m^[[92m  Downloaded^[[0m lingua-hindi-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2826510Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter v0.25.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.2989150Z ^[[1m^[[92m  Downloaded^[[0m syn v1.0.109
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3152390Z ^[[1m^[[92m  Downloaded^[[0m zeroize v1.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3191120Z ^[[1m^[[92m  Downloaded^[[0m zerofrom-derive v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3212100Z ^[[1m^[[92m  Downloaded^[[0m yoke v0.8.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3243490Z ^[[1m^[[92m  Downloaded^[[0m xattr v1.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3282430Z ^[[1m^[[92m  Downloaded^[[0m rand v0.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3350100Z ^[[1m^[[92m  Downloaded^[[0m quinn v0.11.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3406970Z ^[[1m^[[92m  Downloaded^[[0m platform-data v2.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3472140Z ^[[1m^[[92m  Downloaded^[[0m litemap v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3526400Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-python v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3653760Z ^[[1m^[[92m  Downloaded^[[0m tower-http v0.6.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.3968330Z ^[[1m^[[92m  Downloaded^[[0m yoke-derive v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4011750Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-shared v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4051720Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen-futures v0.4.71
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4116210Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.6.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4166780Z ^[[1m^[[92m  Downloaded^[[0m quote v1.0.45
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4252520Z ^[[1m^[[92m  Downloaded^[[0m proc-macro-crate v3.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4290180Z ^[[1m^[[92m  Downloaded^[[0m platform-num v0.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4330080Z ^[[1m^[[92m  Downloaded^[[0m num-bigint v0.4.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4455510Z ^[[1m^[[92m  Downloaded^[[0m nom v8.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4609610Z ^[[1m^[[92m  Downloaded^[[0m md5 v0.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4653220Z ^[[1m^[[92m  Downloaded^[[0m lino-arguments v0.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4721250Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-r v1.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4858010Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-java v0.23.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.4964670Z ^[[1m^[[92m  Downloaded^[[0m serde_json v1.0.149
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.5226540Z ^[[1m^[[92m  Downloaded^[[0m rust_decimal v1.42.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.5391980Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.8.16
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.5788060Z ^[[1m^[[92m  Downloaded^[[0m reqwest v0.13.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.5949900Z ^[[1m^[[92m  Downloaded^[[0m regex v1.12.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6075660Z ^[[1m^[[92m  Downloaded^[[0m rand_core v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6129460Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.9.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6193240Z ^[[1m^[[92m  Downloaded^[[0m lingua-portuguese-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6457380Z ^[[1m^[[92m  Downloaded^[[0m rand_chacha v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6499090Z ^[[1m^[[92m  Downloaded^[[0m radium v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6541330Z ^[[1m^[[92m  Downloaded^[[0m quinn-udp v0.5.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6599600Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6650660Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta_derive v0.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6680800Z ^[[1m^[[92m  Downloaded^[[0m proc-macro2 v1.0.106
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6752030Z ^[[1m^[[92m  Downloaded^[[0m ppv-lite86 v0.2.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6781960Z ^[[1m^[[92m  Downloaded^[[0m platform-mem v0.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.6987050Z ^[[1m^[[92m  Downloaded^[[0m pest_meta v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7044340Z ^[[1m^[[92m  Downloaded^[[0m munge_macro v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7066880Z ^[[1m^[[92m  Downloaded^[[0m miniz_oxide v0.8.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7117960Z ^[[1m^[[92m  Downloaded^[[0m memmap2 v0.9.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7190720Z ^[[1m^[[92m  Downloaded^[[0m log v0.4.29
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7257800Z ^[[1m^[[92m  Downloaded^[[0m lock_api v0.4.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7315920Z ^[[1m^[[92m  Downloaded^[[0m lino-objects-codec v0.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7382780Z ^[[1m^[[92m  Downloaded^[[0m lingua-spanish-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7646660Z ^[[1m^[[92m  Downloaded^[[0m lingua-french-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7914900Z ^[[1m^[[92m  Downloaded^[[0m lino-env v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.7958450Z ^[[1m^[[92m  Downloaded^[[0m links-notation v0.13.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.8044490Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-javascript v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.8147550Z ^[[1m^[[92m  Downloaded^[[0m lingua-english-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.8419150Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-go v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.8556400Z ^[[1m^[[92m  Downloaded^[[0m tower v0.5.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.8856280Z ^[[1m^[[92m  Downloaded^[[0m rayon v1.12.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9224350Z ^[[1m^[[92m  Downloaded^[[0m console_error_panic_hook v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9302610Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9351110Z ^[[1m^[[92m  Downloaded^[[0m ptr_meta v0.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9380700Z ^[[1m^[[92m  Downloaded^[[0m potential_utf v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9427950Z ^[[1m^[[92m  Downloaded^[[0m pin-project-lite v0.2.17
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9624750Z ^[[1m^[[92m  Downloaded^[[0m maplit v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9652680Z ^[[1m^[[92m  Downloaded^[[0m lru-slab v0.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9673320Z ^[[1m^[[92m  Downloaded^[[0m wasm-bindgen v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9743750Z ^[[1m^[[92m  Downloaded^[[0m uuid v1.23.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9797420Z ^[[1m^[[92m  Downloaded^[[0m utf8_iter v1.0.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9820110Z ^[[1m^[[92m  Downloaded^[[0m untrusted v0.9.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9864380Z ^[[1m^[[92m  Downloaded^[[0m unsafe-libyaml v0.2.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:24.9946900Z ^[[1m^[[92m  Downloaded^[[0m unicode-ident v1.0.22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0045750Z ^[[1m^[[92m  Downloaded^[[0m unicode-bidi v0.3.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0097210Z ^[[1m^[[92m  Downloaded^[[0m ucd-trie v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0125370Z ^[[1m^[[92m  Downloaded^[[0m typenum v1.20.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0208010Z ^[[1m^[[92m  Downloaded^[[0m pest_derive v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0278010Z ^[[1m^[[92m  Downloaded^[[0m pest v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0389750Z ^[[1m^[[92m  Downloaded^[[0m percent-encoding v2.3.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0408370Z ^[[1m^[[92m  Downloaded^[[0m once_cell v1.21.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0452170Z ^[[1m^[[92m  Downloaded^[[0m num-traits v0.2.19
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0560190Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-css v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0648010Z ^[[1m^[[92m  Downloaded^[[0m tracing-core v0.1.36
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0702360Z ^[[1m^[[92m  Downloaded^[[0m toml_edit v0.25.11+spec-1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0790510Z ^[[1m^[[92m  Downloaded^[[0m tinyvec v1.11.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0852230Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.28.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0919090Z ^[[1m^[[92m  Downloaded^[[0m serde_derive v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.0994850Z ^[[1m^[[92m  Downloaded^[[0m security-framework v3.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1097050Z ^[[1m^[[92m  Downloaded^[[0m lingua-russian-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1417400Z ^[[1m^[[92m  Downloaded^[[0m ryu v1.0.23
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1535760Z ^[[1m^[[92m  Downloaded^[[0m rustls-webpki v0.103.13
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1613520Z ^[[1m^[[92m  Downloaded^[[0m rkyv v0.7.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1844720Z ^[[1m^[[92m  Downloaded^[[0m doublets v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1920980Z ^[[1m^[[92m  Downloaded^[[0m num-integer v0.1.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1946560Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-proto v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.1975980Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-lua v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2009590Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-ini v1.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2048960Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-graphql v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2080370Z ^[[1m^[[92m  Downloaded^[[0m toml_datetime v1.1.1+spec-1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2102610Z ^[[1m^[[92m  Downloaded^[[0m tokio-macros v2.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2123940Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v2.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2152540Z ^[[1m^[[92m  Downloaded^[[0m thiserror-impl v1.0.69
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2179360Z ^[[1m^[[92m  Downloaded^[[0m tar v0.4.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2225510Z ^[[1m^[[92m  Downloaded^[[0m socket2 v0.6.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2253170Z ^[[1m^[[92m  Downloaded^[[0m lingua-urdu-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2538510Z ^[[1m^[[92m  Downloaded^[[0m smallvec v1.15.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2575590Z ^[[1m^[[92m  Downloaded^[[0m sha2 v0.10.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2627910Z ^[[1m^[[92m  Downloaded^[[0m serde_yaml_ng v0.10.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:25.2713100Z ^[[1m^[[92m  Downloaded^[[0m lingua v1.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.1998010Z ^[[1m^[[92m  Downloaded^[[0m serde_core v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2056630Z ^[[1m^[[92m  Downloaded^[[0m serde v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2120370Z ^[[1m^[[92m  Downloaded^[[0m rustls-platform-verifier v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2253500Z ^[[1m^[[92m  Downloaded^[[0m rustls-pki-types v1.14.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2341990Z ^[[1m^[[92m  Downloaded^[[0m rayon-core v1.13.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2490850Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.15.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.2933470Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.14.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3051780Z ^[[1m^[[92m  Downloaded^[[0m encoding_rs_io v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3101590Z ^[[1m^[[92m  Downloaded^[[0m cfg_aliases v0.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3119560Z ^[[1m^[[92m  Downloaded^[[0m utf8parse v0.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3158610Z ^[[1m^[[92m  Downloaded^[[0m url v2.5.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3243410Z ^[[1m^[[92m  Downloaded^[[0m unicode-segmentation v1.13.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3316240Z ^[[1m^[[92m  Downloaded^[[0m unicode-normalization v0.1.25
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3444900Z ^[[1m^[[92m  Downloaded^[[0m unicode-blocks v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3527880Z ^[[1m^[[92m  Downloaded^[[0m try-lock v0.2.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3585460Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-yaml v0.7.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.3647060Z ^[[1m^[[92m  Downloaded^[[0m pest_generator v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4011850Z ^[[1m^[[92m  Downloaded^[[0m parking_lot_core v0.9.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4071670Z ^[[1m^[[92m  Downloaded^[[0m num-rational v0.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4094150Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-language v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4140320Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-json v0.24.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4165770Z ^[[1m^[[92m  Downloaded^[[0m tower-service v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4180520Z ^[[1m^[[92m  Downloaded^[[0m tower-layer v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4202030Z ^[[1m^[[92m  Downloaded^[[0m tinystr v0.8.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4243320Z ^[[1m^[[92m  Downloaded^[[0m thiserror v1.0.69
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4434310Z ^[[1m^[[92m  Downloaded^[[0m tempfile v3.27.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4489060Z ^[[1m^[[92m  Downloaded^[[0m synstructure v0.13.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4799290Z ^[[1m^[[92m  Downloaded^[[0m strum_macros v0.27.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.4960420Z ^[[1m^[[92m  Downloaded^[[0m streaming-iterator v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5083670Z ^[[1m^[[92m  Downloaded^[[0m slab v0.4.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5101250Z ^[[1m^[[92m  Downloaded^[[0m simd-adler32 v0.3.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5176550Z ^[[1m^[[92m  Downloaded^[[0m shlex v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5207580Z ^[[1m^[[92m  Downloaded^[[0m serde-wasm-bindgen v0.6.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5253520Z ^[[1m^[[92m  Downloaded^[[0m security-framework-sys v2.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5350190Z ^[[1m^[[92m  Downloaded^[[0m scopeguard v1.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5391880Z ^[[1m^[[92m  Downloaded^[[0m rustversion v1.0.22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5450710Z ^[[1m^[[92m  Downloaded^[[0m rustc-hash v2.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5575950Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.8.16
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5677340Z ^[[1m^[[92m  Downloaded^[[0m rkyv_derive v0.7.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5677780Z ^[[1m^[[92m  Downloaded^[[0m rend v0.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5678120Z ^[[1m^[[92m  Downloaded^[[0m hashlink v0.10.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5777580Z ^[[1m^[[92m  Downloaded^[[0m generic-array v0.14.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5780130Z ^[[1m^[[92m  Downloaded^[[0m futures-util v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5940940Z ^[[1m^[[92m  Downloaded^[[0m futures-task v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5967340Z ^[[1m^[[92m  Downloaded^[[0m futures-core v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.5995310Z ^[[1m^[[92m  Downloaded^[[0m funty v2.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6012180Z ^[[1m^[[92m  Downloaded^[[0m fs_extra v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6059930Z ^[[1m^[[92m  Downloaded^[[0m flate2 v1.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6146840Z ^[[1m^[[92m  Downloaded^[[0m find-msvc-tools v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6179410Z ^[[1m^[[92m  Downloaded^[[0m filetime v0.2.29
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6213630Z ^[[1m^[[92m  Downloaded^[[0m equivalent v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6232740Z ^[[1m^[[92m  Downloaded^[[0m dunce v1.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6248460Z ^[[1m^[[92m  Downloaded^[[0m dtor v0.0.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6268270Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_macro v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6288310Z ^[[1m^[[92m  Downloaded^[[0m derive_builder_core v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6354220Z ^[[1m^[[92m  Downloaded^[[0m darling_macro v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6372680Z ^[[1m^[[92m  Downloaded^[[0m darling_core v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.6877340Z ^[[1m^[[92m  Downloaded^[[0m darling v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7083360Z ^[[1m^[[92m  Downloaded^[[0m csv-core v0.1.13
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7203470Z ^[[1m^[[92m  Downloaded^[[0m crypto-common v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7305560Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-deque v0.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7319400Z ^[[1m^[[92m  Downloaded^[[0m counter v0.7.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7319980Z ^[[1m^[[92m  Downloaded^[[0m clap_lex v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7320440Z ^[[1m^[[92m  Downloaded^[[0m clap v4.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.7874540Z ^[[1m^[[92m  Downloaded^[[0m bytes v1.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8021590Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8054620Z ^[[1m^[[92m  Downloaded^[[0m bytecheck_derive v0.6.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8086800Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-rs v1.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8683070Z ^[[1m^[[92m  Downloaded^[[0m anstream v1.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8739920Z ^[[1m^[[92m  Downloaded^[[0m munge v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8845920Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-toml-ng v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8929930Z ^[[1m^[[92m  Downloaded^[[0m tree-sitter-html v0.23.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.8932660Z ^[[1m^[[92m  Downloaded^[[0m toml_parser v1.1.2+spec-1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9000150Z ^[[1m^[[92m  Downloaded^[[0m tokio-rustls v0.26.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9081230Z ^[[1m^[[92m  Downloaded^[[0m thiserror v2.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9317660Z ^[[1m^[[92m  Downloaded^[[0m tap v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9357100Z ^[[1m^[[92m  Downloaded^[[0m subtle v2.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9378880Z ^[[1m^[[92m  Downloaded^[[0m strum v0.28.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9608330Z ^[[1m^[[92m  Downloaded^[[0m strum v0.27.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9732050Z ^[[1m^[[92m  Downloaded^[[0m strsim v0.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9765000Z ^[[1m^[[92m  Downloaded^[[0m stable_deref_trait v1.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:26.9907910Z ^[[1m^[[92m  Downloaded^[[0m seahash v4.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0013430Z ^[[1m^[[92m  Downloaded^[[0m http-body v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0074660Z ^[[1m^[[92m  Downloaded^[[0m http v1.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0191920Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.17.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0276470Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.2.17
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0358200Z ^[[1m^[[92m  Downloaded^[[0m futures-channel v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0422620Z ^[[1m^[[92m  Downloaded^[[0m foldhash v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0484930Z ^[[1m^[[92m  Downloaded^[[0m fnv v1.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0495280Z ^[[1m^[[92m  Downloaded^[[0m fastrand v2.4.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0529730Z ^[[1m^[[92m  Downloaded^[[0m either v1.16.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0595780Z ^[[1m^[[92m  Downloaded^[[0m dtor-proc-macro v0.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0613740Z ^[[1m^[[92m  Downloaded^[[0m displaydoc v0.2.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0668230Z ^[[1m^[[92m  Downloaded^[[0m digest v0.10.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0720200Z ^[[1m^[[92m  Downloaded^[[0m derive_builder v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.0923700Z ^[[1m^[[92m  Downloaded^[[0m daachorse v2.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1027390Z ^[[1m^[[92m  Downloaded^[[0m ctor v0.4.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1103740Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-utils v0.8.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1108040Z ^[[1m^[[92m  Downloaded^[[0m crc32fast v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1156040Z ^[[1m^[[92m  Downloaded^[[0m cpufeatures v0.2.17
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1190770Z ^[[1m^[[92m  Downloaded^[[0m core-foundation-sys v0.8.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1323640Z ^[[1m^[[92m  Downloaded^[[0m core-foundation v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1434550Z ^[[1m^[[92m  Downloaded^[[0m colorchoice v1.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1469690Z ^[[1m^[[92m  Downloaded^[[0m cmake v0.1.58
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1511500Z ^[[1m^[[92m  Downloaded^[[0m clap_builder v4.6.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.1720520Z ^[[1m^[[92m  Downloaded^[[0m chrono v0.4.44
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2029140Z ^[[1m^[[92m  Downloaded^[[0m cfg-if v1.0.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2132110Z ^[[1m^[[92m  Downloaded^[[0m byteorder v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2234020Z ^[[1m^[[92m  Downloaded^[[0m bumpalo v3.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2336460Z ^[[1m^[[92m  Downloaded^[[0m borsh-derive v1.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2438200Z ^[[1m^[[92m  Downloaded^[[0m lingua-arabic-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.2647930Z ^[[1m^[[92m  Downloaded^[[0m bitvec v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3038220Z ^[[1m^[[92m  Downloaded^[[0m bitflags v1.3.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3103450Z ^[[1m^[[92m  Downloaded^[[0m beef v0.5.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3132180Z ^[[1m^[[92m  Downloaded^[[0m autocfg v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3171820Z ^[[1m^[[92m  Downloaded^[[0m anstyle-query v1.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3189430Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.2.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3230610Z ^[[1m^[[92m  Downloaded^[[0m aho-corasick v1.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3560230Z ^[[1m^[[92m  Downloaded^[[0m ahash v0.7.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3662550Z ^[[1m^[[92m  Downloaded^[[0m sync_wrapper v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3664120Z ^[[1m^[[92m  Downloaded^[[0m simdutf8 v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3705840Z ^[[1m^[[92m  Downloaded^[[0m rend v0.5.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3742050Z ^[[1m^[[92m  Downloaded^[[0m hashbrown v0.12.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3799040Z ^[[1m^[[92m  Downloaded^[[0m glob v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3820670Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3883360Z ^[[1m^[[92m  Downloaded^[[0m form_urlencoded v1.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.3984600Z ^[[1m^[[92m  Downloaded^[[0m errno v0.3.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4008010Z ^[[1m^[[92m  Downloaded^[[0m dotenvy v0.15.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4008530Z ^[[1m^[[92m  Downloaded^[[0m bytecheck v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4008890Z ^[[1m^[[92m  Downloaded^[[0m block-buffer v0.10.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4031570Z ^[[1m^[[92m  Downloaded^[[0m base64 v0.22.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4081840Z ^[[1m^[[92m  Downloaded^[[0m atomic-waker v1.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4101890Z ^[[1m^[[92m  Downloaded^[[0m arrayvec v0.7.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4139360Z ^[[1m^[[92m  Downloaded^[[0m anyhow v1.0.102
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4234300Z ^[[1m^[[92m  Downloaded^[[0m anstyle-parse v1.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4262260Z ^[[1m^[[92m  Downloaded^[[0m anstyle v1.0.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4281630Z ^[[1m^[[92m  Downloaded^[[0m allocator-api2 v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4323110Z ^[[1m^[[92m  Downloaded^[[0m getrandom v0.3.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4805780Z ^[[1m^[[92m  Downloaded^[[0m dashmap v6.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4886700Z ^[[1m^[[92m  Downloaded^[[0m ctor-proc-macro v0.0.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4903940Z ^[[1m^[[92m  Downloaded^[[0m crossbeam-epoch v0.9.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.4962630Z ^[[1m^[[92m  Downloaded^[[0m clap_derive v4.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.5041510Z ^[[1m^[[92m  Downloaded^[[0m cc v1.2.62
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.5141840Z ^[[1m^[[92m  Downloaded^[[0m borsh v1.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.5649840Z ^[[1m^[[92m  Downloaded^[[0m bitflags v2.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.5728180Z ^[[1m^[[92m  Downloaded^[[0m adler2 v2.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:27.6139630Z ^[[1m^[[92m  Downloaded^[[0m aws-lc-sys v0.41.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:28.4095950Z ^[[1m^[[92m  Downloaded^[[0m link-calculator v0.19.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:28.8484430Z ^[[1m^[[92m   Compiling^[[0m libc v0.2.186
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:28.8486350Z ^[[1m^[[92m   Compiling^[[0m unicode-ident v1.0.22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:28.8486760Z ^[[1m^[[92m   Compiling^[[0m proc-macro2 v1.0.106
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:29.6108270Z ^[[1m^[[92m   Compiling^[[0m quote v1.0.45
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:31.8916930Z ^[[1m^[[92m   Compiling^[[0m find-msvc-tools v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.2755840Z ^[[1m^[[92m   Compiling^[[0m shlex v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.4089630Z ^[[1m^[[92m   Compiling^[[0m jobserver v0.1.34
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.4221960Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-language v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.6693200Z ^[[1m^[[92m   Compiling^[[0m cc v1.2.62
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.7223480Z ^[[1m^[[92m   Compiling^[[0m syn v2.0.117
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.7293870Z ^[[1m^[[92m   Compiling^[[0m serde_core v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.9244320Z ^[[1m^[[92m   Compiling^[[0m stable_deref_trait v1.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:32.9530180Z ^[[1m^[[92m   Compiling^[[0m serde v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.1521480Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer_data v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.2613510Z ^[[1m^[[92m   Compiling^[[0m cfg-if v1.0.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.2884560Z ^[[1m^[[92m   Compiling^[[0m memchr v2.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.6905820Z ^[[1m^[[92m   Compiling^[[0m icu_properties_data v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.8370660Z ^[[1m^[[92m   Compiling^[[0m itoa v1.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:33.9477460Z ^[[1m^[[92m   Compiling^[[0m cmake v0.1.58
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:34.2307860Z ^[[1m^[[92m   Compiling^[[0m dunce v1.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:34.2820950Z ^[[1m^[[92m   Compiling^[[0m fs_extra v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:34.5091320Z ^[[1m^[[92m   Compiling^[[0m aws-lc-sys v0.41.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:34.7055760Z ^[[1m^[[92m   Compiling^[[0m bytes v1.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:35.3390850Z ^[[1m^[[92m   Compiling^[[0m pin-project-lite v0.2.17
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:35.3511770Z ^[[1m^[[92m   Compiling^[[0m zmij v1.0.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:37.2851570Z ^[[1m^[[92m   Compiling^[[0m synstructure v0.13.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:37.7720360Z ^[[1m^[[92m   Compiling^[[0m zerofrom-derive v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:37.8783490Z ^[[1m^[[92m   Compiling^[[0m yoke-derive v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:38.8683510Z ^[[1m^[[92m   Compiling^[[0m zerovec-derive v0.11.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:39.0442010Z ^[[1m^[[92m   Compiling^[[0m displaydoc v0.2.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:39.6127380Z ^[[1m^[[92m   Compiling^[[0m zerofrom v0.1.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:39.6802830Z ^[[1m^[[92m   Compiling^[[0m yoke v0.8.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:39.7791450Z ^[[1m^[[92m   Compiling^[[0m serde_derive v1.0.228
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:39.8040970Z ^[[1m^[[92m   Compiling^[[0m zerovec v0.11.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:40.2001180Z ^[[1m^[[92m   Compiling^[[0m ptr_meta_derive v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:40.5083250Z ^[[1m^[[92m   Compiling^[[0m once_cell v1.21.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:40.6551630Z ^[[1m^[[92m   Compiling^[[0m futures-core v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:40.7613040Z ^[[1m^[[92m   Compiling^[[0m autocfg v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:41.0720940Z ^[[1m^[[92m   Compiling^[[0m num-traits v0.2.19
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:41.6631990Z ^[[1m^[[92m   Compiling^[[0m tinystr v0.8.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:41.8576220Z ^[[1m^[[92m   Compiling^[[0m aws-lc-rs v1.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.1649050Z ^[[1m^[[92m   Compiling^[[0m smallvec v1.15.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.3685990Z ^[[1m^[[92m   Compiling^[[0m litemap v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.3962030Z ^[[1m^[[92m   Compiling^[[0m writeable v0.6.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.5217520Z ^[[1m^[[92m   Compiling^[[0m heck v0.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.5411560Z ^[[1m^[[92m   Compiling^[[0m icu_locale_core v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.7798600Z ^[[1m^[[92m   Compiling^[[0m potential_utf v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:42.8712860Z ^[[1m^[[92m   Compiling^[[0m zerotrie v0.2.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.0743010Z ^[[1m^[[92m   Compiling^[[0m tokio-macros v2.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.4700880Z ^[[1m^[[92m   Compiling^[[0m socket2 v0.6.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.6128560Z ^[[1m^[[92m   Compiling^[[0m mio v1.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.7930780Z ^[[1m^[[92m   Compiling^[[0m ident_case v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.8428490Z ^[[1m^[[92m   Compiling^[[0m zeroize v1.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:43.9579120Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-shared v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.0223120Z ^[[1m^[[92m   Compiling^[[0m fnv v1.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.1611330Z ^[[1m^[[92m   Compiling^[[0m thiserror v2.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.2198320Z ^[[1m^[[92m   Compiling^[[0m utf8_iter v1.0.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.2719280Z ^[[1m^[[92m   Compiling^[[0m strsim v0.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.3703130Z ^[[1m^[[92m   Compiling^[[0m icu_collections v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.5406920Z ^[[1m^[[92m   Compiling^[[0m darling_core v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:44.7719850Z ^[[1m^[[92m   Compiling^[[0m tokio v1.52.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:47.3685620Z ^[[1m^[[92m   Compiling^[[0m icu_provider v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:48.3877280Z ^[[1m^[[92m   Compiling^[[0m bytecheck_derive v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:48.8610760Z ^[[1m^[[92m   Compiling^[[0m http v1.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:48.9429180Z ^[[1m^[[92m   Compiling^[[0m include_dir_macros v0.7.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:49.2552290Z ^[[1m^[[92m   Compiling^[[0m bitflags v2.11.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:49.3975580Z ^[[1m^[[92m   Compiling^[[0m include_dir v0.7.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:49.7891850Z ^[[1m^[[92m   Compiling^[[0m http-body v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:50.0408410Z ^[[1m^[[92m   Compiling^[[0m darling_macro v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:50.3275110Z ^[[1m^[[92m   Compiling^[[0m rustls-pki-types v1.14.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:51.2205890Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v2.0.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:51.5081070Z ^[[1m^[[92m   Compiling^[[0m untrusted v0.9.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:51.5687030Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.17.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.1107520Z ^[[1m^[[92m   Compiling^[[0m futures-task v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.2855340Z ^[[1m^[[92m   Compiling^[[0m percent-encoding v2.3.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.2857340Z ^[[1m^[[92m   Compiling^[[0m slab v0.4.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.3688890Z ^[[1m^[[92m   Compiling^[[0m httparse v1.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.3719940Z ^[[1m^[[92m   Compiling^[[0m rustls v0.23.40
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.4830020Z ^[[1m^[[92m   Compiling^[[0m futures-util v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.5862460Z ^[[1m^[[92m   Compiling^[[0m darling v0.20.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:52.6102480Z ^[[1m^[[92m   Compiling^[[0m icu_properties v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:53.7263030Z ^[[1m^[[92m   Compiling^[[0m icu_normalizer v2.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.0319410Z ^[[1m^[[92m   Compiling^[[0m munge_macro v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.1994480Z ^[[1m^[[92m   Compiling^[[0m rustversion v1.0.22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.4216640Z ^[[1m^[[92m   Compiling^[[0m subtle v2.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.4895150Z ^[[1m^[[92m   Compiling^[[0m try-lock v0.2.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.5246050Z ^[[1m^[[92m   Compiling^[[0m equivalent v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.5431770Z ^[[1m^[[92m   Compiling^[[0m anyhow v1.0.102
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.5621960Z ^[[1m^[[92m   Compiling^[[0m core-foundation-sys v0.8.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.7534400Z ^[[1m^[[92m   Compiling^[[0m tower-service v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.8370100Z ^[[1m^[[92m   Compiling^[[0m serde_json v1.0.149
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.8674800Z ^[[1m^[[92m   Compiling^[[0m indexmap v2.14.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:54.9844550Z ^[[1m^[[92m   Compiling^[[0m want v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:55.3238990Z ^[[1m^[[92m   Compiling^[[0m idna_adapter v1.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:55.3601660Z ^[[1m^[[92m   Compiling^[[0m derive_builder_core v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:55.6263530Z ^[[1m^[[92m   Compiling^[[0m tracing-core v0.1.36
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.0743790Z ^[[1m^[[92m   Compiling^[[0m futures-channel v0.3.32
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.1098890Z ^[[1m^[[92m   Compiling^[[0m ptr_meta v0.3.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.2178290Z ^[[1m^[[92m   Compiling^[[0m atomic-waker v1.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.2893000Z ^[[1m^[[92m   Compiling^[[0m rustix v1.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.3346050Z ^[[1m^[[92m   Compiling^[[0m hyper v1.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.6765120Z ^[[1m^[[92m   Compiling^[[0m rancor v0.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:56.8099290Z ^[[1m^[[92m   Compiling^[[0m derive_builder_macro v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:57.2734770Z ^[[1m^[[92m   Compiling^[[0m tracing v0.1.44
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:57.4794780Z ^[[1m^[[92m   Compiling^[[0m idna v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:58.5989960Z ^[[1m^[[92m   Compiling^[[0m core-foundation v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:58.6198390Z ^[[1m^[[92m   Compiling^[[0m security-framework-sys v2.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:58.7672580Z ^[[1m^[[92m   Compiling^[[0m form_urlencoded v1.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:59.0120320Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.28.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:59.0467860Z ^[[1m^[[92m   Compiling^[[0m sync_wrapper v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:06:59.0823480Z ^[[1m^[[92m   Compiling^[[0m rkyv_derive v0.8.16
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:00.5075110Z ^[[1m^[[92m   Compiling^[[0m aho-corasick v1.1.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:00.7937890Z ^[[1m^[[92m   Compiling^[[0m errno v0.3.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:00.8619230Z ^[[1m^[[92m   Compiling^[[0m bumpalo v3.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:01.0955320Z ^[[1m^[[92m   Compiling^[[0m base64 v0.22.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:01.3584910Z ^[[1m^[[92m   Compiling^[[0m ipnet v2.12.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:01.9724500Z ^[[1m^[[92m   Compiling^[[0m tower-layer v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:02.0801380Z ^[[1m^[[92m   Compiling^[[0m regex-syntax v0.8.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:04.6311200Z ^[[1m^[[92m   Compiling^[[0m simdutf8 v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:04.7276310Z ^[[1m^[[92m   Compiling^[[0m crossbeam-utils v0.8.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:04.9058470Z ^[[1m^[[92m   Compiling^[[0m crc32fast v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:06.7947860Z ^[[1m^[[92m   Compiling^[[0m bytecheck v0.8.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:06.9641510Z ^[[1m^[[92m   Compiling^[[0m regex-automata v0.4.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:07.9019430Z ^[[1m^[[92m   Compiling^[[0m tower v0.5.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:08.3151540Z ^[[1m^[[92m   Compiling^[[0m hyper-util v0.1.20
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:09.5620030Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro-support v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:14.1386220Z ^[[1m^[[92m   Compiling^[[0m security-framework v3.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:15.5213430Z ^[[1m^[[92m   Compiling^[[0m url v2.5.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:16.1741270Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:17.4318610Z ^[[1m^[[92m   Compiling^[[0m log v0.4.29
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:17.5466390Z ^[[1m^[[92m   Compiling^[[0m simd-adler32 v0.3.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:17.9003730Z ^[[1m^[[92m   Compiling^[[0m adler2 v2.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:19.0714130Z ^[[1m^[[92m   Compiling^[[0m miniz_oxide v0.8.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:22.1307360Z ^[[1m^[[92m   Compiling^[[0m tower-http v0.6.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:22.4735240Z ^[[1m^[[92m   Compiling^[[0m xattr v1.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:22.6688250Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-macro v0.2.121
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:22.7621630Z ^[[1m^[[92m   Compiling^[[0m regex v1.12.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:22.9714250Z ^[[1m^[[92m   Compiling^[[0m rend v0.5.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:24.4391810Z ^[[1m^[[92m   Compiling^[[0m munge v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:24.4957220Z ^[[1m^[[92m   Compiling^[[0m encoding_rs v0.8.35
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:25.6106610Z ^[[1m^[[92m   Compiling^[[0m filetime v0.2.29
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:25.7290530Z ^[[1m^[[92m   Compiling^[[0m http-body-util v0.1.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:25.8232990Z ^[[1m^[[92m   Compiling^[[0m csv-core v0.1.13
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:26.0019500Z ^[[1m^[[92m   Compiling^[[0m rand_core v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:26.0881540Z ^[[1m^[[92m   Compiling^[[0m ryu v1.0.23
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:26.2321290Z ^[[1m^[[92m   Compiling^[[0m csv v1.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:26.6407100Z ^[[1m^[[92m   Compiling^[[0m rand v0.10.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:27.2266140Z ^[[1m^[[92m   Compiling^[[0m tar v0.4.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:27.4246760Z ^[[1m^[[92m   Compiling^[[0m rkyv v0.8.16
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:28.0319890Z ^[[1m^[[92m   Compiling^[[0m encoding_rs_io v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:28.3958450Z ^[[1m^[[92m   Compiling^[[0m flate2 v1.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.2168280Z ^[[1m^[[92m   Compiling^[[0m strum v0.28.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.2730530Z ^[[1m^[[92m   Compiling^[[0m derive_builder v0.20.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.3332180Z ^[[1m^[[92m   Compiling^[[0m memmap2 v0.9.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.4438970Z ^[[1m^[[92m   Compiling^[[0m num_cpus v1.17.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.5283400Z ^[[1m^[[92m   Compiling^[[0m byteorder v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.6053230Z ^[[1m^[[92m   Compiling^[[0m ucd-trie v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.6909450Z ^[[1m^[[92m   Compiling^[[0m utf8parse v0.2.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.7870110Z ^[[1m^[[92m   Compiling^[[0m glob v0.3.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:30.8323690Z ^[[1m^[[92m   Compiling^[[0m daachorse v2.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:31.2006630Z ^[[1m^[[92m   Compiling^[[0m md5 v0.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:31.4615560Z ^[[1m^[[92m   Compiling^[[0m anstyle-parse v1.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:31.6348880Z ^[[1m^[[92m   Compiling^[[0m pest v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:35.8139840Z ^[[1m^[[92m   Compiling^[[0m crossbeam-epoch v0.9.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:39.2832730Z ^[[1m^[[92m   Compiling^[[0m fastrand v2.4.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:39.4867590Z ^[[1m^[[92m   Compiling^[[0m rayon-core v1.13.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:39.6508740Z ^[[1m^[[92m   Compiling^[[0m anstyle-query v1.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:39.7016160Z ^[[1m^[[92m   Compiling^[[0m is_terminal_polyfill v1.70.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:39.8681480Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.2.21
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.0515320Z ^[[1m^[[92m   Compiling^[[0m getrandom v0.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.2611660Z ^[[1m^[[92m   Compiling^[[0m foldhash v0.1.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.4041740Z ^[[1m^[[92m   Compiling^[[0m anstyle v1.0.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.4246990Z ^[[1m^[[92m   Compiling^[[0m parking_lot_core v0.9.12
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.6821950Z ^[[1m^[[92m   Compiling^[[0m colorchoice v1.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.6983290Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.15.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:40.7318110Z ^[[1m^[[92m   Compiling^[[0m anstream v1.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:42.6288110Z ^[[1m^[[92m   Compiling^[[0m crossbeam-deque v0.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:42.8813990Z ^[[1m^[[92m   Compiling^[[0m js-sys v0.3.98
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:44.1285630Z ^[[1m^[[92m   Compiling^[[0m pest_meta v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:46.7285690Z ^[[1m^[[92m   Compiling^[[0m tinyvec_macros v0.1.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:46.8834770Z ^[[1m^[[92m   Compiling^[[0m fst v0.4.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:47.9030310Z ^[[1m^[[92m   Compiling^[[0m scopeguard v1.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:48.4962880Z ^[[1m^[[92m   Compiling^[[0m clap_lex v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:48.7150010Z ^[[1m^[[92m   Compiling^[[0m either v1.16.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:48.9329940Z ^[[1m^[[92m   Compiling^[[0m thiserror v1.0.69
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:49.5923230Z ^[[1m^[[92m   Compiling^[[0m clap_builder v4.6.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:50.1040450Z ^[[1m^[[92m   Compiling^[[0m lindera-dictionary v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:52.9104840Z ^[[1m^[[92m   Compiling^[[0m rustls-webpki v0.103.13
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:57.3616580Z ^[[1m^[[92m   Compiling^[[0m tokio-rustls v0.26.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:57.6399440Z ^[[1m^[[92m   Compiling^[[0m hyper-rustls v0.27.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:57.9312060Z ^[[1m^[[92m   Compiling^[[0m rustls-platform-verifier v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:58.2299610Z ^[[1m^[[92m   Compiling^[[0m reqwest v0.13.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:58.7920350Z ^[[1m^[[92m   Compiling^[[0m lock_api v0.4.14
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:58.9967210Z ^[[1m^[[92m   Compiling^[[0m tinyvec v1.11.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:07:59.5876000Z ^[[1m^[[92m   Compiling^[[0m pest_generator v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:01.9320810Z ^[[1m^[[92m   Compiling^[[0m tree-sitter v0.25.10
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:02.1952850Z ^[[1m^[[92m   Compiling^[[0m platform-num v0.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:02.2639250Z ^[[1m^[[92m   Compiling^[[0m num-integer v0.1.46
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:02.6072380Z ^[[1m^[[92m   Compiling^[[0m lindera-jieba v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:02.6608290Z ^[[1m^[[92m   Compiling^[[0m clap_derive v4.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:02.6803930Z ^[[1m^[[92m   Compiling^[[0m thiserror-impl v1.0.69
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:03.5951540Z ^[[1m^[[92m   Compiling^[[0m nom v8.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.0978140Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c-sharp v0.23.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.2710560Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-swift v0.7.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.4475960Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-typescript v0.23.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.5828310Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-rust v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.7468680Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-toml-ng v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:04.9322970Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-cpp v0.23.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:05.1228030Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-json v0.24.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:05.3092200Z ^[[1m^[[92m   Compiling^[[0m ts-parser-perl v1.1.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:05.4899310Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-kotlin-ng v1.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:05.6507410Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-css v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:05.8166920Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-java v0.23.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.0126920Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-python v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.1546590Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-yaml v0.7.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.3099210Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-xml v0.7.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.4556840Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-javascript v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.6126970Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-go v0.25.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.8421490Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-r v1.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:06.9283380Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-lua v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.0825350Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-vb-dotnet v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.1316630Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-c v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.2518540Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-php v0.24.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.3176710Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-sequel v0.3.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.3931220Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-pascal v0.10.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.4472720Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-html v0.23.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.5349120Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ruby v0.23.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.6142820Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-proto v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.6929100Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-graphql v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.7722940Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-scala v0.25.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.8510880Z ^[[1m^[[92m   Compiling^[[0m tree-sitter-ini v1.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:07.9394210Z ^[[1m^[[92m   Compiling^[[0m unsafe-libyaml v0.2.11
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:08.0262420Z ^[[1m^[[92m   Compiling^[[0m hashbrown v0.14.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:08.6280900Z ^[[1m^[[92m   Compiling^[[0m dtor-proc-macro v0.0.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:08.8394140Z ^[[1m^[[92m   Compiling^[[0m rust_decimal v1.42.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:09.4092010Z ^[[1m^[[92m   Compiling^[[0m bitflags v1.3.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:09.4443050Z ^[[1m^[[92m   Compiling^[[0m kanaria v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:09.5234120Z ^[[1m^[[92m   Compiling^[[0m iana-time-zone v0.1.65
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:09.7122770Z ^[[1m^[[92m   Compiling^[[0m dtor v0.0.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:09.7554890Z ^[[1m^[[92m   Compiling^[[0m dashmap v6.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:10.2967580Z ^[[1m^[[92m   Compiling^[[0m serde_yaml_ng v0.10.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:24.4970710Z ^[[1m^[[92m   Compiling^[[0m links-notation v0.13.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:36.9566360Z ^[[1m^[[92m   Compiling^[[0m clap v4.6.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:37.0596440Z ^[[1m^[[92m   Compiling^[[0m num-bigint v0.4.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:37.8760160Z ^[[1m^[[92m   Compiling^[[0m tempfile v3.27.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:38.4327980Z ^[[1m^[[92m   Compiling^[[0m rayon v1.12.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:41.0995030Z ^[[1m^[[92m   Compiling^[[0m pest_derive v2.8.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:41.5470570Z ^[[1m^[[92m   Compiling^[[0m unicode-normalization v0.1.25
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.0525440Z ^[[1m^[[92m   Compiling^[[0m itertools v0.14.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.2931500Z ^[[1m^[[92m   Compiling^[[0m hashlink v0.10.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.5841480Z ^[[1m^[[92m   Compiling^[[0m lingua-arabic-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.6560020Z ^[[1m^[[92m   Compiling^[[0m lingua-portuguese-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.6795200Z ^[[1m^[[92m   Compiling^[[0m lingua-french-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.7283910Z ^[[1m^[[92m   Compiling^[[0m lingua-bengali-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.7491660Z ^[[1m^[[92m   Compiling^[[0m lingua-spanish-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.7871300Z ^[[1m^[[92m   Compiling^[[0m lingua-russian-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.8213240Z ^[[1m^[[92m   Compiling^[[0m lingua-urdu-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.8657260Z ^[[1m^[[92m   Compiling^[[0m lingua-hindi-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.9190440Z ^[[1m^[[92m   Compiling^[[0m lingua-english-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.9494150Z ^[[1m^[[92m   Compiling^[[0m lingua-chinese-language-model v1.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:42.9844230Z ^[[1m^[[92m   Compiling^[[0m counter v0.7.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.0108520Z ^[[1m^[[92m   Compiling^[[0m strum_macros v0.27.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.1837620Z ^[[1m^[[92m   Compiling^[[0m arrayvec v0.7.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.4026920Z ^[[1m^[[92m   Compiling^[[0m strum v0.27.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.4788020Z ^[[1m^[[92m   Compiling^[[0m ctor-proc-macro v0.0.6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.7092710Z ^[[1m^[[92m   Compiling^[[0m unicode-blocks v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:43.9073180Z ^[[1m^[[92m   Compiling^[[0m beef v0.5.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.0088260Z ^[[1m^[[92m   Compiling^[[0m unicode-segmentation v1.13.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.1433740Z ^[[1m^[[92m   Compiling^[[0m allocator-api2 v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.5135820Z ^[[1m^[[92m   Compiling^[[0m streaming-iterator v0.1.9
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.5961820Z ^[[1m^[[92m   Compiling^[[0m maplit v1.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.6372910Z ^[[1m^[[92m   Compiling^[[0m platform-mem v0.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.8731190Z ^[[1m^[[92m   Compiling^[[0m lindera v3.0.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:44.9994660Z ^[[1m^[[92m   Compiling^[[0m lingua v1.8.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:45.9701190Z ^[[1m^[[92m   Compiling^[[0m platform-data v2.0.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:46.0953540Z ^[[1m^[[92m   Compiling^[[0m ctor v0.4.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:48.1255730Z ^[[1m^[[92m   Compiling^[[0m json5_nodes v2.0.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:49.8851980Z ^[[1m^[[92m   Compiling^[[0m num-rational v0.4.2
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:51.8056010Z ^[[1m^[[92m   Compiling^[[0m chrono v0.4.44
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:51.8098010Z ^[[1m^[[92m   Compiling^[[0m platform-trees v0.3.4
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:51.9381870Z ^[[1m^[[92m   Compiling^[[0m serde-wasm-bindgen v0.6.5
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:52.5233850Z ^[[1m^[[92m   Compiling^[[0m web-sys v0.3.98
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:54.7516710Z ^[[1m^[[92m   Compiling^[[0m wasm-bindgen-futures v0.4.71
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:54.7942180Z ^[[1m^[[92m   Compiling^[[0m whatlang v0.18.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:55.3613360Z ^[[1m^[[92m   Compiling^[[0m console_error_panic_hook v0.1.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:55.9001820Z ^[[1m^[[92m   Compiling^[[0m leak_slice v0.2.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:55.9532730Z ^[[1m^[[92m   Compiling^[[0m formal-ai v0.206.0 (/Users/runner/work/formal-ai/formal-ai)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.0061430Z ^[[1m^[[92m   Compiling^[[0m lazy_static v1.5.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.0493920Z ^[[1m^[[92m   Compiling^[[0m tap v1.0.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.1230660Z ^[[1m^[[92m   Compiling^[[0m dotenvy v0.15.7
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.2410680Z ^[[1m^[[92m   Compiling^[[0m unicode-bidi v0.3.18
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.7125010Z ^[[1m^[[92m   Compiling^[[0m lino-env v0.1.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:56.7329680Z ^[[1m^[[92m   Compiling^[[0m meta-language v0.45.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:57.1571970Z ^[[1m^[[92m   Compiling^[[0m lino-arguments v0.3.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:57.2074200Z ^[[1m^[[92m   Compiling^[[0m doublets v0.4.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:58.0488870Z ^[[1m^[[92m   Compiling^[[0m link-calculator v0.19.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:08:58.8252460Z ^[[1m^[[92m   Compiling^[[0m lino-objects-codec v0.2.1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.7576710Z ^[[1m^[[92m    Finished^[[0m `release` profile [optimized] target(s) in 4m 21s
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8976200Z ##[group]Run actions/setup-node@v6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8976590Z with:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8976800Z   node-version: 22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8977070Z   check-latest: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8979460Z   token: ***
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8979730Z   package-manager-cache: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8980060Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8980310Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8980560Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8980850Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:41.8981170Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.2757550Z Found in cache @ /Users/runner/hostedtoolcache/node/22.22.3/arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.2761310Z ##[group]Environment details
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7176910Z node: v22.22.3
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7177210Z npm: 10.9.8
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7177540Z yarn: 1.22.22
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7178040Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7257800Z ##[group]Run npm install --no-audit --no-fund
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7258140Z ^[[36;1mnpm install --no-audit --no-fund^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7445500Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7445960Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7446180Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7446520Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7446770Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:42.7447090Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:48.3181150Z npm warn deprecated rimraf@2.6.3: Rimraf versions prior to v4 are no longer supported
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:48.3953330Z npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:48.6326930Z npm warn deprecated boolean@3.2.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:48.6484260Z npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.0418560Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.0423470Z added 284 packages in 7s
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1775180Z ##[group]Run node scripts/prepare-resources.mjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1775530Z ^[[36;1mnode scripts/prepare-resources.mjs^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1829010Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1829270Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1829520Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1829730Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1829920Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.1830100Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.2551440Z Synced desktop version 0.153.0 -> 0.206.0 (from Cargo.toml)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5474480Z Prepared desktop binary: /Users/runner/work/formal-ai/formal-ai/desktop/bin/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5476160Z Prepared desktop web resources: /Users/runner/work/formal-ai/formal-ai/desktop/dist-web
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5563560Z ##[group]Run set -euo pipefail
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5564120Z ^[[36;1mset -euo pipefail^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5564320Z ^[[36;1mmissing=()^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5564680Z ^[[36;1mfor name in MAC_CSC_LINK MAC_CSC_KEY_PASSWORD APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER; do^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5565160Z ^[[36;1m  if [ -z "${!name}" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5565380Z ^[[36;1m    missing+=("$name")^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5565570Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5565720Z ^[[36;1mdone^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5565870Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5566030Z ^[[36;1mif [ "${#missing[@]}" -gt 0 ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5566310Z ^[[36;1m  echo "has_secrets=false" >> "$GITHUB_OUTPUT"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5566590Z ^[[36;1m  echo "mode=adhoc" >> "$GITHUB_OUTPUT"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5566970Z ^[[36;1m  echo "::warning::Missing required macOS signing/notarization secrets: ${missing[*]}"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5567610Z ^[[36;1m  echo "Building ad-hoc signed macOS artifacts without notarization for direct testing."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5568000Z ^[[36;1melse^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5568200Z ^[[36;1m  echo "has_secrets=true" >> "$GITHUB_OUTPUT"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5568470Z ^[[36;1m  echo "mode=signed" >> "$GITHUB_OUTPUT"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5568710Z ^[[36;1mfi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5634100Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5634490Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5634750Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5635050Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5635290Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5635570Z   MAC_CSC_LINK: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5635810Z   MAC_CSC_KEY_PASSWORD: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5636080Z   APPLE_API_KEY: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5636310Z   APPLE_API_KEY_ID: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5636510Z   APPLE_API_ISSUER: 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.5636690Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6146890Z ##[warning]Missing required macOS signing/notarization secrets: MAC_CSC_LINK MAC_CSC_KEY_PASSWORD APPLE_API_KEY APPLE_API_KEY_ID APPLE_API_ISSUER
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6154620Z Building ad-hoc signed macOS artifacts without notarization for direct testing.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6250970Z ##[group]Run npx --no-install electron-builder --mac --publish never -c.mac.notarize=false -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6251880Z ^[[36;1mnpx --no-install electron-builder --mac --publish never -c.mac.notarize=false -c.mac.sign=./scripts/adhoc-sign-mac.cjs^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6307880Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6308210Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6308420Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6308680Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6309010Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6309280Z   CSC_IDENTITY_AUTO_DISCOVERY: false
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6309640Z   MACOS_ADHOC_SIGN: 1
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6309920Z   DEBUG: electron-builder,electron-osx-sign*
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:50.6310190Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2207780Z   • electron-builder  version=26.15.3 os=23.6.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2308280Z   • loaded configuration  file=package.json ("build" field)
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2410120Z   • effective config  config=directories:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2510150Z   output: release
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2612240Z   buildResources: build
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2713210Z appId: ai.formal.desktop
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2815770Z productName: formal-ai Desktop
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.2916980Z asar: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3018400Z files:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3149170Z   - filter:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3250050Z       - main.cjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3351120Z       - preload.cjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3452170Z       - lib/**
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3552840Z       - package.json
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3652980Z       - dist-web/**
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3753880Z extraResources:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3855090Z   - from: bin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.3956130Z     to: bin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4055950Z     filter:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4157070Z       - '**/*'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4257560Z linux:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4358340Z   target:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4459380Z     - AppImage
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4560060Z     - deb
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4662910Z     - tar.gz
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4761900Z   category: Utility
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4863240Z   maintainer: link-assistant <link-assistant@users.noreply.github.com>
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.4963860Z   artifactName: formal-ai-desktop-linux-${arch}-${version}.${ext}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5065130Z mac:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5165710Z   target:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5295990Z     - dmg
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5417040Z     - zip
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5518390Z   category: public.app-category.productivity
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5618620Z   artifactName: formal-ai-desktop-macos-${arch}-${version}.${ext}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5720020Z   hardenedRuntime: true
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5820540Z   notarize: 'false'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.5921340Z   entitlements: build/entitlements.mac.plist
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6021980Z   entitlementsInherit: build/entitlements.mac.plist
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6141200Z   sign: ./scripts/adhoc-sign-mac.cjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6242810Z win:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6344760Z   target:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6447020Z     - nsis
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6548100Z     - portable
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6581540Z nsis:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6603810Z   artifactName: formal-ai-desktop-windows-installer-${arch}-${version}.${ext}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6617400Z portable:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6618220Z   artifactName: formal-ai-desktop-windows-portable-${arch}-${version}.${ext}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6622020Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.6624800Z   • spawning        command=npm prefix -w cwd=/Users/runner/work/formal-ai/formal-ai/desktop
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.7612560Z   • exited          command=npm code=1 pid=20598
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.7659050Z   • no event listeners found  event=beforePack
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.7661720Z   • executing @electron/rebuild  electronVersion=42.4.0 arch=arm64 buildFromSource=false workspaceRoot=/Users/runner/work/formal-ai/formal-ai/desktop projectDir=./ appDir=./
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.7662630Z   • installing native dependencies  arch=arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.8563080Z   • completed installing native dependencies
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.8576990Z   • packaging       platform=darwin arch=arm64 electron=42.4.0 appOutDir=release/mac-arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.8577850Z   • no custom electronDist provided, unpacking default Electron distribution
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:51.9466910Z   • downloaded      label=electron progress=100%
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.3304870Z   • downloaded electron zip extracted successfully  output=/Users/runner/work/formal-ai/formal-ai/desktop/release/mac-arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.3306080Z   • no event listeners found  event=afterExtract
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.3454410Z   • searching for node modules  pm=npm searchDir=/Users/runner/work/formal-ai/formal-ai/desktop
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.6118580Z   • node modules collection complete  packageName=formal-ai-desktop depCount=0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.6218850Z   • searching for node modules  pm=traversal searchDir=/Users/runner/work/formal-ai/formal-ai/desktop
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.6320440Z   • using manual traversal of node_modules to build dependency tree
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.6371490Z   • node modules collection complete  packageName=formal-ai-desktop depCount=0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.6372620Z   • no node modules returned while searching directories  searchDirectories=[""]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.7072750Z   • default Electron icon is used  reason=application icon is not set
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.7142710Z   • copying files using pattern  matcher=from: /Users/runner/work/formal-ai/formal-ai/desktop/bin, to: /Users/runner/work/formal-ai/formal-ai/desktop/release/mac-arm64/formal-ai Desktop.app/Contents/Resources/bin, patterns: **/*
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.7144990Z   • copying         src=/Users/runner/work/formal-ai/formal-ai/desktop/bin destination=/Users/runner/work/formal-ai/formal-ai/desktop/release/mac-arm64/formal-ai Desktop.app/Contents/Resources/bin
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8502230Z   • getPublishConfigsForUpdateInfo: no publishConfigs, detect using repository info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8528580Z   • no event listeners found  event=afterSign
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8530120Z   • building        target=macOS zip arch=arm64 file=release/formal-ai-desktop-macos-arm64-0.206.0.zip
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8532180Z   • no event listeners found  event=artifactBuildStarted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8533300Z   • building        target=DMG arch=arm64 file=release/formal-ai-desktop-macos-arm64-0.206.0.dmg
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8533900Z   • no event listeners found  event=artifactBuildStarted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8543620Z   • executing       file=sips args=-g pixelHeight -g pixelWidth /Users/runner/work/formal-ai/formal-ai/desktop/node_modules/dmg-builder/templates/background.tiff
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8604300Z   • executing       file=zip args=-q -r -y -7 /Users/runner/work/formal-ai/formal-ai/desktop/release/formal-ai-desktop-macos-arm64-0.206.0.zip formal-ai Desktop.app cwd=/Users/runner/work/formal-ai/formal-ai/desktop/release/mac-arm64
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8852950Z   • executed        file=sips stdout=/Users/runner/work/formal-ai/formal-ai/desktop/node_modules/dmg-builder/templates/background.tiff
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8854520Z   pixelHeight: 380
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8855210Z   pixelWidth: 540
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8855490Z 
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:54.8907870Z   • downloading     file=dmgbuild-bundle-arm64-75c8a6c.tar.gz
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:55.0522830Z   • downloaded      label=dmgbuild-bundle-arm64-75c8a6c.tar.gz progress=100%
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:56.1662870Z   • executing       file=/Users/runner/Library/Caches/electron-builder/dmg-builder@1.2.5/dmgbuild-bundle-arm64-75c8a6c-9epj3/dmgbuild args=-s /private/var/folders/dq/2t71w9pd3jx50vh3kp15_dt40000gn/T/t-F0uC5B/1.json formal-ai Desktop 0.206.0-arm64 /Users/runner/work/formal-ai/formal-ai/desktop/release/formal-ai-desktop-macos-arm64-0.206.0.dmg env={
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:56.1664260Z   "PYTHONIOENCODING": "utf8"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:10:56.1674720Z }
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:21.3216300Z   • building block map  blockMapFile=release/formal-ai-desktop-macos-arm64-0.206.0.zip.blockmap
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:22.0843930Z   • executed        file=/Users/runner/Library/Caches/electron-builder/dmg-builder@1.2.5/dmgbuild-bundle-arm64-75c8a6c-9epj3/dmgbuild
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:22.0936540Z   • building block map  blockMapFile=release/formal-ai-desktop-macos-arm64-0.206.0.dmg.blockmap
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:33.7950170Z   • no event listeners found  event=artifactBuildCompleted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:33.7952230Z   • no event listeners found  event=artifactBuildCompleted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:33.7953530Z   • getPublishConfigsForUpdateInfo: no publishConfigs, detect using repository info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6162320Z   • no event listeners found  event=artifactBuildCompleted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6163470Z   • no event listeners found  event=artifactBuildCompleted
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6164350Z   • getPublishConfigsForUpdateInfo: no publishConfigs, detect using repository info
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6477180Z ##[group]Run node scripts/normalize-artifacts.mjs
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6477760Z ^[[36;1mnode scripts/normalize-artifacts.mjs^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6603920Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6604510Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6604740Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6605050Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6605300Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.6605600Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7357490Z No desktop artifact names required normalization in /Users/runner/work/formal-ai/formal-ai/desktop/release
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7413430Z ##[group]Run set -euo pipefail
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7413860Z ^[[36;1mset -euo pipefail^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7414160Z ^[[36;1mshopt -s nullglob^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7414380Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7414710Z ^[[36;1mVERSION="$(node -p "require('./package.json').version")"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7415050Z ^[[36;1mcase "macos-arm64" in^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7415380Z ^[[36;1m  macos-x64) ARCH="x64" ;;^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7415640Z ^[[36;1m  macos-arm64) ARCH="arm64" ;;^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7415940Z ^[[36;1m  *)^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7416270Z ^[[36;1m    echo "::error::Unexpected macOS matrix label: macos-arm64"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7416680Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7416950Z ^[[36;1m    ;;^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7417150Z ^[[36;1mesac^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7417400Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7417600Z ^[[36;1mrequired_macos_artifacts=(^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7418040Z ^[[36;1m  "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7418620Z ^[[36;1m  "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.zip"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7419000Z ^[[36;1m)^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7419270Z ^[[36;1mfor artifact in "${required_macos_artifacts[@]}"; do^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7419710Z ^[[36;1m  if [ ! -f "$artifact" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7420150Z ^[[36;1m    echo "::error file=$artifact::Expected versioned macOS release artifact was not created."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7420690Z ^[[36;1m    ls -la release || true^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7420960Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7421230Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7421450Z ^[[36;1mdone^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7421750Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7422130Z ^[[36;1mfor dmg in "release/formal-ai-desktop-macos-${ARCH}-${VERSION}.dmg"; do^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7422540Z ^[[36;1m  echo "Mounting DMG: $dmg"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7422850Z ^[[36;1m  mount_dir="$(mktemp -d)"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7423160Z ^[[36;1m  installed_app="$RUNNER_TEMP/formal-ai Desktop.app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7423570Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7423960Z ^[[36;1m  hdiutil attach "$dmg" -mountpoint "$mount_dir" -nobrowse -readonly^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7424380Z ^[[36;1m  mounted_app="$mount_dir/formal-ai Desktop.app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7424720Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7424930Z ^[[36;1m  if [ ! -d "$mounted_app" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7425370Z ^[[36;1m    echo "::error file=$dmg::Mounted DMG does not contain formal-ai Desktop.app."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7425790Z ^[[36;1m    find "$mount_dir" -maxdepth 2 -print^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7426150Z ^[[36;1m    hdiutil detach "$mount_dir"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7426470Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7426700Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7426940Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7427180Z ^[[36;1m  rm -rf "$installed_app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7427530Z ^[[36;1m  ditto "$mounted_app" "$installed_app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7427840Z ^[[36;1m  hdiutil detach "$mount_dir"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7428160Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7428390Z ^[[36;1m  app_info="$installed_app/Contents/Info.plist"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7428950Z ^[[36;1m  executable="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$app_info")"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7429530Z ^[[36;1m  bundle_id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app_info")"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7430030Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7430280Z ^[[36;1m  if [ "$bundle_id" != "ai.formal.desktop" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7430740Z ^[[36;1m    echo "::error file=$dmg::Unexpected macOS app bundle identifier: $bundle_id"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7431160Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7431540Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7431810Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7432070Z ^[[36;1m  if [ ! -x "$installed_app/Contents/MacOS/$executable" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7432580Z ^[[36;1m    echo "::error file=$dmg::Mounted app executable is missing or not executable."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7433260Z ^[[36;1m    find "$installed_app/Contents" -maxdepth 3 -print^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7433660Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7433970Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7434160Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7434590Z ^[[36;1m  if [ ! -f "$installed_app/Contents/_CodeSignature/CodeResources" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7435080Z ^[[36;1m    echo "::error file=$dmg::Mounted app is missing its signed CodeResources envelope."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7435660Z ^[[36;1m    find "$installed_app/Contents/_CodeSignature" -maxdepth 1 -print 2>/dev/null || true^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7436060Z ^[[36;1m    exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7436320Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7436510Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7436880Z ^[[36;1m  codesign --verify --deep --strict --verbose=2 "$installed_app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7437210Z ^[[36;1m^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7437490Z ^[[36;1m  if [ "$MACOS_BUILD_MODE" = "signed" ]; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7437850Z ^[[36;1m    spctl --assess --type execute --verbose=4 "$installed_app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7438400Z ^[[36;1m    xcrun stapler validate "$installed_app"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7438750Z ^[[36;1m  else^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7439160Z ^[[36;1m    codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7439770Z ^[[36;1m    if ! grep -Fq 'Signature=adhoc' "$RUNNER_TEMP/formal-ai-macos-codesign.txt"; then^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7440310Z ^[[36;1m      echo "::error file=$dmg::Expected ad-hoc macOS signature for no-Apple-account build."^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7440750Z ^[[36;1m      exit 1^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7440990Z ^[[36;1m    fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7441240Z ^[[36;1m  fi^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7441440Z ^[[36;1mdone^[[0m
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7493130Z shell: /bin/bash --noprofile --norc -e -o pipefail {0}
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7493520Z env:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7493740Z   CARGO_HOME: /Users/runner/.cargo
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7494040Z   CARGO_INCREMENTAL: 0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7494220Z   CARGO_TERM_COLOR: always
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7494420Z   MACOS_BUILD_MODE: adhoc
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.7494590Z ##[endgroup]
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:34.8268020Z Mounting DMG: release/formal-ai-desktop-macos-arm64-0.206.0.dmg
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:35.0809020Z Checksumming Protective Master Boot Record (MBR : 0)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0031270Z Protective Master Boot Record (MBR :: verified   CRC32 $673ADF6D
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0119610Z Checksumming GPT Header (Primary GPT Header : 1)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0149550Z  GPT Header (Primary GPT Header : 1): verified   CRC32 $73ED7518
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0177700Z Checksumming GPT Partition Data (Primary GPT Table : 2)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0178380Z GPT Partition Data (Primary GPT Tabl: verified   CRC32 $C8A39852
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:36.0178880Z Checksumming  (Apple_Free : 3)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.0107550Z                     (Apple_Free : 3): verified   CRC32 $00000000
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.0108210Z Checksumming disk image (Apple_HFS : 4)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7305200Z           disk image (Apple_HFS : 4): verified   CRC32 $7295E354
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7306100Z Checksumming  (Apple_Free : 5)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7308190Z                     (Apple_Free : 5): verified   CRC32 $00000000
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7309060Z Checksumming GPT Partition Data (Backup GPT Table : 6)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7312200Z GPT Partition Data (Backup GPT Table: verified   CRC32 $C8A39852
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7312960Z Checksumming GPT Header (Backup GPT Header : 7)…
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7316340Z   GPT Header (Backup GPT Header : 7): verified   CRC32 $8F457339
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7323710Z verified   CRC32 $3948153E
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7837480Z /dev/disk4          	GUID_partition_scheme          	
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:37.7904950Z /dev/disk4s1        	Apple_HFS                      	/private/var/folders/dq/2t71w9pd3jx50vh3kp15_dt40000gn/T/tmp.OtnTHmedQ6
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.2385890Z "disk4" ejected.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.2758700Z ##[error]Mounted app is missing its signed CodeResources envelope.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.2802980Z ##[error]Process completed with exit code 1.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.2911960Z Post job cleanup.
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7413080Z [command]/opt/homebrew/bin/git version
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7588500Z git version 2.54.0
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7612510Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/34df5491-9751-41b2-9fd0-949da9172b38/.gitconfig'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7620390Z Temporarily overriding HOME='/Users/runner/work/_temp/34df5491-9751-41b2-9fd0-949da9172b38' before making global git config changes
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7621240Z Adding repository directory to the temporary git global config as a safe directory
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7623670Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/formal-ai/formal-ai
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7711140Z Removing SSH command configuration
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7717030Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.7766220Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.8416360Z Removing HTTP extra header
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.8420490Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.8467460Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9079600Z Removing includeIf entries pointing to credentials config files
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9085600Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9126460Z includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9127250Z includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9127840Z includeif.gitdir:/github/workspace/.git.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9128330Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9132630Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9172930Z /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9181610Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git.path /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9237480Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git/worktrees/*.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9277890Z /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9284740Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/Users/runner/work/formal-ai/formal-ai/.git/worktrees/*.path /Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9329280Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9364090Z /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9369230Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9411900Z [command]/opt/homebrew/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9446900Z /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9452440Z [command]/opt/homebrew/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:39.9498460Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:40.0011560Z Removing credentials config '/Users/runner/work/_temp/git-credentials-ab9dd4ae-e760-4f05-a6c1-ed551aaee8dd.config'
+Build macos-arm64	UNKNOWN STEP	2026-06-16T07:11:40.0113410Z Cleaning up orphan processes

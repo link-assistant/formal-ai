@@ -3,7 +3,10 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('formal-ai connectivity diagnostics', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('./tests/');
+    // The connectivity harness is a sibling of the app under /tests/; with the
+    // app now served from /app/ (issue #479) a relative ../tests/ reaches it on
+    // both the local server and the Pages path prefix.
+    await page.goto('../tests/');
     await expect(page.locator('[data-testid="connectivity-dashboard"]')).toBeVisible({
       timeout: 15_000,
     });

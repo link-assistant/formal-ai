@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!--
+      The interactive web app lives at /app/ (issue #479: landing page at /, the
+      app at /app, documentation at /docs, downloads at /download). Every one of
+      the app's assets — styles.css, app.js, the Web Worker, the /seed/ tree — is
+      kept at the site root so a single build output is shared by every page.
+      This relative <base> retargets every relative URL in this document (and the
+      Worker spawned from it) back to the site root, so moving the app under
+      /app/ needs no asset edits and stays correct both under GitHub Pages'
+      "/formal-ai/" path prefix and the desktop app's http://localhost static
+      server. It MUST precede the first relative URL (the stylesheet) below.
+    -->
+    <base href="../" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="formal-ai-version" content="__FORMAL_AI_VERSION__" />
+    <title>formal-ai</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css?v=__FORMAL_AI_ASSET_VERSION__" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="vendor.bundle.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script>
+      window.FORMAL_AI_ASSET_VERSION = "__FORMAL_AI_ASSET_VERSION__";
+    </script>
+    <script src="seed_loader.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="i18n.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="syntax-highlight.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="memory.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="app.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+  </body>
+</html>
