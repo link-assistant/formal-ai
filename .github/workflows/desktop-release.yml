@@ -193,14 +193,26 @@ jobs:
           DEBUG: electron-builder,electron-notarize*
         run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never
 
+      # Issue #479: electron-builder 26 changed macOS signing control flow. Its
+      # MacPackager.sign() now calls findSigningIdentity(), which returns null --
+      # skipping signing entirely and NEVER invoking the custom `mac.sign` hook --
+      # unless a real identity is found OR `mac.identity` is exactly "-" (ad-hoc).
+      # See packages/app-builder-lib/src/targets/mac/MacTargetHelper.ts: only the
+      # `qualifier === "-"` branch yields an Identity when no certificate exists.
+      # Without `-c.mac.identity=-` the produced .app had no _CodeSignature, so the
+      # pre-upload smoke test failed with "missing its signed CodeResources
+      # envelope" and macOS assets were never published. Passing identity="-" makes
+      # electron-builder reach doSign(), which runs our ad-hoc hook (deep ad-hoc
+      # sign via @electron/osx-sign + an explicit root-bundle re-seal).
       - name: Package desktop app (macOS ad-hoc)
         if: matrix.ebflag == '--mac' && steps.mac_secrets.outputs.has_secrets != 'true'
         working-directory: desktop
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
           MACOS_ADHOC_SIGN: "1"
+          FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
-        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.sign=./scripts/adhoc-sign-mac.cjs
+        run: npx --no-install electron-builder ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
 
       - name: Normalize desktop artifact names
         working-directory: desktop

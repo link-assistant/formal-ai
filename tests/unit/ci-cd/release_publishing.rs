@@ -620,6 +620,12 @@ fn desktop_release_workflow_signs_and_smoke_tests_macos_artifacts() {
         "MACOS_ADHOC_SIGN: \"1\"",
         "DEBUG: electron-builder,electron-osx-sign*",
         "-c.mac.notarize=false",
+        // Issue #479: electron-builder 26 only reaches the custom `mac.sign`
+        // hook when an identity resolves. With no Apple certificate the sole
+        // surviving branch is the ad-hoc `mac.identity == "-"` qualifier, so the
+        // flag is mandatory -- without it signing is skipped and the produced
+        // .app ships with no _CodeSignature/CodeResources envelope.
+        "-c.mac.identity=-",
         "-c.mac.sign=./scripts/adhoc-sign-mac.cjs",
     ] {
         assert!(
