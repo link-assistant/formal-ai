@@ -21,3 +21,11 @@ bump: minor
 - Toolbar/drawer mode controls expose `data-testid="mode-radio"` /
   `mode-option-<mode>` and a `mode-status` label; existing e2e specs were
   updated from the old `agent-toggle` selector accordingly.
+- The terminal-command response prose is no longer hardcoded in either engine.
+  The four-language bodies now live in `data/seed/multilingual-responses.lino`
+  under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
+  mode on) intents, with a `{command}` placeholder. Both `src/solver_terminal.rs`
+  (via `seed::response_for`) and the JS worker (via `answerFor`) look the
+  template up and fill in the detected command, so the natural-language wording
+  is sourced from seed data rather than living in code (addresses #513 review
+  feedback).

@@ -15,6 +15,7 @@
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::Language;
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
 
 /// Phrases that explicitly mention a terminal/shell/console context. These are
@@ -160,40 +161,17 @@ fn detect_terminal_command(prompt: &str) -> Option<String> {
 }
 
 /// Build the localized response body for a detected terminal command.
+///
+/// The natural-language prose lives in `data/seed/multilingual-responses.lino`
+/// under the `agent_suggestion` intent (with a `{command}` placeholder), so this
+/// function only looks the template up via [`seed::response_for`] and fills in
+/// the detected command — no per-language wording is hardcoded here.
+#[allow(clippy::literal_string_with_formatting_args)]
 fn terminal_body(command: &str, language: Language) -> String {
-    match language {
-        Language::Russian => format!(
-            "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\n\
-             Чтобы выполнять команды оболочки, нужен режим агента (Agent). \
-             В режиме чата (Chat) я только рассуждаю и не запускаю команды.\n\n\
-             Включить режим агента и выдать доступ к оболочке (shell), чтобы я мог \
-             выполнить `{command}`? Переключите режим на «Agent» на панели инструментов \
-             (или «Full Auto» для автоматического выполнения)."
-        ),
-        Language::Hindi => format!(
-            "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\n\
-             शेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में \
-             मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\n\
-             एजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` \
-             चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें (या स्वचालित निष्पादन \
-             के लिए \"Full Auto\")।"
-        ),
-        Language::Chinese => format!(
-            "看起来您想在终端中运行一个命令：`{command}`。\n\n\
-             运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，\
-             我只会分析您的请求，而不会执行命令。\n\n\
-             切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？\
-             请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
-        ),
-        _ => format!(
-            "It looks like you want to run a terminal command: `{command}`.\n\n\
-             Running shell commands requires Agent mode. In Chat mode I only reason \
-             about your request and do not execute commands.\n\n\
-             Switch to Agent mode and grant the `shell` capability so I can run \
-             `{command}`? Use the mode radio in the toolbar to pick \"Agent\" \
-             (or \"Full Auto\" to run commands automatically)."
-        ),
-    }
+    let template = seed::response_for("agent_suggestion", language.slug())
+        .or_else(|| seed::response_for("agent_suggestion", "en"))
+        .unwrap_or_default();
+    template.replace("{command}", command)
 }
 
 /// Try to recognize a terminal-command request. Returns `Some` with an

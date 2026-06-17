@@ -10871,73 +10871,16 @@ function detectTerminalCommand(prompt) {
   return null;
 }
 
+// The natural-language prose lives in data/seed/multilingual-responses.lino
+// under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
+// mode on) intents, with a `{command}` placeholder. This mirror only looks the
+// template up via answerFor() and fills in the detected command, so no
+// per-language wording is hardcoded in the worker. Parity with the Rust solver
+// (src/solver_terminal.rs, terminal_body) is kept by both engines reading the
+// same seed intent.
 function terminalCommandBody(command, language, agentModeOn) {
-  if (language === "ru") {
-    if (agentModeOn) {
-      return (
-        `Похоже, вы просите выполнить команду в терминале: \`${command}\`.\n\n` +
-        "Режим агента включён. Если доступ к оболочке (shell) выдан, я могу " +
-        `выполнить \`${command}\`. Иначе выдайте доступ к \`shell\` в настройках.`
-      );
-    }
-    return (
-      `Похоже, вы просите выполнить команду в терминале: \`${command}\`.\n\n` +
-      "Чтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме " +
-      "чата (Chat) я только рассуждаю и не запускаю команды.\n\n" +
-      "Включить режим агента и выдать доступ к оболочке (shell), чтобы я мог " +
-      `выполнить \`${command}\`? Переключите режим на «Agent» на панели инструментов ` +
-      "(или «Full Auto» для автоматического выполнения)."
-    );
-  }
-  if (language === "hi") {
-    if (agentModeOn) {
-      return (
-        `ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: \`${command}\`।\n\n` +
-        "एजेंट मोड चालू है। यदि `shell` क्षमता प्रदान की गई है तो मैं " +
-        `\`${command}\` चला सकता हूँ। अन्यथा सेटिंग्स में \`shell\` क्षमता प्रदान करें।`
-      );
-    }
-    return (
-      `ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: \`${command}\`।\n\n` +
-      "शेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं " +
-      "केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\n" +
-      "एजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं " +
-      `\`${command}\` चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें ` +
-      "(या स्वचालित निष्पादन के लिए \"Full Auto\")।"
-    );
-  }
-  if (language === "zh") {
-    if (agentModeOn) {
-      return (
-        `看起来您想在终端中运行一个命令：\`${command}\`。\n\n` +
-        "智能体模式已开启。如果已授予 `shell` 权限，我就可以运行 " +
-        `\`${command}\`。否则请在设置中授予 \`shell\` 权限。`
-      );
-    }
-    return (
-      `看起来您想在终端中运行一个命令：\`${command}\`。\n\n` +
-      "运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会" +
-      "分析您的请求，而不会执行命令。\n\n" +
-      "切换到智能体模式并授予 `shell` 权限，以便我运行 " +
-      `\`${command}\`？请在工具栏的模式单选框中选择 \"Agent\"` +
-      "（或选择 \"Full Auto\" 自动运行命令）。"
-    );
-  }
-  if (agentModeOn) {
-    return (
-      `It looks like you want to run a terminal command: \`${command}\`.\n\n` +
-      "Agent mode is on. If the `shell` capability is granted I can run " +
-      `\`${command}\`. Otherwise grant the \`shell\` capability in settings.`
-    );
-  }
-  return (
-    `It looks like you want to run a terminal command: \`${command}\`.\n\n` +
-    "Running shell commands requires Agent mode. In Chat mode I only reason " +
-    "about your request and do not execute commands.\n\n" +
-    "Switch to Agent mode and grant the `shell` capability so I can run " +
-    `\`${command}\`? Use the mode radio in the toolbar to pick \"Agent\" ` +
-    "(or \"Full Auto\" to run commands automatically)."
-  );
+  const intent = agentModeOn ? "agent_suggestion_active" : "agent_suggestion";
+  return answerFor(intent, language).split("{command}").join(command);
 }
 
 function tryTerminalCommand(prompt, language, preferences) {
