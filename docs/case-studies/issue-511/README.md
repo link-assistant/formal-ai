@@ -4,7 +4,7 @@
 > **Pull request (this work):** <https://github.com/link-assistant/formal-ai/pull/512> (branch `issue-511-26d6b8408464`)
 > **Case study date:** 2026-06-17
 > **Type:** Feature request + deep case study, requirements decomposition, and a sequenced implementation plan.
-> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream feedback (see §6/§R16) — the original Agent-CLI gap [`agent#271`](https://github.com/link-assistant/agent/issues/271) is now **resolved** (PR [`agent#272`](https://github.com/link-assistant/agent/pull/272), **v0.24.0**, native permission system), and two follow-up gaps were filed against `agent-commander` so it can expose that capability: [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39) and [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
+> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream feedback (see §6/§R16) — the original Agent-CLI gap [`agent#271`](https://github.com/link-assistant/agent/issues/271) is **resolved** (PR [`agent#272`](https://github.com/link-assistant/agent/pull/272), **v0.24.0**, native permission system), and the two follow-up gaps filed against `agent-commander` are now **both closed**: [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39) (read-only mapping, js_0.7.0 / rust_0.2.5) and [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40) (per-command approve-each relay, js_0.8.0 / rust_0.2.6). **Re-verified 2026-06-17 against the latest versions (`agent` v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): the plan is fully implementable today, with `@link-assistant/agent` as the default backend** (the only org-owned CLI and the only one whose approve-each relay grants a clean session-wide `once`/`always`/`reject`; `claude` is the supported fallback). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/).
 
@@ -17,7 +17,8 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | Online research (the three named repos + upstream standards) | [`raw-data/online-research.md`](raw-data/online-research.md) |
 | `link-assistant/agent` README snapshot (v0.24.0) | [`raw-data/external-agent-README.md`](raw-data/external-agent-README.md) |
 | `link-assistant/agent` permission-system doc snapshot (v0.24.0) | [`raw-data/external-agent-permissions.md`](raw-data/external-agent-permissions.md) |
-| `link-assistant/agent-commander` README snapshot (v0.6.2) | [`raw-data/external-agent-commander-README.md`](raw-data/external-agent-commander-README.md) |
+| `link-assistant/agent-commander` README snapshot (js_0.8.0) | [`raw-data/external-agent-commander-README.md`](raw-data/external-agent-commander-README.md) |
+| `link-assistant/agent-commander` per-command approval parity (`common-concepts.md`, js_0.8.0) | [`raw-data/external-agent-commander-common-concepts.md`](raw-data/external-agent-commander-common-concepts.md) |
 | `link-assistant/hive-mind` README snapshot | [`raw-data/external-hive-mind-README.md`](raw-data/external-hive-mind-README.md) |
 | PR #512 metadata | [`raw-data/pr-512.json`](raw-data/pr-512.json) |
 | **Full requirement inventory (R1–R20)** | [`requirements.md`](requirements.md) |
@@ -155,18 +156,22 @@ shipped infrastructure, not a green-field build.
 | Agent/Chat toggle + command (`agent mode`/`chat mode`) | ✅ | `app.js:482`, `app.js:7054` | Binary only; no `full auto`; not a radio group |
 | Agent-mode → grant sync to desktop bridge | ✅ | `app.js:3776` (`syncDesktopToolGrants`) | All-or-nothing; no per-command approve/deny prompts |
 | Chat-side "agent plan" decomposition | ✅ | `app.js:2099` `decomposeAgentTask`, `app.js:6424` `runAgentPlan` | Splits NL steps; does not execute real tools or render CLI output |
-| Multi-CLI control + read-only/plan enforcement + NDJSON | ✅ (external) | `link-assistant/agent-commander` v0.6.2 | Not a dependency yet; no bridge in `desktop/`; `agent` read-only not yet mapped + no per-command relay → [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39), [#40](https://github.com/link-assistant/agent-commander/issues/40) |
+| Multi-CLI control + read-only/plan enforcement + NDJSON + per-command approve-each | ✅ (external) | `link-assistant/agent-commander` js_0.8.0 / rust_0.2.6 | Not a desktop dependency yet; no bridge in `desktop/`. `agent` read-only mapping ([#39](https://github.com/link-assistant/agent-commander/issues/39)) **and** uniform `--approve-each` relay ([#40](https://github.com/link-assistant/agent-commander/issues/40)) are now **shipped** (approve-each: `agent` + `claude`) |
 | Thin autonomous coding CLI + **native permission system** | ✅ (external) | `link-assistant/agent` v0.24.0 (`--permission-mode auto/plan/readonly/ask`, JSON per-command approval) | Not installed/managed by the desktop app |
 
 See [`raw-data/online-research.md`](raw-data/online-research.md) for the external-repo
-facts. **Re-verified 2026-06-17 (PR #512 feedback):** the Agent CLI **v0.24.0** now
-ships a *native, enforceable* permission system (read-only shell allowlist incl.
-`ls`/`pwd`/`cat`, and a `permission_request`/`permission_response` JSON protocol) — so
-the per-command approval the issue needs is available natively; the remaining gap is
-that `agent-commander` v0.6.2 has not yet exposed it (filed:
-[#39](https://github.com/link-assistant/agent-commander/issues/39),
-[#40](https://github.com/link-assistant/agent-commander/issues/40)). Isolation in the
-Docker container remains required (the CLI's default is still full-auto).
+facts. **Re-verified 2026-06-17 (PR #512 feedback):** the Agent CLI **v0.24.0** ships a
+*native, enforceable* permission system (read-only shell allowlist incl.
+`ls`/`pwd`/`cat`, and a `permission_request`/`permission_response` JSON protocol), and
+`agent-commander` **js_0.8.0 / rust_0.2.6** now exposes it end-to-end: the `agent`
+read-only mapping ([#39](https://github.com/link-assistant/agent-commander/issues/39),
+js_0.7.0 / rust_0.2.5) and the uniform `--approve-each` / `--permission-mode ask` relay
+([#40](https://github.com/link-assistant/agent-commander/issues/40), js_0.8.0 /
+rust_0.2.6) are both **closed/shipped**. Per-command approve-each relays for `agent`
+(scope `session`) and `claude` (scope `tool-input`); `codex`/`gemini`/`qwen`/`opencode`
+cannot relay headless approvals upstream (documented limitation, not a bug), which is
+why the desktop app defaults to **`@link-assistant/agent`**. Isolation in the Docker
+container remains required (the CLI's default is still full-auto).
 
 ---
 
@@ -208,10 +213,14 @@ The design that minimizes new surface area and respects the project's constraint
    directly fixes the screenshot: a terminal request stops landing in `unknown`.
 3. **Real execution through a thin, swappable provider.** Add a desktop "agent
    provider" abstraction with two implementations: the **in-process** loop
-   (`src/agentic_coding/`, default, offline, deterministic — keeps tests hermetic)
-   and an **agent-commander** provider that drives `link-assistant/agent` against the
-   auto-started local OpenAI-compatible server, **inside the Formal-AI Docker
-   container**, with per-tool read-only/plan flags mapped from the user's grants.
+   (`src/agentic_coding/`, default for hermetic CI, offline, deterministic) and an
+   **agent-commander** provider that drives **`link-assistant/agent` (the default
+   backend)** against the auto-started local OpenAI-compatible server, **inside the
+   Formal-AI Docker container**, with per-tool read-only/plan flags mapped from the
+   user's grants and `agent` mode mapped to `--approve-each` (alias
+   `--permission-mode ask`). `agent` is the default because it is the only org-owned
+   CLI and the only backend whose approve-each relay carries a clean session-wide
+   `once`/`always`/`reject` grant; `claude` is a supported fallback.
 4. **Container, not host.** Ship a Formal-AI dev container (extending the existing
    `konard/box-dind` sandbox) that bundles `agent` + `agent-commander`; the desktop
    app offers a one-click install/health-check. The container is the *only* place
@@ -243,17 +252,21 @@ Each of these maps to a milestone in [`proposed-issues.md`](proposed-issues.md).
   CLI provider is exercised by integration/e2e tests that can opt into the container.
 - **Report upstream gaps.** Missing capabilities are filed upstream, not worked around
   silently. The original *"not enforceable"* read-only mode for the `agent` tool was
-  filed at [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is now
+  filed at [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is
   **resolved** by [`agent#272`](https://github.com/link-assistant/agent/pull/272)
-  (**v0.24.0** — native permission system). Re-verifying the latest versions surfaced
-  that `agent-commander` v0.6.2 has not yet exposed agent's new capability, so two
-  follow-ups were filed:
+  (**v0.24.0** — native permission system). The two follow-ups filed last round against
+  `agent-commander` are now **both closed**:
   [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
-  (map `--read-only` for `agent`) and
+  (map `--read-only` for `agent`, shipped js_0.7.0 / rust_0.2.5) and
   [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
-  (uniform per-command approval relay). The per-tool enforcement for the other CLIs was
-  already shipped in
+  (uniform `--approve-each` per-command approval relay, shipped js_0.8.0 / rust_0.2.6).
+  No open `agent-commander` issues remain. The per-tool enforcement for the other CLIs
+  was already shipped in
   [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20).
+  The one remaining limitation — approve-each relays only for `agent`/`claude` because
+  `codex`/`gemini`/`qwen` expose no headless approval handshake — is a documented
+  upstream-CLI constraint (correctly rejected up front by agent-commander), tracked in
+  E8 to re-file upstream if a CLI later adds one.
 
 ---
 
@@ -282,7 +295,8 @@ each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream
 feedback — [`agent#271`](https://github.com/link-assistant/agent/issues/271) resolved
 by [`agent#272`](https://github.com/link-assistant/agent/pull/272) (v0.24.0) and the
 two follow-up gaps [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
-/ [`#40`](https://github.com/link-assistant/agent-commander/issues/40) — so
+/ [`#40`](https://github.com/link-assistant/agent-commander/issues/40) now **both
+closed** (js_0.8.0 / rust_0.2.6) — so
 each milestone can ship and be verified on its own. The first implementation
 milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513): the
 in-process terminal-command handler + three-way mode radio + onboarding message) is

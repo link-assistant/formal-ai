@@ -1,4 +1,4 @@
-<!-- Snapshot of link-assistant/agent-commander README.md (v0.6.2) as of 2026-06-17 (issue #511 case study). Source of truth is the upstream repo; this copy keeps the analysis reproducible offline. -->
+<!-- Snapshot of link-assistant/agent-commander README.md (js_0.8.0 / rust_0.2.6) as of 2026-06-17 (issue #511 case study). Source of truth is the upstream repo; this copy keeps the analysis reproducible offline. The per-command approve-each parity table lives in the upstream `docs/common-concepts.md` (#per-command-approval-ask-mode) and is reproduced in `online-research.md` §2. -->
 
 # agent-commander
 
@@ -26,7 +26,7 @@ Language-specific package documentation:
   - `opencode` - OpenCode CLI
   - `qwen` - Qwen Code CLI (Alibaba's AI coding agent)
   - `gemini` - Gemini CLI (Google's AI coding agent)
-  - `agent` - @link-assistant/agent (unrestricted OpenCode fork)
+  - `agent` - @link-assistant/agent (OpenCode fork with native permission modes)
 - **Multiple Isolation Modes**:
   - No isolation (direct execution)
   - Screen sessions (detached terminal sessions)
@@ -81,7 +81,7 @@ bun add agent-commander
 | `opencode` | OpenCode CLI              | ✅               | ❌               | ✅ `OPENCODE_PERMISSION` deny rules | `grok`, `gemini`, `sonnet`                                   |
 | `qwen`     | Qwen Code CLI             | ✅ (stream-json) | ✅ (stream-json) | ✅ `--approval-mode plan`           | `qwen3-coder`, `coder`, `gpt-4o`                             |
 | `gemini`   | Gemini CLI                | ✅ (stream-json) | ❌               | ✅ `--approval-mode plan`           | `flash`, `pro`, `lite`                                       |
-| `agent`    | @link-assistant/agent     | ✅               | ✅               | ❌ not enforceable                  | `nemotron-3-super-free` (default), `grok`, `sonnet`, `haiku` |
+| `agent`    | @link-assistant/agent     | ✅               | ✅               | ✅ `--permission-mode readonly/plan` | `nemotron-3-super-free` (default), `grok`, `sonnet`, `haiku` |
 
 ### Claude-specific Features
 
@@ -123,7 +123,8 @@ The [Gemini CLI](https://github.com/google-gemini/gemini-cli) supports additiona
 The [@link-assistant/agent](https://github.com/link-assistant/agent) supports additional features:
 
 - **JSON Input/Output**: Accepts JSON via stdin, outputs JSON event streams (OpenCode-compatible)
-- **Unrestricted access**: No sandbox, no permissions system - full autonomous execution
+- **Native permission system**: Enforceable `--permission-mode` (`auto` | `plan` | `readonly` | `ask`) plus an OpenCode-compatible `--permission` JSON policy (agent v0.24.0); `--read-only`/`--plan-only` map to it directly
+- **Autonomous by default**: Runs with `--permission-mode auto` (full auto, never asks) unless a read-only/planning restriction is requested
 - **13 built-in tools**: Including websearch, codesearch, batch - all enabled by default
 - **MCP support**: Model Context Protocol for extending functionality with MCP servers
 - **OpenCode compatibility**: 100% compatible with OpenCode's JSON event streaming format
@@ -137,8 +138,11 @@ Use `--read-only` or `--plan-only` when the selected agent should inspect and pl
 - `opencode`: `OPENCODE_PERMISSION='{"edit":"deny","bash":"deny","task":"deny"}'`
 - `qwen`: `--approval-mode plan`
 - `gemini`: `--approval-mode plan`
+- `agent`: `--permission-mode readonly` for `--read-only`, `--permission-mode plan` for `--plan-only`
 
-If a tool cannot enforce the requested restrictions, `start-agent` fails before starting the agent. For example, `--tool agent --read-only` is rejected because @link-assistant/agent has no native permission system.
+Most tools treat `--plan-only` as an alias for `--read-only`. The `agent` tool honors its own distinction: `--read-only` selects the hard `readonly` mode (deny every edit and any non read-only shell command, never asks) while `--plan-only` selects `plan` (deny edits, allow read-only shell, ask before anything else). For fine-grained OpenCode-style policies, pass `agent`'s native `--permission '<json>'` through `--tool-arg`.
+
+If a tool cannot enforce the requested restrictions, `start-agent` fails before starting the agent.
 
 ## CLI Usage
 
@@ -162,7 +166,7 @@ start-agent --tool claude --working-directory "/tmp/dir" --prompt "Solve the iss
 - `--fallback-model <name>` - Fallback model when default is overloaded (Claude only)
 - `--verbose` - Enable verbose mode (Claude only)
 - `--read-only` - Enforce native read-only/planning mode for supported tools
-- `--plan-only` - Alias for `--read-only`
+- `--plan-only` - Alias for `--read-only` for most tools; the `agent` tool maps it to its softer `--permission-mode plan`
 - `--resume <sessionId>` - Resume a previous session by ID
 - `--session-id <uuid>` - Use a specific session ID (Claude only, must be valid UUID)
 - `--fork-session` - Create new session ID when resuming (Claude only)
@@ -554,6 +558,7 @@ Creates an agent controller.
 - `options.json` (boolean, optional) - Enable JSON output mode
 - `options.resume` (string, optional) - Resume session ID (tool-specific)
 - `options.readOnly` (boolean, optional) - Enforce native read-only/planning mode
+- `options.planOnly` (boolean, optional) - Enforce native planning mode; the `agent` tool maps it to `--permission-mode plan` while other tools treat it like `readOnly`
 - `options.isolation` (string, optional) - 'none', 'screen', or 'docker' (default: 'none')
 - `options.screenName` (string, optional) - Screen session name (required for screen isolation)
 - `options.containerName` (string, optional) - Container name (required for docker isolation)
@@ -562,7 +567,8 @@ Creates an agent controller.
   - `extraEnv` (object or `KEY=VALUE` / `[key, value]` array, optional) - Environment variables applied to the native tool process
   - `extraArgs` (string array, optional) - Raw native tool arguments appended after typed agent-commander arguments
   - `skipDefaultSafetyFlags` (boolean, optional) - Do not add default autonomous safety bypass flags such as Claude/Codex bypass flags or Qwen/Gemini `--yolo`
-  - `permissionMode` (string, optional) - Explicit Claude permission mode
+  - `permissionMode` (string, optional) - Explicit permission mode for Claude or `agent` (agent: `auto` | `plan` | `readonly` | `ask`)
+  - `permission` (string, optional) - OpenCode-compatible `--permission` JSON policy for the `agent` tool
   - `sandboxMode` (string, optional) - Explicit Codex sandbox mode
   - `approvalMode` (string, optional) - Explicit Codex approval mode
 
@@ -754,5 +760,5 @@ This is free and unencumbered software released into the public domain. See [LIC
 ## Related Projects
 
 - [hive-mind](https://github.com/link-assistant/hive-mind) - Multi-agent GitHub issue solver
-- [@link-assistant/agent](https://github.com/link-assistant/agent) - Unrestricted OpenCode fork for autonomous agents
+- [@link-assistant/agent](https://github.com/link-assistant/agent) - OpenCode fork for autonomous agents with a native permission system
 - [test-anywhere](https://github.com/link-foundation/test-anywhere) - Universal JavaScript testing

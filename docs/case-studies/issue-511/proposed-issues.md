@@ -30,11 +30,11 @@ issues, each labeled `enhancement` and linked as a **sub-issue of #511**:
 | E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` |
 | E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` |
 | Upstream gap (R16) — **resolved** | [agent#271](https://github.com/link-assistant/agent/issues/271) → [agent#272](https://github.com/link-assistant/agent/pull/272) (v0.24.0) | `link-assistant/agent` |
-| Upstream follow-up (R16) — map `agent` read-only | [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) | `link-assistant/agent-commander` |
-| Upstream follow-up (R16) — per-command approval relay | [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40) | `link-assistant/agent-commander` |
+| Upstream follow-up (R16) — map `agent` read-only — **resolved** | [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) (closed, js_0.7.0 / rust_0.2.5) | `link-assistant/agent-commander` |
+| Upstream follow-up (R16) — per-command approval relay — **resolved** | [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40) (closed, js_0.8.0 / rust_0.2.6) | `link-assistant/agent-commander` |
 
 **Upstream status (re-verified 2026-06-17 against the latest versions — `agent`
-v0.24.0, `agent-commander` v0.6.2):**
+v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
 - The per-tool read-only/plan gap for `claude`/`codex`/`opencode`/`qwen`/`gemini` was
   resolved in
   [agent-commander#20](https://github.com/link-assistant/agent-commander/issues/20).
@@ -45,15 +45,24 @@ v0.24.0, `agent-commander` v0.6.2):**
   (merged 2026-06-17, **v0.24.0**) added a native, enforceable `--permission-mode`
   (`auto`/`plan`/`readonly`/`ask`), an OpenCode-compatible `--permission` JSON policy,
   and a per-command JSON approval protocol — in **both JS and Rust**.
-- Re-verifying the latest versions surfaced that `agent-commander` v0.6.2 has **not
-  yet** exposed agent's new capability, so two follow-ups were filed:
+- The two `agent-commander` follow-ups filed last round are now **both closed**:
   [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39)
   (map `--read-only`/`--plan-only` for the `agent` tool to native `--permission-mode
-  readonly`/`plan`) and
+  readonly`/`plan`) shipped in **js_0.7.0 / rust_0.2.5**, and
   [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
-  (uniform per-command approval relay forwarding native
-  `permission_request`/`permission_response` frames across tools). These two are the
-  prerequisites for E4/E6 to drive the `agent` tool with read-only + approve-each-command.
+  (uniform per-command approval relay, exposed as `--approve-each` / `--permission-mode
+  ask`, forwarding normalized `permission_request`/`permission_response` frames) shipped
+  in **js_0.8.0 / rust_0.2.6**. No open `agent-commander` issues remain. E4/E6 are no
+  longer blocked: the `agent` tool can be driven with read-only **and**
+  approve-each-command through agent-commander today.
+- **Backend default:** the desktop app defaults to **`@link-assistant/agent`**. Per the
+  agent-commander approve-each parity (`docs/common-concepts.md`), only `agent` (scope
+  `session`) and `claude` (scope `tool-input`) can relay per-command approvals;
+  `codex`/`qwen`/`gemini`/`opencode` cannot (headless upstream-CLI limitation, rejected
+  up front with a clear error — not an agent-commander bug). `agent` is the only
+  org-owned backend and the only one offering a clean session-wide
+  `once`\|`always`\|`reject` grant, so it is the default; `claude` is the supported
+  fallback.
 
 ---
 
@@ -104,16 +113,21 @@ v0.24.0, `agent-commander` v0.6.2):**
   - Implement `CommanderProvider` that drives `link-assistant/agent` **through**
     `agent-commander` (dependency added), mapping per-tool grants → read-only/plan
     flags. Add the CI guard that no host `claude`/`codex` is ever spawned.
-- **Upstream prerequisite for the `agent` tool:** read-only + per-command approval for
-  `@link-assistant/agent` via agent-commander depend on
-  [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) and
+- **Upstream prerequisite for the `agent` tool — now satisfied.** Read-only +
+  per-command approval for `@link-assistant/agent` via agent-commander were tracked by
+  [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39)
+  (closed, js_0.7.0 / rust_0.2.5) and
   [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
-  (the Agent CLI itself already supports both as of v0.24.0). The five other tools
-  enforce read-only today, so `CommanderProvider` can land against them first.
+  (closed, js_0.8.0 / rust_0.2.6); the Agent CLI itself supports both as of v0.24.0.
+  All six tools enforce read-only today, and `agent` (default) + `claude` support
+  approve-each, so `CommanderProvider` can land against the **`agent` default backend**
+  directly — map per-tool grants → `--read-only`/`--plan-only`, and `agent` mode →
+  `--approve-each` (alias `--permission-mode ask`).
 - **Acceptance:** Read-only command executes via the in-process provider in tests; the
-  commander provider is selectable and never invokes the CLI directly or the host
-  subscriptions.
-- **Depends on:** E2 (grants), E3 (server); for the `agent` tool, agent-commander#39/#40.
+  commander provider is selectable, defaults to the `agent` backend, and never invokes
+  the CLI directly or the host subscriptions.
+- **Depends on:** E2 (grants), E3 (server). Upstream agent-commander#39/#40 are
+  resolved, so the `agent` path is no longer blocked.
 
 ## E5 — Installable Formal-AI container (server + agent + agent-commander) & CLI setup
 *(Issue [#517](https://github.com/link-assistant/formal-ai/issues/517))*
@@ -154,14 +168,18 @@ v0.24.0, `agent-commander` v0.6.2):**
 - **Scope:** Track the already-filed upstream gaps to closure and file any further
   agent-commander capability gaps found during E4–E7 as issues on
   `link-assistant/agent-commander`; link them here. Finalize the best-practices doc.
-- **Already filed (2026-06-17, from this PR):** the Agent-CLI permission gap is resolved
-  upstream ([agent#271](https://github.com/link-assistant/agent/issues/271) →
-  [agent#272](https://github.com/link-assistant/agent/pull/272), v0.24.0); two
-  agent-commander follow-ups are open —
+- **Filed & resolved (2026-06-17, from this PR):** the Agent-CLI permission gap is
+  resolved upstream ([agent#271](https://github.com/link-assistant/agent/issues/271) →
+  [agent#272](https://github.com/link-assistant/agent/pull/272), v0.24.0); both
+  agent-commander follow-ups are now **closed** —
   [#39](https://github.com/link-assistant/agent-commander/issues/39) (map `agent`
-  read-only) and
+  read-only, js_0.7.0 / rust_0.2.5) and
   [#40](https://github.com/link-assistant/agent-commander/issues/40) (per-command
-  approval relay).
+  approval relay / `--approve-each`, js_0.8.0 / rust_0.2.6). No open agent-commander
+  issues remain. Remaining known limitation (documented, not a bug): approve-each is
+  available only for `agent` and `claude`; `codex`/`gemini`/`qwen` lack a relayable
+  headless approval handshake upstream — to be re-checked during E4–E7 and, if a CLI
+  later exposes one, filed as a new agent-commander enhancement.
 - **Acceptance:** Gaps filed + linked + tracked to closure; best-practices doc merged.
 - **Depends on:** E4–E7 (findings).
 

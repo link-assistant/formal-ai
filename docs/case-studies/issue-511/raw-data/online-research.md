@@ -7,16 +7,22 @@ folder (`external-agent-README.md`, `external-agent-commander-README.md`,
 reproducible offline.
 
 > **Version watermark (re-verified 2026-06-17, per PR #512 feedback "double check
-> latest versions"):** `@link-assistant/agent` **v0.24.0** (PR
-> [agent#272](https://github.com/link-assistant/agent/pull/272), merged 2026-06-17,
-> closing [agent#271](https://github.com/link-assistant/agent/issues/271)) — **now
-> ships a native, enforceable permission system**. `agent-commander` **v0.6.2**
-> (latest release `rust_0.2.4`, 2026-06-09) — has **not yet** picked up agent's new
-> permission system, so two upstream issues were filed:
+> latest versions again"):** `@link-assistant/agent` **v0.24.0** (`js-v0.24.0`,
+> 2026-06-17; PR [agent#272](https://github.com/link-assistant/agent/pull/272)
+> closing [agent#271](https://github.com/link-assistant/agent/issues/271)) — **ships
+> a native, enforceable permission system** with a JSON per-command approval
+> protocol. `agent-commander` **js_0.8.0 / rust_0.2.6** (both 2026-06-17) — has now
+> **picked up** agent's permission system: both prior gaps are **resolved upstream**.
 > [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39)
-> (map `--read-only` for the `agent` tool to native `--permission-mode`) and
+> (map `--read-only`/`--plan-only` for the `agent` tool to native
+> `--permission-mode`) landed in **js_0.7.0 / rust_0.2.5**, and
 > [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
-> (uniform per-command approval relay).
+> (uniform per-command approval relay, exposed as `--approve-each` / `--permission-mode
+> ask`) landed in **js_0.8.0 / rust_0.2.6**. No open `agent-commander` issues remain.
+> **Backend default decision:** the desktop app uses **`@link-assistant/agent` as the
+> default backend** — it is the only org-owned tool, and the only backend whose native
+> handshake relays clean session-wide `once | always | reject` per-command approvals
+> (see §2 parity table); `claude` is supported but its `always` is only per-call.
 
 ## 1. `link-assistant/agent` — "Agent CLI"
 
@@ -61,21 +67,22 @@ exact read-only shell allowlist that `ls ~` / `pwd` / `cat` need, and a JSON app
 protocol that maps directly onto the desktop app's per-command permission prompts.
 Defense in depth still applies: run inside the Formal-AI Docker container (the CLI's
 own warning), and keep the desktop's default-deny tool gate as the outer layer. The
-remaining work is that the indirection layer (`agent-commander`) has not yet exposed
-this — see §2.
+indirection layer (`agent-commander`) now exposes both capabilities — read-only
+mapping and an `--approve-each` per-command relay for `agent` — as of js_0.8.0 /
+rust_0.2.6 (see §2).
 
 ## 2. `link-assistant/agent-commander`
 
 - Repo: <https://github.com/link-assistant/agent-commander> — *"A JavaScript library
   to control agents enclosed in CLI commands like Anthropic Claude Code CLI."* Has
   both JavaScript (`npm i agent-commander`) and Rust (`crates.io`) packages.
-  **Latest: v0.6.2 / `rust_0.2.4` (2026-06-09).**
+  **Latest: js_0.8.0 / `rust_0.2.6` (both 2026-06-17).**
 - Controls a fleet of CLI agents through one interface: `claude`, `codex`,
   `opencode`, `qwen`, `gemini`, and `agent` (the @link-assistant/agent above).
 - **Isolation modes:** *No isolation (direct), Screen sessions, Docker containers*
   (`--isolation docker --container-name …`).
 - **Read-only / planning mode per tool** (the coarse safety surface), from the
-  README's support matrix (verbatim, current v0.6.2):
+  README's support matrix (verbatim, current js_0.8.0):
   | Tool | Read-only flag |
   |---|---|
   | `claude` | `--permission-mode plan` |
@@ -83,7 +90,7 @@ this — see §2.
   | `opencode` | `OPENCODE_PERMISSION` deny rules |
   | `qwen` | `--approval-mode plan` |
   | `gemini` | `--approval-mode plan` |
-  | `agent` | **❌ not enforceable** — `--tool agent --read-only` is *rejected* |
+  | `agent` | `--permission-mode readonly`/`plan` *(now enforceable — added in js_0.7.0 / rust_0.2.5, [#39](https://github.com/link-assistant/agent-commander/issues/39))* |
 - JSON streaming (NDJSON in/out) for real-time message processing — this is the hook
   the desktop app would consume to *"use Agent CLI output to actually construct the
   viewable chat UI."*
@@ -91,29 +98,54 @@ this — see §2.
   commands before execution"*), Attached/Detached modes, Graceful Shutdown, Prompt
   File Input, raw passthrough (`--tool-arg`, `--tool-env`, `--tool-executable`).
 
-**Two documented gaps vs. issue #511 (filed upstream 2026-06-17):**
+**Both documented gaps vs. issue #511 are now RESOLVED upstream (2026-06-17):**
 
-1. **Stale `agent` read-only mapping** —
-   [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39).
-   The matrix still lists `agent` as *"not enforceable"* and rejects
-   `--tool agent --read-only`, even though agent v0.24.0 now has native
-   `--permission-mode readonly`/`plan`. This blocks the read-only `ls ~` path through
-   the one org-owned tool.
-2. **No uniform per-command approval relay** —
-   [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40).
-   agent-commander offers only *coarse* control: `--read-only`/`--plan-only`
-   (deny-all) and default `--yolo`/`--dangerously-skip-permissions` (auto-approve).
-   There is no "approve each command" mode that relays each tool's native
-   `permission_request`/`permission_response` (agent's new protocol, Claude's
-   stream-json permission prompts, qwen/gemini approval modes) as a normalized
-   stream. This is exactly the desktop "agent mode (approve each command)" UX.
+1. **`agent` read-only mapping** —
+   [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39)
+   **(CLOSED, shipped in js_0.7.0 / rust_0.2.5).** `agent-commander` now maps
+   `--read-only`/`--plan-only` for the `agent` tool onto agent v0.24.0's native
+   `--permission-mode readonly`/`plan`, so the read-only `ls ~` path works through the
+   org-owned tool.
+2. **Uniform per-command approval relay** —
+   [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40)
+   **(CLOSED, shipped in js_0.8.0 / rust_0.2.6).** A `--approve-each` flag (alias
+   `--permission-mode ask`) now relays each backend's native per-command approval as a
+   normalized `permission_request` NDJSON event (fields `id`, `tool`,
+   `command`/`pattern`, `title`, `scope`); the consumer answers with a
+   `permission_response` carrying `once` | `always` | `reject`. This is exactly the
+   desktop "agent mode (approve each command)" UX.
 
-**Implication:** `agent-commander` already provides (a) the multi-CLI abstraction,
-(b) per-tool read-only/plan enforcement for five tools, (c) NDJSON streaming, (d) a
-dry-run preview, and (e) Docker isolation. To *fully* support
-`claude`/`codex`/`gemini`/`agent` for issue #511 it needs the two enhancements above;
-once #39 lands, all six tools (incl. `agent`) enforce read-only, and once #40 lands,
-the desktop app can drive a single tool-agnostic approve-each-command loop.
+**Per-command approval (ask mode) parity — which backends can relay** (verbatim from
+agent-commander `docs/common-concepts.md`, js_0.8.0). The `scope` of an `always`/allow
+decision differs per backend, so a consumer must not assume a session-wide grant
+everywhere:
+
+| Tool | Native mechanism | Scope | Relay | Notes |
+|---|---|---|---|---|
+| `agent` | `--permission-mode ask` (+ `--input-format stream-json`) | `session` | ✅ | Native JSON `permission_request`/`permission_response`; `once`\|`always`\|`reject` map 1:1. |
+| `claude` | `--permission-mode default` (stream-json `can_use_tool`) | `tool-input` | ✅ | `control_request`/`control_response` handshake; no session-wide `always` (both `once` and `always` allow just this call). |
+| `codex` | `--ask-for-approval` (coupled with `--sandbox`) | `sandbox-coupled` | ❌ | Approval is coupled to the sandbox policy; not a tool-agnostic JSON stream. |
+| `qwen` | `--approval-mode default` | `interactive-only` | ❌ | Headless mode has no relayable per-command JSON handshake. |
+| `gemini` | `--approval-mode default` | `interactive-only` | ❌ | No JSON stdin channel (prompt passed via `-p`). |
+| `opencode` | `OPENCODE_PERMISSION` (static policy) | `static-policy` | ❌ | Only a static up-front policy; no per-command relay. |
+
+Only `agent` and `claude` can drive the handshake; for every other tool `--approve-each`
+is rejected up front with a clear error (the same pattern `--read-only` uses for tools
+without an enforceable native restriction). This is an **upstream-CLI limitation**, not
+an agent-commander bug — `codex`/`qwen`/`gemini`/`opencode` do not expose a relayable
+per-command JSON approval channel in headless mode.
+
+**Implication — the #511 plan is fully implementable today, with `agent` as the
+default backend.** `agent-commander` now provides (a) the multi-CLI abstraction,
+(b) per-tool read-only/plan enforcement for **all six** tools (incl. `agent`),
+(c) per-command approve-each relay for `agent` and `claude`, (d) NDJSON streaming,
+(e) a dry-run preview, and (f) Docker isolation. The desktop app defaults to
+**`@link-assistant/agent`** because it is the only org-owned backend and the only one
+whose `always` decision is **session-wide** (clean `once`\|`always`\|`reject`), giving
+the cleanest "grant once for the session" UX; `claude` is supported as an alternative
+(its `always` only allows the current call). `codex`/`gemini`/`qwen` can still run in
+read-only and full-auto modes, but per-command approve-each is unavailable until the
+upstream CLIs expose a relayable handshake.
 
 ## 3. `link-assistant/hive-mind`
 

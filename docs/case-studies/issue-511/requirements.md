@@ -146,31 +146,39 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R16 — Report missing agent-commander features upstream
 - **Source:** *"if some features are missing from agent-commander we should report
   it."*
-- **Priority:** P2 · **Status now:** **Filed** (upstream issues created via `gh`; re-verified against latest versions 2026-06-17)
+- **Priority:** P2 · **Status now:** **Resolved upstream** (issues filed via `gh` and
+  closed by upstream releases; re-verified against latest versions 2026-06-17)
 - **Acceptance:** Any capability gap found during integration is filed as an issue on
   the appropriate upstream repository and linked here.
-- **Filed / current state (re-verified against `agent` v0.24.0 and `agent-commander`
-  v0.6.2):**
+- **Filed & resolved (re-verified against `agent` v0.24.0 and `agent-commander`
+  js_0.8.0 / rust_0.2.6):**
   1. **`agent` native permission system — DONE upstream.** The per-tool read-only/plan
      enforcement gap was raised and resolved for `claude`/`codex`/`opencode`/`qwen`/
      `gemini` in
      [`agent-commander#20`](https://github.com/link-assistant/agent-commander/issues/20)
      (closed). The residual gap — that `@link-assistant/agent` had *no* native
      permission system — was filed as
-     [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is now
+     [`agent#271`](https://github.com/link-assistant/agent/issues/271) and is
      **resolved**: PR [`agent#272`](https://github.com/link-assistant/agent/pull/272)
      (merged 2026-06-17, shipped in **v0.24.0**) added a native, enforceable
      `--permission-mode auto|plan|readonly|ask`, an OpenCode-compatible `--permission`
      JSON policy, and a per-command JSON approval protocol — in both JS and Rust.
-  2. **`agent-commander` has not yet exposed it — two new issues filed.** Latest
-     `agent-commander` v0.6.2 still lists `agent` as *"not enforceable"* and rejects
-     `--tool agent --read-only`, and offers no per-command approval relay. Filed:
+  2. **`agent-commander` has now exposed it — both follow-ups resolved.**
      [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
-     (map `--read-only`/`--plan-only` for `agent` to native `--permission-mode
-     readonly`/`plan`) and
+     (map `--read-only`/`--plan-only` for `agent` onto native `--permission-mode
+     readonly`/`plan`) is **closed**, shipped in **js_0.7.0 / rust_0.2.5**.
      [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40)
-     (uniform per-command approval relay forwarding native
-     `permission_request`/`permission_response` frames across tools).
+     (uniform per-command approval relay as `--approve-each` / `--permission-mode ask`,
+     forwarding normalized `permission_request`/`permission_response` frames) is
+     **closed**, shipped in **js_0.8.0 / rust_0.2.6**. No open `agent-commander` issues
+     remain.
+  3. **Per-command approve-each parity (known upstream-CLI limitation, not a bug).**
+     Only `agent` (scope `session`) and `claude` (scope `tool-input`) can drive the
+     native handshake; `codex`/`qwen`/`gemini`/`opencode` cannot relay per-command JSON
+     approvals in headless mode, so `agent-commander` rejects `--approve-each` for them
+     up front. This validates the **default-backend decision: the desktop app defaults
+     to `@link-assistant/agent`**, the only org-owned backend and the only one with a
+     clean session-wide `once`\|`always`\|`reject` grant.
   - Tracked in this repo by [E8 (#520)](https://github.com/link-assistant/formal-ai/issues/520).
 
 ### R17 — Follow hive-mind best practices for Agent CLI + agent-commander
@@ -233,7 +241,7 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 | R14 | Execution | P1 | Missing | E6 |
 | R14b | Safety | P0 | By design | E4, E5 |
 | R15 | Tests | P1 | Missing | E7 |
-| R16 | Upstream | P2 | Missing | E8 |
+| R16 | Upstream | P2 | Resolved (upstream) | E8 |
 | R17 | Best practices | P2 | Partial | E5, E8 |
 | R18 | Verify journey | P0 | Missing | E7 |
 | R19 | Process | P0 | **Done** | E0 (this PR) |
