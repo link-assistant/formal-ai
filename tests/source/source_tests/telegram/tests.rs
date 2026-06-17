@@ -52,6 +52,9 @@ fn parse_returns_replies_and_next_offset() {
     assert_eq!(batch.replies[0].chat_id, 42);
     assert!(batch.replies[0].text.starts_with("Hi, how may I help you?"));
     assert!(batch.replies[0].text.contains("/trace "));
+    // Issue #488: every answered reply carries the solver's concrete reasoning
+    // as a native, collapsed-by-default Telegram expandable blockquote.
+    assert!(batch.replies[0].text.contains("<blockquote expandable>"));
     assert_eq!(batch.replies[1].chat_id, -100);
     assert!(batch.replies[1].text.contains("language-rust"));
     let json: serde_json::Value = serde_json::from_str(&batch.replies[0].to_send_message_body())
@@ -94,4 +97,33 @@ fn url_encoding_uses_percent_for_reserved_characters() {
 fn json_array_encoding_quotes_values() {
     let encoded = serialize_string_array(&[String::from("a"), String::from("b\"")]);
     assert_eq!(encoded, "[\"a\",\"b\\\"\"]");
+}
+
+#[test]
+fn thinking_blockquote_is_expandable_and_html_escaped() {
+    // Issue #488: the reasoning renders as Telegram's native expandable
+    // blockquote (collapsed by default, expands on tap) and every step sentence
+    // is HTML-escaped so it cannot corrupt the HTML parse mode.
+    use super::{telegram_thinking_blockquote, ThinkingStep};
+
+    assert!(
+        telegram_thinking_blockquote(&[]).is_none(),
+        "no steps should render nothing"
+    );
+
+    let steps = vec![
+        ThinkingStep::new(0, "impulse", "compare 8 < 10", "high", "evt-1"),
+        ThinkingStep::new(1, "compute", "8 < 10", "detailed", "evt-2"),
+    ];
+    let html = telegram_thinking_blockquote(&steps).expect("steps should render");
+    assert!(html.starts_with("<blockquote expandable>"));
+    assert!(html.ends_with("</blockquote>"));
+    assert!(
+        html.contains("&lt;"),
+        "the `<` in the detail must be escaped"
+    );
+    assert!(
+        !html.contains("8 < 10"),
+        "raw HTML-significant characters must not leak: {html}"
+    );
 }

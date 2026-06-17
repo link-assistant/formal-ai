@@ -3,10 +3,15 @@ use std::fmt::{Display, Formatter, Write};
 
 use serde::{Deserialize, Serialize};
 
+use crate::engine::{naturalize_thinking_step, ThinkingStep};
 use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 
 const TEXT_ONLY_MESSAGE: &str = "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.";
 const DEFAULT_API_BASE: &str = "https://api.telegram.org";
+/// Telegram rejects `sendMessage` payloads whose text exceeds 4096 characters,
+/// so the supplementary thinking blockquote (issue #488) is only appended when
+/// the whole reply still fits within this budget.
+const TELEGRAM_MAX_MESSAGE_LEN: usize = 4096;
 /// Crate version advertised by the `/version` bot command. Tracks
 /// `Cargo.toml` automatically so every release reports the right number
 /// without manual bumps (issue #72).
@@ -154,26 +159,40 @@ pub fn handle_telegram_webhook(
 fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
     let raw_text = message.text.as_deref().or(message.caption.as_deref());
 
-    let (reply_text, trace_id) = raw_text.filter(|text| !text.trim().is_empty()).map_or_else(
-        || (String::from(TEXT_ONLY_MESSAGE), None),
-        |prompt| {
-            let trimmed = prompt.trim();
-            if is_version_command(trimmed) {
-                return (version_reply_text(), None);
-            }
-            let symbolic = telegram_solver().solve(trimmed);
-            let trace = symbolic
-                .evidence_links
-                .iter()
-                .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
-            (symbolic.answer, trace)
-        },
-    );
+    let (reply_text, trace_id, thinking) =
+        raw_text.filter(|text| !text.trim().is_empty()).map_or_else(
+            || (String::from(TEXT_ONLY_MESSAGE), None, None),
+            |prompt| {
+                let trimmed = prompt.trim();
+                if is_version_command(trimmed) {
+                    return (version_reply_text(), None, None);
+                }
+                let symbolic = telegram_solver().solve(trimmed);
+                let trace = symbolic
+                    .evidence_links
+                    .iter()
+                    .find_map(|link| link.strip_prefix("trace:").map(str::to_owned));
+                let thinking = telegram_thinking_blockquote(&symbolic.thinking_steps);
+                (symbolic.answer, trace, thinking)
+            },
+        );
 
     let mut text = telegram_html_from_markdown(&reply_text);
-    if let Some(trace) = trace_id {
-        text.push_str("\n\n/trace ");
-        text.push_str(&trace);
+    let trace_footer = trace_id.map(|trace| format!("\n\n/trace {trace}"));
+
+    // Append the collapsed thinking blockquote after the answer, but only while
+    // the whole reply (answer + thinking + trace footer) still fits inside
+    // Telegram's 4096-character limit; the reasoning is supplementary, so it is
+    // dropped rather than risk a rejected `sendMessage` (issue #488).
+    if let Some(thinking) = thinking {
+        let trace_len = trace_footer.as_deref().map_or(0, str::len);
+        if text.len() + "\n\n".len() + thinking.len() + trace_len <= TELEGRAM_MAX_MESSAGE_LEN {
+            text.push_str("\n\n");
+            text.push_str(&thinking);
+        }
+    }
+    if let Some(footer) = trace_footer {
+        text.push_str(&footer);
     }
 
     TelegramWebhookReply {
@@ -185,6 +204,36 @@ fn reply_for_message(message: &TelegramMessage) -> TelegramWebhookReply {
             message_id: message.message_id,
         },
     }
+}
+
+/// Render the solver's concrete thinking steps as a Telegram expandable
+/// blockquote (issue #488).
+///
+/// Telegram's native `<blockquote expandable>` is collapsed by default and
+/// expands on tap, which is a direct, native fit for the issue's "show the
+/// reasoning, collapsed, with an expand affordance" requirement on a non-UI
+/// surface. The lines are the same concrete English meta-language descriptions
+/// every other surface renders (the CLI `--thinking` trace, the OpenAI and
+/// Anthropic APIs); the browser UI additionally translates them into the user's
+/// language through its i18n catalog. Returns `None` when there is nothing to
+/// show so callers can skip the separator entirely.
+fn telegram_thinking_blockquote(steps: &[ThinkingStep]) -> Option<String> {
+    if steps.is_empty() {
+        return None;
+    }
+    let mut body = String::new();
+    for step in steps {
+        let sentence = if step.summary.is_empty() {
+            naturalize_thinking_step(&step.step, &step.detail)
+        } else {
+            step.summary.clone()
+        };
+        if !body.is_empty() {
+            body.push('\n');
+        }
+        body.push_str(&html_escape(&sentence));
+    }
+    Some(format!("<blockquote expandable>💭 {body}</blockquote>"))
 }
 
 fn telegram_solver() -> UniversalSolver {
