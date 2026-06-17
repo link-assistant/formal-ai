@@ -860,16 +860,38 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      # Reclaim runner disk before the heavy doc build. The hosted ubuntu image
+      # ships with ~14 GB free on `/`; pre-installed SDKs we never touch (dotnet,
+      # Android, GHC, CodeQL) eat most of it. Removing them gives `cargo doc`
+      # plus the web bundle, the docs copy and the Pages artifact tar enough
+      # headroom and prevents the "No space left on device" runner crash that
+      # failed this job in issue #523.
+      - name: Free up runner disk space
+        run: |
+          echo "Disk usage before cleanup:"
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          echo "Disk usage after cleanup:"
+          df -h /
+
+      # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
+      # `target/` directory. The other Rust jobs (notably `lint`, which runs
+      # `cargo clippy --all-targets --all-features`) share the same cache key and
+      # populate `target/` with a multi-gigabyte debug tree. Restoring that here
+      # on top of the web bundle and then running `cargo doc` exhausted the
+      # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)
+      # `target/` from the cached registry, so we keep the registry/git cache for
+      # download speed but never restore the bloated build artifacts.
       - name: Cache cargo registry
         uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-cargo-
+            ${{ runner.os }}-cargo-docs-
 
       - name: Generate Rust API docs (cargo doc)
         run: |
