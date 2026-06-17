@@ -37,3 +37,14 @@ bump: minor
   byte-identical inline mirror kept in lockstep by
   `experiments/issue-513-sync-worker-terminal.mjs` (the same convention as the
   operation vocabulary, #386). A `--check` mode guards the parity in CI.
+- Every new terminal-command vocabulary token (shell tokens, `command-line`,
+  the `agent_suggestion*` intents and their `response_*` templates) is grounded
+  as a first-class meaning so the total reference-closure audit
+  (`scripts/audit-total-closure.py`) stays at zero. The
+  `data/seed/closure-generated-*.lino` shards were regenerated via
+  `scripts/close-total.py`; the generation is idempotent.
+- E2E Playwright configs now set reasonable per-test, whole-suite
+  (`globalTimeout`), assertion (`expect.timeout`), and navigation/action caps in
+  both `tests/e2e/playwright.local.config.js` and `playwright.pages.config.js`
+  so a hung worker, server, or deployment aborts promptly instead of wedging CI
+  (addresses #513 review feedback on iterating faster).
