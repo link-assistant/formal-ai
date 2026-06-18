@@ -11,6 +11,7 @@ const {
   serviceKeys,
   describeService,
   createServiceControl,
+  agentHealthCheckCommand,
 } = require("../lib/service-control.cjs");
 
 // A scripted `docker` runner: `responses` maps an argv prefix (joined with " ")
@@ -44,8 +45,8 @@ test("resolveServerPort defaults to 8080 and accepts a valid override", () => {
   assert.equal(resolveServerPort({ FORMAL_AI_SERVER_PORT: "0" }), 8080);
 });
 
-test("serviceKeys exposes exactly the telegram and server services", () => {
-  assert.deepEqual(serviceKeys(), ["telegram", "server"]);
+test("serviceKeys exposes telegram, server, and agent environment services", () => {
+  assert.deepEqual(serviceKeys(), ["telegram", "server", "agent"]);
 });
 
 test("telegram run args keep the default command and inject the token", () => {
@@ -83,26 +84,52 @@ test("server run args publish a loopback port and override the command to serve"
   assert.deepEqual(tail, ["formal-ai", "serve", "--host", "0.0.0.0", "--port", "8080"]);
 });
 
+test("agent environment run args keep an idle ready container with its own Docker volume", () => {
+  const services = serviceDefinitions();
+  const args = services.agent.buildRunArgs();
+  assert.deepEqual(args, [
+    "run",
+    "-d",
+    "--name",
+    "formal-ai-agent",
+    "--restart",
+    "unless-stopped",
+    "--privileged",
+    "-v",
+    "formal-ai-agent-docker:/var/lib/docker",
+    DEFAULT_IMAGE,
+    "sleep",
+    "infinity",
+  ]);
+  assert.match(agentHealthCheckCommand(), /agent --version/);
+  assert.match(agentHealthCheckCommand(), /start-agent --help/);
+});
+
 test("describeService advertises a loopback URL for the server only", () => {
   const services = serviceDefinitions();
   assert.equal(describeService(services.telegram).url, undefined);
   assert.equal(describeService(services.server).url, "http://127.0.0.1:8080");
+  assert.equal(describeService(services.agent).url, undefined);
 });
 
 test("statusAll reports running, stopped, and absent containers", async () => {
   const { runDocker } = makeRunner({
     "inspect -f {{.State.Running}} formal-ai-telegram": { code: 0, stdout: "true\n", stderr: "" },
     "inspect -f {{.State.Running}} formal-ai-server": { code: 1, stdout: "", stderr: "no such object" },
+    "inspect -f {{.State.Running}} formal-ai-agent": { code: 0, stdout: "true\n", stderr: "" },
   });
   const control = createServiceControl({ runDocker });
   const status = await control.statusAll();
   assert.equal(status.dockerAvailable, true);
   const telegram = status.services.find((s) => s.key === "telegram");
   const server = status.services.find((s) => s.key === "server");
+  const agent = status.services.find((s) => s.key === "agent");
   assert.equal(telegram.state, "running");
   assert.equal(telegram.running, true);
   assert.equal(server.state, "absent");
   assert.equal(server.running, false);
+  assert.equal(agent.state, "ready");
+  assert.equal(agent.running, true);
 });
 
 test("status reports docker-unavailable without shelling out", async () => {
@@ -162,6 +189,64 @@ test("start surfaces a docker run failure as an error with the reason", async ()
   assert.equal(result.ok, false);
   assert.equal(result.state, "error");
   assert.match(result.reason, /port already allocated/);
+});
+
+test("installAgentEnvironment pulls, recreates, and health-checks the agent container", async () => {
+  const { runDocker, calls } = makeRunner({
+    "pull ghcr.io/link-assistant/formal-ai:latest": { code: 0, stdout: "newer image\n", stderr: "" },
+    "run -d --name formal-ai-agent": { code: 0, stdout: "agent-container-id\n", stderr: "" },
+    "exec formal-ai-agent sh -lc": {
+      code: 0,
+      stdout: "formal-ai 0.154.0\nagent 0.24.0\n",
+      stderr: "",
+    },
+  });
+  const control = createServiceControl({ runDocker });
+  const result = await control.installAgentEnvironment();
+  assert.equal(result.ok, true);
+  assert.equal(result.key, "agent");
+  assert.equal(result.state, "ready");
+  assert.equal(result.running, true);
+  assert.equal(result.image, DEFAULT_IMAGE);
+  assert.equal(result.imageStatus.pulled, true);
+  assert.match(result.health.stdout, /agent 0\.24\.0/);
+  assert.deepEqual(calls[0], ["pull", DEFAULT_IMAGE]);
+  assert.deepEqual(calls[1], ["rm", "-f", "formal-ai-agent"]);
+  assert.equal(calls[2][0], "run");
+  assert.deepEqual(calls[3], ["exec", "formal-ai-agent", "sh", "-lc", agentHealthCheckCommand()]);
+});
+
+test("installAgentEnvironment accepts an already-built local image when pull fails", async () => {
+  const { runDocker, calls } = makeRunner({
+    "pull local/formal-ai:agent": { code: 1, stdout: "", stderr: "pull access denied" },
+    "image inspect local/formal-ai:agent": { code: 0, stdout: "[]\n", stderr: "" },
+    "run -d --name formal-ai-agent": { code: 0, stdout: "agent-container-id\n", stderr: "" },
+    "exec formal-ai-agent sh -lc": { code: 0, stdout: "agent 0.24.0\n", stderr: "" },
+  });
+  const control = createServiceControl({
+    runDocker,
+    env: { FORMAL_AI_DOCKER_IMAGE: "local/formal-ai:agent" },
+  });
+  const result = await control.installAgentEnvironment();
+  assert.equal(result.ok, true);
+  assert.equal(result.state, "ready");
+  assert.equal(result.image, "local/formal-ai:agent");
+  assert.equal(result.imageStatus.pulled, false);
+  assert.deepEqual(calls[0], ["pull", "local/formal-ai:agent"]);
+  assert.deepEqual(calls[1], ["image", "inspect", "local/formal-ai:agent"]);
+});
+
+test("installAgentEnvironment surfaces a health-check failure", async () => {
+  const { runDocker } = makeRunner({
+    "pull ghcr.io/link-assistant/formal-ai:latest": { code: 0, stdout: "ok\n", stderr: "" },
+    "run -d --name formal-ai-agent": { code: 0, stdout: "agent-container-id\n", stderr: "" },
+    "exec formal-ai-agent sh -lc": { code: 127, stdout: "", stderr: "agent: not found" },
+  });
+  const control = createServiceControl({ runDocker });
+  const result = await control.installAgentEnvironment();
+  assert.equal(result.ok, false);
+  assert.equal(result.state, "error");
+  assert.match(result.reason, /agent: not found/);
 });
 
 test("stop stops and removes the container", async () => {

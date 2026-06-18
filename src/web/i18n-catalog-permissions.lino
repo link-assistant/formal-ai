@@ -60,12 +60,22 @@ en
       reasonNoResult "desktop tool router returned no result"
       reasonRefused "desktop tool router refused the request"
   services
+    title "Services"
+    telegram
+      label "Telegram bot"
+    server
+      label "OpenAI-compatible server"
+    agent
+      label "Agent environment"
     dockerMissing "Docker is not available. Install Docker Desktop to start the prepared containers."
+    installAgent "Install agent environment"
+    installing "Installing…"
     start "Start"
     starting "Starting…"
     stop "Stop"
     stopping "Stopping…"
     state
+      ready "ready"
       running "running"
       stopped "stopped"
       needsToken "needs token"
@@ -130,12 +140,22 @@ ru
       reasonNoResult "маршрутизатор инструментов рабочего стола не вернул результат"
       reasonRefused "маршрутизатор инструментов рабочего стола отклонил запрос"
   services
+    title "Сервисы"
+    telegram
+      label "Telegram-бот"
+    server
+      label "OpenAI-совместимый сервер"
+    agent
+      label "Среда агента"
     dockerMissing "Docker недоступен. Установите Docker Desktop, чтобы запускать подготовленные контейнеры."
+    installAgent "Установить среду агента"
+    installing "Установка…"
     start "Запустить"
     starting "Запуск…"
     stop "Остановить"
     stopping "Остановка…"
     state
+      ready "готова"
       running "работает"
       stopped "остановлен"
       needsToken "нужен токен"
@@ -200,12 +220,22 @@ zh
       reasonNoResult "桌面工具路由器未返回结果"
       reasonRefused "桌面工具路由器拒绝了该请求"
   services
+    title "服务"
+    telegram
+      label "Telegram 机器人"
+    server
+      label "OpenAI 兼容服务器"
+    agent
+      label "代理环境"
     dockerMissing "Docker 不可用。请安装 Docker Desktop 以启动预配置的容器。"
+    installAgent "安装代理环境"
+    installing "正在安装…"
     start "启动"
     starting "正在启动…"
     stop "停止"
     stopping "正在停止…"
     state
+      ready "就绪"
       running "运行中"
       stopped "已停止"
       needsToken "需要令牌"
@@ -270,12 +300,22 @@ hi
       reasonNoResult "डेस्कटॉप टूल राउटर ने कोई परिणाम नहीं लौटाया"
       reasonRefused "डेस्कटॉप टूल राउटर ने अनुरोध अस्वीकार कर दिया"
   services
+    title "सेवाएँ"
+    telegram
+      label "Telegram बॉट"
+    server
+      label "OpenAI-संगत सर्वर"
+    agent
+      label "एजेंट वातावरण"
     dockerMissing "Docker उपलब्ध नहीं है। तैयार कंटेनर शुरू करने के लिए Docker Desktop इंस्टॉल करें।"
+    installAgent "एजेंट वातावरण इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
     start "शुरू करें"
     starting "शुरू हो रहा है…"
     stop "रोकें"
     stopping "रुक रहा है…"
     state
+      ready "तैयार"
       running "चल रहा है"
       stopped "रुका हुआ"
       needsToken "टोकन चाहिए"

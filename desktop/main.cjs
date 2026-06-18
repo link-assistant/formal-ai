@@ -308,11 +308,27 @@ ipcMain.handle("formalAiDesktop:startService", (_event, request) => {
   const key = request && request.service ? String(request.service) : "";
   const token = request && typeof request.token === "string" ? request.token : "";
   try {
+    if (key === "agent") {
+      return serviceControl.installAgentEnvironment();
+    }
     return serviceControl.start(key, { token });
   } catch (error) {
     return Promise.resolve({
       ok: false,
       key,
+      state: "error",
+      running: false,
+      reason: error && error.message ? error.message : String(error),
+    });
+  }
+});
+ipcMain.handle("formalAiDesktop:installAgentEnvironment", () => {
+  try {
+    return serviceControl.installAgentEnvironment();
+  } catch (error) {
+    return Promise.resolve({
+      ok: false,
+      key: "agent",
       state: "error",
       running: false,
       reason: error && error.message ? error.message : String(error),
