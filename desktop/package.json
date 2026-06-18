@@ -17,7 +17,7 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs scripts/local-server.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "electron": "^42.4.0",

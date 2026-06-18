@@ -39,11 +39,8 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "contextIsolation: true",
   "nodeIntegration: false",
   "formalAiDesktop:getStatus",
-  "/v1/chat/completions",
-  "/v1/graph",
   "formal-ai",
   // R3/R4: the local server is opt-in (in-process is the default).
-  "FORMAL_AI_DESKTOP_SERVER",
   "serverModeRequested",
   // R5d (D2): permission-gated tool routing through the local process / sandbox.
   "formalAiDesktop:invokeTool",
@@ -58,11 +55,15 @@ requireIncludes("main.cjs", read("main.cjs"), [
   "formalAiDesktop:startService",
   "formalAiDesktop:stopService",
   "createServiceControl",
+  // Issue #515: entering Agent / Full Auto mode starts or reuses the local API.
+  "formalAiDesktop:ensureAgentServer",
+  "createLocalServerManager",
 ]);
 requireIncludes("preload.cjs", read("preload.cjs"), [
   "contextBridge",
   "FormalAiDesktop",
   "getStatus",
+  "ensureAgentServer",
   "invokeTool",
   "setToolGrants",
   "syncMemory",
@@ -94,6 +95,19 @@ requireIncludes("lib/service-control.cjs", read("lib/service-control.cjs"), [
   "formal-ai-server",
   "TELEGRAM_BOT_TOKEN",
   "serve",
+]);
+// Issue #515: the local-server manager owns start/reuse health logic behind an
+// injectable interface so the Electron main process can be tested without
+// loading Electron.
+requireIncludes("lib/local-server.cjs", read("lib/local-server.cjs"), [
+  "createLocalServerManager",
+  "FORMAL_AI_DESKTOP_SERVER",
+  "requestHealth",
+  "startApiProcess",
+  "/v1/chat/completions",
+  "/v1/graph",
+  "agentProvider",
+  "local-openai-compatible",
 ]);
 
 console.log("formal-ai desktop smoke checks passed");

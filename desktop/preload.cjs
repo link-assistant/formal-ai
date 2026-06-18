@@ -5,6 +5,9 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("FormalAiDesktop", {
   getStatus: () => ipcRenderer.invoke("formalAiDesktop:getStatus"),
   openExternal: (url) => ipcRenderer.invoke("formalAiDesktop:openExternal", url),
+  // Issue #515: Agent / Full Auto mode auto-starts the local
+  // OpenAI-compatible server and exposes its apiBase for provider wiring.
+  ensureAgentServer: () => ipcRenderer.invoke("formalAiDesktop:ensureAgentServer"),
   // R5d: drive the default-deny tool-call gate and route permitted tools through
   // the local process / Docker sandbox.
   setToolGrants: (grants) => ipcRenderer.invoke("formalAiDesktop:setToolGrants", grants),
