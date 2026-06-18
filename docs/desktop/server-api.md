@@ -32,8 +32,10 @@ npm --prefix desktop run build    # packaged installers (build:linux / build:mac
 
 it starts **only** a static file server on a random loopback port to serve the
 web bundle, and reports `mode: "in-process"` to the UI. No `formal-ai serve`
-child process is spawned, so nothing binds an API port. The UI answers prompts
-with the same engine the public web demo uses.
+child process is spawned at first launch, so nothing binds an API port until
+the user either enables the startup opt-in below or switches the desktop UI to
+Agent / Full Auto mode. The UI answers normal chat prompts with the same engine
+the public web demo uses.
 
 This mirrors the design of the upstream
 [`agent`](https://github.com/link-assistant/agent) CLI: an agent you can run
@@ -50,13 +52,20 @@ point an external CLI at formal-ai, or share the local API with another tool.
 ### 2a. From the desktop app
 
 Set `FORMAL_AI_DESKTOP_SERVER` to a truthy value (`1`, `true`, `yes`, or `on`)
-before launching. The shell then starts `formal-ai serve` on a free loopback
-port, waits for `GET /health`, and routes chat through
-`POST /v1/chat/completions`. The status badge switches to **“API local”**.
+before launching when you want the API ready immediately. The shell then starts
+`formal-ai serve` on a free loopback port, waits for `GET /health`, and routes
+chat through `POST /v1/chat/completions`. The status badge switches to
+**“API local”**.
 
 ```bash
 FORMAL_AI_DESKTOP_SERVER=1 npm --prefix desktop run dev
 ```
+
+Without that environment variable, switching the desktop UI to **Agent** or
+**Full Auto** starts the same local server on demand, reusing an already healthy
+server when one is running. The resulting `apiBase` is exposed in the desktop
+status and provider metadata so the later Agent CLI integration can point at
+the same local OpenAI-compatible backend.
 
 The desktop server is bound to `127.0.0.1` and is **unauthenticated by design**
 — the shell scrubs any bearer-token environment variables before spawning it,

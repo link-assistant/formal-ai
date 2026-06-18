@@ -4278,6 +4278,17 @@ function normalizeDesktopStatus(status) {
     return null;
   }
   const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
+  const agentProvider =
+    status.agentProvider && typeof status.agentProvider === "object"
+      ? {
+          type: String(status.agentProvider.type || "local-openai-compatible"),
+          apiBase: String(status.agentProvider.apiBase || apiBase).replace(/\/+$/, ""),
+          openAiBaseUrl: String(
+            status.agentProvider.openAiBaseUrl || (apiBase ? `${apiBase}/v1` : ""),
+          ).replace(/\/+$/, ""),
+          model: String(status.agentProvider.model || "formal-symbolic-production"),
+        }
+      : null;
   return {
     shell: String(status.shell || "Electron"),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
@@ -4290,6 +4301,7 @@ function normalizeDesktopStatus(status) {
     toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
+    agentProvider,
   };
 }
 
@@ -4352,6 +4364,13 @@ function syncDesktopToolGrants(bridge, mode, grants) {
   Promise.resolve(bridge.setToolGrants(desktopToolRouterGrants(mode, grants))).catch(() => {});
 }
 
+async function ensureDesktopAgentServer(bridge) {
+  if (!bridge || typeof bridge.ensureAgentServer !== "function") {
+    return null;
+  }
+  return normalizeDesktopStatus(await bridge.ensureAgentServer());
+}
+
 // Route a single tool call through the desktop bridge to the local process /
 // Docker sandbox. Returns a structured refusal when the bridge is unavailable so
 // callers never silently fall back to executing in the browser.
@@ -4364,6 +4383,9 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       executed: false,
       reason: "desktop tool router is unavailable",
     };
+  }
+  if (typeof bridge.ensureAgentServer === "function") {
+    await bridge.ensureAgentServer();
   }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
 }
@@ -6422,6 +6444,38 @@ function App() {
     // the operating mode or a grant decision changes.
     syncDesktopToolGrants(desktopBridge(), mode, desktopToolGrants);
   }, [mode, desktopToolGrants, desktopStatus]);
+
+  useEffect(() => {
+    if (mode === "chat") {
+      return undefined;
+    }
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.ensureAgentServer !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    ensureDesktopAgentServer(bridge)
+      .then((status) => {
+        if (!cancelled && status) {
+          setDesktopStatus(status);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setDesktopStatus((current) =>
+            normalizeDesktopStatus({
+              ...(current || {}),
+              shell: (current && current.shell) || "Electron",
+              apiReady: false,
+              apiError: error && error.message ? error.message : String(error),
+            }),
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
 
   // Issue #438 (follow-up): poll the desktop bridge for the prepared-container
   // status so the Services panel reflects running/stopped without a manual
