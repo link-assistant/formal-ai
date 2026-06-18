@@ -354,8 +354,17 @@ const REQUIRED_KEYS = [
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '../../..');
-const catalogPath = path.join(repoRoot, 'src/web/i18n-catalog.lino');
-const text = fs.readFileSync(catalogPath, 'utf8');
+// The catalog is split across files so each stays under the Links Notation line
+// limit (see scripts/check-file-size.rs). The loader (src/web/i18n.js) fetches
+// each file and merges their per-locale keys, so this checker does the same.
+const catalogFiles = [
+  'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-permissions.lino',
+];
+const catalogTexts = catalogFiles.map((relativePath) =>
+  fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'),
+);
+const text = catalogTexts.join('\n');
 const failures = [];
 
 if (!text.includes('"""')) {
@@ -366,10 +375,14 @@ if (!/\n  buttons\n    reportIssue /.test(text)) {
   failures.push('catalog must keep related messages in nested blocks');
 }
 
-const parsed = parseLinoCatalogs(text);
-const catalogs = new Map(
-  parsed.map(({ locale, translations }) => [locale, translations]),
-);
+const catalogs = new Map();
+for (const catalogText of catalogTexts) {
+  for (const { locale, translations } of parseLinoCatalogs(catalogText)) {
+    const merged = catalogs.get(locale) || {};
+    Object.assign(merged, translations);
+    catalogs.set(locale, merged);
+  }
+}
 const actualLocales = [...catalogs.keys()].sort();
 
 for (const locale of EXPECTED_LOCALES) {

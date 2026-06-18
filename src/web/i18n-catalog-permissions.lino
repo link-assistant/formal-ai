@@ -1,0 +1,284 @@
+# Desktop tool-permission and Services UI translations (issue #511/#514).
+# Split out of i18n-catalog.lino to stay under the Links Notation line limit.
+# The loader (src/web/i18n.js) fetches this file and i18n-catalog.lino and
+# merges their per-locale keys; tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+
+en
+  permissions
+    tool
+      http_fetch
+        label "HTTP fetch"
+        description "Fetch an HTTP(S) URL through the local process."
+      url_navigate
+        label "URL navigate"
+        description "Open or inspect a URL through the local process."
+      eval_js
+        label "Evaluate JS"
+        description "Run JavaScript inside the sandbox."
+      read_local_file
+        label "Read local file"
+        description "Read a file from the allowed local workspace."
+      code_exec
+        label "Code exec"
+        description "Run code inside the Docker sandbox."
+      shell
+        label "Shell"
+        description "Run a shell command inside the Docker sandbox."
+    panel
+      title "Desktop tool permissions"
+      active "Agent tools active"
+      saved "Saved for Agent mode"
+      rowLabel "Permissions"
+    state
+      granted "Granted"
+      declined "Declined"
+      undecided "Not decided"
+    action
+      grant "Grant"
+      decline "Decline"
+    toolCount "{granted}/{total} tools granted"
+    command
+      title "Shell command request"
+      approve "Approve"
+      deny "Deny"
+      status
+        pending "Pending"
+        running "Running"
+        approved "Approved"
+        denied "Denied"
+    onboarding
+      intro "Agent and Full Auto use explicit desktop permissions."
+      perTool "Grant or decline each tool separately."
+      modes "Agent asks before each shell command; Full Auto skips per-command prompts but still only runs granted tools."
+    message
+      shellRan "Ran shell command in {mode} mode: `{command}`."
+      shellNotRun "Shell command was not run: `{command}`."
+      shellNotGranted "The `shell` tool is not granted. Grant `shell` in the desktop permission panel, then send the command again."
+      approvalPrompt "Approve this shell command before it runs:"
+      commandDeclined "Command declined: `{command}`. No shell command ran."
+      noOutput "(no output)"
+      reasonNoResult "desktop tool router returned no result"
+      reasonRefused "desktop tool router refused the request"
+  services
+    dockerMissing "Docker is not available. Install Docker Desktop to start the prepared containers."
+    start "Start"
+    starting "Starting…"
+    stop "Stop"
+    stopping "Stopping…"
+    state
+      running "running"
+      stopped "stopped"
+      needsToken "needs token"
+      dockerUnavailable "Docker unavailable"
+      error "error"
+      unknown "unknown"
+
+ru
+  permissions
+    tool
+      http_fetch
+        label "HTTP-запрос"
+        description "Загрузить HTTP(S)-адрес через локальный процесс."
+      url_navigate
+        label "Переход по URL"
+        description "Открыть или просмотреть URL через локальный процесс."
+      eval_js
+        label "Выполнить JS"
+        description "Запустить JavaScript в песочнице."
+      read_local_file
+        label "Чтение локального файла"
+        description "Прочитать файл из разрешённого локального рабочего пространства."
+      code_exec
+        label "Выполнение кода"
+        description "Запустить код в песочнице Docker."
+      shell
+        label "Оболочка"
+        description "Выполнить команду оболочки в песочнице Docker."
+    panel
+      title "Разрешения инструментов рабочего стола"
+      active "Инструменты агента активны"
+      saved "Сохранено для режима агента"
+      rowLabel "Разрешения"
+    state
+      granted "Предоставлено"
+      declined "Отклонено"
+      undecided "Не решено"
+    action
+      grant "Предоставить"
+      decline "Отклонить"
+    toolCount "Предоставлено инструментов: {granted}/{total}"
+    command
+      title "Запрос команды оболочки"
+      approve "Одобрить"
+      deny "Отклонить"
+      status
+        pending "Ожидает"
+        running "Выполняется"
+        approved "Одобрено"
+        denied "Отклонено"
+    onboarding
+      intro "Агент и Авто используют явные разрешения рабочего стола."
+      perTool "Предоставьте или отклоните каждый инструмент отдельно."
+      modes "Агент спрашивает перед каждой командой оболочки; Авто пропускает запросы по каждой команде, но всё равно запускает только разрешённые инструменты."
+    message
+      shellRan "Команда оболочки выполнена в режиме {mode}: `{command}`."
+      shellNotRun "Команда оболочки не выполнена: `{command}`."
+      shellNotGranted "Инструмент `shell` не предоставлен. Предоставьте `shell` на панели разрешений рабочего стола и отправьте команду снова."
+      approvalPrompt "Одобрите эту команду оболочки перед запуском:"
+      commandDeclined "Команда отклонена: `{command}`. Команда оболочки не выполнялась."
+      noOutput "(нет вывода)"
+      reasonNoResult "маршрутизатор инструментов рабочего стола не вернул результат"
+      reasonRefused "маршрутизатор инструментов рабочего стола отклонил запрос"
+  services
+    dockerMissing "Docker недоступен. Установите Docker Desktop, чтобы запускать подготовленные контейнеры."
+    start "Запустить"
+    starting "Запуск…"
+    stop "Остановить"
+    stopping "Остановка…"
+    state
+      running "работает"
+      stopped "остановлен"
+      needsToken "нужен токен"
+      dockerUnavailable "Docker недоступен"
+      error "ошибка"
+      unknown "неизвестно"
+
+zh
+  permissions
+    tool
+      http_fetch
+        label "HTTP 获取"
+        description "通过本地进程获取 HTTP(S) 网址。"
+      url_navigate
+        label "URL 导航"
+        description "通过本地进程打开或检查网址。"
+      eval_js
+        label "执行 JS"
+        description "在沙箱中运行 JavaScript。"
+      read_local_file
+        label "读取本地文件"
+        description "从允许的本地工作区读取文件。"
+      code_exec
+        label "执行代码"
+        description "在 Docker 沙箱中运行代码。"
+      shell
+        label "Shell"
+        description "在 Docker 沙箱中运行 shell 命令。"
+    panel
+      title "桌面工具权限"
+      active "代理工具已激活"
+      saved "已为代理模式保存"
+      rowLabel "权限"
+    state
+      granted "已授予"
+      declined "已拒绝"
+      undecided "未决定"
+    action
+      grant "授予"
+      decline "拒绝"
+    toolCount "已授予 {granted}/{total} 个工具"
+    command
+      title "Shell 命令请求"
+      approve "批准"
+      deny "拒绝"
+      status
+        pending "待处理"
+        running "运行中"
+        approved "已批准"
+        denied "已拒绝"
+    onboarding
+      intro "代理和全自动使用明确的桌面权限。"
+      perTool "分别授予或拒绝每个工具。"
+      modes "代理在每个 shell 命令前询问；全自动跳过逐条命令提示，但仍然只运行已授予的工具。"
+    message
+      shellRan "已在 {mode} 模式下运行 shell 命令：`{command}`。"
+      shellNotRun "shell 命令未运行：`{command}`。"
+      shellNotGranted "未授予 `shell` 工具。请在桌面权限面板中授予 `shell`，然后再次发送命令。"
+      approvalPrompt "在运行此 shell 命令前请批准："
+      commandDeclined "命令已拒绝：`{command}`。没有运行任何 shell 命令。"
+      noOutput "（无输出）"
+      reasonNoResult "桌面工具路由器未返回结果"
+      reasonRefused "桌面工具路由器拒绝了该请求"
+  services
+    dockerMissing "Docker 不可用。请安装 Docker Desktop 以启动预配置的容器。"
+    start "启动"
+    starting "正在启动…"
+    stop "停止"
+    stopping "正在停止…"
+    state
+      running "运行中"
+      stopped "已停止"
+      needsToken "需要令牌"
+      dockerUnavailable "Docker 不可用"
+      error "错误"
+      unknown "未知"
+
+hi
+  permissions
+    tool
+      http_fetch
+        label "HTTP फ़ेच"
+        description "लोकल प्रोसेस के ज़रिए एक HTTP(S) URL फ़ेच करें।"
+      url_navigate
+        label "URL नेविगेट"
+        description "लोकल प्रोसेस के ज़रिए एक URL खोलें या जाँचें।"
+      eval_js
+        label "JS चलाएँ"
+        description "सैंडबॉक्स में JavaScript चलाएँ।"
+      read_local_file
+        label "लोकल फ़ाइल पढ़ें"
+        description "अनुमत लोकल वर्कस्पेस से एक फ़ाइल पढ़ें।"
+      code_exec
+        label "कोड चलाएँ"
+        description "Docker सैंडबॉक्स में कोड चलाएँ।"
+      shell
+        label "शेल"
+        description "Docker सैंडबॉक्स में एक शेल कमांड चलाएँ।"
+    panel
+      title "डेस्कटॉप टूल अनुमतियाँ"
+      active "एजेंट टूल सक्रिय"
+      saved "एजेंट मोड के लिए सहेजा गया"
+      rowLabel "अनुमतियाँ"
+    state
+      granted "प्रदान किया"
+      declined "अस्वीकृत"
+      undecided "तय नहीं"
+    action
+      grant "प्रदान करें"
+      decline "अस्वीकार करें"
+    toolCount "{granted}/{total} टूल प्रदान किए गए"
+    command
+      title "शेल कमांड अनुरोध"
+      approve "स्वीकृत करें"
+      deny "अस्वीकार करें"
+      status
+        pending "लंबित"
+        running "चल रहा है"
+        approved "स्वीकृत"
+        denied "अस्वीकृत"
+    onboarding
+      intro "एजेंट और फुल ऑटो स्पष्ट डेस्कटॉप अनुमतियों का उपयोग करते हैं।"
+      perTool "हर टूल को अलग-अलग प्रदान या अस्वीकार करें।"
+      modes "एजेंट हर शेल कमांड से पहले पूछता है; फुल ऑटो हर-कमांड प्रॉम्प्ट छोड़ देता है पर फिर भी केवल प्रदान किए गए टूल ही चलाता है।"
+    message
+      shellRan "{mode} मोड में शेल कमांड चलाई गई: `{command}`।"
+      shellNotRun "शेल कमांड नहीं चलाई गई: `{command}`।"
+      shellNotGranted "`shell` टूल प्रदान नहीं किया गया है। डेस्कटॉप अनुमति पैनल में `shell` प्रदान करें, फिर कमांड दोबारा भेजें।"
+      approvalPrompt "इस शेल कमांड को चलने से पहले स्वीकृत करें:"
+      commandDeclined "कमांड अस्वीकृत: `{command}`। कोई शेल कमांड नहीं चली।"
+      noOutput "(कोई आउटपुट नहीं)"
+      reasonNoResult "डेस्कटॉप टूल राउटर ने कोई परिणाम नहीं लौटाया"
+      reasonRefused "डेस्कटॉप टूल राउटर ने अनुरोध अस्वीकार कर दिया"
+  services
+    dockerMissing "Docker उपलब्ध नहीं है। तैयार कंटेनर शुरू करने के लिए Docker Desktop इंस्टॉल करें।"
+    start "शुरू करें"
+    starting "शुरू हो रहा है…"
+    stop "रोकें"
+    stopping "रुक रहा है…"
+    state
+      running "चल रहा है"
+      stopped "रुका हुआ"
+      needsToken "टोकन चाहिए"
+      dockerUnavailable "Docker उपलब्ध नहीं"
+      error "त्रुटि"
+      unknown "अज्ञात"
