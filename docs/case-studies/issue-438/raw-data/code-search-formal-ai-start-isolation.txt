@@ -1,0 +1,4 @@
+link-assistant/formal-ai:Dockerfile: FORMAL_AI_START_ISOLATION=docker \
+link-assistant/formal-ai:scripts/verify-docker-runtime.sh: if [[ "${FORMAL_AI_START_ISOLATION:-}" != "docker" ]]; then
+link-assistant/formal-ai:scripts/verify-docker-runtime.sh: echo "FORMAL_AI_START_ISOLATION must be docker, got '${FORMAL_AI_START_ISOLATION:-}'" >&2
+link-assistant/formal-ai:tests/unit/docker_runtime.rs: "FORMAL_AI_START_ISOLATION=docker",

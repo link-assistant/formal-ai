@@ -1,0 +1,16 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449075566)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 18.02s
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 4 tests
+test ci_cd::workflow_release::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror ... ok
+test ci_cd::workflow_release::release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts ... ok
+test ci_cd::workflow_release::desktop_release_workflow_run_targets_completed_release_tag ... ok
+test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 919 filtered out; finished in 0.00s
+

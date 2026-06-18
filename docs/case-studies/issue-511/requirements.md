@@ -7,7 +7,8 @@ plans for each are in [`solution-plans.md`](solution-plans.md); the milestone th
 delivers each is in [`proposed-issues.md`](proposed-issues.md).
 
 Legend for *Status now*: **Missing** (not in repo), **Partial** (primitive exists but
-not wired/surfaced), **Present** (exists and reusable as-is).
+not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemented**
+(the branch already satisfies the requirement's current acceptance slice).
 
 ---
 
@@ -16,7 +17,9 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R1 — First-run system message offering agent mode
 - **Source:** *"from the start it will ask to switch to agentic mode"*; *"At first
   time we should produce system message with requests for permissions."*
-- **Priority:** P0 · **Status now:** Missing
+- **Priority:** P0 · **Status now:** Partial (E1/PR #525 returns a seed-backed
+  `agent_suggestion` for detected terminal commands; the first-run system message
+  and per-permission controls remain E2)
 - **Acceptance:** On first use (or first detected terminal/tool request), the chat
   emits a system message that explains agent mode and invites the user to enable it.
   Shown once; the decision persists in preferences.
@@ -44,7 +47,8 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 
 ### R5 — Terminal request no longer dead-ends in `unknown`
 - **Source:** The issue title/screenshot: `Выполни \`ls ~\` в терминале` → `unknown`.
-- **Priority:** P0 · **Status now:** Missing
+- **Priority:** P0 · **Status now:** **Implemented** for recognition/onboarding by
+  E1 / PR #525 (real command execution remains R18/E7)
 - **Acceptance:** A prompt recognized as a shell/terminal command is routed to an
   agent-mode handler (offer to enable + permission prompt, or execute if already
   granted) instead of the `unknown` fallback.
@@ -56,21 +60,21 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R6 — Single chat / agent / full-auto radio group on top
 - **Source:** *"chat/agent/full auto modes should be single radio button group on top,
   that is possible to easily switch between."*
-- **Priority:** P1 · **Status now:** Partial (binary `agent-toggle` button; `Demo`,
-  `Diagnostics` are separate toggles)
+- **Priority:** P1 · **Status now:** **Implemented** by E1 / PR #525
 - **Acceptance:** One labelled radio group with exactly three options replaces the
   binary toggle in the top toolbar; switching is one click; current mode is reflected
   in the status label.
 
 ### R7 — `agent` mode = agentic with per-command confirmation
 - **Source:** Implied by the contrast with full-auto (*"approve each command"*).
-- **Priority:** P1 · **Status now:** Partial
+- **Priority:** P1 · **Status now:** Partial (mode exists; approval execution path is E2/E4)
 - **Acceptance:** In `agent` mode, each command requires explicit approval before it
   runs (the R2/R3 prompt).
 
 ### R8 — `full auto` mode = agentic + no confirmations
 - **Source:** *"full auto is agentic mode + no confirmations."*
-- **Priority:** P1 · **Status now:** Missing
+- **Priority:** P1 · **Status now:** Partial (radio option exists; no grant-gated
+  full-auto execution path yet)
 - **Acceptance:** In `full-auto`, granted-tool commands execute without per-command
   prompts; the prior grants (or an explicit "grant all") still gate which tools are
   allowed.
@@ -96,8 +100,9 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R11 — Auto-start local OpenAI-compatible server & configure the CLI
 - **Source:** *"Start the Formal AI OpenAI compatible server locally, and configure
   Agent CLI."*
-- **Priority:** P1 · **Status now:** Partial (server mode exists behind
-  `FORMAL_AI_DESKTOP_SERVER`; not auto-started for agent mode; CLI not configured)
+- **Priority:** P1 · **Status now:** Partial (`formal-ai serve`, desktop
+  service-control, and `compose.yaml` can start the server; it is not auto-started
+  by agent/full-auto mode and the CLI is not configured yet)
 - **Acceptance:** Entering agent mode auto-starts the local server (if not running)
   and points the Agent CLI's model backend at it.
 
@@ -112,8 +117,9 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 - **Source:** *"use separate small docker container (our server, which we also should
   make available and easy installable by our desktop application), in near server you
   can install codex and claude to test integration."*
-- **Priority:** P1 · **Status now:** Partial (`konard/box-dind` sandbox is used for
-  `shell`; no Formal-AI-owned image bundling agent + agent-commander; no installer UX)
+- **Priority:** P1 · **Status now:** Partial (latest `main` publishes/runs a prepared
+  Formal-AI image and desktop service-control starts Telegram/server containers; the
+  agent image still must bundle `agent` + `agent-commander` and expose install/health UX)
 - **Acceptance:** A Formal-AI container image bundles the local server + `agent` +
   `agent-commander`; the desktop app offers one-click install + health check.
 
@@ -139,7 +145,8 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 ### R15 — Full integration + e2e tests for the cold-start journey
 - **Source:** *"We should also add full integration and e2e tests to make sure our
   desktop app fully supports that case from the start."*
-- **Priority:** P1 · **Status now:** Missing
+- **Priority:** P1 · **Status now:** Partial (E1 adds terminal-intent + mode-switch
+  e2e and explicit Playwright timeouts; the cold-start real `ls ~` journey remains E7)
 - **Acceptance:** Tests cover: first-run onboarding, per-command grant/deny, the
   three-way mode switch, and `ls ~` returning a real listing rendered in chat.
 
@@ -225,14 +232,14 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 
 | Req | Theme | Priority | Status now | Milestone |
 |---|---|---|---|---|
-| R1 | Onboarding | P0 | Missing | E1, E2 |
+| R1 | Onboarding | P0 | Partial | E1, E2 |
 | R2 | Permissions | P0 | Partial | E2 |
 | R3 | Permissions | P0 | Missing | E2 |
 | R4 | Permissions | P0 | Present | E2 (guard) |
-| R5 | Onboarding | P0 | Missing | E1 |
-| R6 | Mode UI | P1 | Partial | E1 |
+| R5 | Onboarding | P0 | **Implemented** | E1 |
+| R6 | Mode UI | P1 | **Implemented** | E1 |
 | R7 | Mode UI | P1 | Partial | E2 |
-| R8 | Mode UI | P1 | Missing | E2 |
+| R8 | Mode UI | P1 | Partial | E2 |
 | R9 | Execution | P1 | Missing | E4 |
 | R10 | Execution | P1 | Missing | E5 |
 | R11 | Execution | P1 | Partial | E3 |
@@ -240,7 +247,7 @@ not wired/surfaced), **Present** (exists and reusable as-is).
 | R13 | Execution | P1 | Partial | E5 |
 | R14 | Execution | P1 | Missing | E6 |
 | R14b | Safety | P0 | By design | E4, E5 |
-| R15 | Tests | P1 | Missing | E7 |
+| R15 | Tests | P1 | Partial | E7 |
 | R16 | Upstream | P2 | Resolved (upstream) | E8 |
 | R17 | Best practices | P2 | Partial | E5, E8 |
 | R18 | Verify journey | P0 | Missing | E7 |

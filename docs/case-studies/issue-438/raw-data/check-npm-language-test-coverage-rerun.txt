@@ -1,0 +1,5 @@
+
+> formal-ai-e2e@1.0.0 check:language-test-coverage
+> node scripts/check-language-test-coverage.mjs
+
+Language test coverage OK: no language-facing changes against origin/main.

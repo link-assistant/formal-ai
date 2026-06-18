@@ -53,6 +53,11 @@ requireIncludes("main.cjs", read("main.cjs"), [
   // R5c (D1): local-database sync.
   "formalAiDesktop:syncMemory",
   "createMemorySync",
+  // Issue #438 (follow-up): one-click start/stop of the prepared containers.
+  "formalAiDesktop:serviceStatus",
+  "formalAiDesktop:startService",
+  "formalAiDesktop:stopService",
+  "createServiceControl",
 ]);
 requireIncludes("preload.cjs", read("preload.cjs"), [
   "contextBridge",
@@ -61,6 +66,9 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "invokeTool",
   "setToolGrants",
   "syncMemory",
+  "serviceStatus",
+  "startService",
+  "stopService",
 ]);
 
 // R5d (D2): the tool router defaults to deny and routes code-exec to box-dind.
@@ -77,6 +85,15 @@ requireIncludes("lib/memory-sync.cjs", read("lib/memory-sync.cjs"), [
   "createMemorySync",
   "/v1/memory/since",
   "/v1/memory/import",
+]);
+// Issue #438 (follow-up): the service-control module manages both prepared
+// containers (Telegram bot + OpenAI-compatible server) behind one runner.
+requireIncludes("lib/service-control.cjs", read("lib/service-control.cjs"), [
+  "createServiceControl",
+  "formal-ai-telegram",
+  "formal-ai-server",
+  "TELEGRAM_BOT_TOKEN",
+  "serve",
 ]);
 
 console.log("formal-ai desktop smoke checks passed");
