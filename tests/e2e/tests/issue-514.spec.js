@@ -2,6 +2,21 @@
 const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
+const supportedUiLanguages = [
+  { language: 'en', name: 'English' },
+  { language: 'ru', name: 'Russian' },
+  { language: 'hi', name: 'Hindi' },
+  { language: 'zh', name: 'Chinese' },
+];
+
+function preferencesForUiLanguage(language) {
+  return [
+    'demo_preferences',
+    '  demoMode "off"',
+    '  greetingVariations "off"',
+    `  uiLanguage "${language}"`,
+  ].join('\n');
+}
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
@@ -121,6 +136,43 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     await expect.poll(() =>
       page.evaluate((prefKey) => window.localStorage.getItem(prefKey), PREF_KEY),
     ).toContain('desktopToolGrants "http_fetch:off,shell:on"');
+  });
+
+  test('permission panel works across supported UI language choices', async ({ page }) => {
+    for (const { language, name } of supportedUiLanguages) {
+      await page.evaluate(
+        ({ prefKey, preferences }) => {
+          window.localStorage.setItem(prefKey, preferences);
+        },
+        {
+          prefKey: PREF_KEY,
+          preferences: preferencesForUiLanguage(language),
+          language,
+          name,
+        },
+      );
+      await page.reload();
+
+      await expect(page.locator('.app'), `${name} UI loaded`).toBeVisible({
+        timeout: 15_000,
+      });
+      await expect(page.locator('html'), `${name} UI language is active`).toHaveAttribute(
+        'lang',
+        language,
+      );
+      await expect(page.locator('[data-testid="desktop-permission-panel-sidebar"]')).toBeVisible();
+      await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
+        '0/6 tools granted',
+      );
+
+      await page.locator('[data-testid="desktop-permission-panel-sidebar-grant-shell"]').click();
+      await expect(
+        page.locator('[data-testid="desktop-permission-panel-sidebar-state-shell"]'),
+      ).toHaveText('Granted');
+      await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
+        '1/6 tools granted',
+      );
+    }
   });
 
   test('Agent mode asks before each shell command', async ({ page }) => {
