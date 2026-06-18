@@ -79,14 +79,14 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     );
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Off');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Permission gated',
+      '0/6 tools granted',
     );
 
-    // The agent toggle is the explicit opt-in for the permission-gated tool router.
+    // The mode radio is the explicit opt-in for the permission-gated tool router.
     await page.locator('[data-testid="mode-option-agent"]').click();
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Opted in');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Agent tools visible',
+      '0/6 tools granted',
     );
   });
 
@@ -115,7 +115,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
       'formal_ai_bundle',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Permission gated',
+      '0/6 tools granted',
     );
   });
 
@@ -150,7 +150,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
         'VS Code - API local - agent permission off',
       );
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        'Permission gated',
+        '0/6 tools granted',
       );
     }
   });

@@ -1339,12 +1339,218 @@ body.is-resizing-context {
   background: #175f4f;
 }
 
+.message.system .avatar {
+  background: #5f6b7a;
+  font-size: 12px;
+}
+
+.message.system .message-body {
+  background: #f6f8fb;
+  border-color: #cdd6e2;
+}
+
 .message-body {
   min-width: 0;
   border: 1px solid #dce4e7;
   border-radius: 8px;
   padding: 12px 14px;
   background: #fbfcfd;
+}
+
+.message-permission-panel {
+  margin-top: 12px;
+}
+
+.permission-panel,
+.command-approval-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header,
+.command-approval-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header strong,
+.command-approval-copy strong {
+  color: #1e252b;
+  font-size: 14px;
+}
+
+.permission-panel-header span,
+.permission-tool-copy span,
+.command-approval-copy span {
+  color: #657584;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.permission-tool-list {
+  display: grid;
+  min-width: 0;
+}
+
+.permission-tool-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  border-top: 1px solid #dce4e7;
+  padding: 9px 0;
+}
+
+.permission-tool-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.permission-tool-copy strong {
+  color: #1e252b;
+  font-size: 13px;
+}
+
+.permission-state,
+.command-approval-status {
+  justify-self: start;
+  border: 1px solid #c8d3df;
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: #eef3f8;
+  color: #34475a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.permission-state-granted,
+.command-approval-status-approved {
+  border-color: #9bc9b7;
+  background: #e7f5ef;
+  color: #175f4f;
+}
+
+.permission-state-declined,
+.command-approval-status-denied {
+  border-color: #e0b2b2;
+  background: #faeeee;
+  color: #8a2f2f;
+}
+
+.command-approval-status-running {
+  border-color: #cdbd7a;
+  background: #fff6d8;
+  color: #6c5512;
+}
+
+.permission-actions,
+.command-approval-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.permission-button {
+  border: 1px solid #94b9ad;
+  border-radius: 6px;
+  padding: 5px 8px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.permission-button:hover:not(:disabled),
+.permission-button[aria-pressed="true"] {
+  background: #e5f3ee;
+  border-color: #5da28a;
+}
+
+.permission-button-secondary {
+  border-color: #c8d3df;
+  color: #46576a;
+}
+
+.permission-button-secondary:hover:not(:disabled),
+.permission-button-secondary[aria-pressed="true"] {
+  background: #f0f3f6;
+  border-color: #93a4b5;
+}
+
+.permission-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.command-approval-panel {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 12px;
+}
+
+.command-approval-copy code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  border: 1px solid #d9e1e8;
+  border-radius: 6px;
+  padding: 3px 5px;
+  background: #f8fafc;
+  color: #1e252b;
+  font-size: 12px;
+}
+
+.desktop-shell-panel .desktop-permission-row {
+  gap: 8px;
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .permission-tool-row,
+.desktop-shell-panel .command-approval-copy {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .command-approval-copy {
+  display: grid;
+}
+
+.desktop-shell-panel .permission-tool-row {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.desktop-shell-panel .permission-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 720px) {
+  .permission-panel-header,
+  .permission-tool-row,
+  .command-approval-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .permission-tool-row {
+    align-items: start;
+  }
+
+  .permission-actions,
+  .command-approval-actions {
+    justify-content: flex-start;
+  }
 }
 
 .message-meta {
@@ -3742,5 +3948,111 @@ textarea:disabled {
     border-color: #2c8f71;
     background: #2c8f71;
     color: #ffffff;
+  }
+}
+
+:root[data-theme="dark"] .message.system .message-body,
+:root[data-theme="dark"] .permission-button,
+:root[data-theme="dark"] .command-approval-copy code {
+  border-color: #424a47;
+  background: #202322;
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .permission-panel-header strong,
+:root[data-theme="dark"] .permission-tool-copy strong,
+:root[data-theme="dark"] .command-approval-copy strong {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .permission-panel-header span,
+:root[data-theme="dark"] .permission-tool-copy span,
+:root[data-theme="dark"] .command-approval-copy span {
+  color: #bcb5ad;
+}
+
+:root[data-theme="dark"] .permission-tool-row,
+:root[data-theme="dark"] .command-approval-panel {
+  border-top-color: #343a3d;
+}
+
+:root[data-theme="dark"] .permission-state,
+:root[data-theme="dark"] .command-approval-status {
+  border-color: #4c5651;
+  background: #252a28;
+  color: #d6d0c8;
+}
+
+:root[data-theme="dark"] .permission-state-granted,
+:root[data-theme="dark"] .command-approval-status-approved {
+  border-color: #4b8f78;
+  background: #183129;
+  color: #9bd9c4;
+}
+
+:root[data-theme="dark"] .permission-state-declined,
+:root[data-theme="dark"] .command-approval-status-denied {
+  border-color: #8c4f4f;
+  background: #351f1f;
+  color: #efb0b0;
+}
+
+:root[data-theme="dark"] .command-approval-status-running {
+  border-color: #8a7535;
+  background: #332b18;
+  color: #ead48a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .message.system .message-body,
+  :root:not([data-theme="light"]) .permission-button,
+  :root:not([data-theme="light"]) .command-approval-copy code {
+    border-color: #424a47;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .permission-panel-header strong,
+  :root:not([data-theme="light"]) .permission-tool-copy strong,
+  :root:not([data-theme="light"]) .command-approval-copy strong {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .permission-panel-header span,
+  :root:not([data-theme="light"]) .permission-tool-copy span,
+  :root:not([data-theme="light"]) .command-approval-copy span {
+    color: #bcb5ad;
+  }
+
+  :root:not([data-theme="light"]) .permission-tool-row,
+  :root:not([data-theme="light"]) .command-approval-panel {
+    border-top-color: #343a3d;
+  }
+
+  :root:not([data-theme="light"]) .permission-state,
+  :root:not([data-theme="light"]) .command-approval-status {
+    border-color: #4c5651;
+    background: #252a28;
+    color: #d6d0c8;
+  }
+
+  :root:not([data-theme="light"]) .permission-state-granted,
+  :root:not([data-theme="light"]) .command-approval-status-approved {
+    border-color: #4b8f78;
+    background: #183129;
+    color: #9bd9c4;
+  }
+
+  :root:not([data-theme="light"]) .permission-state-declined,
+  :root:not([data-theme="light"]) .command-approval-status-denied {
+    border-color: #8c4f4f;
+    background: #351f1f;
+    color: #efb0b0;
+  }
+
+  :root:not([data-theme="light"]) .command-approval-status-running {
+    border-color: #8a7535;
+    background: #332b18;
+    color: #ead48a;
   }
 }
