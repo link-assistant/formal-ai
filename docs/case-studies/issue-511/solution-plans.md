@@ -22,6 +22,17 @@ Reusable components referenced throughout:
   library, per-tool read-only/plan flags, NDJSON streaming), `link-assistant/hive-mind`
   (isolation best practices).
 
+2026-06-18 merge baseline:
+
+- E1 / PR [#525](https://github.com/link-assistant/formal-ai/pull/525) is now in this
+  branch. Terminal-command recognition, the three-way mode radio, seed-backed terminal
+  vocabulary/responses, the no-hardcoded-natural-language documentation + CI guard, and
+  Playwright timeouts are already present.
+- Latest `main` adds the issue #438/#523 service-control stack: the prepared GHCR
+  image, `compose.yaml`, `desktop/lib/service-control.cjs`, and one-click Telegram /
+  OpenAI-compatible server controls. E3/E5 should reuse that stack and extend it for
+  `agent` + `agent-commander`.
+
 ---
 
 ## Theme A — Onboarding & permissions
@@ -29,6 +40,8 @@ Reusable components referenced throughout:
 ### R1 — First-run system message offering agent mode
 - **Reuse:** APP message-render path; preferences store (`agentMode`, plus a new
   `agentOnboardingSeen`).
+- **Status:** Partially scaffolded by E1: detected terminal prompts now receive an
+  `agent_suggestion` response instead of `unknown`.
 - **Plan:** When a conversation has no prior agent-mode decision **and** either it is
   the first session or a terminal/tool request is detected (R5), append a *system*
   chat message (not an assistant turn) that explains agent mode and renders the R3
@@ -38,18 +51,20 @@ Reusable components referenced throughout:
 
 ### R5 — Terminal request no longer dead-ends in `unknown`
 - **Reuse:** WK handler chain; the existing `shell` tool vocabulary in TR.
-- **Plan:** Add a `tryTerminalCommand` handler **just before** the `unknown` fallback
+- **Status:** Implemented by E1 / PR #525 for recognition and seed-backed
+  `agent_suggestion` responses. The real execution handoff is still R9/R12/R18.
+- **Plan:** Keep the `tryTerminalCommand` handler **just before** the `unknown` fallback
   in both the JS worker (`formal_ai_worker.js`) **and** the Rust solver
   (`src/solver.rs`) to preserve parity (the project's E33–E34 parity rule). It detects
-  shell-command shapes — fenced/backtick commands, `выполни … в терминале` / `run … in
-  terminal` / explicit `ls`,`pwd`,`cat`,`cd`… leading tokens — and returns an
-  `agent_suggestion` intent whose content (a) names the detected command, (b) explains
-  agent mode, and (c) — when not yet enabled — offers to switch + grant `shell`. When
-  agent mode is already on, it hands the command to the execution provider (R9/R12).
-- **Test:** Worker unit tests for `Выполни \`ls ~\` в терминале` (ru) and
+  shell-command shapes from `data/seed/terminal-commands.lino` — fenced/backtick
+  commands, localized "run … in terminal" phrasings, and explicit leading shell
+  tokens — and returns an `agent_suggestion` intent whose seed response names the
+  detected command. When real execution lands, agent mode hands the command to the
+  execution provider (R9/R12).
+- **Test:** Existing worker/Rust/e2e tests cover `Выполни \`ls ~\` в терминале` (ru) and
   `run \`ls ~\` in the terminal` (en) asserting intent `agent_suggestion` (not
-  `unknown`); Rust parity test asserting the same classification. This is the smallest
-  change that visibly fixes the screenshot.
+  `unknown`), plus hi/zh parity. The worker mirror is guarded against seed drift by
+  `experiments/issue-513-sync-worker-terminal.mjs --check`.
 
 ### R2 / R3 — Per-tool / per-command grant + decline (independent)
 - **Reuse:** TR `isPermitted` (already per-tool: `grants[tool] === true`); PB/DM
@@ -78,14 +93,12 @@ Reusable components referenced throughout:
 ### R6 — Single chat / agent / full-auto radio group
 - **Reuse:** APP toolbar (`app.js:7054` binary toggle), `desktopStatusLabel`
   (`app.js:3748`), the `set_preference` command path (`app.js:482`).
-- **Plan:** Replace the binary `agent-toggle` button with a three-option radio group
-  (`chat` / `agent` / `full-auto`). Introduce a `mode` preference
-  (`"chat"|"agent"|"fullAuto"`) and derive the legacy `agentMode` boolean
-  (`mode !== "chat"`) for backward compatibility with `syncDesktopToolGrants` and the
-  status label. Keep `Demo`/`Diagnostics` as orthogonal toggles (they are not chat
-  modes). Update `desktopStatusLabel` to show the selected mode.
-- **Test:** APP unit tests for the radio state and the `mode → agentMode` derivation;
-  e2e asserting one click switches modes and the status label updates.
+- **Status:** Implemented by E1 / PR #525.
+- **Plan:** Preserve the three-option radio group (`chat` / `agent` / `full-auto`),
+  the `mode` preference (`"chat"|"agent"|"fullAuto"`), and the derived legacy
+  `agentMode` boolean (`mode !== "chat"`). Future work adds semantics behind the
+  existing radio rather than replacing it.
+- **Test:** Existing e2e asserts one-click mode switching and status-label updates.
 
 ### R7 — `agent` = per-command confirmation
 - **Reuse:** R2/R3 per-command prompt; the mode preference from R6.
@@ -158,20 +171,23 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
 
 ### R11 — Auto-start server & configure the CLI
 - **Reuse:** DM server mode (`FORMAL_AI_DESKTOP_SERVER`, `/health` wait, `apiBase`);
-  `src/protocol.rs`/`src/anthropic.rs` three surfaces.
+  `src/protocol.rs`/`src/anthropic.rs` three surfaces; main's
+  `desktop/lib/service-control.cjs` + `compose.yaml` server container path.
 - **Plan:** On entering agent/full-auto, ensure the local server is running (start it
   if not) and pass its `apiBase` to the provider so the Agent CLI's model backend
-  points at Formal AI. Reuse the existing health-probe and port allocation.
+  points at Formal AI. Reuse the existing health-probe, port allocation, and
+  service-control lifecycle instead of introducing a second server manager.
 - **Test:** DM unit test that agent mode triggers server start when down and reuses a
   running server; integration test that the CLI's configured base equals `apiBase`.
 
 ### R13 — Installable Formal-AI container
 - **Reuse:** `konard/box-dind` sandbox already used by `runInSandbox`; the repo
-  `Dockerfile`.
-- **Plan:** Define a Formal-AI image (extending the box-dind sandbox) bundling the
-  local server binary + `agent` + `agent-commander`. Add a desktop "Install agent
-  environment" action that pulls/builds the image and runs a health check; this is the
-  *only* place autonomous tools run (R14b, R17).
+  `Dockerfile`; main's prepared GHCR image publishing, root `compose.yaml`, and
+  desktop service-control lifecycle.
+- **Plan:** Extend the prepared Formal-AI image/container contract so the agent
+  environment bundles the local server binary + `agent` + `agent-commander`. Add a
+  desktop "Install agent environment" action that pulls/builds the image and runs a
+  health check; this is the *only* place autonomous tools run (R14b, R17).
 - **Test:** A build smoke test for the image; a desktop unit test of the install-state
   machine (not-installed → installing → ready) with a mocked Docker.
 
@@ -199,10 +215,14 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
 ### R15 / R18 — Integration + e2e for the cold-start `ls ~` journey
 - **Reuse:** The existing e2e harness under `tests/e2e/` (Playwright specs, e.g.
   `tests/e2e/tests/issue-479*.spec.js`); TR unit-test patterns.
+- **Status:** Partially covered by E1: terminal intent and three-way mode switch e2e
+  exist, and Playwright configs now have bounded per-test/suite/assertion/navigation
+  timeouts.
 - **Plan:** Add `tests/e2e/tests/issue-511*.spec.js` covering: (1) first-run onboarding
-  message appears; (2) per-command grant/deny; (3) three-way mode switch; (4) `ls ~`
-  in agent mode returns a real listing rendered in chat (against the in-process
-  provider for hermeticity, with a container-gated variant for the real CLI).
+  message appears; (2) per-command grant/deny; (3) the existing three-way mode switch
+  still drives permissions/execution; (4) `ls ~` in agent mode returns a real listing
+  rendered in chat (against the in-process provider for hermeticity, with a
+  container-gated variant for the real CLI).
 - **Test:** The specs themselves; wire them into the e2e CI job.
 
 ### R16 — Report missing agent-commander features upstream
@@ -260,11 +280,11 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
 | Concern | Reused as-is | New code (thin) |
 |---|---|---|
 | Permission enforcement | TR `isPermitted` (per-tool) | Per-tool/per-command **UI** + grant schema |
-| Sandbox execution | DM `runInSandbox` (box-dind) | Formal-AI image bundling CLI + commander |
-| Local model server | DM server mode + 3 surfaces | Auto-start-on-agent-mode trigger |
+| Sandbox execution | DM `runInSandbox` (box-dind), prepared image/service-control | Agent image bundling CLI + commander |
+| Local model server | DM server mode + 3 surfaces, service-control server container | Auto-start-on-agent-mode trigger |
 | Agentic loop | AC planner + driver | `AgentProvider` seam (in-process vs commander) |
 | Chat rendering | APP message/tool-call path | NDJSON→chat adapter |
-| Mode control | APP toggle + status label | 3-way radio + `mode` preference |
+| Mode control | APP 3-way radio + `mode` preference (E1) | Permission/execution semantics behind `agent` and `full-auto` |
 | CLI control | — | `agent-commander` dependency + grant→flag mapping |
 | Tests | e2e + TR unit harnesses | issue-511 specs + provider/onboarding units |
 </content>

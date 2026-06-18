@@ -11,7 +11,7 @@ The current implementation covers the surface area requested in issue #1:
 - HTTP API server with `/v1/chat/completions` and `/v1/responses`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
-- Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
+- Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
@@ -227,18 +227,48 @@ curl -s http://127.0.0.1:8080/telegram/webhook \
 Docker-in-Docker Telegram bot image:
 
 ```bash
+TELEGRAM_BOT_TOKEN=123:abc docker compose up
+
+docker run --rm --privileged \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  -v formal-ai-telegram-docker:/var/lib/docker \
+  ghcr.io/link-assistant/formal-ai:latest
+
+# Local build fallback:
 docker build -t formal-ai .
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
-  -v formal-ai-docker:/var/lib/docker \
+  -v formal-ai-telegram-docker:/var/lib/docker \
   formal-ai
 
 # Preferred when Sysbox is available:
 docker run --rm --runtime=sysbox-runc \
   -e TELEGRAM_BOT_TOKEN=123:abc \
-  -v formal-ai-docker:/var/lib/docker \
+  -v formal-ai-telegram-docker:/var/lib/docker \
   formal-ai
 ```
+
+Prebuilt image quick start: the released image is
+`ghcr.io/link-assistant/formal-ai:latest`, so the only required setting for a
+polling Telegram bot is `TELEGRAM_BOT_TOKEN`. The root `compose.yaml` uses that
+image by default and preserves the inner Docker daemon under the named
+`formal-ai-telegram-docker` volume. Set `FORMAL_AI_DOCKER_IMAGE` to run a locally
+built image or an optional Docker Hub mirror with the same compose file.
+
+The same image and compose file also run the **OpenAI-compatible API server** for
+agentic mode, under an opt-in Compose profile so `docker compose up` keeps
+starting only the Telegram bot:
+
+```bash
+TELEGRAM_BOT_TOKEN=123:abc docker compose up -d   # Telegram bot only (default)
+docker compose --profile server up -d             # OpenAI-compatible server on 127.0.0.1:8080
+docker compose --profile all up -d                # both services
+```
+
+Both containers (`formal-ai-telegram` and `formal-ai-server`) are the **exact same
+ones the desktop app starts and stops with one click** — see
+[One-click services: Telegram bot and OpenAI-compatible server](docs/desktop/service-control.md)
+for the full desktop + server walkthrough.
 
 The root image is intentionally the only supported Docker runtime: it inherits
 from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and
@@ -277,6 +307,30 @@ npm --prefix desktop run build
 ```
 
 Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
+
+#### One-click services (Telegram bot and OpenAI-compatible server)
+
+The desktop sidebar has a **Services** panel that starts and stops the two
+prepared Docker containers with a single click:
+
+- **Telegram bot** (`formal-ai-telegram`) — runs the image's default polling bot.
+  An inline field captures `TELEGRAM_BOT_TOKEN`; the bot will not start without it.
+- **OpenAI-compatible server** (`formal-ai-server`) — runs `formal-ai serve` for
+  agentic mode and publishes `http://127.0.0.1:8080`.
+
+Each row shows a live running/stopped indicator (polled from Docker) and
+**Start**/**Stop** buttons. The lifecycle logic lives in the testable
+[`desktop/lib/service-control.cjs`](desktop/lib/service-control.cjs) module, wired
+into the Electron main process over IPC (`formalAiDesktop:serviceStatus` /
+`startService` / `stopService`) and exposed to the renderer through the preload
+bridge. Docker is required; the panel disables itself with a clear note when
+Docker is unavailable.
+
+The **same containers** run on a server from the root `compose.yaml` with one
+line (`docker compose --profile all up -d`). The complete desktop + server
+walkthrough — configuration, raw `docker run` equivalents, and the isolation
+model — is in
+[docs/desktop/service-control.md](docs/desktop/service-control.md).
 
 ### VS Code extension
 

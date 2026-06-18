@@ -15,20 +15,25 @@ reference [`solution-plans.md`](solution-plans.md).
 
 > **E0 — this PR (done):** case study, requirement inventory (R1–R20), solution plans,
 > and this epic. Delivers R19 + R20.
+>
+> **E1 — PR #525 (done, merged into this branch):** terminal-command intent,
+> three-way mode radio, seed-backed terminal vocabulary/responses, no-hardcoded-natural-
+> language documentation + CI guard, and e2e timeouts. Delivers R5 + R6 and scaffolds
+> R1/R15.
 
 **Status — issues created (via `gh`).** The milestones below are now live GitHub
 issues, each labeled `enhancement` and linked as a **sub-issue of #511**:
 
-| Milestone | Issue | Repository |
-|---|---|---|
-| E1 | [#513](https://github.com/link-assistant/formal-ai/issues/513) | `link-assistant/formal-ai` |
-| E2 | [#514](https://github.com/link-assistant/formal-ai/issues/514) | `link-assistant/formal-ai` |
-| E3 | [#515](https://github.com/link-assistant/formal-ai/issues/515) | `link-assistant/formal-ai` |
-| E4 | [#516](https://github.com/link-assistant/formal-ai/issues/516) | `link-assistant/formal-ai` |
-| E5 | [#517](https://github.com/link-assistant/formal-ai/issues/517) | `link-assistant/formal-ai` |
-| E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` |
-| E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` |
-| E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` |
+| Milestone | Issue | Repository | Status |
+|---|---|---|---|
+| E1 | [#513](https://github.com/link-assistant/formal-ai/issues/513) | `link-assistant/formal-ai` | Done via PR [#525](https://github.com/link-assistant/formal-ai/pull/525) |
+| E2 | [#514](https://github.com/link-assistant/formal-ai/issues/514) | `link-assistant/formal-ai` | Next |
+| E3 | [#515](https://github.com/link-assistant/formal-ai/issues/515) | `link-assistant/formal-ai` | Planned |
+| E4 | [#516](https://github.com/link-assistant/formal-ai/issues/516) | `link-assistant/formal-ai` | Planned |
+| E5 | [#517](https://github.com/link-assistant/formal-ai/issues/517) | `link-assistant/formal-ai` | Planned |
+| E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` | Planned |
+| E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` | Planned |
+| E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` | Planned |
 | Upstream gap (R16) — **resolved** | [agent#271](https://github.com/link-assistant/agent/issues/271) → [agent#272](https://github.com/link-assistant/agent/pull/272) (v0.24.0) | `link-assistant/agent` |
 | Upstream follow-up (R16) — map `agent` read-only — **resolved** | [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) (closed, js_0.7.0 / rust_0.2.5) | `link-assistant/agent-commander` |
 | Upstream follow-up (R16) — per-command approval relay — **resolved** | [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40) (closed, js_0.8.0 / rust_0.2.6) | `link-assistant/agent-commander` |
@@ -68,6 +73,8 @@ v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
 
 ## E1 — Terminal-command intent + three-way Mode radio (the visible fix)
 *(Issue [#513](https://github.com/link-assistant/formal-ai/issues/513))*
+- **Status:** Done via PR [#525](https://github.com/link-assistant/formal-ai/pull/525),
+  merged into this branch on 2026-06-17.
 - **Delivers:** R5, R6, and the scaffolding for R1.
 - **Why first:** smallest slice that **visibly fixes the screenshot** while keeping
   the suite hermetic (no Docker, no real CLI).
@@ -79,6 +86,12 @@ v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
 - **Acceptance:** `Выполни \`ls ~\` в терминале` (ru) and `run \`ls ~\` in terminal`
   (en) no longer return `unknown`; the top bar shows the three-way radio. Unit tests
   in both engines; one e2e for the mode switch.
+- **Review follow-up delivered in PR #525:** all terminal natural-language trigger
+  vocabulary and response prose moved to seed data, new tokens were grounded through
+  total closure, the JS worker mirror is guarded in CI, the
+  no-hardcoded-natural-language rule is documented in `CONTRIBUTING.md` and
+  `docs/design/no-hardcoded-natural-language.md`, and Playwright configs have
+  per-test, suite, assertion, navigation, and action timeouts.
 - **Depends on:** E0.
 
 ## E2 — Per-tool / per-command permission UI + onboarding message
@@ -197,9 +210,9 @@ E1 alone fixes the user-visible symptom (no more `unknown` for terminal commands
 the three-way mode radio); E2 makes permissions real; E3–E6 make execution real and
 isolated; E7 proves the whole cold-start journey; E8 closes the upstream loop.
 
-## Recommended first action after this plan is accepted
+## Recommended next action
 
-Open E1 and implement it. It is hermetic (no Docker, no live CLI, no subscriptions),
-it is the change that removes the exact `unknown` answer in the screenshot, and it
-unblocks every later milestone.
+Implement E2. E1 has already removed the exact `unknown` answer in the screenshot and
+unblocked the later milestones; E2 turns the visible mode/onboarding surface into a
+real permission model while preserving default-deny.
 </content>

@@ -15,6 +15,7 @@ const DESKTOP_PACKAGE: &str = include_str!("../../../desktop/package.json");
 const DESKTOP_MAIN: &str = include_str!("../../../desktop/main.cjs");
 const DESKTOP_PRELOAD: &str = include_str!("../../../desktop/preload.cjs");
 const DESKTOP_SMOKE: &str = include_str!("../../../desktop/scripts/smoke.mjs");
+const DESKTOP_SERVICE_CONTROL: &str = include_str!("../../../desktop/lib/service-control.cjs");
 const WEB_APP: &str = include_str!("../../../src/web/app.js");
 
 #[test]
@@ -175,6 +176,69 @@ fn desktop_network_view_reuses_graph_endpoint() {
     assert!(json["edges"]
         .as_array()
         .is_some_and(|edges| !edges.is_empty()));
+}
+
+#[test]
+fn desktop_service_control_starts_and_stops_prepared_containers() {
+    // Issue #438 (follow-up): the desktop app must start/stop both prepared
+    // containers (Telegram bot + OpenAI-compatible server) with one click. The
+    // service-control module owns the lifecycle behind an injected runner.
+    for expected in [
+        "createServiceControl",
+        "formal-ai-telegram",
+        "formal-ai-server",
+        "TELEGRAM_BOT_TOKEN",
+        // the server container overrides the command to serve the OpenAI API.
+        "serve",
+        // running-state is read without a live daemon dependency in tests.
+        "{{.State.Running}}",
+    ] {
+        assert!(
+            DESKTOP_SERVICE_CONTROL.contains(expected),
+            "service-control.cjs should contain `{expected}`"
+        );
+    }
+
+    // The main process wires the lifecycle to a real docker runner and exposes it
+    // over IPC; the preload bridge forwards the renderer's one-click calls.
+    for expected in [
+        "createServiceControl",
+        "formalAiDesktop:serviceStatus",
+        "formalAiDesktop:startService",
+        "formalAiDesktop:stopService",
+    ] {
+        assert!(
+            DESKTOP_MAIN.contains(expected),
+            "main.cjs should wire `{expected}`"
+        );
+    }
+    for expected in ["serviceStatus", "startService", "stopService"] {
+        assert!(
+            DESKTOP_PRELOAD.contains(expected),
+            "preload.cjs should bridge `{expected}`"
+        );
+    }
+}
+
+#[test]
+fn desktop_web_surface_exposes_one_click_service_controls() {
+    // The renderer renders a Services panel with start/stop buttons and live
+    // status indicators for both prepared containers.
+    for expected in [
+        "sidebar-services",
+        "desktop-services-panel",
+        "desktop-service-start-",
+        "desktop-service-stop-",
+        "desktop-service-telegram-token",
+        "handleStartService",
+        "handleStopService",
+        "serviceStatus",
+    ] {
+        assert!(
+            WEB_APP.contains(expected),
+            "app.js Services panel should contain `{expected}`"
+        );
+    }
 }
 
 #[test]

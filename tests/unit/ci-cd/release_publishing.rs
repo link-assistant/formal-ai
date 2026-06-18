@@ -305,27 +305,44 @@ fn build_job_checks_generated_crate_archive_size() {
 }
 
 #[test]
-fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible() {
+fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror(
+) {
     let workflow = release_workflow();
 
+    assert!(
+        workflow.contains("GHCR_IMAGE: ghcr.io/${{ github.repository }}"),
+        "workflow should expose the default GHCR image name for prepared Docker releases"
+    );
     assert!(
         workflow.contains("DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}"),
         "workflow should expose an opt-in Docker Hub image variable"
     );
     assert_eq!(
         workflow.matches("docker/login-action@v4").count(),
-        2,
-        "auto and manual release jobs should log in to Docker Hub when configured"
+        4,
+        "auto and manual release jobs should log in to GHCR and optionally Docker Hub"
     );
     assert_eq!(
         workflow.matches("docker/metadata-action@v6").count(),
-        2,
-        "auto and manual release jobs should derive Docker tags for Docker Hub"
+        4,
+        "auto and manual release jobs should derive Docker tags for GHCR and optionally Docker Hub"
     );
     assert_eq!(
         workflow.matches("docker/build-push-action@v7").count(),
-        2,
-        "auto and manual release jobs should publish Docker Hub images when configured"
+        4,
+        "auto and manual release jobs should publish GHCR images and optionally Docker Hub mirrors"
+    );
+    assert!(
+        workflow.matches("packages: write").count() >= 2,
+        "release jobs should grant package write permission for GHCR publication"
+    );
+    assert!(
+        workflow.contains("registry: ghcr.io"),
+        "GHCR login should target the GitHub Container Registry"
+    );
+    assert!(
+        workflow.contains("password: ${{ secrets.GITHUB_TOKEN }}"),
+        "GHCR login should use the workflow GITHUB_TOKEN"
     );
     assert!(
         workflow.contains("password: ${{ env.DOCKERHUB_TOKEN }}"),
@@ -340,15 +357,21 @@ fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible()
         .find("- name: Wait for Crate availability on Crates.io")
         .expect("auto release should wait for the crate");
     let auto_docker = auto_release
+        .find("- name: Publish Docker image to GHCR")
+        .expect("auto release should publish the prepared GHCR Docker image");
+    let auto_docker_hub = auto_release
         .find("- name: Publish Docker image to Docker Hub")
-        .expect("auto release should publish the Docker image");
+        .expect("auto release should optionally mirror the Docker image to Docker Hub");
     let auto_github_release = auto_release
         .find("- name: Create GitHub Release")
         .expect("auto release should create a GitHub release");
 
     assert!(
-        auto_publish < auto_wait && auto_wait < auto_docker && auto_docker < auto_github_release,
-        "auto release should publish crates.io first, then Docker Hub, then GitHub release"
+        auto_publish < auto_wait
+            && auto_wait < auto_docker
+            && auto_docker < auto_docker_hub
+            && auto_docker_hub < auto_github_release,
+        "auto release should publish crates.io first, then GHCR, then optional Docker Hub, then GitHub release"
     );
 
     let manual_release = job_block(&workflow, "manual-release");
@@ -359,8 +382,11 @@ fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible()
         .find("- name: Wait for Crate availability on Crates.io")
         .expect("manual release should wait for the crate");
     let manual_docker = manual_release
+        .find("- name: Publish Docker image to GHCR")
+        .expect("manual release should publish the prepared GHCR Docker image");
+    let manual_docker_hub = manual_release
         .find("- name: Publish Docker image to Docker Hub")
-        .expect("manual release should publish the Docker image");
+        .expect("manual release should optionally mirror the Docker image to Docker Hub");
     let manual_github_release = manual_release
         .find("- name: Create GitHub Release")
         .expect("manual release should create a GitHub release");
@@ -368,8 +394,9 @@ fn release_workflow_publishes_optional_docker_hub_image_after_crate_is_visible()
     assert!(
         manual_publish < manual_wait
             && manual_wait < manual_docker
-            && manual_docker < manual_github_release,
-        "manual release should publish crates.io first, then Docker Hub, then GitHub release"
+            && manual_docker < manual_docker_hub
+            && manual_docker_hub < manual_github_release,
+        "manual release should publish crates.io first, then GHCR, then optional Docker Hub, then GitHub release"
     );
 }
 
@@ -380,6 +407,10 @@ fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifa
 
     for step_name in [
         "Wait for Crate availability on Crates.io",
+        "Log in to GitHub Container Registry",
+        "Set up Docker Buildx",
+        "Extract GHCR Docker metadata",
+        "Publish Docker image to GHCR",
         "Configure Docker Hub publishing",
         "Create GitHub Release",
     ] {
@@ -401,6 +432,10 @@ fn release_workflow_defers_rate_limited_crates_publish_without_downstream_artifa
     let manual_release = job_block(&workflow, "manual-release");
     for step_name in [
         "Wait for Crate availability on Crates.io",
+        "Log in to GitHub Container Registry",
+        "Set up Docker Buildx",
+        "Extract GHCR Docker metadata",
+        "Publish Docker image to GHCR",
         "Configure Docker Hub publishing",
         "Create GitHub Release",
     ] {
@@ -793,6 +828,14 @@ fn release_scripts_check_configured_release_artifacts() {
         wait_for_crate.contains("example-sum-package-name")
             && wait_for_crate.contains("crate_available\", \"skipped\""),
         "crate availability wait should preserve template-safe publishing skips"
+    );
+    assert!(
+        release_script.contains("--ghcr-url"),
+        "GitHub release creation should accept a GHCR package URL"
+    );
+    assert!(
+        release_script.contains("fn ghcr_badge"),
+        "GitHub release notes should include GHCR badge support"
     );
     assert!(
         release_script.contains("--docker-hub-url"),

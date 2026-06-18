@@ -4,7 +4,7 @@
 //! Automatically includes crates.io and docs.rs badges in release notes
 //! when the crate name can be detected from Cargo.toml.
 //!
-//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]
+//! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
 //!
 //! ```cargo
 //! [dependencies]
@@ -29,7 +29,7 @@ use std::path::Path;
 use std::process::{exit, Command, Stdio};
 
 #[cfg(not(test))]
-const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--docker-hub-url <url>]";
+const USAGE: &str = "Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]";
 
 #[cfg(not(test))]
 fn get_rust_root() -> String {
@@ -158,6 +158,43 @@ fn docker_hub_badge(url: &str, version: &str) -> String {
 
     format!(
         "[![Docker Hub](https://img.shields.io/badge/docker-{}-2496ED?logo=docker)]({})",
+        badge_escape(&image_tag),
+        tag_url
+    )
+}
+
+fn ghcr_image_tag_from_url(url: &str, version: &str) -> String {
+    let trimmed_url = url.trim_end_matches('/');
+    if let Some(image) = trimmed_url.strip_prefix("https://ghcr.io/") {
+        return format!("{image}:{version}");
+    }
+
+    if let Some(path) = trimmed_url.strip_prefix("https://github.com/") {
+        let parts = path.split('/').collect::<Vec<_>>();
+        if let Some(idx) = parts
+            .windows(2)
+            .position(|window| window == ["pkgs", "container"])
+        {
+            if let (Some(owner), Some(package)) = (parts.first(), parts.get(idx + 2)) {
+                return format!("ghcr.io/{owner}/{package}:{version}");
+            }
+        }
+    }
+
+    format!("{trimmed_url}:{version}")
+}
+
+fn ghcr_badge(url: &str, version: &str) -> String {
+    let trimmed_url = url.trim_end_matches('/');
+    let image_tag = ghcr_image_tag_from_url(trimmed_url, version);
+    let tag_url = if trimmed_url.contains("/pkgs/container/") {
+        format!("{}?tag={}", trimmed_url, docker_hub_tag_query(version))
+    } else {
+        trimmed_url.to_string()
+    };
+
+    format!(
+        "[![GHCR](https://img.shields.io/badge/ghcr-{}-24292F?logo=github)]({})",
         badge_escape(&image_tag),
         tag_url
     )
@@ -378,6 +415,7 @@ fn main() {
     let language = get_arg("language").unwrap_or_else(|| "Rust".to_string());
     let release_label = get_arg("release-label");
     let crates_io_url = get_arg("crates-io-url");
+    let ghcr_url = get_arg("ghcr-url");
     let docker_hub_url = get_arg("docker-hub-url");
     let normalized_version = normalize_release_version(&version);
 
@@ -401,6 +439,9 @@ fn main() {
             "[![Crates.io](https://img.shields.io/crates/v/{crate_name}?label=crates.io)](https://crates.io/crates/{crate_name}/{normalized_version}) [![Docs.rs](https://docs.rs/{crate_name}/badge.svg)](https://docs.rs/{crate_name}/{normalized_version})"
         );
         badges.push(crate_badges);
+    }
+    if let Some(url) = ghcr_url {
+        badges.push(ghcr_badge(&url, &normalized_version));
     }
     if let Some(url) = docker_hub_url {
         badges.push(docker_hub_badge(&url, &normalized_version));
@@ -546,6 +587,19 @@ mod tests {
 
         assert!(badge.contains("1.2.3%2Bbuild.4"));
         assert!(badge.contains("tags?name=1.2.3%2Bbuild.4"));
+    }
+
+    #[test]
+    fn ghcr_badge_links_to_exact_package_tag() {
+        let badge = ghcr_badge(
+            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai",
+            "1.2.3",
+        );
+
+        assert!(badge.contains("ghcr-ghcr.io%2Flink--assistant%2Fformal--ai%3A1.2.3"));
+        assert!(badge.contains(
+            "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai?tag=1.2.3"
+        ));
     }
 
     #[test]

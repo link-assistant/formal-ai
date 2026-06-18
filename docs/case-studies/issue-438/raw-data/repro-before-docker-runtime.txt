@@ -1,0 +1,25 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449075566)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 01s
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 3 tests
+
+thread 'docker_runtime::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration' (3616770) panicked at tests/unit/docker_runtime.rs:72:10:
+compose.yaml should document the prebuilt Telegram bot image startup: Os { code: 2, kind: NotFound, message: "No such file or directory" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime ... ok
+test docker_runtime::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration ... FAILED
+test docker_runtime::docker_microservice_seed_declares_dind_start_command_contract ... ok
+
+failures:
+
+failures:
+    docker_runtime::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 919 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

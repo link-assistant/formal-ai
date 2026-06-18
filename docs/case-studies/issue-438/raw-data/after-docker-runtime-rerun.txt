@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449075566)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.47s
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 3 tests
+test docker_runtime::docker_microservice_seed_declares_dind_start_command_contract ... ok
+test docker_runtime::compose_file_runs_prebuilt_telegram_image_with_minimum_configuration ... ok
+test docker_runtime::dockerfile_defines_only_supported_dind_telegram_runtime ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 920 filtered out; finished in 0.00s
+

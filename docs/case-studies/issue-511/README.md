@@ -4,7 +4,7 @@
 > **Pull request (this work):** <https://github.com/link-assistant/formal-ai/pull/512> (branch `issue-511-26d6b8408464`)
 > **Case study date:** 2026-06-17
 > **Type:** Feature request + deep case study, requirements decomposition, and a sequenced implementation plan.
-> **Status:** Analysis + plan delivered, and the implementation issues are **created** (via `gh`). The feature is large (multi-process, cross-repo, with Docker + real coding-CLI integration and full e2e), so per the project's convention for large vision issues (cf. issue #244), this PR delivers the **case study, the complete requirement inventory, per-requirement solution plans, and a sequenced epic of implementation issues** — and those milestones are now live GitHub issues, each labeled `enhancement` and linked as a **sub-issue of #511**: E1 [#513](https://github.com/link-assistant/formal-ai/issues/513), E2 [#514](https://github.com/link-assistant/formal-ai/issues/514), E3 [#515](https://github.com/link-assistant/formal-ai/issues/515), E4 [#516](https://github.com/link-assistant/formal-ai/issues/516), E5 [#517](https://github.com/link-assistant/formal-ai/issues/517), E6 [#518](https://github.com/link-assistant/formal-ai/issues/518), E7 [#519](https://github.com/link-assistant/formal-ai/issues/519), E8 [#520](https://github.com/link-assistant/formal-ai/issues/520); plus the upstream feedback (see §6/§R16) — the original Agent-CLI gap [`agent#271`](https://github.com/link-assistant/agent/issues/271) is **resolved** (PR [`agent#272`](https://github.com/link-assistant/agent/pull/272), **v0.24.0**, native permission system), and the two follow-up gaps filed against `agent-commander` are now **both closed**: [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39) (read-only mapping, js_0.7.0 / rust_0.2.5) and [`agent-commander#40`](https://github.com/link-assistant/agent-commander/issues/40) (per-command approve-each relay, js_0.8.0 / rust_0.2.6). **Re-verified 2026-06-17 against the latest versions (`agent` v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): the plan is fully implementable today, with `@link-assistant/agent` as the default backend** (the only org-owned CLI and the only one whose approve-each relay grants a clean session-wide `once`/`always`/`reject`; `claude` is the supported fallback). Implementation of each milestone is tracked as its own follow-up issue/PR so each ships and is verified independently.
+> **Status:** Case study + plan delivered, and the implementation issues are **created** (via `gh`). E1 [#513](https://github.com/link-assistant/formal-ai/issues/513) is now implemented by PR [#525](https://github.com/link-assistant/formal-ai/pull/525) and merged into this branch: terminal-command prompts no longer fall through to `unknown`, the toolbar/drawer expose the three-way `chat` / `agent` / `full-auto` mode radio, terminal response text and trigger vocabulary are seed-backed, the no-hardcoded-natural-language rule is documented and CI-enforced, and e2e configs have explicit timeouts. Remaining milestones E2–E8 ([#514](https://github.com/link-assistant/formal-ai/issues/514)–[#520](https://github.com/link-assistant/formal-ai/issues/520)) stay live and sequenced for the real permission UI, auto-started server, agent-commander provider, containerized CLI setup, NDJSON rendering, and cold-start `ls ~` e2e. Latest `main` also brings the issue #438/#523 service-control work (`compose.yaml`, GHCR image publishing, and one-click Telegram/server controls), which the E3/E5 plan should reuse rather than reimplementing. Upstream is unblocked: `agent` v0.24.0 has native permissions, and `agent-commander` js_0.8.0 / rust_0.2.6 has read-only mapping plus `--approve-each`; `@link-assistant/agent` remains the default backend.
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/).
 
@@ -21,6 +21,7 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | `link-assistant/agent-commander` per-command approval parity (`common-concepts.md`, js_0.8.0) | [`raw-data/external-agent-commander-common-concepts.md`](raw-data/external-agent-commander-common-concepts.md) |
 | `link-assistant/hive-mind` README snapshot | [`raw-data/external-hive-mind-README.md`](raw-data/external-hive-mind-README.md) |
 | PR #512 metadata | [`raw-data/pr-512.json`](raw-data/pr-512.json) |
+| PR #525 metadata and comments (E1 + no-hardcoded-NL follow-up) | [`raw-data/pr-525.json`](raw-data/pr-525.json), [`raw-data/pr-525-comments.json`](raw-data/pr-525-comments.json) |
 | **Full requirement inventory (R1–R20)** | [`requirements.md`](requirements.md) |
 | **Per-requirement solution plans + reusable components** | [`solution-plans.md`](solution-plans.md) |
 | **Sequenced epic of implementation issues (E1–E8, created: #513–#520)** | [`proposed-issues.md`](proposed-issues.md) |
@@ -66,8 +67,16 @@ fix:
 This is a **product capability**, not a one-line fix. This case study decomposes it
 into 20 discrete requirements ([`requirements.md`](requirements.md)), maps each to a
 concrete solution that maximizes reuse of what already exists
-([`solution-plans.md`](solution-plans.md)), and sequences the work into a 10-issue
-epic ([`proposed-issues.md`](proposed-issues.md)).
+([`solution-plans.md`](solution-plans.md)), and sequences the remaining work into a
+live implementation epic ([`proposed-issues.md`](proposed-issues.md)).
+
+**2026-06-18 merge update:** the visible E1 slice is no longer only a plan. PR #525
+delivered the terminal-command intent and three-way mode radio, then incorporated the
+maintainer follow-up that all natural-language trigger vocabulary and response prose
+must come from seed data, be grounded as meanings, be kept in worker/Rust parity by
+CI, and be documented in `CONTRIBUTING.md` plus
+[`docs/design/no-hardcoded-natural-language.md`](../../design/no-hardcoded-natural-language.md).
+That leaves the real execution path (E2–E8) as the remaining product work.
 
 ---
 
@@ -109,11 +118,16 @@ The opener text comes from
 [`src/web_engine_core.rs:101`](../../../src/web_engine_core.rs) (`UNKNOWN_OPENERS_RU`
 includes *"Я ещё не научился отвечать на это."*).
 
-**There is no handler that recognizes "execute a shell/terminal command".** Even
-though the desktop tool router supports a `shell` tool
+Before E1, **there was no handler that recognized "execute a shell/terminal
+command".** Even though the desktop tool router supports a `shell` tool
 ([`desktop/lib/tool-router.cjs:25`](../../../desktop/lib/tool-router.cjs)), nothing
 in the chat solver ever proposes using it, so a terminal request can only land in
 `unknown`. That is the **proximate** root cause of the screenshot.
+
+E1 now fixes that proximate root cause with a seed-backed terminal-command intent in
+both engines. The remaining root cause is execution: the recognized command still
+needs the E2–E8 permission, provider, container, and rendering path before `ls ~`
+returns a real directory listing.
 
 The **deeper** root cause is product-level: the desktop app ships agentic plumbing
 that is **invisible and inert by default**:
@@ -126,11 +140,9 @@ that is **invisible and inert by default**:
   use, asks the user to switch to agent mode and grant per-tool permissions. The
   issue calls for exactly this: *"At first time we should produce a system message
   with requests for permissions (each should be granted or declined separately)."*
-- **Mode UI is a binary toggle, not a 3-way radio** — the toolbar control is a single
-  on/off button that flips `chat ↔ agent`
-  ([`src/web/app.js:7054`](../../../src/web/app.js), `className: "agent-toggle"`),
-  with `Demo`/`Diagnostics` as separate toggles. There is **no `full auto` mode** and
-  **no single radio group** as the issue requests.
+- **Mode UI was a binary toggle, not a 3-way radio** — fixed by E1 / PR #525. The
+  remaining gap is semantic: `agent` still needs per-command approvals wired to real
+  execution, and `full-auto` still needs grant-gated execution without confirmations.
 - **No real coding-agent integration** — the server-side loop in
   `src/agentic_coding/` is driven by an *in-repo* test driver
   ([`src/agentic_coding/driver.rs`](../../../src/agentic_coding/driver.rs)), not by
@@ -151,9 +163,10 @@ shipped infrastructure, not a green-field build.
 | Permission-gated tool dispatch (default-deny) | ✅ | [`desktop/lib/tool-router.cjs`](../../../desktop/lib/tool-router.cjs) (`isPermitted`, `SUPPORTED_TOOLS` incl. `shell`) | Grants are all-or-nothing (`{all}`); need **per-tool, per-command** granting + UI |
 | Docker sandbox for `shell`/`code_exec` | ✅ | `desktop/main.cjs` `runInSandbox()` (`konard/box-dind:2.1.1`) | Need the *Formal-AI-owned* dev container that also carries the Agent CLI + agent-commander |
 | OpenAI-compatible local server (3 surfaces) | ✅ | `desktop/main.cjs` server mode (`FORMAL_AI_DESKTOP_SERVER`), `src/protocol.rs`, `src/anthropic.rs` | Need it auto-started + auto-configured as the Agent CLI's backend |
+| One-click service-control shell for prepared containers | ✅ | `desktop/lib/service-control.cjs`, `compose.yaml`, `docs/desktop/service-control.md` (merged from issue #438/#523) | Reuse for E3/E5, but extend the image/container to include `agent` + `agent-commander` |
 | Server-side agentic loop (plan→tool→observe→loop) | ✅ | [`src/agentic_coding/`](../../../src/agentic_coding/) (issue #468) | Driven by an in-repo test driver, not the real CLI; not surfaced in desktop chat |
 | Bounded, isolated agent workspace | ✅ | [`src/agent.rs`](../../../src/agent.rs) (allowlist, path validation, time budget) | Read-only ops (e.g. `ls ~`) need a *host-visible* mode, not just temp workspace |
-| Agent/Chat toggle + command (`agent mode`/`chat mode`) | ✅ | `app.js:482`, `app.js:7054` | Binary only; no `full auto`; not a radio group |
+| Chat / Agent / Full-Auto mode radio | ✅ | `src/web/app.js` mode radio + `mode` preference (E1 / PR #525) | Needs E2/E4 semantics: approvals in `agent`, no confirmations in `full-auto`, real provider execution |
 | Agent-mode → grant sync to desktop bridge | ✅ | `app.js:3776` (`syncDesktopToolGrants`) | All-or-nothing; no per-command approve/deny prompts |
 | Chat-side "agent plan" decomposition | ✅ | `app.js:2099` `decomposeAgentTask`, `app.js:6424` `runAgentPlan` | Splits NL steps; does not execute real tools or render CLI output |
 | Multi-CLI control + read-only/plan enforcement + NDJSON + per-command approve-each | ✅ (external) | `link-assistant/agent-commander` js_0.8.0 / rust_0.2.6 | Not a desktop dependency yet; no bridge in `desktop/`. `agent` read-only mapping ([#39](https://github.com/link-assistant/agent-commander/issues/39)) **and** uniform `--approve-each` relay ([#40](https://github.com/link-assistant/agent-commander/issues/40)) are now **shipped** (approve-each: `agent` + `claude`) |
@@ -203,9 +216,10 @@ with verbatim source quotes and acceptance criteria, is in
 
 The design that minimizes new surface area and respects the project's constraints:
 
-1. **Surface, don't rebuild.** Replace the binary agent toggle with a three-state
-   **Mode** radio group (`chat` / `agent` / `full-auto`) and route `agent`/`full-auto`
-   through the **existing** tool router and `src/agentic_coding/` loop.
+1. **Surface, don't rebuild.** E1 has replaced the binary agent toggle with a
+   three-state **Mode** radio group (`chat` / `agent` / `full-auto`). The remaining
+   work routes `agent`/`full-auto` through the **existing** tool router,
+   service-control layer, and `src/agentic_coding/` loop.
 2. **Onboarding via a deterministic system message.** On first entry to `agent`
    mode (and when a chat prompt is *detected to be a terminal/shell command*),
    emit a system message that explains agent mode and presents **per-tool permission
@@ -270,7 +284,7 @@ Each of these maps to a milestone in [`proposed-issues.md`](proposed-issues.md).
 
 ---
 
-## 7. Why this PR delivers a plan, not the whole feature
+## 7. Why this PR delivers a plan + E1, not the whole feature
 
 The issue says *"plan and execute everything in this single pull request."* The
 **plan** is delivered here in full. Executing **all twenty requirements** in one PR
@@ -289,7 +303,8 @@ is neither safe nor verifiable in one reviewable unit:
   plan + the first verifiable slice, then iterate**.
 
 Accordingly, this PR lands the **case study + requirement inventory + solution plans
-+ sequenced epic**, and the milestones have been **created as live GitHub issues**
++ sequenced epic**, plus the E1 visible slice, and the remaining milestones have been
+**created as live GitHub issues**
 (via `gh`) — E1–E8 as [#513–#520](https://github.com/link-assistant/formal-ai/issues/513),
 each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream
 feedback — [`agent#271`](https://github.com/link-assistant/agent/issues/271) resolved
@@ -298,10 +313,9 @@ two follow-up gaps [`agent-commander#39`](https://github.com/link-assistant/agen
 / [`#40`](https://github.com/link-assistant/agent-commander/issues/40) now **both
 closed** (js_0.8.0 / rust_0.2.6) — so
 each milestone can ship and be verified on its own. The first implementation
-milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513): the
-in-process terminal-command handler + three-way mode radio + onboarding message) is
-the smallest slice that *visibly fixes the screenshot* while keeping the suite
-hermetic, and is recommended to start immediately.
+milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513)) has
+already landed via PR #525: the in-process terminal-command handler and three-way
+mode radio visibly fix the screenshot while keeping the suite hermetic.
 
 ---
 

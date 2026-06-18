@@ -1,6 +1,6 @@
 {
   "name": "formal-ai-desktop",
-  "version": "0.153.0",
+  "version": "0.154.0",
   "private": true,
   "description": "Cross-platform desktop wrapper for formal-ai",
   "homepage": "https://link-assistant.github.io/formal-ai/",
@@ -17,7 +17,7 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs && node scripts/smoke.mjs"
+    "test": "node --test scripts/tool-router.test.mjs scripts/memory-sync.test.mjs scripts/service-control.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
     "electron": "^42.4.0",
