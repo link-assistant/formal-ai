@@ -45,7 +45,9 @@ requireIncludes("main.cjs", read("main.cjs"), [
   // R5d (D2): permission-gated tool routing through the local process / sandbox.
   "formalAiDesktop:invokeTool",
   "formalAiDesktop:setToolGrants",
+  "formalAiDesktop:runAgentProvider",
   "createToolRouter",
+  "createAgentProvider",
   "dockerIsAvailable",
   // R5c (D1): local-database sync.
   "formalAiDesktop:syncMemory",
@@ -66,6 +68,7 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "ensureAgentServer",
   "invokeTool",
   "setToolGrants",
+  "runAgentProvider",
   "syncMemory",
   "serviceStatus",
   "startService",
@@ -108,6 +111,16 @@ requireIncludes("lib/local-server.cjs", read("lib/local-server.cjs"), [
   "/v1/graph",
   "agentProvider",
   "local-openai-compatible",
+]);
+// Issue #516: the desktop agent execution seam is default-in-process and can be
+// switched to the agent-commander provider without spawning host agent CLIs.
+requireIncludes("lib/agent-provider.cjs", read("lib/agent-provider.cjs"), [
+  "createAgentProvider",
+  "in-process",
+  "commander",
+  "start-agent",
+  "agent-commander",
+  "directHostSpawnViolations",
 ]);
 
 console.log("formal-ai desktop smoke checks passed");

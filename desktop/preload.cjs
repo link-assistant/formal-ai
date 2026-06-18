@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld("FormalAiDesktop", {
   // the local process / Docker sandbox.
   setToolGrants: (grants) => ipcRenderer.invoke("formalAiDesktop:setToolGrants", grants),
   invokeTool: (request) => ipcRenderer.invoke("formalAiDesktop:invokeTool", request),
+  // Issue #516: swappable agent execution provider (in-process by default,
+  // agent-commander when explicitly selected).
+  runAgentProvider: (request) => ipcRenderer.invoke("formalAiDesktop:runAgentProvider", request),
   // R5c: reconcile browser (IndexedDB) memory with the native store.
   syncMemory: (payload) => ipcRenderer.invoke("formalAiDesktop:syncMemory", payload),
   // Issue #438 (follow-up): one-click start/stop of the prepared Telegram bot and

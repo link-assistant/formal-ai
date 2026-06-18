@@ -9,6 +9,7 @@ const path = require("node:path");
 const { URL } = require("node:url");
 
 const { createToolRouter, SUPPORTED_TOOLS } = require("./lib/tool-router.cjs");
+const { createAgentProvider } = require("./lib/agent-provider.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
 const {
@@ -32,6 +33,7 @@ let desktopStatus = {
   memory: "formal_ai_bundle",
   agentModeDefault: false,
   toolCallPolicy: "explicit-permission",
+  agentExecutionProvider: { type: "in-process" },
   apiReady: false,
   apiError: "",
 };
@@ -134,7 +136,11 @@ const localServerManager = createLocalServerManager({
 });
 
 function applyLocalServerStatus(status) {
-  desktopStatus = { ...desktopStatus, ...status };
+  desktopStatus = {
+    ...desktopStatus,
+    ...status,
+    agentExecutionProvider: agentProvider.status(),
+  };
   return desktopStatus;
 }
 
@@ -163,6 +169,7 @@ async function createMainWindow() {
     traceUrl: "",
     apiReady: false,
     apiError: "",
+    agentExecutionProvider: agentProvider.status(),
   };
   if (serverModeRequested()) {
     await ensureAgentServer();
@@ -353,6 +360,17 @@ const toolRouter = createToolRouter({
   runInSandbox,
 });
 
+// Issue #516 / E4: swappable execution seam. The in-process provider is the
+// default hermetic path; FORMAL_AI_AGENT_PROVIDER=commander selects the
+// agent-commander adapter, which drives @link-assistant/agent through
+// `start-agent` inside the Formal-AI container contract.
+const agentProvider = createAgentProvider({
+  type: process.env.FORMAL_AI_AGENT_PROVIDER,
+  toolRouter,
+  workingDirectory: REPO_ROOT,
+  containerName: "formal-ai-agent",
+});
+
 // The renderer's permission toggles (desktop-tool-permission / -agent-permission)
 // drive the default-deny grant map. Until the user opts in, every tool call is
 // refused and nothing executes.
@@ -376,6 +394,24 @@ ipcMain.handle("formalAiDesktop:invokeTool", async (_event, request) => {
     };
   }
   return toolRouter.invoke(request);
+});
+
+ipcMain.handle("formalAiDesktop:runAgentProvider", async (_event, request) => {
+  const payload = request && typeof request === "object" ? request : {};
+  if (payload.grants && typeof payload.grants === "object") {
+    toolRouter.setGrants(payload.grants);
+  }
+  const readyStatus = agentProvider.type === "commander"
+    ? desktopStatus.apiReady
+      ? desktopStatus
+      : await ensureAgentServer()
+    : desktopStatus;
+  return agentProvider.run({
+    ...payload,
+    apiBase: readyStatus.apiBase,
+    agentProvider: readyStatus.agentProvider,
+    workingDirectory: payload.workingDirectory || REPO_ROOT,
+  });
 });
 
 // R5c (ROADMAP D1): reconcile the browser (IndexedDB) memory log with the native
