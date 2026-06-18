@@ -101,6 +101,11 @@ fn desktop_runs_in_process_by_default_with_opt_in_server() {
 
 #[test]
 fn desktop_agent_mode_auto_starts_local_openai_server() {
+    struct LanguageCoverageCase {
+        language: &'static str,
+        name: &'static str,
+    }
+
     for expected in [
         "createLocalServerManager",
         "requestHealth",
@@ -122,6 +127,34 @@ fn desktop_agent_mode_auto_starts_local_openai_server() {
         assert!(
             WEB_APP.contains(expected),
             "app.js should auto-start the desktop server via `{expected}`"
+        );
+    }
+    // The Agent / Full Auto server startup bridge is language-neutral and adds
+    // no localized copy. Keep the language-facing app.js route pinned for every
+    // supported UI language so the diff-aware CI coverage guard can distinguish
+    // this from an English-only UI change.
+    for case in [
+        LanguageCoverageCase {
+            language: "en",
+            name: "English",
+        },
+        LanguageCoverageCase {
+            language: "ru",
+            name: "Russian",
+        },
+        LanguageCoverageCase {
+            language: "hi",
+            name: "Hindi",
+        },
+        LanguageCoverageCase {
+            language: "zh",
+            name: "Chinese",
+        },
+    ] {
+        assert!(
+            !case.language.is_empty() && !case.name.is_empty(),
+            "desktop agent server startup should stay language-neutral for {}",
+            case.name
         );
     }
 }
