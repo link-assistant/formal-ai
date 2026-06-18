@@ -16,9 +16,17 @@ ENV HOME=/home/box \
     BUN_INSTALL=/home/box/.bun
 ENV PATH="${BUN_INSTALL}/bin:${PATH}"
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/* && \
+    node --version
+
 USER box
 WORKDIR /home/box
-RUN bun install -g start-command && "$" --version
+RUN bun install -g start-command @link-assistant/agent agent-commander && \
+    "$" --version && \
+    agent --version && \
+    start-agent --help >/dev/null
 
 USER root
 COPY --from=builder /app/target/release/formal-ai /usr/local/bin/formal-ai

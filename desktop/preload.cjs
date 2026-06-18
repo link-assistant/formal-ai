@@ -21,5 +21,6 @@ contextBridge.exposeInMainWorld("FormalAiDesktop", {
   // OpenAI-compatible server Docker containers.
   serviceStatus: () => ipcRenderer.invoke("formalAiDesktop:serviceStatus"),
   startService: (request) => ipcRenderer.invoke("formalAiDesktop:startService", request),
+  installAgentEnvironment: () => ipcRenderer.invoke("formalAiDesktop:installAgentEnvironment"),
   stopService: (request) => ipcRenderer.invoke("formalAiDesktop:stopService", request),
 });

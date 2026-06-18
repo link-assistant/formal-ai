@@ -256,19 +256,21 @@ image by default and preserves the inner Docker daemon under the named
 built image or an optional Docker Hub mirror with the same compose file.
 
 The same image and compose file also run the **OpenAI-compatible API server** for
-agentic mode, under an opt-in Compose profile so `docker compose up` keeps
-starting only the Telegram bot:
+agentic mode and the idle **Agent CLI environment**, under opt-in Compose
+profiles so `docker compose up` keeps starting only the Telegram bot:
 
 ```bash
 TELEGRAM_BOT_TOKEN=123:abc docker compose up -d   # Telegram bot only (default)
 docker compose --profile server up -d             # OpenAI-compatible server on 127.0.0.1:8080
-docker compose --profile all up -d                # both services
+docker compose --profile agent up -d              # agent + agent-commander environment
+docker compose --profile all up -d                # all services
 ```
 
-Both containers (`formal-ai-telegram` and `formal-ai-server`) are the **exact same
-ones the desktop app starts and stops with one click** — see
-[One-click services: Telegram bot and OpenAI-compatible server](docs/desktop/service-control.md)
-for the full desktop + server walkthrough.
+All three containers (`formal-ai-telegram`, `formal-ai-server`, and
+`formal-ai-agent`) are the **exact same ones the desktop app manages with one
+click** — see
+[One-click services and agent environment](docs/desktop/service-control.md) for
+the full desktop + server walkthrough.
 
 The root image is intentionally the only supported Docker runtime: it inherits
 from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and
@@ -308,27 +310,32 @@ npm --prefix desktop run build
 
 Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
 
-#### One-click services (Telegram bot and OpenAI-compatible server)
+#### One-click services and agent environment
 
-The desktop sidebar has a **Services** panel that starts and stops the two
+The desktop sidebar has a **Services** panel that starts, stops, or installs the
 prepared Docker containers with a single click:
 
 - **Telegram bot** (`formal-ai-telegram`) — runs the image's default polling bot.
   An inline field captures `TELEGRAM_BOT_TOKEN`; the bot will not start without it.
 - **OpenAI-compatible server** (`formal-ai-server`) — runs `formal-ai serve` for
   agentic mode and publishes `http://127.0.0.1:8080`.
+- **Agent environment** (`formal-ai-agent`) — pulls the prepared image, recreates
+  an idle container, and health-checks `formal-ai --version`, `agent --version`,
+  and `start-agent --help` inside the container.
 
-Each row shows a live running/stopped indicator (polled from Docker) and
-**Start**/**Stop** buttons. The lifecycle logic lives in the testable
+Each row shows a live Docker-backed indicator and **Start**/**Stop** or
+**Install agent environment** controls. The lifecycle logic lives in the testable
 [`desktop/lib/service-control.cjs`](desktop/lib/service-control.cjs) module, wired
 into the Electron main process over IPC (`formalAiDesktop:serviceStatus` /
-`startService` / `stopService`) and exposed to the renderer through the preload
-bridge. Docker is required; the panel disables itself with a clear note when
-Docker is unavailable.
+`startService` / `installAgentEnvironment` / `stopService`) and exposed to the
+renderer through the preload bridge. Docker is required; the panel disables
+itself with a clear note when Docker is unavailable.
 
 The **same containers** run on a server from the root `compose.yaml` with one
-line (`docker compose --profile all up -d`). The complete desktop + server
-walkthrough — configuration, raw `docker run` equivalents, and the isolation
+line (`docker compose --profile all up -d`). Autonomous tools are run only inside
+the Formal-AI container path; the desktop provider never invokes host
+`agent`/`claude`/`codex` binaries. The complete desktop + server walkthrough —
+configuration, raw `docker run` equivalents, health checks, and the isolation
 model — is in
 [docs/desktop/service-control.md](docs/desktop/service-control.md).
 

@@ -4,9 +4,14 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
+const repoRoot = path.resolve(desktopDir, "..");
 
 function read(relativePath) {
   return fs.readFileSync(path.join(desktopDir, relativePath), "utf8");
+}
+
+function readRepo(relativePath) {
+  return fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
 }
 
 function requireIncludes(label, text, snippets) {
@@ -55,6 +60,7 @@ requireIncludes("main.cjs", read("main.cjs"), [
   // Issue #438 (follow-up): one-click start/stop of the prepared containers.
   "formalAiDesktop:serviceStatus",
   "formalAiDesktop:startService",
+  "formalAiDesktop:installAgentEnvironment",
   "formalAiDesktop:stopService",
   "createServiceControl",
   // Issue #515: entering Agent / Full Auto mode starts or reuses the local API.
@@ -72,6 +78,7 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "syncMemory",
   "serviceStatus",
   "startService",
+  "installAgentEnvironment",
   "stopService",
 ]);
 
@@ -96,8 +103,24 @@ requireIncludes("lib/service-control.cjs", read("lib/service-control.cjs"), [
   "createServiceControl",
   "formal-ai-telegram",
   "formal-ai-server",
+  "formal-ai-agent",
+  "installAgentEnvironment",
+  "agent --version",
+  "start-agent --help",
   "TELEGRAM_BOT_TOKEN",
   "serve",
+]);
+// Issue #517 / E5: the prepared image bundles the local server binary, the Agent
+// CLI, and agent-commander so the desktop install health check can verify all
+// three inside the container.
+requireIncludes("Dockerfile", readRepo("Dockerfile"), [
+  "konard/box-dind:2.1.1",
+  "apt-get install -y --no-install-recommends nodejs",
+  "node --version",
+  "@link-assistant/agent",
+  "agent-commander",
+  "agent --version",
+  "start-agent --help",
 ]);
 // Issue #515: the local-server manager owns start/reuse health logic behind an
 // injectable interface so the Electron main process can be tested without

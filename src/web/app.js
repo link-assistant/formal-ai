@@ -4265,6 +4265,7 @@ function serviceStateLabel(state, t) {
     absent: "services.state.stopped",
     "missing-config": "services.state.needsToken",
     "docker-unavailable": "services.state.dockerUnavailable",
+    ready: "services.state.ready",
     error: "services.state.error",
   }[String(state || "")];
   if (key) {
@@ -6527,7 +6528,10 @@ function App() {
         if (key === "telegram") {
           request.token = telegramToken.trim();
         }
-        const result = await bridge.startService(request);
+        const result =
+          key === "agent" && typeof bridge.installAgentEnvironment === "function"
+            ? await bridge.installAgentEnvironment()
+            : await bridge.startService(request);
         if (result && result.ok === false && result.reason) {
           setServiceError(result.reason);
         }
@@ -8829,7 +8833,7 @@ function App() {
           : null,
         serviceStatus
           ? h(CollapsibleSection, {
-              title: "Services",
+              title: t("services.title"),
               testId: "sidebar-services",
               collapsed: sidebarServicesCollapsed,
               onToggle: () => setSidebarServicesCollapsed((value) => !value),
@@ -8852,6 +8856,8 @@ function App() {
                     const running = Boolean(service.running);
                     const busy = serviceBusy === service.key;
                     const dockerReady = serviceStatus.dockerAvailable !== false;
+                    const isAgentEnvironment = service.key === "agent";
+                    const serviceLabel = service.labelKey ? t(service.labelKey) : service.label;
                     return h(
                       "div",
                       {
@@ -8867,7 +8873,7 @@ function App() {
                           className: `desktop-service-dot${running ? " is-running" : ""}`,
                           "data-testid": `desktop-service-dot-${service.key}`,
                         }),
-                        h("span", { className: "desktop-service-label" }, service.label),
+                        h("span", { className: "desktop-service-label" }, serviceLabel),
                         h(
                           "span",
                           {
@@ -8911,10 +8917,16 @@ function App() {
                             type: "button",
                             className: "desktop-service-start",
                             "data-testid": `desktop-service-start-${service.key}`,
-                            disabled: running || busy || !dockerReady,
+                            disabled: (!isAgentEnvironment && running) || busy || !dockerReady,
                             onClick: () => handleStartService(service.key),
                           },
-                          busy ? t("services.starting") : t("services.start"),
+                          isAgentEnvironment
+                            ? busy
+                              ? t("services.installing")
+                              : t("services.installAgent")
+                            : busy
+                              ? t("services.starting")
+                              : t("services.start"),
                         ),
                         h(
                           "button",
