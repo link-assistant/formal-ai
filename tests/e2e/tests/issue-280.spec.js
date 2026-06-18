@@ -60,7 +60,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Off',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Permission gated',
+      '0/6 tools granted',
     );
 
     await page.locator('[data-testid="mode-option-agent"]').click();
@@ -68,7 +68,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
       'Opted in',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Agent tools visible',
+      '0/6 tools granted',
     );
   });
 
@@ -92,7 +92,7 @@ test.describe('Issue #280: desktop shell bridge', () => {
         'Desktop - API local - agent permission off',
       );
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        'Permission gated',
+        '0/6 tools granted',
       );
     }
   });

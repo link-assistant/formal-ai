@@ -24,9 +24,14 @@ async function sendPrompt(page, text) {
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();
+  const assistantMessages = page.locator('[data-testid="chat-message"].assistant');
+  const initialAssistant = await assistantMessages.count();
   await page.locator('[data-testid="chat-composer-submit"]').click();
-  await expect(messages).toHaveCount(initial + 2, { timeout: 20_000 });
-  return messages.last();
+  await expect.poll(async () => messages.count(), { timeout: 20_000 }).toBeGreaterThan(initial);
+  await expect
+    .poll(async () => assistantMessages.count(), { timeout: 20_000 })
+    .toBeGreaterThan(initialAssistant);
+  return assistantMessages.last();
 }
 
 test.describe('Issue #513 - terminal-command intent + mode radio', () => {

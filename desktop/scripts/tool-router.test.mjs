@@ -3,7 +3,22 @@ import { test } from "node:test";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { createToolRouter, isPermitted, SANDBOX_IMAGE } = require("../lib/tool-router.cjs");
+const {
+  createToolRouter,
+  isPermitted,
+  SANDBOX_IMAGE,
+  SUPPORTED_TOOLS,
+} = require("../lib/tool-router.cjs");
+
+function requestForTool(tool) {
+  if (tool === "http_fetch" || tool === "url_navigate") {
+    return { tool, input: { url: "https://example.com" } };
+  }
+  if (tool === "read_local_file") {
+    return { tool, input: { path: "README.md" } };
+  }
+  return { tool, input: { command: "echo hi" } };
+}
 
 test("default-deny: an ungranted tool call is refused and nothing executes", async () => {
   let fetched = false;
@@ -18,6 +33,37 @@ test("default-deny: an ungranted tool call is refused and nothing executes", asy
   assert.equal(result.status, "refused");
   assert.equal(result.executed, false);
   assert.equal(fetched, false, "fetch must not run when the tool is denied");
+});
+
+test("default-deny: empty grants refuse every supported tool before side effects", async () => {
+  let effects = 0;
+  const router = createToolRouter({
+    fetchImpl: async () => {
+      effects += 1;
+      return { status: 200, text: async () => "body" };
+    },
+    readFile: async () => {
+      effects += 1;
+      return "body";
+    },
+    dockerAvailable: () => {
+      effects += 1;
+      return true;
+    },
+    runInSandbox: async () => {
+      effects += 1;
+      return { exitCode: 0, output: "body" };
+    },
+  });
+  router.setGrants({});
+
+  for (const tool of SUPPORTED_TOOLS) {
+    const result = await router.invoke(requestForTool(tool));
+    assert.equal(result.ok, false, `${tool} must be refused`);
+    assert.equal(result.status, "refused", `${tool} status`);
+    assert.equal(result.executed, false, `${tool} executed flag`);
+  }
+  assert.equal(effects, 0, "no fetch, file, docker, or sandbox effect may run");
 });
 
 test("with permission granted, http_fetch is served by the local process", async () => {
@@ -39,6 +85,19 @@ test("an `all` grant opts every tool in at once", () => {
   assert.equal(isPermitted({ shell: true }, "shell"), true);
   assert.equal(isPermitted({}, "shell"), false);
   assert.equal(isPermitted(null, "shell"), false);
+});
+
+test("a partial grant map only permits the named tool", () => {
+  const grants = { shell: true };
+  for (const tool of SUPPORTED_TOOLS) {
+    assert.equal(
+      isPermitted(grants, tool),
+      tool === "shell",
+      `${tool} permission should be scoped to its own grant`,
+    );
+  }
+  assert.equal(isPermitted({ shell: true, http_fetch: false }, "http_fetch"), false);
+  assert.equal(isPermitted({ http_fetch: true, shell: false }, "shell"), false);
 });
 
 test("with permission granted, code_exec runs inside the box-dind container with logs captured", async () => {
