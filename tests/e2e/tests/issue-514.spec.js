@@ -138,7 +138,11 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
     ).toContain('desktopToolGrants "http_fetch:off,shell:on"');
   });
 
-  test('permission panel works across supported UI language choices', async ({ page }) => {
+  test('permission panel renders catalog translations per UI language', async ({ page }) => {
+    // Issue #511/#514: the panel must render i18n-catalog strings for the active
+    // language instead of hardcoded English. We compare the rendered DOM to what
+    // the in-page i18n engine produces for that language, and assert non-English
+    // UIs differ from English so a hardcoded-English regression cannot pass.
     for (const { language, name } of supportedUiLanguages) {
       await page.evaluate(
         ({ prefKey, preferences }) => {
@@ -160,17 +164,44 @@ test.describe('Issue #514: per-tool permissions and command approval', () => {
         'lang',
         language,
       );
+
+      const expected = await page.evaluate(async (lang) => {
+        const api = window.FormalAiI18n;
+        await api.ready;
+        const local = (key, params) => api.t(key, lang, params);
+        const english = (key, params) => api.t(key, 'en', params);
+        return {
+          zeroGranted: local('permissions.toolCount', { granted: 0, total: 6 }),
+          oneGranted: local('permissions.toolCount', { granted: 1, total: 6 }),
+          granted: local('permissions.state.granted'),
+          enZeroGranted: english('permissions.toolCount', { granted: 0, total: 6 }),
+          enGranted: english('permissions.state.granted'),
+        };
+      }, language);
+
       await expect(page.locator('[data-testid="desktop-permission-panel-sidebar"]')).toBeVisible();
-      await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        '0/6 tools granted',
-      );
+      await expect(
+        page.locator('[data-testid="desktop-tool-permission"]'),
+        `${name} renders translated tool count`,
+      ).toHaveText(expected.zeroGranted);
+
+      if (language !== 'en') {
+        expect(
+          expected.zeroGranted,
+          `${name} tool count must not be the English string`,
+        ).not.toBe(expected.enZeroGranted);
+        expect(
+          expected.granted,
+          `${name} granted label must not be the English string`,
+        ).not.toBe(expected.enGranted);
+      }
 
       await page.locator('[data-testid="desktop-permission-panel-sidebar-grant-shell"]').click();
       await expect(
         page.locator('[data-testid="desktop-permission-panel-sidebar-state-shell"]'),
-      ).toHaveText('Granted');
+      ).toHaveText(expected.granted);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        '1/6 tools granted',
+        expected.oneGranted,
       );
     }
   });

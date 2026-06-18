@@ -237,6 +237,13 @@ hardcoded prompt→answer tables.
      (`seed::response_for(intent, lang)` in Rust, `answerFor(...)` in the
      worker). Code fills placeholders like `{command}`; it does not embed the
      surrounding prose.
+   - **Web front-end (React).** Every string the user sees in `src/web/app.js`
+     — permission-panel titles, button labels, status words, onboarding copy,
+     system messages — is a catalog entry in `src/web/i18n-catalog.lino`, looked
+     up at render time via `t("<key>", params)` (the `window.FormalAiI18n`
+     engine). Never pass a prose string literal as a child of `h(...)`; route it
+     through `t(...)` so it follows the active UI language and fills placeholders
+     like `{granted}/{total}`.
 
    The principle is **meanings ↔ naturalization**: a *meaning* (a slug grounded
    in seed data) can be *naturalized* into a natural-language surface, and any
@@ -260,6 +267,14 @@ hardcoded prompt→answer tables.
      seed” CI step runs
      `node experiments/issue-513-sync-worker-terminal.mjs --check`). Regenerate
      the mirror by running the same script without `--check`.
+   - **Web-UI hardcoded-string guard (#511).** `npm --prefix tests/e2e run
+     check:web-hardcoded-ui` parses every `h(...)` call in `src/web/app.js` and
+     fails the build when a child argument is a bare prose string literal, so new
+     English text cannot leak into the UI. `npm --prefix tests/e2e run check:i18n`
+     asserts every required key exists in all four locales and that sample
+     interpolations render. When you add a web-UI string: add the key + all four
+     translations in `src/web/i18n-catalog.lino`, register it in `REQUIRED_KEYS`
+     in `tests/e2e/scripts/check-i18n-catalog.mjs`, and render it with `t(...)`.
 
    See `docs/design/no-hardcoded-natural-language.md` for the full rationale,
    the meanings ↔ naturalization model, and a worked example.

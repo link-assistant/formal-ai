@@ -292,6 +292,63 @@ const REQUIRED_KEYS = [
   'trace.seedFiles',
   'trace.toolsLoaded',
   'trace.conceptsLoaded',
+  // Issue #514 / #511: desktop tool permission UI and command-approval prose.
+  // These were hardcoded in src/web/app.js; they must live in the catalog so the
+  // permission panel, command approval, and shell messages translate per language.
+  // The lino-i18n parser sets each tool's bare key to its `label` child, so the
+  // `.label` variant is auto-allowed by isGeneratedLabelKey; `.description` is explicit.
+  'permissions.tool.http_fetch',
+  'permissions.tool.http_fetch.description',
+  'permissions.tool.url_navigate',
+  'permissions.tool.url_navigate.description',
+  'permissions.tool.eval_js',
+  'permissions.tool.eval_js.description',
+  'permissions.tool.read_local_file',
+  'permissions.tool.read_local_file.description',
+  'permissions.tool.code_exec',
+  'permissions.tool.code_exec.description',
+  'permissions.tool.shell',
+  'permissions.tool.shell.description',
+  'permissions.panel.title',
+  'permissions.panel.active',
+  'permissions.panel.saved',
+  'permissions.panel.rowLabel',
+  'permissions.state.granted',
+  'permissions.state.declined',
+  'permissions.state.undecided',
+  'permissions.action.grant',
+  'permissions.action.decline',
+  'permissions.toolCount',
+  'permissions.command.title',
+  'permissions.command.approve',
+  'permissions.command.deny',
+  'permissions.command.status.pending',
+  'permissions.command.status.running',
+  'permissions.command.status.approved',
+  'permissions.command.status.denied',
+  'permissions.onboarding.intro',
+  'permissions.onboarding.perTool',
+  'permissions.onboarding.modes',
+  'permissions.message.shellRan',
+  'permissions.message.shellNotRun',
+  'permissions.message.shellNotGranted',
+  'permissions.message.approvalPrompt',
+  'permissions.message.commandDeclined',
+  'permissions.message.noOutput',
+  'permissions.message.reasonNoResult',
+  'permissions.message.reasonRefused',
+  // Issue #511: desktop Services panel labels, also moved out of hardcoded prose.
+  'services.dockerMissing',
+  'services.start',
+  'services.starting',
+  'services.stop',
+  'services.stopping',
+  'services.state.running',
+  'services.state.stopped',
+  'services.state.needsToken',
+  'services.state.dockerUnavailable',
+  'services.state.error',
+  'services.state.unknown',
 ];
 
 const __filename = fileURLToPath(import.meta.url);
@@ -371,6 +428,14 @@ const runtimeChecks = [
   ['en', 'settings.language', 'Language'],
   ['en', 'status.nextDialogIn', 'Next dialog in 5s', { seconds: 5 }],
   ['en', 'status.mode', 'Mode: Agent', { mode: 'Agent' }],
+  // Issue #511/#514: desktop permission strings must resolve per UI language and
+  // interpolate placeholders rather than render hardcoded English.
+  ['en', 'permissions.toolCount', '0/6 tools granted', { granted: 0, total: 6 }],
+  ['ru', 'permissions.toolCount', 'Предоставлено инструментов: 1/6', { granted: 1, total: 6 }],
+  ['en', 'permissions.panel.title', 'Desktop tool permissions'],
+  ['ru', 'permissions.panel.title', 'Разрешения инструментов рабочего стола'],
+  ['zh', 'permissions.state.granted', '已授予'],
+  ['hi', 'permissions.action.grant', 'प्रदान करें'],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {

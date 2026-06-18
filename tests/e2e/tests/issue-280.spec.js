@@ -91,8 +91,14 @@ test.describe('Issue #280: desktop shell bridge', () => {
       await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
         'Desktop - API local - agent permission off',
       );
+      // Issue #511/#514: the tool-count label now comes from the i18n catalog,
+      // so assert against the active language's translation rather than English.
+      const expectedToolCount = await page.evaluate(async (lang) => {
+        await window.FormalAiI18n.ready;
+        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 6 });
+      }, language);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        '0/6 tools granted',
+        expectedToolCount,
       );
     }
   });

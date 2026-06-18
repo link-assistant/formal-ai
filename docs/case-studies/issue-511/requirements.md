@@ -205,6 +205,21 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
   executed by the Agent CLI (through agent-commander, in the container) and its output
   appears in chat — verified by an automated test.
 
+### R21 — No hardcoded user-facing strings in the web UI (enforced)
+- **Source:** PR #512 review (konard, 2026-06-18): *"we still trying to do hardcoded
+  user facing strings in our application, that must be removed and instead we should
+  record meanings sequences, and translate them to target language dynamically. We must
+  stop such errors by introducing strict CI/CD checks, contributing md should be
+  updated, requirements and so on."*
+- **Priority:** P0 · **Status now:** **Implemented** (E2 follow-up)
+- **Acceptance:** Every user-facing string rendered by `src/web/app.js` (permission
+  panel, command approval, one-click services) comes from the i18n catalog
+  (`src/web/i18n-catalog.lino`) via `t(key, params)` and translates across en/ru/zh/hi;
+  a strict CI guard (`tests/e2e/scripts/check-web-hardcoded-ui-strings.mjs`,
+  `check:web-hardcoded-ui`) fails the build on any prose string literal passed as an
+  `h(...)` child; `check:i18n` enforces all-locale key coverage; CONTRIBUTING.md and
+  `docs/design/no-hardcoded-natural-language.md` document the rule so it cannot recur.
+
 ---
 
 ## Theme E — Process / deliverables
@@ -251,6 +266,7 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 | R16 | Upstream | P2 | Resolved (upstream) | E8 |
 | R17 | Best practices | P2 | Partial | E5, E8 |
 | R18 | Verify journey | P0 | Missing | E7 |
+| R21 | i18n guard | P0 | **Implemented** | E2 (guard) |
 | R19 | Process | P0 | **Done** | E0 (this PR) |
 | R20 | Process | P0 | **Done** | E0 (this PR) |
 </content>

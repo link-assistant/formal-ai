@@ -22,9 +22,18 @@ to both directions of every reasoning path:
   worker). Code fills placeholders such as `{command}`; it does not embed the
   surrounding prose.
 
+- **Web front-end (React).** Every user-facing string rendered by
+  `src/web/app.js` — panel titles, button labels, status words, onboarding copy,
+  and system messages — is a catalog entry in `src/web/i18n-catalog.lino`,
+  looked up at render time via `t(key, params)` (the `window.FormalAiI18n`
+  engine in `src/web/i18n.js`). The render helper `h(tag, props, …children)`
+  never receives a prose string literal as a child; visible text is always a
+  `t(...)` call so it follows the active UI language (en/ru/zh/hi) and fills
+  placeholders such as `{command}` or `{granted}/{total}`.
+
 The only natural language that may appear in source files is **documentation**:
 comments, doc-strings, and Markdown. Anything a user can see in a product
-surface comes from the seed.
+surface comes from the seed (engine surfaces) or the i18n catalog (web UI).
 
 ## The principle: meanings ↔ naturalization
 
@@ -77,6 +86,31 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    and the registry is regenerated with
    `python3 scripts/generate-role-registry.py` (keeps `data/seed/roles.lino` in
    lockstep; enforced by the `reference_closure` tests).
+
+4. **Web-UI hardcoded-string guard (#511).** PR #528 reintroduced English prose
+   directly inside `h(...)` render calls (permission-panel titles, button
+   labels, status words). To stop that class of regression,
+   `tests/e2e/scripts/check-web-hardcoded-ui-strings.mjs` parses every
+   `h(tag, props, …children)` call in `src/web/app.js` and **fails the build**
+   when a *child* argument is a bare prose string literal (a letter, whitespace,
+   then another letter — i.e. two words a human reads). Dynamic values —
+   `t(...)`, variables, ternaries, template literals — pass by construction, so
+   the only way to render visible text is through the catalog. A short,
+   documented `ALLOWED_LITERALS` allowlist holds a handful of pre-i18n `<dt>`
+   labels coupled to other suites; **new prose must never be added there.** The
+   companion `check-i18n-catalog.mjs` guard asserts every required key exists in
+   all four locales (en/ru/zh/hi) and that representative interpolations render.
+   Both run in `.github/workflows/release.yml` and locally with:
+
+   ```sh
+   npm --prefix tests/e2e run check:web-hardcoded-ui
+   npm --prefix tests/e2e run check:i18n
+   ```
+
+   To add a new web-UI string: add the key (and its translation) under the right
+   block in `src/web/i18n-catalog.lino` for **all four** locales, register the
+   key in `REQUIRED_KEYS` in `check-i18n-catalog.mjs`, and render it with
+   `t("<key>", params)` — never a literal.
 
 ## Worked example: the terminal-command intent (#513)
 

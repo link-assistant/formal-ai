@@ -228,6 +228,13 @@ jobs:
       - name: Check web app for hook TDZ ordering bugs
         run: npm run --prefix tests/e2e check:web-tdz
 
+      # Issue #511/#514: fail the build if src/web/app.js renders hardcoded
+      # user-facing prose instead of routing it through the i18n catalog (t()).
+      # This stops the per-tool permission / Services regression class from
+      # silently re-appearing.
+      - name: Check web app for hardcoded user-facing strings
+        run: npm run --prefix tests/e2e check:web-hardcoded-ui
+
       # The terminal-command trigger vocabulary lives in
       # data/seed/terminal-commands.lino; the JS worker embeds a byte-identical
       # inline mirror. This fails if the two drift, so the worker can never
