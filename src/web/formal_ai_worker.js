@@ -5508,8 +5508,16 @@ function translateRussianWordSequence(words) {
 }
 
 function translateCompositionalSurface(surface, source, target) {
-  if (source !== "ru" || target !== "en") return null;
   const normalized = normalizeComposableSurface(surface);
+  if (!normalized) return null;
+
+  const direct =
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, source, target, normalized) ||
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, source, target, normalized);
+  if (direct) return direct;
+
+  if (source !== "ru" || target !== "en") return null;
+
   const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
   if (phrase) return phrase;
 
@@ -5690,12 +5698,12 @@ async function translateSurface(surface, source, target) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return { surface: primary, gap: false };
   }
+  const compositional = translateCompositionalSurface(surface, source, target);
+  if (compositional) return { surface: compositional, gap: false };
   if (surface) {
     const live = await liveWiktionaryTranslate(surface, source, target);
     if (live) return { surface: live, gap: false };
   }
-  const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return { surface: compositional, gap: false };
   return { surface: null, gap: true };
 }
 
@@ -24850,6 +24858,8 @@ const MEANINGS_LINO = [
   "    lexeme ru",
   "      surface",
   "        text помидор",
+  "      surface",
+  "        text помидоры",
   "      surface",
   "        text томат",
   "    lexeme hi",
