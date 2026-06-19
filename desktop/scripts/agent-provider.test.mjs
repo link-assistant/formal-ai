@@ -14,6 +14,10 @@ const {
   isReadOnlyShellCommand,
   restrictionFromDesktopGrants,
 } = require("../lib/agent-provider.cjs");
+const {
+  parseNdjsonEvents,
+  agentEventsToChatAnswer,
+} = require("../lib/agent-chat-adapter.cjs");
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const desktopDir = path.resolve(scriptDir, "..");
@@ -34,6 +38,40 @@ function collectDesktopSourceFiles(dir) {
   }
   return files;
 }
+
+test("agent NDJSON events map onto the existing chat answer contract", () => {
+  const fixture = fs.readFileSync(
+    path.join(scriptDir, "fixtures", "issue-518-agent.ndjson"),
+    "utf8",
+  );
+  const events = parseNdjsonEvents(fixture);
+  const answer = agentEventsToChatAnswer(events, {
+    provider: "commander",
+    status: "ok",
+  });
+
+  assert.equal(events.length, 6);
+  assert.equal(answer.intent, "agent_cli_error");
+  assert.equal(answer.source, "agent_provider");
+  assert.match(answer.content, /I will inspect the home directory/);
+  assert.match(answer.content, /Desktop and Documents are present/);
+  assert.match(answer.content, /Network lookup skipped in fixture/);
+  assert.ok(answer.evidence.includes("agent_provider:ndjson"));
+  assert.ok(answer.evidence.includes("agent_events:6"));
+  assert.ok(answer.evidence.includes("provider:commander"));
+
+  const stepNames = answer.steps.map((step) => step.step);
+  assert.ok(stepNames.includes("agent_text"));
+  assert.ok(stepNames.includes("agent_tool_start"));
+  assert.ok(stepNames.includes("agent_tool_result"));
+  assert.ok(stepNames.includes("agent_error"));
+
+  assert.equal(answer.toolCalls.length, 1);
+  assert.equal(answer.toolCalls[0].tool, "shell");
+  assert.equal(answer.toolCalls[0].inputs.command, "ls ~");
+  assert.match(answer.toolCalls[0].outputs.stdout, /Desktop/);
+  assert.equal(answer.toolCalls[0].outputs.exitCode, 0);
+});
 
 test("the default desktop agent provider is the hermetic in-process provider", () => {
   const provider = createAgentProvider({});
@@ -68,6 +106,9 @@ test("in-process provider executes a granted read-only shell command through the
   assert.equal(calls[0].tool, "shell");
   assert.equal(calls[0].command, "ls ~");
   assert.equal(result.events[0].type, "tool_result");
+  assert.equal(result.answer.intent, "agent_cli_turn");
+  assert.match(result.answer.content, /Desktop/);
+  assert.equal(result.answer.toolCalls[0].tool, "shell");
 });
 
 test("in-process provider drives the existing formal-ai agentic loop for tasks", async () => {
@@ -101,6 +142,8 @@ test("in-process provider drives the existing formal-ai agentic loop for tasks",
   assert.equal(result.provider, "in-process");
   assert.equal(result.runner, "configured formal-ai");
   assert.equal(result.body, "finished offline agentic task");
+  assert.equal(result.answer.intent, "agent_cli_turn");
+  assert.equal(result.answer.content, "finished offline agentic task");
   assert.equal(calls.length, 1);
   assert.equal(calls[0].command, "/opt/formal-ai/bin/formal-ai");
   assert.deepEqual(calls[0].args, [
@@ -163,6 +206,8 @@ test("commander provider defaults to the org-owned agent backend through agent-c
   assert.equal(calls[0].options.env.OPENAI_API_KEY, "formal-ai-local");
   assert.equal(Object.hasOwn(calls[0].options.env, "ANTHROPIC_API_KEY"), false);
   assert.deepEqual(result.events, [{ type: "assistant", content: "ok" }]);
+  assert.equal(result.answer.intent, "agent_cli_turn");
+  assert.equal(result.answer.content, "ok");
 });
 
 test("commander provider maps non-read-only agent mode to approve-each", () => {
