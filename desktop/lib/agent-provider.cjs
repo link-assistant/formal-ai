@@ -6,6 +6,11 @@
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
+const {
+  parseNdjsonEvents,
+  agentEventsToChatAnswer,
+  agentProviderResultToChatAnswer,
+} = require("./agent-chat-adapter.cjs");
 
 const DEFAULT_PROVIDER_TYPE = "in-process";
 const COMMANDER_PROVIDER_TYPE = "commander";
@@ -92,6 +97,13 @@ function promptFromRequest(request = {}) {
     return "";
   }
   return `Run the read-only terminal command and return its output:\n\n${command}`;
+}
+
+function withChatAnswer(result = {}, request = {}) {
+  return {
+    ...result,
+    answer: agentProviderResultToChatAnswer(result, request),
+  };
 }
 
 function firstCommandToken(command) {
@@ -310,16 +322,16 @@ function createInProcessProvider(options = {}) {
       const command = commandFromRequest(request);
       if (command) {
         if (typeof invokeTool !== "function") {
-          return {
+          return withChatAnswer({
             ok: false,
             provider: DEFAULT_PROVIDER_TYPE,
             status: "unavailable",
             executed: false,
             reason: "in-process shell runner is unavailable",
-          };
+          }, request);
         }
         const result = await invokeTool({ tool: "shell", input: { command } });
-        return {
+        return withChatAnswer({
           ...result,
           provider: DEFAULT_PROVIDER_TYPE,
           command,
@@ -331,22 +343,22 @@ function createInProcessProvider(options = {}) {
               body: result && result.body ? String(result.body) : "",
             },
           ],
-        };
+        }, request);
       }
 
       const task = promptFromRequest(request);
       if (!task) {
-        return {
+        return withChatAnswer({
           ok: false,
           provider: DEFAULT_PROVIDER_TYPE,
           status: "unsupported",
           executed: false,
           reason: "in-process agentic loop runner is unavailable",
-        };
+        }, request);
       }
       const outcome = await runAgentTask(task, request);
       if (outcome && outcome.ok === false) {
-        return {
+        return withChatAnswer({
           ok: false,
           provider: DEFAULT_PROVIDER_TYPE,
           status: "error",
@@ -357,20 +369,33 @@ function createInProcessProvider(options = {}) {
           exitCode: outcome.exitCode,
           stderr: String(outcome.stderr || ""),
           reason: String(outcome.reason || "in-process agentic loop failed"),
-          events: [],
-        };
+          events: [
+            {
+              type: "error",
+              message: String(outcome.reason || outcome.stderr || "in-process agentic loop failed"),
+            },
+          ],
+        }, request);
       }
-      return {
+      const body = outcome && outcome.finalAnswer
+        ? String(outcome.finalAnswer)
+        : String(outcome || "");
+      return withChatAnswer({
         ok: true,
         provider: DEFAULT_PROVIDER_TYPE,
         status: "ok",
         executed: true,
         task,
-        body: outcome && outcome.finalAnswer ? String(outcome.finalAnswer) : String(outcome || ""),
+        body,
         transcript: outcome && outcome.transcript ? String(outcome.transcript) : "",
         runner: outcome && outcome.runner ? String(outcome.runner) : "",
-        events: [],
-      };
+        events: [
+          {
+            type: "assistant",
+            content: body,
+          },
+        ],
+      }, request);
     },
   };
   return provider;
@@ -514,7 +539,8 @@ function createCommanderProvider(options = {}) {
           env: commanderEnvironment(request, options),
         }),
       );
-      return {
+      const events = parseNdjsonEvents(result.stdout);
+      return withChatAnswer({
         ok: result.code === 0,
         provider: COMMANDER_PROVIDER_TYPE,
         status: result.code === 0 ? "ok" : "error",
@@ -524,26 +550,10 @@ function createCommanderProvider(options = {}) {
         exitCode: result.code,
         body: result.stdout,
         stderr: result.stderr,
-        events: parseNdjsonEvents(result.stdout),
-      };
+        events,
+      }, request);
     },
   };
-}
-
-function parseNdjsonEvents(text) {
-  const events = [];
-  for (const line of String(text || "").split(/\r?\n/)) {
-    const trimmed = line.trim();
-    if (!trimmed) {
-      continue;
-    }
-    try {
-      events.push(JSON.parse(trimmed));
-    } catch (_error) {
-      events.push({ type: "text", text: trimmed });
-    }
-  }
-  return events;
 }
 
 function createAgentProvider(options = {}) {
@@ -583,6 +593,9 @@ module.exports = {
   createAgentProvider,
   createInProcessProvider,
   createCommanderProvider,
+  parseNdjsonEvents,
+  agentEventsToChatAnswer,
+  agentProviderResultToChatAnswer,
   buildCommanderArgs,
   commanderRestrictionArgs,
   restrictionFromDesktopGrants,

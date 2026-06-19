@@ -4391,6 +4391,30 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
 }
 
+async function requestDesktopAgentProvider(bridge, request = {}) {
+  if (!bridge || typeof bridge.runAgentProvider !== "function") {
+    return null;
+  }
+  try {
+    return await bridge.runAgentProvider(request || {});
+  } catch (error) {
+    return {
+      ok: false,
+      provider: "desktop",
+      status: "error",
+      executed: false,
+      reason: error && error.message ? error.message : String(error),
+    };
+  }
+}
+
+function chatAnswerFromAgentProviderResult(result) {
+  if (!result || !result.answer || typeof result.answer !== "object") {
+    return null;
+  }
+  return result.answer;
+}
+
 function terminalCommandFromAnswer(answer) {
   const evidence = Array.isArray(answer && answer.evidence) ? answer.evidence : [];
   for (const item of evidence) {
@@ -7575,7 +7599,29 @@ function App() {
   }, [ensureConversation, refreshConversations, t, thinkingDetailLevel]);
 
   const executeTerminalCommand = useCallback(async (command, executionMode = "agent") => {
-    const result = await requestDesktopToolCall(desktopBridge(), "shell", { command });
+    const bridge = desktopBridge();
+    const providerResult = await requestDesktopAgentProvider(bridge, {
+      mode: executionMode === "fullAuto" ? "fullAuto" : "agent",
+      tool: "shell",
+      command,
+      grants: desktopToolRouterGrants(modeRef.current, desktopToolGrantsRef.current),
+      transcript: true,
+    });
+    const providerAnswer = chatAnswerFromAgentProviderResult(providerResult);
+    if (providerAnswer) {
+      appendAssistantMessage({
+        ...providerAnswer,
+        content: String(providerAnswer.content || desktopToolResultReason(providerResult, t)),
+        evidence: [
+          ...(Array.isArray(providerAnswer.evidence) ? providerAnswer.evidence : []),
+          "desktop_agent_provider",
+          `mode:${executionMode}`,
+        ],
+      });
+      return providerResult;
+    }
+
+    const result = providerResult || (await requestDesktopToolCall(bridge, "shell", { command }));
     const ok = result && result.ok === true && result.executed === true;
     const content = ok
       ? [

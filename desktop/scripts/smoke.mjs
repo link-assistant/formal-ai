@@ -145,5 +145,13 @@ requireIncludes("lib/agent-provider.cjs", read("lib/agent-provider.cjs"), [
   "agent-commander",
   "directHostSpawnViolations",
 ]);
+// Issue #518 / E6: agent CLI NDJSON transcripts render through the same answer,
+// reasoning-step, and tool-call shape as ordinary chat responses.
+requireIncludes("lib/agent-chat-adapter.cjs", read("lib/agent-chat-adapter.cjs"), [
+  "agentEventsToChatAnswer",
+  "tool_use",
+  "tool_result",
+  "agent_cli_turn",
+]);
 
 console.log("formal-ai desktop smoke checks passed");
