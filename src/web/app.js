@@ -2488,6 +2488,32 @@ function thinkingIndefiniteArticle(phrase) {
   return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
 }
 
+// Issue #541 (R8): map the formalization operation (the `OP:*` verb) to a plain,
+// localized task noun ("greeting", "calculation", "search", …) so the human
+// reasoning view can describe what the request was understood as WITHOUT leaking
+// the raw Links-notation tuple. The symbolic tuple stays in the diagnostics
+// panel; the default trace stays human-readable per R8 ("no special syntax").
+const FORMALIZATION_OP_LABEL_KEYS = {
+  greet: "formalizeOpGreet",
+  farewell: "formalizeOpFarewell",
+  express: "formalizeOpExpress",
+  compute: "formalizeOpCompute",
+  define: "formalizeOpDefine",
+  lookup: "formalizeOpLookup",
+  search: "formalizeOpSearch",
+  procedure: "formalizeOpProcedure",
+  identify: "formalizeOpIdentify",
+};
+function formalizationOpLabel(formalization, t) {
+  if (!formalization || typeof formalization !== "object") return "";
+  const op = String(formalization.verb || formalization.op || "")
+    .replace(/^OP:/i, "")
+    .trim()
+    .toLowerCase();
+  const key = FORMALIZATION_OP_LABEL_KEYS[op];
+  return key ? t(`message.thinkingStep.${key}`) : "";
+}
+
 // Translate a single structured thinking step into one concrete, human-readable
 // sentence in the active UI language. This is stage 2 of the issue #488 pipeline
 // ("translate the meta-language description into the target user language"):
@@ -2523,13 +2549,17 @@ function naturalizeThinkingStep(entry, t) {
         language: thinkingLanguageLabel(detail, t),
       });
     case "formalize": {
-      // The browser solver formalizes into a symbolic Links-notation tuple
-      // before the route is known, so surface that tuple concretely; the Rust
-      // solver instead reports the resolved task route (e.g. "greeting").
-      const tuple = entry?.formalization?.tuple;
-      if (tuple) {
-        return t("message.thinkingStep.formalizeTuple", {
-          tuple: thinkingDetailText(tuple),
+      // Issue #541 (R8): keep the human reasoning view free of symbolic syntax.
+      // The browser solver formalizes into a Links-notation tuple before the
+      // route is known — that tuple lives only in the diagnostics panel. Here we
+      // project the operation to a plain task noun ("greeting", "calculation",
+      // "search", …). The Rust solver instead reports the resolved task route in
+      // `detail` (e.g. "greeting"), which we humanize directly.
+      const opLabel = formalizationOpLabel(entry?.formalization, t);
+      if (opLabel) {
+        return t("message.thinkingStep.formalize", {
+          task: opLabel,
+          article: thinkingIndefiniteArticle(opLabel),
         });
       }
       if (!hasDetail) return t("message.thinkingStep.formalizePlain");
@@ -2540,13 +2570,16 @@ function naturalizeThinkingStep(entry, t) {
       });
     }
     case "formalize_resolved": {
-      const tuple = entry?.formalization?.tuple;
-      if (tuple) {
-        return t("message.thinkingStep.formalizeResolvedTuple", {
-          tuple: thinkingDetailText(tuple),
-        });
+      // Issue #541 (R8): never surface the resolved (@USER OP:… Q-id) tuple in
+      // the human trace. The browser solver only has an opaque resolved id here
+      // (its `detail` still embeds the tuple), so fall back to the plain
+      // phrasing; a solver that reports a concrete, syntax-free entity name in
+      // `detail` keeps it.
+      if (entry?.formalization) {
+        return t("message.thinkingStep.formalizeResolvedPlain");
       }
-      return hasDetail
+      const looksSymbolic = /[()@?]|OP:|->|⇒/.test(value);
+      return hasDetail && !looksSymbolic
         ? t("message.thinkingStep.formalizeResolved", {
             entity: humanizeThinkingIdentifier(detail),
           })
@@ -5389,10 +5422,19 @@ function usePrefersReducedMotion() {
 function useMessageReveal(stepCount, budgetMs) {
   const reducedMotion = usePrefersReducedMotion();
   const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  // The staged reveal plays exactly once — when the freshly produced message
+  // first appears. Once it has played out (or if it never applied) we latch
+  // "done" so that a later change in step count — e.g. the user toggling the
+  // reasoning-detail setting on an already-revealed message — snaps straight to
+  // "show everything" instead of replaying the animation. Replaying would set
+  // `bodyShown` back to false (the `.is-revealing` rule is `display:none`, so
+  // the answer would briefly vanish) and re-scroll the steps from the first
+  // one, which is jarring when the user is just adjusting how much detail to see.
+  const doneRef = useRef(!active);
   const [revealedSteps, setRevealedSteps] = useState(active ? 1 : stepCount);
   const [bodyShown, setBodyShown] = useState(!active);
   useEffect(() => {
-    if (!active) {
+    if (!active || doneRef.current) {
       setRevealedSteps(stepCount);
       setBodyShown(true);
       return undefined;
@@ -5412,7 +5454,12 @@ function useMessageReveal(stepCount, budgetMs) {
         ),
       );
     }
-    timers.push(setTimeout(() => setBodyShown(true), Math.round(budgetMs)));
+    timers.push(
+      setTimeout(() => {
+        setBodyShown(true);
+        doneRef.current = true;
+      }, Math.round(budgetMs)),
+    );
     return () => timers.forEach((timer) => clearTimeout(timer));
   }, [active, stepCount, budgetMs]);
   return { active, revealedSteps, bodyShown };

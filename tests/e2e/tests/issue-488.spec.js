@@ -124,29 +124,42 @@ test.describe('Issue #488 - visible thinking preview', () => {
       '[data-testid="thinking-expanded-list"]',
     );
     await expect(expandedList).toBeVisible();
-    // Default detail level is "detailed": every concrete reasoning step shows,
-    // each surfacing real content (the prompt, the matched rule, the composed
-    // answer) instead of a generic category label.
-    expect(await expandedList.locator('li').count()).toBeGreaterThanOrEqual(6);
-    await expect(expandedList).toContainText('Read the request:');
-    await expect(expandedList).toContainText('Match the greeting rule.');
-    await expect(expandedList).toContainText('Compose the answer:');
-    await expect(expandedList).not.toContainText(
-      /match_rule|dispatch_handler|invoke_tool|detect_language/i,
-    );
-
-    // Configurable granularity (issue #488): "standard" recursively folds the
-    // low-level / symbolic children (the formalize tuple, the tool probe) out of
-    // view and keeps only the high-level universal-algorithm phases plus the
-    // final step.
-    await page
-      .locator('[data-testid="setting-thinking-detail"]')
-      .selectOption('standard');
+    // Issue #541 (R8): the default detail level is now "standard" (the 50%
+    // midpoint), so by default we surface only the high-level human reasoning
+    // phases (the impulse, the matched rule, the applied context) and fold the
+    // low-level / symbolic sub-steps (the formalize tuple, the tool probe) out
+    // of view. No raw snake_case identifiers and no symbolic-form jargon leak.
     await expect(expandedList.locator('li')).toHaveCount(5);
     await expect(expandedList).toContainText('Read the request:');
     await expect(expandedList).toContainText('Match the greeting rule.');
     await expect(expandedList).toContainText('Applied available context:');
     await expect(expandedList).not.toContainText(/symbolic form/i);
+    await expect(expandedList).not.toContainText(
+      /match_rule|dispatch_handler|invoke_tool|detect_language/i,
+    );
+
+    // Configurable granularity (issue #488): "detailed" unfolds every concrete
+    // reasoning step, each surfacing real content (the prompt, the matched rule,
+    // the composed answer) instead of a generic category label.
+    await page
+      .locator('[data-testid="setting-thinking-detail"]')
+      .selectOption('detailed');
+    // Switching detail level re-renders the already-revealed message; poll so
+    // the assertion reads the settled list rather than a transient frame.
+    await expect
+      .poll(() => expandedList.locator('li').count())
+      .toBeGreaterThanOrEqual(6);
+    await expect(expandedList).toContainText('Read the request:');
+    await expect(expandedList).toContainText('Match the greeting rule.');
+    await expect(expandedList).toContainText('Compose the answer:');
+    // Issue #541 (R8): even at maximum detail the human trace must stay free of
+    // symbolic syntax — no Links tuple ("(@USER OP:… ?term)"), no "symbolic
+    // form" jargon, no raw snake_case meta-language identifiers.
+    await expect(expandedList).not.toContainText(/symbolic form/i);
+    await expect(expandedList).not.toContainText(/\(@USER|OP:|->|⇒/);
+    await expect(expandedList).not.toContainText(
+      /match_rule|dispatch_handler|invoke_tool|detect_language/i,
+    );
 
     await page
       .locator('[data-testid="setting-thinking-detail"]')
