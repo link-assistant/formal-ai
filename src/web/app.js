@@ -1012,7 +1012,16 @@ const PREFERENCE_DEFAULTS = {
   greetingVariations: true,
   // Issue #488: user-facing thinking can be compact or detailed without
   // changing the raw diagnostics available to maintainers.
-  thinkingDetailLevel: "detailed",
+  // Issue #541 (R8): default to the 50% midpoint ("standard"), which surfaces
+  // only the high-level human-readable steps (not the mechanical sub-steps), so
+  // newcomers are not overwhelmed; "detailed" remains one notch away for power
+  // users and still renders fully human-readable prose (no symbolic syntax).
+  thinkingDetailLevel: "standard",
+  // Issue #541 (R5): minimum wall-clock time, in milliseconds, that a freshly
+  // produced assistant answer spends animating its reasoning + reveal so the
+  // user *feels* the thinking happen even when the deterministic engine answers
+  // instantly. 0 = immediate display; the shipped default is a relaxed 2s.
+  minMessageAnimationMs: 2000,
   // Issue #82: user-tunable assistant behavior. The default still guesses
   // likely typo matches, while the sliders let cautious users ask first and
   // deterministic users turn random response variation off with temperature=0.
@@ -1431,6 +1440,20 @@ function normalizeThinkingDetailLevel(value) {
   return THINKING_DETAIL_LEVELS.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.thinkingDetailLevel;
+}
+
+// Issue #541 (R5): the minimum message-animation budget is a millisecond count
+// clamped to a sane range. 0 means "show the answer immediately" (no animation);
+// the upper bound keeps a mis-set preference from freezing the UI for minutes.
+// Non-numeric / NaN input falls back to the shipped 2s default.
+const MIN_MESSAGE_ANIMATION_MAX_MS = 8000;
+function normalizeAnimationBudgetMs(value) {
+  const number = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(number)) {
+    return PREFERENCE_DEFAULTS.minMessageAnimationMs;
+  }
+  const clamped = Math.min(Math.max(number, 0), MIN_MESSAGE_ANIMATION_MAX_MS);
+  return Math.round(clamped);
 }
 
 function normalizeResponseLanguageMode(value) {
@@ -5324,6 +5347,77 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
 // and stops once the answer arrives. Each new phase appends to the visible
 // steps array so the rotated-scrolling animation in `ThinkingPreview` re-fires
 // the same way it would for real solver steps.
+// Issue #541 (R6): honour the OS "reduce motion" accessibility preference. When
+// the user has asked for reduced motion we skip the staged reveal entirely and
+// show the answer at once, matching the existing prefers-reduced-motion CSS.
+function usePrefersReducedMotion() {
+  const query = "(prefers-reduced-motion: reduce)";
+  const getInitial = () =>
+    typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia(query).matches
+      : false;
+  const [reduced, setReduced] = useState(getInitial);
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      typeof window.matchMedia !== "function"
+    ) {
+      return undefined;
+    }
+    const media = window.matchMedia(query);
+    const handler = (event) => setReduced(event.matches);
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+    // Safari < 14 fallback.
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
+  return reduced;
+}
+
+// Issue #541 (R5/R6): stage the reveal of a freshly produced assistant message —
+// reasoning steps first (each new step re-triggers the rotated-scroll animation
+// in ThinkingPreview), then the answer body — across a minimum animation budget
+// so the deterministic engine's instant answers still *feel* considered. Returns
+// the count of currently revealed steps and whether the body is shown yet. With
+// budgetMs<=0, reduced motion, or no steps it is an immediate no-op (everything
+// shown at once). The first ~72% of the budget unveils the steps; the body is
+// held back until the full budget elapses, satisfying R6's "only when we
+// scrolled to the last thinking step can we show the message itself".
+function useMessageReveal(stepCount, budgetMs) {
+  const reducedMotion = usePrefersReducedMotion();
+  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  const [revealedSteps, setRevealedSteps] = useState(active ? 1 : stepCount);
+  const [bodyShown, setBodyShown] = useState(!active);
+  useEffect(() => {
+    if (!active) {
+      setRevealedSteps(stepCount);
+      setBodyShown(true);
+      return undefined;
+    }
+    // Reserve the final slice of the budget for the body fade; spread the rest
+    // across the steps so even a single step occupies a perceptible beat.
+    const stepsWindow = budgetMs * 0.72;
+    const perStep = stepsWindow / stepCount;
+    setRevealedSteps(1);
+    setBodyShown(false);
+    const timers = [];
+    for (let index = 1; index < stepCount; index += 1) {
+      timers.push(
+        setTimeout(
+          () => setRevealedSteps(index + 1),
+          Math.round(perStep * index),
+        ),
+      );
+    }
+    timers.push(setTimeout(() => setBodyShown(true), Math.round(budgetMs)));
+    return () => timers.forEach((timer) => clearTimeout(timer));
+  }, [active, stepCount, budgetMs]);
+  return { active, revealedSteps, bodyShown };
+}
+
 function usePendingThinkingPhases(isActive, t) {
   const [phaseIndex, setPhaseIndex] = useState(0);
   const phrases = useMemo(
@@ -5638,6 +5732,7 @@ function Message({
   diagnosticsMode,
   reportIssueUrl,
   thinkingDetailLevel,
+  minMessageAnimationMs = 0,
   renderPermissionPanel,
   commandApprovals,
   onApproveCommand,
@@ -5675,6 +5770,21 @@ function Message({
   // Issue #330: progressive syntax highlighting + per-code-block copy buttons.
   const markdownRef = useRef(null);
   const [markdownCopied, setMarkdownCopied] = useState(false);
+
+  // Issue #541 (R5/R6): stage the reveal of this message — reasoning steps
+  // first, then the answer body — across the minimum animation budget. Only a
+  // freshly produced answer carries `animateReveal`; hydrated history shows at
+  // once (budget 0 -> immediate no-op).
+  const revealBudgetMs = message.animateReveal ? minMessageAnimationMs : 0;
+  const reveal = useMessageReveal(thinkingPreviewSteps.length, revealBudgetMs);
+  const revealedThinkingSteps = reveal.active
+    ? thinkingPreviewSteps.slice(0, reveal.revealedSteps)
+    : thinkingPreviewSteps;
+  const bodyRevealClass = reveal.active
+    ? reveal.bodyShown
+      ? " is-revealed"
+      : " is-revealing"
+    : "";
 
   // React 19 compares `dangerouslySetInnerHTML` by object identity (React 18
   // compared the inner `__html` string). A fresh `markdownHtml(...)` object on
@@ -5758,12 +5868,20 @@ function Message({
       // Issue #488: render thinking ABOVE the answer body. Reasoning logically
       // precedes the answer (and during streaming it is the only visible part of
       // the message), so it belongs at the top of the message body, not below it.
-      thinkingPreviewSteps.length
-        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
+      // Issue #541 (R6): during the staged reveal only the steps unveiled so far
+      // are shown, so the trace visibly fills in before the answer appears.
+      revealedThinkingSteps.length
+        ? h(ThinkingPreview, { steps: revealedThinkingSteps, t })
         : null,
+      // Issue #541 (R6): the answer body is held back (is-revealing -> hidden)
+      // until the reasoning reveal has played out, then faded in (is-revealed).
+      // The div stays mounted throughout so enhanceCodeBlocks still grafts in the
+      // code-block wrappers while it is hidden.
       h("div", {
         ref: markdownRef,
-        className: "markdown-body",
+        className: `markdown-body${bodyRevealClass}`,
+        "aria-hidden": reveal.active && !reveal.bodyShown ? "true" : null,
+        "data-testid": "message-markdown-body",
         dangerouslySetInnerHTML: markdownContent,
       }),
       message.permissionPanel && typeof renderPermissionPanel === "function"
@@ -6148,6 +6266,11 @@ function App() {
   );
   const [thinkingDetailLevel, setThinkingDetailLevel] = useState(
     normalizeThinkingDetailLevel(initialPreferences.current.thinkingDetailLevel),
+  );
+  // Issue #541 (R5): minimum wall-clock budget for the reasoning + reveal
+  // animation of a freshly produced answer.
+  const [minMessageAnimationMs, setMinMessageAnimationMs] = useState(
+    normalizeAnimationBudgetMs(initialPreferences.current.minMessageAnimationMs),
   );
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
@@ -7121,6 +7244,7 @@ function App() {
       definitionFusion,
       blueprintComposition,
       thinkingDetailLevel,
+      minMessageAnimationMs,
       experimentalOcr,
       ...externalServices,
       associativeProjectPromotion,
@@ -7160,6 +7284,7 @@ function App() {
     definitionFusion,
     blueprintComposition,
     thinkingDetailLevel,
+    minMessageAnimationMs,
     experimentalOcr,
     externalServices,
     associativeProjectPromotion,
@@ -7550,6 +7675,11 @@ function App() {
       // the per-provider success/failure status.
       diagnostics: answer.diagnostics || null,
       iframeUrl: answer.iframeUrl || null,
+      // Issue #541 (R5/R6): mark this as a freshly produced answer so the
+      // Message component stages its reasoning-then-body reveal across the
+      // minimum animation budget. Hydrated history (rebuilt from memory events)
+      // never carries this flag, so reloads render instantly.
+      animateReveal: true,
     });
     setMessages((current) => [...current, message]);
     const sentAt = new Date().toISOString();
@@ -7844,6 +7974,9 @@ function App() {
           break;
         case "thinkingDetailLevel":
           setThinkingDetailLevel(normalizeThinkingDetailLevel(command.value));
+          break;
+        case "minMessageAnimationMs":
+          setMinMessageAnimationMs(normalizeAnimationBudgetMs(command.value));
           break;
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
@@ -8287,6 +8420,7 @@ function App() {
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
     { key: "thinkingDetailLevel", value: thinkingDetailLevel, set: setThinkingDetailLevel, label: "settings.thinkingDetail" },
+    { key: "minMessageAnimationMs", value: minMessageAnimationMs, set: setMinMessageAnimationMs, label: "settings.minMessageAnimation" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
     // Issue #444: one reset descriptor per external trusted service so the
     // "modified settings" reset bar lists any service the user turned off.
@@ -9444,6 +9578,43 @@ function App() {
             ),
             h(
               "div",
+              { className: "setting-row setting-row-slider" },
+              h(
+                "label",
+                { htmlFor: "setting-min-message-animation" },
+                t("settings.minMessageAnimation"),
+              ),
+              h(
+                "div",
+                { className: "setting-poles" },
+                h("span", null, t("settings.animationImmediate")),
+                h("span", null, t("settings.animationRelaxed")),
+              ),
+              h("input", {
+                id: "setting-min-message-animation",
+                "data-testid": "setting-min-message-animation",
+                type: "range",
+                min: "0",
+                max: "6000",
+                step: "250",
+                value: minMessageAnimationMs,
+                onChange: (event) =>
+                  setMinMessageAnimationMs(
+                    normalizeAnimationBudgetMs(event.target.value),
+                  ),
+              }),
+              h(
+                "output",
+                { htmlFor: "setting-min-message-animation" },
+                minMessageAnimationMs === 0
+                  ? t("settings.animationImmediate")
+                  : t("settings.animationSeconds", {
+                      seconds: (minMessageAnimationMs / 1000).toFixed(1),
+                    }),
+              ),
+            ),
+            h(
+              "div",
               { className: "setting-row setting-row-ocr" },
               h(
                 "label",
@@ -9846,6 +10017,7 @@ function App() {
               message,
               diagnosticsMode,
               thinkingDetailLevel,
+              minMessageAnimationMs,
               renderPermissionPanel: renderDesktopPermissionPanel,
               commandApprovals,
               onApproveCommand: approveDesktopCommand,

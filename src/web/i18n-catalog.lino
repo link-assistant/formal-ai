@@ -244,6 +244,10 @@ en
       brief "Brief"
       standard "Standard"
       detailed "Detailed"
+    minMessageAnimation "Minimum thinking animation"
+    animationImmediate "Immediate"
+    animationRelaxed "Relaxed"
+    animationSeconds "{seconds}s"
     experimentalOcr
       label "Experimental OCR"
       warning "Downloads about 6 MB on first use: OCR wrapper, worker, WebAssembly core, and English traineddata."
@@ -584,6 +588,10 @@ ru
       brief "Кратко"
       standard "Стандартно"
       detailed "Подробно"
+    minMessageAnimation "Минимальная анимация размышления"
+    animationImmediate "Мгновенно"
+    animationRelaxed "Плавно"
+    animationSeconds "{seconds} с"
     experimentalOcr
       label "Экспериментальный OCR"
       warning "При первом использовании скачивается около 6 MB: оболочка OCR, worker, ядро WebAssembly и английские traineddata."
@@ -914,6 +922,10 @@ zh
       brief "简略"
       standard "标准"
       detailed "详细"
+    minMessageAnimation "最短思考动画"
+    animationImmediate "立即"
+    animationRelaxed "舒缓"
+    animationSeconds "{seconds} 秒"
     experimentalOcr
       label "实验性 OCR"
       warning "首次使用会下载约 6 MB：OCR 包装层、worker、WebAssembly 核心和英语训练数据。"
@@ -1250,6 +1262,10 @@ hi
       brief "संक्षिप्त"
       standard "मानक"
       detailed "विस्तृत"
+    minMessageAnimation "न्यूनतम सोच एनिमेशन"
+    animationImmediate "तुरंत"
+    animationRelaxed "आराम से"
+    animationSeconds "{seconds} सेकंड"
     experimentalOcr
       label "Experimental OCR"
       warning "पहली बार इस्तेमाल पर लगभग 6 MB डाउनलोड होता है: OCR wrapper, worker, WebAssembly core, और English traineddata."

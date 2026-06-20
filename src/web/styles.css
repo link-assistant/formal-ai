@@ -1903,6 +1903,11 @@ body.is-resizing-context {
   gap: 3px;
   margin-top: 7px;
   min-width: 0;
+  /* Issue #541 (R7): reserve enough height for at least one full reasoning
+     step (one fading hint line + a wrapped current step), so the collapsed
+     view never clips the current step to a sub-line height where "not a
+     single line of thinking is displayed". */
+  min-height: 1.55em;
   /* Issue #488: clip the rotated-scrolling animation so the previous line
      does not visibly translate out of the bubble before the gradient fade
      swallows it. */
@@ -1915,17 +1920,17 @@ body.is-resizing-context {
   min-width: 0;
   line-height: 1.45;
   overflow-wrap: anywhere;
-  /* Issue #488: keep the layout single-line so the rotated-scrolling
-     illusion (1.5 visible lines: top half of the previous step + the
-     current step) is honoured even when a step wraps to multiple lines. */
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
 }
 
 .thinking-preview-previous {
-  max-height: 0.75em;
+  /* Issue #488: keep the already-scrolled-past step a single fading hint
+     line so the rotated-scrolling illusion (1.x visible lines: the tail of
+     the previous step + the current step) is honoured. */
+  max-height: 1.05em;
   overflow: hidden;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   color: #667684;
   opacity: 0.72;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
@@ -1938,6 +1943,16 @@ body.is-resizing-context {
 }
 
 .thinking-preview-current {
+  /* Issue #541 (R7): show the current reasoning step FULLY — at least one
+     whole paragraph — instead of clipping it to a single ellipsised line.
+     A generous line cap keeps a pathologically long step from dominating the
+     collapsed bubble while normal 1-4 line steps render in full. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  overflow: hidden;
+  white-space: normal;
   color: #334650;
   animation: thinking-rotate-current 320ms ease-out both;
 }
@@ -1967,6 +1982,38 @@ body.is-resizing-context {
 @media (prefers-reduced-motion: reduce) {
   .thinking-preview-previous,
   .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #541 (R5/R6): paced message reveal. The reasoning steps animate
+   (scrolling through the collapsed preview) first; only once they have all
+   been revealed does the answer body appear, and it fades in rather than
+   snapping. The whole sequence stays inside the user's animation budget
+   (default 2s, configurable down to 0 = immediate). The `.is-revealing`
+   state keeps the body out of the layout entirely so a tall answer cannot
+   "peek" beneath the still-animating reasoning steps. */
+.markdown-body.is-revealing {
+  display: none;
+}
+
+.markdown-body.is-revealed {
+  animation: message-body-reveal 600ms ease-out both;
+}
+
+@keyframes message-body-reveal {
+  from {
+    transform: translateY(0.5em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-body.is-revealed {
     animation: none !important;
   }
 }
