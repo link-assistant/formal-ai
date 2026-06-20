@@ -2091,6 +2091,13 @@ function groupConversations(events, options = {}) {
     if (!event) {
       continue;
     }
+    // Issue #541 (R4): demo turns live in their own dedicated conversation
+    // and must never surface in the user's sidebar — listing them would
+    // suggest the user can navigate into and edit them, breaking the
+    // "demo never overwrites your work" guarantee.
+    if (event.isDemo) {
+      continue;
+    }
     const kind = event.kind || "message";
     const id = event.conversationId || "legacy";
     if (kind === "conversation_deleted") {
@@ -2293,6 +2300,10 @@ function messagesForConversation(events, conversationId) {
     const event = safe[index];
     if (!event || event.kind && event.kind !== "message") continue;
     if ((event.conversationId || "legacy") !== conversationId) continue;
+    // Issue #541 (R4): defensive — if a caller ever asks for a demo
+    // conversation id, only return its demo-flagged events; conversely a
+    // real conversation id must skip any stray demo-flagged event that
+    // somehow shares the id.
     const evidence = Array.isArray(event.evidence) ? event.evidence : [];
     out.push(
       createMessage(event.role || "assistant", String(event.content || ""), {
@@ -6471,6 +6482,14 @@ function App() {
   const currentConversationRef = useRef(currentConversationId);
   const conversationTitlesRef = useRef(new Map());
   const conversationEventsRef = useRef([]);
+  // Issue #541 (R4): demo mode runs in its own conversation so user
+  // conversations are never deleted or overwritten. The id lives for the
+  // lifetime of the React app and is reused across cycles so the "last
+  // example" persists even when the user toggles demo off and back on within
+  // a session. It is intentionally NOT persisted as the "current" conversation
+  // — `currentConversationRef` keeps pointing at the user's real thread, so
+  // restoring the UI on demo-off is a single lookup against IndexedDB.
+  const demoConversationIdRef = useRef("");
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -7590,6 +7609,28 @@ function App() {
   // reuse it for follow-up records within the same turn (assistant reply,
   // reasoning steps, tool calls).
   const ensureConversation = useCallback((seedText) => {
+    // Issue #541 (R4): when demo mode is active, route every persisted event
+    // into a dedicated demo conversation. We never touch
+    // `currentConversationRef`/`setCurrentConversationId` from this path so the
+    // user's real thread is preserved exactly as they left it — toggling demo
+    // off restores their conversation untouched.
+    if (demoModeRef.current) {
+      if (!demoConversationIdRef.current) {
+        demoConversationIdRef.current = generateConversationId();
+      }
+      const id = demoConversationIdRef.current;
+      let title = conversationTitlesRef.current.get(id);
+      if (!title) {
+        title = t("buttons.demoOn") || "Demo";
+        conversationTitlesRef.current.set(id, title);
+      }
+      return {
+        conversationId: id,
+        conversationTitle: title,
+        isNew: false,
+        isDemo: true,
+      };
+    }
     let id = currentConversationRef.current;
     let isNew = false;
     if (!id) {
@@ -7604,10 +7645,10 @@ function App() {
       conversationTitlesRef.current.set(id, title);
     }
     return { conversationId: id, conversationTitle: title || "", isNew };
-  }, []);
+  }, [t]);
 
   const appendUserMessage = useCallback((text, extra = {}) => {
-    const { conversationId, conversationTitle } = ensureConversation(text);
+    const { conversationId, conversationTitle, isDemo } = ensureConversation(text);
     const message = createMessage("user", text, extra);
     const memoryAttachments = Array.isArray(extra.attachments)
       ? extra.attachments.map(attachmentMemoryRecord)
@@ -7625,11 +7666,14 @@ function App() {
           : undefined,
       conversationId,
       conversationTitle,
+      // Issue #541 (R4): flag demo turns so the sidebar can hide the demo
+      // conversation and never list it alongside the user's real threads.
+      isDemo: isDemo ? true : undefined,
     });
   }, [ensureConversation]);
 
   const appendSystemMessage = useCallback((content, extra = {}) => {
-    const { conversationId, conversationTitle } = ensureConversation("");
+    const { conversationId, conversationTitle, isDemo } = ensureConversation("");
     const message = createMessage("system", content, {
       author: "formal-ai system",
       ...extra,
@@ -7643,6 +7687,8 @@ function App() {
       sentAt: new Date().toISOString(),
       conversationId,
       conversationTitle,
+      // Issue #541 (R4): flag demo turns so the sidebar can hide them.
+      isDemo: isDemo ? true : undefined,
     }).then(() => {
       refreshConversations();
     });
@@ -7730,7 +7776,12 @@ function App() {
     });
     setMessages((current) => [...current, message]);
     const sentAt = new Date().toISOString();
-    const { conversationId, conversationTitle } = ensureConversation("");
+    const { conversationId, conversationTitle, isDemo } = ensureConversation("");
+    // Issue #541 (R4): flag every persisted record of this turn (reasoning
+    // step, tool call, and the message itself) so the sidebar can hide the
+    // demo conversation. Set undefined rather than false for non-demo turns
+    // so we don't litter the IndexedDB log with redundant keys.
+    const demoFlag = isDemo ? true : undefined;
     if (Array.isArray(answer.steps)) {
       answer.steps.forEach((entry) => {
         recordMemoryEvent({
@@ -7741,6 +7792,7 @@ function App() {
           sentAt,
           conversationId,
           conversationTitle,
+          isDemo: demoFlag,
         });
       });
     }
@@ -7756,6 +7808,7 @@ function App() {
           sentAt,
           conversationId,
           conversationTitle,
+          isDemo: demoFlag,
         });
       });
     }
@@ -7769,6 +7822,7 @@ function App() {
       sentAt,
       conversationId,
       conversationTitle,
+      isDemo: demoFlag,
     }).then(() => {
       // Refresh the sidebar so a brand-new conversation appears immediately.
       refreshConversations();
@@ -8371,10 +8425,31 @@ function App() {
     }
   }
 
+  // Issue #541 (R4): tracks whether the previous render was in demo mode so we
+  // can detect the on→off transition and restore the user's real conversation
+  // back into the UI. Demo writes go to a dedicated demo conversation (see
+  // `demoConversationIdRef`), so restoration is a single IndexedDB lookup
+  // against the still-pointed-at `currentConversationRef`.
+  const demoWasActiveRef = useRef(demoMode);
   useEffect(() => {
+    const wasActive = demoWasActiveRef.current;
+    demoWasActiveRef.current = demoMode;
+
     if (!demoMode) {
       setDemoPhase("manual");
       setDemoCountdown(null);
+      if (wasActive) {
+        // Demo just turned off — restore whatever the user had open before
+        // demo took over. If they had no prior conversation, fall back to an
+        // empty composer rather than leaking the last demo turn into the UI.
+        const userId = currentConversationRef.current;
+        const cachedEvents = conversationEventsRef.current;
+        const restored = userId
+          ? messagesForConversation(cachedEvents, userId)
+          : [];
+        setMessages(restored);
+        setPending(false);
+      }
       return undefined;
     }
 
