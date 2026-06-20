@@ -376,6 +376,23 @@ const REQUIRED_KEYS = [
   'services.state.dockerUnavailable',
   'services.state.error',
   'services.state.unknown',
+  // Issue #548: desktop auto-update notification and user-triggered install UI.
+  'updates.title',
+  'updates.currentVersion',
+  'updates.check',
+  'updates.checking',
+  'updates.update',
+  'updates.updating',
+  'updates.progress',
+  'updates.state.idle',
+  'updates.state.checking',
+  'updates.state.available',
+  'updates.state.notAvailable',
+  'updates.state.downloading',
+  'updates.state.downloaded',
+  'updates.state.installing',
+  'updates.state.disabled',
+  'updates.state.error',
 ];
 
 const __filename = fileURLToPath(import.meta.url);
@@ -476,6 +493,7 @@ const runtimeChecks = [
   ['ru', 'permissions.panel.title', 'Разрешения инструментов рабочего стола'],
   ['zh', 'permissions.state.granted', '已授予'],
   ['hi', 'permissions.action.grant', 'प्रदान करें'],
+  ['en', 'updates.state.available', 'Update 0.213.0 available', { version: '0.213.0' }],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {

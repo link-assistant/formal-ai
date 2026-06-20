@@ -39,7 +39,7 @@ struct GhMock<'a> {
     parent_sha: &'static str,
     /// Whether `gh release view <tag> --json tagName` succeeds.
     release_exists: bool,
-    /// Newline-joined `formal-ai-desktop-*` names returned for
+    /// Newline-joined desktop asset/update metadata names returned for
     /// `gh release view <tag> --json assets --jq ...`.
     asset_names: &'a str,
 }
@@ -189,6 +189,9 @@ fn expected_asset_names(version: &str) -> String {
         format!("formal-ai-desktop-linux-arm64-{version}.deb"),
         format!("formal-ai-desktop-linux-x64-{version}.tar.gz"),
         format!("formal-ai-desktop-linux-arm64-{version}.tar.gz"),
+        "latest.yml".to_string(),
+        "latest-mac.yml".to_string(),
+        "latest-linux.yml".to_string(),
     ]
     .join("\n")
 }
@@ -311,6 +314,42 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
     assert_eq!(
         result.should_build, "false",
         "a release that already has all required desktop assets must not rebuild on workflow_run"
+    );
+}
+
+#[test]
+fn workflow_run_builds_when_release_is_missing_updater_metadata() {
+    // Issue #548: installers alone are not enough for auto-update. The updater
+    // queries latest.yml / latest-mac.yml / latest-linux.yml from the release,
+    // so the self-healing guard must rebuild a release that has every installer
+    // but lacks update metadata.
+    if !bash_available() {
+        eprintln!("skipping: /bin/bash not available");
+        return;
+    }
+    let installers_only = expected_asset_names("0.212.0")
+        .lines()
+        .filter(|name| !name.starts_with("latest"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let result = run_resolve(
+        "missing-updater-metadata",
+        &[
+            ("EVENT", "workflow_run"),
+            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+        ],
+        &GhMock {
+            tags_jq_output: "",
+            latest_tag: "v0.212.0",
+            parent_sha: "0abd3f45parenthead",
+            release_exists: true,
+            asset_names: &installers_only,
+        },
+    );
+    assert!(result.ok, "resolve script failed: {}", result.stderr);
+    assert_eq!(
+        result.should_build, "true",
+        "a release without updater metadata must be rebuilt for desktop auto-update"
     );
 }
 

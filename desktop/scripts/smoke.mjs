@@ -38,12 +38,26 @@ for (const [script, command] of Object.entries(manifest.scripts || {})) {
 if (!Array.isArray(manifest.build.files) || !manifest.build.files.includes("lib/**")) {
   throw new Error("desktop build must bundle lib/** (tool-router / memory-sync)");
 }
+if (!manifest.dependencies || !manifest.dependencies["electron-updater"]) {
+  throw new Error("desktop package must depend on electron-updater for auto updates");
+}
+requireIncludes("package.json build", JSON.stringify(manifest.build || {}), [
+  "electronUpdaterCompatibility",
+  "\"provider\":\"github\"",
+  "\"owner\":\"link-assistant\"",
+  "\"repo\":\"formal-ai\"",
+]);
 
 requireIncludes("main.cjs", read("main.cjs"), [
   "BrowserWindow",
   "contextIsolation: true",
   "nodeIntegration: false",
   "formalAiDesktop:getStatus",
+  "formalAiDesktop:checkForUpdates",
+  "formalAiDesktop:installUpdate",
+  "formalAiDesktop:updateStatus",
+  "createAutoUpdateController",
+  "autoUpdater",
   "formal-ai",
   // R3/R4: the local server is opt-in (in-process is the default).
   "serverModeRequested",
@@ -71,6 +85,9 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "contextBridge",
   "FormalAiDesktop",
   "getStatus",
+  "checkForUpdates",
+  "installUpdate",
+  "onUpdateStatus",
   "ensureAgentServer",
   "invokeTool",
   "setToolGrants",
@@ -155,6 +172,17 @@ requireIncludes("lib/agent-chat-adapter.cjs", read("lib/agent-chat-adapter.cjs")
   "tool_use",
   "tool_result",
   "agent_cli_turn",
+]);
+// Issue #548: desktop auto-update state is owned by a testable controller so
+// renderer notification and user-triggered install behavior can be verified
+// without launching Electron.
+requireIncludes("lib/auto-update.cjs", read("lib/auto-update.cjs"), [
+  "createAutoUpdateController",
+  "checkForUpdates",
+  "installUpdate",
+  "update-available",
+  "quitAndInstall",
+  "autoDownload = false",
 ]);
 
 console.log("formal-ai desktop smoke checks passed");

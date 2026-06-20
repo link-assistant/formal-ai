@@ -734,6 +734,11 @@ fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
     for name in source_names {
         fs::write(tmp.join(name), b"artifact").expect("seed scratch release artifact");
     }
+    fs::write(
+        tmp.join("latest-linux.yml"),
+        "files:\n  - url: formal-ai-desktop-linux-x86_64-9.9.9.AppImage\n  - url: formal-ai-desktop-linux-amd64-9.9.9.deb\npath: formal-ai-desktop-linux-x86_64-9.9.9.AppImage\n",
+    )
+    .expect("seed scratch update metadata");
 
     let output = Command::new("node")
         .arg(&script)
@@ -765,6 +770,8 @@ fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
     .filter(|name| tmp.join(name).exists())
     .copied()
     .collect::<Vec<_>>();
+    let metadata =
+        fs::read_to_string(tmp.join("latest-linux.yml")).expect("read normalized update metadata");
     let _ = fs::remove_dir_all(&tmp);
 
     assert!(
@@ -783,6 +790,13 @@ fn desktop_linux_artifact_names_are_normalized_for_download_contract() {
     assert!(
         stdout.contains("x86_64") && stdout.contains("amd64") && stdout.contains("x64"),
         "normalizer should log the Linux x64 alias rewrites, got stdout:\n{stdout}"
+    );
+    assert!(
+        metadata.contains("formal-ai-desktop-linux-x64-9.9.9.AppImage")
+            && metadata.contains("formal-ai-desktop-linux-x64-9.9.9.deb")
+            && !metadata.contains("linux-x86_64")
+            && !metadata.contains("linux-amd64"),
+        "normalizer should rewrite latest-linux.yml to the uploaded x64 asset names, got:\n{metadata}"
     );
 }
 

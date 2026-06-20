@@ -4322,6 +4322,95 @@ function desktopServiceBridge() {
   return bridge;
 }
 
+function normalizeAppVersion(value) {
+  const raw = String(value || "").trim();
+  if (!raw || raw.startsWith("__") || raw.endsWith("__")) {
+    return "";
+  }
+  return raw.replace(/^v/i, "");
+}
+
+function desktopAppVersionLabel(status) {
+  const desktopVersion = normalizeAppVersion(status && status.appVersion);
+  const fallback = normalizeAppVersion(APP_VERSION) || APP_VERSION;
+  const version = desktopVersion || fallback;
+  return /^v/i.test(version) ? version : `v${version}`;
+}
+
+function normalizeDesktopUpdaterStatus(updater, currentVersion) {
+  if (!updater || typeof updater !== "object") {
+    return null;
+  }
+  const state = String(updater.state || (updater.updateAvailable ? "available" : "idle"));
+  const progressPercent = Math.max(
+    0,
+    Math.min(100, Number(updater.progressPercent || 0) || 0),
+  );
+  return {
+    supported: updater.supported !== false,
+    enabled: updater.enabled !== false && updater.supported !== false,
+    platform: String(updater.platform || ""),
+    currentVersion: normalizeAppVersion(updater.currentVersion) || currentVersion || "",
+    state,
+    updateAvailable: Boolean(updater.updateAvailable),
+    downloaded: Boolean(updater.downloaded),
+    latestVersion: normalizeAppVersion(updater.latestVersion),
+    progressPercent,
+    checkedAt: String(updater.checkedAt || ""),
+    error: String(updater.error || ""),
+    message: String(updater.message || ""),
+  };
+}
+
+function mergeDesktopUpdateStatus(current, payload) {
+  if (!payload || typeof payload !== "object") {
+    return current;
+  }
+  if (payload.updater && typeof payload.updater === "object") {
+    return normalizeDesktopStatus({ ...(current || {}), ...payload });
+  }
+  return normalizeDesktopStatus({
+    ...(current || {}),
+    appVersion:
+      normalizeAppVersion(payload.currentVersion)
+      || (current && current.appVersion)
+      || "",
+    updater: payload,
+  });
+}
+
+function desktopUpdaterStateLabel(updater, t) {
+  const tr = typeof t === "function" ? t : (key) => key;
+  if (!updater) {
+    return "";
+  }
+  if (updater.error) {
+    return `${tr("updates.state.error")}: ${updater.error}`;
+  }
+  if (updater.message && updater.state === "disabled") {
+    return updater.message;
+  }
+  const key = {
+    idle: "updates.state.idle",
+    checking: "updates.state.checking",
+    available: "updates.state.available",
+    "not-available": "updates.state.notAvailable",
+    downloading: "updates.state.downloading",
+    downloaded: "updates.state.downloaded",
+    installing: "updates.state.installing",
+    disabled: "updates.state.disabled",
+    error: "updates.state.error",
+  }[updater.state] || "updates.state.idle";
+  return tr(key, {
+    version: updater.latestVersion || updater.currentVersion || "",
+    percent: Math.round(updater.progressPercent || 0),
+  });
+}
+
+function desktopUpdaterBusy(updater) {
+  return updater && ["checking", "downloading", "installing"].includes(updater.state);
+}
+
 // Human-readable summary for a single managed service state so the UI label and
 // the indicator dot stay in lockstep.
 function serviceStateLabel(state, t) {
@@ -4346,6 +4435,7 @@ function normalizeDesktopStatus(status) {
     return null;
   }
   const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
+  const appVersion = normalizeAppVersion(status.appVersion || status.version);
   const agentProvider =
     status.agentProvider && typeof status.agentProvider === "object"
       ? {
@@ -4365,11 +4455,13 @@ function normalizeDesktopStatus(status) {
     graphUrl: String(status.graphUrl || (apiBase ? `${apiBase}/v1/graph` : "")),
     traceUrl: String(status.traceUrl || (apiBase ? `${apiBase}/v1/graph?trace=answer_greeting_hi` : "")),
     memory: String(status.memory || "formal_ai_bundle"),
+    appVersion,
     agentModeDefault: Boolean(status.agentModeDefault),
     toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
     agentProvider,
+    updater: normalizeDesktopUpdaterStatus(status.updater, appVersion),
   };
 }
 
@@ -6476,6 +6568,7 @@ function App() {
   const [serviceError, setServiceError] = useState("");
   const [telegramToken, setTelegramToken] = useState("");
   const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(false);
+  const [updateBusy, setUpdateBusy] = useState("");
   // Issue #27 / #513: the operating mode runs the user's prompt as a single
   // Q&A ("chat"), a multi-step plan ("agent"), or an auto-executing agent
   // ("fullAuto"). Persisted across reloads via preferences. The legacy
@@ -6685,6 +6778,17 @@ function App() {
   }, []);
 
   useEffect(() => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.onUpdateStatus !== "function") {
+      return undefined;
+    }
+    const unsubscribe = bridge.onUpdateStatus((status) => {
+      setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
+    });
+    return typeof unsubscribe === "function" ? unsubscribe : undefined;
+  }, []);
+
+  useEffect(() => {
     // Push the explicit per-tool grant map to the local router whenever either
     // the operating mode or a grant decision changes.
     syncDesktopToolGrants(desktopBridge(), mode, desktopToolGrants);
@@ -6811,6 +6915,34 @@ function App() {
     },
     [refreshServiceStatus],
   );
+
+  const handleCheckForUpdates = useCallback(async () => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.checkForUpdates !== "function") {
+      return;
+    }
+    setUpdateBusy("check");
+    try {
+      const status = await bridge.checkForUpdates();
+      setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
+    } finally {
+      setUpdateBusy("");
+    }
+  }, []);
+
+  const handleInstallUpdate = useCallback(async () => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.installUpdate !== "function") {
+      return;
+    }
+    setUpdateBusy("install");
+    try {
+      const status = await bridge.installUpdate();
+      setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
+    } finally {
+      setUpdateBusy("");
+    }
+  }, []);
 
   useEffect(() => {
     // R5d: expose a thin hook so the local tool router (and the desktop e2e
@@ -8685,6 +8817,22 @@ function App() {
     granted: desktopGrantedToolCount,
     total: DESKTOP_TOOL_OPTIONS.length,
   });
+  const appVersionLabel = desktopAppVersionLabel(desktopStatus);
+  const updater = desktopStatus && desktopStatus.updater;
+  const updateInFlight = updateBusy || (updater && desktopUpdaterBusy(updater));
+  const canCheckForUpdates = Boolean(
+    updater
+      && updater.supported
+      && updater.enabled
+      && !updateInFlight,
+  );
+  const canInstallUpdate = Boolean(
+    updater
+      && updater.supported
+      && updater.enabled
+      && (updater.updateAvailable || updater.downloaded)
+      && !updateInFlight,
+  );
   const renderDesktopPermissionPanel = (testId) =>
     h(DesktopPermissionPanel, {
       grants: desktopToolGrants,
@@ -8753,7 +8901,7 @@ function App() {
         { className: "brand" },
         h("span", { className: "mark" }, "FA"),
         h("strong", null, "formal-ai"),
-        h("span", { className: "brand-version", "data-testid": "app-version" }, `v${APP_VERSION}`),
+        h("span", { className: "brand-version", "data-testid": "app-version" }, appVersionLabel),
       ),
       h(
         "div",
@@ -9007,7 +9155,7 @@ function App() {
               "div",
               { className: "drawer-brand-copy" },
               h("strong", null, "formal-ai"),
-              h("span", { className: "brand-version" }, `v${APP_VERSION}`),
+              h("span", { className: "brand-version" }, appVersionLabel),
             ),
           ),
           h(
@@ -9163,6 +9311,12 @@ function App() {
                 h(
                   "div",
                   null,
+                  h("dt", null, t("updates.currentVersion")),
+                  h("dd", { "data-testid": "desktop-app-version" }, appVersionLabel),
+                ),
+                h(
+                  "div",
+                  null,
                   h("dt", null, "API"),
                   h(
                     "dd",
@@ -9225,6 +9379,77 @@ function App() {
                     renderDesktopPermissionPanel("desktop-permission-panel-sidebar"),
                   ),
                 ),
+                updater
+                  ? h(
+                      "div",
+                      { className: "desktop-update-row" },
+                      h("dt", null, t("updates.title")),
+                      h(
+                        "dd",
+                        null,
+                        h(
+                          "div",
+                          {
+                            className: "desktop-update-panel",
+                            "data-testid": "desktop-update-panel",
+                            "data-state": updater.state,
+                          },
+                          h(
+                            "span",
+                            {
+                              className: "desktop-update-state",
+                              "data-testid": "desktop-update-state",
+                              role: updater.updateAvailable || updater.downloaded ? "status" : undefined,
+                            },
+                            desktopUpdaterStateLabel(updater, t),
+                          ),
+                          updater.state === "downloading"
+                            ? h(
+                                "progress",
+                                {
+                                  className: "desktop-update-progress",
+                                  "data-testid": "desktop-update-progress",
+                                  max: "100",
+                                  value: String(Math.round(updater.progressPercent || 0)),
+                                  "aria-label": t("updates.progress", {
+                                    percent: Math.round(updater.progressPercent || 0),
+                                  }),
+                                },
+                              )
+                            : null,
+                          h(
+                            "div",
+                            { className: "desktop-update-actions" },
+                            h(
+                              "button",
+                              {
+                                type: "button",
+                                "data-testid": "desktop-update-check",
+                                disabled: !canCheckForUpdates,
+                                onClick: handleCheckForUpdates,
+                              },
+                              updateBusy === "check" || (updater && updater.state === "checking")
+                                ? t("updates.checking")
+                                : t("updates.check"),
+                            ),
+                            h(
+                              "button",
+                              {
+                                type: "button",
+                                className: "desktop-update-install",
+                                "data-testid": "desktop-update-install",
+                                disabled: !canInstallUpdate,
+                                onClick: handleInstallUpdate,
+                              },
+                              updateBusy === "install" || (updater && updater.state === "installing")
+                                ? t("updates.updating")
+                                : t("updates.update"),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
               ),
             })
           : null,

@@ -5,6 +5,16 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("FormalAiDesktop", {
   getStatus: () => ipcRenderer.invoke("formalAiDesktop:getStatus"),
   openExternal: (url) => ipcRenderer.invoke("formalAiDesktop:openExternal", url),
+  checkForUpdates: () => ipcRenderer.invoke("formalAiDesktop:checkForUpdates"),
+  installUpdate: () => ipcRenderer.invoke("formalAiDesktop:installUpdate"),
+  onUpdateStatus: (callback) => {
+    if (typeof callback !== "function") {
+      return () => {};
+    }
+    const listener = (_event, status) => callback(status);
+    ipcRenderer.on("formalAiDesktop:updateStatus", listener);
+    return () => ipcRenderer.removeListener("formalAiDesktop:updateStatus", listener);
+  },
   // Issue #515: Agent / Full Auto mode auto-starts the local
   // OpenAI-compatible server and exposes its apiBase for provider wiring.
   ensureAgentServer: () => ipcRenderer.invoke("formalAiDesktop:ensureAgentServer"),

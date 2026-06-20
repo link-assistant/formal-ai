@@ -1,6 +1,7 @@
 "use strict";
 
 const { app, BrowserWindow, ipcMain, shell } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const childProcess = require("node:child_process");
 const fs = require("node:fs");
 const http = require("node:http");
@@ -14,6 +15,7 @@ const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
 const { createDockerDetector } = require("./lib/docker-detect.cjs");
 const { createDataMigration } = require("./lib/data-migration.cjs");
+const { createAutoUpdateController } = require("./lib/auto-update.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -45,8 +47,15 @@ dataMigration.pinAppName();
 
 let mainWindow = null;
 let staticServer = null;
+const updateController = createAutoUpdateController({
+  app,
+  autoUpdater,
+  log: debugLog,
+  onStatusChange: publishUpdaterStatus,
+});
 let desktopStatus = {
   shell: "Electron",
+  appVersion: updateController.status().currentVersion,
   mode: "in-process",
   apiBase: "",
   staticBase: "",
@@ -57,9 +66,22 @@ let desktopStatus = {
   agentModeDefault: false,
   toolCallPolicy: "explicit-permission",
   agentExecutionProvider: { type: "in-process" },
+  updater: updateController.status(),
   apiReady: false,
   apiError: "",
 };
+
+function publishUpdaterStatus(status) {
+  desktopStatus = {
+    ...desktopStatus,
+    appVersion: status.currentVersion || desktopStatus.appVersion,
+    updater: status,
+  };
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send("formalAiDesktop:updateStatus", status);
+  }
+  return desktopStatus;
+}
 
 function devWebRoot() {
   return path.join(REPO_ROOT, "src", "web");
@@ -162,6 +184,8 @@ function applyLocalServerStatus(status) {
   desktopStatus = {
     ...desktopStatus,
     ...status,
+    appVersion: updateController.status().currentVersion,
+    updater: updateController.status(),
     agentExecutionProvider: agentProvider.status(),
   };
   return desktopStatus;
@@ -185,6 +209,8 @@ async function createMainWindow() {
   desktopStatus = {
     ...desktopStatus,
     mode: "in-process",
+    appVersion: updateController.status().currentVersion,
+    updater: updateController.status(),
     staticBase,
     apiBase: "",
     chatUrl: "",
@@ -527,6 +553,8 @@ ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
   }
 });
 
+ipcMain.handle("formalAiDesktop:checkForUpdates", () => updateController.checkForUpdates());
+ipcMain.handle("formalAiDesktop:installUpdate", () => updateController.installUpdate());
 ipcMain.handle("formalAiDesktop:getStatus", () => desktopStatus);
 ipcMain.handle("formalAiDesktop:openExternal", async (_event, url) => {
   if (typeof url === "string" && /^https?:\/\//i.test(url)) {
@@ -549,7 +577,12 @@ app.whenReady().then(() => {
       error && error.message ? error.message : String(error),
     );
   }
-  return createMainWindow();
+  return createMainWindow().then((window) => {
+    updateController.checkForUpdates().catch((error) => {
+      debugLog("auto-update startup check failed:", error && error.message ? error.message : String(error));
+    });
+    return window;
+  });
 });
 app.on("window-all-closed", () => {
   shutdown().finally(() => {
@@ -561,6 +594,10 @@ app.on("window-all-closed", () => {
 app.on("before-quit", shutdown);
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createMainWindow();
+    createMainWindow().then(() => {
+      updateController.checkForUpdates().catch((error) => {
+        debugLog("auto-update activation check failed:", error && error.message ? error.message : String(error));
+      });
+    });
   }
 });

@@ -582,8 +582,44 @@ fn desktop_release_normalizes_linux_artifact_names_before_checksums() {
     assert!(
         normalizer.contains("linux-x86_64")
             && normalizer.contains("linux-amd64")
-            && normalizer.contains("linux-x64"),
-        "normalizer should map Electron Builder Linux x64 aliases to the x64 download contract"
+            && normalizer.contains("linux-x64")
+            && normalizer.contains("latest(?:-mac|-linux)?\\.yml"),
+        "normalizer should map Electron Builder Linux x64 aliases to the x64 download and updater contracts"
+    );
+}
+
+#[test]
+fn desktop_release_uploads_auto_update_metadata() {
+    let workflow = desktop_release_workflow();
+    let build = job_block(&workflow, "build");
+    let collect = workflow_step_block(build, "Collect artifacts and checksums");
+    let upload = workflow_step_block(build, "Upload assets to release");
+    let resolve_script = fs::read_to_string(format!(
+        "{}/scripts/desktop-release-resolve.sh",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap();
+
+    for step in [collect, upload] {
+        assert!(
+            step.contains("*.blockmap") && step.contains("release/latest.yml"),
+            "desktop release should collect/upload updater blockmaps and latest.yml metadata"
+        );
+        assert!(
+            !step.contains("*.blockmap|*.yml) continue"),
+            "issue #548 regression: updater metadata must not be filtered out of release uploads"
+        );
+    }
+    assert!(
+        collect.contains("latest(-mac|-linux)?\\.yml"),
+        "checksum fragments should include updater metadata for provenance"
+    );
+    assert!(
+        resolve_script.contains("latest.yml")
+            && resolve_script.contains("latest-mac.yml")
+            && resolve_script.contains("latest-linux.yml")
+            && resolve_script.contains("required desktop assets: 17"),
+        "release resolver should require update metadata before skipping an automatic build"
     );
 }
 
