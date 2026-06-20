@@ -12,7 +12,7 @@ The extension ships **two hosts from one manifest**, so it runs both on the desk
 - Symbolic chat with markdown rendering and traceable reasoning.
 - Optional link-graph **network view** of the reasoning (`GET /v1/graph`).
 - Full-memory **export / import** of the self-contained `formal_ai_bundle` Links-Notation document.
-- **Agent mode** off by default; tool calls (HTTP fetch, file read, sandboxed code/shell) are permission-gated until you opt in.
+- **Agent mode** off by default; tool calls (HTTP fetch, file read, host shell, and sandboxed code execution) are permission-gated until you opt in.
 - Multilingual UI (English, Russian, Hindi, Chinese).
 
 ## Commands

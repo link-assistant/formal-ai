@@ -82,10 +82,21 @@ test("the default desktop agent provider is the hermetic in-process provider", (
 test("in-process provider executes a granted read-only shell command through the local gate", async () => {
   const calls = [];
   const router = createToolRouter({
-    dockerAvailable: () => true,
-    runInSandbox: async (spec) => {
+    dockerAvailable: () => {
+      throw new Error("read-only shell command must not probe Docker by default");
+    },
+    runOnHost: async (spec) => {
       calls.push(spec);
-      return { exitCode: 0, output: "Desktop\nDocuments\n", logPath: "/tmp/agent.log" };
+      return {
+        exitCode: 0,
+        output: "Desktop\nDocuments\n",
+        stdout: "Desktop\nDocuments\n",
+        stderr: "",
+        logPath: "/tmp/agent.log",
+      };
+    },
+    runInSandbox: async () => {
+      throw new Error("read-only shell command must not run in Docker by default");
     },
   });
   router.setGrants({ shell: true });
@@ -101,7 +112,7 @@ test("in-process provider executes a granted read-only shell command through the
   assert.equal(result.provider, "in-process");
   assert.equal(result.executed, true);
   assert.equal(result.command, "ls ~");
-  assert.equal(result.servedBy, "box-dind");
+  assert.equal(result.servedBy, "host-shell");
   assert.equal(calls.length, 1);
   assert.equal(calls[0].tool, "shell");
   assert.equal(calls[0].command, "ls ~");

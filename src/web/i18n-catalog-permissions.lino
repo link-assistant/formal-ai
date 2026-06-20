@@ -23,7 +23,7 @@ en
         description "Run code inside the Docker sandbox."
       shell
         label "Shell"
-        description "Run a shell command inside the Docker sandbox."
+        description "Run a shell command on the host machine."
     panel
       title "Desktop tool permissions"
       active "Agent tools active"
@@ -105,7 +105,7 @@ ru
         description "Запустить код в песочнице Docker."
       shell
         label "Оболочка"
-        description "Выполнить команду оболочки в песочнице Docker."
+        description "Выполнить команду оболочки на хост-машине."
     panel
       title "Разрешения инструментов рабочего стола"
       active "Инструменты агента активны"
@@ -187,7 +187,7 @@ zh
         description "在 Docker 沙箱中运行代码。"
       shell
         label "Shell"
-        description "在 Docker 沙箱中运行 shell 命令。"
+        description "在主机上运行 shell 命令。"
     panel
       title "桌面工具权限"
       active "代理工具已激活"
@@ -269,7 +269,7 @@ hi
         description "Docker सैंडबॉक्स में कोड चलाएँ।"
       shell
         label "शेल"
-        description "Docker सैंडबॉक्स में एक शेल कमांड चलाएँ।"
+        description "होस्ट मशीन पर एक शेल कमांड चलाएँ।"
     panel
       title "डेस्कटॉप टूल अनुमतियाँ"
       active "एजेंट टूल सक्रिय"

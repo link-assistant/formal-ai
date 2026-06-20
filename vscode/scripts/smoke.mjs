@@ -83,7 +83,7 @@ if (!views.some((v) => v.id === "formal-ai.chatView" && v.type === "webview")) {
 }
 
 // --- Node (desktop) host ------------------------------------------------
-// R3/R4: opt-in local server; R5d: permission-gated Docker sandbox; R5c: memory.
+// R3/R4: opt-in local server; R5d: permission-gated host shell + Docker sandbox; R5c: memory.
 requireIncludes("extension.node.cjs", read("src/extension.node.cjs"), [
   "VS Code",
   'require("node:child_process")',
@@ -94,6 +94,7 @@ requireIncludes("extension.node.cjs", read("src/extension.node.cjs"), [
   "withApiError",
   "dockerIsAvailable",
   "runInSandbox",
+  "runOnHost",
   "docker.image",
   "createChatViewProvider",
   "renderChatWebview",

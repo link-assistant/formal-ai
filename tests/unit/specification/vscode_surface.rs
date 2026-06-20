@@ -135,9 +135,10 @@ fn vscode_version_syncs_from_the_rust_crate() {
 
 #[test]
 fn vscode_node_host_mirrors_the_electron_desktop_shell() {
-    // The Node host can spin up the local server, drive Docker, route tools
-    // behind permission, and reconcile memory — the desktop affordances the issue
-    // asks for, all behind `formal-ai.*` settings.
+    // The Node host can spin up the local server, run host shell commands, drive
+    // Docker for sandboxed code, route tools behind permission, and reconcile
+    // memory: the desktop affordances the issue asks for, all behind
+    // `formal-ai.*` settings.
     assert!(
         EXTENSION_NODE.contains(r#"require("node:child_process")"#),
         "the Node host needs child_process to spawn the server and Docker"
@@ -148,6 +149,7 @@ fn vscode_node_host_mirrors_the_electron_desktop_shell() {
         "createMemorySync",
         "dockerIsAvailable",
         "runInSandbox",
+        "runOnHost",
         "formal-ai.server.enabled",
         r#"SHELL = "VS Code""#,
     ] {
