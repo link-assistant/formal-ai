@@ -3,6 +3,7 @@ bump: minor
 ---
 
 ### Fixed
+- Desktop conversations now survive app upgrades. The userData directory is pinned to a stable, productName-independent name (`formal-ai`) so a rebrand or package rename can no longer orphan a profile, and on first launch any legacy profile (e.g. `formal-ai Desktop`) is **non-destructively** migrated forward — the renderer's IndexedDB conversation store and `localStorage` preferences are copied into the pinned directory without ever deleting the originals, then version-stamped for future schema migrations (issue #541).
 - Desktop app no longer reports "Docker unavailable" when Docker Desktop is installed and running. The `docker` binary is now resolved across well-known install locations (`/usr/local/bin`, `/opt/homebrew/bin`, `/Applications/Docker.app/...`, Windows `Program Files`, NixOS), fixing the GUI-launch PATH gap, and availability is re-probed on a short TTL so a daemon started after the app opened is detected without a restart (issue #541).
 - Collapsed reasoning preview now shows the current step in full (at least one whole paragraph) instead of clipping it to a single ellipsised line, so the thinking trace is actually readable while collapsed (issue #541).
 

@@ -13,6 +13,7 @@ const { createAgentProvider } = require("./lib/agent-provider.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
 const { createDockerDetector } = require("./lib/docker-detect.cjs");
+const { createDataMigration } = require("./lib/data-migration.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -31,6 +32,16 @@ const {
 } = require("./lib/local-server.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
+
+// Desktop data persistence & migration (issue #541, R3). Pin the userData
+// directory to a stable, productName-independent name so a future rebrand or
+// package rename can never again orphan a user's conversations, and migrate any
+// legacy profile forward on first launch. pinAppName() MUST run before the
+// Electron `ready` event for the userData override to take effect, so it is
+// invoked here at module load; the actual (non-destructive) copy runs in
+// whenReady, before the window/session touches storage.
+const dataMigration = createDataMigration({ app, fs, path, log: debugLog });
+dataMigration.pinAppName();
 
 let mainWindow = null;
 let staticServer = null;
@@ -473,7 +484,21 @@ ipcMain.handle("formalAiDesktop:openExternal", async (_event, url) => {
   return false;
 });
 
-app.whenReady().then(createMainWindow);
+app.whenReady().then(() => {
+  // Issue #541 (R3): migrate any legacy profile into the pinned userData
+  // directory before the window/session is created, so an upgrading user keeps
+  // their conversations. Never fatal — a migration failure must not block
+  // startup, and the copy is non-destructive so it is safe to retry next launch.
+  try {
+    dataMigration.migrate();
+  } catch (error) {
+    debugLog(
+      "data migration failed:",
+      error && error.message ? error.message : String(error),
+    );
+  }
+  return createMainWindow();
+});
 app.on("window-all-closed", () => {
   shutdown().finally(() => {
     if (process.platform !== "darwin") {
