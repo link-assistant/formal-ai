@@ -36,17 +36,17 @@ const { test, expect } = require('@playwright/test');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
 
-function basePreferences() {
+function basePreferences({ uiLanguage = 'en' } = {}) {
   return [
     'demo_preferences',
     '  demoMode "off"',
     '  greetingVariations "off"',
     '  diagnosticsMode "off"',
-    '  uiLanguage "en"',
+    `  uiLanguage "${uiLanguage}"`,
   ].join('\n');
 }
 
-async function bootIssue541Permissions(page) {
+async function bootIssue541Permissions(page, { uiLanguage = 'en' } = {}) {
   await page.addInitScript(
     ({ prefKey, preferences }) => {
       try {
@@ -126,7 +126,7 @@ async function bootIssue541Permissions(page) {
         },
       };
     },
-    { prefKey: PREF_KEY, preferences: basePreferences() },
+    { prefKey: PREF_KEY, preferences: basePreferences({ uiLanguage }) },
   );
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
@@ -247,4 +247,46 @@ test.describe('Issue #541 (R9): grant-all CTA evaluates the pending task', () =>
     await expect(cta).toHaveAttribute('data-has-pending-task', 'false');
     await expect(cta).toHaveText('Grant all and switch to Agent mode');
   });
+});
+
+// The four supported languages from data/seed/agent-info.lino. Each entry pairs
+// the locale tag with the human label and the localized R9 CTA text from
+// src/web/i18n-catalog-permissions.lino. The check-language-test-coverage CI
+// guard requires *added test lines* to mention every supported language by
+// quoted code, language name, or script marker — every locale below satisfies
+// at least one of those conditions.
+const SUPPORTED_LANGUAGE_CTAS = [
+  { language: 'en', label: 'english', cta: 'Grant all and switch to Agent mode' },
+  { language: 'ru', label: 'russian', cta: 'Предоставить все и включить режим агента' },
+  { language: 'zh', label: 'chinese', cta: '全部授予并切换到代理模式' },
+  { language: 'hi', label: 'hindi', cta: 'सभी प्रदान करें और एजेंट मोड पर स्विच करें' },
+];
+
+test.describe('Issue #541 (R9): grant-all CTA renders in every supported language', () => {
+  for (const { language, label, cta } of SUPPORTED_LANGUAGE_CTAS) {
+    test(`renders the localized CTA for ${label} (language: "${language}")`, async ({ page }) => {
+      // Seed the preferences profile with uiLanguage set to this locale. The
+      // renderer reads it on startup and resolves every i18n-keyed string —
+      // including the R9 grant-all CTA — through src/web/i18n.js against
+      // src/web/i18n-catalog-permissions.lino.
+      await bootIssue541Permissions(page, { uiLanguage: language });
+
+      // Flip into Agent mode so the permission panel renders inside the
+      // agent_permission_onboarding system message.
+      await page.locator('[data-testid="mode-option-agent"]').click();
+      await expect(
+        page.locator('[data-testid="desktop-permission-panel-message"]'),
+      ).toBeVisible();
+
+      // No pending task → the CTA must use the "no run" wording from the
+      // catalog. We assert the *localized* string verbatim so a regression
+      // that falls back to English for non-en locales is caught.
+      const ctaLocator = page.locator(
+        '[data-testid="desktop-permission-panel-message-grant-all"]',
+      );
+      await expect(ctaLocator).toBeVisible();
+      await expect(ctaLocator).toHaveAttribute('data-has-pending-task', 'false');
+      await expect(ctaLocator).toHaveText(cta);
+    });
+  }
 });
