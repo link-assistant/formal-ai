@@ -195,8 +195,8 @@ test("commander provider defaults to the org-owned agent backend through agent-c
   assert.equal(calls.length, 1);
   assert.equal(calls[0].command, "start-agent");
   assert.deepEqual(calls[0].args.slice(0, 4), ["--tool", "agent", "--working-directory", "/workspace"]);
-  assert.ok(!calls[0].args.includes("--read-only"), "--tool agent rejects --read-only upstream");
-  assert.ok(calls[0].args.includes("--approve-each"), "desktop gate enforces read-only for the agent backend");
+  assert.ok(calls[0].args.includes("--read-only"), "agent-commander maps agent to native read-only mode");
+  assert.ok(!calls[0].args.includes("--approve-each"));
   assert.ok(calls[0].args.includes("--isolation"));
   assert.ok(calls[0].args.includes("docker"));
   assert.ok(calls[0].args.includes("--container-name"));
@@ -221,7 +221,16 @@ test("commander provider maps non-read-only agent mode to approve-each", () => {
   assert.ok(!args.includes("--read-only"));
 });
 
-test("commander provider maps read-only mode for non-agent backends to read-only", () => {
+test("commander provider maps read-only mode for all backends to read-only", () => {
+  const agentArgs = buildCommanderArgs({
+    mode: "agent",
+    prompt: "List files",
+    command: "ls ~",
+    agentProvider: { apiBase: "http://127.0.0.1:19999" },
+  });
+  assert.ok(agentArgs.includes("--read-only"));
+  assert.ok(!agentArgs.includes("--approve-each"));
+
   const args = buildCommanderArgs({
     mode: "agent",
     commanderTool: "test-tool",

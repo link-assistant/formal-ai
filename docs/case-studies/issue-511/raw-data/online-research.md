@@ -6,8 +6,8 @@ folder (`external-agent-README.md`, `external-agent-commander-README.md`,
 `external-agent-permissions.md`, `external-hive-mind-README.md`) so the analysis is
 reproducible offline.
 
-> **Version watermark (re-verified 2026-06-17, per PR #512 feedback "double check
-> latest versions again"):** `@link-assistant/agent` **v0.24.0** (`js-v0.24.0`,
+> **Version watermark (verified 2026-06-17, and rechecked for E8 on
+> 2026-06-19):** `@link-assistant/agent` **v0.24.0** (`js-v0.24.0`,
 > 2026-06-17; PR [agent#272](https://github.com/link-assistant/agent/pull/272)
 > closing [agent#271](https://github.com/link-assistant/agent/issues/271)) — **ships
 > a native, enforceable permission system** with a JSON per-command approval

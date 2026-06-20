@@ -28,9 +28,9 @@ Reusable components referenced throughout:
   branch. Terminal-command recognition, the three-way mode radio, seed-backed terminal
   vocabulary/responses, the no-hardcoded-natural-language documentation + CI guard, and
   Playwright timeouts are already present.
-- Latest `main` adds the issue #438/#523 service-control stack: the prepared GHCR
+- Latest `main` added the issue #438/#523 service-control stack: the prepared GHCR
   image, `compose.yaml`, `desktop/lib/service-control.cjs`, and one-click Telegram /
-  OpenAI-compatible server controls. E3/E5 should reuse that stack and extend it for
+  OpenAI-compatible server controls. E3/E5 reused that stack and extended it for
   `agent` + `agent-commander`.
 
 ---
@@ -40,19 +40,17 @@ Reusable components referenced throughout:
 ### R1 — First-run system message offering agent mode
 - **Reuse:** APP message-render path; preferences store (`agentMode`, plus a new
   `agentOnboardingSeen`).
-- **Status:** Partially scaffolded by E1: detected terminal prompts now receive an
-  `agent_suggestion` response instead of `unknown`.
-- **Plan:** When a conversation has no prior agent-mode decision **and** either it is
-  the first session or a terminal/tool request is detected (R5), append a *system*
-  chat message (not an assistant turn) that explains agent mode and renders the R3
-  permission controls inline. Persist `agentOnboardingSeen=true` once shown/answered.
-- **Test:** Unit test on the onboarding-trigger predicate; e2e asserting the message
-  appears once on first agent-intent and not again after a decision.
+- **Status:** Implemented by E2 / PR #528.
+- **Done:** When a conversation has no prior agent-mode decision and a terminal/tool
+  request is detected (R5), the app renders the agent-mode onboarding and permission
+  controls instead of returning `unknown`.
+- **Test:** E2/E7 e2e coverage asserts onboarding, grants, denials, and the cold-start
+  `ls ~` flow.
 
 ### R5 — Terminal request no longer dead-ends in `unknown`
 - **Reuse:** WK handler chain; the existing `shell` tool vocabulary in TR.
 - **Status:** Implemented by E1 / PR #525 for recognition and seed-backed
-  `agent_suggestion` responses. The real execution handoff is still R9/R12/R18.
+  `agent_suggestion` responses; execution was completed through E2-E7.
 - **Plan:** Keep the `tryTerminalCommand` handler **just before** the `unknown` fallback
   in both the JS worker (`formal_ai_worker.js`) **and** the Rust solver
   (`src/solver.rs`) to preserve parity (the project's E33–E34 parity rule). It detects
@@ -144,7 +142,7 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
   readonly`/`plan`), and `agent` mode → `--approve-each` (alias `--permission-mode
   ask`). The provider emits the same structured tool-call/result events the chat UI
   already consumes.
-- **Upstream dependency (re-verified 2026-06-17) — RESOLVED.** Read-only and
+- **Upstream dependency (re-verified 2026-06-19) — RESOLVED.** Read-only and
   per-command approval for the `agent` tool are now exposed by `agent-commander`:
   [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
   (read-only mapping) shipped in **js_0.7.0 / rust_0.2.5**, and
@@ -215,20 +213,17 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
 ### R15 / R18 — Integration + e2e for the cold-start `ls ~` journey
 - **Reuse:** The existing e2e harness under `tests/e2e/` (Playwright specs, e.g.
   `tests/e2e/tests/issue-479*.spec.js`); TR unit-test patterns.
-- **Status:** Partially covered by E1: terminal intent and three-way mode switch e2e
-  exist, and Playwright configs now have bounded per-test/suite/assertion/navigation
-  timeouts.
-- **Plan:** Add `tests/e2e/tests/issue-511*.spec.js` covering: (1) first-run onboarding
-  message appears; (2) per-command grant/deny; (3) the existing three-way mode switch
-  still drives permissions/execution; (4) `ls ~` in agent mode returns a real listing
-  rendered in chat (against the in-process provider for hermeticity, with a
-  container-gated variant for the real CLI).
-- **Test:** The specs themselves; wire them into the e2e CI job.
+- **Status:** Implemented by E7 / PR #537.
+- **Done:** `tests/e2e/tests/issue-511-cold-start.spec.js` covers first-run
+  onboarding, per-command grant/deny, the three-way mode switch, and `ls ~` returning
+  a real listing rendered in chat against the hermetic in-process provider, with a
+  `FORMAL_AI_E2E_AGENT_COMMANDER=1` gated commander-provider variant.
+- **Test:** The E7 spec itself, plus the language and i18n guard checks.
 
 ### R16 — Report missing agent-commander features upstream
 - **Reuse:** EXT support matrix; the re-verification note in
   [`raw-data/online-research.md`](raw-data/online-research.md) §2.
-- **Status (re-verified 2026-06-17 against `agent` v0.24.0 / `agent-commander`
+- **Status (re-verified 2026-06-19 against `agent` v0.24.0 / `agent-commander`
   js_0.8.0 / rust_0.2.6) — all resolved upstream:**
   - The original Agent-CLI gap is **resolved upstream** —
     [`agent#271`](https://github.com/link-assistant/agent/issues/271) →
@@ -248,17 +243,21 @@ The chat UI and permission gate are provider-agnostic; only the provider differs
     `codex`/`gemini`/`qwen`/`opencode` cannot relay headless approvals upstream, so
     they support read-only + full-auto but not approve-each. This is the rationale for
     defaulting the desktop backend to **`@link-assistant/agent`**.
-- **Plan:** The `agent` provider can request read-only (`ls ~`) and drive the desktop
-  per-command approval UI directly onto agent-commander's relayed events today. E8
-  re-checks during E4–E7 whether any further capability gap surfaces and files it
-  upstream if so (e.g. a future `codex`/`gemini`/`qwen` approve-each handshake).
-- **Test:** N/A (process); tracked as a checklist item in E8.
+- **Done in E8:** E4–E7 surfaced no new `agent-commander` bug after #39/#40 shipped.
+  The only downstream stale behavior was Formal AI's old workaround for
+  `--tool agent --read-only`; PR #539 removes that workaround and uses upstream
+  `--read-only` directly. If a future backend exposes a relayable headless approval
+  handshake and agent-commander does not map it, file a new upstream issue then.
+- **Test:** `node --test desktop/scripts/agent-provider.test.mjs` asserts the default
+  `agent` backend now receives `--read-only` for the `ls ~` path.
 
 ### R17 — Follow hive-mind best practices
 - **Reuse:** [`raw-data/online-research.md`](raw-data/online-research.md) §3 summary.
-- **Plan:** Adopt Docker/VM isolation for all autonomous execution; never point tools
-  at host subscriptions; document the applied practices in the container README.
-- **Test:** Covered by R13/R14b guards + documentation review.
+- **Done:** E5 applies the Docker/VM isolation guidance through the `formal-ai-agent`
+  container and no-host-CLI contract. E8 finalizes the explicit write-up in
+  [`best-practices.md`](best-practices.md).
+- **Test:** Covered by R13/R14b guards, `docs/desktop/service-control.md`, and the E8
+  documentation review.
 
 ---
 

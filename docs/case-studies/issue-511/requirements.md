@@ -17,9 +17,8 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R1 — First-run system message offering agent mode
 - **Source:** *"from the start it will ask to switch to agentic mode"*; *"At first
   time we should produce system message with requests for permissions."*
-- **Priority:** P0 · **Status now:** Partial (E1/PR #525 returns a seed-backed
-  `agent_suggestion` for detected terminal commands; the first-run system message
-  and per-permission controls remain E2)
+- **Priority:** P0 · **Status now:** **Implemented** by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528)
 - **Acceptance:** On first use (or first detected terminal/tool request), the chat
   emits a system message that explains agent mode and invites the user to enable it.
   Shown once; the decision persists in preferences.
@@ -27,21 +26,24 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R2 — Per-command / per-tool permission requests
 - **Source:** *"with configuration for each bash tool call"*; *"requests for
   permissions (each should be granted or declined separately)."*
-- **Priority:** P0 · **Status now:** Partial (gate exists; grants are all-or-nothing)
+- **Priority:** P0 · **Status now:** **Implemented** by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528)
 - **Acceptance:** Each tool (`shell`, `http_fetch`, `read_local_file`, …) — and, in
   agent (non-full-auto) mode, each concrete command — can be granted or declined
   independently. Declared decisions are recorded and reused.
 
 ### R3 — Independent grant/deny per permission
 - **Source:** *"each should be granted or declined separately."*
-- **Priority:** P0 · **Status now:** Missing (UI presents no per-item choice)
+- **Priority:** P0 · **Status now:** **Implemented** by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528)
 - **Acceptance:** The permission UI exposes a grant and a decline control per item;
   declining one does not grant the others.
 
 ### R4 — Default-deny preserved
 - **Source:** Repo invariant (`tool-router.cjs` `isPermitted`, default-deny) reinforced
   by the issue's "permission off" default in the screenshot.
-- **Priority:** P0 · **Status now:** Present
+- **Priority:** P0 · **Status now:** Present and guarded by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528)
 - **Acceptance:** With no grant, every tool is refused; the new UI only records grants
   and never bypasses `isPermitted`.
 
@@ -67,14 +69,16 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 
 ### R7 — `agent` mode = agentic with per-command confirmation
 - **Source:** Implied by the contrast with full-auto (*"approve each command"*).
-- **Priority:** P1 · **Status now:** Partial (mode exists; approval execution path is E2/E4)
+- **Priority:** P1 · **Status now:** **Implemented** by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528) and E4 / PR
+  [#532](https://github.com/link-assistant/formal-ai/pull/532)
 - **Acceptance:** In `agent` mode, each command requires explicit approval before it
   runs (the R2/R3 prompt).
 
 ### R8 — `full auto` mode = agentic + no confirmations
 - **Source:** *"full auto is agentic mode + no confirmations."*
-- **Priority:** P1 · **Status now:** Partial (radio option exists; no grant-gated
-  full-auto execution path yet)
+- **Priority:** P1 · **Status now:** **Implemented** by E2 / PR
+  [#528](https://github.com/link-assistant/formal-ai/pull/528)
 - **Acceptance:** In `full-auto`, granted-tool commands execute without per-command
   prompts; the prior grants (or an explicit "grant all") still gate which tools are
   allowed.
@@ -86,13 +90,15 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R9 — Use `link-assistant/agent` to execute actions
 - **Source:** *"will use https://github.com/link-assistant/agent + our server start up
   to actually execute actions."*
-- **Priority:** P1 · **Status now:** Missing (only the in-repo test driver exists)
+- **Priority:** P1 · **Status now:** **Implemented** by E4 / PR
+  [#532](https://github.com/link-assistant/formal-ai/pull/532)
 - **Acceptance:** Agent/full-auto mode can execute real actions via the Agent CLI.
 
 ### R10 — Install Agent CLI if missing / upgrade if outdated
 - **Source:** *"Install Agent CLI (if not installed) or upgrade if not newest
   version."*
-- **Priority:** P1 · **Status now:** Missing
+- **Priority:** P1 · **Status now:** **Implemented** by E5 / PR
+  [#533](https://github.com/link-assistant/formal-ai/pull/533)
 - **Acceptance:** The desktop app detects the Agent CLI's presence/version (inside the
   Formal-AI container) and installs or upgrades it as needed, with progress surfaced
   to the user.
@@ -100,16 +106,16 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R11 — Auto-start local OpenAI-compatible server & configure the CLI
 - **Source:** *"Start the Formal AI OpenAI compatible server locally, and configure
   Agent CLI."*
-- **Priority:** P1 · **Status now:** Partial (`formal-ai serve`, desktop
-  service-control, and `compose.yaml` can start the server; it is not auto-started
-  by agent/full-auto mode and the CLI is not configured yet)
+- **Priority:** P1 · **Status now:** **Implemented** by E3 / PR
+  [#530](https://github.com/link-assistant/formal-ai/pull/530)
 - **Acceptance:** Entering agent mode auto-starts the local server (if not running)
   and points the Agent CLI's model backend at it.
 
 ### R12 — Execute only through `agent-commander` (never the CLI directly)
 - **Source:** *"even Agent CLI we should not use directly, but only through
   https://github.com/link-assistant/agent-commander."*
-- **Priority:** P1 · **Status now:** Missing
+- **Priority:** P1 · **Status now:** **Implemented** by E4 / PR
+  [#532](https://github.com/link-assistant/formal-ai/pull/532)
 - **Acceptance:** All CLI invocations go through `agent-commander`; no direct
   `agent`/`claude`/`codex` spawn from the desktop app.
 
@@ -117,16 +123,16 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 - **Source:** *"use separate small docker container (our server, which we also should
   make available and easy installable by our desktop application), in near server you
   can install codex and claude to test integration."*
-- **Priority:** P1 · **Status now:** Partial (latest `main` publishes/runs a prepared
-  Formal-AI image and desktop service-control starts Telegram/server containers; the
-  agent image still must bundle `agent` + `agent-commander` and expose install/health UX)
+- **Priority:** P1 · **Status now:** **Implemented** by E5 / PR
+  [#533](https://github.com/link-assistant/formal-ai/pull/533)
 - **Acceptance:** A Formal-AI container image bundles the local server + `agent` +
   `agent-commander`; the desktop app offers one-click install + health check.
 
 ### R14 — Render Agent CLI output into the existing chat UI
 - **Source:** *"When in agent mode we should use Agent CLI output to actually
   construct viewable chat UI we already have in regular chat mode."*
-- **Priority:** P1 · **Status now:** Missing
+- **Priority:** P1 · **Status now:** **Implemented** by E6 / PR
+  [#536](https://github.com/link-assistant/formal-ai/pull/536)
 - **Acceptance:** The CLI's streamed (NDJSON) events are mapped onto the existing chat
   message + tool-call render path; agent mode looks like normal chat with tool steps.
 
@@ -134,7 +140,9 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 - **Source:** *"don't use your local claude and codex, they are connected to our
   subscriptions … so please use separate small docker container … even Agent CLI we
   should not use directly."*
-- **Priority:** P0 (safety) · **Status now:** N/A (must be enforced by design)
+- **Priority:** P0 (safety) · **Status now:** **Implemented** by E4 / PR
+  [#532](https://github.com/link-assistant/formal-ai/pull/532) and E5 / PR
+  [#533](https://github.com/link-assistant/formal-ai/pull/533)
 - **Acceptance:** No code path invokes the host's `claude`/`codex`; autonomous tools
   run only inside the Formal-AI container.
 
@@ -145,8 +153,8 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R15 — Full integration + e2e tests for the cold-start journey
 - **Source:** *"We should also add full integration and e2e tests to make sure our
   desktop app fully supports that case from the start."*
-- **Priority:** P1 · **Status now:** Partial (E1 adds terminal-intent + mode-switch
-  e2e and explicit Playwright timeouts; the cold-start real `ls ~` journey remains E7)
+- **Priority:** P1 · **Status now:** **Implemented** by E7 / PR
+  [#537](https://github.com/link-assistant/formal-ai/pull/537)
 - **Acceptance:** Tests cover: first-run onboarding, per-command grant/deny, the
   three-way mode switch, and `ls ~` returning a real listing rendered in chat.
 
@@ -154,7 +162,7 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 - **Source:** *"if some features are missing from agent-commander we should report
   it."*
 - **Priority:** P2 · **Status now:** **Resolved upstream** (issues filed via `gh` and
-  closed by upstream releases; re-verified against latest versions 2026-06-17)
+  closed by upstream releases; re-verified against latest versions 2026-06-19)
 - **Acceptance:** Any capability gap found during integration is filed as an issue on
   the appropriate upstream repository and linked here.
 - **Filed & resolved (re-verified against `agent` v0.24.0 and `agent-commander`
@@ -191,8 +199,9 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R17 — Follow hive-mind best practices for Agent CLI + agent-commander
 - **Source:** *"Check github.com/link-assistant/hive-mind for best practices for Agent
   CLI + agent-commander."*
-- **Priority:** P2 · **Status now:** Partial (best practices summarized in
-  [`raw-data/online-research.md`](raw-data/online-research.md) §3)
+- **Priority:** P2 · **Status now:** **Implemented** by E5 / PR
+  [#533](https://github.com/link-assistant/formal-ai/pull/533) and finalized by E8
+  in [`best-practices.md`](best-practices.md)
 - **Acceptance:** The integration adopts hive-mind's isolation guidance (Docker/VM
   isolation; never point autonomous tools at host subscriptions) and documents which
   practices were applied.
@@ -200,7 +209,8 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 ### R18 — Verify the basic read-only terminal journey end-to-end
 - **Source:** *"So user is able to do basic readonly operations via terminal, which
   itself executed in Agent CLI."*
-- **Priority:** P0 · **Status now:** Missing
+- **Priority:** P0 · **Status now:** **Implemented** by E7 / PR
+  [#537](https://github.com/link-assistant/formal-ai/pull/537)
 - **Acceptance:** A read-only operation (`ls ~`, `pwd`, `cat <file>`) issued in chat is
   executed by the Agent CLI (through agent-commander, in the container) and its output
   appears in chat — verified by an automated test.
@@ -247,25 +257,25 @@ not fully wired/surfaced), **Present** (exists and reusable as-is), **Implemente
 
 | Req | Theme | Priority | Status now | Milestone |
 |---|---|---|---|---|
-| R1 | Onboarding | P0 | Partial | E1, E2 |
-| R2 | Permissions | P0 | Partial | E2 |
-| R3 | Permissions | P0 | Missing | E2 |
-| R4 | Permissions | P0 | Present | E2 (guard) |
+| R1 | Onboarding | P0 | **Implemented** | E1, E2 |
+| R2 | Permissions | P0 | **Implemented** | E2 |
+| R3 | Permissions | P0 | **Implemented** | E2 |
+| R4 | Permissions | P0 | Present + guarded | E2 |
 | R5 | Onboarding | P0 | **Implemented** | E1 |
 | R6 | Mode UI | P1 | **Implemented** | E1 |
-| R7 | Mode UI | P1 | Partial | E2 |
-| R8 | Mode UI | P1 | Partial | E2 |
-| R9 | Execution | P1 | Missing | E4 |
-| R10 | Execution | P1 | Missing | E5 |
-| R11 | Execution | P1 | Partial | E3 |
-| R12 | Execution | P1 | Missing | E4 |
-| R13 | Execution | P1 | Partial | E5 |
-| R14 | Execution | P1 | Missing | E6 |
-| R14b | Safety | P0 | By design | E4, E5 |
-| R15 | Tests | P1 | Partial | E7 |
+| R7 | Mode UI | P1 | **Implemented** | E2 |
+| R8 | Mode UI | P1 | **Implemented** | E2 |
+| R9 | Execution | P1 | **Implemented** | E4 |
+| R10 | Execution | P1 | **Implemented** | E5 |
+| R11 | Execution | P1 | **Implemented** | E3 |
+| R12 | Execution | P1 | **Implemented** | E4 |
+| R13 | Execution | P1 | **Implemented** | E5 |
+| R14 | Execution | P1 | **Implemented** | E6 |
+| R14b | Safety | P0 | **Implemented** | E4, E5 |
+| R15 | Tests | P1 | **Implemented** | E7 |
 | R16 | Upstream | P2 | Resolved (upstream) | E8 |
-| R17 | Best practices | P2 | Partial | E5, E8 |
-| R18 | Verify journey | P0 | Missing | E7 |
+| R17 | Best practices | P2 | **Implemented** | E5, E8 |
+| R18 | Verify journey | P0 | **Implemented** | E7 |
 | R21 | i18n guard | P0 | **Implemented** | E2 (guard) |
 | R19 | Process | P0 | **Done** | E0 (this PR) |
 | R20 | Process | P0 | **Done** | E0 (this PR) |
