@@ -400,9 +400,9 @@ Payloads stay Links Notation (`demo_memory`); REST is only the transport (R7).
 
 ### 5d. Local-execution routing + Docker sandbox (R5d)
 
-When the agent has side effects — web fetches, tool calls, code execution — and
-server mode is on, those run through the **local** app and its Docker sandbox,
-not a remote service. The dispatcher is
+When the agent has side effects — web fetches, tool calls, shell commands, code
+execution — and server mode is on, those run through the **local** app, not a
+remote service. The dispatcher is
 [`desktop/lib/tool-router.cjs`](../../desktop/lib/tool-router.cjs), exposed to the
 renderer through `formalAiDesktop:invokeTool` /
 `formalAiDesktop:setToolGrants`.
@@ -413,15 +413,19 @@ renderer through `formalAiDesktop:invokeTool` /
 - **Local I/O tools** — `http_fetch`, `url_navigate`, `read_local_file` — are
   served by the local process. `read_local_file` is confined to an allowed root;
   anything outside it is refused (`forbidden`).
-- **Code/shell tools** — `eval_js`, `code_exec`, `shell` — run only inside the
-  `konard/box-dind:2.1.1` Docker sandbox (the same inner-Docker image the
-  Telegram microservice uses), with logs captured to a local path. If Docker is
-  unavailable the call is refused (`sandbox_unavailable`) rather than run
-  unsandboxed.
+- **Shell** runs on the host machine by default, after the same explicit grant,
+  with output and logs returned through the tool result. A shell request may opt
+  into Docker isolation with `input.isolation = "docker"`.
+- **Sandboxed code tools** — `eval_js`, `code_exec`, and Docker-isolated `shell`
+  requests — run inside the `konard/box-dind:2.1.1` Docker sandbox (the same
+  inner-Docker image the Telegram microservice uses), with logs captured to a
+  local path. If Docker is unavailable the sandboxed call is refused
+  (`sandbox_unavailable`) rather than run unsandboxed.
 
 This mirrors the `docker_microservice` environment in
 [`data/seed/environments.lino`](../../data/seed/environments.lino) and keeps every
-side effect on the local machine and behind an explicit grant.
+side effect on the local machine, with Docker as an explicit sandboxing target,
+and behind an explicit grant.
 
 ---
 

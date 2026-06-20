@@ -82,7 +82,8 @@ requireIncludes("preload.cjs", read("preload.cjs"), [
   "stopService",
 ]);
 
-// R5d (D2): the tool router defaults to deny and routes code-exec to box-dind.
+// R5d (D2): the tool router defaults to deny, runs shell on the host by
+// default, and routes code-exec to box-dind.
 requireIncludes("lib/tool-router.cjs", read("lib/tool-router.cjs"), [
   "createToolRouter",
   "konard/box-dind",
@@ -90,6 +91,8 @@ requireIncludes("lib/tool-router.cjs", read("lib/tool-router.cjs"), [
   "default-deny",
   "http_fetch",
   "code_exec",
+  "runOnHost",
+  "host-shell",
 ]);
 // R5c (D1): the memory-sync client speaks the Links-Notation memory endpoints.
 requireIncludes("lib/memory-sync.cjs", read("lib/memory-sync.cjs"), [

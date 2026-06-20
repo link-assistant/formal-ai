@@ -6,9 +6,12 @@
 // effects (web fetches, tool calls, code execution) run through the *local* app
 // and its Docker sandbox instead of a remote service. Every call passes an
 // explicit-permission gate first (default-deny); denied calls return a
-// structured refusal and nothing executes. Code-exec / shell tools run inside a
-// `konard/box-dind` container — the same image the Telegram microservice uses —
-// with a graceful fallback when Docker is unavailable.
+// structured refusal and nothing executes. Shell commands run on the host
+// process by default (the user's desktop machine); code-exec / eval-js tools
+// run inside a `konard/box-dind` container — the same image the Telegram
+// microservice uses — with a graceful fallback when Docker is unavailable. A
+// shell request may still opt into Docker isolation with `input.isolation =
+// "docker"` so both execution targets remain available.
 //
 // The factory takes its effectful dependencies as injectables so the policy and
 // dispatch logic are unit-testable without a live network, filesystem, or Docker
@@ -20,8 +23,9 @@ const path = require("node:path");
 const SANDBOX_IMAGE = "konard/box-dind:2.1.1";
 
 // The tool vocabulary mirrors the browser environment (see app.js); each maps to
-// a local executor here. `code_exec` / `shell` are sandboxed; the rest are
-// direct local effects behind the permission gate.
+// a local executor here. `code_exec` / `eval_js` are sandboxed, `shell` is host
+// shell by default, and the rest are direct local effects behind the permission
+// gate.
 const SUPPORTED_TOOLS = Object.freeze([
   "http_fetch",
   "url_navigate",
@@ -31,7 +35,7 @@ const SUPPORTED_TOOLS = Object.freeze([
   "shell",
 ]);
 
-const SANDBOXED_TOOLS = Object.freeze(["eval_js", "code_exec", "shell"]);
+const SANDBOXED_TOOLS = Object.freeze(["eval_js", "code_exec"]);
 
 function refusal(tool, reason) {
   return {
@@ -69,6 +73,7 @@ function createToolRouter(options = {}) {
   const fetchImpl = options.fetchImpl || globalThis.fetch;
   const readFile = options.readFile || null;
   const runInSandbox = options.runInSandbox || null;
+  const runOnHost = options.runOnHost || null;
   const dockerAvailable =
     typeof options.dockerAvailable === "function"
       ? options.dockerAvailable
@@ -143,9 +148,40 @@ function createToolRouter(options = {}) {
     }
   }
 
+  async function hostShell(tool, input) {
+    if (typeof runOnHost !== "function") {
+      return failure(tool, "unavailable", "no host shell runner is configured");
+    }
+    const command = String((input && input.command) || "");
+    if (!command.trim()) {
+      return failure(tool, "invalid_input", "shell requires a command");
+    }
+    try {
+      const result = await runOnHost({ tool, command });
+      const stdout = result && result.stdout ? String(result.stdout) : "";
+      const stderr = result && result.stderr ? String(result.stderr) : "";
+      const body = result && result.output ? String(result.output) : `${stdout}${stderr}`;
+      return {
+        ok: true,
+        tool,
+        status: "ok",
+        executed: true,
+        servedBy: "host-shell",
+        isolation: "host",
+        exitCode: result && typeof result.exitCode === "number" ? result.exitCode : 0,
+        logPath: result && result.logPath ? String(result.logPath) : "",
+        stdout,
+        stderr,
+        body,
+      };
+    } catch (error) {
+      return failure(tool, "error", error && error.message ? error.message : String(error));
+    }
+  }
+
   async function sandboxed(tool, input) {
     if (!dockerAvailable()) {
-      // Graceful fallback: never run code-exec / shell unsandboxed.
+      // Graceful fallback: never run sandbox-requested effects without Docker.
       return failure(
         tool,
         "sandbox_unavailable",
@@ -167,6 +203,7 @@ function createToolRouter(options = {}) {
         status: "ok",
         executed: true,
         servedBy: "box-dind",
+        isolation: "docker",
         image: SANDBOX_IMAGE,
         exitCode: result && typeof result.exitCode === "number" ? result.exitCode : 0,
         logPath: result && result.logPath ? String(result.logPath) : "",
@@ -189,6 +226,11 @@ function createToolRouter(options = {}) {
     }
     if (SANDBOXED_TOOLS.includes(tool)) {
       return sandboxed(tool, input);
+    }
+    if (tool === "shell") {
+      return input && input.isolation === "docker"
+        ? sandboxed(tool, input)
+        : hostShell(tool, input);
     }
     if (tool === "read_local_file") {
       return readLocalFile(tool, input);

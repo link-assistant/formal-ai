@@ -240,9 +240,9 @@ async function shutdown() {
 }
 
 // R5d (ROADMAP D2): route the agent's side effects through the local process and
-// its Docker sandbox behind an explicit-permission gate. code-exec / shell tools
-// run inside `konard/box-dind` (the same image the Telegram microservice uses)
-// and never run unsandboxed.
+// its Docker sandbox behind an explicit-permission gate. Shell commands run on
+// the host desktop by default; code-exec / eval-js tools run inside
+// `konard/box-dind` (the same image the Telegram microservice uses).
 //
 // Issue #541 (R2): Docker availability is detected by `docker-detect.cjs`, which
 // resolves the `docker` binary across well-known install locations (fixing the
@@ -282,6 +282,57 @@ function runInSandbox({ image, tool, command }) {
         /* best-effort log capture */
       }
       resolve({ exitCode: typeof code === "number" ? code : 0, output, logPath });
+    });
+  });
+}
+
+function runOnHost({ tool, command }) {
+  return new Promise((resolve) => {
+    const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-host-${process.pid}-${Date.now()}.log`);
+    let child = null;
+    try {
+      child = childProcess.spawn(command, {
+        cwd: os.homedir() || REPO_ROOT,
+        env: process.env,
+        shell: true,
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      resolve({
+        exitCode: 1,
+        output: "",
+        stdout: "",
+        stderr: error && error.message ? error.message : String(error),
+        logPath,
+      });
+      return;
+    }
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.once("error", (error) => {
+      stderr += error && error.message ? error.message : String(error);
+      resolve({ exitCode: 1, output: `${stdout}${stderr}`, stdout, stderr, logPath });
+    });
+    child.once("exit", (code) => {
+      const output = `${stdout}${stderr}`;
+      try {
+        fs.writeFileSync(logPath, output);
+      } catch (_error) {
+        /* best-effort log capture */
+      }
+      resolve({
+        exitCode: typeof code === "number" ? code : 1,
+        output,
+        stdout,
+        stderr,
+        logPath,
+      });
     });
   });
 }
@@ -399,6 +450,7 @@ const toolRouter = createToolRouter({
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,
+  runOnHost,
 });
 
 // Issue #516 / E4: swappable execution seam. The in-process provider is the

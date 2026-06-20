@@ -41,7 +41,7 @@ The surface **label** is derived from `status.shell`: `desktopSurfaceLabel(statu
 | File | Role | `node:*`? |
 |---|---|---|
 | `package.json` | Manifest: dual entry points, 4 commands, 6 settings, webview view, `virtualWorkspaces` + `untrustedWorkspaces` capability | — |
-| `src/extension.node.cjs` | Node host: server lifecycle, Docker sandbox, tool router, memory sync, commands | yes |
+| `src/extension.node.cjs` | Node host: server lifecycle, host shell, Docker sandbox for code, tool router, memory sync, commands | yes |
 | `src/extension.web.cjs` | Web host: in-process only, commands explain desktop-only features | **no** |
 | `src/lib/config.cjs` | Pure settings → `desktopStatus` mapper (`statusFromConfig`, `withApiReady`, `withApiError`) | no |
 | `src/lib/bridge.cjs` | Host-agnostic `FormalAiDesktop` dispatcher (default-deny) | no |

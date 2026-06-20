@@ -18,6 +18,7 @@ const DESKTOP_SMOKE: &str = include_str!("../../../desktop/scripts/smoke.mjs");
 const DESKTOP_SERVICE_CONTROL: &str = include_str!("../../../desktop/lib/service-control.cjs");
 const DESKTOP_LOCAL_SERVER: &str = include_str!("../../../desktop/lib/local-server.cjs");
 const WEB_APP: &str = include_str!("../../../src/web/app.js");
+const I18N_PERMISSIONS: &str = include_str!("../../../src/web/i18n-catalog-permissions.lino");
 
 #[test]
 fn desktop_package_declares_local_dev_smoke_and_release_commands() {
@@ -177,6 +178,45 @@ fn desktop_web_surface_exposes_status_permissions_and_http_chat_path() {
         assert!(
             WEB_APP.contains(expected),
             "desktop UI should contain `{expected}`"
+        );
+    }
+}
+
+#[test]
+fn desktop_shell_permission_describes_host_execution_in_every_language() {
+    struct PermissionCopyCase {
+        language: &'static str,
+        name: &'static str,
+        expected_description: &'static str,
+    }
+
+    for case in [
+        PermissionCopyCase {
+            language: "en",
+            name: "English",
+            expected_description: r#"description "Run a shell command on the host machine.""#,
+        },
+        PermissionCopyCase {
+            language: "ru",
+            name: "Russian",
+            expected_description: r#"description "Выполнить команду оболочки на хост-машине.""#,
+        },
+        PermissionCopyCase {
+            language: "hi",
+            name: "Hindi",
+            expected_description: r#"description "होस्ट मशीन पर एक शेल कमांड चलाएँ।""#,
+        },
+        PermissionCopyCase {
+            language: "zh",
+            name: "Chinese",
+            expected_description: r#"description "在主机上运行 shell 命令。""#,
+        },
+    ] {
+        assert!(
+            I18N_PERMISSIONS.contains(case.expected_description),
+            "{} ({}) shell permission description should name host execution",
+            case.name,
+            case.language
         );
     }
 }
