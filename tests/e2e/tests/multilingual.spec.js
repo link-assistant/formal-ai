@@ -256,6 +256,23 @@ async function setRangeValue(page, testId, value) {
   }, value);
 }
 
+// Issue #541 (R5/R6): freshly produced assistant answers stage a reasoning-
+// then-body reveal that hides the answer body via `.markdown-body.is-revealing
+// { display: none }` for the configured budget (default 2 s). Tests that read
+// `last.innerText()` immediately after sendPrompt would race the reveal and
+// either flake or see only the thinking-preview text — the body div would be
+// invisible to innerText while it carries `.is-revealing`. Emulating
+// prefers-reduced-motion makes `usePrefersReducedMotion()` return true, which
+// short-circuits `useMessageReveal` to "show everything at once" — the same
+// behavior users with the reduced-motion preference see, and the same trick
+// already in use in issue-347.spec.js for screenshot captures. The matching
+// config-level `reducedMotion: 'reduce'` in playwright.local.config.js does not
+// reliably propagate through the test fixture in the local Playwright runner;
+// emulating per-page here is the belt-and-braces fix.
+test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+});
+
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
     await disableGreetingVariations(page);
@@ -2492,7 +2509,16 @@ test.describe('Issue #27: conversations sidebar', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
     // Clear any demo dialog messages so each test starts with a fresh thread.
-    await page.locator('[data-testid="conversation-new"]').click();
+    // Issue #541 (R4): demo isolation now keeps the demo conversation session-
+    // scoped and hidden from the sidebar, so `switchToManualMode` may already
+    // land on an empty user conversation — leaving the "+ New conversation"
+    // button disabled by design (see issue-153.spec.js:140). Skip the click
+    // when the button is disabled; the zero-state assertion below is the
+    // source of truth either way.
+    const newBtn = page.locator('[data-testid="conversation-new"]');
+    if (await newBtn.isEnabled().catch(() => false)) {
+      await newBtn.click();
+    }
     await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, {
       timeout: 5_000,
     });
@@ -2799,7 +2825,14 @@ test.describe('Issue #27: cross-conversation recall', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
-    await page.locator('[data-testid="conversation-new"]').click();
+    // Issue #541 (R4): demo isolation keeps the demo conversation session-
+    // scoped + sidebar-hidden, so the user may already be on an empty fresh
+    // conversation here — and the "+ New conversation" button is disabled by
+    // design until there is content to clear. Skip the click in that case.
+    const newBtn = page.locator('[data-testid="conversation-new"]');
+    if (await newBtn.isEnabled().catch(() => false)) {
+      await newBtn.click();
+    }
     await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
   });
 

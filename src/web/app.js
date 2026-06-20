@@ -1012,7 +1012,16 @@ const PREFERENCE_DEFAULTS = {
   greetingVariations: true,
   // Issue #488: user-facing thinking can be compact or detailed without
   // changing the raw diagnostics available to maintainers.
-  thinkingDetailLevel: "detailed",
+  // Issue #541 (R8): default to the 50% midpoint ("standard"), which surfaces
+  // only the high-level human-readable steps (not the mechanical sub-steps), so
+  // newcomers are not overwhelmed; "detailed" remains one notch away for power
+  // users and still renders fully human-readable prose (no symbolic syntax).
+  thinkingDetailLevel: "standard",
+  // Issue #541 (R5): minimum wall-clock time, in milliseconds, that a freshly
+  // produced assistant answer spends animating its reasoning + reveal so the
+  // user *feels* the thinking happen even when the deterministic engine answers
+  // instantly. 0 = immediate display; the shipped default is a relaxed 2s.
+  minMessageAnimationMs: 2000,
   // Issue #82: user-tunable assistant behavior. The default still guesses
   // likely typo matches, while the sliders let cautious users ask first and
   // deterministic users turn random response variation off with temperature=0.
@@ -1431,6 +1440,20 @@ function normalizeThinkingDetailLevel(value) {
   return THINKING_DETAIL_LEVELS.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.thinkingDetailLevel;
+}
+
+// Issue #541 (R5): the minimum message-animation budget is a millisecond count
+// clamped to a sane range. 0 means "show the answer immediately" (no animation);
+// the upper bound keeps a mis-set preference from freezing the UI for minutes.
+// Non-numeric / NaN input falls back to the shipped 2s default.
+const MIN_MESSAGE_ANIMATION_MAX_MS = 8000;
+function normalizeAnimationBudgetMs(value) {
+  const number = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(number)) {
+    return PREFERENCE_DEFAULTS.minMessageAnimationMs;
+  }
+  const clamped = Math.min(Math.max(number, 0), MIN_MESSAGE_ANIMATION_MAX_MS);
+  return Math.round(clamped);
 }
 
 function normalizeResponseLanguageMode(value) {
@@ -2068,6 +2091,13 @@ function groupConversations(events, options = {}) {
     if (!event) {
       continue;
     }
+    // Issue #541 (R4): demo turns live in their own dedicated conversation
+    // and must never surface in the user's sidebar — listing them would
+    // suggest the user can navigate into and edit them, breaking the
+    // "demo never overwrites your work" guarantee.
+    if (event.isDemo) {
+      continue;
+    }
     const kind = event.kind || "message";
     const id = event.conversationId || "legacy";
     if (kind === "conversation_deleted") {
@@ -2270,6 +2300,10 @@ function messagesForConversation(events, conversationId) {
     const event = safe[index];
     if (!event || event.kind && event.kind !== "message") continue;
     if ((event.conversationId || "legacy") !== conversationId) continue;
+    // Issue #541 (R4): defensive — if a caller ever asks for a demo
+    // conversation id, only return its demo-flagged events; conversely a
+    // real conversation id must skip any stray demo-flagged event that
+    // somehow shares the id.
     const evidence = Array.isArray(event.evidence) ? event.evidence : [];
     out.push(
       createMessage(event.role || "assistant", String(event.content || ""), {
@@ -2465,6 +2499,32 @@ function thinkingIndefiniteArticle(phrase) {
   return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
 }
 
+// Issue #541 (R8): map the formalization operation (the `OP:*` verb) to a plain,
+// localized task noun ("greeting", "calculation", "search", …) so the human
+// reasoning view can describe what the request was understood as WITHOUT leaking
+// the raw Links-notation tuple. The symbolic tuple stays in the diagnostics
+// panel; the default trace stays human-readable per R8 ("no special syntax").
+const FORMALIZATION_OP_LABEL_KEYS = {
+  greet: "formalizeOpGreet",
+  farewell: "formalizeOpFarewell",
+  express: "formalizeOpExpress",
+  compute: "formalizeOpCompute",
+  define: "formalizeOpDefine",
+  lookup: "formalizeOpLookup",
+  search: "formalizeOpSearch",
+  procedure: "formalizeOpProcedure",
+  identify: "formalizeOpIdentify",
+};
+function formalizationOpLabel(formalization, t) {
+  if (!formalization || typeof formalization !== "object") return "";
+  const op = String(formalization.verb || formalization.op || "")
+    .replace(/^OP:/i, "")
+    .trim()
+    .toLowerCase();
+  const key = FORMALIZATION_OP_LABEL_KEYS[op];
+  return key ? t(`message.thinkingStep.${key}`) : "";
+}
+
 // Translate a single structured thinking step into one concrete, human-readable
 // sentence in the active UI language. This is stage 2 of the issue #488 pipeline
 // ("translate the meta-language description into the target user language"):
@@ -2500,13 +2560,17 @@ function naturalizeThinkingStep(entry, t) {
         language: thinkingLanguageLabel(detail, t),
       });
     case "formalize": {
-      // The browser solver formalizes into a symbolic Links-notation tuple
-      // before the route is known, so surface that tuple concretely; the Rust
-      // solver instead reports the resolved task route (e.g. "greeting").
-      const tuple = entry?.formalization?.tuple;
-      if (tuple) {
-        return t("message.thinkingStep.formalizeTuple", {
-          tuple: thinkingDetailText(tuple),
+      // Issue #541 (R8): keep the human reasoning view free of symbolic syntax.
+      // The browser solver formalizes into a Links-notation tuple before the
+      // route is known — that tuple lives only in the diagnostics panel. Here we
+      // project the operation to a plain task noun ("greeting", "calculation",
+      // "search", …). The Rust solver instead reports the resolved task route in
+      // `detail` (e.g. "greeting"), which we humanize directly.
+      const opLabel = formalizationOpLabel(entry?.formalization, t);
+      if (opLabel) {
+        return t("message.thinkingStep.formalize", {
+          task: opLabel,
+          article: thinkingIndefiniteArticle(opLabel),
         });
       }
       if (!hasDetail) return t("message.thinkingStep.formalizePlain");
@@ -2517,13 +2581,16 @@ function naturalizeThinkingStep(entry, t) {
       });
     }
     case "formalize_resolved": {
-      const tuple = entry?.formalization?.tuple;
-      if (tuple) {
-        return t("message.thinkingStep.formalizeResolvedTuple", {
-          tuple: thinkingDetailText(tuple),
-        });
+      // Issue #541 (R8): never surface the resolved (@USER OP:… Q-id) tuple in
+      // the human trace. The browser solver only has an opaque resolved id here
+      // (its `detail` still embeds the tuple), so fall back to the plain
+      // phrasing; a solver that reports a concrete, syntax-free entity name in
+      // `detail` keeps it.
+      if (entry?.formalization) {
+        return t("message.thinkingStep.formalizeResolvedPlain");
       }
-      return hasDetail
+      const looksSymbolic = /[()@?]|OP:|->|⇒/.test(value);
+      return hasDetail && !looksSymbolic
         ? t("message.thinkingStep.formalizeResolved", {
             entity: humanizeThinkingIdentifier(detail),
           })
@@ -5324,6 +5391,91 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
 // and stops once the answer arrives. Each new phase appends to the visible
 // steps array so the rotated-scrolling animation in `ThinkingPreview` re-fires
 // the same way it would for real solver steps.
+// Issue #541 (R6): honour the OS "reduce motion" accessibility preference. When
+// the user has asked for reduced motion we skip the staged reveal entirely and
+// show the answer at once, matching the existing prefers-reduced-motion CSS.
+function usePrefersReducedMotion() {
+  const query = "(prefers-reduced-motion: reduce)";
+  const getInitial = () =>
+    typeof window !== "undefined" && typeof window.matchMedia === "function"
+      ? window.matchMedia(query).matches
+      : false;
+  const [reduced, setReduced] = useState(getInitial);
+  useEffect(() => {
+    if (
+      typeof window === "undefined" ||
+      typeof window.matchMedia !== "function"
+    ) {
+      return undefined;
+    }
+    const media = window.matchMedia(query);
+    const handler = (event) => setReduced(event.matches);
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", handler);
+      return () => media.removeEventListener("change", handler);
+    }
+    // Safari < 14 fallback.
+    media.addListener(handler);
+    return () => media.removeListener(handler);
+  }, []);
+  return reduced;
+}
+
+// Issue #541 (R5/R6): stage the reveal of a freshly produced assistant message —
+// reasoning steps first (each new step re-triggers the rotated-scroll animation
+// in ThinkingPreview), then the answer body — across a minimum animation budget
+// so the deterministic engine's instant answers still *feel* considered. Returns
+// the count of currently revealed steps and whether the body is shown yet. With
+// budgetMs<=0, reduced motion, or no steps it is an immediate no-op (everything
+// shown at once). The first ~72% of the budget unveils the steps; the body is
+// held back until the full budget elapses, satisfying R6's "only when we
+// scrolled to the last thinking step can we show the message itself".
+function useMessageReveal(stepCount, budgetMs) {
+  const reducedMotion = usePrefersReducedMotion();
+  const active = budgetMs > 0 && stepCount > 0 && !reducedMotion;
+  // The staged reveal plays exactly once — when the freshly produced message
+  // first appears. Once it has played out (or if it never applied) we latch
+  // "done" so that a later change in step count — e.g. the user toggling the
+  // reasoning-detail setting on an already-revealed message — snaps straight to
+  // "show everything" instead of replaying the animation. Replaying would set
+  // `bodyShown` back to false (the `.is-revealing` rule is `display:none`, so
+  // the answer would briefly vanish) and re-scroll the steps from the first
+  // one, which is jarring when the user is just adjusting how much detail to see.
+  const doneRef = useRef(!active);
+  const [revealedSteps, setRevealedSteps] = useState(active ? 1 : stepCount);
+  const [bodyShown, setBodyShown] = useState(!active);
+  useEffect(() => {
+    if (!active || doneRef.current) {
+      setRevealedSteps(stepCount);
+      setBodyShown(true);
+      return undefined;
+    }
+    // Reserve the final slice of the budget for the body fade; spread the rest
+    // across the steps so even a single step occupies a perceptible beat.
+    const stepsWindow = budgetMs * 0.72;
+    const perStep = stepsWindow / stepCount;
+    setRevealedSteps(1);
+    setBodyShown(false);
+    const timers = [];
+    for (let index = 1; index < stepCount; index += 1) {
+      timers.push(
+        setTimeout(
+          () => setRevealedSteps(index + 1),
+          Math.round(perStep * index),
+        ),
+      );
+    }
+    timers.push(
+      setTimeout(() => {
+        setBodyShown(true);
+        doneRef.current = true;
+      }, Math.round(budgetMs)),
+    );
+    return () => timers.forEach((timer) => clearTimeout(timer));
+  }, [active, stepCount, budgetMs]);
+  return { active, revealedSteps, bodyShown };
+}
+
 function usePendingThinkingPhases(isActive, t) {
   const [phaseIndex, setPhaseIndex] = useState(0);
   const phrases = useMemo(
@@ -5483,6 +5635,8 @@ function DesktopPermissionPanel({
   grants,
   mode,
   onDecision,
+  onGrantAll,
+  hasPendingTask = false,
   testId = "desktop-permission-panel",
   t,
 }) {
@@ -5494,6 +5648,18 @@ function DesktopPermissionPanel({
       : state === "declined"
         ? tr("permissions.state.declined")
         : tr("permissions.state.undecided");
+  // Issue #541 (R9): the original issue text says "After permissions are
+  // granted nothing happens, the message for granting permissions should also
+  // include button to grant all permissions and switch to agent mode, which
+  // when clicked should actually evaluate pending task for execution."
+  //
+  // We render that affordance as a primary CTA above the per-tool rows so the
+  // user can opt-in with a single click without scrolling through six
+  // grant/decline buttons. The button label changes when a task is queued
+  // ("...and run pending task") so it is honest about what will happen.
+  const grantAllLabel = hasPendingTask
+    ? tr("permissions.action.grantAllAndRun")
+    : tr("permissions.action.grantAll");
   return h(
     "section",
     {
@@ -5509,6 +5675,23 @@ function DesktopPermissionPanel({
         active ? tr("permissions.panel.active") : tr("permissions.panel.saved"),
       ),
     ),
+    onGrantAll
+      ? h(
+          "div",
+          { className: "permission-panel-grant-all" },
+          h(
+            "button",
+            {
+              type: "button",
+              className: "permission-button permission-button-grant-all",
+              "data-testid": `${testId}-grant-all`,
+              "data-has-pending-task": hasPendingTask ? "true" : "false",
+              onClick: () => onGrantAll(),
+            },
+            grantAllLabel,
+          ),
+        )
+      : null,
     h(
       "div",
       { className: "permission-tool-list" },
@@ -5638,6 +5821,7 @@ function Message({
   diagnosticsMode,
   reportIssueUrl,
   thinkingDetailLevel,
+  minMessageAnimationMs = 0,
   renderPermissionPanel,
   commandApprovals,
   onApproveCommand,
@@ -5675,6 +5859,21 @@ function Message({
   // Issue #330: progressive syntax highlighting + per-code-block copy buttons.
   const markdownRef = useRef(null);
   const [markdownCopied, setMarkdownCopied] = useState(false);
+
+  // Issue #541 (R5/R6): stage the reveal of this message — reasoning steps
+  // first, then the answer body — across the minimum animation budget. Only a
+  // freshly produced answer carries `animateReveal`; hydrated history shows at
+  // once (budget 0 -> immediate no-op).
+  const revealBudgetMs = message.animateReveal ? minMessageAnimationMs : 0;
+  const reveal = useMessageReveal(thinkingPreviewSteps.length, revealBudgetMs);
+  const revealedThinkingSteps = reveal.active
+    ? thinkingPreviewSteps.slice(0, reveal.revealedSteps)
+    : thinkingPreviewSteps;
+  const bodyRevealClass = reveal.active
+    ? reveal.bodyShown
+      ? " is-revealed"
+      : " is-revealing"
+    : "";
 
   // React 19 compares `dangerouslySetInnerHTML` by object identity (React 18
   // compared the inner `__html` string). A fresh `markdownHtml(...)` object on
@@ -5758,12 +5957,20 @@ function Message({
       // Issue #488: render thinking ABOVE the answer body. Reasoning logically
       // precedes the answer (and during streaming it is the only visible part of
       // the message), so it belongs at the top of the message body, not below it.
-      thinkingPreviewSteps.length
-        ? h(ThinkingPreview, { steps: thinkingPreviewSteps, t })
+      // Issue #541 (R6): during the staged reveal only the steps unveiled so far
+      // are shown, so the trace visibly fills in before the answer appears.
+      revealedThinkingSteps.length
+        ? h(ThinkingPreview, { steps: revealedThinkingSteps, t })
         : null,
+      // Issue #541 (R6): the answer body is held back (is-revealing -> hidden)
+      // until the reasoning reveal has played out, then faded in (is-revealed).
+      // The div stays mounted throughout so enhanceCodeBlocks still grafts in the
+      // code-block wrappers while it is hidden.
       h("div", {
         ref: markdownRef,
-        className: "markdown-body",
+        className: `markdown-body${bodyRevealClass}`,
+        "aria-hidden": reveal.active && !reveal.bodyShown ? "true" : null,
+        "data-testid": "message-markdown-body",
         dangerouslySetInnerHTML: markdownContent,
       }),
       message.permissionPanel && typeof renderPermissionPanel === "function"
@@ -6149,6 +6356,11 @@ function App() {
   const [thinkingDetailLevel, setThinkingDetailLevel] = useState(
     normalizeThinkingDetailLevel(initialPreferences.current.thinkingDetailLevel),
   );
+  // Issue #541 (R5): minimum wall-clock budget for the reasoning + reveal
+  // animation of a freshly produced answer.
+  const [minMessageAnimationMs, setMinMessageAnimationMs] = useState(
+    normalizeAnimationBudgetMs(initialPreferences.current.minMessageAnimationMs),
+  );
   const [contextPanelWidth, setContextPanelWidth] = useState(
     normalizeContextPanelWidth(initialPreferences.current.contextPanelWidth),
   );
@@ -6301,6 +6513,14 @@ function App() {
   const currentConversationRef = useRef(currentConversationId);
   const conversationTitlesRef = useRef(new Map());
   const conversationEventsRef = useRef([]);
+  // Issue #541 (R4): demo mode runs in its own conversation so user
+  // conversations are never deleted or overwritten. The id lives for the
+  // lifetime of the React app and is reused across cycles so the "last
+  // example" persists even when the user toggles demo off and back on within
+  // a session. It is intentionally NOT persisted as the "current" conversation
+  // — `currentConversationRef` keeps pointing at the user's real thread, so
+  // restoring the UI on demo-off is a single lookup against IndexedDB.
+  const demoConversationIdRef = useRef("");
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -7121,6 +7341,7 @@ function App() {
       definitionFusion,
       blueprintComposition,
       thinkingDetailLevel,
+      minMessageAnimationMs,
       experimentalOcr,
       ...externalServices,
       associativeProjectPromotion,
@@ -7160,6 +7381,7 @@ function App() {
     definitionFusion,
     blueprintComposition,
     thinkingDetailLevel,
+    minMessageAnimationMs,
     experimentalOcr,
     externalServices,
     associativeProjectPromotion,
@@ -7292,6 +7514,15 @@ function App() {
     commandApprovalsRef.current = commandApprovals;
   }, [commandApprovals]);
 
+  // Issue #541 (R9): when the chat surface refuses to execute a shell command
+  // because the user is not in Agent mode or has not granted `shell`, we stash
+  // the original command here so a single click on the permission panel's
+  // "Grant all and switch to Agent mode" button can replay it. The ref holds
+  // the live value (read inside async callbacks); the state mirrors whether
+  // a task is queued so the panel can change its button copy.
+  const pendingAgentTaskRef = useRef(null);
+  const [hasPendingAgentTask, setHasPendingAgentTask] = useState(false);
+
   const themePreferenceRef = useRef(themePreference);
   useEffect(() => {
     themePreferenceRef.current = themePreference;
@@ -7418,6 +7649,28 @@ function App() {
   // reuse it for follow-up records within the same turn (assistant reply,
   // reasoning steps, tool calls).
   const ensureConversation = useCallback((seedText) => {
+    // Issue #541 (R4): when demo mode is active, route every persisted event
+    // into a dedicated demo conversation. We never touch
+    // `currentConversationRef`/`setCurrentConversationId` from this path so the
+    // user's real thread is preserved exactly as they left it — toggling demo
+    // off restores their conversation untouched.
+    if (demoModeRef.current) {
+      if (!demoConversationIdRef.current) {
+        demoConversationIdRef.current = generateConversationId();
+      }
+      const id = demoConversationIdRef.current;
+      let title = conversationTitlesRef.current.get(id);
+      if (!title) {
+        title = t("buttons.demoOn") || "Demo";
+        conversationTitlesRef.current.set(id, title);
+      }
+      return {
+        conversationId: id,
+        conversationTitle: title,
+        isNew: false,
+        isDemo: true,
+      };
+    }
     let id = currentConversationRef.current;
     let isNew = false;
     if (!id) {
@@ -7432,10 +7685,10 @@ function App() {
       conversationTitlesRef.current.set(id, title);
     }
     return { conversationId: id, conversationTitle: title || "", isNew };
-  }, []);
+  }, [t]);
 
   const appendUserMessage = useCallback((text, extra = {}) => {
-    const { conversationId, conversationTitle } = ensureConversation(text);
+    const { conversationId, conversationTitle, isDemo } = ensureConversation(text);
     const message = createMessage("user", text, extra);
     const memoryAttachments = Array.isArray(extra.attachments)
       ? extra.attachments.map(attachmentMemoryRecord)
@@ -7453,11 +7706,14 @@ function App() {
           : undefined,
       conversationId,
       conversationTitle,
+      // Issue #541 (R4): flag demo turns so the sidebar can hide the demo
+      // conversation and never list it alongside the user's real threads.
+      isDemo: isDemo ? true : undefined,
     });
   }, [ensureConversation]);
 
   const appendSystemMessage = useCallback((content, extra = {}) => {
-    const { conversationId, conversationTitle } = ensureConversation("");
+    const { conversationId, conversationTitle, isDemo } = ensureConversation("");
     const message = createMessage("system", content, {
       author: "formal-ai system",
       ...extra,
@@ -7471,6 +7727,8 @@ function App() {
       sentAt: new Date().toISOString(),
       conversationId,
       conversationTitle,
+      // Issue #541 (R4): flag demo turns so the sidebar can hide them.
+      isDemo: isDemo ? true : undefined,
     }).then(() => {
       refreshConversations();
     });
@@ -7505,6 +7763,23 @@ function App() {
       ...current,
       [tool]: Boolean(granted),
     }));
+  }, []);
+
+  // Issue #541 (R9): record a shell command that was deferred because the user
+  // was not in Agent mode (or had not granted `shell`). The "Grant all" button
+  // on the permission panel reads this and replays the command.
+  const capturePendingAgentTask = useCallback((command) => {
+    const safeCommand = String(command || "").trim();
+    if (!safeCommand) {
+      return;
+    }
+    pendingAgentTaskRef.current = { kind: "shell", command: safeCommand };
+    setHasPendingAgentTask(true);
+  }, []);
+
+  const clearPendingAgentTask = useCallback(() => {
+    pendingAgentTaskRef.current = null;
+    setHasPendingAgentTask(false);
   }, []);
 
   useEffect(() => {
@@ -7550,10 +7825,20 @@ function App() {
       // the per-provider success/failure status.
       diagnostics: answer.diagnostics || null,
       iframeUrl: answer.iframeUrl || null,
+      // Issue #541 (R5/R6): mark this as a freshly produced answer so the
+      // Message component stages its reasoning-then-body reveal across the
+      // minimum animation budget. Hydrated history (rebuilt from memory events)
+      // never carries this flag, so reloads render instantly.
+      animateReveal: true,
     });
     setMessages((current) => [...current, message]);
     const sentAt = new Date().toISOString();
-    const { conversationId, conversationTitle } = ensureConversation("");
+    const { conversationId, conversationTitle, isDemo } = ensureConversation("");
+    // Issue #541 (R4): flag every persisted record of this turn (reasoning
+    // step, tool call, and the message itself) so the sidebar can hide the
+    // demo conversation. Set undefined rather than false for non-demo turns
+    // so we don't litter the IndexedDB log with redundant keys.
+    const demoFlag = isDemo ? true : undefined;
     if (Array.isArray(answer.steps)) {
       answer.steps.forEach((entry) => {
         recordMemoryEvent({
@@ -7564,6 +7849,7 @@ function App() {
           sentAt,
           conversationId,
           conversationTitle,
+          isDemo: demoFlag,
         });
       });
     }
@@ -7579,6 +7865,7 @@ function App() {
           sentAt,
           conversationId,
           conversationTitle,
+          isDemo: demoFlag,
         });
       });
     }
@@ -7592,6 +7879,7 @@ function App() {
       sentAt,
       conversationId,
       conversationTitle,
+      isDemo: demoFlag,
     }).then(() => {
       // Refresh the sidebar so a brand-new conversation appears immediately.
       refreshConversations();
@@ -7666,6 +7954,33 @@ function App() {
     return result;
   }, [appendAssistantMessage, t]);
 
+  // Issue #541 (R9): single-click escalation from the permission panel.
+  // 1. Mode flips to "agent" so `requestTerminalCommandExecution` will route
+  //    the shell command instead of bouncing it back to chat.
+  // 2. Every desktop tool grant flips to true so the router approves the call.
+  // 3. Refs are mirrored synchronously (React state lands on the next render,
+  //    but `executeTerminalCommand` reads `modeRef.current` and
+  //    `desktopToolGrantsRef.current` synchronously inside this callback —
+  //    without the manual mirror the replay would race the React update).
+  // 4. The replayed command runs in "agent" mode (per-command prompt) so the
+  //    user still sees the approve/deny step for the deferred shell command
+  //    rather than skipping straight to autorun. If they wanted skip-prompt
+  //    behaviour they would choose Full Auto mode instead.
+  const grantAllAndRunPending = useCallback(async () => {
+    const allGranted = {};
+    DESKTOP_TOOL_OPTIONS.forEach((tool) => { allGranted[tool] = true; });
+    desktopToolGrantsRef.current = allGranted;
+    setDesktopToolGrants(allGranted);
+    modeRef.current = "agent";
+    agentModeRef.current = true;
+    setMode("agent");
+    const task = pendingAgentTaskRef.current;
+    clearPendingAgentTask();
+    if (task && task.kind === "shell" && task.command) {
+      await executeTerminalCommand(task.command, "agent");
+    }
+  }, [clearPendingAgentTask, executeTerminalCommand]);
+
   const requestTerminalCommandExecution = useCallback(
     async (command, answer) => {
       const safeCommand = String(command || "").trim();
@@ -7674,12 +7989,18 @@ function App() {
         return;
       }
       if (!agentModeRef.current) {
+        // Issue #541 (R9): stash the command so the panel's "Grant all" button
+        // can replay it without the user having to retype the prompt.
+        capturePendingAgentTask(safeCommand);
         appendAssistantMessage(answer);
         showAgentOnboarding();
         return;
       }
       showAgentOnboarding();
       if (desktopToolGrantsRef.current.shell !== true) {
+        // Same as above — user opted in to Agent mode but hasn't granted
+        // `shell` yet. Stash the command for one-click recovery.
+        capturePendingAgentTask(safeCommand);
         appendAssistantMessage({
           intent: "desktop_shell_not_granted",
           content: t("permissions.message.shellNotGranted"),
@@ -7723,7 +8044,7 @@ function App() {
         },
       );
     },
-    [appendAssistantMessage, appendSystemMessage, executeTerminalCommand, showAgentOnboarding, t],
+    [appendAssistantMessage, appendSystemMessage, capturePendingAgentTask, executeTerminalCommand, showAgentOnboarding, t],
   );
 
   const approveDesktopCommand = useCallback(
@@ -7844,6 +8165,9 @@ function App() {
           break;
         case "thinkingDetailLevel":
           setThinkingDetailLevel(normalizeThinkingDetailLevel(command.value));
+          break;
+        case "minMessageAnimationMs":
+          setMinMessageAnimationMs(normalizeAnimationBudgetMs(command.value));
           break;
         case "experimentalOcr":
           setExperimentalOcr(Boolean(command.value));
@@ -8191,10 +8515,31 @@ function App() {
     }
   }
 
+  // Issue #541 (R4): tracks whether the previous render was in demo mode so we
+  // can detect the on→off transition and restore the user's real conversation
+  // back into the UI. Demo writes go to a dedicated demo conversation (see
+  // `demoConversationIdRef`), so restoration is a single IndexedDB lookup
+  // against the still-pointed-at `currentConversationRef`.
+  const demoWasActiveRef = useRef(demoMode);
   useEffect(() => {
+    const wasActive = demoWasActiveRef.current;
+    demoWasActiveRef.current = demoMode;
+
     if (!demoMode) {
       setDemoPhase("manual");
       setDemoCountdown(null);
+      if (wasActive) {
+        // Demo just turned off — restore whatever the user had open before
+        // demo took over. If they had no prior conversation, fall back to an
+        // empty composer rather than leaking the last demo turn into the UI.
+        const userId = currentConversationRef.current;
+        const cachedEvents = conversationEventsRef.current;
+        const restored = userId
+          ? messagesForConversation(cachedEvents, userId)
+          : [];
+        setMessages(restored);
+        setPending(false);
+      }
       return undefined;
     }
 
@@ -8287,6 +8632,7 @@ function App() {
     { key: "definitionFusion", value: definitionFusion, set: setDefinitionFusion, label: "settings.definitionFusion" },
     { key: "blueprintComposition", value: blueprintComposition, set: setBlueprintComposition, label: "settings.blueprintComposition" },
     { key: "thinkingDetailLevel", value: thinkingDetailLevel, set: setThinkingDetailLevel, label: "settings.thinkingDetail" },
+    { key: "minMessageAnimationMs", value: minMessageAnimationMs, set: setMinMessageAnimationMs, label: "settings.minMessageAnimation" },
     { key: "experimentalOcr", value: experimentalOcr, set: setExperimentalOcr, label: "settings.experimentalOcr" },
     // Issue #444: one reset descriptor per external trusted service so the
     // "modified settings" reset bar lists any service the user turned off.
@@ -8344,6 +8690,11 @@ function App() {
       grants: desktopToolGrants,
       mode,
       onDecision: setDesktopToolGrant,
+      // Issue #541 (R9): expose the one-click escalation. The panel itself
+      // toggles the button copy based on `hasPendingTask`, so we hand the live
+      // state through.
+      onGrantAll: grantAllAndRunPending,
+      hasPendingTask: hasPendingAgentTask,
       testId,
       t,
     });
@@ -9444,6 +9795,43 @@ function App() {
             ),
             h(
               "div",
+              { className: "setting-row setting-row-slider" },
+              h(
+                "label",
+                { htmlFor: "setting-min-message-animation" },
+                t("settings.minMessageAnimation"),
+              ),
+              h(
+                "div",
+                { className: "setting-poles" },
+                h("span", null, t("settings.animationImmediate")),
+                h("span", null, t("settings.animationRelaxed")),
+              ),
+              h("input", {
+                id: "setting-min-message-animation",
+                "data-testid": "setting-min-message-animation",
+                type: "range",
+                min: "0",
+                max: "6000",
+                step: "250",
+                value: minMessageAnimationMs,
+                onChange: (event) =>
+                  setMinMessageAnimationMs(
+                    normalizeAnimationBudgetMs(event.target.value),
+                  ),
+              }),
+              h(
+                "output",
+                { htmlFor: "setting-min-message-animation" },
+                minMessageAnimationMs === 0
+                  ? t("settings.animationImmediate")
+                  : t("settings.animationSeconds", {
+                      seconds: (minMessageAnimationMs / 1000).toFixed(1),
+                    }),
+              ),
+            ),
+            h(
+              "div",
               { className: "setting-row setting-row-ocr" },
               h(
                 "label",
@@ -9846,6 +10234,7 @@ function App() {
               message,
               diagnosticsMode,
               thinkingDetailLevel,
+              minMessageAnimationMs,
               renderPermissionPanel: renderDesktopPermissionPanel,
               commandApprovals,
               onApproveCommand: approveDesktopCommand,

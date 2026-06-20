@@ -12,6 +12,19 @@ const { createToolRouter, SUPPORTED_TOOLS } = require("./lib/tool-router.cjs");
 const { createAgentProvider } = require("./lib/agent-provider.cjs");
 const { createMemorySync } = require("./lib/memory-sync.cjs");
 const { createServiceControl } = require("./lib/service-control.cjs");
+const { createDockerDetector } = require("./lib/docker-detect.cjs");
+const { createDataMigration } = require("./lib/data-migration.cjs");
+
+// Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
+// hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
+// the `docker` binary because it did not inherit the shell PATH) can be diagnosed
+// from a user's logs without shipping noisy output by default.
+function debugLog(...args) {
+  if (process.env.FORMAL_AI_DESKTOP_DEBUG) {
+    // eslint-disable-next-line no-console
+    console.error("[formal-ai-desktop]", ...args);
+  }
+}
 const {
   createLocalServerManager,
   findFreePort,
@@ -19,6 +32,16 @@ const {
 } = require("./lib/local-server.cjs");
 
 const REPO_ROOT = path.resolve(__dirname, "..");
+
+// Desktop data persistence & migration (issue #541, R3). Pin the userData
+// directory to a stable, productName-independent name so a future rebrand or
+// package rename can never again orphan a user's conversations, and migrate any
+// legacy profile forward on first launch. pinAppName() MUST run before the
+// Electron `ready` event for the userData override to take effect, so it is
+// invoked here at module load; the actual (non-destructive) copy runs in
+// whenReady, before the window/session touches storage.
+const dataMigration = createDataMigration({ app, fs, path, log: debugLog });
+dataMigration.pinAppName();
 
 let mainWindow = null;
 let staticServer = null;
@@ -217,29 +240,31 @@ async function shutdown() {
 }
 
 // R5d (ROADMAP D2): route the agent's side effects through the local process and
-// its Docker sandbox behind an explicit-permission gate. Docker availability is
-// probed once and cached; code-exec / shell tools run inside `konard/box-dind`
-// (the same image the Telegram microservice uses) and never run unsandboxed.
-let dockerProbe = null;
+// its Docker sandbox behind an explicit-permission gate. code-exec / shell tools
+// run inside `konard/box-dind` (the same image the Telegram microservice uses)
+// and never run unsandboxed.
+//
+// Issue #541 (R2): Docker availability is detected by `docker-detect.cjs`, which
+// resolves the `docker` binary across well-known install locations (fixing the
+// GUI-launch PATH gap that made an installed, running Docker report as
+// unavailable) and re-probes on a TTL so a daemon started after launch is seen.
+const dockerDetector = createDockerDetector({
+  env: process.env,
+  platform: process.platform,
+  spawnSync: childProcess.spawnSync,
+  existsSync: fs.existsSync,
+  log: debugLog,
+});
+
 function dockerIsAvailable() {
-  if (dockerProbe === null) {
-    try {
-      const result = childProcess.spawnSync("docker", ["version", "--format", "{{.Server.Version}}"], {
-        stdio: ["ignore", "pipe", "pipe"],
-        timeout: 5000,
-      });
-      dockerProbe = result.status === 0;
-    } catch (_error) {
-      dockerProbe = false;
-    }
-  }
-  return dockerProbe;
+  return dockerDetector.dockerIsAvailable();
 }
 
 function runInSandbox({ image, tool, command }) {
   return new Promise((resolve, reject) => {
     const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-${process.pid}-${Date.now()}.log`);
-    const child = childProcess.spawn("docker", ["run", "--rm", image, "sh", "-c", command], {
+    const dockerBin = dockerDetector.resolveDockerBinary();
+    const child = childProcess.spawn(dockerBin, ["run", "--rm", image, "sh", "-c", command], {
       stdio: ["ignore", "pipe", "pipe"],
     });
     let output = "";
@@ -270,7 +295,7 @@ function runDocker(args) {
   return new Promise((resolve) => {
     let child = null;
     try {
-      child = childProcess.spawn("docker", args, {
+      child = childProcess.spawn(dockerDetector.resolveDockerBinary(), args, {
         stdio: ["ignore", "pipe", "pipe"],
       });
     } catch (error) {
@@ -459,7 +484,21 @@ ipcMain.handle("formalAiDesktop:openExternal", async (_event, url) => {
   return false;
 });
 
-app.whenReady().then(createMainWindow);
+app.whenReady().then(() => {
+  // Issue #541 (R3): migrate any legacy profile into the pinned userData
+  // directory before the window/session is created, so an upgrading user keeps
+  // their conversations. Never fatal — a migration failure must not block
+  // startup, and the copy is non-destructive so it is safe to retry next launch.
+  try {
+    dataMigration.migrate();
+  } catch (error) {
+    debugLog(
+      "data migration failed:",
+      error && error.message ? error.message : String(error),
+    );
+  }
+  return createMainWindow();
+});
 app.on("window-all-closed", () => {
   shutdown().finally(() => {
     if (process.platform !== "darwin") {

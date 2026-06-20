@@ -1396,6 +1396,36 @@ body.is-resizing-context {
   min-width: 0;
 }
 
+/* Issue #541 (R9): one-click escalation CTA. The issue text reported that
+ * "after permissions are granted nothing happens" — the user had to grant six
+ * tools individually, flip the mode toggle, and re-send their prompt. This
+ * button collapses all three actions into a single primary affordance and is
+ * styled like a CTA to read as the main action on the panel. The container
+ * keeps a divider above the per-tool rows so the relationship between the
+ * shortcut and the granular controls is still visible. */
+.permission-panel-grant-all {
+  display: flex;
+  padding: 10px 0 4px;
+}
+
+.permission-button-grant-all {
+  flex: 1;
+  border-color: #5da28a;
+  background: #175f4f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.permission-button-grant-all:hover:not(:disabled),
+.permission-button-grant-all:focus-visible {
+  background: #1e7960;
+  border-color: #175f4f;
+  color: #ffffff;
+}
+
 .permission-tool-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -1903,6 +1933,11 @@ body.is-resizing-context {
   gap: 3px;
   margin-top: 7px;
   min-width: 0;
+  /* Issue #541 (R7): reserve enough height for at least one full reasoning
+     step (one fading hint line + a wrapped current step), so the collapsed
+     view never clips the current step to a sub-line height where "not a
+     single line of thinking is displayed". */
+  min-height: 1.55em;
   /* Issue #488: clip the rotated-scrolling animation so the previous line
      does not visibly translate out of the bubble before the gradient fade
      swallows it. */
@@ -1915,17 +1950,17 @@ body.is-resizing-context {
   min-width: 0;
   line-height: 1.45;
   overflow-wrap: anywhere;
-  /* Issue #488: keep the layout single-line so the rotated-scrolling
-     illusion (1.5 visible lines: top half of the previous step + the
-     current step) is honoured even when a step wraps to multiple lines. */
-  white-space: nowrap;
-  overflow-x: hidden;
-  text-overflow: ellipsis;
 }
 
 .thinking-preview-previous {
-  max-height: 0.75em;
+  /* Issue #488: keep the already-scrolled-past step a single fading hint
+     line so the rotated-scrolling illusion (1.x visible lines: the tail of
+     the previous step + the current step) is honoured. */
+  max-height: 1.05em;
   overflow: hidden;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   color: #667684;
   opacity: 0.72;
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
@@ -1938,6 +1973,16 @@ body.is-resizing-context {
 }
 
 .thinking-preview-current {
+  /* Issue #541 (R7): show the current reasoning step FULLY — at least one
+     whole paragraph — instead of clipping it to a single ellipsised line.
+     A generous line cap keeps a pathologically long step from dominating the
+     collapsed bubble while normal 1-4 line steps render in full. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  overflow: hidden;
+  white-space: normal;
   color: #334650;
   animation: thinking-rotate-current 320ms ease-out both;
 }
@@ -1967,6 +2012,38 @@ body.is-resizing-context {
 @media (prefers-reduced-motion: reduce) {
   .thinking-preview-previous,
   .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #541 (R5/R6): paced message reveal. The reasoning steps animate
+   (scrolling through the collapsed preview) first; only once they have all
+   been revealed does the answer body appear, and it fades in rather than
+   snapping. The whole sequence stays inside the user's animation budget
+   (default 2s, configurable down to 0 = immediate). The `.is-revealing`
+   state keeps the body out of the layout entirely so a tall answer cannot
+   "peek" beneath the still-animating reasoning steps. */
+.markdown-body.is-revealing {
+  display: none;
+}
+
+.markdown-body.is-revealed {
+  animation: message-body-reveal 600ms ease-out both;
+}
+
+@keyframes message-body-reveal {
+  from {
+    transform: translateY(0.5em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-body.is-revealed {
     animation: none !important;
   }
 }
@@ -3959,6 +4036,24 @@ textarea:disabled {
   color: #ece7df;
 }
 
+/* Issue #541 (R9): keep the grant-all CTA high-contrast in dark mode. Without
+ * this rule the more-specific `:root[data-theme="dark"] .permission-button`
+ * above pulls the button back to the same neutral grey as Decline/Grant, which
+ * loses the visual hierarchy that tells the user "this is the one-click
+ * recovery". */
+:root[data-theme="dark"] .permission-button.permission-button-grant-all {
+  border-color: #2c8f71;
+  background: #1e7960;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:hover:not(:disabled),
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:focus-visible {
+  background: #2c8f71;
+  border-color: #4cb094;
+  color: #ffffff;
+}
+
 :root[data-theme="dark"] .permission-panel-header strong,
 :root[data-theme="dark"] .permission-tool-copy strong,
 :root[data-theme="dark"] .command-approval-copy strong {
@@ -4012,6 +4107,22 @@ textarea:disabled {
     color: #ece7df;
   }
 
+  /* Issue #541 (R9): same dark-mode CTA contrast preservation as the
+   * `:root[data-theme="dark"]` block — applies when the user has not pinned a
+   * theme and the OS reports dark mode. */
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all {
+    border-color: #2c8f71;
+    background: #1e7960;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:hover:not(:disabled),
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:focus-visible {
+    background: #2c8f71;
+    border-color: #4cb094;
+    color: #ffffff;
+  }
+
   :root:not([data-theme="light"]) .permission-panel-header strong,
   :root:not([data-theme="light"]) .permission-tool-copy strong,
   :root:not([data-theme="light"]) .command-approval-copy strong {
@@ -4054,5 +4165,57 @@ textarea:disabled {
     border-color: #8a7535;
     background: #332b18;
     color: #ead48a;
+  }
+}
+
+/* Issue #541 (R1): "Not all UI elements has correctly applied theme."
+ * Several widgets had light-mode rules with hardcoded colors but no
+ * `:root[data-theme="dark"]` or `@media (prefers-color-scheme: dark)`
+ * counterparts, so they kept their light palette when the rest of the UI
+ * went dark. The fixes below close those gaps for the highest-visibility
+ * surfaces: the topbar mode-status badge, the collapsed-sidebar toggle,
+ * the mobile drawer section headings, and the per-step "tool"/"agent"
+ * mode badges in the reasoning trace. Color choices follow the existing
+ * dark palette already used elsewhere in this file (#c9c1b6 muted text,
+ * #ece7df bright text, #222624 surface, soft tinted badges for "tool"
+ * blue / "agent" amber).
+ */
+:root[data-theme="dark"] .mode-status,
+:root[data-theme="dark"] .drawer-menu-section h2 {
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .sidebar-toggle.is-collapsed {
+  background: #222624;
+}
+
+:root[data-theme="dark"] .tool-mode {
+  background: rgba(120, 140, 255, 0.22);
+  color: #aebcff;
+}
+
+:root[data-theme="dark"] .tool-mode-agent .tool-mode {
+  background: rgba(255, 170, 90, 0.22);
+  color: #f2c084;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mode-status,
+  :root:not([data-theme="light"]) .drawer-menu-section h2 {
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .sidebar-toggle.is-collapsed {
+    background: #222624;
+  }
+
+  :root:not([data-theme="light"]) .tool-mode {
+    background: rgba(120, 140, 255, 0.22);
+    color: #aebcff;
+  }
+
+  :root:not([data-theme="light"]) .tool-mode-agent .tool-mode {
+    background: rgba(255, 170, 90, 0.22);
+    color: #f2c084;
   }
 }

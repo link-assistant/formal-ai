@@ -63,6 +63,9 @@ module.exports = defineConfig({
     '**/issue-513.spec.js',
     '**/issue-514.spec.js',
     '**/issue-518.spec.js',
+    '**/issue-541-demo-mode.spec.js',
+    '**/issue-541-permissions.spec.js',
+    '**/issue-541-theme.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
   // and asserts on one answer — comfortably under 30s even on a cold worker.
@@ -82,6 +85,15 @@ module.exports = defineConfig({
     // Bound navigation/action waits so a stuck page errors promptly.
     navigationTimeout: 15_000,
     actionTimeout: 10_000,
+    // Issue #541 (R5/R6): freshly produced assistant messages stage a reasoning-
+    // then-body reveal that hides the answer body via `.is-revealing { display:
+    // none }` for the configured animation budget (default 2 s). Headless tests
+    // read `innerText()` immediately, which would return an empty string during
+    // that window and flake. Emulating prefers-reduced-motion makes
+    // `usePrefersReducedMotion()` return true, which short-circuits
+    // `useMessageReveal` to "show everything at once" — matching what users with
+    // reduced-motion preferences see, and giving tests deterministic text.
+    reducedMotion: 'reduce',
   },
   webServer: {
     // The seed mirror under src/web/seed/ is generated from the canonical
