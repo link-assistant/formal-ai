@@ -17,6 +17,7 @@ const REQUIRED_KEYS = [
   'buttons.diagnosticsOn',
   'buttons.agent',
   'buttons.chat',
+  'buttons.fullAuto',
   'buttons.demo',
   'buttons.demoOn',
   'buttons.openMenu',
@@ -35,6 +36,8 @@ const REQUIRED_KEYS = [
   'titles.diagnosticsHide',
   'titles.agentOn',
   'titles.agentOff',
+  'titles.fullAuto',
+  'titles.modeGroup',
   'titles.demoOn',
   'titles.demoOff',
   'titles.menuOpen',
@@ -266,6 +269,7 @@ const REQUIRED_KEYS = [
   'settings.resetNone',
   'status.demoPlaying',
   'status.manual',
+  'status.mode',
   'status.nextDialogIn',
   'status.memoryUnavailable',
   'status.memoryExported',
@@ -288,13 +292,89 @@ const REQUIRED_KEYS = [
   'trace.seedFiles',
   'trace.toolsLoaded',
   'trace.conceptsLoaded',
+  // Issue #514 / #511: desktop tool permission UI and command-approval prose.
+  // These were hardcoded in src/web/app.js; they must live in the catalog so the
+  // permission panel, command approval, and shell messages translate per language.
+  // The lino-i18n parser sets each tool's bare key to its `label` child, so the
+  // `.label` variant is auto-allowed by isGeneratedLabelKey; `.description` is explicit.
+  'permissions.tool.http_fetch',
+  'permissions.tool.http_fetch.description',
+  'permissions.tool.url_navigate',
+  'permissions.tool.url_navigate.description',
+  'permissions.tool.eval_js',
+  'permissions.tool.eval_js.description',
+  'permissions.tool.read_local_file',
+  'permissions.tool.read_local_file.description',
+  'permissions.tool.code_exec',
+  'permissions.tool.code_exec.description',
+  'permissions.tool.shell',
+  'permissions.tool.shell.description',
+  'permissions.panel.title',
+  'permissions.panel.active',
+  'permissions.panel.saved',
+  'permissions.panel.rowLabel',
+  'permissions.state.granted',
+  'permissions.state.declined',
+  'permissions.state.undecided',
+  'permissions.action.grant',
+  'permissions.action.decline',
+  'permissions.toolCount',
+  'permissions.command.title',
+  'permissions.command.approve',
+  'permissions.command.deny',
+  'permissions.command.status.pending',
+  'permissions.command.status.running',
+  'permissions.command.status.approved',
+  'permissions.command.status.denied',
+  'permissions.onboarding.intro',
+  'permissions.onboarding.perTool',
+  'permissions.onboarding.modes',
+  'permissions.message.shellRan',
+  'permissions.message.shellNotRun',
+  'permissions.message.shellNotGranted',
+  'permissions.message.approvalPrompt',
+  'permissions.message.commandDeclined',
+  'permissions.message.noOutput',
+  'permissions.message.reasonNoResult',
+  'permissions.message.reasonRefused',
+  // Issue #511: desktop Services panel labels, also moved out of hardcoded prose.
+  'services.title',
+  'services.telegram',
+  'services.telegram.label',
+  'services.server',
+  'services.server.label',
+  'services.agent',
+  'services.agent.label',
+  'services.dockerMissing',
+  'services.installAgent',
+  'services.installing',
+  'services.start',
+  'services.starting',
+  'services.stop',
+  'services.stopping',
+  'services.state.ready',
+  'services.state.running',
+  'services.state.stopped',
+  'services.state.needsToken',
+  'services.state.dockerUnavailable',
+  'services.state.error',
+  'services.state.unknown',
 ];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '../../..');
-const catalogPath = path.join(repoRoot, 'src/web/i18n-catalog.lino');
-const text = fs.readFileSync(catalogPath, 'utf8');
+// The catalog is split across files so each stays under the Links Notation line
+// limit (see scripts/check-file-size.rs). The loader (src/web/i18n.js) fetches
+// each file and merges their per-locale keys, so this checker does the same.
+const catalogFiles = [
+  'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-permissions.lino',
+];
+const catalogTexts = catalogFiles.map((relativePath) =>
+  fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'),
+);
+const text = catalogTexts.join('\n');
 const failures = [];
 
 if (!text.includes('"""')) {
@@ -305,10 +385,14 @@ if (!/\n  buttons\n    reportIssue /.test(text)) {
   failures.push('catalog must keep related messages in nested blocks');
 }
 
-const parsed = parseLinoCatalogs(text);
-const catalogs = new Map(
-  parsed.map(({ locale, translations }) => [locale, translations]),
-);
+const catalogs = new Map();
+for (const catalogText of catalogTexts) {
+  for (const { locale, translations } of parseLinoCatalogs(catalogText)) {
+    const merged = catalogs.get(locale) || {};
+    Object.assign(merged, translations);
+    catalogs.set(locale, merged);
+  }
+}
 const actualLocales = [...catalogs.keys()].sort();
 
 for (const locale of EXPECTED_LOCALES) {
@@ -366,6 +450,15 @@ const runtimeChecks = [
   ['zz', 'buttons.reportIssue', 'Report issue'],
   ['en', 'settings.language', 'Language'],
   ['en', 'status.nextDialogIn', 'Next dialog in 5s', { seconds: 5 }],
+  ['en', 'status.mode', 'Mode: Agent', { mode: 'Agent' }],
+  // Issue #511/#514: desktop permission strings must resolve per UI language and
+  // interpolate placeholders rather than render hardcoded English.
+  ['en', 'permissions.toolCount', '0/6 tools granted', { granted: 0, total: 6 }],
+  ['ru', 'permissions.toolCount', 'Предоставлено инструментов: 1/6', { granted: 1, total: 6 }],
+  ['en', 'permissions.panel.title', 'Desktop tool permissions'],
+  ['ru', 'permissions.panel.title', 'Разрешения инструментов рабочего стола'],
+  ['zh', 'permissions.state.granted', '已授予'],
+  ['hi', 'permissions.action.grant', 'प्रदान करें'],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {

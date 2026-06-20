@@ -1,4 +1,6 @@
 # UI translations for the browser demo, parsed by lino-i18n at runtime.
+# Permission and Services strings live in i18n-catalog-permissions.lino; the
+# loader (src/web/i18n.js) fetches both files and merges them per locale.
 # Keep locale blocks in sync; tests/e2e/scripts/check-i18n-catalog.mjs enforces key parity.
 
 en
@@ -14,6 +16,7 @@ en
     diagnosticsOn "Diagnostics on"
     agent "Agent"
     chat "Chat"
+    fullAuto "Full Auto"
     demo "Demo"
     demoOn "Demo on"
     openMenu "Open menu"
@@ -43,6 +46,8 @@ en
     agentOff """
       Chat mode - switch to agent mode and each message will be decomposed into sequential steps and executed as a plan.
     """
+    fullAuto "Full Auto - agent mode that runs permitted commands automatically."
+    modeGroup "Operating mode - choose Chat, Agent, or Full Auto."
     demoOn "Demo is on - stop the scripted dialog and resume manual chat."
     demoOff "Start the scripted demo dialog."
     menuOpen "Open the side panel (conversations, prompts, tools)."
@@ -310,6 +315,7 @@ en
   status
     demoPlaying "Demo playing"
     manual "Manual mode"
+    mode "Mode: {mode}"
     nextDialogIn "Next dialog in {seconds}s"
     memoryUnavailable "Memory unavailable"
     memoryExported "Exported full memory: {events} event(s) + {seedFiles} seed file(s)"
@@ -348,6 +354,7 @@ ru
     diagnosticsOn "Диагностика включена"
     agent "Агент"
     chat "Чат"
+    fullAuto "Авто"
     demo "Демо"
     demoOn "Демо включено"
     openMenu "Открыть меню"
@@ -374,6 +381,8 @@ ru
     diagnosticsShow "Показать диагностическую трассировку, намерение, доказательства и шаги рассуждения."
     diagnosticsHide "Скрыть диагностическую трассировку, намерение, доказательства и шаги рассуждения."
     agentOn "Режим агента включен - вернуться к одиночному чату."
+    fullAuto "Авто - режим агента, который автоматически выполняет разрешённые команды."
+    modeGroup "Режим работы - выберите «Чат», «Агент» или «Авто»."
     agentOff """
       Режим чата - перейти в режим агента, где каждое сообщение разбивается на последовательные шаги и выполняется как план.
     """
@@ -646,6 +655,7 @@ ru
   status
     demoPlaying "Демо выполняется"
     manual "Ручной режим"
+    mode "Режим: {mode}"
     nextDialogIn "Следующий диалог через {seconds} с"
     memoryUnavailable "Память недоступна"
     memoryExported "Полный экспорт памяти: {events} событ. + {seedFiles} seed-файл(ов)"
@@ -684,6 +694,7 @@ zh
     diagnosticsOn "诊断开启"
     agent "代理"
     chat "聊天"
+    fullAuto "全自动"
     demo "演示"
     demoOn "演示开启"
     openMenu "打开菜单"
@@ -705,6 +716,8 @@ zh
     diagnosticsHide "隐藏推理跟踪、意图、证据和思考步骤面板。"
     agentOn "代理模式已开启 - 切回单轮聊天。"
     agentOff "聊天模式 - 切换到代理模式，每条消息会被拆成连续步骤并作为计划执行。"
+    fullAuto "全自动 - 自动执行已授权命令的代理模式。"
+    modeGroup "运行模式 - 选择聊天、代理或全自动。"
     demoOn "演示已开启 - 停止脚本对话并恢复手动聊天。"
     demoOff "启动脚本演示对话。"
     menuOpen "打开侧边面板（对话、提示、工具）。"
@@ -972,6 +985,7 @@ zh
   status
     demoPlaying "演示播放中"
     manual "手动模式"
+    mode "模式：{mode}"
     nextDialogIn "{seconds} 秒后下一个对话"
     memoryUnavailable "记忆不可用"
     memoryExported "已导出完整记忆：{events} 个事件 + {seedFiles} 个 seed 文件"
@@ -1010,6 +1024,7 @@ hi
     diagnosticsOn "निदान चालू"
     agent "एजेंट"
     chat "चैट"
+    fullAuto "फुल ऑटो"
     demo "डेमो"
     demoOn "डेमो चालू"
     openMenu "मेन्यू खोलें"
@@ -1037,6 +1052,8 @@ hi
     diagnosticsHide "reasoning trace, intent, evidence, और thinking-steps panels छिपाएं।"
     agentOn "एजेंट मोड चालू है - single-turn chat पर लौटें।"
     agentOff "चैट मोड - एजेंट मोड पर जाएं, जहां हर संदेश sequential steps में टूटकर plan की तरह चलेगा।"
+    fullAuto "फुल ऑटो - एजेंट मोड जो अनुमत commands स्वतः चलाता है।"
+    modeGroup "ऑपरेटिंग मोड - चैट, एजेंट या फुल ऑटो चुनें।"
     demoOn "डेमो चालू है - scripted dialog रोकें और manual chat फिर शुरू करें।"
     demoOff "scripted demo dialog शुरू करें।"
     menuOpen "side panel खोलें (बातचीत, prompts, tools)।"
@@ -1304,6 +1321,7 @@ hi
   status
     demoPlaying "डेमो चल रहा है"
     manual "मैनुअल मोड"
+    mode "मोड: {mode}"
     nextDialogIn "{seconds}s में अगला संवाद"
     memoryUnavailable "स्मृति उपलब्ध नहीं"
     memoryExported "पूरी स्मृति निर्यात हुई: {events} event(s) + {seedFiles} seed file(s)"

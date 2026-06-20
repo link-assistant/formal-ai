@@ -1,0 +1,6 @@
+{"type":"session_start","session_id":"issue-518-fixture"}
+{"type":"text","text":"I will inspect the home directory.\n"}
+{"type":"tool_use","id":"call_ls_home","tool":"bash","input":{"command":"ls ~"}}
+{"type":"tool_result","id":"call_ls_home","tool":"bash","output":{"stdout":"Desktop\nDocuments\n","stderr":"","exitCode":0,"status":"completed"}}
+{"type":"error","message":"Network lookup skipped in fixture"}
+{"type":"text","text":"Desktop and Documents are present."}

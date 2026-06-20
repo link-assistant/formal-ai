@@ -24,10 +24,16 @@ function installDesktopBridge() {
       { key: 'telegram', label: 'Telegram bot', state: 'stopped', running: false },
       {
         key: 'server',
-        label: 'OpenAI-compatible server',
+        labelKey: 'services.server.label',
         state: 'running',
         running: true,
         url: 'http://127.0.0.1:8080/v1',
+      },
+      {
+        key: 'agent',
+        labelKey: 'services.agent.label',
+        state: 'stopped',
+        running: false,
       },
     ],
   };
@@ -46,6 +52,10 @@ function installDesktopBridge() {
     startService: async (request) => {
       window.__serviceCalls.push({ action: 'start', request });
       return { ok: true };
+    },
+    installAgentEnvironment: async () => {
+      window.__serviceCalls.push({ action: 'install-agent' });
+      return { ok: true, state: 'ready' };
     },
     stopService: async (request) => {
       window.__serviceCalls.push({ action: 'stop', request });
@@ -113,6 +123,14 @@ test.describe('Issue #438: desktop one-click services panel', () => {
       page.locator('[data-testid="desktop-service-url-server"]'),
     ).toHaveText('127.0.0.1:8080/v1');
 
+    // Agent environment is installed with its own one-click action; it is not a
+    // host CLI invocation.
+    const agent = page.locator('[data-testid="desktop-service-agent"]');
+    await expect(agent).toHaveAttribute('data-state', 'stopped');
+    await expect(
+      page.locator('[data-testid="desktop-service-start-agent"]'),
+    ).toBeEnabled();
+
     // One click forwards the request (with the typed token) through the bridge.
     await page
       .locator('[data-testid="desktop-service-telegram-token"]')
@@ -129,6 +147,11 @@ test.describe('Issue #438: desktop one-click services panel', () => {
     await expect
       .poll(() => page.evaluate(() => window.__serviceCalls))
       .toContainEqual({ action: 'stop', request: { service: 'server' } });
+
+    await page.locator('[data-testid="desktop-service-start-agent"]').click();
+    await expect
+      .poll(() => page.evaluate(() => window.__serviceCalls))
+      .toContainEqual({ action: 'install-agent' });
   });
 
   test('services panel survives supported UI language choices', async ({ page }) => {
@@ -155,6 +178,10 @@ test.describe('Issue #438: desktop one-click services panel', () => {
       await expect(
         page.locator('[data-testid="desktop-service-stop-server"]'),
         `Server stop control renders for ${name}`,
+      ).toBeVisible();
+      await expect(
+        page.locator('[data-testid="desktop-service-start-agent"]'),
+        `Agent environment install control renders for ${name}`,
       ).toBeVisible();
     }
   });

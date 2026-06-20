@@ -1051,6 +1051,18 @@ const PREFERENCE_DEFAULTS = {
   // sequential sub-tasks and runs each through the existing solver; a future
   // iteration will wire it to docker / WebVM execution.
   agentMode: false,
+  // Issue #513: three-way operating mode replacing the binary agent toggle.
+  //   "chat"     — single-turn reasoning, no command execution;
+  //   "agent"    — multi-step plan + execute, capabilities gated on grant;
+  //   "fullAuto" — agent mode that runs permitted commands automatically.
+  // The legacy `agentMode` boolean is derived as `mode !== "chat"` so existing
+  // readers (worker prefs, desktop tool grants) keep working unchanged.
+  mode: "chat",
+  // Issue #514: first-run Agent/Full Auto onboarding and per-tool grant
+  // decisions are persisted independently. The grant string is a compact
+  // Links-friendly map such as `shell:on,http_fetch:off`.
+  agentOnboardingSeen: false,
+  desktopToolGrants: "",
   // Issue #94: "auto" follows navigator.languages; explicit values use the
   // supported UI language catalog.
   uiLanguage: "auto",
@@ -1117,6 +1129,32 @@ const DEFINITION_FUSION_MODES = ["explicit", "auto"];
 // annotated program with every optional region present.
 const BLUEPRINT_COMPOSITION_MODES = ["composed", "documented"];
 const THINKING_DETAIL_LEVELS = ["brief", "standard", "detailed"];
+// Issue #513: the three-way operating modes shown in the toolbar radio group.
+const MODE_OPTIONS = ["chat", "agent", "fullAuto"];
+const MODE_LABEL_KEYS = {
+  chat: "buttons.chat",
+  agent: "buttons.agent",
+  fullAuto: "buttons.fullAuto",
+};
+const MODE_TITLE_KEYS = {
+  chat: "titles.agentOff",
+  agent: "titles.agentOn",
+  fullAuto: "titles.fullAuto",
+};
+// Issue #514: the renderer mirrors the desktop tool vocabulary so it can send a
+// per-tool grant map to the native router instead of the old all-or-nothing
+// grant. Keep this list in sync with desktop/lib/tool-router.cjs.
+const DESKTOP_TOOL_OPTIONS = Object.freeze([
+  "http_fetch",
+  "url_navigate",
+  "eval_js",
+  "read_local_file",
+  "code_exec",
+  "shell",
+]);
+// Issue #511/#514: per-tool labels and descriptions live in the i18n catalog
+// (permissions.tool.<tool>.{label,description}) so the desktop permission panel
+// translates with the active UI language instead of shipping hardcoded English.
 // Issue #324: source that drives the assistant's response language.
 const RESPONSE_LANGUAGE_MODES = ["last_message", "preferred", "ui"];
 // Issue #324: languages the assistant can be pinned to via `preferredLanguage`.
@@ -1399,6 +1437,85 @@ function normalizeResponseLanguageMode(value) {
   return RESPONSE_LANGUAGE_MODES.includes(value)
     ? value
     : PREFERENCE_DEFAULTS.responseLanguage;
+}
+
+// Issue #513: resolve the persisted operating mode. Falls back to the legacy
+// `agentMode` boolean so users who saved preferences before the radio existed
+// keep their agent opt-in (true -> "agent"), and unknown values reset to chat.
+function normalizeMode(value, legacyAgentMode) {
+  // A newer client that writes mode="chat" also writes the derived agentMode as
+  // false, so the only way to see mode="chat" alongside a truthy legacy
+  // agentMode is a pre-#513 preference store that only had `agentMode "on"`
+  // (mode defaulting to "chat"). In that case upgrade to the agent radio.
+  if (MODE_OPTIONS.includes(value) && !(value === "chat" && legacyAgentMode)) {
+    return value;
+  }
+  return legacyAgentMode ? "agent" : PREFERENCE_DEFAULTS.mode;
+}
+
+function normalizeDesktopToolGrants(value) {
+  const normalized = {};
+  const apply = (tool, granted) => {
+    if (!DESKTOP_TOOL_OPTIONS.includes(tool) || typeof granted !== "boolean") {
+      return;
+    }
+    normalized[tool] = granted;
+  };
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    DESKTOP_TOOL_OPTIONS.forEach((tool) => {
+      if (value[tool] === true || value[tool] === false) {
+        apply(tool, value[tool]);
+      }
+    });
+    return normalized;
+  }
+  const text = String(value || "").trim();
+  if (!text) {
+    return normalized;
+  }
+  text.split(/[,;\n]+/).forEach((entry) => {
+    const match = /^\s*([a-z0-9_]+)\s*[:=]\s*([a-z0-9_-]+)\s*$/i.exec(entry);
+    if (!match) {
+      return;
+    }
+    const state = match[2].toLowerCase();
+    if (["on", "true", "1", "grant", "granted"].includes(state)) {
+      apply(match[1], true);
+    } else if (["off", "false", "0", "decline", "declined", "deny", "denied"].includes(state)) {
+      apply(match[1], false);
+    }
+  });
+  return normalized;
+}
+
+function serializeDesktopToolGrants(grants) {
+  const safe = grants && typeof grants === "object" ? grants : {};
+  return DESKTOP_TOOL_OPTIONS
+    .filter((tool) => safe[tool] === true || safe[tool] === false)
+    .map((tool) => `${tool}:${safe[tool] ? "on" : "off"}`)
+    .join(",");
+}
+
+function desktopToolRouterGrants(mode, grants) {
+  const active = mode !== "chat";
+  const safe = grants && typeof grants === "object" ? grants : {};
+  const out = { all: false };
+  DESKTOP_TOOL_OPTIONS.forEach((tool) => {
+    out[tool] = active && safe[tool] === true;
+  });
+  return out;
+}
+
+function desktopToolGrantCount(grants) {
+  const safe = grants && typeof grants === "object" ? grants : {};
+  return DESKTOP_TOOL_OPTIONS.filter((tool) => safe[tool] === true).length;
+}
+
+function desktopToolGrantState(grants, tool) {
+  const safe = grants && typeof grants === "object" ? grants : {};
+  if (safe[tool] === true) return "granted";
+  if (safe[tool] === false) return "declined";
+  return "undecided";
 }
 
 function normalizePreferredLanguage(value) {
@@ -4140,17 +4257,21 @@ function desktopServiceBridge() {
 
 // Human-readable summary for a single managed service state so the UI label and
 // the indicator dot stay in lockstep.
-function serviceStateLabel(state) {
-  return (
-    {
-      running: "running",
-      stopped: "stopped",
-      absent: "stopped",
-      "missing-config": "needs token",
-      "docker-unavailable": "Docker unavailable",
-      error: "error",
-    }[String(state || "")] || String(state || "unknown")
-  );
+function serviceStateLabel(state, t) {
+  const tr = typeof t === "function" ? t : (key) => key;
+  const key = {
+    running: "services.state.running",
+    stopped: "services.state.stopped",
+    absent: "services.state.stopped",
+    "missing-config": "services.state.needsToken",
+    "docker-unavailable": "services.state.dockerUnavailable",
+    ready: "services.state.ready",
+    error: "services.state.error",
+  }[String(state || "")];
+  if (key) {
+    return tr(key);
+  }
+  return String(state || "") || tr("services.state.unknown");
 }
 
 function normalizeDesktopStatus(status) {
@@ -4158,6 +4279,17 @@ function normalizeDesktopStatus(status) {
     return null;
   }
   const apiBase = String(status.apiBase || "").replace(/\/+$/, "");
+  const agentProvider =
+    status.agentProvider && typeof status.agentProvider === "object"
+      ? {
+          type: String(status.agentProvider.type || "local-openai-compatible"),
+          apiBase: String(status.agentProvider.apiBase || apiBase).replace(/\/+$/, ""),
+          openAiBaseUrl: String(
+            status.agentProvider.openAiBaseUrl || (apiBase ? `${apiBase}/v1` : ""),
+          ).replace(/\/+$/, ""),
+          model: String(status.agentProvider.model || "formal-symbolic-production"),
+        }
+      : null;
   return {
     shell: String(status.shell || "Electron"),
     mode: String(status.mode || (apiBase ? "server" : "in-process")),
@@ -4170,6 +4302,7 @@ function normalizeDesktopStatus(status) {
     toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
+    agentProvider,
   };
 }
 
@@ -4222,15 +4355,21 @@ function desktopMessages(history, text) {
   return messages;
 }
 
-// R5d: the agent-permission toggle is the explicit opt-in for the local tool
-// router (default-deny). When the user opts in, the main process is allowed to
-// run permitted tools through the local app / Docker sandbox; when off, every
-// tool call is refused before anything executes.
-function syncDesktopToolGrants(bridge, agentMode) {
+// R5d / Issue #514: push the explicit per-tool grants to the local router. Chat
+// mode always sends false grants; Agent and Full Auto activate only the tools
+// the user has individually granted.
+function syncDesktopToolGrants(bridge, mode, grants) {
   if (!bridge || typeof bridge.setToolGrants !== "function") {
     return;
   }
-  Promise.resolve(bridge.setToolGrants({ all: Boolean(agentMode) })).catch(() => {});
+  Promise.resolve(bridge.setToolGrants(desktopToolRouterGrants(mode, grants))).catch(() => {});
+}
+
+async function ensureDesktopAgentServer(bridge) {
+  if (!bridge || typeof bridge.ensureAgentServer !== "function") {
+    return null;
+  }
+  return normalizeDesktopStatus(await bridge.ensureAgentServer());
 }
 
 // Route a single tool call through the desktop bridge to the local process /
@@ -4246,7 +4385,77 @@ async function requestDesktopToolCall(bridge, tool, input = {}) {
       reason: "desktop tool router is unavailable",
     };
   }
+  if (typeof bridge.ensureAgentServer === "function") {
+    await bridge.ensureAgentServer();
+  }
   return bridge.invokeTool({ tool: String(tool || ""), input: input || {} });
+}
+
+async function requestDesktopAgentProvider(bridge, request = {}) {
+  if (!bridge || typeof bridge.runAgentProvider !== "function") {
+    return null;
+  }
+  try {
+    return await bridge.runAgentProvider(request || {});
+  } catch (error) {
+    return {
+      ok: false,
+      provider: "desktop",
+      status: "error",
+      executed: false,
+      reason: error && error.message ? error.message : String(error),
+    };
+  }
+}
+
+function chatAnswerFromAgentProviderResult(result) {
+  if (!result || !result.answer || typeof result.answer !== "object") {
+    return null;
+  }
+  return result.answer;
+}
+
+function terminalCommandFromAnswer(answer) {
+  const evidence = Array.isArray(answer && answer.evidence) ? answer.evidence : [];
+  for (const item of evidence) {
+    const text = String(item || "");
+    if (text.startsWith("terminal:command:")) {
+      const command = text.slice("terminal:command:".length).trim();
+      if (command) {
+        return command;
+      }
+    }
+  }
+  return "";
+}
+
+function shellOutputMarkdown(body, t) {
+  const noOutput = typeof t === "function"
+    ? t("permissions.message.noOutput")
+    : "(no output)";
+  const text = String(body || "").trim() || noOutput;
+  const safe = text.replace(/```/g, "` ` `");
+  return `\`\`\`text\n${safe}\n\`\`\``;
+}
+
+function desktopToolResultReason(result, t) {
+  const translate = (key, fallback) =>
+    typeof t === "function" ? t(key) : fallback;
+  if (!result) {
+    return translate(
+      "permissions.message.reasonNoResult",
+      "desktop tool router returned no result",
+    );
+  }
+  return (
+    result.reason ||
+    result.error ||
+    result.status ||
+    translate(
+      "permissions.message.reasonRefused",
+      "desktop tool router refused the request",
+    )
+  );
 }
 
 // R5c: reconcile the browser (IndexedDB) memory log with the native store over
@@ -5270,11 +5479,169 @@ function ThinkingPreview({ steps, t, isPending = false }) {
   );
 }
 
+function DesktopPermissionPanel({
+  grants,
+  mode,
+  onDecision,
+  testId = "desktop-permission-panel",
+  t,
+}) {
+  const active = mode !== "chat";
+  const tr = typeof t === "function" ? t : (key) => key;
+  const stateLabel = (state) =>
+    state === "granted"
+      ? tr("permissions.state.granted")
+      : state === "declined"
+        ? tr("permissions.state.declined")
+        : tr("permissions.state.undecided");
+  return h(
+    "section",
+    {
+      className: "permission-panel",
+      "data-testid": testId,
+      "data-mode": mode,
+    },
+    h("div", { className: "permission-panel-header" },
+      h("strong", null, tr("permissions.panel.title")),
+      h(
+        "span",
+        null,
+        active ? tr("permissions.panel.active") : tr("permissions.panel.saved"),
+      ),
+    ),
+    h(
+      "div",
+      { className: "permission-tool-list" },
+      DESKTOP_TOOL_OPTIONS.map((tool) => {
+        const state = desktopToolGrantState(grants, tool);
+        const granted = state === "granted";
+        const declined = state === "declined";
+        return h(
+          "div",
+          {
+            key: tool,
+            className: "permission-tool-row",
+            "data-testid": `${testId}-row-${tool}`,
+          },
+          h(
+            "div",
+            { className: "permission-tool-copy" },
+            h("strong", null, tr(`permissions.tool.${tool}.label`)),
+            h("span", null, tr(`permissions.tool.${tool}.description`)),
+          ),
+          h(
+            "span",
+            {
+              className: `permission-state permission-state-${state}`,
+              "data-testid": `${testId}-state-${tool}`,
+            },
+            stateLabel(state),
+          ),
+          h(
+            "div",
+            { className: "permission-actions" },
+            h(
+              "button",
+              {
+                type: "button",
+                className: "permission-button",
+                "data-testid": `${testId}-grant-${tool}`,
+                "aria-pressed": granted ? "true" : "false",
+                onClick: () => onDecision && onDecision(tool, true),
+              },
+              tr("permissions.action.grant"),
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "permission-button permission-button-secondary",
+                "data-testid": `${testId}-decline-${tool}`,
+                "aria-pressed": declined ? "true" : "false",
+                onClick: () => onDecision && onDecision(tool, false),
+              },
+              tr("permissions.action.decline"),
+            ),
+          ),
+        );
+      }),
+    ),
+  );
+}
+
+function CommandApprovalPanel({ approval, status, onApprove, onDeny, t }) {
+  if (!approval) {
+    return null;
+  }
+  const tr = typeof t === "function" ? t : (key) => key;
+  const currentStatus = status || approval.status || "pending";
+  const pending = currentStatus === "pending";
+  const command = String(approval.command || "");
+  const statusKeys = {
+    pending: "permissions.command.status.pending",
+    running: "permissions.command.status.running",
+    approved: "permissions.command.status.approved",
+    denied: "permissions.command.status.denied",
+  };
+  const statusLabel = statusKeys[currentStatus]
+    ? tr(statusKeys[currentStatus])
+    : currentStatus;
+  return h(
+    "section",
+    {
+      className: "command-approval-panel",
+      "data-testid": "command-approval",
+      "data-status": currentStatus,
+    },
+    h(
+      "div",
+      { className: "command-approval-copy" },
+      h("strong", null, tr("permissions.command.title")),
+      h("code", null, command),
+      h(
+        "span",
+        { className: `command-approval-status command-approval-status-${currentStatus}` },
+        statusLabel,
+      ),
+    ),
+    h(
+      "div",
+      { className: "command-approval-actions" },
+      h(
+        "button",
+        {
+          type: "button",
+          className: "permission-button",
+          "data-testid": "command-approve",
+          disabled: !pending,
+          onClick: () => pending && onApprove && onApprove(approval),
+        },
+        tr("permissions.command.approve"),
+      ),
+      h(
+        "button",
+        {
+          type: "button",
+          className: "permission-button permission-button-secondary",
+          "data-testid": "command-deny",
+          disabled: !pending,
+          onClick: () => pending && onDeny && onDeny(approval),
+        },
+        tr("permissions.command.deny"),
+      ),
+    ),
+  );
+}
+
 function Message({
   message,
   diagnosticsMode,
   reportIssueUrl,
   thinkingDetailLevel,
+  renderPermissionPanel,
+  commandApprovals,
+  onApproveCommand,
+  onDenyCommand,
   t,
 }) {
   const evidence = diagnosticsMode ? (message.evidence ?? []) : [];
@@ -5399,6 +5766,25 @@ function Message({
         className: "markdown-body",
         dangerouslySetInnerHTML: markdownContent,
       }),
+      message.permissionPanel && typeof renderPermissionPanel === "function"
+        ? h(
+            "div",
+            { className: "message-permission-panel" },
+            renderPermissionPanel("desktop-permission-panel-message"),
+          )
+        : null,
+      message.commandApproval
+        ? h(CommandApprovalPanel, {
+            approval: message.commandApproval,
+            status:
+              commandApprovals &&
+              commandApprovals[message.commandApproval.id] &&
+              commandApprovals[message.commandApproval.id].status,
+            onApprove: onApproveCommand,
+            onDeny: onDenyCommand,
+            t,
+          })
+        : null,
       message.iframeUrl
         ? h(
             "div",
@@ -5878,11 +6264,24 @@ function App() {
   const [serviceError, setServiceError] = useState("");
   const [telegramToken, setTelegramToken] = useState("");
   const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(false);
-  // Issue #27: agent mode runs the user's prompt as a multi-step plan instead
-  // of a single Q&A. Persisted across reloads via preferences.
-  const [agentMode, setAgentMode] = useState(
-    initialPreferences.current.agentMode,
+  // Issue #27 / #513: the operating mode runs the user's prompt as a single
+  // Q&A ("chat"), a multi-step plan ("agent"), or an auto-executing agent
+  // ("fullAuto"). Persisted across reloads via preferences. The legacy
+  // `agentMode` boolean is derived so existing readers keep working.
+  const [mode, setMode] = useState(
+    normalizeMode(
+      initialPreferences.current.mode,
+      initialPreferences.current.agentMode,
+    ),
   );
+  const agentMode = mode !== "chat";
+  const [agentOnboardingSeen, setAgentOnboardingSeen] = useState(
+    Boolean(initialPreferences.current.agentOnboardingSeen),
+  );
+  const [desktopToolGrants, setDesktopToolGrants] = useState(() =>
+    normalizeDesktopToolGrants(initialPreferences.current.desktopToolGrants),
+  );
+  const [commandApprovals, setCommandApprovals] = useState({});
   // Issue #27: a mobile-friendly slide-out menu that hosts the entire sidebar
   // plus the topbar action buttons. On wide screens the menu is hidden via CSS.
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -6066,10 +6465,42 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Push the explicit-permission state to the local tool router whenever the
-    // agent-permission toggle changes (default-deny until opted in).
-    syncDesktopToolGrants(desktopBridge(), agentMode);
-  }, [agentMode, desktopStatus]);
+    // Push the explicit per-tool grant map to the local router whenever either
+    // the operating mode or a grant decision changes.
+    syncDesktopToolGrants(desktopBridge(), mode, desktopToolGrants);
+  }, [mode, desktopToolGrants, desktopStatus]);
+
+  useEffect(() => {
+    if (mode === "chat") {
+      return undefined;
+    }
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.ensureAgentServer !== "function") {
+      return undefined;
+    }
+    let cancelled = false;
+    ensureDesktopAgentServer(bridge)
+      .then((status) => {
+        if (!cancelled && status) {
+          setDesktopStatus(status);
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          setDesktopStatus((current) =>
+            normalizeDesktopStatus({
+              ...(current || {}),
+              shell: (current && current.shell) || "Electron",
+              apiReady: false,
+              apiError: error && error.message ? error.message : String(error),
+            }),
+          );
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [mode]);
 
   // Issue #438 (follow-up): poll the desktop bridge for the prepared-container
   // status so the Services panel reflects running/stopped without a manual
@@ -6121,7 +6552,10 @@ function App() {
         if (key === "telegram") {
           request.token = telegramToken.trim();
         }
-        const result = await bridge.startService(request);
+        const result =
+          key === "agent" && typeof bridge.installAgentEnvironment === "function"
+            ? await bridge.installAgentEnvironment()
+            : await bridge.startService(request);
         if (result && result.ok === false && result.reason) {
           setServiceError(result.reason);
         }
@@ -6699,7 +7133,10 @@ function App() {
       location: locationPreference,
       assistantName: normalizeAssistantName(assistantName),
       currentConversationId,
+      mode,
       agentMode,
+      agentOnboardingSeen,
+      desktopToolGrants: serializeDesktopToolGrants(desktopToolGrants),
       uiLanguage: uiLanguagePreference,
       responseLanguage,
       preferredLanguage,
@@ -6735,7 +7172,10 @@ function App() {
     locationPreference,
     assistantName,
     currentConversationId,
+    mode,
     agentMode,
+    agentOnboardingSeen,
+    desktopToolGrants,
     uiLanguagePreference,
     responseLanguage,
     preferredLanguage,
@@ -6831,6 +7271,27 @@ function App() {
     agentModeRef.current = agentMode;
   }, [agentMode]);
 
+  // Issue #513: mirror the three-way operating mode for the worker prefs payload.
+  const modeRef = useRef(mode);
+  useEffect(() => {
+    modeRef.current = mode;
+  }, [mode]);
+
+  const agentOnboardingSeenRef = useRef(agentOnboardingSeen);
+  useEffect(() => {
+    agentOnboardingSeenRef.current = agentOnboardingSeen;
+  }, [agentOnboardingSeen]);
+
+  const desktopToolGrantsRef = useRef(desktopToolGrants);
+  useEffect(() => {
+    desktopToolGrantsRef.current = desktopToolGrants;
+  }, [desktopToolGrants]);
+
+  const commandApprovalsRef = useRef(commandApprovals);
+  useEffect(() => {
+    commandApprovalsRef.current = commandApprovals;
+  }, [commandApprovals]);
+
   const themePreferenceRef = useRef(themePreference);
   useEffect(() => {
     themePreferenceRef.current = themePreference;
@@ -6903,6 +7364,7 @@ function App() {
       ...externalServicesRef.current,
       associativeProjectPromotion: associativeProjectPromotionRef.current,
       agentMode: agentModeRef.current,
+      mode: modeRef.current,
       theme: themePreferenceRef.current,
       uiLanguage: uiLanguagePreferenceRef.current,
       responseLanguage: responseLanguageRef.current,
@@ -6994,6 +7456,63 @@ function App() {
     });
   }, [ensureConversation]);
 
+  const appendSystemMessage = useCallback((content, extra = {}) => {
+    const { conversationId, conversationTitle } = ensureConversation("");
+    const message = createMessage("system", content, {
+      author: "formal-ai system",
+      ...extra,
+    });
+    setMessages((current) => [...current, message]);
+    recordMemoryEvent({
+      kind: "message",
+      role: "system",
+      content,
+      intent: extra.intent,
+      sentAt: new Date().toISOString(),
+      conversationId,
+      conversationTitle,
+    }).then(() => {
+      refreshConversations();
+    });
+    return message;
+  }, [ensureConversation, refreshConversations]);
+
+  const showAgentOnboarding = useCallback(() => {
+    if (agentOnboardingSeenRef.current) {
+      return false;
+    }
+    agentOnboardingSeenRef.current = true;
+    setAgentOnboardingSeen(true);
+    appendSystemMessage(
+      [
+        t("permissions.onboarding.intro"),
+        t("permissions.onboarding.perTool"),
+        t("permissions.onboarding.modes"),
+      ].join("\n\n"),
+      {
+        intent: "agent_permission_onboarding",
+        permissionPanel: true,
+      },
+    );
+    return true;
+  }, [appendSystemMessage, t]);
+
+  const setDesktopToolGrant = useCallback((tool, granted) => {
+    if (!DESKTOP_TOOL_OPTIONS.includes(tool)) {
+      return;
+    }
+    setDesktopToolGrants((current) => ({
+      ...current,
+      [tool]: Boolean(granted),
+    }));
+  }, []);
+
+  useEffect(() => {
+    if (agentMode) {
+      showAgentOnboarding();
+    }
+  }, [agentMode, showAgentOnboarding]);
+
   const appendAssistantMessage = useCallback((answer) => {
     const source = answer.source || (workerRef.current ? "worker" : "fallback");
     const solverEvidence = Array.isArray(answer.evidence) ? answer.evidence : [];
@@ -7079,14 +7598,205 @@ function App() {
     });
   }, [ensureConversation, refreshConversations, t, thinkingDetailLevel]);
 
+  const executeTerminalCommand = useCallback(async (command, executionMode = "agent") => {
+    const bridge = desktopBridge();
+    const providerResult = await requestDesktopAgentProvider(bridge, {
+      mode: executionMode === "fullAuto" ? "fullAuto" : "agent",
+      tool: "shell",
+      command,
+      grants: desktopToolRouterGrants(modeRef.current, desktopToolGrantsRef.current),
+      transcript: true,
+    });
+    const providerAnswer = chatAnswerFromAgentProviderResult(providerResult);
+    if (providerAnswer) {
+      appendAssistantMessage({
+        ...providerAnswer,
+        content: String(providerAnswer.content || desktopToolResultReason(providerResult, t)),
+        evidence: [
+          ...(Array.isArray(providerAnswer.evidence) ? providerAnswer.evidence : []),
+          "desktop_agent_provider",
+          `mode:${executionMode}`,
+        ],
+      });
+      return providerResult;
+    }
+
+    const result = providerResult || (await requestDesktopToolCall(bridge, "shell", { command }));
+    const ok = result && result.ok === true && result.executed === true;
+    const content = ok
+      ? [
+          t("permissions.message.shellRan", {
+            mode:
+              executionMode === "fullAuto"
+                ? t("buttons.fullAuto")
+                : t("buttons.agent"),
+            command,
+          }),
+          "",
+          shellOutputMarkdown(result.body, t),
+        ].join("\n")
+      : [
+          t("permissions.message.shellNotRun", { command }),
+          "",
+          desktopToolResultReason(result, t),
+        ].join("\n");
+    appendAssistantMessage({
+      intent: ok ? "desktop_shell_result" : "desktop_shell_refused",
+      content,
+      confidence: ok ? 0.9 : 1.0,
+      evidence: [
+        "desktop_tool:shell",
+        `mode:${executionMode}`,
+        ok ? "desktop_tool:executed" : "desktop_tool:refused",
+      ],
+      steps: [
+        {
+          step: ok ? "execute_shell" : "refuse_shell",
+          detail: command,
+        },
+      ],
+      toolCalls: [
+        {
+          tool: "shell",
+          inputs: { command, mode: executionMode },
+          outputs: result || { ok: false, executed: false, status: "unavailable" },
+        },
+      ],
+    });
+    return result;
+  }, [appendAssistantMessage, t]);
+
+  const requestTerminalCommandExecution = useCallback(
+    async (command, answer) => {
+      const safeCommand = String(command || "").trim();
+      if (!safeCommand) {
+        appendAssistantMessage(answer);
+        return;
+      }
+      if (!agentModeRef.current) {
+        appendAssistantMessage(answer);
+        showAgentOnboarding();
+        return;
+      }
+      showAgentOnboarding();
+      if (desktopToolGrantsRef.current.shell !== true) {
+        appendAssistantMessage({
+          intent: "desktop_shell_not_granted",
+          content: t("permissions.message.shellNotGranted"),
+          confidence: 1.0,
+          evidence: ["desktop_tool:shell", "desktop_tool:not_granted"],
+          steps: [{ step: "check_tool_grant", detail: "shell=false" }],
+          toolCalls: [
+            {
+              tool: "shell",
+              inputs: { command: safeCommand },
+              outputs: {
+                ok: false,
+                executed: false,
+                status: "refused",
+                reason: "shell tool is not granted",
+              },
+            },
+          ],
+        });
+        return;
+      }
+      if (modeRef.current === "fullAuto") {
+        await executeTerminalCommand(safeCommand, "fullAuto");
+        return;
+      }
+      const approval = {
+        id: `command-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        tool: "shell",
+        command: safeCommand,
+        status: "pending",
+      };
+      setCommandApprovals((current) => ({
+        ...current,
+        [approval.id]: approval,
+      }));
+      appendSystemMessage(
+        `${t("permissions.message.approvalPrompt")}\n\n\`${safeCommand}\``,
+        {
+          intent: "desktop_command_approval",
+          commandApproval: approval,
+        },
+      );
+    },
+    [appendAssistantMessage, appendSystemMessage, executeTerminalCommand, showAgentOnboarding, t],
+  );
+
+  const approveDesktopCommand = useCallback(
+    async (approval) => {
+      if (!approval || !approval.id) {
+        return;
+      }
+      const existing = commandApprovalsRef.current[approval.id] || approval;
+      if (existing.status !== "pending") {
+        return;
+      }
+      const running = { ...existing, status: "running" };
+      commandApprovalsRef.current = {
+        ...commandApprovalsRef.current,
+        [approval.id]: running,
+      };
+      setCommandApprovals(commandApprovalsRef.current);
+      await executeTerminalCommand(approval.command, "agent");
+      const approved = { ...running, status: "approved" };
+      commandApprovalsRef.current = {
+        ...commandApprovalsRef.current,
+        [approval.id]: approved,
+      };
+      setCommandApprovals(commandApprovalsRef.current);
+    },
+    [executeTerminalCommand],
+  );
+
+  const denyDesktopCommand = useCallback(
+    (approval) => {
+      if (!approval || !approval.id) {
+        return;
+      }
+      const existing = commandApprovalsRef.current[approval.id] || approval;
+      if (existing.status !== "pending") {
+        return;
+      }
+      const denied = { ...existing, status: "denied" };
+      commandApprovalsRef.current = {
+        ...commandApprovalsRef.current,
+        [approval.id]: denied,
+      };
+      setCommandApprovals(commandApprovalsRef.current);
+      appendAssistantMessage({
+        intent: "desktop_shell_denied",
+        content: t("permissions.message.commandDeclined", {
+          command: approval.command,
+        }),
+        confidence: 1.0,
+        evidence: ["desktop_tool:shell", "desktop_tool:user_denied"],
+        steps: [{ step: "user_denied_shell", detail: approval.command }],
+        toolCalls: [
+          {
+            tool: "shell",
+            inputs: { command: approval.command, mode: "agent" },
+            outputs: { ok: false, executed: false, status: "denied" },
+          },
+        ],
+      });
+    },
+    [appendAssistantMessage, t],
+  );
+
   const conversationHistory = useCallback(
     () =>
-      messages.map((message) => ({
-        role: message.role,
-        content: message.content,
-        intent: message.intent,
-        evidence: message.evidence,
-      })),
+      messages
+        .filter((message) => ["user", "assistant"].includes(message.role))
+        .map((message) => ({
+          role: message.role,
+          content: message.content,
+          intent: message.intent,
+          evidence: message.evidence,
+        })),
     [messages],
   );
 
@@ -7108,7 +7818,18 @@ function App() {
           setDemoMode(Boolean(command.value));
           break;
         case "agentMode":
-          setAgentMode(Boolean(command.value));
+          // Issue #513: the legacy natural-language "agent mode on/off" command
+          // maps onto the three-way mode (preserving full-auto when already set).
+          setMode((current) =>
+            command.value
+              ? current === "fullAuto"
+                ? "fullAuto"
+                : "agent"
+              : "chat",
+          );
+          break;
+        case "mode":
+          setMode(normalizeMode(command.value));
           break;
         case "greetingVariations":
           setGreetingVariations(Boolean(command.value));
@@ -7434,6 +8155,12 @@ function App() {
     }
 
     const answer = await requestAnswer(trimmed, history);
+    const terminalCommand = terminalCommandFromAnswer(answer);
+    if (terminalCommand) {
+      await requestTerminalCommandExecution(terminalCommand, answer);
+      setPending(false);
+      return;
+    }
     appendAssistantMessage(answer);
     setPending(false);
   }
@@ -7533,6 +8260,11 @@ function App() {
       ? t("status.nextDialogIn", { seconds: demoCountdown })
       : t("status.demoPlaying")
     : t("status.manual");
+  // Issue #513: localized labels for the three-way operating-mode radio group
+  // and the status indicator that reflects the active mode.
+  const modeLabel = (option) => t(MODE_LABEL_KEYS[option]);
+  const modeTitle = (option) => t(MODE_TITLE_KEYS[option]);
+  const modeStatusText = t("status.mode", { mode: modeLabel(mode) });
   const reportContext = {
     messages,
     workerState,
@@ -7602,10 +8334,19 @@ function App() {
       : "";
   const desktopStatusText = desktopStatusLabel(desktopStatus, agentMode);
   const desktopAgentPermission = agentMode ? "Opted in" : "Off";
-  const desktopToolPermission =
-    desktopStatus && agentMode
-      ? "Agent tools visible"
-      : "Permission gated";
+  const desktopGrantedToolCount = desktopToolGrantCount(desktopToolGrants);
+  const desktopToolPermission = t("permissions.toolCount", {
+    granted: desktopGrantedToolCount,
+    total: DESKTOP_TOOL_OPTIONS.length,
+  });
+  const renderDesktopPermissionPanel = (testId) =>
+    h(DesktopPermissionPanel, {
+      grants: desktopToolGrants,
+      mode,
+      onDecision: setDesktopToolGrant,
+      testId,
+      t,
+    });
 
   return h(
     "main",
@@ -7688,6 +8429,17 @@ function App() {
             role: "status",
           },
           demoStatus,
+        ),
+        h(
+          "span",
+          {
+            className: `mode-status mode-status-${mode}`,
+            "data-testid": "mode-status",
+            "data-mode": mode,
+            "data-menu-priority": "7",
+            role: "status",
+          },
+          modeStatusText,
         ),
         diagnosticsMode
           ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
@@ -7820,27 +8572,35 @@ function App() {
           ),
         ),
         h(
-          "button",
+          "div",
           {
-            type: "button",
-            className: "agent-toggle",
-            "data-testid": "agent-toggle",
+            className: "mode-radio",
+            "data-testid": "mode-radio",
             "data-menu-priority": "4",
-            "aria-pressed": agentMode,
-            title: agentMode
-              ? t("titles.agentOn")
-              : t("titles.agentOff"),
-            "aria-label": agentMode ? t("buttons.agent") : t("buttons.chat"),
-            onClick: () => setAgentMode((value) => !value),
+            role: "radiogroup",
+            "aria-label": t("titles.modeGroup"),
           },
-          h(ToolbarIcon, {
-            action: agentMode ? "agent" : "chat",
-            pack: toolbarIconPack,
-          }),
-          h(
-            "span",
-            { className: "btn-label" },
-            agentMode ? t("buttons.agent") : t("buttons.chat"),
+          MODE_OPTIONS.map((option) =>
+            h(
+              "button",
+              {
+                key: option,
+                type: "button",
+                className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
+                "data-testid": `mode-option-${option}`,
+                "data-mode": option,
+                role: "radio",
+                "aria-checked": mode === option,
+                title: modeTitle(option),
+                "aria-label": modeLabel(option),
+                onClick: () => setMode(option),
+              },
+              h(ToolbarIcon, {
+                action: option === "chat" ? "chat" : "agent",
+                pack: toolbarIconPack,
+              }),
+              h("span", { className: "btn-label" }, modeLabel(option)),
+            ),
           ),
         ),
         h(
@@ -7991,18 +8751,34 @@ function App() {
               h("span", null, diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")),
             ),
             h(
-              "button",
+              "div",
               {
-                type: "button",
-                className: "drawer-action",
-                "aria-pressed": agentMode,
-                onClick: () => setAgentMode((value) => !value),
+                className: "drawer-action drawer-mode-radio",
+                "data-testid": "drawer-mode-radio",
+                role: "radiogroup",
+                "aria-label": t("titles.modeGroup"),
               },
-              h(ToolbarIcon, {
-                action: agentMode ? "agent" : "chat",
-                pack: toolbarIconPack,
-              }),
-              h("span", null, agentMode ? t("buttons.agent") : t("buttons.chat")),
+              MODE_OPTIONS.map((option) =>
+                h(
+                  "button",
+                  {
+                    key: option,
+                    type: "button",
+                    className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
+                    "data-testid": `drawer-mode-option-${option}`,
+                    "data-mode": option,
+                    role: "radio",
+                    "aria-checked": mode === option,
+                    title: modeTitle(option),
+                    onClick: () => setMode(option),
+                  },
+                  h(ToolbarIcon, {
+                    action: option === "chat" ? "chat" : "agent",
+                    pack: toolbarIconPack,
+                  }),
+                  h("span", null, modeLabel(option)),
+                ),
+              ),
             ),
             h(
               "button",
@@ -8088,12 +8864,22 @@ function App() {
                     desktopToolPermission,
                   ),
                 ),
+                h(
+                  "div",
+                  { className: "desktop-permission-row" },
+                  h("dt", null, t("permissions.panel.rowLabel")),
+                  h(
+                    "dd",
+                    null,
+                    renderDesktopPermissionPanel("desktop-permission-panel-sidebar"),
+                  ),
+                ),
               ),
             })
           : null,
         serviceStatus
           ? h(CollapsibleSection, {
-              title: "Services",
+              title: t("services.title"),
               testId: "sidebar-services",
               collapsed: sidebarServicesCollapsed,
               onToggle: () => setSidebarServicesCollapsed((value) => !value),
@@ -8108,7 +8894,7 @@ function App() {
                         className: "desktop-services-note",
                         "data-testid": "desktop-services-docker-missing",
                       },
-                      "Docker is not available. Install Docker Desktop to start the prepared containers.",
+                      t("services.dockerMissing"),
                     )
                   : null,
                 ...(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(
@@ -8116,6 +8902,8 @@ function App() {
                     const running = Boolean(service.running);
                     const busy = serviceBusy === service.key;
                     const dockerReady = serviceStatus.dockerAvailable !== false;
+                    const isAgentEnvironment = service.key === "agent";
+                    const serviceLabel = service.labelKey ? t(service.labelKey) : service.label;
                     return h(
                       "div",
                       {
@@ -8131,14 +8919,14 @@ function App() {
                           className: `desktop-service-dot${running ? " is-running" : ""}`,
                           "data-testid": `desktop-service-dot-${service.key}`,
                         }),
-                        h("span", { className: "desktop-service-label" }, service.label),
+                        h("span", { className: "desktop-service-label" }, serviceLabel),
                         h(
                           "span",
                           {
                             className: "desktop-service-state",
                             "data-testid": `desktop-service-state-${service.key}`,
                           },
-                          serviceStateLabel(service.state),
+                          serviceStateLabel(service.state, t),
                         ),
                       ),
                       service.key === "telegram" && !running
@@ -8175,10 +8963,16 @@ function App() {
                             type: "button",
                             className: "desktop-service-start",
                             "data-testid": `desktop-service-start-${service.key}`,
-                            disabled: running || busy || !dockerReady,
+                            disabled: (!isAgentEnvironment && running) || busy || !dockerReady,
                             onClick: () => handleStartService(service.key),
                           },
-                          busy ? "Starting…" : "Start",
+                          isAgentEnvironment
+                            ? busy
+                              ? t("services.installing")
+                              : t("services.installAgent")
+                            : busy
+                              ? t("services.starting")
+                              : t("services.start"),
                         ),
                         h(
                           "button",
@@ -8189,7 +8983,7 @@ function App() {
                             disabled: !running || busy,
                             onClick: () => handleStopService(service.key),
                           },
-                          busy ? "Stopping…" : "Stop",
+                          busy ? t("services.stopping") : t("services.stop"),
                         ),
                       ),
                     );
@@ -9052,6 +9846,10 @@ function App() {
               message,
               diagnosticsMode,
               thinkingDetailLevel,
+              renderPermissionPanel: renderDesktopPermissionPanel,
+              commandApprovals,
+              onApproveCommand: approveDesktopCommand,
+              onDenyCommand: denyDesktopCommand,
               t,
               reportIssueUrl:
                 shouldOfferMessageReport(message)

@@ -1,4 +1,119 @@
 meanings
+  pattern_concept_context_delimiter_within_en
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter within en"
+  pattern_concept_context_delimiter_zhong_de_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter zhong de zh"
+  pattern_concept_context_delimiter_zhong_zh
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter zhong zh"
+  pattern_concept_prefix_can_you_define
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you define"
+  pattern_concept_prefix_can_you_describe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you describe"
+  pattern_concept_prefix_can_you_explain
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix can you explain"
+  pattern_concept_prefix_chto_eto
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto eto"
+  pattern_concept_prefix_chto_oboznachaet
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto oboznachaet"
+  pattern_concept_prefix_chto_oznachaet_slovo
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto oznachaet slovo"
+  pattern_concept_prefix_chto_podrazumevaetsya_pod
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto podrazumevaetsya pod"
+  pattern_concept_prefix_chto_takoe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto takoe"
+  pattern_concept_prefix_chto_znachit
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix chto znachit"
+  pattern_concept_prefix_define
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix define"
+  pattern_concept_prefix_definition_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix definition of"
+  pattern_concept_prefix_describe
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix describe"
+  pattern_concept_prefix_explain
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix explain"
+  pattern_concept_prefix_explanation_of
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix explanation of"
+  pattern_concept_prefix_jieshao
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshao"
+  pattern_concept_prefix_jieshi
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshi"
+  pattern_concept_prefix_jieshi_yixia
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix jieshi yixia"
+  pattern_concept_prefix_kto_eto
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto eto"
+  pattern_concept_prefix_kto_takaya
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto takaya"
+  pattern_concept_prefix_kto_takoy
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept prefix kto takoy"
   pattern_concept_prefix_meaning_of
     defined-by prompt_pattern
     lexeme en
@@ -714,6 +829,11 @@ meanings
     lexeme en
       surface
         text "physical action question"
+  pip
+    defined-by token
+    lexeme en
+      surface
+        text "pip"
   playright
     defined-by word_surface
     lexeme en
@@ -769,11 +889,26 @@ meanings
     lexeme en
       surface
         text "proposal only"
+  ps
+    defined-by token
+    lexeme en
+      surface
+        text "ps"
   punctuation
     defined-by concept
     lexeme en
       surface
         text "punctuation"
+  pwd
+    defined-by token
+    lexeme en
+      surface
+        text "pwd"
+  python3
+    defined-by token
+    lexeme en
+      surface
+        text "python3"
   qa_network
     defined-by kind
     lexeme en
@@ -814,6 +949,46 @@ meanings
     lexeme en
       surface
         text "reserved role"
+  response_agent_suggestion_active_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active en"
+  response_agent_suggestion_active_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active hi"
+  response_agent_suggestion_active_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active ru"
+  response_agent_suggestion_active_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion active zh"
+  response_agent_suggestion_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion en"
+  response_agent_suggestion_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion hi"
+  response_agent_suggestion_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion ru"
+  response_agent_suggestion_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response agent suggestion zh"
   response_assistant_free_time_en
     defined-by response_template
     lexeme en
@@ -1219,178 +1394,3 @@ meanings
     lexeme en
       surface
         text "reverse sort list files"
-  reverse_sort_list_files_arg
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files arg"
-  reverse_string
-    defined-by task
-    lexeme en
-      surface
-        text "reverse string"
-  reverse_words
-    defined-by operation
-    lexeme en
-      surface
-        text "reverse words"
-  role-only
-    defined-by concept
-    lexeme en
-      surface
-        text "role only"
-  rs
-    defined-by word_surface
-    lexeme en
-      surface
-        text "rs"
-  rule_chinese
-    defined-by rule
-    lexeme en
-      surface
-        text "rule chinese"
-  rule_english
-    defined-by rule
-    lexeme en
-      surface
-        text "rule english"
-  rule_hindi
-    defined-by rule
-    lexeme en
-      surface
-        text "rule hindi"
-  rule_russian
-    defined-by rule
-    lexeme en
-      surface
-        text "rule russian"
-  rust_library
-    defined-by environment
-    lexeme en
-      surface
-        text "rust library"
-  sdk
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sdk"
-  self_improvement_loop
-    defined-by concept
-    lexeme en
-      surface
-        text "self improvement loop"
-  sentence_case
-    defined-by operation
-    lexeme en
-      surface
-        text "sentence case"
-  shell-helpers
-    defined-by category
-    lexeme en
-      surface
-        text "shell helpers"
-  short_rule_list
-    defined-by coverage_group
-    lexeme en
-      surface
-        text "short rule list"
-  signal-processing
-    defined-by category
-    lexeme en
-      surface
-        text "signal processing"
-  snake
-    defined-by concept
-    lexeme en
-      surface
-        text "snake"
-  snake_case
-    defined-by phrase
-    lexeme en
-      surface
-        text "snake case"
-  software-design
-    defined-by category
-    lexeme en
-      surface
-        text "software design"
-  software_docs
-    defined-by kind
-    lexeme en
-      surface
-        text "software docs"
-  software_project_implementation
-    defined-by concept
-    lexeme en
-      surface
-        text "software project implementation"
-  software_project_plan
-    defined-by concept
-    lexeme en
-      surface
-        text "software project plan"
-  sort_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "sort lines"
-  sort_words
-    defined-by operation
-    lexeme en
-      surface
-        text "sort words"
-  sqrt
-    defined-by word_surface
-    lexeme en
-      surface
-        text "sqrt"
-  stackexchange
-    defined-by source
-    lexeme en
-      surface
-        text "stackexchange"
-  strip_empty_lines
-    defined-by operation
-    lexeme en
-      surface
-        text "strip empty lines"
-  structured-knowledge
-    defined-by category
-    lexeme en
-      surface
-        text "structured knowledge"
-  structured_knowledge
-    defined-by kind
-    lexeme en
-      surface
-        text "structured knowledge"
-  sum_to_ten
-    defined-by task
-    lexeme en
-      surface
-        text "sum to ten"
-  summarize_conversation
-    defined-by name
-    lexeme en
-      surface
-        text "summarize conversation"
-  supported_languages
-    defined-by field
-    lexeme en
-      surface
-        text "supported languages"
-  symbolic-ai
-    defined-by category
-    lexeme en
-      surface
-        text "symbolic ai"
-  test_status
-    defined-by intent
-    lexeme en
-      surface
-        text "test status"
-  thu
-    defined-by word_surface
-    lexeme en
-      surface
-        text "thu"

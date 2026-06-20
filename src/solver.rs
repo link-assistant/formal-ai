@@ -575,6 +575,14 @@ impl UniversalSolver {
                     1.0,
                 );
             }
+            // Issue #513: recognize terminal-command requests (visible fix for
+            // #511) before falling through to the unknown answer, so a shell
+            // request returns an agent_suggestion intent in both engines.
+            if let Some(answer) =
+                crate::solver_terminal::try_terminal_command(prompt, language, &mut log)
+            {
+                return answer;
+            }
             if requires_external_lookup(prompt) {
                 self.record_external_search(&mut log, prompt);
             }

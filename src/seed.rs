@@ -33,6 +33,7 @@ mod personas;
 mod projects;
 mod roles;
 mod summary_topics;
+mod terminal_commands;
 
 use std::collections::BTreeMap;
 
@@ -52,7 +53,7 @@ pub use embedded::{
     MEANINGS_UNITS_LINO, MEANING_FILES, MULTILINGUAL_RESPONSES_LINO, NUMERIC_LIST_OPERATIONS_LINO,
     OPERATION_VOCABULARY_LINO, PERSONAS_LINO, PROGRAM_CST_GRAMMARS_LINO, PROGRAM_PLAN_RULES_LINO,
     PROJECTS_LINO, PROMPT_PATTERNS_LINO, SELF_IMPROVEMENT_LOOP_LINO, SUMMARY_TOPICS_LINO,
-    TOOLS_LINO,
+    TERMINAL_COMMANDS_LINO, TOOLS_LINO,
 };
 pub use facts::{facts, FactRecord, LocalizedFact};
 pub use grounding_overrides::{
@@ -132,6 +133,7 @@ pub use roles::{
     ROLE_YEAR_UNIT_CUE,
 };
 pub use summary_topics::{summary_topic_seeds, SummaryTopic, SummaryTopicSeeds};
+pub use terminal_commands::{terminal_command_vocabulary, TerminalCommandVocabulary};
 
 /// Merge every embedded seed file into a single Links Notation document.
 ///

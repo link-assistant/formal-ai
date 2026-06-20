@@ -16,9 +16,11 @@
 const DEFAULT_IMAGE = "ghcr.io/link-assistant/formal-ai:latest";
 const DEFAULT_SERVER_PORT = 8080;
 // Each service gets its OWN inner-Docker volume: two DinD daemons cannot share a
-// single /var/lib/docker, so the bot and the server must not collide if both run.
+// single /var/lib/docker, so the bot, server, and agent environment must not
+// collide if they run together.
 const TELEGRAM_VOLUME = "formal-ai-telegram-docker:/var/lib/docker";
 const SERVER_VOLUME = "formal-ai-server-docker:/var/lib/docker";
+const AGENT_VOLUME = "formal-ai-agent-docker:/var/lib/docker";
 
 // Resolve the image once so a locally built image or an optional Docker Hub
 // mirror can be substituted with the same `FORMAL_AI_DOCKER_IMAGE` override the
@@ -33,11 +35,18 @@ function resolveServerPort(env = {}) {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_SERVER_PORT;
 }
 
-// The two managed services. Both run from the single prepared image: the
-// Telegram bot keeps the image's default `formal-ai telegram --mode polling`
-// command, and the server overrides the command with `formal-ai serve` so the
-// OpenAI-compatible API (and its in-container Docker sandbox for agentic mode)
-// listens on a published loopback port.
+function agentHealthCheckCommand() {
+  return [
+    "formal-ai --version",
+    "agent --version",
+    "start-agent --help >/dev/null",
+  ].join(" && ");
+}
+
+// The managed containers. All run from the single prepared image: the Telegram
+// bot keeps the image's default `formal-ai telegram --mode polling` command, the
+// server overrides the command with `formal-ai serve`, and the Agent environment
+// stays idle so desktop install can health-check and target it.
 function serviceDefinitions(env = {}) {
   const image = resolveImage(env);
   const serverPort = resolveServerPort(env);
@@ -45,6 +54,7 @@ function serviceDefinitions(env = {}) {
     telegram: {
       key: "telegram",
       label: "Telegram bot",
+      labelKey: "services.telegram.label",
       container: "formal-ai-telegram",
       image,
       requiresEnv: ["TELEGRAM_BOT_TOKEN"],
@@ -71,6 +81,7 @@ function serviceDefinitions(env = {}) {
     server: {
       key: "server",
       label: "OpenAI-compatible server",
+      labelKey: "services.server.label",
       container: "formal-ai-server",
       image,
       port: serverPort,
@@ -98,6 +109,34 @@ function serviceDefinitions(env = {}) {
         ];
       },
     },
+    agent: {
+      key: "agent",
+      label: "Agent environment",
+      labelKey: "services.agent.label",
+      container: "formal-ai-agent",
+      image,
+      requiresEnv: [],
+      readyState: "ready",
+      buildRunArgs() {
+        return [
+          "run",
+          "-d",
+          "--name",
+          this.container,
+          "--restart",
+          "unless-stopped",
+          "--privileged",
+          "-v",
+          AGENT_VOLUME,
+          this.image,
+          "sleep",
+          "infinity",
+        ];
+      },
+      healthCheckArgs() {
+        return ["exec", this.container, "sh", "-lc", agentHealthCheckCommand()];
+      },
+    },
   };
 }
 
@@ -115,6 +154,9 @@ function describeService(service) {
     container: service.container,
     image: service.image,
   };
+  if (service.labelKey) {
+    summary.labelKey = service.labelKey;
+  }
   if (typeof service.port === "number") {
     summary.port = service.port;
     summary.url = `http://127.0.0.1:${service.port}`;
@@ -175,7 +217,7 @@ function createServiceControl(options = {}) {
       return { ...base, state: "absent", running: false };
     }
     const running = result.stdout.trim() === "true";
-    return { ...base, state: running ? "running" : "stopped", running };
+    return { ...base, state: running ? service.readyState || "running" : "stopped", running };
   }
 
   async function statusAll() {
@@ -278,6 +320,80 @@ function createServiceControl(options = {}) {
     return { ok: true, ...base, state: "stopped", running: false };
   }
 
+  async function installAgentEnvironment() {
+    const service = lookup("agent");
+    const base = describeService(service);
+    if (!dockerAvailable()) {
+      return {
+        ok: false,
+        ...base,
+        state: "docker-unavailable",
+        running: false,
+        reason: "Docker is not available on this machine",
+      };
+    }
+
+    // Pull first so the one-click install also upgrades the prepared image. A
+    // locally built FORMAL_AI_DOCKER_IMAGE may not be pullable, so accept it when
+    // Docker can inspect the tag after the pull failure.
+    const pullResult = await run(["pull", service.image]);
+    let imageStatus = { pulled: pullResult.code === 0, pull: pullResult };
+    if (pullResult.code !== 0) {
+      const inspectResult = await run(["image", "inspect", service.image]);
+      imageStatus = { pulled: false, pull: pullResult, inspect: inspectResult };
+      if (inspectResult.code !== 0) {
+        return {
+          ok: false,
+          ...base,
+          state: "error",
+          running: false,
+          reason: (pullResult.stderr || pullResult.stdout || "docker pull failed").trim(),
+          imageStatus,
+        };
+      }
+    }
+
+    // Recreate every time so a freshly pulled image replaces an older idle
+    // environment. This is the upgrade path for bundled `agent` and
+    // `agent-commander`.
+    await run(["rm", "-f", service.container]);
+    const runResult = await run(service.buildRunArgs());
+    if (runResult.code !== 0) {
+      return {
+        ok: false,
+        ...base,
+        state: "error",
+        running: false,
+        reason: (runResult.stderr || runResult.stdout || "docker run failed").trim(),
+        imageStatus,
+      };
+    }
+
+    const health = await run(service.healthCheckArgs());
+    if (health.code !== 0) {
+      return {
+        ok: false,
+        ...base,
+        state: "error",
+        running: true,
+        reason: (health.stderr || health.stdout || "agent environment health check failed").trim(),
+        containerId: runResult.stdout.trim(),
+        imageStatus,
+        health,
+      };
+    }
+
+    return {
+      ok: true,
+      ...base,
+      state: "ready",
+      running: true,
+      containerId: runResult.stdout.trim(),
+      imageStatus,
+      health,
+    };
+  }
+
   return {
     services,
     describe: () => serviceKeys().map((key) => describeService(services[key])),
@@ -285,6 +401,7 @@ function createServiceControl(options = {}) {
     statusAll,
     start,
     stop,
+    installAgentEnvironment,
   };
 }
 
@@ -293,6 +410,7 @@ module.exports = {
   DEFAULT_SERVER_PORT,
   resolveImage,
   resolveServerPort,
+  agentHealthCheckCommand,
   serviceDefinitions,
   serviceKeys,
   describeService,

@@ -1,10 +1,11 @@
-# Prepared formal-ai services. Both run from the single prepared image
-# (ghcr.io/link-assistant/formal-ai) and share an inner-Docker volume so the
-# agentic sandbox works without bind-mounting the host's docker.sock.
+# Prepared formal-ai services. All run from the single prepared image
+# (ghcr.io/link-assistant/formal-ai) and use their own inner-Docker volumes so
+# the agentic sandbox works without bind-mounting the host's docker.sock.
 #
 #   docker compose up -d                         # Telegram bot (default)
 #   docker compose --profile server up -d        # OpenAI-compatible API server
-#   docker compose --profile all up -d           # both at once
+#   docker compose --profile agent up -d         # idle Agent CLI environment
+#   docker compose --profile all up -d           # all services
 #
 # The desktop app starts/stops the exact same containers with one click; see
 # docs/desktop/service-control.md.
@@ -37,6 +38,21 @@ services:
     volumes:
       - formal-ai-server-docker:/var/lib/docker
 
+  # Idle, health-checkable container for Agent CLI execution through
+  # agent-commander. The desktop "Install agent environment" action pulls this
+  # image, recreates this container, and verifies formal-ai/agent/start-agent
+  # inside it before agent mode can target `formal-ai-agent`.
+  agent-environment:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-agent
+    profiles: ["agent", "all"]
+    restart: unless-stopped
+    privileged: true
+    command: ["sleep", "infinity"]
+    volumes:
+      - formal-ai-agent-docker:/var/lib/docker
+
 volumes:
   formal-ai-telegram-docker:
   formal-ai-server-docker:
+  formal-ai-agent-docker:
