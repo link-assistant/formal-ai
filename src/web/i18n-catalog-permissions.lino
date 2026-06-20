@@ -36,6 +36,8 @@ en
     action
       grant "Grant"
       decline "Decline"
+      grantAll "Grant all and switch to Agent mode"
+      grantAllAndRun "Grant all, switch to Agent mode, and run pending task"
     toolCount "{granted}/{total} tools granted"
     command
       title "Shell command request"
@@ -116,6 +118,8 @@ ru
     action
       grant "Предоставить"
       decline "Отклонить"
+      grantAll "Предоставить все и включить режим агента"
+      grantAllAndRun "Предоставить все, включить режим агента и выполнить отложенную задачу"
     toolCount "Предоставлено инструментов: {granted}/{total}"
     command
       title "Запрос команды оболочки"
@@ -196,6 +200,8 @@ zh
     action
       grant "授予"
       decline "拒绝"
+      grantAll "全部授予并切换到代理模式"
+      grantAllAndRun "全部授予、切换到代理模式并执行待处理任务"
     toolCount "已授予 {granted}/{total} 个工具"
     command
       title "Shell 命令请求"
@@ -276,6 +282,8 @@ hi
     action
       grant "प्रदान करें"
       decline "अस्वीकार करें"
+      grantAll "सभी प्रदान करें और एजेंट मोड पर स्विच करें"
+      grantAllAndRun "सभी प्रदान करें, एजेंट मोड पर स्विच करें और लंबित कार्य चलाएँ"
     toolCount "{granted}/{total} टूल प्रदान किए गए"
     command
       title "शेल कमांड अनुरोध"

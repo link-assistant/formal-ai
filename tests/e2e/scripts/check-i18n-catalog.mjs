@@ -331,6 +331,10 @@ const REQUIRED_KEYS = [
   'permissions.state.undecided',
   'permissions.action.grant',
   'permissions.action.decline',
+  // Issue #541 (R9): one-click affordance on the permission panel — grant every
+  // tool, opt in to Agent mode, and (if a task was deferred) run it.
+  'permissions.action.grantAll',
+  'permissions.action.grantAllAndRun',
   'permissions.toolCount',
   'permissions.command.title',
   'permissions.command.approve',

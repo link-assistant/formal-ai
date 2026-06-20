@@ -5635,6 +5635,8 @@ function DesktopPermissionPanel({
   grants,
   mode,
   onDecision,
+  onGrantAll,
+  hasPendingTask = false,
   testId = "desktop-permission-panel",
   t,
 }) {
@@ -5646,6 +5648,18 @@ function DesktopPermissionPanel({
       : state === "declined"
         ? tr("permissions.state.declined")
         : tr("permissions.state.undecided");
+  // Issue #541 (R9): the original issue text says "After permissions are
+  // granted nothing happens, the message for granting permissions should also
+  // include button to grant all permissions and switch to agent mode, which
+  // when clicked should actually evaluate pending task for execution."
+  //
+  // We render that affordance as a primary CTA above the per-tool rows so the
+  // user can opt-in with a single click without scrolling through six
+  // grant/decline buttons. The button label changes when a task is queued
+  // ("...and run pending task") so it is honest about what will happen.
+  const grantAllLabel = hasPendingTask
+    ? tr("permissions.action.grantAllAndRun")
+    : tr("permissions.action.grantAll");
   return h(
     "section",
     {
@@ -5661,6 +5675,23 @@ function DesktopPermissionPanel({
         active ? tr("permissions.panel.active") : tr("permissions.panel.saved"),
       ),
     ),
+    onGrantAll
+      ? h(
+          "div",
+          { className: "permission-panel-grant-all" },
+          h(
+            "button",
+            {
+              type: "button",
+              className: "permission-button permission-button-grant-all",
+              "data-testid": `${testId}-grant-all`,
+              "data-has-pending-task": hasPendingTask ? "true" : "false",
+              onClick: () => onGrantAll(),
+            },
+            grantAllLabel,
+          ),
+        )
+      : null,
     h(
       "div",
       { className: "permission-tool-list" },
@@ -7483,6 +7514,15 @@ function App() {
     commandApprovalsRef.current = commandApprovals;
   }, [commandApprovals]);
 
+  // Issue #541 (R9): when the chat surface refuses to execute a shell command
+  // because the user is not in Agent mode or has not granted `shell`, we stash
+  // the original command here so a single click on the permission panel's
+  // "Grant all and switch to Agent mode" button can replay it. The ref holds
+  // the live value (read inside async callbacks); the state mirrors whether
+  // a task is queued so the panel can change its button copy.
+  const pendingAgentTaskRef = useRef(null);
+  const [hasPendingAgentTask, setHasPendingAgentTask] = useState(false);
+
   const themePreferenceRef = useRef(themePreference);
   useEffect(() => {
     themePreferenceRef.current = themePreference;
@@ -7725,6 +7765,23 @@ function App() {
     }));
   }, []);
 
+  // Issue #541 (R9): record a shell command that was deferred because the user
+  // was not in Agent mode (or had not granted `shell`). The "Grant all" button
+  // on the permission panel reads this and replays the command.
+  const capturePendingAgentTask = useCallback((command) => {
+    const safeCommand = String(command || "").trim();
+    if (!safeCommand) {
+      return;
+    }
+    pendingAgentTaskRef.current = { kind: "shell", command: safeCommand };
+    setHasPendingAgentTask(true);
+  }, []);
+
+  const clearPendingAgentTask = useCallback(() => {
+    pendingAgentTaskRef.current = null;
+    setHasPendingAgentTask(false);
+  }, []);
+
   useEffect(() => {
     if (agentMode) {
       showAgentOnboarding();
@@ -7897,6 +7954,33 @@ function App() {
     return result;
   }, [appendAssistantMessage, t]);
 
+  // Issue #541 (R9): single-click escalation from the permission panel.
+  // 1. Mode flips to "agent" so `requestTerminalCommandExecution` will route
+  //    the shell command instead of bouncing it back to chat.
+  // 2. Every desktop tool grant flips to true so the router approves the call.
+  // 3. Refs are mirrored synchronously (React state lands on the next render,
+  //    but `executeTerminalCommand` reads `modeRef.current` and
+  //    `desktopToolGrantsRef.current` synchronously inside this callback —
+  //    without the manual mirror the replay would race the React update).
+  // 4. The replayed command runs in "agent" mode (per-command prompt) so the
+  //    user still sees the approve/deny step for the deferred shell command
+  //    rather than skipping straight to autorun. If they wanted skip-prompt
+  //    behaviour they would choose Full Auto mode instead.
+  const grantAllAndRunPending = useCallback(async () => {
+    const allGranted = {};
+    DESKTOP_TOOL_OPTIONS.forEach((tool) => { allGranted[tool] = true; });
+    desktopToolGrantsRef.current = allGranted;
+    setDesktopToolGrants(allGranted);
+    modeRef.current = "agent";
+    agentModeRef.current = true;
+    setMode("agent");
+    const task = pendingAgentTaskRef.current;
+    clearPendingAgentTask();
+    if (task && task.kind === "shell" && task.command) {
+      await executeTerminalCommand(task.command, "agent");
+    }
+  }, [clearPendingAgentTask, executeTerminalCommand]);
+
   const requestTerminalCommandExecution = useCallback(
     async (command, answer) => {
       const safeCommand = String(command || "").trim();
@@ -7905,12 +7989,18 @@ function App() {
         return;
       }
       if (!agentModeRef.current) {
+        // Issue #541 (R9): stash the command so the panel's "Grant all" button
+        // can replay it without the user having to retype the prompt.
+        capturePendingAgentTask(safeCommand);
         appendAssistantMessage(answer);
         showAgentOnboarding();
         return;
       }
       showAgentOnboarding();
       if (desktopToolGrantsRef.current.shell !== true) {
+        // Same as above — user opted in to Agent mode but hasn't granted
+        // `shell` yet. Stash the command for one-click recovery.
+        capturePendingAgentTask(safeCommand);
         appendAssistantMessage({
           intent: "desktop_shell_not_granted",
           content: t("permissions.message.shellNotGranted"),
@@ -7954,7 +8044,7 @@ function App() {
         },
       );
     },
-    [appendAssistantMessage, appendSystemMessage, executeTerminalCommand, showAgentOnboarding, t],
+    [appendAssistantMessage, appendSystemMessage, capturePendingAgentTask, executeTerminalCommand, showAgentOnboarding, t],
   );
 
   const approveDesktopCommand = useCallback(
@@ -8600,6 +8690,11 @@ function App() {
       grants: desktopToolGrants,
       mode,
       onDecision: setDesktopToolGrant,
+      // Issue #541 (R9): expose the one-click escalation. The panel itself
+      // toggles the button copy based on `hasPendingTask`, so we hand the live
+      // state through.
+      onGrantAll: grantAllAndRunPending,
+      hasPendingTask: hasPendingAgentTask,
       testId,
       t,
     });

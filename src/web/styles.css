@@ -1396,6 +1396,36 @@ body.is-resizing-context {
   min-width: 0;
 }
 
+/* Issue #541 (R9): one-click escalation CTA. The issue text reported that
+ * "after permissions are granted nothing happens" — the user had to grant six
+ * tools individually, flip the mode toggle, and re-send their prompt. This
+ * button collapses all three actions into a single primary affordance and is
+ * styled like a CTA to read as the main action on the panel. The container
+ * keeps a divider above the per-tool rows so the relationship between the
+ * shortcut and the granular controls is still visible. */
+.permission-panel-grant-all {
+  display: flex;
+  padding: 10px 0 4px;
+}
+
+.permission-button-grant-all {
+  flex: 1;
+  border-color: #5da28a;
+  background: #175f4f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.permission-button-grant-all:hover:not(:disabled),
+.permission-button-grant-all:focus-visible {
+  background: #1e7960;
+  border-color: #175f4f;
+  color: #ffffff;
+}
+
 .permission-tool-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -4006,6 +4036,24 @@ textarea:disabled {
   color: #ece7df;
 }
 
+/* Issue #541 (R9): keep the grant-all CTA high-contrast in dark mode. Without
+ * this rule the more-specific `:root[data-theme="dark"] .permission-button`
+ * above pulls the button back to the same neutral grey as Decline/Grant, which
+ * loses the visual hierarchy that tells the user "this is the one-click
+ * recovery". */
+:root[data-theme="dark"] .permission-button.permission-button-grant-all {
+  border-color: #2c8f71;
+  background: #1e7960;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:hover:not(:disabled),
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:focus-visible {
+  background: #2c8f71;
+  border-color: #4cb094;
+  color: #ffffff;
+}
+
 :root[data-theme="dark"] .permission-panel-header strong,
 :root[data-theme="dark"] .permission-tool-copy strong,
 :root[data-theme="dark"] .command-approval-copy strong {
@@ -4057,6 +4105,22 @@ textarea:disabled {
     border-color: #424a47;
     background: #202322;
     color: #ece7df;
+  }
+
+  /* Issue #541 (R9): same dark-mode CTA contrast preservation as the
+   * `:root[data-theme="dark"]` block — applies when the user has not pinned a
+   * theme and the OS reports dark mode. */
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all {
+    border-color: #2c8f71;
+    background: #1e7960;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:hover:not(:disabled),
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:focus-visible {
+    background: #2c8f71;
+    border-color: #4cb094;
+    color: #ffffff;
   }
 
   :root:not([data-theme="light"]) .permission-panel-header strong,
