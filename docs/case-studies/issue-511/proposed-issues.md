@@ -27,18 +27,18 @@ issues, each labeled `enhancement` and linked as a **sub-issue of #511**:
 | Milestone | Issue | Repository | Status |
 |---|---|---|---|
 | E1 | [#513](https://github.com/link-assistant/formal-ai/issues/513) | `link-assistant/formal-ai` | Done via PR [#525](https://github.com/link-assistant/formal-ai/pull/525) |
-| E2 | [#514](https://github.com/link-assistant/formal-ai/issues/514) | `link-assistant/formal-ai` | Next |
-| E3 | [#515](https://github.com/link-assistant/formal-ai/issues/515) | `link-assistant/formal-ai` | Planned |
-| E4 | [#516](https://github.com/link-assistant/formal-ai/issues/516) | `link-assistant/formal-ai` | Planned |
-| E5 | [#517](https://github.com/link-assistant/formal-ai/issues/517) | `link-assistant/formal-ai` | Planned |
-| E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` | Planned |
-| E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` | Planned |
-| E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` | Planned |
+| E2 | [#514](https://github.com/link-assistant/formal-ai/issues/514) | `link-assistant/formal-ai` | Done via PR [#528](https://github.com/link-assistant/formal-ai/pull/528) |
+| E3 | [#515](https://github.com/link-assistant/formal-ai/issues/515) | `link-assistant/formal-ai` | Done via PR [#530](https://github.com/link-assistant/formal-ai/pull/530) |
+| E4 | [#516](https://github.com/link-assistant/formal-ai/issues/516) | `link-assistant/formal-ai` | Done via PR [#532](https://github.com/link-assistant/formal-ai/pull/532) |
+| E5 | [#517](https://github.com/link-assistant/formal-ai/issues/517) | `link-assistant/formal-ai` | Done via PR [#533](https://github.com/link-assistant/formal-ai/pull/533) |
+| E6 | [#518](https://github.com/link-assistant/formal-ai/issues/518) | `link-assistant/formal-ai` | Done via PR [#536](https://github.com/link-assistant/formal-ai/pull/536) |
+| E7 | [#519](https://github.com/link-assistant/formal-ai/issues/519) | `link-assistant/formal-ai` | Done via PR [#537](https://github.com/link-assistant/formal-ai/pull/537) |
+| E8 | [#520](https://github.com/link-assistant/formal-ai/issues/520) | `link-assistant/formal-ai` | In PR [#539](https://github.com/link-assistant/formal-ai/pull/539) |
 | Upstream gap (R16) — **resolved** | [agent#271](https://github.com/link-assistant/agent/issues/271) → [agent#272](https://github.com/link-assistant/agent/pull/272) (v0.24.0) | `link-assistant/agent` |
 | Upstream follow-up (R16) — map `agent` read-only — **resolved** | [agent-commander#39](https://github.com/link-assistant/agent-commander/issues/39) (closed, js_0.7.0 / rust_0.2.5) | `link-assistant/agent-commander` |
 | Upstream follow-up (R16) — per-command approval relay — **resolved** | [agent-commander#40](https://github.com/link-assistant/agent-commander/issues/40) (closed, js_0.8.0 / rust_0.2.6) | `link-assistant/agent-commander` |
 
-**Upstream status (re-verified 2026-06-17 against the latest versions — `agent`
+**Upstream status (re-verified 2026-06-19 against the latest versions — `agent`
 v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
 - The per-tool read-only/plan gap for `claude`/`codex`/`opencode`/`qwen`/`gemini` was
   resolved in
@@ -181,7 +181,7 @@ v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
 - **Scope:** Track the already-filed upstream gaps to closure and file any further
   agent-commander capability gaps found during E4–E7 as issues on
   `link-assistant/agent-commander`; link them here. Finalize the best-practices doc.
-- **Filed & resolved (2026-06-17, from this PR):** the Agent-CLI permission gap is
+- **Filed & resolved (2026-06-17, re-verified 2026-06-19):** the Agent-CLI permission gap is
   resolved upstream ([agent#271](https://github.com/link-assistant/agent/issues/271) →
   [agent#272](https://github.com/link-assistant/agent/pull/272), v0.24.0); both
   agent-commander follow-ups are now **closed** —
@@ -191,8 +191,14 @@ v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6): all blockers resolved.**
   approval relay / `--approve-each`, js_0.8.0 / rust_0.2.6). No open agent-commander
   issues remain. Remaining known limitation (documented, not a bug): approve-each is
   available only for `agent` and `claude`; `codex`/`gemini`/`qwen` lack a relayable
-  headless approval handshake upstream — to be re-checked during E4–E7 and, if a CLI
-  later exposes one, filed as a new agent-commander enhancement.
+  headless approval handshake upstream. E4–E7 did not change that assessment; if a CLI
+  later exposes one, file a new agent-commander enhancement.
+- **Closeout (2026-06-19, PR #539):** E4–E7 found no further `agent-commander`
+  defect. The upstream baseline is still current (`agent` v0.24.0,
+  `agent-commander` js_0.8.0 / rust_0.2.6), and
+  `link-assistant/agent-commander` has no open issues. PR #539 removes Formal AI's
+  obsolete `--tool agent --read-only` workaround and finalizes
+  [`best-practices.md`](best-practices.md).
 - **Acceptance:** Gaps filed + linked + tracked to closure; best-practices doc merged.
 - **Depends on:** E4–E7 (findings).
 
@@ -210,9 +216,10 @@ E1 alone fixes the user-visible symptom (no more `unknown` for terminal commands
 the three-way mode radio); E2 makes permissions real; E3–E6 make execution real and
 isolated; E7 proves the whole cold-start journey; E8 closes the upstream loop.
 
-## Recommended next action
+## Closeout state
 
-Implement E2. E1 has already removed the exact `unknown` answer in the screenshot and
-unblocked the later milestones; E2 turns the visible mode/onboarding surface into a
-real permission model while preserving default-deny.
+E1–E7 are implemented on the parent branch, and E8 closes the upstream-feedback loop:
+no new `agent-commander` gap needs filing as of 2026-06-19, the old read-only
+workaround is removed, and [`best-practices.md`](best-practices.md) is the finalized
+Agent CLI + agent-commander guidance.
 </content>

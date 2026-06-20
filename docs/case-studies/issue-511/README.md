@@ -4,7 +4,7 @@
 > **Pull request (this work):** <https://github.com/link-assistant/formal-ai/pull/512> (branch `issue-511-26d6b8408464`)
 > **Case study date:** 2026-06-17
 > **Type:** Feature request + deep case study, requirements decomposition, and a sequenced implementation plan.
-> **Status:** Case study + plan delivered, and the implementation issues are **created** (via `gh`). E1 [#513](https://github.com/link-assistant/formal-ai/issues/513) is now implemented by PR [#525](https://github.com/link-assistant/formal-ai/pull/525) and merged into this branch: terminal-command prompts no longer fall through to `unknown`, the toolbar/drawer expose the three-way `chat` / `agent` / `full-auto` mode radio, terminal response text and trigger vocabulary are seed-backed, the no-hardcoded-natural-language rule is documented and CI-enforced, and e2e configs have explicit timeouts. Remaining milestones E2–E8 ([#514](https://github.com/link-assistant/formal-ai/issues/514)–[#520](https://github.com/link-assistant/formal-ai/issues/520)) stay live and sequenced for the real permission UI, auto-started server, agent-commander provider, containerized CLI setup, NDJSON rendering, and cold-start `ls ~` e2e. Latest `main` also brings the issue #438/#523 service-control work (`compose.yaml`, GHCR image publishing, and one-click Telegram/server controls), which the E3/E5 plan should reuse rather than reimplementing. Upstream is unblocked: `agent` v0.24.0 has native permissions, and `agent-commander` js_0.8.0 / rust_0.2.6 has read-only mapping plus `--approve-each`; `@link-assistant/agent` remains the default backend.
+> **Status:** Case study + implementation epic delivered on the `issue-511-26d6b8408464` parent branch. E1–E7 are implemented by PRs [#525](https://github.com/link-assistant/formal-ai/pull/525), [#528](https://github.com/link-assistant/formal-ai/pull/528), [#530](https://github.com/link-assistant/formal-ai/pull/530), [#532](https://github.com/link-assistant/formal-ai/pull/532), [#533](https://github.com/link-assistant/formal-ai/pull/533), [#536](https://github.com/link-assistant/formal-ai/pull/536), and [#537](https://github.com/link-assistant/formal-ai/pull/537). E8 is handled by PR [#539](https://github.com/link-assistant/formal-ai/pull/539): upstream status was re-verified on 2026-06-19 (`agent` v0.24.0, `agent-commander` js_0.8.0 / rust_0.2.6), no open `agent-commander` gaps remain, the desktop commander provider now uses the shipped `--tool agent --read-only` mapping, and the Agent CLI + agent-commander best-practices write-up is finalized in [`best-practices.md`](best-practices.md).
 
 All raw, third-party captures referenced below live under [`raw-data/`](raw-data/).
 
@@ -22,6 +22,7 @@ All raw, third-party captures referenced below live under [`raw-data/`](raw-data
 | `link-assistant/hive-mind` README snapshot | [`raw-data/external-hive-mind-README.md`](raw-data/external-hive-mind-README.md) |
 | PR #512 metadata | [`raw-data/pr-512.json`](raw-data/pr-512.json) |
 | PR #525 metadata and comments (E1 + no-hardcoded-NL follow-up) | [`raw-data/pr-525.json`](raw-data/pr-525.json), [`raw-data/pr-525-comments.json`](raw-data/pr-525-comments.json) |
+| **Agent CLI + agent-commander best practices (E8)** | [`best-practices.md`](best-practices.md) |
 | **Full requirement inventory (R1–R20)** | [`requirements.md`](requirements.md) |
 | **Per-requirement solution plans + reusable components** | [`solution-plans.md`](solution-plans.md) |
 | **Sequenced epic of implementation issues (E1–E8, created: #513–#520)** | [`proposed-issues.md`](proposed-issues.md) |
@@ -70,13 +71,12 @@ concrete solution that maximizes reuse of what already exists
 ([`solution-plans.md`](solution-plans.md)), and sequences the remaining work into a
 live implementation epic ([`proposed-issues.md`](proposed-issues.md)).
 
-**2026-06-18 merge update:** the visible E1 slice is no longer only a plan. PR #525
-delivered the terminal-command intent and three-way mode radio, then incorporated the
-maintainer follow-up that all natural-language trigger vocabulary and response prose
-must come from seed data, be grounded as meanings, be kept in worker/Rust parity by
-CI, and be documented in `CONTRIBUTING.md` plus
-[`docs/design/no-hardcoded-natural-language.md`](../../design/no-hardcoded-natural-language.md).
-That leaves the real execution path (E2–E8) as the remaining product work.
+**2026-06-19 closeout update:** E1–E7 are now merged into the parent branch. The
+desktop flow has terminal-command intent, a three-way mode radio, per-tool and
+per-command permissions, agent-mode server auto-start, an `AgentProvider` seam,
+an installable `formal-ai-agent` container with Agent CLI + agent-commander, NDJSON
+agent-output rendering, and cold-start `ls ~` e2e coverage. E8 re-verified upstream
+state and finalized the applied best practices in [`best-practices.md`](best-practices.md).
 
 ---
 

@@ -472,12 +472,6 @@ function commanderRestrictionArgs(request = {}, options = {}) {
     grantRestriction === "read-only" ||
     isReadOnlyShellCommand(commandFromRequest(request))
   ) {
-    // agent-commander currently rejects `--tool agent --read-only`; until the
-    // upstream Agent permission gap is closed, the desktop gate remains the
-    // read-only enforcement layer for the default agent backend.
-    if (tool === DEFAULT_COMMANDER_TOOL) {
-      return ["--approve-each"];
-    }
     return ["--read-only"];
   }
   if (grantRestriction === "approve-each") {
