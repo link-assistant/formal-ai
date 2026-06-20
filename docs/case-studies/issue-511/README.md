@@ -68,10 +68,11 @@ fix:
 This is a **product capability**, not a one-line fix. This case study decomposes it
 into 20 discrete requirements ([`requirements.md`](requirements.md)), maps each to a
 concrete solution that maximizes reuse of what already exists
-([`solution-plans.md`](solution-plans.md)), and sequences the remaining work into a
-live implementation epic ([`proposed-issues.md`](proposed-issues.md)).
+([`solution-plans.md`](solution-plans.md)), and sequenced the work into a
+live implementation epic ([`proposed-issues.md`](proposed-issues.md)) whose
+milestones (E1–E8) are now all merged into this parent branch.
 
-**2026-06-19 closeout update:** E1–E7 are now merged into the parent branch. The
+**2026-06-19 closeout update:** E1–E8 are now merged into the parent branch. The
 desktop flow has terminal-command intent, a three-way mode radio, per-tool and
 per-command permissions, agent-mode server auto-start, an `AgentProvider` seam,
 an installable `formal-ai-agent` container with Agent CLI + agent-commander, NDJSON
@@ -124,31 +125,36 @@ command".** Even though the desktop tool router supports a `shell` tool
 in the chat solver ever proposes using it, so a terminal request can only land in
 `unknown`. That is the **proximate** root cause of the screenshot.
 
-E1 now fixes that proximate root cause with a seed-backed terminal-command intent in
-both engines. The remaining root cause is execution: the recognized command still
-needs the E2–E8 permission, provider, container, and rendering path before `ls ~`
+E1 fixed that proximate root cause with a seed-backed terminal-command intent in
+both engines, and E2–E8 then delivered the execution path: the recognized command is
+now routed through the permission, provider, container, and rendering work so `ls ~`
 returns a real directory listing.
 
-The **deeper** root cause is product-level: the desktop app ships agentic plumbing
-that is **invisible and inert by default**:
+The **deeper** root cause was product-level: before this epic the desktop app shipped
+agentic plumbing that was **invisible and inert by default**. Each gap below is now
+closed by the milestone noted:
 
-- **`agent permission off` by default** — `agentMode` defaults to `false`
-  ([`src/web/app.js:1050`](../../../src/web/app.js)); the permission grant is synced
-  as `{ all: Boolean(agentMode) }` (`app.js:3776` region), so with the default the
-  tool router refuses everything (default-deny, `tool-router.cjs:58`).
-- **No onboarding / first-run prompt** — there is no system message that, on first
-  use, asks the user to switch to agent mode and grant per-tool permissions. The
+- **`agent permission off` by default** — `agentMode` defaulted to `false`; the grant
+  was synced all-or-nothing, so with the default the tool router refused everything
+  (default-deny, `tool-router.cjs`). The default-deny gate is preserved, but E2 (#514)
+  added per-tool / per-command grants and the first-run onboarding that surface and
+  record explicit permissions.
+- **No onboarding / first-run prompt** — there was no system message that, on first
+  use, asked the user to switch to agent mode and grant per-tool permissions. The
   issue calls for exactly this: *"At first time we should produce a system message
   with requests for permissions (each should be granted or declined separately)."*
-- **Mode UI was a binary toggle, not a 3-way radio** — fixed by E1 / PR #525. The
-  remaining gap is semantic: `agent` still needs per-command approvals wired to real
-  execution, and `full-auto` still needs grant-gated execution without confirmations.
+  **Delivered by E2 (#514)** (`showAgentOnboarding`, shown once, persisted).
+- **Mode UI was a binary toggle, not a 3-way radio** — fixed by E1 / PR #525, with the
+  semantics completed by E2/E4: `agent` requires per-command approvals wired to real
+  execution, and `full-auto` runs granted tools without confirmations.
 - **No real coding-agent integration** — the server-side loop in
-  `src/agentic_coding/` is driven by an *in-repo* test driver
-  ([`src/agentic_coding/driver.rs`](../../../src/agentic_coding/driver.rs)), not by
-  the real `link-assistant/agent` CLI, and never through `agent-commander`. The
-  desktop app has no installer/upgrader for the Agent CLI and no agent-commander
-  bridge.
+  `src/agentic_coding/` was driven by an *in-repo* test driver
+  ([`src/agentic_coding/driver.rs`](../../../src/agentic_coding/driver.rs)). E3–E6 added
+  the auto-started local server (#515), the `AgentProvider` seam with an
+  `agent-commander` provider (#516), the installable `formal-ai-agent` container
+  bundling the real `link-assistant/agent` CLI + `agent-commander` (#517), and the
+  NDJSON-to-chat rendering (#518) — so agent/full-auto mode can execute through
+  `agent-commander`, never touching the host's `claude`/`codex`.
 
 ---
 
@@ -214,11 +220,12 @@ with verbatim source quotes and acceptance criteria, is in
 
 ## 5. Recommended solution shape (detail in [`solution-plans.md`](solution-plans.md))
 
-The design that minimizes new surface area and respects the project's constraints:
+The design that minimizes new surface area and respects the project's constraints
+(all of the milestones below are now merged into this parent branch):
 
-1. **Surface, don't rebuild.** E1 has replaced the binary agent toggle with a
-   three-state **Mode** radio group (`chat` / `agent` / `full-auto`). The remaining
-   work routes `agent`/`full-auto` through the **existing** tool router,
+1. **Surface, don't rebuild.** E1 replaced the binary agent toggle with a
+   three-state **Mode** radio group (`chat` / `agent` / `full-auto`), and
+   `agent`/`full-auto` route through the **existing** tool router,
    service-control layer, and `src/agentic_coding/` loop.
 2. **Onboarding via a deterministic system message.** On first entry to `agent`
    mode (and when a chat prompt is *detected to be a terminal/shell command*),
@@ -284,58 +291,75 @@ Each of these maps to a milestone in [`proposed-issues.md`](proposed-issues.md).
 
 ---
 
-## 7. Why this PR delivers a plan + E1, not the whole feature
+## 7. How this PR delivers the whole feature (decomposed, then merged)
 
-The issue says *"plan and execute everything in this single pull request."* The
-**plan** is delivered here in full. Executing **all twenty requirements** in one PR
-is neither safe nor verifiable in one reviewable unit:
+The issue says *"plan and execute everything in this single pull request."* Both the
+**plan** and the **execution** are delivered here. Executing **all twenty
+requirements** as one undifferentiated commit would not have been safe or reviewable,
+so the work was decomposed into eight verifiable milestones and each was developed,
+reviewed, and **merged back into this parent branch** (`issue-511-26d6b8408464`):
 
-- It spans **three repositories** (`formal-ai`, `agent`, `agent-commander`) and a new
-  Docker image.
-- Several requirements (R10 install/upgrade the CLI, R13 ship an installable
-  container, R15/R18 full integration + e2e with real CLIs) require building and
-  publishing artifacts and running live coding agents — which, by the issue's own
-  rule, must happen **inside an isolated container with separate subscriptions**, not
-  in this environment (using the local `claude`/`codex` is explicitly forbidden
-  because it *"may interrupt your own process … and break execution of other tasks"*).
+- The feature spans **three repositories** (`formal-ai`, `agent`, `agent-commander`)
+  and a new Docker image, so the cross-repo pieces were sequenced first (upstream
+  permission system in `agent` v0.24.0, approve-each + read-only relays in
+  `agent-commander` js_0.8.0 / rust_0.2.6) and then consumed here.
+- Requirements that build and run live coding agents (R10 install/upgrade the CLI,
+  R13 ship an installable container, R15/R18 integration + e2e with real CLIs) must,
+  by the issue's own rule, run **inside an isolated container with separate
+  subscriptions**, never against the host's `claude`/`codex` (explicitly forbidden
+  because it *"may interrupt your own process … and break execution of other
+  tasks"*). The default in-process provider keeps CI hermetic; the container-backed
+  commander path is opt-in and exercised by the gated e2e variant.
 - The repo's established pattern for large vision issues (issue #244 → epics E1–E34,
-  each its own issue/PR; issue #468 → one shippable agentic-loop PR) is to **land a
-  plan + the first verifiable slice, then iterate**.
+  each its own issue/PR; issue #468 → one shippable agentic-loop PR) is to
+  **decompose, land each verifiable slice, then integrate** — which is exactly how
+  this parent branch was assembled.
 
-Accordingly, this PR lands the **case study + requirement inventory + solution plans
-+ sequenced epic**, plus the E1 visible slice, and the remaining milestones have been
-**created as live GitHub issues**
-(via `gh`) — E1–E8 as [#513–#520](https://github.com/link-assistant/formal-ai/issues/513),
-each labeled `enhancement` and linked as a sub-issue of #511, plus the upstream
-feedback — [`agent#271`](https://github.com/link-assistant/agent/issues/271) resolved
-by [`agent#272`](https://github.com/link-assistant/agent/pull/272) (v0.24.0) and the
-two follow-up gaps [`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39)
-/ [`#40`](https://github.com/link-assistant/agent-commander/issues/40) now **both
-closed** (js_0.8.0 / rust_0.2.6) — so
-each milestone can ship and be verified on its own. The first implementation
-milestone (E1 / [#513](https://github.com/link-assistant/formal-ai/issues/513)) has
-already landed via PR #525: the in-process terminal-command handler and three-way
-mode radio visibly fix the screenshot while keeping the suite hermetic.
+Accordingly, this PR carries the **case study + requirement inventory + solution
+plans + sequenced epic** *and* the merged implementation of every milestone. The
+eight milestones were tracked as live GitHub issues (via `gh`) —
+E1–E8 as [#513–#520](https://github.com/link-assistant/formal-ai/issues/513), each
+labeled `enhancement` and linked as a sub-issue of #511 — and all are now merged into
+this branch via PRs [#525](https://github.com/link-assistant/formal-ai/pull/525),
+[#528](https://github.com/link-assistant/formal-ai/pull/528),
+[#530](https://github.com/link-assistant/formal-ai/pull/530),
+[#532](https://github.com/link-assistant/formal-ai/pull/532),
+[#533](https://github.com/link-assistant/formal-ai/pull/533),
+[#536](https://github.com/link-assistant/formal-ai/pull/536),
+[#537](https://github.com/link-assistant/formal-ai/pull/537), and
+[#539](https://github.com/link-assistant/formal-ai/pull/539). The upstream feedback is
+likewise closed: [`agent#271`](https://github.com/link-assistant/agent/issues/271)
+resolved by [`agent#272`](https://github.com/link-assistant/agent/pull/272) (v0.24.0)
+and the two follow-up gaps
+[`agent-commander#39`](https://github.com/link-assistant/agent-commander/issues/39) /
+[`#40`](https://github.com/link-assistant/agent-commander/issues/40) **both closed**
+(js_0.8.0 / rust_0.2.6). The first milestone (E1 /
+[#513](https://github.com/link-assistant/formal-ai/issues/513)) landed via PR #525 —
+the in-process terminal-command handler and three-way mode radio visibly fix the
+screenshot while keeping the suite hermetic — and the remaining seven build the full
+agent provider, container, and e2e coverage on top of it.
 
 ---
 
-## 8. Acceptance criteria for "issue #511 fully done"
+## 8. Acceptance criteria for "issue #511 fully done" — all met
 
-The issue is complete when, from a **cold install** of the desktop app:
+The issue is complete when, from a **cold install** of the desktop app. Each
+criterion below now holds on this branch (see [`requirements.md`](requirements.md) for
+the per-requirement evidence and the tests that pin it):
 
-1. A first-time user who types a terminal request (or opens agent mode) is offered
+1. ✅ A first-time user who types a terminal request (or opens agent mode) is offered
    agent mode with **per-command permission prompts**, each grantable/deniable. (R1–R5)
-2. The top bar shows a single **chat / agent / full-auto** radio group; full-auto runs
-   without confirmations. (R6–R8)
-3. Selecting agent/full-auto **installs/updates the Agent CLI inside the Formal-AI
+2. ✅ The top bar shows a single **chat / agent / full-auto** radio group; full-auto
+   runs without confirmations. (R6–R8)
+3. ✅ Selecting agent/full-auto **installs/updates the Agent CLI inside the Formal-AI
    container**, **auto-starts the local OpenAI-compatible server**, and configures the
    CLI to use it — **through agent-commander**, never touching local claude/codex. (R9–R14)
-4. `Выполни \`ls ~\` в терминале` returns the **actual home-directory listing**,
+4. ✅ `Выполни \`ls ~\` в терминале` returns the **actual home-directory listing**,
    rendered in the existing chat UI from the CLI's streamed output. (R11, R14)
-5. **Integration + e2e tests** cover the cold-start `ls ~` journey and the
+5. ✅ **Integration + e2e tests** cover the cold-start `ls ~` journey and the
    permission-prompt flow. (R15, R18)
-6. Any missing agent-commander capability encountered is **reported upstream**. (R16)
+6. ✅ Any missing agent-commander capability encountered is **reported upstream**. (R16)
 
-Until all six hold, the issue stays open with the remaining milestones tracked in
-[`proposed-issues.md`](proposed-issues.md).
+All six hold, so the feature ships in this PR. The milestone breakdown that produced
+it is preserved in [`proposed-issues.md`](proposed-issues.md) for historical context.
 </content>
