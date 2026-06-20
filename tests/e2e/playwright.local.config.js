@@ -65,6 +65,7 @@ module.exports = defineConfig({
     '**/issue-518.spec.js',
     '**/issue-541-demo-mode.spec.js',
     '**/issue-541-permissions.spec.js',
+    '**/issue-541-theme.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
   // and asserts on one answer — comfortably under 30s even on a cold worker.

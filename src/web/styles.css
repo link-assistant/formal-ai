@@ -4167,3 +4167,55 @@ textarea:disabled {
     color: #ead48a;
   }
 }
+
+/* Issue #541 (R1): "Not all UI elements has correctly applied theme."
+ * Several widgets had light-mode rules with hardcoded colors but no
+ * `:root[data-theme="dark"]` or `@media (prefers-color-scheme: dark)`
+ * counterparts, so they kept their light palette when the rest of the UI
+ * went dark. The fixes below close those gaps for the highest-visibility
+ * surfaces: the topbar mode-status badge, the collapsed-sidebar toggle,
+ * the mobile drawer section headings, and the per-step "tool"/"agent"
+ * mode badges in the reasoning trace. Color choices follow the existing
+ * dark palette already used elsewhere in this file (#c9c1b6 muted text,
+ * #ece7df bright text, #222624 surface, soft tinted badges for "tool"
+ * blue / "agent" amber).
+ */
+:root[data-theme="dark"] .mode-status,
+:root[data-theme="dark"] .drawer-menu-section h2 {
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .sidebar-toggle.is-collapsed {
+  background: #222624;
+}
+
+:root[data-theme="dark"] .tool-mode {
+  background: rgba(120, 140, 255, 0.22);
+  color: #aebcff;
+}
+
+:root[data-theme="dark"] .tool-mode-agent .tool-mode {
+  background: rgba(255, 170, 90, 0.22);
+  color: #f2c084;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mode-status,
+  :root:not([data-theme="light"]) .drawer-menu-section h2 {
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .sidebar-toggle.is-collapsed {
+    background: #222624;
+  }
+
+  :root:not([data-theme="light"]) .tool-mode {
+    background: rgba(120, 140, 255, 0.22);
+    color: #aebcff;
+  }
+
+  :root:not([data-theme="light"]) .tool-mode-agent .tool-mode {
+    background: rgba(255, 170, 90, 0.22);
+    color: #f2c084;
+  }
+}
