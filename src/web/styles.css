@@ -1281,6 +1281,56 @@ body.is-resizing-context {
   cursor: not-allowed;
 }
 
+.desktop-update-row dd {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-state {
+  font-size: 13px;
+  font-weight: 700;
+  color: #24333d;
+  overflow-wrap: anywhere;
+}
+
+.desktop-update-progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #1f7a5b;
+}
+
+.desktop-update-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-update-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid #c8d2d8;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: #f3f6f7;
+}
+
+.desktop-update-install {
+  background: #1f7a5b;
+  border-color: #1f7a5b;
+  color: #ffffff;
+}
+
+.desktop-update-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .desktop-services-note,
 .desktop-services-error {
   margin: 0;

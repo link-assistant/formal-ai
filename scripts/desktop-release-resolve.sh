@@ -102,7 +102,10 @@ expected_desktop_assets() {
     "formal-ai-desktop-linux-x64-${version}.deb" \
     "formal-ai-desktop-linux-arm64-${version}.deb" \
     "formal-ai-desktop-linux-x64-${version}.tar.gz" \
-    "formal-ai-desktop-linux-arm64-${version}.tar.gz"
+    "formal-ai-desktop-linux-arm64-${version}.tar.gz" \
+    "latest.yml" \
+    "latest-mac.yml" \
+    "latest-linux.yml"
 }
 
 group "desktop-release resolve inputs"
@@ -213,7 +216,7 @@ if [ -z "$release_version" ]; then
   log "Could not parse semver from ${tag}; leaving build enabled rather than risking a silent skip."
 else
   existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-"))' 2>/dev/null || true)"
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null || true)"
   existing_count="$(printf '%s\n' "$existing_names" | sed '/^$/d' | wc -l | tr -d ' ')"
   missing=()
   while IFS= read -r expected; do
@@ -224,7 +227,7 @@ else
 
   log "release version: ${release_version}"
   log "existing desktop assets: ${existing_count}"
-  log "required desktop assets: 14"
+  log "required desktop assets: 17"
   if [ ${#missing[@]} -eq 0 ]; then
     log "all required desktop assets are present."
   else

@@ -6,8 +6,9 @@
 #   formal-ai-desktop-windows-installer-<arch>-<version>.exe
 #   formal-ai-desktop-windows-portable-<arch>-<version>.exe
 #   formal-ai-desktop-linux-<arch>-<version>.{AppImage,deb,tar.gz}
+#   latest.yml, latest-mac.yml, latest-linux.yml, and *.blockmap updater metadata
 #   (Electron Builder emits x86_64/amd64 Linux x64 aliases; the build job
-#    normalizes them to x64 before checksums/uploads.)
+#    normalizes them to x64 before checksums/uploads and rewrites update metadata.)
 # plus a consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt, and SLSA build
 # provenance attestations (verifiable with `gh attestation verify`).
 #
@@ -311,9 +312,11 @@ jobs:
           files=()
           for f in release/formal-ai-desktop-*; do
             case "$f" in
-              *.blockmap|*.yml) continue ;;
-              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz) files+=("$f") ;;
+              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz|*.blockmap) files+=("$f") ;;
             esac
+          done
+          for f in release/latest.yml release/latest-mac.yml release/latest-linux.yml; do
+            [ -f "$f" ] && files+=("$f")
           done
           if [ ${#files[@]} -eq 0 ]; then
             echo "No desktop artifacts produced for ${{ matrix.label }}" >&2
@@ -325,7 +328,7 @@ jobs:
           node -e '
             const fs = require("fs"); const cp = require("crypto"); const path = require("path");
             const dir = "release";
-            const re = /^formal-ai-desktop-.*\.(dmg|zip|exe|AppImage|deb|tar\.gz)$/;
+            const re = /^(formal-ai-desktop-.*\.(dmg|zip|exe|AppImage|deb|tar\.gz|blockmap)|latest(-mac|-linux)?\.yml)$/;
             const names = fs.readdirSync(dir).filter((n) => re.test(n)).sort();
             for (const n of names) {
               const hash = cp.createHash("sha256").update(fs.readFileSync(path.join(dir, n))).digest("hex");
@@ -345,9 +348,11 @@ jobs:
           files=()
           for f in release/formal-ai-desktop-*; do
             case "$f" in
-              *.blockmap|*.yml) continue ;;
-              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz) files+=("$f") ;;
+              *.dmg|*.zip|*.exe|*.AppImage|*.deb|*.tar.gz|*.blockmap) files+=("$f") ;;
             esac
+          done
+          for f in release/latest.yml release/latest-mac.yml release/latest-linux.yml; do
+            [ -f "$f" ] && files+=("$f")
           done
           gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
 

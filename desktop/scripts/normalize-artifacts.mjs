@@ -52,6 +52,32 @@ for (const entry of fs.readdirSync(releaseDir, { withFileTypes: true })) {
   }
 }
 
+let metadataFilesUpdated = 0;
+const metadataReplacements = [
+  ["formal-ai-desktop-linux-x86_64-", "formal-ai-desktop-linux-x64-"],
+  ["formal-ai-desktop-linux-amd64-", "formal-ai-desktop-linux-x64-"],
+];
+for (const entry of fs.readdirSync(releaseDir, { withFileTypes: true })) {
+  if (!entry.isFile() || !/^latest(?:-mac|-linux)?\.yml$/.test(entry.name)) {
+    continue;
+  }
+
+  const target = path.join(releaseDir, entry.name);
+  let content = fs.readFileSync(target, "utf8");
+  let normalized = content;
+  for (const [from, to] of metadataReplacements) {
+    normalized = normalized.split(from).join(to);
+  }
+  if (normalized !== content) {
+    fs.writeFileSync(target, normalized);
+    console.log(`Normalized desktop update metadata: ${entry.name}`);
+    metadataFilesUpdated += 1;
+  }
+}
+
 if (renamed === 0) {
   console.log(`No desktop artifact names required normalization in ${releaseDir}`);
+}
+if (metadataFilesUpdated === 0) {
+  console.log(`No desktop update metadata required normalization in ${releaseDir}`);
 }

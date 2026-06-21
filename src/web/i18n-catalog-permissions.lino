@@ -84,6 +84,24 @@ en
       dockerUnavailable "Docker unavailable"
       error "error"
       unknown "unknown"
+  updates
+    title "Updates"
+    currentVersion "Version"
+    check "Check"
+    checking "Checking..."
+    update "Update"
+    updating "Updating..."
+    progress "{percent}% downloaded"
+    state
+      idle "Ready to check"
+      checking "Checking for updates"
+      available "Update {version} available"
+      notAvailable "Up to date"
+      downloading "Downloading update"
+      downloaded "Ready to restart"
+      installing "Installing update"
+      disabled "Unavailable"
+      error "Update error"
 
 ru
   permissions
@@ -166,6 +184,24 @@ ru
       dockerUnavailable "Docker недоступен"
       error "ошибка"
       unknown "неизвестно"
+  updates
+    title "Обновления"
+    currentVersion "Версия"
+    check "Проверить"
+    checking "Проверка..."
+    update "Обновить"
+    updating "Обновление..."
+    progress "Загружено {percent}%"
+    state
+      idle "Готово к проверке"
+      checking "Проверка обновлений"
+      available "Доступно обновление {version}"
+      notAvailable "Актуальная версия"
+      downloading "Загрузка обновления"
+      downloaded "Готово к перезапуску"
+      installing "Установка обновления"
+      disabled "Недоступно"
+      error "Ошибка обновления"
 
 zh
   permissions
@@ -248,6 +284,24 @@ zh
       dockerUnavailable "Docker 不可用"
       error "错误"
       unknown "未知"
+  updates
+    title "更新"
+    currentVersion "版本"
+    check "检查"
+    checking "正在检查..."
+    update "更新"
+    updating "正在更新..."
+    progress "已下载 {percent}%"
+    state
+      idle "可检查更新"
+      checking "正在检查更新"
+      available "有可用更新 {version}"
+      notAvailable "已是最新"
+      downloading "正在下载更新"
+      downloaded "可重启更新"
+      installing "正在安装更新"
+      disabled "不可用"
+      error "更新错误"
 
 hi
   permissions
@@ -330,3 +384,21 @@ hi
       dockerUnavailable "Docker उपलब्ध नहीं"
       error "त्रुटि"
       unknown "अज्ञात"
+  updates
+    title "अपडेट"
+    currentVersion "संस्करण"
+    check "जाँचें"
+    checking "जाँच हो रही है..."
+    update "अपडेट"
+    updating "अपडेट हो रहा है..."
+    progress "{percent}% डाउनलोड हुआ"
+    state
+      idle "जाँच के लिए तैयार"
+      checking "अपडेट की जाँच हो रही है"
+      available "अपडेट {version} उपलब्ध है"
+      notAvailable "नवीनतम है"
+      downloading "अपडेट डाउनलोड हो रहा है"
+      downloaded "रीस्टार्ट के लिए तैयार"
+      installing "अपडेट इंस्टॉल हो रहा है"
+      disabled "अनुपलब्ध"
+      error "अपडेट त्रुटि"
