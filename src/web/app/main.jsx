@@ -9,6 +9,12 @@
 // incremental migration to Chakra primitives.
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { ChakraProvider } from "@chakra-ui/react";
+
+// Issue #550: the Chakra system bridges the app's --fa-* CSS design tokens into
+// Chakra semantic tokens with the global reset/body styling disabled, so
+// styles.css stays authoritative while the UI migrates to Chakra primitives.
+import { system as chakraSystem } from "./theme.js";
 
 const {
   createElement: h,
@@ -10662,4 +10668,8 @@ function wait(milliseconds) {
   });
 }
 
-createRoot(document.getElementById("root")).render(h(App));
+createRoot(document.getElementById("root")).render(
+  <ChakraProvider value={chakraSystem}>
+    <App />
+  </ChakraProvider>,
+);
