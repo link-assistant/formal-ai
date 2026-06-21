@@ -124,15 +124,23 @@ test.describe('Issue #554 — VS Code extension page (/vscode/)', () => {
     await expect(page.locator('[data-testid="brand-home"]')).toHaveAttribute('href', '../');
   });
 
-  test('switching language re-renders and persists across reloads', async ({ page }) => {
-    await page.locator('.locale-switch button[data-value="ru"]').click();
-    await expect(page.locator('[data-testid="vscode-app-summary"]')).toContainText('Marketplace');
-    await expect(page.locator('.hero h1')).toHaveText('formal-ai для VS Code');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  test('localizes the heading for every supported UI language', async ({ page }) => {
+    await expect(page.locator('.hero h1')).toHaveText('formal-ai for VS Code');
 
+    for (const [locale, heading] of [
+      ['ru', 'formal-ai для VS Code'],
+      ['zh', 'VS Code 版 formal-ai'],
+      ['hi', 'VS Code के लिए formal-ai'],
+    ]) {
+      await page.locator(`.locale-switch button[data-value="${locale}"]`).click();
+      await expect(page.locator('.hero h1')).toHaveText(heading);
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    }
+
+    // The chosen locale is written to the shared store, so a reload keeps Hindi.
     await page.reload();
-    await expect(page.locator('.hero h1')).toHaveText('formal-ai для VS Code');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+    await expect(page.locator('.hero h1')).toHaveText('VS Code के लिए formal-ai');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'hi');
   });
 });
 
@@ -179,17 +187,24 @@ test.describe('Issue #554 — CLI page (/cli/)', () => {
     await expect(page.locator('[data-testid="brand-home"]')).toHaveAttribute('href', '../');
   });
 
-  test('switching language re-renders and persists across reloads', async ({ page }) => {
-    await expect(page.locator('[data-testid="cli-app-summary"]')).toContainText(
-      'command-line tool',
-    );
-    await page.locator('.locale-switch button[data-value="ru"]').click();
-    await expect(page.locator('[data-testid="cli-app-summary"]')).toContainText('командной строки');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  test('localizes the eyebrow for every supported UI language', async ({ page }) => {
+    // The CLI heading is identical across most locales, so assert the eyebrow,
+    // which is translated in each — covering all four supported languages.
+    await expect(page.locator('.hero .eyebrow')).toHaveText('Command-line interface');
+
+    for (const [locale, eyebrow] of [
+      ['ru', 'Интерфейс командной строки'],
+      ['zh', '命令行界面'],
+      ['hi', 'कमांड-लाइन इंटरफ़ेस'],
+    ]) {
+      await page.locator(`.locale-switch button[data-value="${locale}"]`).click();
+      await expect(page.locator('.hero .eyebrow')).toHaveText(eyebrow);
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    }
 
     await page.reload();
-    await expect(page.locator('[data-testid="cli-app-summary"]')).toContainText('командной строки');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+    await expect(page.locator('.hero .eyebrow')).toHaveText('कमांड-लाइन इंटरफ़ेस');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'hi');
   });
 });
 
@@ -234,16 +249,21 @@ test.describe('Issue #554 — Telegram bot page (/telegram/)', () => {
     await expect(page.locator('[data-testid="brand-home"]')).toHaveAttribute('href', '../');
   });
 
-  test('switching language re-renders and persists across reloads', async ({ page }) => {
-    await expect(page.locator('[data-testid="telegram-app-summary"]')).toContainText(
-      'Chat with the symbolic agent from Telegram',
-    );
-    await page.locator('.locale-switch button[data-value="ru"]').click();
-    await expect(page.locator('.hero h1')).toHaveText('Telegram-бот formal-ai');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+  test('localizes the heading for every supported UI language', async ({ page }) => {
+    await expect(page.locator('.hero h1')).toHaveText('formal-ai Telegram bot');
+
+    for (const [locale, heading] of [
+      ['ru', 'Telegram-бот formal-ai'],
+      ['zh', 'formal-ai Telegram 机器人'],
+      ['hi', 'formal-ai Telegram बॉट'],
+    ]) {
+      await page.locator(`.locale-switch button[data-value="${locale}"]`).click();
+      await expect(page.locator('.hero h1')).toHaveText(heading);
+      await expect(page.locator('html')).toHaveAttribute('lang', locale);
+    }
 
     await page.reload();
-    await expect(page.locator('.hero h1')).toHaveText('Telegram-бот formal-ai');
-    await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+    await expect(page.locator('.hero h1')).toHaveText('formal-ai Telegram बॉट');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'hi');
   });
 });
