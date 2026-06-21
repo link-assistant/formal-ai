@@ -32,6 +32,8 @@
       footerVersion: "Version",
       footerSource: "Source on GitHub",
       sourceEyebrow: "Open source",
+      copyLabel: "Copy",
+      copiedLabel: "Copied",
     },
     ru: {
       language: "Язык",
@@ -42,6 +44,8 @@
       footerVersion: "Версия",
       footerSource: "Исходный код на GitHub",
       sourceEyebrow: "Открытый код",
+      copyLabel: "Копировать",
+      copiedLabel: "Скопировано",
     },
     zh: {
       language: "语言",
@@ -52,6 +56,8 @@
       footerVersion: "版本",
       footerSource: "GitHub 源代码",
       sourceEyebrow: "开源",
+      copyLabel: "复制",
+      copiedLabel: "已复制",
     },
     hi: {
       language: "भाषा",
@@ -62,6 +68,8 @@
       footerVersion: "संस्करण",
       footerSource: "GitHub पर सोर्स कोड",
       sourceEyebrow: "ओपन सोर्स",
+      copyLabel: "कॉपी करें",
+      copiedLabel: "कॉपी हो गया",
     },
   };
 
@@ -213,8 +221,15 @@
   //   repoUrl:      string  — hero "Source on GitHub" big-button target
   //   exposeAs:     string  — window global to publish the api on (for e2e)
   //   destinations: [{ id, href, external?, icon, titleKey, descKey, actionKey }]
+  //   sections:     optional [{ id?, titleKey?, introKey?, steps?:[key],
+  //                   commands?:[{ command, labelKey?, noteKey?, testid? }],
+  //                   links?:[{ href, labelKey, external?, testid? }], noteKey? }]
+  //                 — install pages (#554) use these for copy-paste commands.
   //   copy:         { <locale>: { heading, eyebrow, summary, ...cardKeys } }
   // }
+  //
+  // Both `destinations` and `sections` are optional; a page may render only a
+  // card grid (landing/docs), only sections, or both.
 
   function createChooser(config) {
     var state = { locale: "en", themePreference: "auto" };
@@ -255,6 +270,148 @@
         h("span", { class: "nav-card-title", text: text(locale, destination.titleKey) }),
         h("span", { class: "nav-card-desc", text: text(locale, destination.descKey) }),
         h("span", { class: "nav-card-action", text: text(locale, destination.actionKey) }),
+      );
+    }
+
+    // -------------------------------------------------------------------------
+    // Optional info sections (issue #554): the install pages for the VS Code
+    // extension, the CLI and the Telegram bot need more than a card grid — they
+    // carry copy-paste install commands, ordered step lists and direct links.
+    // These render only when `config.sections` is provided, so the landing and
+    // docs pages (no sections) are byte-for-byte unchanged.
+    // -------------------------------------------------------------------------
+
+    // Copy `value` to the clipboard, flipping the button label to "Copied" for a
+    // moment. Uses the async Clipboard API where available and falls back to a
+    // hidden textarea + execCommand so it still works under the strict CSP and
+    // on older engines.
+    function copyToClipboard(value, button, locale) {
+      var original = text(locale, "copyLabel");
+      var flip = function () {
+        button.textContent = text(locale, "copiedLabel");
+        if (typeof global.setTimeout === "function") {
+          global.setTimeout(function () {
+            button.textContent = original;
+          }, 1500);
+        }
+      };
+      var fallback = function () {
+        try {
+          var ta = document.createElement("textarea");
+          ta.value = value;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "absolute";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+        } catch (error) {
+          /* clipboard unavailable; leave the visible command for manual copy */
+        }
+      };
+      if (
+        global.navigator &&
+        global.navigator.clipboard &&
+        typeof global.navigator.clipboard.writeText === "function"
+      ) {
+        global.navigator.clipboard.writeText(value).then(flip, function () {
+          fallback();
+          flip();
+        });
+      } else {
+        fallback();
+        flip();
+      }
+    }
+
+    // command = { command, labelKey?, noteKey?, testid? }
+    function commandBlock(locale, command) {
+      var button = h("button", {
+        type: "button",
+        class: "copy-button",
+        "data-testid": command.testid ? "copy-" + command.testid : null,
+        "aria-label": text(locale, "copyLabel"),
+        text: text(locale, "copyLabel"),
+      });
+      button.addEventListener("click", function () {
+        copyToClipboard(command.command, button, locale);
+      });
+      return h(
+        "div",
+        { class: "command-block" },
+        command.labelKey
+          ? h("span", { class: "command-label", text: text(locale, command.labelKey) })
+          : null,
+        h(
+          "div",
+          { class: "command-row" },
+          h(
+            "pre",
+            { class: "command-pre" },
+            h("code", {
+              "data-testid": command.testid ? "command-" + command.testid : null,
+              text: command.command,
+            }),
+          ),
+          button,
+        ),
+        command.noteKey
+          ? h("p", { class: "command-note", text: text(locale, command.noteKey) })
+          : null,
+      );
+    }
+
+    // section = { id?, titleKey?, introKey?, steps?:[key], commands?:[command],
+    //             links?:[{href,labelKey,external?,testid?}], noteKey? }
+    function sectionBlock(locale, section) {
+      return h(
+        "section",
+        {
+          class: "info-section",
+          "data-testid": section.id ? "section-" + section.id : null,
+        },
+        section.titleKey
+          ? h("h2", { class: "info-title", text: text(locale, section.titleKey) })
+          : null,
+        section.introKey
+          ? h("p", { class: "info-intro", text: text(locale, section.introKey) })
+          : null,
+        section.steps
+          ? h(
+              "ol",
+              { class: "info-steps" },
+              section.steps.map(function (key) {
+                return h("li", { text: text(locale, key) });
+              }),
+            )
+          : null,
+        section.commands
+          ? section.commands.map(function (command) {
+              return commandBlock(locale, command);
+            })
+          : null,
+        section.links
+          ? h(
+              "div",
+              { class: "info-links" },
+              section.links.map(function (link) {
+                var props = {
+                  class: "info-link",
+                  href: link.href,
+                  "data-testid": link.testid || null,
+                };
+                if (link.external) {
+                  props.target = "_blank";
+                  props.rel = "noopener noreferrer";
+                }
+                return h("a", props, text(locale, link.labelKey));
+              }),
+            )
+          : null,
+        section.noteKey
+          ? h("p", { class: "info-note", text: text(locale, section.noteKey) })
+          : null,
       );
     }
 
@@ -348,13 +505,31 @@
         sourceCta,
       );
 
-      var cards = h(
-        "section",
-        { class: "nav-cards", "data-testid": "nav-cards" },
-        (config.destinations || []).map(function (destination) {
-          return navCard(locale, destination);
-        }),
-      );
+      // Optional detailed install sections, rendered between the hero and the
+      // card grid (issue #554). Absent on the landing/docs chooser pages.
+      var sections =
+        config.sections && config.sections.length
+          ? h(
+              "div",
+              { class: "info-sections", "data-testid": "info-sections" },
+              config.sections.map(function (section) {
+                return sectionBlock(locale, section);
+              }),
+            )
+          : null;
+
+      // The card grid is optional too: an install page may carry only sections,
+      // or sections plus a couple of cross-links back into the site.
+      var cards =
+        config.destinations && config.destinations.length
+          ? h(
+              "section",
+              { class: "nav-cards", "data-testid": "nav-cards" },
+              config.destinations.map(function (destination) {
+                return navCard(locale, destination);
+              }),
+            )
+          : null;
 
       // The footer no longer carries a small "Source on GitHub" text link — the
       // source code is surfaced as the big .source-cta button in the hero above
@@ -374,7 +549,8 @@
 
       root.appendChild(topbar);
       root.appendChild(hero);
-      root.appendChild(cards);
+      if (sections) root.appendChild(sections);
+      if (cards) root.appendChild(cards);
       root.appendChild(footer);
     }
 
