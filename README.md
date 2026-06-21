@@ -18,6 +18,39 @@ The current implementation covers the surface area requested in issue #1:
 
 Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
 
+## Install
+
+Every interface has a dedicated landing page on the
+[site](https://link-assistant.github.io/formal-ai/) with copy-paste install
+instructions, and a single universal installer covers all of them. The script is
+published at [`scripts/install.sh`](scripts/install.sh) (POSIX `sh`, for
+macOS/Linux) and [`scripts/install.ps1`](scripts/install.ps1) (PowerShell, for
+Windows). Pass a target to choose what to install:
+
+```bash
+# Desktop app (default), VS Code extension, the CLI, or all three:
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- desktop
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- vscode
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- cli
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- all
+```
+
+The Telegram bot is driven by the CLI, so install the `cli` target and then run
+`formal-ai telegram` with a `@BotFather` token (see the
+[Telegram page](https://link-assistant.github.io/formal-ai/telegram/)).
+
+```powershell
+# Windows PowerShell (set FORMAL_AI_INSTALL_TARGET to pick a target):
+$env:FORMAL_AI_INSTALL_TARGET='vscode'; irm https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.ps1 | iex
+```
+
+| Interface | Landing page | Notes |
+| --- | --- | --- |
+| Desktop app | [`/download/`](https://link-assistant.github.io/formal-ai/download/) | Electron shell with one-click services and a one-click VS Code extension install in Settings. |
+| VS Code extension | [`/vscode/`](https://link-assistant.github.io/formal-ai/vscode/) | Not on the Marketplace yet, so install it manually — the one-liner above, a downloaded `.vsix` ("VS Code Extension only" mode), or one click from the desktop app. |
+| CLI | [`/cli/`](https://link-assistant.github.io/formal-ai/cli/) | `cargo install formal-ai` or the universal installer. |
+| Telegram bot | [`/telegram/`](https://link-assistant.github.io/formal-ai/telegram/) | Driven by the CLI; needs a `@BotFather` token. |
+
 ## Universal Problem-Solving Algorithm
 
 Every prompt — a greeting, a math question, a translation, a "write a program"
