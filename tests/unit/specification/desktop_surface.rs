@@ -17,7 +17,10 @@ const DESKTOP_PRELOAD: &str = include_str!("../../../desktop/preload.cjs");
 const DESKTOP_SMOKE: &str = include_str!("../../../desktop/scripts/smoke.mjs");
 const DESKTOP_SERVICE_CONTROL: &str = include_str!("../../../desktop/lib/service-control.cjs");
 const DESKTOP_LOCAL_SERVER: &str = include_str!("../../../desktop/lib/local-server.cjs");
-const WEB_APP: &str = include_str!("../../../src/web/app.js");
+// Issue #550: the front-end source moved to JSX (bundled by bun into the
+// served src/web/app.js); these surface assertions check source-level code, so
+// they read the JSX source rather than the minified bundle.
+const WEB_APP: &str = include_str!("../../../src/web/app/main.jsx");
 const I18N_PERMISSIONS: &str = include_str!("../../../src/web/i18n-catalog-permissions.lino");
 
 #[test]

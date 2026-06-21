@@ -29,7 +29,10 @@ const WEBVIEW_HTML_LIB: &str = include_str!("../../../vscode/src/lib/webview-htm
 const CHAT_VIEW_LIB: &str = include_str!("../../../vscode/src/lib/chat-view.cjs");
 const SERVER_PROCESS_LIB: &str = include_str!("../../../vscode/src/lib/server-process.cjs");
 const PREPARE_RESOURCES: &str = include_str!("../../../vscode/scripts/prepare-resources.mjs");
-const WEB_APP: &str = include_str!("../../../src/web/app.js");
+// Issue #550: the front-end source moved to JSX (bundled by bun into the
+// served src/web/app.js); these surface assertions check source-level code, so
+// they read the JSX source rather than the minified bundle.
+const WEB_APP: &str = include_str!("../../../src/web/app/main.jsx");
 
 #[test]
 fn vscode_manifest_declares_dual_host_commands_and_settings() {

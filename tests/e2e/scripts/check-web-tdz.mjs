@@ -22,7 +22,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const appPath = path.resolve(here, "../../../src/web/app.js");
+// Issue #550: the front-end source is authored as JSX at src/web/app/main.jsx
+// and bundled by bun into the served src/web/app.js. The hand-written h(...)
+// render calls this guard parses live in the JSX source, not the minified bundle.
+const appPath = path.resolve(here, "../../../src/web/app/main.jsx");
 
 const source = fs.readFileSync(appPath, "utf8");
 const lines = source.split("\n");
