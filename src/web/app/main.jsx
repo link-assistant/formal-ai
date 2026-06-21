@@ -9,7 +9,7 @@
 // incremental migration to Chakra primitives.
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, chakra } from "@chakra-ui/react";
 
 // Issue #550: the Chakra system bridges the app's --fa-* CSS design tokens into
 // Chakra semantic tokens with the global reset/body styling disabled, so
@@ -1863,14 +1863,20 @@ function ToolbarButton({
   // segmented/toggle controls. Merged last so a control can extend the shared
   // contract without forking it.
   if (extraProps) Object.assign(props, extraProps);
-  return h(
-    isLink ? "a" : "button",
-    props,
-    icon ? h(ToolbarIcon, { action: icon, pack: iconPack }) : null,
-    label !== undefined && label !== null
-      ? h("span", { className: "btn-label" }, label)
-      : null,
-    children,
+  // Render through the Chakra styled factory (chakra.a / chakra.button). These
+  // are the low-level primitives — they carry no component recipe, so no Chakra
+  // styling is imposed; the element keeps its className and styles.css stays
+  // authoritative (preflight is off). This is the safe first step of the
+  // h() → JSX + Chakra migration: identical DOM and computed styles.
+  const Tag = isLink ? chakra.a : chakra.button;
+  return (
+    <Tag {...props}>
+      {icon ? <ToolbarIcon action={icon} pack={iconPack} /> : null}
+      {label !== undefined && label !== null ? (
+        <chakra.span className="btn-label">{label}</chakra.span>
+      ) : null}
+      {children}
+    </Tag>
   );
 }
 
