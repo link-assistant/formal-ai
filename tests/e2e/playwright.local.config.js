@@ -67,6 +67,7 @@ module.exports = defineConfig({
     '**/issue-541-permissions.spec.js',
     '**/issue-541-theme.spec.js',
     '**/issue-548.spec.js',
+    '**/issue-550-chakra-migration.spec.js',
     '**/issue-1963.spec.js',
   ],
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
