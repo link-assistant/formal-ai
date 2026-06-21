@@ -18,6 +18,7 @@ import { system as chakraSystem } from "./theme.js";
 
 const {
   createElement: h,
+  Fragment,
   useCallback,
   useEffect,
   useMemo,

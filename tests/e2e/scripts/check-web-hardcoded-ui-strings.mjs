@@ -30,18 +30,38 @@
 // Usage: node scripts/check-web-hardcoded-ui-strings.mjs
 // Exit code 0 = clean, 1 = at least one hardcoded user-facing string found.
 
-import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../../..");
 // Issue #550: the front-end source is authored as JSX at src/web/app/main.jsx
-// and bundled by bun into the served src/web/app.js. The hand-written h(...)
-// render calls this guard parses live in the JSX source, not the minified bundle.
+// and bundled by bun into the served src/web/app.js. JSX render code does not
+// contain literal `h(...)` calls in source, so this guard scans the bun-compiled
+// output instead: the project's tsconfig pins the classic JSX runtime with `h`
+// as the factory, so every <Tag>…</Tag> element — exactly like the hand-written
+// h(tag, props, ...children) calls it has always parsed — compiles back to an
+// `h(...)` call here. We build with `--packages external` (no minify) so only
+// the app's own code is transpiled (React/Chakra/Emotion stay as bare imports
+// and never leak their internal strings into the scan) and identifiers stay
+// readable. The transpiled JS is what we parse below.
 const appPath = path.join(repoRoot, "src/web/app/main.jsx");
-const source = fs.readFileSync(appPath, "utf8");
+const source = execFileSync(
+  "bun",
+  [
+    "build",
+    appPath,
+    "--target",
+    "browser",
+    "--format",
+    "esm",
+    "--packages",
+    "external",
+  ],
+  { cwd: repoRoot, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 },
+);
 
 // Pre-existing, test-entrenched desktop status-panel labels rendered as <dt>
 // headers in the desktop sidebar. Single-word labels (Shell, API, Network,
@@ -172,18 +192,21 @@ while ((match = hCallRe.exec(source)) !== null) {
 
 if (violations.length > 0) {
   console.error(
-    "check-web-hardcoded-ui-strings: found hardcoded user-facing string(s) in src/web/app.js.",
+    "check-web-hardcoded-ui-strings: found hardcoded user-facing string(s) in the front-end (src/web/app/main.jsx).",
   );
   console.error(
     "Route user-facing text through the i18n catalog via t(\"<key>\", params); see",
   );
   console.error("docs/design/no-hardcoded-natural-language.md and CONTRIBUTING.md.");
+  console.error(
+    "(Line numbers below are in the bun-compiled output; grep the quoted text in main.jsx.)",
+  );
   for (const v of violations) {
-    console.error(`- app.js:${v.line}: ${JSON.stringify(v.text)}`);
+    console.error(`- compiled:${v.line}: ${JSON.stringify(v.text)}`);
   }
   process.exit(1);
 }
 
 console.log(
-  `check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of src/web/app.js (allowlist: ${ALLOWED_LITERALS.size} legacy labels).`,
+  `check-web-hardcoded-ui-strings: OK — no hardcoded user-facing strings in h() children of the front-end (src/web/app/main.jsx, allowlist: ${ALLOWED_LITERALS.size} legacy labels).`,
 );
