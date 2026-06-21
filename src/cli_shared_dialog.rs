@@ -6,12 +6,12 @@ use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use formal_ai::{convert_shared_dialog_to_demo_memory, SharedDialogFormat, SharedDialogMetadata};
 
 #[derive(Debug, Subcommand)]
-pub(crate) enum SharedDialogAction {
+pub enum SharedDialogAction {
     Convert(SharedDialogConvertOptions),
 }
 
 #[derive(Debug, Clone, ClapArgs)]
-pub(crate) struct SharedDialogConvertOptions {
+pub struct SharedDialogConvertOptions {
     /// Source capture or transcript. Use `-` to read from stdin.
     #[arg(long)]
     input: PathBuf,
@@ -50,7 +50,7 @@ enum SharedDialogCliFormat {
     MarkdownTranscript,
 }
 
-pub(crate) fn run_shared_dialog(action: SharedDialogAction) -> Result<(), Box<dyn Error>> {
+pub fn run_shared_dialog(action: SharedDialogAction) -> Result<(), Box<dyn Error>> {
     match action {
         SharedDialogAction::Convert(options) => {
             let input = crate::read_input(&options.input)?;
