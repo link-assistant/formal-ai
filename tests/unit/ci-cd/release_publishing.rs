@@ -16,7 +16,9 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     // pieces the deploy can drift again.
     let manifest_dir = env!("CARGO_MANIFEST_DIR");
     let index_html = fs::read_to_string(format!("{manifest_dir}/src/web/index.html")).unwrap();
-    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
+    // Issue #550: app source moved to JSX (bundled by bun into the served
+    // app.js); these checks assert source-level code, so read the JSX source.
+    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app/main.jsx")).unwrap();
     let stamp_script =
         fs::read_to_string(format!("{manifest_dir}/scripts/stamp-pages-artifact.sh")).unwrap();
     let workflow = release_workflow();
@@ -173,7 +175,9 @@ fn static_demo_runtime_assets_are_cache_busted_by_deployment_version() {
         fs::read_to_string(format!("{manifest_dir}/src/web/app/index.html")).unwrap();
     let tests_index =
         fs::read_to_string(format!("{manifest_dir}/src/web/tests/index.html")).unwrap();
-    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app.js")).unwrap();
+    // Issue #550: app source moved to JSX (bundled by bun into the served
+    // app.js); these checks assert source-level code, so read the JSX source.
+    let app_js = fs::read_to_string(format!("{manifest_dir}/src/web/app/main.jsx")).unwrap();
     let seed_loader_js =
         fs::read_to_string(format!("{manifest_dir}/src/web/seed_loader.js")).unwrap();
     let worker_js =

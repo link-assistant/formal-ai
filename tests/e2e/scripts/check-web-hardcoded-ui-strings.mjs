@@ -37,7 +37,10 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "../../..");
-const appPath = path.join(repoRoot, "src/web/app.js");
+// Issue #550: the front-end source is authored as JSX at src/web/app/main.jsx
+// and bundled by bun into the served src/web/app.js. The hand-written h(...)
+// render calls this guard parses live in the JSX source, not the minified bundle.
+const appPath = path.join(repoRoot, "src/web/app/main.jsx");
 const source = fs.readFileSync(appPath, "utf8");
 
 // Pre-existing, test-entrenched desktop status-panel labels rendered as <dt>
