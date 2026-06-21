@@ -55,16 +55,19 @@ test.describe('Issue #479 — landing page (/) chooser', () => {
     });
   });
 
-  test('renders three navigation cards pointing at app, docs and download', async ({ page }) => {
+  test('renders six navigation cards pointing at every interface', async ({ page }) => {
     await expect(page.locator('.hero h1')).toHaveText('formal-ai');
 
     const cards = page.locator('[data-testid="nav-cards"] .nav-card');
-    await expect(cards).toHaveCount(3);
+    await expect(cards).toHaveCount(6);
 
     // In-site routes are relative so the Pages path prefix is preserved.
     await expect(page.locator('[data-testid="nav-app"]')).toHaveAttribute('href', 'app/');
     await expect(page.locator('[data-testid="nav-docs"]')).toHaveAttribute('href', 'docs/');
     await expect(page.locator('[data-testid="nav-download"]')).toHaveAttribute('href', 'download/');
+    await expect(page.locator('[data-testid="nav-vscode"]')).toHaveAttribute('href', 'vscode/');
+    await expect(page.locator('[data-testid="nav-cli"]')).toHaveAttribute('href', 'cli/');
+    await expect(page.locator('[data-testid="nav-telegram"]')).toHaveAttribute('href', 'telegram/');
 
     // In-site cards stay in the same tab so theme/locale carry over; the brand
     // returns home.
