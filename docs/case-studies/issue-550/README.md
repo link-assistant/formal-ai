@@ -2,7 +2,9 @@
 
 Deep analysis of [link-assistant/formal-ai#550][issue], the five reported UI/UX
 defects, their shared root cause, the fix shipped in [#551][pr], and the strategic
-follow-up (design tokens → Chakra UI + JSX).
+work delivered with it (a `--fa-*` design-token system + a reusable `ToolbarButton`
+component — Chakra UI's value, CSP-safe; the Emotion runtime is documented as
+blocked by the #479 CSP, see §6).
 
 > **Mirror.** This product-repo issue is mirrored to the tracking repo as
 > [link-assistant/hive-mind#1963][hm-issue]. The fix commits and tests landed on the
@@ -19,10 +21,10 @@ Companion documents in this folder:
 | File | Contents |
 |---|---|
 | [`requirements.md`](requirements.md) | Every requirement (P1–P5 defects + M1–M8 meta), verbatim, traced to fix + test. |
-| [`solution-plans.md`](solution-plans.md) | Options A/B/C per problem, the shipped choice, and the staged Chakra migration. |
+| [`solution-plans.md`](solution-plans.md) | Options A/B/C per problem, the shipped choice, and the Chakra/JSX ADR (tokens + component shipped; Emotion runtime CSP-blocked). |
 | [`best-practices.md`](best-practices.md) | Nine lessons so the *class* of defect cannot recur (incl. CI gotchas). |
 | [`proposed-issues.md`](proposed-issues.md) | Upstream/third-party assessment (conclusion: none warranted). |
-| [`raw-data/`](raw-data/) | Issue/PR JSON snapshots (the "download all logs and data" requirement). |
+| [`raw-data/`](raw-data/) | Issue/PR JSON + predecessor issues (#488/#541) + v0.214.0 code snapshots (the "download all logs and data" requirement). |
 | [`screenshots/`](screenshots/) | `before/` and `after/` renders of every affected surface (light + dark). |
 
 ---
@@ -47,12 +49,18 @@ and every interactive treatment is hand-written per element, so each new surface
 button silently misses rules the older ones already have (full analysis in
 [`best-practices.md` §1](best-practices.md)).
 
-**Shipped in [#551][pr]:** all five defects fixed in-place and token-ready, with Rust
-unit tests (P2) and Playwright behavioral tests (P1/P3/P4/P5). The Chakra UI + JSX
-transition is **documented as a staged, multi-PR migration** (see §6 and
-[`solution-plans.md`](solution-plans.md)) rather than executed here — it is
-disproportionate to a polish fix and the app currently ships raw
-`React.createElement` with no JSX build step.
+**Shipped in [#551][pr]:** all five defects fixed in-place, with Rust unit tests (P2)
+and Playwright behavioral tests (P1/P3/P4/P5). **Plus the strategic M2/M3 substance:**
+a `--fa-*` semantic design-token system in `styles.css` (collapses the three-layer hex
+duplication that is the P4/P5 root cause into one source of truth per theme) and a
+reusable `ToolbarButton` component in `app.js` (renders all 11 topbar controls, so the
+shared markup/treatment is uniform by construction). These are exactly Chakra UI's
+token-theme and component-library layers, delivered CSP-safely. Chakra's **Emotion
+CSS-in-JS runtime** is *not* shipped — it injects `<style>` tags at runtime, which the
+[#479][issue-479]-hardened CSP (`style-src 'self'`, no `unsafe-inline`) forbids, and
+`app.js` is served un-transpiled so JSX would need a new build step. This is an
+architectural block, not a deferral of convenience — full ADR in §6 and
+[`solution-plans.md`](solution-plans.md).
 
 ---
 
@@ -123,10 +131,13 @@ Full detail with verbatim quotes and traceability in [`requirements.md`](require
 * **P1–P5** — the five reported defects. All fixed and tested (this PR).
 * **M1 / M7** — "fix it in all places / uniform behavior." Honored: P2 in both runtimes;
   P4/P5 in both dark layers; audit recorded in `best-practices.md`.
-* **M2** — "reuse our own react.js components." Partially honored now (CSS consolidated
-  into shared selectors); full component extraction folded into the Chakra plan.
-* **M3** — "fully transition to Chakra UI + JSX." Documented as a staged migration
-  (§6, `solution-plans.md`); not executed in this polish PR.
+* **M2** — "reuse our own react.js components." Honored: a reusable `ToolbarButton`
+  component now renders all 11 topbar controls, and CSS consolidates onto the `--fa-*`
+  tokens. Shared markup *and* shared treatment, by construction.
+* **M3** — "fully transition to Chakra UI + JSX." Chakra's reusable substance (token
+  theme system + component model) is **shipped** as `--fa-*` tokens + `ToolbarButton`;
+  Chakra's Emotion runtime is **CSP-blocked** by [#479][issue-479] (full ADR in §6 /
+  `solution-plans.md`) — an architectural block, honestly documented, not a deferral.
 * **M4** — "download data → `docs/case-studies/issue-{id}` → deep analysis + online
   research." **This folder.**
 * **M5** — "add debug/verbose if root cause unclear." N/A — all five root causes were
@@ -138,36 +149,58 @@ Full detail with verbatim quotes and traceability in [`requirements.md`](require
 
 ---
 
-## 6. Recommended solution shape (and why Chakra is deferred)
+## 6. Solution shape — what shipped, and why the Chakra runtime is CSP-blocked
 
-**Immediate (this PR):** minimal, in-place, token-ready fixes for P1–P5, each tested at
-the layer where the defect lives (Rust units for P2 logic; Playwright for P1/P3/P4/P5
-computed styles and interaction).
+**The five fixes (this PR):** minimal, in-place fixes for P1–P5, each tested at the layer
+where the defect lives (Rust units for P2 logic; Playwright for P1/P3/P4/P5 computed
+styles and interaction).
 
-**Recommended next (separate PR):** introduce **CSS custom properties (design tokens)**
-— `--surface`, `--surface-raised`, `--border`, `--text`, `--text-muted`, `--accent`,
-`--accent-weak` — defined once per theme. This removes the manual hex duplication that
-is the P4/P5 root cause and is a *no-visual-change* refactor. The shipped fixes use
-consistent property names in both layers so they drop straight onto tokens later.
+**The strategic M2/M3 work (also this PR).** Chakra UI decomposes into three separable
+layers; the requirement's intent ("everything nice, polished, consistent, reusable") is
+served by the first two, and both are shipped:
 
-**Strategic (multi-PR): Chakra UI + JSX (M3).** Deferred from this PR because:
+1. **Design-token theme system → shipped.** A `--fa-*` semantic-token palette defined once
+   per theme in `styles.css` — light values in `:root{}`, each dark layer overriding only
+   the values (~20 lines). Tokens cover surfaces, borders, text, accents, the
+   services/update panel, and the shared control interaction set (`--fa-control-hover-*`,
+   `--fa-control-active-hover-*`, `--fa-focus-ring`). This collapses the three-layer hex
+   duplication that is the **P4/P5 root cause** into one source of truth, matching the
+   precedent already set by `landing.css` and the `--code-*`/`--hljs-*` tokens in
+   `.markdown-body`. Value-preserving (every token = exact prior hex), so the exact-RGB
+   regression assertions stayed green. This is precisely Chakra's `semanticTokens` substrate.
+2. **Reusable component model → shipped.** A single `ToolbarButton` component in `app.js`
+   renders all 11 topbar controls, so shared markup/classes/a11y/menu-priority are
+   guaranteed by construction. This is Chakra's component-library value, built on raw
+   `React.createElement` so it ships under the strict CSP today.
+3. **Emotion CSS-in-JS runtime + JSX authoring → CSP-blocked (not shipped).**
 
-* The web app ships **raw `React.createElement`** (`h = React.createElement`) with **no
-  JSX build step**, and CI runs `git diff --exit-code` on the committed
-  `vendor.bundle.js` / `ocr.bundle.js`. Chakra + JSX means adding a JSX toolchain, a
-  Chakra/Emotion bundle, and regenerating committed bundles — a large, risky change
-  that should not ride with five cosmetic fixes.
-* Chakra's design fits the destination cleanly: its **semantic tokens** take `_light` /
-  `_dark` conditions and also support `[data-theme]`-scoped themes, which map 1:1 onto
-  formal-ai's existing `data-theme` override + `prefers-color-scheme` fallback —
-  "7 semantic tokens per palette without having to think about dark mode."
-  [(Chakra v3 docs)][chakra-tokens]
+**Why the literal Chakra runtime cannot ship here (the architectural block).**
 
-Staged plan (detail in [`solution-plans.md`](solution-plans.md)): **(1)** tokens →
-**(2)** JSX toolchain → **(3)** Chakra provider + theme whose semantic tokens are the
-step-1 tokens → **(4)** port leaf components in slices (topbar `IconButton` folds in
-P5; services/update cards fold in P4; thinking preview folds in P1/P3) → **(5)** retire
-the bespoke CSS as each view is ported.
+* **Emotion's runtime style injection violates the #479 CSP.** Issue [#479][issue-479]
+  hardened the app to `style-src 'self'` — **no** `'unsafe-inline'`. Chakra is built on
+  Emotion, which **injects `<style>` blocks into the document at runtime**; that requires
+  `style-src 'unsafe-inline'` (or a per-render nonce the static file server cannot supply).
+  Shipping the Chakra runtime would mean **weakening a real, shipped security property** to
+  land a styling refactor — the wrong trade. CSS custom properties, by contrast, are
+  CSP-neutral, which is *why* the token system is the correct expression of this
+  requirement under this codebase's constraints.
+* **`app.js` is served un-transpiled.** The ≈10.7k-line `src/web/app.js` is delivered
+  verbatim via `<script src="app.js">`; there is **no JSX/transpile step** in the serving
+  path (only `vendor.bundle.js` / `ocr.bundle.js` are bundled, frozen by a `git diff
+  --exit-code` CI gate). JSX authoring would require introducing a build step for the main
+  app file. `ToolbarButton` delivers JSX's *reusability* benefit without that toolchain.
+
+These are correctness/security objections, not effort objections. The decision is to ship
+Chakra's value and record the runtime as blocked-by-CSP.
+
+**Forward path if the #479 CSP is ever relaxed** (detail in
+[`solution-plans.md`](solution-plans.md)): **(1)** tokens — done; rename `--fa-*` →
+Chakra `semanticTokens` whose `_light`/`_dark` conditions map onto the existing
+`data-theme` + `prefers-color-scheme` layering [(Chakra v3 docs)][chakra-tokens] →
+**(2)** components — started; `ToolbarButton` → thin wrapper over Chakra `Button`, then
+the services/update cards (P4) and thinking preview (P1/P3) → **(3)** runtime — only here
+does Emotion enter, and only if `style-src` is relaxed to admit a nonce/hash for its
+injected styles (or Chakra is run in static-extraction mode).
 
 ### Library / feature research (M4)
 
@@ -176,9 +209,11 @@ the bespoke CSS as each view is ported.
 | [`mask-image` + `linear-gradient`][mdn-mask] | P1 container scroll-fade. Fading a scroll container's edge is a documented standard use of gradient masks. | **Baseline** (unprefixed Chrome/Edge 120+, Firefox 53+, Safari 15.4+; `-webkit-` kept for older Safari). **Shipped.** |
 | [`:has()` selector][mdn-has] | Scopes the P1 fade to "a container that *has* a previous step," so a lone step isn't masked. | **Baseline** (newly available Dec 2023, all core browsers). **Shipped.** |
 | [`:focus-visible`][mdn-fv] | P5 keyboard-only focus ring without rings on mouse click — the [W3C WCAG technique C45][wcag-c45] for focus indication. | **Baseline** (since 2019). **Shipped.** |
-| [Chakra UI v3 semantic tokens][chakra-tokens] | The M3 destination: eliminates manual light/dark hex (P4) and gives a shared `Button`/`IconButton` (P5). | **Strategic target** — staged plan. |
-| CSS custom properties (native) | Zero-dependency removal of the P4/P5 duplication root cause; the bridge to Chakra tokens. | **Recommended immediate follow-up.** |
+| [Chakra UI v3 semantic tokens][chakra-tokens] | The M3 target. Its token-theme + component layers are delivered here as `--fa-*` + `ToolbarButton`; its Emotion runtime is CSP-blocked by [#479][issue-479]. | **Value adopted CSP-safely; runtime deferred until the CSP admits it.** |
+| CSS custom properties (native) | Zero-dependency, CSP-neutral removal of the P4/P5 duplication root cause; the Chakra-token substrate. | **Shipped** (`--fa-*` palette). |
+| Reusable `createElement` component | JSX's reusability without a transpile step for the raw-served `app.js`. | **Shipped** (`ToolbarButton`, 11 controls). |
 | Playwright (already a dep) | Behavioral regression for all five defects. | **Shipped** (`issue-1963.spec.js`). |
+| Emotion / styled-components | Runtime CSS-in-JS; transitive with Chakra. Injects `<style>` at runtime → incompatible with `style-src 'self'`. | **Rejected under current CSP.** |
 | Tailwind | Could also centralize tokens, but the issue names Chakra; a second system would fragment styling. | **Rejected.** |
 
 ---
@@ -269,11 +304,16 @@ Renders of every affected surface in light and dark are in
   (`issue-1963.spec.js` P5)
 * ✅ **M1/M4/M6/M7/M8** — duplicates fixed in all places; this case study compiled with
   online research; upstream assessed (none); single PR.
-* ☐ **M2/M3** — Chakra UI + JSX migration documented as a staged plan; tracked for
-  follow-up PRs (intentionally out of scope here — see §6).
+* ✅ **M2** — reusable `ToolbarButton` component renders all 11 topbar controls; CSS
+  consolidated onto `--fa-*` tokens. (`demo.spec.js`, `issue-1963.spec.js`)
+* ◑ **M3** — Chakra's token-theme + component substance **shipped** (`--fa-*` +
+  `ToolbarButton`); its Emotion CSS-in-JS runtime is **architecturally blocked** by the
+  #479 CSP (`style-src 'self'` forbids runtime `<style>` injection) and the un-transpiled
+  `app.js` serving path. Documented with a forward path — see §6 / `solution-plans.md`.
 
 [issue]: https://github.com/link-assistant/formal-ai/issues/550
 [pr]: https://github.com/link-assistant/formal-ai/pull/551
+[issue-479]: https://github.com/link-assistant/formal-ai/issues/479
 [hm-issue]: https://github.com/link-assistant/hive-mind/issues/1963
 [mdn-mask]: https://developer.mozilla.org/en-US/docs/Web/CSS/mask-image
 [mdn-has]: https://developer.mozilla.org/en-US/docs/Web/CSS/:has

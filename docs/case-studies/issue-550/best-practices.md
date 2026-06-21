@@ -17,11 +17,18 @@ Consequences observed:
 * **P5** — new topbar buttons were added without copying the older buttons' hover rules,
   so feedback was partial.
 
-> **Recommendation.** Introduce design tokens (CSS custom properties) defined once per
-> theme: `--surface`, `--surface-raised`, `--border`, `--text`, `--text-muted`,
-> `--accent`, `--accent-weak`. A new element then *inherits* correct theming and only has
-> to consume tokens, not re-derive colors. This is the prerequisite step of the Chakra
-> migration (`solution-plans.md`) and removes the P4/P5 root cause on its own.
+> **Resolution (shipped in this PR).** A `--fa-*` semantic-token palette is now defined
+> once per theme in `styles.css`: light values in `:root{}`; each dark layer overrides
+> **only the values**. Tokens cover surfaces (`--fa-surface-card`, `--fa-surface-raised`),
+> borders, text (`--fa-text-body`, `--fa-text-muted`, `--fa-text-strong`), accents, the
+> services/update panel, and the shared control interaction set
+> (`--fa-control-hover-*`, `--fa-control-active-hover-*`, `--fa-focus-ring`). A new element
+> now *inherits* correct theming by consuming a token instead of re-deriving hex, which
+> removes the P4/P5 root cause. This matches the precedent already set by `landing.css` and
+> by the `--code-*`/`--hljs-*` tokens in `.markdown-body`. It is also the CSP-safe substrate
+> a future Chakra theme maps onto (`solution-plans.md` M2/M3 ADR). The change is
+> value-preserving — every token equals the exact prior hex — so the exact-RGB regression
+> assertions in `issue-1963.spec.js` stayed green.
 
 ## 2. "Fix it in all places" requires knowing where the places are
 
@@ -41,10 +48,16 @@ works if you can enumerate the duplication. Here that meant:
 ## 3. Reuse selectors before reaching for new components
 
 P5's fix grouped every topbar control under one selector list instead of adding yet
-another per-button rule. This is the CSS-level expression of the issue's "reuse our own
-components" (M2): one rule, uniform behavior, no drift. The component-level version
-(`<IconButton>`) is the next step, but consolidating the selector captures most of the
-benefit immediately and with no build changes.
+another per-button rule — the CSS-level expression of "reuse our own components" (M2):
+one rule, uniform behavior, no drift. This PR then took the component-level step too: a
+single `ToolbarButton` (`src/web/app.js`) now renders all 11 topbar controls, so the
+shared markup/classes/a11y attributes are guaranteed by construction — a new control
+cannot be added with the wrong shape. The component is built on raw `React.createElement`
+(no JSX/Chakra runtime), so it ships under the strict CSP today.
+
+> **Recommendation.** Consolidate at *both* layers: a shared selector removes style drift,
+> and a shared component removes markup drift. Neither alone is sufficient — the selector
+> can't stop a malformed button, and the component can't stop a one-off `:hover` override.
 
 ## 4. Test at the layer where the defect lives
 
