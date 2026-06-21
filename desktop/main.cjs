@@ -16,6 +16,7 @@ const { createServiceControl } = require("./lib/service-control.cjs");
 const { createDockerDetector } = require("./lib/docker-detect.cjs");
 const { createDataMigration } = require("./lib/data-migration.cjs");
 const { createAutoUpdateController } = require("./lib/auto-update.cjs");
+const { createVsCodeInstaller } = require("./lib/vscode-install.cjs");
 
 // Verbose desktop diagnostics (issue #541): opt-in via FORMAL_AI_DESKTOP_DEBUG so
 // hard-to-reproduce environment problems (e.g. a GUI-launched app that cannot see
@@ -550,6 +551,87 @@ ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
     return { ok: true, status: "ok", pushed, pulled };
   } catch (error) {
     return { ok: false, status: "error", reason: error && error.message ? error.message : String(error) };
+  }
+});
+
+// Issue #554 (R2): one-click install of the formal-ai VS Code extension. The
+// extension is not on the Marketplace yet, so the installer downloads the signed
+// `.vsix` attached to the latest GitHub release and runs `code
+// --install-extension` — the same artifact the manual `install.sh vscode` flow
+// uses. Each side-effecting dependency is injected so the lib stays testable.
+function runVsCodeCli(command, args) {
+  return new Promise((resolve) => {
+    let child = null;
+    try {
+      child = childProcess.spawn(command, args, {
+        stdio: ["ignore", "pipe", "pipe"],
+        // VS Code installs `code` as `code.cmd` on Windows; a `.cmd` shim is only
+        // resolvable through the shell.
+        shell: process.platform === "win32",
+      });
+    } catch (error) {
+      resolve({ code: 1, stdout: "", stderr: error && error.message ? error.message : String(error) });
+      return;
+    }
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.once("error", (error) => {
+      resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
+    });
+    child.once("exit", (code) => {
+      resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
+    });
+  });
+}
+
+async function fetchReleaseJson(url) {
+  const response = await globalThis.fetch(url, {
+    headers: { Accept: "application/vnd.github+json", "User-Agent": "formal-ai-desktop" },
+  });
+  if (!response.ok) {
+    throw new Error(`GitHub Releases API returned HTTP ${response.status}`);
+  }
+  return response.json();
+}
+
+async function downloadReleaseAsset(url, dest) {
+  const response = await globalThis.fetch(url, {
+    headers: { "User-Agent": "formal-ai-desktop" },
+    redirect: "follow",
+  });
+  if (!response.ok || !response.body) {
+    throw new Error(`failed to download .vsix: HTTP ${response.status}`);
+  }
+  const buffer = Buffer.from(await response.arrayBuffer());
+  await fs.promises.writeFile(dest, buffer);
+  return dest;
+}
+
+const vscodeInstaller = createVsCodeInstaller({
+  env: process.env,
+  runCommand: runVsCodeCli,
+  fetchJson: fetchReleaseJson,
+  downloadFile: downloadReleaseAsset,
+  joinPath: (dir, file) => path.join(dir, file),
+  tmpDir: () => os.tmpdir(),
+  log: debugLog,
+});
+
+ipcMain.handle("formalAiDesktop:installVsCodeExtension", async () => {
+  try {
+    return await vscodeInstaller.install();
+  } catch (error) {
+    return {
+      ok: false,
+      state: "error",
+      reason: error && error.message ? error.message : String(error),
+    };
   }
 });
 

@@ -368,9 +368,85 @@ jobs:
           path: desktop/release/SHA256SUMS-${{ matrix.label }}.partial
           retention-days: 7
 
+  vscode:
+    name: Package VS Code extension (.vsix)
+    needs: resolve
+    if: needs.resolve.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.resolve.outputs.tag }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      # No committed lockfile under vscode/ (the extension's only deps are the
+      # packaging dev-tools), so a plain install is used rather than `npm ci`.
+      - name: Install extension dependencies
+        working-directory: vscode
+        run: npm install --no-audit --no-fund
+
+      - name: Package the .vsix
+        id: package
+        working-directory: vscode
+        run: |
+          set -euo pipefail
+          # `vscode:prepublish` (prepare-resources.mjs) syncs the extension
+          # version from Cargo.toml and copies src/web + data/seed + desktop/lib
+          # into the package, so the .vsix is fully self-contained and its
+          # filename (formal-ai-vscode-<version>.vsix) matches the release
+          # version the /download and /vscode pages resolve.
+          npm run package
+          vsix="$(ls formal-ai-vscode-*.vsix 2>/dev/null | head -n1)"
+          [ -n "$vsix" ] || { echo "::error::vsce package produced no .vsix" >&2; exit 1; }
+          echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
+          echo "Packaged: $vsix"
+
+      - name: Collect .vsix checksum fragment
+        working-directory: vscode
+        run: |
+          set -euo pipefail
+          # Same `sha256sum`-format line (bare filename) as the desktop build job
+          # so the consolidated SHA256SUMS.txt covers the .vsix too, and both the
+          # /download verifier and install.sh can match it by name.
+          node -e '
+            const fs = require("fs"); const cp = require("crypto");
+            const n = fs.readdirSync(".").filter((f) => /^formal-ai-vscode-.*\.vsix$/.test(f)).sort()[0];
+            if (!n) { process.exit(1); }
+            const hash = cp.createHash("sha256").update(fs.readFileSync(n)).digest("hex");
+            process.stdout.write(hash + "  " + n + "\n");
+          ' > SHA256SUMS-vscode.partial
+          cat SHA256SUMS-vscode.partial
+
+      - name: Upload .vsix to release
+        working-directory: vscode
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+        run: gh release upload "$TAG" "${{ steps.package.outputs.vsix }}" --repo "$REPO" --clobber
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-checksums: vscode/SHA256SUMS-vscode.partial
+
+      - name: Upload checksum fragment
+        uses: actions/upload-artifact@v7
+        with:
+          name: checksums-vscode
+          path: vscode/SHA256SUMS-vscode.partial
+          retention-days: 7
+
   finalize:
     name: Publish SHA256SUMS.txt + provenance
-    needs: [resolve, build]
+    needs: [resolve, build, vscode]
     # always() so a partial matrix (one arch failing under fail-fast:false) still
     # publishes checksums for the arches that did build.
     if: ${{ always() && needs.resolve.outputs.should_build == 'true' }}

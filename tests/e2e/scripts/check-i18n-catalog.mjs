@@ -393,6 +393,18 @@ const REQUIRED_KEYS = [
   'updates.state.installing',
   'updates.state.disabled',
   'updates.state.error',
+
+  'vscodeInstall.title',
+  'vscodeInstall.summary',
+  'vscodeInstall.install',
+  'vscodeInstall.installing',
+  'vscodeInstall.installed',
+  'vscodeInstall.noCli',
+  'vscodeInstall.noAsset',
+  'vscodeInstall.lookupFailed',
+  'vscodeInstall.downloadFailed',
+  'vscodeInstall.installFailed',
+  'vscodeInstall.error',
 ];
 
 const __filename = fileURLToPath(import.meta.url);
@@ -494,6 +506,10 @@ const runtimeChecks = [
   ['zh', 'permissions.state.granted', '已授予'],
   ['hi', 'permissions.action.grant', 'प्रदान करें'],
   ['en', 'updates.state.available', 'Update 0.213.0 available', { version: '0.213.0' }],
+  // Issue #554: the one-click VS Code extension install strings resolve per UI
+  // language and interpolate the detected CLI name.
+  ['en', 'vscodeInstall.installed', 'Installed into code. Reload VS Code to start using it.', { cli: 'code' }],
+  ['ru', 'vscodeInstall.install', 'Установить в VS Code'],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {
