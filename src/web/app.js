@@ -1796,6 +1796,62 @@ function ToolbarIcon({ action, pack, className = "btn-icon" }) {
   );
 }
 
+// Reusable top-menu control (issue #550). Every topbar button/link was hand
+// written as the same icon + localized `.btn-label` span pair, so they drifted:
+// some gained a hover/focus treatment and some didn't (the P5 "only some
+// buttons react to hover" defect). Routing them all through ONE component means
+// they share the same markup contract — `.btn-label`, the icon, and the
+// className that the single CSS hover/focus rule targets — so a new control
+// cannot silently miss the shared affordance. Renders an <a> when `href` is a
+// string, otherwise a <button type="button">. Localized text stays at the call
+// site as `label`/`title`/`ariaLabel` props (still real `t(...)` calls, so the
+// hardcoded-UI check keeps passing); this component never embeds prose.
+function ToolbarButton({
+  className,
+  label,
+  icon,
+  iconPack,
+  href,
+  onClick,
+  title,
+  ariaLabel,
+  testId,
+  menuPriority,
+  target,
+  rel,
+  type = "button",
+  extraProps = null,
+  children = null,
+}) {
+  const isLink = typeof href === "string";
+  const props = { className };
+  if (title !== undefined) props.title = title;
+  if (ariaLabel !== undefined) props["aria-label"] = ariaLabel;
+  if (testId !== undefined) props["data-testid"] = testId;
+  if (menuPriority !== undefined) props["data-menu-priority"] = menuPriority;
+  if (isLink) {
+    props.href = href;
+    if (target !== undefined) props.target = target;
+    if (rel !== undefined) props.rel = rel;
+  } else {
+    props.type = type;
+    if (onClick) props.onClick = onClick;
+  }
+  // Caller-supplied attributes (aria-pressed, role, data-mode, key, …) for the
+  // segmented/toggle controls. Merged last so a control can extend the shared
+  // contract without forking it.
+  if (extraProps) Object.assign(props, extraProps);
+  return h(
+    isLink ? "a" : "button",
+    props,
+    icon ? h(ToolbarIcon, { action: icon, pack: iconPack }) : null,
+    label !== undefined && label !== null
+      ? h("span", { className: "btn-label" }, label)
+      : null,
+    children,
+  );
+}
+
 function i18nApi() {
   return typeof window !== "undefined" && window.FormalAiI18n
     ? window.FormalAiI18n
@@ -8867,40 +8923,28 @@ function App() {
     h(
       "header",
       { className: "topbar" },
-      h(
-        "button",
-        {
-          type: "button",
-          className: "mobile-menu-toggle topbar-menu-toggle",
-          "data-testid": "mobile-menu-toggle",
-          "aria-pressed": mobileMenuOpen,
-          "aria-label": mobileMenuOpen
-            ? t("buttons.closeMenu")
-            : t("buttons.openMenu"),
-          title: mobileMenuOpen
-            ? t("titles.menuClose")
-            : t("titles.menuOpen"),
-          onClick: () => setMobileMenuOpen((value) => !value),
-        },
-        h(MenuGlyph, { open: mobileMenuOpen }),
-      ),
-      h(
-        "button",
-        {
-          type: "button",
-          className: `sidebar-toggle${sidebarCollapsed ? " is-collapsed" : ""}`,
-          "data-testid": "sidebar-toggle",
-          "aria-pressed": !sidebarCollapsed,
-          "aria-label": sidebarCollapsed
-            ? t("buttons.expandSidebar")
-            : t("buttons.collapseSidebar"),
-          title: sidebarCollapsed
-            ? t("titles.expandSidebar")
-            : t("titles.collapseSidebar"),
-          onClick: () => setSidebarCollapsed((value) => !value),
-        },
-        h(SidebarToggleGlyph, { collapsed: sidebarCollapsed }),
-      ),
+      h(ToolbarButton, {
+        className: "mobile-menu-toggle topbar-menu-toggle",
+        testId: "mobile-menu-toggle",
+        ariaLabel: mobileMenuOpen ? t("buttons.closeMenu") : t("buttons.openMenu"),
+        title: mobileMenuOpen ? t("titles.menuClose") : t("titles.menuOpen"),
+        onClick: () => setMobileMenuOpen((value) => !value),
+        extraProps: { "aria-pressed": mobileMenuOpen },
+        children: h(MenuGlyph, { open: mobileMenuOpen }),
+      }),
+      h(ToolbarButton, {
+        className: `sidebar-toggle${sidebarCollapsed ? " is-collapsed" : ""}`,
+        testId: "sidebar-toggle",
+        ariaLabel: sidebarCollapsed
+          ? t("buttons.expandSidebar")
+          : t("buttons.collapseSidebar"),
+        title: sidebarCollapsed
+          ? t("titles.expandSidebar")
+          : t("titles.collapseSidebar"),
+        onClick: () => setSidebarCollapsed((value) => !value),
+        extraProps: { "aria-pressed": !sidebarCollapsed },
+        children: h(SidebarToggleGlyph, { collapsed: sidebarCollapsed }),
+      }),
       h(
         "div",
         { className: "brand" },
@@ -8948,91 +8992,76 @@ function App() {
         diagnosticsMode
           ? h("span", { className: "status", "data-menu-priority": "7" }, workerState)
           : null,
-        h(
-          "a",
-          {
-            className: "source-code-button",
-            "data-testid": "source-code",
-            "data-menu-priority": "5",
-            href: SOURCE_CODE_URL,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            title: t("titles.sourceCode"),
-            "aria-label": t("buttons.sourceCode"),
-          },
-          h(ToolbarIcon, { action: "sourceCode", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.sourceCode")),
-        ),
-        h(
-          "a",
-          {
-            className: "download-button",
-            "data-testid": "download-link",
-            "data-menu-priority": "5",
-            href: "download/",
-            title: t("titles.download"),
-            "aria-label": t("buttons.download"),
-          },
-          h(ToolbarIcon, { action: "download", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.download")),
-        ),
-        h(
-          "a",
-          {
-            className: "report-button",
-            "data-testid": "report-issue",
-            "data-menu-priority": "1",
-            href: currentReportUrl,
-            target: "_blank",
-            rel: "noopener noreferrer",
-            title: t("titles.reportIssue"),
-            "aria-label": t("buttons.reportIssue"),
-          },
-          h(ToolbarIcon, { action: "reportIssue", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.reportIssue")),
-        ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "memory-button",
-            "data-testid": "memory-export",
-            "data-menu-priority": "6",
-            onClick: handleExportMemory,
-            title: t("titles.exportMemory"),
-            "aria-label": t("buttons.exportMemory"),
-          },
-          h(ToolbarIcon, { action: "exportMemory", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.exportMemory")),
-        ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "memory-button",
-            "data-testid": "memory-import",
-            "data-menu-priority": "6",
-            onClick: triggerImportMemory,
-            title: t("titles.importMemory"),
-            "aria-label": t("buttons.importMemory"),
-          },
-          h(ToolbarIcon, { action: "importMemory", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.importMemory")),
-        ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "memory-button memory-reset-button",
-            "data-testid": "memory-reset",
-            "data-menu-priority": "6",
-            onClick: handleResetMemory,
-            title: t("titles.resetMemory"),
-            "aria-label": t("buttons.resetMemory"),
-          },
-          h(ToolbarIcon, { action: "resetMemory", pack: toolbarIconPack }),
-          h("span", { className: "btn-label" }, t("buttons.resetMemory")),
-        ),
+        h(ToolbarButton, {
+          className: "source-code-button",
+          testId: "source-code",
+          menuPriority: "5",
+          href: SOURCE_CODE_URL,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          title: t("titles.sourceCode"),
+          ariaLabel: t("buttons.sourceCode"),
+          icon: "sourceCode",
+          iconPack: toolbarIconPack,
+          label: t("buttons.sourceCode"),
+        }),
+        h(ToolbarButton, {
+          className: "download-button",
+          testId: "download-link",
+          menuPriority: "5",
+          href: "download/",
+          title: t("titles.download"),
+          ariaLabel: t("buttons.download"),
+          icon: "download",
+          iconPack: toolbarIconPack,
+          label: t("buttons.download"),
+        }),
+        h(ToolbarButton, {
+          className: "report-button",
+          testId: "report-issue",
+          menuPriority: "1",
+          href: currentReportUrl,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          title: t("titles.reportIssue"),
+          ariaLabel: t("buttons.reportIssue"),
+          icon: "reportIssue",
+          iconPack: toolbarIconPack,
+          label: t("buttons.reportIssue"),
+        }),
+        h(ToolbarButton, {
+          className: "memory-button",
+          testId: "memory-export",
+          menuPriority: "6",
+          onClick: handleExportMemory,
+          title: t("titles.exportMemory"),
+          ariaLabel: t("buttons.exportMemory"),
+          icon: "exportMemory",
+          iconPack: toolbarIconPack,
+          label: t("buttons.exportMemory"),
+        }),
+        h(ToolbarButton, {
+          className: "memory-button",
+          testId: "memory-import",
+          menuPriority: "6",
+          onClick: triggerImportMemory,
+          title: t("titles.importMemory"),
+          ariaLabel: t("buttons.importMemory"),
+          icon: "importMemory",
+          iconPack: toolbarIconPack,
+          label: t("buttons.importMemory"),
+        }),
+        h(ToolbarButton, {
+          className: "memory-button memory-reset-button",
+          testId: "memory-reset",
+          menuPriority: "6",
+          onClick: handleResetMemory,
+          title: t("titles.resetMemory"),
+          ariaLabel: t("buttons.resetMemory"),
+          icon: "resetMemory",
+          iconPack: toolbarIconPack,
+          label: t("buttons.resetMemory"),
+        }),
         h("input", {
           ref: importInputRef,
           type: "file",
@@ -9053,28 +9082,23 @@ function App() {
               memoryStatus,
             )
           : null,
-        h(
-          "button",
-          {
-            type: "button",
-            className: "diagnostics-toggle",
-            "data-menu-priority": "2",
-            "aria-pressed": diagnosticsMode,
-            onClick: () => setDiagnosticsMode((value) => !value),
-            title: diagnosticsMode
-              ? t("titles.diagnosticsHide")
-              : t("titles.diagnosticsShow"),
-            "aria-label": diagnosticsMode
-              ? t("buttons.diagnosticsOn")
-              : t("buttons.diagnostics"),
-          },
-          h(ToolbarIcon, { action: "diagnostics", pack: toolbarIconPack }),
-          h(
-            "span",
-            { className: "btn-label" },
-            diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics"),
-          ),
-        ),
+        h(ToolbarButton, {
+          className: "diagnostics-toggle",
+          menuPriority: "2",
+          onClick: () => setDiagnosticsMode((value) => !value),
+          title: diagnosticsMode
+            ? t("titles.diagnosticsHide")
+            : t("titles.diagnosticsShow"),
+          ariaLabel: diagnosticsMode
+            ? t("buttons.diagnosticsOn")
+            : t("buttons.diagnostics"),
+          icon: "diagnostics",
+          iconPack: toolbarIconPack,
+          label: diagnosticsMode
+            ? t("buttons.diagnosticsOn")
+            : t("buttons.diagnostics"),
+          extraProps: { "aria-pressed": diagnosticsMode },
+        }),
         h(
           "div",
           {
@@ -9085,48 +9109,35 @@ function App() {
             "aria-label": t("titles.modeGroup"),
           },
           MODE_OPTIONS.map((option) =>
-            h(
-              "button",
-              {
-                key: option,
-                type: "button",
-                className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
-                "data-testid": `mode-option-${option}`,
+            h(ToolbarButton, {
+              key: option,
+              className: `mode-option mode-option-${option}${mode === option ? " is-active" : ""}`,
+              testId: `mode-option-${option}`,
+              title: modeTitle(option),
+              ariaLabel: modeLabel(option),
+              icon: option === "chat" ? "chat" : "agent",
+              iconPack: toolbarIconPack,
+              label: modeLabel(option),
+              onClick: () => setMode(option),
+              extraProps: {
                 "data-mode": option,
                 role: "radio",
                 "aria-checked": mode === option,
-                title: modeTitle(option),
-                "aria-label": modeLabel(option),
-                onClick: () => setMode(option),
               },
-              h(ToolbarIcon, {
-                action: option === "chat" ? "chat" : "agent",
-                pack: toolbarIconPack,
-              }),
-              h("span", { className: "btn-label" }, modeLabel(option)),
-            ),
+            }),
           ),
         ),
-        h(
-          "button",
-          {
-            type: "button",
-            className: "mode-toggle",
-            "data-menu-priority": "3",
-            "aria-pressed": demoMode,
-            onClick: () => setDemoMode((value) => !value),
-            title: demoMode
-              ? t("titles.demoOn")
-              : t("titles.demoOff"),
-            "aria-label": demoMode ? t("buttons.demoOn") : t("buttons.demo"),
-          },
-          h(ToolbarIcon, { action: "demo", pack: toolbarIconPack }),
-          h(
-            "span",
-            { className: "btn-label" },
-            demoMode ? t("buttons.demoOn") : t("buttons.demo"),
-          ),
-        ),
+        h(ToolbarButton, {
+          className: "mode-toggle",
+          menuPriority: "3",
+          onClick: () => setDemoMode((value) => !value),
+          title: demoMode ? t("titles.demoOn") : t("titles.demoOff"),
+          ariaLabel: demoMode ? t("buttons.demoOn") : t("buttons.demo"),
+          icon: "demo",
+          iconPack: toolbarIconPack,
+          label: demoMode ? t("buttons.demoOn") : t("buttons.demo"),
+          extraProps: { "aria-pressed": demoMode },
+        }),
       ),
     ),
     mobileMenuOpen
