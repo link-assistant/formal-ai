@@ -24,6 +24,7 @@ mod program_blueprint;
 mod program_synthesis;
 mod research_table;
 mod self_awareness;
+mod shell_command_transform;
 mod software_project;
 mod software_project_code;
 mod software_project_followup;
@@ -54,6 +55,9 @@ pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
 pub use research_table::try_research_comparison_table;
 pub use self_awareness::SelfAwarenessRuntime;
+pub use shell_command_transform::{
+    try_shell_command_transform, try_shell_command_transform_with_history,
+};
 pub use software_project::try_software_project_request;
 pub use software_project_followup::try_software_project_followup;
 pub use text_manipulation::{try_text_manipulation, try_text_manipulation_with_history};

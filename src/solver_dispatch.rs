@@ -24,8 +24,9 @@ use crate::solver_handlers::{
     try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
     try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
     try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
-    try_shell_refusal, try_software_project_followup, try_software_project_request,
-    try_source_conflict, try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
+    try_software_project_followup, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
     try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
@@ -97,6 +98,9 @@ pub fn try_contextual_override(
             try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
         }
         "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
+        "shell_command_transform" => {
+            try_shell_command_transform_with_history(prompt, normalized, log, history)
+        }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         _ => return ContextualOutcome::NotHandled,
     };
@@ -154,6 +158,11 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // reductions. It runs before `arithmetic` (which would otherwise claim the
     // numeric prompt) and before the generic, result-less `algorithm` handler.
     ("numeric_list", try_numeric_list),
+    // Issue #552: shell-command rewrites such as "make this an infinite loop"
+    // should produce the concrete command text in chat mode, while still not
+    // executing the command. This is more specific than generic script writing
+    // or terminal-command refusal.
+    ("shell_command_transform", try_shell_command_transform),
     ("number_constraint_reasoning", try_number_riddle),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),

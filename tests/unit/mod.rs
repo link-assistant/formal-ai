@@ -25,6 +25,7 @@ mod reference_closure;
 mod semantic_facets;
 mod semantic_grounding;
 mod semantic_root;
+mod shared_dialog;
 mod software_project;
 mod specification;
 mod test_status;
