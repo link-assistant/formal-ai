@@ -28,15 +28,16 @@ macOS/Linux) and [`scripts/install.ps1`](scripts/install.ps1) (PowerShell, for
 Windows). Pass a target to choose what to install:
 
 ```bash
-# Desktop app (default), VS Code extension, the CLI, or all three:
+# Desktop app (default), VS Code extension, the CLI, the Telegram bot, or all:
 curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- desktop
 curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- vscode
 curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- cli
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- telegram
 curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- all
 ```
 
-The Telegram bot is driven by the CLI, so install the `cli` target and then run
-`formal-ai telegram` with a `@BotFather` token (see the
+The Telegram bot ships inside the CLI, so the `telegram` target installs the CLI;
+then run `formal-ai telegram` with a `@BotFather` token (see the
 [Telegram page](https://link-assistant.github.io/formal-ai/telegram/)).
 
 ```powershell
@@ -49,7 +50,7 @@ $env:FORMAL_AI_INSTALL_TARGET='vscode'; irm https://raw.githubusercontent.com/li
 | Desktop app | [`/download/`](https://link-assistant.github.io/formal-ai/download/) | Electron shell with one-click services and a one-click VS Code extension install in Settings. |
 | VS Code extension | [`/vscode/`](https://link-assistant.github.io/formal-ai/vscode/) | Not on the Marketplace yet, so install it manually — the one-liner above, a downloaded `.vsix` ("VS Code Extension only" mode), or one click from the desktop app. |
 | CLI | [`/cli/`](https://link-assistant.github.io/formal-ai/cli/) | `cargo install formal-ai` or the universal installer. |
-| Telegram bot | [`/telegram/`](https://link-assistant.github.io/formal-ai/telegram/) | Driven by the CLI; needs a `@BotFather` token. |
+| Telegram bot | [`/telegram/`](https://link-assistant.github.io/formal-ai/telegram/) | `telegram` installer target (installs the CLI that powers the bot); needs a `@BotFather` token. |
 
 ## Universal Problem-Solving Algorithm
 

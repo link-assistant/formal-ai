@@ -226,8 +226,15 @@ test.describe('Issue #554 — Telegram bot page (/telegram/)', () => {
     }
 
     await expect(page.locator('[data-testid="command-telegram-cargo"]')).toContainText('cargo install');
-    await expect(page.locator('[data-testid="command-telegram-curl"]')).toContainText('curl -fsSL');
+    // The installer one-liner uses the dedicated `telegram` target (it installs
+    // the CLI that drives the bot) so the Telegram page is self-consistent.
+    const telegramCurl = page.locator('[data-testid="command-telegram-curl"]');
+    await expect(telegramCurl).toContainText('curl -fsSL');
+    await expect(telegramCurl).toContainText('sh -s -- telegram');
     await expect(page.locator('[data-testid="command-telegram-ps"]')).toContainText('irm');
+    await expect(page.locator('[data-testid="command-telegram-ps"]')).toContainText(
+      "FORMAL_AI_INSTALL_TARGET='telegram'",
+    );
     await expect(page.locator('[data-testid="command-telegram-run"]')).toBeVisible();
     await expect(page.locator('[data-testid="command-telegram-webhook"]')).toBeVisible();
     await expect(page.locator('[data-testid="copy-telegram-run"]')).toBeVisible();

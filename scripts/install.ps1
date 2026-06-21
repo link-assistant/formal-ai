@@ -9,6 +9,7 @@
     desktop   the Electron desktop app (downloads the matching release asset)
     vscode    the VS Code extension (downloads the .vsix, runs `code --install-extension`)
     cli       the `formal-ai` command-line tool (via `cargo install formal-ai`)
+    telegram  the Telegram bot (alias for `cli`: the bot ships inside the CLI)
     all       desktop + vscode + cli (best effort; skips what the host can't do)
 
   Run directly:
@@ -21,18 +22,18 @@
     irm https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.ps1 | iex
 
 .PARAMETER Target
-  desktop | vscode | cli | all. Defaults to $env:FORMAL_AI_INSTALL_TARGET, then 'desktop'.
+  desktop | vscode | cli | telegram | all. Defaults to $env:FORMAL_AI_INSTALL_TARGET, then 'desktop'.
 
 .NOTES
   Environment variables (so the irm|iex form needs no parameters):
-    FORMAL_AI_INSTALL_TARGET    desktop | vscode | cli | all (default: desktop)
+    FORMAL_AI_INSTALL_TARGET    desktop | vscode | cli | telegram | all (default: desktop)
     FORMAL_AI_INSTALL_VERSION   pin a release tag, e.g. v0.215.0 (default: latest)
     FORMAL_AI_INSTALL_DIR       directory for downloaded desktop assets
     FORMAL_AI_SKIP_VERIFY=1     skip the SHA-256 checksum verification
 #>
 [CmdletBinding()]
 param(
-  [ValidateSet('desktop', 'vscode', 'cli', 'all', 'help')]
+  [ValidateSet('desktop', 'vscode', 'cli', 'telegram', 'all', 'help')]
   [string] $Target = $(if ($env:FORMAL_AI_INSTALL_TARGET) { $env:FORMAL_AI_INSTALL_TARGET } else { 'desktop' })
 )
 
@@ -51,12 +52,13 @@ function Show-Usage {
   Write-Host @'
 formal-ai universal installer (Windows)
 
-Usage: install.ps1 -Target <desktop|vscode|cli|all>
+Usage: install.ps1 -Target <desktop|vscode|cli|telegram|all>
 
 Targets:
   desktop   Download the desktop app installer for this architecture.
   vscode    Download the .vsix and install it with `code --install-extension`.
   cli       Install the `formal-ai` CLI with `cargo install formal-ai`.
+  telegram  Install the CLI that powers the Telegram bot (alias for `cli`).
   all       Install everything this machine can support (best effort).
 
 Environment:
@@ -186,6 +188,15 @@ function Install-VsCode {
   }
 }
 
+function Install-Telegram {
+  # The Telegram bot ships inside the CLI, so this is the `cli` step plus a
+  # bot-specific next-step hint. Kept as its own target so users following the
+  # Telegram landing page can run with -Target telegram without an error.
+  Install-Cli
+  Write-Log 'Telegram bot ready. Create a token with @BotFather, then run:'
+  Write-Log '  $env:TELEGRAM_BOT_TOKEN=''<token>''; formal-ai telegram'
+}
+
 function Install-Cli {
   if (Get-Command cargo -ErrorAction SilentlyContinue) {
     Write-Log "installing the formal-ai CLI with 'cargo install formal-ai'"
@@ -213,6 +224,7 @@ function Invoke-Main {
     'desktop' { Install-Desktop -Release $release }
     'vscode'  { Install-VsCode -Release $release }
     'cli'     { Install-Cli }
+    'telegram' { Install-Telegram }
     'all' {
       # Best effort: never abort the whole run because one optional interface is
       # missing its toolchain.

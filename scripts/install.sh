@@ -7,6 +7,7 @@
 #   desktop   the Electron desktop app (downloads the matching release asset)
 #   vscode    the VS Code extension (downloads the .vsix, runs `code --install-extension`)
 #   cli       the `formal-ai` command-line tool (via `cargo install formal-ai`)
+#   telegram  the Telegram bot (alias for `cli`: the bot ships inside the CLI)
 #   all       desktop + vscode + cli (best effort; skips what the host can't do)
 #
 # Usage (run directly):
@@ -18,7 +19,7 @@
 #   wget -qO- https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- vscode
 #
 # Configuration (environment variables, so the curl|sh form needs no args):
-#   FORMAL_AI_INSTALL_TARGET    desktop | vscode | cli | all   (default: desktop)
+#   FORMAL_AI_INSTALL_TARGET    desktop | vscode | cli | telegram | all (default: desktop)
 #   FORMAL_AI_INSTALL_VERSION   pin a release tag, e.g. v0.215.0 (default: latest)
 #   FORMAL_AI_INSTALL_DIR       where to place downloaded desktop assets
 #                               (default: $HOME/Downloads, else the current dir)
@@ -44,12 +45,13 @@ usage() {
   cat >&2 <<'EOF'
 formal-ai universal installer
 
-Usage: install.sh [desktop|vscode|cli|all]
+Usage: install.sh [desktop|vscode|cli|telegram|all]
 
 Targets:
   desktop   Download the desktop app release asset for this OS/arch.
   vscode    Download the .vsix and install it with `code --install-extension`.
   cli       Install the `formal-ai` CLI with `cargo install formal-ai`.
+  telegram  Install the CLI that powers the Telegram bot (alias for `cli`).
   all       Install everything this machine can support (best effort).
 
 Environment:
@@ -270,6 +272,15 @@ install_cli() {
   fi
 }
 
+# The Telegram bot ships inside the CLI, so installing it is the `cli` step plus
+# a bot-specific next-step hint. Kept as its own target so users following the
+# Telegram landing page can run `... | sh -s -- telegram` without an error.
+install_telegram() {
+  install_cli "$@"
+  log "Telegram bot ready. Create a token with @BotFather, then run:"
+  log "  TELEGRAM_BOT_TOKEN=<token> formal-ai telegram"
+}
+
 # --- main ------------------------------------------------------------------
 
 main() {
@@ -279,7 +290,7 @@ main() {
   esac
 
   case "$target" in
-    desktop | vscode | cli | all) : ;;
+    desktop | vscode | cli | telegram | all) : ;;
     *) usage; die "unknown target: $target" ;;
   esac
 
@@ -292,6 +303,7 @@ main() {
     desktop) install_desktop "$json_file" ;;
     vscode) install_vscode "$json_file" ;;
     cli) install_cli "$json_file" ;;
+    telegram) install_telegram "$json_file" ;;
     all)
       # Best effort: install what this host supports, never abort the whole run
       # because one optional interface is missing its toolchain.

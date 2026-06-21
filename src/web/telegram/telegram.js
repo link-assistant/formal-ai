@@ -21,8 +21,8 @@
   var BOTFATHER = "https://t.me/BotFather";
 
   var CARGO_CMD = "cargo install formal-ai";
-  var CURL_CMD = "curl -fsSL " + RAW_SH + " | sh -s -- cli";
-  var PS_CMD = "$env:FORMAL_AI_INSTALL_TARGET='cli'; irm " + RAW_PS1 + " | iex";
+  var CURL_CMD = "curl -fsSL " + RAW_SH + " | sh -s -- telegram";
+  var PS_CMD = "$env:FORMAL_AI_INSTALL_TARGET='telegram'; irm " + RAW_PS1 + " | iex";
   var RUN_CMD = "TELEGRAM_BOT_TOKEN=<token> formal-ai telegram";
   var WEBHOOK_CMD = "FORMAL_AI_TELEGRAM_MODE=webhook formal-ai telegram";
 
@@ -74,13 +74,13 @@
           "Chat with the symbolic agent from Telegram. The bot is driven by the formal-ai CLI: install it, create a bot token with @BotFather, then run one command. Long polling needs no public URL.",
         installTitle: "1. Install the CLI",
         installIntro:
-          "The Telegram bot ships inside the formal-ai command-line tool. Install it with Cargo, or with the universal one-line installer's `cli` target.",
+          "The Telegram bot ships inside the formal-ai command-line tool. Install it with Cargo, or with the universal one-line installer's `telegram` target.",
         cargoLabel: "Any OS with Rust",
         curlLabel: "macOS / Linux (terminal)",
         psLabel: "Windows (PowerShell)",
         rawScriptLabel: "View install.sh (raw)",
         installNote:
-          "Cargo needs the Rust toolchain (https://rustup.rs). The installer's `cli` target runs `cargo install formal-ai` for you.",
+          "Cargo needs the Rust toolchain (https://rustup.rs). The installer's `telegram` target installs the CLI that powers the bot for you.",
         runTitle: "2. Create a bot and run it",
         runIntro:
           "Get a bot token from Telegram, then start the bot in long-polling mode — no webhook or public URL required.",
@@ -113,13 +113,13 @@
           "Общайтесь с символьным агентом из Telegram. Бот работает на CLI formal-ai: установите его, создайте токен бота через @BotFather и выполните одну команду. Для long polling публичный URL не нужен.",
         installTitle: "1. Установите CLI",
         installIntro:
-          "Telegram-бот входит в инструмент командной строки formal-ai. Установите его через Cargo или целью `cli` универсального однострочного установщика.",
+          "Telegram-бот входит в инструмент командной строки formal-ai. Установите его через Cargo или целью `telegram` универсального однострочного установщика.",
         cargoLabel: "Любая ОС с Rust",
         curlLabel: "macOS / Linux (терминал)",
         psLabel: "Windows (PowerShell)",
         rawScriptLabel: "Посмотреть install.sh (raw)",
         installNote:
-          "Для Cargo нужен набор инструментов Rust (https://rustup.rs). Цель `cli` установщика сама выполнит `cargo install formal-ai`.",
+          "Для Cargo нужен набор инструментов Rust (https://rustup.rs). Цель `telegram` установщика установит CLI, на котором работает бот.",
         runTitle: "2. Создайте бота и запустите его",
         runIntro:
           "Получите токен бота в Telegram, затем запустите бот в режиме long polling — без вебхука и публичного URL.",
@@ -152,13 +152,13 @@
           "在 Telegram 中与符号化代理对话。机器人由 formal-ai 命令行驱动：安装它，用 @BotFather 创建机器人令牌，然后运行一条命令。长轮询无需公网 URL。",
         installTitle: "1. 安装 CLI",
         installIntro:
-          "Telegram 机器人内置于 formal-ai 命令行工具中。可用 Cargo 安装，或使用通用一行安装器的 `cli` 目标。",
+          "Telegram 机器人内置于 formal-ai 命令行工具中。可用 Cargo 安装，或使用通用一行安装器的 `telegram` 目标。",
         cargoLabel: "任何装有 Rust 的系统",
         curlLabel: "macOS / Linux（终端）",
         psLabel: "Windows（PowerShell）",
         rawScriptLabel: "查看 install.sh（原始文件）",
         installNote:
-          "Cargo 需要 Rust 工具链（https://rustup.rs）。安装器的 `cli` 目标会为你运行 `cargo install formal-ai`。",
+          "Cargo 需要 Rust 工具链（https://rustup.rs）。安装器的 `telegram` 目标会为你安装驱动机器人的 CLI。",
         runTitle: "2. 创建机器人并运行",
         runIntro:
           "从 Telegram 获取机器人令牌，然后以长轮询模式启动机器人 —— 无需 webhook 或公网 URL。",
@@ -191,13 +191,13 @@
           "Telegram से सिंबॉलिक एजेंट के साथ चैट करें। बॉट formal-ai CLI से चलता है: इसे इंस्टॉल करें, @BotFather से बॉट टोकन बनाएँ, फिर एक कमांड चलाएँ। लॉन्ग पोलिंग के लिए सार्वजनिक URL नहीं चाहिए।",
         installTitle: "1. CLI इंस्टॉल करें",
         installIntro:
-          "Telegram बॉट formal-ai कमांड-लाइन टूल में शामिल है। इसे Cargo से, या यूनिवर्सल एक-पंक्ति इंस्टॉलर के `cli` टारगेट से इंस्टॉल करें।",
+          "Telegram बॉट formal-ai कमांड-लाइन टूल में शामिल है। इसे Cargo से, या यूनिवर्सल एक-पंक्ति इंस्टॉलर के `telegram` टारगेट से इंस्टॉल करें।",
         cargoLabel: "Rust वाला कोई भी OS",
         curlLabel: "macOS / Linux (टर्मिनल)",
         psLabel: "Windows (PowerShell)",
         rawScriptLabel: "install.sh देखें (raw)",
         installNote:
-          "Cargo को Rust टूलचेन चाहिए (https://rustup.rs)। इंस्टॉलर का `cli` टारगेट आपके लिए `cargo install formal-ai` चलाता है।",
+          "Cargo को Rust टूलचेन चाहिए (https://rustup.rs)। इंस्टॉलर का `telegram` टारगेट आपके लिए बॉट चलाने वाला CLI इंस्टॉल करता है।",
         runTitle: "2. बॉट बनाएँ और चलाएँ",
         runIntro:
           "Telegram से बॉट टोकन लें, फिर बॉट को लॉन्ग-पोलिंग मोड में शुरू करें — किसी webhook या सार्वजनिक URL की ज़रूरत नहीं।",

@@ -12,10 +12,11 @@ bump: minor
   steps, and direct links to the raw installer and the latest release.
 - **A universal one-line installer** — [`scripts/install.sh`](scripts/install.sh)
   (POSIX `sh`) and [`scripts/install.ps1`](scripts/install.ps1) (PowerShell) —
-  that installs the desktop app, the VS Code extension, the CLI, or the Telegram
-  bot from a single command (`curl -fsSL …/install.sh | sh -s -- <target>`). The
-  VS Code page documents the manual-only ".vsix" flow ("VS Code Extension only"
-  mode) while the extension is still off the Marketplace.
+  with a target for every interface: `desktop`, `vscode`, `cli`, `telegram`
+  (installs the CLI that powers the bot), and `all`, from a single command
+  (`curl -fsSL …/install.sh | sh -s -- <target>`). The VS Code page documents the
+  manual-only ".vsix" flow ("VS Code Extension only" mode) while the extension is
+  still off the Marketplace.
 - **One-click VS Code extension install from the desktop app.** Settings now
   offers *Install VS Code extension*: the Electron shell
   (`desktop/lib/vscode-install.cjs`) detects an installed `code`/`code-insiders`/
