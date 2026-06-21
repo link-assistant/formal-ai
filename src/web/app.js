@@ -1806,6 +1806,9 @@ function ToolbarIcon({ action, pack, className = "btn-icon" }) {
 // string, otherwise a <button type="button">. Localized text stays at the call
 // site as `label`/`title`/`ariaLabel` props (still real `t(...)` calls, so the
 // hardcoded-UI check keeps passing); this component never embeds prose.
+// Pairs with the `--fa-control-*` design tokens in styles.css (the shared
+// hover/active/focus treatment); see docs/case-studies/issue-550 for the full
+// rationale (M2 reusable-component requirement + the Chakra/CSP ADR).
 function ToolbarButton({
   className,
   label,
