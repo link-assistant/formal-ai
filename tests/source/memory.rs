@@ -348,7 +348,12 @@ pub fn parse_links_notation(text: &str) -> Vec<MemoryEvent> {
 }
 
 pub(crate) fn escape_value(value: &str) -> String {
-    value.replace('\\', "\\\\").replace('"', "\\\"")
+    value
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
+        .replace('\t', "\\t")
 }
 
 fn unescape_value(value: &str) -> String {
@@ -357,7 +362,14 @@ fn unescape_value(value: &str) -> String {
     while let Some(ch) = chars.next() {
         if ch == '\\' {
             if let Some(next) = chars.next() {
-                out.push(next);
+                match next {
+                    'n' => out.push('\n'),
+                    'r' => out.push('\r'),
+                    't' => out.push('\t'),
+                    '\\' => out.push('\\'),
+                    '"' => out.push('"'),
+                    other => out.push(other),
+                }
             }
         } else {
             out.push(ch);

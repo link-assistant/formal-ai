@@ -1,0 +1,680 @@
+{
+  "kind": "chatgpt",
+  "searched_files": 100,
+  "fetched_files": 100,
+  "unique_links": 243,
+  "shortest_10": [
+    {
+      "link": "https://chatgpt.com/share/xxx",
+      "length": 29,
+      "source": "https://github.com/chen3feng/vibe-writing/blob/a29df05b98d864633dc78b66af31ca959e19d151/SKILL.md",
+      "repository": "chen3feng/vibe-writing",
+      "path": "SKILL.md"
+    },
+    {
+      "link": "https://chatgpt.com/share/abc123",
+      "length": 32,
+      "source": "https://github.com/Anveio/conveaux/blob/f4fc12382495b90a9ddeffba65e3aff27a150eaf/VISION.md",
+      "repository": "Anveio/conveaux",
+      "path": "VISION.md"
+    },
+    {
+      "link": "https://chatgpt.com/share/0dd1e011-0166-4e44-bb08-5f4147dcbd89",
+      "length": 62,
+      "source": "https://github.com/Rafanambinantsoa/Pusher---Laravel-Nuxt-RealTime/blob/3db39e3c53298889f764b33039471e29241d0826/Note.txt",
+      "repository": "Rafanambinantsoa/Pusher---Laravel-Nuxt-RealTime",
+      "path": "Note.txt"
+    },
+    {
+      "link": "https://chatgpt.com/share/29edcfc0-3cf5-4e2a-bb9d-a0d8c60a8a18",
+      "length": 62,
+      "source": "https://github.com/gkrishna4/Demo_meti/blob/0c87c9fa40765c7aae93267e8ddab9de4dda70f5/xxx.txt",
+      "repository": "gkrishna4/Demo_meti",
+      "path": "xxx.txt"
+    },
+    {
+      "link": "https://chatgpt.com/share/45d12ed3-71d8-4a18-a226-f97dd9e796f9",
+      "length": 62,
+      "source": "https://github.com/fernandoacorreia/dotfiles/blob/9e8520360ff3137d1bfae74901b3faea7a870e76/TODO.md",
+      "repository": "fernandoacorreia/dotfiles",
+      "path": "TODO.md"
+    },
+    {
+      "link": "https://chatgpt.com/share/6415334f-b4ca-4511-aeba-93307161c8b1",
+      "length": 62,
+      "source": "https://github.com/gkrishna4/Demo_meti/blob/0c87c9fa40765c7aae93267e8ddab9de4dda70f5/xxx.txt",
+      "repository": "gkrishna4/Demo_meti",
+      "path": "xxx.txt"
+    },
+    {
+      "link": "https://chatgpt.com/share/66ef04d1-bbe0-8011-96ff-a30dfd272b7d",
+      "length": 62,
+      "source": "https://github.com/6610685122/CN331_University_Registrar/blob/bbcc197e6efe6640f88e91e2b92510811f165a6f/Info.txt",
+      "repository": "6610685122/CN331_University_Registrar",
+      "path": "Info.txt"
+    },
+    {
+      "link": "https://chatgpt.com/share/6703dee6-7f58-800a-baf0-fedc569fcc59",
+      "length": 62,
+      "source": "https://github.com/rtreharne/qs/blob/f909a228c1add5b99abe6ffc76476bcb3843babe/04.Rmd",
+      "repository": "rtreharne/qs",
+      "path": "04.Rmd"
+    },
+    {
+      "link": "https://chatgpt.com/share/67049482-3600-8009-8fd2-44f56d01d757",
+      "length": 62,
+      "source": "https://github.com/ManishSonawane24/Encryption-Decryption-Tool/blob/19fc50754b2ab7acd17e22606582fc3642d989b2/LINK.md",
+      "repository": "ManishSonawane24/Encryption-Decryption-Tool",
+      "path": "LINK.md"
+    },
+    {
+      "link": "https://chatgpt.com/share/6706000a-4b1c-8009-9995-6dbbaefb306a",
+      "length": 62,
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/en/07.md",
+      "repository": "xiaolai/little-book-of-ai",
+      "path": "en/07.md"
+    }
+  ],
+  "fetches": [
+    {
+      "source": "https://github.com/NAIST-SE/DevGPT/blob/685efd2509dede9a6e996b839ae4e20d33430648/README.md",
+      "raw_url": "https://raw.githubusercontent.com/NAIST-SE/DevGPT/685efd2509dede9a6e996b839ae4e20d33430648/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/chen3feng/vibe-writing/blob/a29df05b98d864633dc78b66af31ca959e19d151/SKILL.md",
+      "raw_url": "https://raw.githubusercontent.com/chen3feng/vibe-writing/a29df05b98d864633dc78b66af31ca959e19d151/SKILL.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/nestorac/nexum/blob/48ea0884bd486ee3c730abc276cacdff61a1ccc8/Nexum.md",
+      "raw_url": "https://raw.githubusercontent.com/nestorac/nexum/48ea0884bd486ee3c730abc276cacdff61a1ccc8/Nexum.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/gkrishna4/Demo_meti/blob/0c87c9fa40765c7aae93267e8ddab9de4dda70f5/xxx.txt",
+      "raw_url": "https://raw.githubusercontent.com/gkrishna4/Demo_meti/0c87c9fa40765c7aae93267e8ddab9de4dda70f5/xxx.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/nicepkg/chat2poster/blob/d60f21bc278abaa575bc76911c4ceb9b00041e77/TASKS.md",
+      "raw_url": "https://raw.githubusercontent.com/nicepkg/chat2poster/d60f21bc278abaa575bc76911c4ceb9b00041e77/TASKS.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Anveio/conveaux/blob/f4fc12382495b90a9ddeffba65e3aff27a150eaf/VISION.md",
+      "raw_url": "https://raw.githubusercontent.com/Anveio/conveaux/f4fc12382495b90a9ddeffba65e3aff27a150eaf/VISION.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/khrees/chatdump/blob/ff1c2019b172a7eb156507a870fab57b84ca4c1a/SPEC.md",
+      "raw_url": "https://raw.githubusercontent.com/khrees/chatdump/ff1c2019b172a7eb156507a870fab57b84ca4c1a/SPEC.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Bichev/get-llm-chat/blob/e34059b20ca370147cb30f5c3ea270d4973f70cd/PRD.md",
+      "raw_url": "https://raw.githubusercontent.com/Bichev/get-llm-chat/e34059b20ca370147cb30f5c3ea270d4973f70cd/PRD.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Sohamsk/BGSW-Project/blob/fe8f1d3a7c67e7087196b4fa5d4ac4b49e4e561f/ref.txt",
+      "raw_url": "https://raw.githubusercontent.com/Sohamsk/BGSW-Project/fe8f1d3a7c67e7087196b4fa5d4ac4b49e4e561f/ref.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/yslys/system_notes/blob/b87fbfdb6c5fb3ede28399a74e1b377f5ca3c717/CXL.md",
+      "raw_url": "https://raw.githubusercontent.com/yslys/system_notes/b87fbfdb6c5fb3ede28399a74e1b377f5ca3c717/CXL.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Launchpad-Incubator/weather-balloon/blob/20fe8baa1bbda5fa63eda5e95f2977ff802f62c2/a.txt",
+      "raw_url": "https://raw.githubusercontent.com/Launchpad-Incubator/weather-balloon/20fe8baa1bbda5fa63eda5e95f2977ff802f62c2/a.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/automata/aicodeguide/blob/ec6046726e750dc56ccbeb12d443fe2bb53fd925/README.md",
+      "raw_url": "https://raw.githubusercontent.com/automata/aicodeguide/ec6046726e750dc56ccbeb12d443fe2bb53fd925/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/irmoodie/bioc13/blob/76689a1b73e128103d177232f2280ac653306090/help.qmd",
+      "raw_url": "https://raw.githubusercontent.com/irmoodie/bioc13/76689a1b73e128103d177232f2280ac653306090/help.qmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/shreyashChitkula/Megathon-182/blob/589d16c18252fa3529b223ca2d05b88e3e913bfa/AI.txt",
+      "raw_url": "https://raw.githubusercontent.com/shreyashChitkula/Megathon-182/589d16c18252fa3529b223ca2d05b88e3e913bfa/AI.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/kactlabs/wiki/blob/eac846dc2b47b468420a89abc9b70dffd8883247/venv.md",
+      "raw_url": "https://raw.githubusercontent.com/kactlabs/wiki/eac846dc2b47b468420a89abc9b70dffd8883247/venv.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Shandel-dev/stardustPlay/blob/9c6a8a4956a005318e89a99f902578f096d822c8/chat.txt",
+      "raw_url": "https://raw.githubusercontent.com/Shandel-dev/stardustPlay/9c6a8a4956a005318e89a99f902578f096d822c8/chat.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/codereport/FM2GP-2025/blob/b14e2a56803197d81426fd962b2e3cc286d3729b/Links.md",
+      "raw_url": "https://raw.githubusercontent.com/codereport/FM2GP-2025/b14e2a56803197d81426fd962b2e3cc286d3729b/Links.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/garrettm00re/personAIble/blob/ba6f2e715b7adab59eb8abc03cde2ab18f14eec6/todo.txt",
+      "raw_url": "https://raw.githubusercontent.com/garrettm00re/personAIble/ba6f2e715b7adab59eb8abc03cde2ab18f14eec6/todo.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/kurt-krueckeberg/antora-genealogy/blob/271bd9df7fac5dfd587ce915dc5afe984a0f9949/todo.adoc",
+      "raw_url": "https://raw.githubusercontent.com/kurt-krueckeberg/antora-genealogy/271bd9df7fac5dfd587ce915dc5afe984a0f9949/todo.adoc",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/pakkadZ/pyorbbecsdk/blob/d245b8eac5322f9479ee5c40fd4377efeba9f90d/note.txt",
+      "raw_url": "https://raw.githubusercontent.com/pakkadZ/pyorbbecsdk/d245b8eac5322f9479ee5c40fd4377efeba9f90d/note.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/tomaspiaggio/dark/blob/14e190497610b24887ff067b7f2f167a876f487d/TODOs.md",
+      "raw_url": "https://raw.githubusercontent.com/tomaspiaggio/dark/14e190497610b24887ff067b7f2f167a876f487d/TODOs.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/chrisokchen/aia-swd/blob/562d8b54db12844d9f01d2057c8f77166e805383/C0.md",
+      "raw_url": "https://raw.githubusercontent.com/chrisokchen/aia-swd/562d8b54db12844d9f01d2057c8f77166e805383/C0.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/NeonGamerBot-QK/AI-Blog/blob/16ba3cf972d4d4f18f1d1bc716082963d3865f20/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/NeonGamerBot-QK/AI-Blog/16ba3cf972d4d4f18f1d1bc716082963d3865f20/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/wandell/FOV-2024-deprecated/blob/00c5b0caef07123736ef8f46863798618bfcb975/Notes.qmd",
+      "raw_url": "https://raw.githubusercontent.com/wandell/FOV-2024-deprecated/00c5b0caef07123736ef8f46863798618bfcb975/Notes.qmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/patcon/valency-anndata/blob/c5a7160027c90cc802ed6e43344e9d4ee8a869a6/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/patcon/valency-anndata/c5a7160027c90cc802ed6e43344e9d4ee8a869a6/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/UCSB-MEDS/teach-me-how-to-google/blob/375062b4840fd7a21e989e527a9cca9be354366a/index.qmd",
+      "raw_url": "https://raw.githubusercontent.com/UCSB-MEDS/teach-me-how-to-google/375062b4840fd7a21e989e527a9cca9be354366a/index.qmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/HiddeNoob/space-war/blob/cfd86b755831d27d9687369c03134b515b701c20/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/HiddeNoob/space-war/cfd86b755831d27d9687369c03134b515b701c20/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/zhangguangyan/debian-mini-desktop/blob/23b560f79ab8931498aa5f98c5e6dbbccf94faad/a1.txt",
+      "raw_url": "https://raw.githubusercontent.com/zhangguangyan/debian-mini-desktop/23b560f79ab8931498aa5f98c5e6dbbccf94faad/a1.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/MonishV0017/dslab/blob/cedb5622aa3507a74f4edb974bd9167ab518dc81/DS.txt",
+      "raw_url": "https://raw.githubusercontent.com/MonishV0017/dslab/cedb5622aa3507a74f4edb974bd9167ab518dc81/DS.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Leonardo777-prog/challenge-golang/blob/e20b0e58ffb451763f6203d2f0bb4184183c71c5/ia.txt",
+      "raw_url": "https://raw.githubusercontent.com/Leonardo777-prog/challenge-golang/e20b0e58ffb451763f6203d2f0bb4184183c71c5/ia.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/myzevel123/nexttoamerica/blob/04d5562be29e0439e4570818293bcec073b8ba6a/tx.txt",
+      "raw_url": "https://raw.githubusercontent.com/myzevel123/nexttoamerica/04d5562be29e0439e4570818293bcec073b8ba6a/tx.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Abdelrazek97/cap-stone-project/blob/71939ab45d1e3315a332f2cf413ba1431c501939/gpt.txt",
+      "raw_url": "https://raw.githubusercontent.com/Abdelrazek97/cap-stone-project/71939ab45d1e3315a332f2cf413ba1431c501939/gpt.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/madhukantsingh/fastapi-multitenant/blob/28ba71222923c87362400d3336af8f8e9496004f/imp.txt",
+      "raw_url": "https://raw.githubusercontent.com/madhukantsingh/fastapi-multitenant/28ba71222923c87362400d3336af8f8e9496004f/imp.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Yash-Mahule/wad/blob/6206eea6796c0362f4f74b2140adf7dabeccf469/abc.txt",
+      "raw_url": "https://raw.githubusercontent.com/Yash-Mahule/wad/6206eea6796c0362f4f74b2140adf7dabeccf469/abc.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ManishSonawane24/Encryption-Decryption-Tool/blob/19fc50754b2ab7acd17e22606582fc3642d989b2/LINK.md",
+      "raw_url": "https://raw.githubusercontent.com/ManishSonawane24/Encryption-Decryption-Tool/19fc50754b2ab7acd17e22606582fc3642d989b2/LINK.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Vikranth3140/Encryption-Decryption-Tool/blob/f30946c42b817a532febf52342b6c99d2c6e0991/LINK.md",
+      "raw_url": "https://raw.githubusercontent.com/Vikranth3140/Encryption-Decryption-Tool/f30946c42b817a532febf52342b6c99d2c6e0991/LINK.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/kotla-saketh/JavaCodeVault/blob/fd3e0866c8cf49079930c0becc9fe0edb7e079fe/url.txt",
+      "raw_url": "https://raw.githubusercontent.com/kotla-saketh/JavaCodeVault/fd3e0866c8cf49079930c0becc9fe0edb7e079fe/url.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/sohammanjare560-lab/LP3/blob/1b2c0773b50781e812e8c1a8f7866030c65fa675/all.txt",
+      "raw_url": "https://raw.githubusercontent.com/sohammanjare560-lab/LP3/1b2c0773b50781e812e8c1a8f7866030c65fa675/all.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/indicgenous/Machine-Learning-practice/blob/e0d4eafb3adcc51564ad3c4810d743407bab7b9e/copy.txt",
+      "raw_url": "https://raw.githubusercontent.com/indicgenous/Machine-Learning-practice/e0d4eafb3adcc51564ad3c4810d743407bab7b9e/copy.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/voedger/voedger-kb/blob/e2968a2b69248288a6ca5c050b1eddff2ede029a/se-pr.md",
+      "raw_url": "https://raw.githubusercontent.com/voedger/voedger-kb/e2968a2b69248288a6ca5c050b1eddff2ede029a/se-pr.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Soham-Gaonkar/Smart-FAQ/blob/9cbbdd8bb426a597c9e70b89cffd8ebfe5445c71/link.txt",
+      "raw_url": "https://raw.githubusercontent.com/Soham-Gaonkar/Smart-FAQ/9cbbdd8bb426a597c9e70b89cffd8ebfe5445c71/link.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/6610685122/CN331_University_Registrar/blob/bbcc197e6efe6640f88e91e2b92510811f165a6f/Info.txt",
+      "raw_url": "https://raw.githubusercontent.com/6610685122/CN331_University_Registrar/bbcc197e6efe6640f88e91e2b92510811f165a6f/Info.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Chandermani-web/Pdf-s/blob/122d4f686df2c529d26eae2c3c7a475d73055536/urls.txt",
+      "raw_url": "https://raw.githubusercontent.com/Chandermani-web/Pdf-s/122d4f686df2c529d26eae2c3c7a475d73055536/urls.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/laloalarom9/BackendFrontendEjercicio2/blob/a57d880e5b7f634131f2de59f4d8cebae2d1054e/file.txt",
+      "raw_url": "https://raw.githubusercontent.com/laloalarom9/BackendFrontendEjercicio2/a57d880e5b7f634131f2de59f4d8cebae2d1054e/file.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/RobertMLayne/content-extractor-v5/blob/cd52330db8b2253ea7842c09e5be29542cf3e269/urls.txt",
+      "raw_url": "https://raw.githubusercontent.com/RobertMLayne/content-extractor-v5/cd52330db8b2253ea7842c09e5be29542cf3e269/urls.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rasaljaman/Java/blob/09c8c38b8112f05f33ac29a59d6aefaeae600753/Link.txt",
+      "raw_url": "https://raw.githubusercontent.com/rasaljaman/Java/09c8c38b8112f05f33ac29a59d6aefaeae600753/Link.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/jumzzz/memes/blob/a0960d30fdb5743a841a5f0d291a8fdc1106232b/some.txt",
+      "raw_url": "https://raw.githubusercontent.com/jumzzz/memes/a0960d30fdb5743a841a5f0d291a8fdc1106232b/some.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/shvpn/job/blob/31eaeb2d04e7b6e27869ce35c91b1073150b058f/code.txt",
+      "raw_url": "https://raw.githubusercontent.com/shvpn/job/31eaeb2d04e7b6e27869ce35c91b1073150b058f/code.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/SHRINIVAS-05/Practice_For_Interview/blob/fa0b7422f5bda34e312cdd70286590197af8b80b/Notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/SHRINIVAS-05/Practice_For_Interview/fa0b7422f5bda34e312cdd70286590197af8b80b/Notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ksulifrxng/Evrooma/blob/14e652a93e97ce55921388e8bc6a72c84197ba77/notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/ksulifrxng/Evrooma/14e652a93e97ce55921388e8bc6a72c84197ba77/notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/RA2211003010031/Auto-Reply-Bot-openAI-/blob/36c479722d05bdac8ed07e1ab413eb8839115c13/notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/RA2211003010031/Auto-Reply-Bot-openAI-/36c479722d05bdac8ed07e1ab413eb8839115c13/notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/LIKESTEM/Sec-Jwt-ReactJS-Spring-Boot-Example1/blob/29ec470e45331b4e63dd0dfc4e1ccfac86b75b9b/Tips1.txt",
+      "raw_url": "https://raw.githubusercontent.com/LIKESTEM/Sec-Jwt-ReactJS-Spring-Boot-Example1/29ec470e45331b4e63dd0dfc4e1ccfac86b75b9b/Tips1.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/naa55/angular-testing/blob/361eebc9950e0f8be2455fca61671e6a835bb9e2/notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/naa55/angular-testing/361eebc9950e0f8be2455fca61671e6a835bb9e2/notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ManullangJihan/Aerodynamics-with-Julia/blob/5d79d2e4d994ce6b1a457267a1529eebdeb9d739/Notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/ManullangJihan/Aerodynamics-with-Julia/5d79d2e4d994ce6b1a457267a1529eebdeb9d739/Notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/pantharev/ApexWeather/blob/b7d9a4334a63a2618e0a86bf16d1976ddc77f738/todos.txt",
+      "raw_url": "https://raw.githubusercontent.com/pantharev/ApexWeather/b7d9a4334a63a2618e0a86bf16d1976ddc77f738/todos.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/samyaksubedi/Learn-Sockets-and-Redis-/blob/87947acbe813dd51099b6a88bba63db264c66b18/notes.txt",
+      "raw_url": "https://raw.githubusercontent.com/samyaksubedi/Learn-Sockets-and-Redis-/87947acbe813dd51099b6a88bba63db264c66b18/notes.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Benrobo/nexusai/blob/55d554e00640023baea625f7c4bc03a91e6cbefe/plan.md",
+      "raw_url": "https://raw.githubusercontent.com/Benrobo/nexusai/55d554e00640023baea625f7c4bc03a91e6cbefe/plan.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/sulabh-npl/laravel-node/blob/c1e9f7d307c0cf4f849b08d48c4e0328361ffea4/readme.md",
+      "raw_url": "https://raw.githubusercontent.com/sulabh-npl/laravel-node/c1e9f7d307c0cf4f849b08d48c4e0328361ffea4/readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/JuniorfoxDev/Junior-fox/blob/5290ac0bd1f1815cc94345a173b520470513e839/data.txt",
+      "raw_url": "https://raw.githubusercontent.com/JuniorfoxDev/Junior-fox/5290ac0bd1f1815cc94345a173b520470513e839/data.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/en/07.md",
+      "raw_url": "https://raw.githubusercontent.com/xiaolai/little-book-of-ai/005312fa1640aa18d8bfb2f2d5bb7d296a548428/en/07.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Open-Athena/scaling-law-analysis/blob/82cf54880ded6b2225c06e64751f15d9d7a57e07/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/Open-Athena/scaling-law-analysis/82cf54880ded6b2225c06e64751f15d9d7a57e07/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/13.md",
+      "raw_url": "https://raw.githubusercontent.com/xiaolai/little-book-of-ai/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/13.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Rafanambinantsoa/Pusher---Laravel-Nuxt-RealTime/blob/3db39e3c53298889f764b33039471e29241d0826/Note.txt",
+      "raw_url": "https://raw.githubusercontent.com/Rafanambinantsoa/Pusher---Laravel-Nuxt-RealTime/3db39e3c53298889f764b33039471e29241d0826/Note.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/LearningCircuitsLab/lecilab-behavior-analysis/blob/89adaa36811651ff238352fe47d3a4dd784ada1d/To%20do.txt",
+      "raw_url": "https://raw.githubusercontent.com/LearningCircuitsLab/lecilab-behavior-analysis/89adaa36811651ff238352fe47d3a4dd784ada1d/To%20do.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/gregalexan/Cartel-Search-Products/blob/c69bd2f74bbf95b1e3ace833af8dffd3ba17b856/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/gregalexan/Cartel-Search-Products/c69bd2f74bbf95b1e3ace833af8dffd3ba17b856/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/metalim/adventofcode.2024.go/blob/aabb995ae0ca05393003ec020dcdcbd18a172945/o1.md",
+      "raw_url": "https://raw.githubusercontent.com/metalim/adventofcode.2024.go/aabb995ae0ca05393003ec020dcdcbd18a172945/o1.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/yunuserme/yunuserme.github.io/blob/eb1df85e6d58498f328aae2d8f7e5f48f6419314/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/yunuserme/yunuserme.github.io/eb1df85e6d58498f328aae2d8f7e5f48f6419314/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/vedanti02/Zulip-AI-enhancements/blob/ebc4d319961bbf159c4d2cfd9c064faa155dcc79/ai.md",
+      "raw_url": "https://raw.githubusercontent.com/vedanti02/Zulip-AI-enhancements/ebc4d319961bbf159c4d2cfd9c064faa155dcc79/ai.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/KaganEM16/JavaScript-Oyun-Projesi/blob/0c264820cdf1d7a655f82a398521c4f5d2d86385/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/KaganEM16/JavaScript-Oyun-Projesi/0c264820cdf1d7a655f82a398521c4f5d2d86385/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ahmetyilmaz-ai/ahmetyilmazzz.github.io/blob/ab47c7c7ce1f97275fc84deb9ec454e8e1d0a0cb/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/ahmetyilmaz-ai/ahmetyilmazzz.github.io/ab47c7c7ce1f97275fc84deb9ec454e8e1d0a0cb/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/07.md",
+      "raw_url": "https://raw.githubusercontent.com/xiaolai/little-book-of-ai/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/07.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/MartianInGreen/LMPlugins/blob/20ae04e7546f03a0986cac83e39a29105f462ec6/readme.md",
+      "raw_url": "https://raw.githubusercontent.com/MartianInGreen/LMPlugins/20ae04e7546f03a0986cac83e39a29105f462ec6/readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/jipphysics/redes-neuronales-2025/blob/4d86d4d89674112c1d987b9e628534a386a7cccc/readme.md",
+      "raw_url": "https://raw.githubusercontent.com/jipphysics/redes-neuronales-2025/4d86d4d89674112c1d987b9e628534a386a7cccc/readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/fernandoacorreia/dotfiles/blob/9e8520360ff3137d1bfae74901b3faea7a870e76/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/fernandoacorreia/dotfiles/9e8520360ff3137d1bfae74901b3faea7a870e76/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/AR-Muthudhanush/GoLangExpert-Bot/blob/c172aec78267a9e77ee1b9a733ff264f53f39cb9/steps.txt",
+      "raw_url": "https://raw.githubusercontent.com/AR-Muthudhanush/GoLangExpert-Bot/c172aec78267a9e77ee1b9a733ff264f53f39cb9/steps.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/MattterSteege/DynamicGrid/blob/ce7e3a25a34edc587e3f31d2318bc5481b6256a4/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/MattterSteege/DynamicGrid/ce7e3a25a34edc587e3f31d2318bc5481b6256a4/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/fredt34/GeeDeePermark/blob/acc610392663dcff9a4a152efbec575b3565188b/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/fredt34/GeeDeePermark/acc610392663dcff9a4a152efbec575b3565188b/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/winksaville/vacation-hours-python/blob/159a7811f1176da12b9d9ed92e27933e8c8bff07/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/winksaville/vacation-hours-python/159a7811f1176da12b9d9ed92e27933e8c8bff07/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/master-of-none/rest-auth/blob/c16b10e39fe9153e4cc6054cec4dda6e7ab8c74d/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/master-of-none/rest-auth/c16b10e39fe9153e4cc6054cec4dda6e7ab8c74d/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/yduf/covered/blob/3f3e521a1e28911de1838733ce3e243f68644eef/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/yduf/covered/3f3e521a1e28911de1838733ce3e243f68644eef/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Jivraj-18/university_ai_usage/blob/079cefb53da653f91000439ca32cbe7a91b77a81/urls.md",
+      "raw_url": "https://raw.githubusercontent.com/Jivraj-18/university_ai_usage/079cefb53da653f91000439ca32cbe7a91b77a81/urls.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/mbarnig/next-js-swiper-multilang/blob/265acbc896c500425f17de9f5f0a4138f3bc7327/docs.md",
+      "raw_url": "https://raw.githubusercontent.com/mbarnig/next-js-swiper-multilang/265acbc896c500425f17de9f5f0a4138f3bc7327/docs.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/knail2/secure-agent-augmentation/blob/366160c9bc325b113b5935b2d751a708d8515449/notes.md",
+      "raw_url": "https://raw.githubusercontent.com/knail2/secure-agent-augmentation/366160c9bc325b113b5935b2d751a708d8515449/notes.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/alisadeghiaghili/Deutsch/blob/4f3a8398ed61c996040d9291f4b00233aa5cc6c2/Wem.md",
+      "raw_url": "https://raw.githubusercontent.com/alisadeghiaghili/Deutsch/4f3a8398ed61c996040d9291f4b00233aa5cc6c2/Wem.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/12.md",
+      "raw_url": "https://raw.githubusercontent.com/xiaolai/little-book-of-ai/005312fa1640aa18d8bfb2f2d5bb7d296a548428/cn/12.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/voedger/voedger-kb/blob/e2968a2b69248288a6ca5c050b1eddff2ede029a/se.md",
+      "raw_url": "https://raw.githubusercontent.com/voedger/voedger-kb/e2968a2b69248288a6ca5c050b1eddff2ede029a/se.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xiaolai/little-book-of-ai/blob/005312fa1640aa18d8bfb2f2d5bb7d296a548428/en/12.md",
+      "raw_url": "https://raw.githubusercontent.com/xiaolai/little-book-of-ai/005312fa1640aa18d8bfb2f2d5bb7d296a548428/en/12.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/aceholecousins/hoverbattle/blob/5c1b07d8e2ad6f1bd2c1c9888996fc79aceff938/devlog.md",
+      "raw_url": "https://raw.githubusercontent.com/aceholecousins/hoverbattle/5c1b07d8e2ad6f1bd2c1c9888996fc79aceff938/devlog.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rtreharne/qs/blob/f909a228c1add5b99abe6ffc76476bcb3843babe/04.Rmd",
+      "raw_url": "https://raw.githubusercontent.com/rtreharne/qs/f909a228c1add5b99abe6ffc76476bcb3843babe/04.Rmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rtreharne/qs/blob/f909a228c1add5b99abe6ffc76476bcb3843babe/08.Rmd",
+      "raw_url": "https://raw.githubusercontent.com/rtreharne/qs/f909a228c1add5b99abe6ffc76476bcb3843babe/08.Rmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/emmakbradley/Math533_Hw2/blob/a529fb4a9f4846ce964a0737a87a369f323a7e30/Final.qmd",
+      "raw_url": "https://raw.githubusercontent.com/emmakbradley/Math533_Hw2/a529fb4a9f4846ce964a0737a87a369f323a7e30/Final.qmd",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/metalim/adventofcode.2022.go/blob/def7be3e030fd45f53dc857f6fadb00b79c40a24/o1.md",
+      "raw_url": "https://raw.githubusercontent.com/metalim/adventofcode.2022.go/def7be3e030fd45f53dc857f6fadb00b79c40a24/o1.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Alone-Incarnate/My-Python-Projects/blob/bb3ef4d27876cce7d6c993c11a5c550e023e196d/1.txt",
+      "raw_url": "https://raw.githubusercontent.com/Alone-Incarnate/My-Python-Projects/bb3ef4d27876cce7d6c993c11a5c550e023e196d/1.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/DYBInh2k5/web-sd-Framework-Develop/blob/4529b7994a81b63bb86e9ba70cc7e8f6db7f4060/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/DYBInh2k5/web-sd-Framework-Develop/4529b7994a81b63bb86e9ba70cc7e8f6db7f4060/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/DYBInh2k5/PT-Ung-Dung-Web-nen-tang-JAVA-EE/blob/3f73f777de77557382d497cafeb469a49e6f11e7/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/DYBInh2k5/PT-Ung-Dung-Web-nen-tang-JAVA-EE/3f73f777de77557382d497cafeb469a49e6f11e7/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/bitmap4/megathon-25/blob/e73f3b97d4078ba5ec1c69f95f23ded33fa8c873/ai.md",
+      "raw_url": "https://raw.githubusercontent.com/bitmap4/megathon-25/e73f3b97d4078ba5ec1c69f95f23ded33fa8c873/ai.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/yagmurerasln/Web-Tabanli-Programlama-Projesi/blob/0c81a0e75756ff58a193f4254e7150f1a32ddaec/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/yagmurerasln/Web-Tabanli-Programlama-Projesi/0c81a0e75756ff58a193f4254e7150f1a32ddaec/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Tunahaniskin/Take-Down-The-Necromancer/blob/a5debfed389ac3c749daaf165522c8b273d45010/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/Tunahaniskin/Take-Down-The-Necromancer/a5debfed389ac3c749daaf165522c8b273d45010/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/semaimre/labirentten-kacis/blob/5be94dfe9731fee3231cba3bf0374d6a3f54b338/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/semaimre/labirentten-kacis/5be94dfe9731fee3231cba3bf0374d6a3f54b338/AI.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/samuelkiszka/flp-haskell-project/blob/d06c2f22d89d334d1470f611db6025d4d0a0209d/AI.md",
+      "raw_url": "https://raw.githubusercontent.com/samuelkiszka/flp-haskell-project/d06c2f22d89d334d1470f611db6025d4d0a0209d/AI.md",
+      "status": 200,
+      "error": null
+    }
+  ]
+}

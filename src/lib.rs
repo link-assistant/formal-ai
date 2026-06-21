@@ -35,6 +35,7 @@ pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod self_improvement;
 pub mod server;
+pub mod shared_dialog;
 pub mod skill_compiler;
 pub mod solver;
 pub(crate) mod solver_diagnostics;
@@ -148,6 +149,10 @@ pub use self_improvement::{
 pub use server::{
     handle_api_request, handle_api_request_with_auth, handle_api_request_with_headers, serve,
     ApiAuthConfig, ApiHttpResponse,
+};
+pub use shared_dialog::{
+    convert_shared_dialog_to_demo_memory, parse_shared_dialog, shared_dialog_to_memory_events,
+    SharedDialog, SharedDialogError, SharedDialogFormat, SharedDialogMetadata, SharedDialogTurn,
 };
 pub use skill_compiler::{
     compile_natural_language_skill, CompiledSkillEffect, CompiledSkillExpectedTest,

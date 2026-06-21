@@ -6,6 +6,9 @@ use std::sync::Arc;
 use clap::{Args as ClapArgs, Subcommand, ValueEnum};
 use lino_arguments::Parser;
 
+mod cli_shared_dialog;
+
+use cli_shared_dialog::{run_shared_dialog, SharedDialogAction};
 use formal_ai::agentic_coding::run_agentic_task;
 use formal_ai::{
     agent_info, collect_github_logs, create_chat_completion_with_solver,
@@ -67,6 +70,11 @@ enum Command {
     Memory {
         #[command(subcommand)]
         action: MemoryAction,
+    },
+    /// Convert shared chat captures or compact transcripts into `demo_memory`.
+    SharedDialog {
+        #[command(subcommand)]
+        action: SharedDialogAction,
     },
     /// Export or import the full self-contained `formal_ai_bundle` (seed +
     /// memory). The same file format the browser's "Download bundle" button
@@ -375,6 +383,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         } => run_chat(&prompt, format, definition_fusion, thinking)?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Memory { action } => run_memory(action)?,
+        Command::SharedDialog { action } => run_shared_dialog(action)?,
         Command::Bundle { action } => run_bundle(action)?,
         Command::Environments => run_environments(),
         Command::GithubLogs { action } => run_github_logs(action)?,
@@ -795,7 +804,7 @@ fn write_full_memory_backup(
     Ok(())
 }
 
-fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {
+pub(crate) fn read_input(path: &std::path::Path) -> Result<String, Box<dyn Error>> {
     if path.as_os_str() == "-" {
         use std::io::Read;
         let mut buf = String::new();
