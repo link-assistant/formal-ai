@@ -7,6 +7,10 @@ contextBridge.exposeInMainWorld("FormalAiDesktop", {
   openExternal: (url) => ipcRenderer.invoke("formalAiDesktop:openExternal", url),
   checkForUpdates: () => ipcRenderer.invoke("formalAiDesktop:checkForUpdates"),
   installUpdate: () => ipcRenderer.invoke("formalAiDesktop:installUpdate"),
+  // Issue #554 (R2): one-click install of the VS Code extension from the
+  // already-installed Desktop app (downloads the latest release .vsix and runs
+  // `code --install-extension`).
+  installVsCodeExtension: () => ipcRenderer.invoke("formalAiDesktop:installVsCodeExtension"),
   onUpdateStatus: (callback) => {
     if (typeof callback !== "function") {
       return () => {};

@@ -4450,6 +4450,27 @@ function serviceStateLabel(state, t) {
   return String(state || "") || tr("services.state.unknown");
 }
 
+// Issue #554 (R2): map the structured VS Code install result the main process
+// returns to a localized status line shown under the one-click button.
+function vscodeInstallStateLabel(result, t) {
+  const tr = typeof t === "function" ? t : (key) => key;
+  if (!result || typeof result !== "object") {
+    return "";
+  }
+  if (result.ok) {
+    return tr("vscodeInstall.installed", { cli: String(result.cli || "code") });
+  }
+  const key = {
+    "no-vscode-cli": "vscodeInstall.noCli",
+    "no-release-asset": "vscodeInstall.noAsset",
+    "release-lookup-failed": "vscodeInstall.lookupFailed",
+    "download-failed": "vscodeInstall.downloadFailed",
+    "install-failed": "vscodeInstall.installFailed",
+    error: "vscodeInstall.error",
+  }[String(result.state || "")];
+  return key ? tr(key) : tr("vscodeInstall.error");
+}
+
 function normalizeDesktopStatus(status) {
   if (!status || typeof status !== "object") {
     return null;
@@ -5881,6 +5902,11 @@ function App() {
   const [telegramToken, setTelegramToken] = useState("");
   const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(false);
   const [updateBusy, setUpdateBusy] = useState("");
+  // Issue #554 (R2): one-click install of the formal-ai VS Code extension from
+  // the desktop app. `vscodeInstallBusy` gates the button; `vscodeInstallResult`
+  // holds the last {ok,state,reason} the main process returned.
+  const [vscodeInstallBusy, setVscodeInstallBusy] = useState(false);
+  const [vscodeInstallResult, setVscodeInstallResult] = useState(null);
   // Issue #27 / #513: the operating mode runs the user's prompt as a single
   // Q&A ("chat"), a multi-step plan ("agent"), or an auto-executing agent
   // ("fullAuto"). Persisted across reloads via preferences. The legacy
@@ -6253,6 +6279,30 @@ function App() {
       setDesktopStatus((current) => mergeDesktopUpdateStatus(current, status));
     } finally {
       setUpdateBusy("");
+    }
+  }, []);
+
+  // Issue #554 (R2): one-click VS Code extension install. The main process
+  // detects a VS Code CLI, downloads the latest release `.vsix`, and runs
+  // `code --install-extension`; we surface the structured result inline.
+  const handleInstallVsCodeExtension = useCallback(async () => {
+    const bridge = desktopBridge();
+    if (!bridge || typeof bridge.installVsCodeExtension !== "function") {
+      return;
+    }
+    setVscodeInstallBusy(true);
+    setVscodeInstallResult(null);
+    try {
+      const result = await bridge.installVsCodeExtension();
+      setVscodeInstallResult(result || { ok: false, state: "error" });
+    } catch (error) {
+      setVscodeInstallResult({
+        ok: false,
+        state: "error",
+        reason: error && error.message ? error.message : String(error),
+      });
+    } finally {
+      setVscodeInstallBusy(false);
     }
   }, []);
 
@@ -8205,7 +8255,7 @@ function App() {
     "--context-panel-width": `${contextPanelWidth}px`
   }}><aside className={`context-panel${mobileMenuOpen ? " is-mobile-open" : ""}${sidebarCollapsed ? " is-desktop-collapsed" : ""}`} data-testid="context-panel" aria-hidden={sidebarCollapsed && !mobileMenuOpen ? "true" : "false"}><div className="drawer-brand" data-testid="drawer-brand"><div className="drawer-brand-main"><span className="mark">{"FA"}</span><div className="drawer-brand-copy"><strong>{"formal-ai"}</strong><span className="brand-version">{appVersionLabel}</span></div></div><button type="button" className="drawer-close" data-testid="drawer-close" aria-label={t("buttons.closeMenu")} title={t("titles.menuClose")} onClick={() => setMobileMenuOpen(false)}><MenuGlyph open={true} /></button></div><CollapsibleSection title={t("sidebar.menu")} testId="drawer-menu-actions" collapsed={sidebarMenuCollapsed} onToggle={() => setSidebarMenuCollapsed(value => !value)} className="drawer-menu-section" bodyClassName="drawer-menu-body" children={<div className="drawer-action-list"><a className="drawer-action" data-testid="drawer-source-code" href={SOURCE_CODE_URL} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="sourceCode" pack={toolbarIconPack} /><span>{t("buttons.sourceCode")}</span></a><a className="drawer-action" data-testid="drawer-report-issue" href={currentReportUrl} target="_blank" rel="noopener noreferrer"><ToolbarIcon action="reportIssue" pack={toolbarIconPack} /><span>{t("buttons.reportIssue")}</span></a><button type="button" className="drawer-action" data-testid="drawer-memory-export" onClick={handleExportMemory}><ToolbarIcon action="exportMemory" pack={toolbarIconPack} /><span>{t("buttons.exportMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-import" onClick={triggerImportMemory}><ToolbarIcon action="importMemory" pack={toolbarIconPack} /><span>{t("buttons.importMemory")}</span></button><button type="button" className="drawer-action" data-testid="drawer-memory-reset" onClick={handleResetMemory}><ToolbarIcon action="resetMemory" pack={toolbarIconPack} /><span>{t("buttons.resetMemory")}</span></button><button type="button" className="drawer-action" aria-pressed={diagnosticsMode} onClick={() => setDiagnosticsMode(value => !value)}><ToolbarIcon action="diagnostics" pack={toolbarIconPack} /><span>{diagnosticsMode ? t("buttons.diagnosticsOn") : t("buttons.diagnostics")}</span></button><div className="drawer-action drawer-mode-radio" data-testid="drawer-mode-radio" role="radiogroup" aria-label={t("titles.modeGroup")}>{MODE_OPTIONS.map(option => <button key={option} type="button" className={`mode-option mode-option-${option}${mode === option ? " is-active" : ""}`} data-testid={`drawer-mode-option-${option}`} data-mode={option} role="radio" aria-checked={mode === option} title={modeTitle(option)} onClick={() => setMode(option)}><ToolbarIcon action={option === "chat" ? "chat" : "agent"} pack={toolbarIconPack} /><span>{modeLabel(option)}</span></button>)}</div><button type="button" className="drawer-action" aria-pressed={demoMode} onClick={() => setDemoMode(value => !value)}><ToolbarIcon action="demo" pack={toolbarIconPack} /><span>{demoMode ? t("buttons.demoOn") : t("buttons.demo")}</span></button></div>} />{desktopStatus ? <CollapsibleSection title={desktopSurfaceLabel(desktopStatus)} testId="sidebar-desktop" collapsed={sidebarDesktopCollapsed} onToggle={() => setSidebarDesktopCollapsed(value => !value)} className="desktop-shell-section" children={<dl className="desktop-shell-panel" data-testid="desktop-shell-panel"><div><dt>{"Shell"}</dt><dd>{desktopStatus.shell}</dd></div><div><dt>{t("updates.currentVersion")}</dt><dd data-testid="desktop-app-version">{appVersionLabel}</dd></div><div><dt>{"API"}</dt><dd data-testid="desktop-api-base">{compactUrl(desktopStatus.apiBase)}</dd></div><div><dt>{"Network"}</dt><dd><a href={desktopStatus.graphUrl || "#"} target="_blank" rel="noopener noreferrer" data-testid="desktop-network-link">{compactUrl(desktopStatus.graphUrl)}</a></dd></div><div><dt>{"Memory"}</dt><dd data-testid="desktop-memory-bundle">{desktopStatus.memory}</dd></div><div><dt>{"Agent"}</dt><dd data-testid="desktop-agent-permission">{desktopAgentPermission}</dd></div><div><dt>{"Tool calls"}</dt><dd data-testid="desktop-tool-permission">{desktopToolPermission}</dd></div><div className="desktop-permission-row"><dt>{t("permissions.panel.rowLabel")}</dt><dd>{renderDesktopPermissionPanel("desktop-permission-panel-sidebar")}</dd></div>{updater ? <div className="desktop-update-row"><dt>{t("updates.title")}</dt><dd><div className="desktop-update-panel" data-testid="desktop-update-panel" data-state={updater.state}><span className="desktop-update-state" data-testid="desktop-update-state" role={updater.updateAvailable || updater.downloaded ? "status" : undefined}>{desktopUpdaterStateLabel(updater, t)}</span>{updater.state === "downloading" ? <progress className="desktop-update-progress" data-testid="desktop-update-progress" max="100" value={String(Math.round(updater.progressPercent || 0))} aria-label={t("updates.progress", {
                 percent: Math.round(updater.progressPercent || 0)
-              })} /> : null}<div className="desktop-update-actions"><button type="button" data-testid="desktop-update-check" disabled={!canCheckForUpdates} onClick={handleCheckForUpdates}>{updateBusy === "check" || updater && updater.state === "checking" ? t("updates.checking") : t("updates.check")}</button><button type="button" className="desktop-update-install" data-testid="desktop-update-install" disabled={!canInstallUpdate} onClick={handleInstallUpdate}>{updateBusy === "install" || updater && updater.state === "installing" ? t("updates.updating") : t("updates.update")}</button></div></div></dd></div> : null}</dl>} /> : null}{serviceStatus ? <CollapsibleSection title={t("services.title")} testId="sidebar-services" collapsed={sidebarServicesCollapsed} onToggle={() => setSidebarServicesCollapsed(value => !value)} className="desktop-services-section" children={<div className="desktop-services-panel" data-testid="desktop-services-panel">{serviceStatus.dockerAvailable === false ? <p className="desktop-services-note" data-testid="desktop-services-docker-missing">{t("services.dockerMissing")}</p> : null}{(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(service => {
+              })} /> : null}<div className="desktop-update-actions"><button type="button" data-testid="desktop-update-check" disabled={!canCheckForUpdates} onClick={handleCheckForUpdates}>{updateBusy === "check" || updater && updater.state === "checking" ? t("updates.checking") : t("updates.check")}</button><button type="button" className="desktop-update-install" data-testid="desktop-update-install" disabled={!canInstallUpdate} onClick={handleInstallUpdate}>{updateBusy === "install" || updater && updater.state === "installing" ? t("updates.updating") : t("updates.update")}</button></div></div></dd></div> : null}<div className="desktop-vscode-row" data-testid="desktop-vscode-install-row"><dt>{t("vscodeInstall.title")}</dt><dd><div className="desktop-vscode-panel" data-testid="desktop-vscode-install-panel"><p className="desktop-vscode-summary">{t("vscodeInstall.summary")}</p><div className="desktop-vscode-actions"><button type="button" className="desktop-vscode-install" data-testid="desktop-vscode-install" disabled={vscodeInstallBusy} onClick={handleInstallVsCodeExtension}>{vscodeInstallBusy ? t("vscodeInstall.installing") : t("vscodeInstall.install")}</button></div>{vscodeInstallResult ? <p className={`desktop-vscode-status${vscodeInstallResult.ok ? " is-ok" : " is-error"}`} data-testid="desktop-vscode-install-status" role="status">{vscodeInstallStateLabel(vscodeInstallResult, t)}{vscodeInstallResult.ok || !vscodeInstallResult.reason ? "" : ` — ${vscodeInstallResult.reason}`}</p> : null}</div></dd></div></dl>} /> : null}{serviceStatus ? <CollapsibleSection title={t("services.title")} testId="sidebar-services" collapsed={sidebarServicesCollapsed} onToggle={() => setSidebarServicesCollapsed(value => !value)} className="desktop-services-section" children={<div className="desktop-services-panel" data-testid="desktop-services-panel">{serviceStatus.dockerAvailable === false ? <p className="desktop-services-note" data-testid="desktop-services-docker-missing">{t("services.dockerMissing")}</p> : null}{(Array.isArray(serviceStatus.services) ? serviceStatus.services : []).map(service => {
         const running = Boolean(service.running);
         const busy = serviceBusy === service.key;
         const dockerReady = serviceStatus.dockerAvailable !== false;

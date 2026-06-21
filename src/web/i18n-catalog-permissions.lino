@@ -102,6 +102,18 @@ en
       installing "Installing update"
       disabled "Unavailable"
       error "Update error"
+  vscodeInstall
+    title "VS Code extension"
+    summary "Install the formal-ai extension into VS Code in one click. It downloads the latest signed .vsix and runs code --install-extension."
+    install "Install in VS Code"
+    installing "Installing…"
+    installed "Installed into {cli}. Reload VS Code to start using it."
+    noCli "No VS Code command-line tool was found. Install VS Code and enable the 'code' command in PATH."
+    noAsset "No extension has been published to the latest release yet."
+    lookupFailed "Could not reach the GitHub Releases API."
+    downloadFailed "Could not download the .vsix."
+    installFailed "code --install-extension failed."
+    error "Could not install the VS Code extension."
 
 ru
   permissions
@@ -202,6 +214,18 @@ ru
       installing "Установка обновления"
       disabled "Недоступно"
       error "Ошибка обновления"
+  vscodeInstall
+    title "Расширение VS Code"
+    summary "Установите расширение formal-ai в VS Code одним кликом. Загружается последний подписанный .vsix и выполняется code --install-extension."
+    install "Установить в VS Code"
+    installing "Установка…"
+    installed "Установлено в {cli}. Перезагрузите VS Code, чтобы начать работу."
+    noCli "Инструмент командной строки VS Code не найден. Установите VS Code и включите команду «code» в PATH."
+    noAsset "Расширение ещё не опубликовано в последнем релизе."
+    lookupFailed "Не удалось обратиться к GitHub Releases API."
+    downloadFailed "Не удалось загрузить .vsix."
+    installFailed "Команда code --install-extension завершилась с ошибкой."
+    error "Не удалось установить расширение VS Code."
 
 zh
   permissions
@@ -302,6 +326,18 @@ zh
       installing "正在安装更新"
       disabled "不可用"
       error "更新错误"
+  vscodeInstall
+    title "VS Code 扩展"
+    summary "一键将 formal-ai 扩展安装到 VS Code。它会下载最新的已签名 .vsix 并运行 code --install-extension。"
+    install "安装到 VS Code"
+    installing "正在安装…"
+    installed "已安装到 {cli}。请重新加载 VS Code 以开始使用。"
+    noCli "未找到 VS Code 命令行工具。请安装 VS Code 并在 PATH 中启用 “code” 命令。"
+    noAsset "最新发布中尚未提供扩展。"
+    lookupFailed "无法访问 GitHub Releases API。"
+    downloadFailed "无法下载 .vsix。"
+    installFailed "code --install-extension 执行失败。"
+    error "无法安装 VS Code 扩展。"
 
 hi
   permissions
@@ -402,3 +438,15 @@ hi
       installing "अपडेट इंस्टॉल हो रहा है"
       disabled "अनुपलब्ध"
       error "अपडेट त्रुटि"
+  vscodeInstall
+    title "VS Code एक्सटेंशन"
+    summary "एक क्लिक में formal-ai एक्सटेंशन को VS Code में इंस्टॉल करें। यह नवीनतम हस्ताक्षरित .vsix डाउनलोड करता है और code --install-extension चलाता है।"
+    install "VS Code में इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
+    installed "{cli} में इंस्टॉल हो गया। उपयोग शुरू करने के लिए VS Code पुनः लोड करें।"
+    noCli "कोई VS Code कमांड-लाइन टूल नहीं मिला। VS Code इंस्टॉल करें और PATH में 'code' कमांड सक्षम करें।"
+    noAsset "नवीनतम रिलीज़ में अभी तक कोई एक्सटेंशन प्रकाशित नहीं हुआ है।"
+    lookupFailed "GitHub Releases API तक नहीं पहुँचा जा सका।"
+    downloadFailed ".vsix डाउनलोड नहीं हो सका।"
+    installFailed "code --install-extension विफल रहा।"
+    error "VS Code एक्सटेंशन इंस्टॉल नहीं हो सका।"
