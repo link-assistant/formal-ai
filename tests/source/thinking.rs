@@ -139,7 +139,14 @@ fn strip_agent_substep_prefix(step: &str) -> &str {
 
 fn truncate_thinking_detail(value: &str) -> String {
     let trimmed = value.trim();
-    let limit = 120;
+    // Issue #1963 (problem 2, "Thinking steps are not fully written, some parts
+    // are omitted."): the previous 120-char cap clipped the concrete detail of a
+    // step mid-sentence (e.g. a pasted prompt or a composed answer), so the
+    // visible reasoning read as truncated rather than complete. 600 chars keeps
+    // the detail bounded (the panel still scrolls and the fade still applies)
+    // while letting realistic single-step content render in full. This mirrors
+    // the JS `thinkingDetailText` helper; keep both constants in sync.
+    let limit = 600;
     if trimmed.chars().count() <= limit {
         return trimmed.to_owned();
     }

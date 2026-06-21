@@ -1994,6 +1994,20 @@ body.is-resizing-context {
   overflow: hidden;
 }
 
+/* Issue #1963 (P1): the scroll-fade gradient must read as ONE continuous fade
+   spanning the whole collapsed reasoning container (the tail of the previous
+   step blending into the current step), not a separate per-paragraph fade on
+   each line — the latter "looks broken, because each paragraph/line/step has
+   its own gradient". A single container-level mask replaces the former
+   per-element mask on `.thinking-preview-previous`, so both visible steps share
+   one gradient and the fade reads as earlier reasoning scrolling out of view
+   above. The mask is applied via `:has()` only when a previous step exists to
+   fade, so a lone first step is never dimmed. */
+.thinking-preview-collapsed:has(.thinking-preview-previous) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+}
+
 .thinking-preview-previous,
 .thinking-preview-current {
   margin: 0;
@@ -2013,8 +2027,9 @@ body.is-resizing-context {
   text-overflow: ellipsis;
   color: #667684;
   opacity: 0.72;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+  /* Issue #1963 (P1): the fade gradient is no longer applied per line here;
+     the parent `.thinking-preview-collapsed` now carries a single container
+     mask so the previous + current steps share one continuous gradient. */
   /* Issue #488: when a new step arrives the React key for `previous`
      changes, which re-mounts the <p> and (because animations only run on
      mount/key-change) replays this keyframe — that is the rotated
@@ -2532,13 +2547,16 @@ body.is-resizing-context {
   min-height: 0;
 }
 
-.pending .message-body {
-  width: 116px;
-}
-
-.typing::after {
-  content: "...";
-}
+/* Issue #1963 (P3): the pending assistant bubble must NOT be pinned to a narrow
+   fixed width. While only the thinking trace is shown (no answer body yet) the
+   bubble used to be clamped to 116px — a relic of the old typing-dots indicator
+   — so the message visibly jumped from ~116px to the full column width the
+   moment the answer started streaming. The pending body now inherits the normal
+   `.message-body` sizing (it fills the grid column up to the shared message
+   max-width), so the width is stable from the first thinking step through the
+   final answer and there is no sudden jump. The former `.typing::after` dots
+   indicator is dead (the pending bubble always renders the thinking preview),
+   so it is removed with the fixed width it used to size. */
 
 .composer {
   max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
@@ -4267,5 +4285,244 @@ textarea:disabled {
   :root:not([data-theme="light"]) .tool-mode-agent .tool-mode {
     background: rgba(255, 170, 90, 0.22);
     color: #f2c084;
+  }
+}
+
+/* ===================================================================
+ * Issue #1963: UI/UX polish — dark-theme gaps + hover/focus consistency
+ * ===================================================================
+ * Mirrors hive-mind #1963. Two classes of defect, both rooted in this file's
+ * manually-duplicated-hex theming (there are no CSS custom properties, so a
+ * surface only goes dark if someone remembers to author a matching dark rule):
+ *
+ *   - P4 ("We still have theming issues in all `services` box"): the desktop
+ *     SERVICES and UPDATE panels (the Telegram-bot / OpenAI-server start-stop
+ *     cards and the auto-update panel) were authored with only light-mode
+ *     hardcoded colors and never received `:root[data-theme="dark"]` /
+ *     `@media (prefers-color-scheme: dark)` counterparts, so they kept a
+ *     glaring white surface when the rest of the app went dark. This is the
+ *     exact failure mode #541 (R1) fixed for other widgets; the dark values
+ *     below follow the same established dark palette (#1d201f / #242826
+ *     surfaces, #343a3d / #4a524e borders, #ece7df bright / #c9c1b6 muted
+ *     text, #91d7bc accent link, #6cc5a6 hover border).
+ *
+ *   - P5 ("Not all buttons on top menu are reacting to hover ... it is
+ *     partial"): the topbar action buttons had NO light-mode :hover at all,
+ *     and only 4 of ~10 got a dark :hover, so hovering felt inconsistent.
+ *     Every topbar control now shares ONE hover treatment (light + dark) and —
+ *     for keyboard parity (WCAG 2.4.7 / 1.4.11) — ONE :focus-visible ring, so
+ *     mouse and keyboard users get the same affordance on every button.
+ * =================================================================== */
+
+/* --- P4: dark surfaces for the desktop services + update panels --------- */
+:root[data-theme="dark"] .desktop-service {
+  border-color: #343a3d;
+  background: #1d201f;
+}
+
+:root[data-theme="dark"] .desktop-service-dot {
+  background: #4a524e;
+}
+
+:root[data-theme="dark"] .desktop-service-state {
+  color: #c9c1b6;
+}
+
+:root[data-theme="dark"] .desktop-service-token {
+  border-color: #4a524e;
+  background: #242826;
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .desktop-service-url {
+  color: #91d7bc;
+}
+
+:root[data-theme="dark"] .desktop-service-actions button,
+:root[data-theme="dark"] .desktop-update-actions button {
+  border-color: #4a524e;
+  background: #242826;
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .desktop-service-actions button:hover:not(:disabled),
+:root[data-theme="dark"] .desktop-update-actions button:hover:not(:disabled) {
+  border-color: #6cc5a6;
+  background: #28332f;
+}
+
+:root[data-theme="dark"] .desktop-service-start,
+:root[data-theme="dark"] .desktop-update-install {
+  border-color: #2a8f6a;
+  background: #1f7a5b;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .desktop-update-state {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .desktop-services-error {
+  color: #ef9a9a;
+}
+
+/* --- P5: one uniform hover for every topbar control (light) -------------- */
+.mode-toggle:hover,
+.diagnostics-toggle:hover,
+.mode-option:hover,
+.mobile-menu-toggle:hover,
+.sidebar-toggle:hover,
+.report-button:hover,
+.source-code-button:hover,
+.download-button:hover,
+.memory-button:hover {
+  border-color: #86b8a7;
+  background: #edf7f3;
+}
+
+/* Active/pressed segmented controls keep their solid green meaning; on hover
+   they deepen instead of taking the light tint, so the hover is still legible
+   without dropping the "selected" state. Higher specificity than the generic
+   hover above, so it wins regardless of source order. */
+.mode-toggle[aria-pressed="true"]:hover,
+.diagnostics-toggle[aria-pressed="true"]:hover,
+.mode-option[aria-checked="true"]:hover,
+.mode-option.is-active:hover,
+.mobile-menu-toggle[aria-pressed="true"]:hover {
+  border-color: #0f4a3c;
+  background: #0f4a3c;
+}
+
+/* Keyboard parity (WCAG 2.4.7): one focus ring shared by every topbar control,
+   pairing the accent color with a visible outline (not color alone). */
+.mode-toggle:focus-visible,
+.diagnostics-toggle:focus-visible,
+.mode-option:focus-visible,
+.mobile-menu-toggle:focus-visible,
+.sidebar-toggle:focus-visible,
+.report-button:focus-visible,
+.source-code-button:focus-visible,
+.download-button:focus-visible,
+.memory-button:focus-visible {
+  outline: 2px solid #175f4f;
+  outline-offset: 2px;
+}
+
+/* --- P5: hover + focus for topbar controls (explicit dark theme) --------- */
+:root[data-theme="dark"] .mode-toggle:hover,
+:root[data-theme="dark"] .diagnostics-toggle:hover,
+:root[data-theme="dark"] .mode-option:hover,
+:root[data-theme="dark"] .mobile-menu-toggle:hover,
+:root[data-theme="dark"] .report-button:hover,
+:root[data-theme="dark"] .memory-button:hover {
+  border-color: #6cc5a6;
+  background: #28332f;
+}
+
+:root[data-theme="dark"] .mode-toggle[aria-pressed="true"]:hover,
+:root[data-theme="dark"] .diagnostics-toggle[aria-pressed="true"]:hover,
+:root[data-theme="dark"] .mode-option[aria-checked="true"]:hover,
+:root[data-theme="dark"] .mode-option.is-active:hover,
+:root[data-theme="dark"] .mobile-menu-toggle[aria-pressed="true"]:hover {
+  border-color: #2a8f6a;
+  background: #165a49;
+}
+
+:root[data-theme="dark"] .mode-toggle:focus-visible,
+:root[data-theme="dark"] .diagnostics-toggle:focus-visible,
+:root[data-theme="dark"] .mode-option:focus-visible,
+:root[data-theme="dark"] .mobile-menu-toggle:focus-visible,
+:root[data-theme="dark"] .sidebar-toggle:focus-visible,
+:root[data-theme="dark"] .report-button:focus-visible,
+:root[data-theme="dark"] .source-code-button:focus-visible,
+:root[data-theme="dark"] .download-button:focus-visible,
+:root[data-theme="dark"] .memory-button:focus-visible {
+  outline: 2px solid #6cc5a6;
+  outline-offset: 2px;
+}
+
+/* --- P4 + P5 mirrored into the media-query dark block ------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .desktop-service {
+    border-color: #343a3d;
+    background: #1d201f;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-dot {
+    background: #4a524e;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-state {
+    color: #c9c1b6;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-token {
+    border-color: #4a524e;
+    background: #242826;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-url {
+    color: #91d7bc;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-actions button,
+  :root:not([data-theme="light"]) .desktop-update-actions button {
+    border-color: #4a524e;
+    background: #242826;
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-actions button:hover:not(:disabled),
+  :root:not([data-theme="light"]) .desktop-update-actions button:hover:not(:disabled) {
+    border-color: #6cc5a6;
+    background: #28332f;
+  }
+
+  :root:not([data-theme="light"]) .desktop-service-start,
+  :root:not([data-theme="light"]) .desktop-update-install {
+    border-color: #2a8f6a;
+    background: #1f7a5b;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) .desktop-update-state {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .desktop-services-error {
+    color: #ef9a9a;
+  }
+
+  :root:not([data-theme="light"]) .mode-toggle:hover,
+  :root:not([data-theme="light"]) .diagnostics-toggle:hover,
+  :root:not([data-theme="light"]) .mode-option:hover,
+  :root:not([data-theme="light"]) .mobile-menu-toggle:hover,
+  :root:not([data-theme="light"]) .report-button:hover,
+  :root:not([data-theme="light"]) .memory-button:hover {
+    border-color: #6cc5a6;
+    background: #28332f;
+  }
+
+  :root:not([data-theme="light"]) .mode-toggle[aria-pressed="true"]:hover,
+  :root:not([data-theme="light"]) .diagnostics-toggle[aria-pressed="true"]:hover,
+  :root:not([data-theme="light"]) .mode-option[aria-checked="true"]:hover,
+  :root:not([data-theme="light"]) .mode-option.is-active:hover,
+  :root:not([data-theme="light"]) .mobile-menu-toggle[aria-pressed="true"]:hover {
+    border-color: #2a8f6a;
+    background: #165a49;
+  }
+
+  :root:not([data-theme="light"]) .mode-toggle:focus-visible,
+  :root:not([data-theme="light"]) .diagnostics-toggle:focus-visible,
+  :root:not([data-theme="light"]) .mode-option:focus-visible,
+  :root:not([data-theme="light"]) .mobile-menu-toggle:focus-visible,
+  :root:not([data-theme="light"]) .sidebar-toggle:focus-visible,
+  :root:not([data-theme="light"]) .report-button:focus-visible,
+  :root:not([data-theme="light"]) .source-code-button:focus-visible,
+  :root:not([data-theme="light"]) .download-button:focus-visible,
+  :root:not([data-theme="light"]) .memory-button:focus-visible {
+    outline: 2px solid #6cc5a6;
+    outline-offset: 2px;
   }
 }

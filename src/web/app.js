@@ -2479,16 +2479,21 @@ function summarizeThinkingDetail(value) {
 
 // Preserve a concrete detail value verbatim (the user's prompt, the computed
 // result, the composed answer) while bounding its length, mirroring the Rust
-// `truncate_thinking_detail` helper (120 chars, ellipsis suffix). Unlike
+// `truncate_thinking_detail` helper (600 chars, ellipsis suffix). Unlike
 // `summarizeThinkingDetail` this does NOT lowercase or strip punctuation, so the
 // real content survives into the naturalized sentence.
+//
+// Issue #1963 (P2 "Thinking steps are not fully written, some parts are
+// omitted."): the cap was raised 120 -> 600 so realistic single-step detail
+// renders in full instead of being clipped mid-sentence. Keep this constant in
+// sync with the Rust `truncate_thinking_detail` helper.
 function thinkingDetailText(detail) {
   if (detail === null || detail === undefined) return "";
   const text = String(detail).trim();
   if (text.length === 0) return "";
   const chars = Array.from(text);
-  if (chars.length <= 120) return text;
-  return `${chars.slice(0, 119).join("").trimEnd()}…`;
+  if (chars.length <= 600) return text;
+  return `${chars.slice(0, 599).join("").trimEnd()}…`;
 }
 
 // English indefinite article for a phrase, mirroring the Rust `indefinite_article`

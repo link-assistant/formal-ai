@@ -10,6 +10,7 @@ mod docs_requirements_issue_468;
 mod formal_ai;
 mod github_logs;
 mod installation_conversion;
+mod issue_1963;
 mod issue_337;
 mod issue_403;
 mod issue_425;
