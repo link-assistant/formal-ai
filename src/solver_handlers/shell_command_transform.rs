@@ -55,12 +55,7 @@ fn build_screen_command(
     if !normalized.contains("screen") {
         return None;
     }
-    if !(normalized.contains("single line")
-        || normalized.contains("one line")
-        || normalized.contains("execute")
-        || normalized.contains("run")
-        || normalized.contains("inside"))
-    {
+    if !wants_screen_execution(normalized) {
         return None;
     }
 
@@ -101,6 +96,33 @@ fn wants_infinite_loop(normalized: &str) -> bool {
         || normalized.contains("infinite")
         || normalized.contains("forever")
         || normalized.contains("repeatedly")
+        || normalized.contains("цикл")
+        || normalized.contains("бесконеч")
+        || normalized.contains("लूप")
+        || normalized.contains("अनंत")
+        || normalized.contains("बार-बार")
+        || normalized.contains("循环")
+        || normalized.contains("无限")
+        || normalized.contains("一直")
+}
+
+fn wants_screen_execution(normalized: &str) -> bool {
+    normalized.contains("single line")
+        || normalized.contains("one line")
+        || normalized.contains("execute")
+        || normalized.contains("run")
+        || normalized.contains("inside")
+        || normalized.contains("одной строк")
+        || normalized.contains("внутри")
+        || normalized.contains("выполн")
+        || normalized.contains("एक पंक्ति")
+        || normalized.contains("अंदर")
+        || normalized.contains("चल")
+        || normalized.contains("निष्पादित")
+        || normalized.contains("单行")
+        || normalized.contains("一行")
+        || normalized.contains("执行")
+        || normalized.contains("里面")
 }
 
 fn extract_shell_command(prompt: &str) -> Option<String> {
