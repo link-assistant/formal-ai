@@ -5,6 +5,122 @@
     sans-serif;
   background: #eef2f1;
   color: #1e252b;
+
+  /* ===================================================================
+   * Issue #550 (M1/M2/M7): semantic design tokens — one source of truth
+   * for the light/dark axis.
+   * ===================================================================
+   * Root cause of P4 ("services box ignores dark theme") and P5 ("only some
+   * topbar buttons react to hover") was that this stylesheet hand-duplicated
+   * every colour across a light base + `:root[data-theme="dark"]` +
+   * `@media (prefers-color-scheme: dark)` layer, so a new surface or control
+   * went dark / got a hover state ONLY if someone remembered to author the
+   * matching duplicate rule — and newer code routinely missed it.
+   *
+   * These tokens collapse that triplication: a rule written once against a
+   * token (e.g. `background: var(--fa-surface-card)`) automatically themes in
+   * all three states because only the token VALUE is overridden below (in both
+   * dark layers). New surfaces/controls that use the tokens inherit correct
+   * theming and interaction by construction — they can no longer silently miss
+   * a dark or hover rule. This generalises the pre-existing `--code-*` token
+   * pattern (see `.markdown-body`) to the whole chrome and is the documented
+   * step 1 of the tokens → Chakra migration (see the issue-550 case study).
+   *
+   * Light values live here; dark values are overridden once, just below. */
+
+  /* Surfaces */
+  --fa-surface-card: #ffffff;
+  --fa-surface-raised: #f3f6f7;
+  /* Borders */
+  --fa-border-subtle: #d6dde1;
+  --fa-border-control: #c8d2d8;
+  /* Text */
+  --fa-text-body: #1e252b;
+  --fa-text-muted: #657584;
+  --fa-text-strong: #24333d;
+  --fa-mode-status-text: #40515f;
+  /* Accent */
+  --fa-accent-link: #175f4f;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #1f7a5b;
+  --fa-accent-solid-text: #ffffff;
+  /* Status */
+  --fa-service-dot-idle: #b4c0c8;
+  --fa-error-text: #b3261e;
+  --fa-sidebar-toggle-collapsed-bg: #eef2f1;
+  /* Reasoning-trace mode badges */
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.18);
+  --fa-tool-mode-text: #4a5acc;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.18);
+  --fa-tool-mode-agent-text: #b66e1a;
+  /* Interactive control states — shared by every topbar control AND every
+   * panel action button so hover/focus is uniform across the whole app. */
+  --fa-control-hover-border: #86b8a7;
+  --fa-control-hover-bg: #edf7f3;
+  --fa-control-active-hover-border: #0f4a3c;
+  --fa-control-active-hover-bg: #0f4a3c;
+  --fa-focus-ring: #175f4f;
+}
+
+/* Dark token values — explicit theme override (wins over the OS preference). */
+:root[data-theme="dark"] {
+  --fa-surface-card: #1d201f;
+  --fa-surface-raised: #242826;
+  --fa-border-subtle: #343a3d;
+  --fa-border-control: #4a524e;
+  --fa-text-body: #ece7df;
+  --fa-text-muted: #c9c1b6;
+  --fa-text-strong: #ece7df;
+  --fa-mode-status-text: #c9c1b6;
+  --fa-accent-link: #91d7bc;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #2a8f6a;
+  --fa-accent-solid-text: #ffffff;
+  --fa-service-dot-idle: #4a524e;
+  --fa-error-text: #ef9a9a;
+  --fa-sidebar-toggle-collapsed-bg: #222624;
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+  --fa-tool-mode-text: #aebcff;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+  --fa-tool-mode-agent-text: #f2c084;
+  --fa-control-hover-border: #6cc5a6;
+  --fa-control-hover-bg: #28332f;
+  --fa-control-active-hover-border: #2a8f6a;
+  --fa-control-active-hover-bg: #165a49;
+  --fa-focus-ring: #6cc5a6;
+}
+
+/* Dark token values — OS preference fallback (unless light is pinned). The two
+ * dark layers carry IDENTICAL token values; the duplication now lives in ONE
+ * place (these ~20 lines) instead of being scattered across every coloured
+ * rule in the file. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fa-surface-card: #1d201f;
+    --fa-surface-raised: #242826;
+    --fa-border-subtle: #343a3d;
+    --fa-border-control: #4a524e;
+    --fa-text-body: #ece7df;
+    --fa-text-muted: #c9c1b6;
+    --fa-text-strong: #ece7df;
+    --fa-mode-status-text: #c9c1b6;
+    --fa-accent-link: #91d7bc;
+    --fa-accent-solid-bg: #1f7a5b;
+    --fa-accent-solid-border: #2a8f6a;
+    --fa-accent-solid-text: #ffffff;
+    --fa-service-dot-idle: #4a524e;
+    --fa-error-text: #ef9a9a;
+    --fa-sidebar-toggle-collapsed-bg: #222624;
+    --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+    --fa-tool-mode-text: #aebcff;
+    --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+    --fa-tool-mode-agent-text: #f2c084;
+    --fa-control-hover-border: #6cc5a6;
+    --fa-control-hover-bg: #28332f;
+    --fa-control-active-hover-border: #2a8f6a;
+    --fa-control-active-hover-bg: #165a49;
+    --fa-focus-ring: #6cc5a6;
+  }
 }
 
 .ui-skin-glass .topbar,
@@ -367,7 +483,7 @@ button {
 /* Issue #513: the active-mode status badge reads like the demo-mode badge so the
  * toolbar's status labels stay visually consistent. */
 .mode-status {
-  color: #40515f;
+  color: var(--fa-mode-status-text);
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
@@ -593,7 +709,7 @@ button {
 
 .drawer-menu-section h2 {
   margin: 0;
-  color: #40515f;
+  color: var(--fa-mode-status-text);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -652,7 +768,7 @@ button {
  * "expand" affordance subtle — no green press state, since the action label
  * already flips. */
 .sidebar-toggle.is-collapsed {
-  background: #eef2f1;
+  background: var(--fa-sidebar-toggle-collapsed-bg);
 }
 
 .workspace {
@@ -1199,10 +1315,10 @@ body.is-resizing-context {
 .desktop-service {
   display: grid;
   gap: 8px;
-  border: 1px solid #d6dde1;
+  border: 1px solid var(--fa-border-subtle);
   border-radius: 8px;
   padding: 10px;
-  background: #ffffff;
+  background: var(--fa-surface-card);
 }
 
 .desktop-service-head {
@@ -1215,7 +1331,7 @@ body.is-resizing-context {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #b4c0c8;
+  background: var(--fa-service-dot-idle);
   flex: 0 0 auto;
 }
 
@@ -1232,7 +1348,7 @@ body.is-resizing-context {
 .desktop-service-state {
   margin-left: auto;
   font-size: 12px;
-  color: #657584;
+  color: var(--fa-text-muted);
   text-transform: uppercase;
   font-weight: 700;
 }
@@ -1241,14 +1357,16 @@ body.is-resizing-context {
   width: 100%;
   box-sizing: border-box;
   padding: 7px 9px;
-  border: 1px solid #c8d2d8;
+  border: 1px solid var(--fa-border-control);
   border-radius: 7px;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
   font-size: 13px;
   font-family: inherit;
 }
 
 .desktop-service-url {
-  color: #175f4f;
+  color: var(--fa-accent-link);
   font-weight: 700;
   font-size: 13px;
   overflow-wrap: anywhere;
@@ -1263,17 +1381,26 @@ body.is-resizing-context {
   flex: 1 1 0;
   padding: 7px 10px;
   border-radius: 7px;
-  border: 1px solid #c8d2d8;
+  border: 1px solid var(--fa-border-control);
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
-  background: #f3f6f7;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+}
+
+/* Panel action buttons share the topbar control hover so hover is uniform
+ * across chrome AND panels (issue #550 P5). Was dark-only before. */
+.desktop-service-actions button:hover:not(:disabled),
+.desktop-update-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 .desktop-service-start {
-  background: #1f7a5b;
-  border-color: #1f7a5b;
-  color: #ffffff;
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
 }
 
 .desktop-service-actions button:disabled {
@@ -1294,7 +1421,7 @@ body.is-resizing-context {
 .desktop-update-state {
   font-size: 13px;
   font-weight: 700;
-  color: #24333d;
+  color: var(--fa-text-strong);
   overflow-wrap: anywhere;
 }
 
@@ -1313,17 +1440,18 @@ body.is-resizing-context {
   flex: 1 1 0;
   padding: 7px 10px;
   border-radius: 7px;
-  border: 1px solid #c8d2d8;
+  border: 1px solid var(--fa-border-control);
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
-  background: #f3f6f7;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
 }
 
 .desktop-update-install {
-  background: #1f7a5b;
-  border-color: #1f7a5b;
-  color: #ffffff;
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
 }
 
 .desktop-update-actions button:disabled {
@@ -1339,7 +1467,7 @@ body.is-resizing-context {
 }
 
 .desktop-services-error {
-  color: #b3261e;
+  color: var(--fa-error-text);
   font-weight: 700;
 }
 
@@ -3124,16 +3252,16 @@ textarea:disabled {
   letter-spacing: 0.04em;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(120, 140, 255, 0.18);
-  color: #4a5acc;
+  background: var(--fa-tool-mode-bg);
+  color: var(--fa-tool-mode-text);
   overflow-wrap: anywhere;
   word-break: break-word;
   line-height: 1.4;
 }
 
 .tool-mode-agent .tool-mode {
-  background: rgba(255, 170, 90, 0.18);
-  color: #b66e1a;
+  background: var(--fa-tool-mode-agent-bg);
+  color: var(--fa-tool-mode-agent-text);
 }
 
 .tool-desc {
@@ -4236,137 +4364,31 @@ textarea:disabled {
   }
 }
 
-/* Issue #541 (R1): "Not all UI elements has correctly applied theme."
- * Several widgets had light-mode rules with hardcoded colors but no
- * `:root[data-theme="dark"]` or `@media (prefers-color-scheme: dark)`
- * counterparts, so they kept their light palette when the rest of the UI
- * went dark. The fixes below close those gaps for the highest-visibility
- * surfaces: the topbar mode-status badge, the collapsed-sidebar toggle,
- * the mobile drawer section headings, and the per-step "tool"/"agent"
- * mode badges in the reasoning trace. Color choices follow the existing
- * dark palette already used elsewhere in this file (#c9c1b6 muted text,
- * #ece7df bright text, #222624 surface, soft tinted badges for "tool"
- * blue / "agent" amber).
- */
-:root[data-theme="dark"] .mode-status,
-:root[data-theme="dark"] .drawer-menu-section h2 {
-  color: #c9c1b6;
-}
-
-:root[data-theme="dark"] .sidebar-toggle.is-collapsed {
-  background: #222624;
-}
-
-:root[data-theme="dark"] .tool-mode {
-  background: rgba(120, 140, 255, 0.22);
-  color: #aebcff;
-}
-
-:root[data-theme="dark"] .tool-mode-agent .tool-mode {
-  background: rgba(255, 170, 90, 0.22);
-  color: #f2c084;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .mode-status,
-  :root:not([data-theme="light"]) .drawer-menu-section h2 {
-    color: #c9c1b6;
-  }
-
-  :root:not([data-theme="light"]) .sidebar-toggle.is-collapsed {
-    background: #222624;
-  }
-
-  :root:not([data-theme="light"]) .tool-mode {
-    background: rgba(120, 140, 255, 0.22);
-    color: #aebcff;
-  }
-
-  :root:not([data-theme="light"]) .tool-mode-agent .tool-mode {
-    background: rgba(255, 170, 90, 0.22);
-    color: #f2c084;
-  }
-}
-
 /* ===================================================================
- * Issue #1963: UI/UX polish — dark-theme gaps + hover/focus consistency
+ * Issues #541 (R1) + #1963 + #550 (P4/P5): theme + interaction parity,
+ * now expressed through the design tokens at the top of this file.
  * ===================================================================
- * Mirrors hive-mind #1963. Two classes of defect, both rooted in this file's
- * manually-duplicated-hex theming (there are no CSS custom properties, so a
- * surface only goes dark if someone remembers to author a matching dark rule):
+ * Historically each of these surfaces needed THREE hand-written copies of
+ * every colour (a light base + `:root[data-theme="dark"]` + the
+ * `@media (prefers-color-scheme: dark)` fallback). A surface went dark, or a
+ * control gained a hover/focus state, only when every copy was authored — and
+ * new code routinely missed one, which is exactly how P4 ("services box still
+ * not themed in dark") and P5 ("only some topbar buttons react to hover")
+ * happened in the first place.
  *
- *   - P4 ("We still have theming issues in all `services` box"): the desktop
- *     SERVICES and UPDATE panels (the Telegram-bot / OpenAI-server start-stop
- *     cards and the auto-update panel) were authored with only light-mode
- *     hardcoded colors and never received `:root[data-theme="dark"]` /
- *     `@media (prefers-color-scheme: dark)` counterparts, so they kept a
- *     glaring white surface when the rest of the app went dark. This is the
- *     exact failure mode #541 (R1) fixed for other widgets; the dark values
- *     below follow the same established dark palette (#1d201f / #242826
- *     surfaces, #343a3d / #4a524e borders, #ece7df bright / #c9c1b6 muted
- *     text, #91d7bc accent link, #6cc5a6 hover border).
- *
- *   - P5 ("Not all buttons on top menu are reacting to hover ... it is
- *     partial"): the topbar action buttons had NO light-mode :hover at all,
- *     and only 4 of ~10 got a dark :hover, so hovering felt inconsistent.
- *     Every topbar control now shares ONE hover treatment (light + dark) and —
- *     for keyboard parity (WCAG 2.4.7 / 1.4.11) — ONE :focus-visible ring, so
- *     mouse and keyboard users get the same affordance on every button.
+ * Those surfaces now read their colours from the `--fa-*` tokens, so each light
+ * rule themes itself in BOTH dark layers automatically — only the token value
+ * is overridden, in one place at the top of the file. The large R1 + P4
+ * dark-only duplicate blocks that used to live here are therefore gone: their
+ * light rules above carry the tokens (e.g. `.desktop-service`,
+ * `.desktop-service-token`, `.tool-mode`, `.mode-status`). What remains below
+ * is the genuinely shared interaction layer — one hover, one active-hover, and
+ * one :focus-visible ring (WCAG 2.4.7 / 1.4.11) applied uniformly to every
+ * topbar control, all token-driven so mouse and keyboard users get the same
+ * affordance in every theme.
  * =================================================================== */
 
-/* --- P4: dark surfaces for the desktop services + update panels --------- */
-:root[data-theme="dark"] .desktop-service {
-  border-color: #343a3d;
-  background: #1d201f;
-}
-
-:root[data-theme="dark"] .desktop-service-dot {
-  background: #4a524e;
-}
-
-:root[data-theme="dark"] .desktop-service-state {
-  color: #c9c1b6;
-}
-
-:root[data-theme="dark"] .desktop-service-token {
-  border-color: #4a524e;
-  background: #242826;
-  color: #ece7df;
-}
-
-:root[data-theme="dark"] .desktop-service-url {
-  color: #91d7bc;
-}
-
-:root[data-theme="dark"] .desktop-service-actions button,
-:root[data-theme="dark"] .desktop-update-actions button {
-  border-color: #4a524e;
-  background: #242826;
-  color: #ece7df;
-}
-
-:root[data-theme="dark"] .desktop-service-actions button:hover:not(:disabled),
-:root[data-theme="dark"] .desktop-update-actions button:hover:not(:disabled) {
-  border-color: #6cc5a6;
-  background: #28332f;
-}
-
-:root[data-theme="dark"] .desktop-service-start,
-:root[data-theme="dark"] .desktop-update-install {
-  border-color: #2a8f6a;
-  background: #1f7a5b;
-  color: #ffffff;
-}
-
-:root[data-theme="dark"] .desktop-update-state {
-  color: #ece7df;
-}
-
-:root[data-theme="dark"] .desktop-services-error {
-  color: #ef9a9a;
-}
-
-/* --- P5: one uniform hover for every topbar control (light) -------------- */
+/* One uniform hover for every topbar control (themes via --fa-control-*). */
 .mode-toggle:hover,
 .diagnostics-toggle:hover,
 .mode-option:hover,
@@ -4376,8 +4398,8 @@ textarea:disabled {
 .source-code-button:hover,
 .download-button:hover,
 .memory-button:hover {
-  border-color: #86b8a7;
-  background: #edf7f3;
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
 }
 
 /* Active/pressed segmented controls keep their solid green meaning; on hover
@@ -4389,8 +4411,8 @@ textarea:disabled {
 .mode-option[aria-checked="true"]:hover,
 .mode-option.is-active:hover,
 .mobile-menu-toggle[aria-pressed="true"]:hover {
-  border-color: #0f4a3c;
-  background: #0f4a3c;
+  border-color: var(--fa-control-active-hover-border);
+  background: var(--fa-control-active-hover-bg);
 }
 
 /* Keyboard parity (WCAG 2.4.7): one focus ring shared by every topbar control,
@@ -4404,125 +4426,6 @@ textarea:disabled {
 .source-code-button:focus-visible,
 .download-button:focus-visible,
 .memory-button:focus-visible {
-  outline: 2px solid #175f4f;
+  outline: 2px solid var(--fa-focus-ring);
   outline-offset: 2px;
-}
-
-/* --- P5: hover + focus for topbar controls (explicit dark theme) --------- */
-:root[data-theme="dark"] .mode-toggle:hover,
-:root[data-theme="dark"] .diagnostics-toggle:hover,
-:root[data-theme="dark"] .mode-option:hover,
-:root[data-theme="dark"] .mobile-menu-toggle:hover,
-:root[data-theme="dark"] .report-button:hover,
-:root[data-theme="dark"] .memory-button:hover {
-  border-color: #6cc5a6;
-  background: #28332f;
-}
-
-:root[data-theme="dark"] .mode-toggle[aria-pressed="true"]:hover,
-:root[data-theme="dark"] .diagnostics-toggle[aria-pressed="true"]:hover,
-:root[data-theme="dark"] .mode-option[aria-checked="true"]:hover,
-:root[data-theme="dark"] .mode-option.is-active:hover,
-:root[data-theme="dark"] .mobile-menu-toggle[aria-pressed="true"]:hover {
-  border-color: #2a8f6a;
-  background: #165a49;
-}
-
-:root[data-theme="dark"] .mode-toggle:focus-visible,
-:root[data-theme="dark"] .diagnostics-toggle:focus-visible,
-:root[data-theme="dark"] .mode-option:focus-visible,
-:root[data-theme="dark"] .mobile-menu-toggle:focus-visible,
-:root[data-theme="dark"] .sidebar-toggle:focus-visible,
-:root[data-theme="dark"] .report-button:focus-visible,
-:root[data-theme="dark"] .source-code-button:focus-visible,
-:root[data-theme="dark"] .download-button:focus-visible,
-:root[data-theme="dark"] .memory-button:focus-visible {
-  outline: 2px solid #6cc5a6;
-  outline-offset: 2px;
-}
-
-/* --- P4 + P5 mirrored into the media-query dark block ------------------- */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .desktop-service {
-    border-color: #343a3d;
-    background: #1d201f;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-dot {
-    background: #4a524e;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-state {
-    color: #c9c1b6;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-token {
-    border-color: #4a524e;
-    background: #242826;
-    color: #ece7df;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-url {
-    color: #91d7bc;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-actions button,
-  :root:not([data-theme="light"]) .desktop-update-actions button {
-    border-color: #4a524e;
-    background: #242826;
-    color: #ece7df;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-actions button:hover:not(:disabled),
-  :root:not([data-theme="light"]) .desktop-update-actions button:hover:not(:disabled) {
-    border-color: #6cc5a6;
-    background: #28332f;
-  }
-
-  :root:not([data-theme="light"]) .desktop-service-start,
-  :root:not([data-theme="light"]) .desktop-update-install {
-    border-color: #2a8f6a;
-    background: #1f7a5b;
-    color: #ffffff;
-  }
-
-  :root:not([data-theme="light"]) .desktop-update-state {
-    color: #ece7df;
-  }
-
-  :root:not([data-theme="light"]) .desktop-services-error {
-    color: #ef9a9a;
-  }
-
-  :root:not([data-theme="light"]) .mode-toggle:hover,
-  :root:not([data-theme="light"]) .diagnostics-toggle:hover,
-  :root:not([data-theme="light"]) .mode-option:hover,
-  :root:not([data-theme="light"]) .mobile-menu-toggle:hover,
-  :root:not([data-theme="light"]) .report-button:hover,
-  :root:not([data-theme="light"]) .memory-button:hover {
-    border-color: #6cc5a6;
-    background: #28332f;
-  }
-
-  :root:not([data-theme="light"]) .mode-toggle[aria-pressed="true"]:hover,
-  :root:not([data-theme="light"]) .diagnostics-toggle[aria-pressed="true"]:hover,
-  :root:not([data-theme="light"]) .mode-option[aria-checked="true"]:hover,
-  :root:not([data-theme="light"]) .mode-option.is-active:hover,
-  :root:not([data-theme="light"]) .mobile-menu-toggle[aria-pressed="true"]:hover {
-    border-color: #2a8f6a;
-    background: #165a49;
-  }
-
-  :root:not([data-theme="light"]) .mode-toggle:focus-visible,
-  :root:not([data-theme="light"]) .diagnostics-toggle:focus-visible,
-  :root:not([data-theme="light"]) .mode-option:focus-visible,
-  :root:not([data-theme="light"]) .mobile-menu-toggle:focus-visible,
-  :root:not([data-theme="light"]) .sidebar-toggle:focus-visible,
-  :root:not([data-theme="light"]) .report-button:focus-visible,
-  :root:not([data-theme="light"]) .source-code-button:focus-visible,
-  :root:not([data-theme="light"]) .download-button:focus-visible,
-  :root:not([data-theme="light"]) .memory-button:focus-visible {
-    outline: 2px solid #6cc5a6;
-    outline-offset: 2px;
-  }
 }
