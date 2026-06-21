@@ -25,18 +25,20 @@ Consequences observed:
 > (`--fa-control-hover-*`, `--fa-control-active-hover-*`, `--fa-focus-ring`). A new element
 > now *inherits* correct theming by consuming a token instead of re-deriving hex, which
 > removes the P4/P5 root cause. This matches the precedent already set by `landing.css` and
-> by the `--code-*`/`--hljs-*` tokens in `.markdown-body`. It is also the CSP-safe substrate
-> a future Chakra theme maps onto (`solution-plans.md` M2/M3 ADR). The change is
-> value-preserving — every token equals the exact prior hex — so the exact-RGB regression
-> assertions in `issue-1963.spec.js` stayed green.
+> by the `--code-*`/`--hljs-*` tokens in `.markdown-body`. It is also the substrate the
+> shipped Chakra theme maps onto: [`src/web/app/theme.js`](../../../src/web/app/theme.js)
+> bridges each `--fa-*` var 1:1 into a Chakra `semanticToken` (`fa.surface.card` →
+> `var(--fa-surface-card)`), so Chakra components reference the same themed values
+> (`solution-plans.md` M2/M3). The change is value-preserving — every token equals the exact
+> prior hex — so the exact-RGB regression assertions in `issue-1963.spec.js` stayed green.
 
 ## 2. "Fix it in all places" requires knowing where the places are
 
 The issue's M1/M7 ("if the issue is one place it should be fixed in all places") only
 works if you can enumerate the duplication. Here that meant:
 * P2 lives in **two runtimes** — the Rust core (`src/thinking.rs`) and the JS worker
-  (`src/web/app.js`). Both were changed and cross-referenced with a "keep both constants
-  in sync" comment.
+  (authored in `src/web/app/main.jsx`, bun-built into `src/web/app.js`). Both were changed
+  and cross-referenced with a "keep both constants in sync" comment.
 * P4/P5 live in **two dark layers** — the explicit `data-theme` override and the
   `prefers-color-scheme` fallback. Both were changed.
 
@@ -50,10 +52,11 @@ works if you can enumerate the duplication. Here that meant:
 P5's fix grouped every topbar control under one selector list instead of adding yet
 another per-button rule — the CSS-level expression of "reuse our own components" (M2):
 one rule, uniform behavior, no drift. This PR then took the component-level step too: a
-single `ToolbarButton` (`src/web/app.js`) now renders all 11 topbar controls, so the
-shared markup/classes/a11y attributes are guaranteed by construction — a new control
-cannot be added with the wrong shape. The component is built on raw `React.createElement`
-(no JSX/Chakra runtime), so it ships under the strict CSP today.
+single `ToolbarButton` (authored in `src/web/app/main.jsx`) now renders all 11 topbar
+controls, so the shared markup/classes/a11y attributes are guaranteed by construction — a
+new control cannot be added with the wrong shape. The component is authored in JSX and
+renders through Chakra's `chakra.a` / `chakra.button` styled factory, part of the full
+Chakra/JSX migration (M2/M3).
 
 > **Recommendation.** Consolidate at *both* layers: a shared selector removes style drift,
 > and a shared component removes markup drift. Neither alone is sufficient — the selector
@@ -105,13 +108,17 @@ real work → "Revert 'Initial commit with task details'" → merge*.
 
 ## 7. Don't perturb generated artifacts
 
-CI runs `git diff --exit-code` on the committed `vendor.bundle.js` / `ocr.bundle.js`. The
-fixes deliberately touched only hand-written `app.js` / `styles.css` / Rust and left the
-bundle *entry* files alone, so a rebuild produced no bundle diff.
+CI runs `git diff --exit-code` on the committed generated bundles. As part of the M2/M3
+migration `src/web/app.js` is now itself a generated artifact — bun-built from
+`src/web/app/main.jsx` by `build:web` — so the gate was extended to cover it:
+`git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js`
+(`.github/workflows/release.yml`). The source of truth is now `main.jsx`; `app.js` must be
+rebuilt and committed in lock-step so the gate passes.
 
-> **Recommendation.** Before committing web changes, rebuild and confirm the generated
-> bundles are unchanged (or regenerate and commit them intentionally) — never let an
-> incidental bundle diff ride along with a logic fix.
+> **Recommendation.** Edit the source (`main.jsx` / entry files / `styles.css` / Rust),
+> then run `bun run build:web` and commit the regenerated `app.js` / bundles in the same
+> change — never hand-edit a generated artifact, and never let a stale (or incidental)
+> bundle diff ride along with a logic fix.
 
 ## 8. Make the repro production-faithful
 
