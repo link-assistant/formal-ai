@@ -23,6 +23,17 @@ use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::intent_formalization::{formalize_intent, IntentFormalization, IntentKind};
 use crate::links_format::format_lino_record;
+use crate::translation::formalize_prompt;
+
+/// Formalize a single span the same way the solver formalizes a whole prompt:
+/// derive the formalization candidate first (so routes that depend on candidate
+/// relevants are recognized) and then classify. This keeps a segment's kind and
+/// route consistent with how the engine would route that text on its own.
+#[must_use]
+fn formalize_span(span: &str, language: &str) -> IntentFormalization {
+    let candidate = formalize_prompt(span, language);
+    formalize_intent(span, language, Some(&candidate))
+}
 
 /// Lifecycle status of a single detected [`Need`].
 ///
@@ -145,7 +156,7 @@ impl ProblemFrame {
                 .iter()
                 .enumerate()
                 .map(|(index, span)| {
-                    let segment = formalize_intent(span, &formalization.language, None);
+                    let segment = formalize_span(span, &formalization.language);
                     Need {
                         need_id: need_id_for(&frame_id, index, span),
                         source_span: span.clone(),
@@ -205,6 +216,232 @@ impl ProblemFrame {
 #[must_use]
 fn need_id_for(frame_id: &str, index: usize, span: &str) -> String {
     stable_id("problem_need", &format!("{frame_id}:{index}:{span}"))
+}
+
+/// Why a [`WorkUnit`] became a recursion leaf (or did not).
+///
+/// This mirrors the atomicity predicate in
+/// `docs/case-studies/issue-559/recursive-core.md`. Phase 1B records the reason
+/// as trace only; later phases let `atomicity_policy` change which reason wins.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AtomicityReason {
+    /// The span maps to a recognized route, so a single existing method solves
+    /// it directly (the generalization of `handle_specialized_pattern`).
+    DirectMethod,
+    /// The span cannot be decomposed further and has no recognized route; it is
+    /// an irreducible single need.
+    SingleNeed,
+    /// `depth >= max_decomposition_depth`: the unit is forced to a leaf so the
+    /// recursion is always bounded (`NON-GOALS.md`).
+    DepthBound,
+    /// The unit was decomposed into children (it is not a leaf).
+    NotAtomic,
+}
+
+impl AtomicityReason {
+    /// Stable slug used in the Links Notation trace.
+    #[must_use]
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::DirectMethod => "direct_method",
+            Self::SingleNeed => "single_need",
+            Self::DepthBound => "depth_bound",
+            Self::NotAtomic => "not_atomic",
+        }
+    }
+}
+
+/// A node in the recursive, bidirectional decomposition of a [`ProblemFrame`].
+///
+/// A `WorkUnit` is the recursively-formalized sub-impulse from
+/// `docs/case-studies/issue-559/alignment.md`. Phase 1B builds the *downward*
+/// (decomposition) pass only, bounded by `max_decomposition_depth` and the
+/// atomicity base case, and records it as trace. It does not change routing or
+/// the answer (R13); the existing dispatch still resolves every leaf. Later
+/// phases add the upward (construction) pass, candidate/selection links, and the
+/// validation/composition fields described in the recursive-core spec.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct WorkUnit {
+    /// Content-addressed identifier, stable for a given parent, depth, and span.
+    pub unit_id: String,
+    /// The unit or frame that produced this one (`None` for the root).
+    pub parent: Option<String>,
+    /// The substring of the prompt this unit covers.
+    pub source_span: String,
+    /// Recursion depth (0 at the root).
+    pub depth: u8,
+    /// Whether this unit is a recursion leaf.
+    pub atomic: bool,
+    /// Why the unit is (or is not) atomic.
+    pub reason: AtomicityReason,
+    /// The routing slug the span formalizes to, when one is recognized.
+    pub route: Option<String>,
+    /// Sub-units produced by the downward pass (empty when atomic).
+    pub children: Vec<Self>,
+}
+
+impl WorkUnit {
+    /// Build the root unit and its bounded recursive decomposition from the
+    /// already-computed [`IntentFormalization`].
+    #[must_use]
+    pub fn from_formalization(formalization: &IntentFormalization, max_depth: u8) -> Self {
+        Self::build(
+            &formalization.source_text,
+            None,
+            &formalization.language,
+            0,
+            max_depth,
+        )
+    }
+
+    /// Recursively build one unit, splitting only while it is non-atomic and the
+    /// depth bound has not been reached.
+    fn build(span: &str, parent: Option<String>, language: &str, depth: u8, max_depth: u8) -> Self {
+        let unit_id = stable_id("work_unit", &format!("{parent:?}:{depth}:{span}"));
+        let route = formalize_span(span, language).route;
+
+        // Depth bound first: a forced leaf is always bounded.
+        if depth >= max_depth {
+            return Self::leaf(
+                unit_id,
+                parent,
+                span,
+                depth,
+                AtomicityReason::DepthBound,
+                route,
+            );
+        }
+
+        let segments = decompose_once(span);
+        if segments.len() <= 1 {
+            // Cannot split further: a direct method match is the leaf reason when
+            // a route is recognized, otherwise it is an irreducible single need.
+            let reason = if route.is_some() {
+                AtomicityReason::DirectMethod
+            } else {
+                AtomicityReason::SingleNeed
+            };
+            return Self::leaf(unit_id, parent, span, depth, reason, route);
+        }
+
+        let children = segments
+            .iter()
+            .map(|child_span| {
+                Self::build(
+                    child_span,
+                    Some(unit_id.clone()),
+                    language,
+                    depth + 1,
+                    max_depth,
+                )
+            })
+            .collect();
+        Self {
+            unit_id,
+            parent,
+            source_span: span.to_owned(),
+            depth,
+            atomic: false,
+            reason: AtomicityReason::NotAtomic,
+            route,
+            children,
+        }
+    }
+
+    fn leaf(
+        unit_id: String,
+        parent: Option<String>,
+        span: &str,
+        depth: u8,
+        reason: AtomicityReason,
+        route: Option<String>,
+    ) -> Self {
+        Self {
+            unit_id,
+            parent,
+            source_span: span.to_owned(),
+            depth,
+            atomic: true,
+            reason,
+            route,
+            children: Vec::new(),
+        }
+    }
+
+    /// Total number of units in this subtree (this unit plus its descendants).
+    #[must_use]
+    pub fn unit_count(&self) -> usize {
+        1 + self.children.iter().map(Self::unit_count).sum::<usize>()
+    }
+
+    /// Number of recursion leaves (atomic units) in this subtree.
+    #[must_use]
+    pub fn leaf_count(&self) -> usize {
+        if self.atomic {
+            1
+        } else {
+            self.children.iter().map(Self::leaf_count).sum()
+        }
+    }
+
+    /// Render this unit and its descendants as Links Notation records.
+    #[must_use]
+    pub fn to_links_notation(&self) -> String {
+        let mut pairs: Vec<(&str, String)> = vec![
+            ("record_type", "work_unit".to_owned()),
+            ("unit_id", self.unit_id.clone()),
+            ("source_span", self.source_span.clone()),
+            ("depth", self.depth.to_string()),
+            ("atomic", self.atomic.to_string()),
+            ("atomicity_reason", self.reason.slug().to_owned()),
+        ];
+        if let Some(parent) = &self.parent {
+            pairs.push(("parent", parent.clone()));
+        }
+        if let Some(route) = &self.route {
+            pairs.push(("route", route.clone()));
+        }
+        for child in &self.children {
+            pairs.push(("child", child.unit_id.clone()));
+        }
+        let mut out = format_lino_record(&self.unit_id, &pairs);
+        for child in &self.children {
+            out.push('\n');
+            out.push_str(&child.to_links_notation());
+        }
+        out
+    }
+
+    /// Emit the `work_unit:enter` / `work_unit:exit` loop events in pre-order so
+    /// the downward pass is observable in the event log (mirrors the
+    /// `solve_unit` pseudo-code in the recursive-core spec).
+    fn emit_events(&self, log: &mut EventLog) {
+        log.append(
+            "work_unit:enter",
+            format!("{} {}", self.depth, self.source_span),
+        );
+        for child in &self.children {
+            child.emit_events(log);
+        }
+        log.append(
+            "work_unit:exit",
+            format!("{} {}", self.depth, self.reason.slug()),
+        );
+    }
+}
+
+/// Split a span one level, preferring sentence boundaries over clause boundaries
+/// so the work-unit tree is hierarchical (sentences above clauses).
+///
+/// Returns the single span unchanged when it cannot be split further, which is
+/// the recursion base case in [`WorkUnit::build`].
+#[must_use]
+fn decompose_once(span: &str) -> Vec<String> {
+    let sentences = split_sentences(span);
+    if sentences.len() > 1 {
+        return sentences;
+    }
+    split_clauses(span)
 }
 
 /// Split a prompt into the spans that each carry one need.
@@ -291,4 +528,25 @@ pub(crate) fn record_problem_frame(
         );
     }
     frame
+}
+
+/// Build the recursive work-unit tree for the formalized prompt and emit it as
+/// loop events plus its Links Notation trace.
+///
+/// This is the downward (decomposition) pass of the recursive core, recorded as
+/// trace only (Phase 1B): it appends a `work_unit` record (the serialized tree),
+/// a `work_unit:count`, a `work_unit:leaf_count`, and the per-unit
+/// `work_unit:enter` / `work_unit:exit` events. Routing and the answer are
+/// unchanged — every leaf is still resolved by the existing dispatch (R13).
+pub(crate) fn record_work_units(
+    log: &mut EventLog,
+    formalization: &IntentFormalization,
+    max_depth: u8,
+) -> WorkUnit {
+    let root = WorkUnit::from_formalization(formalization, max_depth);
+    log.append("work_unit", root.to_links_notation());
+    log.append("work_unit:count", root.unit_count().to_string());
+    log.append("work_unit:leaf_count", root.leaf_count().to_string());
+    root.emit_events(log);
+    root
 }

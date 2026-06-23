@@ -69,6 +69,58 @@ fn specialized_handlers_still_publish_loop_events() {
     );
 }
 
+#[test]
+fn handler_families_publish_loop_events_as_recursion_leaves() {
+    // Issue #559 (Phase 1B): widen the loop-event guarantee beyond arithmetic.
+    // Each of these prompts is a distinct handler family; every one must still
+    // emit candidate generation and validation when reached as a recursion leaf,
+    // and must record the new work-unit decomposition trace alongside them, so
+    // the recursive core is observable without changing the answer (R13/R332).
+    for (prompt, expected_intent) in [
+        ("What is 7 * (3 + 4)?", "calculation"),
+        ("Hi", "greeting"),
+        ("translate apple to Russian", "translate_en_to_ru"),
+    ] {
+        let response = answer(prompt);
+        assert_eq!(
+            response.intent, expected_intent,
+            "{prompt:?} must still route to {expected_intent}"
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("candidate:")),
+            "{prompt:?} must still record candidate generation: {:?}",
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("validation:")),
+            "{prompt:?} must still record validation: {:?}",
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("work_unit:enter")),
+            "{prompt:?} must record the work-unit decomposition trace: {:?}",
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("work_unit:exit")),
+            "{prompt:?} must record a work-unit exit for every entered unit: {:?}",
+            response.evidence_links
+        );
+    }
+}
+
 // ---------------------------------------------------------------------------
 // full-scope expectations: the full 9-step reasoning loop.
 // ---------------------------------------------------------------------------

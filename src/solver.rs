@@ -482,6 +482,16 @@ impl UniversalSolver {
         let _problem_frame =
             crate::meta_frame::record_problem_frame(&mut log, &intent_formalization);
 
+        // Issue #559 (Phase 1B): record the recursive, bounded downward pass —
+        // the work-unit decomposition of the frame (R19/R332) — as trace. Every
+        // leaf is still resolved by the existing dispatch below, so routing and
+        // the answer are unchanged (R13).
+        let _work_unit_root = crate::meta_frame::record_work_units(
+            &mut log,
+            &intent_formalization,
+            self.config.max_decomposition_depth,
+        );
+
         log.append("search:local", prompt.to_owned());
 
         let sub_impulses =

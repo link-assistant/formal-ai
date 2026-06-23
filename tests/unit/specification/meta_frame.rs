@@ -8,7 +8,7 @@
 //! handler tests; here we assert the frame itself is correct and stable.
 
 use formal_ai::intent_formalization::formalize_intent;
-use formal_ai::meta_frame::{NeedStatus, ProblemFrame};
+use formal_ai::meta_frame::{AtomicityReason, NeedStatus, ProblemFrame, WorkUnit};
 use formal_ai::translation::formalize_prompt;
 use formal_ai::IntentKind;
 
@@ -16,6 +16,30 @@ fn frame_for(prompt: &str) -> ProblemFrame {
     let candidate = formalize_prompt(prompt, "en");
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
     ProblemFrame::from_formalization(&formalization)
+}
+
+fn work_unit_for(prompt: &str, max_depth: u8) -> WorkUnit {
+    let candidate = formalize_prompt(prompt, "en");
+    let formalization = formalize_intent(prompt, "en", Some(&candidate));
+    WorkUnit::from_formalization(&formalization, max_depth)
+}
+
+fn collect_leaves(unit: &WorkUnit, out: &mut Vec<String>) {
+    if unit.atomic {
+        out.push(unit.source_span.clone());
+    } else {
+        for child in &unit.children {
+            collect_leaves(child, out);
+        }
+    }
+}
+
+fn deepest_depth(unit: &WorkUnit) -> u8 {
+    unit.children
+        .iter()
+        .map(deepest_depth)
+        .max()
+        .unwrap_or(unit.depth)
 }
 
 #[test]
@@ -137,6 +161,110 @@ fn frame_serializes_to_grounded_links_notation() {
             lino.contains(&need.need_id),
             "need id {} must appear in the trace:\n{lino}",
             need.need_id
+        );
+    }
+}
+
+#[test]
+fn single_intent_prompt_is_an_atomic_root() {
+    let root = work_unit_for("translate apple to Russian", 4);
+    assert_eq!(root.depth, 0);
+    assert!(
+        root.atomic,
+        "a single-intent prompt must be an atomic root so its leaf routes as today: {root:?}"
+    );
+    assert!(
+        root.children.is_empty(),
+        "an atomic root must have no children"
+    );
+    assert_eq!(
+        root.reason,
+        AtomicityReason::DirectMethod,
+        "a recognized route must record a direct-method leaf"
+    );
+    assert_eq!(root.unit_count(), 1);
+    assert_eq!(root.leaf_count(), 1);
+}
+
+#[test]
+fn conjunction_prompt_decomposes_into_atomic_leaves() {
+    let root = work_unit_for(
+        "translate apple to Russian and write a hello world program in Python",
+        4,
+    );
+    assert!(
+        !root.atomic,
+        "a conjunction root must decompose into children: {root:?}"
+    );
+    assert_eq!(root.reason, AtomicityReason::NotAtomic);
+    assert!(
+        root.children.len() >= 2,
+        "a conjunction must yield at least two children: {root:?}"
+    );
+    let mut leaves = Vec::new();
+    collect_leaves(&root, &mut leaves);
+    assert!(
+        leaves.iter().any(|span| span.contains("translate apple")),
+        "the translate clause must reach a leaf: {leaves:?}"
+    );
+    assert!(
+        leaves.iter().any(|span| span.contains("hello world")),
+        "the write-program clause must reach a leaf: {leaves:?}"
+    );
+    assert_eq!(
+        root.leaf_count(),
+        leaves.len(),
+        "leaf_count must match the collected leaves"
+    );
+}
+
+#[test]
+fn recursion_is_bounded_by_max_depth() {
+    let prompt = "translate apple to Russian and write a hello world program in Python";
+    let shallow = work_unit_for(prompt, 1);
+    assert!(
+        deepest_depth(&shallow) <= 1,
+        "no unit may exceed the configured max depth: {shallow:?}"
+    );
+}
+
+#[test]
+fn depth_bounded_leaf_records_its_reason() {
+    // With max_depth 0 the root is forced to a leaf immediately, even though it
+    // is a multi-need conjunction, so the recursion is always bounded.
+    let root = work_unit_for(
+        "translate apple to Russian and write a hello world program in Python",
+        0,
+    );
+    assert!(root.atomic, "max_depth 0 must force the root to a leaf");
+    assert_eq!(root.reason, AtomicityReason::DepthBound);
+    assert!(root.children.is_empty());
+}
+
+#[test]
+fn work_unit_tree_serializes_to_grounded_links_notation() {
+    let root = work_unit_for(
+        "translate apple to Russian and write a hello world program in Python",
+        4,
+    );
+    let lino = root.to_links_notation();
+    assert!(
+        lino.contains("record_type \"work_unit\""),
+        "every unit must declare its record_type:\n{lino}"
+    );
+    assert!(
+        lino.contains("atomicity_reason \"not_atomic\""),
+        "the non-atomic root must record its reason:\n{lino}"
+    );
+    assert!(
+        lino.contains(&format!("unit_id \"{}\"", root.unit_id)),
+        "the root unit id must serialize:\n{lino}"
+    );
+    for child in &root.children {
+        assert!(
+            lino.contains(&child.unit_id),
+            "child unit {} must appear in the trace:\n{lino}",
+            child.unit_id
         );
     }
 }

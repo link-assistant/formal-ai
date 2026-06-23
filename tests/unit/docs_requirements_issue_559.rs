@@ -51,6 +51,52 @@ fn issue_559_problem_frame_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_recursive_work_units_are_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R332: the requirements row exists and cites the shipped recursive core.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R332 ",
+            "recursive, bounded work-unit tree",
+            "src/meta_frame.rs",
+            "record_work_units",
+            "max_decomposition_depth",
+        ],
+    );
+
+    // The frame module ships the recursive work-unit structures and recorder.
+    let meta_frame = read(root.join("src/meta_frame.rs"));
+    assert_contains_all(
+        "src/meta_frame.rs",
+        &meta_frame,
+        &[
+            "pub struct WorkUnit",
+            "pub enum AtomicityReason",
+            "fn decompose_once",
+            "fn record_work_units",
+            "work_unit:enter",
+            "work_unit:exit",
+        ],
+    );
+
+    // The recursive pass is wired into the solver loop, bounded by the existing
+    // depth knob so it stays terminating and behavior-preserving.
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("crate::meta_frame::record_work_units"),
+        "src/solver.rs should emit the work-unit decomposition in the main loop"
+    );
+    assert!(
+        solver.contains("self.config.max_decomposition_depth"),
+        "the recursive pass must be bounded by max_decomposition_depth"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
