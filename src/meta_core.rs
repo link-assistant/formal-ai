@@ -29,11 +29,7 @@ use crate::intent_formalization::IntentFormalization;
 /// `max_depth` bounds the recursive decomposition so the downward pass always
 /// terminates. This is the single seam the solver loop calls; keeping the five
 /// stages together here keeps the loop body small and the pipeline cohesive.
-pub fn record_meta_core(
-    log: &mut EventLog,
-    formalization: &IntentFormalization,
-    max_depth: u8,
-) {
+pub fn record_meta_core(log: &mut EventLog, formalization: &IntentFormalization, max_depth: u8) {
     let problem_frame = crate::meta_frame::record_problem_frame(log, formalization);
     let work_unit_root = crate::meta_frame::record_work_units(log, formalization, max_depth);
     let need_ledger = crate::meta_frame::record_need_ledger(log, &problem_frame, &work_unit_root);
