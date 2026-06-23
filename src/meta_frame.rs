@@ -575,6 +575,12 @@ pub struct LedgerRow {
     pub status: NeedStatus,
     /// The atomicity reason of the leaf that resolved this need, when matched.
     pub leaf_reason: Option<AtomicityReason>,
+    /// The id of the work-unit leaf that resolves this need, when matched — the
+    /// link that connects the ledger row back to the decomposition (R334).
+    pub unit_id: Option<String>,
+    /// The route the resolving leaf carries, when matched — the method the leaf
+    /// is expected to dispatch to.
+    pub route: Option<String>,
 }
 
 impl LedgerRow {
@@ -592,6 +598,12 @@ impl LedgerRow {
         ];
         if let Some(reason) = self.leaf_reason {
             pairs.push(("leaf_reason", reason.slug().to_owned()));
+        }
+        if let Some(unit_id) = &self.unit_id {
+            pairs.push(("unit_id", unit_id.clone()));
+        }
+        if let Some(route) = &self.route {
+            pairs.push(("route", route.clone()));
         }
         format_lino_record(&row_id, &pairs)
     }
@@ -628,19 +640,20 @@ impl NeedLedger {
             .iter()
             .map(|need| {
                 let leaf = best_leaf_for(&leaves, &need.source_span);
-                let (status, leaf_reason) = leaf.map_or((NeedStatus::Blocked, None), |leaf| {
-                    let status = if leaf.route.is_some() {
+                let status = leaf.map_or(NeedStatus::Blocked, |leaf| {
+                    if leaf.route.is_some() {
                         NeedStatus::Satisfied
                     } else {
                         NeedStatus::Blocked
-                    };
-                    (status, Some(leaf.reason))
+                    }
                 });
                 LedgerRow {
                     need_id: need.need_id.clone(),
                     source_span: need.source_span.clone(),
                     status,
-                    leaf_reason,
+                    leaf_reason: leaf.map(|leaf| leaf.reason),
+                    unit_id: leaf.map(|leaf| leaf.unit_id.clone()),
+                    route: leaf.and_then(|leaf| leaf.route.clone()),
                 }
             })
             .collect();

@@ -216,6 +216,47 @@ fn issue_559_recursive_core_recipe_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_solution_evidence_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R334: the requirements row exists and cites the shipped evidence pipeline.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R334 ",
+            "end-to-end evidence chain",
+            "src/solution_evidence.rs",
+            "record_solution_evidence",
+        ],
+    );
+
+    // The evidence module ships the named structures and the loop-event recorder.
+    let evidence = read(root.join("src/solution_evidence.rs"));
+    assert_contains_all(
+        "src/solution_evidence.rs",
+        &evidence,
+        &[
+            "pub struct SolutionEvidence",
+            "pub struct EvidenceTrail",
+            "fn assemble",
+            "fn accounted_for",
+            "fn fully_resolved",
+            "fn record_solution_evidence",
+            "solution_evidence",
+        ],
+    );
+
+    // The evidence join is wired into the solver loop as a trace-only event.
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("crate::solution_evidence::record_solution_evidence"),
+        "src/solver.rs should emit the solution evidence in the main loop"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

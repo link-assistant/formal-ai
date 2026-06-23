@@ -496,7 +496,7 @@ impl UniversalSolver {
         // detected need carries an explicit status (R8/R333). Trace-only: a
         // blocked need is recorded rather than dropped, but routing and the
         // answer are unchanged (R13).
-        let _need_ledger =
+        let need_ledger =
             crate::meta_frame::record_need_ledger(&mut log, &problem_frame, &work_unit_root);
 
         // Issue #559 (Phase 3): record the method registry — the catalogue of
@@ -504,7 +504,18 @@ impl UniversalSolver {
         // constants and serialized as link data (R331), so the meta algorithm can
         // later reason about its own methods. Trace-only: selection still flows
         // through the existing dispatch below, preserving behavior (R13).
-        let _method_registry = crate::method_registry::record_method_registry(&mut log);
+        let method_registry = crate::method_registry::record_method_registry(&mut log);
+
+        // Issue #559 (R334): join the frame, ledger, and registry into one
+        // end-to-end evidence chain — per need, frame → work-unit leaf → status →
+        // method — so "address every detected need" is auditable as a single
+        // record. Trace-only: routing and the answer are unchanged (R13).
+        let _solution_evidence = crate::solution_evidence::record_solution_evidence(
+            &mut log,
+            &problem_frame,
+            &need_ledger,
+            &method_registry,
+        );
 
         log.append("search:local", prompt.to_owned());
 

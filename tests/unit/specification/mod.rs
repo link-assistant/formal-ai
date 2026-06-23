@@ -70,6 +70,7 @@ mod reasoning_paths_procedures;
 mod recursive_core_recipe;
 mod self_improvement;
 mod shared_dialog_replay;
+mod solution_evidence;
 mod source_cache;
 mod substitution_rules;
 mod summarization_pipeline;
