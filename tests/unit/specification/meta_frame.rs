@@ -8,7 +8,7 @@
 //! handler tests; here we assert the frame itself is correct and stable.
 
 use formal_ai::intent_formalization::formalize_intent;
-use formal_ai::meta_frame::{AtomicityReason, NeedStatus, ProblemFrame, WorkUnit};
+use formal_ai::meta_frame::{AtomicityReason, NeedLedger, NeedStatus, ProblemFrame, WorkUnit};
 use formal_ai::translation::formalize_prompt;
 use formal_ai::IntentKind;
 
@@ -40,6 +40,15 @@ fn deepest_depth(unit: &WorkUnit) -> u8 {
         .map(deepest_depth)
         .max()
         .unwrap_or(unit.depth)
+}
+
+fn ledger_for(prompt: &str) -> (ProblemFrame, NeedLedger) {
+    let candidate = formalize_prompt(prompt, "en");
+    let formalization = formalize_intent(prompt, "en", Some(&candidate));
+    let frame = ProblemFrame::from_formalization(&formalization);
+    let root = WorkUnit::from_formalization(&formalization, 4);
+    let ledger = NeedLedger::resolve(&frame, &root);
+    (frame, ledger)
 }
 
 #[test]
@@ -267,6 +276,83 @@ fn work_unit_tree_serializes_to_grounded_links_notation() {
             child.unit_id
         );
     }
+}
+
+#[test]
+fn ledger_has_exactly_one_row_per_need() {
+    let (frame, ledger) =
+        ledger_for("translate apple to Russian and write a hello world program in Python");
+    assert_eq!(
+        ledger.rows.len(),
+        frame.needs.len(),
+        "the ledger must account for every detected need exactly once"
+    );
+    for need in &frame.needs {
+        assert!(
+            ledger.rows.iter().any(|row| row.need_id == need.need_id),
+            "need {} must appear in the ledger",
+            need.need_id
+        );
+    }
+}
+
+#[test]
+fn every_need_is_accounted_for_with_a_non_pending_status() {
+    let (_frame, ledger) =
+        ledger_for("translate apple to Russian and write a hello world program in Python");
+    assert!(
+        ledger.every_need_accounted_for(),
+        "no need may stay pending in the resolved ledger: {ledger:?}"
+    );
+    assert!(
+        ledger
+            .rows
+            .iter()
+            .all(|row| row.status != NeedStatus::Pending),
+        "every row must carry an explicit status"
+    );
+}
+
+#[test]
+fn routed_need_is_satisfied_and_unroutable_need_is_blocked() {
+    let (_frame, ledger) = ledger_for("translate apple to Russian");
+    assert_eq!(ledger.rows.len(), 1);
+    assert_eq!(
+        ledger.rows[0].status,
+        NeedStatus::Satisfied,
+        "a need that maps to a known method must be satisfiable"
+    );
+    assert_eq!(
+        ledger.rows[0].leaf_reason,
+        Some(AtomicityReason::DirectMethod)
+    );
+
+    let (_frame, blocked) = ledger_for("zzqqx unfathomable gibberish token");
+    assert_eq!(blocked.rows.len(), 1);
+    assert_eq!(
+        blocked.rows[0].status,
+        NeedStatus::Blocked,
+        "a need with no recognized method must be recorded as blocked, not dropped"
+    );
+}
+
+#[test]
+fn ledger_serializes_to_grounded_links_notation() {
+    let (_frame, ledger) =
+        ledger_for("translate apple to Russian and write a hello world program in Python");
+    let lino = ledger.to_links_notation();
+    assert!(
+        lino.contains("record_type \"need_ledger\""),
+        "the ledger must declare its record_type:\n{lino}"
+    );
+    assert!(
+        lino.contains("record_type \"need_ledger_row\""),
+        "every row must serialize as its own record:\n{lino}"
+    );
+    assert!(
+        lino.contains(&format!("row_count \"{}\"", ledger.rows.len())),
+        "the ledger must record its row count:\n{lino}"
+    );
 }
 
 #[test]

@@ -97,6 +97,46 @@ fn issue_559_recursive_work_units_are_traceable() {
     );
 }
 
+#[test]
+fn issue_559_need_ledger_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R333: the requirements row exists and cites the shipped ledger.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R333 ",
+            "need-satisfaction ledger",
+            "src/meta_frame.rs",
+            "record_need_ledger",
+        ],
+    );
+
+    // The frame module ships the ledger structures and recorder.
+    let meta_frame = read(root.join("src/meta_frame.rs"));
+    assert_contains_all(
+        "src/meta_frame.rs",
+        &meta_frame,
+        &[
+            "pub struct NeedLedger",
+            "pub struct LedgerRow",
+            "fn resolve",
+            "fn every_need_accounted_for",
+            "fn record_need_ledger",
+            "need:status",
+        ],
+    );
+
+    // The ledger is wired into the solver loop as a trace-only event.
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("crate::meta_frame::record_need_ledger"),
+        "src/solver.rs should emit the need ledger in the main loop"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

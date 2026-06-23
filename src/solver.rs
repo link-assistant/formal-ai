@@ -479,18 +479,25 @@ impl UniversalSolver {
         // frame — the meaning record made first-class, enumerating every detected
         // need (R7/R330). This is trace-only: routing and the answer are still
         // decided by the existing dispatch below, preserving behavior (R13).
-        let _problem_frame =
+        let problem_frame =
             crate::meta_frame::record_problem_frame(&mut log, &intent_formalization);
 
         // Issue #559 (Phase 1B): record the recursive, bounded downward pass —
         // the work-unit decomposition of the frame (R19/R332) — as trace. Every
         // leaf is still resolved by the existing dispatch below, so routing and
         // the answer are unchanged (R13).
-        let _work_unit_root = crate::meta_frame::record_work_units(
+        let work_unit_root = crate::meta_frame::record_work_units(
             &mut log,
             &intent_formalization,
             self.config.max_decomposition_depth,
         );
+
+        // Issue #559 (Phase 2): project the need-satisfaction ledger so every
+        // detected need carries an explicit status (R8/R333). Trace-only: a
+        // blocked need is recorded rather than dropped, but routing and the
+        // answer are unchanged (R13).
+        let _need_ledger =
+            crate::meta_frame::record_need_ledger(&mut log, &problem_frame, &work_unit_root);
 
         log.append("search:local", prompt.to_owned());
 

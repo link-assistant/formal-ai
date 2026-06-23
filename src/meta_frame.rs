@@ -384,6 +384,18 @@ impl WorkUnit {
         }
     }
 
+    /// Collect references to every recursion leaf (atomic unit) in this subtree,
+    /// in source order.
+    pub fn collect_leaves<'a>(&'a self, out: &mut Vec<&'a Self>) {
+        if self.atomic {
+            out.push(self);
+        } else {
+            for child in &self.children {
+                child.collect_leaves(out);
+            }
+        }
+    }
+
     /// Render this unit and its descendants as Links Notation records.
     #[must_use]
     pub fn to_links_notation(&self) -> String {
@@ -549,4 +561,171 @@ pub(crate) fn record_work_units(
     log.append("work_unit:leaf_count", root.leaf_count().to_string());
     root.emit_events(log);
     root
+}
+
+/// One row of the need-satisfaction ledger: a detected need plus the status the
+/// recursive core assigns it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LedgerRow {
+    /// The need this row resolves.
+    pub need_id: String,
+    /// The need's source span (for provenance in the trace).
+    pub source_span: String,
+    /// The resolved lifecycle status.
+    pub status: NeedStatus,
+    /// The atomicity reason of the leaf that resolved this need, when matched.
+    pub leaf_reason: Option<AtomicityReason>,
+}
+
+impl LedgerRow {
+    #[must_use]
+    fn to_links_notation(&self) -> String {
+        let row_id = stable_id(
+            "need_ledger_row",
+            &format!("{}:{}", self.need_id, self.status.slug()),
+        );
+        let mut pairs: Vec<(&str, String)> = vec![
+            ("record_type", "need_ledger_row".to_owned()),
+            ("need_id", self.need_id.clone()),
+            ("source_span", self.source_span.clone()),
+            ("status", self.status.slug().to_owned()),
+        ];
+        if let Some(reason) = self.leaf_reason {
+            pairs.push(("leaf_reason", reason.slug().to_owned()));
+        }
+        format_lino_record(&row_id, &pairs)
+    }
+}
+
+/// The need-satisfaction ledger for one [`ProblemFrame`] (root requirement R333).
+///
+/// The ledger makes "address every detected need" (R8) structural rather than
+/// prose: every need in the frame appears exactly once with an explicit status,
+/// so a blocked or deferred need is recorded, never silently dropped. Phase 2
+/// derives the status from the recursive work-unit tree — a need whose leaf maps
+/// to a direct method is [`NeedStatus::Satisfied`] (a known method resolves it);
+/// a need with no recognized method (a single-need or depth-bound leaf) is
+/// [`NeedStatus::Blocked`] and reported as such. This is a behavior-preserving
+/// projection: it changes neither routing nor the answer. Runtime validation
+/// feedback (flipping a satisfied prediction back to blocked when a leaf fails
+/// to validate) is layered on in a later phase.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NeedLedger {
+    /// The frame this ledger resolves.
+    pub frame_id: String,
+    /// One row per detected need, in frame order.
+    pub rows: Vec<LedgerRow>,
+}
+
+impl NeedLedger {
+    /// Resolve the ledger for a frame against its recursive work-unit tree.
+    #[must_use]
+    pub fn resolve(frame: &ProblemFrame, root: &WorkUnit) -> Self {
+        let mut leaves = Vec::new();
+        root.collect_leaves(&mut leaves);
+        let rows = frame
+            .needs
+            .iter()
+            .map(|need| {
+                let leaf = best_leaf_for(&leaves, &need.source_span);
+                let (status, leaf_reason) = leaf.map_or((NeedStatus::Blocked, None), |leaf| {
+                    let status = if leaf.route.is_some() {
+                        NeedStatus::Satisfied
+                    } else {
+                        NeedStatus::Blocked
+                    };
+                    (status, Some(leaf.reason))
+                });
+                LedgerRow {
+                    need_id: need.need_id.clone(),
+                    source_span: need.source_span.clone(),
+                    status,
+                    leaf_reason,
+                }
+            })
+            .collect();
+        Self {
+            frame_id: frame.frame_id.clone(),
+            rows,
+        }
+    }
+
+    /// Number of rows with the given status.
+    #[must_use]
+    pub fn count_with(&self, status: NeedStatus) -> usize {
+        self.rows.iter().filter(|row| row.status == status).count()
+    }
+
+    /// Whether every detected need has an explicit, non-pending status — the
+    /// structural form of "address every detected need" (R8).
+    #[must_use]
+    pub fn every_need_accounted_for(&self) -> bool {
+        !self.rows.is_empty()
+            && self
+                .rows
+                .iter()
+                .all(|row| row.status != NeedStatus::Pending)
+    }
+
+    /// Render the ledger and its rows as Links Notation records.
+    #[must_use]
+    pub fn to_links_notation(&self) -> String {
+        let ledger_id = stable_id("need_ledger", &self.frame_id);
+        let mut pairs: Vec<(&str, String)> = vec![
+            ("record_type", "need_ledger".to_owned()),
+            ("frame_id", self.frame_id.clone()),
+            ("row_count", self.rows.len().to_string()),
+            (
+                "satisfied",
+                self.count_with(NeedStatus::Satisfied).to_string(),
+            ),
+            ("blocked", self.count_with(NeedStatus::Blocked).to_string()),
+        ];
+        for row in &self.rows {
+            pairs.push(("row", row.need_id.clone()));
+        }
+        let mut out = format_lino_record(&ledger_id, &pairs);
+        for row in &self.rows {
+            out.push('\n');
+            out.push_str(&row.to_links_notation());
+        }
+        out
+    }
+}
+
+/// Pick the work-unit leaf that best matches a need's span: an exact span match
+/// first, then the longest leaf span contained in the need (or containing it),
+/// so a need is mapped to the most specific method that covers it.
+#[must_use]
+fn best_leaf_for<'a>(leaves: &'a [&'a WorkUnit], span: &str) -> Option<&'a WorkUnit> {
+    if let Some(exact) = leaves.iter().find(|leaf| leaf.source_span == span) {
+        return Some(exact);
+    }
+    leaves
+        .iter()
+        .filter(|leaf| span.contains(leaf.source_span.as_str()) || leaf.source_span.contains(span))
+        .max_by_key(|leaf| leaf.source_span.len())
+        .copied()
+}
+
+/// Resolve and emit the need-satisfaction ledger as a loop event plus its Links
+/// Notation trace (Phase 2). Trace-only: routing and the answer are unchanged.
+pub(crate) fn record_need_ledger(
+    log: &mut EventLog,
+    frame: &ProblemFrame,
+    root: &WorkUnit,
+) -> NeedLedger {
+    let ledger = NeedLedger::resolve(frame, root);
+    log.append("need_ledger", ledger.to_links_notation());
+    log.append(
+        "need_ledger:accounted_for",
+        ledger.every_need_accounted_for().to_string(),
+    );
+    for row in &ledger.rows {
+        log.append(
+            "need:status",
+            format!("{} {}", row.status.slug(), row.source_span),
+        );
+    }
+    ledger
 }
