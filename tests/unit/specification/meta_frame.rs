@@ -18,6 +18,12 @@ fn frame_for(prompt: &str) -> ProblemFrame {
     ProblemFrame::from_formalization(&formalization)
 }
 
+fn frame_for_lang(prompt: &str, language: &str) -> ProblemFrame {
+    let candidate = formalize_prompt(prompt, language);
+    let formalization = formalize_intent(prompt, language, Some(&candidate));
+    ProblemFrame::from_formalization(&formalization)
+}
+
 fn work_unit_for(prompt: &str, max_depth: u8) -> WorkUnit {
     let candidate = formalize_prompt(prompt, "en");
     let formalization = formalize_intent(prompt, "en", Some(&candidate));
@@ -353,6 +359,47 @@ fn ledger_serializes_to_grounded_links_notation() {
         lino.contains(&format!("row_count \"{}\"", ledger.rows.len())),
         "the ledger must record its row count:\n{lino}"
     );
+}
+
+#[test]
+fn frame_formalizes_requests_in_every_supported_language() {
+    // The meta core is language-agnostic by design: every message is translated
+    // into the same link-based meta language and worked on directly, so a request
+    // in any supported language must produce a frame that records that language
+    // and detects at least one need. This pins that property across all four
+    // supported languages (issue #559: "translate every message to a meta
+    // language and work on it"), so a language-specific regression cannot land
+    // with only one language pinned.
+    let cases = [
+        ("english", "en", "translate apple to Russian"),
+        ("russian", "ru", "переведи яблоко на английский"),
+        ("hindi", "hi", "सेब का अंग्रेज़ी में अनुवाद करें"),
+        ("chinese", "zh", "把苹果翻译成英文"),
+    ];
+    for (name, code, prompt) in cases {
+        let frame = frame_for_lang(prompt, code);
+        assert_eq!(
+            frame.language, code,
+            "the {name} frame must record its own language tag, got {:?}",
+            frame.language
+        );
+        assert!(
+            frame.need_count() >= 1,
+            "a {name} request must surface at least one need: {frame:?}"
+        );
+        assert_eq!(
+            frame.needs.len(),
+            frame.need_count(),
+            "the {name} frame's need list must match its reported count"
+        );
+        // The frame must still serialize to grounded Links Notation regardless of
+        // the source language's script.
+        let lino = frame.to_links_notation();
+        assert!(
+            lino.contains(&format!("language \"{code}\"")),
+            "the {name} frame must serialize its language tag:\n{lino}"
+        );
+    }
 }
 
 #[test]
