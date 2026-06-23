@@ -811,3 +811,20 @@ flow documented for server operators.
 | R327 | The desktop app must start and stop both prepared services — the Telegram bot and the OpenAI-compatible API server — with one click, polling Docker for live status and requiring `TELEGRAM_BOT_TOKEN` before the bot starts. | Implemented by `desktop/lib/service-control.cjs` (dependency-injected `runDocker`, `docker inspect -f '{{.State.Running}}'` status, stale-container reaping, required-token check), exposed over IPC by `desktop/main.cjs` (`formalAiDesktop:serviceStatus`/`startService`/`stopService`), bridged by `desktop/preload.cjs`, and rendered as the sidebar Services panel in `src/web/app.js`. |
 | R328 | A server must reproduce the identical containers with one line, and the two Docker-in-Docker services must not collide. | Implemented by root `compose.yaml`, which adds an opt-in `server` profile (`docker compose --profile all up -d`) running `formal-ai serve` on `127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}`, and gives each service its own inner-Docker volume (`formal-ai-telegram-docker`, `formal-ai-server-docker`) because two DinD daemons cannot share one `/var/lib/docker`. |
 | R329 | The one-click desktop and one-line server paths must be fully documented and kept synchronized by tests. | Implemented by `docs/desktop/service-control.md` (plus README "One-click services" and ARCHITECTURE "One-click / one-line services"), and verified by `desktop/scripts/service-control.test.mjs`, `tests/unit/specification/desktop_surface.rs::{desktop_service_control_starts_and_stops_prepared_containers,desktop_web_surface_exposes_one_click_service_controls}`, and `tests/unit/docker_runtime.rs::compose_file_offers_optional_openai_compatible_server_profile`. |
+
+## Issue #559 General Meta Algorithm
+
+Issue [#559](https://github.com/link-assistant/formal-ai/issues/559) asks to
+generalize the solver away from hardcoded specific intents toward a single
+general meta algorithm: translate every message into the meta language, detect
+all questions/requirements/needs, address each in the answer, and let the core
+reason about and (eventually) modify itself. PR
+[#560](https://github.com/link-assistant/formal-ai/pull/560) lands this in
+behavior-preserving phases. The full plan, requirements derivation, recursive
+core, and option comparison are in `docs/case-studies/issue-559/`. New rows
+R330–R335 capture obligations genuinely new to this issue; most of #559 is
+realized through existing rows (R72/R74/R97/R103/R157/R158/R67/R264/R311/R314/R129).
+
+| ID | Requirement | Status |
+| --- | --- | --- |
+| R330 | Every prompt must produce an explicit, link-serializable problem frame — the meaning record made first-class — emitted as a solver loop event and enumerating every detected need. | Implemented by `src/meta_frame.rs` (`ProblemFrame`, `Need`, `record_problem_frame`), wired into `src/solver.rs::solve_with_history_probability_store_and_intent_cache` as the trace-only `problem_frame` event, serialized via `src/links_format.rs::format_lino_record`, and verified by `tests/unit/specification/meta_frame.rs` and `tests/unit/docs_requirements_issue_559.rs::issue_559_problem_frame_is_traceable`. |

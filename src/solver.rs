@@ -475,6 +475,13 @@ impl UniversalSolver {
         record_intent_formalization(&mut log, &intent_entry);
         let intent_formalization = intent_entry.formalization;
 
+        // Issue #559 (Phase 1A): emit the explicit, link-serializable problem
+        // frame — the meaning record made first-class, enumerating every detected
+        // need (R7/R330). This is trace-only: routing and the answer are still
+        // decided by the existing dispatch below, preserving behavior (R13).
+        let _problem_frame =
+            crate::meta_frame::record_problem_frame(&mut log, &intent_formalization);
+
         log.append("search:local", prompt.to_owned());
 
         let sub_impulses =
