@@ -137,6 +137,55 @@ fn issue_559_need_ledger_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_method_registry_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R331: the requirements row exists and cites the shipped registry.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R331 ",
+            "method registry",
+            "src/method_registry.rs",
+            "from_dispatch",
+            "record_method_registry",
+        ],
+    );
+
+    // The registry module ships the named structures and the loop-event recorder.
+    let registry = read(root.join("src/method_registry.rs"));
+    assert_contains_all(
+        "src/method_registry.rs",
+        &registry,
+        &[
+            "pub struct MethodRegistry",
+            "pub struct Method",
+            "pub enum MethodSurface",
+            "fn from_dispatch",
+            "fn to_links_notation",
+            "fn record_method_registry",
+            "method_registry",
+        ],
+    );
+
+    // The catalogue is grounded in the live dispatch constants.
+    let dispatch = read(root.join("src/solver_dispatch.rs"));
+    assert!(
+        dispatch.contains("CONTEXTUAL_HANDLER_NAMES"),
+        "src/solver_dispatch.rs should expose the contextual handler names the registry reads"
+    );
+
+    // The registry is wired into the solver loop as a trace-only event.
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("crate::method_registry::record_method_registry"),
+        "src/solver.rs should emit the method registry in the main loop"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

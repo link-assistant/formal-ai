@@ -81,6 +81,23 @@ pub enum ContextualOutcome {
 /// Extracted from `solver.rs` so that module stays under the repository line
 /// limit; the three branches were previously inlined in
 /// `UniversalSolver::handle_specialized_pattern`.
+/// The context-dependent override handlers, in the order `try_contextual_override`
+/// evaluates them.
+///
+/// This is the single source of truth for the contextual surface, kept beside the
+/// match below so the two cannot drift: every name here is dispatched in the
+/// `match` and every `match` arm is named here (the
+/// `tests/unit/specification/method_registry.rs` grounding test pins both
+/// directions against this source). The method registry (issue #559, R331) reads
+/// this constant so the catalogue-as-data is grounded in the live code.
+pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
+    "proof_request",
+    "meta_explanation",
+    "numeric_list",
+    "shell_command_transform",
+    "text_manipulation",
+];
+
 pub fn try_contextual_override(
     name: &str,
     prompt: &str,

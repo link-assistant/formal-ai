@@ -499,6 +499,13 @@ impl UniversalSolver {
         let _need_ledger =
             crate::meta_frame::record_need_ledger(&mut log, &problem_frame, &work_unit_root);
 
+        // Issue #559 (Phase 3): record the method registry — the catalogue of
+        // handlers each atomic leaf can route to, derived from the live dispatch
+        // constants and serialized as link data (R331), so the meta algorithm can
+        // later reason about its own methods. Trace-only: selection still flows
+        // through the existing dispatch below, preserving behavior (R13).
+        let _method_registry = crate::method_registry::record_method_registry(&mut log);
+
         log.append("search:local", prompt.to_owned());
 
         let sub_impulses =

@@ -54,6 +54,7 @@ mod issue_436;
 mod links_network;
 mod meta_algorithm;
 mod meta_frame;
+mod method_registry;
 mod multilingual;
 mod natural_language_access;
 mod natural_language_skill_compilation;
