@@ -1,6 +1,6 @@
 # Issue 559 Case Study: General Meta Algorithm
 
-Status: first-session planning artifact only. Issue 559 explicitly asks for a detailed planning pass before implementation, with execution to follow after maintainer approval or requested changes.
+Status: planning complete and the meta core (R330–R335) is implemented in PR #560. The planning artifacts below describe the intended migration; the shipped result and a deep, data-grounded analysis are in [implementation-results.md](implementation-results.md), reproducible offline via `cargo run --example issue_559_meta_core` with output captured at [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt).
 
 Update: two rounds of PR feedback on 2026-06-23 shaped this case study. The first (comment 4783154352) requested a deeper plan that integrates Voyager without a neural runtime, makes the solver recursively decompositional and compositional, stays link-native, treats algorithms as data, and audits related upstream dependencies. The second (comment 4783640128) asked to make the plan at least twice as detailed, critically check everything, compare multiple options (implementing them all where feasible), and re-check everything against the vision, requirements, and roadmap. This case study now includes that expanded second planning pass across a spine plus eight companion documents.
 
@@ -67,9 +67,11 @@ The refined plan adds four constraints from the follow-up feedback:
 - [options-comparison.md](options-comparison.md) — options per decision, recommendations, and comparison harnesses.
 - [recursive-core.md](recursive-core.md) — downward/upward passes, atomicity predicate, `SolverConfig` knobs, pseudo-code, Voyager mapping.
 - [evidence-pipeline.md](evidence-pipeline.md) — the general fresh-data pipeline grounded in the existing search core and fetch seams.
+- [implementation-results.md](implementation-results.md) — what actually shipped (R330–R335), a walk through real emitted artifacts for three prompt shapes, the method-registry grounding, a real route↔method vocabulary finding, and how it answers the issue.
 - [solution-plan.md](solution-plan.md) — the spine: planning status, phases 0A–10 with gates, verification matrix, requirement mapping, risk register.
 - [upstream-dependency-audit.md](upstream-dependency-audit.md) — related organization dependencies and existing upstream issues.
 - [raw-data/online-research.md](raw-data/online-research.md) — external research and library/component checks.
+- [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) — the verbatim Links Notation the running meta core emits for three prompt shapes plus the full method registry, produced by `cargo run --example issue_559_meta_core`.
 
 ## Recommended Approval Decision
 
