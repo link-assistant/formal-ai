@@ -1,822 +1,488 @@
 # Issue 559 Solution Plan
 
-This plan preserves the issue's first-session constraint: document and plan first,
-then implement behavior changes after maintainer approval or requested changes.
-The June 23, 2026 PR feedback is folded into this revision: the core solver must
-be fully recursive, must use links as the native representation, must learn from
-Voyager without adding neural-network runtime dependencies, and must include an
-upstream dependency audit before implementation starts.
+This plan preserves the issue's first-session constraint: document and plan
+first, then implement behavior changes after maintainer approval. It folds in the
+two rounds of PR feedback (2026-06-23): the core solver must be fully recursive
+and bidirectional, links must be the native representation, Voyager must be a
+design reference without any neural runtime, an upstream dependency audit must
+precede implementation, and the plan must be at least twice as detailed with
+options compared and re-checked against the governing documents.
+
+This document is the **spine**. The deep detail lives in focused, cross-linked
+companion documents so each stays reviewable:
+
+## Reading Guide
+
+| Document | Purpose |
+| --- | --- |
+| [requirements.md](requirements.md) | R1–R27 + non-goals derived from the issue and feedback |
+| [architecture-inventory.md](architecture-inventory.md) | Current architecture, grounded in `file:line`, with "already built vs absent" |
+| [alignment.md](alignment.md) | Re-check against VISION/GOALS/NON-GOALS/ROADMAP/REQUIREMENTS/ARCHITECTURE; resolves conflicts C1–C7; canonical vocabulary mapping; proposed R330+ |
+| [critical-review.md](critical-review.md) | Every first-session imprecision corrected with evidence (CR1–CR12); precise built-vs-absent inventory |
+| [options-comparison.md](options-comparison.md) | 2–4 options per major decision with pros/cons/cost/risk + recommendation + comparison harnesses |
+| [recursive-core.md](recursive-core.md) | Downward/upward passes, atomicity predicate, `SolverConfig` knobs, pseudo-code grounded in `solver.rs:411-653`, Voyager mapping |
+| [evidence-pipeline.md](evidence-pipeline.md) | expand→search→rerank→crawl→extract→compare→hypothesize, grounded in the real search core and fetch seams |
+| [upstream-dependency-audit.md](upstream-dependency-audit.md) | Org-owned dependency readiness and gates |
+| [raw-data/online-research.md](raw-data/online-research.md) | External research (ReAct, ToT, GoT, Reflexion, Self-Refine, Voyager, meta-theory, etc.) |
 
 ## Planning Status
 
 Current PR scope:
 
-- Planning artifacts only.
-- No runtime behavior changes.
+- Planning artifacts only; no runtime behavior changes.
 - No migration of current caches, overrides, meanings, or `.lino` assets.
 - No direct replacement of current specialized handlers.
-- No new upstream issues opened, because the dependency audit found no blocker
-  for the next behavior-preserving phases.
+- No new upstream issues opened — the audit found no blocker for the next
+  behavior-preserving phases ([upstream-dependency-audit.md](upstream-dependency-audit.md)).
 
 Recommended next approval target:
 
-- Approve Phase 1A and Phase 1B only.
-- Phase 1A adds an observable `ProblemFrame` trace while preserving current
-  routing.
-- Phase 1B adds a recursive `WorkUnit` trace while preserving current answers.
-- Later phases can move selection into data once parity evidence exists.
+- Approve **Phase 1A** and **Phase 1B** only (both behavior-preserving).
+- Phase 1A adds an observable `ProblemFrame` trace while preserving routing.
+- Phase 1B adds a recursive `WorkUnit` trace while preserving answers.
+- Later phases move selection into data only once comparison evidence proves
+  parity.
+
+## Canonical Vocabulary (read this first)
+
+The working names below are **not new primitives**. They make the existing 11-step
+loop's implicit state explicit and link-serializable. This is the resolution of
+conflict C1 (full table in [alignment.md](alignment.md)):
+
+| Working name | Canonical concept | Current carrier | Requirement |
+| --- | --- | --- | --- |
+| `ProblemFrame` | Formalized impulse + 11-step envelope (the "meaning record") | `IntentFormalization` (`src/intent_formalization.rs:48`) | R157, R72 |
+| `Need` | A detected requirement / sub-requirement | requirement records; R158 "graph of requirements and subtasks" | R158 |
+| `WorkUnit` | A recursively-formalized `sub_impulse` | `UniversalSolver::decompose` output | R74 |
+| atomicity / depth | Recursion bound | `SolverConfig::max_decomposition_depth` + new `atomicity_policy` knob | R74, NON-GOALS |
+| `evidence_policy` | Fresh-vs-cached source policy | `source:`/`policy:offline`/`FORMAL_AI_OFFLINE` | R67 |
+| method/skill registry | Data-described selection | extends §9 ladder + `data/seed/intent-routing.lino` | R103, R97 |
+
+Every new control knob is added to `SolverConfig` **first** (`NON-GOALS.md`: "new
+knobs are added to the config first"). The 11-step loop *shape* never branches by
+domain (`GOALS.md`).
+
+## Roadmap Positioning
+
+Issue 559 closes a **named residual**, it does not re-open settled work
+(conflicts C2/C4 in [alignment.md](alignment.md)):
+
+- **Pillar 20** (routing by formalized intent — Built, caveat
+  "`SPECIALIZED_HANDLERS` remain as a precedence table behind the formalized
+  router"): the method-registry migration removes that residual.
+- **Pillar 7** (task-agnostic meta-builder, "algorithm that builds algorithms",
+  R7, tracked in `docs/case-studies/issue-412`): issue 559 advances it.
+- **Pillars 2 / 19 / 26** (universal loop / reasoning under unknowns / general
+  synthesis — Built): issue 559 makes their internal state explicit and reuses
+  them; it does not change the loop shape.
+
+Per the **Verification Contract** (`ROADMAP.md:266`), any phase that changes a
+roadmap item's status must update REQUIREMENTS.md, the ARCHITECTURE status table,
+and ROADMAP together.
 
 ## Target Architecture
 
-The system should be a recursive link-native problem solver. The implementation
-can still use Rust structs, functions, and standard-library calls, but the control
-plane should be representable as links, serializable through existing `.lino`
-assets, and eventually translatable through `meta-language`.
+A recursive, bidirectional, link-native problem solver. Rust structs, functions,
+and standard-library calls remain the implementation, but the **control plane**
+becomes data: representable as links, serialized through `.lino`, and eventually
+round-tripped through `meta-language`.
 
-The target is not "add another handler." The target is to route every prompt
-through a common shape:
+Every prompt flows through one shape (the existing 11-step loop with explicit
+state):
 
 1. Capture an impulse.
-2. Convert it into a structured problem frame.
-3. Split the frame into needs and recursive work units.
-4. Use known methods and accumulated skills as executable links.
-5. Execute the smallest work units directly.
-6. Compose results upward until every need has a visible status.
-7. Record enough trace data to learn new methods behind tests and review gates.
+2. Formalize it into a `ProblemFrame` (explicit meaning record).
+3. Detect all needs; assign each an evidence policy.
+4. Recurse: split into `WorkUnit`s downward while searching the registry/cache to
+   construct upward (both directions — [recursive-core.md](recursive-core.md)).
+5. Resolve atomic units via existing leaf solvers (search, handlers, synthesis).
+6. Compose results upward; record a need-satisfaction ledger.
+7. Project the answer, marking every need satisfied/deferred/blocked/rejected.
+8. Emit enough link-trace data to ground recipes and (later, gated) propose
+   improvements.
 
-### Link-Native Contract
+### Link-Native Contract (re-anchored)
 
-All planning and execution records should be expressible as links:
+All planning and execution records are doublet links — because **`VISION.md:44`
+states "Doublet links are the primitive storage model for this project"** and
+`VISION.md:5` states "The associative network is the AI." (This re-anchors the
+first-session draft, which leaned on external meta-theory phrasing absent from
+the canonical docs — conflict C7.)
 
-- A user message is a link to source text and context.
-- A need is a link between a requested outcome, constraints, evidence, and status.
-- A method is a link between preconditions, input shape, implementation hook,
-  output shape, and validation policy.
-- A work unit is a link between a parent need, child work units, selected method,
-  observations, validation results, and composed output.
-- A piece of code can be linked as data through `meta-language` snapshots and
-  source spans, then linked back to executable hooks.
+- A user message links to source text and context.
+- A need links a requested outcome, constraints, evidence, and status.
+- A method links preconditions, input shape, implementation hook, output shape,
+  and validation policy.
+- A work unit links a parent need, child units, selected method, observations,
+  validation results, and composed output.
+- Code can be linked as data via `meta-language` snapshots/source spans, then
+  linked back to executable hooks (R24; later phase).
 
-Use "link network" terminology in code and docs. Avoid introducing a separate
-conceptual model where point-like and relation-like structures are different
-primitive kinds. In the meta-theory sense, both are links, and a
-self-referential link can stand for a point-like element when needed.
+The meta-theory article remains a cited *external influence*
+([raw-data/online-research.md](raw-data/online-research.md)), not repo doctrine.
 
-### `ProblemFrame`
+### `ProblemFrame` (the explicit meaning record)
 
-Introduce a general `ProblemFrame` before specialized behavior runs. The exact
-Rust type can evolve, but the frame should have these conceptual fields:
+Built and traced before specialized behavior runs; routing stays unchanged until
+comparison tests exist. Conceptual fields:
 
-- `frame_id`: stable trace id for the prompt.
-- `impulse`: original user message plus conversation context.
-- `mode`: chat, agentic coding, task execution, diagnostic, or
-  offline-constrained mode.
-- `language`: detected language, source spans, and translation metadata.
-- `needs`: extracted questions, commands, constraints, preferences, safety
-  constraints, source requirements, freshness requirements, and follow-up
-  references.
-- `evidence_policy`: local memory, source cache, web search, crawl, tool output,
-  test execution, user clarification, or offline-only policy.
-- `root_work_unit`: top-level recursive unit linked to all child units.
-- `candidate_methods`: method or skill candidates with evidence for why each
-  applies.
-- `selected_methods`: methods chosen for execution, preserving deterministic
-  order and compatibility information.
-- `validation_plan`: tests, source requirements, checks, expected evidence, and
-  answer-quality constraints.
-- `observations`: tool outputs, source documents, test results, search results,
-  method outputs, and errors.
-- `composition`: how subresults were merged into the final answer.
-- `presentation`: final answer requirements, omitted details, and unmet need
-  statuses.
-
-Initial implementation rule: build and trace this frame, but keep current
-handler dispatch unchanged until comparison tests are available.
+- `frame_id`, `impulse`, `mode`, `language` (+ source spans);
+- `needs` (questions, commands, constraints, preferences, safety, source/freshness
+  requirements, follow-up references);
+- `evidence_policy` (memory / cache / search / crawl / tool / test / clarification
+  / offline-only);
+- `root_work_unit`, `candidate_methods`, `selected_methods`, `validation_plan`,
+  `observations`, `composition`, `presentation`.
 
 ### Need Records
 
-Every prompt should decompose into need records, not just one intent label.
-Minimum fields:
-
-- `need_id`
-- `source_span`
-- `kind`: question, command, constraint, preference, citation request,
-  freshness request, clarification need, validation need, or presentation need.
-- `satisfaction_criteria`
-- `evidence_requirements`
-- `dependencies`
-- `status`: pending, satisfied, deferred, blocked, rejected, or superseded.
-- `status_reason`
-
-This is the mechanism that prevents the solver from answering one part of a
-multi-part prompt while silently dropping the rest.
+Every prompt decomposes into need records, not a single intent label — this is
+what prevents answering one part of a multi-part prompt and silently dropping the
+rest (R7, R8, R158). Fields: `need_id`, `source_span`, `kind`,
+`satisfaction_criteria`, `evidence_requirements`, `dependencies`, `status`
+(pending/satisfied/deferred/blocked/rejected/superseded), `status_reason`.
 
 ### Recursive `WorkUnit`
 
-`WorkUnit` is the recursive execution unit. It should be stored as link data and
-can be represented by a Rust struct during execution.
-
-Minimum fields:
-
-- `work_unit_id`
-- `parent_work_unit_id`
-- `linked_need_ids`
-- `input_links`
-- `output_links`
-- `constraints`
-- `evidence_policy`
-- `atomicity_decision`
-- `candidate_methods`
-- `selected_method`
-- `child_work_units`
-- `observations`
-- `validation_results`
-- `composition_result`
-- `status`
-
-Atomic units should be small enough to execute by one direct method call,
-standard-library call, crate call, tool call, search query, parser invocation, or
-simple deterministic transformation. Non-atomic units must split into children
-or retrieve existing building blocks before executing.
+The recursive execution unit, stored as link data (Rust struct at runtime).
+Fields: `work_unit_id`, `parent_work_unit_id`, `linked_need_ids`, `input_links`,
+`output_links`, `constraints`, `evidence_policy`, `atomicity_decision`,
+`candidate_methods`, `selected_method`, `child_work_units`, `observations`,
+`validation_results`, `composition_result`, `status`. The atomicity predicate and
+the downward/upward passes are specified in [recursive-core.md](recursive-core.md).
 
 ### Method And Skill Records
 
-Current handlers should become method records first, then skill records can
-accumulate over time. A method or skill record should include:
+Current handlers become method records first; skill records accumulate later.
+Fields: `method_id`, `aliases`, `meaning_links`, `preconditions`,
+`negative_preconditions`, `input_schema`, `output_schema`,
+`required_capabilities`, `evidence_policy`, `validation_policy`,
+`implementation_hook`, `fallback_hooks`, `compatibility_precedence_group`,
+`old_dispatch_handler`, `source_files`, `related_tests`, `benchmark_fixtures`,
+`last_successful_examples`, `failure_examples`, `promotion_status`
+(seed/experimental/stable/deprecated/retired). The registry starts as data that
+mirrors existing behavior; it becomes the control plane only after old/new
+selection agree (Decision 2 / 5 in [options-comparison.md](options-comparison.md)).
 
-- `method_id`
-- `aliases`
-- `meaning_links`
-- `preconditions`
-- `negative_preconditions`
-- `input_schema`
-- `output_schema`
-- `required_capabilities`
-- `evidence_policy`
-- `validation_policy`
-- `implementation_hook`
-- `fallback_hooks`
-- `compatibility_precedence_group`
-- `old_dispatch_handler`
-- `source_files`
-- `related_tests`
-- `benchmark_fixtures`
-- `last_successful_examples`
-- `failure_examples`
-- `promotion_status`: seed, experimental, stable, deprecated, or retired.
+## Core Algorithm, Evidence, Options (summaries)
 
-The registry should start as data that mirrors existing behavior. Only after old
-and new selection agree should the registry become the primary control plane.
+To avoid duplication, the deep specifications live in companion docs:
 
-## Recursive Core Algorithm
+- **Recursive core** — downward decomposition + upward construction meeting at an
+  atomicity predicate; pseudo-code grounded in `solver.rs:411-653`; leaf solvers
+  reuse today's search/handlers/synthesis; SolverConfig knobs
+  (`atomicity_policy`, `recursion_mode`, `selection_mode`); Voyager mapping
+  without neural runtime. See [recursive-core.md](recursive-core.md).
+- **Evidence pipeline** — reuses the built 33-provider search and RRF
+  (`src/web_search_core.rs`); adds crawl/extract/compare/hypothesize and non-CORS
+  providers via the desktop fetch seam; offline-deterministic with cached
+  fixtures. See [evidence-pipeline.md](evidence-pipeline.md).
+- **Options** — frame representation, method selection, recursion direction,
+  evidence execution, migration strategy, registry storage, algorithm-as-data —
+  each with options, recommendation, and a comparison harness behind a
+  `SolverConfig` knob. See [options-comparison.md](options-comparison.md).
 
-The general solver should reason downward by decomposition and upward by
-composition. Both directions are needed: downward recursion finds small tasks;
-upward construction searches for existing pieces that can be combined.
+## Self-Modification Boundary
 
-### Downward Pass
-
-1. Capture the impulse and context.
-2. Create a `ProblemFrame`.
-3. Extract all needs, constraints, preferences, and validation requirements.
-4. Decide the evidence policy for each need.
-5. Create a root `WorkUnit` linked to the frame.
-6. Test whether the unit is atomic.
-7. If atomic, select the smallest applicable method or standard-library call.
-8. If not atomic, split into child work units.
-9. Recurse on each child until every leaf is atomic, blocked, deferred, or
-   rejected.
-10. Record every split as link data.
-
-### Upward Pass
-
-1. Search the method and skill registry for reusable pieces.
-2. Search accumulated examples, experiments, source cache, and current code
-   hooks for solved subproblems.
-3. Propose compositions from available pieces.
-4. Validate each composition against the parent unit's criteria.
-5. If a composition satisfies the parent, mark the child set complete.
-6. If no composition satisfies the parent, decompose further or request more
-   evidence.
-
-### Execution Loop
-
-Pseudo-code for the target behavior:
-
-```text
-solve(frame):
-  root = create_work_unit(frame)
-  recurse(root)
-  result = compose(root)
-  validate_frame(frame, result)
-  return present(frame, result)
-
-recurse(unit):
-  attach_candidate_methods(unit)
-  if is_atomic(unit):
-    execute_atomic(unit)
-    validate(unit)
-    return unit
-
-  children = decompose(unit)
-  if children are empty:
-    children = construct_from_known_pieces(unit)
-
-  for child in children:
-    recurse(child)
-
-  compose_children(unit)
-  validate(unit)
-  if unit is not satisfied and can_split_further(unit):
-    refine_and_recurse(unit)
-  return unit
-```
-
-Atomic execution should be boring and inspectable:
-
-- A Rust standard-library method call.
-- A crate API call such as parser, calculator, search cache, or source resolver.
-- A browser or CLI tool call.
-- A deterministic string, number, date, or source-cache transformation.
-- A registry method whose hook is already tested.
-
-The recursive algorithm must not require a neural network. It may call tools or
-web search when the evidence policy requires them, but core planning, trace
-construction, validation, and composition should stay deterministic and
-testable.
-
-## Voyager-Inspired Adaptation
-
-Voyager is useful as a reference pattern, not as a dependency. The relevant ideas
-map into this project as follows:
-
-| Voyager pattern | Formal AI adaptation |
-| --- | --- |
-| Automatic curriculum | Coverage backlog generated from unsatisfied needs, unknown traces, and missing method records. |
-| Skill library | Link-native method and skill registry backed by `.lino`, examples, experiments, and tests. |
-| Iterative prompting with feedback | Deterministic execute, observe, validate, patch, and retry cycle recorded in work-unit traces. |
-| Self-verification | Critic methods that check every need against evidence and validation policy. |
-| Open-ended exploration | Proposal-only self-improvement loop gated by tests, benchmarks, and human review. |
-
-Do not add Voyager, GPT, embeddings, or any neural runtime to the core algorithm.
-Use the reference to shape the architecture:
-
-- accumulate skills as data;
-- prefer small reusable methods;
-- let failures generate curriculum items;
-- require execution feedback before promotion;
-- keep skill promotion behind validation gates.
-
-## Evidence And Search Pipeline
-
-The plan must support fresh external data because some user prompts require
-current facts, direct citations, or changing online state. The pipeline should
-be general rather than tied to one handler.
-
-### Query Expansion
-
-For a need that requires external evidence, generate search candidates from:
-
-- terms;
-- phrases;
-- full sentences;
-- direct questions;
-- related source names;
-- repository, issue, or package identifiers;
-- time constraints such as "latest", "today", or an explicit date.
-
-Every generated query should link back to the need and source span that produced
-it. This makes reranking and citation decisions reviewable.
-
-### Search, Rerank, Crawl, Extract
-
-The evidence pipeline should:
-
-1. Choose allowed providers from the evidence policy.
-2. Search with multiple query shapes when appropriate.
-3. Deduplicate results by canonical URL and source identity.
-4. Rerank by source authority, freshness, directness, and historical reliability.
-5. Fetch or crawl selected pages.
-6. Extract bounded evidence snippets, dates, entities, and claims.
-7. Link each fact to source URL, retrieval time, and freshness status.
-8. Identify contradictions or missing evidence.
-9. Form hypotheses only when evidence is incomplete, and mark them as hypotheses.
-10. Validate the final answer against citation and freshness requirements.
-
-### Offline And Cache Behavior
-
-When network access is unavailable or disallowed:
-
-- use local source cache and stored facts;
-- surface freshness limits in the frame;
-- avoid pretending cached data is current;
-- leave needs blocked or deferred when required evidence is unavailable.
-
-Tests should use deterministic cached fixtures. Live search should be separated
-from normal unit tests.
+The only sanctioned self-modification mechanism is
+`docs/design/self-improvement-loop.md` (issue #364): proposal-only, gated by
+verification + benchmarks + human review, never auto-appending to `data/seed/`.
+Issue 559 adds **no** new autonomy (conflict C3). "Reason about itself" is
+delivered as *inspectability* (the algorithm is readable, queryable, diffable
+data), not unsupervised self-editing. This is Phase 9, and it cannot ship without
+the gate.
 
 ## Phased Implementation
 
-### Phase 0A: First Planning Artifact
+Each phase is independently committable and reviewable (R17). Phases that add data
+or change routing must pass the full gate matrix (see Verification Matrix). Phases
+that touch comparison knobs default them to the compatible value, so merging
+changes nothing observable until a knob is flipped — and each flip is gated by a
+comparison harness.
 
-Status: complete in the earlier PR commit.
+### Phase 0A — First Planning Artifact
 
-Deliverables:
+Status: complete (earlier commit). Deliverables: requirements, architecture
+inventory, research, initial phased plan. Exit: maintainers can review direction
+without runtime risk.
 
-- Case-study requirements.
-- Architecture inventory.
-- External research notes.
-- Initial phased plan and risk assessment.
+### Phase 0B — Feedback Integration, Critical Check, Upstream Audit
 
-Exit criteria:
+Status: this revision. Deliverables: the companion docs above; canonical
+vocabulary mapping; C1–C7 resolutions; CR1–CR12 corrections; options with
+comparison harnesses; recursive core and evidence pipeline grounded in source;
+upstream audit; expanded requirements. Checks: documentation diff review,
+changelog fragment valid, no code behavior changes. Exit: next behavior-preserving
+phases are specific enough to approve/reject. Pause if: a maintainer rejects the
+recursive-work-unit direction or asks to open a specific upstream issue first.
 
-- Maintainers can review the proposed direction without runtime risk.
+### Phase 1A — Add `ProblemFrame` Without Behavior Changes
 
-### Phase 0B: Feedback Integration And Upstream Audit
+Goal: make the explicit meaning record observable before changing routing.
+Tasks: add the Rust `ProblemFrame` (Option 1A — extend `IntentFormalization`);
+populate from current formalization data; link to impulse/context/mode; extract
+initial needs without routing on them; record evidence-policy guesses without
+enforcing; emit as a solver event / `.lino` trace behind a debug flag if noisy.
+Tests: frame-construction unit tests; fixtures for single-question, multi-need,
+follow-up, constraint-heavy prompts; structured assertions for needs and policy;
+existing answer tests unchanged; **gate matrix** (closure, no-hardcoded-NL,
+traceability for R330, parity for any shared logic). Exit: every path can emit a
+frame; answers and selection unchanged; source-span data sufficient for later
+need tracking. Pause if: formalization can't produce source spans without a
+larger parser change, or worker parity can't represent the frame without new
+serialization.
 
-Status: this revision.
-
-Deliverables:
-
-- Expanded recursive solver plan.
-- Voyager mapping.
-- Link-native terminology and algorithm-as-data constraints.
-- Upstream dependency audit.
-- Updated requirements covering the PR feedback.
-
-Tests/checks:
-
-- Documentation diff review.
-- Changelog fragment remains valid.
-- No code behavior changes.
-
-Exit criteria:
-
-- PR documents whether upstream blockers exist.
-- Next behavior-preserving phases are specific enough to approve or reject.
-
-Pause criteria:
-
-- A maintainer rejects the recursive-work-unit direction.
-- A maintainer asks to open a specific upstream issue before implementation.
-
-### Phase 1A: Add `ProblemFrame` Without Behavior Changes
-
-Goal: make the general frame observable before changing routing.
-
-Tasks:
-
-- Add a Rust `ProblemFrame` or equivalent internal structure.
-- Populate it from current prompt/formalization data.
-- Link each frame to the original impulse, context, and mode.
-- Extract initial needs without using them for routing.
-- Record evidence-policy guesses without enforcing them yet.
-- Emit the frame in solver events or trace diagnostics.
-- Add a feature flag or debug setting if trace output would be noisy.
-
-Tests:
-
-- Unit tests for frame construction.
-- Fixtures for single-question, multi-need, follow-up, and constraint-heavy
-  prompts.
-- Snapshot or structured assertions for needs and evidence policy.
-- Existing answer tests remain unchanged.
-
-Exit criteria:
-
-- Every prompt path can emit a `ProblemFrame`.
-- Current answers and handler selection are unchanged.
-- The frame includes enough source-span data for later need tracking.
-
-Pause criteria:
-
-- Current formalization data cannot produce source spans without a larger parser
-  change.
-- Browser worker parity cannot represent the frame without new serialization
-  work.
-
-### Phase 1B: Add Recursive `WorkUnit` Trace Without Behavior Changes
+### Phase 1B — Add Recursive `WorkUnit` Trace Without Behavior Changes
 
 Goal: prove the recursive shape while old dispatch still controls answers.
-
-Tasks:
-
-- Add `WorkUnit` records linked to `ProblemFrame` needs.
-- Add deterministic atomicity decisions.
-- For current direct handlers, create one root unit and one leaf unit wrapping
-  the selected handler.
-- For multi-need prompts, create sibling child units even if old dispatch still
-  answers with one route.
-- Record selected old handler as the leaf method hook.
-- Record validation status as trace-only metadata.
-
-Tests:
-
-- Unit tests for parent-child work-unit links.
-- Atomicity tests for arithmetic, translation, sorting, lookup, source-cache, and
-  agentic prompts.
-- Trace tests showing multi-need prompts create multiple linked child units.
-- Existing answer tests remain unchanged.
-
-Exit criteria:
-
-- Recursive traces are emitted for representative prompt classes.
-- Leaf units are small enough to map to a single current handler, crate call, or
-  standard-library call.
-- No user-visible behavior changes.
-
-Pause criteria:
-
-- Trace size becomes too large for existing serialization.
-- Links Notation parsing or rendering becomes a blocker for large trace fixtures.
-
-### Phase 2: Need Satisfaction Ledger
-
-Goal: make dropped requirements visible before changing execution.
-
-Tasks:
-
-- Promote need statuses to a ledger on the frame.
-- Add validation that every need ends as satisfied, deferred, blocked, rejected,
-  or superseded.
-- Add a final-answer coverage check for multi-part prompts.
-- Add diagnostics when old dispatch answers only one need.
-
-Tests:
-
-- Multi-need prompt fixtures.
-- Negative tests where constraints are intentionally unsatisfied.
-- Regression tests for issue families that historically lost follow-up context.
-- Answer text remains unchanged unless diagnostics are explicitly enabled.
-
-Exit criteria:
-
-- The solver can say which needs were covered by the current response path.
-- No direct dispatch behavior is replaced yet.
-
-### Phase 3: Inventory Current Handlers As Methods
-
-Goal: make every current specialized handler visible as data.
-
-Tasks:
-
-- Create a method registry in `.lino` or a generated seed file.
-- Add one method entry for each `SPECIALIZED_HANDLERS` member.
-- Add entries for contextual overrides and seed meanings that behave like
-  methods.
-- Preserve current precedence as compatibility metadata.
-- Add implementation hooks pointing to current Rust or JS code.
-- Add related tests and benchmark fixture links.
-
-Tests:
-
-- Registry covers every specialized handler.
-- Every registry implementation hook resolves.
-- Current dispatch order can be reconstructed from compatibility metadata.
-- Guard test fails when Rust handler table and registry diverge.
-
-Exit criteria:
-
-- The method registry is a complete mirror of current dispatch.
-- No runtime path depends on registry selection yet.
-
-### Phase 4: Registry Selection In Comparison Mode
-
-Goal: run old dispatch and registry selection side by side.
-
-Tasks:
-
-- Add a selector that reads method preconditions and frame needs.
-- Execute old dispatch as the source of truth.
-- Execute registry selection in diagnostic mode.
-- Record agreements and disagreements.
-- Add comparison output to traces, not final answers.
-
-Tests:
-
-- Old and registry selection agree for benchmark and prompt-variation fixtures.
-- Precedence corner cases remain covered.
-- Unknown prompts still produce reasoning traces instead of silent failures.
-- Browser worker and native Rust selection produce the same candidate ordering.
-
-Exit criteria:
-
-- Agreement rate is high enough for targeted migration.
-- Every disagreement has a known reason or a tracked issue.
-
-### Phase 5: Move Cue Recognition Out Of Rust
-
-Goal: reduce hardcoded natural-language trigger logic.
-
-Tasks:
-
-- Move recognizer cues from code such as `append_prompt_relevants` into seed
-  meanings or method preconditions.
-- Replace Rust string lists with data lookup and structural predicates.
-- Keep syntax-level checks in code only when they are truly parser concerns.
-- Add migration notes for each moved cue family.
-
-Tests:
-
-- No-hardcoded-natural-language guard updated for migrated cues.
-- Prompt variation tests for every moved cue family.
-- Backward compatibility tests for current supported prompts.
-- Multilingual fixtures for cue families that already have language coverage.
-
-Exit criteria:
-
-- Migrated cues are reviewable as data.
-- Behavior matches old dispatch in comparison mode.
-
-### Phase 6: Fresh Evidence And Search Generalization
-
-Goal: make online research a reusable evidence policy, not a one-off feature.
-
-Tasks:
-
-- Implement query expansion for terms, phrases, sentences, and questions.
-- Add deterministic source-cache fixtures for tests.
-- Add source authority and freshness scoring.
-- Add crawler/fetch boundaries and citation extraction.
-- Add contradiction and hypothesis records.
-- Connect evidence artifacts to needs and work units.
-
-Tests:
-
-- Cached search fixtures for current-date, source-sensitive, and citation
-  prompts.
-- Reranking tests with stale and authoritative sources.
-- Contradiction tests.
-- Offline-mode tests that clearly block fresh-data needs.
-- Live-search smoke test outside normal deterministic CI.
-
-Exit criteria:
-
-- Any method can request fresh evidence through the frame.
-- Final answers can be validated against citation and freshness requirements.
-
-### Phase 7: Skill Accumulation
-
-Goal: accumulate reusable methods from successful traces.
-
-Tasks:
-
-- Store successful work-unit leaves as candidate skills.
-- Promote examples from `experiments/` to `examples/` when they demonstrate a
-  real reusable use case.
-- Record failure examples and blocked needs as curriculum items.
-- Add promotion rules requiring tests and benchmark deltas.
-- Add deprecation and retirement status for old skills.
-
-Tests:
-
-- A successful trace can propose a new skill record.
-- A failed trace creates a curriculum item without changing behavior.
-- Proposed skills cannot become stable without tests.
-- Bad proposals are rejected by benchmark or validation checks.
-
-Exit criteria:
-
-- Skill accumulation is reviewable and reversible.
-- No unreviewed self-modification occurs.
-
-### Phase 8: Link-Native Algorithm-As-Data Integration
-
-Goal: represent algorithms as data that can round-trip with source.
-
-Tasks:
-
-- Use `meta-language` source spans and snapshots for method definitions where
-  practical.
-- Add `.lino` representations for method preconditions, validation policies, and
-  simple compositions.
-- Add code-to-data and data-to-code round-trip fixtures for small methods.
-- Keep complex Rust implementations as hooks until translation is proven.
-
-Tests:
-
-- Lossless parse/reconstruct fixtures for method metadata.
-- Round-trip tests for simple validation and composition records.
-- Structural query/replace tests for registry edits.
-- Compatibility tests proving hooks still execute after metadata round-trip.
-
-Exit criteria:
-
-- Simple algorithm records can be reviewed as links and reconstructed.
-- Existing hand-written code remains the execution source for complex methods.
-
-Pause criteria:
-
-- Required `meta-language` APIs are not available in the pinned version.
-- NPM/browser packaging becomes required before Rust-side integration can
-  proceed.
-
-### Phase 9: Gated Self-Improvement
-
-Goal: let the algorithm propose improvements without silently changing itself.
-
-Tasks:
-
-- Reuse `docs/design/self-improvement-loop.md`.
-- Convert unknown traces into proposed method, skill, or rule patches.
-- Require tests and benchmark deltas before accepting a proposal.
-- Require human review as the final gate for persistent behavior changes.
-
-Tests:
-
-- Unknown trace can produce a proposed method entry.
-- Proposal is not applied without verification.
-- Rejected proposals remain inspectable for future analysis.
-- Accepted proposals include tests and changelog updates.
-
-Exit criteria:
-
-- The system can reason about improving itself without mutating production
-  behavior automatically.
-
-### Phase 10: Retire Direct Specialized Dispatch
-
-Goal: make the method registry the control plane after parity is proven.
-
-Tasks:
-
-- Switch selected method families from old dispatch to registry selection one at
-  a time.
-- Keep implementation hooks for existing Rust handlers.
-- Remove direct handler-table precedence only after registry parity is proven.
-- Update docs and architecture diagrams.
-
-Tests:
-
-- Full local CI.
-- Browser worker parity.
-- Benchmarks and prompt variations.
-- Changelog and documentation checks.
-- Old/new comparison evidence for every retired direct-dispatch family.
-
-Exit criteria:
-
-- The registry controls method selection.
-- Specialized Rust handlers remain available as implementation hooks.
-- No previously supported prompt family is removed without explicit approval.
+Tasks: add `WorkUnit` records linked to needs; deterministic atomicity decisions;
+for direct handlers, one root + one leaf wrapping the selected handler; for
+multi-need prompts, sibling child units even though old dispatch answers one
+route; record the old handler as the leaf hook; validation status as trace-only.
+Tests: parent/child link tests; atomicity tests for arithmetic, translation,
+sorting, lookup, source-cache, agentic prompts; multi-need prompts create
+multiple linked children; **widen
+`specialized_handlers_still_publish_loop_events` beyond arithmetic**; existing
+answer tests unchanged; gate matrix. Exit: recursive traces for representative
+classes; leaves map to a single handler/crate/stdlib call; no visible behavior
+change. Pause if: trace size exceeds current serialization (then
+`links-notation#197` streaming becomes relevant).
+
+### Phase 2 — Need-Satisfaction Ledger
+
+Goal: make dropped requirements visible before changing execution. Tasks: promote
+need statuses to a ledger on the frame; validate every need ends
+satisfied/deferred/blocked/rejected/superseded; final-answer coverage check for
+multi-part prompts; diagnostics when old dispatch answers only one need. Tests:
+multi-need fixtures; negative tests for intentionally unsatisfied constraints;
+regressions for issue families that historically lost follow-up context; answer
+text unchanged unless diagnostics enabled; gate matrix. Exit: the solver reports
+which needs the current path covered; no direct dispatch replaced yet.
+
+### Phase 3 — Inventory Current Handlers As Methods
+
+Goal: make every current specialized handler visible as data. Tasks: create the
+method registry under `data/seed/` or `data/meta/` (Option 6A); one entry per the
+**50** `SPECIALIZED_HANDLERS` members; entries for the five contextual-override
+handlers and method-like seed meanings; preserve current precedence as
+compatibility metadata; implementation hooks pointing to current Rust/JS; link
+related tests and benchmark fixtures. Tests: registry covers all 50 handlers;
+every hook resolves; current dispatch order reconstructs from metadata; a guard
+test fails when the Rust table and registry diverge; gate matrix (closure is
+strict — author entries closed). Exit: the registry is a complete mirror of
+current dispatch; no runtime path depends on registry selection yet.
+
+### Phase 4 — Registry Selection In Comparison Mode
+
+Goal: run old dispatch and registry selection side by side (Option 5B). Tasks:
+add `SolverConfig.selection_mode ∈ {legacy, registry, compare}` (config first);
+in `compare`, compute both, keep legacy as source of truth, record divergences as
+events without changing answers. Tests: old and registry selection agree across
+benchmark and prompt-variation fixtures; precedence corner cases covered; unknown
+prompts still produce reasoning traces; Rust and worker produce the same
+candidate ordering; gate matrix. Exit: divergence is zero (or every divergence is
+a tracked, explained issue) across all suites before any default flip.
+
+### Phase 5 — Move Cue Recognition Out Of Rust
+
+Goal: reduce hardcoded natural-language triggers (R97). Tasks: move cues from
+`append_prompt_relevants` (`src/intent_formalization.rs:718-800`) and
+`looks_like_text_manipulation` (`:832-851`) into seed meanings or method
+preconditions; replace Rust string lists with data lookup + structural
+predicates; keep only true parser concerns in code; migration notes per cue
+family. Tests: no-hardcoded-NL guard updated for migrated cues; prompt-variation
+tests per moved family; backward-compat tests; multilingual fixtures where
+coverage exists; gate matrix. Exit: migrated cues are reviewable as data;
+behavior matches old dispatch in `compare` mode.
+
+### Phase 6 — Fresh Evidence And Search Generalization
+
+Goal: make online research a reusable evidence policy, not a one-off
+([evidence-pipeline.md](evidence-pipeline.md)). Tasks: implement query expansion;
+reuse the built search + RRF; add crawl/extract/compare/hypothesize; wire non-CORS
+providers through the desktop fetch seam (Option 4A+4B); deterministic cache
+fixtures; connect evidence artifacts to needs and work units; extend
+`evidence_policy` knob (config first). Tests: cached fixtures for current-date,
+source-sensitive, citation prompts; rerank tests with stale vs authoritative
+sources; contradiction tests; offline-mode tests that block fresh-data needs;
+live-search smoke test outside deterministic CI; evidence-quality comparison
+benchmark (pipeline off/on, CORS vs CORS+desktop); gate matrix incl. wired
+parity. Exit: any method can request fresh evidence through the frame; answers
+validate against citation/freshness requirements.
+
+### Phase 7 — Skill Accumulation
+
+Goal: accumulate reusable methods from successful traces (R21). Tasks: store
+successful work-unit leaves as candidate skills; promote `experiments/` →
+`examples/` when a real reusable use case is demonstrated; record failures and
+blocked needs as curriculum items (the deterministic Voyager-curriculum analog);
+promotion rules require tests + benchmark deltas; deprecation/retirement statuses.
+Tests: a successful trace proposes a skill record; a failed trace creates a
+curriculum item without changing behavior; proposed skills cannot become stable
+without tests; bad proposals rejected by benchmarks/validation; gate matrix.
+Exit: skill accumulation is reviewable and reversible; no unreviewed
+self-modification.
+
+### Phase 8 — Link-Native Algorithm-As-Data Integration
+
+Goal: represent algorithms as data that round-trips with source (R24, Option 7B).
+Tasks: use `meta-language` source spans/snapshots for method definitions where
+practical; `.lino` representations for preconditions, validation policies, simple
+compositions; code↔data round-trip fixtures for small methods; keep complex Rust
+as hooks until translation is proven. Tests: lossless parse/reconstruct fixtures;
+round-trip tests for simple validation/composition records; structural
+query/replace tests for registry edits; compatibility tests proving hooks still
+execute after round-trip; gate matrix. Exit: simple algorithm records reviewable
+as links and reconstructable; hand-written code remains the execution source for
+complex methods. Pause if: required `meta-language` APIs are absent in the pinned
+version, or npm/browser packaging is required before Rust-side integration (see
+`meta-language#165`).
+
+### Phase 9 — Gated Self-Improvement
+
+Goal: let the algorithm propose improvements without silently changing itself
+(R12, C3). Tasks: reuse `docs/design/self-improvement-loop.md` and
+`src/self_improvement.rs`; convert unknown traces into proposed method/skill/rule
+patches; require tests + benchmark deltas before acceptance; human review is the
+final gate. Tests: unknown trace produces a proposed entry; proposal not applied
+without verification; rejected proposals remain inspectable; accepted proposals
+include tests + changelog; gate matrix. Exit: the system can reason about
+improving itself without mutating production behavior automatically.
+
+### Phase 10 — Retire Direct Specialized Dispatch
+
+Goal: make the registry the control plane after parity is proven. Tasks: flip
+`selection_mode` to `registry` per method family one at a time; keep Rust handlers
+as implementation hooks; remove direct table precedence only after registry
+parity is proven; update docs/architecture diagrams and the ROADMAP/REQUIREMENTS
+per the Verification Contract. Tests: full local CI; worker parity; benchmarks
+and prompt variations; changelog/doc checks; old/new comparison evidence for every
+retired family; gate matrix. Exit: the registry controls selection; specialized
+Rust handlers remain available as hooks; no previously supported prompt family is
+removed without explicit approval.
 
 ## Concrete First Implementation PR After Approval
 
-After this planning PR is approved, the first code PR should be deliberately
-small:
+The first code PR is deliberately small (Option 1A):
 
-1. Add `ProblemFrame` and `Need` structures.
-2. Populate them from existing formalization inputs.
-3. Add trace-only serialization.
-4. Add unit tests for frame construction.
-5. Add fixtures for multi-need prompts.
-6. Confirm existing answer tests are unchanged.
-7. Add a changelog fragment.
+1. Add `ProblemFrame` and `Need` structures (extending `IntentFormalization`).
+2. Populate from existing formalization inputs.
+3. Add trace-only `.lino` serialization.
+4. Add frame-construction unit tests.
+5. Add multi-need prompt fixtures.
+6. Confirm existing answer tests unchanged.
+7. Add a changelog fragment and the R330 traceability test.
 
-The second code PR should add `WorkUnit` traces:
-
-1. Add `WorkUnit` structures.
-2. Link root units to frames and child units to needs.
-3. Wrap current handler dispatch as leaf work units.
-4. Add atomicity classification tests.
-5. Add trace fixtures for direct and decomposed prompts.
-6. Confirm existing answer tests are unchanged.
-
-Only after those PRs should method registry selection start.
+The second code PR adds `WorkUnit` traces (Phase 1B). Only after those should
+registry selection start (Phase 3+).
 
 ## Verification Matrix
 
-Before switching behavior:
+Standing local checks before any behavior switch:
 
 - `cargo fmt --all -- --check`
 - `cargo clippy --all-targets --all-features`
-- `rust-script scripts/check-file-size.rs`
+- `rust-script scripts/check-file-size.rs` (`.rs` ≤ 1000, `.lino` ≤ 1500)
 - `cargo test`
-- existing benchmark or prompt-variation commands used by this repo
-- browser worker parity tests where changed code crosses runtime boundaries
+- existing benchmark / prompt-variation commands
+- worker parity tests where changed code crosses the runtime boundary
 
-For each implementation phase:
+The six **hard gates** every data/routing phase must pass (resolves C6):
 
-- Add focused unit tests first.
-- Add fixture prompts for the class being migrated.
-- Add old/new comparison tests before routing changes.
-- Add deterministic cache fixtures for fresh-data behavior.
-- Update docs and changelog in the same PR.
-- Keep behavior changes narrow enough to revert as one commit if necessary.
+1. **Total reference closure** — `python3 scripts/audit-total-closure.py` →
+   `unresolved_distinct: 0` (`tests/unit/total_closure.rs`).
+2. **No hardcoded natural language** — the four gates in
+   `docs/design/no-hardcoded-natural-language.md`, incl. worker-mirror `--check`.
+3. **Requirement traceability** — a new `issue_559_..._are_traceable()` in
+   `tests/unit/docs_requirements.rs` asserting each new `| R<n> ` row.
+4. **Loop-event compatibility** —
+   `specialized_handlers_still_publish_loop_events`
+   (`tests/unit/specification/reasoning_loop.rs:44`) passes and is widened.
+5. **Recipe grounding** — the general `data/meta/*-recipe.lino` recipe asserted
+   against live source (parameterize the existing grounding harness — resolves
+   C5).
+6. **Cross-runtime parity** — Rust↔JS worker parity for shared logic, with a
+   wired check (addresses the weak-flank risk in
+   [critical-review.md](critical-review.md)).
+
+Per phase: focused unit tests first; fixtures for the class being migrated;
+old/new comparison before routing changes; deterministic cache fixtures for
+fresh-data behavior; docs + changelog in the same PR; behavior changes narrow
+enough to revert as one commit.
 
 ## Upstream Dependency Gates
 
-The upstream audit found no blockers for Phase 1A or Phase 1B. Existing upstream
-issues that may matter later:
+The audit ([upstream-dependency-audit.md](upstream-dependency-audit.md)) found no
+blocker for Phase 1A/1B. Existing issues that may matter later:
 
-- `link-foundation/links-notation#197`: streaming parser for large message
-  handling. This may matter if trace export grows too large for current parsing.
-- `link-foundation/meta-language#168`: shared-dialog source-description schema.
-  This may matter when issue-559 traces need to interoperate with shared-dialog
-  source descriptions.
-- `link-foundation/meta-language#165`: npm package publication. This may matter
-  only if browser-side registry tooling needs the package from npm before the
-  repo has another browser integration path.
-- `linksplatform/doublets-rs` has older build and FFI issues. They do not block
-  current default builds unless Phase 8 or later depends on optional features
-  that reproduce those failures.
+- `link-foundation/links-notation#197` (streaming parser) — if trace export grows
+  too large.
+- `link-foundation/meta-language#168` (shared-dialog source-description schema) —
+  when traces must interoperate with shared-dialog source descriptions.
+- `link-foundation/meta-language#165` (npm publication) — only if browser-side
+  registry tooling needs the npm package before another integration path exists.
+- `linksplatform/doublets-rs#22` and related build issues — only if a later phase
+  depends on optional features that reproduce them.
 
 Open a new upstream issue only when a phase hits a concrete missing feature that
 cannot be worked around locally without distorting the architecture.
 
-## Solution Options Considered
-
-Option A: Planning only now.
-
-- Recommended for this PR because the issue explicitly asks for planning before
-  execution.
-
-Option B: Data registry plus compatibility dispatch.
-
-- Recommended implementation path.
-- Lowers risk by preserving existing handlers and tests.
-- Moves control metadata into `.lino` incrementally.
-
-Option C: Full Links Notation method interpreter immediately.
-
-- Good long-term target.
-- Too risky as the first implementation step because current behavior depends on
-  many specialized handlers and precedence cases.
-
-Option D: Adopt an external agent orchestrator.
-
-- Not recommended as the core implementation.
-- External systems are useful design references, but the repo already has Rust,
-  browser worker, Links Notation, offline cache, and no-hardcoded-natural-
-  language constraints.
-
 ## Requirement Mapping
 
-- R5, R6, R7, R8: addressed by `ProblemFrame`, need records, and evidence
-  policy.
-- R9: addressed by recursive `WorkUnit` records and Phase 1B.
-- R10: addressed by the fresh evidence and search pipeline.
-- R11: addressed by method registry, skill records, and the recursive algorithm.
-- R12: addressed by gated self-improvement and skill promotion rules.
-- R13, R14, R16: addressed by compatibility mode, parity tests, and staged
-  retirement of direct dispatch.
-- R15: addressed by keeping `.lino`, cache, meanings, overrides, and source
-  cache as first-class architecture.
-- R17: addressed by phase-sized PRs and commits.
-- R18: addressed by the Voyager-inspired adaptation section without neural
-  dependency.
-- R19: addressed by recursive decomposition to atomic calls.
-- R20: addressed by downward decomposition and upward composition.
-- R21: addressed by method and skill records that can wrap Rust, crate, and
-  standard-library calls.
-- R22: addressed by the evidence and search pipeline.
-- R23: addressed by link-native terminology and records.
-- R24: addressed by Phase 8 algorithm-as-data integration.
-- R25: addressed by the upstream dependency audit.
-- R26: addressed by the no-blocker conclusion and future upstream issue gate.
-- R27: addressed by detailed phase deliverables, tests, exit criteria, and pause
-  criteria.
+- R5–R8: `ProblemFrame`, need records, evidence policy, need-satisfaction ledger.
+- R9: recursive `WorkUnit` records + Phase 1B + agentic todo planning (R314).
+- R10, R22: the evidence pipeline.
+- R11: method registry + skill records + the recursive algorithm.
+- R12: gated self-improvement (Phase 9) and skill promotion rules.
+- R13, R14, R16: compatibility/`compare` mode, parity tests, staged retirement.
+- R15: keeping `.lino`, cache, meanings, overrides, source cache first-class.
+- R17: phase-sized PRs and commits.
+- R18: Voyager mapping without neural dependency
+  ([recursive-core.md](recursive-core.md)).
+- R19, R20: downward decomposition + upward construction
+  ([recursive-core.md](recursive-core.md)).
+- R21: method/skill records wrapping Rust/crate/stdlib calls.
+- R23: link-native records re-anchored to `VISION.md:44`.
+- R24: Phase 8 algorithm-as-data integration.
+- R25, R26: the upstream audit + future upstream-issue gate.
+- R27: detailed phase deliverables, tests, exit/pause criteria, comparison
+  harnesses, and the companion deep-dive docs.
+- New rows R330–R335 proposed in [alignment.md](alignment.md).
 
-## Risks
+## Risk Register
 
-1. Handler precedence regressions.
-   - Mitigation: reconstruct current precedence from registry data and run
-     old/new comparison tests before switching.
-
-2. Hardcoded language logic moves but does not become more general.
-   - Mitigation: store meanings and preconditions as data, then test
-     multilingual and variation prompts.
-
-3. Recursive work units become too heavy for simple chat.
-   - Mitigation: direct prompts can produce one root unit and one atomic leaf
-     with minimal trace detail.
-
-4. Fresh-data policy creates flaky tests.
-   - Mitigation: separate live web behavior from deterministic source-cache
-     tests.
-
-5. Rust and JS worker behavior drifts.
-   - Mitigation: require mirror tests or generated fixtures for every migrated
-     method family.
-
-6. Algorithm-as-data work outruns available upstream APIs.
-   - Mitigation: keep implementation hooks in Rust until metadata round-trips
-     are proven.
-
-7. Self-improvement becomes unsafe.
-   - Mitigation: proposal-only by default, with tests, benchmarks, and human
-     review gates.
+1. **Handler precedence regressions.** Mitigation: reconstruct precedence from
+   registry metadata; run `compare` mode to zero divergence before any flip.
+2. **Hardcoded language logic moves but is not more general.** Mitigation: store
+   meanings/preconditions as data; test multilingual and variation prompts.
+3. **Recursive units too heavy for simple chat.** Mitigation: direct prompts
+   produce one root + one atomic leaf with minimal trace; `atomicity_policy`
+   default reproduces today.
+4. **Fresh-data policy creates flaky tests.** Mitigation: separate live web from
+   deterministic cache fixtures; offline mode blocks fresh-data needs.
+5. **Rust/JS worker drift (the weak flank).** Mitigation: a wired parity check for
+   every migrated family; most `experiments/*-parity.mjs` are not in CI today.
+6. **Algorithm-as-data outruns upstream APIs.** Mitigation: keep Rust hooks until
+   round-trips are proven; honor Phase 8 pause criteria.
+7. **Self-improvement becomes unsafe.** Mitigation: proposal-only by default with
+   tests, benchmarks, and human review (C3).
+8. **Total-closure / file-size gates fail on new data.** Mitigation: author
+   `.lino` closed; shard large traces; respect the 1000/1500-line caps.
 
 ## PR Review Notes To Surface
 
-The PR description or review comment should state:
+The PR description / review comment should state:
 
-- This PR is still planning-only.
-- The plan now integrates Voyager as a design reference without adding neural
-  dependencies.
-- The proposed core is recursive through `WorkUnit` records.
-- The plan uses links as the native representation and avoids a separate
-  point/relation primitive model.
-- Upstream dependency audit found no blockers for the next behavior-preserving
-  phases.
-- No new upstream issue was created.
+- This PR is still planning-only (draft).
+- The plan is now spread across a spine + eight companion docs, roughly doubling
+  the prior detail, with options compared and comparison harnesses specified.
+- The core is recursive and bidirectional through `WorkUnit` records; the loop
+  shape is unchanged.
+- New names map onto canonical VISION/REQUIREMENTS terms (C1); link-native
+  statements are re-anchored to `VISION.md:44` (C7).
+- Issue 559 closes the ROADMAP Pillar 20 residual and advances Pillar 7 (C2/C4).
+- Self-modification stays within the existing proposal-only gate (C3).
+- The verification matrix includes total-closure, no-hardcoded-NL, traceability,
+  loop-event compatibility, recipe grounding, and parity (C6).
+- The upstream audit found no blockers for the next behavior-preserving phases;
+  no new upstream issue was created.

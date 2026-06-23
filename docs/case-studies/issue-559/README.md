@@ -2,13 +2,14 @@
 
 Status: first-session planning artifact only. Issue 559 explicitly asks for a detailed planning pass before implementation, with execution to follow after maintainer approval or requested changes.
 
-Update: PR feedback on 2026-06-23 requested a deeper plan that integrates Voyager, makes the solver recursively decompositional and compositional, stays link-native with meta-theory, and audits related upstream dependencies. This case study now includes that expanded second planning pass.
+Update: two rounds of PR feedback on 2026-06-23 shaped this case study. The first (comment 4783154352) requested a deeper plan that integrates Voyager without a neural runtime, makes the solver recursively decompositional and compositional, stays link-native, treats algorithms as data, and audits related upstream dependencies. The second (comment 4783640128) asked to make the plan at least twice as detailed, critically check everything, compare multiple options (implementing them all where feasible), and re-check everything against the vision, requirements, and roadmap. This case study now includes that expanded second planning pass across a spine plus eight companion documents.
 
 ## Source Material
 
 - GitHub issue: <https://github.com/link-assistant/formal-ai/issues/559>
 - Prepared pull request: <https://github.com/link-assistant/formal-ai/pull/560>
-- PR feedback integrated: <https://github.com/link-assistant/formal-ai/pull/560#issuecomment-4783154352>
+- PR feedback integrated (round 1): <https://github.com/link-assistant/formal-ai/pull/560#issuecomment-4783154352>
+- PR feedback integrated (round 2): <https://github.com/link-assistant/formal-ai/pull/560#issuecomment-4783640128>
 - Local inspiration image: [inspiration.png](inspiration.png)
 - Raw GitHub and search data: [raw-data/](raw-data/)
 - External research notes: [raw-data/online-research.md](raw-data/online-research.md)
@@ -45,18 +46,30 @@ The recommended plan is therefore not a rewrite-first change. It is an increment
 
 The refined plan adds four constraints from the follow-up feedback:
 
-- Represent problems, tasks, dependencies, evidence, methods, objects, files, sequences, and algorithms as links or link networks, not as a separate non-link ontology.
+- Represent problems, tasks, dependencies, evidence, methods, objects, files, sequences, and algorithms as links or link networks, not as a separate non-link ontology. This is anchored to `VISION.md:44` ("Doublet links are the primitive storage model for this project"), with the meta-theory article kept as a cited external influence rather than repo doctrine (see [alignment.md](alignment.md) conflict C7).
 - Make solving recursive: decompose until a work unit is directly solvable, while also searching upward from existing libraries, standard functions, repo code, and accumulated skills.
 - Adapt Voyager's open-ended curriculum, skill library, execution feedback, and critic loop into deterministic, review-gated formal-ai mechanisms without adding a neural runtime dependency.
 - Treat organization-owned dependencies as gates: no upstream blocker was found for the next planning-approved phases, but existing relevant issues are listed in [upstream-dependency-audit.md](upstream-dependency-audit.md).
 
+## What The Second Pass Added
+
+- A **critical check** of the first-session artifacts: twelve corrections (CR1–CR12) with `file:line` evidence, including the lexicon path, the location of `IntentFormalization`, the real 50-entry handler table, and the fact that multi-provider web search and Reciprocal Rank Fusion are already built (so only crawl/extract/compare and non-CORS providers are genuinely absent). See [critical-review.md](critical-review.md).
+- A **strategic re-check** against VISION/GOALS/NON-GOALS/ROADMAP/REQUIREMENTS/ARCHITECTURE that resolves seven alignment conflicts (C1–C7), introduces a canonical vocabulary mapping (the new names are explicit forms of existing concepts, not new primitives), positions the work against ROADMAP Pillars 7 and 20, and proposes new requirement rows R330–R335. See [alignment.md](alignment.md).
+- An **options comparison** giving 2–4 options per major decision with pros/cons/cost/risk and, where feasible, a `SolverConfig`-knob comparison harness so competing directions can be run side by side and judged by tests and benchmarks. See [options-comparison.md](options-comparison.md).
+- Deep specifications for the **recursive bidirectional core** ([recursive-core.md](recursive-core.md)) and the **evidence pipeline** ([evidence-pipeline.md](evidence-pipeline.md)), both grounded in concrete source locations.
+
 ## Files In This Case Study
 
-- [requirements.md](requirements.md) captures the issue requirements, acceptance criteria, and inferred constraints.
-- [architecture-inventory.md](architecture-inventory.md) documents the relevant current architecture before planning changes.
-- [solution-plan.md](solution-plan.md) proposes implementation phases, tests, risks, and alternatives.
-- [upstream-dependency-audit.md](upstream-dependency-audit.md) checks related organization dependencies and existing upstream issues.
-- [raw-data/online-research.md](raw-data/online-research.md) records external research and library/component checks.
+- [requirements.md](requirements.md) — issue requirements, acceptance criteria, inferred constraints, the canonical vocabulary note, new obligations R28–R31, and root-requirement mapping.
+- [architecture-inventory.md](architecture-inventory.md) — the relevant current architecture, grounded in `file:line`, with an "already built vs absent" view.
+- [alignment.md](alignment.md) — strategic alignment, conflicts C1–C7 and their resolutions, canonical vocabulary mapping, proposed root rows R330–R335.
+- [critical-review.md](critical-review.md) — corrections CR1–CR12 with evidence; precise built-vs-absent inventory; residual risks.
+- [options-comparison.md](options-comparison.md) — options per decision, recommendations, and comparison harnesses.
+- [recursive-core.md](recursive-core.md) — downward/upward passes, atomicity predicate, `SolverConfig` knobs, pseudo-code, Voyager mapping.
+- [evidence-pipeline.md](evidence-pipeline.md) — the general fresh-data pipeline grounded in the existing search core and fetch seams.
+- [solution-plan.md](solution-plan.md) — the spine: planning status, phases 0A–10 with gates, verification matrix, requirement mapping, risk register.
+- [upstream-dependency-audit.md](upstream-dependency-audit.md) — related organization dependencies and existing upstream issues.
+- [raw-data/online-research.md](raw-data/online-research.md) — external research and library/component checks.
 
 ## Recommended Approval Decision
 
