@@ -17,6 +17,9 @@ This inventory documents the current architecture before implementation planning
 - `docs/design/rule-synthesis.md`
 - `CONTRIBUTING.md`
 - Existing case studies, especially `docs/case-studies/issue-554` and `docs/case-studies/issue-468`
+- Follow-up PR feedback on <https://github.com/link-assistant/formal-ai/pull/560#issuecomment-4783154352>
+- `docs/case-studies/issue-433/README.md`
+- `docs/case-studies/issue-468/README.md`
 
 ## Current Universal Solver Loop
 
@@ -43,6 +46,8 @@ This means the repo already has a traceable universal envelope. Issue 559 should
 - Agentic coding recipe: `data/meta/agentic-coding-recipe.lino`, tested by `tests/unit/specification/agentic_meta_algorithm.rs`.
 
 Both are useful precedents because they describe behavior in data and then ground it through tests. The gap is that they are still specific algorithms, not one general problem-frame algorithm.
+
+Issue #433 is also directly relevant. It audits each specialized handler recognizer as fixed enumeration, hybrid, or compositional, then demonstrates how `numeric_list` can be reconstructed from the issue #423 meta-algorithm primitives. That makes the current missing piece clearer: the repository has examples of class-level construction recipes, but no single registry where every method advertises its preconditions, required evidence, validation policy, and executable hook.
 
 ## Formalization And Routing
 
@@ -117,15 +122,41 @@ Important current compatibility guard:
 
 Issue 559 can reuse this as the later self-modification gate for changing the general meta algorithm.
 
+## Follow-Up Feedback Applied To Architecture
+
+The 2026-06-23 PR feedback adds architectural constraints that are not fully captured by the initial first-session plan:
+
+1. **Recursive solving is not just optional decomposition.** The current solver can decompose in specific places, but there is no universal recursive work-unit model that keeps splitting until a unit is directly solvable by a method, library call, standard function, or reviewed skill.
+2. **Skill accumulation is not a first-class control plane.** Existing handlers, examples, generated source, seed rules, and standard-library functions can behave like reusable skills, but the repository does not yet index them with applicability, proof status, examples, negative examples, validation cost, and safe reuse boundaries.
+3. **Fresh-data research is handler-specific.** The desktop and web-search paths exist, but there is no general evidence pipeline that can expand a prompt into terms, phrases, sentences, and questions; search multiple providers; rerank; crawl; extract; compare; and feed hypothesis gaps back into the same recursive loop.
+4. **Link-native modeling needs to be explicit.** `meta-language` and Links Notation already use links, but future docs should avoid making a separate non-link ontology the primary model. Dependency, task, method, evidence, and sequence relations should be represented as links.
+5. **Dependency readiness is not gated.** The repo uses several organization-owned crates and packages, but the implementation plan did not previously say which upstream capability must exist before each phase can begin.
+
 ## Architecture Gaps To Address
 
 1. Method selection is not yet a first-class, data-described reasoning step.
 2. Specialized handler precedence still lives in Rust ordering.
 3. Some natural-language cue recognition still lives in Rust code.
-4. Big-task planning is documented for agentic coding but not represented as a general task graph for every large request.
+4. Big-task planning is documented for agentic coding but not represented as a general recursive task-link network for every large request.
 5. Chat-mode fresh-data policy is not a unified evidence policy in the solver frame.
 6. Existing tests cover many behaviors, but they do not yet prove class-level parity for every historical handler family.
 7. Meta recipes exist per capability; the project needs a general recipe that can call those methods as data-described submethods.
+8. There is no `ProblemFrame` type, event, or `.lino` schema that every solver response must emit.
+9. There is no `WorkUnit` or equivalent recursive unit that records parent/child links, atomicity, required evidence, selected skill, validation result, and composition result.
+10. There is no method/skill registry covering all `SPECIALIZED_HANDLERS`, contextual overrides, standard library operations, repo helper functions, generated examples, and future learned rules.
+11. There is no old-vs-new comparison mode for registry selection before replacing direct dispatch.
+12. There is no uniform need-satisfaction ledger that forces the final answer to mark every detected question, requirement, constraint, and deferred item.
+13. There is no general search/rerank/crawl/extract/evaluate loop for fresh-data chat questions.
+14. There is no upstream dependency gate document that says when implementation must pause for `meta-language`, `links-notation`, `lino-objects-codec`, `doublets`, `link-calculator`, or `agent-commander`.
+
+## Upstream Dependency Snapshot
+
+The related organization dependency audit is captured in [upstream-dependency-audit.md](upstream-dependency-audit.md). The important architecture conclusion is:
+
+- No upstream blocker prevents the next behavior-preserving phases: `ProblemFrame`, recursive work-unit tracing, method registry inventory, and old/new selection comparison.
+- `meta-language` already advertises mutable link networks, source spans, lossless parse/reconstruction, generated-source rendering, snapshots, structural query/replace, substitutions, LiNo parsing, and cross-language reconstruction. Those capabilities are enough for the planned algorithm-as-data representation.
+- `links-notation` has an existing streaming-parser issue, <https://github.com/link-foundation/links-notation/issues/197>. It matters for very large future frame exports but is not a blocker for the initial registry and frame data.
+- `link-calculator`, `doublets`, `platform-mem`, `lino-objects-codec`, `lino-arguments`, `lino-i18n`, and `agent-commander` do not currently block the next implementation phases.
 
 ## Compatibility Constraints
 
