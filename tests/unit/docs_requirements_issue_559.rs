@@ -186,6 +186,36 @@ fn issue_559_method_registry_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_recursive_core_recipe_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R335: the requirements row exists and cites the shipped self-description.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R335 ",
+            "describe itself as grounded link data",
+            "data/meta/recursive-core-recipe.lino",
+        ],
+    );
+
+    // The recipe exists and declares the meta_recipe header plus its steps.
+    let recipe = read(root.join("data/meta/recursive-core-recipe.lino"));
+    assert_contains_all(
+        "data/meta/recursive-core-recipe.lino",
+        &recipe,
+        &[
+            "record_type \"meta_recipe\"",
+            "topic \"recursive_core\"",
+            "record_type \"meta_step\"",
+            "record_type \"meta_function\"",
+        ],
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

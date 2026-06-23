@@ -1,0 +1,106 @@
+recursive_core_meta_recipe
+  record_type "meta_recipe"
+  topic "recursive_core"
+  title "The recursive meta algorithm"
+  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
+  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the eight ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, and let the ledger prove every need was addressed. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set rather than growing new hardcoded intents."
+step_formalize_impulse
+  record_type "meta_step"
+  order "1"
+  id "formalize_impulse"
+  title "Formalize the impulse to one meaning record"
+  detail "Translate the latest message into the engine's meta language with formalize_intent: a language-tagged IntentFormalization carrying the impulse id, kind, route, and relevant spans. Working on this formalized record (not the raw bytes) is what lets one loop serve every language and task class."
+  source_file "src/intent_formalization.rs"
+step_build_problem_frame
+  record_type "meta_step"
+  order "2"
+  id "build_problem_frame"
+  title "Make the meaning a first-class problem frame that enumerates every need"
+  detail "ProblemFrame::from_formalization expands the meaning into an explicit, link-serializable frame whose needs each name one detected question, requirement, or task. Detecting all needs up front (R7) is what makes 'address everything the user asked' structural rather than best-effort."
+  source_file "src/meta_frame.rs"
+step_decompose_recursively
+  record_type "meta_step"
+  order "3"
+  id "decompose_recursively"
+  title "Decompose the frame as a recursive, bounded work-unit tree (downward pass)"
+  detail "WorkUnit::build calls decompose_once on each span and recurses until a unit either maps to a direct method, is an irreducible single need, or hits max_decomposition_depth. This is the recursive core: any task is broken down until each leaf is solvable by a single method call, and the bound guarantees termination."
+  source_file "src/meta_frame.rs"
+step_account_for_needs
+  record_type "meta_step"
+  order "4"
+  id "account_for_needs"
+  title "Account for every need in a satisfaction ledger"
+  detail "NeedLedger::resolve writes exactly one row per detected need against the leaf that resolves it: a need with a recognized method is satisfiable, a need with no method is recorded as blocked rather than silently dropped. every_need_accounted_for is the structural guarantee that nothing the user asked for goes unanswered."
+  source_file "src/meta_frame.rs"
+step_catalogue_methods
+  record_type "meta_step"
+  order "5"
+  id "catalogue_methods"
+  title "Catalogue the resolving methods as link data"
+  detail "MethodRegistry::from_dispatch derives the catalogue of every handler a leaf can route to directly from the live dispatch code, serialized to Links Notation. Treating the specific algorithms as data (method records) rather than buried branches is what lets the meta algorithm later reason about and modify its own method set."
+  source_file "src/method_registry.rs"
+step_resolve_leaves
+  record_type "meta_step"
+  order "6"
+  id "resolve_leaves"
+  title "Resolve each atomic leaf through the single ordered dispatch"
+  detail "try_contextual_override and the ordered SPECIALIZED_HANDLERS table resolve each atomic leaf: the first matching method wins. The decomposition above means dispatch is only ever asked to solve single-method leaves, so one ordered table covers every task class without per-intent control flow."
+  source_file "src/solver_dispatch.rs"
+step_record_evidence
+  record_type "meta_step"
+  order "7"
+  id "record_evidence"
+  title "Record every step as evidence in the append-only log"
+  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
+  source_file "src/event_log.rs"
+step_project_answer
+  record_type "meta_step"
+  order "8"
+  id "project_answer"
+  title "Project the answer from the event log"
+  detail "The final answer is a projection of the append-only event log, not a side effect: the same loop that recorded the frame, decomposition, ledger, and resolution yields the response. Because the projection reads the log, behaviour is fully determined by the recorded events (R13)."
+  source_file "src/solver.rs"
+fn_formalize_intent
+  record_type "meta_function"
+  function "formalize_intent"
+  source_file "src/intent_formalization.rs"
+fn_from_formalization
+  record_type "meta_function"
+  function "from_formalization"
+  source_file "src/meta_frame.rs"
+fn_record_problem_frame
+  record_type "meta_function"
+  function "record_problem_frame"
+  source_file "src/meta_frame.rs"
+fn_decompose_once
+  record_type "meta_function"
+  function "decompose_once"
+  source_file "src/meta_frame.rs"
+fn_record_work_units
+  record_type "meta_function"
+  function "record_work_units"
+  source_file "src/meta_frame.rs"
+fn_resolve_ledger
+  record_type "meta_function"
+  function "resolve"
+  source_file "src/meta_frame.rs"
+fn_record_need_ledger
+  record_type "meta_function"
+  function "record_need_ledger"
+  source_file "src/meta_frame.rs"
+fn_from_dispatch
+  record_type "meta_function"
+  function "from_dispatch"
+  source_file "src/method_registry.rs"
+fn_record_method_registry
+  record_type "meta_function"
+  function "record_method_registry"
+  source_file "src/method_registry.rs"
+fn_try_contextual_override
+  record_type "meta_function"
+  function "try_contextual_override"
+  source_file "src/solver_dispatch.rs"
+fn_build_evidence_links
+  record_type "meta_function"
+  function "build_evidence_links"
+  source_file "src/event_log.rs"
