@@ -475,46 +475,16 @@ impl UniversalSolver {
         record_intent_formalization(&mut log, &intent_entry);
         let intent_formalization = intent_entry.formalization;
 
-        // Issue #559 (Phase 1A): emit the explicit, link-serializable problem
-        // frame — the meaning record made first-class, enumerating every detected
-        // need (R7/R330). This is trace-only: routing and the answer are still
-        // decided by the existing dispatch below, preserving behavior (R13).
-        let problem_frame =
-            crate::meta_frame::record_problem_frame(&mut log, &intent_formalization);
-
-        // Issue #559 (Phase 1B): record the recursive, bounded downward pass —
-        // the work-unit decomposition of the frame (R19/R332) — as trace. Every
-        // leaf is still resolved by the existing dispatch below, so routing and
-        // the answer are unchanged (R13).
-        let work_unit_root = crate::meta_frame::record_work_units(
+        // Issue #559: record the general recursive meta core — problem frame
+        // (R330), recursive work-unit decomposition (R332), need-satisfaction
+        // ledger (R333), method registry (R331), and the end-to-end solution
+        // evidence (R334) — as one cohesive, trace-only pass. Routing and the
+        // answer are still decided by the existing dispatch below (R13); see
+        // `crate::meta_core` for the staged pipeline.
+        crate::meta_core::record_meta_core(
             &mut log,
             &intent_formalization,
             self.config.max_decomposition_depth,
-        );
-
-        // Issue #559 (Phase 2): project the need-satisfaction ledger so every
-        // detected need carries an explicit status (R8/R333). Trace-only: a
-        // blocked need is recorded rather than dropped, but routing and the
-        // answer are unchanged (R13).
-        let need_ledger =
-            crate::meta_frame::record_need_ledger(&mut log, &problem_frame, &work_unit_root);
-
-        // Issue #559 (Phase 3): record the method registry — the catalogue of
-        // handlers each atomic leaf can route to, derived from the live dispatch
-        // constants and serialized as link data (R331), so the meta algorithm can
-        // later reason about its own methods. Trace-only: selection still flows
-        // through the existing dispatch below, preserving behavior (R13).
-        let method_registry = crate::method_registry::record_method_registry(&mut log);
-
-        // Issue #559 (R334): join the frame, ledger, and registry into one
-        // end-to-end evidence chain — per need, frame → work-unit leaf → status →
-        // method — so "address every detected need" is auditable as a single
-        // record. Trace-only: routing and the answer are unchanged (R13).
-        let _solution_evidence = crate::solution_evidence::record_solution_evidence(
-            &mut log,
-            &problem_frame,
-            &need_ledger,
-            &method_registry,
         );
 
         log.append("search:local", prompt.to_owned());

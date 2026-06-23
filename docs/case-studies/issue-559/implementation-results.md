@@ -34,13 +34,14 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R334 | 4 | Solution evidence: the join `need → leaf → status → method` | `src/solution_evidence.rs` (`SolutionEvidence`, `EvidenceTrail`) | `solution_evidence`, `solution_evidence:accounted_for` | 5ebdb999 |
 | R335 | — | Self-describing recursive-core recipe as link data | `data/meta/recursive-core-recipe.lino` | (data; not a loop event) | c619c447 |
 
-The wiring lives in `src/solver.rs`: after `record_problem_frame` the loop calls
-`record_work_units`, `record_need_ledger`, `record_method_registry`, and
-`record_solution_evidence` in sequence, all before the existing
-`search:local` step, so the meta core observes the request but does not steer it
-yet. That ordering is what makes the migration safe: the artifacts are produced
-and audited first; routing is moved onto them only in later, behavior-changing
-phases that remain deferred (see [solution-plan.md](solution-plan.md)).
+The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
+loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
+`search:local` step: it records the problem frame, then `record_work_units`,
+`record_need_ledger`, `record_method_registry`, and `record_solution_evidence`
+in sequence, so the meta core observes the request but does not steer it yet.
+That ordering is what makes the migration safe: the artifacts are produced and
+audited first; routing is moved onto them only in later, behavior-changing phases
+that remain deferred (see [solution-plan.md](solution-plan.md)).
 
 ## Walking the artifacts for three prompt shapes
 

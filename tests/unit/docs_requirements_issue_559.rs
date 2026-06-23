@@ -43,11 +43,16 @@ fn issue_559_problem_frame_is_traceable() {
         ],
     );
 
-    // The frame is wired into the solver loop as a trace-only event.
+    // The frame is wired into the meta core, which the solver loop invokes.
+    let meta_core = read(root.join("src/meta_core.rs"));
+    assert!(
+        meta_core.contains("crate::meta_frame::record_problem_frame"),
+        "src/meta_core.rs should emit the problem frame in the meta-core pass"
+    );
     let solver = read(root.join("src/solver.rs"));
     assert!(
-        solver.contains("crate::meta_frame::record_problem_frame"),
-        "src/solver.rs should emit the problem frame in the main loop"
+        solver.contains("crate::meta_core::record_meta_core"),
+        "src/solver.rs should invoke the meta core in the main loop"
     );
 }
 
@@ -84,13 +89,14 @@ fn issue_559_recursive_work_units_are_traceable() {
         ],
     );
 
-    // The recursive pass is wired into the solver loop, bounded by the existing
+    // The recursive pass is wired into the meta core, bounded by the existing
     // depth knob so it stays terminating and behavior-preserving.
-    let solver = read(root.join("src/solver.rs"));
+    let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
-        solver.contains("crate::meta_frame::record_work_units"),
-        "src/solver.rs should emit the work-unit decomposition in the main loop"
+        meta_core.contains("crate::meta_frame::record_work_units"),
+        "src/meta_core.rs should emit the work-unit decomposition"
     );
+    let solver = read(root.join("src/solver.rs"));
     assert!(
         solver.contains("self.config.max_decomposition_depth"),
         "the recursive pass must be bounded by max_decomposition_depth"
@@ -129,11 +135,11 @@ fn issue_559_need_ledger_is_traceable() {
         ],
     );
 
-    // The ledger is wired into the solver loop as a trace-only event.
-    let solver = read(root.join("src/solver.rs"));
+    // The ledger is wired into the meta core as a trace-only event.
+    let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
-        solver.contains("crate::meta_frame::record_need_ledger"),
-        "src/solver.rs should emit the need ledger in the main loop"
+        meta_core.contains("crate::meta_frame::record_need_ledger"),
+        "src/meta_core.rs should emit the need ledger"
     );
 }
 
@@ -178,11 +184,11 @@ fn issue_559_method_registry_is_traceable() {
         "src/solver_dispatch.rs should expose the contextual handler names the registry reads"
     );
 
-    // The registry is wired into the solver loop as a trace-only event.
-    let solver = read(root.join("src/solver.rs"));
+    // The registry is wired into the meta core as a trace-only event.
+    let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
-        solver.contains("crate::method_registry::record_method_registry"),
-        "src/solver.rs should emit the method registry in the main loop"
+        meta_core.contains("crate::method_registry::record_method_registry"),
+        "src/meta_core.rs should emit the method registry"
     );
 }
 
@@ -249,11 +255,11 @@ fn issue_559_solution_evidence_is_traceable() {
         ],
     );
 
-    // The evidence join is wired into the solver loop as a trace-only event.
-    let solver = read(root.join("src/solver.rs"));
+    // The evidence join is wired into the meta core as a trace-only event.
+    let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
-        solver.contains("crate::solution_evidence::record_solution_evidence"),
-        "src/solver.rs should emit the solution evidence in the main loop"
+        meta_core.contains("crate::solution_evidence::record_solution_evidence"),
+        "src/meta_core.rs should emit the solution evidence"
     );
 }
 
