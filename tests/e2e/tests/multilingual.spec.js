@@ -2,6 +2,8 @@
 const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
+const TEN_POW_100 =
+  '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 const definitionDisambiguationCases = [
   {
@@ -409,6 +411,13 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('2 + 2 = 4');
     await expect(last).not.toContainText('arithmetic is available');
+  });
+
+  test('large integer exponent renders exactly', async ({ page }) => {
+    const last = await sendPrompt(page, '10^100');
+    await expect(last).toHaveClass(/assistant/);
+    await expect(last).toContainText(`10^100 = ${TEN_POW_100}`);
+    await expect(last).not.toContainText('1e+1');
   });
 
   test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {
