@@ -846,28 +846,6 @@ fn route_from_relevants(relevants: &[String]) -> Option<String> {
     })
 }
 
-/// The legacy route→method mapping retained as an audit baseline for issue #559.
-/// Live method dispatch uses
-/// [`MethodRegistry::method_for_route`](crate::method_registry::MethodRegistry::method_for_route)
-/// and `meta_method_dispatch`; selection comparison (R339) records any
-/// divergence between the two.
-pub(crate) fn specialized_handler_name(slug: &str) -> Option<&str> {
-    match slug {
-        "translation" => Some("translation"),
-        "algorithm" => Some("algorithm"),
-        "software_project_plan" | "software_project_implementation" => Some("software_project"),
-        "meta_explanation" => Some("meta_explanation"),
-        "concept_lookup" | "concept_lookup_in_context" => Some("concept_lookup"),
-        "arithmetic" => Some("arithmetic"),
-        "web_search" => Some("web_search"),
-        "procedural_how_to" => Some("procedural_how_to"),
-        "proof_request" => Some("proof_request"),
-        "write_script" => Some("write_script"),
-        other if !other.is_empty() => Some(other),
-        _ => None,
-    }
-}
-
 fn infer_kind(
     prompt: &str,
     normalized: &str,

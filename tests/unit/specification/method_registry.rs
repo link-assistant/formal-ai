@@ -199,3 +199,77 @@ fn registry_serializes_to_grounded_links_notation() {
         );
     }
 }
+
+// ---------------------------------------------------------------------------
+// Corpus-wide dispatch closure (issue #559, R344).
+//
+// The registry is now the *sole* dispatch authority: the legacy hardcoded route
+// mapper was removed once the corpus-wide parity certificate proved the registry
+// was a behaviour-preserving replacement. This test preserves that certificate's
+// invariant directly against the live registry, now with no second authority to
+// compare against. The corpus is enumerated from live data, never a hand-kept
+// list: every method name (a method is its own self-resolving route), every
+// route→method alias (R336) — which includes the `write_program` intent the
+// classifier emits directly — and every classifier route slug.
+//
+// Two facts are pinned. (1) Closure safety: no route the system can emit ever
+// resolves to an *unregistered* method — the property that made the registry a
+// safe drop-in for the retired table. (2) Coverage: every method-name route and
+// every alias route resolves (these are exactly the routes the legacy authority
+// also resolved, so the registry loses no coverage). Classifier slugs with no
+// handler may legitimately stay unresolved, exactly as under the old certificate's
+// four-way partition.
+// ---------------------------------------------------------------------------
+
+#[test]
+fn the_registry_is_the_sole_authority_that_closes_over_the_route_corpus() {
+    use formal_ai::route_method_alias::aliases;
+    use formal_ai::seed::intent_routing;
+
+    let registry = MethodRegistry::from_dispatch();
+
+    // Routes that must resolve: every method name and every alias route.
+    let mut must_resolve: Vec<String> = Vec::new();
+    for method in &registry.methods {
+        must_resolve.push(method.name.clone());
+    }
+    for alias in aliases() {
+        must_resolve.push(alias.route.clone());
+    }
+
+    // The full vocabulary the system can ever emit (a superset of must_resolve).
+    let mut corpus = must_resolve.clone();
+    for intent in intent_routing().intents {
+        if !intent.slug.is_empty() {
+            corpus.push(intent.slug);
+        }
+    }
+    corpus.sort_unstable();
+    corpus.dedup();
+    assert!(
+        corpus.len() >= 40,
+        "the route corpus should span the whole vocabulary, got {}",
+        corpus.len()
+    );
+
+    // (1) Closure safety: whatever resolves, resolves to a registered method.
+    for route in &corpus {
+        if let Some(method) = registry.method_for_route(route) {
+            assert!(
+                registry.methods.iter().any(|m| m.name == method.name),
+                "route `{route}` resolved to an unregistered method `{}`",
+                method.name
+            );
+        }
+    }
+
+    // (2) Coverage: every method-name route and every alias route resolves.
+    must_resolve.sort_unstable();
+    must_resolve.dedup();
+    for route in &must_resolve {
+        assert!(
+            registry.method_for_route(route).is_some(),
+            "the sole dispatch authority must resolve route `{route}` to a method"
+        );
+    }
+}

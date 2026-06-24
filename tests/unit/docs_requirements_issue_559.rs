@@ -437,17 +437,17 @@ fn issue_559_upward_construction_is_traceable() {
 }
 
 #[test]
-fn issue_559_selection_comparison_is_traceable() {
+fn issue_559_selection_trace_is_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 
-    // R339: the requirements row exists and cites the selection comparison.
+    // R339: the requirements row exists and cites the registry selection trace.
     let requirements = read(root.join("REQUIREMENTS.md"));
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
         &[
             "| R339 ",
-            "method-selection comparison",
+            "method-selection trace",
             "src/selection.rs",
             "record_selection",
             "tests/unit/specification/selection.rs",
@@ -461,24 +461,24 @@ fn issue_559_selection_comparison_is_traceable() {
         &module,
         &[
             "pub enum SelectionMode",
-            "pub enum SelectionAgreement",
             "pub struct LeafSelection",
-            "pub struct SelectionComparison",
+            "pub struct MethodSelection",
             "fn emits_artifact",
-            "fn records_comparison",
             "fn for_unit",
+            "fn resolved_count",
+            "fn unresolved_count",
             "fn to_links_notation",
             "fn record_selection",
             "selection",
         ],
     );
 
-    // The two compared authorities both exist: the hardcoded legacy mapping and
-    // the data-driven registry resolver.
+    // The single selection authority is the data-driven registry resolver; the
+    // hardcoded legacy mapper was removed in the full migration to the registry.
     let intent = read(root.join("src/intent_formalization.rs"));
     assert!(
-        intent.contains("fn specialized_handler_name"),
-        "src/intent_formalization.rs should expose the legacy selection authority"
+        !intent.contains("fn specialized_handler_name"),
+        "the legacy hardcoded selection authority must be fully removed"
     );
     let registry = read(root.join("src/method_registry.rs"));
     assert!(
@@ -486,11 +486,11 @@ fn issue_559_selection_comparison_is_traceable() {
         "src/method_registry.rs should expose the registry selection authority"
     );
 
-    // The comparison is wired into the meta core, gated by the solver config knob.
+    // The selection trace is wired into the meta core, gated by the solver knob.
     let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
         meta_core.contains("crate::selection::record_selection"),
-        "src/meta_core.rs should emit the method-selection comparison"
+        "src/meta_core.rs should emit the method-selection trace"
     );
     let solver = read(root.join("src/solver.rs"));
     assert!(
@@ -737,44 +737,47 @@ fn issue_559_recipe_interpreter_is_traceable() {
 }
 
 #[test]
-fn issue_559_dispatch_parity_is_traceable() {
+fn issue_559_legacy_dispatch_authority_is_fully_retired() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 
-    // R344: the requirements row exists and cites the shipped parity certificate.
+    // R344: the requirements row records the completed migration — the corpus-wide
+    // parity certificate proved the registry was a behavior-preserving replacement,
+    // so the legacy route mapper and its audit scaffolding were removed outright and
+    // the data-driven registry is now the sole dispatch authority.
     let requirements = read(root.join("REQUIREMENTS.md"));
     assert_contains_all(
         "REQUIREMENTS.md",
         &requirements,
         &[
             "| R344 ",
-            "src/dispatch_parity.rs",
-            "tests/unit/specification/dispatch_parity.rs",
-            "is_retire_safe",
-            "SelectionAgreement::classify",
+            "sole dispatch authority",
+            "src/method_registry.rs",
         ],
     );
 
-    // The module ships the per-route resolver, the corpus-wide audit, the verdict,
-    // and the trace recorder.
-    let module = read(root.join("src/dispatch_parity.rs"));
-    assert_contains_all(
-        "src/dispatch_parity.rs",
-        &module,
-        &[
-            "pub struct RouteParity",
-            "pub struct DispatchParity",
-            "pub fn audit",
-            "pub fn is_retire_safe",
-            "pub fn contradiction_count",
-            "pub fn record_dispatch_parity",
-        ],
+    // The legacy parity scaffolding is gone: no module, no crate registration.
+    assert!(
+        !root.join("src/dispatch_parity.rs").exists(),
+        "the dispatch-parity audit module must be removed once the legacy authority is retired"
     );
-
-    // The module is registered so the certificate is reachable from the crate.
     let lib = read(root.join("src/lib.rs"));
     assert!(
-        lib.contains("pub mod dispatch_parity;"),
-        "src/lib.rs must expose the dispatch parity module"
+        !lib.contains("dispatch_parity"),
+        "src/lib.rs must not reference the removed dispatch-parity module"
+    );
+
+    // The legacy hardcoded route→method mapper is gone everywhere in the crate.
+    let intent = read(root.join("src/intent_formalization.rs"));
+    assert!(
+        !intent.contains("fn specialized_handler_name"),
+        "the legacy route mapper must be fully removed from the crate"
+    );
+
+    // The registry remains the single authority that resolves a route to a method.
+    let registry = read(root.join("src/method_registry.rs"));
+    assert!(
+        registry.contains("fn method_for_route"),
+        "src/method_registry.rs must remain the sole route→method resolver"
     );
 }
 

@@ -33,11 +33,7 @@ const PROMPTS: &[&str] = &[
 
 const RECURSION_MODES: &[RecursionMode] =
     &[RecursionMode::Down, RecursionMode::Up, RecursionMode::Both];
-const SELECTION_MODES: &[SelectionMode] = &[
-    SelectionMode::Legacy,
-    SelectionMode::Registry,
-    SelectionMode::Compare,
-];
+const SELECTION_MODES: &[SelectionMode] = &[SelectionMode::Off, SelectionMode::Record];
 const SKILL_MODES: &[SkillMode] = &[SkillMode::Off, SkillMode::Accumulate];
 
 #[test]
@@ -96,7 +92,7 @@ fn executing_the_recipe_reproduces_the_pipeline_trace_in_default_modes() {
                 &formalization,
                 4,
                 RecursionMode::Down,
-                SelectionMode::Legacy,
+                SelectionMode::Off,
                 SkillMode::Off,
             ),
             "data-driven execution must reproduce the pipeline trace for {prompt:?}"
@@ -133,7 +129,7 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
             &formalization,
             4,
             RecursionMode::Down,
-            SelectionMode::Legacy,
+            SelectionMode::Off,
             SkillMode::Off,
         )
         .expect("the checked-in recipe executes cleanly");
@@ -164,7 +160,7 @@ fn external_stages_are_skipped_and_recorder_stages_run() {
         ],
         "the executed recorder stages, in order, for the default modes"
     );
-    for gated in ["construct_upward", "compare_selection", "accumulate_skills"] {
+    for gated in ["construct_upward", "select_methods", "accumulate_skills"] {
         assert!(
             trace.skipped.contains(&gated.to_owned()),
             "mode-gated stage `{gated}` must be skipped under the default modes"
@@ -186,11 +182,11 @@ fn enabling_modes_executes_the_gated_stages() {
             &formalization,
             4,
             RecursionMode::Both,
-            SelectionMode::Compare,
+            SelectionMode::Record,
             SkillMode::Accumulate,
         )
         .expect("the recipe executes under every mode enabled");
-    for now_running in ["construct_upward", "compare_selection", "accumulate_skills"] {
+    for now_running in ["construct_upward", "select_methods", "accumulate_skills"] {
         assert!(
             trace.executed.contains(&now_running.to_owned()),
             "`{now_running}` must run once its mode is enabled"
@@ -234,7 +230,7 @@ step_build_problem_frame
             &formalization,
             4,
             RecursionMode::Down,
-            SelectionMode::Legacy,
+            SelectionMode::Off,
             SkillMode::Off,
         )
         .expect_err("a misordered recipe must fail rather than silently misbehave");
@@ -262,7 +258,7 @@ step_unknown
             &formalization,
             4,
             RecursionMode::Down,
-            SelectionMode::Legacy,
+            SelectionMode::Off,
             SkillMode::Off,
         )
         .expect_err("an unknown recorder binding must be rejected");

@@ -134,10 +134,7 @@ pub fn try_contextual_override(
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         _ => return ContextualOutcome::NotHandled,
     };
-    answer.map_or(ContextualOutcome::Skip, |answer| {
-        log.append("specialized_handler", name.to_owned());
-        ContextualOutcome::Answer(answer)
-    })
+    answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)
 }
 
 /// Ordered dispatch table for the universal solver's specialized handlers.

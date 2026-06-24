@@ -23,12 +23,12 @@
 //! 6. the solution evidence (R334) — the end-to-end join, per need `frame →
 //!    work-unit leaf → status → method`, so "address every detected need" is one
 //!    auditable record;
-//! 7. the method-selection comparison (R339) — for every atomic leaf, the method
-//!    the legacy authority names versus the one the registry resolves, classified
-//!    as agree / registry-rescues / contradict / unresolved. Governed by
-//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Legacy`, which
-//!    records nothing); it proves the registry never contradicts a valid legacy
-//!    selection, preserving a retire-parity audit for the old mapper;
+//! 7. the method-selection trace (R339) — for every atomic leaf, the method the
+//!    single data-driven registry authority resolves (alias-aware), recorded so
+//!    the selection step of the algorithm is inspectable. Governed by
+//!    [`SelectionMode`](crate::selection::SelectionMode) (default `Off`, which
+//!    records nothing); a leaf with no serving method is recorded `unresolved`
+//!    rather than dropped;
 //! 8. the skill-accumulation ledger (R342) — distilled from the solution evidence,
 //!    every satisfied need becomes a proposed reusable skill and every blocked need
 //!    a curriculum item, so the loop accumulates what it can do and a list of what
@@ -53,8 +53,8 @@ use crate::skill_ledger::SkillMode;
 /// about: the default ([`RecursionMode::Down`]) emits the downward decomposition
 /// reasoning only, reproducing the pre-knob trace exactly (R13); `Up`/`Both`
 /// additionally emit the upward construction pass. `selection_mode` selects
-/// whether the legacy-vs-registry method-selection comparison is recorded: the
-/// default ([`SelectionMode::Legacy`]) records nothing. `skill_mode` selects whether
+/// whether the per-leaf registry method-selection trace is recorded: the
+/// default ([`SelectionMode::Off`]) records nothing. `skill_mode` selects whether
 /// the skill-accumulation ledger is recorded: the default ([`SkillMode::Off`])
 /// records nothing. The structural work-unit decomposition events
 /// (`work_unit:enter` / `work_unit:exit`) are always emitted regardless of any
@@ -99,7 +99,7 @@ pub fn record_meta_core(
 /// Apply the meta-core mode environment overrides in place.
 ///
 /// `FORMAL_AI_RECURSION_MODE` selects which recursive directions are traced,
-/// `FORMAL_AI_SELECTION_MODE` selects whether the method-selection comparison is
+/// `FORMAL_AI_SELECTION_MODE` selects whether the method-selection trace is
 /// recorded, and `FORMAL_AI_SKILL_MODE` selects whether the skill-accumulation
 /// ledger is recorded; an unset or unrecognized value leaves the corresponding mode
 /// at its (behavior-preserving) default. Kept here so the meta-core knobs are parsed

@@ -59,8 +59,6 @@ pub fn try_dispatch(
             log,
         ) {
             ContextualOutcome::Answer(answer) => {
-                // `try_contextual_override` records the compatibility
-                // `specialized_handler` event for contextual paths.
                 return Some(record_contextual_method_answer(prompt, log, answer, &name));
             }
             ContextualOutcome::Skip => continue,
@@ -186,7 +184,6 @@ fn try_diagnostic(
 
 fn record_method(log: &mut EventLog, name: &str) {
     log.append("method", name.to_owned());
-    log.append("specialized_handler", name.to_owned());
 }
 
 fn record_method_answer(

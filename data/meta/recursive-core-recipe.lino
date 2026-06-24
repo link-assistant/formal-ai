@@ -74,12 +74,12 @@ step_record_evidence
   detail "The recorder passes append trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning, upward_construction, solution_evidence, selection) to the EventLog, and build_evidence_links surfaces them as evidence links. The end-to-end evidence join itself is record_solution_evidence, which assembles per need 'frame leaf status method'; this step records it. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
   source_file "src/event_log.rs"
   records "record_solution_evidence"
-step_compare_selection
+step_select_methods
   record_type "meta_step"
   order "10"
-  id "compare_selection"
-  title "Compare the two method-selection authorities leaf by leaf"
-  detail "SelectionComparison::for_unit names, for every atomic leaf, both the method the legacy baseline (specialized_handler_name) would pick and the one the live data-driven registry resolves (MethodRegistry::method_for_route), classifying each as agree, registry_rescues (the registry resolves a leaf the legacy baseline cannot, e.g. write_program via its route→method alias), contradict, or unresolved. record_selection emits this optional selection event, gated by the selection_mode knob (legacy default records nothing, registry records the chosen method, compare adds the comparison and the contradiction count). The zero-contradiction invariant proves the live registry never names a different real method than a valid legacy baseline selection."
+  id "select_methods"
+  title "Record the method the registry selects for each leaf"
+  detail "MethodSelection::for_unit names, for every atomic leaf, the method the single data-driven registry authority resolves (MethodRegistry::method_for_route, alias-aware — e.g. write_program resolves to write_script through its route→method alias), or marks the leaf unresolved when no method serves it. record_selection emits this optional selection event, gated by the selection_mode knob (off default records nothing, record emits the per-leaf selection). The legacy hardcoded route mapper was removed once the registry became the sole dispatch authority, so this step records what the registry selects rather than a comparison against a second authority."
   source_file "src/selection.rs"
   records "record_selection"
 step_project_answer

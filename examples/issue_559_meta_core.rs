@@ -19,9 +19,9 @@
 //! 6. the upward construction pass (R338): the post-order leaf→root walk that
 //!    composes each answer back up, the construction half of the recursion;
 //! 7. the solution evidence (R334): the join `need → leaf → status → method`;
-//! 8. the method-selection comparison (R339): per atomic leaf, the legacy method
-//!    versus the registry-resolved one, classified and counted (shown in the
-//!    `compare` mode so both authorities and the agreement are visible);
+//! 8. the method-selection trace (R339): per atomic leaf, the method the single
+//!    data-driven registry authority resolves (or `unresolved`), with resolved
+//!    and unresolved leaves counted;
 //! 9. the skill-accumulation ledger (R342): each satisfied need distilled into a
 //!    proposed reusable skill and each blocked need into a curriculum item, with
 //!    nothing ever auto-promoted (the promotable count is always zero).
@@ -34,15 +34,13 @@
 //! program, driving the live recorder primitives in the order the data declares,
 //! and proves the resulting event log is identical, event-for-event, to the
 //! hand-written pipeline's — the algorithm-as-data and the algorithm-as-code are
-//! the same algorithm. Finally the dispatch-parity certificate (R344) audits the
-//! registry against the legacy dispatch authority across the *entire* route
-//! vocabulary the system can emit and proves zero contradictions, so the registry
-//! is a behavior-preserving drop-in for the hardcoded dispatch table — the
-//! precondition for retiring it. Together these are the "deep case-study analysis"
-//! data for `docs/case-studies/issue-559`.
+//! the same algorithm. The method registry is the sole dispatch authority — the
+//! hardcoded route mapper was removed entirely — so the selection trace records
+//! what the one authority resolves rather than a comparison against a retired
+//! baseline. Together these are the "deep case-study analysis" data for
+//! `docs/case-studies/issue-559`.
 
 use formal_ai::cue_lexicon::cue_sets;
-use formal_ai::dispatch_parity::DispatchParity;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_construction::{RecursionMode, UpwardConstruction};
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
@@ -50,7 +48,7 @@ use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::meta_self_improvement::{MetaSelfImprovement, SelfImprovementMode};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::recipe_interpreter::RecipeProgram;
-use formal_ai::selection::{SelectionComparison, SelectionMode};
+use formal_ai::selection::{MethodSelection, SelectionMode};
 use formal_ai::skill_ledger::{SkillLedger, SkillMode};
 use formal_ai::solution_evidence::SolutionEvidence;
 use formal_ai::translation::formalize_prompt;
@@ -65,7 +63,7 @@ fn dump(prompt: &str) {
     let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
     let construction = UpwardConstruction::for_unit(&root, &registry);
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
-    let selection = SelectionComparison::for_unit(&root, &registry);
+    let selection = MethodSelection::for_unit(&root, &registry);
     let skills = SkillLedger::from_evidence(&evidence);
 
     println!("================================================================");
@@ -97,13 +95,12 @@ fn dump(prompt: &str) {
         evidence.to_links_notation()
     );
     println!(
-        "\n# (R339) method-selection comparison \
-         (leaves={}, agree={}, registry_rescues={}, contradict={})\n{}",
+        "\n# (R339) method-selection trace \
+         (leaves={}, resolved={}, unresolved={})\n{}",
         selection.leaf_count(),
-        selection.agreement_count(),
-        selection.rescue_count(),
-        selection.contradiction_count(),
-        selection.to_links_notation(SelectionMode::Compare)
+        selection.resolved_count(),
+        selection.unresolved_count(),
+        selection.to_links_notation()
     );
     println!(
         "\n# (R342) skill-accumulation ledger \
@@ -192,30 +189,10 @@ fn main() {
         &formalization,
         4,
         RecursionMode::Down,
-        SelectionMode::Legacy,
+        SelectionMode::Off,
         SkillMode::Off,
     );
     println!(
         "# executing the recipe reproduces the live pipeline trace event-for-event: {reproduces}"
     );
-
-    // (R344) the retire-parity certificate: audit the registry against the legacy
-    // dispatch authority across the *entire* route vocabulary the system can emit,
-    // not just one prompt's leaves. Zero contradictions means the registry is a
-    // behavior-preserving drop-in for the hardcoded dispatch table — the
-    // precondition for retiring it. Print the certificate and the verdict.
-    let parity = DispatchParity::audit();
-    println!("================================================================");
-    println!(
-        "# (R344) dispatch parity — {} routes audited (agree={}, registry_rescues={}, \
-         unresolved={}, contradict={}), retire_safe={}",
-        parity.route_count(),
-        parity.agreement_count(),
-        parity.rescue_count(),
-        parity.unresolved_count(),
-        parity.contradiction_count(),
-        parity.is_retire_safe()
-    );
-    println!("================================================================");
-    println!("{}", parity.to_links_notation());
 }
