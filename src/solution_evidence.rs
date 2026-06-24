@@ -10,11 +10,9 @@
 //! becomes an end-to-end auditable fact rather than four separate projections a
 //! reader must reconcile by hand.
 //!
-//! This is a behavior-preserving projection: it reads the artifacts the loop
-//! already produced and emits a trace-only `solution_evidence` event. It changes
-//! neither routing nor the answer (R13). Runtime outcome feedback — flipping a
-//! satisfied prediction back to blocked when a leaf fails to validate — is layered
-//! on in a later phase; this phase pins the *static* chain so the wiring exists.
+//! This projection reads the artifacts the loop already produced and emits the
+//! `solution_evidence` audit event. Runtime method selection happens through the
+//! same registry resolver, while this module stays focused on the evidence join.
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
@@ -175,10 +173,9 @@ impl SolutionEvidence {
 /// Assemble the solution evidence and emit it as a loop event plus its Links
 /// Notation trace.
 ///
-/// Trace-only (R334): it appends one `solution_evidence` event (the serialized
-/// chain, which enumerates every trail) and a compact
-/// `solution_evidence:accounted_for`, so the end-to-end audit is observable in
-/// the event log without changing routing or the answer (R13).
+/// Append one `solution_evidence` event (the serialized chain, which enumerates
+/// every trail) and a compact `solution_evidence:accounted_for`, so the
+/// end-to-end audit is observable in the event log.
 pub(crate) fn record_solution_evidence(
     log: &mut EventLog,
     frame: &ProblemFrame,

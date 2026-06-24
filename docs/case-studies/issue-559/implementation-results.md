@@ -19,18 +19,18 @@ quotation below is copied verbatim from that run.
 
 ## What shipped (R330–R344)
 
-The general meta core is now a fixed pipeline every request passes through, ahead
-of the existing specialized dispatch. Each stage is a behavior-preserving,
-trace-only loop event: it records an explicit Links Notation artifact into the
-append-only `EventLog` and changes neither routing nor the produced answer
-(constraint R13). The phases were landed and committed independently:
+The general meta core is now a fixed pipeline every request passes through before
+method execution. Its recorder stages append explicit Links Notation artifacts
+into the append-only `EventLog`, and the same `MethodRegistry` is consumed by the
+live registry-backed executor in `src/meta_method_dispatch.rs::try_dispatch`.
+The phases were landed and committed independently:
 
 | Row | Phase | Artifact | Module | Loop event(s) | Commit |
 |-----|-------|----------|--------|---------------|--------|
 | R330 | 1A | Problem frame: the request as an explicit set of needs | `src/meta_frame.rs` (`ProblemFrame`, `Need`, `NeedStatus`) | `problem_frame` | 354a7c72 |
 | R332 | 1B | Recursive, bounded work-unit tree: decompose until atomic | `src/meta_frame.rs` (`WorkUnit`, `AtomicityReason`, `decompose_once`) | `work_unit:enter`, `work_unit:exit` | 353728e8 |
 | R333 | 2 | Need-satisfaction ledger: one row per need with status | `src/meta_frame.rs` (`NeedLedger`, `LedgerRow`) | `need:status` | 6082c156 |
-| R331 | 3 | Method registry: catalogue derived from live dispatch | `src/method_registry.rs` (`MethodRegistry`, `Method`, `MethodSurface`) | `method_registry`, `method_registry:count` | e7ae154a |
+| R331 | 3 + live swap | Method registry: catalogue derived from live dispatch and used by the registry-backed executor | `src/method_registry.rs` (`MethodRegistry`, `Method`, `MethodSurface`), `src/meta_method_dispatch.rs` (`try_dispatch`) | `method_registry`, `method_registry:count`, selected `method` | e7ae154a + this PR |
 | R334 | 4 | Solution evidence: the join `need → leaf → status → method` | `src/solution_evidence.rs` (`SolutionEvidence`, `EvidenceTrail`) | `solution_evidence`, `solution_evidence:accounted_for` | 5ebdb999 |
 | R335 | — | Self-describing recursive-core recipe as link data | `data/meta/recursive-core-recipe.lino` | (data; not a loop event) | c619c447 |
 | R336 | 4 | Route→method alias bridge: a coarser/finer intent slug still resolves to a catalogued method | `data/meta/route-method-aliases.lino`, `src/route_method_alias.rs` (`RouteMethodAlias`), consumed by `MethodRegistry::method_for_route` | (data + `solution_evidence` `method_via_alias`) | (this PR) |
@@ -40,24 +40,24 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
 | R341 | 5 | Cue lexicon: the hardcoded natural-language recognition cues moved out of inline Rust literals into reviewable link data | `data/meta/cue-lexicon.lino` (`cue_set` records), `src/cue_lexicon.rs` (`CueMatch`, `CueSet`), consumed by `src/intent_formalization.rs` (`append_prompt_relevants`, `looks_arithmetic`, `looks_like_text_manipulation`) | (data; recognition cues, not a loop event) | (this PR) |
 | R342 | 7 | Skill-accumulation ledger: each satisfied need distilled into a proposed reusable skill and each blocked need into a curriculum item, proposal-only and gated (no skill ever auto-promoted) | `src/skill_ledger.rs` (`SkillMode`, `SkillStatus`, `PromotionGate`, `CandidateSkill`, `CurriculumItem`, `SkillLedger`), distilling `SolutionEvidence`, gated by `SolverConfig::skill_mode` | `skill_ledger`, `skill_ledger:promotable` | (this PR) |
-| R343 | 8 | Recipe interpreter: the recipe runs as an executable program, driving the live recorder primitives in the order the data declares and proving the event log is identical, event-for-event, to the hand-written pipeline's | `src/recipe_interpreter.rs` (`RecipeStep`, `RecipeProgram`, `ExecutionTrace`, `from_lino`, `execute`, `recorder_sequence`, `reproduces_pipeline`), executing the recorders bound via the recipe's `records` fields against `src/meta_core.rs` | (executes the same loop events as `record_meta_core`; trace-only) | (this PR) |
-| R344 | 10 | Dispatch-parity certificate: the registry and the legacy dispatch authority are audited across the *entire* route vocabulary the system can emit (not just one prompt's leaves), proving zero contradictions — the registry is a behavior-preserving drop-in for the hardcoded table | `src/dispatch_parity.rs` (`RouteParity`, `DispatchParity`, `audit`, `is_retire_safe`, `record_dispatch_parity`), reusing `SelectionAgreement::classify` (R339) over a corpus grounded in `MethodRegistry::from_dispatch`, `route_method_alias`, `seed::intent_routing`, and `coding::WRITE_PROGRAM_INTENT` | `dispatch_parity`, `dispatch_parity:contradictions` (standalone certificate; trace-only) | (this PR) |
+| R343 | 8 | Recipe interpreter: the recipe runs as an executable program, driving the live recorder primitives in the order the data declares and proving the event log is identical, event-for-event, to the hand-written pipeline's | `src/recipe_interpreter.rs` (`RecipeStep`, `RecipeProgram`, `ExecutionTrace`, `from_lino`, `execute`, `recorder_sequence`, `reproduces_pipeline`), executing the recorders bound via the recipe's `records` fields against `src/meta_core.rs` | (executes the same loop events as `record_meta_core`) | (this PR) |
+| R344 | 10 | Dispatch-parity certificate: the registry and the legacy dispatch authority are audited across the *entire* route vocabulary the system can emit (not just one prompt's leaves), proving zero contradictions while the registry-backed executor is the live method path | `src/dispatch_parity.rs` (`RouteParity`, `DispatchParity`, `audit`, `is_retire_safe`, `record_dispatch_parity`), reusing `SelectionAgreement::classify` (R339) over a corpus grounded in `MethodRegistry::from_dispatch`, `route_method_alias`, `seed::intent_routing`, and `coding::WRITE_PROGRAM_INTENT` | `dispatch_parity`, `dispatch_parity:contradictions` (standalone compatibility certificate) | (this PR) |
 
-The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
-loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
-`search:local` step: it records the problem frame, then `record_work_units`,
-`record_need_ledger`, `record_method_registry`, `record_work_unit_reasoning`,
-`record_upward_construction`, `record_solution_evidence`, and `record_selection`
-in sequence, so the meta core observes the request but does not steer it yet.
+The recorder wiring lives in `src/meta_core.rs` (`record_meta_core`), which the
+solver loop (`src/solver.rs`) invokes as a single cohesive pass before the
+existing `search:local` step: it records the problem frame, then
+`record_work_units`, `record_need_ledger`, `record_method_registry`,
+`record_work_unit_reasoning`, `record_upward_construction`,
+`record_solution_evidence`, and `record_selection` in sequence. Method execution
+then goes through `src/meta_method_dispatch.rs::try_dispatch`, which orders names
+from the same registry and records the selected `method`.
 Which recursive directions are reasoned about — the downward decomposition
 (R337), the upward construction (R338), or both — is selected by
 `SolverConfig::recursion_mode` (default `Down`); whether the legacy-vs-registry
 method-selection comparison is recorded (R339) is selected by
 `SolverConfig::selection_mode` (default `Legacy`, which records nothing). Both
-knobs default to leaving the trace exactly as it was before they existed.
-That ordering is what makes the migration safe: the artifacts are produced and
-audited first; routing is moved onto them only in later, behavior-changing phases
-that remain deferred (see [solution-plan.md](solution-plan.md)).
+knobs default to leaving optional trace artifacts quiet while the live executor
+uses the registry-backed method path.
 
 ## Walking the artifacts for three prompt shapes
 
@@ -150,7 +150,8 @@ admitting one part is blocked.
 construction. The captured run reports:
 
 ```text
-  method_count "55"
+  method_count "60"
+  prelude_count "5"
   specialized_count "50"
   contextual_count "5"
 ```
@@ -199,12 +200,12 @@ problem_need_…
   method_via_alias "true"
 ```
 
-Resolution stays trace-only: it enriches the audit's `method`/`method_via_alias`
-links and changes neither routing nor the answer (R13). The map is kept grounded
-by `tests/unit/specification/route_method_alias.rs` — every alias target must be
-a real registered method and every alias must be *necessary* (its route slug is
-not already a method name) — so it can never drift into stale or redundant
-entries.
+That same route→method bridge is now used by the live registry dispatcher, so an
+aliased route can promote and execute the correct method instead of only enriching
+the evidence audit. The map is kept grounded by
+`tests/unit/specification/route_method_alias.rs` — every alias target must be a
+real registered method and every alias must be *necessary* (its route slug is not
+already a method name) — so it can never drift into stale or redundant entries.
 
 ## White-box recursive reasoning (R337)
 
@@ -279,14 +280,13 @@ inputs as children in source order, the serialization, and the gating contract
 
 ## Comparing the two selection authorities (R339)
 
-The method registry (R331/R336) was built so the catalogue is *data*, but the
-engine still picks the method for each leaf the old way: the hardcoded
-`specialized_handler_name` mapping in `src/intent_formalization.rs`. Before the
-data-driven registry can ever *drive* selection — and the hardcoded dispatch
-authority be retired — we must prove the two never disagree. R339
-(`src/selection.rs`) makes that proof a recorded artifact: for every atomic leaf
-it names both the method the legacy authority would pick and the one the registry
-resolves through `MethodRegistry::method_for_route`, and classifies the pair.
+The method registry (R331/R336) is now live selection data: the solver executes
+specialized methods through `meta_method_dispatch::try_dispatch`, which orders
+registry method names from the request's relevant tags before invoking the
+matching handler. R339 keeps the previous `specialized_handler_name` mapper as an
+audit baseline. For every atomic leaf, `src/selection.rs` names both the method
+the legacy authority would pick and the one the registry resolves through
+`MethodRegistry::method_for_route`, and classifies the pair.
 
 The four classes are `agree` (both name the same real method), `registry_rescues`
 (the legacy authority names no real handler but a route→method alias resolves
@@ -315,16 +315,17 @@ exist, so it resolves *nothing real*; the registry resolves `write_script`
 through the alias. The crucial invariant the case study pins across all three
 canonical prompts is `contradiction_count "0"`: wherever the legacy authority
 names a real method, the registry names the *same* one. That zero-contradiction
-result is the safety precondition for a later, behavior-changing phase to move
-selection onto the registry and delete the hardcoded mapping.
+result is the safety invariant that lets the registry-backed executor remain the
+single live method path while the old mapper is retained only for parity audits.
 
 Recording is governed by the `SelectionMode` knob (`Legacy` | `Registry` |
 `Compare`), surfaced as `SolverConfig::selection_mode` and the
 `FORMAL_AI_SELECTION_MODE` env override. The default `Legacy` records nothing —
 `record_selection` returns `None` and no `selection` event is appended — so the
-default solver behaves exactly as before. `Registry` records the chosen method
+optional audit trace stays quiet by default. `Registry` records the chosen method
 per leaf; `Compare` additionally records the legacy method, the per-leaf
-`agreement`, and the `selection:contradictions` summary count.
+`agreement`, and the `selection:contradictions` summary count. The live dispatch
+path does not depend on recording this optional artifact.
 `tests/unit/specification/selection.rs` pins the classification of each leaf
 shape, the zero-contradiction invariant, the mode-gated serialization, and that
 the answer and intent are identical whether the mode is `Legacy` or `Compare`.
@@ -502,10 +503,9 @@ position for position, the live pipeline's actual stage order (cross-checked aga
 placed before its dependency (e.g. the need ledger before the problem frame) or a
 binding to a recorder that does not exist is rejected with an explicit error rather
 than a wrong trace. This is the concrete sense in which the algorithm-as-data and
-the algorithm-as-code are *the same algorithm* — and the foundation for eventually
-driving the pipeline from the recipe itself (the dynamic-recompilation direction of
-issue #558). It stays strictly trace-only: it executes the same loop events the
-pipeline already emits, changing neither routing nor the answer (R13).
+the algorithm-as-code are *the same algorithm*. The interpreter executes the same
+recorder events the pipeline already emits; method execution remains in the
+registry-backed executor.
 
 `tests/unit/specification/recipe_interpreter.rs` pins all of this: the twelve
 contiguously-ordered steps, the nine-recorder subsequence matching the live
@@ -515,15 +515,14 @@ dependency-ordering and unknown-binding errors, and the Links Notation
 serialization. The recipe also gains the `from_lino` / `execute` `meta_function`
 records so the self-improvement loop continues to see a faithful self-description.
 
-## Proving the registry can retire the dispatch table (R344)
+## Proving the registry-backed path stays compatible (R344)
 
 R339 records, per request, that the data-driven registry never contradicts the
 legacy dispatch authority on the leaves *that prompt* produces. That is the right
-shape of proof but the wrong scope to **retire** the hardcoded
-`specialized_handler_name` table: replacing it with the registry as the selection
-authority is safe only if the two agree across the *entire route vocabulary the
-system can ever emit*, not just the routes one request happens to exercise. R344 is
-that corpus-wide certificate.
+shape of proof but the wrong scope for a live replacement: the registry-backed
+method executor must stay compatible across the *entire route vocabulary the
+system can ever emit*, not just the routes one request happens to exercise. R344
+is that corpus-wide certificate.
 
 `DispatchParity::audit` builds the route corpus from live data — never a hand-kept
 list — by unioning every registered method name (a method name is itself a route
@@ -542,15 +541,13 @@ contradictions** across the whole corpus. On the checked-in sources the audit
 covers 63 routes — 53 agree, one registry-rescue (`write_program` → `write_script`,
 through the R336 alias the legacy catch-all cannot serve), nine honestly unresolved
 (shared blockage, e.g. greetings, which is agreement not divergence), and zero
-contradictions. While that count is zero the registry is a behavior-preserving
-drop-in for the legacy authority, which is exactly the precondition for actually
-retiring the hardcoded dispatch in a later, behavior-changing phase (the
-dynamic-recompilation direction of issue #558). Like the registry it audits, the
+contradictions. While that count is zero the registry-backed method executor is
+compatible with the retained legacy baseline. Like the registry it audits, the
 certificate is derived from the live code by construction, so it cannot drift; it
 serializes to Links Notation and, via `record_dispatch_parity`, emits a
 `dispatch_parity` event plus a compact `dispatch_parity:contradictions` count so any
-future regression in retire-parity surfaces as a single auditable number. It is
-pure analysis: it changes neither routing nor any answer (R13).
+future regression in dispatch parity surfaces as a single auditable number. It is
+pure analysis layered over the live registry-backed path.
 
 `tests/unit/specification/dispatch_parity.rs` pins the invariant: zero
 contradictions and `is_retire_safe`, every route classified into exactly one class
@@ -572,7 +569,8 @@ and the Links Notation / trace-event serialization.
 
 - **One general recursive meta algorithm:** every request now flows through the
   same frame → recursive decomposition → ledger → registry → evidence pipeline,
-  regardless of which specialized handler ultimately answers.
+  then through the registry-backed method executor, regardless of which
+  specialized handler ultimately answers.
 - **Translate to a meta language and work on it:** the meta language is Links
   Notation; each stage emits its artifact as `.lino` records.
 - **Detect all needs and ensure each is addressed:** the frame enumerates needs,
@@ -584,9 +582,9 @@ and the Links Notation / trace-event serialization.
   by users and developers, not just the predicate, R338 records the upward
   construction pass so both directions of the recursion — decompose and compose —
   are explicit, inspectable link data, R339 records the legacy-vs-registry
-  selection comparison, proving (zero contradictions) that the data-driven
-  registry can later drive selection and replace the hardcoded dispatch authority,
-  and R340 closes the meta-circular loop: the algorithm reads its own recipe
+  selection comparison, proving (zero contradictions) that the live registry
+  executor is compatible with the retained legacy baseline, and R340 closes the
+  meta-circular loop: the algorithm reads its own recipe
   against the live pipeline and emits the updated recipe as links — gated and
   proposal-only, so it can reason about modifying itself without a human losing the
   final say (it already caught and fixed one real drift).
@@ -607,13 +605,10 @@ and the Links Notation / trace-event serialization.
   trace is identical, event-for-event, to the hand-written pipeline's across every
   mode combination, so the algorithm-as-data and the algorithm-as-code are provably
   the same algorithm (the groundwork for driving the pipeline from its own recipe).
-- **Retire the hardcoded dispatch table:** R344 proves the precondition for it —
-  `src/dispatch_parity.rs` audits the data-driven registry against the legacy
-  dispatch authority across the *entire* route vocabulary the system can emit (not
-  just one prompt's leaves) and certifies zero contradictions, so the registry is a
-  behavior-preserving drop-in for the hardcoded `specialized_handler_name` table —
-  the groundwork for actually replacing it in the dynamic-recompilation direction of
-  issue #558.
+- **Replace the direct dispatch loop:** `src/meta_method_dispatch.rs` executes
+  solver methods through `MethodRegistry::ordered_method_names_for_relevants` and
+  records the selected method; R344 keeps a corpus-wide parity certificate against
+  the retained legacy mapper so regressions surface as explicit contradictions.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and new data files.
 - **Compile data and do deep case-study analysis:** this document plus the

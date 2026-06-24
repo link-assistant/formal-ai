@@ -1,6 +1,7 @@
 # Issue 559 Requirements
 
-These requirements are derived from the issue body, existing repo direction, and the first-session planning constraint.
+These requirements are derived from the issue body, existing repo direction, and
+the PR feedback that expanded #560 from planning into implementation.
 
 ## Canonical Vocabulary Note
 
@@ -32,7 +33,9 @@ R4. Research existing components and libraries.
 
 R5. Replace hardcoded specific intents with a general meta algorithm.
 
-- Acceptance: future implementation routes every prompt through a general problem frame and data-described method registry before selecting any specialized execution path.
+- Acceptance: every prompt routes through a general problem frame and
+  data-described method registry before the solver executes any specialized
+  method hook.
 
 R6. Translate each message into the meta language.
 
@@ -146,7 +149,10 @@ R28. Emit an explicit, link-serializable problem frame as a loop event.
 
 R29. Drive method selection from a data-described method/skill registry.
 
-- Acceptance: a `.lino` registry records preconditions, required evidence, validation policy, cost, and an executable hook; selection consults the registry (in `compare` mode) before direct dispatch, reproducing the exact precedence of the 50 `SPECIALIZED_HANDLERS` until parity is proven.
+- Acceptance: the registry records the live prelude, specialized-handler, and
+  contextual method catalogue; `meta_method_dispatch::try_dispatch` orders and
+  executes method names through that registry; the legacy mapper remains only as
+  a parity baseline with zero-contradiction tests.
 - Maps to: proposed root **R331**; existing R103 (intent routing from data), R97 (externalize hardcoded surfaces); closes ROADMAP Pillar 20 residual.
 
 R30. Maintain a need-satisfaction ledger in the answer projection.
@@ -175,18 +181,20 @@ Most of issue 559 is realized through requirements the repo already tracks; only
 - R314 (`:783`) — agentic CLI loop / `plan_chat_step` (big-task todo planning).
 - R129 (`:249`) — 5–10 variations per test case (new routing tests).
 
-Proposed new root rows R330–R335 are enumerated in [alignment.md](alignment.md), each to be pinned by a new `issue_559_..._are_traceable()` test in `tests/unit/docs_requirements.rs`.
+Root rows R330–R344 are enumerated in [alignment.md](alignment.md) and pinned by
+`tests/unit/docs_requirements_issue_559.rs`.
 
-## Non-Goals For This First Session
+## Safety Boundaries
 
-NG1. Do not implement the architecture rewrite before the planning artifact is reviewed.
+NG1. Do not replace the Rust solver with an external Python orchestration
+framework.
 
-NG2. Do not remove specialized handlers immediately.
+NG2. Do not silently enable self-modification of solver behavior; all recipe and
+skill changes stay proposal-only until tests, benchmarks, and human review accept
+them.
 
-NG3. Do not replace the Rust solver with an external Python orchestration framework.
+NG3. Do not depend on Voyager, GPT-4, embeddings, or any other neural model as the
+core runtime for the general algorithm.
 
-NG4. Do not silently enable self-modification of solver behavior.
-
-NG5. Do not depend on Voyager, GPT-4, embeddings, or any other neural model as the core runtime for the general algorithm.
-
-NG6. Do not replace link-native data structures with a separate non-link model; external structural ideas must be translated into links.
+NG4. Do not replace link-native data structures with a separate non-link model;
+external structural ideas must be translated into links.

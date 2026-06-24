@@ -114,7 +114,8 @@ adds no new autonomy. "Algorithm reasons about itself" is delivered as
 *inspectability* (the algorithm is data that can be read, queried, and diffed),
 not as *unsupervised self-editing*. Any change to the general meta algorithm
 flows through the existing proposal gate and a human PR review. This is the
-content of Phase 9, and Phase 9 cannot ship without the gate.
+content of the self-improvement surface, and that surface cannot ship without
+the gate.
 
 ## Grounded-Recipe Discipline (resolves C5)
 
@@ -179,23 +180,23 @@ repo already tracks, adding new rows only for genuinely new obligations.
 | R157 (`:326`) — formalize to a meaning record | `ProblemFrame` is the explicit meaning record. |
 | R158 (`:327`) — graph of requirements and subtasks | The need ledger + recursive work units operationalize this. |
 | R67 (`:105`) — search external + cache provenance | The evidence policy reuses `source:`/`fetched_at`/`sha256`/`cache_hit`/`policy:offline`. |
-| R264 (`:634`) — white-box self-improvement | Phase 9 reuses this exact mechanism; no new autonomy. |
+| R264 (`:634`) — white-box self-improvement | Reuse this exact mechanism; no new autonomy. |
 | R311 (`:780`) — everything is a link (`format_lino_record`) | All new frames/units/registry entries serialize as links. |
 | R314 (`:783`) — agentic CLI loop (`plan_chat_step`) | Big-task todo planning extends the existing agentic loop. |
 | R129 (`:249`) — 5–10 variations per test case | New routing tests follow the prompt-variation harness. |
 
-## New Requirements To Add (R330+)
+## New Requirements Added (R330+)
 
 Per `ROADMAP.md:266` and the traceability pattern in
-`tests/unit/docs_requirements.rs`, the following new rows are proposed for
-REQUIREMENTS.md, each pinned by a new `issue_559_..._are_traceable()` test. The
-exact numbers are assigned when the rows are written (current max is R329).
+`tests/unit/docs_requirements.rs`, PR #560 adds rows R330-R344 to
+REQUIREMENTS.md, each pinned by an `issue_559_..._is_traceable()` test.
 
 1. **R330** — Every prompt produces an explicit, link-serializable problem frame
    (the meaning record made first-class), emitted as a loop event.
 2. **R331** — Method selection is data-described: a `.lino` method/skill registry
-   records preconditions, required evidence, validation policy, cost, and an
-   executable hook; selection consults the registry before direct dispatch.
+   records prelude, specialized, and contextual method surfaces, and the live
+   solver executes the selected registry ordering through
+   `meta_method_dispatch::try_dispatch`.
 3. **R332** — Recursive work units split a non-atomic frame until each unit is
    directly solvable by a method, library call, repo function, or reviewed skill,
    bounded by a `SolverConfig` atomicity/depth knob.
@@ -204,8 +205,10 @@ exact numbers are assigned when the rows are written (current max is R329).
 5. **R334** — A general evidence pipeline (expand → search → rerank → crawl →
    extract → compare → hypothesize) runs when the evidence policy requires fresh
    data, reusing existing provenance fields.
-6. **R335** — The general meta algorithm ships as a grounded
-   `data/meta/*-recipe.lino` recipe with a CI grounding test.
+6. **R335-R344** — The shipped recursive-core recipe, alias bridge, reasoning
+   passes, selection comparison, solution evidence, self-improvement gate,
+   skill ledger, recipe interpreter, and dispatch-parity certificate complete the
+   first live registry-backed replacement while preserving behavior.
 
 These map back to the product requirements R5–R12 and the feedback requirements
 R18–R27 in [requirements.md](requirements.md). The number of new rows is kept
@@ -219,7 +222,7 @@ contract surface rather than inventing a parallel one.
 | --- | --- | --- |
 | C1 vocabulary divergence | Resolved via canonical mapping | this doc + every deep-dive |
 | C2 missing roadmap linkage | Resolved (Pillars 7/20, supporting 2/19/26) | this doc + solution-plan |
-| C3 self-modification scope | Resolved (proposal-only gate, Phase 9) | this doc + recursive-core |
+| C3 self-modification scope | Resolved (proposal-only gate) | this doc + recursive-core |
 | C4 re-litigating Built work | Resolved (quote caveats, Verification Contract) | this doc + solution-plan |
 | C5 missing grounding discipline | Resolved (third grounded recipe) | this doc + solution-plan |
 | C6 missing CI gates | Resolved (six-gate matrix) | this doc + critical-review |

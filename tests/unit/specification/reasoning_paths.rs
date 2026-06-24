@@ -84,6 +84,25 @@ fn arithmetic_records_calculation_event_in_evidence_log() {
 }
 
 #[test]
+fn selected_specialized_handler_is_recorded_as_a_meta_method() {
+    let response = answer("What is 6 * 7?");
+    assert_eq!(response.intent, "calculation");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("method:")),
+        "registry-backed dispatch should record the selected method event: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response.links_notation.contains("method \"arithmetic\""),
+        "the method event should name the selected registry method:\n{}",
+        response.links_notation,
+    );
+}
+
+#[test]
 fn arithmetic_handles_large_integer_multiplication_without_overflow() {
     // Multiplying large integers should yield an exact integer result,
     // not an overflow error. Regression for issue #55.

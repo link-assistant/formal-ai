@@ -21,8 +21,6 @@
 //! "random guessing" is seeded from the content-addressed impulse id so the
 //! deterministic-projection invariant from `NON-GOALS.md` is preserved.
 
-use std::fmt::Write as _;
-
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
     answer_links_notation, language_aware_answer_for, language_aware_intent_for,
@@ -30,24 +28,17 @@ use crate::engine::{
 };
 use crate::event_log::{build_evidence_links, EventLog};
 use crate::intent_formalization::{
-    ordered_handler_names, record_intent_formalization, recover_write_program_rule,
-    rewrite_bare_program_coreference_rule, select_rule_for_intent, IntentFormalization,
-    IntentFormalizationCache, IntentFormalizationCacheEntry,
+    record_intent_formalization, recover_write_program_rule, rewrite_bare_program_coreference_rule,
+    select_rule_for_intent, IntentFormalizationCache, IntentFormalizationCacheEntry,
 };
 use crate::language::{detect as detect_language, Language};
 use crate::probability::{ProbabilityDecisionPolicy, ProbabilityStore};
-use crate::proof_engine::ProofRenderConfig;
 use crate::rule_synthesis::try_construct_unknown_rule;
 use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
-use crate::solver_dispatch::{try_contextual_override, ContextualOutcome, SPECIALIZED_HANDLERS};
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handler_oracle::try_unsupported_write_program;
-use crate::solver_handlers::{
-    finalize_simple, try_agent_workspace_task, try_behavior_rules_with_runtime,
-    try_definition_merge_by_default, try_feature_capability, try_natural_language_tool_request,
-    try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
-};
+use crate::solver_handlers::{finalize_simple, try_agent_workspace_task};
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
@@ -455,9 +446,9 @@ impl UniversalSolver {
         // Issue #559: record the general recursive meta core — problem frame
         // (R330), recursive work-unit decomposition (R332), need-satisfaction
         // ledger (R333), method registry (R331), and the end-to-end solution
-        // evidence (R334) — as one cohesive, trace-only pass. Routing and the
-        // answer are still decided by the existing dispatch below (R13); see
-        // `crate::meta_core` for the staged pipeline.
+        // evidence (R334) — as one cohesive pass. Method selection below is
+        // registry-backed, so the trace and the executable dispatch share the
+        // same method vocabulary.
         crate::meta_core::record_meta_core(
             &mut log,
             &intent_formalization,
@@ -542,9 +533,13 @@ impl UniversalSolver {
         // requested program. Policy guards still run for these prompts below.
         let is_concrete_write_program = matches!(rule, SelectedRule::WriteProgram(_));
         if !is_concrete_write_program {
-            if let Some(answer) =
-                self.handle_specialized_pattern(prompt, &intent_formalization, history, &mut log)
-            {
+            if let Some(answer) = crate::meta_method_dispatch::try_dispatch(
+                self,
+                prompt,
+                &intent_formalization,
+                history,
+                &mut log,
+            ) {
                 return answer;
             }
         }
@@ -642,159 +637,6 @@ impl UniversalSolver {
             thinking_steps,
             links_notation,
         }
-    }
-
-    fn handle_specialized_pattern(
-        &self,
-        prompt: &str,
-        intent_formalization: &IntentFormalization,
-        history: &[ConversationTurn],
-        log: &mut EventLog,
-    ) -> Option<SymbolicAnswer> {
-        let normalized = prompt.to_lowercase();
-
-        if let Some(answer) = self.try_diagnostic(prompt, &normalized, log) {
-            return Some(answer);
-        }
-        if let Some(answer) =
-            try_natural_language_tool_request(prompt, &normalized, log, self.config.agent_mode)
-        {
-            log.append("specialized_handler", "nl_tool".to_owned());
-            return Some(answer);
-        }
-        let capability_runtime = CapabilityRuntime::new(
-            self.config.offline,
-            self.config.agent_mode,
-            self.config.diagnostic_mode,
-            self.config.definition_fusion_by_default,
-        );
-        let self_awareness_runtime = SelfAwarenessRuntime::new(
-            self.config.execution_surface,
-            self.config.offline,
-            self.config.agent_mode,
-            self.config.diagnostic_mode,
-            self.config.definition_fusion_by_default,
-            self.config.blueprint_composition,
-        );
-        if let Some(answer) =
-            try_behavior_rules_with_runtime(prompt, &normalized, log, self_awareness_runtime)
-        {
-            log.append("specialized_handler", "behavior_rules".to_owned());
-            return Some(answer);
-        }
-        if let Some(answer) = try_feature_capability(prompt, &normalized, log, capability_runtime) {
-            log.append("specialized_handler", "feature_capability".to_owned());
-            return Some(answer);
-        }
-        if let Some(answer) =
-            try_playwright_script(prompt, &normalized, log, self.config.guess_probability)
-        {
-            log.append("specialized_handler", "playwright_script".to_owned());
-            return Some(answer);
-        }
-        let proof_render_config = ProofRenderConfig {
-            guess_probability: self.config.guess_probability,
-            follow_up_probability: self.config.follow_up_probability,
-        };
-        let handler_names = ordered_handler_names(
-            intent_formalization,
-            SPECIALIZED_HANDLERS.iter().map(|(name, _)| *name),
-        );
-        for name in handler_names {
-            let Some((_, handler)) = SPECIALIZED_HANDLERS
-                .iter()
-                .find(|(candidate, _)| *candidate == name)
-            else {
-                continue;
-            };
-            if self.config.definition_fusion_by_default && name == "concept_lookup" {
-                if let Some(answer) = try_definition_merge_by_default(prompt, log) {
-                    log.append(
-                        "specialized_handler",
-                        "definition_merge_by_default".to_owned(),
-                    );
-                    return Some(answer);
-                }
-            }
-            // A few handlers need more than the uniform signature: the proof
-            // handler depends on the solver configuration sliders, the
-            // meta-explanation handler on the self-awareness runtime, and the
-            // numeric-list handler on the conversation history (issue #412, so a
-            // bare follow-up "Отсортируй 4, 3, 1, 17, 8, 9, 15" inherits the
-            // language and code request established by an earlier coding turn).
-            // Their entries stay in `SPECIALIZED_HANDLERS` to keep the precedence
-            // order documented in one place; `try_contextual_override` routes the
-            // few contextual names through their richer variants.
-            match try_contextual_override(
-                name,
-                prompt,
-                &normalized,
-                history,
-                proof_render_config,
-                self_awareness_runtime,
-                log,
-            ) {
-                ContextualOutcome::Answer(answer) => return Some(answer),
-                ContextualOutcome::Skip => continue,
-                ContextualOutcome::NotHandled => {}
-            }
-            if let Some(answer) = handler(prompt, &normalized, log) {
-                log.append("specialized_handler", name.to_owned());
-                return Some(answer);
-            }
-            if name == "concept_lookup" {
-                if let Some(answer) = try_project_lookup(
-                    prompt,
-                    &normalized,
-                    log,
-                    self.config.associative_project_promotion,
-                    intent_formalization.route.as_deref() == Some("identity"),
-                ) {
-                    log.append("specialized_handler", "project_lookup".to_owned());
-                    return Some(answer);
-                }
-            }
-        }
-        None
-    }
-
-    fn try_diagnostic(
-        &self,
-        prompt: &str,
-        normalized: &str,
-        log: &mut EventLog,
-    ) -> Option<SymbolicAnswer> {
-        if !normalized.contains("[diagnostic]") {
-            return None;
-        }
-        log.append("diagnostic_mode", "active".to_owned());
-        let stripped = prompt.replace("[diagnostic]", "").trim().to_owned();
-        let inner_solver = Self::new(self.config);
-        let inner = inner_solver.solve(&stripped);
-        let mut decorated = inner.answer.clone();
-        decorated.push_str("\n\n[diagnostic]\n");
-        decorated.push_str(inner.links_notation.trim_end());
-        decorated.push('\n');
-        for link in &inner.evidence_links {
-            let _ = writeln!(decorated, "evidence: {link}");
-        }
-        let _ = writeln!(decorated, "trace: {}", inner.intent);
-        log.append("intent", inner.intent.clone());
-        let response_link = format!("response:diagnostic:{}", inner.intent);
-        log.append("response", response_link.clone());
-        let trace_id = log.append("trace", inner.intent.clone());
-        let evidence_links = build_evidence_links(prompt, log, &response_link);
-        let links_notation =
-            answer_links_notation(prompt, &inner.intent, &decorated, log, &trace_id);
-        let thinking_steps = log.thinking_steps_for_answer(&inner.answer);
-        Some(SymbolicAnswer {
-            intent: inner.intent,
-            answer: decorated,
-            confidence: inner.confidence,
-            evidence_links,
-            thinking_steps,
-            links_notation,
-        })
     }
 
     fn handle_policy(

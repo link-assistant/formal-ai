@@ -49,22 +49,21 @@ precedence table behind the formalized router).
 | 2B Data-described registry, Rust executes | A `.lino` method/skill registry holds preconditions/evidence/validation/cost; a generic selector reads it; handlers stay as executable hooks | Closes Pillar 20; general; honors R103/R97; algorithm-as-data on-ramp | Must reproduce the exact 50-handler order initially | M–L | Medium |
 | 2C Full registry + learned ranking | As 2B but selection scores are tuned from benchmark feedback | Most adaptive | Tuning risks nondeterminism; needs the self-improvement gate | L | High |
 
-**Recommendation: 2B, reached through 2A, with 2C deferred behind the
+**Recommendation implemented in PR #560: 2B, with 2C gated behind the
 self-improvement gate.** 2B is the general solution the issue asks for: selection
-becomes data the system can inspect and (later, gated) modify, while handlers
-remain callable (NG2). 2A is a stepping stone that lets us land metadata with
-zero behavior change first. 2C only after deterministic replay and benchmarks can
-prove it never regresses.
+is data the system can inspect and the solver executes specialized handlers
+through the registry-backed `meta_method_dispatch::try_dispatch` path, while
+handlers remain callable Rust hooks (NG2). 2C only after deterministic replay and
+benchmarks can prove learned ranking never regresses.
 
 **Comparison harness (this is the "implement all to compare" case):** add a
 `SolverConfig` knob `selection_mode ∈ {legacy, registry, compare}` (added to
-config first, per NON-GOALS). In `compare` mode the solver computes *both* the
-legacy `ordered_handler_names` result and the registry selection, asserts they
-match, and records any divergence as an event without changing the answer.
-Benchmarks and the prompt-variation suite run in `compare` mode in CI; the
-migration flips the default to `registry` only when divergence is zero across all
-suites. This makes 2A vs 2B an empirical, test-enforced decision rather than a
-leap.
+config first, per NON-GOALS). The live solver path now uses the registry-backed
+executor; `selection_mode` controls the optional audit artifact. In `compare`
+mode the solver records both the retained legacy mapper result and the registry
+selection, classifies any divergence, and keeps R344's corpus-wide parity
+certificate at zero contradictions. This keeps 2B empirical and test-enforced
+while preserving a legacy baseline for review.
 
 ## Decision 3 — Recursion direction
 
@@ -121,13 +120,13 @@ non-CORS providers and crawl before they become default-on.
 | Option | Summary | Pros | Cons | Cost | Risk |
 | --- | --- | --- | --- | --- | --- |
 | 5A Big-bang replace dispatch | Swap `SPECIALIZED_HANDLERS` for the registry in one PR | Fast; no dual code path | High blast radius; hard to review; risks regressions across 50 handlers | M | High |
-| 5B Shadow/compare then flip | Land registry alongside legacy, run `compare` mode in CI, flip default when divergence is zero (Decision 2 harness) | Safe; empirical; reviewable per step; honors R13/R17 | Temporary dual path; more test runs | M–L | Low |
+| 5B Registry-backed path with retained parity baseline | Land registry-backed dispatch, keep the old mapper only for `compare`/parity audits, and fail tests on contradictions | Empirical; closes the dispatch residual in one reviewable path; honors R13/R17 through a corpus-wide certificate | Requires keeping audit-only legacy code until reviewers are comfortable removing it | M–L | Low |
 | 5C Handler-by-handler | Migrate one handler family at a time | Smallest steps | Long tail; inconsistent intermediate state; 50 families | L | Medium |
 
-**Recommendation: 5B.** It is the safest and most reviewable, matches the
-"backward compatibility, additive tests" constraint (R13/R14), and turns the
-migration into a measurable gate rather than a judgment call. 5C can be layered
-inside 5B for the few handlers that need bespoke metadata.
+**Recommendation implemented in PR #560: 5B.** The registry-backed executor is the
+live path, and `selection`/`dispatch_parity` keep the migration measurable rather
+than judgment-based. 5C is no longer needed for the existing handler set; bespoke
+metadata can still be added later without reintroducing a direct dispatch loop.
 
 ## Decision 6 — Skill/method registry storage and grounding
 

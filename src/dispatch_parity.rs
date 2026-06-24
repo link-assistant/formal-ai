@@ -3,11 +3,11 @@
 //! The per-request selection comparison (R339, [`crate::selection`]) proves the
 //! data-driven [`MethodRegistry`] never contradicts the legacy dispatch authority
 //! *on the leaves a given prompt happens to produce*. That is necessary but not
-//! sufficient to **retire** the hardcoded dispatch table: to replace
+//! sufficient after **retiring** the direct solver loop: to keep
 //! [`specialized_handler_name`](crate::intent_formalization::specialized_handler_name)
-//! with the registry as the selection authority, the two must agree across the
-//! *entire route vocabulary the system can ever emit*, not just the routes seen on
-//! one request.
+//! as a reliable audit baseline, it must agree with the registry across the
+//! *entire route vocabulary the system can ever emit*, not just the routes seen
+//! on one request.
 //!
 //! This module is that corpus-wide proof. It enumerates every route slug any
 //! authority knows about — grounded in live data, never a hand-kept list:
@@ -25,9 +25,7 @@
 //! corpus. A contradiction means the registry would pick a different real method
 //! than a valid legacy selection, or fail to resolve a route the legacy resolves —
 //! either way, retiring the table would change behaviour. While that count is zero
-//! the registry is a behaviour-preserving drop-in for the legacy authority, which
-//! is the precondition for actually retiring the hardcoded dispatch in a later,
-//! behaviour-changing phase (the dynamic-recompilation direction of issue #558).
+//! the registry remains a behaviour-preserving replacement for the old authority.
 //!
 //! Like the method registry it audits, this certificate is derived from the live
 //! code by construction, so it can never drift; the grounding test

@@ -1,5 +1,10 @@
 # Issue 559 Recursive Core
 
+**Historical status:** this specification predates the live dispatch replacement
+in PR #560. The current implementation record is
+[implementation-results.md](implementation-results.md); specialized methods now
+execute through `src/meta_method_dispatch.rs::try_dispatch`.
+
 This document specifies the recursive, bidirectional core of the general meta
 algorithm. It answers the PR feedback's request that "the core algorithm be fully
 recursive" (R19) and run "in both directions at the same time" (R20). It is
@@ -22,8 +27,8 @@ The current entry chain is `solve` (`src/solver.rs:373`) →
 2. local search `search:local` (`:478`);
 3. shallow decomposition (`:480-483`);
 4. write-program rescue (`:525`) before synthesis (`:536`);
-5. specialized handlers via `handle_specialized_pattern` (`:551` skips them for
-   concrete `WriteProgram`);
+5. specialized handlers via the registry-backed method dispatcher (`:551` in the
+   pre-PR inventory skipped them for concrete `WriteProgram`);
 6. policy/unknown fallbacks and event emission.
 
 The recursive core generalizes **step 3**. Today `UniversalSolver::decompose`
@@ -133,8 +138,8 @@ exists," decomposition handles "this is novel, break it down."
 of today's solvers, in the existing precedence (CR7 — order matters):
 
 1. local search (`search:local`, today at `solver.rs:478`);
-2. registry-selected specialized method (the generalization of
-   `handle_specialized_pattern`, `:655-767`);
+2. registry-selected specialized method via
+   `meta_method_dispatch::try_dispatch`;
 3. write-program rescue (`:525`) / synthesis (`:536`) for constructive units;
 4. policy/unknown fallback with provenance.
 

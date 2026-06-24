@@ -1,9 +1,9 @@
-//! Ordered dispatch table for the universal solver's specialized handlers.
+//! Ordered executable method catalogue for the universal solver.
 //!
 //! Extracted from `solver.rs` to keep that module under the repository line
-//! limit. The table is the single source of truth for handler precedence: the
-//! first handler that returns `Some` wins, and several tests rely on this
-//! resolution order.
+//! limit. The method catalogue is the executable backing for the meta method
+//! registry: the registry chooses method names, then this module supplies the
+//! Rust function for names implemented as regular solver handlers.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -34,8 +34,8 @@ use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question
 
 /// Uniform signature every specialized handler conforms to. Handlers that
 /// don't need `normalized` go through tiny adapter wrappers below so the
-/// dispatch registry stays homogeneous and the loop in
-/// `UniversalSolver::handle_specialized_pattern` remains a single line.
+/// dispatch registry stays homogeneous and the registry executor can call every
+/// regular table entry through one function shape.
 pub type SpecializedHandler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
 
 fn handle_arithmetic(
@@ -79,8 +79,7 @@ pub enum ContextualOutcome {
 /// handler, the dispatch loop routes those few names through this helper.
 ///
 /// Extracted from `solver.rs` so that module stays under the repository line
-/// limit; the three branches were previously inlined in
-/// `UniversalSolver::handle_specialized_pattern`.
+/// limit; these branches are now reached through the registry-backed executor.
 /// The context-dependent override handlers, in the order `try_contextual_override`
 /// evaluates them.
 ///
@@ -96,6 +95,20 @@ pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
     "numeric_list",
     "shell_command_transform",
     "text_manipulation",
+];
+
+/// Method names that run before the regular handler table.
+///
+/// These used to be hardwired at the top of `UniversalSolver`'s specialized
+/// dispatch loop. Issue #559 makes them first-class registry methods as well, so
+/// the solver has one ordered method-selection path instead of a prelude branch
+/// plus a separate handler table.
+pub const PRELUDE_METHOD_NAMES: &[&str] = &[
+    "diagnostic",
+    "nl_tool",
+    "behavior_rules",
+    "feature_capability",
+    "playwright_script",
 ];
 
 pub fn try_contextual_override(
@@ -222,3 +235,12 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("opinion_question", try_opinion_question),
     ("incompatible_units", try_incompatible_units),
 ];
+
+/// Return the executable handler for a registry method name implemented by the
+/// regular solver-handler table.
+#[must_use]
+pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
+    SPECIALIZED_HANDLERS
+        .iter()
+        .find_map(|(candidate, handler)| (*candidate == name).then_some(*handler))
+}

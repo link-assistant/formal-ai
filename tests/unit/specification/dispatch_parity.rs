@@ -1,13 +1,11 @@
 //! Issue #559 (R344): the registry-vs-legacy dispatch parity certificate.
 //!
-//! These tests pin the retire-parity invariant: across the *entire* route
-//! vocabulary the system can emit — not just the routes one prompt happens to
-//! produce — the data-driven method registry never contradicts the legacy dispatch
-//! authority. While that holds, the registry is a behaviour-preserving drop-in for
-//! the hardcoded `specialized_handler_name` table, which is the precondition for
-//! retiring that table in a later phase. A new route that the registry resolved
-//! differently (or failed to resolve) than the legacy would flip
-//! `is_retire_safe()` to false and fail here.
+//! These tests pin the post-retirement parity invariant: across the *entire*
+//! route vocabulary the system can emit — not just the routes one prompt happens
+//! to produce — the data-driven method registry never contradicts the legacy
+//! route mapper. A new route that the registry resolved differently (or failed to
+//! resolve) than that audit baseline would flip `is_retire_safe()` to false and
+//! fail here.
 
 use formal_ai::dispatch_parity::{record_dispatch_parity, DispatchParity};
 use formal_ai::event_log::EventLog;

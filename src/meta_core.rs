@@ -1,7 +1,7 @@
 //! Issue #559: the general recursive meta core, wired as one cohesive pass.
 //!
-//! Every request flows through the same pipeline before the existing specialized
-//! dispatch decides routing and the answer:
+//! Every request flows through the same pipeline before registry-backed method
+//! dispatch executes the selected method:
 //!
 //! 1. the explicit, link-serializable problem frame (R330) — the meaning record
 //!    made first-class, enumerating every detected need (R7);
@@ -9,9 +9,9 @@
 //!    decompose until each leaf is directly solvable (R19);
 //! 3. the need-satisfaction ledger (R333) — every detected need carries an
 //!    explicit status, a blocked need recorded rather than dropped (R8);
-//! 4. the method registry (R331) — the catalogue of handlers each atomic leaf can
-//!    route to, derived from the live dispatch constants, so the meta algorithm
-//!    can later reason about its own methods;
+//! 4. the method registry (R331) — the catalogue of methods each atomic leaf can
+//!    route to, derived from the live dispatch constants and used by the solver's
+//!    live method dispatch;
 //! 5. the bidirectional recursive reasoning (R337, R338) — a human-readable
 //!    thought at every recursive step. The downward pass (observe →
 //!    decompose/atomic → method) explains *how the request is taken apart*; the
@@ -28,7 +28,7 @@
 //!    as agree / registry-rescues / contradict / unresolved. Governed by
 //!    [`SelectionMode`](crate::selection::SelectionMode) (default `Legacy`, which
 //!    records nothing); it proves the registry never contradicts a valid legacy
-//!    selection, the precondition for the registry to drive selection later;
+//!    selection, preserving a retire-parity audit for the old mapper;
 //! 8. the skill-accumulation ledger (R342) — distilled from the solution evidence,
 //!    every satisfied need becomes a proposed reusable skill and every blocked need
 //!    a curriculum item, so the loop accumulates what it can do and a list of what
@@ -36,10 +36,9 @@
 //!    (default `Off`, which records nothing); it is proposal-only — no skill is ever
 //!    auto-promoted to stable without tests and a benchmark delta (C3).
 //!
-//! The whole pass is **trace-only**: each stage appends Links Notation artifacts
-//! to the append-only event log, and none of them changes routing or the produced
-//! answer (R13). Selection still flows through the existing dispatch downstream;
-//! moving routing onto these artifacts is a later, behavior-changing phase.
+//! The recording stages are append-only: each stage appends Links Notation
+//! artifacts to the event log. The same registry they record is also the live
+//! method-selection authority used by `meta_method_dispatch`.
 
 use crate::event_log::EventLog;
 use crate::intent_formalization::IntentFormalization;

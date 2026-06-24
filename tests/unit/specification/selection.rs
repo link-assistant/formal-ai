@@ -1,14 +1,15 @@
-//! Issue #559 (R339): registry-driven method selection, compared to the legacy.
+//! Issue #559 (R339): registry-driven method selection, compared to the legacy
+//! route mapper.
 //!
 //! Two authorities can name the method that resolves an atomic work-unit leaf: the
 //! hardcoded legacy mapping (`specialized_handler_name`) and the data-driven
-//! registry resolver (`MethodRegistry::method_for_route`, alias-aware). For the
-//! registry to eventually *drive* selection — and to retire the hardcoded
-//! authority — it must never contradict a valid legacy selection. These tests pin
-//! that invariant (zero contradictions across the canonical prompts), the
+//! registry resolver (`MethodRegistry::method_for_route`, alias-aware). The live
+//! solver now dispatches through the registry; the legacy mapper remains as an
+//! audit baseline that must never contradict the registry. These tests pin that
+//! invariant (zero contradictions across the canonical prompts), the
 //! `registry_rescues` case the route→method aliases exist to fix, and that the
-//! `SelectionMode` knob is strictly additive and trace-only (R13): the default
-//! `Legacy` records nothing and never changes the answer.
+//! `SelectionMode` knob only controls trace verbosity: the default `Legacy`
+//! records nothing.
 
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::WorkUnit;
@@ -198,7 +199,8 @@ fn compare_mode_serializes_both_authorities_and_the_agreement() {
 }
 
 // ---------------------------------------------------------------------------
-// The knob gates the emitted trace; the default is behavior-preserving.
+// The knob gates the emitted trace; live method dispatch is registry-backed
+// either way.
 // ---------------------------------------------------------------------------
 
 fn has_prefix(links: &[String], prefix: &str) -> bool {

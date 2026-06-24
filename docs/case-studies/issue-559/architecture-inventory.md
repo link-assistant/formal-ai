@@ -1,5 +1,10 @@
 # Issue 559 Architecture Inventory
 
+**Historical status:** this inventory records the pre-implementation architecture
+verified on 2026-06-23. PR #560 replaces the solver-local specialized dispatch
+control plane with `src/meta_method_dispatch.rs::try_dispatch`; see
+[implementation-results.md](implementation-results.md) for the current state.
+
 This inventory documents the current architecture before implementation
 planning, as requested in the issue. Every claim is grounded in a concrete
 `file:line` reference verified against the working tree on 2026-06-23. Where the
@@ -43,8 +48,10 @@ at `src/solver.rs:349`. The public entry `solve` (`:373`) delegates through
 4. Run local search (`search:local`, `:478`) **before** decomposition
    (`:480`–`483`).
 5. Try the write-program rescue path (`:525`) **before** synthesis (`:536`).
-6. Run specialized handlers via `handle_specialized_pattern`, except that
-   concrete `WriteProgram` rules skip them (`:551`).
+6. Run registry-backed method dispatch through
+   `src/meta_method_dispatch.rs::try_dispatch`; the 50 specialized handlers are
+   implementation hooks selected by `MethodRegistry`, not a solver-local control
+   plane.
 7. Apply policy and unknown-reasoning fallbacks.
 8. Record candidate, validation, simplification, and answer-projection events.
 
@@ -116,8 +123,8 @@ Relevant files (corrected locations):
   (1070 lines).
 
 > Precision note: there is **no** `data/meanings.lino`. The lexicon lives under
-> `data/seed/`. The first draft referenced the wrong path; later phases that add
-> registry data must target `data/seed/` (or `data/meta/`) so the
+> `data/seed/`. The first draft referenced the wrong path; registry data must
+> target `data/seed/` (or `data/meta/`) so the
 > `include_str!` embedding in `src/seed/embedded.rs` continues to work.
 
 Routing today is mostly data-driven but retains hardcoded English cue
@@ -168,8 +175,8 @@ shell_refusal, proof_request, opinion_question, incompatible_units
 ```
 
 > Precision note: the first draft listed "setup" and "UI" handlers. Those do
-> not exist. The 50 keys above are the actual table; the migration inventory in
-> Phase 3 must cover exactly these.
+> not exist. The 50 keys above are the actual table, and PR #560's registry
+> derives exactly these specialized methods.
 
 A separate code helper, `try_contextual_override`
 (`src/solver_dispatch.rs:84-111`), supplies extra arguments for five handlers
@@ -179,18 +186,19 @@ that need context beyond the prompt: `proof_request`, `meta_explanation`,
 `data/overrides/` (see "Data, Cache, Overrides, And Meanings" below). The two
 "override" concepts must not be conflated during migration.
 
-Relevant runtime:
+Relevant runtime at inventory time:
 
-- `UniversalSolver::handle_specialized_pattern` (`src/solver.rs:655-767`) is the
-  Rust control plane; it runs pre-table handlers (`:687-702`) and then consults
-  `ordered_handler_names` (`:707-710`).
+- The former solver-local specialized-pattern helper was the Rust control plane;
+  PR #560 replaces that path with
+  `src/meta_method_dispatch.rs::try_dispatch`, backed by `MethodRegistry`.
 
-The current system already lets intent formalization influence handler order by
-placing relevant handler names first. However, the executable control plane is
-still the handler table plus Rust predicates. `ROADMAP.md` Pillar 20 captures
-this precisely: routing is "by formalized intent, not a fixed catalogue"
-(Built), with the caveat "`SPECIALIZED_HANDLERS` remain as a precedence table
-behind the formalized router." Issue 559 targets that residual.
+The current system lets intent formalization influence registry method order by
+promoting relevant method names before the specialized fallback sweep.
+`ROADMAP.md` Pillar 20 captures the target precisely: routing is "by
+formalized intent, not a fixed catalogue" (Built). PR #560 closes the previous
+caveat by making `SPECIALIZED_HANDLERS` a callable implementation table behind
+`MethodRegistry`, while the legacy route mapper remains only as an audit
+baseline for parity tests.
 
 ## Existing Web Search, Rerank, And Fetch
 
@@ -244,7 +252,7 @@ method. See [evidence-pipeline.md](evidence-pipeline.md).
   (`:188`). It proposes Links Notation rules from accumulated unknown traces and
   blocks adoption behind verification and benchmark gates
   (`docs/design/self-improvement-loop.md`). Issue 559 reuses this exact gate for
-  any self-modification (Phase 9) — nothing in 559 may bypass it.
+  any self-modification; nothing in 559 may bypass it.
 - `ARCHITECTURE.md` §9 ("Transformation and Substitution Rules", line 643)
   documents a five-rule ladder from pure data rules → Rust handlers → sandboxed
   JS → dynamically compiled code stored as data → natural-language skills. This
@@ -288,12 +296,12 @@ Cargo wires three test binaries — `unit`, `integration`, `source`
 (`Cargo.toml:73-83`). `tests/source/` is a vendored mirror of `src/` used to
 test private functions. Relevant suites:
 
-- `tests/unit/specification/reasoning_loop.rs` — contains the most load-bearing
+- `tests/unit/specification/reasoning_loop.rs` — contains the load-bearing
   compatibility guard, `specialized_handlers_still_publish_loop_events`
   (`:44-70`), which asserts specialized handler answers still publish candidate,
-  validation, and simplification evidence. Today it only exercises arithmetic;
-  Phase 1 should widen it. A migration can keep handlers but must route them
-  through the universal evidence model.
+  validation, and simplification evidence. PR #560 keeps that compatibility
+  guard and adds registry-specific coverage proving selected handler answers
+  expose the selected meta method.
 - `tests/unit/specification/meta_algorithm.rs` (#444) and
   `tests/unit/specification/agentic_meta_algorithm.rs` (#468) — ground the
   `data/meta/*-recipe.lino` recipes against live source via a hand-rolled
@@ -360,11 +368,16 @@ the initial first-session plan:
    which upstream capability must exist before each phase can begin. See
    [upstream-dependency-audit.md](upstream-dependency-audit.md).
 
-## Architecture Gaps To Address
+## Pre-Implementation Gaps And PR #560 Status
 
-1. Method selection is not yet a first-class, data-described reasoning step.
-2. Specialized handler precedence still lives in Rust ordering
-   (`SPECIALIZED_HANDLERS`, `src/solver_dispatch.rs:120`).
+1. Method selection is now a first-class, data-described reasoning step:
+   `MethodRegistry` enumerates the prelude, specialized, and contextual method
+   surfaces, and `meta_method_dispatch::try_dispatch` executes the selected
+   method ordering.
+2. Specialized handler precedence still originates from the Rust table
+   (`SPECIALIZED_HANDLERS`, `src/solver_dispatch.rs`), but PR #560 routes that
+   table through the registry-backed dispatcher instead of a solver-local
+   direct-dispatch loop.
 3. Some natural-language cue recognition still lives in Rust code
    (`append_prompt_relevants`, `looks_like_text_manipulation`).
 4. Big-task planning is documented for agentic coding (`data/meta/agentic-coding-recipe.lino`)
@@ -375,26 +388,20 @@ the initial first-session plan:
 6. Existing tests cover many behaviors, but they do not yet prove class-level
    parity for every historical handler family (the load-bearing guard only
    checks arithmetic today).
-7. Meta recipes exist per capability; the project needs a general recipe (a
-   third `data/meta/*-recipe.lino` grounded by a test) that can call those
-   methods as data-described submethods.
-8. There is no `ProblemFrame` type/event/`.lino` schema that every solver
-   response emits (verified: 0 occurrences of `ProblemFrame` in `src/`). The
-   closest analog is `IntentFormalization`.
-9. There is no `WorkUnit`/`work_unit` recursive unit (verified: 0 occurrences in
-   `src/`) recording parent/child links, atomicity, required evidence, selected
-   skill, validation result, and composition result. The closest analog is the
-   `sub_impulse` produced by `UniversalSolver::decompose`.
-10. There is no method/skill registry covering all 50 `SPECIALIZED_HANDLERS`,
-    the five contextual-override handlers, standard-library operations, repo
-    helper functions, generated examples, and future learned rules.
-11. There is no old-vs-new comparison mode for registry selection before
-    replacing direct dispatch (though BATTERY baselines and prompt-variation
-    harnesses provide the infrastructure to build one).
-12. There is no uniform need-satisfaction ledger that forces the final answer to
-    mark every detected question, requirement, constraint, and deferred item
-    (`REQUIREMENTS.md` R158 already asks to "model the task as a graph of
-    requirements and subtasks" — the ledger operationalizes this).
+7. Meta recipes exist per capability; PR #560 adds the general recursive-core
+   recipe in `data/meta/recursive-core-recipe.lino` and grounds it with the
+   recipe interpreter tests.
+8. `ProblemFrame` now exists in `src/meta_frame.rs` and every solver response
+   records the frame as a link-serializable event.
+9. `WorkUnit` now exists in `src/meta_frame.rs`, recording parent/child links,
+   atomicity, routes, and method-resolvable leaves.
+10. The method registry now covers the 50 specialized handlers, five prelude
+    methods, and five contextual override methods exposed by dispatch.
+11. Old-vs-new selection comparison exists as an audit mode: live dispatch uses
+    the registry-backed path, while the legacy route mapper remains as the
+    parity baseline for R339/R344.
+12. `NeedLedger` now records per-need status, route, method, and reason so
+    detected requirements are accounted for structurally.
 13. There is no general search/rerank/crawl/extract/evaluate loop for fresh-data
     chat questions (search + RRF exist; crawl/extract/compare do not).
 14. There is no upstream dependency gate document that says when implementation

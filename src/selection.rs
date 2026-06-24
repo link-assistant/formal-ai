@@ -1,4 +1,5 @@
-//! Issue #559 (R339): registry-driven method selection, compared to the legacy.
+//! Issue #559 (R339): registry-driven method selection, compared to the legacy
+//! route mapper.
 //!
 //! The meta core resolves every atomic work-unit leaf with a *method* (one of the
 //! solver's specialized handlers). Two authorities can name that method:
@@ -13,11 +14,10 @@
 //!   (R336), so it can name a handler for routes whose slug differs from the
 //!   method name (e.g. `write_program` → `write_script`).
 //!
-//! For the meta algorithm to eventually *drive* selection from its own registry —
-//! and to retire the hardcoded dispatch authority — we must first prove the
-//! registry never contradicts a valid legacy selection: wherever the legacy names
-//! a real handler, the registry must name the same one. This module records that
-//! comparison per leaf as trace-only Links Notation, classifying each leaf as:
+//! The live solver now drives selection from the registry. The old route mapper is
+//! retained as a parity baseline: wherever it names a real handler, the registry
+//! must name the same one. This module records that comparison per leaf as Links
+//! Notation, classifying each leaf as:
 //!
 //! * `agree` — both authorities name the same registered method;
 //! * `registry_rescues` — the legacy names no real method (its catch-all returns a
@@ -27,12 +27,10 @@
 //! * `unresolved` — neither authority resolves a method (an honestly blocked leaf).
 //!
 //! Selection is governed by [`SelectionMode`]: the default
-//! [`SelectionMode::Legacy`] records nothing, so the trace is exactly what shipped
-//! before this comparison existed and the legacy authority remains the live source
-//! of truth (R13). [`SelectionMode::Registry`] records the registry-driven choice
-//! per leaf, and [`SelectionMode::Compare`] records the full per-leaf comparison
-//! plus the divergence and contradiction counts. None of the modes change routing
-//! or the produced answer; legacy dispatch still runs.
+//! [`SelectionMode::Legacy`] records nothing for trace compatibility.
+//! [`SelectionMode::Registry`] records the registry-driven choice per leaf, and
+//! [`SelectionMode::Compare`] records the full per-leaf comparison plus the
+//! divergence and contradiction counts.
 
 use crate::event_log::EventLog;
 use crate::intent_formalization::specialized_handler_name;
@@ -40,11 +38,11 @@ use crate::links_format::format_lino_record;
 use crate::meta_frame::WorkUnit;
 use crate::method_registry::MethodRegistry;
 
-/// Which selection authority the meta core records (and, in a later phase, drives
-/// selection from). The default reproduces the pre-comparison trace exactly.
+/// Which selection artifact the meta core records. The live solver always uses
+/// registry dispatch; this knob only changes trace verbosity.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum SelectionMode {
-    /// Record nothing; the legacy authority alone selects (default, behavior-preserving).
+    /// Record nothing for compatibility with the pre-comparison trace.
     #[default]
     Legacy,
     /// Record the registry-driven method choice per leaf.
@@ -312,12 +310,12 @@ fn collect_leaf_selections(
     }
 }
 
-/// Emit the method-selection comparison as a trace-only event, gated by `mode`.
+/// Emit the method-selection comparison as an optional trace event, gated by
+/// `mode`.
 ///
 /// Returns `None` when `mode` is [`SelectionMode::Legacy`], so the default leaves
-/// the trace exactly as it was before this comparison existed and the legacy
-/// authority stays the live source of truth (R13). When emitted, it appends one
-/// `selection` event (the serialized header plus every leaf) and, in
+/// the trace exactly as it was before this comparison existed. When emitted, it
+/// appends one `selection` event (the serialized header plus every leaf) and, in
 /// [`SelectionMode::Compare`], a compact `selection:contradictions` count so a
 /// regression surfaces as a single auditable number.
 pub(crate) fn record_selection(

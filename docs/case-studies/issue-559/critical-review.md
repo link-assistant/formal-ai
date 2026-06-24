@@ -1,5 +1,12 @@
 # Issue 559 Critical Review
 
+**Historical status:** this review records the pre-implementation critical check
+completed on 2026-06-23. PR #560 now implements the R330-R344 artifacts and the
+live registry-backed dispatcher; see
+[implementation-results.md](implementation-results.md) for the current state.
+The "absent" rows below are retained as the exact gaps this PR closed or
+scoped, not as open work for this branch.
+
 This document is the "critical check of everything" the PR feedback requested. It
 lists every imprecision found in the first-session planning artifacts, the
 corrected fact with a `file:line` reference verified on 2026-06-23, and where the
@@ -47,7 +54,7 @@ Each claim below was checked directly against the working tree. References use
   entries; "setup" and "UI" are not among them. The real ordered keys are listed
   in [architecture-inventory.md](architecture-inventory.md) ("Specialized
   Handler Dispatch").
-- **Impact:** the Phase 3 migration inventory must enumerate the real 50 keys.
+- **Impact:** the registry migration must enumerate the real 50 keys.
 - **Fixed in:** [architecture-inventory.md](architecture-inventory.md).
 
 ### CR4 — "Web search and rerank are missing"
@@ -138,7 +145,8 @@ Each claim below was checked directly against the working tree. References use
 - **Fact:** the only sanctioned path is `docs/design/self-improvement-loop.md`
   (proposal-only, gated by verification + benchmark + human review; never
   auto-appends to `data/seed/`). `NON-GOALS.md` forbids hidden autonomy.
-- **Impact:** Phase 9 reuses this gate; issue 559 adds no autonomy.
+- **Impact:** any self-improvement extension reuses this gate; issue 559 adds no
+  autonomy.
 - **Fixed in:** [alignment.md](alignment.md) (C3),
   [recursive-core.md](recursive-core.md).
 
@@ -162,10 +170,11 @@ Each claim below was checked directly against the working tree. References use
 - **Impact:** the verification matrix now lists all of these.
 - **Fixed in:** [alignment.md](alignment.md) (C6), [solution-plan.md](solution-plan.md).
 
-## Already Built Versus Absent
+## Pre-Implementation Built Versus Absent
 
-This inventory keeps the plan honest about scope. "Built" items are reused as-is;
-"partial" items are extended; only "absent" items are new construction.
+This inventory keeps the plan honest about scope. The first columns preserve the
+pre-implementation finding; the action column records the PR #560 outcome where
+this branch changed the status.
 
 | Capability | Status | Evidence | Issue-559 action |
 | --- | --- | --- | --- |
@@ -180,19 +189,19 @@ This inventory keeps the plan honest about scope. "Built" items are reused as-is
 | Reciprocal Rank Fusion | Built | `reciprocal_rank_fusion` (`:396`), `WEB_SEARCH_RRF_K=60` (`:33`) | Reuse in rerank stage |
 | Real network search/fetch | Built (browser) | `formal_ai_worker.js` ~`:35736`, `tryFetch` ~`:34849` | Reuse; add non-CORS seam |
 | Source cache + provenance | Built | `data/cache/`; R67 (`source:`/`fetched_at`/`sha256`/`cache_hit`) | Reuse as evidence policy backing |
-| Self-improvement proposal loop | Built | `src/self_improvement.rs:166`; `docs/design/self-improvement-loop.md` | Reuse as Phase 9 gate |
+| Self-improvement proposal loop | Built | `src/self_improvement.rs:166`; `docs/design/self-improvement-loop.md` | Reuse the existing proposal-only gate |
 | Single-skill compiler | Built (partial) | `src/skill_compiler.rs` | Extend toward a skill registry |
 | Grounded recipe discipline | Built | `data/meta/*-recipe.lino`; `meta_algorithm.rs`; `agentic_meta_algorithm.rs` | Add a third general recipe |
 | Five-rule substitution ladder | Built | `ARCHITECTURE.md` §9 (`:643`) | Use as registry method kinds |
-| Explicit `ProblemFrame` type/event/schema | **Absent** | 0 hits for `ProblemFrame` in `src/` | New (Phase 1A) |
-| Recursive `WorkUnit` with parent/child links | **Absent** | 0 hits for `WorkUnit`/`work_unit` in `src/` | New (Phase 1B) |
-| Method/skill registry covering all handlers | **Absent** | no registry indexing the 50 handlers + stdlib + skills | New (Phase 2–3) |
-| Need-satisfaction ledger | **Absent** | no per-need satisfied/deferred/blocked tracking | New (Phase 4) |
+| Explicit `ProblemFrame` type/event/schema | **Absent** | 0 hits for `ProblemFrame` in `src/` | Built in PR #560 via `src/meta_frame.rs` |
+| Recursive `WorkUnit` with parent/child links | **Absent** | 0 hits for `WorkUnit`/`work_unit` in `src/` | Built in PR #560 via `src/meta_frame.rs` |
+| Method registry covering all handlers | **Absent** | no registry indexing the 50 handlers + stdlib + skills | Built in PR #560 via `MethodRegistry::from_dispatch` and `meta_method_dispatch::try_dispatch`; skill promotion remains ledgered separately |
+| Need-satisfaction ledger | **Absent** | no per-need satisfied/deferred/blocked tracking | Built in PR #560 via `NeedLedger` events |
 | Crawl / full-content extraction | **Absent** | 0 hits for `crawl` in `src/`, `desktop/`, `vscode/` | New (evidence pipeline) |
 | Live non-CORS providers (Google/Bing/Brave) | **Absent (live)** | registered but `cors_readable:false` | New (server/desktop fetch seam) |
 | Expand→crawl→extract→compare loop | **Absent** | search+RRF exist; downstream stages do not | New (evidence pipeline) |
-| Old-vs-new selection comparison mode | **Absent** | BATTERY baselines exist but no selection A/B | New (Phase 3, behind a knob) |
-| General meta-algorithm recipe | **Absent** | only two specific recipes exist | New (Phase 5) |
+| Old-vs-new selection comparison mode | **Absent** | BATTERY baselines exist but no selection A/B | Built as selection and dispatch parity audit baselines |
+| General meta-algorithm recipe | **Absent** | only two specific recipes exist | Built in `data/meta/recursive-core-recipe.lino` and regenerated artifacts |
 
 ## Residual Risks Found During Review
 

@@ -1,5 +1,11 @@
 # Issue 559 Solution Plan
 
+**Historical status:** this document records the pre-implementation plan. PR #560
+now ships the live registry-backed method dispatcher and the R330-R344 artifacts;
+see [implementation-results.md](implementation-results.md) for the current
+implementation record. Planning language below is preserved as rationale, not as
+open work for this branch.
+
 This plan preserves the issue's first-session constraint: document and plan
 first, then implement behavior changes after maintainer approval. It folds in the
 two rounds of PR feedback (2026-06-23): the core solver must be fully recursive
@@ -20,6 +26,7 @@ companion documents so each stays reviewable:
 | [alignment.md](alignment.md) | Re-check against VISION/GOALS/NON-GOALS/ROADMAP/REQUIREMENTS/ARCHITECTURE; resolves conflicts C1–C7; canonical vocabulary mapping; proposed R330+ |
 | [critical-review.md](critical-review.md) | Every first-session imprecision corrected with evidence (CR1–CR12); precise built-vs-absent inventory |
 | [options-comparison.md](options-comparison.md) | 2–4 options per major decision with pros/cons/cost/risk + recommendation + comparison harnesses |
+| [implementation-results.md](implementation-results.md) | Current PR #560 implementation record, including the live registry-backed dispatcher |
 | [recursive-core.md](recursive-core.md) | Downward/upward passes, atomicity predicate, `SolverConfig` knobs, pseudo-code grounded in `solver.rs:411-653`, Voyager mapping |
 | [evidence-pipeline.md](evidence-pipeline.md) | expand→search→rerank→crawl→extract→compare→hypothesize, grounded in the real search core and fetch seams |
 | [upstream-dependency-audit.md](upstream-dependency-audit.md) | Org-owned dependency readiness and gates |
@@ -29,19 +36,24 @@ companion documents so each stays reviewable:
 
 Current PR scope:
 
-- Planning artifacts only; no runtime behavior changes.
-- No migration of current caches, overrides, meanings, or `.lino` assets.
-- No direct replacement of current specialized handlers.
-- No new upstream issues opened — the audit found no blocker for the next
-  behavior-preserving phases ([upstream-dependency-audit.md](upstream-dependency-audit.md)).
+- Implemented, not planning-only.
+- The solver now executes specialized methods through
+  `src/meta_method_dispatch.rs::try_dispatch`, backed by
+  `MethodRegistry::ordered_method_names_for_relevants`.
+- Current caches, overrides, meanings, and existing `.lino` assets remain
+  first-class; new meta data is additive.
+- Rust specialized handlers remain as executable hooks, served by one generalized
+  registry-backed meta method path.
+- No new upstream issues opened — the audit found no blocker for this PR
+  ([upstream-dependency-audit.md](upstream-dependency-audit.md)).
 
-Recommended next approval target:
+Implemented approval target:
 
-- Approve **Phase 1A** and **Phase 1B** only (both behavior-preserving).
-- Phase 1A adds an observable `ProblemFrame` trace while preserving routing.
-- Phase 1B adds a recursive `WorkUnit` trace while preserving answers.
-- Later phases move selection into data only once comparison evidence proves
-  parity.
+- R330-R344 are delivered in PR #560.
+- R331 is now live: the registry drives method dispatch, while the old mapper is
+  retained only as a parity baseline.
+- R344 keeps the corpus-wide compatibility certificate against that retained
+  baseline.
 
 ## Canonical Vocabulary (read this first)
 
@@ -116,7 +128,8 @@ the canonical docs — conflict C7.)
 - A work unit links a parent need, child units, selected method, observations,
   validation results, and composed output.
 - Code can be linked as data via `meta-language` snapshots/source spans, then
-  linked back to executable hooks (R24; later phase).
+  linked back to executable hooks; PR #560 exercises that contract for method
+  registry entries and handler hooks.
 
 The meta-theory article remains a cited *external influence*
 ([raw-data/online-research.md](raw-data/online-research.md)), not repo doctrine.
@@ -257,7 +270,8 @@ multi-part prompts; diagnostics when old dispatch answers only one need. Tests:
 multi-need fixtures; negative tests for intentionally unsatisfied constraints;
 regressions for issue families that historically lost follow-up context; answer
 text unchanged unless diagnostics enabled; gate matrix. Exit: the solver reports
-which needs the current path covered; no direct dispatch replaced yet.
+which needs the then-current path covered. PR #560 subsequently replaces the
+direct specialized-dispatch control plane in Phase 10 below.
 
 ### Phase 3 — Inventory Current Handlers As Methods
 
@@ -349,36 +363,30 @@ without verification; rejected proposals remain inspectable; accepted proposals
 include tests + changelog; gate matrix. Exit: the system can reason about
 improving itself without mutating production behavior automatically.
 
-### Phase 10 — Retire Direct Specialized Dispatch
+### Phase 10 — Replace Direct Specialized Dispatch
 
-Goal: make the registry the control plane after parity is proven. Tasks: flip
-`selection_mode` to `registry` per method family one at a time; keep Rust handlers
-as implementation hooks; remove direct table precedence only after registry
-parity is proven; update docs/architecture diagrams and the ROADMAP/REQUIREMENTS
-per the Verification Contract. Tests: full local CI; worker parity; benchmarks
-and prompt variations; changelog/doc checks; old/new comparison evidence for every
-retired family; gate matrix. Exit: the registry controls selection; specialized
-Rust handlers remain available as hooks; no previously supported prompt family is
-removed without explicit approval.
+Status: completed in PR #560. The registry is the control plane for method
+dispatch through `meta_method_dispatch::try_dispatch`; Rust handlers remain as
+implementation hooks. The legacy route mapper remains only as an audit baseline
+for R339/R344 parity checks, and no previously supported prompt family is removed.
 
 ## Concrete First Implementation PR After Approval
 
-The first code PR is deliberately small (Option 1A):
+Historical note: the first implementation PR grew beyond this initial split after
+PR feedback on 2026-06-24 required the registry-backed method path to ship here
+with the rest of this branch. PR #560 now includes:
 
-1. Add `ProblemFrame` and `Need` structures (extending `IntentFormalization`).
-2. Populate from existing formalization inputs.
-3. Add trace-only `.lino` serialization.
-4. Add frame-construction unit tests.
-5. Add multi-need prompt fixtures.
-6. Confirm existing answer tests unchanged.
-7. Add a changelog fragment and the R330 traceability test.
-
-The second code PR adds `WorkUnit` traces (Phase 1B). Only after those should
-registry selection start (Phase 3+).
+1. Problem frames and work-unit decomposition.
+2. Need ledgers and solution evidence.
+3. The prelude/specialized/contextual method registry.
+4. Live registry-backed method dispatch.
+5. Alias, selection, recipe, self-improvement, skill-ledger, and dispatch-parity
+   artifacts.
+6. Requirement traceability tests for R330-R344.
 
 ## Verification Matrix
 
-Standing local checks before any behavior switch:
+Standing local checks for the registry-backed behavior switch:
 
 - `cargo fmt --all -- --check`
 - `cargo clippy --all-targets --all-features`
@@ -413,7 +421,8 @@ enough to revert as one commit.
 ## Upstream Dependency Gates
 
 The audit ([upstream-dependency-audit.md](upstream-dependency-audit.md)) found no
-blocker for Phase 1A/1B. Existing issues that may matter later:
+blocker for PR #560. Existing issues remain follow-up gates only when a concrete
+feature needs them:
 
 - `link-foundation/links-notation#197` (streaming parser) — if trace export grows
   too large.
@@ -421,8 +430,8 @@ blocker for Phase 1A/1B. Existing issues that may matter later:
   when traces must interoperate with shared-dialog source descriptions.
 - `link-foundation/meta-language#165` (npm publication) — only if browser-side
   registry tooling needs the npm package before another integration path exists.
-- `linksplatform/doublets-rs#22` and related build issues — only if a later phase
-  depends on optional features that reproduce them.
+- `linksplatform/doublets-rs#22` and related build issues — only if optional
+  doublets features become required and reproduce them.
 
 Open a new upstream issue only when a phase hits a concrete missing feature that
 cannot be worked around locally without distorting the architecture.
@@ -434,7 +443,8 @@ cannot be worked around locally without distorting the architecture.
 - R10, R22: the evidence pipeline.
 - R11: method registry + skill records + the recursive algorithm.
 - R12: gated self-improvement (Phase 9) and skill promotion rules.
-- R13, R14, R16: compatibility/`compare` mode, parity tests, staged retirement.
+- R13, R14, R16: compatibility/`compare` mode, parity tests, registry-backed
+  dispatch with the legacy mapper retained as an audit baseline.
 - R15: keeping `.lino`, cache, meanings, overrides, source cache first-class.
 - R17: phase-sized PRs and commits.
 - R18: Voyager mapping without neural dependency

@@ -1,12 +1,12 @@
-//! Issue #559 Phase 3: the method registry as grounded link data (R331).
+//! Issue #559: the method registry as grounded link data and live method
+//! selection data (R331).
 //!
-//! The registry enumerates every handler an atomic work-unit leaf can route to.
+//! The registry enumerates every method an atomic work-unit leaf can route to.
 //! These tests keep the data *grounded in the live code*: the registry is built
 //! from the dispatch constants, and we assert every derived name actually appears
 //! in `src/solver_dispatch.rs` (and vice-versa for the contextual surface), so the
-//! catalogue-as-data can never drift from the handlers that really run. We also
-//! pin the Links Notation serialization (R311) and the trace-only contract: the
-//! registry changes neither routing nor answers.
+//! catalogue-as-data can never drift from the methods that really run. We also
+//! pin the Links Notation serialization and the order the live executor consumes.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -23,8 +23,13 @@ fn dispatch_source() -> String {
 }
 
 #[test]
-fn registry_covers_both_dispatch_surfaces() {
+fn registry_covers_all_dispatch_surfaces() {
     let registry = MethodRegistry::from_dispatch();
+    assert_eq!(
+        registry.count_on(MethodSurface::Prelude),
+        5,
+        "there are exactly five prelude methods"
+    );
     assert!(
         registry.count_on(MethodSurface::Specialized) >= 40,
         "the specialized surface should enumerate the full ordered table, got {}",
@@ -37,16 +42,28 @@ fn registry_covers_both_dispatch_surfaces() {
     );
     assert_eq!(
         registry.method_count(),
-        registry.count_on(MethodSurface::Specialized)
+        registry.count_on(MethodSurface::Prelude)
+            + registry.count_on(MethodSurface::Specialized)
             + registry.count_on(MethodSurface::Contextual),
         "every method must belong to exactly one surface"
     );
 }
 
 #[test]
-fn every_specialized_method_is_named_in_the_dispatch_table() {
+fn every_prelude_and_specialized_method_is_named_in_the_dispatch_table() {
     let registry = MethodRegistry::from_dispatch();
     let source = dispatch_source();
+    for method in registry
+        .methods
+        .iter()
+        .filter(|m| m.surface == MethodSurface::Prelude)
+    {
+        assert!(
+            source.contains(&format!("\"{}\"", method.name)),
+            "prelude method `{}` must be a real entry in PRELUDE_METHOD_NAMES",
+            method.name
+        );
+    }
     for method in registry
         .methods
         .iter()
@@ -110,6 +127,42 @@ fn specialized_order_follows_table_precedence() {
 }
 
 #[test]
+fn registry_order_starts_with_prelude_and_promotes_relevant_methods() {
+    let registry = MethodRegistry::from_dispatch();
+    let ordered = registry.ordered_method_names_for_relevants(&[
+        "handler:write_program".to_owned(),
+        "route:translation".to_owned(),
+    ]);
+    assert_eq!(
+        &ordered[..5],
+        [
+            "diagnostic",
+            "nl_tool",
+            "behavior_rules",
+            "feature_capability",
+            "playwright_script",
+        ],
+        "prelude methods must always run first"
+    );
+    assert_eq!(
+        ordered[5], "write_script",
+        "handler:write_program should resolve through the route-method alias"
+    );
+    assert_eq!(
+        ordered[6], "translation",
+        "route:translation should promote the translation method"
+    );
+    let first_http = ordered
+        .iter()
+        .position(|name| name == "http_fetch")
+        .expect("full specialized table appended after promoted methods");
+    assert!(
+        first_http > 6,
+        "regular table entries should follow prelude and relevant promotions: {ordered:?}"
+    );
+}
+
+#[test]
 fn registry_serializes_to_grounded_links_notation() {
     let registry = MethodRegistry::from_dispatch();
     let lino = registry.to_links_notation();
@@ -126,8 +179,17 @@ fn registry_serializes_to_grounded_links_notation() {
         "the registry must record its method count:\n{lino}"
     );
     assert!(
-        lino.contains("surface \"specialized\"") && lino.contains("surface \"contextual\""),
-        "both dispatch surfaces must be represented:\n{lino}"
+        lino.contains(&format!(
+            "prelude_count \"{}\"",
+            registry.count_on(MethodSurface::Prelude)
+        )),
+        "the registry must record its prelude count:\n{lino}"
+    );
+    assert!(
+        lino.contains("surface \"prelude\"")
+            && lino.contains("surface \"specialized\"")
+            && lino.contains("surface \"contextual\""),
+        "all dispatch surfaces must be represented:\n{lino}"
     );
     for method in &registry.methods {
         assert!(

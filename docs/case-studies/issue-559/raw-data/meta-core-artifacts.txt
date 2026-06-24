@@ -499,13 +499,19 @@ calendar_digit_actions [token] handler=calendar_create_event: schedule, book, ad
 calendar_ru_date_marker [substring] handler=calendar_create_event: число
 text_manipulation [substring] handler=text_manipulation: uppercase, lowercase, replace, remove text, append text, prepend text, extract email, count occurrences, count unique words, deduplicate lines, sort lines, trim whitespace, normalize whitespace, reverse words
 ================================================================
-# (R331) method registry — 55 methods derived from live dispatch
+# (R331) method registry — 60 methods derived from live dispatch
 ================================================================
 method_registry
   record_type "method_registry"
-  method_count "55"
+  method_count "60"
+  prelude_count "5"
   specialized_count "50"
   contextual_count "5"
+  method "diagnostic"
+  method "nl_tool"
+  method "behavior_rules"
+  method "feature_capability"
+  method "playwright_script"
   method "http_fetch"
   method "url_navigate"
   method "web_search"
@@ -561,6 +567,31 @@ method_registry
   method "numeric_list"
   method "shell_command_transform"
   method "text_manipulation"
+diagnostic
+  record_type "method"
+  name "diagnostic"
+  order "0"
+  surface "prelude"
+nl_tool
+  record_type "method"
+  name "nl_tool"
+  order "1"
+  surface "prelude"
+behavior_rules
+  record_type "method"
+  name "behavior_rules"
+  order "2"
+  surface "prelude"
+feature_capability
+  record_type "method"
+  name "feature_capability"
+  order "3"
+  surface "prelude"
+playwright_script
+  record_type "method"
+  name "playwright_script"
+  order "4"
+  surface "prelude"
 http_fetch
   record_type "method"
   name "http_fetch"
@@ -914,12 +945,12 @@ plan_accumulate_skills
   executes "record_skill_ledger"
 # executing the recipe reproduces the live pipeline trace event-for-event: true
 ================================================================
-# (R344) dispatch parity — 63 routes audited (agree=53, registry_rescues=1, unresolved=9, contradict=0), retire_safe=true
+# (R344) dispatch parity — 68 routes audited (agree=58, registry_rescues=1, unresolved=9, contradict=0), retire_safe=true
 ================================================================
 dispatch_parity
   record_type "dispatch_parity"
-  route_count "63"
-  agreement_count "53"
+  route_count "68"
+  agreement_count "58"
   rescue_count "1"
   unresolved_count "9"
   contradiction_count "0"
@@ -944,6 +975,12 @@ assistant_name
   record_type "route_parity"
   route "assistant_name"
   agreement "unresolved"
+behavior_rules
+  record_type "route_parity"
+  route "behavior_rules"
+  agreement "agree"
+  legacy_method "behavior_rules"
+  registry_method "behavior_rules"
 brainstorming
   record_type "route_parity"
   route "brainstorming"
@@ -1020,6 +1057,12 @@ definition_merge
   agreement "agree"
   legacy_method "definition_merge"
   registry_method "definition_merge"
+diagnostic
+  record_type "route_parity"
+  route "diagnostic"
+  agreement "agree"
+  legacy_method "diagnostic"
+  registry_method "diagnostic"
 docs_method_explanation
   record_type "route_parity"
   route "docs_method_explanation"
@@ -1048,6 +1091,12 @@ farewell
   record_type "route_parity"
   route "farewell"
   agreement "unresolved"
+feature_capability
+  record_type "route_parity"
+  route "feature_capability"
+  agreement "agree"
+  legacy_method "feature_capability"
+  registry_method "feature_capability"
 greeting
   record_type "route_parity"
   route "greeting"
@@ -1110,6 +1159,12 @@ network_query
   agreement "agree"
   legacy_method "network_query"
   registry_method "network_query"
+nl_tool
+  record_type "route_parity"
+  route "nl_tool"
+  agreement "agree"
+  legacy_method "nl_tool"
+  registry_method "nl_tool"
 number_constraint_reasoning
   record_type "route_parity"
   route "number_constraint_reasoning"
@@ -1134,6 +1189,12 @@ physical_action_question
   agreement "agree"
   legacy_method "physical_action_question"
   registry_method "physical_action_question"
+playwright_script
+  record_type "route_parity"
+  route "playwright_script"
+  agreement "agree"
+  legacy_method "playwright_script"
+  registry_method "playwright_script"
 procedural_how_to
   record_type "route_parity"
   route "procedural_how_to"

@@ -31,6 +31,7 @@ pub mod memory_sync;
 pub mod meta_construction;
 pub(crate) mod meta_core;
 pub mod meta_frame;
+pub(crate) mod meta_method_dispatch;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
 pub mod method_registry;

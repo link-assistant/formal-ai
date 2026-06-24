@@ -17,6 +17,7 @@ use crate::engine::{
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
+use crate::method_registry::MethodRegistry;
 use crate::probability::ProbabilityStore;
 use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
@@ -245,7 +246,10 @@ pub fn formalize_intent(
         .or_else(|| route_from_relevants(&relevants));
     if let Some(route_slug) = &route_slug {
         push_unique(&mut relevants, format!("route:{route_slug}"));
-        if specialized_handler_name(route_slug).is_some() {
+        if MethodRegistry::from_dispatch()
+            .method_for_route(route_slug)
+            .is_some()
+        {
             push_unique(&mut relevants, format!("handler:{route_slug}"));
         }
     }
@@ -307,31 +311,6 @@ pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRu
         Some(WRITE_PROGRAM_INTENT) => write_program_rule_for_intent(intent),
         _ => SelectedRule::Unknown,
     }
-}
-
-#[must_use]
-pub(crate) fn ordered_handler_names<'a>(
-    intent: &IntentFormalization,
-    names: impl Iterator<Item = &'a str>,
-) -> Vec<&'a str> {
-    let names = names.collect::<Vec<_>>();
-    let mut ordered = Vec::new();
-    for relevant in &intent.relevants {
-        let Some(name) = relevant.strip_prefix("handler:") else {
-            continue;
-        };
-        if let Some(matched) = names.iter().copied().find(|candidate| *candidate == name) {
-            if !ordered.contains(&matched) {
-                ordered.push(matched);
-            }
-        }
-    }
-    for name in names {
-        if !ordered.contains(&name) {
-            ordered.push(name);
-        }
-    }
-    ordered
 }
 
 #[derive(Debug, Clone)]
@@ -857,22 +836,21 @@ fn contains_term_for_relevants(haystack: &str, needle: &str) -> bool {
 }
 
 fn route_from_relevants(relevants: &[String]) -> Option<String> {
+    let registry = MethodRegistry::from_dispatch();
     relevants.iter().find_map(|relevant| {
-        relevant
+        let slug = relevant
             .strip_prefix("route:")
             .or_else(|| relevant.strip_prefix("handler:"))
-            .and_then(specialized_handler_name)
-            .map(str::to_owned)
+            .filter(|slug| registry.method_for_route(slug).is_some())?;
+        Some(slug.to_owned())
     })
 }
 
-/// The legacy route→method mapping: the hardcoded authority that resolves a route
-/// slug to the name of the handler that serves it. This is the source of truth the
-/// solver has always used; the data-driven
+/// The legacy route→method mapping retained as an audit baseline for issue #559.
+/// Live method dispatch uses
 /// [`MethodRegistry::method_for_route`](crate::method_registry::MethodRegistry::method_for_route)
-/// mirrors it through alias link data, and the selection comparison (issue #559,
-/// R339) records any divergence between the two so the registry can later drive
-/// selection safely.
+/// and `meta_method_dispatch`; selection comparison (R339) records any
+/// divergence between the two.
 pub(crate) fn specialized_handler_name(slug: &str) -> Option<&str> {
     match slug {
         "translation" => Some("translation"),

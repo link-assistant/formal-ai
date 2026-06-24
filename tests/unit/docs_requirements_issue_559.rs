@@ -2,8 +2,8 @@
 //!
 //! These tests keep the REQUIREMENTS.md rows for issue #559 honest: each row
 //! names the source and tests that implement it, and the test asserts those
-//! artifacts exist and carry the named entry points. Rows are added as each
-//! behavior-preserving phase lands; this guard grows with them.
+//! artifacts exist and carry the named entry points. This guard grows with the
+//! issue #559 contract.
 
 use std::fs;
 use std::path::Path;
@@ -135,7 +135,7 @@ fn issue_559_need_ledger_is_traceable() {
         ],
     );
 
-    // The ledger is wired into the meta core as a trace-only event.
+    // The ledger is wired into the meta core as a recorded event.
     let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
         meta_core.contains("crate::meta_frame::record_need_ledger"),
@@ -158,6 +158,8 @@ fn issue_559_method_registry_is_traceable() {
             "src/method_registry.rs",
             "from_dispatch",
             "record_method_registry",
+            "src/meta_method_dispatch.rs",
+            "try_dispatch",
         ],
     );
 
@@ -171,6 +173,7 @@ fn issue_559_method_registry_is_traceable() {
             "pub struct Method",
             "pub enum MethodSurface",
             "fn from_dispatch",
+            "fn ordered_method_names_for_relevants",
             "fn to_links_notation",
             "fn record_method_registry",
             "method_registry",
@@ -184,11 +187,23 @@ fn issue_559_method_registry_is_traceable() {
         "src/solver_dispatch.rs should expose the contextual handler names the registry reads"
     );
 
-    // The registry is wired into the meta core as a trace-only event.
+    // The registry is recorded by the meta core and drives the live method
+    // executor the solver calls.
     let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
         meta_core.contains("crate::method_registry::record_method_registry"),
         "src/meta_core.rs should emit the method registry"
+    );
+    let executor = read(root.join("src/meta_method_dispatch.rs"));
+    assert_contains_all(
+        "src/meta_method_dispatch.rs",
+        &executor,
+        &["fn try_dispatch", "MethodRegistry::from_dispatch"],
+    );
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("crate::meta_method_dispatch::try_dispatch"),
+        "src/solver.rs should dispatch through the registry-backed method executor"
     );
 }
 
@@ -255,7 +270,7 @@ fn issue_559_solution_evidence_is_traceable() {
         ],
     );
 
-    // The evidence join is wired into the meta core as a trace-only event.
+    // The evidence join is wired into the meta core as a recorded event.
     let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
         meta_core.contains("crate::solution_evidence::record_solution_evidence"),
@@ -356,7 +371,7 @@ fn issue_559_work_unit_reasoning_is_traceable() {
         ],
     );
 
-    // The reasoning is wired into the meta core as a trace-only event.
+    // The reasoning is wired into the meta core as a recorded event.
     let meta_core = read(root.join("src/meta_core.rs"));
     assert!(
         meta_core.contains("crate::meta_reasoning::record_work_unit_reasoning"),

@@ -221,12 +221,11 @@ fn need_id_for(frame_id: &str, index: usize, span: &str) -> String {
 /// Why a [`WorkUnit`] became a recursion leaf (or did not).
 ///
 /// This mirrors the atomicity predicate in
-/// `docs/case-studies/issue-559/recursive-core.md`. Phase 1B records the reason
-/// as trace only; later phases let `atomicity_policy` change which reason wins.
+/// `docs/case-studies/issue-559/recursive-core.md`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AtomicityReason {
     /// The span maps to a recognized route, so a single existing method solves
-    /// it directly (the generalization of `handle_specialized_pattern`).
+    /// it directly through the registry-backed method dispatcher.
     DirectMethod,
     /// The span cannot be decomposed further and has no recognized route; it is
     /// an irreducible single need.
@@ -619,8 +618,8 @@ impl LedgerRow {
 /// a need with no recognized method (a single-need or depth-bound leaf) is
 /// [`NeedStatus::Blocked`] and reported as such. This is a behavior-preserving
 /// projection: it changes neither routing nor the answer. Runtime validation
-/// feedback (flipping a satisfied prediction back to blocked when a leaf fails
-/// to validate) is layered on in a later phase.
+/// feedback can refine these predictions if a future validator proves a leaf
+/// failed after method selection.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NeedLedger {
     /// The frame this ledger resolves.

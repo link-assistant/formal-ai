@@ -1,6 +1,10 @@
 # Issue 559 Case Study: General Meta Algorithm
 
-Status: planning complete and the meta core (R330–R335) is implemented in PR #560. The planning artifacts below describe the intended migration; the shipped result and a deep, data-grounded analysis are in [implementation-results.md](implementation-results.md), reproducible offline via `cargo run --example issue_559_meta_core` with output captured at [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt).
+Status: implemented in PR #560. The shipped result is a live registry-backed meta
+method path plus the link-native recursive/audit artifacts R330–R344 describe;
+the deep, data-grounded analysis is in [implementation-results.md](implementation-results.md),
+reproducible offline via `cargo run --example issue_559_meta_core` with output
+captured at [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt).
 
 Update: two rounds of PR feedback on 2026-06-23 shaped this case study. The first (comment 4783154352) requested a deeper plan that integrates Voyager without a neural runtime, makes the solver recursively decompositional and compositional, stays link-native, treats algorithms as data, and audits related upstream dependencies. The second (comment 4783640128) asked to make the plan at least twice as detailed, critically check everything, compare multiple options (implementing them all where feasible), and re-check everything against the vision, requirements, and roadmap. This case study now includes that expanded second planning pass across a spine plus eight companion documents.
 
@@ -35,14 +39,23 @@ The repository already has many pieces of the requested architecture:
 - `docs/design/no-hardcoded-natural-language.md` states the design constraint that code should move meanings rather than embed natural-language triggers.
 - `docs/design/self-improvement-loop.md` already defines a review-gated learning loop for unknown traces.
 
-The main gap is that the control plane is still split across specialized recognizers and handler ordering:
+The main implementation result is that the control plane now has one registry
+method path:
 
-- `src/solver_dispatch.rs` contains an ordered table of specialized handlers.
-- `src/intent_formalization.rs` still contains prompt cue recognizers for routing.
-- `UniversalSolver::handle_specialized_pattern` still uses the specialized table as the executable method-selection path.
-- Existing meta recipes are specific examples, not one general problem-frame recipe that every request passes through.
+- `src/method_registry.rs` derives prelude, specialized, and contextual method
+  records from live dispatch constants.
+- `src/meta_method_dispatch.rs::try_dispatch` orders and executes method names
+  through that registry, including alias-resolved routes like
+  `write_program -> write_script`.
+- `src/selection.rs` and `src/dispatch_parity.rs` keep the older route mapper as
+  an audit baseline, proving the registry never contradicts a valid legacy
+  method.
+- `data/meta/recursive-core-recipe.lino` is the general problem-frame recipe that
+  every request passes through and that the interpreter can execute event for
+  event.
 
-The recommended plan is therefore not a rewrite-first change. It is an incremental migration that introduces a general problem frame, recursive work units, and a data-described method/skill registry, proves parity with the current specialized handlers, then moves routing and preconditions out of hardcoded code in phases.
+The planning documents remain in this directory for traceability; the current
+architecture is recorded in [implementation-results.md](implementation-results.md).
 
 The refined plan adds four constraints from the follow-up feedback:
 
@@ -67,12 +80,18 @@ The refined plan adds four constraints from the follow-up feedback:
 - [options-comparison.md](options-comparison.md) — options per decision, recommendations, and comparison harnesses.
 - [recursive-core.md](recursive-core.md) — downward/upward passes, atomicity predicate, `SolverConfig` knobs, pseudo-code, Voyager mapping.
 - [evidence-pipeline.md](evidence-pipeline.md) — the general fresh-data pipeline grounded in the existing search core and fetch seams.
-- [implementation-results.md](implementation-results.md) — what actually shipped (R330–R335), a walk through real emitted artifacts for three prompt shapes, the method-registry grounding, a real route↔method vocabulary finding, and how it answers the issue.
+- [implementation-results.md](implementation-results.md) — what actually shipped
+  (R330–R344 plus the live registry-backed method dispatcher), a walk through
+  real emitted artifacts for three prompt shapes, the method-registry grounding,
+  a real route↔method vocabulary finding, and how it answers the issue.
 - [solution-plan.md](solution-plan.md) — the spine: planning status, phases 0A–10 with gates, verification matrix, requirement mapping, risk register.
 - [upstream-dependency-audit.md](upstream-dependency-audit.md) — related organization dependencies and existing upstream issues.
 - [raw-data/online-research.md](raw-data/online-research.md) — external research and library/component checks.
 - [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) — the verbatim Links Notation the running meta core emits for three prompt shapes plus the full method registry, produced by `cargo run --example issue_559_meta_core`.
 
-## Recommended Approval Decision
+## Current Review Focus
 
-Approve Phases 1A and 1B from [solution-plan.md](solution-plan.md): add the problem-frame model, recursive work-unit trace, and need-satisfaction tests while preserving current output behavior. That creates a measurable base before moving handler metadata, hardcoded cue recognition, and reusable skills into `.lino` data.
+Review PR #560 as the implemented migration: problem frames, recursive work
+units, need ledger, method registry, solution evidence, recipe/interpreter,
+selection/parity audits, cue data, skill ledger, and the live registry-backed
+method executor are all in this branch.
