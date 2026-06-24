@@ -605,6 +605,68 @@ fn issue_559_cue_lexicon_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_skill_ledger_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R342: the requirements row exists and cites the shipped skill ledger.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R342 ",
+            "skill",
+            "curriculum",
+            "src/skill_ledger.rs",
+            "tests/unit/specification/skill_ledger.rs",
+        ],
+    );
+
+    // The module ships the gate, the lifecycle, and the proposal-only ledger.
+    let module = read(root.join("src/skill_ledger.rs"));
+    assert_contains_all(
+        "src/skill_ledger.rs",
+        &module,
+        &[
+            "pub enum SkillMode",
+            "pub enum SkillStatus",
+            "pub struct PromotionGate",
+            "pub struct CandidateSkill",
+            "pub struct CurriculumItem",
+            "pub struct SkillLedger",
+            "fn from_evidence",
+            "fn satisfied",
+            "fn promotable",
+            "fn promotable_count",
+            "fn record_skill_ledger",
+        ],
+    );
+
+    // The recipe describes the skill-accumulation stage the pipeline runs, so the
+    // self-improvement loop stays self-consistent.
+    let recipe = read(root.join("data/meta/recursive-core-recipe.lino"));
+    assert!(
+        recipe.contains("record_skill_ledger"),
+        "the recipe must cite the skill-accumulation stage the pipeline runs"
+    );
+    assert!(
+        recipe.contains("id \"accumulate_skills\""),
+        "the recipe must list the twelfth step that accumulates skills"
+    );
+
+    // The meta core wires the ledger into the pipeline behind its gate.
+    let meta_core = read(root.join("src/meta_core.rs"));
+    assert!(
+        meta_core.contains("record_skill_ledger"),
+        "the meta core must run the skill-accumulation stage"
+    );
+    assert!(
+        meta_core.contains("FORMAL_AI_SKILL_MODE"),
+        "the skill ledger must be gated by its own env knob"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

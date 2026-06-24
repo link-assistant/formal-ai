@@ -2,8 +2,8 @@ recursive_core_meta_recipe
   record_type "meta_recipe"
   topic "recursive_core"
   title "The recursive meta algorithm"
-  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, reasoned about in the open with white-box reasoning attached to every recursive step in both directions (the downward decomposition and the upward construction that composes children back into each answer), checked leaf by leaf so the data-driven registry never contradicts the legacy method selection, and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
-  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the eleven ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, let the ledger prove every need was addressed, and let the selection comparison prove the registry resolves each leaf to the same method the legacy authority would. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set — and eventually drive selection from the registry rather than the hardcoded dispatch — instead of growing new hardcoded intents."
+  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, reasoned about in the open with white-box reasoning attached to every recursive step in both directions (the downward decomposition and the upward construction that composes children back into each answer), checked leaf by leaf so the data-driven registry never contradicts the legacy method selection, projected back into the answer from the append-only event log, and finally distilled into a proposal-only skill-accumulation ledger that turns each satisfied need into a candidate reusable skill and each blocked need into a curriculum item — with no neural inference and no skill ever auto-promoted without review. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
+  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the twelve ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, let the ledger prove every need was addressed, let the selection comparison prove the registry resolves each leaf to the same method the legacy authority would, and let the skill-accumulation ledger turn the outcome into proposed reusable skills and a curriculum of what is still unsolved. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set — and eventually drive selection from the registry rather than the hardcoded dispatch — instead of growing new hardcoded intents."
 step_formalize_impulse
   record_type "meta_step"
   order "1"
@@ -81,6 +81,13 @@ step_project_answer
   title "Project the answer from the event log"
   detail "The final answer is a projection of the append-only event log, not a side effect: the same loop that recorded the frame, decomposition, ledger, and resolution yields the response. Because the projection reads the log, behaviour is fully determined by the recorded events (R13)."
   source_file "src/solver.rs"
+step_accumulate_skills
+  record_type "meta_step"
+  order "12"
+  id "accumulate_skills"
+  title "Accumulate reusable skills and a curriculum from the outcome"
+  detail "SkillLedger::from_evidence distils the solution evidence into learning the next request can reuse: every need that was satisfied by a catalogued method becomes a proposed CandidateSkill (a named, reusable capability the solver demonstrably has), and every need that was blocked becomes a CurriculumItem (a recorded gap to close rather than a silent failure). record_skill_ledger emits this as the trace-only skill_ledger event, gated by the skill_mode knob (off default records nothing, accumulate records the ledger). Accumulation is proposal-only: a candidate skill is born proposed and its PromotionGate requires both tests and a benchmark delta before it may become stable, so the promotable count is always zero at trace time and no skill is ever auto-promoted without human review (C3). This is the deterministic analog of an agent that grows a skill library and a curriculum, and the foundation for the core to reason about and extend its own method set."
+  source_file "src/skill_ledger.rs"
 fn_formalize_intent
   record_type "meta_function"
   function "formalize_intent"
@@ -157,6 +164,14 @@ fn_record_solution_evidence
   record_type "meta_function"
   function "record_solution_evidence"
   source_file "src/solution_evidence.rs"
+fn_skill_from_evidence
+  record_type "meta_function"
+  function "from_evidence"
+  source_file "src/skill_ledger.rs"
+fn_record_skill_ledger
+  record_type "meta_function"
+  function "record_skill_ledger"
+  source_file "src/skill_ledger.rs"
 fn_build_evidence_links
   record_type "meta_function"
   function "build_evidence_links"

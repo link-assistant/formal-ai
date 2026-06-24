@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R341)
+## What shipped (R330–R342)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -39,6 +39,7 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R339 | 6 | Method-selection comparison + `selection_mode` knob: per atomic leaf, the legacy method versus the registry-resolved one, classified and counted | `src/selection.rs` (`SelectionMode`, `SelectionAgreement`, `LeafSelection`, `SelectionComparison`), comparing `specialized_handler_name` against `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection`, `selection:contradictions` | (this PR) |
 | R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
 | R341 | 5 | Cue lexicon: the hardcoded natural-language recognition cues moved out of inline Rust literals into reviewable link data | `data/meta/cue-lexicon.lino` (`cue_set` records), `src/cue_lexicon.rs` (`CueMatch`, `CueSet`), consumed by `src/intent_formalization.rs` (`append_prompt_relevants`, `looks_arithmetic`, `looks_like_text_manipulation`) | (data; recognition cues, not a loop event) | (this PR) |
+| R342 | 7 | Skill-accumulation ledger: each satisfied need distilled into a proposed reusable skill and each blocked need into a curriculum item, proposal-only and gated (no skill ever auto-promoted) | `src/skill_ledger.rs` (`SkillMode`, `SkillStatus`, `PromotionGate`, `CandidateSkill`, `CurriculumItem`, `SkillLedger`), distilling `SolutionEvidence`, gated by `SolverConfig::skill_mode` | `skill_ledger`, `skill_ledger:promotable` | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
@@ -329,7 +330,7 @@ the answer and intent are identical whether the mode is `Legacy` or `Compare`.
 ## Self-description as data (R335)
 
 `data/meta/recursive-core-recipe.lino` describes the meta core to itself: a
-`meta_recipe` header (`topic "recursive_core"`), eleven ordered `meta_step`
+`meta_recipe` header (`topic "recursive_core"`), twelve ordered `meta_step`
 records mapping each stage to its seed source file, and the `meta_function`
 records naming the entry points. `tests/unit/specification/recursive_core_recipe.rs`
 asserts every named function actually exists in its cited source (`fn {name}`),
@@ -433,11 +434,46 @@ now a one-line data edit rather than a Rust change — and when the meta algorit
 later reasons about its own recognition surface (R340), this is the editable cue
 vocabulary it reads.
 
+## Accumulating skills and a curriculum (R342)
+
+The previous stages prove, per request, which needs the core resolved and which it
+could not. A system meant to "improve itself" must turn that outcome into *learning*
+the next request can reuse — the deterministic analog of an agent that grows a skill
+library and a curriculum of what it still cannot do. R342 adds that as the twelfth
+step, a pure projection of the solution evidence (`src/skill_ledger.rs`):
+
+- every need that was **satisfied** by a catalogued method becomes a proposed
+  `CandidateSkill` — a named, reusable capability the solver demonstrably has,
+  captured with the span that demonstrated it and the work-unit leaf it came from; and
+- every need that was **blocked** (no method resolved it, or its chain never
+  connected) becomes a `CurriculumItem` — a recorded gap to close, with a reason,
+  never a silently dropped failure.
+
+Crucially, accumulation is **proposal-only and gated**, exactly like the meta
+self-improvement loop (R340). A candidate skill is born `proposed`, and its
+`PromotionGate` requires both tests *and* a benchmark delta before it may become
+`stable`. Neither exists at trace time, so `promotable_count()` is structurally
+always zero: nothing is ever auto-promoted without human review (C3). The default
+`SkillMode::Off` (env `FORMAL_AI_SKILL_MODE`) records nothing, so the trace and the
+answer are exactly what shipped before this stage existed (R13); `accumulate` emits
+the ledger as the trace-only `skill_ledger` event plus a `skill_ledger:promotable`
+count that is the auditable proof of the no-auto-promotion invariant.
+
+`tests/unit/specification/skill_ledger.rs` pins the gate (off by default, slug
+round-trip), that a satisfied need yields exactly one proposed skill while a blocked
+need yields a curriculum item, that every evidence trail is accounted for as one or
+the other (nothing dropped), the promotion rule (`has_tests && has_benchmark_delta`),
+the never-auto-promotes invariant across prompt shapes, and the serialization. The
+recipe (`data/meta/recursive-core-recipe.lino`) gains the twelfth `meta_step` and the
+`from_evidence` / `record_skill_ledger` `meta_function` records, so the
+self-improvement loop stays self-consistent. This is the foundation for the core to
+later reason about and extend its own method set from its own accumulated experience.
+
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon,skill_ledger}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R341) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R342) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -470,6 +506,12 @@ vocabulary it reads.
   reviewable cue lexicon (`data/meta/cue-lexicon.lino`), so the recognition surface
   is editable data rather than scattered string lists — behavior-preserving, and a
   new trigger word for an existing handler family is now a one-line data edit.
+- **Accumulate skills and learn what is missing:** R342 distils each request's
+  outcome into a proposed reusable skill per satisfied need and a curriculum item
+  per blocked need — proposal-only and gated so no skill is ever auto-promoted
+  without tests and a benchmark delta (C3) — the deterministic analog of an agent
+  that grows a skill library and a curriculum, and the foundation for the core to
+  reason about and extend its own method set.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and new data files.
 - **Compile data and do deep case-study analysis:** this document plus the

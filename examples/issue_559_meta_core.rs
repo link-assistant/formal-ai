@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R341).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R342).
 //!
 //! Run with:
 //!
@@ -21,7 +21,10 @@
 //! 7. the solution evidence (R334): the join `need → leaf → status → method`;
 //! 8. the method-selection comparison (R339): per atomic leaf, the legacy method
 //!    versus the registry-resolved one, classified and counted (shown in the
-//!    `compare` mode so both authorities and the agreement are visible).
+//!    `compare` mode so both authorities and the agreement are visible);
+//! 9. the skill-accumulation ledger (R342): each satisfied need distilled into a
+//!    proposed reusable skill and each blocked need into a curriculum item, with
+//!    nothing ever auto-promoted (the promotable count is always zero).
 //!
 //! The self-describing recipe (R335) lives as data in
 //! `data/meta/recursive-core-recipe.lino`. The meta self-improvement loop (R340)
@@ -37,6 +40,7 @@ use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::meta_self_improvement::{MetaSelfImprovement, SelfImprovementMode};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::selection::{SelectionComparison, SelectionMode};
+use formal_ai::skill_ledger::SkillLedger;
 use formal_ai::solution_evidence::SolutionEvidence;
 use formal_ai::translation::formalize_prompt;
 
@@ -51,6 +55,7 @@ fn dump(prompt: &str) {
     let construction = UpwardConstruction::for_unit(&root, &registry);
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
     let selection = SelectionComparison::for_unit(&root, &registry);
+    let skills = SkillLedger::from_evidence(&evidence);
 
     println!("================================================================");
     println!("PROMPT: {prompt}");
@@ -88,6 +93,14 @@ fn dump(prompt: &str) {
         selection.rescue_count(),
         selection.contradiction_count(),
         selection.to_links_notation(SelectionMode::Compare)
+    );
+    println!(
+        "\n# (R342) skill-accumulation ledger \
+         (proposed={}, curriculum={}, promotable={})\n{}",
+        skills.proposed_count(),
+        skills.curriculum_count(),
+        skills.promotable_count(),
+        skills.to_links_notation()
     );
 }
 

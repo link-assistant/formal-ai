@@ -76,6 +76,7 @@ mod route_method_alias;
 mod selection;
 mod self_improvement;
 mod shared_dialog_replay;
+mod skill_ledger;
 mod solution_evidence;
 mod source_cache;
 mod substitution_rules;

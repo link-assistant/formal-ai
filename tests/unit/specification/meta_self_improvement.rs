@@ -142,7 +142,7 @@ fn the_live_recipe_already_describes_every_pipeline_stage() {
 
 #[test]
 fn the_loop_sees_every_record_stage_the_pipeline_runs() {
-    // The live pipeline runs these eight record_* stages; the loop must parse all
+    // The live pipeline runs these nine record_* stages; the loop must parse all
     // of them out of the meta_core source, in source order.
     let loop_ = MetaSelfImprovement::from_repo();
     let functions: Vec<&str> = loop_
@@ -159,6 +159,7 @@ fn the_loop_sees_every_record_stage_the_pipeline_runs() {
         "record_upward_construction",
         "record_solution_evidence",
         "record_selection",
+        "record_skill_ledger",
     ] {
         assert!(
             functions.contains(&expected),

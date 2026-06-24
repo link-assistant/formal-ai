@@ -46,6 +46,7 @@ pub mod self_improvement;
 pub mod server;
 pub mod shared_dialog;
 pub mod skill_compiler;
+pub mod skill_ledger;
 pub mod solution_evidence;
 pub mod solver;
 pub(crate) mod solver_diagnostics;

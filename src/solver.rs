@@ -49,10 +49,10 @@ use crate::solver_handlers::{
     try_playwright_script, try_project_lookup, CapabilityRuntime, SelfAwarenessRuntime,
 };
 use crate::solver_helpers::{
-    confidence_for, env_bool, env_bounded_f32, env_definition_fusion_by_default, env_truthy,
-    is_agent_opt_in, is_agent_request, is_cache_flush_request, is_destructive_action,
-    is_forget_request, is_inappropriate_content, is_unbounded_autonomy, is_unbounded_loop,
-    record_candidates, record_decomposition, record_validation, requires_external_lookup,
+    confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
+    is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
+    is_unbounded_loop, record_candidates, record_decomposition, record_validation,
+    requires_external_lookup,
 };
 use crate::solver_synthesis::try_synthesize_from_sub_results;
 use crate::solver_unknown_reasoning::{answer_unknown_prompt, UnknownReasoningConfig};
@@ -89,7 +89,7 @@ impl ExecutionSurface {
         }
     }
 
-    fn from_env_value(raw: &str) -> Option<Self> {
+    pub(crate) fn from_env_value(raw: &str) -> Option<Self> {
         match raw.trim().to_ascii_lowercase().as_str() {
             "rust" | "rust_library" | "library" | "lib" => Some(Self::RustLibrary),
             "cli" | "terminal" | "shell" => Some(Self::Cli),
@@ -200,6 +200,12 @@ pub struct SolverConfig {
     /// choice per leaf; `Compare` records the full comparison plus divergence and
     /// contradiction counts. Trace-only in every mode (R13).
     pub selection_mode: crate::selection::SelectionMode,
+    /// Whether the meta core records the skill-accumulation ledger (issue #559,
+    /// R342): `Off` (default) records nothing; `Accumulate` distills each satisfied
+    /// need into a proposed reusable skill and each blocked need into a curriculum
+    /// item. Proposal-only — no skill is auto-promoted without review — and
+    /// trace-only either way (R13/C3).
+    pub skill_mode: crate::skill_ledger::SkillMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -239,6 +245,7 @@ impl Default for SolverConfig {
             max_decomposition_depth: 4,
             recursion_mode: crate::meta_construction::RecursionMode::default(),
             selection_mode: crate::selection::SelectionMode::default(),
+            skill_mode: crate::skill_ledger::SkillMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -254,56 +261,12 @@ impl Default for SolverConfig {
 
 impl SolverConfig {
     /// Build a [`SolverConfig`] using the documented environment overrides.
+    ///
+    /// The parsing body lives in [`crate::solver_helpers::config_from_env`] to keep
+    /// this module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
     #[must_use]
     pub fn from_env() -> Self {
-        let mut config = Self::default();
-        if env_truthy("FORMAL_AI_OFFLINE") {
-            config.offline = true;
-        }
-        if env_truthy("FORMAL_AI_AGENT_MODE") {
-            config.agent_mode = true;
-        }
-        if env_truthy("FORMAL_AI_DIAGNOSTIC_MODE") {
-            config.diagnostic_mode = true;
-        }
-        if let Some(value) = env_definition_fusion_by_default() {
-            config.definition_fusion_by_default = value;
-        }
-        if let Some(value) = env_bool("FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION")
-            .or_else(|| env_bool("FORMAL_AI_PROJECT_PROMOTION"))
-        {
-            config.associative_project_promotion = value;
-        }
-        if let Ok(value) = std::env::var("FORMAL_AI_EXECUTION_SURFACE")
-            .or_else(|_| std::env::var("FORMAL_AI_SURFACE"))
-        {
-            if let Some(surface) = ExecutionSurface::from_env_value(&value) {
-                config.execution_surface = surface;
-            }
-        }
-        if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
-            config.temperature = value;
-        }
-        if let Some(value) = env_bounded_f32("FORMAL_AI_GUESS_PROBABILITY", 0.0, 1.0) {
-            config.guess_probability = value;
-        }
-        if let Some(value) = env_bounded_f32("FORMAL_AI_FOLLOW_UP_PROBABILITY", 0.0, 1.0) {
-            config.follow_up_probability = value;
-        }
-        if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
-            if let Ok(parsed) = value.parse::<u64>() {
-                config.cache_ttl_seconds = parsed;
-            }
-        }
-        if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
-            .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
-        {
-            if let Some(mode) = BlueprintComposition::from_value(&value) {
-                config.blueprint_composition = mode;
-            }
-        }
-        crate::meta_core::apply_env_modes(&mut config.recursion_mode, &mut config.selection_mode);
-        config
+        crate::solver_helpers::config_from_env()
     }
 }
 
@@ -501,6 +464,7 @@ impl UniversalSolver {
             self.config.max_decomposition_depth,
             self.config.recursion_mode,
             self.config.selection_mode,
+            self.config.skill_mode,
         );
 
         log.append("search:local", prompt.to_owned());
