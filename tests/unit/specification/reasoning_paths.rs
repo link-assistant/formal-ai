@@ -84,7 +84,7 @@ fn arithmetic_records_calculation_event_in_evidence_log() {
 }
 
 #[test]
-fn selected_specialized_handler_is_recorded_as_a_meta_method() {
+fn selected_registry_method_is_recorded_as_a_meta_method() {
     let response = answer("What is 6 * 7?");
     assert_eq!(response.intent, "calculation");
     assert!(

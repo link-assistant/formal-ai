@@ -200,7 +200,7 @@ this branch changed the status.
 | Crawl / full-content extraction | **Absent** | 0 hits for `crawl` in `src/`, `desktop/`, `vscode/` | New (evidence pipeline) |
 | Live non-CORS providers (Google/Bing/Brave) | **Absent (live)** | registered but `cors_readable:false` | New (server/desktop fetch seam) |
 | Expand→crawl→extract→compare loop | **Absent** | search+RRF exist; downstream stages do not | New (evidence pipeline) |
-| Old-vs-new selection comparison mode | **Absent** | BATTERY baselines exist but no selection A/B | Built as selection and dispatch parity audit baselines |
+| Per-leaf method-selection auditability | **Absent** | BATTERY baselines exist but no selection trace | Built as the registry's `selection_mode` trace; the interim parity certificate that de-risked the migration was removed once the registry became the sole authority |
 | General meta-algorithm recipe | **Absent** | only two specific recipes exist | Built in `data/meta/recursive-core-recipe.lino` and regenerated artifacts |
 
 ## Residual Risks Found During Review

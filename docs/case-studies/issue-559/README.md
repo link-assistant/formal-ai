@@ -47,9 +47,11 @@ method path:
 - `src/meta_method_dispatch.rs::try_dispatch` orders and executes method names
   through that registry, including alias-resolved routes like
   `write_program -> write_script`.
-- `src/selection.rs` and `src/dispatch_parity.rs` keep the older route mapper as
-  an audit baseline, proving the registry never contradicts a valid legacy
-  method.
+- `src/selection.rs` records, per request, the method the registry resolves for
+  each atomic leaf (or `unresolved`), making the dispatch the sole authority
+  performs auditable. The legacy route mapper and its parity audit scaffolding
+  were removed outright once the registry was proven a behavior-preserving
+  replacement (R344).
 - `data/meta/recursive-core-recipe.lino` is the general problem-frame recipe that
   every request passes through and that the interpreter can execute event for
   event.

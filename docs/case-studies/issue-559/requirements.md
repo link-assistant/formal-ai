@@ -151,8 +151,10 @@ R29. Drive method selection from a data-described method/skill registry.
 
 - Acceptance: the registry records the live prelude, specialized-handler, and
   contextual method catalogue; `meta_method_dispatch::try_dispatch` orders and
-  executes method names through that registry; the legacy mapper remains only as
-  a parity baseline with zero-contradiction tests.
+  executes method names through that registry as the sole dispatch authority; the
+  legacy mapper was removed outright after a corpus-wide certificate proved the
+  registry a behavior-preserving replacement, and the closure invariant now holds
+  directly against the live registry.
 - Maps to: proposed root **R331**; existing R103 (intent routing from data), R97 (externalize hardcoded surfaces); closes ROADMAP Pillar 20 residual.
 
 R30. Maintain a need-satisfaction ledger in the answer projection.

@@ -50,10 +50,11 @@ Current PR scope:
 Implemented approval target:
 
 - R330-R344 are delivered in PR #560.
-- R331 is now live: the registry drives method dispatch, while the old mapper is
-  retained only as a parity baseline.
-- R344 keeps the corpus-wide compatibility certificate against that retained
-  baseline.
+- R331 is now live: the registry is the sole authority that drives method dispatch.
+- R344 completes the migration — after a corpus-wide compatibility certificate
+  proved the registry a behavior-preserving replacement, the legacy mapper and the
+  certificate scaffolding were removed outright and the closure invariant now holds
+  directly against the live registry.
 
 ## Canonical Vocabulary (read this first)
 
@@ -365,10 +366,11 @@ improving itself without mutating production behavior automatically.
 
 ### Phase 10 — Replace Direct Specialized Dispatch
 
-Status: completed in PR #560. The registry is the control plane for method
+Status: completed in PR #560. The registry is the sole control plane for method
 dispatch through `meta_method_dispatch::try_dispatch`; Rust handlers remain as
-implementation hooks. The legacy route mapper remains only as an audit baseline
-for R339/R344 parity checks, and no previously supported prompt family is removed.
+implementation hooks. The legacy route mapper and the R344 parity scaffolding were
+removed outright once the certificate proved the registry a behavior-preserving
+replacement, and no previously supported prompt family is removed.
 
 ## Concrete First Implementation PR After Approval
 
@@ -380,8 +382,9 @@ with the rest of this branch. PR #560 now includes:
 2. Need ledgers and solution evidence.
 3. The prelude/specialized/contextual method registry.
 4. Live registry-backed method dispatch.
-5. Alias, selection, recipe, self-improvement, skill-ledger, and dispatch-parity
-   artifacts.
+5. Alias, method-selection trace, recipe, self-improvement, and skill-ledger
+   artifacts, plus the corpus-wide closure invariant pinned against the live
+   registry.
 6. Requirement traceability tests for R330-R344.
 
 ## Verification Matrix
@@ -443,8 +446,8 @@ cannot be worked around locally without distorting the architecture.
 - R10, R22: the evidence pipeline.
 - R11: method registry + skill records + the recursive algorithm.
 - R12: gated self-improvement (Phase 9) and skill promotion rules.
-- R13, R14, R16: compatibility/`compare` mode, parity tests, registry-backed
-  dispatch with the legacy mapper retained as an audit baseline.
+- R13, R14, R16: behavior-preserving migration, corpus-closure test, registry-backed
+  dispatch as the sole authority after the legacy mapper was retired outright.
 - R15: keeping `.lino`, cache, meanings, overrides, source cache first-class.
 - R17: phase-sized PRs and commits.
 - R18: Voyager mapping without neural dependency

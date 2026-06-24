@@ -91,23 +91,19 @@ problem_need_9d4753ec069ff65a
   route "translation"
   method "translation"
 
-# (R339) method-selection comparison (leaves=1, agree=1, registry_rescues=0, contradict=0)
+# (R339) method-selection trace (leaves=1, resolved=1, unresolved=0)
 selection
   record_type "selection"
-  mode "compare"
   root_id "work_unit_1653752b66b67893"
   leaf_count "1"
-  agreement_count "1"
-  rescue_count "0"
-  contradiction_count "0"
+  resolved_count "1"
+  unresolved_count "0"
 work_unit_1653752b66b67893
   record_type "leaf_selection"
   unit_id "work_unit_1653752b66b67893"
   depth "0"
   route "translation"
-  registry_method "translation"
-  legacy_method "translation"
-  agreement "agree"
+  method "translation"
 
 # (R342) skill-accumulation ledger (proposed=1, curriculum=0, promotable=0)
 skill_ledger_a441e81bfba5b174
@@ -307,30 +303,25 @@ problem_need_e221ed16f702b263
   method "write_script"
   method_via_alias "true"
 
-# (R339) method-selection comparison (leaves=2, agree=1, registry_rescues=1, contradict=0)
+# (R339) method-selection trace (leaves=2, resolved=2, unresolved=0)
 selection
   record_type "selection"
-  mode "compare"
   root_id "work_unit_16efab3092bb4d01"
   leaf_count "2"
-  agreement_count "1"
-  rescue_count "1"
-  contradiction_count "0"
+  resolved_count "2"
+  unresolved_count "0"
 work_unit_ddbb9068def90fae
   record_type "leaf_selection"
   unit_id "work_unit_ddbb9068def90fae"
   depth "1"
   route "translation"
-  registry_method "translation"
-  legacy_method "translation"
-  agreement "agree"
+  method "translation"
 work_unit_751ee4a5ba055be3
   record_type "leaf_selection"
   unit_id "work_unit_751ee4a5ba055be3"
   depth "1"
   route "write_program"
-  registry_method "write_script"
-  agreement "registry_rescues"
+  method "write_script"
 
 # (R342) skill-accumulation ledger (proposed=2, curriculum=0, promotable=0)
 skill_ledger_35a9f3848454d8d7
@@ -450,20 +441,18 @@ problem_need_2f86301fc50ef7f1
   connected "true"
   work_unit "work_unit_b008b07e7a293ffd"
 
-# (R339) method-selection comparison (leaves=1, agree=0, registry_rescues=0, contradict=0)
+# (R339) method-selection trace (leaves=1, resolved=0, unresolved=1)
 selection
   record_type "selection"
-  mode "compare"
   root_id "work_unit_b008b07e7a293ffd"
   leaf_count "1"
-  agreement_count "0"
-  rescue_count "0"
-  contradiction_count "0"
+  resolved_count "0"
+  unresolved_count "1"
 work_unit_b008b07e7a293ffd
   record_type "leaf_selection"
   unit_id "work_unit_b008b07e7a293ffd"
   depth "0"
-  agreement "unresolved"
+  method "unresolved"
 
 # (R342) skill-accumulation ledger (proposed=0, curriculum=1, promotable=0)
 skill_ledger_bf47cbd910a63ba7
@@ -928,10 +917,10 @@ plan_record_evidence
   order "9"
   id "record_evidence"
   executes "record_solution_evidence"
-plan_compare_selection
+plan_select_methods
   record_type "recipe_plan_step"
   order "10"
-  id "compare_selection"
+  id "select_methods"
   executes "record_selection"
 plan_project_answer
   record_type "recipe_plan_step"
@@ -944,403 +933,3 @@ plan_accumulate_skills
   id "accumulate_skills"
   executes "record_skill_ledger"
 # executing the recipe reproduces the live pipeline trace event-for-event: true
-================================================================
-# (R344) dispatch parity — 68 routes audited (agree=58, registry_rescues=1, unresolved=9, contradict=0), retire_safe=true
-================================================================
-dispatch_parity
-  record_type "dispatch_parity"
-  route_count "68"
-  agreement_count "58"
-  rescue_count "1"
-  unresolved_count "9"
-  contradiction_count "0"
-  retire_safe "true"
-algorithm
-  record_type "route_parity"
-  route "algorithm"
-  agreement "agree"
-  legacy_method "algorithm"
-  registry_method "algorithm"
-arithmetic
-  record_type "route_parity"
-  route "arithmetic"
-  agreement "agree"
-  legacy_method "arithmetic"
-  registry_method "arithmetic"
-assistant_free_time
-  record_type "route_parity"
-  route "assistant_free_time"
-  agreement "unresolved"
-assistant_name
-  record_type "route_parity"
-  route "assistant_name"
-  agreement "unresolved"
-behavior_rules
-  record_type "route_parity"
-  route "behavior_rules"
-  agreement "agree"
-  legacy_method "behavior_rules"
-  registry_method "behavior_rules"
-brainstorming
-  record_type "route_parity"
-  route "brainstorming"
-  agreement "agree"
-  legacy_method "brainstorming"
-  registry_method "brainstorming"
-calendar_create_event
-  record_type "route_parity"
-  route "calendar_create_event"
-  agreement "agree"
-  legacy_method "calendar_create_event"
-  registry_method "calendar_create_event"
-calendar_reasoning
-  record_type "route_parity"
-  route "calendar_reasoning"
-  agreement "agree"
-  legacy_method "calendar_reasoning"
-  registry_method "calendar_reasoning"
-capabilities
-  record_type "route_parity"
-  route "capabilities"
-  agreement "agree"
-  legacy_method "capabilities"
-  registry_method "capabilities"
-clarification
-  record_type "route_parity"
-  route "clarification"
-  agreement "agree"
-  legacy_method "clarification"
-  registry_method "clarification"
-compound_interest
-  record_type "route_parity"
-  route "compound_interest"
-  agreement "agree"
-  legacy_method "compound_interest"
-  registry_method "compound_interest"
-concept_lookup
-  record_type "route_parity"
-  route "concept_lookup"
-  agreement "agree"
-  legacy_method "concept_lookup"
-  registry_method "concept_lookup"
-concept_lookup_in_context
-  record_type "route_parity"
-  route "concept_lookup_in_context"
-  agreement "agree"
-  legacy_method "concept_lookup"
-  registry_method "concept_lookup"
-conversation_memory
-  record_type "route_parity"
-  route "conversation_memory"
-  agreement "agree"
-  legacy_method "conversation_memory"
-  registry_method "conversation_memory"
-conversation_topic
-  record_type "route_parity"
-  route "conversation_topic"
-  agreement "agree"
-  legacy_method "conversation_topic"
-  registry_method "conversation_topic"
-coreference
-  record_type "route_parity"
-  route "coreference"
-  agreement "agree"
-  legacy_method "coreference"
-  registry_method "coreference"
-courtesy_response
-  record_type "route_parity"
-  route "courtesy_response"
-  agreement "unresolved"
-definition_merge
-  record_type "route_parity"
-  route "definition_merge"
-  agreement "agree"
-  legacy_method "definition_merge"
-  registry_method "definition_merge"
-diagnostic
-  record_type "route_parity"
-  route "diagnostic"
-  agreement "agree"
-  legacy_method "diagnostic"
-  registry_method "diagnostic"
-docs_method_explanation
-  record_type "route_parity"
-  route "docs_method_explanation"
-  agreement "agree"
-  legacy_method "docs_method_explanation"
-  registry_method "docs_method_explanation"
-document_generation_plan
-  record_type "route_parity"
-  route "document_generation_plan"
-  agreement "agree"
-  legacy_method "document_generation_plan"
-  registry_method "document_generation_plan"
-execution_failure
-  record_type "route_parity"
-  route "execution_failure"
-  agreement "agree"
-  legacy_method "execution_failure"
-  registry_method "execution_failure"
-fact_lookup
-  record_type "route_parity"
-  route "fact_lookup"
-  agreement "agree"
-  legacy_method "fact_lookup"
-  registry_method "fact_lookup"
-farewell
-  record_type "route_parity"
-  route "farewell"
-  agreement "unresolved"
-feature_capability
-  record_type "route_parity"
-  route "feature_capability"
-  agreement "agree"
-  legacy_method "feature_capability"
-  registry_method "feature_capability"
-greeting
-  record_type "route_parity"
-  route "greeting"
-  agreement "unresolved"
-how_it_works
-  record_type "route_parity"
-  route "how_it_works"
-  agreement "agree"
-  legacy_method "how_it_works"
-  registry_method "how_it_works"
-http_fetch
-  record_type "route_parity"
-  route "http_fetch"
-  agreement "agree"
-  legacy_method "http_fetch"
-  registry_method "http_fetch"
-identity
-  record_type "route_parity"
-  route "identity"
-  agreement "unresolved"
-ill_formed
-  record_type "route_parity"
-  route "ill_formed"
-  agreement "agree"
-  legacy_method "ill_formed"
-  registry_method "ill_formed"
-incompatible_units
-  record_type "route_parity"
-  route "incompatible_units"
-  agreement "agree"
-  legacy_method "incompatible_units"
-  registry_method "incompatible_units"
-installation_conversion
-  record_type "route_parity"
-  route "installation_conversion"
-  agreement "agree"
-  legacy_method "installation_conversion"
-  registry_method "installation_conversion"
-javascript_execution
-  record_type "route_parity"
-  route "javascript_execution"
-  agreement "agree"
-  legacy_method "javascript_execution"
-  registry_method "javascript_execution"
-kupi_slona
-  record_type "route_parity"
-  route "kupi_slona"
-  agreement "agree"
-  legacy_method "kupi_slona"
-  registry_method "kupi_slona"
-meta_explanation
-  record_type "route_parity"
-  route "meta_explanation"
-  agreement "agree"
-  legacy_method "meta_explanation"
-  registry_method "meta_explanation"
-network_query
-  record_type "route_parity"
-  route "network_query"
-  agreement "agree"
-  legacy_method "network_query"
-  registry_method "network_query"
-nl_tool
-  record_type "route_parity"
-  route "nl_tool"
-  agreement "agree"
-  legacy_method "nl_tool"
-  registry_method "nl_tool"
-number_constraint_reasoning
-  record_type "route_parity"
-  route "number_constraint_reasoning"
-  agreement "agree"
-  legacy_method "number_constraint_reasoning"
-  registry_method "number_constraint_reasoning"
-numeric_list
-  record_type "route_parity"
-  route "numeric_list"
-  agreement "agree"
-  legacy_method "numeric_list"
-  registry_method "numeric_list"
-opinion_question
-  record_type "route_parity"
-  route "opinion_question"
-  agreement "agree"
-  legacy_method "opinion_question"
-  registry_method "opinion_question"
-physical_action_question
-  record_type "route_parity"
-  route "physical_action_question"
-  agreement "agree"
-  legacy_method "physical_action_question"
-  registry_method "physical_action_question"
-playwright_script
-  record_type "route_parity"
-  route "playwright_script"
-  agreement "agree"
-  legacy_method "playwright_script"
-  registry_method "playwright_script"
-procedural_how_to
-  record_type "route_parity"
-  route "procedural_how_to"
-  agreement "agree"
-  legacy_method "procedural_how_to"
-  registry_method "procedural_how_to"
-procedural_how_to_followup
-  record_type "route_parity"
-  route "procedural_how_to_followup"
-  agreement "agree"
-  legacy_method "procedural_how_to_followup"
-  registry_method "procedural_how_to_followup"
-program_synthesis
-  record_type "route_parity"
-  route "program_synthesis"
-  agreement "agree"
-  legacy_method "program_synthesis"
-  registry_method "program_synthesis"
-proof_request
-  record_type "route_parity"
-  route "proof_request"
-  agreement "agree"
-  legacy_method "proof_request"
-  registry_method "proof_request"
-punctuation_only_prompt
-  record_type "route_parity"
-  route "punctuation_only_prompt"
-  agreement "agree"
-  legacy_method "punctuation_only_prompt"
-  registry_method "punctuation_only_prompt"
-recall_name
-  record_type "route_parity"
-  route "recall_name"
-  agreement "unresolved"
-research_comparison_table
-  record_type "route_parity"
-  route "research_comparison_table"
-  agreement "agree"
-  legacy_method "research_comparison_table"
-  registry_method "research_comparison_table"
-roleplay
-  record_type "route_parity"
-  route "roleplay"
-  agreement "agree"
-  legacy_method "roleplay"
-  registry_method "roleplay"
-shell_command_transform
-  record_type "route_parity"
-  route "shell_command_transform"
-  agreement "agree"
-  legacy_method "shell_command_transform"
-  registry_method "shell_command_transform"
-shell_refusal
-  record_type "route_parity"
-  route "shell_refusal"
-  agreement "agree"
-  legacy_method "shell_refusal"
-  registry_method "shell_refusal"
-software_project
-  record_type "route_parity"
-  route "software_project"
-  agreement "agree"
-  legacy_method "software_project"
-  registry_method "software_project"
-software_project_followup
-  record_type "route_parity"
-  route "software_project_followup"
-  agreement "agree"
-  legacy_method "software_project_followup"
-  registry_method "software_project_followup"
-software_project_implementation
-  record_type "route_parity"
-  route "software_project_implementation"
-  agreement "agree"
-  legacy_method "software_project"
-  registry_method "software_project"
-software_project_plan
-  record_type "route_parity"
-  route "software_project_plan"
-  agreement "agree"
-  legacy_method "software_project"
-  registry_method "software_project"
-source_conflict
-  record_type "route_parity"
-  route "source_conflict"
-  agreement "agree"
-  legacy_method "source_conflict"
-  registry_method "source_conflict"
-source_refresh
-  record_type "route_parity"
-  route "source_refresh"
-  agreement "agree"
-  legacy_method "source_refresh"
-  registry_method "source_refresh"
-summarization
-  record_type "route_parity"
-  route "summarization"
-  agreement "agree"
-  legacy_method "summarization"
-  registry_method "summarization"
-test_status
-  record_type "route_parity"
-  route "test_status"
-  agreement "unresolved"
-text_manipulation
-  record_type "route_parity"
-  route "text_manipulation"
-  agreement "agree"
-  legacy_method "text_manipulation"
-  registry_method "text_manipulation"
-translation
-  record_type "route_parity"
-  route "translation"
-  agreement "agree"
-  legacy_method "translation"
-  registry_method "translation"
-unknown
-  record_type "route_parity"
-  route "unknown"
-  agreement "unresolved"
-url_navigate
-  record_type "route_parity"
-  route "url_navigate"
-  agreement "agree"
-  legacy_method "url_navigate"
-  registry_method "url_navigate"
-web_search
-  record_type "route_parity"
-  route "web_search"
-  agreement "agree"
-  legacy_method "web_search"
-  registry_method "web_search"
-who_is
-  record_type "route_parity"
-  route "who_is"
-  agreement "agree"
-  legacy_method "who_is"
-  registry_method "who_is"
-write_program
-  record_type "route_parity"
-  route "write_program"
-  agreement "registry_rescues"
-  registry_method "write_script"
-write_script
-  record_type "route_parity"
-  route "write_script"
-  agreement "agree"
-  legacy_method "write_script"
-  registry_method "write_script"

@@ -56,14 +56,16 @@ through the registry-backed `meta_method_dispatch::try_dispatch` path, while
 handlers remain callable Rust hooks (NG2). 2C only after deterministic replay and
 benchmarks can prove learned ranking never regresses.
 
-**Comparison harness (this is the "implement all to compare" case):** add a
-`SolverConfig` knob `selection_mode ∈ {legacy, registry, compare}` (added to
-config first, per NON-GOALS). The live solver path now uses the registry-backed
-executor; `selection_mode` controls the optional audit artifact. In `compare`
-mode the solver records both the retained legacy mapper result and the registry
-selection, classifies any divergence, and keeps R344's corpus-wide parity
-certificate at zero contradictions. This keeps 2B empirical and test-enforced
-while preserving a legacy baseline for review.
+**Selection trace (the auditability surface):** add a `SolverConfig` knob
+`selection_mode ∈ {off, record}` (added to config first). The live solver path
+uses the registry-backed executor as the sole dispatch authority; `selection_mode`
+controls the optional audit artifact. In `record` mode the solver names, for every
+atomic leaf, the method the registry resolves (or `unresolved`), making the
+dispatch auditable per request. An interim parity certificate first proved the
+registry resolved the whole route corpus at zero contradictions against the legacy
+mapper; with that proof in hand R344 removed the mapper and the certificate
+scaffolding outright, and the closure invariant now holds directly against the
+live registry.
 
 ## Decision 3 — Recursion direction
 
@@ -120,13 +122,19 @@ non-CORS providers and crawl before they become default-on.
 | Option | Summary | Pros | Cons | Cost | Risk |
 | --- | --- | --- | --- | --- | --- |
 | 5A Big-bang replace dispatch | Swap `SPECIALIZED_HANDLERS` for the registry in one PR | Fast; no dual code path | High blast radius; hard to review; risks regressions across 50 handlers | M | High |
-| 5B Registry-backed path with retained parity baseline | Land registry-backed dispatch, keep the old mapper only for `compare`/parity audits, and fail tests on contradictions | Empirical; closes the dispatch residual in one reviewable path; honors R13/R17 through a corpus-wide certificate | Requires keeping audit-only legacy code until reviewers are comfortable removing it | M–L | Low |
+| 5B Registry-backed path, prove parity, then retire the mapper | Land registry-backed dispatch, prove a corpus-wide parity certificate against the old mapper, then remove the legacy authority and the audit scaffolding outright | Empirical; the certificate de-risks the swap before it happens, then leaves a single authority with no obsolete-by-example code | Two-phase: the audit scaffolding exists transiently before removal | M–L | Low |
 | 5C Handler-by-handler | Migrate one handler family at a time | Smallest steps | Long tail; inconsistent intermediate state; 50 families | L | Medium |
 
-**Recommendation implemented in PR #560: 5B.** The registry-backed executor is the
-live path, and `selection`/`dispatch_parity` keep the migration measurable rather
-than judgment-based. 5C is no longer needed for the existing handler set; bespoke
-metadata can still be added later without reintroducing a direct dispatch loop.
+**Recommendation implemented in PR #560: 5B, carried through to its end state.**
+A corpus-wide parity certificate first proved the registry resolved the entire
+route vocabulary as a behavior-preserving replacement (zero contradictions); with
+that proof in hand the legacy `specialized_handler_name` mapper and the
+`dispatch_parity` audit scaffolding were **removed outright**, leaving the registry
+as the sole dispatch authority. The certificate's closure invariant survives
+directly against the live registry (`method_registry.rs` corpus-closure test), and
+`selection` records what that one authority resolves per request. 5C is no longer
+needed for the existing handler set; bespoke metadata can still be added later
+without reintroducing a direct dispatch loop.
 
 ## Decision 6 — Skill/method registry storage and grounding
 

@@ -206,9 +206,10 @@ REQUIREMENTS.md, each pinned by an `issue_559_..._is_traceable()` test.
    extract → compare → hypothesize) runs when the evidence policy requires fresh
    data, reusing existing provenance fields.
 6. **R335-R344** — The shipped recursive-core recipe, alias bridge, reasoning
-   passes, selection comparison, solution evidence, self-improvement gate,
-   skill ledger, recipe interpreter, and dispatch-parity certificate complete the
-   first live registry-backed replacement while preserving behavior.
+   passes, method-selection trace, solution evidence, self-improvement gate,
+   skill ledger, and recipe interpreter complete the migration to the
+   registry-backed path as the sole dispatch authority; R344 retires the legacy
+   route mapper and its parity scaffolding outright while preserving behavior.
 
 These map back to the product requirements R5–R12 and the feedback requirements
 R18–R27 in [requirements.md](requirements.md). The number of new rows is kept

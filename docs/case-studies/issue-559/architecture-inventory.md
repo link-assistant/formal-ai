@@ -197,8 +197,8 @@ promoting relevant method names before the specialized fallback sweep.
 `ROADMAP.md` Pillar 20 captures the target precisely: routing is "by
 formalized intent, not a fixed catalogue" (Built). PR #560 closes the previous
 caveat by making `SPECIALIZED_HANDLERS` a callable implementation table behind
-`MethodRegistry`, while the legacy route mapper remains only as an audit
-baseline for parity tests.
+`MethodRegistry`, which is now the sole route→method authority — the legacy route
+mapper and its parity scaffolding were removed outright (R344).
 
 ## Existing Web Search, Rerank, And Fetch
 
@@ -397,9 +397,10 @@ the initial first-session plan:
    atomicity, routes, and method-resolvable leaves.
 10. The method registry now covers the 50 specialized handlers, five prelude
     methods, and five contextual override methods exposed by dispatch.
-11. Old-vs-new selection comparison exists as an audit mode: live dispatch uses
-    the registry-backed path, while the legacy route mapper remains as the
-    parity baseline for R339/R344.
+11. The registry-backed path is the sole dispatch authority. R339 records the
+    registry's per-leaf method-selection trace as an opt-in audit artifact; R344
+    completed the migration by removing the legacy route mapper and its parity
+    scaffolding outright.
 12. `NeedLedger` now records per-need status, route, method, and reason so
     detected requirements are accounted for structurally.
 13. There is no general search/rerank/crawl/extract/evaluate loop for fresh-data
@@ -417,7 +418,7 @@ architecture conclusion is:
 
 - No upstream blocker prevents the next behavior-preserving phases:
   `ProblemFrame` trace, recursive work-unit tracing, method registry inventory,
-  and old/new selection comparison.
+  and the registry's per-leaf method-selection trace.
 - `meta-language` already advertises mutable link networks, source spans,
   lossless parse/reconstruction, generated-source rendering, snapshots,
   structural query/replace, substitutions, LiNo parsing, and cross-language

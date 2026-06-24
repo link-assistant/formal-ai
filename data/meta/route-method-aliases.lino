@@ -13,7 +13,7 @@ alias_software_project_plan
   record_type "route_method_alias"
   route "software_project_plan"
   method "software_project"
-  rationale "A software-project planning intent resolves to the single software_project handler (matching specialized_handler_name's legacy mapping)."
+  rationale "A software-project planning intent resolves to the single software_project handler that serves the whole software-project surface."
 alias_software_project_implementation
   record_type "route_method_alias"
   route "software_project_implementation"

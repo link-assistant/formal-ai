@@ -36,12 +36,12 @@ The phases were landed and committed independently:
 | R336 | 4 | Route→method alias bridge: a coarser/finer intent slug still resolves to a catalogued method | `data/meta/route-method-aliases.lino`, `src/route_method_alias.rs` (`RouteMethodAlias`), consumed by `MethodRegistry::method_for_route` | (data + `solution_evidence` `method_via_alias`) | (this PR) |
 | R337 | 5 | White-box recursive reasoning: a downward/upward thought per work unit | `src/meta_reasoning.rs` (`WorkUnitReasoning`) | `work_unit_reasoning`, `work_unit_reasoning:steps` | (this PR) |
 | R338 | 5 | Upward construction pass + `recursion_mode` knob: the post-order leaf→root composition, the construction half of the recursion | `src/meta_construction.rs` (`RecursionMode`, `UpwardConstruction`, `ConstructionStep`), gated by `SolverConfig::recursion_mode` | `upward_construction`, `upward_construction:steps` | (this PR) |
-| R339 | 6 | Method-selection comparison + `selection_mode` knob: per atomic leaf, the legacy method versus the registry-resolved one, classified and counted | `src/selection.rs` (`SelectionMode`, `SelectionAgreement`, `LeafSelection`, `SelectionComparison`), comparing `specialized_handler_name` against `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection`, `selection:contradictions` | (this PR) |
+| R339 | 6 | Method-selection trace + `selection_mode` knob: per atomic leaf, the method the single data-driven registry authority resolves (or `unresolved`), with resolved/unresolved counts | `src/selection.rs` (`SelectionMode` Off/Record, `LeafSelection`, `MethodSelection`), resolving each leaf through `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection` | (this PR) |
 | R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
 | R341 | 5 | Cue lexicon: the hardcoded natural-language recognition cues moved out of inline Rust literals into reviewable link data | `data/meta/cue-lexicon.lino` (`cue_set` records), `src/cue_lexicon.rs` (`CueMatch`, `CueSet`), consumed by `src/intent_formalization.rs` (`append_prompt_relevants`, `looks_arithmetic`, `looks_like_text_manipulation`) | (data; recognition cues, not a loop event) | (this PR) |
 | R342 | 7 | Skill-accumulation ledger: each satisfied need distilled into a proposed reusable skill and each blocked need into a curriculum item, proposal-only and gated (no skill ever auto-promoted) | `src/skill_ledger.rs` (`SkillMode`, `SkillStatus`, `PromotionGate`, `CandidateSkill`, `CurriculumItem`, `SkillLedger`), distilling `SolutionEvidence`, gated by `SolverConfig::skill_mode` | `skill_ledger`, `skill_ledger:promotable` | (this PR) |
 | R343 | 8 | Recipe interpreter: the recipe runs as an executable program, driving the live recorder primitives in the order the data declares and proving the event log is identical, event-for-event, to the hand-written pipeline's | `src/recipe_interpreter.rs` (`RecipeStep`, `RecipeProgram`, `ExecutionTrace`, `from_lino`, `execute`, `recorder_sequence`, `reproduces_pipeline`), executing the recorders bound via the recipe's `records` fields against `src/meta_core.rs` | (executes the same loop events as `record_meta_core`) | (this PR) |
-| R344 | 10 | Dispatch-parity certificate: the registry and the legacy dispatch authority are audited across the *entire* route vocabulary the system can emit (not just one prompt's leaves), proving zero contradictions while the registry-backed executor is the live method path | `src/dispatch_parity.rs` (`RouteParity`, `DispatchParity`, `audit`, `is_retire_safe`, `record_dispatch_parity`), reusing `SelectionAgreement::classify` (R339) over a corpus grounded in `MethodRegistry::from_dispatch`, `route_method_alias`, `seed::intent_routing`, and `coding::WRITE_PROGRAM_INTENT` | `dispatch_parity`, `dispatch_parity:contradictions` (standalone compatibility certificate) | (this PR) |
+| R344 | — | Total migration: the legacy route mapper and the dispatch-parity audit scaffolding are **removed outright** once the certificate proved the registry was a behavior-preserving replacement; the registry is the sole dispatch authority and the corpus-wide closure invariant is pinned directly against it | removed `src/dispatch_parity.rs` and `specialized_handler_name`; closure invariant verified by `tests/unit/specification/method_registry.rs::the_registry_is_the_sole_authority_that_closes_over_the_route_corpus` over a corpus grounded in `MethodRegistry::from_dispatch`, `route_method_alias::aliases`, and `seed::intent_routing` | (no event; migration complete) | (this PR) |
 
 The recorder wiring lives in `src/meta_core.rs` (`record_meta_core`), which the
 solver loop (`src/solver.rs`) invokes as a single cohesive pass before the
@@ -53,9 +53,9 @@ then goes through `src/meta_method_dispatch.rs::try_dispatch`, which orders name
 from the same registry and records the selected `method`.
 Which recursive directions are reasoned about — the downward decomposition
 (R337), the upward construction (R338), or both — is selected by
-`SolverConfig::recursion_mode` (default `Down`); whether the legacy-vs-registry
-method-selection comparison is recorded (R339) is selected by
-`SolverConfig::selection_mode` (default `Legacy`, which records nothing). Both
+`SolverConfig::recursion_mode` (default `Down`); whether the registry's
+per-leaf method-selection trace is recorded (R339) is selected by
+`SolverConfig::selection_mode` (default `Off`, which records nothing). Both
 knobs default to leaving optional trace artifacts quiet while the live executor
 uses the registry-backed method path.
 
@@ -278,57 +278,52 @@ mode does not request the upward direction; otherwise it appends the trace-only
 inputs as children in source order, the serialization, and the gating contract
 (the answer and intent are identical across all three modes).
 
-## Comparing the two selection authorities (R339)
+## The single-authority method-selection trace (R339)
 
-The method registry (R331/R336) is now live selection data: the solver executes
-specialized methods through `meta_method_dispatch::try_dispatch`, which orders
-registry method names from the request's relevant tags before invoking the
-matching handler. R339 keeps the previous `specialized_handler_name` mapper as an
-audit baseline. For every atomic leaf, `src/selection.rs` names both the method
-the legacy authority would pick and the one the registry resolves through
-`MethodRegistry::method_for_route`, and classifies the pair.
+The method registry (R331/R336) is the *sole* selection authority: the solver
+executes specialized methods through `meta_method_dispatch::try_dispatch`, which
+orders registry method names from the request's relevant tags before invoking the
+matching handler. There is no second authority — the previous hardcoded
+`specialized_handler_name` mapper has been **removed entirely** (see R344). For
+every atomic leaf, `src/selection.rs` names the method the registry resolves
+through `MethodRegistry::method_for_route` (alias-aware), or marks the leaf
+`unresolved` when no method serves it.
 
-The four classes are `agree` (both name the same real method), `registry_rescues`
-(the legacy authority names no real handler but a route→method alias resolves
-one), `contradict` (both name a real method, but different ones), and
-`unresolved` (neither resolves anything). For the conjunction *"translate apple to
-Russian and write a hello world program in Python"* the registry rescues exactly
-the leaf the R336 alias exists for:
+Each leaf is therefore in one of two states — resolved (the registry names a
+registered method) or unresolved — and the artifact partitions the tree into
+`resolved_count` and `unresolved_count`. For the conjunction *"translate apple to
+Russian and write a hello world program in Python"* the registry resolves both
+leaves, the second through the R336 alias:
 
 ```text
 selection
   record_type "selection"
-  mode "compare"
   root_id "work_unit_16efab3092bb4d01"
   leaf_count "2"
-  agreement_count "1"
-  rescue_count "1"
-  contradiction_count "0"
+  resolved_count "2"
+  unresolved_count "0"
 …
-  route "translation"  registry_method "translation"  legacy_method "translation"  agreement "agree"
-  route "write_program"  registry_method "write_script"  agreement "registry_rescues"
+  record_type "leaf_selection"  route "translation"  method "translation"
+  record_type "leaf_selection"  route "write_program"  method "write_script"
 ```
 
-The `write_program` leaf is a rescue, not a contradiction, because the legacy
-authority's catch-all would name a handler called `write_program` that does not
-exist, so it resolves *nothing real*; the registry resolves `write_script`
-through the alias. The crucial invariant the case study pins across all three
-canonical prompts is `contradiction_count "0"`: wherever the legacy authority
-names a real method, the registry names the *same* one. That zero-contradiction
-result is the safety invariant that lets the registry-backed executor remain the
-single live method path while the old mapper is retained only for parity audits.
+The `write_program` leaf resolves to `write_script` through the route→method
+alias (R336): the intent slug the classifier emits is coarser than the handler
+that serves it, and the registry bridges the two. The invariant the case study
+pins across all three canonical prompts is that every resolved leaf names a
+*registered* method, and that resolved and unresolved leaves partition the tree —
+the registry never invents a method that does not exist.
 
-Recording is governed by the `SelectionMode` knob (`Legacy` | `Registry` |
-`Compare`), surfaced as `SolverConfig::selection_mode` and the
-`FORMAL_AI_SELECTION_MODE` env override. The default `Legacy` records nothing —
-`record_selection` returns `None` and no `selection` event is appended — so the
-optional audit trace stays quiet by default. `Registry` records the chosen method
-per leaf; `Compare` additionally records the legacy method, the per-leaf
-`agreement`, and the `selection:contradictions` summary count. The live dispatch
-path does not depend on recording this optional artifact.
-`tests/unit/specification/selection.rs` pins the classification of each leaf
-shape, the zero-contradiction invariant, the mode-gated serialization, and that
-the answer and intent are identical whether the mode is `Legacy` or `Compare`.
+Recording is governed by the `SelectionMode` knob (`Off` | `Record`), surfaced as
+`SolverConfig::selection_mode` and the `FORMAL_AI_SELECTION_MODE` env override.
+The default `Off` records nothing — `record_selection` returns `None` and no
+`selection` event is appended — so the optional trace stays quiet by default.
+`Record` appends the per-leaf selection. The live dispatch path does not depend on
+recording this optional artifact: it always resolves through the same registry.
+`tests/unit/specification/selection.rs` pins the resolution of each leaf shape
+(routed, aliased, unroutable), that resolved and unresolved counts partition the
+leaves, the mode-gated serialization, and that the answer and intent are identical
+whether the mode is `Off` or `Record`.
 
 ## Self-description as data (R335)
 
@@ -515,49 +510,42 @@ dependency-ordering and unknown-binding errors, and the Links Notation
 serialization. The recipe also gains the `from_lino` / `execute` `meta_function`
 records so the self-improvement loop continues to see a faithful self-description.
 
-## Proving the registry-backed path stays compatible (R344)
+## Retiring the legacy dispatch authority outright (R344)
 
-R339 records, per request, that the data-driven registry never contradicts the
-legacy dispatch authority on the leaves *that prompt* produces. That is the right
-shape of proof but the wrong scope for a live replacement: the registry-backed
-method executor must stay compatible across the *entire route vocabulary the
-system can ever emit*, not just the routes one request happens to exercise. R344
-is that corpus-wide certificate.
+Earlier in this work an interim `DispatchParity` certificate audited the
+data-driven registry against the legacy `specialized_handler_name` mapper across
+the *entire route vocabulary the system can ever emit* — every registered method
+name (a method is its own self-resolving route), every route→method alias (R336),
+and every classifier route slug from `seed::intent_routing` — and proved **zero
+contradictions**: wherever the legacy authority named a real method, the registry
+named the *same* one, and the registry additionally rescued routes the legacy
+catch-all could not serve (e.g. `write_program` → `write_script`). That certificate
+established the registry was a behavior-preserving replacement.
 
-`DispatchParity::audit` builds the route corpus from live data — never a hand-kept
-list — by unioning every registered method name (a method name is itself a route
-that must resolve to itself), every route→method alias (R336), every classifier
-route slug from `seed::intent_routing`, and the one `write_program` intent the
-classifier emits directly; it then sorts and de-duplicates. For each route it
-resolves both authorities — the legacy `specialized_handler_name` (filtered to real
-registered methods, so its slug-returning catch-all cannot masquerade as a
-selection) and the alias-aware `MethodRegistry::method_for_route` — and classifies
-them with the very same `SelectionAgreement::classify` rule (lifted to `pub(crate)`
-and shared) that the per-request comparison uses: agree / registry-rescues /
-contradict / unresolved.
+With that proof in hand, the migration was completed by **removing the legacy
+authority and its audit scaffolding entirely** — `src/dispatch_parity.rs` and
+`intent_formalization::specialized_handler_name` are gone. Keeping a retired
+mapper "as a baseline" would be exactly the obsolete-by-example code the issue
+asks us to eliminate; once the registry is proven equivalent, the only correct
+state is one authority. The registry (`MethodRegistry::method_for_route`,
+alias-aware) is now the sole route→method resolver and the only live dispatch
+path (`meta_method_dispatch::try_dispatch`).
 
-The headline fact is the single verdict `DispatchParity::is_retire_safe`: **zero
-contradictions** across the whole corpus. On the checked-in sources the audit
-covers 63 routes — 53 agree, one registry-rescue (`write_program` → `write_script`,
-through the R336 alias the legacy catch-all cannot serve), nine honestly unresolved
-(shared blockage, e.g. greetings, which is agreement not divergence), and zero
-contradictions. While that count is zero the registry-backed method executor is
-compatible with the retained legacy baseline. Like the registry it audits, the
-certificate is derived from the live code by construction, so it cannot drift; it
-serializes to Links Notation and, via `record_dispatch_parity`, emits a
-`dispatch_parity` event plus a compact `dispatch_parity:contradictions` count so any
-future regression in dispatch parity surfaces as a single auditable number. It is
-pure analysis layered over the live registry-backed path.
-
-`tests/unit/specification/dispatch_parity.rs` pins the invariant: zero
-contradictions and `is_retire_safe`, every route classified into exactly one class
-with the corpus non-empty and de-duplicated, every registered method reachable as a
-self-resolving route both authorities agree on, the `write_program` alias rescue,
-and the Links Notation / trace-event serialization.
+The closure invariant the certificate guaranteed survives directly against the
+live registry, with no second authority to compare against.
+`tests/unit/specification/method_registry.rs::the_registry_is_the_sole_authority_that_closes_over_the_route_corpus`
+rebuilds the same corpus from live data (`MethodRegistry::from_dispatch`,
+`route_method_alias::aliases`, `seed::intent_routing`) and pins two facts: (1)
+**closure safety** — no route the system can emit ever resolves to an
+*unregistered* method, the property that made the registry a safe drop-in; and (2)
+**coverage** — every method-name route and every alias route resolves (exactly the
+routes the legacy authority also resolved, so the registry loses no coverage).
+Classifier slugs with no handler may legitimately stay unresolved, exactly as under
+the old certificate's four-way partition.
 
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon,skill_ledger,recipe_interpreter,dispatch_parity}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon,skill_ledger,recipe_interpreter}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
   REQUIREMENTS.md row (R330–R344) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
@@ -581,9 +569,9 @@ and the Links Notation / trace-event serialization.
   attaches white-box recursive reasoning to every step so the box is inspectable
   by users and developers, not just the predicate, R338 records the upward
   construction pass so both directions of the recursion — decompose and compose —
-  are explicit, inspectable link data, R339 records the legacy-vs-registry
-  selection comparison, proving (zero contradictions) that the live registry
-  executor is compatible with the retained legacy baseline, and R340 closes the
+  are explicit, inspectable link data, R339 records the registry's per-leaf
+  method-selection trace, making the dispatch the sole authority performs
+  auditable per request, and R340 closes the
   meta-circular loop: the algorithm reads its own recipe
   against the live pipeline and emits the updated recipe as links — gated and
   proposal-only, so it can reason about modifying itself without a human losing the
@@ -607,8 +595,10 @@ and the Links Notation / trace-event serialization.
   the same algorithm (the groundwork for driving the pipeline from its own recipe).
 - **Replace the direct dispatch loop:** `src/meta_method_dispatch.rs` executes
   solver methods through `MethodRegistry::ordered_method_names_for_relevants` and
-  records the selected method; R344 keeps a corpus-wide parity certificate against
-  the retained legacy mapper so regressions surface as explicit contradictions.
+  records the selected method; R344 completes the migration by retiring the legacy
+  route mapper and its parity scaffolding outright, leaving the registry as the
+  sole dispatch authority, with the corpus-wide closure invariant pinned directly
+  against the live registry.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and new data files.
 - **Compile data and do deep case-study analysis:** this document plus the
