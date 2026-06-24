@@ -6,16 +6,26 @@ use std::fs;
 use super::workflow_fixtures::*;
 
 #[test]
-fn demo_deploy_is_independent_from_release_publication() {
+fn demo_deploy_waits_for_release_ref_before_pages_upload() {
     let workflow = release_workflow();
+    let auto_release = job_block(&workflow, "auto-release");
+    let manual_release = job_block(&workflow, "manual-release");
     let deploy_demo = job_block(&workflow, "deploy-demo");
 
-    assert!(deploy_demo.contains("needs: [build]"));
+    assert!(auto_release.contains("outputs:\n      pages_sha:"));
+    assert!(auto_release.contains("Resolve Pages deploy ref"));
+    assert!(manual_release.contains("outputs:\n      pages_sha:"));
+    assert!(manual_release.contains("Resolve Pages deploy ref"));
+    assert!(deploy_demo.contains("needs: [build, auto-release, manual-release]"));
     assert!(deploy_demo.contains("needs.build.result == 'success'"));
     assert!(deploy_demo.contains("github.ref == 'refs/heads/main'"));
-    assert!(!deploy_demo.contains("needs: [auto-release, manual-release]"));
-    assert!(!deploy_demo.contains("needs.auto-release.result"));
-    assert!(!deploy_demo.contains("needs.manual-release.result"));
+    assert!(deploy_demo.contains("needs.auto-release.result == 'success'"));
+    assert!(deploy_demo.contains("needs.manual-release.result == 'success'"));
+    assert!(deploy_demo.contains("Select Pages deployment ref"));
+    assert!(deploy_demo.contains(
+        "PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}"
+    ));
+    assert!(deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
 }
 
 #[test]
@@ -55,16 +65,18 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
     let pages_e2e = job_block(&workflow, "test-e2e-pages");
 
     assert!(
-        deploy_demo.contains("ref: ${{ github.sha }}"),
-        "Pages deployment should use the exact commit that passed CI"
+        deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"),
+        "Pages deployment should use the selected Pages SHA, which is the release child commit when auto-release creates one"
     );
     assert!(
         deploy_demo.contains("Stamp GitHub Pages artifact"),
         "Pages deployment should stamp a per-commit asset marker before upload"
     );
     assert!(
-        deploy_demo.contains("scripts/stamp-pages-artifact.sh src/web \"${{ github.sha }}\""),
-        "Pages deployment should stamp src/web with the workflow commit SHA"
+        deploy_demo.contains(
+            "scripts/stamp-pages-artifact.sh src/web \"${{ steps.pages_ref.outputs.sha }}\""
+        ),
+        "Pages deployment should stamp src/web with the selected Pages deployment SHA"
     );
     assert!(
         pages_e2e.contains("scripts/wait-for-pages-deployment.sh"),
@@ -75,8 +87,9 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
         "live Pages e2e should probe the resolved Pages URL"
     );
     assert!(
-        pages_e2e.contains("\"${{ github.sha }}\""),
-        "live Pages e2e should wait for the current workflow commit"
+        pages_e2e
+            .contains("PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}"),
+        "live Pages e2e should wait for the same selected SHA that deploy-demo stamped"
     );
     assert!(
         !pages_e2e.contains("run: sleep 30"),

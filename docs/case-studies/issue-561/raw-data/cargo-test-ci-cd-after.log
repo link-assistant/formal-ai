@@ -1,0 +1,104 @@
+   Compiling formal-ai v0.218.0 (/tmp/gh-issue-solver-1782321944771)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.72s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-7d07136f446e2292)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-b467d9613e6a0382)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-376293241cb07ac6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 41 filtered out; finished in 0.00s
+
+     Running tests/source/mod.rs (target/debug/deps/source-aa27f6b7a9a826c5)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 428 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-c8d58b51c43920be)
+
+running 73 tests
+test ci_cd::changelog_parsing::test_middle_version_extraction ... ok
+test ci_cd::check_crate_package_size::tests::classifies_package_sizes_against_crates_io_limit ... ok
+test ci_cd::changelog_parsing::test_nonexistent_version ... ok
+test ci_cd::changelog_parsing::test_empty_section_fallback ... ok
+test ci_cd::changelog_parsing::test_version_with_dots_regex_escape ... ok
+test ci_cd::changelog_parsing::test_last_version_extraction ... ok
+test ci_cd::check_crate_package_size::tests::derives_crate_archive_path_from_package_metadata ... ok
+test ci_cd::check_crate_package_size::tests::formats_bytes_with_raw_count_for_ci_logs ... ok
+test ci_cd::check_file_size::tests::classifies_hard_limit_violations ... ok
+test ci_cd::check_file_size::tests::warning_annotation_uses_github_actions_format ... ok
+test ci_cd::check_file_size::tests::classifies_warning_band_without_blocking ... ok
+test ci_cd::check_file_size::tests::check_directory_skips_generated_wikidata_cache ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_escapes_build_metadata ... ok
+test ci_cd::create_github_release::tests::docker_hub_badge_links_to_exact_tag ... ok
+test ci_cd::create_github_release::tests::generic_validation_failure_is_not_duplicate_release ... ok
+test ci_cd::create_github_release::tests::duplicate_release_validation_is_idempotent ... ok
+test ci_cd::check_file_size::tests::check_directory_enforces_lino_limit ... ok
+test ci_cd::check_file_size::tests::check_directory_reports_warning_and_violation_separately ... ok
+test ci_cd::create_github_release::tests::ghcr_badge_links_to_exact_package_tag ... ok
+test ci_cd::create_github_release::tests::release_body_under_limit_is_unchanged ... ok
+test ci_cd::create_github_release::tests::oversized_release_body_is_shortened_with_full_changelog_link ... ok
+test ci_cd::create_github_release::tests::release_label_remains_optional_suffix ... ok
+test ci_cd::create_github_release::tests::release_title_defaults_empty_language_to_rust ... ok
+test ci_cd::create_github_release::tests::validation_failure_that_mentions_release_notes_is_not_duplicate_release ... ok
+test ci_cd::create_github_release::tests::release_tag_uses_prefix_with_normalized_semver ... ok
+test ci_cd::create_github_release::tests::release_payload_keeps_tag_prefix_out_of_release_name ... ok
+test ci_cd::create_github_release::tests::release_title_uses_language_and_bare_semver ... ok
+test ci_cd::desktop_release_resolve::release_event_builds_resolved_tag_even_with_existing_assets ... ok
+test ci_cd::desktop_release_resolve::workflow_dispatch_rebuilds_requested_tag ... ok
+test ci_cd::desktop_release_resolve::workflow_run_skips_when_head_sha_missing ... ok
+test ci_cd::desktop_release_resolve::workflow_dispatch_without_tag_falls_back_to_latest ... ok
+test ci_cd::desktop_release_resolve::workflow_run_skips_when_no_release_exists ... ok
+test ci_cd::desktop_release_resolve::workflow_run_builds_when_release_is_missing_linux_assets ... ok
+test ci_cd::release_publishing::crate_package_manifest_uses_publish_allowlist ... ok
+test ci_cd::desktop_release_resolve::auto_release_child_commit_triggers_build ... ok
+test ci_cd::release_publishing::desktop_linux_deb_package_metadata_is_configured ... ok
+test ci_cd::release_publishing::build_job_checks_generated_crate_archive_size ... ok
+test ci_cd::release_publishing::desktop_release_lets_electron_builder_read_package_json_build_key ... ok
+test ci_cd::release_publishing::desktop_release_workflow_signs_and_smoke_tests_macos_artifacts ... ok
+test ci_cd::release_publishing::desktop_macos_package_uses_vk_bot_signing_configuration ... ok
+test ci_cd::release_publishing::release_scripts_check_configured_release_artifacts ... ok
+test ci_cd::release_publishing::release_workflow_defers_rate_limited_crates_publish_without_downstream_artifacts ... ok
+test ci_cd::release_publishing::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror ... ok
+test ci_cd::release_publishing::github_pages_artifact_advertises_crate_version_from_cargo_toml ... ok
+test ci_cd::release_publishing::static_demo_runtime_assets_are_cache_busted_by_deployment_version ... ok
+test ci_cd::desktop_release_resolve::workflow_run_builds_when_release_is_missing_updater_metadata ... ok
+test ci_cd::workflow_release::change_gated_jobs_never_depend_on_a_skipped_changelog ... ok
+test ci_cd::workflow_release::demo_deploy_uses_github_pages_workflow_artifact ... ok
+test ci_cd::workflow_release::demo_deploy_waits_for_release_ref_before_pages_upload ... ok
+test ci_cd::workflow_release::deploy_demo_generates_api_docs_and_copies_them_after_stamping ... ok
+test ci_cd::workflow_release::desktop_release_normalizes_linux_artifact_names_before_checksums ... ok
+test ci_cd::workflow_release::desktop_release_runs_on_any_completed_main_pipeline_not_only_success ... ok
+test ci_cd::workflow_release::desktop_release_uploads_auto_update_metadata ... ok
+test ci_cd::workflow_release::desktop_release_workflow_run_resolves_child_release_not_head_sha_tag ... ok
+test ci_cd::workflow_release::issue_479_landing_surfaces_source_code_as_a_big_button ... ok
+test ci_cd::workflow_release::issue_479_site_is_restructured_into_landing_app_docs_download ... ok
+test ci_cd::workflow_release::pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment ... ok
+test ci_cd::workflow_release::pages_e2e_navigation_preserves_repository_subpath ... ok
+test ci_cd::workflow_release::pages_e2e_uses_deployment_output_url ... ok
+test ci_cd::workflow_release::release_workflow_jobs_have_explicit_timeouts ... ok
+test ci_cd::workflow_release::test_job_skips_non_code_changes ... ok
+test ci_cd::workflow_release::wait_for_pages_deployment_is_marker_authoritative ... ok
+test ci_cd::workspace_manifest_resolution::errors_when_workspace_has_no_publishable_members ... ok
+test ci_cd::workspace_manifest_resolution::path_helpers_match_repository_layout ... ok
+test ci_cd::workspace_manifest_resolution::resolves_first_publishable_workspace_member ... ok
+test ci_cd::release_publishing::desktop_linux_artifact_names_are_normalized_for_download_contract ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_cli_parser_returns_none_without_configuration ... ok
+test ci_cd::workspace_manifest_resolution::resolves_root_package_manifest_when_package_exists ... ok
+test ci_cd::source_test_placement::src_has_no_inline_unit_tests ... ok
+test ci_cd::workspace_manifest_resolution::rust_root_prefers_explicit_parameter ... ok
+test ci_cd::release_publishing::stamp_pages_artifact_replaces_formal_ai_version_placeholder ... ok
+test ci_cd::desktop_release_resolve::workflow_run_uses_exact_tag_when_one_points_at_head_sha ... ok
+test ci_cd::desktop_release_resolve::workflow_run_skips_when_release_has_all_required_assets ... ok
+
+test result: ok. 73 passed; 0 failed; 0 ignored; 0 measured; 1072 filtered out; finished in 0.54s
