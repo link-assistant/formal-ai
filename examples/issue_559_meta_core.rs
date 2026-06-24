@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R339).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R340).
 //!
 //! Run with:
 //!
@@ -24,13 +24,16 @@
 //!    `compare` mode so both authorities and the agreement are visible).
 //!
 //! The self-describing recipe (R335) lives as data in
-//! `data/meta/recursive-core-recipe.lino`. Together these are the "deep
-//! case-study analysis" data for `docs/case-studies/issue-559`.
+//! `data/meta/recursive-core-recipe.lino`. The meta self-improvement loop (R340)
+//! reads that recipe against the live pipeline and prints the proposed updated
+//! algorithm — here a no-op, proving the recipe describes every stage. Together
+//! these are the "deep case-study analysis" data for `docs/case-studies/issue-559`.
 
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_construction::UpwardConstruction;
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
 use formal_ai::meta_reasoning::WorkUnitReasoning;
+use formal_ai::meta_self_improvement::{MetaSelfImprovement, SelfImprovementMode};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::selection::{SelectionComparison, SelectionMode};
 use formal_ai::solution_evidence::SolutionEvidence;
@@ -103,4 +106,22 @@ fn main() {
     );
     println!("================================================================");
     println!("{}", registry.to_links_notation());
+
+    // (R340) the meta algorithm reading itself: compare the recipe (the algorithm
+    // as link data) against the live pipeline (the algorithm as code), and emit the
+    // proposed updated recipe as links. On the checked-in sources this is a no-op,
+    // proving the self-description matches what the pipeline actually runs.
+    let proposal = MetaSelfImprovement::from_repo().propose();
+    println!("================================================================");
+    println!(
+        "# (R340) meta self-improvement proposal (self_consistent={}, changes={})",
+        proposal.is_self_consistent(),
+        proposal.change_count()
+    );
+    println!("# {}", proposal.summary());
+    println!("================================================================");
+    println!(
+        "{}",
+        proposal.to_links_notation(SelfImprovementMode::Propose)
+    );
 }

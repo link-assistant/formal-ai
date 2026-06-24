@@ -65,7 +65,7 @@ step_record_evidence
   order "9"
   id "record_evidence"
   title "Record every step as evidence in the append-only log"
-  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning, upward_construction, selection) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
+  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning, upward_construction, solution_evidence, selection) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
   source_file "src/event_log.rs"
 step_compare_selection
   record_type "meta_step"
@@ -153,6 +153,10 @@ fn_record_selection
   record_type "meta_function"
   function "record_selection"
   source_file "src/selection.rs"
+fn_record_solution_evidence
+  record_type "meta_function"
+  function "record_solution_evidence"
+  source_file "src/solution_evidence.rs"
 fn_build_evidence_links
   record_type "meta_function"
   function "build_evidence_links"

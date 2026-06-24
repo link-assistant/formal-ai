@@ -56,6 +56,7 @@ mod meta_algorithm;
 mod meta_construction;
 mod meta_frame;
 mod meta_reasoning;
+mod meta_self_improvement;
 mod method_registry;
 mod multilingual;
 mod natural_language_access;

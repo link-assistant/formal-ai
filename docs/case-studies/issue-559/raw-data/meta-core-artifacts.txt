@@ -746,3 +746,12 @@ text_manipulation
   name "text_manipulation"
   order "4"
   surface "contextual"
+================================================================
+# (R340) meta self-improvement proposal (self_consistent=true, changes=0)
+# The recipe already describes every pipeline stage; no update proposed.
+================================================================
+meta_recipe_proposal
+  record_type "meta_recipe_proposal"
+  mode "propose"
+  self_consistent "true"
+  change_count "0"

@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R339)
+## What shipped (R330–R340)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -37,6 +37,7 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R337 | 5 | White-box recursive reasoning: a downward/upward thought per work unit | `src/meta_reasoning.rs` (`WorkUnitReasoning`) | `work_unit_reasoning`, `work_unit_reasoning:steps` | (this PR) |
 | R338 | 5 | Upward construction pass + `recursion_mode` knob: the post-order leaf→root composition, the construction half of the recursion | `src/meta_construction.rs` (`RecursionMode`, `UpwardConstruction`, `ConstructionStep`), gated by `SolverConfig::recursion_mode` | `upward_construction`, `upward_construction:steps` | (this PR) |
 | R339 | 6 | Method-selection comparison + `selection_mode` knob: per atomic leaf, the legacy method versus the registry-resolved one, classified and counted | `src/selection.rs` (`SelectionMode`, `SelectionAgreement`, `LeafSelection`, `SelectionComparison`), comparing `specialized_handler_name` against `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection`, `selection:contradictions` | (this PR) |
+| R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
@@ -335,11 +336,58 @@ so the self-description cannot rot. This is the first concrete step toward
 "reason about and modify itself": the core's structure is now queryable link data
 on the same footing as everything else.
 
+## The algorithm improving itself (R340)
+
+R335 made the recipe faithful in the *recipe → code* direction: every function it
+names must exist. R340 closes the loop in the other direction and turns the
+faithfulness check into a genuine self-improvement step. The headline requirement
+of the issue is meta-circular — the algorithm should take *itself* (the recipe,
+the algorithm encoded as Links Notation) together with what it is required to do
+(the stages the live `record_meta_core` pipeline runs), both meta-language
+encoded, and produce the *updated* algorithm, again link-encoded.
+`src/meta_self_improvement.rs` realises exactly that, in its safest form.
+
+The loop reads the recipe's `meta_function` citations (the algorithm as data) and
+parses the `crate::<module>::record_<name>(` calls out of `src/meta_core.rs` (the
+algorithm as code), both embedded at compile time so the algorithm can reason
+about itself with no runtime filesystem dependency. It then compares the two and
+emits a `MetaRecipeProposal` — the updated algorithm in delta form: which
+`meta_function` citations to *add* (a pipeline stage the recipe does not yet
+describe) and which to *drop* (a citation the pipeline no longer runs). The
+proposal serializes back to Links Notation, so the output is the same kind of
+meta-language data as the input:
+
+```text
+meta_recipe_proposal
+  record_type "meta_recipe_proposal"
+  mode "propose"
+  self_consistent "true"
+  change_count "0"
+```
+
+It is deliberately gated and proposal-only. The default `SelfImprovementMode::Off`
+returns `None` — the loop is dormant — and even in `Propose` mode it never writes
+the recipe back: adoption stays a human review step, exactly as the issue #364
+learning loop (`src/self_improvement.rs`) stops at *proposing* seed rules (R12,
+C3). So R340 changes neither routing nor the answer.
+
+This is not a toy: the loop found a real drift on the way in. The pipeline calls
+`record_solution_evidence` (R334), but the recipe did not cite it — the
+self-description had silently fallen behind the code. The loop surfaced that as a
+proposed addition (`add_record_solution_evidence`, `source_file
+"src/solution_evidence.rs"`), and adopting it — adding the `fn_record_solution_evidence`
+citation to the recipe — is what makes the checked-in sources self-consistent
+today. `tests/unit/specification/meta_self_improvement.rs` pins both halves: the
+loop detects synthetic drift (a proposed addition and a proposed removal, each
+serialized), and on the live recipe-and-pipeline it is now self-consistent
+(`change_count "0"`), which is the regression guard that keeps the recipe honest
+in the code → data direction from here on.
+
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R339) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R340) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -360,9 +408,13 @@ on the same footing as everything else.
   attaches white-box recursive reasoning to every step so the box is inspectable
   by users and developers, not just the predicate, R338 records the upward
   construction pass so both directions of the recursion — decompose and compose —
-  are explicit, inspectable link data, and R339 records the legacy-vs-registry
+  are explicit, inspectable link data, R339 records the legacy-vs-registry
   selection comparison, proving (zero contradictions) that the data-driven
-  registry can later drive selection and replace the hardcoded dispatch authority.
+  registry can later drive selection and replace the hardcoded dispatch authority,
+  and R340 closes the meta-circular loop: the algorithm reads its own recipe
+  against the live pipeline and emits the updated recipe as links — gated and
+  proposal-only, so it can reason about modifying itself without a human losing the
+  final say (it already caught and fixed one real drift).
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and one new data file.
 - **Compile data and do deep case-study analysis:** this document plus the

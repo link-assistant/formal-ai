@@ -488,6 +488,63 @@ fn issue_559_selection_comparison_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_meta_self_improvement_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R340: the requirements row exists and cites the self-improvement loop.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R340 ",
+            "reason about improving itself",
+            "src/meta_self_improvement.rs",
+            "propose_recipe_update",
+            "tests/unit/specification/meta_self_improvement.rs",
+        ],
+    );
+
+    // The module ships the gate, the proposal, and the meta-circular loop.
+    let module = read(root.join("src/meta_self_improvement.rs"));
+    assert_contains_all(
+        "src/meta_self_improvement.rs",
+        &module,
+        &[
+            "pub enum SelfImprovementMode",
+            "pub struct PipelineStage",
+            "pub struct MetaRecipeProposal",
+            "pub struct MetaSelfImprovement",
+            "fn proposes",
+            "fn is_self_consistent",
+            "fn from_repo",
+            "fn propose",
+            "fn to_links_notation",
+            "fn propose_recipe_update",
+        ],
+    );
+
+    // The loop reads itself: the recipe (algorithm-as-data) and the live pipeline
+    // (algorithm-as-code) are both embedded at compile time.
+    assert!(
+        module.contains("data/meta/recursive-core-recipe.lino"),
+        "the loop must read the recipe — the algorithm encoded as link data"
+    );
+    assert!(
+        module.contains("include_str!(\"meta_core.rs\")"),
+        "the loop must read the live pipeline source as its ground truth"
+    );
+
+    // The recipe now describes the solution-evidence stage the pipeline runs, so
+    // the live loop is self-consistent (the finding it surfaced, now adopted).
+    let recipe = read(root.join("data/meta/recursive-core-recipe.lino"));
+    assert!(
+        recipe.contains("record_solution_evidence"),
+        "the recipe must cite every record_* stage the pipeline runs"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
