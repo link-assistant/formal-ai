@@ -71,6 +71,7 @@ mod prompt_variations;
 mod reasoning_loop;
 mod reasoning_paths;
 mod reasoning_paths_procedures;
+mod recipe_interpreter;
 mod recursive_core_recipe;
 mod route_method_alias;
 mod selection;

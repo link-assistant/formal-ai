@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R342)
+## What shipped (R330–R343)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -40,6 +40,7 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
 | R341 | 5 | Cue lexicon: the hardcoded natural-language recognition cues moved out of inline Rust literals into reviewable link data | `data/meta/cue-lexicon.lino` (`cue_set` records), `src/cue_lexicon.rs` (`CueMatch`, `CueSet`), consumed by `src/intent_formalization.rs` (`append_prompt_relevants`, `looks_arithmetic`, `looks_like_text_manipulation`) | (data; recognition cues, not a loop event) | (this PR) |
 | R342 | 7 | Skill-accumulation ledger: each satisfied need distilled into a proposed reusable skill and each blocked need into a curriculum item, proposal-only and gated (no skill ever auto-promoted) | `src/skill_ledger.rs` (`SkillMode`, `SkillStatus`, `PromotionGate`, `CandidateSkill`, `CurriculumItem`, `SkillLedger`), distilling `SolutionEvidence`, gated by `SolverConfig::skill_mode` | `skill_ledger`, `skill_ledger:promotable` | (this PR) |
+| R343 | 8 | Recipe interpreter: the recipe runs as an executable program, driving the live recorder primitives in the order the data declares and proving the event log is identical, event-for-event, to the hand-written pipeline's | `src/recipe_interpreter.rs` (`RecipeStep`, `RecipeProgram`, `ExecutionTrace`, `from_lino`, `execute`, `recorder_sequence`, `reproduces_pipeline`), executing the recorders bound via the recipe's `records` fields against `src/meta_core.rs` | (executes the same loop events as `record_meta_core`; trace-only) | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
@@ -469,11 +470,55 @@ recipe (`data/meta/recursive-core-recipe.lino`) gains the twelfth `meta_step` an
 self-improvement loop stays self-consistent. This is the foundation for the core to
 later reason about and extend its own method set from its own accumulated experience.
 
+## Executing the recipe as a program (R343)
+
+R335 made the recursive core's structure grounded link data, and R340 had the
+algorithm *read* that recipe against the live pipeline to propose changes. But a
+recipe that is only ever read is still just a checked description — the proof that
+it *is* the algorithm rested on a name-by-name comparison, not on running it. R343
+closes that gap: the recipe is now an **executable program**.
+
+Each trace-recorded step in `data/meta/recursive-core-recipe.lino` gains a `records`
+field naming the recorder primitive it drives (`build_problem_frame` →
+`record_problem_frame`, … `accumulate_skills` → `record_skill_ledger`); the three
+external steps (`formalize_impulse`, `resolve_leaves`, `project_answer`) carry no
+binding because they happen outside the trace loop. `src/recipe_interpreter.rs`
+parses those steps into an ordered `RecipeProgram` and **runs** it: walking the
+steps in declared order, it invokes each bound recorder against the same live
+primitives the hand-written pipeline uses, threading the intermediate artifacts
+(problem frame → work-unit tree → need ledger → method registry → solution
+evidence) exactly as `record_meta_core` does, and honoring the same mode gates
+(`recursion_mode` for upward construction and white-box reasoning, `selection_mode`
+for the comparison, `skill_mode` for the ledger).
+
+The headline guarantee is **parity, proven by execution**:
+`RecipeProgram::reproduces_pipeline` runs the recipe and `record_meta_core` on fresh
+event logs for the same input and compares them — and the two logs are identical,
+event-for-event, across every one of the 3×3×2 recursion/selection/skill mode
+combinations for all three prompt shapes. The recipe's recorder order also equals,
+position for position, the live pipeline's actual stage order (cross-checked against
+`MetaSelfImprovement::pipeline_stages`). Divergence cannot pass silently: a step
+placed before its dependency (e.g. the need ledger before the problem frame) or a
+binding to a recorder that does not exist is rejected with an explicit error rather
+than a wrong trace. This is the concrete sense in which the algorithm-as-data and
+the algorithm-as-code are *the same algorithm* — and the foundation for eventually
+driving the pipeline from the recipe itself (the dynamic-recompilation direction of
+issue #558). It stays strictly trace-only: it executes the same loop events the
+pipeline already emits, changing neither routing nor the answer (R13).
+
+`tests/unit/specification/recipe_interpreter.rs` pins all of this: the twelve
+contiguously-ordered steps, the nine-recorder subsequence matching the live
+pipeline, event-for-event reproduction in default modes and under every mode
+combination, which stages run versus are skipped (external and mode-gated), the
+dependency-ordering and unknown-binding errors, and the Links Notation
+serialization. The recipe also gains the `from_lino` / `execute` `meta_function`
+records so the self-improvement loop continues to see a faithful self-description.
+
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon,skill_ledger}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon,skill_ledger,recipe_interpreter}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R342) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R343) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -512,6 +557,12 @@ later reason about and extend its own method set from its own accumulated experi
   without tests and a benchmark delta (C3) — the deterministic analog of an agent
   that grows a skill library and a curriculum, and the foundation for the core to
   reason about and extend its own method set.
+- **Algorithm as executable data:** R343 turns the self-describing recipe from a
+  checked description into a runnable program — `src/recipe_interpreter.rs` executes
+  the recipe's steps against the live recorder primitives and proves the resulting
+  trace is identical, event-for-event, to the hand-written pipeline's across every
+  mode combination, so the algorithm-as-data and the algorithm-as-code are provably
+  the same algorithm (the groundwork for driving the pipeline from its own recipe).
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and new data files.
 - **Compile data and do deep case-study analysis:** this document plus the

@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R342).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R343).
 //!
 //! Run with:
 //!
@@ -29,18 +29,24 @@
 //! The self-describing recipe (R335) lives as data in
 //! `data/meta/recursive-core-recipe.lino`. The meta self-improvement loop (R340)
 //! reads that recipe against the live pipeline and prints the proposed updated
-//! algorithm — here a no-op, proving the recipe describes every stage. Together
-//! these are the "deep case-study analysis" data for `docs/case-studies/issue-559`.
+//! algorithm — here a no-op, proving the recipe describes every stage. The recipe
+//! interpreter (R343) goes one step further: it *executes* that recipe as a
+//! program, driving the live recorder primitives in the order the data declares,
+//! and proves the resulting event log is identical, event-for-event, to the
+//! hand-written pipeline's — the algorithm-as-data and the algorithm-as-code are
+//! the same algorithm. Together these are the "deep case-study analysis" data for
+//! `docs/case-studies/issue-559`.
 
 use formal_ai::cue_lexicon::cue_sets;
 use formal_ai::intent_formalization::formalize_intent;
-use formal_ai::meta_construction::UpwardConstruction;
+use formal_ai::meta_construction::{RecursionMode, UpwardConstruction};
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
 use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::meta_self_improvement::{MetaSelfImprovement, SelfImprovementMode};
 use formal_ai::method_registry::MethodRegistry;
+use formal_ai::recipe_interpreter::RecipeProgram;
 use formal_ai::selection::{SelectionComparison, SelectionMode};
-use formal_ai::skill_ledger::SkillLedger;
+use formal_ai::skill_ledger::{SkillLedger, SkillMode};
 use formal_ai::solution_evidence::SolutionEvidence;
 use formal_ai::translation::formalize_prompt;
 
@@ -157,5 +163,34 @@ fn main() {
     println!(
         "{}",
         proposal.to_links_notation(SelfImprovementMode::Propose)
+    );
+
+    // (R343) the recipe as an executable program: parse the recipe into an ordered
+    // plan, run it against the live recorder primitives, and prove the event log it
+    // produces is identical, event-for-event, to the hand-written pipeline's. Print
+    // the plan and confirm parity for one prompt under the default modes.
+    let program = RecipeProgram::from_repo();
+    println!("================================================================");
+    println!(
+        "# (R343) recipe interpreter — {} steps, {} drive recorder primitives",
+        program.step_count(),
+        program.recorder_sequence().len()
+    );
+    println!("================================================================");
+    println!("{}", program.to_links_notation());
+    let formalization = {
+        let prompt = "translate apple to Russian";
+        let candidate = formalize_prompt(prompt, "en");
+        formalize_intent(prompt, "en", Some(&candidate))
+    };
+    let reproduces = program.reproduces_pipeline(
+        &formalization,
+        4,
+        RecursionMode::Down,
+        SelectionMode::Legacy,
+        SkillMode::Off,
+    );
+    println!(
+        "# executing the recipe reproduces the live pipeline trace event-for-event: {reproduces}"
     );
 }

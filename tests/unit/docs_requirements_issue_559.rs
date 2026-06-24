@@ -667,6 +667,60 @@ fn issue_559_skill_ledger_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_recipe_interpreter_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R343: the requirements row exists and cites the shipped recipe interpreter.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R343 ",
+            "src/recipe_interpreter.rs",
+            "tests/unit/specification/recipe_interpreter.rs",
+            "reproduces_pipeline",
+        ],
+    );
+
+    // The module ships the program parser, the executor, and the parity check.
+    let module = read(root.join("src/recipe_interpreter.rs"));
+    assert_contains_all(
+        "src/recipe_interpreter.rs",
+        &module,
+        &[
+            "pub struct RecipeStep",
+            "pub struct RecipeProgram",
+            "pub struct ExecutionTrace",
+            "fn from_lino",
+            "fn execute",
+            "fn recorder_sequence",
+            "fn reproduces_pipeline",
+        ],
+    );
+
+    // The recipe binds each trace-recorded step to the recorder primitive it drives,
+    // which is what makes the algorithm executable as data.
+    let recipe = read(root.join("data/meta/recursive-core-recipe.lino"));
+    assert_contains_all(
+        "data/meta/recursive-core-recipe.lino",
+        &recipe,
+        &[
+            "records \"record_problem_frame\"",
+            "records \"record_solution_evidence\"",
+            "records \"record_skill_ledger\"",
+        ],
+    );
+
+    // The module is registered so the interpreter is reachable from the crate.
+    let lib = read(root.join("src/lib.rs"));
+    assert!(
+        lib.contains("pub mod recipe_interpreter;"),
+        "src/lib.rs must expose the recipe interpreter module"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
