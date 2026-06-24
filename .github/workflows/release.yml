@@ -71,7 +71,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Detect changes
         id: changes
@@ -96,7 +96,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Check for changelog fragments
         env:
@@ -119,7 +119,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Check for manual version changes
         env:
@@ -165,7 +165,7 @@ jobs:
           bun-version-file: .bun-version
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -370,7 +370,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -425,7 +425,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Configure git
         run: rust-script scripts/git-config.rs
@@ -656,7 +656,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Configure git
         run: rust-script scripts/git-config.rs
@@ -846,7 +846,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: cargo install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Create changelog fragment
         env:

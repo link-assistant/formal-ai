@@ -29,6 +29,29 @@ fn demo_deploy_waits_for_release_ref_before_pages_upload() {
 }
 
 #[test]
+fn rust_script_install_steps_use_retry_wrapper() {
+    let workflow = release_workflow();
+    let manifest_dir = env!("CARGO_MANIFEST_DIR");
+    let install_script =
+        fs::read_to_string(format!("{manifest_dir}/scripts/install-rust-script.sh")).unwrap();
+
+    assert!(
+        !workflow.contains("run: cargo install rust-script"),
+        "workflow should not call cargo install directly because crates.io HTTP failures are transient"
+    );
+    assert_eq!(
+        workflow
+            .matches("run: bash scripts/install-rust-script.sh")
+            .count(),
+        8,
+        "each rust-script install step should use the retry wrapper"
+    );
+    assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
+    assert!(install_script.contains("cargo install rust-script --locked"));
+    assert!(install_script.contains("sleep \"$delay\""));
+}
+
+#[test]
 fn demo_deploy_uses_github_pages_workflow_artifact() {
     let workflow = release_workflow();
     let deploy_demo = job_block(&workflow, "deploy-demo");

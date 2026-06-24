@@ -62,6 +62,11 @@ supporting data to be preserved here.
   desktop artifacts at `0.218.0`; no separate stale desktop surface was found.
 - CI/CD false positive: the live Pages E2E check waited for the pre-release
   workflow SHA, so it passed while proving only that the stale SHA was live.
+- CI/CD transient failure: PR run `28118275692` failed in `Detect Changes`
+  while installing `rust-script` because crates.io returned an HTTP/2 framing
+  error for the `libc` crate download. The neighboring
+  `Version Modification Check` job installed the same tool successfully, which
+  confirms a transient network/download failure rather than a source failure.
 - Template comparison: no matching upstream template defect was found, so no
   template issue was opened.
 
@@ -104,6 +109,9 @@ The release workflow now:
 - Selects the release job output SHA, checks out that SHA, and stamps
   `deployment.json`, the web app, and API docs with the same selected SHA.
 - Passes `deploy-demo.outputs.pages_sha` into the live Pages E2E wait.
+- Routes every workflow `rust-script` installation through
+  `scripts/install-rust-script.sh`, which reuses an existing installation and
+  retries `cargo install rust-script --locked` before failing.
 
 This keeps the deployed website tied to the release child commit when a release
 is produced, while retaining the existing `workflow_dispatch` instant-release
@@ -121,6 +129,9 @@ path.
   the same workflow. This uses built-in GitHub Actions job outputs and the
   existing Pages actions, fixes the stale stamp directly, and keeps the current
   release workflow shape.
+- Add retries to the existing `rust-script` installer path. This keeps the
+  existing script-based workflow structure while avoiding false CI failures from
+  transient crates.io transport errors.
 
 ## Reproduction Test
 
@@ -141,11 +152,19 @@ the same selected deployment SHA.
 Local verification logs:
 
 - [`raw-data/cargo-fmt-check-after.log`](raw-data/cargo-fmt-check-after.log)
+- [`raw-data/bash-check-install-rust-script-after.log`](raw-data/bash-check-install-rust-script-after.log)
 - [`raw-data/cargo-clippy-after.log`](raw-data/cargo-clippy-after.log)
 - [`raw-data/check-file-size-after.log`](raw-data/check-file-size-after.log)
 - [`raw-data/git-diff-check-after.log`](raw-data/git-diff-check-after.log)
 - [`raw-data/cargo-test-ci-cd-after.log`](raw-data/cargo-test-ci-cd-after.log)
 - [`raw-data/cargo-test-all-features-after.log`](raw-data/cargo-test-all-features-after.log)
+
+Follow-up CI failure investigation:
+
+- [`raw-data/ci-run-28118275692.json`](raw-data/ci-run-28118275692.json)
+- [`raw-data/ci-cd-pipeline-28118275692.log`](raw-data/ci-cd-pipeline-28118275692.log)
+- Failure lines: `download of li/bc/libc failed` and
+  `[16] Error in the HTTP2 framing layer` during `cargo install rust-script`.
 
 ## Template Comparison
 
