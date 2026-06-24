@@ -185,10 +185,10 @@ Independent of which option is chosen, all of them must:
 | Decision | Recommended option | Comparison harness? |
 | --- | --- | --- |
 | 1 Frame representation | 1A → 1B | Snapshot equality of `.lino` trace |
-| 2 Method selection | 2A → 2B (2C gated) | Yes — `selection_mode={legacy,registry,compare}` |
+| 2 Method selection | 2A → 2B (2C gated) | Trace — `selection_mode={off,record}`; corpus-closure invariant |
 | 3 Recursion direction | 3C bidirectional | Yes — `recursion_mode={down,up,both}` |
 | 4 Evidence execution | 4A + 4B | Yes — pipeline on/off + CORS vs CORS+desktop benchmark |
-| 5 Migration strategy | 5B shadow/compare | Built into Decision 2 harness |
+| 5 Migration strategy | 5B prove-then-retire | Parity certificate (interim) → corpus-closure test |
 | 6 Registry storage | 6A `data/seed`/`data/meta` | Recipe grounding test |
 | 7 Algorithm-as-data | 7A → 7B → 7C | Grounding test now; round-trip test later |
 

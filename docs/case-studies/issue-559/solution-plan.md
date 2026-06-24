@@ -287,16 +287,18 @@ test fails when the Rust table and registry diverge; gate matrix (closure is
 strict — author entries closed). Exit: the registry is a complete mirror of
 current dispatch; no runtime path depends on registry selection yet.
 
-### Phase 4 — Registry Selection In Comparison Mode
+### Phase 4 — Registry Selection (carried through to sole authority)
 
-Goal: run old dispatch and registry selection side by side (Option 5B). Tasks:
-add `SolverConfig.selection_mode ∈ {legacy, registry, compare}` (config first);
-in `compare`, compute both, keep legacy as source of truth, record divergences as
-events without changing answers. Tests: old and registry selection agree across
-benchmark and prompt-variation fixtures; precedence corner cases covered; unknown
-prompts still produce reasoning traces; Rust and worker produce the same
-candidate ordering; gate matrix. Exit: divergence is zero (or every divergence is
-a tracked, explained issue) across all suites before any default flip.
+Goal: make the registry the sole selection authority (Option 5B carried to its end
+state). Tasks: add `SolverConfig.selection_mode ∈ {off, record}` (config first); an
+interim parity certificate proved old dispatch and registry selection agreed across
+the whole route corpus (zero contradictions); with that proof the legacy mapper was
+removed outright and `record` now emits the registry's per-leaf selection trace
+without changing answers. Tests: every method-name and alias route resolves and no
+route resolves to an unregistered method (corpus-closure invariant); precedence
+corner cases covered; unknown prompts still produce reasoning traces; Rust and
+worker produce the same candidate ordering; the answer is identical whether the
+mode is `off` or `record`.
 
 ### Phase 5 — Move Cue Recognition Out Of Rust
 

@@ -186,7 +186,7 @@ mechanism maps to a deterministic, testable, data-described counterpart.
 | `max_decomposition_depth` (existing) | Hard recursion bound | unchanged |
 | `atomicity_policy` (new) | When a unit stops splitting (`prefer_compose` / `prefer_split`) | reproduces today |
 | `recursion_mode` (new, comparison) | `down` / `up` / `both` | `down` until `both` proven |
-| `selection_mode` (new, comparison) | `legacy` / `registry` / `compare` | `legacy` until parity proven |
+| `selection_mode` (new, trace) | `off` / `record` | `off` (the registry is the sole authority; this only toggles the audit trace) |
 | `evidence_policy` (extends existing source/offline policy) | When fresh data is required | offline-safe default |
 
 Every knob ships disabled-by-default or set to the compatible value, so merging
