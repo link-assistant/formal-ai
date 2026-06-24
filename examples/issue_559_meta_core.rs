@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R338).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R339).
 //!
 //! Run with:
 //!
@@ -18,7 +18,10 @@
 //!    step, so the box is inspectable, not just the predicate;
 //! 6. the upward construction pass (R338): the post-order leaf→root walk that
 //!    composes each answer back up, the construction half of the recursion;
-//! 7. the solution evidence (R334): the join `need → leaf → status → method`.
+//! 7. the solution evidence (R334): the join `need → leaf → status → method`;
+//! 8. the method-selection comparison (R339): per atomic leaf, the legacy method
+//!    versus the registry-resolved one, classified and counted (shown in the
+//!    `compare` mode so both authorities and the agreement are visible).
 //!
 //! The self-describing recipe (R335) lives as data in
 //! `data/meta/recursive-core-recipe.lino`. Together these are the "deep
@@ -29,6 +32,7 @@ use formal_ai::meta_construction::UpwardConstruction;
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
 use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::method_registry::MethodRegistry;
+use formal_ai::selection::{SelectionComparison, SelectionMode};
 use formal_ai::solution_evidence::SolutionEvidence;
 use formal_ai::translation::formalize_prompt;
 
@@ -42,6 +46,7 @@ fn dump(prompt: &str) {
     let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
     let construction = UpwardConstruction::for_unit(&root, &registry);
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
+    let selection = SelectionComparison::for_unit(&root, &registry);
 
     println!("================================================================");
     println!("PROMPT: {prompt}");
@@ -70,6 +75,15 @@ fn dump(prompt: &str) {
         evidence.accounted_for(),
         evidence.fully_resolved(),
         evidence.to_links_notation()
+    );
+    println!(
+        "\n# (R339) method-selection comparison \
+         (leaves={}, agree={}, registry_rescues={}, contradict={})\n{}",
+        selection.leaf_count(),
+        selection.agreement_count(),
+        selection.rescue_count(),
+        selection.contradiction_count(),
+        selection.to_links_notation(SelectionMode::Compare)
     );
 }
 

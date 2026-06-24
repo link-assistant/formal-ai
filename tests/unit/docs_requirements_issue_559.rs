@@ -421,6 +421,73 @@ fn issue_559_upward_construction_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_selection_comparison_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R339: the requirements row exists and cites the selection comparison.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R339 ",
+            "method-selection comparison",
+            "src/selection.rs",
+            "record_selection",
+            "tests/unit/specification/selection.rs",
+        ],
+    );
+
+    // The selection module ships the mode knob, the structures, and recorder.
+    let module = read(root.join("src/selection.rs"));
+    assert_contains_all(
+        "src/selection.rs",
+        &module,
+        &[
+            "pub enum SelectionMode",
+            "pub enum SelectionAgreement",
+            "pub struct LeafSelection",
+            "pub struct SelectionComparison",
+            "fn emits_artifact",
+            "fn records_comparison",
+            "fn for_unit",
+            "fn to_links_notation",
+            "fn record_selection",
+            "selection",
+        ],
+    );
+
+    // The two compared authorities both exist: the hardcoded legacy mapping and
+    // the data-driven registry resolver.
+    let intent = read(root.join("src/intent_formalization.rs"));
+    assert!(
+        intent.contains("fn specialized_handler_name"),
+        "src/intent_formalization.rs should expose the legacy selection authority"
+    );
+    let registry = read(root.join("src/method_registry.rs"));
+    assert!(
+        registry.contains("fn method_for_route"),
+        "src/method_registry.rs should expose the registry selection authority"
+    );
+
+    // The comparison is wired into the meta core, gated by the solver config knob.
+    let meta_core = read(root.join("src/meta_core.rs"));
+    assert!(
+        meta_core.contains("crate::selection::record_selection"),
+        "src/meta_core.rs should emit the method-selection comparison"
+    );
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("selection_mode"),
+        "src/solver.rs should expose the selection_mode config knob"
+    );
+    assert!(
+        solver.contains("self.config.selection_mode"),
+        "src/solver.rs should pass the selection mode into the meta core"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

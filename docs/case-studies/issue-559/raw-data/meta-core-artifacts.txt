@@ -90,6 +90,24 @@ problem_need_9d4753ec069ff65a
   work_unit "work_unit_1653752b66b67893"
   route "translation"
   method "translation"
+
+# (R339) method-selection comparison (leaves=1, agree=1, registry_rescues=0, contradict=0)
+selection
+  record_type "selection"
+  mode "compare"
+  root_id "work_unit_1653752b66b67893"
+  leaf_count "1"
+  agreement_count "1"
+  rescue_count "0"
+  contradiction_count "0"
+work_unit_1653752b66b67893
+  record_type "leaf_selection"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  route "translation"
+  registry_method "translation"
+  legacy_method "translation"
+  agreement "agree"
 ================================================================
 PROMPT: translate apple to Russian and write a hello world program in Python
 ================================================================
@@ -266,6 +284,31 @@ problem_need_e221ed16f702b263
   route "write_program"
   method "write_script"
   method_via_alias "true"
+
+# (R339) method-selection comparison (leaves=2, agree=1, registry_rescues=1, contradict=0)
+selection
+  record_type "selection"
+  mode "compare"
+  root_id "work_unit_16efab3092bb4d01"
+  leaf_count "2"
+  agreement_count "1"
+  rescue_count "1"
+  contradiction_count "0"
+work_unit_ddbb9068def90fae
+  record_type "leaf_selection"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  route "translation"
+  registry_method "translation"
+  legacy_method "translation"
+  agreement "agree"
+work_unit_751ee4a5ba055be3
+  record_type "leaf_selection"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  route "write_program"
+  registry_method "write_script"
+  agreement "registry_rescues"
 ================================================================
 PROMPT: zzqqx unfathomable gibberish token
 ================================================================
@@ -350,6 +393,21 @@ problem_need_2f86301fc50ef7f1
   status "blocked"
   connected "true"
   work_unit "work_unit_b008b07e7a293ffd"
+
+# (R339) method-selection comparison (leaves=1, agree=0, registry_rescues=0, contradict=0)
+selection
+  record_type "selection"
+  mode "compare"
+  root_id "work_unit_b008b07e7a293ffd"
+  leaf_count "1"
+  agreement_count "0"
+  rescue_count "0"
+  contradiction_count "0"
+work_unit_b008b07e7a293ffd
+  record_type "leaf_selection"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  agreement "unresolved"
 ================================================================
 # (R331) method registry — 55 methods derived from live dispatch
 ================================================================

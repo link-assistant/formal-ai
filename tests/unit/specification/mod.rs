@@ -71,6 +71,7 @@ mod reasoning_paths;
 mod reasoning_paths_procedures;
 mod recursive_core_recipe;
 mod route_method_alias;
+mod selection;
 mod self_improvement;
 mod shared_dialog_replay;
 mod solution_evidence;

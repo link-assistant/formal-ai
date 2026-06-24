@@ -194,6 +194,12 @@ pub struct SolverConfig {
     /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
     /// trace the upward construction pass. Trace-only either way (R13).
     pub recursion_mode: crate::meta_construction::RecursionMode,
+    /// Whether the meta core records the legacy-vs-registry method-selection
+    /// comparison (issue #559, R339): `Legacy` (default) records nothing and the
+    /// hardcoded authority alone selects; `Registry` records the registry-driven
+    /// choice per leaf; `Compare` records the full comparison plus divergence and
+    /// contradiction counts. Trace-only in every mode (R13).
+    pub selection_mode: crate::selection::SelectionMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -232,6 +238,7 @@ impl Default for SolverConfig {
             temperature: 0.7,
             max_decomposition_depth: 4,
             recursion_mode: crate::meta_construction::RecursionMode::default(),
+            selection_mode: crate::selection::SelectionMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -295,11 +302,7 @@ impl SolverConfig {
                 config.blueprint_composition = mode;
             }
         }
-        if let Ok(value) = std::env::var("FORMAL_AI_RECURSION_MODE") {
-            if let Some(mode) = crate::meta_construction::RecursionMode::from_slug(&value) {
-                config.recursion_mode = mode;
-            }
-        }
+        crate::meta_core::apply_env_modes(&mut config.recursion_mode, &mut config.selection_mode);
         config
     }
 }
@@ -497,6 +500,7 @@ impl UniversalSolver {
             &intent_formalization,
             self.config.max_decomposition_depth,
             self.config.recursion_mode,
+            self.config.selection_mode,
         );
 
         log.append("search:local", prompt.to_owned());

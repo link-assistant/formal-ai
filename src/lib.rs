@@ -39,6 +39,7 @@ pub mod protocol;
 pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
+pub mod selection;
 pub mod self_improvement;
 pub mod server;
 pub mod shared_dialog;

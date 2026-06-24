@@ -2,8 +2,8 @@ recursive_core_meta_recipe
   record_type "meta_recipe"
   topic "recursive_core"
   title "The recursive meta algorithm"
-  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, reasoned about in the open with white-box reasoning attached to every recursive step in both directions (the downward decomposition and the upward construction that composes children back into each answer), and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
-  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the ten ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, and let the ledger prove every need was addressed. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set rather than growing new hardcoded intents."
+  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, reasoned about in the open with white-box reasoning attached to every recursive step in both directions (the downward decomposition and the upward construction that composes children back into each answer), checked leaf by leaf so the data-driven registry never contradicts the legacy method selection, and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
+  generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the eleven ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, let the ledger prove every need was addressed, and let the selection comparison prove the registry resolves each leaf to the same method the legacy authority would. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set — and eventually drive selection from the registry rather than the hardcoded dispatch — instead of growing new hardcoded intents."
 step_formalize_impulse
   record_type "meta_step"
   order "1"
@@ -65,11 +65,18 @@ step_record_evidence
   order "9"
   id "record_evidence"
   title "Record every step as evidence in the append-only log"
-  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning, upward_construction) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
+  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning, upward_construction, selection) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
   source_file "src/event_log.rs"
-step_project_answer
+step_compare_selection
   record_type "meta_step"
   order "10"
+  id "compare_selection"
+  title "Compare the two method-selection authorities leaf by leaf"
+  detail "SelectionComparison::for_unit names, for every atomic leaf, both the method the legacy authority (specialized_handler_name) would pick and the one the data-driven registry resolves (MethodRegistry::method_for_route), classifying each as agree, registry_rescues (the registry resolves a leaf the legacy authority cannot, e.g. write_program via its route→method alias), contradict, or unresolved. record_selection emits this as the trace-only selection event, gated by the selection_mode knob (legacy default records nothing, registry records the chosen method, compare adds the comparison and the contradiction count). The zero-contradiction invariant — the registry never names a different real method than a valid legacy selection — is the safety precondition for the registry to drive selection later and retire the hardcoded dispatch authority, without changing routing or the answer today."
+  source_file "src/selection.rs"
+step_project_answer
+  record_type "meta_step"
+  order "11"
   id "project_answer"
   title "Project the answer from the event log"
   detail "The final answer is a projection of the append-only event log, not a side effect: the same loop that recorded the frame, decomposition, ledger, and resolution yields the response. Because the projection reads the log, behaviour is fully determined by the recorded events (R13)."
@@ -138,6 +145,14 @@ fn_try_contextual_override
   record_type "meta_function"
   function "try_contextual_override"
   source_file "src/solver_dispatch.rs"
+fn_selection_for_unit
+  record_type "meta_function"
+  function "for_unit"
+  source_file "src/selection.rs"
+fn_record_selection
+  record_type "meta_function"
+  function "record_selection"
+  source_file "src/selection.rs"
 fn_build_evidence_links
   record_type "meta_function"
   function "build_evidence_links"

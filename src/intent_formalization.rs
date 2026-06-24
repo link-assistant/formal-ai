@@ -873,7 +873,14 @@ fn route_from_relevants(relevants: &[String]) -> Option<String> {
     })
 }
 
-fn specialized_handler_name(slug: &str) -> Option<&str> {
+/// The legacy route→method mapping: the hardcoded authority that resolves a route
+/// slug to the name of the handler that serves it. This is the source of truth the
+/// solver has always used; the data-driven
+/// [`MethodRegistry::method_for_route`](crate::method_registry::MethodRegistry::method_for_route)
+/// mirrors it through alias link data, and the selection comparison (issue #559,
+/// R339) records any divergence between the two so the registry can later drive
+/// selection safely.
+pub(crate) fn specialized_handler_name(slug: &str) -> Option<&str> {
     match slug {
         "translation" => Some("translation"),
         "algorithm" => Some("algorithm"),

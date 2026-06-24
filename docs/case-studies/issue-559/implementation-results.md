@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R338)
+## What shipped (R330–R339)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -36,17 +36,20 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R336 | 4 | Route→method alias bridge: a coarser/finer intent slug still resolves to a catalogued method | `data/meta/route-method-aliases.lino`, `src/route_method_alias.rs` (`RouteMethodAlias`), consumed by `MethodRegistry::method_for_route` | (data + `solution_evidence` `method_via_alias`) | (this PR) |
 | R337 | 5 | White-box recursive reasoning: a downward/upward thought per work unit | `src/meta_reasoning.rs` (`WorkUnitReasoning`) | `work_unit_reasoning`, `work_unit_reasoning:steps` | (this PR) |
 | R338 | 5 | Upward construction pass + `recursion_mode` knob: the post-order leaf→root composition, the construction half of the recursion | `src/meta_construction.rs` (`RecursionMode`, `UpwardConstruction`, `ConstructionStep`), gated by `SolverConfig::recursion_mode` | `upward_construction`, `upward_construction:steps` | (this PR) |
+| R339 | 6 | Method-selection comparison + `selection_mode` knob: per atomic leaf, the legacy method versus the registry-resolved one, classified and counted | `src/selection.rs` (`SelectionMode`, `SelectionAgreement`, `LeafSelection`, `SelectionComparison`), comparing `specialized_handler_name` against `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection`, `selection:contradictions` | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
 `search:local` step: it records the problem frame, then `record_work_units`,
 `record_need_ledger`, `record_method_registry`, `record_work_unit_reasoning`,
-`record_upward_construction`, and `record_solution_evidence` in sequence, so the
-meta core observes the request but does not steer it yet. Which recursive
-directions are reasoned about — the downward decomposition (R337), the upward
-construction (R338), or both — is selected by `SolverConfig::recursion_mode`
-(default `Down`), which leaves the default trace exactly as it was before the
-knob existed.
+`record_upward_construction`, `record_solution_evidence`, and `record_selection`
+in sequence, so the meta core observes the request but does not steer it yet.
+Which recursive directions are reasoned about — the downward decomposition
+(R337), the upward construction (R338), or both — is selected by
+`SolverConfig::recursion_mode` (default `Down`); whether the legacy-vs-registry
+method-selection comparison is recorded (R339) is selected by
+`SolverConfig::selection_mode` (default `Legacy`, which records nothing). Both
+knobs default to leaving the trace exactly as it was before they existed.
 That ordering is what makes the migration safe: the artifacts are produced and
 audited first; routing is moved onto them only in later, behavior-changing phases
 that remain deferred (see [solution-plan.md](solution-plan.md)).
@@ -269,10 +272,62 @@ mode does not request the upward direction; otherwise it appends the trace-only
 inputs as children in source order, the serialization, and the gating contract
 (the answer and intent are identical across all three modes).
 
+## Comparing the two selection authorities (R339)
+
+The method registry (R331/R336) was built so the catalogue is *data*, but the
+engine still picks the method for each leaf the old way: the hardcoded
+`specialized_handler_name` mapping in `src/intent_formalization.rs`. Before the
+data-driven registry can ever *drive* selection — and the hardcoded dispatch
+authority be retired — we must prove the two never disagree. R339
+(`src/selection.rs`) makes that proof a recorded artifact: for every atomic leaf
+it names both the method the legacy authority would pick and the one the registry
+resolves through `MethodRegistry::method_for_route`, and classifies the pair.
+
+The four classes are `agree` (both name the same real method), `registry_rescues`
+(the legacy authority names no real handler but a route→method alias resolves
+one), `contradict` (both name a real method, but different ones), and
+`unresolved` (neither resolves anything). For the conjunction *"translate apple to
+Russian and write a hello world program in Python"* the registry rescues exactly
+the leaf the R336 alias exists for:
+
+```text
+selection
+  record_type "selection"
+  mode "compare"
+  root_id "work_unit_16efab3092bb4d01"
+  leaf_count "2"
+  agreement_count "1"
+  rescue_count "1"
+  contradiction_count "0"
+…
+  route "translation"  registry_method "translation"  legacy_method "translation"  agreement "agree"
+  route "write_program"  registry_method "write_script"  agreement "registry_rescues"
+```
+
+The `write_program` leaf is a rescue, not a contradiction, because the legacy
+authority's catch-all would name a handler called `write_program` that does not
+exist, so it resolves *nothing real*; the registry resolves `write_script`
+through the alias. The crucial invariant the case study pins across all three
+canonical prompts is `contradiction_count "0"`: wherever the legacy authority
+names a real method, the registry names the *same* one. That zero-contradiction
+result is the safety precondition for a later, behavior-changing phase to move
+selection onto the registry and delete the hardcoded mapping.
+
+Recording is governed by the `SelectionMode` knob (`Legacy` | `Registry` |
+`Compare`), surfaced as `SolverConfig::selection_mode` and the
+`FORMAL_AI_SELECTION_MODE` env override. The default `Legacy` records nothing —
+`record_selection` returns `None` and no `selection` event is appended — so the
+default solver behaves exactly as before. `Registry` records the chosen method
+per leaf; `Compare` additionally records the legacy method, the per-leaf
+`agreement`, and the `selection:contradictions` summary count.
+`tests/unit/specification/selection.rs` pins the classification of each leaf
+shape, the zero-contradiction invariant, the mode-gated serialization, and that
+the answer and intent are identical whether the mode is `Legacy` or `Compare`.
+
 ## Self-description as data (R335)
 
 `data/meta/recursive-core-recipe.lino` describes the meta core to itself: a
-`meta_recipe` header (`topic "recursive_core"`), nine ordered `meta_step`
+`meta_recipe` header (`topic "recursive_core"`), eleven ordered `meta_step`
 records mapping each stage to its seed source file, and the `meta_function`
 records naming the entry points. `tests/unit/specification/recursive_core_recipe.rs`
 asserts every named function actually exists in its cited source (`fn {name}`),
@@ -282,9 +337,9 @@ on the same footing as everything else.
 
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R338) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R339) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -303,9 +358,11 @@ on the same footing as everything else.
 - **Reason about and modify itself:** R335 makes the core's own structure
   grounded link data with tests that keep the description faithful, R337
   attaches white-box recursive reasoning to every step so the box is inspectable
-  by users and developers, not just the predicate, and R338 records the upward
+  by users and developers, not just the predicate, R338 records the upward
   construction pass so both directions of the recursion — decompose and compose —
-  are explicit, inspectable link data.
+  are explicit, inspectable link data, and R339 records the legacy-vs-registry
+  selection comparison, proving (zero contradictions) that the data-driven
+  registry can later drive selection and replace the hardcoded dispatch authority.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and one new data file.
 - **Compile data and do deep case-study analysis:** this document plus the
