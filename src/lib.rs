@@ -34,6 +34,7 @@ pub(crate) mod program_coreference;
 pub mod program_plan;
 pub mod proof_engine;
 pub mod protocol;
+pub mod route_method_alias;
 pub(crate) mod rule_synthesis;
 pub mod seed;
 pub mod self_improvement;

@@ -113,6 +113,25 @@ impl MethodRegistry {
         self.methods.len()
     }
 
+    /// Resolve a route slug to the catalogued method that serves it.
+    ///
+    /// A route slug usually names a method directly (the meta-language intent
+    /// vocabulary and the dispatch vocabulary coincide). When it does not — for
+    /// example the `write_program` intent served by the `write_script` method —
+    /// the resolver consults the route→method alias link data
+    /// ([`crate::route_method_alias`]) so the meta core can still name the method
+    /// a leaf resolves to. This is the single route→method resolution authority
+    /// the evidence join (R334) uses; keeping it here means selection and audit
+    /// share one bridge between the two vocabularies.
+    #[must_use]
+    pub fn method_for_route(&self, route: &str) -> Option<&Method> {
+        if let Some(method) = self.methods.iter().find(|method| method.name == route) {
+            return Some(method);
+        }
+        let aliased = crate::route_method_alias::method_for_alias(route)?;
+        self.methods.iter().find(|method| method.name == aliased)
+    }
+
     /// Number of methods on a given dispatch surface.
     #[must_use]
     pub fn count_on(&self, surface: MethodSurface) -> usize {

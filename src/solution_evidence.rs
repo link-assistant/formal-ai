@@ -36,8 +36,12 @@ pub struct EvidenceTrail {
     /// The route the resolving leaf carries, when matched.
     pub route: Option<String>,
     /// The catalogued method this trail resolves to, when the route names a
-    /// registered handler — the link to the method registry.
+    /// registered handler (directly or via a route→method alias) — the link to
+    /// the method registry.
     pub method: Option<String>,
+    /// Whether the method was reached through a route→method alias rather than a
+    /// direct name match (provenance for the resolution, R334).
+    pub method_via_alias: bool,
     /// Whether the chain is connected end to end: a leaf was reached and the need
     /// carries an explicit, non-pending status.
     pub connected: bool,
@@ -61,6 +65,9 @@ impl EvidenceTrail {
         }
         if let Some(method) = &self.method {
             pairs.push(("method", method.clone()));
+            if self.method_via_alias {
+                pairs.push(("method_via_alias", "true".to_owned()));
+            }
         }
         format_lino_record(&self.need_id, &pairs)
     }
@@ -85,13 +92,17 @@ impl SolutionEvidence {
             .rows
             .iter()
             .map(|row| {
-                let method = row.route.as_ref().and_then(|route| {
-                    registry
-                        .methods
-                        .iter()
-                        .find(|method| &method.name == route)
-                        .map(|method| method.name.clone())
-                });
+                let resolved = row
+                    .route
+                    .as_ref()
+                    .and_then(|route| registry.method_for_route(route));
+                let method = resolved.map(|method| method.name.clone());
+                // The method was reached via an alias when the resolved name
+                // differs from the route slug that produced it.
+                let method_via_alias = match (&row.route, &method) {
+                    (Some(route), Some(name)) => route != name,
+                    _ => false,
+                };
                 let connected = row.unit_id.is_some() && row.status != NeedStatus::Pending;
                 EvidenceTrail {
                     need_id: row.need_id.clone(),
@@ -100,6 +111,7 @@ impl SolutionEvidence {
                     status: row.status,
                     route: row.route.clone(),
                     method,
+                    method_via_alias,
                     connected,
                 }
             })

@@ -263,6 +263,66 @@ fn issue_559_solution_evidence_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_route_method_alias_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R336: the requirements row exists and cites the shipped alias bridge.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R336 ",
+            "route vocabulary",
+            "data/meta/route-method-aliases.lino",
+            "src/route_method_alias.rs",
+            "method_for_route",
+        ],
+    );
+
+    // The alias data declares the catalogue and at least the write_program entry.
+    let aliases = read(root.join("data/meta/route-method-aliases.lino"));
+    assert_contains_all(
+        "data/meta/route-method-aliases.lino",
+        &aliases,
+        &[
+            "record_type \"route_method_alias\"",
+            "route \"write_program\"",
+            "method \"write_script\"",
+        ],
+    );
+
+    // The loader module ships the named structures and the resolver helper.
+    let module = read(root.join("src/route_method_alias.rs"));
+    assert_contains_all(
+        "src/route_method_alias.rs",
+        &module,
+        &[
+            "pub struct RouteMethodAlias",
+            "pub fn aliases",
+            "pub fn method_for_alias",
+        ],
+    );
+
+    // The registry consumes the alias data through the route→method resolver, and
+    // the evidence join surfaces alias provenance.
+    let registry = read(root.join("src/method_registry.rs"));
+    assert!(
+        registry.contains("fn method_for_route"),
+        "src/method_registry.rs should expose method_for_route"
+    );
+    assert!(
+        registry.contains("crate::route_method_alias::method_for_alias"),
+        "method_for_route should consult the route→method alias data"
+    );
+    let evidence = read(root.join("src/solution_evidence.rs"));
+    assert!(
+        evidence.contains("method_via_alias"),
+        "src/solution_evidence.rs should record alias provenance on each trail"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

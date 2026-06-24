@@ -1,0 +1,26 @@
+route_method_alias_catalog
+  record_type "route_method_alias_catalog"
+  topic "route_method_resolution"
+  title "Route vocabulary → method vocabulary aliases"
+  summary "Issue #559: the meta core decomposes a request into work-unit leaves, each carrying a route slug from the meaning record (the meta-language intent vocabulary), and resolves that leaf against the method registry derived from the live dispatch code (the handler vocabulary). The two vocabularies mostly coincide, but a few meta-language intent slugs are coarser or finer than the handler that actually resolves them — for example the intent `write_program` is served by the registered `write_script` method, and `software_project_plan`/`software_project_implementation` both resolve to the single `software_project` handler. Without an explicit map these leaves would show no resolving method in the solution evidence (R334), making 'every detected need is addressed' look unmet when it is in fact served. This file is that map, as first-class link data: each record names a route slug and the registered method that resolves it. It is grounded — tests/unit/specification/route_method_alias.rs asserts every alias target is a real method in MethodRegistry::from_dispatch() and that each alias is necessary (the route slug is not already a registered method name), so the data can never drift from the live catalogue. Resolution stays trace-only: it enriches the evidence join, it does not change routing or the produced answer (R13)."
+  generalization "To teach the meta core that a new meta-language intent is served by an existing handler, add one alias record here rather than a bespoke branch: the route→method resolver (MethodRegistry::method_for_route) consults this data, so the evidence join closes automatically. When the meta algorithm later reasons about and modifies its own method set, this map is the editable bridge between the intent vocabulary it plans in and the method vocabulary it dispatches through."
+alias_write_program
+  record_type "route_method_alias"
+  route "write_program"
+  method "write_script"
+  rationale "The meta-language program-writing intent (coding/catalog WRITE_PROGRAM_INTENT) is resolved by the registered write_script method; program_synthesis is the deeper fallback on the same surface."
+alias_software_project_plan
+  record_type "route_method_alias"
+  route "software_project_plan"
+  method "software_project"
+  rationale "A software-project planning intent resolves to the single software_project handler (matching specialized_handler_name's legacy mapping)."
+alias_software_project_implementation
+  record_type "route_method_alias"
+  route "software_project_implementation"
+  method "software_project"
+  rationale "A software-project implementation intent resolves to the same software_project handler as the planning intent."
+alias_concept_lookup_in_context
+  record_type "route_method_alias"
+  route "concept_lookup_in_context"
+  method "concept_lookup"
+  rationale "A context-scoped concept lookup is served by the same concept_lookup handler as a bare lookup."

@@ -44,7 +44,7 @@ step_resolve_leaves
   order "6"
   id "resolve_leaves"
   title "Resolve each atomic leaf through the single ordered dispatch"
-  detail "try_contextual_override and the ordered SPECIALIZED_HANDLERS table resolve each atomic leaf: the first matching method wins. The decomposition above means dispatch is only ever asked to solve single-method leaves, so one ordered table covers every task class without per-intent control flow."
+  detail "try_contextual_override and the ordered SPECIALIZED_HANDLERS table resolve each atomic leaf: the first matching method wins. The decomposition above means dispatch is only ever asked to solve single-method leaves, so one ordered table covers every task class without per-intent control flow. When a leaf's meta-language route slug is coarser or finer than the handler that serves it (for example the write_program intent served by write_script), MethodRegistry::method_for_route consults the route→method alias link data so the leaf still names its resolving method."
   source_file "src/solver_dispatch.rs"
 step_record_evidence
   record_type "meta_step"
@@ -96,6 +96,14 @@ fn_record_method_registry
   record_type "meta_function"
   function "record_method_registry"
   source_file "src/method_registry.rs"
+fn_method_for_route
+  record_type "meta_function"
+  function "method_for_route"
+  source_file "src/method_registry.rs"
+fn_method_for_alias
+  record_type "meta_function"
+  function "method_for_alias"
+  source_file "src/route_method_alias.rs"
 fn_try_contextual_override
   record_type "meta_function"
   function "try_contextual_override"
