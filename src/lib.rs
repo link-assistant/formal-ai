@@ -10,6 +10,7 @@ pub(crate) mod calculation_word_problem;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
 pub(crate) mod concepts;
+pub mod cue_lexicon;
 pub mod document_formats;
 pub mod engine;
 pub(crate) mod engine_assistant_name;

@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R340).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R341).
 //!
 //! Run with:
 //!
@@ -29,6 +29,7 @@
 //! algorithm — here a no-op, proving the recipe describes every stage. Together
 //! these are the "deep case-study analysis" data for `docs/case-studies/issue-559`.
 
+use formal_ai::cue_lexicon::cue_sets;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_construction::UpwardConstruction;
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
@@ -96,6 +97,26 @@ fn main() {
     dump("translate apple to Russian");
     dump("translate apple to Russian and write a hello world program in Python");
     dump("zzqqx unfathomable gibberish token");
+
+    // (R341) the recognition cue lexicon: the hardcoded natural-language cues that
+    // used to be inline Rust literals, now reviewable link data grouped into named
+    // cue sets with their match mode. Print the catalogue once.
+    let sets = cue_sets();
+    println!("================================================================");
+    println!(
+        "# (R341) cue lexicon — {} cue sets lifted out of Rust into data",
+        sets.len()
+    );
+    println!("================================================================");
+    for set in sets {
+        println!(
+            "{} [{}] handler={}: {}",
+            set.name,
+            set.match_mode.slug(),
+            set.handler,
+            set.cues.join(", ")
+        );
+    }
 
     // (R331) the method catalogue is the same for every request; print it once.
     let registry = MethodRegistry::from_dispatch();

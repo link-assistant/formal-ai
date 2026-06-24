@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R340)
+## What shipped (R330–R341)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -38,6 +38,7 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R338 | 5 | Upward construction pass + `recursion_mode` knob: the post-order leaf→root composition, the construction half of the recursion | `src/meta_construction.rs` (`RecursionMode`, `UpwardConstruction`, `ConstructionStep`), gated by `SolverConfig::recursion_mode` | `upward_construction`, `upward_construction:steps` | (this PR) |
 | R339 | 6 | Method-selection comparison + `selection_mode` knob: per atomic leaf, the legacy method versus the registry-resolved one, classified and counted | `src/selection.rs` (`SelectionMode`, `SelectionAgreement`, `LeafSelection`, `SelectionComparison`), comparing `specialized_handler_name` against `MethodRegistry::method_for_route`, gated by `SolverConfig::selection_mode` | `selection`, `selection:contradictions` | (this PR) |
 | R340 | 9 | Gated meta self-improvement loop: the algorithm reads its own recipe against the live pipeline and proposes the updated recipe as links | `src/meta_self_improvement.rs` (`SelfImprovementMode`, `PipelineStage`, `MetaRecipeProposal`, `MetaSelfImprovement`), reading `data/meta/recursive-core-recipe.lino` against `src/meta_core.rs` | (proposal data; gated, not a hot-path loop event) | (this PR) |
+| R341 | 5 | Cue lexicon: the hardcoded natural-language recognition cues moved out of inline Rust literals into reviewable link data | `data/meta/cue-lexicon.lino` (`cue_set` records), `src/cue_lexicon.rs` (`CueMatch`, `CueSet`), consumed by `src/intent_formalization.rs` (`append_prompt_relevants`, `looks_arithmetic`, `looks_like_text_manipulation`) | (data; recognition cues, not a loop event) | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
@@ -383,11 +384,60 @@ serialized), and on the live recipe-and-pipeline it is now self-consistent
 (`change_count "0"`), which is the regression guard that keeps the recipe honest
 in the code → data direction from here on.
 
+## Recognition cues as data, not Rust literals (R341)
+
+The meta core's first move is to turn a message into a problem frame, and part of
+that is recognizing which handler family a phrase points at. Historically the cue
+lists that drove that recognition were inline Rust string literals inside
+`src/intent_formalization.rs`: a literal `["+", "-", "*", "/", "plus", …]` for
+arithmetic, `["search", "google", "find"]` for web search, the fourteen
+text-manipulation operations, the Russian/English calendar fallback verbs, and so
+on. The issue asks to generalize *away* from hardcoded specific intents, and
+R97/R103 already moved most of the surface vocabulary into seed data. R341 finishes
+that migration for the meta core's own cue lists.
+
+`data/meta/cue-lexicon.lino` now holds every cue as a reviewable link, grouped into
+named `cue_set` records that each declare how they are matched:
+
+```text
+cue_arithmetic_operators
+  record_type "cue_set"
+  name "arithmetic_operators"
+  handler "arithmetic"
+  match "substring"
+  cue "+"
+  cue "-"
+  cue "plus"
+  …
+```
+
+`src/cue_lexicon.rs` parses that data once (the same `OnceLock` + `parse_lino`
+pattern as the route→method aliases, R336) and exposes `matches(set, haystack)` and
+`cues(set)`. The three match modes mirror the predicates they replaced exactly:
+`token` is whitespace-bounded for Latin/Cyrillic and substring for CJK — the same
+`contains_token` logic that keeps "book" from matching inside "books" — while
+`substring` is a raw `contains` and `prefix` is `starts_with`. The Rust call sites
+keep only the structural glue: `looks_arithmetic` still requires a digit *and* an
+operator cue (now read from `cues("arithmetic_operators")`); the calendar promotion
+still conjoins a date signal with a schedule verb; `looks_like_text_manipulation`
+is now a one-line `cue_lexicon::matches("text_manipulation", …)`.
+
+The migration is behavior-preserving by construction — the data contains exactly
+the strings the literals did — and `tests/unit/specification/cue_lexicon.rs` pins
+that on both ends: it asserts every cue set the code consults exists with its
+expected match mode, that the migrated cue *contents* reproduce the old lists
+verbatim, and that representative prompts still surface the same `handler:*`
+relevants (so routing is unchanged), including the "free programming books" → not a
+calendar event regression. Adding a trigger word for an existing handler family is
+now a one-line data edit rather than a Rust change — and when the meta algorithm
+later reasons about its own recognition surface (R340), this is the editable cue
+vocabulary it reads.
+
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction,selection,meta_self_improvement,cue_lexicon}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R340) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R341) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -415,7 +465,12 @@ in the code → data direction from here on.
   against the live pipeline and emits the updated recipe as links — gated and
   proposal-only, so it can reason about modifying itself without a human losing the
   final say (it already caught and fixed one real drift).
+- **Generalize away from hardcoded specific intents:** R341 lifts the meta core's
+  hardcoded natural-language recognition cues out of inline Rust literals into a
+  reviewable cue lexicon (`data/meta/cue-lexicon.lino`), so the recognition surface
+  is editable data rather than scattered string lists — behavior-preserving, and a
+  new trigger word for an existing handler family is now a one-line data edit.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
-  artifacts are additive trace events and one new data file.
+  artifacts are additive trace events and new data files.
 - **Compile data and do deep case-study analysis:** this document plus the
   reproducible [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt).

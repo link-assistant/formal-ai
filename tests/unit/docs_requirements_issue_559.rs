@@ -545,6 +545,66 @@ fn issue_559_meta_self_improvement_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_cue_lexicon_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R341: the requirements row exists and cites the shipped cue lexicon.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R341 ",
+            "cue",
+            "data/meta/cue-lexicon.lino",
+            "src/cue_lexicon.rs",
+            "tests/unit/specification/cue_lexicon.rs",
+        ],
+    );
+
+    // The cue data declares cue sets with their match modes and migrated cues.
+    let cues = read(root.join("data/meta/cue-lexicon.lino"));
+    assert_contains_all(
+        "data/meta/cue-lexicon.lino",
+        &cues,
+        &[
+            "record_type \"cue_set\"",
+            "name \"arithmetic_operators\"",
+            "name \"text_manipulation\"",
+            "match \"token\"",
+            "match \"substring\"",
+            "match \"prefix\"",
+        ],
+    );
+
+    // The loader module ships the named structures and the lookup helpers.
+    let module = read(root.join("src/cue_lexicon.rs"));
+    assert_contains_all(
+        "src/cue_lexicon.rs",
+        &module,
+        &[
+            "pub enum CueMatch",
+            "pub struct CueSet",
+            "pub fn cue_sets",
+            "pub fn matches",
+            "pub fn cues",
+        ],
+    );
+
+    // The cue strings are sourced from the data, not from inline Rust literals: the
+    // call sites consult the cue lexicon by set name.
+    let intent = read(root.join("src/intent_formalization.rs"));
+    assert!(
+        intent.contains("cue_lexicon::matches(\"text_manipulation\""),
+        "looks_like_text_manipulation must read its cues from the lexicon"
+    );
+    assert!(
+        intent.contains("cue_lexicon::cues(\"arithmetic_operators\")"),
+        "looks_arithmetic must read its operator cues from the lexicon"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

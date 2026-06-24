@@ -9,6 +9,7 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
+use crate::cue_lexicon;
 use crate::engine::{
     normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
     WRITE_PROGRAM_INTENT,
@@ -721,26 +722,26 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
     let handlers = [
         (
             "handler:execution_failure",
-            lower_prompt.contains("undefined_function")
-                || normalized.contains("undefined function"),
+            cue_lexicon::matches("execution_failure_prompt", &lower_prompt)
+                || cue_lexicon::matches("execution_failure_normalized", normalized),
         ),
         ("handler:arithmetic", looks_arithmetic(prompt, normalized)),
         (
             "handler:web_search",
-            has_any_token(normalized, &["search", "google", "find"])
+            cue_lexicon::matches("web_search", normalized)
                 || looks_like_latest_news_search(normalized),
         ),
         (
             "handler:procedural_how_to",
-            normalized.starts_with("how to "),
+            cue_lexicon::matches("procedural_how_to", normalized),
         ),
         (
             "handler:proof_request",
-            has_any_token(normalized, &["prove", "proof"]),
+            cue_lexicon::matches("proof_request", normalized),
         ),
         (
             "handler:write_script",
-            has_any_token(normalized, &["script", "code"]),
+            cue_lexicon::matches("write_script", normalized),
         ),
         (
             "handler:write_program",
@@ -756,7 +757,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:software_project",
-            has_any_token(normalized, &["build", "create", "implement", "develop"]),
+            cue_lexicon::matches("software_project", normalized),
         ),
         (
             "handler:meta_explanation",
@@ -764,7 +765,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:concept_lookup",
-            normalized.starts_with("what is ") || normalized.starts_with("define "),
+            cue_lexicon::matches("concept_lookup", normalized),
         ),
         ("handler:calendar_create_event", {
             let lex = seed::lexicon();
@@ -783,12 +784,15 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
                     .iter()
                     .any(|w| contains_term_for_relevants(normalized, w));
             // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
-            // Token-boundary checks keep unrelated text such as "free-programming-books"
-            // (the word "book" embedded in "books") from masquerading as a schedule verb.
-            let fallback_cue = has_any_token(normalized, &["забей", "поставь", "schedule", "book"])
-                || (normalized.contains("число")
+            // The verb cues use token-boundary matching (cue-lexicon `match "token"`) so that
+            // unrelated text such as "free-programming-books" (the word "book" embedded in
+            // "books") cannot masquerade as a schedule verb. The "число"/"в "/":" glue stays in
+            // code as a structural composite: a date marker conjoined with a preposition or a
+            // time separator.
+            let fallback_cue = cue_lexicon::matches("calendar_fallback_verbs", normalized)
+                || (cue_lexicon::matches("calendar_ru_date_marker", normalized)
                     && (normalized.contains("в ") || normalized.contains(':')))
-                || (has_digit && has_any_token(normalized, &["schedule", "book", "add"]));
+                || (has_digit && cue_lexicon::matches("calendar_digit_actions", normalized));
             has_date_signal && (has_schedule || fallback_cue)
         }),
     ];
@@ -800,9 +804,13 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
 }
 
 fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
+    // Structural composite: a digit must be present, and an arithmetic operator must
+    // appear in either the raw lowercased prompt or the normalized view. The operator
+    // cue list lives in the cue lexicon (`arithmetic_operators`, substring match); the
+    // digit-plus-either-input glue stays here.
     let raw = prompt.to_ascii_lowercase();
     raw.chars().any(|c| c.is_ascii_digit())
-        && ["+", "-", "*", "/", "plus", "minus", "times", "divided"]
+        && cue_lexicon::cues("arithmetic_operators")
             .iter()
             .any(|operator| raw.contains(operator) || normalized.contains(operator))
 }
@@ -830,24 +838,9 @@ fn looks_like_program_synthesis(normalized: &str) -> bool {
 }
 
 fn looks_like_text_manipulation(normalized: &str) -> bool {
-    [
-        "uppercase",
-        "lowercase",
-        "replace",
-        "remove text",
-        "append text",
-        "prepend text",
-        "extract email",
-        "count occurrences",
-        "count unique words",
-        "deduplicate lines",
-        "sort lines",
-        "trim whitespace",
-        "normalize whitespace",
-        "reverse words",
-    ]
-    .iter()
-    .any(|operation| normalized.contains(operation))
+    // The fourteen text-manipulation operation cues live in the cue lexicon
+    // (`text_manipulation`, substring match), not as a Rust string literal.
+    cue_lexicon::matches("text_manipulation", normalized)
 }
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
