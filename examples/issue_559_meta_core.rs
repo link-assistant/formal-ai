@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R343).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R344).
 //!
 //! Run with:
 //!
@@ -34,10 +34,15 @@
 //! program, driving the live recorder primitives in the order the data declares,
 //! and proves the resulting event log is identical, event-for-event, to the
 //! hand-written pipeline's — the algorithm-as-data and the algorithm-as-code are
-//! the same algorithm. Together these are the "deep case-study analysis" data for
-//! `docs/case-studies/issue-559`.
+//! the same algorithm. Finally the dispatch-parity certificate (R344) audits the
+//! registry against the legacy dispatch authority across the *entire* route
+//! vocabulary the system can emit and proves zero contradictions, so the registry
+//! is a behavior-preserving drop-in for the hardcoded dispatch table — the
+//! precondition for retiring it. Together these are the "deep case-study analysis"
+//! data for `docs/case-studies/issue-559`.
 
 use formal_ai::cue_lexicon::cue_sets;
+use formal_ai::dispatch_parity::DispatchParity;
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_construction::{RecursionMode, UpwardConstruction};
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
@@ -193,4 +198,24 @@ fn main() {
     println!(
         "# executing the recipe reproduces the live pipeline trace event-for-event: {reproduces}"
     );
+
+    // (R344) the retire-parity certificate: audit the registry against the legacy
+    // dispatch authority across the *entire* route vocabulary the system can emit,
+    // not just one prompt's leaves. Zero contradictions means the registry is a
+    // behavior-preserving drop-in for the hardcoded dispatch table — the
+    // precondition for retiring it. Print the certificate and the verdict.
+    let parity = DispatchParity::audit();
+    println!("================================================================");
+    println!(
+        "# (R344) dispatch parity — {} routes audited (agree={}, registry_rescues={}, \
+         unresolved={}, contradict={}), retire_safe={}",
+        parity.route_count(),
+        parity.agreement_count(),
+        parity.rescue_count(),
+        parity.unresolved_count(),
+        parity.contradiction_count(),
+        parity.is_retire_safe()
+    );
+    println!("================================================================");
+    println!("{}", parity.to_links_notation());
 }

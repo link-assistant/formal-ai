@@ -115,8 +115,12 @@ impl SelectionAgreement {
     }
 
     /// Classify a leaf from the two authorities' resolved method names.
+    ///
+    /// Shared with the corpus-wide dispatch-parity audit (R344,
+    /// [`crate::dispatch_parity`]) so the per-request comparison and the
+    /// retire-parity certificate classify agreement by exactly the same rule.
     #[must_use]
-    fn classify(legacy: Option<&str>, registry: Option<&str>) -> Self {
+    pub(crate) fn classify(legacy: Option<&str>, registry: Option<&str>) -> Self {
         match (legacy, registry) {
             (None, None) => Self::Unresolved,
             (None, Some(_)) => Self::RegistryRescues,

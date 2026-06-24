@@ -46,6 +46,7 @@ mod coding_modification_benchmarks;
 mod cue_lexicon;
 mod definition_fusion;
 mod desktop_surface;
+mod dispatch_parity;
 mod formalization;
 mod intent_formalization;
 mod issue_146;

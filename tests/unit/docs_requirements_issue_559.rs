@@ -721,6 +721,48 @@ fn issue_559_recipe_interpreter_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_dispatch_parity_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R344: the requirements row exists and cites the shipped parity certificate.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R344 ",
+            "src/dispatch_parity.rs",
+            "tests/unit/specification/dispatch_parity.rs",
+            "is_retire_safe",
+            "SelectionAgreement::classify",
+        ],
+    );
+
+    // The module ships the per-route resolver, the corpus-wide audit, the verdict,
+    // and the trace recorder.
+    let module = read(root.join("src/dispatch_parity.rs"));
+    assert_contains_all(
+        "src/dispatch_parity.rs",
+        &module,
+        &[
+            "pub struct RouteParity",
+            "pub struct DispatchParity",
+            "pub fn audit",
+            "pub fn is_retire_safe",
+            "pub fn contradiction_count",
+            "pub fn record_dispatch_parity",
+        ],
+    );
+
+    // The module is registered so the certificate is reachable from the crate.
+    let lib = read(root.join("src/lib.rs"));
+    assert!(
+        lib.contains("pub mod dispatch_parity;"),
+        "src/lib.rs must expose the dispatch parity module"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
