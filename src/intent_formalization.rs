@@ -863,7 +863,9 @@ fn infer_kind(
             | "software_project_plan"
             | "software_project_implementation",
         ) => IntentKind::Task,
-        _ if prompt.contains('?') || starts_with_question_word(normalized) => IntentKind::Question,
+        _ if contains_question_mark(prompt) || starts_with_question_word(normalized) => {
+            IntentKind::Question
+        }
         _ if has_any_token(normalized, &["must", "should", "require", "requires"]) => {
             IntentKind::Requirement
         }
@@ -904,6 +906,10 @@ fn starts_with_question_word(normalized: &str) -> bool {
                 .strip_prefix(word.as_str())
                 .is_some_and(|rest| rest.starts_with(' '))
         })
+}
+
+fn contains_question_mark(prompt: &str) -> bool {
+    prompt.contains('?') || prompt.contains('？')
 }
 
 fn push_unique(values: &mut Vec<String>, value: String) {
