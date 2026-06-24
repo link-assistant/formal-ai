@@ -12,7 +12,10 @@
 //! 4. the method registry (R331) — the catalogue of handlers each atomic leaf can
 //!    route to, derived from the live dispatch constants, so the meta algorithm
 //!    can later reason about its own methods;
-//! 5. the solution evidence (R334) — the end-to-end join, per need `frame →
+//! 5. the white-box recursive reasoning (R337) — a human-readable thought at every
+//!    recursive step, downward (observe → decompose/atomic → method) and upward
+//!    (compose), so the box is inspectable, not just the predicate;
+//! 6. the solution evidence (R334) — the end-to-end join, per need `frame →
 //!    work-unit leaf → status → method`, so "address every detected need" is one
 //!    auditable record.
 //!
@@ -34,6 +37,8 @@ pub fn record_meta_core(log: &mut EventLog, formalization: &IntentFormalization,
     let work_unit_root = crate::meta_frame::record_work_units(log, formalization, max_depth);
     let need_ledger = crate::meta_frame::record_need_ledger(log, &problem_frame, &work_unit_root);
     let method_registry = crate::method_registry::record_method_registry(log);
+    let _reasoning =
+        crate::meta_reasoning::record_work_unit_reasoning(log, &work_unit_root, &method_registry);
     let _solution_evidence = crate::solution_evidence::record_solution_evidence(
         log,
         &problem_frame,

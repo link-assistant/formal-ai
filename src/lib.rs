@@ -28,6 +28,7 @@ pub mod memory;
 pub mod memory_sync;
 pub(crate) mod meta_core;
 pub mod meta_frame;
+pub mod meta_reasoning;
 pub mod method_registry;
 pub mod probability;
 pub(crate) mod program_coreference;

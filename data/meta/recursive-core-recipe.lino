@@ -2,7 +2,7 @@ recursive_core_meta_recipe
   record_type "meta_recipe"
   topic "recursive_core"
   title "The recursive meta algorithm"
-  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
+  summary "Machine-readable recipe for the single general meta algorithm (issue #559): how our Formal AI turns any message into a solved, link-native knowledge base. Every prompt is formalized to one meaning record, expanded into an explicit problem frame that enumerates every detected need, decomposed by a recursive bounded downward pass into a work-unit tree whose atomic leaves each map to a method, accounted for in a need-satisfaction ledger so no need is dropped, resolved against a method registry derived from the live dispatch code, reasoned about in the open with white-box reasoning attached to every recursive step, and projected back into the answer from the append-only event log — with no neural inference. The recipe is grounded: tests/unit/specification/recursive_core_recipe.rs asserts the live source still defines every function and step named here, so this file always describes how the meta core was produced, not stale prose."
   generalization "To extend the meta algorithm to a new class of tasks, do not add a bespoke branch: instead make the new behaviour fall out of the eight ordered steps below. Formalize the impulse to a meaning record, let the problem frame surface its needs structurally, let the recursive downward pass decompose it until each leaf is single-method solvable, register the resolving handler as one more method in the catalogue, and let the ledger prove every need was addressed. The specific algorithm becomes data (a method record) reached by the same general loop, so the core can later reason about and modify its own method set rather than growing new hardcoded intents."
 step_formalize_impulse
   record_type "meta_step"
@@ -39,23 +39,30 @@ step_catalogue_methods
   title "Catalogue the resolving methods as link data"
   detail "MethodRegistry::from_dispatch derives the catalogue of every handler a leaf can route to directly from the live dispatch code, serialized to Links Notation. Treating the specific algorithms as data (method records) rather than buried branches is what lets the meta algorithm later reason about and modify its own method set."
   source_file "src/method_registry.rs"
-step_resolve_leaves
+step_reason_white_box
   record_type "meta_step"
   order "6"
+  id "reason_white_box"
+  title "Attach white-box recursive reasoning to every step"
+  detail "WorkUnitReasoning::for_unit walks the work-unit tree and records, for every recursive step, a human-readable thought in both directions: the downward thought (what span was observed, why the unit was decomposed or judged atomic, and which method an atomic leaf resolves to through method_for_route) and the upward thought (how the unit's answer is composed from its solved children). record_work_unit_reasoning emits this parallel tree as the trace-only work_unit_reasoning event, so the box is inspectable by users and developers — the reasoning, not just the predicate, is visible."
+  source_file "src/meta_reasoning.rs"
+step_resolve_leaves
+  record_type "meta_step"
+  order "7"
   id "resolve_leaves"
   title "Resolve each atomic leaf through the single ordered dispatch"
   detail "try_contextual_override and the ordered SPECIALIZED_HANDLERS table resolve each atomic leaf: the first matching method wins. The decomposition above means dispatch is only ever asked to solve single-method leaves, so one ordered table covers every task class without per-intent control flow. When a leaf's meta-language route slug is coarser or finer than the handler that serves it (for example the write_program intent served by write_script), MethodRegistry::method_for_route consults the route→method alias link data so the leaf still names its resolving method."
   source_file "src/solver_dispatch.rs"
 step_record_evidence
   record_type "meta_step"
-  order "7"
+  order "8"
   id "record_evidence"
   title "Record every step as evidence in the append-only log"
-  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
+  detail "Each pass above appends trace events (problem_frame, work_unit:enter/exit, need:status, method_registry, work_unit_reasoning) to the EventLog, and build_evidence_links surfaces them as evidence links. The log is append-only, so the full derivation of the answer is reconstructable and auditable."
   source_file "src/event_log.rs"
 step_project_answer
   record_type "meta_step"
-  order "8"
+  order "9"
   id "project_answer"
   title "Project the answer from the event log"
   detail "The final answer is a projection of the append-only event log, not a side effect: the same loop that recorded the frame, decomposition, ledger, and resolution yields the response. Because the projection reads the log, behaviour is fully determined by the recorded events (R13)."
@@ -104,6 +111,14 @@ fn_method_for_alias
   record_type "meta_function"
   function "method_for_alias"
   source_file "src/route_method_alias.rs"
+fn_reason_for_unit
+  record_type "meta_function"
+  function "for_unit"
+  source_file "src/meta_reasoning.rs"
+fn_record_work_unit_reasoning
+  record_type "meta_function"
+  function "record_work_unit_reasoning"
+  source_file "src/meta_reasoning.rs"
 fn_try_contextual_override
   record_type "meta_function"
   function "try_contextual_override"

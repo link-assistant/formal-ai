@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R335).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R337).
 //!
 //! Run with:
 //!
@@ -14,7 +14,9 @@
 //! 2. the recursive, bounded work-unit tree (R332): decompose until atomic;
 //! 3. the need-satisfaction ledger (R333): one row per need with its status;
 //! 4. the method registry (R331): the catalogue derived from live dispatch;
-//! 5. the solution evidence (R334): the join `need → leaf → status → method`.
+//! 5. the white-box recursive reasoning (R337): the downward/upward thought per
+//!    step, so the box is inspectable, not just the predicate;
+//! 6. the solution evidence (R334): the join `need → leaf → status → method`.
 //!
 //! The self-describing recipe (R335) lives as data in
 //! `data/meta/recursive-core-recipe.lino`. Together these are the "deep
@@ -22,6 +24,7 @@
 
 use formal_ai::intent_formalization::formalize_intent;
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
+use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::solution_evidence::SolutionEvidence;
 use formal_ai::translation::formalize_prompt;
@@ -33,6 +36,7 @@ fn dump(prompt: &str) {
     let root = WorkUnit::from_formalization(&formalization, 4);
     let ledger = NeedLedger::resolve(&frame, &root);
     let registry = MethodRegistry::from_dispatch();
+    let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
 
     println!("================================================================");
@@ -46,6 +50,11 @@ fn dump(prompt: &str) {
     println!(
         "\n# (R333) need-satisfaction ledger\n{}",
         ledger.to_links_notation()
+    );
+    println!(
+        "\n# (R337) white-box recursive reasoning ({} steps)\n{}",
+        reasoning.step_count(),
+        reasoning.to_links_notation()
     );
     println!(
         "\n# (R334) solution evidence (accounted_for={}, fully_resolved={})\n{}",

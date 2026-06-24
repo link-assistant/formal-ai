@@ -47,6 +47,17 @@ need_ledger_row_9b0313c317a8bda3
   unit_id "work_unit_1653752b66b67893"
   route "translation"
 
+# (R337) white-box recursive reasoning (1 steps)
+work_unit_1653752b66b67893
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  observation "At depth 0, observed a span of 26 characters; the route `translation` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `translation`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "translation"
+
 # (R334) solution evidence (accounted_for=true, fully_resolved=true)
 solution_evidence
   record_type "solution_evidence"
@@ -151,6 +162,36 @@ need_ledger_row_9bf4c90073a1ab42
   unit_id "work_unit_751ee4a5ba055be3"
   route "write_program"
 
+# (R337) white-box recursive reasoning (3 steps)
+work_unit_16efab3092bb4d01
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_16efab3092bb4d01"
+  depth "0"
+  observation "At depth 0, observed a span of 68 characters; the route `write_program` was recognized."
+  decision "decompose"
+  downward_rationale "The span carries more than one need, so it is not solvable by a single method: decompose it into 2 sub-units and reason about each recursively."
+  upward_rationale "Once all 2 children are solved, compose their results in source order into this unit's answer; the answer is complete iff every child's is."
+  child "work_unit_ddbb9068def90fae"
+  child "work_unit_751ee4a5ba055be3"
+work_unit_ddbb9068def90fae
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  observation "At depth 1, observed a span of 26 characters; the route `translation` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `translation`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "translation"
+work_unit_751ee4a5ba055be3
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  observation "At depth 1, observed a span of 37 characters; the route `write_program` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `write_script`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "write_script"
+
 # (R334) solution evidence (accounted_for=true, fully_resolved=true)
 solution_evidence
   record_type "solution_evidence"
@@ -158,7 +199,7 @@ solution_evidence
   trail_count "2"
   accounted_for "true"
   fully_resolved "true"
-  resolved_to_method "1"
+  resolved_to_method "2"
   trail "problem_need_5e9dcd33c57da30f"
   trail "problem_need_e221ed16f702b263"
 problem_need_5e9dcd33c57da30f
@@ -178,6 +219,8 @@ problem_need_e221ed16f702b263
   connected "true"
   work_unit "work_unit_751ee4a5ba055be3"
   route "write_program"
+  method "write_script"
+  method_via_alias "true"
 ================================================================
 PROMPT: zzqqx unfathomable gibberish token
 ================================================================
@@ -222,6 +265,16 @@ need_ledger_row_7c25ee8e4112d907
   status "blocked"
   leaf_reason "single_need"
   unit_id "work_unit_b008b07e7a293ffd"
+
+# (R337) white-box recursive reasoning (1 steps)
+work_unit_b008b07e7a293ffd
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  observation "At depth 0, observed a span of 34 characters; no route was recognized."
+  decision "single_need"
+  downward_rationale "The span cannot be split further and matches no known route, so it is an irreducible single need. Record it for an honest blocked status instead of forcing an answer."
+  upward_rationale "Return a blocked marker upward: this leaf has no resolving method, so there is nothing to compose."
 
 # (R334) solution evidence (accounted_for=true, fully_resolved=false)
 solution_evidence

@@ -323,6 +323,47 @@ fn issue_559_route_method_alias_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_work_unit_reasoning_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R337: the requirements row exists and cites the shipped white-box reasoning.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R337 ",
+            "white-box recursive reasoning",
+            "src/meta_reasoning.rs",
+            "record_work_unit_reasoning",
+        ],
+    );
+
+    // The reasoning module ships the named structure and the loop-event recorder.
+    let module = read(root.join("src/meta_reasoning.rs"));
+    assert_contains_all(
+        "src/meta_reasoning.rs",
+        &module,
+        &[
+            "pub struct WorkUnitReasoning",
+            "fn for_unit",
+            "fn to_links_notation",
+            "fn record_work_unit_reasoning",
+            "work_unit_reasoning",
+            "downward_rationale",
+            "upward_rationale",
+        ],
+    );
+
+    // The reasoning is wired into the meta core as a trace-only event.
+    let meta_core = read(root.join("src/meta_core.rs"));
+    assert!(
+        meta_core.contains("crate::meta_reasoning::record_work_unit_reasoning"),
+        "src/meta_core.rs should emit the white-box work-unit reasoning"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))
