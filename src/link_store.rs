@@ -317,13 +317,13 @@ impl DoubletsLinkStore {
 
     /// Number of memory events mirrored into native doublets.
     #[must_use]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.events.len()
     }
 
     /// Whether this native store currently has no memory events.
     #[must_use]
-    pub fn is_empty(&self) -> bool {
+    pub const fn is_empty(&self) -> bool {
         self.events.is_empty()
     }
 

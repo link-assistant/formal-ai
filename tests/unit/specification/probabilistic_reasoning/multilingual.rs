@@ -107,3 +107,89 @@ fn probability_evidence_reranks_formalization_across_supported_languages() {
         }
     }
 }
+
+#[test]
+fn questioning_rigor_clarify_margin_scales_across_supported_languages() {
+    // `probability_margin_epsilon` / `finite_clamped` in src/translation/selection.rs
+    // turn `questioning_rigor` into the clarify-vs-decide margin (epsilon = 0.23·rigor
+    // + 0.02). They are evaluated on every supported language's formalization decision,
+    // so pin the monotonic epsilon growth across en, ru, hi, and zh rather than leaving
+    // the language-facing margin path verified for English only.
+    struct LanguageCase {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    let cases = [
+        LanguageCase {
+            language: "en",
+            prompt: "apple is a fruit",
+        },
+        LanguageCase {
+            language: "ru",
+            prompt: "яблоко это фрукт",
+        },
+        LanguageCase {
+            language: "hi",
+            prompt: "सेब एक फल है",
+        },
+        LanguageCase {
+            language: "zh",
+            prompt: "苹果是水果",
+        },
+    ];
+
+    let decision_epsilon =
+        |selection: &formal_ai::translation::FormalizationSelection| match &selection.decision {
+            FormalizationDecision::Selected { epsilon, .. }
+            | FormalizationDecision::Clarify { epsilon, .. } => *epsilon,
+            FormalizationDecision::NoCandidate => panic!("expected a decision carrying epsilon"),
+        };
+
+    for case in cases {
+        let candidates = formalize_prompt_candidates(case.prompt, case.language);
+        assert!(
+            !candidates.is_empty(),
+            "language={} should formalize at least one candidate",
+            case.language
+        );
+
+        let lax = select_formalization_candidate(
+            &candidates,
+            FormalizationSelectionConfig {
+                temperature: 0.0,
+                guess_probability: 1.0,
+                questioning_rigor: 0.0,
+            },
+            case.prompt,
+        );
+        let strict = select_formalization_candidate(
+            &candidates,
+            FormalizationSelectionConfig {
+                temperature: 0.0,
+                guess_probability: 1.0,
+                questioning_rigor: 1.0,
+            },
+            case.prompt,
+        );
+
+        let lax_epsilon = decision_epsilon(&lax);
+        let strict_epsilon = decision_epsilon(&strict);
+
+        assert!(
+            (lax_epsilon - 0.02).abs() < 1e-6,
+            "language={} zero rigor should yield the base epsilon, got {lax_epsilon}",
+            case.language
+        );
+        assert!(
+            (strict_epsilon - 0.25).abs() < 1e-6,
+            "language={} full rigor should yield the widened epsilon, got {strict_epsilon}",
+            case.language
+        );
+        assert!(
+            strict_epsilon > lax_epsilon,
+            "language={} more rigor must widen the clarify margin",
+            case.language
+        );
+    }
+}

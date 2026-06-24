@@ -530,6 +530,111 @@ fn issue_195_dind_telegram_runtime_documents_are_present_and_traceable() {
 }
 
 #[test]
+fn issue_438_prebuilt_telegram_image_documents_are_present_and_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "Issue #438 Prepared Telegram Docker Image",
+            "| R320 ",
+            "| R321 ",
+            "| R322 ",
+            "| R323 ",
+            "| R324 ",
+            "| R325 ",
+            "| R326 ",
+            "| R327 ",
+            "| R328 ",
+            "| R329 ",
+            "ghcr.io/link-assistant/formal-ai:latest",
+            "compose.yaml",
+            "desktop/lib/service-control.cjs",
+            "docs/desktop/service-control.md",
+        ],
+    );
+
+    let readme = read(root.join("README.md"));
+    assert_contains_all(
+        "README.md",
+        &readme,
+        &[
+            "Prebuilt image quick start",
+            "ghcr.io/link-assistant/formal-ai:latest",
+            "TELEGRAM_BOT_TOKEN=123:abc docker compose up",
+            "FORMAL_AI_DOCKER_IMAGE",
+        ],
+    );
+
+    let architecture = read(root.join("ARCHITECTURE.md"));
+    assert_contains_all(
+        "ARCHITECTURE.md",
+        &architecture,
+        &[
+            "Prepared Telegram Docker image",
+            "GitHub Container Registry",
+            "ghcr.io/link-assistant/formal-ai:latest",
+            "compose.yaml",
+        ],
+    );
+
+    let compose = read(root.join("compose.yaml"));
+    assert_contains_all(
+        "compose.yaml",
+        &compose,
+        &[
+            "telegram-bot:",
+            "ghcr.io/link-assistant/formal-ai:latest",
+            "TELEGRAM_BOT_TOKEN",
+            "formal-ai-telegram-docker:/var/lib/docker",
+        ],
+    );
+
+    let service_control = read(root.join("docs/desktop/service-control.md"));
+    assert_contains_all(
+        "docs/desktop/service-control.md",
+        &service_control,
+        &[
+            "One-click services",
+            "formal-ai-telegram",
+            "formal-ai-server",
+            "desktop/lib/service-control.cjs",
+            "docker compose --profile all up -d",
+            "formal-ai serve --host 0.0.0.0 --port 8080",
+        ],
+    );
+
+    let case_study = read(root.join("docs/case-studies/issue-438/README.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-438/README.md",
+        &case_study,
+        &[
+            "# Issue 438 Case Study",
+            "## Collected Data",
+            "## Online Facts",
+            "## Requirements",
+            "## Solution Options",
+            "## Verification Plan",
+            "ghcr.io/link-assistant/formal-ai:latest",
+        ],
+    );
+
+    let research = read(root.join("docs/case-studies/issue-438/raw-data/online-research.md"));
+    assert_contains_all(
+        "docs/case-studies/issue-438/raw-data/online-research.md",
+        &research,
+        &[
+            "https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry",
+            "https://docs.docker.com/compose/how-tos/environment-variables/variable-interpolation/",
+            "https://core.telegram.org/bots/api",
+            "GITHUB_TOKEN",
+        ],
+    );
+}
+
+#[test]
 fn issue_278_default_native_doublets_store_is_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
 

@@ -2,6 +2,8 @@
 const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
+const TEN_POW_100 =
+  '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 const definitionDisambiguationCases = [
   {
@@ -181,6 +183,21 @@ async function switchToManualMode(page) {
   });
 }
 
+async function setUiLanguage(page, language) {
+  await page.evaluate((nextLanguage) => {
+    window.localStorage.setItem(
+      'formal-ai.preferences.v1',
+      `demo_preferences\n  demoMode "off"\n  greetingVariations "off"\n  uiLanguage "${nextLanguage}"`,
+    );
+  }, language);
+  await page.reload();
+  await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('html')).toHaveAttribute('lang', language);
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+    timeout: 5_000,
+  });
+}
+
 // Issue #27: greeting randomisation defaults to ON. Tests below pin the
 // canonical greeting text, so disable randomisation up-front for stability.
 // The script merges into any existing preference snapshot so reload-survival
@@ -255,6 +272,23 @@ async function setRangeValue(page, testId, value) {
     node.dispatchEvent(new Event('change', { bubbles: true }));
   }, value);
 }
+
+// Issue #541 (R5/R6): freshly produced assistant answers stage a reasoning-
+// then-body reveal that hides the answer body via `.markdown-body.is-revealing
+// { display: none }` for the configured budget (default 2 s). Tests that read
+// `last.innerText()` immediately after sendPrompt would race the reveal and
+// either flake or see only the thinking-preview text — the body div would be
+// invisible to innerText while it carries `.is-revealing`. Emulating
+// prefers-reduced-motion makes `usePrefersReducedMotion()` return true, which
+// short-circuits `useMessageReveal` to "show everything at once" — the same
+// behavior users with the reduced-motion preference see, and the same trick
+// already in use in issue-347.spec.js for screenshot captures. The matching
+// config-level `reducedMotion: 'reduce'` in playwright.local.config.js does not
+// reliably propagate through the test fixture in the local Playwright runner;
+// emulating per-page here is the belt-and-braces fix.
+test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+});
 
 test.describe('multilingual chat surface', () => {
   test.beforeEach(async ({ page }) => {
@@ -392,6 +426,25 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('2 + 2 = 4');
     await expect(last).not.toContainText('arithmetic is available');
+  });
+
+  test('large integer exponent renders exactly across supported UI languages', async ({
+    page,
+  }) => {
+    const cases = [
+      { language: 'en', name: 'English', prompt: '10^100' },
+      { language: 'ru', name: 'Russian', prompt: '10^100' },
+      { language: 'hi', name: 'Hindi', prompt: '10^100' },
+      { language: 'zh', name: 'Chinese', prompt: '10^100' },
+    ];
+
+    for (const { language, name, prompt } of cases) {
+      await setUiLanguage(page, language);
+      const last = await sendPrompt(page, prompt);
+      await expect(last, name).toHaveClass(/assistant/);
+      await expect(last, name).toContainText(`${prompt} = ${TEN_POW_100}`);
+      await expect(last, name).not.toContainText('1e+1');
+    }
   });
 
   test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {
@@ -2310,18 +2363,25 @@ test.describe('Issue #27: agent mode', () => {
     await switchToManualMode(page);
   });
 
-  test('Chat/Agent toggle is present and starts in Chat', async ({ page }) => {
-    const toggle = page.locator('[data-testid="agent-toggle"]');
-    await expect(toggle).toBeVisible();
-    // Issue #409: the topbar buttons render an icon + label so the label
-    // can collapse on the mobile-icon-only breakpoint. Assert on the label span.
-    await expect(toggle.locator('.btn-label')).toHaveText('Chat');
-    await toggle.click();
-    await expect(toggle.locator('.btn-label')).toHaveText('Agent');
+  test('Chat/Agent/Full-Auto radio is present and starts in Chat', async ({ page }) => {
+    // Issue #513: the binary agent toggle became a three-way radio group.
+    const group = page.locator('[data-testid="mode-radio"]');
+    await expect(group).toBeVisible();
+    await expect(page.locator('[data-testid="mode-option-chat"]')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.locator('[data-testid="mode-option-fullAuto"]')).toBeVisible();
+    await page.locator('[data-testid="mode-option-agent"]').click();
+    await expect(page.locator('[data-testid="mode-option-agent"]')).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    await expect(page.locator('[data-testid="mode-status"]')).toContainText('Agent');
   });
 
   test('Agent mode decomposes a multi-step task and runs each step', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(
       page,
       'Hi; then what is 2 + 2; then who are you',
@@ -2338,7 +2398,7 @@ test.describe('Issue #27: agent mode', () => {
   });
 
   test('Agent mode preserves single-step prompts as plain Q&A', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(page, 'Hi');
     // No "; then …" — should run as a single step (chat-style answer).
     await expect(last).toContainText('Hi, how may I help you?');
@@ -2485,7 +2545,16 @@ test.describe('Issue #27: conversations sidebar', () => {
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
     // Clear any demo dialog messages so each test starts with a fresh thread.
-    await page.locator('[data-testid="conversation-new"]').click();
+    // Issue #541 (R4): demo isolation now keeps the demo conversation session-
+    // scoped and hidden from the sidebar, so `switchToManualMode` may already
+    // land on an empty user conversation — leaving the "+ New conversation"
+    // button disabled by design (see issue-153.spec.js:140). Skip the click
+    // when the button is disabled; the zero-state assertion below is the
+    // source of truth either way.
+    const newBtn = page.locator('[data-testid="conversation-new"]');
+    if (await newBtn.isEnabled().catch(() => false)) {
+      await newBtn.click();
+    }
     await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, {
       timeout: 5_000,
     });
@@ -2792,7 +2861,14 @@ test.describe('Issue #27: cross-conversation recall', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await switchToManualMode(page);
-    await page.locator('[data-testid="conversation-new"]').click();
+    // Issue #541 (R4): demo isolation keeps the demo conversation session-
+    // scoped + sidebar-hidden, so the user may already be on an empty fresh
+    // conversation here — and the "+ New conversation" button is disabled by
+    // design until there is content to clear. Skip the click in that case.
+    const newBtn = page.locator('[data-testid="conversation-new"]');
+    if (await newBtn.isEnabled().catch(() => false)) {
+      await newBtn.click();
+    }
     await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0, { timeout: 5_000 });
   });
 

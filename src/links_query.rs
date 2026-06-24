@@ -356,7 +356,7 @@ fn split_filters(text: &str) -> Vec<String> {
 }
 
 fn is_boundary(ch: Option<char>) -> bool {
-    ch.map_or(true, char::is_whitespace)
+    ch.is_none_or(char::is_whitespace)
 }
 
 fn parse_filter(clause: &str) -> Result<Filter, LinksQueryError> {

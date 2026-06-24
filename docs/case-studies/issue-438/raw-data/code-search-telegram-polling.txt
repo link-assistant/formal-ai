@@ -1,0 +1,6 @@
+link-assistant/formal-ai:README.md: defaults to `formal-ai telegram --mode polling`. Do not bind-mount the host
+link-assistant/formal-ai:README.md: cargo run -- telegram --mode polling \
+link-assistant/formal-ai:changelog.d/20260521_230000_issue_195_dind_telegram.md: - The root Docker image now uses `konard/box-dind:2.1.1` as the supported runtime, keeps the Box DinD entrypoint, and starts `formal-ai telegram --mode polling` by default.
+link-assistant/formal-ai:ARCHITECTURE.md: `formal-ai telegram --mode polling`. Commands that need nested execution
+link-assistant/formal-ai:data/seed/environments.lino: memory_export_command "formal-ai telegram --mode polling (default container command)"
+link-assistant/formal-ai:tests/unit/docs_requirements.rs: "formal-ai telegram --mode polling",

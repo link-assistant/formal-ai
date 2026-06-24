@@ -146,6 +146,97 @@ fn decomposed_sub_results_are_composed_for_algebra() {
 }
 
 #[test]
+fn compound_courtesy_and_question_are_answered_in_source_order() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        language_link: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en", // English
+            prompt: "Hi, what is Redis?",
+            language_link: "language:en",
+        },
+        Case {
+            language: "ru", // Russian
+            prompt: "Привет, что такое Redis?",
+            language_link: "language:ru",
+        },
+        Case {
+            language: "hi", // Hindi
+            prompt: "नमस्ते, Redis क्या है?",
+            language_link: "language:hi",
+        },
+        Case {
+            language: "zh", // Chinese
+            prompt: "你好, Redis是什么？",
+            language_link: "language:zh",
+        },
+    ];
+
+    for case in cases {
+        let response = synthesis_solver().solve(case.prompt);
+
+        assert_eq!(
+            response.intent, "compound_response",
+            "{} compound prompt should compose sub-results, got {}: {}",
+            case.language, response.intent, response.answer
+        );
+        let mut paragraphs = response.answer.split("\n\n");
+        let greeting = paragraphs.next().unwrap_or_default();
+        let question_answer = paragraphs.next().unwrap_or_default();
+        assert!(
+            !greeting.contains("Redis"),
+            "{} compound answer must react to the greeting first: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            question_answer.contains("Redis"),
+            "{} compound answer must answer the question segment, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(case.prompt),
+            "{} unknown answer must not treat the whole compound prompt as one concept: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == case.language_link),
+            "{} compound answer should retain the detected language link: {:?}",
+            case.language,
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .filter(|link| link.starts_with("sub_impulse:"))
+                .count()
+                >= 2,
+            "{} compound prompt must be split into multiple sub-impulses: {:?}",
+            case.language,
+            response.evidence_links
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("composition:compound_response"),
+            "{} compound synthesis must be recorded in the trace: {}",
+            case.language,
+            response.links_notation
+        );
+    }
+}
+
+#[test]
 fn paraphrased_algebra_prompt_reaches_same_derivation() {
     let solver = synthesis_solver();
     let first = solver.solve("If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?");

@@ -29,6 +29,20 @@ fn export_round_trips_through_parse() {
 }
 
 #[test]
+fn export_round_trips_multiline_content() {
+    let events = vec![MemoryEvent {
+        id: String::from("multiline"),
+        role: Some(String::from("assistant")),
+        content: Some(String::from("```bash\nwhile true; do sleep 30m; done\n```")),
+        ..MemoryEvent::default()
+    }];
+    let text = export_links_notation(&events);
+
+    assert!(text.contains(r#"content "```bash\nwhile true; do sleep 30m; done\n```""#));
+    assert_eq!(parse_links_notation(&text), events);
+}
+
+#[test]
 fn parse_ignores_unknown_fields() {
     let text =
         "demo_memory\n  event \"1\"\n    role \"user\"\n    novel_key \"x\"\n    content \"Hi\"\n";

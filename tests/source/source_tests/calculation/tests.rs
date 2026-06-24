@@ -130,6 +130,20 @@ fn upstream_equation_categories_are_delegated_with_steps() {
 }
 
 #[test]
+fn fallback_arithmetic_handles_large_integer_exponents_exactly() {
+    const TEN_POW_100: &str =
+        "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
+    let value = crate::arithmetic::evaluate_fallback_formatted("10^100")
+        .expect("large integer exponent should evaluate exactly");
+    assert_eq!(value, TEN_POW_100);
+
+    let tower = crate::arithmetic::evaluate_fallback_formatted("2^3^2")
+        .expect("exponentiation should be right-associative");
+    assert_eq!(tower, "512");
+}
+
+#[test]
 fn arithmetic_word_tables_match_seed() {
     // src/arithmetic.rs is compiled into the wasm worker (no_std, no build.rs),
     // so its spelled-word→value tables are materialized at author time into

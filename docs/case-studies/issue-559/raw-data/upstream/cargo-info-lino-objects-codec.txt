@@ -1,0 +1,8 @@
+lino-objects-codec #links-notation #serialization #codec #object-graph #circular-references
+A library to encode/decode objects to/from links notation
+version: 0.2.1
+license: Unlicense
+rust-version: 1.70
+documentation: https://docs.rs/lino-objects-codec
+repository: https://github.com/link-foundation/lino-objects-codec
+crates.io: https://crates.io/crates/lino-objects-codec/0.2.1
