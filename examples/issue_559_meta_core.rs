@@ -1,4 +1,4 @@
-//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R337).
+//! Emit the issue #559 meta-core link artifacts for a sample prompt (R330–R338).
 //!
 //! Run with:
 //!
@@ -16,13 +16,16 @@
 //! 4. the method registry (R331): the catalogue derived from live dispatch;
 //! 5. the white-box recursive reasoning (R337): the downward/upward thought per
 //!    step, so the box is inspectable, not just the predicate;
-//! 6. the solution evidence (R334): the join `need → leaf → status → method`.
+//! 6. the upward construction pass (R338): the post-order leaf→root walk that
+//!    composes each answer back up, the construction half of the recursion;
+//! 7. the solution evidence (R334): the join `need → leaf → status → method`.
 //!
 //! The self-describing recipe (R335) lives as data in
 //! `data/meta/recursive-core-recipe.lino`. Together these are the "deep
 //! case-study analysis" data for `docs/case-studies/issue-559`.
 
 use formal_ai::intent_formalization::formalize_intent;
+use formal_ai::meta_construction::UpwardConstruction;
 use formal_ai::meta_frame::{NeedLedger, ProblemFrame, WorkUnit};
 use formal_ai::meta_reasoning::WorkUnitReasoning;
 use formal_ai::method_registry::MethodRegistry;
@@ -37,6 +40,7 @@ fn dump(prompt: &str) {
     let ledger = NeedLedger::resolve(&frame, &root);
     let registry = MethodRegistry::from_dispatch();
     let reasoning = WorkUnitReasoning::for_unit(&root, &registry);
+    let construction = UpwardConstruction::for_unit(&root, &registry);
     let evidence = SolutionEvidence::assemble(&frame, &ledger, &registry);
 
     println!("================================================================");
@@ -55,6 +59,11 @@ fn dump(prompt: &str) {
         "\n# (R337) white-box recursive reasoning ({} steps)\n{}",
         reasoning.step_count(),
         reasoning.to_links_notation()
+    );
+    println!(
+        "\n# (R338) upward construction pass ({} steps)\n{}",
+        construction.step_count(),
+        construction.to_links_notation()
     );
     println!(
         "\n# (R334) solution evidence (accounted_for={}, fully_resolved={})\n{}",

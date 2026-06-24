@@ -364,6 +364,63 @@ fn issue_559_work_unit_reasoning_is_traceable() {
     );
 }
 
+#[test]
+fn issue_559_upward_construction_is_traceable() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+
+    // R338: the requirements row exists and cites the upward construction pass.
+    let requirements = read(root.join("REQUIREMENTS.md"));
+    assert_contains_all(
+        "REQUIREMENTS.md",
+        &requirements,
+        &[
+            "| R338 ",
+            "upward construction pass",
+            "src/meta_construction.rs",
+            "record_upward_construction",
+            "recursion_mode",
+        ],
+    );
+
+    // The construction module ships the mode knob, the structures, and recorder.
+    let module = read(root.join("src/meta_construction.rs"));
+    assert_contains_all(
+        "src/meta_construction.rs",
+        &module,
+        &[
+            "pub enum RecursionMode",
+            "pub struct UpwardConstruction",
+            "pub struct ConstructionStep",
+            "fn emits_downward",
+            "fn emits_upward",
+            "fn for_unit",
+            "fn to_links_notation",
+            "fn record_upward_construction",
+            "upward_construction",
+        ],
+    );
+
+    // The pass is wired into the meta core, gated by the solver config knob.
+    let meta_core = read(root.join("src/meta_core.rs"));
+    assert!(
+        meta_core.contains("crate::meta_construction::record_upward_construction"),
+        "src/meta_core.rs should emit the upward construction pass"
+    );
+    assert!(
+        meta_core.contains("mode.emits_downward()"),
+        "src/meta_core.rs should gate the downward reasoning on the recursion mode"
+    );
+    let solver = read(root.join("src/solver.rs"));
+    assert!(
+        solver.contains("recursion_mode"),
+        "src/solver.rs should expose the recursion_mode config knob"
+    );
+    assert!(
+        solver.contains("self.config.recursion_mode"),
+        "src/solver.rs should pass the recursion mode into the meta core"
+    );
+}
+
 fn read(path: impl AsRef<Path>) -> String {
     fs::read_to_string(path.as_ref())
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.as_ref().display()))

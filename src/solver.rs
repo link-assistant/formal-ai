@@ -189,6 +189,11 @@ pub struct SolverConfig {
     pub temperature: f32,
     /// Hard upper bound on recursive sub-impulse expansion.
     pub max_decomposition_depth: u8,
+    /// Which directions of the meta core's recursive reasoning are traced
+    /// (issue #559): `Down` (default) reasons about the downward decomposition
+    /// only and reproduces the pre-knob trace exactly; `Up`/`Both` additionally
+    /// trace the upward construction pass. Trace-only either way (R13).
+    pub recursion_mode: crate::meta_construction::RecursionMode,
     /// Whether agent mode is opted in. Off by default.
     pub agent_mode: bool,
     /// Whether diagnostic links are echoed inside the user-facing reply.
@@ -226,6 +231,7 @@ impl Default for SolverConfig {
             questioning_rigor: 0.4,
             temperature: 0.7,
             max_decomposition_depth: 4,
+            recursion_mode: crate::meta_construction::RecursionMode::default(),
             agent_mode: false,
             diagnostic_mode: false,
             offline: false,
@@ -287,6 +293,11 @@ impl SolverConfig {
         {
             if let Some(mode) = BlueprintComposition::from_value(&value) {
                 config.blueprint_composition = mode;
+            }
+        }
+        if let Ok(value) = std::env::var("FORMAL_AI_RECURSION_MODE") {
+            if let Some(mode) = crate::meta_construction::RecursionMode::from_slug(&value) {
+                config.recursion_mode = mode;
             }
         }
         config
@@ -485,6 +496,7 @@ impl UniversalSolver {
             &mut log,
             &intent_formalization,
             self.config.max_decomposition_depth,
+            self.config.recursion_mode,
         );
 
         log.append("search:local", prompt.to_owned());

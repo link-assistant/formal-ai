@@ -1,10 +1,10 @@
 //! Issue #559 (R335): the recursive meta core, self-described as grounded data.
 //!
 //! `data/meta/recursive-core-recipe.lino` is the meta algorithm describing
-//! *itself*: the nine ordered steps that turn any message into a solved,
+//! *itself*: the ten ordered steps that turn any message into a solved,
 //! link-native knowledge base, plus the live functions that implement each step.
 //! These tests keep that recipe grounded — they load it and assert the real
-//! source still defines every named function and lists nine contiguous steps —
+//! source still defines every named function and lists ten contiguous steps —
 //! so the self-description can never drift from the code that actually runs. This
 //! is the concrete sense in which the core can "reason about itself": its own
 //! algorithm exists as data the engine can read, pinned to the implementation.
@@ -118,8 +118,8 @@ fn recursive_core_recipe_steps_are_complete_and_ordered() {
     orders.sort_unstable();
     assert_eq!(
         orders,
-        (1..=9).collect::<Vec<_>>(),
-        "the recursive meta core must list nine contiguously ordered steps"
+        (1..=10).collect::<Vec<_>>(),
+        "the recursive meta core must list ten contiguously ordered steps"
     );
 }
 

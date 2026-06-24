@@ -26,6 +26,7 @@ pub(crate) mod links_format;
 pub mod links_query;
 pub mod memory;
 pub mod memory_sync;
+pub mod meta_construction;
 pub(crate) mod meta_core;
 pub mod meta_frame;
 pub mod meta_reasoning;

@@ -58,6 +58,20 @@ work_unit_1653752b66b67893
   upward_rationale "Return the method's result directly; there are no children to compose."
   method "translation"
 
+# (R338) upward construction pass (1 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_1653752b66b67893"
+  step_count "1"
+work_unit_1653752b66b67893
+  record_type "construction_step"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `translation`."
+  method "translation"
+
 # (R334) solution evidence (accounted_for=true, fully_resolved=true)
 solution_evidence
   record_type "solution_evidence"
@@ -192,6 +206,37 @@ work_unit_751ee4a5ba055be3
   upward_rationale "Return the method's result directly; there are no children to compose."
   method "write_script"
 
+# (R338) upward construction pass (3 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_16efab3092bb4d01"
+  step_count "3"
+work_unit_ddbb9068def90fae
+  record_type "construction_step"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `translation`."
+  method "translation"
+work_unit_751ee4a5ba055be3
+  record_type "construction_step"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  order "2"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `write_script`."
+  method "write_script"
+work_unit_16efab3092bb4d01
+  record_type "construction_step"
+  unit_id "work_unit_16efab3092bb4d01"
+  depth "0"
+  order "3"
+  kind "compose"
+  rationale "Recursive case: compose the 2 already-constructed children in source order into this unit's answer."
+  input "work_unit_ddbb9068def90fae"
+  input "work_unit_751ee4a5ba055be3"
+
 # (R334) solution evidence (accounted_for=true, fully_resolved=true)
 solution_evidence
   record_type "solution_evidence"
@@ -275,6 +320,19 @@ work_unit_b008b07e7a293ffd
   decision "single_need"
   downward_rationale "The span cannot be split further and matches no known route, so it is an irreducible single need. Record it for an honest blocked status instead of forcing an answer."
   upward_rationale "Return a blocked marker upward: this leaf has no resolving method, so there is nothing to compose."
+
+# (R338) upward construction pass (1 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_b008b07e7a293ffd"
+  step_count "1"
+work_unit_b008b07e7a293ffd
+  record_type "construction_step"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: no method resolves this leaf, so its answer is a blocked marker — nothing is constructed."
 
 # (R334) solution evidence (accounted_for=true, fully_resolved=false)
 solution_evidence

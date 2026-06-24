@@ -17,7 +17,7 @@ The captured output is checked in at
 [raw-data/meta-core-artifacts.txt](raw-data/meta-core-artifacts.txt) and every
 quotation below is copied verbatim from that run.
 
-## What shipped (R330–R337)
+## What shipped (R330–R338)
 
 The general meta core is now a fixed pipeline every request passes through, ahead
 of the existing specialized dispatch. Each stage is a behavior-preserving,
@@ -35,13 +35,18 @@ append-only `EventLog` and changes neither routing nor the produced answer
 | R335 | — | Self-describing recursive-core recipe as link data | `data/meta/recursive-core-recipe.lino` | (data; not a loop event) | c619c447 |
 | R336 | 4 | Route→method alias bridge: a coarser/finer intent slug still resolves to a catalogued method | `data/meta/route-method-aliases.lino`, `src/route_method_alias.rs` (`RouteMethodAlias`), consumed by `MethodRegistry::method_for_route` | (data + `solution_evidence` `method_via_alias`) | (this PR) |
 | R337 | 5 | White-box recursive reasoning: a downward/upward thought per work unit | `src/meta_reasoning.rs` (`WorkUnitReasoning`) | `work_unit_reasoning`, `work_unit_reasoning:steps` | (this PR) |
+| R338 | 5 | Upward construction pass + `recursion_mode` knob: the post-order leaf→root composition, the construction half of the recursion | `src/meta_construction.rs` (`RecursionMode`, `UpwardConstruction`, `ConstructionStep`), gated by `SolverConfig::recursion_mode` | `upward_construction`, `upward_construction:steps` | (this PR) |
 
 The wiring lives in `src/meta_core.rs` (`record_meta_core`), which the solver
 loop (`src/solver.rs`) invokes as a single cohesive pass before the existing
 `search:local` step: it records the problem frame, then `record_work_units`,
 `record_need_ledger`, `record_method_registry`, `record_work_unit_reasoning`,
-and `record_solution_evidence` in sequence, so the meta core observes the request
-but does not steer it yet.
+`record_upward_construction`, and `record_solution_evidence` in sequence, so the
+meta core observes the request but does not steer it yet. Which recursive
+directions are reasoned about — the downward decomposition (R337), the upward
+construction (R338), or both — is selected by `SolverConfig::recursion_mode`
+(default `Down`), which leaves the default trace exactly as it was before the
+knob existed.
 That ordering is what makes the migration safe: the artifacts are produced and
 audited first; routing is moved onto them only in later, behavior-changing phases
 that remain deferred (see [solution-plan.md](solution-plan.md)).
@@ -224,6 +229,46 @@ and upward thoughts, the decision slugs, the method resolution, and the
 trace-only contract (building the reasoning mutates neither the unit tree nor the
 resolved methods).
 
+## The upward construction pass (R338)
+
+Decomposition is only half of a recursive algorithm. The downward pass (R332/R337)
+splits a request into a work-unit tree and explains *why*; the **upward pass**
+(`src/meta_construction.rs`) composes the children's results back into each
+parent's answer, leaf to root — the construction half of the recursion. It is a
+post-order (bottom-up) walk of the same tree: every leaf is a base case
+(`kind "leaf_method"`, constructed directly from the method that resolves its
+route through the same `method_for_route` bridge the evidence join uses), and
+every parent is a recursive case (`kind "compose"`, composing its
+already-constructed children in source order), terminating at the root. For the
+conjunction *"translate apple to Russian and write a hello world program in
+Python"* the pass is three steps — both leaves first, the root last:
+
+```text
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_16efab3092bb4d01"
+  step_count "3"
+…
+  order "1"  kind "leaf_method"  method "translation"
+  order "2"  kind "leaf_method"  method "write_script"
+  order "3"  kind "compose"      input "…ddbb…"  input "…751e…"
+```
+
+Which directions the meta core emits is governed by the `RecursionMode` knob
+(`Down` | `Up` | `Both`), surfaced as `SolverConfig::recursion_mode` and the
+`FORMAL_AI_RECURSION_MODE` env override. The default is `Down`, which reproduces
+the pre-knob trace exactly — the upward pass is always an explicit opt-in, so the
+default solver behaves identically to before this knob existed (R13). The
+structural decomposition events (`work_unit:enter` / `work_unit:exit`) are always
+emitted; the knob gates only the directional *reasoning* artifacts, none of which
+change routing or the answer. `record_upward_construction` returns `None` when the
+mode does not request the upward direction; otherwise it appends the trace-only
+`upward_construction` and `upward_construction:steps` events.
+`tests/unit/specification/meta_construction.rs` pins the post-order shape (orders
+`1..=N`, root last, root `compose`), the leaf-vs-compose semantics, the compose
+inputs as children in source order, the serialization, and the gating contract
+(the answer and intent are identical across all three modes).
+
 ## Self-description as data (R335)
 
 `data/meta/recursive-core-recipe.lino` describes the meta core to itself: a
@@ -237,9 +282,9 @@ on the same footing as everything else.
 
 ## Verification and traceability
 
-- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning}.rs`.
+- Grounding tests: `tests/unit/specification/{meta_frame,method_registry,recursive_core_recipe,solution_evidence,route_method_alias,meta_reasoning,meta_construction}.rs`.
 - Requirement traceability: `tests/unit/docs_requirements_issue_559.rs` ties each
-  REQUIREMENTS.md row (R330–R337) to its source module, named entry points, and
+  REQUIREMENTS.md row (R330–R338) to its source module, named entry points, and
   solver wiring; a row that loses its implementation fails CI.
 - Backward compatibility: every change is additive (new modules, new optional
   `LedgerRow` fields, new trace events). The full unit suite passes with the new
@@ -256,9 +301,11 @@ on the same footing as everything else.
   the ledger gives each a status, and the evidence join makes "every need
   addressed" a single auditable fact (`accounted_for` / `fully_resolved`).
 - **Reason about and modify itself:** R335 makes the core's own structure
-  grounded link data with tests that keep the description faithful, and R337
+  grounded link data with tests that keep the description faithful, R337
   attaches white-box recursive reasoning to every step so the box is inspectable
-  by users and developers, not just the predicate.
+  by users and developers, not just the predicate, and R338 records the upward
+  construction pass so both directions of the recursion — decompose and compose —
+  are explicit, inspectable link data.
 - **Preserve caches, overrides, meanings, and `.lino` files:** untouched; the new
   artifacts are additive trace events and one new data file.
 - **Compile data and do deep case-study analysis:** this document plus the
