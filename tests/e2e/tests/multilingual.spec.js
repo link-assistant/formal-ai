@@ -2,6 +2,8 @@
 const { test, expect } = require('@playwright/test');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
+const TEN_POW_100 =
+  '10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000';
 
 const definitionDisambiguationCases = [
   {
@@ -178,6 +180,21 @@ async function switchToManualMode(page) {
   });
   await expect(page.locator('[data-testid="tool-entry"]').first()).toBeVisible({
     timeout: 10_000,
+  });
+}
+
+async function setUiLanguage(page, language) {
+  await page.evaluate((nextLanguage) => {
+    window.localStorage.setItem(
+      'formal-ai.preferences.v1',
+      `demo_preferences\n  demoMode "off"\n  greetingVariations "off"\n  uiLanguage "${nextLanguage}"`,
+    );
+  }, language);
+  await page.reload();
+  await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('html')).toHaveAttribute('lang', language);
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
+    timeout: 5_000,
   });
 }
 
@@ -409,6 +426,25 @@ test.describe('multilingual chat surface', () => {
     await expect(last).toHaveClass(/assistant/);
     await expect(last).toContainText('2 + 2 = 4');
     await expect(last).not.toContainText('arithmetic is available');
+  });
+
+  test('large integer exponent renders exactly across supported UI languages', async ({
+    page,
+  }) => {
+    const cases = [
+      { language: 'en', name: 'English', prompt: '10^100' },
+      { language: 'ru', name: 'Russian', prompt: '10^100' },
+      { language: 'hi', name: 'Hindi', prompt: '10^100' },
+      { language: 'zh', name: 'Chinese', prompt: '10^100' },
+    ];
+
+    for (const { language, name, prompt } of cases) {
+      await setUiLanguage(page, language);
+      const last = await sendPrompt(page, prompt);
+      await expect(last, name).toHaveClass(/assistant/);
+      await expect(last, name).toContainText(`${prompt} = ${TEN_POW_100}`);
+      await expect(last, name).not.toContainText('1e+1');
+    }
   });
 
   test('misspelled calculate action resolves as a calculation with interpretation', async ({ page }) => {

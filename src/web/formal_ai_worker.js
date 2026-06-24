@@ -1511,10 +1511,9 @@ function tokenizeArithmetic(input) {
         j += 1;
       }
       const slice = input.slice(i, j);
-      const value = Number(slice);
-      if (Number.isNaN(value)) {
-        throw new Error("unparseable");
-      }
+      const hasDecimal = slice.includes(".");
+      const value = hasDecimal ? Number(slice) : BigInt(slice);
+      if (hasDecimal && Number.isNaN(value)) throw new Error("unparseable");
       tokens.push({ kind: "num", value });
       i = j;
     } else {
@@ -1902,6 +1901,74 @@ function normalizeArithmeticWords(expression) {
   return rewritePercentOf(mapped);
 }
 
+const EXACT_ARITHMETIC_EXPONENT_LIMIT = 10000n;
+
+function isArithmeticBigInt(value) {
+  return typeof value === "bigint";
+}
+
+function arithmeticToNumber(value) {
+  return isArithmeticBigInt(value) ? Number(value) : value;
+}
+
+function arithmeticIsZero(value) {
+  return value === 0 || value === 0n;
+}
+
+function arithmeticEnsureFinite(value) {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new Error("overflow");
+  }
+  return value;
+}
+
+function arithmeticNegate(value) {
+  return isArithmeticBigInt(value) ? -value : -value;
+}
+
+function arithmeticAdd(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left + right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) + arithmeticToNumber(right));
+}
+
+function arithmeticSub(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left - right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) - arithmeticToNumber(right));
+}
+
+function arithmeticMul(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left * right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) * arithmeticToNumber(right));
+}
+
+function arithmeticDiv(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (
+    isArithmeticBigInt(left) &&
+    isArithmeticBigInt(right) &&
+    left % right === 0n
+  ) {
+    return left / right;
+  }
+  return arithmeticEnsureFinite(arithmeticToNumber(left) / arithmeticToNumber(right));
+}
+
+function arithmeticRem(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left % right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) % arithmeticToNumber(right));
+}
+
+function arithmeticPow(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right) && right >= 0n) {
+    if (right > EXACT_ARITHMETIC_EXPONENT_LIMIT) throw new Error("overflow");
+    return left ** right;
+  }
+  return arithmeticEnsureFinite(
+    Math.pow(arithmeticToNumber(left), arithmeticToNumber(right)),
+  );
+}
+
 function evaluateArithmetic(expression) {
   const normalized = normalizeArithmeticWords(expression);
   const tokens = tokenizeArithmetic(normalized);
@@ -1928,8 +1995,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "^") {
       advance();
-      left = Math.pow(left, parseUnary());
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = arithmeticPow(left, parseUnary());
     }
     return left;
   }
@@ -1937,7 +2003,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "-") {
       advance();
-      return -parseUnary();
+      return arithmeticNegate(parseUnary());
     }
     if (tok && tok.kind === "+") {
       advance();
@@ -1956,15 +2022,12 @@ function evaluateArithmetic(expression) {
       advance();
       const right = parseUnary();
       if (op === "*") {
-        left = left * right;
-      } else if (right === 0) {
-        throw new Error("division by zero");
+        left = arithmeticMul(left, right);
       } else if (op === "/") {
-        left = left / right;
+        left = arithmeticDiv(left, right);
       } else {
-        left = left % right;
+        left = arithmeticRem(left, right);
       }
-      if (!Number.isFinite(left)) throw new Error("overflow");
     }
     return left;
   }
@@ -1976,8 +2039,7 @@ function evaluateArithmetic(expression) {
       const isPlus = tok.kind === "+";
       advance();
       const right = parseMultiplicative();
-      left = isPlus ? left + right : left - right;
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = isPlus ? arithmeticAdd(left, right) : arithmeticSub(left, right);
     }
     return left;
   }
@@ -1989,11 +2051,13 @@ function evaluateArithmetic(expression) {
 }
 
 function formatArithmeticResult(value) {
+  if (isArithmeticBigInt(value)) return value.toString();
   if (!Number.isFinite(value)) return "non-finite";
   if (Math.abs(value % 1) === 0 && Math.abs(value) < 1e15) {
     return value.toFixed(0);
   }
-  const rendered = value.toFixed(10);
+  const rendered = Math.abs(value) >= 1e21 ? String(value) : value.toFixed(10);
+  if (/[eE]/.test(rendered)) return rendered;
   const trimmed = rendered.replace(/0+$/, "").replace(/\.$/, "");
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
