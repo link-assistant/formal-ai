@@ -1,0 +1,4 @@
+name = 'agent-commander'
+version = '0.8.0'
+repository.url = 'git+https://github.com/link-assistant/agent-commander.git'
+description = 'A JavaScript library to control agents enclosed in CLI commands like Anthropic Claude Code CLI'

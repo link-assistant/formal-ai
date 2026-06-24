@@ -1,0 +1,13 @@
+platform-mem #memory #linksplatform #mmap #allocator
+Memory for linksplatform
+version: 0.3.0
+license: Unlicense
+rust-version: 1.85
+documentation: https://docs.rs/platform-mem/0.3.0
+homepage: https://github.com/linksplatform/mem-rs
+repository: https://github.com/linksplatform/mem-rs
+crates.io: https://crates.io/crates/platform-mem/0.3.0
+features:
+ +default = []
+  async   = [tokio]
+  tokio   = [dep:tokio]

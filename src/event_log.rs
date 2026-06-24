@@ -364,9 +364,7 @@ fn curate_thinking_event(
         "language" | "language_from" => keep("detect_language", detail, "high"),
         "language_to" => keep("resolve_response_language", detail, "high"),
         "intent_formalization:route" => keep("formalize", detail, "high"),
-        "intent" | "specialized_handler" | "legacy_intent" => {
-            keep("dispatch_handler", detail, "high")
-        }
+        "intent" | "legacy_intent" => keep("dispatch_handler", detail, "high"),
         "program_plan" | "program_parameters" => keep("program_plan", detail, "high"),
         "response" => {
             let value = if final_answer.is_empty() {

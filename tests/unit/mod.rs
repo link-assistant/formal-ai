@@ -7,6 +7,7 @@ mod docker_runtime;
 mod docs_requirements;
 mod docs_requirements_issue_451;
 mod docs_requirements_issue_468;
+mod docs_requirements_issue_559;
 mod formal_ai;
 mod github_logs;
 mod installation_conversion;
