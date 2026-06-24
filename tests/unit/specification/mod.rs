@@ -88,5 +88,6 @@ mod text_manipulation;
 mod text_manipulation_benchmarks;
 mod translation_via_links;
 mod transparent_state;
+mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;

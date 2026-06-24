@@ -1538,6 +1538,8 @@ const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
 const ROLE_MATH_FUNCTION_NAME = "math_function_name";
+const ROLE_MEASUREMENT_UNIT = "measurement_unit";
+const ROLE_PHYSICAL_DIMENSION = "physical_dimension";
 
 // Issue #386: the spelled digit/operator → value normalization tables, derived
 // from the seed at runtime exactly as the Rust solver derives them
@@ -17343,6 +17345,12 @@ const MEANINGS_LINO = [
   "      surface",
   "        text метра",
   "      surface",
+  "        text метру",
+  "      surface",
+  "        text метром",
+  "      surface",
+  "        text метре",
+  "      surface",
   "        text метров",
   "    lexeme hi",
   "      surface",
@@ -17573,6 +17581,16 @@ const MEANINGS_LINO = [
   "        text кг",
   "      surface",
   "        text килограмм",
+  "      surface",
+  "        text килограмма",
+  "      surface",
+  "        text килограмму",
+  "      surface",
+  "        text килограммом",
+  "      surface",
+  "        text килограмме",
+  "      surface",
+  "        text килограммов",
   "    lexeme hi",
   "      surface",
   "        text किलोग्राम",
@@ -17595,6 +17613,16 @@ const MEANINGS_LINO = [
   "    lexeme ru",
   "      surface",
   "        text грамм",
+  "      surface",
+  "        text грамма",
+  "      surface",
+  "        text грамму",
+  "      surface",
+  "        text граммом",
+  "      surface",
+  "        text грамме",
+  "      surface",
+  "        text граммов",
   "    lexeme hi",
   "      surface",
   "        text ग्राम",
@@ -30574,6 +30602,93 @@ function findMeaning(slug) {
   return meaningLexicon().find((meaning) => meaning.slug === slug) || null;
 }
 
+function wordInLanguage(meaning, language) {
+  const lexeme = (meaning.lexemes || []).find((candidate) => candidate.language === language);
+  return lexeme && lexeme.words.length > 0 ? lexeme.words[0] : null;
+}
+
+function dimensionLabelForUnit(unit) {
+  for (const slug of unit.definedBy || []) {
+    const dimension = findMeaning(slug);
+    if (!dimension || !dimension.roles.includes(ROLE_PHYSICAL_DIMENSION)) continue;
+    return wordInLanguage(dimension, "en") || dimension.words[0] || null;
+  }
+  return null;
+}
+
+function isAlphabeticCharacter(ch) {
+  return !!ch && /\p{Alphabetic}/u.test(ch);
+}
+
+// Mirrors contains_unit_word in src/solver_handler_units.rs: ASCII and CJK unit
+// surfaces need alphabetic boundaries so "gram" inside "program" and "克" inside
+// an unrelated CJK compound do not count, while inflected alphabetic scripts can
+// still match suffix forms such as Russian "килограмм" in "килограмме".
+function containsUnitWord(normalized, unit) {
+  if (!unit) return false;
+  const text = String(normalized || "");
+  if (!/[^\x00-\x7F]/.test(unit) || containsCjk(unit)) {
+    let searchFrom = 0;
+    while (searchFrom <= text.length) {
+      const start = text.indexOf(unit, searchFrom);
+      if (start < 0) return false;
+      const end = start + unit.length;
+      const before = Array.from(text.slice(0, start)).pop() || "";
+      const after = Array.from(text.slice(end))[0] || "";
+      if (!isAlphabeticCharacter(before) && !isAlphabeticCharacter(after)) {
+        return true;
+      }
+      searchFrom = end;
+    }
+    return false;
+  }
+  return text.includes(unit);
+}
+
+function detectIncompatibleUnitPair(normalized) {
+  const found = [];
+  for (const unit of meaningsWithRole(ROLE_MEASUREMENT_UNIT)) {
+    const dimension = dimensionLabelForUnit(unit);
+    if (!dimension || found.some((entry) => entry.dimension === dimension)) {
+      continue;
+    }
+    const matched = unit.words.find((word) => containsUnitWord(normalized, word));
+    if (matched) {
+      found.push({ unit: matched, dimension });
+    }
+  }
+  if (found.length < 2) return null;
+  return [found[0], found[1]];
+}
+
+function tryIncompatibleUnits(prompt, normalized) {
+  const pair = detectIncompatibleUnitPair(normalized);
+  if (!pair) return null;
+  const [a, b] = pair;
+  const content =
+    `${a.unit} measures ${a.dimension}; ${b.unit} measures ${b.dimension}. ` +
+    "These are different physical dimensions and cannot be converted into each other. " +
+    "The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+  return {
+    intent: "unit_incompatibility",
+    content,
+    confidence: 1.0,
+    evidence: [
+      `unit_incompatibility:${a.unit}:${a.dimension}:vs:${b.unit}:${b.dimension}`,
+      "response:unit_incompatibility",
+    ],
+    trace: [
+      `unit_incompatibility:${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+    ],
+    steps: [
+      {
+        step: "unit_incompatibility",
+        detail: `${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+      },
+    ],
+  };
+}
+
 // Distinct surface words (across all languages) carried by the meaning `slug`,
 // or an empty array when no such meaning exists. The coding catalog reads each
 // language's and task's alias surfaces from the `program_language_<slug>` /
@@ -37533,6 +37648,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
     },
+    { name: "tryIncompatibleUnits", run: () => tryIncompatibleUnits(prompt, normalized) },
     // Issue #135/#386: a Playwright-script request is more specific than the
     // generalized write_program recognizer. Since #386 taught
     // writeProgramParameters to recognize a program_kind ("скрипт"/"script")
