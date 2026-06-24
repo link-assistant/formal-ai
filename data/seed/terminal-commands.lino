@@ -1,0 +1,97 @@
+terminal_commands
+  terminal_phrases
+    language ru
+      phrase "в терминале"
+      phrase "в консоли"
+      phrase "в командной строке"
+      phrase "в шелле"
+    language en
+      phrase "in terminal"
+      phrase "in the terminal"
+      phrase "in a terminal"
+      phrase "in console"
+      phrase "in the console"
+      phrase "in shell"
+      phrase "in the shell"
+      phrase "in a shell"
+      phrase "terminal command"
+      phrase "shell command"
+      phrase "command line"
+      phrase command-line
+    language hi
+      phrase "टर्मिनल में"
+      phrase "टर्मिनल पर"
+      phrase "कमांड लाइन"
+      phrase "शेल में"
+    language zh
+      phrase 在终端
+      phrase 终端中
+      phrase 终端里
+      phrase 命令行
+      phrase 在命令行
+      phrase "在 shell"
+      phrase 在shell
+  run_verbs
+    language ru
+      verb выполни
+      verb выполнить
+      verb запусти
+      verb запустить
+    language en
+      verb run
+      verb execute
+    language hi
+      verb चलाओ
+      verb चलाएं
+      verb चलाएँ
+      verb चलाइए
+      verb निष्पादित
+  cjk_run_verbs
+    verb 运行
+    verb 执行
+    verb 跑一下
+    verb 跑下
+  shell_tokens
+    token ls
+    token pwd
+    token cd
+    token cat
+    token echo
+    token mkdir
+    token rmdir
+    token rm
+    token cp
+    token mv
+    token touch
+    token grep
+    token git
+    token npm
+    token npx
+    token node
+    token cargo
+    token python
+    token python3
+    token pip
+    token curl
+    token wget
+    token chmod
+    token chown
+    token df
+    token du
+    token ps
+    token kill
+    token head
+    token tail
+    token whoami
+    token uname
+    token export
+    token which
+    token sudo
+    token ssh
+    token tar
+    token find
+    token sed
+    token awk
+    token make
+    token docker
+    token kubectl

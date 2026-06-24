@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify",
+    "build:web": "bun build ./src/web/vendor-entry.js --outfile ./src/web/vendor.bundle.js --target browser --format iife --production --minify && bun build ./src/web/ocr-entry.js --outfile ./src/web/ocr.bundle.js --target browser --format iife --production --minify && bun build ./src/web/app/main.jsx --outfile ./src/web/app.js --target browser --format iife --production --minify",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run build",
     "desktop:smoke": "npm --prefix desktop run smoke",
@@ -13,11 +13,13 @@
     "vscode:test": "npm --prefix vscode run test"
   },
   "dependencies": {
-    "dompurify": "3.3.0",
+    "@chakra-ui/react": "^3",
+    "@emotion/react": "^11",
+    "dompurify": "3.4.10",
     "lino-i18n": "0.1.1",
-    "marked": "17.0.1",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "marked": "18.0.5",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "tesseract.js": "7.0.0"
   }
 }

@@ -5,6 +5,122 @@
     sans-serif;
   background: #eef2f1;
   color: #1e252b;
+
+  /* ===================================================================
+   * Issue #550 (M1/M2/M7): semantic design tokens — one source of truth
+   * for the light/dark axis.
+   * ===================================================================
+   * Root cause of P4 ("services box ignores dark theme") and P5 ("only some
+   * topbar buttons react to hover") was that this stylesheet hand-duplicated
+   * every colour across a light base + `:root[data-theme="dark"]` +
+   * `@media (prefers-color-scheme: dark)` layer, so a new surface or control
+   * went dark / got a hover state ONLY if someone remembered to author the
+   * matching duplicate rule — and newer code routinely missed it.
+   *
+   * These tokens collapse that triplication: a rule written once against a
+   * token (e.g. `background: var(--fa-surface-card)`) automatically themes in
+   * all three states because only the token VALUE is overridden below (in both
+   * dark layers). New surfaces/controls that use the tokens inherit correct
+   * theming and interaction by construction — they can no longer silently miss
+   * a dark or hover rule. This generalises the pre-existing `--code-*` token
+   * pattern (see `.markdown-body`) to the whole chrome and is the documented
+   * step 1 of the tokens → Chakra migration (see the issue-550 case study).
+   *
+   * Light values live here; dark values are overridden once, just below. */
+
+  /* Surfaces */
+  --fa-surface-card: #ffffff;
+  --fa-surface-raised: #f3f6f7;
+  /* Borders */
+  --fa-border-subtle: #d6dde1;
+  --fa-border-control: #c8d2d8;
+  /* Text */
+  --fa-text-body: #1e252b;
+  --fa-text-muted: #657584;
+  --fa-text-strong: #24333d;
+  --fa-mode-status-text: #40515f;
+  /* Accent */
+  --fa-accent-link: #175f4f;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #1f7a5b;
+  --fa-accent-solid-text: #ffffff;
+  /* Status */
+  --fa-service-dot-idle: #b4c0c8;
+  --fa-error-text: #b3261e;
+  --fa-sidebar-toggle-collapsed-bg: #eef2f1;
+  /* Reasoning-trace mode badges */
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.18);
+  --fa-tool-mode-text: #4a5acc;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.18);
+  --fa-tool-mode-agent-text: #b66e1a;
+  /* Interactive control states — shared by every topbar control AND every
+   * panel action button so hover/focus is uniform across the whole app. */
+  --fa-control-hover-border: #86b8a7;
+  --fa-control-hover-bg: #edf7f3;
+  --fa-control-active-hover-border: #0f4a3c;
+  --fa-control-active-hover-bg: #0f4a3c;
+  --fa-focus-ring: #175f4f;
+}
+
+/* Dark token values — explicit theme override (wins over the OS preference). */
+:root[data-theme="dark"] {
+  --fa-surface-card: #1d201f;
+  --fa-surface-raised: #242826;
+  --fa-border-subtle: #343a3d;
+  --fa-border-control: #4a524e;
+  --fa-text-body: #ece7df;
+  --fa-text-muted: #c9c1b6;
+  --fa-text-strong: #ece7df;
+  --fa-mode-status-text: #c9c1b6;
+  --fa-accent-link: #91d7bc;
+  --fa-accent-solid-bg: #1f7a5b;
+  --fa-accent-solid-border: #2a8f6a;
+  --fa-accent-solid-text: #ffffff;
+  --fa-service-dot-idle: #4a524e;
+  --fa-error-text: #ef9a9a;
+  --fa-sidebar-toggle-collapsed-bg: #222624;
+  --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+  --fa-tool-mode-text: #aebcff;
+  --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+  --fa-tool-mode-agent-text: #f2c084;
+  --fa-control-hover-border: #6cc5a6;
+  --fa-control-hover-bg: #28332f;
+  --fa-control-active-hover-border: #2a8f6a;
+  --fa-control-active-hover-bg: #165a49;
+  --fa-focus-ring: #6cc5a6;
+}
+
+/* Dark token values — OS preference fallback (unless light is pinned). The two
+ * dark layers carry IDENTICAL token values; the duplication now lives in ONE
+ * place (these ~20 lines) instead of being scattered across every coloured
+ * rule in the file. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fa-surface-card: #1d201f;
+    --fa-surface-raised: #242826;
+    --fa-border-subtle: #343a3d;
+    --fa-border-control: #4a524e;
+    --fa-text-body: #ece7df;
+    --fa-text-muted: #c9c1b6;
+    --fa-text-strong: #ece7df;
+    --fa-mode-status-text: #c9c1b6;
+    --fa-accent-link: #91d7bc;
+    --fa-accent-solid-bg: #1f7a5b;
+    --fa-accent-solid-border: #2a8f6a;
+    --fa-accent-solid-text: #ffffff;
+    --fa-service-dot-idle: #4a524e;
+    --fa-error-text: #ef9a9a;
+    --fa-sidebar-toggle-collapsed-bg: #222624;
+    --fa-tool-mode-bg: rgba(120, 140, 255, 0.22);
+    --fa-tool-mode-text: #aebcff;
+    --fa-tool-mode-agent-bg: rgba(255, 170, 90, 0.22);
+    --fa-tool-mode-agent-text: #f2c084;
+    --fa-control-hover-border: #6cc5a6;
+    --fa-control-hover-bg: #28332f;
+    --fa-control-active-hover-border: #2a8f6a;
+    --fa-control-active-hover-bg: #165a49;
+    --fa-focus-ring: #6cc5a6;
+  }
 }
 
 .ui-skin-glass .topbar,
@@ -58,7 +174,7 @@
 
 .ui-skin-contrast .mode-toggle,
 .ui-skin-contrast .diagnostics-toggle,
-.ui-skin-contrast .agent-toggle,
+.ui-skin-contrast .mode-option,
 .ui-skin-contrast .mobile-menu-toggle,
 .ui-skin-contrast .drawer-close,
 .ui-skin-contrast .drawer-action,
@@ -151,7 +267,7 @@
 :root[data-theme="dark"] .ui-skin-contrast .tool,
 :root[data-theme="dark"] .ui-skin-contrast .mode-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .diagnostics-toggle,
-:root[data-theme="dark"] .ui-skin-contrast .agent-toggle,
+:root[data-theme="dark"] .ui-skin-contrast .mode-option,
 :root[data-theme="dark"] .ui-skin-contrast .mobile-menu-toggle,
 :root[data-theme="dark"] .ui-skin-contrast .drawer-close,
 :root[data-theme="dark"] .ui-skin-contrast .drawer-action,
@@ -213,7 +329,7 @@
   :root:not([data-theme="light"]) .ui-skin-contrast .tool,
   :root:not([data-theme="light"]) .ui-skin-contrast .mode-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .diagnostics-toggle,
-  :root:not([data-theme="light"]) .ui-skin-contrast .agent-toggle,
+  :root:not([data-theme="light"]) .ui-skin-contrast .mode-option,
   :root:not([data-theme="light"]) .ui-skin-contrast .mobile-menu-toggle,
   :root:not([data-theme="light"]) .ui-skin-contrast .drawer-close,
   :root:not([data-theme="light"]) .ui-skin-contrast .drawer-action,
@@ -364,6 +480,16 @@ button {
   flex: 0 0 auto;
 }
 
+/* Issue #513: the active-mode status badge reads like the demo-mode badge so the
+ * toolbar's status labels stay visually consistent. */
+.mode-status {
+  color: var(--fa-mode-status-text);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
 .desktop-status {
   flex: 0 1 auto;
   max-width: min(360px, 38vw);
@@ -381,7 +507,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.agent-toggle,
+.mode-option,
 .mobile-menu-toggle,
 .sidebar-toggle,
 .drawer-close,
@@ -401,7 +527,7 @@ button {
 
 .mode-toggle,
 .diagnostics-toggle,
-.agent-toggle,
+.mode-option,
 .mobile-menu-toggle,
 .sidebar-toggle,
 .report-button,
@@ -414,6 +540,20 @@ button {
   min-height: 38px;
   padding: 0 12px;
   white-space: nowrap;
+}
+
+/* Issue #513: the binary agent toggle became a three-way mode radio group.
+ * The options sit in a single segmented control so the active mode reads as a
+ * connected switch rather than three independent buttons. */
+.mode-radio,
+.drawer-mode-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.drawer-mode-radio {
+  flex-wrap: wrap;
 }
 
 /* Issue #409: toolbar buttons carry a local icon + label so the label can be
@@ -569,7 +709,7 @@ button {
 
 .drawer-menu-section h2 {
   margin: 0;
-  color: #40515f;
+  color: var(--fa-mode-status-text);
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -615,7 +755,8 @@ button {
 
 .mode-toggle[aria-pressed="true"],
 .diagnostics-toggle[aria-pressed="true"],
-.agent-toggle[aria-pressed="true"],
+.mode-option[aria-checked="true"],
+.mode-option.is-active,
 .mobile-menu-toggle[aria-pressed="true"],
 .send-button {
   border-color: #175f4f;
@@ -627,7 +768,7 @@ button {
  * "expand" affordance subtle — no green press state, since the action label
  * already flips. */
 .sidebar-toggle.is-collapsed {
-  background: #eef2f1;
+  background: var(--fa-sidebar-toggle-collapsed-bg);
 }
 
 .workspace {
@@ -1164,6 +1305,172 @@ body.is-resizing-context {
   font-weight: 700;
 }
 
+/* Issue #438 (follow-up): one-click start/stop panel for the prepared Docker
+   containers (Telegram bot + OpenAI-compatible server). */
+.desktop-services-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-service {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--fa-border-subtle);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--fa-surface-card);
+}
+
+.desktop-service-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.desktop-service-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--fa-service-dot-idle);
+  flex: 0 0 auto;
+}
+
+.desktop-service-dot.is-running {
+  background: #2faa6a;
+  box-shadow: 0 0 0 3px rgba(47, 170, 106, 0.18);
+}
+
+.desktop-service-label {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.desktop-service-state {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--fa-text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.desktop-service-token {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 9px;
+  border: 1px solid var(--fa-border-control);
+  border-radius: 7px;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.desktop-service-url {
+  color: var(--fa-accent-link);
+  font-weight: 700;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-service-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-service-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--fa-border-control);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+}
+
+/* Panel action buttons share the topbar control hover so hover is uniform
+ * across chrome AND panels (issue #550 P5). Was dark-only before. */
+.desktop-service-actions button:hover:not(:disabled),
+.desktop-update-actions button:hover:not(:disabled) {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+.desktop-service-start {
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
+}
+
+.desktop-service-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-update-row dd {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.desktop-update-state {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--fa-text-strong);
+  overflow-wrap: anywhere;
+}
+
+.desktop-update-progress {
+  width: 100%;
+  height: 9px;
+  accent-color: #1f7a5b;
+}
+
+.desktop-update-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.desktop-update-actions button {
+  flex: 1 1 0;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--fa-border-control);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: var(--fa-surface-raised);
+  color: var(--fa-text-body);
+}
+
+.desktop-update-install {
+  background: var(--fa-accent-solid-bg);
+  border-color: var(--fa-accent-solid-border);
+  color: var(--fa-accent-solid-text);
+}
+
+.desktop-update-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.desktop-services-note,
+.desktop-services-error {
+  margin: 0;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.desktop-services-error {
+  color: var(--fa-error-text);
+  font-weight: 700;
+}
+
 .chat-panel {
   min-width: 0;
   min-height: 0;
@@ -1210,12 +1517,248 @@ body.is-resizing-context {
   background: #175f4f;
 }
 
+.message.system .avatar {
+  background: #5f6b7a;
+  font-size: 12px;
+}
+
+.message.system .message-body {
+  background: #f6f8fb;
+  border-color: #cdd6e2;
+}
+
 .message-body {
   min-width: 0;
   border: 1px solid #dce4e7;
   border-radius: 8px;
   padding: 12px 14px;
   background: #fbfcfd;
+}
+
+.message-permission-panel {
+  margin-top: 12px;
+}
+
+.permission-panel,
+.command-approval-panel {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header,
+.command-approval-copy {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.permission-panel-header strong,
+.command-approval-copy strong {
+  color: #1e252b;
+  font-size: 14px;
+}
+
+.permission-panel-header span,
+.permission-tool-copy span,
+.command-approval-copy span {
+  color: #657584;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.permission-tool-list {
+  display: grid;
+  min-width: 0;
+}
+
+/* Issue #541 (R9): one-click escalation CTA. The issue text reported that
+ * "after permissions are granted nothing happens" — the user had to grant six
+ * tools individually, flip the mode toggle, and re-send their prompt. This
+ * button collapses all three actions into a single primary affordance and is
+ * styled like a CTA to read as the main action on the panel. The container
+ * keeps a divider above the per-tool rows so the relationship between the
+ * shortcut and the granular controls is still visible. */
+.permission-panel-grant-all {
+  display: flex;
+  padding: 10px 0 4px;
+}
+
+.permission-button-grant-all {
+  flex: 1;
+  border-color: #5da28a;
+  background: #175f4f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.permission-button-grant-all:hover:not(:disabled),
+.permission-button-grant-all:focus-visible {
+  background: #1e7960;
+  border-color: #175f4f;
+  color: #ffffff;
+}
+
+.permission-tool-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  border-top: 1px solid #dce4e7;
+  padding: 9px 0;
+}
+
+.permission-tool-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.permission-tool-copy strong {
+  color: #1e252b;
+  font-size: 13px;
+}
+
+.permission-state,
+.command-approval-status {
+  justify-self: start;
+  border: 1px solid #c8d3df;
+  border-radius: 6px;
+  padding: 3px 6px;
+  background: #eef3f8;
+  color: #34475a;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.permission-state-granted,
+.command-approval-status-approved {
+  border-color: #9bc9b7;
+  background: #e7f5ef;
+  color: #175f4f;
+}
+
+.permission-state-declined,
+.command-approval-status-denied {
+  border-color: #e0b2b2;
+  background: #faeeee;
+  color: #8a2f2f;
+}
+
+.command-approval-status-running {
+  border-color: #cdbd7a;
+  background: #fff6d8;
+  color: #6c5512;
+}
+
+.permission-actions,
+.command-approval-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.permission-button {
+  border: 1px solid #94b9ad;
+  border-radius: 6px;
+  padding: 5px 8px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.permission-button:hover:not(:disabled),
+.permission-button[aria-pressed="true"] {
+  background: #e5f3ee;
+  border-color: #5da28a;
+}
+
+.permission-button-secondary {
+  border-color: #c8d3df;
+  color: #46576a;
+}
+
+.permission-button-secondary:hover:not(:disabled),
+.permission-button-secondary[aria-pressed="true"] {
+  background: #f0f3f6;
+  border-color: #93a4b5;
+}
+
+.permission-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.command-approval-panel {
+  margin-top: 12px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 12px;
+}
+
+.command-approval-copy code {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  border: 1px solid #d9e1e8;
+  border-radius: 6px;
+  padding: 3px 5px;
+  background: #f8fafc;
+  color: #1e252b;
+  font-size: 12px;
+}
+
+.desktop-shell-panel .desktop-permission-row {
+  gap: 8px;
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .permission-tool-row,
+.desktop-shell-panel .command-approval-copy {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.desktop-shell-panel .permission-panel-header,
+.desktop-shell-panel .command-approval-copy {
+  display: grid;
+}
+
+.desktop-shell-panel .permission-tool-row {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.desktop-shell-panel .permission-actions {
+  justify-content: flex-start;
+}
+
+@media (max-width: 720px) {
+  .permission-panel-header,
+  .permission-tool-row,
+  .command-approval-copy {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .permission-tool-row {
+    align-items: start;
+  }
+
+  .permission-actions,
+  .command-approval-actions {
+    justify-content: flex-start;
+  }
 }
 
 .message-meta {
@@ -1255,6 +1798,23 @@ body.is-resizing-context {
 .markdown-body {
   line-height: 1.5;
   overflow-wrap: anywhere;
+  --code-surface: #f8fafc;
+  --code-header-surface: #eef3f8;
+  --code-border: #d7e0ea;
+  --code-text: #1f2937;
+  --code-muted: #526173;
+  --code-button-bg: #ffffff;
+  --code-button-border: #cbd5e1;
+  --code-button-hover-bg: #e5edf5;
+  --code-copy-done-text: #166534;
+  --code-copy-done-bg: #dcfce7;
+  --code-copy-done-border: #86efac;
+  --hljs-comment: #667085;
+  --hljs-keyword: #9f1239;
+  --hljs-string: #0f766e;
+  --hljs-number: #a16207;
+  --hljs-type: #166534;
+  --hljs-title: #6d28d9;
 }
 
 .markdown-body p {
@@ -1294,8 +1854,9 @@ body.is-resizing-context {
   overflow: auto;
   border-radius: 8px;
   padding: 12px;
-  background: #111827;
-  color: #f7fafc;
+  background: var(--code-surface);
+  color: var(--code-text);
+  border: 1px solid var(--code-border);
   line-height: 1.45;
 }
 
@@ -1314,9 +1875,10 @@ body.is-resizing-context {
 .markdown-body .code-block {
   position: relative;
   margin: 8px 0;
+  border: 1px solid var(--code-border);
   border-radius: 8px;
   overflow: hidden;
-  background: #111827;
+  background: var(--code-surface);
 }
 
 .markdown-body .code-block:first-child {
@@ -1333,20 +1895,21 @@ body.is-resizing-context {
   justify-content: space-between;
   gap: 8px;
   padding: 6px 10px;
-  background: #0b111d;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  background: var(--code-header-surface);
+  border-bottom: 1px solid var(--code-border);
   font-size: 12px;
 }
 
 .markdown-body .code-block-lang {
-  color: #9fb0c3;
+  color: var(--code-muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
 }
 
 .markdown-body .code-block > pre {
   margin: 0;
+  border: 0;
   border-radius: 0;
 }
 
@@ -1369,20 +1932,20 @@ body.is-resizing-context {
 
 .code-copy-button {
   padding: 3px 9px;
-  color: #cdd9e5;
-  background: rgba(148, 163, 184, 0.16);
-  border-color: rgba(148, 163, 184, 0.28);
+  color: var(--code-text);
+  background: var(--code-button-bg);
+  border-color: var(--code-button-border);
 }
 
 .code-copy-button:hover {
-  background: rgba(148, 163, 184, 0.3);
-  color: #ffffff;
+  background: var(--code-button-hover-bg);
+  color: var(--code-text);
 }
 
 .code-copy-button.is-copied {
-  color: #d1fadf;
-  background: rgba(34, 197, 94, 0.28);
-  border-color: rgba(34, 197, 94, 0.5);
+  color: var(--code-copy-done-text);
+  background: var(--code-copy-done-bg);
+  border-color: var(--code-copy-done-border);
 }
 
 .message-copy-button {
@@ -1406,36 +1969,35 @@ body.is-resizing-context {
   background: rgba(34, 197, 94, 0.16);
 }
 
-/* Syntax-highlight token palette. The code background is dark in both themes,
-   so a single palette tuned for the dark surface keeps contrast consistent. */
+/* Syntax-highlight token palette follows the active code surface. */
 .markdown-body code.hljs {
-  color: #e6edf3;
+  color: var(--code-text);
 }
 
 .markdown-body .hljs-comment {
-  color: #8b98a5;
+  color: var(--hljs-comment);
   font-style: italic;
 }
 
 .markdown-body .hljs-keyword {
-  color: #ff7b72;
+  color: var(--hljs-keyword);
 }
 
 .markdown-body .hljs-string {
-  color: #a5d6ff;
+  color: var(--hljs-string);
 }
 
 .markdown-body .hljs-number,
 .markdown-body .hljs-literal {
-  color: #f0b072;
+  color: var(--hljs-number);
 }
 
 .markdown-body .hljs-type {
-  color: #7ee787;
+  color: var(--hljs-type);
 }
 
 .markdown-body .hljs-title {
-  color: #d2a8ff;
+  color: var(--hljs-title);
 }
 
 .markdown-body a.external-link {
@@ -1499,6 +2061,228 @@ body.is-resizing-context {
 
 .thinking-steps li + li {
   margin-top: 4px;
+}
+
+.thinking-preview {
+  margin-top: 10px;
+  border-top: 1px solid #dce4e7;
+  padding-top: 10px;
+  color: #4b5e6b;
+  font-size: 13px;
+}
+
+.thinking-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.thinking-preview-title {
+  color: #40515f;
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.thinking-preview-toggle {
+  flex: 0 0 auto;
+  border: 1px solid #cbd6db;
+  border-radius: 6px;
+  padding: 3px 9px;
+  background: #ffffff;
+  color: #175f4f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.thinking-preview-toggle:hover {
+  border-color: #86b8a7;
+  background: #edf7f3;
+}
+
+.thinking-preview-collapsed {
+  display: grid;
+  gap: 3px;
+  margin-top: 7px;
+  min-width: 0;
+  /* Issue #541 (R7): reserve enough height for at least one full reasoning
+     step (one fading hint line + a wrapped current step), so the collapsed
+     view never clips the current step to a sub-line height where "not a
+     single line of thinking is displayed". */
+  min-height: 1.55em;
+  /* Issue #488: clip the rotated-scrolling animation so the previous line
+     does not visibly translate out of the bubble before the gradient fade
+     swallows it. */
+  overflow: hidden;
+}
+
+/* Issue #1963 (P1): the scroll-fade gradient must read as ONE continuous fade
+   spanning the whole collapsed reasoning container (the tail of the previous
+   step blending into the current step), not a separate per-paragraph fade on
+   each line — the latter "looks broken, because each paragraph/line/step has
+   its own gradient". A single container-level mask replaces the former
+   per-element mask on `.thinking-preview-previous`, so both visible steps share
+   one gradient and the fade reads as earlier reasoning scrolling out of view
+   above. The mask is applied via `:has()` only when a previous step exists to
+   fade, so a lone first step is never dimmed. */
+.thinking-preview-collapsed:has(.thinking-preview-previous) {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 1.4em);
+}
+
+.thinking-preview-previous,
+.thinking-preview-current {
+  margin: 0;
+  min-width: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.thinking-preview-previous {
+  /* Issue #488: keep the already-scrolled-past step a single fading hint
+     line so the rotated-scrolling illusion (1.x visible lines: the tail of
+     the previous step + the current step) is honoured. */
+  max-height: 1.05em;
+  overflow: hidden;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  color: #667684;
+  opacity: 0.72;
+  /* Issue #1963 (P1): the fade gradient is no longer applied per line here;
+     the parent `.thinking-preview-collapsed` now carries a single container
+     mask so the previous + current steps share one continuous gradient. */
+  /* Issue #488: when a new step arrives the React key for `previous`
+     changes, which re-mounts the <p> and (because animations only run on
+     mount/key-change) replays this keyframe — that is the rotated
+     scrolling illusion the issue asks for. */
+  animation: thinking-rotate-previous 320ms ease-out both;
+}
+
+.thinking-preview-current {
+  /* Issue #541 (R7): show the current reasoning step FULLY — at least one
+     whole paragraph — instead of clipping it to a single ellipsised line.
+     A generous line cap keeps a pathologically long step from dominating the
+     collapsed bubble while normal 1-4 line steps render in full. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  line-clamp: 10;
+  overflow: hidden;
+  white-space: normal;
+  color: #334650;
+  animation: thinking-rotate-current 320ms ease-out both;
+}
+
+@keyframes thinking-rotate-current {
+  from {
+    transform: translateY(0.8em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes thinking-rotate-previous {
+  from {
+    transform: translateY(0.6em);
+    opacity: 0.95;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-previous,
+  .thinking-preview-current {
+    animation: none !important;
+  }
+}
+
+/* Issue #541 (R5/R6): paced message reveal. The reasoning steps animate
+   (scrolling through the collapsed preview) first; only once they have all
+   been revealed does the answer body appear, and it fades in rather than
+   snapping. The whole sequence stays inside the user's animation budget
+   (default 2s, configurable down to 0 = immediate). The `.is-revealing`
+   state keeps the body out of the layout entirely so a tall answer cannot
+   "peek" beneath the still-animating reasoning steps. */
+.markdown-body.is-revealing {
+  display: none;
+}
+
+.markdown-body.is-revealed {
+  animation: message-body-reveal 600ms ease-out both;
+}
+
+@keyframes message-body-reveal {
+  from {
+    transform: translateY(0.5em);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .markdown-body.is-revealed {
+    animation: none !important;
+  }
+}
+
+/* Issue #488: pulsing dot next to the "Thinking" title while the assistant
+   is mid-response, so the live trace is visibly live. */
+.thinking-preview-live-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: #2f9a6f;
+  vertical-align: middle;
+  animation: thinking-live-dot 1100ms ease-in-out infinite;
+}
+
+@keyframes thinking-live-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thinking-preview-live-dot {
+    animation: none !important;
+    opacity: 0.85;
+  }
+}
+
+.thinking-preview-list {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}
+
+.thinking-preview-list li {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .diagnostics-steps,
@@ -1891,13 +2675,16 @@ body.is-resizing-context {
   min-height: 0;
 }
 
-.pending .message-body {
-  width: 116px;
-}
-
-.typing::after {
-  content: "...";
-}
+/* Issue #1963 (P3): the pending assistant bubble must NOT be pinned to a narrow
+   fixed width. While only the thinking trace is shown (no answer body yet) the
+   bubble used to be clamped to 116px — a relic of the old typing-dots indicator
+   — so the message visibly jumped from ~116px to the full column width the
+   moment the answer started streaming. The pending body now inherits the normal
+   `.message-body` sizing (it fills the grid column up to the shared message
+   max-width), so the width is stable from the first thinking step through the
+   final answer and there is no sudden jump. The former `.typing::after` dots
+   indicator is dead (the pending bubble always renders the thinking preview),
+   so it is removed with the fixed width it used to size. */
 
 .composer {
   max-height: min(280px, calc(var(--formal-ai-viewport-height, 100dvh) * 0.5));
@@ -2118,7 +2905,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2143,7 +2930,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2158,9 +2945,13 @@ textarea:disabled {
     gap: 10px;
   }
 
+  /* Issue #513: the mode status label is a text status badge like the demo and
+   * memory badges, so it leaves the icon-only action row at the same width they
+   * do. This also keeps the row single-line for the Issue #94 wrap check. */
   .demo-status,
   .desktop-status,
-  .memory-status {
+  .memory-status,
+  .mode-status {
     display: none;
   }
 }
@@ -2216,7 +3007,7 @@ textarea:disabled {
 
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .source-code-button,
   .topbar-actions .download-button,
@@ -2461,16 +3252,16 @@ textarea:disabled {
   letter-spacing: 0.04em;
   padding: 2px 6px;
   border-radius: 4px;
-  background: rgba(120, 140, 255, 0.18);
-  color: #4a5acc;
+  background: var(--fa-tool-mode-bg);
+  color: var(--fa-tool-mode-text);
   overflow-wrap: anywhere;
   word-break: break-word;
   line-height: 1.4;
 }
 
 .tool-mode-agent .tool-mode {
-  background: rgba(255, 170, 90, 0.18);
-  color: #b66e1a;
+  background: var(--fa-tool-mode-agent-bg);
+  color: var(--fa-tool-mode-agent-text);
 }
 
 .tool-desc {
@@ -2496,7 +3287,7 @@ textarea:disabled {
    * fits on a 360px-wide handset alongside the hamburger toggle. */
   .topbar-actions .mode-toggle,
   .topbar-actions .diagnostics-toggle,
-  .topbar-actions .agent-toggle,
+  .topbar-actions .mode-option,
   .topbar-actions .report-button,
   .topbar-actions .memory-button {
     padding: 0 8px;
@@ -2576,7 +3367,7 @@ textarea:disabled {
 
 :root[data-theme="dark"] .mode-toggle,
 :root[data-theme="dark"] .diagnostics-toggle,
-:root[data-theme="dark"] .agent-toggle,
+:root[data-theme="dark"] .mode-option,
 :root[data-theme="dark"] .mobile-menu-toggle,
 :root[data-theme="dark"] .sidebar-toggle,
 :root[data-theme="dark"] .source-code-button,
@@ -2639,7 +3430,9 @@ textarea:disabled {
 :root[data-theme="dark"] .setting-check,
 :root[data-theme="dark"] .setting-warning,
 :root[data-theme="dark"] .composer-attachment-status,
-:root[data-theme="dark"] .thinking-steps {
+:root[data-theme="dark"] .thinking-steps,
+:root[data-theme="dark"] .thinking-preview,
+:root[data-theme="dark"] .thinking-preview-previous {
   color: #b7b0a7;
 }
 
@@ -2720,6 +3513,26 @@ textarea:disabled {
 :root[data-theme="dark"] .markdown-body :not(pre) > code,
 :root[data-theme="dark"] textarea:disabled {
   background: #272b2a;
+}
+
+:root[data-theme="dark"] .markdown-body {
+  --code-surface: #111827;
+  --code-header-surface: #0b111d;
+  --code-border: rgba(148, 163, 184, 0.22);
+  --code-text: #e6edf3;
+  --code-muted: #9fb0c3;
+  --code-button-bg: rgba(148, 163, 184, 0.16);
+  --code-button-border: rgba(148, 163, 184, 0.28);
+  --code-button-hover-bg: rgba(148, 163, 184, 0.3);
+  --code-copy-done-text: #d1fadf;
+  --code-copy-done-bg: rgba(34, 197, 94, 0.28);
+  --code-copy-done-border: rgba(34, 197, 94, 0.5);
+  --hljs-comment: #8b98a5;
+  --hljs-keyword: #ff7b72;
+  --hljs-string: #a5d6ff;
+  --hljs-number: #f0b072;
+  --hljs-type: #7ee787;
+  --hljs-title: #d2a8ff;
 }
 
 :root[data-theme="dark"] .evidence-list span {
@@ -2809,8 +3622,28 @@ textarea:disabled {
   border-top-color: #343a3d;
 }
 
+:root[data-theme="dark"] .thinking-preview {
+  border-top-color: #343a3d;
+}
+
 :root[data-theme="dark"] .thinking-steps strong {
   color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .thinking-preview-title,
+:root[data-theme="dark"] .thinking-preview-current {
+  color: #d8d0c4;
+}
+
+:root[data-theme="dark"] .thinking-preview-toggle {
+  border-color: #4a524e;
+  background: #202322;
+  color: #8ed9bf;
+}
+
+:root[data-theme="dark"] .thinking-preview-toggle:hover {
+  border-color: #6cc5a6;
+  background: #28332f;
 }
 
 :root[data-theme="dark"] .formalization-view {
@@ -2919,7 +3752,8 @@ textarea:disabled {
 
 :root[data-theme="dark"] .mode-toggle[aria-pressed="true"],
 :root[data-theme="dark"] .diagnostics-toggle[aria-pressed="true"],
-:root[data-theme="dark"] .agent-toggle[aria-pressed="true"],
+:root[data-theme="dark"] .mode-option[aria-checked="true"],
+:root[data-theme="dark"] .mode-option.is-active,
 :root[data-theme="dark"] .mobile-menu-toggle[aria-pressed="true"],
 :root[data-theme="dark"] .send-button {
   border-color: #2c8f71;
@@ -2995,7 +3829,7 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .mode-toggle,
   :root:not([data-theme="light"]) .diagnostics-toggle,
-  :root:not([data-theme="light"]) .agent-toggle,
+  :root:not([data-theme="light"]) .mode-option,
   :root:not([data-theme="light"]) .mobile-menu-toggle,
   :root:not([data-theme="light"]) .sidebar-toggle,
   :root:not([data-theme="light"]) .source-code-button,
@@ -3054,7 +3888,9 @@ textarea:disabled {
   :root:not([data-theme="light"]) .setting-check,
   :root:not([data-theme="light"]) .setting-warning,
   :root:not([data-theme="light"]) .composer-attachment-status,
-  :root:not([data-theme="light"]) .thinking-steps {
+  :root:not([data-theme="light"]) .thinking-steps,
+  :root:not([data-theme="light"]) .thinking-preview,
+  :root:not([data-theme="light"]) .thinking-preview-previous {
     color: #b7b0a7;
   }
 
@@ -3135,6 +3971,26 @@ textarea:disabled {
   :root:not([data-theme="light"]) .markdown-body :not(pre) > code,
   :root:not([data-theme="light"]) textarea:disabled {
     background: #272b2a;
+  }
+
+  :root:not([data-theme="light"]) .markdown-body {
+    --code-surface: #111827;
+    --code-header-surface: #0b111d;
+    --code-border: rgba(148, 163, 184, 0.22);
+    --code-text: #e6edf3;
+    --code-muted: #9fb0c3;
+    --code-button-bg: rgba(148, 163, 184, 0.16);
+    --code-button-border: rgba(148, 163, 184, 0.28);
+    --code-button-hover-bg: rgba(148, 163, 184, 0.3);
+    --code-copy-done-text: #d1fadf;
+    --code-copy-done-bg: rgba(34, 197, 94, 0.28);
+    --code-copy-done-border: rgba(34, 197, 94, 0.5);
+    --hljs-comment: #8b98a5;
+    --hljs-keyword: #ff7b72;
+    --hljs-string: #a5d6ff;
+    --hljs-number: #f0b072;
+    --hljs-type: #7ee787;
+    --hljs-title: #d2a8ff;
   }
 
   :root:not([data-theme="light"]) .evidence-list span {
@@ -3223,8 +4079,28 @@ textarea:disabled {
     border-top-color: #343a3d;
   }
 
+  :root:not([data-theme="light"]) .thinking-preview {
+    border-top-color: #343a3d;
+  }
+
   :root:not([data-theme="light"]) .thinking-steps strong {
     color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-title,
+  :root:not([data-theme="light"]) .thinking-preview-current {
+    color: #d8d0c4;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-toggle {
+    border-color: #4a524e;
+    background: #202322;
+    color: #8ed9bf;
+  }
+
+  :root:not([data-theme="light"]) .thinking-preview-toggle:hover {
+    border-color: #6cc5a6;
+    background: #28332f;
   }
 
   :root:not([data-theme="light"]) .formalization-view {
@@ -3338,11 +4214,218 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .mode-toggle[aria-pressed="true"],
   :root:not([data-theme="light"]) .diagnostics-toggle[aria-pressed="true"],
-  :root:not([data-theme="light"]) .agent-toggle[aria-pressed="true"],
+  :root:not([data-theme="light"]) .mode-option[aria-checked="true"],
+  :root:not([data-theme="light"]) .mode-option.is-active,
   :root:not([data-theme="light"]) .mobile-menu-toggle[aria-pressed="true"],
   :root:not([data-theme="light"]) .send-button {
     border-color: #2c8f71;
     background: #2c8f71;
     color: #ffffff;
   }
+}
+
+:root[data-theme="dark"] .message.system .message-body,
+:root[data-theme="dark"] .permission-button,
+:root[data-theme="dark"] .command-approval-copy code {
+  border-color: #424a47;
+  background: #202322;
+  color: #ece7df;
+}
+
+/* Issue #541 (R9): keep the grant-all CTA high-contrast in dark mode. Without
+ * this rule the more-specific `:root[data-theme="dark"] .permission-button`
+ * above pulls the button back to the same neutral grey as Decline/Grant, which
+ * loses the visual hierarchy that tells the user "this is the one-click
+ * recovery". */
+:root[data-theme="dark"] .permission-button.permission-button-grant-all {
+  border-color: #2c8f71;
+  background: #1e7960;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:hover:not(:disabled),
+:root[data-theme="dark"] .permission-button.permission-button-grant-all:focus-visible {
+  background: #2c8f71;
+  border-color: #4cb094;
+  color: #ffffff;
+}
+
+:root[data-theme="dark"] .permission-panel-header strong,
+:root[data-theme="dark"] .permission-tool-copy strong,
+:root[data-theme="dark"] .command-approval-copy strong {
+  color: #ece7df;
+}
+
+:root[data-theme="dark"] .permission-panel-header span,
+:root[data-theme="dark"] .permission-tool-copy span,
+:root[data-theme="dark"] .command-approval-copy span {
+  color: #bcb5ad;
+}
+
+:root[data-theme="dark"] .permission-tool-row,
+:root[data-theme="dark"] .command-approval-panel {
+  border-top-color: #343a3d;
+}
+
+:root[data-theme="dark"] .permission-state,
+:root[data-theme="dark"] .command-approval-status {
+  border-color: #4c5651;
+  background: #252a28;
+  color: #d6d0c8;
+}
+
+:root[data-theme="dark"] .permission-state-granted,
+:root[data-theme="dark"] .command-approval-status-approved {
+  border-color: #4b8f78;
+  background: #183129;
+  color: #9bd9c4;
+}
+
+:root[data-theme="dark"] .permission-state-declined,
+:root[data-theme="dark"] .command-approval-status-denied {
+  border-color: #8c4f4f;
+  background: #351f1f;
+  color: #efb0b0;
+}
+
+:root[data-theme="dark"] .command-approval-status-running {
+  border-color: #8a7535;
+  background: #332b18;
+  color: #ead48a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .message.system .message-body,
+  :root:not([data-theme="light"]) .permission-button,
+  :root:not([data-theme="light"]) .command-approval-copy code {
+    border-color: #424a47;
+    background: #202322;
+    color: #ece7df;
+  }
+
+  /* Issue #541 (R9): same dark-mode CTA contrast preservation as the
+   * `:root[data-theme="dark"]` block — applies when the user has not pinned a
+   * theme and the OS reports dark mode. */
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all {
+    border-color: #2c8f71;
+    background: #1e7960;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:hover:not(:disabled),
+  :root:not([data-theme="light"]) .permission-button.permission-button-grant-all:focus-visible {
+    background: #2c8f71;
+    border-color: #4cb094;
+    color: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) .permission-panel-header strong,
+  :root:not([data-theme="light"]) .permission-tool-copy strong,
+  :root:not([data-theme="light"]) .command-approval-copy strong {
+    color: #ece7df;
+  }
+
+  :root:not([data-theme="light"]) .permission-panel-header span,
+  :root:not([data-theme="light"]) .permission-tool-copy span,
+  :root:not([data-theme="light"]) .command-approval-copy span {
+    color: #bcb5ad;
+  }
+
+  :root:not([data-theme="light"]) .permission-tool-row,
+  :root:not([data-theme="light"]) .command-approval-panel {
+    border-top-color: #343a3d;
+  }
+
+  :root:not([data-theme="light"]) .permission-state,
+  :root:not([data-theme="light"]) .command-approval-status {
+    border-color: #4c5651;
+    background: #252a28;
+    color: #d6d0c8;
+  }
+
+  :root:not([data-theme="light"]) .permission-state-granted,
+  :root:not([data-theme="light"]) .command-approval-status-approved {
+    border-color: #4b8f78;
+    background: #183129;
+    color: #9bd9c4;
+  }
+
+  :root:not([data-theme="light"]) .permission-state-declined,
+  :root:not([data-theme="light"]) .command-approval-status-denied {
+    border-color: #8c4f4f;
+    background: #351f1f;
+    color: #efb0b0;
+  }
+
+  :root:not([data-theme="light"]) .command-approval-status-running {
+    border-color: #8a7535;
+    background: #332b18;
+    color: #ead48a;
+  }
+}
+
+/* ===================================================================
+ * Issues #541 (R1) + #1963 + #550 (P4/P5): theme + interaction parity,
+ * now expressed through the design tokens at the top of this file.
+ * ===================================================================
+ * Historically each of these surfaces needed THREE hand-written copies of
+ * every colour (a light base + `:root[data-theme="dark"]` + the
+ * `@media (prefers-color-scheme: dark)` fallback). A surface went dark, or a
+ * control gained a hover/focus state, only when every copy was authored — and
+ * new code routinely missed one, which is exactly how P4 ("services box still
+ * not themed in dark") and P5 ("only some topbar buttons react to hover")
+ * happened in the first place.
+ *
+ * Those surfaces now read their colours from the `--fa-*` tokens, so each light
+ * rule themes itself in BOTH dark layers automatically — only the token value
+ * is overridden, in one place at the top of the file. The large R1 + P4
+ * dark-only duplicate blocks that used to live here are therefore gone: their
+ * light rules above carry the tokens (e.g. `.desktop-service`,
+ * `.desktop-service-token`, `.tool-mode`, `.mode-status`). What remains below
+ * is the genuinely shared interaction layer — one hover, one active-hover, and
+ * one :focus-visible ring (WCAG 2.4.7 / 1.4.11) applied uniformly to every
+ * topbar control, all token-driven so mouse and keyboard users get the same
+ * affordance in every theme.
+ * =================================================================== */
+
+/* One uniform hover for every topbar control (themes via --fa-control-*). */
+.mode-toggle:hover,
+.diagnostics-toggle:hover,
+.mode-option:hover,
+.mobile-menu-toggle:hover,
+.sidebar-toggle:hover,
+.report-button:hover,
+.source-code-button:hover,
+.download-button:hover,
+.memory-button:hover {
+  border-color: var(--fa-control-hover-border);
+  background: var(--fa-control-hover-bg);
+}
+
+/* Active/pressed segmented controls keep their solid green meaning; on hover
+   they deepen instead of taking the light tint, so the hover is still legible
+   without dropping the "selected" state. Higher specificity than the generic
+   hover above, so it wins regardless of source order. */
+.mode-toggle[aria-pressed="true"]:hover,
+.diagnostics-toggle[aria-pressed="true"]:hover,
+.mode-option[aria-checked="true"]:hover,
+.mode-option.is-active:hover,
+.mobile-menu-toggle[aria-pressed="true"]:hover {
+  border-color: var(--fa-control-active-hover-border);
+  background: var(--fa-control-active-hover-bg);
+}
+
+/* Keyboard parity (WCAG 2.4.7): one focus ring shared by every topbar control,
+   pairing the accent color with a visible outline (not color alone). */
+.mode-toggle:focus-visible,
+.diagnostics-toggle:focus-visible,
+.mode-option:focus-visible,
+.mobile-menu-toggle:focus-visible,
+.sidebar-toggle:focus-visible,
+.report-button:focus-visible,
+.source-code-button:focus-visible,
+.download-button:focus-visible,
+.memory-button:focus-visible {
+  outline: 2px solid var(--fa-focus-ring);
+  outline-offset: 2px;
 }

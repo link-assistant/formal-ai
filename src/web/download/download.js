@@ -227,6 +227,14 @@
         'Click "Open Anyway" next to formal-ai Desktop, confirm, and authenticate.',
       installMacosFooter:
         "Subsequent launches do not show the warning. Only run these steps for formal-ai release artifacts whose SHA-256 matches SHA256SUMS.txt from the same GitHub release.",
+      installMacosShotsCaption:
+        "Real macOS 15 (Sequoia) Gatekeeper prompts captured from our sibling app VK Bot Desktop, which ships with the same ad-hoc signing — formal-ai Desktop shows identical dialogs with its own name.",
+      installMacosShot1Alt:
+        'macOS warning dialog: "VK Bot Desktop" Not Opened, with Done and Move to Trash buttons.',
+      installMacosShot2Alt:
+        "macOS System Settings, Privacy & Security, with the Open Anyway button for VK Bot Desktop.",
+      installMacosShot3Alt:
+        'macOS confirmation dialog: Open "VK Bot Desktop"? with Open Anyway, Move to Trash and Done buttons.',
       agentTitle: "In-process by default",
       agentBody:
         "formal-ai Desktop runs an in-process reasoning agent — no server required. You can optionally enable a local OpenAI-compatible server and point the claude, codex, or agent CLIs at it.",
@@ -303,6 +311,14 @@
         "Нажмите «Открыть всё равно» рядом с formal-ai Desktop, подтвердите и пройдите аутентификацию.",
       installMacosFooter:
         "При последующих запусках предупреждение не появляется. Используйте эти шаги только для релизных файлов formal-ai, чья контрольная сумма SHA-256 совпала с SHA256SUMS.txt из того же релиза GitHub.",
+      installMacosShotsCaption:
+        "Реальные диалоги Gatekeeper в macOS 15 (Sequoia), снятые в нашем родственном приложении VK Bot Desktop, которое подписано так же (ad-hoc). formal-ai Desktop показывает те же диалоги со своим именем.",
+      installMacosShot1Alt:
+        "Предупреждение macOS: «VK Bot Desktop» не открыт, с кнопками «Готово» и «Переместить в Корзину».",
+      installMacosShot2Alt:
+        "Системные настройки macOS, «Конфиденциальность и безопасность», с кнопкой «Всё равно открыть» для VK Bot Desktop.",
+      installMacosShot3Alt:
+        "Диалог подтверждения macOS: открыть «VK Bot Desktop»? с кнопками «Всё равно открыть», «Переместить в Корзину» и «Готово».",
       agentTitle: "По умолчанию встроенный агент",
       agentBody:
         "formal-ai Desktop запускает встроенный агент рассуждений — сервер не нужен. При желании можно включить локальный OpenAI-совместимый сервер и направить на него CLI claude, codex или agent.",
@@ -377,6 +393,14 @@
         "在 formal-ai Desktop 旁点击“仍要打开”，确认并完成身份验证。",
       installMacosFooter:
         "后续启动不再显示警告。仅对 SHA-256 与同一 GitHub 版本的 SHA256SUMS.txt 匹配的 formal-ai 发布文件执行这些步骤。",
+      installMacosShotsCaption:
+        "在我们的姊妹应用 VK Bot Desktop 中拍摄的真实 macOS 15 (Sequoia) Gatekeeper 对话框；它采用相同的 ad-hoc 签名。formal-ai Desktop 显示相同的对话框，只是名称不同。",
+      installMacosShot1Alt:
+        "macOS 警告对话框：未打开“VK Bot Desktop”，带“完成”和“移到废纸篓”按钮。",
+      installMacosShot2Alt:
+        "macOS 系统设置 → 隐私与安全性，显示 VK Bot Desktop 的“仍要打开”按钮。",
+      installMacosShot3Alt:
+        "macOS 确认对话框：打开“VK Bot Desktop”？带“仍要打开”、“移到废纸篓”和“完成”按钮。",
       agentTitle: "默认内置代理",
       agentBody:
         "formal-ai 桌面版运行内置推理代理——无需服务器。你可以选择启用本地 OpenAI 兼容服务器，并让 claude、codex 或 agent CLI 指向它。",
@@ -453,6 +477,14 @@
         'formal-ai Desktop के पास "Open Anyway" क्लिक करें, पुष्टि करें और प्रमाणित करें।',
       installMacosFooter:
         "बाद के लॉन्च में चेतावनी नहीं दिखती। ये चरण केवल उन formal-ai रिलीज़ आर्टिफ़ैक्ट्स के लिए चलाएँ जिनका SHA-256 उसी GitHub रिलीज़ की SHA256SUMS.txt से मेल खाता है।",
+      installMacosShotsCaption:
+        "हमारे सहयोगी ऐप VK Bot Desktop में लिए गए असली macOS 15 (Sequoia) Gatekeeper संवाद, जो वही ad-hoc साइनिंग इस्तेमाल करता है — formal-ai Desktop अपने नाम के साथ वही संवाद दिखाता है।",
+      installMacosShot1Alt:
+        'macOS चेतावनी संवाद: "VK Bot Desktop" नहीं खुला, "Done" और "Move to Trash" बटनों के साथ।',
+      installMacosShot2Alt:
+        'macOS सिस्टम सेटिंग्स, प्राइवेसी और सुरक्षा, VK Bot Desktop के लिए "Open Anyway" बटन के साथ।',
+      installMacosShot3Alt:
+        'macOS पुष्टिकरण संवाद: "VK Bot Desktop" खोलें? "Open Anyway", "Move to Trash" और "Done" बटनों के साथ।',
       agentTitle: "डिफ़ॉल्ट रूप से इन-प्रोसेस",
       agentBody:
         "formal-ai डेस्कटॉप एक इन-प्रोसेस रीज़निंग एजेंट चलाता है — किसी सर्वर की ज़रूरत नहीं। आप चाहें तो एक लोकल OpenAI-संगत सर्वर सक्षम कर सकते हैं और claude, codex या agent CLI को उस पर निर्देशित कर सकते हैं।",
@@ -601,6 +633,25 @@
 
   var MACOS_INSTALL_COMMAND =
     'sudo xattr -dr com.apple.quarantine "/Applications/formal-ai Desktop.app"';
+
+  // Real macOS 15 (Sequoia) Gatekeeper dialogs, mapped 1:1 to the System Settings
+  // steps below (installMacosSettingsStep1/2/3). Issue #479 asked for macOS
+  // screenshots like konard.github.io/vk-bot-desktop, and the maintainer was
+  // explicit that synthetic/drawn images are not acceptable -- they must be
+  // "copied from our code" at https://github.com/konard/vk-bot-desktop. Gatekeeper
+  // cannot be triggered on a hosted macOS CI runner, so we reuse the genuine
+  // captures from our sibling desktop app VK Bot Desktop, which ships with the
+  // same explicit electron-builder ad-hoc signing hook (identity "-") when no
+  // Apple Developer ID secrets are available.
+  // The dialog wording, layout and buttons are byte-identical for formal-ai
+  // Desktop; only the app name shown in the prompt differs ("VK Bot Desktop" vs
+  // "formal-ai Desktop"). Provenance is documented in
+  // src/web/download/assets/screenshots/README.md.
+  var MACOS_GATEKEEPER_SHOTS = [
+    { src: "assets/screenshots/macos-gatekeeper-not-opened.png", altKey: "installMacosShot1Alt" },
+    { src: "assets/screenshots/macos-gatekeeper-open-anyway.png", altKey: "installMacosShot2Alt" },
+    { src: "assets/screenshots/macos-gatekeeper-confirm.png", altKey: "installMacosShot3Alt" },
+  ];
 
   // ---------------------------------------------------------------------------
   // Tiny hyperscript helper (avoids inline handlers/styles for CSP compliance)
@@ -802,7 +853,7 @@
       { class: "download-topbar" },
       h(
         "a",
-        { class: "brand", href: "../", "data-testid": "back-to-app" },
+        { class: "brand", href: "../app/", "data-testid": "back-to-app" },
         h("span", { class: "brand-mark", "aria-hidden": "true", text: "◆" }),
         h("span", { text: "formal-ai" }),
       ),
@@ -986,6 +1037,19 @@
             h("li", { text: text(locale, "installMacosSettingsStep1") }),
             h("li", { text: text(locale, "installMacosSettingsStep2") }),
             h("li", { text: text(locale, "installMacosSettingsStep3") }),
+          ),
+          h(
+            "figure",
+            { class: "install-macos-screenshots" },
+            MACOS_GATEKEEPER_SHOTS.map(function (shot) {
+              return h("img", {
+                src: shot.src,
+                alt: text(locale, shot.altKey),
+                loading: "lazy",
+                decoding: "async",
+              });
+            }),
+            h("figcaption", { text: text(locale, "installMacosShotsCaption") }),
           ),
         ),
         h(

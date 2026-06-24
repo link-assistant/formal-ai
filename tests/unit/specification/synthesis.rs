@@ -4,7 +4,11 @@
 //! recorded as links, and composed into answer candidates without adding a
 //! whole-prompt answer lookup.
 
-use formal_ai::{detect_language, ExecutionSurface, Language, SolverConfig, UniversalSolver};
+use formal_ai::{
+    detect_language, formalize_intent,
+    meta_frame::{AtomicityReason, ProblemFrame, WorkUnit},
+    ExecutionSurface, Language, SolverConfig, UniversalSolver,
+};
 use serde::Deserialize;
 
 const CROSS_RUNTIME_SYNTHESIS_FIXTURE: &str =
@@ -180,6 +184,39 @@ fn detects_language_from_mixed_script_definition_prompt() {
 }
 
 #[test]
+fn mixed_script_definition_prompt_survives_meta_frame_formalization() {
+    let prompt = "Что такое vulkan layer";
+    let language = detect_language(prompt);
+
+    assert_eq!(language, Language::Russian);
+
+    let candidate = formal_ai::translation::formalize_prompt(prompt, language.slug());
+    let formalization = formalize_intent(prompt, language.slug(), Some(&candidate));
+    assert_eq!(formalization.language, "ru");
+    assert_eq!(formalization.route.as_deref(), Some("concept_lookup"));
+    assert!(formalization
+        .knowns
+        .iter()
+        .any(|known| known == "language:ru"));
+    assert!(formalization
+        .relevants
+        .iter()
+        .any(|relevant| relevant == "route:concept_lookup"));
+
+    let frame = ProblemFrame::from_formalization(&formalization);
+    assert_eq!(frame.language, "ru");
+    assert_eq!(frame.route.as_deref(), Some("concept_lookup"));
+    assert_eq!(frame.need_count(), 1);
+    assert_eq!(frame.needs[0].source_span, prompt);
+    assert_eq!(frame.needs[0].route.as_deref(), Some("concept_lookup"));
+
+    let root_unit = WorkUnit::from_formalization(&formalization, 4);
+    assert!(root_unit.atomic);
+    assert_eq!(root_unit.reason, AtomicityReason::DirectMethod);
+    assert_eq!(root_unit.route.as_deref(), Some("concept_lookup"));
+}
+
+#[test]
 fn decomposed_sub_results_are_composed_for_algebra() {
     let response =
         synthesis_solver().solve("If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?");
@@ -199,6 +236,97 @@ fn decomposed_sub_results_are_composed_for_algebra() {
         .iter()
         .any(|link| link.starts_with("composition:substitution:")));
     assert!(response.links_notation.contains("composition:evaluation"));
+}
+
+#[test]
+fn compound_courtesy_and_question_are_answered_in_source_order() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        language_link: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en", // English
+            prompt: "Hi, what is Redis?",
+            language_link: "language:en",
+        },
+        Case {
+            language: "ru", // Russian
+            prompt: "Привет, что такое Redis?",
+            language_link: "language:ru",
+        },
+        Case {
+            language: "hi", // Hindi
+            prompt: "नमस्ते, Redis क्या है?",
+            language_link: "language:hi",
+        },
+        Case {
+            language: "zh", // Chinese
+            prompt: "你好, Redis是什么？",
+            language_link: "language:zh",
+        },
+    ];
+
+    for case in cases {
+        let response = synthesis_solver().solve(case.prompt);
+
+        assert_eq!(
+            response.intent, "compound_response",
+            "{} compound prompt should compose sub-results, got {}: {}",
+            case.language, response.intent, response.answer
+        );
+        let mut paragraphs = response.answer.split("\n\n");
+        let greeting = paragraphs.next().unwrap_or_default();
+        let question_answer = paragraphs.next().unwrap_or_default();
+        assert!(
+            !greeting.contains("Redis"),
+            "{} compound answer must react to the greeting first: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            question_answer.contains("Redis"),
+            "{} compound answer must answer the question segment, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            !response.answer.contains(case.prompt),
+            "{} unknown answer must not treat the whole compound prompt as one concept: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == case.language_link),
+            "{} compound answer should retain the detected language link: {:?}",
+            case.language,
+            response.evidence_links
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .filter(|link| link.starts_with("sub_impulse:"))
+                .count()
+                >= 2,
+            "{} compound prompt must be split into multiple sub-impulses: {:?}",
+            case.language,
+            response.evidence_links
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("composition:compound_response"),
+            "{} compound synthesis must be recorded in the trace: {}",
+            case.language,
+            response.links_notation
+        );
+    }
 }
 
 #[test]

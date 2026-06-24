@@ -8,14 +8,17 @@
 //! concept knowledge base lives in [`crate::concepts`]; this module
 //! re-exports nothing — callers import those modules directly.
 
-use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule};
+use crate::engine::{normalize_prompt, ExecutionStatus, ProgramSpec, SelectedRule};
 use crate::event_log::EventLog;
+use crate::intent_formalization::{formalize_intent, IntentKind};
 use crate::language::{detect as detect_language, Language};
+use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {
     pub id: String,
     pub text: String,
+    pub independent: bool,
 }
 
 pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
@@ -110,28 +113,138 @@ pub fn record_decomposition(
     if max_depth == 0 {
         return Vec::new();
     }
+
+    let language = detect_language(prompt);
+    let whole_intent = formalize_intent(prompt, language.slug(), None);
+    if whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy {
+        let independent_parts = independent_actionable_segments(prompt);
+        if independent_parts.len() > 1 {
+            return record_sub_impulses(log, independent_parts, true);
+        }
+    }
+
     let lower = prompt.to_lowercase();
     let triggers = [" and ", " with tests", " with benchmarks", "; "];
     if !triggers.iter().any(|trigger| lower.contains(trigger)) {
         return Vec::new();
     }
 
-    let parts: Vec<&str> = prompt
+    let parts: Vec<String> = prompt
         .split([',', ';'])
         .flat_map(|chunk| chunk.split(" and "))
         .flat_map(|chunk| chunk.split(" with "))
         .map(str::trim)
         .filter(|chunk| !chunk.is_empty())
+        .map(str::to_owned)
         .collect();
+    record_sub_impulses(log, parts, false)
+}
+
+fn record_sub_impulses(
+    log: &mut EventLog,
+    parts: Vec<String>,
+    independent: bool,
+) -> Vec<DecomposedSubImpulse> {
     let mut sub_impulses = Vec::new();
     for sub_impulse in parts {
-        let id = log.append("sub_impulse", sub_impulse.to_owned());
+        let id = log.append("sub_impulse", sub_impulse.clone());
         sub_impulses.push(DecomposedSubImpulse {
             id,
-            text: sub_impulse.to_owned(),
+            text: sub_impulse,
+            independent,
         });
     }
     sub_impulses
+}
+
+fn independent_actionable_segments(prompt: &str) -> Vec<String> {
+    let parts = split_candidate_actionable_parts(prompt);
+    if parts.len() <= 1
+        || !parts
+            .iter()
+            .all(|part| looks_like_independent_impulse(part))
+    {
+        return Vec::new();
+    }
+    parts
+}
+
+fn split_candidate_actionable_parts(text: &str) -> Vec<String> {
+    let mut parts = Vec::new();
+    for sentence in split_sentences(text) {
+        for clause in sentence.split(';') {
+            for comma_part in clause.split(',') {
+                for and_part in comma_part.split(" and ") {
+                    let trimmed = strip_leading_coordinator(and_part.trim());
+                    if !trimmed.is_empty() {
+                        parts.push(trimmed.to_owned());
+                    }
+                }
+            }
+        }
+    }
+    parts
+}
+
+fn split_sentences(text: &str) -> Vec<String> {
+    let chars: Vec<char> = text.chars().collect();
+    let mut sentences = Vec::new();
+    let mut current = String::new();
+    for (index, &ch) in chars.iter().enumerate() {
+        current.push(ch);
+        let strong_terminator = matches!(ch, '?' | '!' | '。' | '！' | '？');
+        let period_boundary =
+            ch == '.' && chars.get(index + 1).is_none_or(|next| next.is_whitespace());
+        if strong_terminator || period_boundary {
+            push_trimmed_segment(&mut sentences, &current);
+            current.clear();
+        }
+    }
+    push_trimmed_segment(&mut sentences, &current);
+    sentences
+}
+
+fn push_trimmed_segment(out: &mut Vec<String>, candidate: &str) {
+    let trimmed = candidate.trim();
+    if !trimmed.is_empty() {
+        out.push(trimmed.to_owned());
+    }
+}
+
+fn strip_leading_coordinator(text: &str) -> &str {
+    let trimmed = text.trim_start();
+    let lowered = trimmed.to_ascii_lowercase();
+    for coordinator in ["and", "then"] {
+        if lowered == coordinator {
+            return "";
+        }
+        let prefix = format!("{coordinator} ");
+        if lowered.starts_with(&prefix) {
+            return trimmed[prefix.len()..].trim_start();
+        }
+    }
+    trimmed
+}
+
+fn looks_like_independent_impulse(segment: &str) -> bool {
+    let normalized = normalize_prompt(segment);
+    if normalized.is_empty() {
+        return false;
+    }
+    let language = detect_language(segment);
+    let formalization = formalize_intent(segment, language.slug(), None);
+    formalization.route.is_some()
+        || matches!(
+            formalization.kind,
+            IntentKind::Task
+                | IntentKind::Question
+                | IntentKind::Requirement
+                | IntentKind::Courtesy
+        )
+        || formalization
+            .relevants
+            .iter()
+            .any(|relevant| relevant.starts_with("handler:"))
 }
 
 pub fn record_candidates(log: &mut EventLog, prompt: &str, intent: &str) {
@@ -189,7 +302,7 @@ pub const fn is_prime(value: u64) -> bool {
     }
     let mut divisor: u64 = 2;
     while divisor.saturating_mul(divisor) <= value {
-        if value % divisor == 0 {
+        if value.is_multiple_of(divisor) {
             return false;
         }
         divisor += 1;
@@ -625,6 +738,7 @@ pub fn is_write_script_request(normalized: &str) -> bool {
 
 pub fn format_write_script_execution(program: ProgramSpec) -> String {
     let execution = &program.language.execution;
+    let expected_output = program.expected_output();
     let cmd = execution.check_command.map_or_else(
         || format!("Run command: `{}`", execution.run_command),
         |check| {
@@ -645,7 +759,7 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         execution.environment,
         cmd,
         output_label,
-        program.task.output,
+        expected_output,
         execution.notes
     )
 }
@@ -700,4 +814,62 @@ pub fn env_truthy(name: &str) -> bool {
                 "0" | "false" | "no" | "off"
             )
     })
+}
+
+/// Build a [`crate::solver::SolverConfig`] from the documented environment
+/// overrides. This is the body of [`crate::solver::SolverConfig::from_env`],
+/// extracted here so `src/solver.rs` stays under the 1000-line cap.
+pub fn config_from_env() -> SolverConfig {
+    let mut config = SolverConfig::default();
+    if env_truthy("FORMAL_AI_OFFLINE") {
+        config.offline = true;
+    }
+    if env_truthy("FORMAL_AI_AGENT_MODE") {
+        config.agent_mode = true;
+    }
+    if env_truthy("FORMAL_AI_DIAGNOSTIC_MODE") {
+        config.diagnostic_mode = true;
+    }
+    if let Some(value) = env_definition_fusion_by_default() {
+        config.definition_fusion_by_default = value;
+    }
+    if let Some(value) = env_bool("FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION")
+        .or_else(|| env_bool("FORMAL_AI_PROJECT_PROMOTION"))
+    {
+        config.associative_project_promotion = value;
+    }
+    if let Ok(value) =
+        std::env::var("FORMAL_AI_EXECUTION_SURFACE").or_else(|_| std::env::var("FORMAL_AI_SURFACE"))
+    {
+        if let Some(surface) = ExecutionSurface::from_env_value(&value) {
+            config.execution_surface = surface;
+        }
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
+        config.temperature = value;
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_GUESS_PROBABILITY", 0.0, 1.0) {
+        config.guess_probability = value;
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_FOLLOW_UP_PROBABILITY", 0.0, 1.0) {
+        config.follow_up_probability = value;
+    }
+    if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
+        if let Ok(parsed) = value.parse::<u64>() {
+            config.cache_ttl_seconds = parsed;
+        }
+    }
+    if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
+        .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
+    {
+        if let Some(mode) = BlueprintComposition::from_value(&value) {
+            config.blueprint_composition = mode;
+        }
+    }
+    crate::meta_core::apply_env_modes(
+        &mut config.recursion_mode,
+        &mut config.selection_mode,
+        &mut config.skill_mode,
+    );
+    config
 }

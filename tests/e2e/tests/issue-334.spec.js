@@ -78,7 +78,7 @@ test.describe('Issue #334 — Fibonacci agent plan', () => {
   });
 
   test('agent mode decomposes the full prompt into two working steps', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
     const last = await sendPrompt(page, FULL_PROMPT);
 
     await expect(last).toHaveClass(/assistant/);

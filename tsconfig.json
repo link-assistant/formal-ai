@@ -1,0 +1,13 @@
+{
+  "//": "Issue #550: pin the bun bundler's JSX transform to the classic runtime",
+  "//2": "with `h` as the factory so JSX authored in src/web/app/main.jsx compiles",
+  "//3": "to the same `h(tag, props, ...children)` calls the codebase already uses",
+  "//4": "(h === React.createElement). This keeps a single React instance and lets",
+  "//5": "the static guards (check-web-tdz, check-web-hardcoded-ui-strings) parse the",
+  "//6": "compiled output uniformly. `Fragment` (React.Fragment) backs the <>…</> form.",
+  "compilerOptions": {
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
+  }
+}

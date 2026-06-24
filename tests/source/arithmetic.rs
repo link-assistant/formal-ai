@@ -64,6 +64,7 @@ impl core::fmt::Display for ArithmeticError {
 // ---------------------------------------------------------------------------
 
 const BASE: u64 = 1_000_000_000;
+const EXACT_EXPONENT_LIMIT: u32 = 10_000;
 
 /// A non-negative arbitrary-precision integer stored as base-10^9 limbs in
 /// little-endian order (least-significant limb first).
@@ -73,6 +74,10 @@ struct BigUint(Vec<u64>);
 impl BigUint {
     fn zero() -> Self {
         Self(vec![0])
+    }
+
+    fn one() -> Self {
+        Self(vec![1])
     }
 
     fn from_u64(value: u64) -> Self {
@@ -126,6 +131,35 @@ impl BigUint {
             result.pop();
         }
         Self(result)
+    }
+
+    fn pow_u32(&self, mut exponent: u32) -> Self {
+        let mut result = Self::one();
+        let mut base = self.clone();
+        while exponent > 0 {
+            if exponent % 2 == 1 {
+                result = result.mul(&base);
+            }
+            exponent /= 2;
+            if exponent > 0 {
+                base = base.mul(&base);
+            }
+        }
+        result
+    }
+
+    fn to_u32(&self) -> Option<u32> {
+        let mut value = 0_u32;
+        for &limb in self.0.iter().rev() {
+            if limb > u64::from(u32::MAX) {
+                return None;
+            }
+            #[allow(clippy::cast_possible_truncation)]
+            let limb_u32 = limb as u32;
+            value = value.checked_mul(1_000_000_000)?;
+            value = value.checked_add(limb_u32)?;
+        }
+        Some(value)
     }
 
     fn to_decimal_string(&self) -> String {
@@ -294,6 +328,100 @@ fn arith_mul(left: ArithValue, right: ArithValue) -> Result<ArithValue, Arithmet
     }
 }
 
+fn arith_pow(left: &ArithValue, right: &ArithValue) -> Result<ArithValue, ArithmeticError> {
+    if let (
+        ArithValue::Integer {
+            negative,
+            magnitude,
+        },
+        ArithValue::Integer {
+            negative: false,
+            magnitude: exponent,
+        },
+    ) = (left, right)
+    {
+        let Some(exponent) = exponent.to_u32() else {
+            return Err(ArithmeticError::Overflow);
+        };
+        if exponent > EXACT_EXPONENT_LIMIT {
+            return Err(ArithmeticError::Overflow);
+        }
+        let result = magnitude.pow_u32(exponent);
+        Ok(ArithValue::Integer {
+            negative: *negative && exponent % 2 == 1 && !result.is_zero(),
+            magnitude: result,
+        })
+    } else {
+        let Some(exponent) = integer_exponent_i32(right) else {
+            return Err(ArithmeticError::Unparseable);
+        };
+        Ok(ArithValue::Float(pow_f64_integer(left.to_f64(), exponent)?))
+    }
+}
+
+fn integer_exponent_i32(value: &ArithValue) -> Option<i32> {
+    match value {
+        ArithValue::Integer {
+            negative,
+            magnitude,
+        } => {
+            let exponent = magnitude.to_u32()?;
+            if exponent > EXACT_EXPONENT_LIMIT {
+                return None;
+            }
+            #[allow(clippy::cast_possible_wrap)]
+            let exponent = exponent as i32;
+            Some(if *negative { -exponent } else { exponent })
+        }
+        ArithValue::Float(exponent) => {
+            if !exponent.is_finite() {
+                return None;
+            }
+            let limit = f64::from(EXACT_EXPONENT_LIMIT);
+            if *exponent < -limit || *exponent > limit {
+                return None;
+            }
+            #[allow(clippy::cast_possible_truncation)]
+            let integer = *exponent as i32;
+            #[allow(clippy::float_cmp)]
+            (f64::from(integer) == *exponent).then_some(integer)
+        }
+    }
+}
+
+fn pow_f64_integer(base: f64, exponent: i32) -> Result<f64, ArithmeticError> {
+    let negative_exponent = exponent < 0;
+    let mut remaining = exponent.unsigned_abs();
+    let mut factor = base;
+    let mut result = 1.0_f64;
+    while remaining > 0 {
+        if remaining % 2 == 1 {
+            result *= factor;
+            if !result.is_finite() {
+                return Err(ArithmeticError::Overflow);
+            }
+        }
+        remaining /= 2;
+        if remaining > 0 {
+            factor *= factor;
+            if !factor.is_finite() {
+                return Err(ArithmeticError::Overflow);
+            }
+        }
+    }
+    if negative_exponent {
+        if result == 0.0 {
+            return Err(ArithmeticError::DivisionByZero);
+        }
+        result = 1.0 / result;
+    }
+    if result.is_finite() {
+        Ok(result)
+    } else {
+        Err(ArithmeticError::Overflow)
+    }
+}
+
 fn arith_div(left: &ArithValue, right: &ArithValue) -> Result<ArithValue, ArithmeticError> {
     if right.to_f64() == 0.0 {
         return Err(ArithmeticError::DivisionByZero);
@@ -363,6 +491,7 @@ enum ArithmeticToken {
     Star,
     Slash,
     Percent,
+    Caret,
     LParen,
     RParen,
 }
@@ -395,6 +524,10 @@ fn tokenize_arithmetic(input: &str) -> Result<Vec<ArithmeticToken>, ArithmeticEr
             '%' => {
                 chars.next();
                 tokens.push(ArithmeticToken::Percent);
+            }
+            '^' => {
+                chars.next();
+                tokens.push(ArithmeticToken::Caret);
             }
             '(' => {
                 chars.next();
@@ -537,7 +670,18 @@ impl<'a> ArithmeticParser<'a> {
                 self.advance();
                 self.parse_unary()
             }
-            _ => self.parse_primary(),
+            _ => self.parse_power(),
+        }
+    }
+
+    fn parse_power(&mut self) -> Result<ArithValue, ArithmeticError> {
+        let left = self.parse_primary()?;
+        if matches!(self.peek(), Some(ArithmeticToken::Caret)) {
+            self.advance();
+            let right = self.parse_unary()?;
+            arith_pow(&left, &right)
+        } else {
+            Ok(left)
         }
     }
 

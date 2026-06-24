@@ -359,7 +359,7 @@ impl<'p> Composer<'p> {
                 }
             }
             let score = u32::from(operation_exact) * 2 + u32::from(on.is_some());
-            if best.map_or(true, |(_, current)| score > current) {
+            if best.is_none_or(|(_, current)| score > current) {
                 best = Some((case.find_child_value("code"), score));
             }
         }

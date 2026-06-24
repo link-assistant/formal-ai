@@ -185,7 +185,7 @@ impl<'a> TseitinEncoder<'a> {
         }
     }
 
-    fn fresh_gate(&mut self) -> Literal {
+    const fn fresh_gate(&mut self) -> Literal {
         let variable = self.next_variable;
         self.next_variable += 1;
         Literal::positive(variable)

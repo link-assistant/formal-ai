@@ -4,13 +4,10 @@
 // #218 fixed the apple noun; #221 demands the same machinery for any
 // common noun (tomato/cucumber/potato/...) plus the unquoted variants.
 //
-// The browser worker resolves common nouns via a live Wiktionary
-// fetch (`liveWiktionaryTranslate` in `formal_ai_worker.js`) — the
-// MediaWiki action API is CORS-friendly through `origin=*`, so the
-// worker stays lightweight (no offline dictionary bundled) and always
-// reflects the latest Wiktionary data. The Rust pipeline uses the
-// same source through the cached API-response bundles in
-// `data/seed/api-cache/*.lino` so the two surfaces agree.
+// The browser worker first resolves common nouns from the seed-backed
+// compositional surfaces, then falls back to live Wiktionary lookup for
+// missing forms. The Rust pipeline uses the same seed/cache data so the two
+// surfaces agree without depending on the MediaWiki API for covered nouns.
 const { test, expect } = require('@playwright/test');
 
 async function switchToManualMode(page) {
@@ -91,10 +88,28 @@ test.describe('Issue #221 common-noun translation', () => {
     }
   });
 
+  test('seed-backed tomato translations cover every supported target language', async ({
+    page,
+  }) => {
+    const cases = [
+      { source: 'en', target: 'ru', prompt: 'translate "tomato" to russian', expected: /помидор|томат/i, placeholder: '[ru]' },
+      { source: 'ru', target: 'en', prompt: 'переведи "помидоры" на английский', expected: 'tomato', placeholder: '[en]' },
+      { source: 'en', target: 'hi', prompt: 'translate "tomato" to hindi', expected: /टमाटर/i, placeholder: '[hi]' },
+      { source: 'en', target: 'zh', prompt: 'translate "tomato" to chinese', expected: /番茄|西红柿/i, placeholder: '[zh]' },
+    ];
+
+    for (const { source, target, prompt, expected, placeholder } of cases) {
+      await test.step(`${source}->${target}`, async () => {
+        const reply = await sendPrompt(page, prompt);
+        await expect(reply).toContainText(expected);
+        await expect(reply).not.toContainText(placeholder);
+      });
+    }
+  });
+
   test('Russian inflected forms resolve to the lemma translation', async ({ page }) => {
-    // Wiktionary's `помидоры` page redirects/links to the lemma `помидор`,
-    // and the live MediaWiki action API follows the redirect transparently
-    // so the translation block we extract is the noun's English glosses.
+    // The seed includes `помидоры` as an inflected tomato surface, so this path
+    // stays deterministic even when the live Wiktionary fallback is unavailable.
     const reply = await sendPrompt(page, 'переведи "помидоры" на английский');
     await expect(reply).toContainText('tomato');
     await expect(reply).not.toContainText('[en]');

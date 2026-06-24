@@ -473,7 +473,7 @@ fn extract_claim_from_prompt(normalized: &str) -> String {
     trimmed.to_owned()
 }
 
-fn is_claim_intro_boundary(ch: char) -> bool {
+const fn is_claim_intro_boundary(ch: char) -> bool {
     ch.is_whitespace()
         || matches!(
             ch,

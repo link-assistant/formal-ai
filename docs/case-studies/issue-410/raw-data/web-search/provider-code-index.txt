@@ -1,0 +1,720 @@
+/tmp/issue-410-web-search/src/search.js:3: * Main class for performing multi-provider web searches with merging and reranking
+/tmp/issue-410-web-search/src/search.js:7:  buildProviders,
+/tmp/issue-410-web-search/src/search.js:8:  getDefaultProviderIds,
+/tmp/issue-410-web-search/src/search.js:10:} from './providers/registry.js';
+/tmp/issue-410-web-search/src/search.js:14: * @typedef {import('./providers/base.js').SearchResult} SearchResult
+/tmp/issue-410-web-search/src/search.js:15: * @typedef {import('./providers/base.js').SearchOptions} SearchOptions
+/tmp/issue-410-web-search/src/search.js:21: * @property {string[]} [providers] - List of providers to use
+/tmp/issue-410-web-search/src/search.js:22: * @property {Object} [google] - Google provider configuration
+/tmp/issue-410-web-search/src/search.js:25: * @property {Object} [bing] - Bing provider configuration
+/tmp/issue-410-web-search/src/search.js:27: * @property {Object<string, number>} [weights] - Weights for each provider
+/tmp/issue-410-web-search/src/search.js:35: * @property {string[]} [providers] - Override providers list
+/tmp/issue-410-web-search/src/search.js:46:    this.providers = new Map();
+/tmp/issue-410-web-search/src/search.js:47:    this.defaultProviders = config.providers || getDefaultProviderIds();
+/tmp/issue-410-web-search/src/search.js:51:    this.initializeProviders(config);
+/tmp/issue-410-web-search/src/search.js:55:   * Initialize search providers based on configuration
+/tmp/issue-410-web-search/src/search.js:58:  initializeProviders(config) {
+/tmp/issue-410-web-search/src/search.js:59:    this.providers = buildProviders(config);
+/tmp/issue-410-web-search/src/search.js:62:      const provider = this.providers.get(name);
+/tmp/issue-410-web-search/src/search.js:63:      if (provider) {
+/tmp/issue-410-web-search/src/search.js:64:        provider.setWeight(weight);
+/tmp/issue-410-web-search/src/search.js:70:   * Get a provider by name
+/tmp/issue-410-web-search/src/search.js:72:   * @returns {import('./providers/base.js').BaseSearchProvider|undefined}
+/tmp/issue-410-web-search/src/search.js:74:  getProvider(name) {
+/tmp/issue-410-web-search/src/search.js:75:    return this.providers.get(name.toLowerCase());
+/tmp/issue-410-web-search/src/search.js:79:   * Set provider weight
+/tmp/issue-410-web-search/src/search.js:80:   * @param {string} name - Provider name
+/tmp/issue-410-web-search/src/search.js:83:  setProviderWeight(name, weight) {
+/tmp/issue-410-web-search/src/search.js:84:    const provider = this.providers.get(name.toLowerCase());
+/tmp/issue-410-web-search/src/search.js:85:    if (provider) {
+/tmp/issue-410-web-search/src/search.js:86:      provider.setWeight(weight);
+/tmp/issue-410-web-search/src/search.js:91:   * Enable or disable a provider
+/tmp/issue-410-web-search/src/search.js:92:   * @param {string} name - Provider name
+/tmp/issue-410-web-search/src/search.js:93:   * @param {boolean} enabled - Whether to enable the provider
+/tmp/issue-410-web-search/src/search.js:95:  setProviderEnabled(name, enabled) {
+/tmp/issue-410-web-search/src/search.js:96:    const provider = this.providers.get(name.toLowerCase());
+/tmp/issue-410-web-search/src/search.js:97:    if (provider) {
+/tmp/issue-410-web-search/src/search.js:98:      provider.enabled = enabled;
+/tmp/issue-410-web-search/src/search.js:103:   * Perform a search across multiple providers
+/tmp/issue-410-web-search/src/search.js:106:   * @param {number} [options.limit] - Maximum results per provider
+/tmp/issue-410-web-search/src/search.js:110:   * @param {string[]} [options.providers] - Providers to use
+/tmp/issue-410-web-search/src/search.js:112:   * @param {Object<string, number>} [options.weights] - Provider weights
+/tmp/issue-410-web-search/src/search.js:120:    const providersToUse = options.providers || this.defaultProviders;
+/tmp/issue-410-web-search/src/search.js:125:    const providerNames = [];
+/tmp/issue-410-web-search/src/search.js:127:    for (const name of providersToUse) {
+/tmp/issue-410-web-search/src/search.js:128:      const provider = this.providers.get(name.toLowerCase());
+/tmp/issue-410-web-search/src/search.js:129:      if (provider && provider.isAvailable()) {
+/tmp/issue-410-web-search/src/search.js:130:        providerNames.push(name);
+/tmp/issue-410-web-search/src/search.js:132:          provider.search(query, {
+/tmp/issue-410-web-search/src/search.js:143:    const resultsByProvider = {};
+/tmp/issue-410-web-search/src/search.js:147:      const providerName = providerNames[i];
+/tmp/issue-410-web-search/src/search.js:150:        resultsByProvider[providerName] = result.value;
+/tmp/issue-410-web-search/src/search.js:153:          `Provider ${providerName} failed:`,
+/tmp/issue-410-web-search/src/search.js:156:        resultsByProvider[providerName] = [];
+/tmp/issue-410-web-search/src/search.js:160:    return mergeResults(resultsByProvider, {
+/tmp/issue-410-web-search/src/search.js:168:   * Search with a single provider only
+/tmp/issue-410-web-search/src/search.js:170:   * @param {string} providerName - Provider name
+/tmp/issue-410-web-search/src/search.js:174:  async searchSingle(query, providerName, options = {}) {
+/tmp/issue-410-web-search/src/search.js:175:    const provider = this.providers.get(providerName.toLowerCase());
+/tmp/issue-410-web-search/src/search.js:176:    if (!provider) {
+/tmp/issue-410-web-search/src/search.js:177:      throw new Error(`Unknown provider: ${providerName}`);
+/tmp/issue-410-web-search/src/search.js:180:    if (!provider.isAvailable()) {
+/tmp/issue-410-web-search/src/search.js:181:      throw new Error(`Provider ${providerName} is not available`);
+/tmp/issue-410-web-search/src/search.js:184:    return await provider.search(query, options);
+/tmp/issue-410-web-search/src/search.js:188:   * Get list of available provider names
+/tmp/issue-410-web-search/src/search.js:191:  getAvailableProviders() {
+/tmp/issue-410-web-search/src/search.js:192:    return Array.from(this.providers.keys());
+/tmp/issue-410-web-search/src/search.js:196:   * Get provider status information, enriched with registry metadata
+/tmp/issue-410-web-search/src/search.js:200:  getProviderStatus() {
+/tmp/issue-410-web-search/src/search.js:207:    for (const [name, provider] of this.providers) {
+/tmp/issue-410-web-search/src/search.js:210:        enabled: provider.enabled,
+/tmp/issue-410-web-search/src/search.js:211:        weight: provider.getWeight(),
+/tmp/issue-410-web-search/src/search.js:213:          typeof provider.hasApiCredentials === 'function'
+/tmp/issue-410-web-search/src/search.js:214:            ? provider.hasApiCredentials()
+/tmp/issue-410-web-search/src/merger.js:3: * Combines results from multiple search providers and reranks them
+/tmp/issue-410-web-search/src/merger.js:7: * @typedef {import('./providers/base.js').SearchResult} SearchResult
+/tmp/issue-410-web-search/src/merger.js:13: * @property {Object<string, number>} [weights] - Weight for each provider
+/tmp/issue-410-web-search/src/merger.js:47: * @param {Object<string, SearchResult[]>} resultsByProvider - Results grouped by provider
+/tmp/issue-410-web-search/src/merger.js:51:export function mergeWithRRF(resultsByProvider, options = {}) {
+/tmp/issue-410-web-search/src/merger.js:59:  for (const [provider, results] of Object.entries(resultsByProvider)) {
+/tmp/issue-410-web-search/src/merger.js:60:    const providerWeight = weights[provider] || 1.0;
+/tmp/issue-410-web-search/src/merger.js:64:      const score = rrfScore(result.rank, k) * providerWeight;
+/tmp/issue-410-web-search/src/merger.js:97: * @param {Object<string, SearchResult[]>} resultsByProvider - Results grouped by provider
+/tmp/issue-410-web-search/src/merger.js:101:export function mergeWithWeights(resultsByProvider, options = {}) {
+/tmp/issue-410-web-search/src/merger.js:109:  for (const [provider, results] of Object.entries(resultsByProvider)) {
+/tmp/issue-410-web-search/src/merger.js:110:    const providerWeight = weights[provider] || 1.0;
+/tmp/issue-410-web-search/src/merger.js:114:      const score = ((maxRank - result.rank + 1) / maxRank) * providerWeight;
+/tmp/issue-410-web-search/src/merger.js:147: * @param {Object<string, SearchResult[]>} resultsByProvider - Results grouped by provider
+/tmp/issue-410-web-search/src/merger.js:151:export function mergeWithInterleave(resultsByProvider, options = {}) {
+/tmp/issue-410-web-search/src/merger.js:156:  const providers = Object.entries(resultsByProvider);
+/tmp/issue-410-web-search/src/merger.js:157:  const indices = providers.map(() => 0);
+/tmp/issue-410-web-search/src/merger.js:158:  const maxLength = Math.max(...providers.map(([, r]) => r.length));
+/tmp/issue-410-web-search/src/merger.js:161:    for (let j = 0; j < providers.length; j++) {
+/tmp/issue-410-web-search/src/merger.js:162:      const [, providerResults] = providers[j];
+/tmp/issue-410-web-search/src/merger.js:163:      if (indices[j] < providerResults.length) {
+/tmp/issue-410-web-search/src/merger.js:164:        const result = providerResults[indices[j]];
+/tmp/issue-410-web-search/src/merger.js:188: * @param {Object<string, SearchResult[]>} resultsByProvider - Results grouped by provider
+/tmp/issue-410-web-search/src/merger.js:192:export function mergeResults(resultsByProvider, options = {}) {
+/tmp/issue-410-web-search/src/merger.js:197:      return mergeWithWeights(resultsByProvider, options);
+/tmp/issue-410-web-search/src/merger.js:199:      return mergeWithInterleave(resultsByProvider, options);
+/tmp/issue-410-web-search/src/merger.js:202:      return mergeWithRRF(resultsByProvider, options);
+/tmp/issue-410-web-search/src/index.d.ts:2: * Web Search - Multi-provider web search aggregator
+/tmp/issue-410-web-search/src/index.d.ts:16:  /** The search provider that returned this result */
+/tmp/issue-410-web-search/src/index.d.ts:30:  /** Maximum number of results to return per provider */
+/tmp/issue-410-web-search/src/index.d.ts:38:  /** Providers to use for this search */
+/tmp/issue-410-web-search/src/index.d.ts:39:  providers?: string[];
+/tmp/issue-410-web-search/src/index.d.ts:42:  /** Provider weights */
+/tmp/issue-410-web-search/src/index.d.ts:52:  /** Provider weights */
+/tmp/issue-410-web-search/src/index.d.ts:61: * Provider category, mirroring `formal-ai`'s `web_search_core` registry.
+/tmp/issue-410-web-search/src/index.d.ts:63:export type ProviderCategory = 'search' | 'knowledge' | 'papers' | 'code';
+/tmp/issue-410-web-search/src/index.d.ts:66: * How a provider obtains its results.
+/tmp/issue-410-web-search/src/index.d.ts:68:export type ProviderAccess =
+/tmp/issue-410-web-search/src/index.d.ts:77: * Provider status information, enriched with registry metadata.
+/tmp/issue-410-web-search/src/index.d.ts:79:export interface ProviderStatus {
+/tmp/issue-410-web-search/src/index.d.ts:80:  /** Whether the provider is enabled */
+/tmp/issue-410-web-search/src/index.d.ts:82:  /** Provider weight for reranking */
+/tmp/issue-410-web-search/src/index.d.ts:84:  /** Whether the provider has API credentials */
+/tmp/issue-410-web-search/src/index.d.ts:86:  /** Provider category */
+/tmp/issue-410-web-search/src/index.d.ts:87:  category: ProviderCategory;
+/tmp/issue-410-web-search/src/index.d.ts:93:  access: ProviderAccess;
+/tmp/issue-410-web-search/src/index.d.ts:97: * A single registry entry describing a provider.
+/tmp/issue-410-web-search/src/index.d.ts:100:  /** Stable provider id */
+/tmp/issue-410-web-search/src/index.d.ts:101:  id: string;
+/tmp/issue-410-web-search/src/index.d.ts:104:  /** Provider category */
+/tmp/issue-410-web-search/src/index.d.ts:105:  category: ProviderCategory;
+/tmp/issue-410-web-search/src/index.d.ts:109:  defaultForCategory: boolean;
+/tmp/issue-410-web-search/src/index.d.ts:111:  access: ProviderAccess;
+/tmp/issue-410-web-search/src/index.d.ts:118:  id: string;
+/tmp/issue-410-web-search/src/index.d.ts:120:  category: ProviderCategory;
+/tmp/issue-410-web-search/src/index.d.ts:123:  defaultForCategory?: boolean;
+/tmp/issue-410-web-search/src/index.d.ts:136: * Configuration for Google provider
+/tmp/issue-410-web-search/src/index.d.ts:146: * Configuration for Bing provider
+/tmp/issue-410-web-search/src/index.d.ts:157:  /** Default providers to use */
+/tmp/issue-410-web-search/src/index.d.ts:158:  providers?: string[];
+/tmp/issue-410-web-search/src/index.d.ts:159:  /** Google provider configuration */
+/tmp/issue-410-web-search/src/index.d.ts:161:  /** Bing provider configuration */
+/tmp/issue-410-web-search/src/index.d.ts:163:  /** Default weights for providers */
+/tmp/issue-410-web-search/src/index.d.ts:172: * Base class for search providers
+/tmp/issue-410-web-search/src/index.d.ts:174:export declare abstract class BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:175:  /** Provider name */
+/tmp/issue-410-web-search/src/index.d.ts:177:  /** Whether the provider is enabled */
+/tmp/issue-410-web-search/src/index.d.ts:179:  /** Provider weight for reranking */
+/tmp/issue-410-web-search/src/index.d.ts:185:   * Search for results using this provider
+/tmp/issue-410-web-search/src/index.d.ts:193:   * Check if the provider is available/configured
+/tmp/issue-410-web-search/src/index.d.ts:198:   * Get the provider name
+/tmp/issue-410-web-search/src/index.d.ts:203:   * Get the provider weight
+/tmp/issue-410-web-search/src/index.d.ts:208:   * Set the provider weight
+/tmp/issue-410-web-search/src/index.d.ts:214: * Google search provider
+/tmp/issue-410-web-search/src/index.d.ts:216:export declare class GoogleProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:223: * DuckDuckGo search provider
+/tmp/issue-410-web-search/src/index.d.ts:225:export declare class DuckDuckGoProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:231: * Bing search provider
+/tmp/issue-410-web-search/src/index.d.ts:233:export declare class BingProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:240: * Browser-based search provider using browser-commander
+/tmp/issue-410-web-search/src/index.d.ts:242:export declare class BrowserSearchProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:252: * Generic, descriptor-driven search provider. A single implementation that can
+/tmp/issue-410-web-search/src/index.d.ts:255:export declare class GenericProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:260:  readonly category: ProviderCategory;
+/tmp/issue-410-web-search/src/index.d.ts:267: * Provider that delegates a single-provider fetch + parse to the optional
+/tmp/issue-410-web-search/src/index.d.ts:270:export declare class WebCaptureProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/index.d.ts:277:      provider: string;
+/tmp/issue-410-web-search/src/index.d.ts:287: * Web Search Engine - main class for multi-provider search
+/tmp/issue-410-web-search/src/index.d.ts:293:   * Search across multiple providers
+/tmp/issue-410-web-search/src/index.d.ts:298:   * Search with a single provider
+/tmp/issue-410-web-search/src/index.d.ts:302:    providerName: string,
+/tmp/issue-410-web-search/src/index.d.ts:307:   * Get available provider names
+/tmp/issue-410-web-search/src/index.d.ts:309:  getAvailableProviders(): string[];
+/tmp/issue-410-web-search/src/index.d.ts:312:   * Get provider status information
+/tmp/issue-410-web-search/src/index.d.ts:314:  getProviderStatus(): Record<string, ProviderStatus>;
+/tmp/issue-410-web-search/src/index.d.ts:317:   * Set provider weight
+/tmp/issue-410-web-search/src/index.d.ts:319:  setProviderWeight(name: string, weight: number): void;
+/tmp/issue-410-web-search/src/index.d.ts:322:   * Enable or disable a provider
+/tmp/issue-410-web-search/src/index.d.ts:324:  setProviderEnabled(name: string, enabled: boolean): void;
+/tmp/issue-410-web-search/src/index.d.ts:327:   * Get a provider by name
+/tmp/issue-410-web-search/src/index.d.ts:329:  getProvider(name: string): BaseSearchProvider | undefined;
+/tmp/issue-410-web-search/src/index.d.ts:340: * Get list of available provider names (every registered engine)
+/tmp/issue-410-web-search/src/index.d.ts:342:export declare function getAvailableProviders(): string[];
+/tmp/issue-410-web-search/src/index.d.ts:345: * Create a browser search provider
+/tmp/issue-410-web-search/src/index.d.ts:347:export declare function createBrowserProvider(config?: {
+/tmp/issue-410-web-search/src/index.d.ts:351:}): BrowserSearchProvider;
+/tmp/issue-410-web-search/src/index.d.ts:354: * Create a descriptor-driven generic provider
+/tmp/issue-410-web-search/src/index.d.ts:356:export declare function createGenericProvider(
+/tmp/issue-410-web-search/src/index.d.ts:359:): GenericProvider;
+/tmp/issue-410-web-search/src/index.d.ts:362: * Create a web-capture-backed provider
+/tmp/issue-410-web-search/src/index.d.ts:364:export declare function createWebCaptureProvider(config?: {
+/tmp/issue-410-web-search/src/index.d.ts:367:}): WebCaptureProvider;
+/tmp/issue-410-web-search/src/index.d.ts:369:/** Provider categories, mirroring `formal-ai`'s `web_search_core` registry. */
+/tmp/issue-410-web-search/src/index.d.ts:370:export declare const CATEGORIES: ProviderCategory[];
+/tmp/issue-410-web-search/src/index.d.ts:378:/** Build the full registry of provider entries. */
+/tmp/issue-410-web-search/src/index.d.ts:381:/** Get all provider ids, optionally filtered by category. */
+/tmp/issue-410-web-search/src/index.d.ts:382:export declare function getProviderIds(category?: ProviderCategory): string[];
+/tmp/issue-410-web-search/src/index.d.ts:384:/** Get the default provider ids used when the caller does not specify any. */
+/tmp/issue-410-web-search/src/index.d.ts:385:export declare function getDefaultProviderIds(): string[];
+/tmp/issue-410-web-search/src/index.d.ts:387:/** Instantiate every registered provider. */
+/tmp/issue-410-web-search/src/index.d.ts:388:export declare function buildProviders(
+/tmp/issue-410-web-search/src/index.d.ts:390:): Map<string, BaseSearchProvider>;
+/tmp/issue-410-web-search/src/index.d.ts:420:  resultsByProvider: Record<string, SearchResult[]>,
+/tmp/issue-410-web-search/src/index.d.ts:428:  resultsByProvider: Record<string, SearchResult[]>,
+/tmp/issue-410-web-search/src/index.d.ts:436:  resultsByProvider: Record<string, SearchResult[]>,
+/tmp/issue-410-web-search/src/index.d.ts:444:  resultsByProvider: Record<string, SearchResult[]>,
+/tmp/issue-410-web-search/src/index.js:2: * Web Search - Multi-provider web search aggregator
+/tmp/issue-410-web-search/src/index.js:6: * (Reciprocal Rank Fusion, weighted, interleave). Providers are organized by a
+/tmp/issue-410-web-search/src/index.js:9: * `@link-assistant/web-capture` component library can back any provider.
+/tmp/issue-410-web-search/src/index.js:14:  BaseSearchProvider,
+/tmp/issue-410-web-search/src/index.js:15:  GoogleProvider,
+/tmp/issue-410-web-search/src/index.js:16:  DuckDuckGoProvider,
+/tmp/issue-410-web-search/src/index.js:17:  BingProvider,
+/tmp/issue-410-web-search/src/index.js:18:  BrowserSearchProvider,
+/tmp/issue-410-web-search/src/index.js:19:  createBrowserProvider,
+/tmp/issue-410-web-search/src/index.js:20:  GenericProvider,
+/tmp/issue-410-web-search/src/index.js:21:  createGenericProvider,
+/tmp/issue-410-web-search/src/index.js:22:  WebCaptureProvider,
+/tmp/issue-410-web-search/src/index.js:23:  createWebCaptureProvider,
+/tmp/issue-410-web-search/src/index.js:32:  getProviderIds,
+/tmp/issue-410-web-search/src/index.js:33:  getDefaultProviderIds,
+/tmp/issue-410-web-search/src/index.js:34:  buildProviders,
+/tmp/issue-410-web-search/src/index.js:35:  getAvailableProviders,
+/tmp/issue-410-web-search/src/index.js:36:} from './providers/index.js';
+/tmp/issue-410-web-search/rust/src/lib.rs:1://! Web Search - Multi-provider web search aggregator
+/tmp/issue-410-web-search/rust/src/lib.rs:25:pub mod providers;
+/tmp/issue-410-web-search/rust/src/lib.rs:30:pub use providers::{
+/tmp/issue-410-web-search/rust/src/lib.rs:31:    get_default_provider_ids, get_provider_ids, get_registry, is_known_category, RegistryEntry,
+/tmp/issue-410-web-search/rust/src/error.rs:20:    /// Provider not found
+/tmp/issue-410-web-search/rust/src/error.rs:21:    #[error("Unknown provider: {0}")]
+/tmp/issue-410-web-search/rust/src/error.rs:22:    UnknownProvider(String),
+/tmp/issue-410-web-search/rust/src/error.rs:24:    /// Provider is disabled
+/tmp/issue-410-web-search/rust/src/error.rs:25:    #[error("Provider {0} is disabled")]
+/tmp/issue-410-web-search/rust/src/error.rs:26:    ProviderDisabled(String),
+/tmp/issue-410-web-search/rust/src/error.rs:28:    /// API error from search provider
+/tmp/issue-410-web-search/rust/src/error.rs:29:    #[error("API error from {provider}: {message}")]
+/tmp/issue-410-web-search/rust/src/error.rs:30:    ApiError { provider: String, message: String },
+/tmp/issue-410-web-search/src/server.js:12:  getProviderIds,
+/tmp/issue-410-web-search/src/server.js:13:} from './providers/registry.js';
+/tmp/issue-410-web-search/src/server.js:37:    providers: searchEngine.getProviderStatus(),
+/tmp/issue-410-web-search/src/server.js:43: * GET /search?q=<query>&providers=<providers>&limit=<limit>&strategy=<strategy>
+/tmp/issue-410-web-search/src/server.js:66:  if (req.query.providers) {
+/tmp/issue-410-web-search/src/server.js:67:    options.providers = req.query.providers.split(',').map((p) => p.trim());
+/tmp/issue-410-web-search/src/server.js:86:        providers: options.providers || searchEngine.getAvailableProviders(),
+/tmp/issue-410-web-search/src/server.js:108:    providers,
+/tmp/issue-410-web-search/src/server.js:125:    providers,
+/tmp/issue-410-web-search/src/server.js:140:        providers: options.providers || searchEngine.getAvailableProviders(),
+/tmp/issue-410-web-search/src/server.js:156: * Search with single provider
+/tmp/issue-410-web-search/src/server.js:157: * GET /search/:provider?q=<query>
+/tmp/issue-410-web-search/src/server.js:159:app.get('/search/:provider', async (req, res) => {
+/tmp/issue-410-web-search/src/server.js:160:  const { provider } = req.params;
+/tmp/issue-410-web-search/src/server.js:183:      provider,
+/tmp/issue-410-web-search/src/server.js:188:      provider,
+/tmp/issue-410-web-search/src/server.js:193:    if (error.message.includes('Unknown provider')) {
+/tmp/issue-410-web-search/src/server.js:196:        availableProviders: searchEngine.getAvailableProviders(),
+/tmp/issue-410-web-search/src/server.js:199:    console.error(`Search error (${provider}):`, error);
+/tmp/issue-410-web-search/src/server.js:208: * Get available providers
+/tmp/issue-410-web-search/src/server.js:209: * GET /providers?category=<category>
+/tmp/issue-410-web-search/src/server.js:211:app.get('/providers', (req, res) => {
+/tmp/issue-410-web-search/src/server.js:220:  const status = searchEngine.getProviderStatus();
+/tmp/issue-410-web-search/src/server.js:228:    providers: category
+/tmp/issue-410-web-search/src/server.js:238: * Get provider categories and the providers within each
+/tmp/issue-410-web-search/src/server.js:244:    categories[category] = getProviderIds(category);
+/tmp/issue-410-web-search/src/server.js:259:    console.log('  GET  /search?q=<query>        - Search all providers');
+/tmp/issue-410-web-search/src/server.js:261:    console.log('  GET  /search/:provider?q=<query> - Search single provider');
+/tmp/issue-410-web-search/src/server.js:262:    console.log('  GET  /providers               - List available providers');
+/tmp/issue-410-web-search/src/server.js:263:    console.log('  GET  /categories              - List provider categories');
+/tmp/issue-410-web-search/src/server.js:268:    console.log('  providers    - Comma-separated list of providers');
+/tmp/issue-410-web-search/src/server.js:269:    console.log('  limit        - Max results per provider (default: 10)');
+/tmp/issue-410-web-search/src/server.js:271:    console.log('  weights      - JSON object with provider weights');
+/tmp/issue-410-web-search/src/providers/index.js:2: * Search providers module
+/tmp/issue-410-web-search/src/providers/index.js:3: * Exports all available search providers, the descriptor-driven generic
+/tmp/issue-410-web-search/src/providers/index.js:4: * provider, the web-capture component-library provider, and the typed
+/tmp/issue-410-web-search/src/providers/index.js:8:export { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/index.js:9:export { GoogleProvider } from './google.js';
+/tmp/issue-410-web-search/src/providers/index.js:10:export { DuckDuckGoProvider } from './duckduckgo.js';
+/tmp/issue-410-web-search/src/providers/index.js:11:export { BingProvider } from './bing.js';
+/tmp/issue-410-web-search/src/providers/index.js:12:export { BrowserSearchProvider, createBrowserProvider } from './browser.js';
+/tmp/issue-410-web-search/src/providers/index.js:13:export { GenericProvider, createGenericProvider } from './generic.js';
+/tmp/issue-410-web-search/src/providers/index.js:14:export { WebCaptureProvider, createWebCaptureProvider } from './web-capture.js';
+/tmp/issue-410-web-search/src/providers/index.js:24:  getProviderIds,
+/tmp/issue-410-web-search/src/providers/index.js:25:  getDefaultProviderIds,
+/tmp/issue-410-web-search/src/providers/index.js:26:  buildProviders,
+/tmp/issue-410-web-search/src/providers/index.js:29:import { getProviderIds } from './registry.js';
+/tmp/issue-410-web-search/src/providers/index.js:32: * Get list of all available provider ids (every registered engine).
+/tmp/issue-410-web-search/src/providers/index.js:35:export function getAvailableProviders() {
+/tmp/issue-410-web-search/src/providers/index.js:36:  return getProviderIds();
+/tmp/issue-410-web-search/rust/src/search.rs:10:use crate::providers::{
+/tmp/issue-410-web-search/rust/src/search.rs:11:    build_providers, get_default_provider_ids, get_registry, BuildConfig, RegistryEntry,
+/tmp/issue-410-web-search/rust/src/search.rs:12:    SearchOptions, SearchProvider, SearchResult,
+/tmp/issue-410-web-search/rust/src/search.rs:18:    /// Providers to use by default
+/tmp/issue-410-web-search/rust/src/search.rs:19:    pub providers: Vec<String>,
+/tmp/issue-410-web-search/rust/src/search.rs:26:    /// Default weights for providers
+/tmp/issue-410-web-search/rust/src/search.rs:36:            providers: get_default_provider_ids(),
+/tmp/issue-410-web-search/rust/src/search.rs:48:    providers: HashMap<String, Arc<RwLock<Box<dyn SearchProvider>>>>,
+/tmp/issue-410-web-search/rust/src/search.rs:50:    default_providers: Vec<String>,
+/tmp/issue-410-web-search/rust/src/search.rs:63:    /// Providers are instantiated from the typed registry (the single source of
+/tmp/issue-410-web-search/rust/src/search.rs:67:        let mut providers: HashMap<String, Arc<RwLock<Box<dyn SearchProvider>>>> = HashMap::new();
+/tmp/issue-410-web-search/rust/src/search.rs:75:        for (id, provider) in build_providers(&build_config) {
+/tmp/issue-410-web-search/rust/src/search.rs:76:            providers.insert(id, Arc::new(RwLock::new(provider)));
+/tmp/issue-410-web-search/rust/src/search.rs:80:            providers,
+/tmp/issue-410-web-search/rust/src/search.rs:82:            default_providers: config.providers,
+/tmp/issue-410-web-search/rust/src/search.rs:88:    /// Search across multiple providers
+/tmp/issue-410-web-search/rust/src/search.rs:102:        providers: Option<Vec<String>>,
+/tmp/issue-410-web-search/rust/src/search.rs:109:        let providers_to_use = providers.unwrap_or_else(|| self.default_providers.clone());
+/tmp/issue-410-web-search/rust/src/search.rs:119:        for provider_name in &providers_to_use {
+/tmp/issue-410-web-search/rust/src/search.rs:120:            let provider = self.providers.get(provider_name).cloned();
+/tmp/issue-410-web-search/rust/src/search.rs:121:            if provider.is_none() {
+/tmp/issue-410-web-search/rust/src/search.rs:125:            let provider = provider.unwrap();
+/tmp/issue-410-web-search/rust/src/search.rs:128:            let name = provider_name.clone();
+/tmp/issue-410-web-search/rust/src/search.rs:131:                let provider = provider.read().await;
+/tmp/issue-410-web-search/rust/src/search.rs:132:                if !provider.is_available() {
+/tmp/issue-410-web-search/rust/src/search.rs:135:                match provider.search(&query, &opts).await {
+/tmp/issue-410-web-search/rust/src/search.rs:138:                        tracing::error!("Provider {} failed: {}", name, e);
+/tmp/issue-410-web-search/rust/src/search.rs:145:        let mut results_by_provider = HashMap::new();
+/tmp/issue-410-web-search/rust/src/search.rs:149:                results_by_provider.insert(name, results);
+/tmp/issue-410-web-search/rust/src/search.rs:153:        Ok(merge_results(&results_by_provider, &merge_opts))
+/tmp/issue-410-web-search/rust/src/search.rs:156:    /// Search with a single provider
+/tmp/issue-410-web-search/rust/src/search.rs:160:        provider_name: &str,
+/tmp/issue-410-web-search/rust/src/search.rs:163:        let provider = self
+/tmp/issue-410-web-search/rust/src/search.rs:164:            .providers
+/tmp/issue-410-web-search/rust/src/search.rs:165:            .get(provider_name)
+/tmp/issue-410-web-search/rust/src/search.rs:166:            .ok_or_else(|| SearchError::UnknownProvider(provider_name.to_string()))?;
+/tmp/issue-410-web-search/rust/src/search.rs:168:        let provider = provider.read().await;
+/tmp/issue-410-web-search/rust/src/search.rs:170:        if !provider.is_available() {
+/tmp/issue-410-web-search/rust/src/search.rs:171:            return Err(SearchError::ProviderDisabled(provider_name.to_string()));
+/tmp/issue-410-web-search/rust/src/search.rs:174:        provider.search(query, &options).await
+/tmp/issue-410-web-search/rust/src/search.rs:177:    /// Get available provider names
+/tmp/issue-410-web-search/rust/src/search.rs:178:    pub fn get_available_providers(&self) -> Vec<String> {
+/tmp/issue-410-web-search/rust/src/search.rs:179:        self.providers.keys().cloned().collect()
+/tmp/issue-410-web-search/rust/src/search.rs:182:    /// Get the full provider registry (metadata for every known provider).
+/tmp/issue-410-web-search/rust/src/search.rs:187:    /// Get provider status, enriched with registry metadata (category, label,
+/tmp/issue-410-web-search/rust/src/search.rs:190:    pub async fn get_provider_status(&self) -> HashMap<String, ProviderStatus> {
+/tmp/issue-410-web-search/rust/src/search.rs:193:        for (name, provider) in &self.providers {
+/tmp/issue-410-web-search/rust/src/search.rs:194:            let p = provider.read().await;
+/tmp/issue-410-web-search/rust/src/search.rs:198:                ProviderStatus {
+/tmp/issue-410-web-search/rust/src/search.rs:212:    /// Set provider weight
+/tmp/issue-410-web-search/rust/src/search.rs:213:    pub async fn set_provider_weight(&self, name: &str, weight: f64) -> Result<(), SearchError> {
+/tmp/issue-410-web-search/rust/src/search.rs:214:        let provider = self
+/tmp/issue-410-web-search/rust/src/search.rs:215:            .providers
+/tmp/issue-410-web-search/rust/src/search.rs:217:            .ok_or_else(|| SearchError::UnknownProvider(name.to_string()))?;
+/tmp/issue-410-web-search/rust/src/search.rs:219:        provider.write().await.set_weight(weight);
+/tmp/issue-410-web-search/rust/src/search.rs:223:    /// Enable or disable a provider
+/tmp/issue-410-web-search/rust/src/search.rs:224:    pub async fn set_provider_enabled(&self, name: &str, enabled: bool) -> Result<(), SearchError> {
+/tmp/issue-410-web-search/rust/src/search.rs:225:        let provider = self
+/tmp/issue-410-web-search/rust/src/search.rs:226:            .providers
+/tmp/issue-410-web-search/rust/src/search.rs:228:            .ok_or_else(|| SearchError::UnknownProvider(name.to_string()))?;
+/tmp/issue-410-web-search/rust/src/search.rs:230:        provider.write().await.set_enabled(enabled);
+/tmp/issue-410-web-search/rust/src/search.rs:241:/// Provider status information, enriched with registry metadata.
+/tmp/issue-410-web-search/rust/src/search.rs:244:pub struct ProviderStatus {
+/tmp/issue-410-web-search/rust/src/search.rs:245:    /// Whether the provider is enabled
+/tmp/issue-410-web-search/rust/src/search.rs:247:    /// Provider weight for reranking
+/tmp/issue-410-web-search/rust/src/search.rs:249:    /// Provider category (one of the registry categories)
+/tmp/issue-410-web-search/src/providers/html-engines.js:6: * DuckDuckGo providers). Parsing is factored through {@link parseAnchorList}
+/tmp/issue-410-web-search/src/providers/html-engines.js:10: * @module providers/html-engines
+/tmp/issue-410-web-search/src/providers/html-engines.js:25: * @param {string} config.source - Provider id used as the result `source`
+/tmp/issue-410-web-search/src/providers/html-engines.js:96:  id: 'brave',
+/tmp/issue-410-web-search/src/providers/html-engines.js:126:  id: 'mojeek',
+/tmp/issue-410-web-search/src/providers/html-engines.js:154:  id: 'ecosia',
+/tmp/issue-410-web-search/src/providers/html-engines.js:182:  id: 'startpage',
+/tmp/issue-410-web-search/src/providers/html-engines.js:210:  id: 'yahoo',
+/tmp/issue-410-web-search/src/providers/html-engines.js:238:  id: 'lite',
+/tmp/issue-410-web-search/src/providers/generic.js:2: * Generic, descriptor-driven search provider.
+/tmp/issue-410-web-search/src/providers/generic.js:4: * A single provider implementation that can speak to any engine described by a
+/tmp/issue-410-web-search/src/providers/generic.js:5: * catalog descriptor (see {@link module:providers/api-engines} and
+/tmp/issue-410-web-search/src/providers/generic.js:6: * {@link module:providers/html-engines}). This keeps the fetch/normalize/error
+/tmp/issue-410-web-search/src/providers/generic.js:10: * @module providers/generic
+/tmp/issue-410-web-search/src/providers/generic.js:13:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/generic.js:21: * @property {string} id - Stable provider id
+/tmp/issue-410-web-search/src/providers/generic.js:23: * @property {'search'|'knowledge'|'papers'|'code'} category - Provider category
+/tmp/issue-410-web-search/src/providers/generic.js:26: * @property {boolean} [defaultForCategory] - Default provider for its category
+/tmp/issue-410-web-search/src/providers/generic.js:35: * Descriptor-driven provider.
+/tmp/issue-410-web-search/src/providers/generic.js:37: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/generic.js:39:export class GenericProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/generic.js:42:   * @param {Object} [config] - Provider configuration
+/tmp/issue-410-web-search/src/providers/generic.js:102: * Create a {@link GenericProvider} from a descriptor.
+/tmp/issue-410-web-search/src/providers/generic.js:105: * @param {Object} [config] - Provider configuration
+/tmp/issue-410-web-search/src/providers/generic.js:106: * @returns {GenericProvider}
+/tmp/issue-410-web-search/src/providers/generic.js:108:export function createGenericProvider(descriptor, config) {
+/tmp/issue-410-web-search/src/providers/generic.js:109:  return new GenericProvider(descriptor, config);
+/tmp/issue-410-web-search/rust/src/providers/google.rs:1://! Google search provider
+/tmp/issue-410-web-search/rust/src/providers/google.rs:6:use super::base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/google.rs:22:/// Configuration for Google provider
+/tmp/issue-410-web-search/rust/src/providers/google.rs:28:    pub search_engine_id: Option<String>,
+/tmp/issue-410-web-search/rust/src/providers/google.rs:31:/// Google search provider
+/tmp/issue-410-web-search/rust/src/providers/google.rs:32:pub struct GoogleProvider {
+/tmp/issue-410-web-search/rust/src/providers/google.rs:41:impl GoogleProvider {
+/tmp/issue-410-web-search/rust/src/providers/google.rs:42:    /// Create a new Google provider with optional API credentials
+/tmp/issue-410-web-search/rust/src/providers/google.rs:57:    /// Create a new Google provider from environment variables
+/tmp/issue-410-web-search/rust/src/providers/google.rs:61:            search_engine_id: std::env::var("GOOGLE_CX").ok(),
+/tmp/issue-410-web-search/rust/src/providers/google.rs:105:                provider: self.name.clone(),
+/tmp/issue-410-web-search/rust/src/providers/google.rs:164:                provider: self.name.clone(),
+/tmp/issue-410-web-search/rust/src/providers/google.rs:237:impl Default for GoogleProvider {
+/tmp/issue-410-web-search/rust/src/providers/google.rs:244:impl SearchProvider for GoogleProvider {
+/tmp/issue-410-web-search/rust/src/main.rs:23:    get_provider_ids, get_registry, is_known_category, MergeOptions, MergeStrategy, RegistryEntry,
+/tmp/issue-410-web-search/rust/src/main.rs:29:#[command(about = "Multi-provider web search aggregator")]
+/tmp/issue-410-web-search/rust/src/main.rs:39:    /// Providers to use (comma-separated)
+/tmp/issue-410-web-search/rust/src/main.rs:41:    providers: Option<Vec<String>>,
+/tmp/issue-410-web-search/rust/src/main.rs:43:    /// List every registered provider with its metadata and exit
+/tmp/issue-410-web-search/rust/src/main.rs:45:    list_providers: bool,
+/tmp/issue-410-web-search/rust/src/main.rs:47:    /// Maximum results per provider
+/tmp/issue-410-web-search/rust/src/main.rs:95:    providers: Option<String>,
+/tmp/issue-410-web-search/rust/src/main.rs:110:    results: Vec<web_search::providers::SearchResult>,
+/tmp/issue-410-web-search/rust/src/main.rs:115:    providers: Vec<String>,
+/tmp/issue-410-web-search/rust/src/main.rs:130:    providers: HashMap<String, web_search::search::ProviderStatus>,
+/tmp/issue-410-web-search/rust/src/main.rs:136:        providers: state.engine.get_provider_status().await,
+/tmp/issue-410-web-search/rust/src/main.rs:146:struct ProvidersResponse {
+/tmp/issue-410-web-search/rust/src/main.rs:149:    providers: HashMap<String, web_search::search::ProviderStatus>,
+/tmp/issue-410-web-search/rust/src/main.rs:153:async fn providers_handler(
+/tmp/issue-410-web-search/rust/src/main.rs:156:) -> Result<Json<ProvidersResponse>, (StatusCode, Json<ErrorResponse>)> {
+/tmp/issue-410-web-search/rust/src/main.rs:170:    let status = state.engine.get_provider_status().await;
+/tmp/issue-410-web-search/rust/src/main.rs:176:    let providers = match &category {
+/tmp/issue-410-web-search/rust/src/main.rs:184:    Ok(Json(ProvidersResponse {
+/tmp/issue-410-web-search/rust/src/main.rs:187:        providers,
+/tmp/issue-410-web-search/rust/src/main.rs:200:        categories.insert(category.to_string(), get_provider_ids(Some(category)));
+/tmp/issue-410-web-search/rust/src/main.rs:219:    let providers = params
+/tmp/issue-410-web-search/rust/src/main.rs:220:        .providers
+/tmp/issue-410-web-search/rust/src/main.rs:249:            providers.clone(),
+/tmp/issue-410-web-search/rust/src/main.rs:273:            providers: providers.unwrap_or_else(|| state.engine.get_available_providers()),
+/tmp/issue-410-web-search/rust/src/main.rs:281:async fn search_provider_handler(
+/tmp/issue-410-web-search/rust/src/main.rs:283:    Path(provider): Path<String>,
+/tmp/issue-410-web-search/rust/src/main.rs:305:        .search_single(&query, &provider, search_options)
+/tmp/issue-410-web-search/rust/src/main.rs:308:            let status = if e.to_string().contains("Unknown provider") {
+/tmp/issue-410-web-search/rust/src/main.rs:324:        "provider": provider,
+/tmp/issue-410-web-search/rust/src/main.rs:337:        .route("/providers", get(providers_handler))
+/tmp/issue-410-web-search/rust/src/main.rs:340:        .route("/search/{provider}", get(search_provider_handler))
+/tmp/issue-410-web-search/rust/src/main.rs:348:    println!("  GET  /search?q=<query>        - Search all providers");
+/tmp/issue-410-web-search/rust/src/main.rs:349:    println!("  GET  /search/:provider?q=<query> - Search single provider");
+/tmp/issue-410-web-search/rust/src/main.rs:350:    println!("  GET  /providers               - List available providers");
+/tmp/issue-410-web-search/rust/src/main.rs:351:    println!("  GET  /categories              - List provider categories");
+/tmp/issue-410-web-search/rust/src/main.rs:395:            "Providers: {}",
+/tmp/issue-410-web-search/rust/src/main.rs:396:            cli.providers
+/tmp/issue-410-web-search/rust/src/main.rs:409:            cli.providers.clone(),
+/tmp/issue-410-web-search/rust/src/main.rs:469:    if cli.list_providers {
+/tmp/issue-410-web-search/rust/src/main.rs:470:        print_providers();
+/tmp/issue-410-web-search/rust/src/main.rs:486:/// Print the full provider registry grouped by category.
+/tmp/issue-410-web-search/rust/src/main.rs:487:fn print_providers() {
+/tmp/issue-410-web-search/rust/src/main.rs:489:    println!("Registered providers ({} total):\n", registry.len());
+/tmp/issue-410-web-search/src/providers/api-engines.js:5: * require scraping HTML, so they are the most reliable providers and can be
+/tmp/issue-410-web-search/src/providers/api-engines.js:7: * by {@link module:providers/generic.GenericProvider}.
+/tmp/issue-410-web-search/src/providers/api-engines.js:9: * @module providers/api-engines
+/tmp/issue-410-web-search/src/providers/api-engines.js:22: * @param {string} source - Provider id
+/tmp/issue-410-web-search/src/providers/api-engines.js:58:  id: 'wikipedia',
+/tmp/issue-410-web-search/src/providers/api-engines.js:63:  defaultForCategory: true,
+/tmp/issue-410-web-search/src/providers/api-engines.js:88:  id: 'wikidata',
+/tmp/issue-410-web-search/src/providers/api-engines.js:116:  id: 'searx',
+/tmp/issue-410-web-search/src/providers/api-engines.js:141:  id: 'crossref',
+/tmp/issue-410-web-search/src/providers/api-engines.js:146:  defaultForCategory: true,
+/tmp/issue-410-web-search/src/providers/api-engines.js:172:  id: 'openalex',
+/tmp/issue-410-web-search/src/providers/api-engines.js:202:  id: 'github',
+/tmp/issue-410-web-search/src/providers/api-engines.js:207:  defaultForCategory: true,
+/tmp/issue-410-web-search/src/providers/api-engines.js:240:  id: 'hackernews',
+/tmp/issue-410-web-search/src/providers/api-engines.js:300:  id: 'arxiv',
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:1://! web-capture component-library provider.
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:5://! re-implementing per-provider scraping. Mirrors the JavaScript
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:6://! `src/providers/web-capture.js`.
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:8://! There is no published `web-capture` Rust crate yet, so this provider is an
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:10://! returns no results, exactly like the JS provider does when the optional
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:11://! `@link-assistant/web-capture` dependency is absent. The provider, its id
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:19:use super::base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:22:/// Providers exposed by web-capture's search contract.
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:27:/// Provider that delegates to the web-capture component library.
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:28:pub struct WebCaptureProvider {
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:35:impl WebCaptureProvider {
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:36:    /// Create a provider bound to a web-capture engine (default `wikipedia`).
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:47:    /// The web-capture engine this provider delegates to.
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:53:impl Default for WebCaptureProvider {
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:60:impl SearchProvider for WebCaptureProvider {
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:92:                "WebCaptureProvider: the web-capture component library is not wired in the Rust \
+/tmp/issue-410-web-search/rust/src/providers/web_capture.rs:93:                 build yet; wc:* providers return no results until it is available."
+/tmp/issue-410-web-search/rust/src/providers/base.rs:1://! Base provider trait and common types
+/tmp/issue-410-web-search/rust/src/providers/base.rs:17:    /// The search provider that returned this result
+/tmp/issue-410-web-search/rust/src/providers/base.rs:42:/// Trait that all search providers must implement
+/tmp/issue-410-web-search/rust/src/providers/base.rs:44:pub trait SearchProvider: Send + Sync {
+/tmp/issue-410-web-search/rust/src/providers/base.rs:45:    /// Get the provider name
+/tmp/issue-410-web-search/rust/src/providers/base.rs:48:    /// Check if the provider is available/enabled
+/tmp/issue-410-web-search/rust/src/providers/base.rs:51:    /// Get the provider weight for reranking
+/tmp/issue-410-web-search/rust/src/providers/base.rs:54:    /// Set the provider weight for reranking
+/tmp/issue-410-web-search/rust/src/providers/base.rs:57:    /// Enable or disable the provider
+/tmp/issue-410-web-search/src/providers/browser.js:2: * Browser-based search provider
+/tmp/issue-410-web-search/src/providers/browser.js:7:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/browser.js:10: * Browser search provider using browser-commander
+/tmp/issue-410-web-search/src/providers/browser.js:12: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/browser.js:14:export class BrowserSearchProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/browser.js:137:        'BrowserSearchProvider: browser-commander not configured, returning empty results'
+/tmp/issue-410-web-search/src/providers/browser.js:198: * Create a browser search provider with browser-commander
+/tmp/issue-410-web-search/src/providers/browser.js:200: * @returns {BrowserSearchProvider}
+/tmp/issue-410-web-search/src/providers/browser.js:202:export function createBrowserProvider(config = {}) {
+/tmp/issue-410-web-search/src/providers/browser.js:203:  return new BrowserSearchProvider(config);
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:1://! Typed provider registry.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:3://! A single source of truth describing every search provider this library can
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:5://! `knowledge`, `papers`, `code`). The registry powers provider discovery
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:6://! (CLI/server/`/providers`) and is the factory that instantiates the correct
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:7://! provider implementation for each id. Mirrors the JavaScript
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:8://! `src/providers/registry.js` (issue #3 parity requirement).
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:12:use super::base::SearchProvider;
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:13:use super::bing::{BingConfig, BingProvider};
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:14:use super::duckduckgo::DuckDuckGoProvider;
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:16:use super::generic::GenericProvider;
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:17:use super::google::{GoogleConfig, GoogleProvider};
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:18:use super::web_capture::{WebCaptureProvider, SUPPORTED_PROVIDERS};
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:20:/// Provider categories, mirroring `formal-ai`'s `web_search_core` registry.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:23:/// Public metadata describing a single registered provider.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:27:    /// Stable provider id.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:28:    pub id: String,
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:31:    /// Provider category (one of [`CATEGORIES`]).
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:35:    /// Whether this is its category's default provider.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:41:/// Engine configuration used to instantiate providers.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:52:/// Metadata for a class-based provider (google/bing/duckduckgo) that predates
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:55:    id: &'static str,
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:65:        id: "google",
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:73:        id: "bing",
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:81:        id: "duckduckgo",
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:92:        id: d.id.to_string(),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:101:/// Build the full registry of provider entries, in catalog order
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:108:            id: e.id.to_string(),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:121:            id: format!("wc:{engine}"),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:133:/// Get all provider ids, optionally filtered by category.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:134:pub fn get_provider_ids(category: Option<&str>) -> Vec<String> {
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:142:/// Get the default provider ids used when the caller does not specify providers.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:143:pub fn get_default_provider_ids() -> Vec<String> {
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:155:/// Instantiate every registered provider, keyed by id, in catalog order.
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:156:pub fn build_providers(config: &BuildConfig) -> Vec<(String, Box<dyn SearchProvider>)> {
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:157:    let mut providers: Vec<(String, Box<dyn SearchProvider>)> = Vec::new();
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:159:    providers.push((
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:161:        Box::new(GoogleProvider::new(GoogleConfig {
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:163:            search_engine_id: config.google_cx.clone(),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:166:    providers.push((
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:168:        Box::new(BingProvider::new(BingConfig {
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:172:    providers.push((
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:174:        Box::new(DuckDuckGoProvider::new()),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:178:        providers.push((d.id.to_string(), Box::new(GenericProvider::new(d))));
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:182:        providers.push((
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:184:            Box::new(WebCaptureProvider::new(engine)),
+/tmp/issue-410-web-search/rust/src/providers/registry.rs:188:    providers
+/tmp/issue-410-web-search/src/providers/registry.js:2: * Typed provider registry.
+/tmp/issue-410-web-search/src/providers/registry.js:4: * A single source of truth describing every search provider this library can
+/tmp/issue-410-web-search/src/providers/registry.js:6: * (`search`, `knowledge`, `papers`, `code`). The registry powers provider
+/tmp/issue-410-web-search/src/providers/registry.js:7: * discovery (CLI/server/`/providers`) and is the factory that instantiates the
+/tmp/issue-410-web-search/src/providers/registry.js:8: * correct provider implementation for each id.
+/tmp/issue-410-web-search/src/providers/registry.js:10: * @module providers/registry
+/tmp/issue-410-web-search/src/providers/registry.js:13:import { GoogleProvider } from './google.js';
+/tmp/issue-410-web-search/src/providers/registry.js:14:import { DuckDuckGoProvider } from './duckduckgo.js';
+/tmp/issue-410-web-search/src/providers/registry.js:15:import { BingProvider } from './bing.js';
+/tmp/issue-410-web-search/src/providers/registry.js:16:import { GenericProvider } from './generic.js';
+/tmp/issue-410-web-search/src/providers/registry.js:17:import { WebCaptureProvider } from './web-capture.js';
+/tmp/issue-410-web-search/src/providers/registry.js:21:/** Provider categories, mirroring `formal-ai`'s `web_search_core` registry. */
+/tmp/issue-410-web-search/src/providers/registry.js:26: * @property {string} id - Stable provider id
+/tmp/issue-410-web-search/src/providers/registry.js:28: * @property {'search'|'knowledge'|'papers'|'code'} category - Provider category
+/tmp/issue-410-web-search/src/providers/registry.js:30: * @property {boolean} defaultForCategory - Whether this is its category's default
+/tmp/issue-410-web-search/src/providers/registry.js:35: * Class-based providers that predate the descriptor catalog. They keep their
+/tmp/issue-410-web-search/src/providers/registry.js:41:    id: 'google',
+/tmp/issue-410-web-search/src/providers/registry.js:45:    defaultForCategory: true,
+/tmp/issue-410-web-search/src/providers/registry.js:47:    create: (config) => new GoogleProvider(config.google),
+/tmp/issue-410-web-search/src/providers/registry.js:50:    id: 'bing',
+/tmp/issue-410-web-search/src/providers/registry.js:54:    defaultForCategory: false,
+/tmp/issue-410-web-search/src/providers/registry.js:56:    create: (config) => new BingProvider(config.bing),
+/tmp/issue-410-web-search/src/providers/registry.js:59:    id: 'duckduckgo',
+/tmp/issue-410-web-search/src/providers/registry.js:63:    defaultForCategory: false,
+/tmp/issue-410-web-search/src/providers/registry.js:65:    create: () => new DuckDuckGoProvider(),
+/tmp/issue-410-web-search/src/providers/registry.js:71: * {@link GenericProvider}. `access` is derived from the descriptor `kind`.
+/tmp/issue-410-web-search/src/providers/registry.js:76: * The `web-capture` component-library provider. Delegates single-provider
+/tmp/issue-410-web-search/src/providers/registry.js:80:const WEB_CAPTURE_ENGINES = WebCaptureProvider.SUPPORTED_PROVIDERS.map(
+/tmp/issue-410-web-search/src/providers/registry.js:82:    id: `wc:${engine}`,
+/tmp/issue-410-web-search/src/providers/registry.js:86:    defaultForCategory: false,
+/tmp/issue-410-web-search/src/providers/registry.js:89:      new WebCaptureProvider({ engine, fetchImpl: config.fetchImpl }),
+/tmp/issue-410-web-search/src/providers/registry.js:94: * Build the full registry of provider entries.
+/tmp/issue-410-web-search/src/providers/registry.js:96: * @returns {RegistryEntry[]} All known providers with metadata
+/tmp/issue-410-web-search/src/providers/registry.js:124:    id: e.id,
+/tmp/issue-410-web-search/src/providers/registry.js:128:    defaultForCategory: Boolean(e.defaultForCategory),
+/tmp/issue-410-web-search/src/providers/registry.js:134: * Get all provider ids, optionally filtered by category.
+/tmp/issue-410-web-search/src/providers/registry.js:139:export function getProviderIds(category) {
+/tmp/issue-410-web-search/src/providers/registry.js:146: * Get the default provider ids (one or more sensible defaults per the
+/tmp/issue-410-web-search/src/providers/registry.js:147: * `search` category) used when the caller does not specify providers.
+/tmp/issue-410-web-search/src/providers/registry.js:151:export function getDefaultProviderIds() {
+/tmp/issue-410-web-search/src/providers/registry.js:156: * Instantiate every registered provider.
+/tmp/issue-410-web-search/src/providers/registry.js:159: * @param {Object} [config.google] - Google provider config
+/tmp/issue-410-web-search/src/providers/registry.js:160: * @param {Object} [config.bing] - Bing provider config
+/tmp/issue-410-web-search/src/providers/registry.js:162: * @returns {Map<string, import('./base.js').BaseSearchProvider>}
+/tmp/issue-410-web-search/src/providers/registry.js:164:export function buildProviders(config = {}) {
+/tmp/issue-410-web-search/src/providers/registry.js:165:  const providers = new Map();
+/tmp/issue-410-web-search/src/providers/registry.js:168:    providers.set(e.id, e.create(config));
+/tmp/issue-410-web-search/src/providers/registry.js:171:    providers.set(
+/tmp/issue-410-web-search/src/providers/registry.js:173:      new GenericProvider(d, { fetchImpl: config.fetchImpl })
+/tmp/issue-410-web-search/src/providers/registry.js:177:    providers.set(w.id, w.create(config));
+/tmp/issue-410-web-search/src/providers/registry.js:180:  return providers;
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:4://! (`src/providers/api-engines.js` and `src/providers/html-engines.js`). Each
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:6://! [`GenericProvider`](super::generic::GenericProvider) performs all fetch,
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:51:    /// Stable provider id.
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:52:    pub id: &'static str,
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:55:    /// Provider category (one of [`super::registry::CATEGORIES`]).
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:61:    /// Whether this is its category's default provider.
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:724:            id: "wikipedia",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:737:            id: "wikidata",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:750:            id: "searx",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:763:            id: "crossref",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:776:            id: "openalex",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:789:            id: "github",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:802:            id: "hackernews",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:815:            id: "arxiv",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:834:            id: "brave",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:847:            id: "mojeek",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:860:            id: "ecosia",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:873:            id: "startpage",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:886:            id: "yahoo",
+/tmp/issue-410-web-search/rust/src/providers/engines.rs:899:            id: "lite",
+/tmp/issue-410-web-search/rust/src/providers/html_utils.rs:3://! Mirrors the JavaScript `src/providers/html-utils.js` and the
+/tmp/issue-410-web-search/rust/src/providers/html_utils.rs:4://! `parseAnchorList` helper from `src/providers/html-engines.js`, so the
+/tmp/issue-410-web-search/rust/src/providers/html_utils.rs:75:    /// Provider id recorded as the result `source`.
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:1://! Search provider implementations
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:13:pub use base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:14:pub use bing::{BingConfig, BingProvider};
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:15:pub use duckduckgo::DuckDuckGoProvider;
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:20:pub use generic::GenericProvider;
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:21:pub use google::{GoogleConfig, GoogleProvider};
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:26:    build_providers, get_default_provider_ids, get_provider_ids, get_registry, is_known_category,
+/tmp/issue-410-web-search/rust/src/providers/mod.rs:29:pub use web_capture::{WebCaptureProvider, SUPPORTED_PROVIDERS};
+/tmp/issue-410-web-search/src/providers/html-utils.js:2: * Shared HTML parsing utilities for search providers.
+/tmp/issue-410-web-search/src/providers/html-utils.js:4: * Centralizes the text-cleaning helpers that every HTML-scraping provider
+/tmp/issue-410-web-search/src/providers/html-utils.js:6: * logic lives in exactly one place instead of being copied into each provider.
+/tmp/issue-410-web-search/src/providers/html-utils.js:8: * @module providers/html-utils
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:1://! DuckDuckGo search provider
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:6:use super::base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:9:/// DuckDuckGo search provider
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:10:pub struct DuckDuckGoProvider {
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:18:impl DuckDuckGoProvider {
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:19:    /// Create a new DuckDuckGo provider
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:51:            if url.is_empty() || url.starts_with("//duckduckgo.com") || url.contains("ad_provider")
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:82:impl Default for DuckDuckGoProvider {
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:89:impl SearchProvider for DuckDuckGoProvider {
+/tmp/issue-410-web-search/rust/src/providers/duckduckgo.rs:141:                provider: self.name.clone(),
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:1://! Bing search provider
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:6:use super::base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:28:/// Configuration for Bing provider
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:35:/// Bing search provider
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:36:pub struct BingProvider {
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:45:impl BingProvider {
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:46:    /// Create a new Bing provider with optional API credentials
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:61:    /// Create a new Bing provider from environment variables
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:110:                provider: self.name.clone(),
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:166:                provider: self.name.clone(),
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:233:impl Default for BingProvider {
+/tmp/issue-410-web-search/rust/src/providers/bing.rs:240:impl SearchProvider for BingProvider {
+/tmp/issue-410-web-search/src/providers/bing.js:2: * Bing search provider
+/tmp/issue-410-web-search/src/providers/bing.js:7:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/bing.js:11: * Bing search provider implementation
+/tmp/issue-410-web-search/src/providers/bing.js:12: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/bing.js:14:export class BingProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:2: * DuckDuckGo search provider
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:6:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:10: * DuckDuckGo search provider implementation
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:11: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:13:export class DuckDuckGoProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/duckduckgo.js:99:        url.includes('ad_provider')
+/tmp/issue-410-web-search/src/providers/base.js:2: * Base search provider class
+/tmp/issue-410-web-search/src/providers/base.js:3: * All search providers must implement this interface
+/tmp/issue-410-web-search/src/providers/base.js:11: * @property {string} source - The search provider that returned this result
+/tmp/issue-410-web-search/src/providers/base.js:24: * Base class for search providers
+/tmp/issue-410-web-search/src/providers/base.js:27:export class BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/base.js:29:   * @param {string} name - The name of the search provider
+/tmp/issue-410-web-search/src/providers/base.js:32:    if (new.target === BaseSearchProvider) {
+/tmp/issue-410-web-search/src/providers/base.js:33:      throw new Error('BaseSearchProvider is an abstract class');
+/tmp/issue-410-web-search/src/providers/base.js:41:   * Search for results using this provider
+/tmp/issue-410-web-search/src/providers/base.js:53:   * Check if the provider is available/configured
+/tmp/issue-410-web-search/src/providers/base.js:61:   * Get the provider name
+/tmp/issue-410-web-search/src/providers/base.js:69:   * Get the provider weight for reranking
+/tmp/issue-410-web-search/src/providers/base.js:77:   * Set the provider weight for reranking
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:1://! Generic, descriptor-driven search provider.
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:3://! A single provider implementation that can speak to any engine described by a
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:7://! `src/providers/generic.js` (issue #3 parity requirement).
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:13:use super::base::{SearchOptions, SearchProvider, SearchResult};
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:20:/// Descriptor-driven provider.
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:21:pub struct GenericProvider {
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:28:impl GenericProvider {
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:29:    /// Create a new provider for the given engine descriptor.
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:42:    /// The engine descriptor backing this provider.
+/tmp/issue-410-web-search/rust/src/providers/generic.rs:73:impl SearchProvider for GenericProvider {
+/tmp/issue-410-web-search/src/providers/google.js:2: * Google search provider
+/tmp/issue-410-web-search/src/providers/google.js:7:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/google.js:11: * Google search provider implementation
+/tmp/issue-410-web-search/src/providers/google.js:12: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/google.js:14:export class GoogleProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/web-capture.js:2: * web-capture component-library provider.
+/tmp/issue-410-web-search/src/providers/web-capture.js:6: * rather than re-implementing per-provider scraping. This provider delegates a
+/tmp/issue-410-web-search/src/providers/web-capture.js:7: * single-provider fetch + parse to web-capture's normalized `search()`
+/tmp/issue-410-web-search/src/providers/web-capture.js:11: * dynamically so the core package stays lightweight, and the provider degrades
+/tmp/issue-410-web-search/src/providers/web-capture.js:16: * @module providers/web-capture
+/tmp/issue-410-web-search/src/providers/web-capture.js:19:import { BaseSearchProvider } from './base.js';
+/tmp/issue-410-web-search/src/providers/web-capture.js:21:/** Providers exposed by web-capture's search contract. */
+/tmp/issue-410-web-search/src/providers/web-capture.js:47: * Provider that delegates to the web-capture component library.
+/tmp/issue-410-web-search/src/providers/web-capture.js:49: * @extends BaseSearchProvider
+/tmp/issue-410-web-search/src/providers/web-capture.js:51:export class WebCaptureProvider extends BaseSearchProvider {
+/tmp/issue-410-web-search/src/providers/web-capture.js:52:  /** Providers understood by web-capture's search contract. */
+/tmp/issue-410-web-search/src/providers/web-capture.js:57:   * @param {string} [config.engine] - web-capture provider id (default 'wikipedia')
+/tmp/issue-410-web-search/src/providers/web-capture.js:85:          'WebCaptureProvider: @link-assistant/web-capture is not installed; ' +
+/tmp/issue-410-web-search/src/providers/web-capture.js:86:            'install it to enable web-capture-backed providers.'
+/tmp/issue-410-web-search/src/providers/web-capture.js:95:        provider: this.engine,
+/tmp/issue-410-web-search/src/providers/web-capture.js:102:        `WebCaptureProvider (${this.engine}) error: ${error.message}`
+/tmp/issue-410-web-search/src/providers/web-capture.js:127: * Create a {@link WebCaptureProvider}.
+/tmp/issue-410-web-search/src/providers/web-capture.js:129: * @param {Object} [config] - Provider configuration
+/tmp/issue-410-web-search/src/providers/web-capture.js:130: * @returns {WebCaptureProvider}
+/tmp/issue-410-web-search/src/providers/web-capture.js:132:export function createWebCaptureProvider(config) {
+/tmp/issue-410-web-search/src/providers/web-capture.js:133:  return new WebCaptureProvider(config);
+/tmp/issue-410-web-search/rust/src/merger.rs:5:use crate::providers::SearchResult;
+/tmp/issue-410-web-search/rust/src/merger.rs:24:    /// Weights for each provider (provider name -> weight)
+/tmp/issue-410-web-search/rust/src/merger.rs:49:    /// Set provider weights
+/tmp/issue-410-web-search/rust/src/merger.rs:81:    results_by_provider: &HashMap<String, Vec<SearchResult>>,
+/tmp/issue-410-web-search/rust/src/merger.rs:89:    for (provider, results) in results_by_provider {
+/tmp/issue-410-web-search/rust/src/merger.rs:90:        let weight = options.weights.get(provider).copied().unwrap_or(1.0);
+/tmp/issue-410-web-search/rust/src/merger.rs:139:    results_by_provider: &HashMap<String, Vec<SearchResult>>,
+/tmp/issue-410-web-search/rust/src/merger.rs:147:    for (provider, results) in results_by_provider {
+/tmp/issue-410-web-search/rust/src/merger.rs:148:        let weight = options.weights.get(provider).copied().unwrap_or(1.0);
+/tmp/issue-410-web-search/rust/src/merger.rs:197:    results_by_provider: &HashMap<String, Vec<SearchResult>>,
+/tmp/issue-410-web-search/rust/src/merger.rs:203:    let providers: Vec<_> = results_by_provider.keys().collect();
+/tmp/issue-410-web-search/rust/src/merger.rs:204:    let max_len = results_by_provider
+/tmp/issue-410-web-search/rust/src/merger.rs:211:        for provider in &providers {
+/tmp/issue-410-web-search/rust/src/merger.rs:212:            if let Some(provider_results) = results_by_provider.get(*provider) {
+/tmp/issue-410-web-search/rust/src/merger.rs:213:                if i < provider_results.len() {
+/tmp/issue-410-web-search/rust/src/merger.rs:214:                    let result = &provider_results[i];
+/tmp/issue-410-web-search/rust/src/merger.rs:237:    results_by_provider: &HashMap<String, Vec<SearchResult>>,
+/tmp/issue-410-web-search/rust/src/merger.rs:241:        MergeStrategy::Rrf => merge_with_rrf(results_by_provider, options),
+/tmp/issue-410-web-search/rust/src/merger.rs:242:        MergeStrategy::Weighted => merge_with_weights(results_by_provider, options),
+/tmp/issue-410-web-search/rust/src/merger.rs:243:        MergeStrategy::Interleave => merge_with_interleave(results_by_provider, options),
+/tmp/issue-410-web-search/rust/src/merger.rs:265:        let mut results_by_provider = HashMap::new();
+/tmp/issue-410-web-search/rust/src/merger.rs:267:        results_by_provider.insert(
+/tmp/issue-410-web-search/rust/src/merger.rs:275:        results_by_provider.insert(
+/tmp/issue-410-web-search/rust/src/merger.rs:284:        let merged = merge_with_rrf(&results_by_provider, &options);

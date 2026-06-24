@@ -1,0 +1,630 @@
+/tmp/issue-410-web-capture/js/src/popups.js:6: * - Google Funding Choices (FC) consent dialogs
+/tmp/issue-410-web-capture/js/src/popups.js:35:  // Try to click the Google Funding Choices "Consent" button first
+/tmp/issue-410-web-capture/js/src/popups.js:56:      // Google Funding Choices (FC) consent dialog
+/tmp/issue-410-web-capture/js/src/popups.js:91:    // Remove Google FC consent dialog elements from DOM
+/tmp/issue-410-web-capture/js/src/popups.js:140: * @param {number} options.passes - Number of scroll passes (default: 2)
+/tmp/issue-410-web-capture/js/src/popups.js:141: * @param {number} options.stepDelay - Delay between scroll steps in ms (default: 100)
+/tmp/issue-410-web-capture/js/src/popups.js:142: * @param {number} options.passDelay - Delay between passes in ms (default: 1000)
+/tmp/issue-410-web-capture/rust/src/postprocess.rs:25:    fn default() -> Self {
+/tmp/issue-410-web-capture/rust/src/github.rs:60:    pub default_branch: String,
+/tmp/issue-410-web-capture/rust/src/github.rs:70:    default_branch: Option<String>,
+/tmp/issue-410-web-capture/rust/src/github.rs:162:    let default_branch = repository
+/tmp/issue-410-web-capture/rust/src/github.rs:163:        .default_branch
+/tmp/issue-410-web-capture/rust/src/github.rs:168:        fetch_github_readme(&parsed, &default_branch),
+/tmp/issue-410-web-capture/rust/src/github.rs:169:        fetch_github_root_tree(&parsed, &default_branch)
+/tmp/issue-410-web-capture/rust/src/github.rs:179:            stargazers_count: repository.stargazers_count.unwrap_or_default(),
+/tmp/issue-410-web-capture/rust/src/github.rs:180:            forks_count: repository.forks_count.unwrap_or_default(),
+/tmp/issue-410-web-capture/rust/src/github.rs:181:            open_issues_count: repository.open_issues_count.unwrap_or_default(),
+/tmp/issue-410-web-capture/rust/src/github.rs:183:            topics: repository.topics.unwrap_or_default(),
+/tmp/issue-410-web-capture/rust/src/github.rs:185:        default_branch,
+/tmp/issue-410-web-capture/rust/src/github.rs:206:        format!("- Default branch: `{}`", snapshot.default_branch),
+/tmp/issue-410-web-capture/rust/src/github.rs:258:        format!("Default branch: {}", snapshot.default_branch),
+/tmp/issue-410-web-capture/rust/src/github.rs:301:    default_branch: &str,
+/tmp/issue-410-web-capture/rust/src/github.rs:304:        "{GITHUB_API_BASE}/repos/{}/{}/readme?ref={default_branch}",
+/tmp/issue-410-web-capture/rust/src/github.rs:337:    default_branch: &str,
+/tmp/issue-410-web-capture/rust/src/github.rs:340:        "{GITHUB_API_BASE}/repos/{}/{}/contents?ref={default_branch}",
+/tmp/issue-410-web-capture/rust/src/github.rs:346:        .unwrap_or_default()
+/tmp/issue-410-web-capture/rust/src/github.rs:352:                    "https://github.com/{}/{}/{kind}/{default_branch}/{}",
+/tmp/issue-410-web-capture/rust/src/markdown.rs:267:/// Background: Google Docs HTML exports emit `<img title="" alt="" src="...">`.
+/tmp/issue-410-web-capture/rust/src/markdown.rs:294:/// lists keep their own per-list numbering, matching `html2md`'s default.
+/tmp/issue-410-web-capture/rust/src/browser.rs:21:    /// Chromiumoxide engine (default)
+/tmp/issue-410-web-capture/rust/src/browser.rs:22:    #[default]
+/tmp/issue-410-web-capture/rust/src/browser.rs:148:        "--disable-default-apps".to_string(),
+/tmp/issue-410-web-capture/rust/src/browser.rs:151:        "--no-default-browser-check".to_string(),
+/tmp/issue-410-web-capture/rust/src/browser.rs:186:        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+/tmp/issue-410-web-capture/rust/src/browser.rs:188:        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+/tmp/issue-410-web-capture/rust/src/browser.rs:189:        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+/tmp/issue-410-web-capture/rust/src/figures.rs:72:            .unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/verify.rs:25:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:27:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:29:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:31:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:33:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:35:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:37:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:39:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/verify.rs:154:    let mut missing = MissingContent::default();
+/tmp/issue-410-web-capture/js/src/retry.js:9: * @param {number} options.retries - Maximum number of retries (default: 3)
+/tmp/issue-410-web-capture/js/src/retry.js:10: * @param {number} options.baseDelay - Initial delay in ms (default: 1000)
+/tmp/issue-410-web-capture/js/src/retry.js:11: * @param {number} options.maxDelay - Maximum delay in ms (default: 30000)
+/tmp/issue-410-web-capture/js/src/retry.js:12: * @param {number} options.factor - Exponential backoff factor (default: 2)
+/tmp/issue-410-web-capture/rust/src/archive.rs:3://! Pins the default `--format archive` layout contract (see issue #113): the
+/tmp/issue-410-web-capture/rust/src/archive.rs:11:/// Build a default `--format archive` ZIP (`Vec<u8>`) from raw HTML.
+/tmp/issue-410-web-capture/rust/src/extract_images.rs:45:/// * `images_dir` - Subdirectory name for images (default: "images")
+/tmp/issue-410-web-capture/rust/src/extract_images.rs:162:/// Non-empty alt becomes `*[image: <alt>]*`. Empty alt — common for Google
+/tmp/issue-410-web-capture/rust/src/extract_images.rs:289:                    "Stripped {} inline base64 image(s) for default markdown; \
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1://! Google Docs capture module.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3://! Supports API-based capture of Google Docs documents via the export URL pattern:
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:10://! - `md` — Markdown (native Google Docs export)
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:151:/// Result of fetching a Google Docs document.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:164:/// Google Docs capture backend selected from the CLI `--capture` flag.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:175:/// Rendered Google Docs content from either Docs API or editor model data.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:265:/// Parsed Google Docs model/document capture.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:285:        /// Optional Google Docs named style.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:337:        /// Content ID from Google Docs model data.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:370:    /// Google Docs list identifier.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:400:/// Check if a URL is a Google Docs document URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:406:/// Extract the document ID from a Google Docs URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:408:/// Returns `None` if the URL is not a valid Google Docs URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:417:/// Build a Google Docs export URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:421:/// * `document_id` - The Google Docs document ID
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:432:/// Build a Google Docs editor URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:438:/// Build a Google Docs REST API URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:444:/// Select a Google Docs capture backend from the CLI `--capture` value.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:458:            "Unsupported Google Docs capture method \"{other}\". Use \"browser\" or \"api\"."
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:463:/// Fetch a Google Docs document via the export URL.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:470:/// * `url` - Google Docs URL (edit URL or any URL containing the document ID)
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:476:/// Returns an error if the URL is not a valid Google Docs URL, or if the fetch fails.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:483:        WebCaptureError::InvalidUrl(format!("Not a valid Google Docs URL: {url}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:492:        "fetching Google Doc via public export"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:511:        .map_err(|e| WebCaptureError::FetchError(format!("Failed to fetch Google Doc: {e}")))?;
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:521:        "received Google Docs public export response"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:526:            "Failed to fetch Google Doc ({} {}): {}",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:534:        WebCaptureError::FetchError(format!("Failed to read Google Doc response: {e}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:539:        "read Google Docs public export body"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:557:/// Fetch a Google Docs document and convert to Markdown.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:564:/// * `url` - Google Docs URL
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:589:        "rendered Google Docs public export markdown"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:600:/// Result of running the Google Docs export HTML pre-processor.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:614:/// Pre-process Google Docs export HTML so the generic `html2md` pipeline
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:617:/// Google Drive serves bold/italic/strikethrough as inline style spans and
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:648:/// Normalize Markdown emitted from Google Docs public-export HTML converters.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1566:/// Fetch and render a Google Docs document via the authenticated REST API.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1576:        WebCaptureError::InvalidUrl(format!("Not a valid Google Docs URL: {url}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1582:        "fetching Google Doc via Docs API"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1592:            WebCaptureError::FetchError(format!("Failed to fetch Google Doc via Docs API: {e}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1603:        "received Google Docs API response"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1608:            "Failed to fetch Google Doc via Docs API ({} {}): {}",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1616:        WebCaptureError::FetchError(format!("Failed to read Google Docs API response: {e}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1619:        WebCaptureError::ParseError(format!("Failed to parse Google Docs API response: {e}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1628:        "rendered Google Docs API document"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1641:/// Fetch and render the model data embedded in the Google Docs `/edit` route.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1652:            "Rust browser-model Google Docs capture cannot inject API tokens; use --capture api for authenticated Docs API capture".to_string(),
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1656:        WebCaptureError::InvalidUrl(format!("Not a valid Google Docs URL: {url}"))
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1662:        "capturing Google Doc editor model with a real browser"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1679:        "extracted Google Docs editor model chunks through CDP"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1683:            "Google Docs editor page did not expose DOCS_modelChunk data".to_string(),
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1693:                "failed to fetch Google Docs export HTML for browser-model semantic hints"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1711:        "parsed Google Docs editor model"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1741:        "launching headless Chrome CDP session for Google Docs model capture"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1856:    let mut quiescence = BrowserModelQuiescence::default();
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1878:                "Google Docs model extraction script failed: {exception}"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1904:                "captured quiesced Google Docs model chunks through CDP Runtime.evaluate"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1913:        "Timed out waiting for Google Docs DOCS_modelChunk stream to quiesce for document {document_id} after {} ms (last chunks={last_chunks}, payload_bytes={last_payload_bytes}, cid_urls={last_cid_urls}, poll_count={poll_count}, stable_for_ms={})",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1932:            "--disable-default-apps",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:1935:            "--no-default-browser-check",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2051:        .unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2061:        .unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2092:fn duration_from_env_ms(name: &str, default: Duration) -> Duration {
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2093:    std::env::var(name).map_or(default, |value| match value.trim().parse::<u64>() {
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2100:                default_ms = default.as_millis(),
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2101:                "ignoring invalid Google Docs model wait environment variable"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2103:            default
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2126:/// Render a Google Docs REST API document value.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2295:        inline_styles: vec![TextStyle::default(); text_len],
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2296:        ..ModelStyleMaps::default()
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2331:                    ..TextStyle::default()
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2449:/// from Google Docs export HTML.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2536:                table = Some(TableBlock::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2547:                row = Some(TableRow::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2559:                    row = Some(TableRow::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2561:                cell = Some(TableCell::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2578:                        row = Some(TableRow::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2580:                    cell = Some(TableCell::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2593:                    TextStyle::default(),
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2617:                        .unwrap_or_default(),
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2688:        return ParagraphMeta::default();
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2693:        ..ParagraphMeta::default()
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2910:            *row = Some(TableRow::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2913:            *cell = Some(TableCell::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2933:            *row = Some(TableRow::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2936:            *cell = Some(TableCell::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2947:    append_styled_text(content, text, TextStyle::default());
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:2982:/// Render a parsed Google Docs capture as Markdown, HTML, or text.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3061:    // Google Docs list use a single newline, including nested levels; adjacent
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3226:    let inactive = MarkdownMarkerState::default();
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3492:/// Result of fetching a Google Doc as an archive.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3551:                        "Failed to read Google Docs image {}: {error}",
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3560:                    "downloaded Google Docs browser-model archive image"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3572:                    "failed to download Google Docs browser-model archive image"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3579:                    "failed to download Google Docs browser-model archive image"
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3636:/// Google Docs HTML exports embed images as base64 data URIs.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3684:/// Fetch a Google Docs document as a ZIP archive.
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3696:/// * `url` - Google Docs URL
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3756:        let options = zip::write::SimpleFileOptions::default()
+/tmp/issue-410-web-capture/rust/src/gdocs.rs:3820:        let mut quiescence = BrowserModelQuiescence::default();
+/tmp/issue-410-web-capture/rust/src/main.rs:61:    /// Search provider: wikipedia, duckduckgo, google, bing, brave
+/tmp/issue-410-web-capture/rust/src/main.rs:62:    #[arg(long, default_value = "wikipedia")]
+/tmp/issue-410-web-capture/rust/src/main.rs:63:    provider: String,
+/tmp/issue-410-web-capture/rust/src/main.rs:66:    #[arg(long, default_value_t = 10)]
+/tmp/issue-410-web-capture/rust/src/main.rs:74:    #[arg(short, long, default_value = "3000", env = "PORT")]
+/tmp/issue-410-web-capture/rust/src/main.rs:78:    #[arg(short, long, default_value = "markdown")]
+/tmp/issue-410-web-capture/rust/src/main.rs:81:    /// Output file path (default: stdout for text, auto-generated for images)
+/tmp/issue-410-web-capture/rust/src/main.rs:85:    /// Extract LaTeX formulas from img.formula, `KaTeX`, `MathJax` (default: true).
+/tmp/issue-410-web-capture/rust/src/main.rs:87:    #[arg(long, default_value_t = true, env = "WEB_CAPTURE_EXTRACT_LATEX")]
+/tmp/issue-410-web-capture/rust/src/main.rs:90:    /// Extract article metadata (author, date, hubs, tags) (default: true).
+/tmp/issue-410-web-capture/rust/src/main.rs:92:    #[arg(long, default_value_t = true, env = "WEB_CAPTURE_EXTRACT_METADATA")]
+/tmp/issue-410-web-capture/rust/src/main.rs:95:    /// Apply post-processing (unicode normalization, LaTeX spacing) (default: true).
+/tmp/issue-410-web-capture/rust/src/main.rs:97:    #[arg(long, default_value_t = true, env = "WEB_CAPTURE_POST_PROCESS")]
+/tmp/issue-410-web-capture/rust/src/main.rs:100:    /// Detect and correct code block languages (default: true).
+/tmp/issue-410-web-capture/rust/src/main.rs:102:    #[arg(long, default_value_t = true, env = "WEB_CAPTURE_DETECT_CODE_LANGUAGE")]
+/tmp/issue-410-web-capture/rust/src/main.rs:114:    /// file (default: false). By default markdown keeps remote images as direct
+/tmp/issue-410-web-capture/rust/src/main.rs:116:    #[arg(long, default_value_t = false, env = "WEB_CAPTURE_EMBED_IMAGES")]
+/tmp/issue-410-web-capture/rust/src/main.rs:119:    /// Directory name for extracted images, relative to output file (default: images)
+/tmp/issue-410-web-capture/rust/src/main.rs:120:    #[arg(long, default_value = "images", env = "WEB_CAPTURE_IMAGES_DIR")]
+/tmp/issue-410-web-capture/rust/src/main.rs:123:    /// Base directory for auto-derived output paths when -o is omitted (default: ./data/web-capture)
+/tmp/issue-410-web-capture/rust/src/main.rs:126:        default_value = "./data/web-capture",
+/tmp/issue-410-web-capture/rust/src/main.rs:131:    /// Create archive output. Formats: zip (default), 7z, tar.gz (alias gz), tar
+/tmp/issue-410-web-capture/rust/src/main.rs:132:    #[arg(long, num_args = 0..=1, default_missing_value = "zip")]
+/tmp/issue-410-web-capture/rust/src/main.rs:136:    #[arg(long, default_value_t = false, env = "WEB_CAPTURE_NO_PRETTY_HTML")]
+/tmp/issue-410-web-capture/rust/src/main.rs:140:    #[arg(long, default_value_t = false)]
+/tmp/issue-410-web-capture/rust/src/main.rs:143:    /// Keep remote image URLs as direct links — this is the default markdown
+/tmp/issue-410-web-capture/rust/src/main.rs:146:    #[arg(long, default_value_t = false, env = "WEB_CAPTURE_KEEP_ORIGINAL_LINKS")]
+/tmp/issue-410-web-capture/rust/src/main.rs:153:    #[arg(long, num_args = 0..=1, default_missing_value = "", env = "WEB_CAPTURE_EXTRACT_IMAGES")]
+/tmp/issue-410-web-capture/rust/src/main.rs:157:    #[arg(long, default_value_t = false)]
+/tmp/issue-410-web-capture/rust/src/main.rs:165:    #[arg(long, default_value_t = false)]
+/tmp/issue-410-web-capture/rust/src/main.rs:169:    #[arg(long, default_value_t = false)]
+/tmp/issue-410-web-capture/rust/src/main.rs:173:    #[arg(long, default_value_t = false)]
+/tmp/issue-410-web-capture/rust/src/main.rs:176:    /// API token for authenticated capture (e.g., Google Docs private documents).
+/tmp/issue-410-web-capture/rust/src/main.rs:181:    /// Capture method: browser (default) or api (direct HTTP fetch, for Google Docs etc.)
+/tmp/issue-410-web-capture/rust/src/main.rs:182:    #[arg(long, default_value = "browser")]
+/tmp/issue-410-web-capture/rust/src/main.rs:197:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/main.rs:199:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/main.rs:201:    #[serde(default, rename = "embedImages")]
+/tmp/issue-410-web-capture/rust/src/main.rs:203:    #[serde(default = "default_true", rename = "keepOriginalLinks")]
+/tmp/issue-410-web-capture/rust/src/main.rs:205:    #[serde(default, rename = "contentSelector")]
+/tmp/issue-410-web-capture/rust/src/main.rs:207:    #[serde(default, rename = "bodySelector")]
+/tmp/issue-410-web-capture/rust/src/main.rs:211:const fn default_true() -> bool {
+/tmp/issue-410-web-capture/rust/src/main.rs:221:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/main.rs:222:    provider: Option<String>,
+/tmp/issue-410-web-capture/rust/src/main.rs:223:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/main.rs:225:    #[serde(default)]
+/tmp/issue-410-web-capture/rust/src/main.rs:259:/// `--extract-images` > the default contract (keep remote links, strip inline
+/tmp/issue-410-web-capture/rust/src/main.rs:260:/// base64). `--keep-original-links` falls through to the default, which is its
+/tmp/issue-410-web-capture/rust/src/main.rs:360:    let default_filter = if args.verbose {
+/tmp/issue-410-web-capture/rust/src/main.rs:367:            tracing_subscriber::EnvFilter::try_from_default_env()
+/tmp/issue-410-web-capture/rust/src/main.rs:368:                .unwrap_or_else(|_| default_filter.into()),
+/tmp/issue-410-web-capture/rust/src/main.rs:444:    info!("  GET /search?q=<QUERY>     - Structured search-provider capture");
+/tmp/issue-410-web-capture/rust/src/main.rs:553:        ..EnhancedOptions::default()
+/tmp/issue-410-web-capture/rust/src/main.rs:805:    let options = zip::write::SimpleFileOptions::default()
+/tmp/issue-410-web-capture/rust/src/main.rs:922:    let options = web_capture::animation::AnimationOptions::default();
+/tmp/issue-410-web-capture/rust/src/main.rs:983:    let options = web_capture::themed_image::ThemedImageOptions::default();
+/tmp/issue-410-web-capture/rust/src/main.rs:1002:/// Structured search-provider capture endpoint handler
+/tmp/issue-410-web-capture/rust/src/main.rs:1004:    let query = params.q.unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/main.rs:1008:    let provider = params
+/tmp/issue-410-web-capture/rust/src/main.rs:1009:        .provider
+/tmp/issue-410-web-capture/rust/src/main.rs:1016:        &provider,
+/tmp/issue-410-web-capture/rust/src/main.rs:1046:    // Search defaults to JSON output unless --format/-f was passed explicitly.
+/tmp/issue-410-web-capture/rust/src/main.rs:1057:        web_capture::search::search(query, &args.provider, args.limit, "fetch", &now_rfc3339())
+/tmp/issue-410-web-capture/rust/src/main.rs:1086:    // Google Docs capture honors --capture:
+/tmp/issue-410-web-capture/rust/src/main.rs:1104:            "selected Google Docs capture method"
+/tmp/issue-410-web-capture/rust/src/main.rs:1110:                "Google Docs editor model does not support requested format; using regular browser pipeline"
+/tmp/issue-410-web-capture/rust/src/main.rs:1122:                "Google Doc (browser-model)",
+/tmp/issue-410-web-capture/rust/src/main.rs:1138:                "Google Doc (docs-api)",
+/tmp/issue-410-web-capture/rust/src/main.rs:1158:                        "Google Doc (archive)",
+/tmp/issue-410-web-capture/rust/src/main.rs:1171:                            process_output_markdown(markdown, args, &path, "Google Doc Markdown")
+/tmp/issue-410-web-capture/rust/src/main.rs:1173:                        write_text_capture_to_path(&markdown, &path, "Google Doc Markdown").await?;
+/tmp/issue-410-web-capture/rust/src/main.rs:1195:                        &format!("Google Doc ({gdocs_format})"),
+/tmp/issue-410-web-capture/rust/src/main.rs:1307:            // Enhanced conversion is now the default
+/tmp/issue-410-web-capture/rust/src/main.rs:1347:                // Generate default filename
+/tmp/issue-410-web-capture/rust/src/main.rs:1350:                let default_filename = format!(
+/tmp/issue-410-web-capture/rust/src/main.rs:1357:                fs::write(&default_filename, &screenshot).await?;
+/tmp/issue-410-web-capture/rust/src/main.rs:1358:                eprintln!("Screenshot saved to: {default_filename}");
+/tmp/issue-410-web-capture/rust/src/main.rs:1431:            "Google Doc (archive)",
+/tmp/issue-410-web-capture/js/src/markdown.js:65:        mode: embedImages ? 'embed' : 'default',
+/tmp/issue-410-web-capture/js/src/markdown.js:91:        mode: embedImages ? 'embed' : 'default',
+/tmp/issue-410-web-capture/js/src/markdown.js:106:    // same contract as the CLI: default keeps remote links and strips inline
+/tmp/issue-410-web-capture/js/src/markdown.js:109:      mode: embedImages ? 'embed' : 'default',
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:1:// Google Docs browser-model fallback helpers.
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:22: * Check whether an error means Google Docs browser-model data was unavailable.
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:27:export function isGoogleDocsBrowserModelUnavailableError(err) {
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:35: * Fetch a Google Doc through the public export pipeline for a requested output
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:40: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:44:export async function fetchGoogleDocByExportFormat(deps, url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:45:  const { fetchGoogleDoc, fetchGoogleDocAsMarkdown, fetchGoogleDocAsArchive } =
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:51:    const archiveResult = await fetchGoogleDocAsArchive(url, { apiToken, log });
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:60:    const result = await fetchGoogleDocAsMarkdown(url, { apiToken, log });
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:69:    const result = await fetchGoogleDoc(url, {
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:82:    const result = await fetchGoogleDoc(url, {
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:95:    `Unsupported Google Docs export fallback format "${format}".`
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:100: * Capture a Google Doc through the browser model, falling back to public export
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:104: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:108:export async function captureGoogleDocWithBrowserOrFallback(
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:113:  const { captureGoogleDocWithBrowser } = deps;
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:122:    const result = await captureGoogleDocWithBrowser(url, browserOptions);
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:129:    if (!fallback || !isGoogleDocsBrowserModelUnavailableError(err)) {
+/tmp/issue-410-web-capture/js/src/gdocs-fallback.js:140:    const result = await fetchGoogleDocByExportFormat(deps, url, {
+/tmp/issue-410-web-capture/rust/src/batch.rs:41:/// Batch configuration containing multiple articles and defaults.
+/tmp/issue-410-web-capture/rust/src/batch.rs:46:    pub defaults: Option<ArticleConfig>,
+/tmp/issue-410-web-capture/rust/src/batch.rs:83:/// Merges defaults with the specific article configuration.
+/tmp/issue-410-web-capture/rust/src/batch.rs:101:    // Merge defaults
+/tmp/issue-410-web-capture/rust/src/batch.rs:102:    Ok(config.defaults.as_ref().map_or_else(
+/tmp/issue-410-web-capture/rust/src/batch.rs:104:        |defaults| merge_config(defaults, article),
+/tmp/issue-410-web-capture/rust/src/batch.rs:114:/// Get all article configurations with defaults merged.
+/tmp/issue-410-web-capture/rust/src/batch.rs:121:            config.defaults.as_ref().map_or_else(
+/tmp/issue-410-web-capture/rust/src/batch.rs:123:                |defaults| merge_config(defaults, article),
+/tmp/issue-410-web-capture/rust/src/batch.rs:129:/// Create a default batch configuration for a list of URLs.
+/tmp/issue-410-web-capture/rust/src/batch.rs:131:pub fn create_config_from_urls(urls: &[String], defaults: Option<ArticleConfig>) -> BatchConfig {
+/tmp/issue-410-web-capture/rust/src/batch.rs:152:                ..Default::default()
+/tmp/issue-410-web-capture/rust/src/batch.rs:157:    BatchConfig { articles, defaults }
+/tmp/issue-410-web-capture/rust/src/batch.rs:187:/// Merge defaults into an article config (article values take precedence).
+/tmp/issue-410-web-capture/rust/src/batch.rs:188:fn merge_config(defaults: &ArticleConfig, article: &ArticleConfig) -> ArticleConfig {
+/tmp/issue-410-web-capture/rust/src/batch.rs:191:            defaults.url.clone()
+/tmp/issue-410-web-capture/rust/src/batch.rs:195:        title: article.title.clone().or_else(|| defaults.title.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:199:            .or_else(|| defaults.language.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:203:            .or_else(|| defaults.archive_path.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:207:            .or_else(|| defaults.markdown_file.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:211:            .or_else(|| defaults.screenshot_light_file.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:215:            .or_else(|| defaults.screenshot_dark_file.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:219:            .or_else(|| defaults.images_dir.clone()),
+/tmp/issue-410-web-capture/rust/src/batch.rs:220:        has_local_images: article.has_local_images.or(defaults.has_local_images),
+/tmp/issue-410-web-capture/rust/src/batch.rs:221:        expected_figures: article.expected_figures.or(defaults.expected_figures),
+/tmp/issue-410-web-capture/rust/src/batch.rs:222:        format: article.format.clone().or_else(|| defaults.format.clone()),
+/tmp/issue-410-web-capture/js/src/stream.js:3:import { convertGoogleDriveUrl } from './lib.js';
+/tmp/issue-410-web-capture/js/src/stream.js:11:    const response = await fetch(convertGoogleDriveUrl(url));
+/tmp/issue-410-web-capture/js/src/stream.js:15:    // Set default content type if not present
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:1:// Google Docs export HTML preprocessor (issue #92 R6).
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:3:// Google Drive's `/export?format=html` payload serves bold/italic/
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:16: * Pre-process Google Docs export HTML so the generic Cheerio+Turndown
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:19: * @param {string} html - Raw export HTML returned by Google Docs.
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:22:export function preprocessGoogleDocsExportHtml(html) {
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:70:  groupGoogleDocsBlockquotes($, classStyles);
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:71:  nestGoogleDocsLists($, classStyles);
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:72:  normalizeGoogleDocsTables($);
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:135: * Normalize Markdown emitted from Google Docs public-export HTML converters.
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:140:export function normalizeGoogleDocsExportMarkdown(markdown) {
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:349:function groupGoogleDocsBlockquotes($, classStyles) {
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:382:function nestGoogleDocsLists($, classStyles) {
+/tmp/issue-410-web-capture/js/src/gdocs-preprocess.js:509:function normalizeGoogleDocsTables($) {
+/tmp/issue-410-web-capture/js/src/extract-images.js:103: * Non-empty alt becomes `*[image: <alt>]*`. Empty alt — common for Google Docs
+/tmp/issue-410-web-capture/js/src/extract-images.js:158: *  - `'default'`: keep remote URLs as direct links; strip inline base64 data
+/tmp/issue-410-web-capture/js/src/extract-images.js:168: * @param {'default'|'embed'|'extract'} [options.mode='default']
+/tmp/issue-410-web-capture/js/src/extract-images.js:178:  const { mode = 'default', dir, subdir = 'images' } = options;
+/tmp/issue-410-web-capture/js/src/extract-images.js:212:  // 'default'
+/tmp/issue-410-web-capture/js/src/txt.js:5:  fetchGoogleDriveImageHtml,
+/tmp/issue-410-web-capture/js/src/txt.js:8:  isGoogleDriveFileUrl,
+/tmp/issue-410-web-capture/js/src/txt.js:37:    if (isGoogleDriveFileUrl(url)) {
+/tmp/issue-410-web-capture/js/src/txt.js:38:      const googleDriveImageHtml = await fetchGoogleDriveImageHtml(url);
+/tmp/issue-410-web-capture/js/src/lib.js:23:  const googleDriveImageHtml = await fetchGoogleDriveImageHtml(url);
+/tmp/issue-410-web-capture/js/src/lib.js:37:export function getGoogleDriveFileId(url) {
+/tmp/issue-410-web-capture/js/src/lib.js:70:export function isGoogleDriveFileUrl(url) {
+/tmp/issue-410-web-capture/js/src/lib.js:71:  return Boolean(getGoogleDriveFileId(url));
+/tmp/issue-410-web-capture/js/src/lib.js:74:export function convertGoogleDriveUrl(url) {
+/tmp/issue-410-web-capture/js/src/lib.js:75:  const fileId = getGoogleDriveFileId(url);
+/tmp/issue-410-web-capture/js/src/lib.js:84:  const fileId = getGoogleDriveFileId(url);
+/tmp/issue-410-web-capture/js/src/lib.js:89:  const imageUrl = options.imageSrc || convertGoogleDriveUrl(url);
+/tmp/issue-410-web-capture/js/src/lib.js:100:  <title>Google Drive image</title>
+/tmp/issue-410-web-capture/js/src/lib.js:103:  <h1>Google Drive image</h1>
+/tmp/issue-410-web-capture/js/src/lib.js:104:  <p><a href="${escapedSourceUrl}">Original Google Drive file</a></p>
+/tmp/issue-410-web-capture/js/src/lib.js:105:  <img src="${escapedImageUrl}" alt="Google Drive image"${extensionAttribute}>
+/tmp/issue-410-web-capture/js/src/lib.js:111:  if (!isGoogleDriveFileUrl(url)) {
+/tmp/issue-410-web-capture/js/src/lib.js:116:    'Google Drive image',
+/tmp/issue-410-web-capture/js/src/lib.js:118:    `Original Google Drive file: ${url}`,
+/tmp/issue-410-web-capture/js/src/lib.js:119:    `Image: ${convertGoogleDriveUrl(url)}`,
+/tmp/issue-410-web-capture/js/src/lib.js:124:export async function fetchGoogleDriveImage(url) {
+/tmp/issue-410-web-capture/js/src/lib.js:125:  const fileId = getGoogleDriveFileId(url);
+/tmp/issue-410-web-capture/js/src/lib.js:130:  const downloadUrl = convertGoogleDriveUrl(url);
+/tmp/issue-410-web-capture/js/src/lib.js:133:    throw new Error(`Google Drive returned HTTP ${response.status}`);
+/tmp/issue-410-web-capture/js/src/lib.js:138:    throw new Error(`Google Drive file is not an image (${contentType})`);
+/tmp/issue-410-web-capture/js/src/lib.js:149:export async function fetchGoogleDriveImageHtml(url) {
+/tmp/issue-410-web-capture/js/src/lib.js:150:  if (!isGoogleDriveFileUrl(url)) {
+/tmp/issue-410-web-capture/js/src/lib.js:154:  const downloadUrl = convertGoogleDriveUrl(url);
+/tmp/issue-410-web-capture/js/src/lib.js:526:// break. Google Docs export wraps every visual line break in `<br>`, including
+/tmp/issue-410-web-capture/js/src/lib.js:554:// the `  \n` hard break that the <br> rule emits. Google Docs export-html
+/tmp/issue-410-web-capture/js/src/batch.js:34: * @property {Object} [defaults] - Default options applied to all articles
+/tmp/issue-410-web-capture/js/src/batch.js:42: * - JavaScript/ESM files (.mjs, .js) with default or named exports
+/tmp/issue-410-web-capture/js/src/batch.js:60:    // Support both default export and named exports
+/tmp/issue-410-web-capture/js/src/batch.js:61:    if (module.default) {
+/tmp/issue-410-web-capture/js/src/batch.js:62:      return module.default;
+/tmp/issue-410-web-capture/js/src/batch.js:92:  // Merge defaults
+/tmp/issue-410-web-capture/js/src/batch.js:93:  return { ...config.defaults, ...article };
+/tmp/issue-410-web-capture/js/src/batch.js:110: * @returns {ArticleConfig[]} Array of article configs (with defaults merged)
+/tmp/issue-410-web-capture/js/src/batch.js:114:    ...config.defaults,
+/tmp/issue-410-web-capture/js/src/batch.js:120: * Create a default batch configuration for a list of URLs.
+/tmp/issue-410-web-capture/js/src/batch.js:123: * @param {Object} [defaults] - Default options for all articles
+/tmp/issue-410-web-capture/js/src/batch.js:126:export function createConfigFromUrls(urls, defaults = {}) {
+/tmp/issue-410-web-capture/js/src/batch.js:150:  return { articles, defaults };
+/tmp/issue-410-web-capture/js/src/kreuzberg.js:7: * This converter is available as an alternative to the default Turndown-based
+/tmp/issue-410-web-capture/js/src/kreuzberg.js:28:      _convert = mod.convert || mod.default?.convert || null;
+/tmp/issue-410-web-capture/js/src/fetch.js:2:import { convertGoogleDriveUrl } from './lib.js';
+/tmp/issue-410-web-capture/js/src/fetch.js:10:    const response = await fetch(convertGoogleDriveUrl(url));
+/tmp/issue-410-web-capture/js/src/fetch.js:14:    // Set default content type if not present
+/tmp/issue-410-web-capture/js/src/github.js:54:  const defaultBranch = repository.default_branch || 'main';
+/tmp/issue-410-web-capture/js/src/github.js:57:    fetchGithubReadme(parsed, defaultBranch),
+/tmp/issue-410-web-capture/js/src/github.js:58:    fetchGithubRootTree(parsed, defaultBranch),
+/tmp/issue-410-web-capture/js/src/github.js:64:    defaultBranch,
+/tmp/issue-410-web-capture/js/src/github.js:71:  const { repository, defaultBranch, readme, tree, sourceUrl } = snapshot;
+/tmp/issue-410-web-capture/js/src/github.js:80:    `- Default branch: \`${defaultBranch}\``,
+/tmp/issue-410-web-capture/js/src/github.js:118:  const { repository, defaultBranch, readme, tree, sourceUrl } = snapshot;
+/tmp/issue-410-web-capture/js/src/github.js:123:    `Default branch: ${defaultBranch}`,
+/tmp/issue-410-web-capture/js/src/github.js:161:async function fetchGithubReadme(parsed, defaultBranch) {
+/tmp/issue-410-web-capture/js/src/github.js:163:    `${GITHUB_API_BASE}/repos/${encodePath(parsed.owner)}/${encodePath(parsed.repo)}/readme?ref=${encodeURIComponent(defaultBranch)}`,
+/tmp/issue-410-web-capture/js/src/github.js:188:async function fetchGithubRootTree(parsed, defaultBranch) {
+/tmp/issue-410-web-capture/js/src/github.js:190:    `${GITHUB_API_BASE}/repos/${encodePath(parsed.owner)}/${encodePath(parsed.repo)}/contents?ref=${encodeURIComponent(defaultBranch)}`,
+/tmp/issue-410-web-capture/js/src/github.js:207:          `https://github.com/${parsed.owner}/${parsed.repo}/${pathKind}/${defaultBranch}/${item.path}`,
+/tmp/issue-410-web-capture/rust/src/themed_image.rs:54:    fn default() -> Self {
+/tmp/issue-410-web-capture/js/src/themed-image.js:127: *   width      - viewport width (default 1920)
+/tmp/issue-410-web-capture/js/src/themed-image.js:128: *   height     - viewport height (default 1080)
+/tmp/issue-410-web-capture/js/src/themed-image.js:129: *   fullPage   - 'true' (default) to capture full page
+/tmp/issue-410-web-capture/js/src/themed-image.js:130: *   dismissPopups - 'true' (default) to dismiss popups
+/tmp/issue-410-web-capture/js/src/gdocs-images.js:1:// Google Docs editor-model image localization (issue #92 R5).
+/tmp/issue-410-web-capture/js/src/gdocs-images.js:23:    // fall through to default
+/tmp/issue-410-web-capture/js/src/gdocs-images.js:41:    default:
+/tmp/issue-410-web-capture/js/src/gdocs-images.js:50: * `writeGoogleDocsArchive` and rewrites the markdown/html to reference the
+/tmp/issue-410-web-capture/js/src/gdocs-images.js:59:export async function localizeGoogleDocsModelImages(modelResult, options = {}) {
+/tmp/issue-410-web-capture/js/src/image.js:2:import { fetchGoogleDriveImage, isStackOverflowQuestionUrl } from './lib.js';
+/tmp/issue-410-web-capture/js/src/image.js:11: *   format    - 'png' (default, lossless) or 'jpeg'
+/tmp/issue-410-web-capture/js/src/image.js:12: *   quality   - JPEG quality 0-100 (default 80, ignored for PNG)
+/tmp/issue-410-web-capture/js/src/image.js:13: *   width     - viewport width in px (default 1280)
+/tmp/issue-410-web-capture/js/src/image.js:14: *   height    - viewport height in px (default 800)
+/tmp/issue-410-web-capture/js/src/image.js:15: *   fullPage  - 'true' to capture full scrollable page (default 'false')
+/tmp/issue-410-web-capture/js/src/image.js:16: *   theme     - 'light', 'dark', or 'no-preference' (default: browser default)
+/tmp/issue-410-web-capture/js/src/image.js:17: *   dismissPopups - 'true' to auto-close cookie/consent popups before capture (default 'true')
+/tmp/issue-410-web-capture/js/src/image.js:38:  const shouldDismissPopups = req.query.dismissPopups !== 'false'; // default true
+/tmp/issue-410-web-capture/js/src/image.js:42:    const googleDriveImage = await fetchGoogleDriveImage(absoluteUrl);
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:8:export async function waitForGoogleDocsModelQuiescence(
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:20:    const modelData = await readGoogleDocsModelData(page);
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:62:        `Google Docs DOCS_modelChunk stream did not quiesce within ${maxWaitMs} ms for document ${documentId} (last chunks=${lastChunks}, payload_bytes=${fingerprint.payloadBytes}, cid_urls=${lastCidUrls}, poll_count=${pollCount}, stable_for_ms=${lastStableForMs})`
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:70:export function resolveGoogleDocsModelWaitOptions(options) {
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:93:async function readGoogleDocsModelData(page) {
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:152:function readDurationMs(optionValue, envName, defaultValue) {
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:155:    return defaultValue;
+/tmp/issue-410-web-capture/js/src/gdocs-model-wait.js:159:    return defaultValue;
+/tmp/issue-410-web-capture/rust/src/metadata.rs:56:    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+/tmp/issue-410-web-capture/rust/src/metadata.rs:58:    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+/tmp/issue-410-web-capture/rust/src/metadata.rs:60:    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+/tmp/issue-410-web-capture/rust/src/metadata.rs:62:    #[serde(skip_serializing_if = "Vec::is_empty", default)]
+/tmp/issue-410-web-capture/rust/src/metadata.rs:102:    let mut meta = ArticleMetadata::default();
+/tmp/issue-410-web-capture/js/src/browser.js:14: * These are appended to browser-commander's default CHROME_ARGS
+/tmp/issue-410-web-capture/js/src/browser.js:56: * @param {string} engine - 'puppeteer' or 'playwright' (defaults to puppeteer)
+/tmp/issue-410-web-capture/js/src/search.js:2: * Structured search-provider capture (issue #130).
+/tmp/issue-410-web-capture/js/src/search.js:4: * Turns a query + provider into a normalized, machine-readable result set so
+/tmp/issue-410-web-capture/js/src/search.js:6: * instead of each reimplementing provider-specific scraping. Server-side and
+/tmp/issue-410-web-capture/js/src/search.js:7: * CLI callers fetch provider pages directly (no CORS restriction), so this
+/tmp/issue-410-web-capture/js/src/search.js:8: * module defaults to the `fetch` capture mode. Providers that expose a native
+/tmp/issue-410-web-capture/js/src/search.js:9: * CORS/JSON API (Wikipedia) are preferred; HTML search engines are parsed
+/tmp/issue-410-web-capture/js/src/search.js:14: *   query, provider, captureMode, capturedAt,
+/tmp/issue-410-web-capture/js/src/search.js:36:/** Default provider when none is supplied. */
+/tmp/issue-410-web-capture/js/src/search.js:62: * Build the provider-native source URL for a query.
+/tmp/issue-410-web-capture/js/src/search.js:64: * @param {string} provider - One of {@link SEARCH_PROVIDERS}
+/tmp/issue-410-web-capture/js/src/search.js:69:export function buildSearchUrl(provider, query, limit = DEFAULT_LIMIT) {
+/tmp/issue-410-web-capture/js/src/search.js:71:  switch (provider) {
+/tmp/issue-410-web-capture/js/src/search.js:82:    default:
+/tmp/issue-410-web-capture/js/src/search.js:84:        `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:90: * Detect provider CAPTCHA / bot-block interstitials in an HTML body.
+/tmp/issue-410-web-capture/js/src/search.js:105: * Decode a DuckDuckGo redirect href (`//duckduckgo.com/l/?uddg=...`) back to
+/tmp/issue-410-web-capture/js/src/search.js:111:function resolveDuckDuckGoHref(href) {
+/tmp/issue-410-web-capture/js/src/search.js:131:/** Parse the Wikipedia REST search JSON into normalized results. */
+/tmp/issue-410-web-capture/js/src/search.js:132:function parseWikipedia(body, limit) {
+/tmp/issue-410-web-capture/js/src/search.js:148:/** Parse DuckDuckGo HTML (html.duckduckgo.com/html) into normalized results. */
+/tmp/issue-410-web-capture/js/src/search.js:149:function parseDuckDuckGo($, limit) {
+/tmp/issue-410-web-capture/js/src/search.js:164:    const url = resolveDuckDuckGoHref(anchor.attr('href'));
+/tmp/issue-410-web-capture/js/src/search.js:173:/** Parse Google results HTML into normalized results (best-effort). */
+/tmp/issue-410-web-capture/js/src/search.js:174:function parseGoogle($, limit) {
+/tmp/issue-410-web-capture/js/src/search.js:193:/** Parse Bing results HTML into normalized results. */
+/tmp/issue-410-web-capture/js/src/search.js:194:function parseBing($, limit) {
+/tmp/issue-410-web-capture/js/src/search.js:211:/** Parse Brave Search results HTML into normalized results. */
+/tmp/issue-410-web-capture/js/src/search.js:212:function parseBrave($, limit) {
+/tmp/issue-410-web-capture/js/src/search.js:234: * Parse a provider response body into normalized result rows. Pure function
+/tmp/issue-410-web-capture/js/src/search.js:237: * @param {string} provider - One of {@link SEARCH_PROVIDERS}
+/tmp/issue-410-web-capture/js/src/search.js:243:  provider,
+/tmp/issue-410-web-capture/js/src/search.js:247:  if (provider === 'wikipedia') {
+/tmp/issue-410-web-capture/js/src/search.js:248:    return { results: parseWikipedia(body, limit), blockedByCaptcha: false };
+/tmp/issue-410-web-capture/js/src/search.js:253:  switch (provider) {
+/tmp/issue-410-web-capture/js/src/search.js:255:      results = parseDuckDuckGo($, limit);
+/tmp/issue-410-web-capture/js/src/search.js:258:      results = parseGoogle($, limit);
+/tmp/issue-410-web-capture/js/src/search.js:261:      results = parseBing($, limit);
+/tmp/issue-410-web-capture/js/src/search.js:264:      results = parseBrave($, limit);
+/tmp/issue-410-web-capture/js/src/search.js:266:    default:
+/tmp/issue-410-web-capture/js/src/search.js:268:        `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:284:  lines.push(`- Provider: \`${result.provider}\``);
+/tmp/issue-410-web-capture/js/src/search.js:306: * Capture structured search results for a query from a provider.
+/tmp/issue-410-web-capture/js/src/search.js:310: * @param {string} [options.provider=wikipedia] - Provider id
+/tmp/issue-410-web-capture/js/src/search.js:319:  provider = DEFAULT_PROVIDER,
+/tmp/issue-410-web-capture/js/src/search.js:328:  if (!SEARCH_PROVIDERS.includes(provider)) {
+/tmp/issue-410-web-capture/js/src/search.js:330:      `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:334:  const sourceUrl = buildSearchUrl(provider, query, limit);
+/tmp/issue-410-web-capture/js/src/search.js:349:          provider === 'wikipedia'
+/tmp/issue-410-web-capture/js/src/search.js:357:    const parsed = parseSearchResults(provider, body, { limit });
+/tmp/issue-410-web-capture/js/src/search.js:369:    provider,
+/tmp/issue-410-web-capture/js/src/search.js:378: * Express handler for `GET /search?q=<query>&provider=<p>&format=json|markdown`.
+/tmp/issue-410-web-capture/js/src/search.js:388:  const provider = req.query.provider || DEFAULT_PROVIDER;
+/tmp/issue-410-web-capture/js/src/search.js:389:  if (!SEARCH_PROVIDERS.includes(provider)) {
+/tmp/issue-410-web-capture/js/src/search.js:393:        `Unknown provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:399:    const result = await search({ query, provider, limit });
+/tmp/issue-410-web-capture/js/src/animation.js:219: *   format         - 'gif' (default), 'png-sequence'
+/tmp/issue-410-web-capture/js/src/animation.js:220: *   maxSize        - Max output dimension (default 1024)
+/tmp/issue-410-web-capture/js/src/animation.js:221: *   interval       - Capture interval ms (default 0)
+/tmp/issue-410-web-capture/js/src/animation.js:222: *   minFrames      - Min frames per cycle (default 120)
+/tmp/issue-410-web-capture/js/src/animation.js:223: *   loopTimeout    - Max seconds for loop (default 60)
+/tmp/issue-410-web-capture/js/src/animation.js:224: *   similarity     - Loop detection threshold (default 0.99)
+/tmp/issue-410-web-capture/js/src/animation.js:225: *   captureMode    - 'screenshot' (default), 'screencast', 'beginframe'
+/tmp/issue-410-web-capture/js/src/archive.js:13: *   localImages    - 'true' (default) to download images locally into the archive,
+/tmp/issue-410-web-capture/js/src/archive.js:15: *   documentFormat - 'markdown' (default) or 'html' - format of the main document
+/tmp/issue-410-web-capture/js/src/archive.js:171:      // Markdown format (default)
+/tmp/issue-410-web-capture/js/src/archive.js:187:      // reference only, so the default archive layout (document.md +
+/tmp/issue-410-web-capture/js/src/archive.js:224: * endpoint and {@link buildArchiveFromHtml} so the default layout stays
+/tmp/issue-410-web-capture/js/src/archive.js:243: * default `--format archive` layout contract (issue #113):
+/tmp/issue-410-web-capture/js/src/pdf.js:10: *   width     - viewport width in px (default 1280)
+/tmp/issue-410-web-capture/js/src/pdf.js:11: *   height    - viewport height in px (default 800)
+/tmp/issue-410-web-capture/js/src/pdf.js:13: *   dismissPopups - 'true' (default) to auto-close popups before export
+/tmp/issue-410-web-capture/js/src/pdf.js:18:import { fetchGoogleDriveImage, googleDriveImageHtmlForUrl } from './lib.js';
+/tmp/issue-410-web-capture/js/src/pdf.js:33:    const googleDriveImage = await fetchGoogleDriveImage(absoluteUrl);
+/tmp/issue-410-web-capture/rust/src/lib.rs:221:    fn default() -> Self {
+/tmp/issue-410-web-capture/rust/src/lib.rs:303:        md = postprocess::post_process_markdown(&md, &postprocess::PostProcessOptions::default());
+/tmp/issue-410-web-capture/rust/src/lib.rs:344:/// and `bodySelector` controls used by the default enhanced converter.
+/tmp/issue-410-web-capture/rust/src/kreuzberg.rs:6://! This converter is available as an alternative to the default `html2md`-based
+/tmp/issue-410-web-capture/rust/src/kreuzberg.rs:63:        ..html_to_markdown_rs::ConversionOptions::default()
+/tmp/issue-410-web-capture/rust/src/kreuzberg.rs:69:    let content = result.content.unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/search.rs:1://! Structured search-provider capture (issue #130).
+/tmp/issue-410-web-capture/rust/src/search.rs:3://! Turns a query + provider into a normalized, machine-readable result set so
+/tmp/issue-410-web-capture/rust/src/search.rs:5://! instead of each reimplementing provider-specific scraping. Server-side and
+/tmp/issue-410-web-capture/rust/src/search.rs:6://! CLI callers fetch provider pages directly (no CORS restriction), so this
+/tmp/issue-410-web-capture/rust/src/search.rs:7://! module defaults to the `fetch` capture mode. Providers that expose a native
+/tmp/issue-410-web-capture/rust/src/search.rs:8://! CORS/JSON API (Wikipedia) are preferred; HTML search engines are parsed
+/tmp/issue-410-web-capture/rust/src/search.rs:14://!   "query": "...", "provider": "...", "captureMode": "fetch",
+/tmp/issue-410-web-capture/rust/src/search.rs:31:/// Default provider when none is supplied.
+/tmp/issue-410-web-capture/rust/src/search.rs:63:    pub provider: String,
+/tmp/issue-410-web-capture/rust/src/search.rs:70:/// Returns true if `provider` is one of the supported providers.
+/tmp/issue-410-web-capture/rust/src/search.rs:72:pub fn is_supported_provider(provider: &str) -> bool {
+/tmp/issue-410-web-capture/rust/src/search.rs:73:    SEARCH_PROVIDERS.contains(&provider)
+/tmp/issue-410-web-capture/rust/src/search.rs:83:/// Build the provider-native source URL for a query.
+/tmp/issue-410-web-capture/rust/src/search.rs:87:/// Returns an error string when `provider` is not supported.
+/tmp/issue-410-web-capture/rust/src/search.rs:88:pub fn build_search_url(provider: &str, query: &str, limit: usize) -> Result<String, String> {
+/tmp/issue-410-web-capture/rust/src/search.rs:90:    match provider {
+/tmp/issue-410-web-capture/rust/src/search.rs:99:            "Unknown search provider \"{other}\". Supported: {}",
+/tmp/issue-410-web-capture/rust/src/search.rs:105:/// Detect provider CAPTCHA / bot-block interstitials in an HTML body.
+/tmp/issue-410-web-capture/rust/src/search.rs:116:/// Decode a `DuckDuckGo` redirect href (`//duckduckgo.com/l/?uddg=...`).
+/tmp/issue-410-web-capture/rust/src/search.rs:133:/// Wikipedia REST search page entry.
+/tmp/issue-410-web-capture/rust/src/search.rs:166:    let pages = parsed.pages.unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/search.rs:176:                .unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/search.rs:177:            let title = clean_text(&page.title.or(page.key).unwrap_or_default());
+/tmp/issue-410-web-capture/rust/src/search.rs:178:            let snippet_raw = page.excerpt.or(page.description).unwrap_or_default();
+/tmp/issue-410-web-capture/rust/src/search.rs:197:        .unwrap_or_default()
+/tmp/issue-410-web-capture/rust/src/search.rs:218:            let url = resolve_duckduckgo_href(anchor.value().attr("href").unwrap_or_default());
+/tmp/issue-410-web-capture/rust/src/search.rs:248:            .unwrap_or_default()
+/tmp/issue-410-web-capture/rust/src/search.rs:276:            let url = anchor.value().attr("href").unwrap_or_default().to_string();
+/tmp/issue-410-web-capture/rust/src/search.rs:305:            .unwrap_or_default()
+/tmp/issue-410-web-capture/rust/src/search.rs:326:/// Parse a provider response body into normalized result rows.
+/tmp/issue-410-web-capture/rust/src/search.rs:332:    provider: &str,
+/tmp/issue-410-web-capture/rust/src/search.rs:336:    if provider == "wikipedia" {
+/tmp/issue-410-web-capture/rust/src/search.rs:341:    let results = match provider {
+/tmp/issue-410-web-capture/rust/src/search.rs:357:    lines.push(format!("- Provider: `{}`", result.provider));
+/tmp/issue-410-web-capture/rust/src/search.rs:378:/// Capture structured search results for a query from a provider.
+/tmp/issue-410-web-capture/rust/src/search.rs:386:/// Returns an error string for an empty query or unsupported provider.
+/tmp/issue-410-web-capture/rust/src/search.rs:389:    provider: &str,
+/tmp/issue-410-web-capture/rust/src/search.rs:397:    if !is_supported_provider(provider) {
+/tmp/issue-410-web-capture/rust/src/search.rs:399:            "Unknown search provider \"{provider}\". Supported: {}",
+/tmp/issue-410-web-capture/rust/src/search.rs:404:    let source_url = build_search_url(provider, query, limit)?;
+/tmp/issue-410-web-capture/rust/src/search.rs:414:    let accept = if provider == "wikipedia" {
+/tmp/issue-410-web-capture/rust/src/search.rs:433:                            let (parsed, blocked) = parse_search_results(provider, &body, limit);
+/tmp/issue-410-web-capture/rust/src/search.rs:448:        provider: provider.to_string(),
+/tmp/issue-410-web-capture/rust/src/search.rs:479:            <h2><a href="https://bing-result.example/1">Bing One</a></h2>
+/tmp/issue-410-web-capture/rust/src/search.rs:480:            <div class="b_caption"><p>Bing snippet one</p></div>
+/tmp/issue-410-web-capture/rust/src/search.rs:494:    fn rejects_unknown_provider_url() {
+/tmp/issue-410-web-capture/rust/src/search.rs:535:        assert_eq!(results[0].title, "Bing One");
+/tmp/issue-410-web-capture/rust/src/search.rs:537:        assert_eq!(results[0].snippet, "Bing snippet one");
+/tmp/issue-410-web-capture/rust/src/search.rs:559:            provider: "wikipedia".to_string(),
+/tmp/issue-410-web-capture/rust/src/search.rs:586:            provider: "wikipedia".to_string(),
+/tmp/issue-410-web-capture/rust/src/animation.rs:25:    #[default]
+/tmp/issue-410-web-capture/rust/src/animation.rs:60:    #[default]
+/tmp/issue-410-web-capture/rust/src/animation.rs:87:    fn default() -> Self {
+/tmp/issue-410-web-capture/rust/src/animation.rs:100:            capture_mode: CaptureMode::default(),
+/tmp/issue-410-web-capture/rust/src/animation.rs:101:            format: AnimationFormat::default(),
+/tmp/issue-410-web-capture/js/src/gdocs.js:2:// Google Docs capture module.
+/tmp/issue-410-web-capture/js/src/gdocs.js:14:import { createBrowser as defaultCreateBrowser } from './browser.js';
+/tmp/issue-410-web-capture/js/src/gdocs.js:16:  normalizeGoogleDocsExportMarkdown,
+/tmp/issue-410-web-capture/js/src/gdocs.js:17:  preprocessGoogleDocsExportHtml,
+/tmp/issue-410-web-capture/js/src/gdocs.js:19:import { localizeGoogleDocsModelImages } from './gdocs-images.js';
+/tmp/issue-410-web-capture/js/src/gdocs.js:23:  isGoogleDocsBrowserModelUnavailableError,
+/tmp/issue-410-web-capture/js/src/gdocs.js:24:  fetchGoogleDocByExportFormat as fetchGoogleDocByExportFormatImpl,
+/tmp/issue-410-web-capture/js/src/gdocs.js:25:  captureGoogleDocWithBrowserOrFallback as captureGoogleDocWithBrowserOrFallbackImpl,
+/tmp/issue-410-web-capture/js/src/gdocs.js:28:  resolveGoogleDocsModelWaitOptions,
+/tmp/issue-410-web-capture/js/src/gdocs.js:29:  waitForGoogleDocsModelQuiescence,
+/tmp/issue-410-web-capture/js/src/gdocs.js:33:  normalizeGoogleDocsExportMarkdown,
+/tmp/issue-410-web-capture/js/src/gdocs.js:34:  preprocessGoogleDocsExportHtml,
+/tmp/issue-410-web-capture/js/src/gdocs.js:35:  localizeGoogleDocsModelImages,
+/tmp/issue-410-web-capture/js/src/gdocs.js:36:  isGoogleDocsBrowserModelUnavailableError,
+/tmp/issue-410-web-capture/js/src/gdocs.js:47: * Supported Google Docs export formats.
+/tmp/issue-410-web-capture/js/src/gdocs.js:61: * Check if a URL is a Google Docs document URL.
+/tmp/issue-410-web-capture/js/src/gdocs.js:64: * @returns {boolean} True if the URL is a Google Docs document URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:66:export function isGoogleDocsUrl(url) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:74: * Extract the document ID from a Google Docs URL.
+/tmp/issue-410-web-capture/js/src/gdocs.js:76: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:77: * @returns {string|null} Document ID or null if not a valid Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:88: * Build a Google Docs export URL.
+/tmp/issue-410-web-capture/js/src/gdocs.js:90: * @param {string} documentId - Google Docs document ID
+/tmp/issue-410-web-capture/js/src/gdocs.js:100: * Build the Google Docs editor URL used for browser-model capture.
+/tmp/issue-410-web-capture/js/src/gdocs.js:102: * @param {string} documentId - Google Docs document ID
+/tmp/issue-410-web-capture/js/src/gdocs.js:110: * Build the Google Docs REST API URL.
+/tmp/issue-410-web-capture/js/src/gdocs.js:112: * @param {string} documentId - Google Docs document ID
+/tmp/issue-410-web-capture/js/src/gdocs.js:120: * Select the Google Docs capture backend for CLI --capture behavior.
+/tmp/issue-410-web-capture/js/src/gdocs.js:126:export function selectGoogleDocsCaptureMethod(capture = 'browser', apiToken) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:135:    `Unsupported Google Docs capture method "${capture}". Use "browser" or "api".`
+/tmp/issue-410-web-capture/js/src/gdocs.js:140: * Fetch a Google Docs document via the public export URL.
+/tmp/issue-410-web-capture/js/src/gdocs.js:145: * @param {string} url - Google Docs URL (edit URL or any URL containing the document ID)
+/tmp/issue-410-web-capture/js/src/gdocs.js:151:export async function fetchGoogleDoc(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:156:    throw new Error(`Not a valid Google Docs URL: ${url}`);
+/tmp/issue-410-web-capture/js/src/gdocs.js:193:      `Failed to fetch Google Doc (${response.status} ${statusText}): ${exportUrl}`
+/tmp/issue-410-web-capture/js/src/gdocs.js:218: * Fetch a Google Docs document using the Google Docs REST API.
+/tmp/issue-410-web-capture/js/src/gdocs.js:220: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:225:export async function fetchGoogleDocFromDocsApi(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:228:    throw new Error('Google Docs REST API capture requires --apiToken');
+/tmp/issue-410-web-capture/js/src/gdocs.js:233:    throw new Error(`Not a valid Google Docs URL: ${url}`);
+/tmp/issue-410-web-capture/js/src/gdocs.js:262:      `Failed to fetch Google Doc via Docs API (${response.status} ${statusText}): ${apiUrl}`
+/tmp/issue-410-web-capture/js/src/gdocs.js:289: * Fetch a Google Docs document and convert to Markdown.
+/tmp/issue-410-web-capture/js/src/gdocs.js:294: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:299:export async function fetchGoogleDocAsMarkdown(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:303:  const result = await fetchGoogleDoc(url, {
+/tmp/issue-410-web-capture/js/src/gdocs.js:309:  const preprocessed = preprocessGoogleDocsExportHtml(result.content);
+/tmp/issue-410-web-capture/js/src/gdocs.js:316:  const markdown = normalizeGoogleDocsExportMarkdown(
+/tmp/issue-410-web-capture/js/src/gdocs.js:333: * Fetch a Google Doc through the public export pipeline for a requested output
+/tmp/issue-410-web-capture/js/src/gdocs.js:336: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:340:export function fetchGoogleDocByExportFormat(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:341:  return fetchGoogleDocByExportFormatImpl(
+/tmp/issue-410-web-capture/js/src/gdocs.js:342:    { fetchGoogleDoc, fetchGoogleDocAsMarkdown, fetchGoogleDocAsArchive },
+/tmp/issue-410-web-capture/js/src/gdocs.js:349: * Capture a Google Doc through the browser model, falling back to public export
+/tmp/issue-410-web-capture/js/src/gdocs.js:352: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:356:export function captureGoogleDocWithBrowserOrFallback(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:357:  return captureGoogleDocWithBrowserOrFallbackImpl(
+/tmp/issue-410-web-capture/js/src/gdocs.js:359:      captureGoogleDocWithBrowser,
+/tmp/issue-410-web-capture/js/src/gdocs.js:360:      fetchGoogleDoc,
+/tmp/issue-410-web-capture/js/src/gdocs.js:361:      fetchGoogleDocAsMarkdown,
+/tmp/issue-410-web-capture/js/src/gdocs.js:362:      fetchGoogleDocAsArchive,
+/tmp/issue-410-web-capture/js/src/gdocs.js:370: * Capture a Google Doc from the editor page model (`DOCS_modelChunk`).
+/tmp/issue-410-web-capture/js/src/gdocs.js:372: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:383:export async function captureGoogleDocWithBrowser(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:387:    createBrowser = defaultCreateBrowser,
+/tmp/issue-410-web-capture/js/src/gdocs.js:390:  const modelWait = resolveGoogleDocsModelWaitOptions(options);
+/tmp/issue-410-web-capture/js/src/gdocs.js:393:    throw new Error(`Not a valid Google Docs URL: ${url}`);
+/tmp/issue-410-web-capture/js/src/gdocs.js:428:    const modelData = await waitForGoogleDocsModelQuiescence(page, {
+/tmp/issue-410-web-capture/js/src/gdocs.js:433:    const exportHtml = await fetchGoogleDocsExportHtmlFromPage(
+/tmp/issue-410-web-capture/js/src/gdocs.js:439:    const capture = parseGoogleDocsModelChunks(
+/tmp/issue-410-web-capture/js/src/gdocs.js:459:        'Google Docs editor page did not expose DOCS_modelChunk data'
+/tmp/issue-410-web-capture/js/src/gdocs.js:464:      markdown: renderGoogleDocsCapture(capture, 'markdown'),
+/tmp/issue-410-web-capture/js/src/gdocs.js:465:      html: renderGoogleDocsCapture(capture, 'html'),
+/tmp/issue-410-web-capture/js/src/gdocs.js:466:      text: renderGoogleDocsCapture(capture, 'txt'),
+/tmp/issue-410-web-capture/js/src/gdocs.js:549: * Extract a CID-to-image URL map from Google Docs editor HTML.
+/tmp/issue-410-web-capture/js/src/gdocs.js:569: * Parse captured Google Docs model chunks into blocks, tables, and text.
+/tmp/issue-410-web-capture/js/src/gdocs.js:575: * @param {string} [options.exportHtml] - Optional Google Docs export HTML used for list and quote semantics
+/tmp/issue-410-web-capture/js/src/gdocs.js:578:export function parseGoogleDocsModelChunks(
+/tmp/issue-410-web-capture/js/src/gdocs.js:677:      // Drop trailing empty rows that Google Docs sometimes emits after the
+/tmp/issue-410-web-capture/js/src/gdocs.js:766:        // Inside a Google Docs table, `\n` (0x0a) separates CELLS, not rows.
+/tmp/issue-410-web-capture/js/src/gdocs.js:829:    applyGoogleDocsExportSemanticHints(capture, options.exportHtml);
+/tmp/issue-410-web-capture/js/src/gdocs.js:963:async function fetchGoogleDocsExportHtmlFromPage(page, documentId, log) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:1000:function applyGoogleDocsExportSemanticHints(capture, exportHtml) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:1001:  const hints = extractGoogleDocsExportSemanticHints(exportHtml);
+/tmp/issue-410-web-capture/js/src/gdocs.js:1046:function extractGoogleDocsExportSemanticHints(exportHtml) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:1047:  const preprocessed = preprocessGoogleDocsExportHtml(exportHtml).html;
+/tmp/issue-410-web-capture/js/src/gdocs.js:1103: * Render a parsed Google Docs model capture.
+/tmp/issue-410-web-capture/js/src/gdocs.js:1109:export function renderGoogleDocsCapture(capture, format = 'markdown') {
+/tmp/issue-410-web-capture/js/src/gdocs.js:1121: * Render a Google Docs REST API document as Markdown, HTML, and text.
+/tmp/issue-410-web-capture/js/src/gdocs.js:1398:      default:
+/tmp/issue-410-web-capture/js/src/gdocs.js:1407: * Google Docs HTML exports embed images as base64 data URIs.
+/tmp/issue-410-web-capture/js/src/gdocs.js:1438: * Fetch a Google Docs document as a ZIP archive with images.
+/tmp/issue-410-web-capture/js/src/gdocs.js:1446: * @param {string} url - Google Docs URL
+/tmp/issue-410-web-capture/js/src/gdocs.js:1451:export async function fetchGoogleDocAsArchive(url, options = {}) {
+/tmp/issue-410-web-capture/js/src/gdocs.js:1455:  const result = await fetchGoogleDoc(url, { format: 'html', apiToken, log });
+/tmp/issue-410-web-capture/js/src/gdocs.js:1457:  const preprocessed = preprocessGoogleDocsExportHtml(result.content);
+/tmp/issue-410-web-capture/js/src/gdocs.js:1469:  const markdown = normalizeGoogleDocsExportMarkdown(
+/tmp/issue-410-web-capture/rust/src/localize_images.rs:61:    fn default() -> Self {

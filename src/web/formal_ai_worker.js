@@ -1511,10 +1511,9 @@ function tokenizeArithmetic(input) {
         j += 1;
       }
       const slice = input.slice(i, j);
-      const value = Number(slice);
-      if (Number.isNaN(value)) {
-        throw new Error("unparseable");
-      }
+      const hasDecimal = slice.includes(".");
+      const value = hasDecimal ? Number(slice) : BigInt(slice);
+      if (hasDecimal && Number.isNaN(value)) throw new Error("unparseable");
       tokens.push({ kind: "num", value });
       i = j;
     } else {
@@ -1539,6 +1538,8 @@ const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
 const ROLE_MATH_FUNCTION_NAME = "math_function_name";
+const ROLE_MEASUREMENT_UNIT = "measurement_unit";
+const ROLE_PHYSICAL_DIMENSION = "physical_dimension";
 
 // Issue #386: the spelled digit/operator → value normalization tables, derived
 // from the seed at runtime exactly as the Rust solver derives them
@@ -1902,6 +1903,74 @@ function normalizeArithmeticWords(expression) {
   return rewritePercentOf(mapped);
 }
 
+const EXACT_ARITHMETIC_EXPONENT_LIMIT = 10000n;
+
+function isArithmeticBigInt(value) {
+  return typeof value === "bigint";
+}
+
+function arithmeticToNumber(value) {
+  return isArithmeticBigInt(value) ? Number(value) : value;
+}
+
+function arithmeticIsZero(value) {
+  return value === 0 || value === 0n;
+}
+
+function arithmeticEnsureFinite(value) {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new Error("overflow");
+  }
+  return value;
+}
+
+function arithmeticNegate(value) {
+  return isArithmeticBigInt(value) ? -value : -value;
+}
+
+function arithmeticAdd(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left + right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) + arithmeticToNumber(right));
+}
+
+function arithmeticSub(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left - right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) - arithmeticToNumber(right));
+}
+
+function arithmeticMul(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left * right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) * arithmeticToNumber(right));
+}
+
+function arithmeticDiv(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (
+    isArithmeticBigInt(left) &&
+    isArithmeticBigInt(right) &&
+    left % right === 0n
+  ) {
+    return left / right;
+  }
+  return arithmeticEnsureFinite(arithmeticToNumber(left) / arithmeticToNumber(right));
+}
+
+function arithmeticRem(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left % right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) % arithmeticToNumber(right));
+}
+
+function arithmeticPow(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right) && right >= 0n) {
+    if (right > EXACT_ARITHMETIC_EXPONENT_LIMIT) throw new Error("overflow");
+    return left ** right;
+  }
+  return arithmeticEnsureFinite(
+    Math.pow(arithmeticToNumber(left), arithmeticToNumber(right)),
+  );
+}
+
 function evaluateArithmetic(expression) {
   const normalized = normalizeArithmeticWords(expression);
   const tokens = tokenizeArithmetic(normalized);
@@ -1928,8 +1997,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "^") {
       advance();
-      left = Math.pow(left, parseUnary());
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = arithmeticPow(left, parseUnary());
     }
     return left;
   }
@@ -1937,7 +2005,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "-") {
       advance();
-      return -parseUnary();
+      return arithmeticNegate(parseUnary());
     }
     if (tok && tok.kind === "+") {
       advance();
@@ -1956,15 +2024,12 @@ function evaluateArithmetic(expression) {
       advance();
       const right = parseUnary();
       if (op === "*") {
-        left = left * right;
-      } else if (right === 0) {
-        throw new Error("division by zero");
+        left = arithmeticMul(left, right);
       } else if (op === "/") {
-        left = left / right;
+        left = arithmeticDiv(left, right);
       } else {
-        left = left % right;
+        left = arithmeticRem(left, right);
       }
-      if (!Number.isFinite(left)) throw new Error("overflow");
     }
     return left;
   }
@@ -1976,8 +2041,7 @@ function evaluateArithmetic(expression) {
       const isPlus = tok.kind === "+";
       advance();
       const right = parseMultiplicative();
-      left = isPlus ? left + right : left - right;
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = isPlus ? arithmeticAdd(left, right) : arithmeticSub(left, right);
     }
     return left;
   }
@@ -1989,11 +2053,13 @@ function evaluateArithmetic(expression) {
 }
 
 function formatArithmeticResult(value) {
+  if (isArithmeticBigInt(value)) return value.toString();
   if (!Number.isFinite(value)) return "non-finite";
   if (Math.abs(value % 1) === 0 && Math.abs(value) < 1e15) {
     return value.toFixed(0);
   }
-  const rendered = value.toFixed(10);
+  const rendered = Math.abs(value) >= 1e21 ? String(value) : value.toFixed(10);
+  if (/[eE]/.test(rendered)) return rendered;
   const trimmed = rendered.replace(/0+$/, "").replace(/\.$/, "");
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
@@ -5508,8 +5574,16 @@ function translateRussianWordSequence(words) {
 }
 
 function translateCompositionalSurface(surface, source, target) {
-  if (source !== "ru" || target !== "en") return null;
   const normalized = normalizeComposableSurface(surface);
+  if (!normalized) return null;
+
+  const direct =
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, source, target, normalized) ||
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, source, target, normalized);
+  if (direct) return direct;
+
+  if (source !== "ru" || target !== "en") return null;
+
   const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
   if (phrase) return phrase;
 
@@ -5751,12 +5825,12 @@ async function translateSurface(surface, source, target) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return { surface: primary, gap: false };
   }
+  const compositional = translateCompositionalSurface(surface, source, target);
+  if (compositional) return { surface: compositional, gap: false };
   if (surface) {
     const live = await liveWiktionaryTranslate(surface, source, target);
     if (live) return { surface: live, gap: false };
   }
-  const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return { surface: compositional, gap: false };
   return { surface: null, gap: true };
 }
 
@@ -10836,6 +10910,225 @@ function tryWhoIsQuestion(prompt) {
   };
 }
 
+// Issue #513 (visible fix for #511): recognize a request to run a shell/terminal
+// command. The detection rules are mirrored in the Rust solver
+// (`src/solver_terminal.rs`, `try_terminal_command`) so both engines stay at
+// parity. A recognized command returns an `agent_suggestion` intent that names
+// the detected command, explains agent mode, and — when agent mode is off —
+// offers to switch it on and grant the `shell` capability.
+// Issue #513: the terminal-command trigger vocabulary, embedded inline and
+// byte-identical to data/seed/terminal-commands.lino (regenerated by
+// experiments/issue-513-sync-worker-terminal.mjs). This is the JS mirror of
+// TerminalCommandVocabulary in src/seed/terminal_commands.rs: the per-language
+// surface phrases / verbs / shell tokens live once in the seed data — never as
+// hardcoded per-language word lists in worker code.
+const TERMINAL_COMMANDS_LINO = [
+  "terminal_commands",
+  "  terminal_phrases",
+  "    language ru",
+  '      phrase "в терминале"',
+  '      phrase "в консоли"',
+  '      phrase "в командной строке"',
+  '      phrase "в шелле"',
+  "    language en",
+  '      phrase "in terminal"',
+  '      phrase "in the terminal"',
+  '      phrase "in a terminal"',
+  '      phrase "in console"',
+  '      phrase "in the console"',
+  '      phrase "in shell"',
+  '      phrase "in the shell"',
+  '      phrase "in a shell"',
+  '      phrase "terminal command"',
+  '      phrase "shell command"',
+  '      phrase "command line"',
+  "      phrase command-line",
+  "    language hi",
+  '      phrase "टर्मिनल में"',
+  '      phrase "टर्मिनल पर"',
+  '      phrase "कमांड लाइन"',
+  '      phrase "शेल में"',
+  "    language zh",
+  "      phrase 在终端",
+  "      phrase 终端中",
+  "      phrase 终端里",
+  "      phrase 命令行",
+  "      phrase 在命令行",
+  '      phrase "在 shell"',
+  "      phrase 在shell",
+  "  run_verbs",
+  "    language ru",
+  "      verb выполни",
+  "      verb выполнить",
+  "      verb запусти",
+  "      verb запустить",
+  "    language en",
+  "      verb run",
+  "      verb execute",
+  "    language hi",
+  "      verb चलाओ",
+  "      verb चलाएं",
+  "      verb चलाएँ",
+  "      verb चलाइए",
+  "      verb निष्पादित",
+  "  cjk_run_verbs",
+  "    verb 运行",
+  "    verb 执行",
+  "    verb 跑一下",
+  "    verb 跑下",
+  "  shell_tokens",
+  "    token ls",
+  "    token pwd",
+  "    token cd",
+  "    token cat",
+  "    token echo",
+  "    token mkdir",
+  "    token rmdir",
+  "    token rm",
+  "    token cp",
+  "    token mv",
+  "    token touch",
+  "    token grep",
+  "    token git",
+  "    token npm",
+  "    token npx",
+  "    token node",
+  "    token cargo",
+  "    token python",
+  "    token python3",
+  "    token pip",
+  "    token curl",
+  "    token wget",
+  "    token chmod",
+  "    token chown",
+  "    token df",
+  "    token du",
+  "    token ps",
+  "    token kill",
+  "    token head",
+  "    token tail",
+  "    token whoami",
+  "    token uname",
+  "    token export",
+  "    token which",
+  "    token sudo",
+  "    token ssh",
+  "    token tar",
+  "    token find",
+  "    token sed",
+  "    token awk",
+  "    token make",
+  "    token docker",
+  "    token kubectl",
+].join("\n");
+
+let cachedTerminalCommandVocabulary = null;
+// Parse the embedded terminal-command vocabulary into pooled trigger lists.
+// Mirrors terminal_command_vocabulary() in src/seed/terminal_commands.rs;
+// phrases/verbs are pooled across every language because detection is
+// language-agnostic.
+function terminalCommandVocabulary() {
+  if (cachedTerminalCommandVocabulary) return cachedTerminalCommandVocabulary;
+  const root = parseLinoTree(TERMINAL_COMMANDS_LINO);
+  const container =
+    root.children.find((child) => child.name === "terminal_commands") || root;
+  const vocab = {
+    terminalPhrases: [],
+    runVerbs: new Set(),
+    cjkRunVerbs: [],
+    shellTokens: new Set(),
+  };
+  const languageValues = (group, childName) => {
+    const out = [];
+    for (const lang of group.children) {
+      if (lang.name !== "language") continue;
+      for (const child of lang.children) {
+        if (child.name === childName) out.push(child.value);
+      }
+    }
+    return out;
+  };
+  const directValues = (group, childName) =>
+    group.children.filter((c) => c.name === childName).map((c) => c.value);
+  for (const group of container.children) {
+    if (group.name === "terminal_phrases") {
+      vocab.terminalPhrases = languageValues(group, "phrase");
+    } else if (group.name === "run_verbs") {
+      vocab.runVerbs = new Set(languageValues(group, "verb"));
+    } else if (group.name === "cjk_run_verbs") {
+      vocab.cjkRunVerbs = directValues(group, "verb");
+    } else if (group.name === "shell_tokens") {
+      vocab.shellTokens = new Set(directValues(group, "token"));
+    }
+  }
+  cachedTerminalCommandVocabulary = vocab;
+  return cachedTerminalCommandVocabulary;
+}
+
+function extractBacktickCommand(prompt) {
+  const first = prompt.indexOf("`");
+  if (first < 0) return null;
+  let start = first;
+  while (start < prompt.length && prompt[start] === "`") start += 1;
+  let end = start;
+  while (end < prompt.length && prompt[end] !== "`") end += 1;
+  if (end <= start) return null;
+  const command = prompt.slice(start, end).trim();
+  return command || null;
+}
+
+function leadingShellCommand(prompt) {
+  const trimmed = prompt.trim().replace(/^`+|`+$/g, "").trim();
+  const first = trimmed.split(/\s+/)[0] || "";
+  const normalized = (first.match(/^[A-Za-z0-9_-]+/) || [""])[0].toLowerCase();
+  return terminalCommandVocabulary().shellTokens.has(normalized) ? trimmed : null;
+}
+
+function detectTerminalCommand(prompt) {
+  const vocab = terminalCommandVocabulary();
+  const lower = prompt.toLowerCase();
+  const hasPhrase = vocab.terminalPhrases.some((p) => lower.includes(p));
+  const tokens = lower.split(/[^\p{L}\p{N}_]+/u).filter(Boolean);
+  const tokenSet = new Set(tokens);
+  const hasVerb =
+    [...vocab.runVerbs].some((v) => tokenSet.has(v)) ||
+    vocab.cjkRunVerbs.some((v) => lower.includes(v));
+  const backtick = extractBacktickCommand(prompt);
+  const leading = leadingShellCommand(prompt);
+  if (backtick && (hasVerb || hasPhrase)) return backtick;
+  if (hasPhrase && hasVerb) return backtick || leading;
+  if (leading) return leading;
+  return null;
+}
+
+// The natural-language prose lives in data/seed/multilingual-responses.lino
+// under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
+// mode on) intents, with a `{command}` placeholder. This mirror only looks the
+// template up via answerFor() and fills in the detected command, so no
+// per-language wording is hardcoded in the worker. Parity with the Rust solver
+// (src/solver_terminal.rs, terminal_body) is kept by both engines reading the
+// same seed intent.
+function terminalCommandBody(command, language, agentModeOn) {
+  const intent = agentModeOn ? "agent_suggestion_active" : "agent_suggestion";
+  return answerFor(intent, language).split("{command}").join(command);
+}
+
+function tryTerminalCommand(prompt, language, preferences) {
+  const command = detectTerminalCommand(prompt);
+  if (!command) return null;
+  const agentModeOn = Boolean(preferences && preferences.agentMode);
+  return {
+    intent: "agent_suggestion",
+    content: terminalCommandBody(command, language, agentModeOn),
+    confidence: 0.6,
+    evidence: [
+      `terminal:command:${command}`,
+      "terminal:agent_suggestion:shell",
+      "response:agent_suggestion",
+    ],
+  };
+}
+
 // Wikipedia REST summary endpoint per language. Browser-friendly: CORS is
 // enabled by Wikimedia for these summary endpoints, so the worker can fetch
 // without a proxy from GitHub Pages.
@@ -14725,9 +15018,8 @@ const WRITE_PROGRAM_TASKS = {
   },
   list_files: {
     label: "list files in the current directory",
-    // Verified output for the documented sample directory containing exactly
-    // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
-    // byte order, so the output is identical across languages (issue #312).
+    // Fallback output for the Rust-flavoured sample. Rendered answers resolve
+    // list-file samples from each language's `saveAs` name (issue #440).
     output: "Cargo.toml\nREADME.md\nmain.rs",
   },
   list_files_arg: {
@@ -17114,6 +17406,12 @@ const MEANINGS_LINO = [
   "      surface",
   "        text метра",
   "      surface",
+  "        text метру",
+  "      surface",
+  "        text метром",
+  "      surface",
+  "        text метре",
+  "      surface",
   "        text метров",
   "    lexeme hi",
   "      surface",
@@ -17344,6 +17642,16 @@ const MEANINGS_LINO = [
   "        text кг",
   "      surface",
   "        text килограмм",
+  "      surface",
+  "        text килограмма",
+  "      surface",
+  "        text килограмму",
+  "      surface",
+  "        text килограммом",
+  "      surface",
+  "        text килограмме",
+  "      surface",
+  "        text килограммов",
   "    lexeme hi",
   "      surface",
   "        text किलोग्राम",
@@ -17366,6 +17674,16 @@ const MEANINGS_LINO = [
   "    lexeme ru",
   "      surface",
   "        text грамм",
+  "      surface",
+  "        text грамма",
+  "      surface",
+  "        text грамму",
+  "      surface",
+  "        text граммом",
+  "      surface",
+  "        text грамме",
+  "      surface",
+  "        text граммов",
   "    lexeme hi",
   "      surface",
   "        text ग्राम",
@@ -24694,6 +25012,8 @@ const MEANINGS_LINO = [
   "      surface",
   "        text помидор",
   "      surface",
+  "        text помидоры",
+  "      surface",
   "        text томат",
   "    lexeme hi",
   "      surface",
@@ -30343,6 +30663,93 @@ function findMeaning(slug) {
   return meaningLexicon().find((meaning) => meaning.slug === slug) || null;
 }
 
+function wordInLanguage(meaning, language) {
+  const lexeme = (meaning.lexemes || []).find((candidate) => candidate.language === language);
+  return lexeme && lexeme.words.length > 0 ? lexeme.words[0] : null;
+}
+
+function dimensionLabelForUnit(unit) {
+  for (const slug of unit.definedBy || []) {
+    const dimension = findMeaning(slug);
+    if (!dimension || !dimension.roles.includes(ROLE_PHYSICAL_DIMENSION)) continue;
+    return wordInLanguage(dimension, "en") || dimension.words[0] || null;
+  }
+  return null;
+}
+
+function isAlphabeticCharacter(ch) {
+  return !!ch && /\p{Alphabetic}/u.test(ch);
+}
+
+// Mirrors contains_unit_word in src/solver_handler_units.rs: ASCII and CJK unit
+// surfaces need alphabetic boundaries so "gram" inside "program" and "克" inside
+// an unrelated CJK compound do not count, while inflected alphabetic scripts can
+// still match suffix forms such as Russian "килограмм" in "килограмме".
+function containsUnitWord(normalized, unit) {
+  if (!unit) return false;
+  const text = String(normalized || "");
+  if (!/[^\x00-\x7F]/.test(unit) || containsCjk(unit)) {
+    let searchFrom = 0;
+    while (searchFrom <= text.length) {
+      const start = text.indexOf(unit, searchFrom);
+      if (start < 0) return false;
+      const end = start + unit.length;
+      const before = Array.from(text.slice(0, start)).pop() || "";
+      const after = Array.from(text.slice(end))[0] || "";
+      if (!isAlphabeticCharacter(before) && !isAlphabeticCharacter(after)) {
+        return true;
+      }
+      searchFrom = end;
+    }
+    return false;
+  }
+  return text.includes(unit);
+}
+
+function detectIncompatibleUnitPair(normalized) {
+  const found = [];
+  for (const unit of meaningsWithRole(ROLE_MEASUREMENT_UNIT)) {
+    const dimension = dimensionLabelForUnit(unit);
+    if (!dimension || found.some((entry) => entry.dimension === dimension)) {
+      continue;
+    }
+    const matched = unit.words.find((word) => containsUnitWord(normalized, word));
+    if (matched) {
+      found.push({ unit: matched, dimension });
+    }
+  }
+  if (found.length < 2) return null;
+  return [found[0], found[1]];
+}
+
+function tryIncompatibleUnits(prompt, normalized) {
+  const pair = detectIncompatibleUnitPair(normalized);
+  if (!pair) return null;
+  const [a, b] = pair;
+  const content =
+    `${a.unit} measures ${a.dimension}; ${b.unit} measures ${b.dimension}. ` +
+    "These are different physical dimensions and cannot be converted into each other. " +
+    "The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+  return {
+    intent: "unit_incompatibility",
+    content,
+    confidence: 1.0,
+    evidence: [
+      `unit_incompatibility:${a.unit}:${a.dimension}:vs:${b.unit}:${b.dimension}`,
+      "response:unit_incompatibility",
+    ],
+    trace: [
+      `unit_incompatibility:${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+    ],
+    steps: [
+      {
+        step: "unit_incompatibility",
+        detail: `${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+      },
+    ],
+  };
+}
+
 // Distinct surface words (across all languages) carried by the meaning `slug`,
 // or an empty array when no such meaning exists. The coding catalog reads each
 // language's and task's alias surfaces from the `program_language_<slug>` /
@@ -31153,13 +31560,17 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(no output)",
     sandboxFailed: (message) => `Execution status: failed in sandbox - ${message}.`,
     notRun: (language, reason) =>
-      `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
+      `Execution status: not run - ${reason}.`,
+    copyInstruction: (language) =>
+      `Copy the snippet into a ${language} environment to verify.`,
     noFilesystem: (language) =>
       `the browser sandbox has no filesystem access for this ${language} program`,
     noToolchain: (language) => `the browser sandbox cannot invoke a ${language} toolchain`,
-    sampleDirectory:
-      "The output depends on the directory; for a sample directory holding " +
-      "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    sampleDirectory: (files) =>
+      `The sample output below is for a clean directory containing exactly ${markdownFileList(
+        files,
+        "and",
+      )} and no extra files:`,
     expectedOutput: "Expected output after verification:",
   },
   ru: {
@@ -31173,14 +31584,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(нет вывода)",
     sandboxFailed: (message) => `Статус выполнения: сбой в песочнице - ${message}.`,
     notRun: (language, reason) =>
-      `Статус выполнения: не запущено - ${reason}. Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
+      `Статус выполнения: не запущено - ${reason}.`,
+    copyInstruction: (language) =>
+      `Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
     noFilesystem: (language) =>
       `у браузерной песочницы нет доступа к файловой системе для этой программы на ${language}`,
     noToolchain: (language) =>
       `браузерная песочница не может вызвать инструментарий ${language}`,
-    sampleDirectory:
-      "Вывод зависит от каталога; для образца каталога, содержащего ровно " +
-      "`Cargo.toml`, `README.md` и `main.rs`, он такой:",
+    sampleDirectory: (files) =>
+      `Ниже показан вывод для чистого каталога, содержащего ровно ${markdownFileList(
+        files,
+        "и",
+      )}, и никаких других файлов:`,
     expectedOutput: "Ожидаемый вывод после проверки:",
   },
   hi: {
@@ -31194,14 +31609,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(कोई आउटपुट नहीं)",
     sandboxFailed: (message) => `निष्पादन स्थिति: सैंडबॉक्स में विफल - ${message}.`,
     notRun: (language, reason) =>
-      `निष्पादन स्थिति: नहीं चला - ${reason}. सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
+      `निष्पादन स्थिति: नहीं चला - ${reason}.`,
+    copyInstruction: (language) =>
+      `सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
     noFilesystem: (language) =>
       `इस ${language} प्रोग्राम के लिए ब्राउज़र सैंडबॉक्स में फ़ाइल सिस्टम तक पहुँच नहीं है`,
     noToolchain: (language) =>
       `ब्राउज़र सैंडबॉक्स ${language} टूलचेन को आमंत्रित नहीं कर सकता`,
-    sampleDirectory:
-      "आउटपुट निर्देशिका पर निर्भर करता है; ठीक `Cargo.toml`, `README.md` और " +
-      "`main.rs` रखने वाली एक नमूना निर्देशिका के लिए यह है:",
+    sampleDirectory: (files) =>
+      `नीचे दिया गया नमूना आउटपुट ऐसी साफ डायरेक्टरी के लिए है जिसमें ठीक ${markdownFileList(
+        files,
+        "और",
+      )} हों और कोई अतिरिक्त फाइल न हो:`,
     expectedOutput: "सत्यापन के बाद अपेक्षित आउटपुट:",
   },
   zh: {
@@ -31214,17 +31633,49 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "（无输出）",
     sandboxFailed: (message) => `执行状态：沙箱中失败 - ${message}。`,
     notRun: (language, reason) =>
-      `执行状态：未运行 - ${reason}。将代码片段复制到 ${language} 环境中以验证。`,
+      `执行状态：未运行 - ${reason}。`,
+    copyInstruction: (language) => `将代码片段复制到 ${language} 环境中以验证。`,
     noFilesystem: (language) => `浏览器沙箱无法为此 ${language} 程序访问文件系统`,
     noToolchain: (language) => `浏览器沙箱无法调用 ${language} 工具链`,
-    sampleDirectory:
-      "输出取决于目录；对于恰好包含 `Cargo.toml`、`README.md` 和 `main.rs` 的示例目录，它是：",
+    sampleDirectory: (files) =>
+      `下面的示例输出适用于一个只包含 ${markdownFileList(files, "和")} 且没有其他文件的干净目录：`,
     expectedOutput: "验证后的预期输出：",
   },
 };
 
 function writeProgramStrings(language) {
   return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;
+}
+
+function markdownFileList(files, conjunction) {
+  const quoted = files.map((file) => `\`${file}\``);
+  if (quoted.length <= 1) return quoted.join("");
+  return `${quoted.slice(0, -1).join(", ")} ${conjunction} ${quoted[quoted.length - 1]}`;
+}
+
+function listFilesTaskDirection(task) {
+  switch (task) {
+    case "list_files":
+    case "list_files_arg":
+      return "ascending";
+    case "list_files_reverse_sort":
+    case "list_files_arg_reverse_sort":
+      return "descending";
+    default:
+      return "";
+  }
+}
+
+function listFilesSampleFiles(languageInfo) {
+  return ["README.md", "data.txt", languageInfo.saveAs].sort();
+}
+
+function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
+  const direction = listFilesTaskDirection(task);
+  if (!direction) return taskInfo.output;
+  const files = listFilesSampleFiles(languageInfo);
+  if (direction === "descending") files.reverse();
+  return files.join("\n");
 }
 
 function writeProgramExecutionLines(language, task, code, output, strings) {
@@ -31253,14 +31704,9 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   }
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
-  const lines = [i18n.notRun(language, reason)];
-  if (
-    task === "list_files" ||
-    task === "list_files_arg" ||
-    task === "list_files_reverse_sort" ||
-    task === "list_files_arg_reverse_sort"
-  ) {
-    lines.push(i18n.sampleDirectory);
+  const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
+  if (listFilesTaskDirection(task)) {
+    lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));
   } else {
     lines.push(i18n.expectedOutput);
   }
@@ -32793,6 +33239,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS[task];
+  const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
@@ -32805,7 +33252,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push("```");
   lines.push("");
   lines.push(
-    ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
+    ...writeProgramExecutionLines(language, task, template, expectedOutput, i18n),
   );
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
@@ -36722,7 +37169,7 @@ function attachUserContext(answer, userContext) {
       ...(Array.isArray(answer.evidence) ? answer.evidence : []),
       ...evidence,
     ],
-    steps,
+    steps: withThinkingLevels(steps),
   });
 }
 
@@ -37262,6 +37709,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
     },
+    { name: "tryIncompatibleUnits", run: () => tryIncompatibleUnits(prompt, normalized) },
     // Issue #135/#386: a Playwright-script request is more specific than the
     // generalized write_program recognizer. Since #386 taught
     // writeProgramParameters to recognize a program_kind ("скрипт"/"script")
@@ -37557,6 +38005,16 @@ async function solve(prompt, history, prefs, userContext = {}) {
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
 
+  // Issue #513: recognize terminal-command requests (visible fix for #511)
+  // before the unknown fallback, so a shell request returns an agent_suggestion
+  // intent in both engines.
+  const terminal = tryTerminalCommand(prompt, language, preferences);
+  if (terminal) {
+    events.push(`handler:${terminal.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
+    return finalize(events, steps, toolCalls, terminal, formalizationContext);
+  }
+
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
@@ -37666,6 +38124,44 @@ function deformalizeProjection(formalizationContext, answer) {
   };
 }
 
+// Issue #488: classify each reasoning step into a granularity tier so the
+// thinking preview can show only the high-level universal-algorithm phases at
+// the default ("standard") granularity and fold the mechanical sub-steps
+// (the symbolic formalization tuple, tool probes, calculator reductions, memory
+// scans, rule bookkeeping) into the opt-in "detailed" view. This mirrors the
+// Rust solver's `ThinkingStep::level` classification (see src/engine.rs and
+// src/event_log.rs) so the browser and native engines curate the trace
+// identically — the thinking is fully applied to the logic, not just the UI.
+const HIGH_LEVEL_THINKING_STEPS = new Set([
+  "impulse",
+  "detect_language",
+  "resolve_response_language",
+  "dispatch_handler",
+  "match_rule",
+  "clarify_formalization",
+  "program_plan",
+  "compute",
+  "deformalize",
+  "user_context",
+  "fallback",
+]);
+
+function thinkingStepLevel(step) {
+  const raw = String(step || "");
+  // Nested agent sub-reasoning always folds under its composite agent task.
+  if (/^agent_\d+_/i.test(raw)) return "detailed";
+  return HIGH_LEVEL_THINKING_STEPS.has(raw) ? "high" : "detailed";
+}
+
+function withThinkingLevels(steps) {
+  if (!Array.isArray(steps)) return [];
+  return steps.map((step) =>
+    step && typeof step === "object" && !step.level
+      ? Object.assign({}, step, { level: thinkingStepLevel(step.step) })
+      : step,
+  );
+}
+
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const interpretations = collectInterpretations(formalizationContext, answer);
   answer = applyVisibleInterpretations(answer, interpretations);
@@ -37673,10 +38169,16 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const projection = deformalizeProjection(formalizationContext, answer);
   events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
   steps.push({
     step: "deformalize",
     detail: projection.summary,
     projection,
+    answer: answerFirstLine,
   });
   const trace = events.map((event) => `trace:${event}`);
   const result = {
@@ -37684,7 +38186,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     content: answer.content,
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
-    steps,
+    steps: withThinkingLevels(steps),
     toolCalls,
   };
   if (answer.iframeUrl) {

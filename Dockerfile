@@ -1,10 +1,12 @@
-FROM rust:1.82-slim AS builder
+FROM rust:1.96-slim AS builder
 
 WORKDIR /app
 COPY . .
 RUN cargo build --release --locked
 
 FROM konard/box-dind:2.1.1
+
+LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
 
 ENV HOME=/home/box \
     FORMAL_AI_IMAGE_VARIANT=dind \
@@ -14,9 +16,17 @@ ENV HOME=/home/box \
     BUN_INSTALL=/home/box/.bun
 ENV PATH="${BUN_INSTALL}/bin:${PATH}"
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends nodejs && \
+    rm -rf /var/lib/apt/lists/* && \
+    node --version
+
 USER box
 WORKDIR /home/box
-RUN bun install -g start-command && "$" --version
+RUN bun install -g start-command @link-assistant/agent agent-commander && \
+    "$" --version && \
+    agent --version && \
+    start-agent --help >/dev/null
 
 USER root
 COPY --from=builder /app/target/release/formal-ai /usr/local/bin/formal-ai

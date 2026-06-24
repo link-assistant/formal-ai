@@ -1,0 +1,12 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449075566)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.82s
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 1 test
+test docs_requirements::issue_438_prebuilt_telegram_image_documents_are_present_and_traceable ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 922 filtered out; finished in 0.01s
+

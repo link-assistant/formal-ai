@@ -1,0 +1,12 @@
+# Refreshed 2026-06-15
+web-search #web-search #search-engine #google #duckduckgo #bing
+A multi-provider web search aggregator with reranking support
+version: 0.3.1
+license: Unlicense
+rust-version: 1.96
+documentation: https://docs.rs/web-search/0.3.1
+repository: https://github.com/link-assistant/web-search
+crates.io: https://crates.io/crates/web-search/0.3.1
+features:
+ +default = [server]
+  server  = []

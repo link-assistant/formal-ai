@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="formal-ai-version" content="__FORMAL_AI_VERSION__" />
+    <meta
+      name="description"
+      content="Install the formal-ai VS Code extension. Until it is on the Marketplace the only install method is manual — a one-line curl|sh installer or a downloaded .vsix — plus one-click install from the desktop app."
+    />
+    <!--
+      The VS Code install page (issue #554) is a self-contained chooser rendered
+      by the shared site-chrome.js: no cross-origin requests, so the same strict
+      same-origin CSP as / and /docs/ applies. The copy-to-clipboard buttons use
+      the in-bundle navigator.clipboard API (no inline scripts), so no CSP
+      relaxation is needed.
+    -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self';"
+    />
+    <title>formal-ai for VS Code</title>
+    <link rel="icon" href="data:," />
+    <!-- Cache-busted with the deploy SHA exactly like / and /app/ (issue #479). -->
+    <link rel="stylesheet" href="../landing.css?v=__FORMAL_AI_ASSET_VERSION__" />
+  </head>
+  <body>
+    <main id="vscode-app" class="page-shell" data-testid="vscode-app">
+      <noscript>
+        <section class="hero">
+          <h1>formal-ai for VS Code</h1>
+          <p class="summary">
+            The extension is not on the Marketplace yet, so it installs manually.
+          </p>
+          <ul>
+            <li>
+              One-line install (macOS/Linux):
+              <code
+                >curl -fsSL
+                https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh
+                | sh -s -- vscode</code
+              >
+            </li>
+            <li>
+              <a
+                href="https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh"
+                >Download install.sh</a
+              >
+            </li>
+            <li>
+              <a href="https://github.com/link-assistant/formal-ai/releases/latest"
+                >Download the .vsix from the latest release</a
+              >, then run
+              <code>code --install-extension formal-ai-vscode-&lt;version&gt;.vsix</code>.
+            </li>
+            <li><a href="../download/">All downloads</a></li>
+          </ul>
+        </section>
+      </noscript>
+    </main>
+
+    <!--
+      The shared site-chrome.js renders the same top bar (brand + theme/locale
+      switchers) the landing and download pages use, reusing the visitor's
+      stored theme/locale via ../preferences.js. vscode.js supplies the config
+      (hero + install sections + cross-links).
+    -->
+    <script src="../preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="../site-chrome.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="vscode.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+  </body>
+</html>
