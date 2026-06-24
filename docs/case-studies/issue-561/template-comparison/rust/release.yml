@@ -31,11 +31,6 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  # Cancel superseded runs on PR branches to save CI minutes, but never cancel a
-  # run on main: that branch drives the release pipeline (crates.io publish, tag
-  # creation, desktop builds, Pages deploy), and cancelling it mid-flight can
-  # leave a release half-published. desktop-release.yml uses cancel-in-progress:
-  # false for the same reason (issue #479).
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
@@ -44,8 +39,6 @@ env:
   # Support both CARGO_REGISTRY_TOKEN (cargo's native env var) and CARGO_TOKEN (for backwards compatibility)
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
-  # Default prepared Docker image published by releases for single-line bot startup.
-  GHCR_IMAGE: ghcr.io/${{ github.repository }}
   # Optional: set repository variable DOCKERHUB_IMAGE to namespace/image to publish Docker Hub releases.
   DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE }}
 
@@ -71,7 +64,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Detect changes
         id: changes
@@ -96,7 +89,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Check for changelog fragments
         env:
@@ -119,7 +112,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Check for manual version changes
         env:
@@ -128,6 +121,37 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
 
+  # === CARGO.LOCK GUARD ===
+  # Binary crates must commit Cargo.lock so CI and release jobs resolve the same
+  # dependency graph every run. This also prevents cache keys based on
+  # hashFiles('**/Cargo.lock') from silently degrading to the empty hash.
+  cargo-lock:
+    name: Cargo.lock Guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [detect-changes]
+    if: |
+      always() && !cancelled() && (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.docs-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true' ||
+        needs.detect-changes.outputs.any-code-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: cargo install rust-script
+
+      - name: Check committed Cargo.lock for binary crates
+        run: rust-script scripts/check-cargo-lock.rs
+
   # === LINT AND FORMAT CHECK ===
   # Lint runs independently of changelog check - it's a fast check that should always run
   # See: https://github.com/link-assistant/hive-mind/pull/1024 for why this dependency was removed
@@ -135,37 +159,31 @@ jobs:
     name: Lint and Format Check
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [detect-changes]
+    needs: [detect-changes, cargo-lock]
     # Note: always() is required because detect-changes is skipped on workflow_dispatch,
     # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
     # See: https://github.com/actions/runner/issues/491
     if: |
       always() && !cancelled() && (
-        github.event_name == 'push' ||
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.docs-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.cargo-lock.result == 'success' && (
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
+          needs.detect-changes.outputs.rs-changed == 'true' ||
+          needs.detect-changes.outputs.toml-changed == 'true' ||
+          needs.detect-changes.outputs.docs-changed == 'true' ||
+          needs.detect-changes.outputs.workflow-changed == 'true'
+        )
       )
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -184,106 +202,34 @@ jobs:
       - name: Run Clippy
         run: cargo clippy --all-targets --all-features
 
-      - name: Check semantic grounding
-        run: cargo test --test unit semantic_grounding -- --nocapture
-
       - name: Check file size limit
         run: rust-script scripts/check-file-size.rs
 
-      - name: Install web bundle dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build web vendor bundle
-        run: bun run build:web
-
-      - name: Check web bundles are current
-        run: git diff --exit-code -- src/web/vendor.bundle.js src/web/ocr.bundle.js src/web/app.js
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
-
-      - name: Install web test dependencies
-        run: npm ci --prefix tests/e2e
-
-      - name: Check i18n catalog coverage
-        run: npm run --prefix tests/e2e check:i18n
-
-      - name: Check language change parity
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: npm run --prefix tests/e2e check:language-parity
-
-      - name: Check language test coverage
-        env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: npm run --prefix tests/e2e check:language-test-coverage
-
-      - name: Check multilingual intent coverage
-        run: npm run --prefix tests/e2e check:intent-coverage
-
-      - name: Check web app for hook TDZ ordering bugs
-        run: npm run --prefix tests/e2e check:web-tdz
-
-      # Issue #511/#514: fail the build if src/web/app.js renders hardcoded
-      # user-facing prose instead of routing it through the i18n catalog (t()).
-      # This stops the per-tool permission / Services regression class from
-      # silently re-appearing.
-      - name: Check web app for hardcoded user-facing strings
-        run: npm run --prefix tests/e2e check:web-hardcoded-ui
-
-      # The terminal-command trigger vocabulary lives in
-      # data/seed/terminal-commands.lino; the JS worker embeds a byte-identical
-      # inline mirror. This fails if the two drift, so the worker can never
-      # silently re-hardcode trigger phrases that have moved into seed data.
-      - name: Check terminal vocabulary worker mirror is in sync with seed
-        run: node experiments/issue-513-sync-worker-terminal.mjs --check
-
-      # The VS Code extension host libraries (config/bridge/webview-html/
-      # chat-view/server-process) and the manifest are pure JS exercised by
-      # node's built-in test runner plus a static smoke check. They read only
-      # committed source (never the git-ignored dist-web/vendor mirrors), so no
-      # `npm ci` or prepare-resources step is required here.
-      - name: Run VS Code extension node tests
-        run: npm run vscode:test
-
   # === TEST ===
-  # Test runs independently of the changelog check and gates on the change
-  # detector so it never burns runner time on non-code changes (issue #442).
-  #
-  # Previously this job ran whenever `changelog` was skipped. But `changelog`
-  # is skipped precisely when there are NO code changes (docs-only / .gitkeep /
-  # changelog-fragment-only commits), so `needs.changelog.result == 'skipped'`
-  # turned "no code changed" into "run the full test suite" — the exact
-  # opposite of what we want. Gate on the detect-changes outputs instead, the
-  # same way `lint` and `coverage` already do.
+  # Test runs independently of changelog check and only for code-affecting changes
   test:
     name: Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
-    needs: [detect-changes]
-    # Note: always() is required because detect-changes is skipped on
-    # workflow_dispatch; without it the skipped dependency would cascade and
-    # skip this job despite the workflow_dispatch condition below.
+    needs: [detect-changes, cargo-lock]
+    # Note: always() is required because detect-changes is skipped on workflow_dispatch,
+    # and without always(), this job would also be skipped even though its condition includes workflow_dispatch.
     # See: https://github.com/actions/runner/issues/491
     if: |
       always() && !cancelled() && (
-        github.event_name == 'push' ||
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true' ||
-        needs.detect-changes.outputs.workflow-changed == 'true'
+        needs.cargo-lock.result == 'success' && (
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
+          needs.detect-changes.outputs.any-code-changed == 'true' ||
+          needs.detect-changes.outputs.rs-changed == 'true' ||
+          needs.detect-changes.outputs.toml-changed == 'true' ||
+          needs.detect-changes.outputs.workflow-changed == 'true'
+        )
       )
     strategy:
       fail-fast: false
       matrix:
-        # Windows and macOS execution is dropped for now to speed up iteration;
-        # the tests themselves are kept and still run on Linux.
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v6
 
@@ -301,9 +247,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cargo-
 
-      - name: Check LiNo data integrity
-        run: cargo test --test unit data_files -- --nocapture
-
       - name: Run tests
         run: cargo test --all-features --verbose
 
@@ -316,13 +259,15 @@ jobs:
     name: Code Coverage
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [detect-changes]
+    needs: [detect-changes, cargo-lock]
     if: |
       always() && !cancelled() && (
-        github.event_name == 'push' ||
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.rs-changed == 'true' ||
-        needs.detect-changes.outputs.toml-changed == 'true'
+        needs.cargo-lock.result == 'success' && (
+          github.event_name == 'push' ||
+          github.event_name == 'workflow_dispatch' ||
+          needs.detect-changes.outputs.rs-changed == 'true' ||
+          needs.detect-changes.outputs.toml-changed == 'true'
+        )
       )
     steps:
       - uses: actions/checkout@v6
@@ -370,7 +315,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Cache cargo registry
         uses: actions/cache@v5
@@ -390,7 +335,7 @@ jobs:
         run: cargo package --list --allow-dirty
 
       - name: Check crate package size
-        run: rust-script scripts/check-crate-package-size.rs
+        run: rust-script scripts/check-crate-size.rs
 
   # === AUTO RELEASE ===
   # Automatic release on push to main using changelog fragments
@@ -406,15 +351,11 @@ jobs:
       needs.build.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    outputs:
-      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
-      pages_version: ${{ steps.release_pages_ref.outputs.version }}
     env:
       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     permissions:
       contents: write
-      packages: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -425,7 +366,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Configure git
         run: rust-script scripts/git-config.rs
@@ -457,6 +398,10 @@ jobs:
         if: steps.check.outputs.should_release == 'true'
         run: cargo build --release
 
+      - name: Check crate package size
+        if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
+        run: rust-script scripts/check-crate-size.rs
+
       - name: Publish to Crates.io
         if: steps.check.outputs.should_release == 'true' && steps.check.outputs.crate_published != 'true'
         id: publish-crate
@@ -473,54 +418,13 @@ jobs:
           )
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
 
-      - name: Log in to GitHub Container Registry
+      - name: Smoke-test published crate
         if: |
           steps.check.outputs.should_release == 'true' && (
             steps.check.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        if: |
-          steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
-            steps.publish-crate.outputs.publish_result == 'success'
-          )
-        uses: docker/setup-buildx-action@v4
-
-      - name: Extract GHCR Docker metadata
-        if: |
-          steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
-            steps.publish-crate.outputs.publish_result == 'success'
-          )
-        id: ghcr-meta
-        uses: docker/metadata-action@v6
-        with:
-          images: ${{ env.GHCR_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.current_version.outputs.version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
-
-      - name: Publish Docker image to GHCR
-        if: |
-          steps.check.outputs.should_release == 'true' && (
-            steps.check.outputs.crate_published == 'true' ||
-            steps.publish-crate.outputs.publish_result == 'success'
-          )
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.ghcr-meta.outputs.tags }}
-          labels: ${{ steps.ghcr-meta.outputs.labels }}
+        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.current_version.outputs.version }}"
 
       - name: Configure Docker Hub publishing
         if: |
@@ -561,6 +465,14 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
+      # Resilient buildx boot: pre-pull the pinned BuildKit image with retries
+      # and a pull-through registry-mirror fallback so a transient Docker Hub
+      # outage at boot does not take the publish job down. See issue #69 and
+      # docs/case-studies/issue-69/README.md.
+      - name: Set up Docker Buildx
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: ./.github/actions/setup-buildx-resilient
+
       - name: Extract Docker metadata
         if: steps.dockerhub.outputs.enabled == 'true'
         id: docker-meta
@@ -590,7 +502,6 @@ jobs:
           )
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
         run: |
           # Use new_version from version-and-commit when available (tag-checked), else fall back to Cargo.toml version
@@ -603,25 +514,10 @@ jobs:
             --release-version "$RELEASE_VERSION"
             --repository "${{ github.repository }}"
           )
-          release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
             release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
           fi
           rust-script scripts/create-github-release.rs "${release_args[@]}"
-
-      - name: Resolve Pages deploy ref
-        id: release_pages_ref
-        if: always()
-        run: |
-          sha="$(git rev-parse HEAD)"
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
-          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
 
   # === MANUAL INSTANT RELEASE ===
   # Manual release via workflow_dispatch - only after CI passes
@@ -637,15 +533,11 @@ jobs:
       needs.build.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    outputs:
-      pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
-      pages_version: ${{ steps.release_pages_ref.outputs.version }}
     env:
       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
     permissions:
       contents: write
-      packages: write
     steps:
       - uses: actions/checkout@v6
         with:
@@ -656,7 +548,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Configure git
         run: rust-script scripts/git-config.rs
@@ -675,6 +567,10 @@ jobs:
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         run: cargo build --release
 
+      - name: Check crate package size
+        if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
+        run: rust-script scripts/check-crate-size.rs
+
       - name: Publish to Crates.io
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         id: publish-crate
@@ -690,50 +586,12 @@ jobs:
           steps.publish-crate.outputs.publish_result == 'success'
         run: rust-script scripts/wait-for-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
 
-      - name: Log in to GitHub Container Registry
+      - name: Smoke-test published crate
         if: |
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        uses: docker/login-action@v4
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        if: |
-          (steps.version.outputs.version_committed == 'true' ||
-            steps.version.outputs.already_released == 'true') &&
-          steps.publish-crate.outputs.publish_result == 'success'
-        uses: docker/setup-buildx-action@v4
-
-      - name: Extract GHCR Docker metadata
-        if: |
-          (steps.version.outputs.version_committed == 'true' ||
-            steps.version.outputs.already_released == 'true') &&
-          steps.publish-crate.outputs.publish_result == 'success'
-        id: ghcr-meta
-        uses: docker/metadata-action@v6
-        with:
-          images: ${{ env.GHCR_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.version.outputs.new_version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
-
-      - name: Publish Docker image to GHCR
-        if: |
-          (steps.version.outputs.version_committed == 'true' ||
-            steps.version.outputs.already_released == 'true') &&
-          steps.publish-crate.outputs.publish_result == 'success'
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.ghcr-meta.outputs.tags }}
-          labels: ${{ steps.ghcr-meta.outputs.labels }}
+        run: rust-script scripts/smoke-test-published-crate.rs --release-version "${{ steps.version.outputs.new_version }}"
 
       - name: Configure Docker Hub publishing
         if: |
@@ -773,6 +631,14 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
 
+      # Resilient buildx boot: pre-pull the pinned BuildKit image with retries
+      # and a pull-through registry-mirror fallback so a transient Docker Hub
+      # outage at boot does not take the publish job down. See issue #69 and
+      # docs/case-studies/issue-69/README.md.
+      - name: Set up Docker Buildx
+        if: steps.dockerhub.outputs.enabled == 'true'
+        uses: ./.github/actions/setup-buildx-resilient
+
       - name: Extract Docker metadata
         if: steps.dockerhub.outputs.enabled == 'true'
         id: docker-meta
@@ -801,32 +667,16 @@ jobs:
           steps.publish-crate.outputs.publish_result == 'success'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHCR_URL: https://github.com/${{ github.repository }}/pkgs/container/formal-ai
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
         run: |
           release_args=(
             --release-version "${{ steps.version.outputs.new_version }}"
             --repository "${{ github.repository }}"
           )
-          release_args+=(--ghcr-url "$GHCR_URL")
           if [ -n "$DOCKER_HUB_URL" ]; then
             release_args+=(--docker-hub-url "$DOCKER_HUB_URL")
           fi
           rust-script scripts/create-github-release.rs "${release_args[@]}"
-
-      - name: Resolve Pages deploy ref
-        id: release_pages_ref
-        if: always()
-        run: |
-          sha="$(git rev-parse HEAD)"
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
-          echo "sha=${sha}" >> "$GITHUB_OUTPUT"
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Pages deploy ref: ${sha} (formal-ai ${version})"
 
   # === MANUAL CHANGELOG PR ===
   changelog-pr:
@@ -846,7 +696,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
+        run: cargo install rust-script
 
       - name: Create changelog fragment
         env:
@@ -877,99 +727,28 @@ jobs:
             2. Merge this PR to main
             3. The automated release workflow will publish to crates.io and create a GitHub release
 
-  # === E2E TESTS (LOCAL) ===
-  # Serve src/web with a local HTTP server and run Playwright tests against it.
-  # Runs on every PR so regressions are caught before merge.
-  test-e2e-local:
-    name: E2E Tests (local demo)
+  # === DEPLOY DOCUMENTATION ===
+  # Deploy Rust API documentation to GitHub Pages after a successful package build.
+  # Keep this independent from package/GitHub release publication so the website
+  # still updates when the release path fails. Use the official Pages artifact
+  # deployment path so repositories configured with "GitHub Actions" as their
+  # Pages source fail this job if Pages cannot deploy.
+  #
+  # One-time setup: in the repository's Settings -> Pages, set Source to
+  # "GitHub Actions". Without this, the first run fails on actions/deploy-pages
+  # with "Get Pages site failed" / "Failed to create deployment". This cannot be
+  # configured from a workflow. See README.md "Deploying API documentation".
+  deploy-docs:
+    name: Deploy Rust Documentation
+    needs: [build]
+    if: |
+      !cancelled() &&
+      needs.build.result == 'success' && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant')
+      )
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [detect-changes]
-    if: |
-      always() && !cancelled() && (
-        github.event_name == 'push' ||
-        github.event_name == 'workflow_dispatch' ||
-        needs.detect-changes.outputs.any-code-changed == 'true'
-      )
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.x'
-          cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
-
-      - name: Install web bundle dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build web vendor bundle
-        run: bun run build:web
-
-      - name: Install Playwright and dependencies
-        run: |
-          cd tests/e2e
-          npm ci
-
-      - name: Install Playwright browsers
-        run: |
-          cd tests/e2e
-          npx playwright install --with-deps chromium
-
-      - name: Sync data/seed into src/web/seed (deployment mirror)
-        run: scripts/sync-seed.sh
-
-      - name: Run local e2e tests
-        run: |
-          cd tests/e2e
-          npx playwright test --config=playwright.local.config.js
-
-      - name: Upload Playwright report on failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-local
-          path: tests/e2e/playwright-report/
-          retention-days: 7
-
-      # The issue-347 spec regenerates the /download preview images and full-page
-      # captures on every run (proving the screenshots can be produced in CI).
-      # Publish them as an artifact so reviewers can compare against the committed
-      # baselines without running the suite locally.
-      - name: Upload generated /download screenshots
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: download-page-screenshots
-          path: |
-            docs/screenshots/issue-347/
-            src/web/download/assets/app-preview*.png
-          retention-days: 14
-
-  # === DEPLOY DEMO ===
-  # Deploy the React chat demo from src/web/ to GitHub Pages after a successful build.
-  deploy-demo:
-    name: Deploy Demo to GitHub Pages
-    needs: [build, auto-release, manual-release]
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-      pages_sha: ${{ steps.pages_ref.outputs.sha }}
-    if: |
-      always() && !cancelled() &&
-      needs.build.result == 'success' && (
-        (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
-        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && needs.manual-release.result == 'success')
-      )
-    runs-on: ubuntu-latest
-    # 20 min (was 15): this job now also runs `cargo doc` for the /docs/api
-    # reference, which compiles the dependency tree on a cold cargo cache.
-    timeout-minutes: 20
     permissions:
       contents: read
       pages: write
@@ -978,177 +757,39 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Select Pages deployment ref
-        id: pages_ref
-        env:
-          PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
-        run: |
-          if [ -z "$PAGES_DEPLOY_SHA" ]; then
-            echo "::error::Could not resolve Pages deployment SHA"
-            exit 1
-          fi
-          echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
-          echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
-
       - uses: actions/checkout@v6
         with:
-          ref: ${{ steps.pages_ref.outputs.sha }}
+          ref: main
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build documentation
+        run: cargo doc --no-deps --all-features
+
+      - name: Generate Pages root index
+        run: |
+          # rustdoc emits target/doc/<crate>/index.html but no root index.html,
+          # which makes the GitHub Pages root URL return 404. Redirect the root
+          # to the crate docs directory that rustdoc generated.
+          crate=$(cargo metadata --no-deps --format-version 1 \
+            | python3 -c 'import json,sys; print(json.load(sys.stdin)["packages"][0]["name"].replace("-","_"))')
+          printf '<!doctype html><meta http-equiv="refresh" content="0; url=%s/index.html">\n' "$crate" \
+            > target/doc/index.html
+          touch target/doc/.nojekyll
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install web bundle dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Build web vendor bundle
-        run: bun run build:web
-
-      # === API DOCS (/docs/api) ===
-      # The documentation hub (/docs/) links to a Rust API reference at
-      # /docs/api/. Generate it with `cargo doc` here and copy it into the Pages
-      # artifact below so it deploys alongside the rest of the site (issue #479).
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      # Reclaim runner disk before the heavy doc build. The hosted ubuntu image
-      # ships with ~14 GB free on `/`; pre-installed SDKs we never touch (dotnet,
-      # Android, GHC, CodeQL) eat most of it. Removing them gives `cargo doc`
-      # plus the web bundle, the docs copy and the Pages artifact tar enough
-      # headroom and prevents the "No space left on device" runner crash that
-      # failed this job in issue #523.
-      - name: Free up runner disk space
-        run: |
-          echo "Disk usage before cleanup:"
-          df -h /
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL || true
-          sudo docker image prune --all --force >/dev/null 2>&1 || true
-          echo "Disk usage after cleanup:"
-          df -h /
-
-      # IMPORTANT (issue #523): cache only the downloaded crate sources, NOT the
-      # `target/` directory. The other Rust jobs (notably `lint`, which runs
-      # `cargo clippy --all-targets --all-features`) share the same cache key and
-      # populate `target/` with a multi-gigabyte debug tree. Restoring that here
-      # on top of the web bundle and then running `cargo doc` exhausted the
-      # runner disk. `cargo doc --no-deps --lib` rebuilds its own (much smaller)
-      # `target/` from the cached registry, so we keep the registry/git cache for
-      # download speed but never restore the bloated build artifacts.
-      - name: Cache cargo registry
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-          key: ${{ runner.os }}-cargo-docs-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-docs-
-
-      - name: Generate Rust API docs (cargo doc)
-        run: |
-          # Document just the library (lib name: formal_ai). --no-deps keeps the
-          # output small and fast; RUSTDOCFLAGS is unset so doc-link warnings do
-          # not fail the deploy.
-          cargo doc --no-deps --lib
-          # rustdoc emits the crate docs under target/doc/formal_ai/; add a root
-          # redirect so /docs/api/ lands on the crate root instead of 404ing.
-          cat > target/doc/index.html <<'HTML'
-          <!doctype html>
-          <html lang="en">
-            <head>
-              <meta charset="utf-8" />
-              <meta http-equiv="refresh" content="0; url=formal_ai/index.html" />
-              <link rel="canonical" href="formal_ai/index.html" />
-              <title>formal-ai API reference</title>
-            </head>
-            <body>
-              <p>Redirecting to the <a href="formal_ai/index.html">formal-ai API reference</a>&hellip;</p>
-            </body>
-          </html>
-          HTML
-
-      - name: Sync data/seed into src/web/seed (deployment mirror)
-        run: scripts/sync-seed.sh
-
-      - name: Read formal-ai version from Cargo.toml
-        id: formal_ai_version
-        run: |
-          version="$(sed -n 's/^version[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' Cargo.toml | head -n 1)"
-          if [ -z "$version" ]; then
-            echo "::error file=Cargo.toml::Could not read formal-ai version from Cargo.toml"
-            exit 1
-          fi
-          echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Detected formal-ai version: ${version}"
-
-      - name: Stamp GitHub Pages artifact
-        run: scripts/stamp-pages-artifact.sh src/web "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
-
-      - name: Copy Rust API docs into the Pages artifact (/docs/api)
-        run: |
-          # Copy after stamping: rustdoc's HTML carries no version placeholders,
-          # and copying post-stamp keeps stamp-pages-artifact.sh from scanning
-          # the (large) generated tree.
-          mkdir -p src/web/docs/api
-          cp -R target/doc/. src/web/docs/api/
+      - name: Verify site tree
+        run: find target/doc -maxdepth 2 -print
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: src/web
+          path: target/doc
+          include-hidden-files: true
 
-      - name: Deploy Pages artifact
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
-
-  # === E2E TESTS (GITHUB PAGES) ===
-  # Run Playwright tests against the live GitHub Pages URL after deployment.
-  test-e2e-pages:
-    name: E2E Tests (GitHub Pages)
-    needs: [deploy-demo]
-    if: |
-      !cancelled() &&
-      needs.deploy-demo.result == 'success'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.x'
-          cache: npm
-          cache-dependency-path: tests/e2e/package-lock.json
-
-      - name: Install Playwright and dependencies
-        run: |
-          cd tests/e2e
-          npm ci
-
-      - name: Install Playwright browsers
-        run: |
-          cd tests/e2e
-          npx playwright install --with-deps chromium
-
-      - name: Wait for GitHub Pages deployment
-        env:
-          PAGES_DEPLOY_SHA: ${{ needs.deploy-demo.outputs.pages_sha || github.sha }}
-        run: scripts/wait-for-pages-deployment.sh "${{ needs.deploy-demo.outputs.page_url }}" "$PAGES_DEPLOY_SHA"
-
-      - name: Run GitHub Pages e2e tests
-        run: |
-          cd tests/e2e
-          PAGES_URL="${{ needs.deploy-demo.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
-
-      - name: Upload Playwright report on failure
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-pages
-          path: tests/e2e/playwright-report/
-          retention-days: 7

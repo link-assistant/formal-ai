@@ -58,9 +58,9 @@ fn github_pages_artifact_advertises_crate_version_from_cargo_toml() {
     );
     assert!(
         deploy_demo.contains(
-            "scripts/stamp-pages-artifact.sh src/web \"${{ github.sha }}\" \"${{ github.sha }}\" \"${{ steps.formal_ai_version.outputs.version }}\""
+            "scripts/stamp-pages-artifact.sh src/web \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.pages_ref.outputs.sha }}\" \"${{ steps.formal_ai_version.outputs.version }}\""
         ),
-        "deploy-demo should forward the resolved crate version to the stamp script"
+        "deploy-demo should forward the selected deployment SHA and resolved crate version to the stamp script"
     );
 
     let wait_script = fs::read_to_string(format!(
