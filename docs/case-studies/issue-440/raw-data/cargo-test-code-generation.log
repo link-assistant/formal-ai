@@ -1,0 +1,99 @@
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449093559)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 9.76s
+     Running unittests src/lib.rs (target/debug/deps/formal_ai-721af03ad133d343)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/formal_ai-0da60406702df0cc)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/integration/mod.rs (target/debug/deps/integration-6dfce46095b9665d)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 40 filtered out; finished in 0.00s
+
+     Running tests/source/mod.rs (target/debug/deps/source-4e1fcc7c57fc369b)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 419 filtered out; finished in 0.00s
+
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 68 tests
+test specification::code_generation::follow_up::english_code_answer_explains_and_instructs ... ok
+test specification::code_generation::follow_up::first_turn_without_prior_code_keeps_full_instructions ... ok
+test specification::code_generation::follow_up::explicit_list_files_with_path_argument_is_supported ... ok
+test specification::code_generation::follow_up::chinese_code_answer_explains_and_instructs ... ok
+test specification::code_generation::follow_up::hindi_code_answer_explains_and_instructs ... ok
+test specification::code_generation::follow_up::russian_code_answer_explains_and_instructs ... ok
+test specification::code_generation::follow_up::follow_up_code_edit_omits_setup_steps ... ok
+test specification::code_generation::follow_up::english_follow_up_modification_emits_substitution_plan_trace ... ok
+test specification::code_generation::follow_up::unavailable_language_explains_and_instructs ... ok
+test specification::code_generation::follow_up::hindi_follow_up_path_argument_modification_reuses_context ... ok
+test specification::code_generation::single_turn::c_hello_world_seed_compiles_and_runs ... ok
+test specification::code_generation::single_turn::code_answers_declare_isolation_level ... ok
+test specification::code_generation::single_turn::chinese_list_files_in_rust_returns_program ... ok
+test specification::code_generation::follow_up::chinese_follow_up_path_argument_modification_reuses_context ... ok
+test specification::code_generation::single_turn::english_list_files_in_python_returns_program ... ok
+test specification::code_generation::single_turn::code_answers_include_execution_links_in_notation ... ok
+test specification::code_generation::follow_up::russian_follow_up_path_argument_modification_reuses_context ... ok
+test specification::code_generation::single_turn::go_alias_golang_is_supported ... ok
+test specification::code_generation::single_turn::hindi_list_files_in_rust_returns_program ... ok
+test specification::code_generation::single_turn::go_hello_world_seed_runs ... ok
+test specification::code_generation::single_turn::javascript_alias_node_is_supported ... ok
+test specification::code_generation::single_turn::execution_failures_are_reported_with_full_trace ... ok
+test specification::code_generation::single_turn::javascript_hello_world_seed_runs ... ok
+test specification::code_generation::single_turn::parametric_write_program_handles_new_task_for_supported_language ... ok
+test specification::code_generation::single_turn::python_alias_py_is_supported ... ok
+test specification::code_generation::single_turn::python_hello_world_seed_runs ... ok
+test specification::code_generation::single_turn::russian_list_files_in_rust_returns_program ... ok
+test specification::code_generation::single_turn::python_list_files_reverse_sort_sample_output_matches_saved_file_name ... ok
+test specification::code_generation::single_turn::russian_transliteration_хелло_ворлд_на_расте_returns_rust ... ok
+test specification::code_generation::single_turn::russian_transliteration_хелло_ворлд_на_джаваскрипт_returns_javascript ... ok
+test specification::code_generation::single_turn::russian_transliteration_хелло_ворлд_питоне_returns_python ... ok
+test specification::code_generation::single_turn::hello_world_without_recognized_language_returns_unsupported_parameters ... ok
+test specification::code_generation::single_turn::rust_hello_world_seed_compiles_and_runs ... ok
+test specification::code_generation::single_turn::rust_hello_world_accepts_inline_output_replacement ... ok
+test specification::code_generation::single_turn::russian_program_request_with_unknown_task_is_not_unknown ... ok
+test specification::code_generation::single_turn::rust_alias_rs_is_supported ... ok
+test specification::code_generation::single_turn::list_files_supported_for_every_popular_language ... ok
+test specification::code_generation::single_turn::translating_a_program_between_languages_keeps_semantics ... ok
+test specification::code_generation::single_turn::typescript_hello_world_seed_reports_unavailable_execution ... ok
+test specification::code_generation::task_catalog::chinese_sum_to_ten_in_go_returns_program ... ok
+test specification::code_generation::task_catalog::english_fizzbuzz_in_rust_returns_program ... ok
+test specification::code_generation::single_turn::supported_language_with_missing_template_returns_unsupported_parameters ... ok
+test specification::code_generation::task_catalog::english_recursive_fibonacci_in_python_returns_program ... ok
+test specification::code_generation::task_catalog::hindi_reverse_string_in_rust_returns_program ... ok
+test specification::code_generation::single_turn::hello_world_inline_replacement_accepts_diverse_prompt_surfaces ... ok
+test specification::code_generation::single_turn::unknown_language_after_the_language_noun_is_extracted_in_both_head_initial_languages ... ok
+test specification::code_generation::single_turn::top_ten_popular_languages_each_use_the_write_program_intent ... ok
+test specification::code_generation::task_catalog::russian_factorial_of_five_in_python_returns_program ... ok
+test specification::code_generation::task_catalog::new_coding_tasks_are_each_supported_in_a_popular_language ... ok
+test specification::code_generation_blueprint::chinese_http_json_statistics_request_returns_blueprint_in_chinese ... ok
+test specification::code_generation::single_turn::sorting_algorithm_request_returns_code_and_tests ... ok
+test specification::code_generation::task_catalog::fizzbuzz_supported_for_every_popular_language ... ok
+test specification::code_generation_blueprint::hindi_http_json_statistics_request_returns_blueprint_in_hindi ... ok
+test specification::code_generation_blueprint::partial_composite_request_without_statistics_stays_unsupported ... ok
+test specification::code_generation_blueprint::english_http_json_statistics_request_records_blueprint_capabilities ... ok
+test specification::code_generation_blueprint::budget_calculator_blueprint_covers_supported_prompt_languages ... ok
+test specification::code_generation_blueprint::russian_http_json_statistics_request_returns_blueprint_in_russian ... ok
+test specification::code_generation_blueprint::budget_calculator_request_returns_python_blueprint_program ... ok
+test specification::code_generation_blueprint::javascript_http_json_statistics_request_returns_blueprint_program ... ok
+test specification::code_generation_coreference::bare_results_follow_up_without_active_program_stays_out_of_write_program ... ok
+test specification::code_generation_blueprint::rust_http_json_statistics_request_returns_blueprint_program ... ok
+test specification::code_generation_program_modifiers::explicit_list_files_reverse_sort_modifiers_compose ... ok
+test specification::code_generation_blueprint::python_comments_omitted_drops_docstring_and_hash_comments_end_to_end ... ok
+test specification::code_generation_program_modifiers::explicit_reverse_sort_path_argument_programs_work_in_every_supported_prompt_language ... ok
+test specification::code_generation_coreference::bare_imperative_results_follow_ups_bind_active_program_in_all_languages ... ok
+test specification::code_generation_blueprint::python_http_json_statistics_request_returns_blueprint_program ... ok
+test specification::code_generation_coreference::unknown_bare_program_modifier_constructs_and_verifies_a_rule ... ok
+test specification::code_generation_blueprint::comments_capability_composes_the_emitted_program_end_to_end ... ok
+
+test result: ok. 68 passed; 0 failed; 0 ignored; 0 measured; 853 filtered out; finished in 1.69s

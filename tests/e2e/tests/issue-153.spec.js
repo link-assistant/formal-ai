@@ -331,7 +331,7 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await requireAttr('.topbar-actions [data-testid="report-issue"]', '1');
     await requireAttr('.topbar-actions .diagnostics-toggle', '2');
     await requireAttr('.topbar-actions .mode-toggle', '3');
-    await requireAttr('.topbar-actions [data-testid="agent-toggle"]', '4');
+    await requireAttr('.topbar-actions [data-testid="mode-radio"]', '4');
     await requireAttr('.topbar-actions [data-testid="source-code"]', '5');
     await requireAttr('.topbar-actions [data-testid="memory-export"]', '6');
     await requireAttr('.topbar-actions [data-testid="memory-import"]', '6');
@@ -406,7 +406,7 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await expectVisible('.topbar-actions [data-testid="report-issue"]');
     await expectVisible('.topbar-actions .diagnostics-toggle');
     await expectVisible('.topbar-actions .mode-toggle');
-    await expectHidden('.topbar-actions [data-testid="agent-toggle"]');
+    await expectHidden('.topbar-actions [data-testid="mode-radio"]');
     await expectHidden('.topbar-actions [data-testid="source-code"]');
     await expectHidden('.topbar-actions [data-testid="memory-export"]');
     await expectHidden('.topbar-actions [data-testid="memory-import"]');

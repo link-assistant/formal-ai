@@ -79,14 +79,14 @@ test.describe('Issue #353: VS Code extension bridge', () => {
     );
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Off');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Permission gated',
+      '0/6 tools granted',
     );
 
-    // The agent toggle is the explicit opt-in for the permission-gated tool router.
-    await page.locator('[data-testid="agent-toggle"]').click();
+    // The mode radio is the explicit opt-in for the permission-gated tool router.
+    await page.locator('[data-testid="mode-option-agent"]').click();
     await expect(page.locator('[data-testid="desktop-agent-permission"]')).toHaveText('Opted in');
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Agent tools visible',
+      '0/6 tools granted',
     );
   });
 
@@ -115,7 +115,7 @@ test.describe('Issue #353: VS Code extension bridge', () => {
       'formal_ai_bundle',
     );
     await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-      'Permission gated',
+      '0/6 tools granted',
     );
   });
 
@@ -149,8 +149,14 @@ test.describe('Issue #353: VS Code extension bridge', () => {
       await expect(page.locator('[data-testid="desktop-shell-status"]')).toContainText(
         'VS Code - API local - agent permission off',
       );
+      // Issue #511/#514: the tool-count label now comes from the i18n catalog,
+      // so assert against the active language's translation rather than English.
+      const expectedToolCount = await page.evaluate(async (lang) => {
+        await window.FormalAiI18n.ready;
+        return window.FormalAiI18n.t('permissions.toolCount', lang, { granted: 0, total: 6 });
+      }, language);
       await expect(page.locator('[data-testid="desktop-tool-permission"]')).toHaveText(
-        'Permission gated',
+        expectedToolCount,
       );
     }
   });

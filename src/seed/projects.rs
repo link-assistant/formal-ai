@@ -115,7 +115,7 @@ impl ProjectRecord {
 
     /// Localized topic (1–5 word) label when defined, otherwise the default.
     #[must_use]
-    pub fn topic_for(&self, language: &str) -> &str {
+    pub const fn topic_for(&self, language: &str) -> &str {
         // Statements may move, but the topic stays per-record — localized
         // overrides only differ for prose, not for the bare topic label.
         let _ = language;

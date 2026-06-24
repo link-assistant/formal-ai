@@ -43,11 +43,11 @@ pub const KNOWLEDGE_CACHE_FLOOR: usize = 512;
 /// to the [`KNOWLEDGE_CACHE_FLOOR`] floor, and finally clamped to the source's
 /// own size (you can never cache more rows than exist).
 ///
-/// `div_ceil` is avoided to keep the crate buildable on the declared MSRV
-/// (Rust 1.70), so the 1% is computed as `(source_total + 99) / 100`.
+/// The crate's Rust 1.77 baseline supports `div_ceil`, so the 1% calculation
+/// stays explicit without carrying a manual rounding formula.
 #[must_use]
 pub const fn cache_capacity(source_total: usize) -> usize {
-    let one_percent = (source_total + 99) / 100;
+    let one_percent = source_total.div_ceil(100);
     let floored = if one_percent > KNOWLEDGE_CACHE_FLOOR {
         one_percent
     } else {

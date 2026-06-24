@@ -33,9 +33,26 @@ while true; do
     marker_ok=true
   fi
 
+  # Success criteria (issue #479):
+  #   1. deployment.json is served AND advertises "sha":"<expected_sha>".
+  #      GitHub Pages deploys atomically -- the whole artifact (every HTML file
+  #      plus this marker, all stamped by scripts/stamp-pages-artifact.sh in one
+  #      step) flips live together. The marker SHA is therefore the AUTHORITATIVE
+  #      freshness signal: if it reads the expected SHA, the index served beside
+  #      it is the matching stamped build.
+  #   2. The site root (index.html) is actually being served (HTTP 200).
+  #   3. No un-stamped placeholders survive in the index -- a defensive net that
+  #      catches a half-run or broken stamp step.
+  # We deliberately do NOT require the raw SHA to appear in the index body. That
+  # coupled the probe to every root page embedding the commit SHA verbatim, which
+  # silently broke when the issue #479 landing page (/) shipped without cache-
+  # busted asset refs: the marker had the right SHA but the index never did, so
+  # this loop timed out for the full 300s and failed the whole pipeline (which in
+  # turn gated the desktop release -> "Not available in latest release"). The
+  # marker is sufficient; the index now carries ?v=<sha> refs too, but the probe
+  # no longer depends on that.
   if [[ "$index_ok" == true && "$marker_ok" == true ]] &&
     grep -Eq "\"sha\"[[:space:]]*:[[:space:]]*\"${expected_sha}\"" "$marker_file" &&
-    grep -Fq "$expected_sha" "$index_file" &&
     ! grep -Fq "__FORMAL_AI_ASSET_VERSION__" "$index_file" &&
     ! grep -Fq "__FORMAL_AI_VERSION__" "$index_file"; then
     echo "GitHub Pages is serving deployment ${expected_sha}"

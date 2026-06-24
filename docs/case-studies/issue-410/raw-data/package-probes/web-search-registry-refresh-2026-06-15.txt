@@ -1,0 +1,6 @@
+# web-search@0.10.3 provider registry — refreshed 2026-06-15
+# extracted from published npm package src/providers/registry.js
+provider_count: 40
+provider_ids: arxiv,bing,bitbucket,brave,cambridge-dictionary,codeberg,collins-dictionary,crossref,dbpedia,dictionary-com,doaj,duckduckgo,ecosia,europepmc,gitee,gitflic,github,gitlab,google,hackernews,internet-archive,lite,merriam-webster,mojeek,openalex,openlibrary,searx,semantic-scholar,startpage,wc:bing,wc:brave,wc:duckduckgo,wc:google,wc:wikipedia,wikidata,wikinews,wikipedia,wiktionary,yahoo,yandex
+default_provider_ids: ["duckduckgo","internet-archive","wikipedia","wikidata","wiktionary","wikinews"]
+categories: ["search","knowledge","papers","code"]

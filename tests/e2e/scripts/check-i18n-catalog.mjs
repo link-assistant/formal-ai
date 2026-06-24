@@ -17,6 +17,7 @@ const REQUIRED_KEYS = [
   'buttons.diagnosticsOn',
   'buttons.agent',
   'buttons.chat',
+  'buttons.fullAuto',
   'buttons.demo',
   'buttons.demoOn',
   'buttons.openMenu',
@@ -35,6 +36,8 @@ const REQUIRED_KEYS = [
   'titles.diagnosticsHide',
   'titles.agentOn',
   'titles.agentOff',
+  'titles.fullAuto',
+  'titles.modeGroup',
   'titles.demoOn',
   'titles.demoOff',
   'titles.menuOpen',
@@ -71,6 +74,97 @@ const REQUIRED_KEYS = [
   'message.copyMarkdownDone',
   'message.copyMarkdownTitle',
   'message.thinking',
+  'message.thinkingExpand',
+  'message.thinkingCollapse',
+  'message.thinkingPrevious',
+  'message.thinkingCurrent',
+  'message.thinkingLanguage.en',
+  'message.thinkingLanguage.ru',
+  'message.thinkingLanguage.zh',
+  'message.thinkingLanguage.hi',
+  'message.thinkingLanguage.unknown',
+  'message.thinkingRoute.reply',
+  'message.thinkingRoute.greeting',
+  'message.thinkingRoute.farewell',
+  'message.thinkingRoute.unknown',
+  'message.thinkingRoute.generic',
+  'message.thinkingRule.selected',
+  'message.thinkingRule.greeting',
+  'message.thinkingRule.farewell',
+  'message.thinkingRule.unknown',
+  'message.thinkingStep.impulse',
+  'message.thinkingStep.formalize',
+  'message.thinkingStep.formalizeResolved',
+  'message.thinkingStep.formalizeOpGreet',
+  'message.thinkingStep.formalizeOpFarewell',
+  'message.thinkingStep.formalizeOpExpress',
+  'message.thinkingStep.formalizeOpCompute',
+  'message.thinkingStep.formalizeOpDefine',
+  'message.thinkingStep.formalizeOpLookup',
+  'message.thinkingStep.formalizeOpSearch',
+  'message.thinkingStep.formalizeOpProcedure',
+  'message.thinkingStep.formalizeOpIdentify',
+  'message.thinkingStep.detectLanguage',
+  'message.thinkingStep.resolveResponseLanguage',
+  'message.thinkingStep.clarifyFormalization',
+  'message.thinkingStep.dispatchHandler',
+  'message.thinkingStep.matchRule',
+  'message.thinkingStep.invokeTool',
+  'message.thinkingStep.fallback',
+  'message.thinkingStep.userContext',
+  'message.thinkingStep.deformalize',
+  'message.thinkingStep.routeAttempt',
+  'message.thinkingStep.coreferenceBinding',
+  'message.thinkingStep.modifierDetection',
+  'message.thinkingStep.ruleConstruction',
+  'message.thinkingStep.ruleVerification',
+  'message.thinkingStep.programPlan',
+  'message.thinkingStep.desktopShell',
+  'message.thinkingStep.httpChat',
+  'message.thinkingStep.memory',
+  'message.thinkingStep.agentPlan',
+  'message.thinkingStep.agentSubstep',
+  'message.thinkingStep.triggerButton',
+  'message.thinkingStep.applyMessageCommand',
+  'message.thinkingStep.triggerMessageAction',
+  'message.thinkingStep.extractTerm',
+  'message.thinkingStep.scanMemory',
+  'message.thinkingStep.groupByConversation',
+  'message.thinkingStep.generic',
+  'message.thinkingStep.working',
+  'message.thinkingStep.pendingReading',
+  'message.thinkingStep.pendingFormalizing',
+  'message.thinkingStep.pendingDispatching',
+  'message.thinkingStep.pendingComposing',
+  'message.thinkingStep.fallbackNormalize',
+  'message.thinkingStep.fallbackIntent',
+  'message.thinkingStep.fallbackRender',
+  'message.thinkingStep.impulsePlain',
+  'message.thinkingStep.formalizePlain',
+  'message.thinkingStep.formalizeTuple',
+  'message.thinkingStep.formalizeResolvedPlain',
+  'message.thinkingStep.formalizeResolvedTuple',
+  'message.thinkingStep.clarifyFormalizationPlain',
+  'message.thinkingStep.dispatchHandlerPlain',
+  'message.thinkingStep.matchRulePlain',
+  'message.thinkingStep.routeAttemptPlain',
+  'message.thinkingStep.compute',
+  'message.thinkingStep.computePlain',
+  'message.thinkingStep.computeEngine',
+  'message.thinkingStep.computeEnginePlain',
+  'message.thinkingStep.computeExpression',
+  'message.thinkingStep.computeSteps',
+  'message.thinkingStep.lookupFact',
+  'message.thinkingStep.lookupFactPlain',
+  'message.thinkingStep.invokeToolPlain',
+  'message.thinkingStep.ruleVerificationPlain',
+  'message.thinkingStep.policyRefusal',
+  'message.thinkingStep.policyRefusalPlain',
+  'message.thinkingStep.programPlanPlain',
+  'message.thinkingStep.scanMemoryPlain',
+  'message.thinkingStep.deformalizePlain',
+  'message.thinkingStep.agentPlanPlain',
+  'message.thinkingStep.userContextDefault',
   'message.diagnosticsSteps',
   'message.diagnosticsTools',
   'message.diagnosticsHttp',
@@ -127,6 +221,14 @@ const REQUIRED_KEYS = [
   'settings.blueprintComposition',
   'settings.blueprintComposition.composed',
   'settings.blueprintComposition.documented',
+  'settings.thinkingDetail',
+  'settings.thinkingDetail.brief',
+  'settings.thinkingDetail.standard',
+  'settings.thinkingDetail.detailed',
+  'settings.minMessageAnimation',
+  'settings.animationImmediate',
+  'settings.animationRelaxed',
+  'settings.animationSeconds',
   'settings.experimentalOcr',
   'settings.experimentalOcr.warning',
   'settings.externalServices',
@@ -180,6 +282,7 @@ const REQUIRED_KEYS = [
   'settings.resetNone',
   'status.demoPlaying',
   'status.manual',
+  'status.mode',
   'status.nextDialogIn',
   'status.memoryUnavailable',
   'status.memoryExported',
@@ -202,13 +305,122 @@ const REQUIRED_KEYS = [
   'trace.seedFiles',
   'trace.toolsLoaded',
   'trace.conceptsLoaded',
+  // Issue #514 / #511: desktop tool permission UI and command-approval prose.
+  // These were hardcoded in src/web/app.js; they must live in the catalog so the
+  // permission panel, command approval, and shell messages translate per language.
+  // The lino-i18n parser sets each tool's bare key to its `label` child, so the
+  // `.label` variant is auto-allowed by isGeneratedLabelKey; `.description` is explicit.
+  'permissions.tool.http_fetch',
+  'permissions.tool.http_fetch.description',
+  'permissions.tool.url_navigate',
+  'permissions.tool.url_navigate.description',
+  'permissions.tool.eval_js',
+  'permissions.tool.eval_js.description',
+  'permissions.tool.read_local_file',
+  'permissions.tool.read_local_file.description',
+  'permissions.tool.code_exec',
+  'permissions.tool.code_exec.description',
+  'permissions.tool.shell',
+  'permissions.tool.shell.description',
+  'permissions.panel.title',
+  'permissions.panel.active',
+  'permissions.panel.saved',
+  'permissions.panel.rowLabel',
+  'permissions.state.granted',
+  'permissions.state.declined',
+  'permissions.state.undecided',
+  'permissions.action.grant',
+  'permissions.action.decline',
+  // Issue #541 (R9): one-click affordance on the permission panel — grant every
+  // tool, opt in to Agent mode, and (if a task was deferred) run it.
+  'permissions.action.grantAll',
+  'permissions.action.grantAllAndRun',
+  'permissions.toolCount',
+  'permissions.command.title',
+  'permissions.command.approve',
+  'permissions.command.deny',
+  'permissions.command.status.pending',
+  'permissions.command.status.running',
+  'permissions.command.status.approved',
+  'permissions.command.status.denied',
+  'permissions.onboarding.intro',
+  'permissions.onboarding.perTool',
+  'permissions.onboarding.modes',
+  'permissions.message.shellRan',
+  'permissions.message.shellNotRun',
+  'permissions.message.shellNotGranted',
+  'permissions.message.approvalPrompt',
+  'permissions.message.commandDeclined',
+  'permissions.message.noOutput',
+  'permissions.message.reasonNoResult',
+  'permissions.message.reasonRefused',
+  // Issue #511: desktop Services panel labels, also moved out of hardcoded prose.
+  'services.title',
+  'services.telegram',
+  'services.telegram.label',
+  'services.server',
+  'services.server.label',
+  'services.agent',
+  'services.agent.label',
+  'services.dockerMissing',
+  'services.installAgent',
+  'services.installing',
+  'services.start',
+  'services.starting',
+  'services.stop',
+  'services.stopping',
+  'services.state.ready',
+  'services.state.running',
+  'services.state.stopped',
+  'services.state.needsToken',
+  'services.state.dockerUnavailable',
+  'services.state.error',
+  'services.state.unknown',
+  // Issue #548: desktop auto-update notification and user-triggered install UI.
+  'updates.title',
+  'updates.currentVersion',
+  'updates.check',
+  'updates.checking',
+  'updates.update',
+  'updates.updating',
+  'updates.progress',
+  'updates.state.idle',
+  'updates.state.checking',
+  'updates.state.available',
+  'updates.state.notAvailable',
+  'updates.state.downloading',
+  'updates.state.downloaded',
+  'updates.state.installing',
+  'updates.state.disabled',
+  'updates.state.error',
+
+  'vscodeInstall.title',
+  'vscodeInstall.summary',
+  'vscodeInstall.install',
+  'vscodeInstall.installing',
+  'vscodeInstall.installed',
+  'vscodeInstall.noCli',
+  'vscodeInstall.noAsset',
+  'vscodeInstall.lookupFailed',
+  'vscodeInstall.downloadFailed',
+  'vscodeInstall.installFailed',
+  'vscodeInstall.error',
 ];
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, '../../..');
-const catalogPath = path.join(repoRoot, 'src/web/i18n-catalog.lino');
-const text = fs.readFileSync(catalogPath, 'utf8');
+// The catalog is split across files so each stays under the Links Notation line
+// limit (see scripts/check-file-size.rs). The loader (src/web/i18n.js) fetches
+// each file and merges their per-locale keys, so this checker does the same.
+const catalogFiles = [
+  'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-permissions.lino',
+];
+const catalogTexts = catalogFiles.map((relativePath) =>
+  fs.readFileSync(path.join(repoRoot, relativePath), 'utf8'),
+);
+const text = catalogTexts.join('\n');
 const failures = [];
 
 if (!text.includes('"""')) {
@@ -219,10 +431,14 @@ if (!/\n  buttons\n    reportIssue /.test(text)) {
   failures.push('catalog must keep related messages in nested blocks');
 }
 
-const parsed = parseLinoCatalogs(text);
-const catalogs = new Map(
-  parsed.map(({ locale, translations }) => [locale, translations]),
-);
+const catalogs = new Map();
+for (const catalogText of catalogTexts) {
+  for (const { locale, translations } of parseLinoCatalogs(catalogText)) {
+    const merged = catalogs.get(locale) || {};
+    Object.assign(merged, translations);
+    catalogs.set(locale, merged);
+  }
+}
 const actualLocales = [...catalogs.keys()].sort();
 
 for (const locale of EXPECTED_LOCALES) {
@@ -280,6 +496,20 @@ const runtimeChecks = [
   ['zz', 'buttons.reportIssue', 'Report issue'],
   ['en', 'settings.language', 'Language'],
   ['en', 'status.nextDialogIn', 'Next dialog in 5s', { seconds: 5 }],
+  ['en', 'status.mode', 'Mode: Agent', { mode: 'Agent' }],
+  // Issue #511/#514: desktop permission strings must resolve per UI language and
+  // interpolate placeholders rather than render hardcoded English.
+  ['en', 'permissions.toolCount', '0/6 tools granted', { granted: 0, total: 6 }],
+  ['ru', 'permissions.toolCount', 'Предоставлено инструментов: 1/6', { granted: 1, total: 6 }],
+  ['en', 'permissions.panel.title', 'Desktop tool permissions'],
+  ['ru', 'permissions.panel.title', 'Разрешения инструментов рабочего стола'],
+  ['zh', 'permissions.state.granted', '已授予'],
+  ['hi', 'permissions.action.grant', 'प्रदान करें'],
+  ['en', 'updates.state.available', 'Update 0.213.0 available', { version: '0.213.0' }],
+  // Issue #554: the one-click VS Code extension install strings resolve per UI
+  // language and interpolate the detected CLI name.
+  ['en', 'vscodeInstall.installed', 'Installed into code. Reload VS Code to start using it.', { cli: 'code' }],
+  ['ru', 'vscodeInstall.install', 'Установить в VS Code'],
 ];
 
 for (const [locale, key, expected, params = {}] of runtimeChecks) {

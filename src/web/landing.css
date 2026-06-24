@@ -1,0 +1,486 @@
+/*
+ * formal-ai landing page (issue #479).
+ *
+ * The site root (/) is a lightweight chooser that points visitors at the three
+ * destinations the project ships: the interactive web app (/app/), the
+ * documentation (/docs/), and the desktop download page (/download/).
+ *
+ * Palette, typography and the segmented language/theme switchers are kept byte
+ * compatible with download.css so the chrome is identical across /, /download/
+ * and /docs/. Theme is driven by the `data-theme` attribute that the chat app,
+ * download.js and landing.js all set on <html>, so a visitor's choice is shared
+ * across every page via the same Links-Notation-backed preferences store.
+ */
+
+:root {
+  color-scheme: light;
+  --bg: #eef2f1;
+  --surface: #fbfcfd;
+  --surface-strong: #e6ece9;
+  --text: #1e252b;
+  --muted: #5d6965;
+  --line: #d6dde1;
+  --accent: #175f4f;
+  --accent-strong: #0f4a3d;
+  --on-accent: #ffffff;
+  --warm: #c0492f;
+  --shadow: 0 18px 44px rgba(29, 36, 34, 0.12);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #181a1b;
+  --surface: #202322;
+  --surface-strong: #2b302e;
+  --text: #ece7df;
+  --muted: #a7b1ab;
+  --line: #343a3d;
+  --accent: #2c8f71;
+  --accent-strong: #4fc3a0;
+  --on-accent: #ffffff;
+  --warm: #f08b70;
+  --shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+/*
+ * Before landing.js sets an explicit data-theme (and for the <noscript>
+ * fallback), follow the OS preference so the first paint matches the chat app.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #181a1b;
+    --surface: #202322;
+    --surface-strong: #2b302e;
+    --text: #ece7df;
+    --muted: #a7b1ab;
+    --line: #343a3d;
+    --accent: #2c8f71;
+    --accent-strong: #4fc3a0;
+    --warm: #f08b70;
+    --shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.page-shell {
+  display: block;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+/* --- Top bar: brand + language/theme switchers ---------------------------- */
+
+.landing-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 8px;
+}
+
+.brand {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.05rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.brand-mark {
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+
+.topbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.locale-switch,
+.theme-switch {
+  display: inline-flex;
+  width: fit-content;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.locale-switch button,
+.theme-switch button {
+  min-width: 44px;
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.locale-switch button.active,
+.theme-switch button.active {
+  color: var(--surface);
+  background: var(--text);
+}
+
+.locale-switch button:focus-visible,
+.theme-switch button:focus-visible,
+.nav-card:focus-visible,
+.source-cta:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* --- Hero ------------------------------------------------------------------ */
+
+.hero {
+  display: grid;
+  gap: 18px;
+  padding: 48px 0 36px;
+  max-width: 46rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 3.4rem;
+  line-height: 1;
+}
+
+.summary {
+  max-width: 38rem;
+  color: var(--muted);
+  font-size: 1.18rem;
+  line-height: 1.55;
+}
+
+/* The big "Source on GitHub" call-to-action (issue #479: the maintainer asked
+   that the source code on the landing be a big button, not a small footer
+   link). It mirrors the /download page's .primary-download button -- accent
+   fill, generous padding, a small action eyebrow above a strong label -- with a
+   monospace code glyph so it reads unmistakably as "view the source code". */
+.source-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  justify-self: start;
+  min-height: 64px;
+  margin-top: 4px;
+  border-radius: 10px;
+  padding: 14px 24px;
+  color: var(--on-accent);
+  background: var(--accent);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.source-cta:hover {
+  background: var(--accent-strong);
+}
+
+.source-cta:active {
+  transform: translateY(1px);
+}
+
+.source-cta-icon {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.source-cta-text {
+  display: grid;
+  gap: 3px;
+}
+
+.source-cta-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.source-cta-label {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+/* --- Navigation cards (the chooser) --------------------------------------- */
+
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  padding: 8px 0 56px;
+}
+
+.nav-card {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 10px;
+  min-height: 200px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.nav-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+}
+
+.nav-card-icon {
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.nav-card-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.nav-card-desc {
+  align-self: start;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.nav-card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-strong);
+  font-weight: 750;
+}
+
+.nav-card-action::after {
+  content: "→";
+}
+
+/* --- Info sections (install pages, issue #554) ----------------------------- */
+/*
+ * The VS Code / CLI / Telegram install pages render detailed instructions
+ * between the hero and the card grid: titled sections, ordered step lists,
+ * copy-paste command blocks, and direct links. They reuse the same palette and
+ * surfaces as the cards so the chrome stays identical across every page.
+ */
+
+.info-sections {
+  display: grid;
+  gap: 22px;
+  padding: 8px 0 8px;
+}
+
+.info-section {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.info-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.info-intro {
+  max-width: 46rem;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.info-steps {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.3rem;
+  color: var(--text);
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
+.info-steps li {
+  padding-left: 4px;
+}
+
+/* Copy-paste command block: a monospace command with a Copy button. */
+.command-block {
+  display: grid;
+  gap: 8px;
+}
+
+.command-label {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.command-row {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.command-pre {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  overflow-x: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-strong);
+}
+
+.command-pre code {
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.95rem;
+  white-space: pre;
+}
+
+.copy-button {
+  flex: 0 0 auto;
+  align-self: stretch;
+  min-width: 88px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 0 16px;
+  color: var(--on-accent);
+  background: var(--accent);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.copy-button:hover {
+  background: var(--accent-strong);
+}
+
+.copy-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.command-note,
+.info-note {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.info-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  align-items: center;
+}
+
+.info-link {
+  color: var(--accent-strong);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.info-link:hover {
+  text-decoration: underline;
+}
+
+.info-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .command-row {
+    flex-direction: column;
+  }
+
+  .copy-button {
+    align-self: flex-start;
+    padding: 10px 16px;
+  }
+}
+
+/* --- Footer --------------------------------------------------------------- */
+
+.landing-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: center;
+  padding: 8px 0 48px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2.6rem;
+  }
+
+  .source-cta {
+    width: 100%;
+  }
+}

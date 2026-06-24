@@ -3,7 +3,22 @@ import { test } from "node:test";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const { createToolRouter, isPermitted, SANDBOX_IMAGE } = require("../lib/tool-router.cjs");
+const {
+  createToolRouter,
+  isPermitted,
+  SANDBOX_IMAGE,
+  SUPPORTED_TOOLS,
+} = require("../lib/tool-router.cjs");
+
+function requestForTool(tool) {
+  if (tool === "http_fetch" || tool === "url_navigate") {
+    return { tool, input: { url: "https://example.com" } };
+  }
+  if (tool === "read_local_file") {
+    return { tool, input: { path: "README.md" } };
+  }
+  return { tool, input: { command: "echo hi" } };
+}
 
 test("default-deny: an ungranted tool call is refused and nothing executes", async () => {
   let fetched = false;
@@ -18,6 +33,41 @@ test("default-deny: an ungranted tool call is refused and nothing executes", asy
   assert.equal(result.status, "refused");
   assert.equal(result.executed, false);
   assert.equal(fetched, false, "fetch must not run when the tool is denied");
+});
+
+test("default-deny: empty grants refuse every supported tool before side effects", async () => {
+  let effects = 0;
+  const router = createToolRouter({
+    fetchImpl: async () => {
+      effects += 1;
+      return { status: 200, text: async () => "body" };
+    },
+    readFile: async () => {
+      effects += 1;
+      return "body";
+    },
+    dockerAvailable: () => {
+      effects += 1;
+      return true;
+    },
+    runOnHost: async () => {
+      effects += 1;
+      return { exitCode: 0, output: "body" };
+    },
+    runInSandbox: async () => {
+      effects += 1;
+      return { exitCode: 0, output: "body" };
+    },
+  });
+  router.setGrants({});
+
+  for (const tool of SUPPORTED_TOOLS) {
+    const result = await router.invoke(requestForTool(tool));
+    assert.equal(result.ok, false, `${tool} must be refused`);
+    assert.equal(result.status, "refused", `${tool} status`);
+    assert.equal(result.executed, false, `${tool} executed flag`);
+  }
+  assert.equal(effects, 0, "no fetch, file, docker, or sandbox effect may run");
 });
 
 test("with permission granted, http_fetch is served by the local process", async () => {
@@ -41,6 +91,55 @@ test("an `all` grant opts every tool in at once", () => {
   assert.equal(isPermitted(null, "shell"), false);
 });
 
+test("a partial grant map only permits the named tool", () => {
+  const grants = { shell: true };
+  for (const tool of SUPPORTED_TOOLS) {
+    assert.equal(
+      isPermitted(grants, tool),
+      tool === "shell",
+      `${tool} permission should be scoped to its own grant`,
+    );
+  }
+  assert.equal(isPermitted({ shell: true, http_fetch: false }, "http_fetch"), false);
+  assert.equal(isPermitted({ http_fetch: true, shell: false }, "shell"), false);
+});
+
+test("with permission granted, shell runs on the host by default", async () => {
+  const calls = [];
+  const router = createToolRouter({
+    dockerAvailable: () => {
+      throw new Error("host shell must not probe Docker by default");
+    },
+    runOnHost: async (spec) => {
+      calls.push(spec);
+      return {
+        exitCode: 0,
+        output: "Desktop\nDocuments\n",
+        stdout: "Desktop\nDocuments\n",
+        stderr: "",
+        logPath: "/tmp/host-shell.log",
+      };
+    },
+    runInSandbox: async () => {
+      throw new Error("host shell must not run in Docker by default");
+    },
+  });
+  router.setGrants({ shell: true });
+
+  const result = await router.invoke({ tool: "shell", input: { command: "ls ~" } });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.executed, true);
+  assert.equal(result.servedBy, "host-shell");
+  assert.equal(result.isolation, "host");
+  assert.equal(result.exitCode, 0);
+  assert.equal(result.logPath, "/tmp/host-shell.log");
+  assert.equal(result.stdout, "Desktop\nDocuments\n");
+  assert.equal(result.stderr, "");
+  assert.equal(result.body, "Desktop\nDocuments\n");
+  assert.deepEqual(calls, [{ tool: "shell", command: "ls ~" }]);
+});
+
 test("with permission granted, code_exec runs inside the box-dind container with logs captured", async () => {
   const calls = [];
   const router = createToolRouter({
@@ -60,6 +159,40 @@ test("with permission granted, code_exec runs inside the box-dind container with
   assert.equal(calls.length, 1);
   assert.equal(calls[0].image, SANDBOX_IMAGE);
   assert.equal(calls[0].command, "echo hi");
+});
+
+test("shell can still opt into Docker isolation", async () => {
+  const calls = [];
+  let hostRan = false;
+  const router = createToolRouter({
+    dockerAvailable: () => true,
+    runOnHost: async () => {
+      hostRan = true;
+      return { exitCode: 0, output: "" };
+    },
+    runInSandbox: async (spec) => {
+      calls.push(spec);
+      return { exitCode: 0, output: "container home\n", logPath: "/tmp/docker-shell.log" };
+    },
+  });
+  router.setGrants({ shell: true });
+
+  const result = await router.invoke({
+    tool: "shell",
+    input: { command: "ls ~", isolation: "docker" },
+  });
+
+  assert.equal(result.ok, true);
+  assert.equal(result.executed, true);
+  assert.equal(result.servedBy, "box-dind");
+  assert.equal(result.isolation, "docker");
+  assert.equal(result.image, SANDBOX_IMAGE);
+  assert.equal(result.logPath, "/tmp/docker-shell.log");
+  assert.equal(result.body, "container home\n");
+  assert.equal(hostRan, false);
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].tool, "shell");
+  assert.equal(calls[0].command, "ls ~");
 });
 
 test("code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)", async () => {

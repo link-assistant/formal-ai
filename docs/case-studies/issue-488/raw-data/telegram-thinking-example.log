@@ -1,0 +1,45 @@
+=== prompt: Hi ===
+Hi, how may I help you?
+
+<blockquote expandable>💭 Read the request: &quot;Hi&quot;.
+Detect the request language: English.
+Formalize the request as a greeting task.
+Route to the greeting handler.
+Verify the result against the rules.
+Compose the answer: &quot;Hi, how may I help you?&quot;.</blockquote>
+
+/trace simplification:trace:simplification_c0aa1c077f5b5335
+
+=== prompt: 2 + 2 ===
+2 + 2 = 4
+
+<blockquote expandable>💭 Read the request: &quot;2 + 2&quot;.
+Detect the request language: English.
+Formalize the request as an arithmetic task.
+Compute 2 + 2 = 4.
+Evaluate with the link calculator.
+Reduce the expression (2 + 2).
+Apply 6 reduction step(s).
+Route to the calculation handler.
+Verify the result against the rules.
+Compose the answer: &quot;2 + 2 = 4&quot;.</blockquote>
+
+/trace simplification:trace:simplification_9efc0c1e9ffbe017
+
+=== prompt: What is 8% of 50? ===
+8% of 50 = 4
+
+<blockquote expandable>💭 Read the request: &quot;What is 8% of 50?&quot;.
+Detect the request language: English.
+Formalize the request as a concept lookup task.
+Search memory for 8% of 50.
+Compute 8% of 50 = 4.
+Evaluate with the link calculator.
+Reduce the expression ((8 / 100) * 50).
+Apply 9 reduction step(s).
+Route to the calculation handler.
+Verify the result against the rules.
+Compose the answer: &quot;8% of 50 = 4&quot;.</blockquote>
+
+/trace simplification:trace:simplification_b0364d8a30ec8973
+

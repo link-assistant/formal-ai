@@ -90,3 +90,83 @@ cargo test --test unit specification::meta_algorithm -- --nocapture
 Because the recipe is checked against the source, the handler and its recipe can
 never silently diverge — which is exactly what lets us treat the source as a
 reproducible artifact of the meta-algorithm.
+
+## The agentic-coding meta-algorithm (issue #468)
+
+The same grounded-recipe discipline records a second, different kind of
+meta-algorithm: not a chat intent handler, but the **deterministic agentic loop**
+that lets our Formal AI *solve a task in agentic coding mode*. The maintainer's
+framing for issue #468 was that "our Formal AI system should have enough skills
+(meta algorithm, rust code) to actually call all the tools from any agentic CLI,
+understand errors from tools, … to actually complete the task." Its recipe lives
+at [`data/meta/agentic-coding-recipe.lino`](../data/meta/agentic-coding-recipe.lino)
+and is grounded by
+[`tests/unit/specification/agentic_meta_algorithm.rs`](../tests/unit/specification/agentic_meta_algorithm.rs).
+
+The loop is a pure, deterministic function of the conversation so far — no
+sampling, no hidden state, no neural inference (a NON-GOAL). Given the messages
+exchanged and the tool names the agentic CLI advertised, the planner decides the
+next step as a small state machine:
+
+```text
+web_search → web_fetch → write_file(formalize) → run_command(verify) → final
+```
+
+Each step is taken only if the conversation has no prior result for that
+capability **and** the CLI advertised a tool providing it, so the planner adapts
+to whatever subset of tools a given CLI exposes. Tool *errors* are observed: a
+fetch result that looks like an error is not trusted as source text, and the
+formalizer falls back to the canonical synopsis so the loop still completes with
+a stable, all-nine-primitive knowledge base.
+
+### The eight steps
+
+Each step is one `meta_step` record in the recipe; instantiate them in order to
+make the Formal AI solve a new task in agentic mode:
+
+1. **Recognise the agentic task** from the latest user turn against a small
+   closed keyword set — a non-match yields `None`, so agentic coding stays
+   strictly opt-in and ordinary chat is untouched.
+2. **Pin the canonical plan as named constants** (`SEARCH_QUERY`,
+   `CANONICAL_SOURCE_URL`, `KB_PATH`) so the recipe is data, not scattered
+   literals.
+3. **Classify advertised tools into capabilities** (`Search`/`Fetch`/`Write`/
+   `Run`) by substring, mirroring agentic-CLI naming so any CLI's tool set maps.
+4. **Plan each step as a pure function of history** — the state machine above,
+   in `plan_chat_step`.
+5. **Understand tool errors and fall back deterministically** so a failed fetch
+   never derails the loop.
+6. **Wire the planner into the OpenAI-compatible server behind two gates**:
+   `agent_mode` (the real guard — every tool is refused unless explicitly opted
+   in) and the per-tool permission gate, then turn the plan into a completion
+   (`tool_calls` or a final `stop`).
+7. **Grant the client-executed tool capabilities** through the permission-only
+   `pkg_agentic_coding` associative package, so a permitted agent can drive the
+   full loop while granting it by default enables no hidden autonomous action.
+8. **Execute the loop with an offline driver and corpus**, bounded by a hard
+   `MAX_TURNS` cap, and expose it through the `agent` CLI subcommand, the
+   `issue_468_agentic_loop` example, and the integration tests.
+
+### What the recipe records
+
+| Recipe record | Count | Grounded against |
+| --- | --- | --- |
+| `meta_step` | 8 | ordering 1..8 is contiguous; each `seed_file` exists |
+| `meta_constant` | 3 | `pub const <name>: &str` in `src/agentic_coding/planner.rs` |
+| `meta_tool` | 4 | `"<tool>"` in `DRIVER_TOOLS`, `Capability::<cap>` in the planner, and the `"<permission>"` / package name in `src/associative_package.rs` |
+| `meta_stage` | 5 | `Step <n>:` markers in the planner; ordering 1..5 contiguous |
+| `meta_function` | 14 | `fn <name>` in the named source file |
+| `meta_primitive` | 9 | each appears in `PRIMITIVE_KINDS` in `src/agentic_coding/formalize.rs`; ordering 1..9 contiguous |
+| `meta_bound` | 1 | `const MAX_TURNS: usize = 12;` in `src/agentic_coding/driver.rs` |
+| `meta_surface` | 3 | the CLI subcommand, the example, and the integration test each contain their `needle` |
+
+### Running it
+
+```sh
+# Verify the agentic recipe still matches the live source:
+cargo test --test unit specification::agentic_meta_algorithm -- --nocapture
+```
+
+Because this recipe is checked against the source too, the agentic loop and its
+recipe can never silently diverge — the loop is itself a reproducible artifact of
+the meta-algorithm.

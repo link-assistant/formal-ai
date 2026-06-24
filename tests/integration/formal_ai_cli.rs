@@ -4,6 +4,8 @@ use std::process::{Child, Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, Instant};
 
+use formal_ai::parse_memory_links_notation;
+
 static TMPDIR_SEQ: AtomicU64 = AtomicU64::new(0);
 
 fn tmpdir() -> std::path::PathBuf {
@@ -279,6 +281,53 @@ fn cli_github_logs_plan_prints_reproducible_capture_commands() {
     assert!(stdout.contains("pr-1816-conversation-comments.json"));
     assert!(stdout.contains("run-26058054431.log"));
     assert!(stdout.contains("gh api repos/link-assistant/hive-mind/pulls/1816/comments --paginate"));
+}
+
+#[test]
+fn cli_shared_dialog_convert_chatgpt_share_writes_demo_memory() {
+    let dir = tmpdir();
+    let input = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("docs/case-studies/issue-552/raw-data/chatgpt-share-6a3825b9.html");
+    let output = dir.join("chatgpt-share.lino");
+    let share_url = "https://chatgpt.com/share/6a3825b9-8de4-83ee-9c24-52fd1eb38d24";
+
+    let converted = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "shared-dialog",
+            "convert",
+            "--input",
+            input.to_str().unwrap(),
+            "--output",
+            output.to_str().unwrap(),
+            "--source-url",
+            share_url,
+            "--demo-label",
+            "issue-552-chatgpt-share",
+        ])
+        .output()
+        .expect("shared-dialog convert");
+
+    assert!(
+        converted.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&converted.stderr)
+    );
+    let text = std::fs::read_to_string(&output).expect("read converted demo_memory");
+    let events = parse_memory_links_notation(&text);
+    assert_eq!(events.len(), 4);
+    assert_eq!(
+        events[0].demo_label.as_deref(),
+        Some("issue-552-chatgpt-share")
+    );
+    assert_eq!(events[0].evidence, vec![String::from(share_url)]);
+    assert!(events[3]
+        .content
+        .as_deref()
+        .unwrap_or_default()
+        .contains("screen -dmS auto-cleanup bash -c"));
+    assert!(text.contains(r#"content "```bash\nscreen -dmS auto-cleanup"#));
+
+    let _ = std::fs::remove_dir_all(&dir);
 }
 
 #[test]

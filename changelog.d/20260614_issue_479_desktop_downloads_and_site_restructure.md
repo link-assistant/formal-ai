@@ -1,0 +1,15 @@
+---
+bump: minor
+---
+
+### Fixed
+- Replaced a manual `(len + 1) / 2` ceiling in the lexicon matcher with `div_ceil`, satisfying clippy's `manual_div_ceil` lint under newer stable toolchains.
+
+### Added
+- A landing-page chooser at `/` that links to the web app (`/app/`), the documentation hub (`/docs/`), and the desktop download (`/download/`), wired to the shared theme + UI-language preference store and localized into en/ru/zh/hi.
+- A documentation hub at `/docs/` and a generated Rust API reference at `/docs/api/`, built with `cargo doc` during the GitHub Pages deploy.
+- End-to-end coverage for the new landing and documentation pages, plus CI guards for the new static and deploy invariants.
+
+### Changed
+- The interactive web app moved from `/` to `/app/`, served with `<base href="../">` so its shared site-root assets still resolve under both the GitHub Pages path prefix and the desktop static server; the desktop wrapper and in-site back-links now target `/app/`.
+- The release pipeline's concurrency is now main-safe, so a release run on `main` is never cancelled mid-flight.

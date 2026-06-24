@@ -8,7 +8,7 @@
 //! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
 //! uses so identifiers stay stable across surfaces.
 
-use crate::engine::stable_id;
+use crate::engine::{stable_id, ThinkingStep};
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 
@@ -92,6 +92,85 @@ impl EventLog {
         buffer
     }
 
+    /// Project raw solver events into user-readable, ordered thinking steps.
+    ///
+    /// This is the *curated* projection introduced for issue #488. Instead of a
+    /// noisy 1:1 dump of every internal event, it keeps only the meaningful
+    /// reasoning milestones, cleans each `detail` down to concrete content,
+    /// folds the calculator's reduction trace into one composite `compute` step
+    /// with detailed children, de-duplicates consecutive repeats, and labels the
+    /// universal-algorithm phases `high` so the minimum granularity surfaces only
+    /// the high-level direction.
+    ///
+    /// The raw, lossless trace stays available to maintainers through
+    /// [`EventLog::steps_block`] and [`EventLog::evidence_links`].
+    #[must_use]
+    pub fn thinking_steps(&self) -> Vec<ThinkingStep> {
+        self.thinking_steps_for_answer("")
+    }
+
+    /// Like [`EventLog::thinking_steps`], but substitutes the actual composed
+    /// answer for the opaque `response:<route>` payload of the closing
+    /// `deformalize` step so the final reasoning step is concrete (issue #488).
+    #[must_use]
+    pub fn thinking_steps_for_answer(&self, final_answer: &str) -> Vec<ThinkingStep> {
+        let answer = collapse_thinking_whitespace(final_answer);
+
+        // Phase 1 — curate raw events into a clean plan, folding the
+        // calculator's reduction trace into one composite parent + children.
+        let mut plan: Vec<PlannedThinkingStep> = Vec::new();
+        let mut calculation = CalculationCluster::default();
+        for event in &self.events {
+            if event.kind == "calculation" || event.kind.starts_with("calculation:") {
+                calculation.absorb(event.kind, &event.payload);
+                continue;
+            }
+            if calculation.has_data() {
+                calculation.drain_into(&mut plan);
+            }
+            if let Some(step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+                plan.push(step);
+            }
+        }
+        if calculation.has_data() {
+            calculation.drain_into(&mut plan);
+        }
+
+        // Phase 2 — de-duplicate consecutive repeats, assign order and parent
+        // ids (so composite steps render as recursively nested thinking).
+        let mut steps: Vec<ThinkingStep> = Vec::new();
+        let mut order: u32 = 0;
+        let mut previous_key: Option<String> = None;
+        let mut current_parent: Option<String> = None;
+        for planned in plan {
+            let key = format!("{}\u{1f}{}", planned.step, planned.detail);
+            let is_child = planned.role == StepRole::Child;
+            if !is_child && previous_key.as_deref() == Some(key.as_str()) {
+                continue;
+            }
+            previous_key = Some(key);
+            let mut step = ThinkingStep::new(
+                order,
+                planned.step,
+                planned.detail,
+                planned.level,
+                planned.source,
+            );
+            match planned.role {
+                StepRole::Parent => current_parent = Some(step.id.clone()),
+                StepRole::Child => {
+                    if let Some(parent) = current_parent.clone() {
+                        step = step.with_parent(parent);
+                    }
+                }
+                StepRole::Normal => current_parent = None,
+            }
+            steps.push(step);
+            order += 1;
+        }
+        steps
+    }
+
     /// Replay every in-process event into a durable link store projection.
     ///
     /// This is additive: the original event log remains in-process, while
@@ -111,6 +190,216 @@ impl EventLog {
             })?;
         }
         Ok(self.events.len())
+    }
+}
+
+/// Role of a planned step in a recursively-composite (fractal) thinking tree.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum StepRole {
+    /// A leaf step at the top level.
+    Normal,
+    /// A composite step that owns the following [`StepRole::Child`] steps.
+    Parent,
+    /// A sub-step nested under the most recent [`StepRole::Parent`].
+    Child,
+}
+
+/// A curated thinking step before ordering, de-duplication and id assignment.
+struct PlannedThinkingStep {
+    step: &'static str,
+    detail: String,
+    level: &'static str,
+    source: &'static str,
+    role: StepRole,
+}
+
+impl PlannedThinkingStep {
+    fn normal(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            step,
+            detail: detail.into(),
+            level,
+            source,
+            role: StepRole::Normal,
+        }
+    }
+
+    fn parent(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            role: StepRole::Parent,
+            ..Self::normal(step, detail, level, source)
+        }
+    }
+
+    fn child(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            role: StepRole::Child,
+            ..Self::normal(step, detail, level, source)
+        }
+    }
+}
+
+/// Accumulates the calculator's `calculation:*` trace so it can be rendered as a
+/// single composite `compute` step (parent) with detailed children (issue #488,
+/// requirement R11 — recursively composite / fractal steps).
+#[derive(Default)]
+struct CalculationCluster {
+    request: Option<String>,
+    engine: Option<String>,
+    expression: Option<String>,
+    steps: Option<String>,
+    result: Option<String>,
+}
+
+impl CalculationCluster {
+    fn absorb(&mut self, kind: &str, payload: &str) {
+        let value = payload.trim().to_owned();
+        match kind {
+            "calculation" => self.result = Some(value),
+            "calculation:request" => self.request = Some(value),
+            "calculation:engine" => self.engine = Some(value),
+            "calculation:lino" => self.expression = Some(value),
+            "calculation:steps" => self.steps = Some(value),
+            // `calculation:rate_basis` and any other detail kinds stay in the raw
+            // evidence trace but are not surfaced in the curated view.
+            _ => {}
+        }
+    }
+
+    const fn has_data(&self) -> bool {
+        self.result.is_some()
+            || self.request.is_some()
+            || self.engine.is_some()
+            || self.expression.is_some()
+            || self.steps.is_some()
+    }
+
+    fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+        let parent_detail = self
+            .result
+            .clone()
+            .or_else(|| self.request.clone())
+            .unwrap_or_default();
+        plan.push(PlannedThinkingStep::parent(
+            "compute",
+            parent_detail,
+            "high",
+            "calculation",
+        ));
+        if let Some(engine) = self.engine.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_engine",
+                engine,
+                "detailed",
+                "calculation:engine",
+            ));
+        }
+        if let Some(expression) = self.expression.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_expression",
+                expression,
+                "detailed",
+                "calculation:lino",
+            ));
+        }
+        if let Some(steps) = self.steps.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_steps",
+                steps,
+                "detailed",
+                "calculation:steps",
+            ));
+        }
+        *self = Self::default();
+    }
+}
+
+/// Collapse any run of whitespace (including newlines) into single spaces so a
+/// multi-line answer renders as one concrete `deformalize` detail.
+fn collapse_thinking_whitespace(value: &str) -> String {
+    value.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+/// Curate a single raw solver event into a clean, concrete thinking step, or
+/// `None` when the event is internal bookkeeping that should not surface to the
+/// user.
+///
+/// This is an **allowlist**: only events that carry meaningful reasoning are
+/// kept, and each is reduced to concrete content (a search term, a route, a
+/// looked-up entity, the composed answer). Unknown kinds are dropped so the
+/// default view stays concrete — the lossless trace remains in the evidence
+/// links for maintainers.
+fn curate_thinking_event(
+    kind: &'static str,
+    payload: &str,
+    final_answer: &str,
+) -> Option<PlannedThinkingStep> {
+    let detail = payload.trim();
+    let keep = |step: &'static str, detail: &str, level: &'static str| {
+        Some(PlannedThinkingStep::normal(
+            step,
+            detail.to_owned(),
+            level,
+            kind,
+        ))
+    };
+    match kind {
+        // ---- Universal-algorithm phases (high level / minimum granularity) ----
+        "impulse" => keep("impulse", detail, "high"),
+        "language" | "language_from" => keep("detect_language", detail, "high"),
+        "language_to" => keep("resolve_response_language", detail, "high"),
+        "intent_formalization:route" => keep("formalize", detail, "high"),
+        "intent" | "legacy_intent" => keep("dispatch_handler", detail, "high"),
+        "program_plan" | "program_parameters" => keep("program_plan", detail, "high"),
+        "response" => {
+            let value = if final_answer.is_empty() {
+                detail
+            } else {
+                final_answer
+            };
+            keep("deformalize", value, "high")
+        }
+
+        // ---- Concrete detailed reasoning ----
+        "concept_lookup:request" | "procedural_how_to:request" => {
+            keep("scan_memory", detail, "detailed")
+        }
+        "concept_lookup:hit" | "fact_query:relation" | "fact_query:subject" | "fact_lookup:hit" => {
+            keep("lookup_fact", detail, "detailed")
+        }
+        "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
+            keep("http_chat", detail, "detailed")
+        }
+        "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
+        "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
+        "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
+        "rule_construction" => keep("rule_construction", "", "detailed"),
+        // The validation payload is an internal acceptance reason
+        // (`accepted_without_extra_constraints`); surface a clean verification
+        // step without the meta-language token.
+        "validation" => keep("rule_verification", "", "detailed"),
+        _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
+        _ if kind.starts_with("agent_mode") || kind == "action_log" => {
+            keep("agent_plan", detail, "detailed")
+        }
+
+        // ---- Everything else: internal bookkeeping, dropped from the view ----
+        _ => None,
     }
 }
 

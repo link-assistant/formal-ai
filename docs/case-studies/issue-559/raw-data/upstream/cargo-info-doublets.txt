@@ -1,0 +1,20 @@
+doublets #associative #doublets #db
+Doublets (links) data structure implementation.
+version: 0.4.0
+license: Unlicense
+rust-version: 1.85
+documentation: https://docs.rs/doublets/0.4.0
+homepage: https://github.com/linksplatform/doublets-rs
+repository: https://github.com/linksplatform/doublets-rs
+crates.io: https://crates.io/crates/doublets/0.4.0
+features:
+ +default      = [platform]
+  data         = []
+  mem          = []
+  num          = []
+  platform     = [mem, num, data]
+  full         = [platform, rayon, small-search]
+  more-inline  = []
+  rayon        = [dep:rayon]
+  small-search = [smallvec]
+  smallvec     = [dep:smallvec]

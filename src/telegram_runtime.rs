@@ -9,7 +9,8 @@ use std::time::Duration;
 
 use crate::server::serve;
 use crate::telegram::{
-    parse_get_updates_response, TelegramPollingConfig, TelegramPollingError, TelegramPollingReply,
+    extract_sent_message_id, parse_get_updates_response, TelegramPollingConfig,
+    TelegramPollingError, TelegramPollingReply,
 };
 
 /// Errors that can interrupt the long-polling loop.
@@ -47,6 +48,25 @@ pub trait TelegramTransport {
         url: &str,
         body: &str,
     ) -> Result<String, TelegramPollingRuntimeError>;
+    /// Issue an `editMessageText` POST request with a JSON body and return the raw response
+    /// body. Powers the progressive thinking-message stream introduced by issue #488. The
+    /// default implementation falls back to `send_message`, so existing transports keep
+    /// working — they just deliver the edit as a regular `sendMessage` on a different URL,
+    /// which is harmless during tests that only inspect the recorded URL/body pairs.
+    fn edit_message_text(
+        &mut self,
+        url: &str,
+        body: &str,
+    ) -> Result<String, TelegramPollingRuntimeError> {
+        self.send_message(url, body)
+    }
+    /// Sleep for the given duration between progressive thinking edits so the
+    /// runtime respects Telegram's per-chat rate limits (issue #488). The
+    /// default implementation uses `std::thread::sleep`; tests override it to
+    /// keep the suite instant.
+    fn sleep_between_edits(&mut self, duration: Duration) {
+        sleep(duration);
+    }
 }
 
 /// Default transport that shells out to `curl` so the binary does not need a TLS dependency.
@@ -121,6 +141,17 @@ impl TelegramTransport for CurlTelegramTransport {
         ];
         Self::run_curl(&args)
     }
+
+    fn edit_message_text(
+        &mut self,
+        url: &str,
+        body: &str,
+    ) -> Result<String, TelegramPollingRuntimeError> {
+        // `editMessageText` shares the same POST/JSON shape as `sendMessage`; the
+        // only differences are the URL and the payload fields (`message_id`
+        // instead of `reply_parameters.message_id`).
+        self.send_message(url, body)
+    }
 }
 
 /// Start the long-polling loop with the default curl transport.
@@ -193,18 +224,65 @@ fn send_reply<T: TelegramTransport>(
 ) {
     let send_url = config.send_message_url();
     let body = reply.to_send_message_body();
-    match transport.send_message(&send_url, &body) {
-        Ok(_) => {
+    let send_response = match transport.send_message(&send_url, &body) {
+        Ok(response) => {
             eprintln!(
                 "telegram-poll: sent reply to chat_id={} (message_id={})",
                 reply.chat_id, reply.reply_parameters.message_id
             );
+            response
         }
         Err(error) => {
             eprintln!(
                 "telegram-poll: sendMessage to chat_id={} failed: {error}",
                 reply.chat_id
             );
+            return;
+        }
+    };
+
+    // Issue #488: stream the progressive thinking edits if Telegram echoed back
+    // a message_id we can target. Missing/unknown ids drop the stream silently
+    // and leave the initial bubble as the user's last view of the reply.
+    if reply.progressive_edits.is_empty() {
+        return;
+    }
+    let Some(sent_message_id) = extract_sent_message_id(&send_response) else {
+        eprintln!(
+            "telegram-poll: no message_id in sendMessage response for chat_id={}; skipping {} thinking edit(s)",
+            reply.chat_id,
+            reply.progressive_edits.len()
+        );
+        return;
+    };
+    let edit_url = config.edit_message_text_url();
+    for (index, edit) in reply.progressive_edits.iter().enumerate() {
+        if edit.delay_before_ms > 0 {
+            transport.sleep_between_edits(Duration::from_millis(edit.delay_before_ms));
+        }
+        let edit_body = edit.to_edit_message_body(reply.chat_id, sent_message_id);
+        match transport.edit_message_text(&edit_url, &edit_body) {
+            Ok(_) => {
+                eprintln!(
+                    "telegram-poll: edit {n}/{total} for chat_id={chat} message_id={msg}",
+                    n = index + 1,
+                    total = reply.progressive_edits.len(),
+                    chat = reply.chat_id,
+                    msg = sent_message_id,
+                );
+            }
+            Err(error) => {
+                eprintln!(
+                    "telegram-poll: editMessageText {n}/{total} for chat_id={chat} message_id={msg} failed: {error}",
+                    n = index + 1,
+                    total = reply.progressive_edits.len(),
+                    chat = reply.chat_id,
+                    msg = sent_message_id,
+                );
+                // Stop streaming if Telegram rejected an edit; the live bubble
+                // already shows the last successful snapshot.
+                return;
+            }
         }
     }
 }

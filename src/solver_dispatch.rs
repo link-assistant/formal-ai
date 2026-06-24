@@ -1,9 +1,9 @@
-//! Ordered dispatch table for the universal solver's specialized handlers.
+//! Ordered executable method catalogue for the universal solver.
 //!
 //! Extracted from `solver.rs` to keep that module under the repository line
-//! limit. The table is the single source of truth for handler precedence: the
-//! first handler that returns `Some` wins, and several tests rely on this
-//! resolution order.
+//! limit. The method catalogue is the executable backing for the meta method
+//! registry: the registry chooses method names, then this module supplies the
+//! Rust function for names implemented as regular solver handlers.
 
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
@@ -18,12 +18,13 @@ use crate::solver_handlers::{
     try_algorithm, try_arithmetic, try_brainstorming_request, try_calendar_create_event,
     try_calendar_reasoning, try_capabilities, try_clarification, try_compound_interest,
     try_concept_lookup, try_conversation_memory, try_conversation_topic_request,
-    try_coreference_request, try_definition_merge, try_execution_failure, try_fact_lookup,
-    try_http_fetch, try_ill_formed, try_installation_conversion, try_javascript_execution,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_number_riddle,
-    try_numeric_list, try_numeric_list_with_history, try_opinion_question, try_program_synthesis,
-    try_proof_request, try_proof_request_with_config, try_punctuation_only_prompt,
-    try_research_comparison_table, try_roleplay_request, try_shell_refusal,
+    try_coreference_request, try_definition_merge, try_document_request, try_execution_failure,
+    try_fact_lookup, try_http_fetch, try_ill_formed, try_installation_conversion,
+    try_javascript_execution, try_meta_explanation, try_meta_explanation_with_runtime,
+    try_network_query, try_number_riddle, try_numeric_list, try_numeric_list_with_history,
+    try_opinion_question, try_program_synthesis, try_proof_request, try_proof_request_with_config,
+    try_punctuation_only_prompt, try_research_comparison_table, try_roleplay_request,
+    try_shell_command_transform, try_shell_command_transform_with_history, try_shell_refusal,
     try_software_project_followup, try_software_project_request, try_source_conflict,
     try_source_refresh, try_summarization_request, try_text_manipulation,
     try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
@@ -33,8 +34,8 @@ use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question
 
 /// Uniform signature every specialized handler conforms to. Handlers that
 /// don't need `normalized` go through tiny adapter wrappers below so the
-/// dispatch registry stays homogeneous and the loop in
-/// `UniversalSolver::handle_specialized_pattern` remains a single line.
+/// dispatch registry stays homogeneous and the registry executor can call every
+/// regular table entry through one function shape.
 pub type SpecializedHandler = fn(&str, &str, &mut EventLog) -> Option<SymbolicAnswer>;
 
 fn handle_arithmetic(
@@ -78,8 +79,38 @@ pub enum ContextualOutcome {
 /// handler, the dispatch loop routes those few names through this helper.
 ///
 /// Extracted from `solver.rs` so that module stays under the repository line
-/// limit; the three branches were previously inlined in
-/// `UniversalSolver::handle_specialized_pattern`.
+/// limit; these branches are now reached through the registry-backed executor.
+/// The context-dependent override handlers, in the order `try_contextual_override`
+/// evaluates them.
+///
+/// This is the single source of truth for the contextual surface, kept beside the
+/// match below so the two cannot drift: every name here is dispatched in the
+/// `match` and every `match` arm is named here (the
+/// `tests/unit/specification/method_registry.rs` grounding test pins both
+/// directions against this source). The method registry (issue #559, R331) reads
+/// this constant so the catalogue-as-data is grounded in the live code.
+pub const CONTEXTUAL_HANDLER_NAMES: &[&str] = &[
+    "proof_request",
+    "meta_explanation",
+    "numeric_list",
+    "shell_command_transform",
+    "text_manipulation",
+];
+
+/// Method names that run before the regular handler table.
+///
+/// These used to be hardwired at the top of `UniversalSolver`'s specialized
+/// dispatch loop. Issue #559 makes them first-class registry methods as well, so
+/// the solver has one ordered method-selection path instead of a prelude branch
+/// plus a separate handler table.
+pub const PRELUDE_METHOD_NAMES: &[&str] = &[
+    "diagnostic",
+    "nl_tool",
+    "behavior_rules",
+    "feature_capability",
+    "playwright_script",
+];
+
 pub fn try_contextual_override(
     name: &str,
     prompt: &str,
@@ -97,13 +128,13 @@ pub fn try_contextual_override(
             try_meta_explanation_with_runtime(prompt, normalized, log, self_awareness_runtime)
         }
         "numeric_list" => try_numeric_list_with_history(prompt, normalized, log, history),
+        "shell_command_transform" => {
+            try_shell_command_transform_with_history(prompt, normalized, log, history)
+        }
         "text_manipulation" => try_text_manipulation_with_history(prompt, normalized, log, history),
         _ => return ContextualOutcome::NotHandled,
     };
-    answer.map_or(ContextualOutcome::Skip, |answer| {
-        log.append("specialized_handler", name.to_owned());
-        ContextualOutcome::Answer(answer)
-    })
+    answer.map_or(ContextualOutcome::Skip, ContextualOutcome::Answer)
 }
 
 /// Ordered dispatch table for the universal solver's specialized handlers.
@@ -154,6 +185,11 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     // reductions. It runs before `arithmetic` (which would otherwise claim the
     // numeric prompt) and before the generic, result-less `algorithm` handler.
     ("numeric_list", try_numeric_list),
+    // Issue #552: shell-command rewrites such as "make this an infinite loop"
+    // should produce the concrete command text in chat mode, while still not
+    // executing the command. This is more specific than generic script writing
+    // or terminal-command refusal.
+    ("shell_command_transform", try_shell_command_transform),
     ("number_constraint_reasoning", try_number_riddle),
     ("arithmetic", handle_arithmetic),
     ("javascript_execution", handle_javascript_execution),
@@ -174,6 +210,11 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("installation_conversion", try_installation_conversion),
     ("write_script", try_write_script),
     ("program_synthesis", try_program_synthesis),
+    // Issue #425: "make me a PDF / document / report with <subject>" is a
+    // document-generation task, not a software build. It runs before
+    // `software_project` so a document request is not mistaken for code, and it
+    // converts the would-be unknown response into the universal-algorithm plan.
+    ("document_generation_plan", try_document_request),
     ("software_project", try_software_project_request),
     ("algorithm", try_algorithm),
     ("source_refresh", try_source_refresh),
@@ -191,3 +232,12 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("opinion_question", try_opinion_question),
     ("incompatible_units", try_incompatible_units),
 ];
+
+/// Return the executable handler for a registry method name implemented by the
+/// regular solver-handler table.
+#[must_use]
+pub fn handler_for_method(name: &str) -> Option<SpecializedHandler> {
+    SPECIALIZED_HANDLERS
+        .iter()
+        .find_map(|(candidate, handler)| (*candidate == name).then_some(*handler))
+}

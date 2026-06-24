@@ -316,6 +316,11 @@
     if (event.conversationId) record.conversationId = String(event.conversationId);
     if (event.conversationTitle)
       record.conversationTitle = String(event.conversationTitle);
+    // Issue #541 (R4): demo turns are persisted in a dedicated demo
+    // conversation. The sidebar and the messages-for-conversation projection
+    // both filter on this flag so the user's real threads are never polluted
+    // by demo content. Only stored when truthy so non-demo events stay lean.
+    if (event.isDemo) record.isDemo = true;
     return withStore("readwrite", function (store, setResult) {
       var request = store.add(record);
       request.onsuccess = function () {
@@ -395,6 +400,10 @@
         if (raw.conversationId) record.conversationId = String(raw.conversationId);
         if (raw.conversationTitle)
           record.conversationTitle = String(raw.conversationTitle);
+        // Issue #541 (R4): preserve the demo-conversation flag on roundtrip
+        // so an export/import never quietly promotes demo turns into the
+        // user's real sidebar.
+        if (raw.isDemo) record.isDemo = true;
         var request = store.add(record);
         request.onsuccess = function () {
           inserted += 1;

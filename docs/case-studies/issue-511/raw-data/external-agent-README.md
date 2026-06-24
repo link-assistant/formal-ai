@@ -1,0 +1,256 @@
+<!-- Snapshot of link-assistant/agent README.md (v0.24.0) as of 2026-06-17 (issue #511 case study). Source of truth is the upstream repo; this copy keeps the analysis reproducible offline. -->
+
+# Link Assistant Agent
+
+**A minimal, public domain AI CLI agent compatible with OpenCode's JSON interface**
+
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
+
+> 🚨 **SECURITY WARNING: 100% UNSAFE AND AUTONOMOUS** 🚨
+>
+> This agent operates with **ZERO RESTRICTIONS** and **FULL AUTONOMY**:
+>
+> - ❌ **No Sandbox** - Complete unrestricted file system access
+> - ❌ **No Permissions System** - No approval required for any actions
+> - ❌ **No Safety Guardrails** - Can execute ANY command with full privileges
+> - ⚠️ **Autonomous Execution** - Makes decisions and executes actions independently
+>
+> **ONLY use in isolated environments** (VMs, Docker containers) where AI agents can have unrestricted access. **NOT SAFE** for personal computers, production servers, or systems with sensitive data.
+>
+> 🛡️ **Opt-in read-only mode:** For planning-only tasks you can run the agent
+> with `--read-only` (or `--disable-tools bash,write,edit`), a native,
+> enforceable mode that disables all filesystem-mutating and shell tools. See
+> [TOOLS.md → Read-Only / Planning Mode](TOOLS.md#read-only--planning-mode).
+>
+> 🔐 **Opt-in permission system:** For finer-grained control there is a native,
+> JSON-driven permission system (`--permission-mode auto|plan|readonly|ask` and
+> an OpenCode-compatible `--permission '<json>'` override) with per-command
+> approval over stdin/stdout and **no TUI**. Default stays full auto. See
+> [docs/permissions.md](docs/permissions.md).
+
+## Implementations
+
+This repository contains two implementations of the agent:
+
+| Implementation                 | Status               | Package Manager | Install Command                        |
+| ------------------------------ | -------------------- | --------------- | -------------------------------------- |
+| [JavaScript/Bun](js/README.md) | **Production Ready** | npm             | `bun install -g @link-assistant/agent` |
+| [Rust](rust/README.md)         | Work in Progress     | cargo           | `cargo install link-assistant-agent`   |
+
+Both implementations aim to be fully compatible with [OpenCode](https://github.com/sst/opencode)'s `run --format json` mode.
+
+### JavaScript/Bun Implementation
+
+[![npm version](https://badge.fury.io/js/@link-assistant%2Fagent.svg)](https://www.npmjs.com/package/@link-assistant/agent)
+
+The primary implementation, feature-complete and production-ready. Requires [Bun](https://bun.sh) >= 1.0.0.
+
+```bash
+# Step 1: Install Bun (skip if already installed)
+curl -fsSL https://bun.sh/install | bash
+source ~/.bashrc  # Or restart your terminal (use ~/.zshrc for Zsh)
+
+# Step 2: Verify Bun is working
+bun --version
+
+# Step 3: Install the agent globally
+bun install -g @link-assistant/agent
+
+# Step 4: Verify the agent is working
+agent --version
+
+# Step 5: Run it
+echo "hi" | agent
+```
+
+> **Troubleshooting:** If `bun` or `agent` is not found after installation, run `source ~/.bashrc` (or `source ~/.zshrc` for Zsh) to reload your PATH, or restart your terminal. See [js/README.md](js/README.md#troubleshooting) for more details.
+
+See [js/README.md](js/README.md) for full documentation including:
+
+- Complete CLI options reference
+- Model selection examples
+- Session resume functionality
+- MCP (Model Context Protocol) configuration
+- JSON output standards (OpenCode and Claude formats)
+
+### Rust Implementation
+
+[![Crates.io](https://img.shields.io/crates/v/link-assistant-agent.svg)](https://crates.io/crates/link-assistant-agent)
+
+The Rust implementation provides core functionality but is still under active development.
+
+```bash
+# Step 1: Install Rust (skip if already installed)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.bashrc  # Or restart your terminal
+
+# Step 2: Build from source
+cd rust
+cargo build --release
+
+# Step 3: Run it
+./target/release/agent -p "hello"
+```
+
+See [rust/README.md](rust/README.md) for full documentation.
+
+## Project Vision
+
+We're creating a slimmed-down, public domain version of OpenCode CLI focused on the "agentic run mode" for use in virtual machines, Docker containers, and other environments where unrestricted AI agent access is acceptable. This is **not** for general desktop use - it's for isolated environments where you want maximum AI agent freedom.
+
+**OpenCode Compatibility**: We maintain 100% compatibility with OpenCode's JSON event streaming format, so tools expecting `opencode run --format json --model opencode/minimax-m2.5-free` output will work with our agent-cli.
+
+## Why Choose Agent Over OpenCode?
+
+While maintaining 100% compatibility with OpenCode's JSON interface, Agent offers several key advantages:
+
+- **🎯 Token Efficient**: Title generation disabled by default - saves tokens and prevents rate limit issues with free-tier models
+- **🔄 Robust Retry Logic**: Advanced retry with exponential backoff (up to 20 minutes per retry, 7 days total timeout)
+- **⚙️ Configurable Timeouts**: Full control over retry behavior via `--retry-timeout` and environment variables
+- **📊 Smart Error Tracking**: Different error types reset retry timers independently for optimal recovery
+- **🎛️ Respect API Headers**: Automatically respects retry-after headers from API providers
+
+**The Result**: Agent is optimized for long-running, autonomous operations with free-tier models, while OpenCode focuses on interactive TUI use cases.
+
+## Features
+
+- **JSON Input/Output**: Accepts JSON via stdin, outputs JSON event streams (OpenCode-compatible)
+- **Plain Text Input**: Also accepts plain text messages (auto-converted to JSON format)
+- **Unrestricted Access**: Full file system and command execution access (no sandbox, no restrictions)
+- **Tool Support**: 13 tools including websearch, codesearch, batch - all enabled by default
+- **Flexible Model Selection**: Supports [OpenCode Zen](https://opencode.ai/docs/zen/), [Claude OAuth](docs/claude-oauth.md), [Groq](docs/groq.md), [OpenRouter](docs/openrouter.md), and more - see [MODELS.md](MODELS.md)
+- **Public Domain**: Unlicense - use it however you want
+
+## Quick Start
+
+**Plain text (easiest):**
+
+```bash
+echo "hi" | agent
+```
+
+**Simple JSON message:**
+
+```bash
+echo '{"message":"hi"}' | agent
+```
+
+**With custom model:**
+
+```bash
+echo "hi" | agent --model opencode/minimax-m2.5-free
+```
+
+**Direct prompt mode:**
+
+```bash
+agent -p "What is 2+2?"
+```
+
+See [js/README.md](js/README.md#usage) for more usage examples including model selection, session resume, and JSON output standards.
+
+## Supported Tools
+
+All 13 tools are **enabled by default** with **no configuration required**. See [TOOLS.md](TOOLS.md) for complete documentation.
+
+### File Operations
+
+- **`read`** - Read file contents
+- **`write`** - Write files
+- **`edit`** - Edit files with string replacement
+- **`list`** - List directory contents
+
+### Search Tools
+
+- **`glob`** - File pattern matching (`**/*.js`)
+- **`grep`** - Text search with regex support
+- **`websearch`** ✨ - Web search via Exa API (no config needed!)
+- **`codesearch`** ✨ - Code search via Exa API (no config needed!)
+
+### Execution Tools
+
+- **`bash`** - Execute shell commands
+- **`batch`** ✨ - Batch multiple tool calls (no config needed!)
+- **`task`** - Launch subagent tasks
+
+### Utility Tools
+
+- **`todo`** - Task tracking
+- **`webfetch`** - Fetch and process URLs
+
+✨ = Always enabled (no experimental flags or environment variables needed)
+
+## Architecture
+
+This agent reproduces OpenCode's `run --format json` command architecture:
+
+- **Streaming JSON Events**: Real-time event stream output
+- **Event Types**: `tool_use`, `text`, `step_start`, `step_finish`, `error`
+- **Session Management**: Unique session IDs for each request
+- **Tool Execution**: Tools with unrestricted access
+- **Compatible Format**: Events match OpenCode's JSON schema exactly
+
+## MCP (Model Context Protocol) Support
+
+The agent supports the Model Context Protocol (MCP), allowing you to extend functionality with MCP servers such as browser automation via Playwright.
+
+**Quick setup for Playwright MCP:**
+
+```bash
+agent mcp add playwright npx @playwright/mcp@latest
+```
+
+See [js/README.md](js/README.md#mcp-model-context-protocol-support) for full MCP documentation including:
+
+- Available Playwright tools (22+ browser automation capabilities)
+- MCP server configuration
+- Usage examples
+
+## Documentation
+
+| Document                         | Description                               |
+| -------------------------------- | ----------------------------------------- |
+| [MODELS.md](MODELS.md)           | Available models, providers, and pricing  |
+| [TOOLS.md](TOOLS.md)             | Complete tool documentation               |
+| [EXAMPLES.md](EXAMPLES.md)       | Usage examples for each tool              |
+| [TESTING.md](TESTING.md)         | Testing guide                             |
+| [js/README.md](js/README.md)     | JavaScript/Bun implementation (full docs) |
+| [rust/README.md](rust/README.md) | Rust implementation                       |
+
+## Files
+
+### JavaScript Implementation (js/)
+
+- `js/src/index.js` - Main entry point with JSON/plain text input support
+- `js/src/session/` - Session management and agent implementation
+- `js/src/tool/` - Tool implementations
+- `js/tests/` - Comprehensive test suite
+- `js/package.json` - npm package configuration
+
+### Rust Implementation (rust/)
+
+- `rust/src/main.rs` - Main entry point
+- `rust/src/cli.rs` - CLI argument parsing
+- `rust/src/tool/` - Tool implementations
+- `rust/Cargo.toml` - Cargo package configuration
+
+## Reference Implementations
+
+This repository includes official reference implementations as git submodules to provide best-in-class examples:
+
+- **original-opencode** - [OpenCode](https://github.com/sst/opencode) - The original OpenCode implementation we maintain compatibility with
+- **reference-gemini-cookbook** - [Google Gemini Cookbook](https://github.com/google-gemini/cookbook) - Official examples and guides for using the Gemini API
+- **reference-gemini-cli** - [Google Gemini CLI](https://github.com/google-gemini/gemini-cli) - Official AI agent bringing Gemini directly to the terminal
+- **reference-qwen3-coder** - [Qwen3-Coder](https://github.com/QwenLM/Qwen3-Coder) - Official Qwen3 code model from Alibaba Cloud
+
+To initialize all submodules:
+
+```bash
+git submodule update --init --recursive
+```
+
+These reference implementations provide valuable insights into different approaches for building AI agents and can serve as learning resources for developers working with this codebase.
+
+## License
+
+Unlicense (Public Domain)

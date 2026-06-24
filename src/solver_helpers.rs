@@ -11,6 +11,7 @@
 use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule};
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
+use crate::solver::{BlueprintComposition, ExecutionSurface, SolverConfig};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DecomposedSubImpulse {
@@ -189,7 +190,7 @@ pub const fn is_prime(value: u64) -> bool {
     }
     let mut divisor: u64 = 2;
     while divisor.saturating_mul(divisor) <= value {
-        if value % divisor == 0 {
+        if value.is_multiple_of(divisor) {
             return false;
         }
         divisor += 1;
@@ -625,6 +626,7 @@ pub fn is_write_script_request(normalized: &str) -> bool {
 
 pub fn format_write_script_execution(program: ProgramSpec) -> String {
     let execution = &program.language.execution;
+    let expected_output = program.expected_output();
     let cmd = execution.check_command.map_or_else(
         || format!("Run command: `{}`", execution.run_command),
         |check| {
@@ -645,7 +647,7 @@ pub fn format_write_script_execution(program: ProgramSpec) -> String {
         execution.environment,
         cmd,
         output_label,
-        program.task.output,
+        expected_output,
         execution.notes
     )
 }
@@ -700,4 +702,62 @@ pub fn env_truthy(name: &str) -> bool {
                 "0" | "false" | "no" | "off"
             )
     })
+}
+
+/// Build a [`crate::solver::SolverConfig`] from the documented environment
+/// overrides. This is the body of [`crate::solver::SolverConfig::from_env`],
+/// extracted here so `src/solver.rs` stays under the 1000-line cap.
+pub fn config_from_env() -> SolverConfig {
+    let mut config = SolverConfig::default();
+    if env_truthy("FORMAL_AI_OFFLINE") {
+        config.offline = true;
+    }
+    if env_truthy("FORMAL_AI_AGENT_MODE") {
+        config.agent_mode = true;
+    }
+    if env_truthy("FORMAL_AI_DIAGNOSTIC_MODE") {
+        config.diagnostic_mode = true;
+    }
+    if let Some(value) = env_definition_fusion_by_default() {
+        config.definition_fusion_by_default = value;
+    }
+    if let Some(value) = env_bool("FORMAL_AI_ASSOCIATIVE_PROJECT_PROMOTION")
+        .or_else(|| env_bool("FORMAL_AI_PROJECT_PROMOTION"))
+    {
+        config.associative_project_promotion = value;
+    }
+    if let Ok(value) =
+        std::env::var("FORMAL_AI_EXECUTION_SURFACE").or_else(|_| std::env::var("FORMAL_AI_SURFACE"))
+    {
+        if let Some(surface) = ExecutionSurface::from_env_value(&value) {
+            config.execution_surface = surface;
+        }
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_TEMPERATURE", 0.0, 1.0) {
+        config.temperature = value;
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_GUESS_PROBABILITY", 0.0, 1.0) {
+        config.guess_probability = value;
+    }
+    if let Some(value) = env_bounded_f32("FORMAL_AI_FOLLOW_UP_PROBABILITY", 0.0, 1.0) {
+        config.follow_up_probability = value;
+    }
+    if let Ok(value) = std::env::var("FORMAL_AI_CACHE_TTL_SECONDS") {
+        if let Ok(parsed) = value.parse::<u64>() {
+            config.cache_ttl_seconds = parsed;
+        }
+    }
+    if let Ok(value) = std::env::var("FORMAL_AI_BLUEPRINT_COMPOSITION")
+        .or_else(|_| std::env::var("FORMAL_AI_PROGRAM_COMPOSITION"))
+    {
+        if let Some(mode) = BlueprintComposition::from_value(&value) {
+            config.blueprint_composition = mode;
+        }
+    }
+    crate::meta_core::apply_env_modes(
+        &mut config.recursion_mode,
+        &mut config.selection_mode,
+        &mut config.skill_mode,
+    );
+    config
 }

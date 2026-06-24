@@ -1,0 +1,12 @@
+link-assistant/formal-ai:README.md: and intent formalization (`src/intent_formalization.rs`), is documented in
+link-assistant/formal-ai:changelog.d/20260526_200500_issue_299_intent_formalization.md: - Added Links-Notation intent formalization with an impulse-id cache and routed the Rust solver from the formalized intent record.
+link-assistant/formal-ai:REQUIREMENTS.md: reasoning under unknowns, intent formalization in Links Notation, generalized
+link-assistant/formal-ai:src/intent_formalization.rs: //! Links-Notation intent formalization and cache.
+link-assistant/formal-ai:changelog.d/20260525_000000_issue_244_vision_plan.md: - Opened the reasoning-focused batch E21-E27 ([#298](https://github.com/link-assistant/formal-ai/issues/298)–[#304](https://github.com/link-assistant/formal-ai/issues/304)) after a third-pass audit on issue #244 feedback: reasoning under unknowns instead of a canned fallback, intent formalization as Links Notation (dropping the fixed catalogue), parametric `write a program` intents, `link-cli`-style `replace x y` / `when n do m` substitution rules over link CRUD, natural-language access to memory/APIs/code execution, a general code-modifying/executing agent, and permissively-licensed industry benchmark datasets.
+link-assistant/formal-ai:docs/case-studies/issue-244/proposed-issues.md: foundation-first: E22 (intent formalization) and E21 (reasoning under unknowns)
+link-assistant/formal-ai:docs/case-studies/issue-244/proposed-issues.md: ### E22 — Intent formalization as Links Notation — [#299](https://github.com/link-assistant/formal-ai/issues/299)
+link-assistant/formal-ai:docs/case-studies/issue-244/README.md: | Q13 | If there are **critical problems blocking the vision**, plan to fix them **first** (solid foundation). | Done — E1/E2 were planned and implemented first; E15-E20 then closed the smaller follow-ups; the E21-E27 reasoning batch is ordered foundation-first (E22 intent formalization and E21 reasoning-under-unknowns before the E26 coding agent). |
+link-assistant/formal-ai:docs/case-studies/issue-244/README.md: foundation-first (E22 intent formalization and E21 reasoning-under-unknowns
+link-assistant/formal-ai:docs/case-studies/issue-410/raw-data/formal-ai/README.md: and intent formalization (`src/intent_formalization.rs`), is documented in
+link-assistant/formal-ai:tests/unit/specification/intent_formalization.rs: //! Intent formalization tests.
+link-assistant/formal-ai:tests/source/intent_formalization.rs: //! Links-Notation intent formalization and cache.

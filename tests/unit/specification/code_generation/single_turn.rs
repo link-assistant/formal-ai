@@ -104,6 +104,28 @@ fn python_hello_world_seed_runs() {
 }
 
 #[test]
+fn python_list_files_reverse_sort_sample_output_matches_saved_file_name() {
+    let response = answer(
+        "Write me a Python program that lists files in the current directory in reverse-sorted order",
+    );
+
+    assert_write_program_parameters(&response, "python", "list_files_reverse_sort");
+    assert!(response.answer.contains("```python"));
+    assert!(
+        response
+            .answer
+            .contains("```text\nmain.py\ndata.txt\nREADME.md\n```"),
+        "Python reverse file-list output should match the documented sample directory, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("Cargo.toml"),
+        "Python sample output should not mention Rust project files, got: {}",
+        response.answer
+    );
+}
+
+#[test]
 fn javascript_hello_world_seed_runs() {
     let response = answer("Show me hello world in JavaScript");
     assert_write_program_parameters(&response, "javascript", "hello_world");

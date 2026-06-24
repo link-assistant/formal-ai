@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Issue #1963 — UI/UX polish harness</title>
+    <!-- Link the REAL shipped stylesheet so the harness renders exactly what
+         the desktop app renders. The DOM below is copied verbatim from the
+         React render functions in src/web/app.js (ThinkingPreview,
+         PendingAssistantBubble, the desktop services + update panels, and the
+         topbar), so every class resolves against production CSS. -->
+    <link rel="stylesheet" href="../src/web/styles.css" />
+    <style>
+      /* Harness-only chrome — never ships. Lets the page flow for a full-height
+         screenshot instead of the app's fixed 100dvh viewport. */
+      html,
+      body {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+      }
+      body {
+        padding: 24px;
+        box-sizing: border-box;
+      }
+      .harness-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: minmax(320px, 540px) minmax(300px, 360px);
+        align-items: start;
+        max-width: 960px;
+      }
+      .harness-card {
+        border: 1px dashed rgba(127, 127, 127, 0.5);
+        border-radius: 10px;
+        padding: 14px 16px 18px;
+      }
+      .harness-card h2 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+      .harness-card p.note {
+        margin: 0 0 12px;
+        font-size: 12px;
+        opacity: 0.7;
+      }
+      /* Give the chat column a realistic width so the pending-bubble width (P3)
+         is meaningful. */
+      .harness-chat {
+        max-width: 520px;
+      }
+      .topbar {
+        position: static;
+      }
+      /* P5 renders full-width (its real layout spans the app header), so it sits
+         below the grid rather than inside a narrow grid cell. */
+      .harness-fullwidth {
+        max-width: 960px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="harness-grid">
+      <!-- ============================================================ P1 -->
+      <section class="harness-card">
+        <h2>P1 — continuous scroll-fade across the collapsed reasoning</h2>
+        <p class="note">
+          One container-level gradient now spans both visible steps instead of a
+          separate fade per paragraph.
+        </p>
+        <div class="message assistant">
+          <div class="avatar" aria-hidden="true">FA</div>
+          <div class="message-body">
+            <section class="thinking-preview is-collapsed" aria-label="Thinking">
+              <div class="thinking-preview-header">
+                <strong class="thinking-preview-title">Thinking</strong>
+                <button type="button" class="thinking-preview-toggle" aria-expanded="false">
+                  Expand
+                </button>
+              </div>
+              <div class="thinking-preview-collapsed" data-testid="thinking-collapsed">
+                <p class="thinking-preview-previous" data-testid="thinking-preview-previous"
+                   aria-label="Previous thinking step">
+                  Match the greeting rule.
+                </p>
+                <p class="thinking-preview-current" data-testid="thinking-preview-current"
+                   aria-label="Current thinking step">
+                  Applied available context: the user greeted in English, so reply in kind.
+                </p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ P4 -->
+      <section class="harness-card">
+        <h2>P4 — services + update panels honor the dark theme</h2>
+        <p class="note">Every services/update surface now has a dark counterpart.</p>
+        <div class="desktop-services-panel" data-testid="desktop-services-panel">
+          <div class="desktop-update-panel" data-state="available">
+            <span class="desktop-update-state" role="status">Update available: v0.215.0</span>
+            <div class="desktop-update-actions">
+              <button type="button">Check for updates</button>
+              <button type="button" class="desktop-update-install">Install &amp; restart</button>
+            </div>
+          </div>
+          <div class="desktop-service" data-state="stopped">
+            <div class="desktop-service-head">
+              <span class="desktop-service-dot"></span>
+              <span class="desktop-service-label">Telegram bot</span>
+              <span class="desktop-service-state">Stopped</span>
+            </div>
+            <input type="password" class="desktop-service-token" placeholder="TELEGRAM_BOT_TOKEN" />
+            <div class="desktop-service-actions">
+              <button type="button" class="desktop-service-start">Start</button>
+              <button type="button" class="desktop-service-stop" disabled>Stop</button>
+            </div>
+          </div>
+          <div class="desktop-service" data-state="running">
+            <div class="desktop-service-head">
+              <span class="desktop-service-dot is-running"></span>
+              <span class="desktop-service-label">OpenAI-compatible server</span>
+              <span class="desktop-service-state">Running</span>
+            </div>
+            <a class="desktop-service-url" href="#" target="_blank" rel="noopener noreferrer">127.0.0.1:8080</a>
+            <div class="desktop-service-actions">
+              <button type="button" class="desktop-service-start" disabled>Start</button>
+              <button type="button" class="desktop-service-stop">Stop</button>
+            </div>
+          </div>
+          <p class="desktop-services-error">Failed to start Telegram bot: invalid token.</p>
+        </div>
+      </section>
+
+      <!-- ============================================================ P3 -->
+      <section class="harness-card">
+        <h2>P3 — pending bubble keeps full message width</h2>
+        <p class="note">
+          The thinking-only bubble (top) no longer collapses to a narrow 116px box
+          before the answer (bottom) arrives — no width jump.
+        </p>
+        <div class="harness-chat">
+          <article class="message assistant pending">
+            <div class="avatar" aria-hidden="true">FA</div>
+            <div class="message-body">
+              <section class="thinking-preview is-collapsed is-pending" aria-label="Thinking" data-pending="true">
+                <div class="thinking-preview-header">
+                  <strong class="thinking-preview-title">
+                    <span class="thinking-preview-live-dot" aria-hidden="true"></span>Thinking
+                  </strong>
+                  <button type="button" class="thinking-preview-toggle" aria-expanded="false">Expand</button>
+                </div>
+                <div class="thinking-preview-collapsed">
+                  <p class="thinking-preview-previous">Read the request: "Hi".</p>
+                  <p class="thinking-preview-current">Applied available context.</p>
+                </div>
+              </section>
+            </div>
+          </article>
+          <article class="message assistant">
+            <div class="avatar" aria-hidden="true">FA</div>
+            <div class="message-body">
+              <div class="message-meta"><strong>Formal AI</strong><time>now</time></div>
+              <p>Hello! How can I help you today?</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================================ P5 -->
+    <section class="harness-card harness-fullwidth">
+      <h2>P5 — every topbar control reacts to hover + focus</h2>
+        <p class="note">
+          All buttons share one hover treatment and one focus ring (hover/focus
+          captured via the browser in the spec/screenshots).
+        </p>
+        <header class="topbar">
+          <button type="button" class="mobile-menu-toggle" aria-pressed="false">Menu</button>
+          <button type="button" class="sidebar-toggle">Sidebar</button>
+          <div class="topbar-actions">
+            <button type="button" class="source-code-button">Source</button>
+            <button type="button" class="download-button">Download</button>
+            <button type="button" class="report-button">Report</button>
+            <button type="button" class="memory-button">Memory</button>
+            <button type="button" class="diagnostics-toggle" aria-pressed="false">Diagnostics</button>
+            <div class="mode-radio" role="radiogroup" aria-label="Mode">
+              <button type="button" class="mode-option mode-option-chat is-active" role="radio" aria-checked="true">Chat</button>
+              <button type="button" class="mode-option mode-option-agent" role="radio" aria-checked="false">Agent</button>
+            </div>
+            <button type="button" class="mode-toggle" aria-pressed="false">Mode</button>
+          </div>
+        </header>
+    </section>
+  </body>
+</html>

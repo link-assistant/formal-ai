@@ -1,0 +1,452 @@
+# Desktop tool-permission and Services UI translations (issue #511/#514).
+# Split out of i18n-catalog.lino to stay under the Links Notation line limit.
+# The loader (src/web/i18n.js) fetches this file and i18n-catalog.lino and
+# merges their per-locale keys; tests/e2e/scripts/check-i18n-catalog.mjs enforces parity.
+
+en
+  permissions
+    tool
+      http_fetch
+        label "HTTP fetch"
+        description "Fetch an HTTP(S) URL through the local process."
+      url_navigate
+        label "URL navigate"
+        description "Open or inspect a URL through the local process."
+      eval_js
+        label "Evaluate JS"
+        description "Run JavaScript inside the sandbox."
+      read_local_file
+        label "Read local file"
+        description "Read a file from the allowed local workspace."
+      code_exec
+        label "Code exec"
+        description "Run code inside the Docker sandbox."
+      shell
+        label "Shell"
+        description "Run a shell command on the host machine."
+    panel
+      title "Desktop tool permissions"
+      active "Agent tools active"
+      saved "Saved for Agent mode"
+      rowLabel "Permissions"
+    state
+      granted "Granted"
+      declined "Declined"
+      undecided "Not decided"
+    action
+      grant "Grant"
+      decline "Decline"
+      grantAll "Grant all and switch to Agent mode"
+      grantAllAndRun "Grant all, switch to Agent mode, and run pending task"
+    toolCount "{granted}/{total} tools granted"
+    command
+      title "Shell command request"
+      approve "Approve"
+      deny "Deny"
+      status
+        pending "Pending"
+        running "Running"
+        approved "Approved"
+        denied "Denied"
+    onboarding
+      intro "Agent and Full Auto use explicit desktop permissions."
+      perTool "Grant or decline each tool separately."
+      modes "Agent asks before each shell command; Full Auto skips per-command prompts but still only runs granted tools."
+    message
+      shellRan "Ran shell command in {mode} mode: `{command}`."
+      shellNotRun "Shell command was not run: `{command}`."
+      shellNotGranted "The `shell` tool is not granted. Grant `shell` in the desktop permission panel, then send the command again."
+      approvalPrompt "Approve this shell command before it runs:"
+      commandDeclined "Command declined: `{command}`. No shell command ran."
+      noOutput "(no output)"
+      reasonNoResult "desktop tool router returned no result"
+      reasonRefused "desktop tool router refused the request"
+  services
+    title "Services"
+    telegram
+      label "Telegram bot"
+    server
+      label "OpenAI-compatible server"
+    agent
+      label "Agent environment"
+    dockerMissing "Docker is not available. Install Docker Desktop to start the prepared containers."
+    installAgent "Install agent environment"
+    installing "Installing…"
+    start "Start"
+    starting "Starting…"
+    stop "Stop"
+    stopping "Stopping…"
+    state
+      ready "ready"
+      running "running"
+      stopped "stopped"
+      needsToken "needs token"
+      dockerUnavailable "Docker unavailable"
+      error "error"
+      unknown "unknown"
+  updates
+    title "Updates"
+    currentVersion "Version"
+    check "Check"
+    checking "Checking..."
+    update "Update"
+    updating "Updating..."
+    progress "{percent}% downloaded"
+    state
+      idle "Ready to check"
+      checking "Checking for updates"
+      available "Update {version} available"
+      notAvailable "Up to date"
+      downloading "Downloading update"
+      downloaded "Ready to restart"
+      installing "Installing update"
+      disabled "Unavailable"
+      error "Update error"
+  vscodeInstall
+    title "VS Code extension"
+    summary "Install the formal-ai extension into VS Code in one click. It downloads the latest signed .vsix and runs code --install-extension."
+    install "Install in VS Code"
+    installing "Installing…"
+    installed "Installed into {cli}. Reload VS Code to start using it."
+    noCli "No VS Code command-line tool was found. Install VS Code and enable the 'code' command in PATH."
+    noAsset "No extension has been published to the latest release yet."
+    lookupFailed "Could not reach the GitHub Releases API."
+    downloadFailed "Could not download the .vsix."
+    installFailed "code --install-extension failed."
+    error "Could not install the VS Code extension."
+
+ru
+  permissions
+    tool
+      http_fetch
+        label "HTTP-запрос"
+        description "Загрузить HTTP(S)-адрес через локальный процесс."
+      url_navigate
+        label "Переход по URL"
+        description "Открыть или просмотреть URL через локальный процесс."
+      eval_js
+        label "Выполнить JS"
+        description "Запустить JavaScript в песочнице."
+      read_local_file
+        label "Чтение локального файла"
+        description "Прочитать файл из разрешённого локального рабочего пространства."
+      code_exec
+        label "Выполнение кода"
+        description "Запустить код в песочнице Docker."
+      shell
+        label "Оболочка"
+        description "Выполнить команду оболочки на хост-машине."
+    panel
+      title "Разрешения инструментов рабочего стола"
+      active "Инструменты агента активны"
+      saved "Сохранено для режима агента"
+      rowLabel "Разрешения"
+    state
+      granted "Предоставлено"
+      declined "Отклонено"
+      undecided "Не решено"
+    action
+      grant "Предоставить"
+      decline "Отклонить"
+      grantAll "Предоставить все и включить режим агента"
+      grantAllAndRun "Предоставить все, включить режим агента и выполнить отложенную задачу"
+    toolCount "Предоставлено инструментов: {granted}/{total}"
+    command
+      title "Запрос команды оболочки"
+      approve "Одобрить"
+      deny "Отклонить"
+      status
+        pending "Ожидает"
+        running "Выполняется"
+        approved "Одобрено"
+        denied "Отклонено"
+    onboarding
+      intro "Агент и Авто используют явные разрешения рабочего стола."
+      perTool "Предоставьте или отклоните каждый инструмент отдельно."
+      modes "Агент спрашивает перед каждой командой оболочки; Авто пропускает запросы по каждой команде, но всё равно запускает только разрешённые инструменты."
+    message
+      shellRan "Команда оболочки выполнена в режиме {mode}: `{command}`."
+      shellNotRun "Команда оболочки не выполнена: `{command}`."
+      shellNotGranted "Инструмент `shell` не предоставлен. Предоставьте `shell` на панели разрешений рабочего стола и отправьте команду снова."
+      approvalPrompt "Одобрите эту команду оболочки перед запуском:"
+      commandDeclined "Команда отклонена: `{command}`. Команда оболочки не выполнялась."
+      noOutput "(нет вывода)"
+      reasonNoResult "маршрутизатор инструментов рабочего стола не вернул результат"
+      reasonRefused "маршрутизатор инструментов рабочего стола отклонил запрос"
+  services
+    title "Сервисы"
+    telegram
+      label "Telegram-бот"
+    server
+      label "OpenAI-совместимый сервер"
+    agent
+      label "Среда агента"
+    dockerMissing "Docker недоступен. Установите Docker Desktop, чтобы запускать подготовленные контейнеры."
+    installAgent "Установить среду агента"
+    installing "Установка…"
+    start "Запустить"
+    starting "Запуск…"
+    stop "Остановить"
+    stopping "Остановка…"
+    state
+      ready "готова"
+      running "работает"
+      stopped "остановлен"
+      needsToken "нужен токен"
+      dockerUnavailable "Docker недоступен"
+      error "ошибка"
+      unknown "неизвестно"
+  updates
+    title "Обновления"
+    currentVersion "Версия"
+    check "Проверить"
+    checking "Проверка..."
+    update "Обновить"
+    updating "Обновление..."
+    progress "Загружено {percent}%"
+    state
+      idle "Готово к проверке"
+      checking "Проверка обновлений"
+      available "Доступно обновление {version}"
+      notAvailable "Актуальная версия"
+      downloading "Загрузка обновления"
+      downloaded "Готово к перезапуску"
+      installing "Установка обновления"
+      disabled "Недоступно"
+      error "Ошибка обновления"
+  vscodeInstall
+    title "Расширение VS Code"
+    summary "Установите расширение formal-ai в VS Code одним кликом. Загружается последний подписанный .vsix и выполняется code --install-extension."
+    install "Установить в VS Code"
+    installing "Установка…"
+    installed "Установлено в {cli}. Перезагрузите VS Code, чтобы начать работу."
+    noCli "Инструмент командной строки VS Code не найден. Установите VS Code и включите команду «code» в PATH."
+    noAsset "Расширение ещё не опубликовано в последнем релизе."
+    lookupFailed "Не удалось обратиться к GitHub Releases API."
+    downloadFailed "Не удалось загрузить .vsix."
+    installFailed "Команда code --install-extension завершилась с ошибкой."
+    error "Не удалось установить расширение VS Code."
+
+zh
+  permissions
+    tool
+      http_fetch
+        label "HTTP 获取"
+        description "通过本地进程获取 HTTP(S) 网址。"
+      url_navigate
+        label "URL 导航"
+        description "通过本地进程打开或检查网址。"
+      eval_js
+        label "执行 JS"
+        description "在沙箱中运行 JavaScript。"
+      read_local_file
+        label "读取本地文件"
+        description "从允许的本地工作区读取文件。"
+      code_exec
+        label "执行代码"
+        description "在 Docker 沙箱中运行代码。"
+      shell
+        label "Shell"
+        description "在主机上运行 shell 命令。"
+    panel
+      title "桌面工具权限"
+      active "代理工具已激活"
+      saved "已为代理模式保存"
+      rowLabel "权限"
+    state
+      granted "已授予"
+      declined "已拒绝"
+      undecided "未决定"
+    action
+      grant "授予"
+      decline "拒绝"
+      grantAll "全部授予并切换到代理模式"
+      grantAllAndRun "全部授予、切换到代理模式并执行待处理任务"
+    toolCount "已授予 {granted}/{total} 个工具"
+    command
+      title "Shell 命令请求"
+      approve "批准"
+      deny "拒绝"
+      status
+        pending "待处理"
+        running "运行中"
+        approved "已批准"
+        denied "已拒绝"
+    onboarding
+      intro "代理和全自动使用明确的桌面权限。"
+      perTool "分别授予或拒绝每个工具。"
+      modes "代理在每个 shell 命令前询问；全自动跳过逐条命令提示，但仍然只运行已授予的工具。"
+    message
+      shellRan "已在 {mode} 模式下运行 shell 命令：`{command}`。"
+      shellNotRun "shell 命令未运行：`{command}`。"
+      shellNotGranted "未授予 `shell` 工具。请在桌面权限面板中授予 `shell`，然后再次发送命令。"
+      approvalPrompt "在运行此 shell 命令前请批准："
+      commandDeclined "命令已拒绝：`{command}`。没有运行任何 shell 命令。"
+      noOutput "（无输出）"
+      reasonNoResult "桌面工具路由器未返回结果"
+      reasonRefused "桌面工具路由器拒绝了该请求"
+  services
+    title "服务"
+    telegram
+      label "Telegram 机器人"
+    server
+      label "OpenAI 兼容服务器"
+    agent
+      label "代理环境"
+    dockerMissing "Docker 不可用。请安装 Docker Desktop 以启动预配置的容器。"
+    installAgent "安装代理环境"
+    installing "正在安装…"
+    start "启动"
+    starting "正在启动…"
+    stop "停止"
+    stopping "正在停止…"
+    state
+      ready "就绪"
+      running "运行中"
+      stopped "已停止"
+      needsToken "需要令牌"
+      dockerUnavailable "Docker 不可用"
+      error "错误"
+      unknown "未知"
+  updates
+    title "更新"
+    currentVersion "版本"
+    check "检查"
+    checking "正在检查..."
+    update "更新"
+    updating "正在更新..."
+    progress "已下载 {percent}%"
+    state
+      idle "可检查更新"
+      checking "正在检查更新"
+      available "有可用更新 {version}"
+      notAvailable "已是最新"
+      downloading "正在下载更新"
+      downloaded "可重启更新"
+      installing "正在安装更新"
+      disabled "不可用"
+      error "更新错误"
+  vscodeInstall
+    title "VS Code 扩展"
+    summary "一键将 formal-ai 扩展安装到 VS Code。它会下载最新的已签名 .vsix 并运行 code --install-extension。"
+    install "安装到 VS Code"
+    installing "正在安装…"
+    installed "已安装到 {cli}。请重新加载 VS Code 以开始使用。"
+    noCli "未找到 VS Code 命令行工具。请安装 VS Code 并在 PATH 中启用 “code” 命令。"
+    noAsset "最新发布中尚未提供扩展。"
+    lookupFailed "无法访问 GitHub Releases API。"
+    downloadFailed "无法下载 .vsix。"
+    installFailed "code --install-extension 执行失败。"
+    error "无法安装 VS Code 扩展。"
+
+hi
+  permissions
+    tool
+      http_fetch
+        label "HTTP फ़ेच"
+        description "लोकल प्रोसेस के ज़रिए एक HTTP(S) URL फ़ेच करें।"
+      url_navigate
+        label "URL नेविगेट"
+        description "लोकल प्रोसेस के ज़रिए एक URL खोलें या जाँचें।"
+      eval_js
+        label "JS चलाएँ"
+        description "सैंडबॉक्स में JavaScript चलाएँ।"
+      read_local_file
+        label "लोकल फ़ाइल पढ़ें"
+        description "अनुमत लोकल वर्कस्पेस से एक फ़ाइल पढ़ें।"
+      code_exec
+        label "कोड चलाएँ"
+        description "Docker सैंडबॉक्स में कोड चलाएँ।"
+      shell
+        label "शेल"
+        description "होस्ट मशीन पर एक शेल कमांड चलाएँ।"
+    panel
+      title "डेस्कटॉप टूल अनुमतियाँ"
+      active "एजेंट टूल सक्रिय"
+      saved "एजेंट मोड के लिए सहेजा गया"
+      rowLabel "अनुमतियाँ"
+    state
+      granted "प्रदान किया"
+      declined "अस्वीकृत"
+      undecided "तय नहीं"
+    action
+      grant "प्रदान करें"
+      decline "अस्वीकार करें"
+      grantAll "सभी प्रदान करें और एजेंट मोड पर स्विच करें"
+      grantAllAndRun "सभी प्रदान करें, एजेंट मोड पर स्विच करें और लंबित कार्य चलाएँ"
+    toolCount "{granted}/{total} टूल प्रदान किए गए"
+    command
+      title "शेल कमांड अनुरोध"
+      approve "स्वीकृत करें"
+      deny "अस्वीकार करें"
+      status
+        pending "लंबित"
+        running "चल रहा है"
+        approved "स्वीकृत"
+        denied "अस्वीकृत"
+    onboarding
+      intro "एजेंट और फुल ऑटो स्पष्ट डेस्कटॉप अनुमतियों का उपयोग करते हैं।"
+      perTool "हर टूल को अलग-अलग प्रदान या अस्वीकार करें।"
+      modes "एजेंट हर शेल कमांड से पहले पूछता है; फुल ऑटो हर-कमांड प्रॉम्प्ट छोड़ देता है पर फिर भी केवल प्रदान किए गए टूल ही चलाता है।"
+    message
+      shellRan "{mode} मोड में शेल कमांड चलाई गई: `{command}`।"
+      shellNotRun "शेल कमांड नहीं चलाई गई: `{command}`।"
+      shellNotGranted "`shell` टूल प्रदान नहीं किया गया है। डेस्कटॉप अनुमति पैनल में `shell` प्रदान करें, फिर कमांड दोबारा भेजें।"
+      approvalPrompt "इस शेल कमांड को चलने से पहले स्वीकृत करें:"
+      commandDeclined "कमांड अस्वीकृत: `{command}`। कोई शेल कमांड नहीं चली।"
+      noOutput "(कोई आउटपुट नहीं)"
+      reasonNoResult "डेस्कटॉप टूल राउटर ने कोई परिणाम नहीं लौटाया"
+      reasonRefused "डेस्कटॉप टूल राउटर ने अनुरोध अस्वीकार कर दिया"
+  services
+    title "सेवाएँ"
+    telegram
+      label "Telegram बॉट"
+    server
+      label "OpenAI-संगत सर्वर"
+    agent
+      label "एजेंट वातावरण"
+    dockerMissing "Docker उपलब्ध नहीं है। तैयार कंटेनर शुरू करने के लिए Docker Desktop इंस्टॉल करें।"
+    installAgent "एजेंट वातावरण इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
+    start "शुरू करें"
+    starting "शुरू हो रहा है…"
+    stop "रोकें"
+    stopping "रुक रहा है…"
+    state
+      ready "तैयार"
+      running "चल रहा है"
+      stopped "रुका हुआ"
+      needsToken "टोकन चाहिए"
+      dockerUnavailable "Docker उपलब्ध नहीं"
+      error "त्रुटि"
+      unknown "अज्ञात"
+  updates
+    title "अपडेट"
+    currentVersion "संस्करण"
+    check "जाँचें"
+    checking "जाँच हो रही है..."
+    update "अपडेट"
+    updating "अपडेट हो रहा है..."
+    progress "{percent}% डाउनलोड हुआ"
+    state
+      idle "जाँच के लिए तैयार"
+      checking "अपडेट की जाँच हो रही है"
+      available "अपडेट {version} उपलब्ध है"
+      notAvailable "नवीनतम है"
+      downloading "अपडेट डाउनलोड हो रहा है"
+      downloaded "रीस्टार्ट के लिए तैयार"
+      installing "अपडेट इंस्टॉल हो रहा है"
+      disabled "अनुपलब्ध"
+      error "अपडेट त्रुटि"
+  vscodeInstall
+    title "VS Code एक्सटेंशन"
+    summary "एक क्लिक में formal-ai एक्सटेंशन को VS Code में इंस्टॉल करें। यह नवीनतम हस्ताक्षरित .vsix डाउनलोड करता है और code --install-extension चलाता है।"
+    install "VS Code में इंस्टॉल करें"
+    installing "इंस्टॉल हो रहा है…"
+    installed "{cli} में इंस्टॉल हो गया। उपयोग शुरू करने के लिए VS Code पुनः लोड करें।"
+    noCli "कोई VS Code कमांड-लाइन टूल नहीं मिला। VS Code इंस्टॉल करें और PATH में 'code' कमांड सक्षम करें।"
+    noAsset "नवीनतम रिलीज़ में अभी तक कोई एक्सटेंशन प्रकाशित नहीं हुआ है।"
+    lookupFailed "GitHub Releases API तक नहीं पहुँचा जा सका।"
+    downloadFailed ".vsix डाउनलोड नहीं हो सका।"
+    installFailed "code --install-extension विफल रहा।"
+    error "VS Code एक्सटेंशन इंस्टॉल नहीं हो सका।"

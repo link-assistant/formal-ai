@@ -1,0 +1,2 @@
+    Updating crates.io index
+error: could not find `web-search` in registry `https://github.com/rust-lang/crates.io-index`

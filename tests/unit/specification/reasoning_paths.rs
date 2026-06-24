@@ -1,6 +1,6 @@
 //! Reasoning-path tests (R85–R88).
 //!
-//! These tests pin down the universal solver's new specialized handlers and
+//! These tests pin down the universal solver's registry-dispatched methods and
 //! prove that each interface (library and the convenience module-level
 //! entry points) routes through the same loop, without any hardcoded
 //! demo-style responses. Every test exercises the event-log projection so a
@@ -80,6 +80,30 @@ fn arithmetic_records_calculation_event_in_evidence_log() {
         "evidence links should include the calculation event so the answer is a \
          projection of the log, not a memoized constant: {:?}",
         response.evidence_links,
+    );
+}
+
+/// Method selection flows through the single data-driven registry authority
+/// (`meta_method_dispatch::try_dispatch`): the resolved method is published as a
+/// `method:` evidence link and named in the Links Notation trace. This pins the
+/// post-migration contract that the registry — not the retired legacy mapper — is
+/// the sole surface that names the method behind each answer.
+#[test]
+fn selected_registry_method_is_recorded_as_a_meta_method() {
+    let response = answer("What is 6 * 7?");
+    assert_eq!(response.intent, "calculation");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("method:")),
+        "registry-backed dispatch should record the selected method event: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response.links_notation.contains("method \"arithmetic\""),
+        "the method event should name the selected registry method:\n{}",
+        response.links_notation,
     );
 }
 
