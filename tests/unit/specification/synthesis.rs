@@ -146,6 +146,45 @@ fn decomposed_sub_results_are_composed_for_algebra() {
 }
 
 #[test]
+fn compound_courtesy_and_question_are_answered_in_source_order() {
+    let response = synthesis_solver().solve("Hi, what is Redis?");
+
+    assert_eq!(response.intent, "compound_response");
+    assert!(
+        response.answer.starts_with("Hi, how may I help you?"),
+        "compound answer must react to the greeting first: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("I could not determine `Redis`"),
+        "compound answer must answer the question segment, got: {}",
+        response.answer
+    );
+    assert!(
+        !response.answer.contains("`Hi, what is Redis`"),
+        "the unknown answer must not treat the whole compound prompt as one concept: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .filter(|link| link.starts_with("sub_impulse:"))
+            .count()
+            >= 2,
+        "compound prompt must be split into multiple sub-impulses: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response
+            .links_notation
+            .contains("composition:compound_response"),
+        "compound synthesis must be recorded in the trace: {}",
+        response.links_notation
+    );
+}
+
+#[test]
 fn paraphrased_algebra_prompt_reaches_same_derivation() {
     let solver = synthesis_solver();
     let first = solver.solve("If x = 2 and y = 5, then what is the value of (x^4 + 2y^2) / 6?");

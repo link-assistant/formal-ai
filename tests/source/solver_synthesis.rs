@@ -24,6 +24,7 @@ pub struct SolvedSubImpulse {
     pub impulse_id: String,
     pub result_id: String,
     pub text: String,
+    pub independent: bool,
     pub intent: String,
     pub answer: String,
 }
@@ -45,8 +46,9 @@ pub fn record_solved_sub_impulse(
     answer: &SymbolicAnswer,
 ) -> SolvedSubImpulse {
     let payload = format!(
-        "sub_impulse={} intent={} answer={}",
+        "sub_impulse={} independent={} intent={} answer={}",
         sub_impulse.id,
+        sub_impulse.independent,
         answer.intent,
         truncate_for_trace(&answer.answer, 240),
     );
@@ -55,6 +57,7 @@ pub fn record_solved_sub_impulse(
         impulse_id: sub_impulse.id.clone(),
         result_id,
         text: sub_impulse.text.clone(),
+        independent: sub_impulse.independent,
         intent: answer.intent.clone(),
         answer: answer.answer.clone(),
     }
@@ -111,6 +114,11 @@ pub fn try_synthesize_from_sub_results(
     }
     if let Some(candidate) = compose_object_count(prompt, log, sub_results) {
         candidates.push(candidate);
+    }
+    if candidates.is_empty() {
+        if let Some(candidate) = compose_compound_response(log, sub_results) {
+            candidates.push(candidate);
+        }
     }
     if candidates.is_empty() {
         return None;
@@ -287,6 +295,41 @@ fn compose_object_count(
         "object_counting",
         count.to_string(),
         1.0,
+        sub_results,
+    ))
+}
+
+fn compose_compound_response(
+    log: &mut EventLog,
+    sub_results: &[SolvedSubImpulse],
+) -> Option<ComposedCandidate> {
+    if sub_results.len() < 2 || !sub_results.iter().all(|result| result.independent) {
+        return None;
+    }
+    let answers = sub_results
+        .iter()
+        .map(|result| result.answer.trim())
+        .filter(|answer| !answer.is_empty())
+        .collect::<Vec<_>>();
+    if answers.len() < 2 {
+        return None;
+    }
+    log.append(
+        "composition:compound_response",
+        format!(
+            "parts={} from={}",
+            answers.len(),
+            sub_results
+                .iter()
+                .map(|result| result.result_id.as_str())
+                .collect::<Vec<_>>()
+                .join(",")
+        ),
+    );
+    Some(candidate(
+        "compound_response",
+        answers.join("\n\n"),
+        0.9,
         sub_results,
     ))
 }
