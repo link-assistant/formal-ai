@@ -528,7 +528,7 @@ impl SubstitutionTraceReport {
     }
 
     #[must_use]
-    pub fn applied_count(&self) -> usize {
+    pub const fn applied_count(&self) -> usize {
         self.traces.len()
     }
 

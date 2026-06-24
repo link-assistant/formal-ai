@@ -25,6 +25,7 @@ pub const PROMPT_PATTERNS_LINO: &str = include_str!("../../data/seed/prompt-patt
 pub const INTENT_ROUTING_LINO: &str = include_str!("../../data/seed/intent-routing.lino");
 pub const OPERATION_VOCABULARY_LINO: &str =
     include_str!("../../data/seed/operation-vocabulary.lino");
+pub const TERMINAL_COMMANDS_LINO: &str = include_str!("../../data/seed/terminal-commands.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../data/seed/numeric-list-operations.lino");
 pub const CODING_IDIOMS_LINO: &str = include_str!("../../data/seed/coding-idioms.lino");
@@ -118,6 +119,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/operation-vocabulary.lino",
             OPERATION_VOCABULARY_LINO,
         ),
+        ("data/seed/terminal-commands.lino", TERMINAL_COMMANDS_LINO),
         (
             "data/seed/numeric-list-operations.lino",
             NUMERIC_LIST_OPERATIONS_LINO,

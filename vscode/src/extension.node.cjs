@@ -5,7 +5,7 @@
 // Issue #353 (ROADMAP D2/D3): this host mirrors the Electron shell
 // (`desktop/main.cjs`) inside a VS Code Webview. It can spin up the local
 // OpenAI-compatible server (`formal-ai serve`) on opt-in, route the agent's side
-// effects through a permission-gated Docker sandbox, and reconcile memory with
+// effects through permission-gated host/Docker runners, and reconcile memory with
 // the native store — all the desktop affordances, driven by `formal-ai.*`
 // settings. The web host (`extension.web.cjs`) shares the same UI but stays
 // in-process because a browser cannot spawn a process.
@@ -72,7 +72,7 @@ function dockerIsAvailable() {
 
 // Run a sandboxed tool call inside the configured `konard/box-dind` image. The
 // router passes its default image; the `formal-ai.docker.image` setting wins so
-// users can pin their own sandbox. Never runs code-exec / shell unsandboxed.
+// users can pin their own sandbox. Host shell commands use runOnHost below.
 function runInSandbox({ image, tool, command }) {
   const configuredImage = String(currentConfig().get("docker.image", image || DEFAULT_IMAGE));
   return new Promise((resolve, reject) => {
@@ -97,6 +97,59 @@ function runInSandbox({ image, tool, command }) {
         /* best-effort log capture */
       }
       resolve({ exitCode: typeof code === "number" ? code : 0, output, logPath });
+    });
+  });
+}
+
+function runOnHost({ tool, command }) {
+  return new Promise((resolve) => {
+    const logPath = path.join(os.tmpdir(), `formal-ai-${tool}-host-${nonceStamp()}.log`);
+    let child = null;
+    try {
+      child = childProcess.spawn(command, {
+        cwd: vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+          ? vscode.workspace.workspaceFolders[0].uri.fsPath
+          : os.homedir(),
+        env: process.env,
+        shell: true,
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+    } catch (error) {
+      resolve({
+        exitCode: 1,
+        output: "",
+        stdout: "",
+        stderr: error && error.message ? error.message : String(error),
+        logPath,
+      });
+      return;
+    }
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.once("error", (error) => {
+      stderr += error && error.message ? error.message : String(error);
+      resolve({ exitCode: 1, output: `${stdout}${stderr}`, stdout, stderr, logPath });
+    });
+    child.once("exit", (code) => {
+      const output = `${stdout}${stderr}`;
+      try {
+        fs.writeFileSync(logPath, output);
+      } catch (_error) {
+        /* best-effort log capture */
+      }
+      resolve({
+        exitCode: typeof code === "number" ? code : 1,
+        output,
+        stdout,
+        stderr,
+        logPath,
+      });
     });
   });
 }
@@ -139,6 +192,7 @@ function activate(context) {
     resolvePath: (value) => path.resolve(readRoot(), value),
     dockerAvailable: dockerIsAvailable,
     runInSandbox,
+    runOnHost,
   });
   toolRouter.setGrants({ all: status.allowToolsByDefault === true });
 

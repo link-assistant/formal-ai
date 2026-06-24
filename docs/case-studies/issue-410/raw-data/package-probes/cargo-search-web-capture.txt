@@ -1,0 +1,4 @@
+    Blocking waiting for file lock on package cache
+web-capture = "0.3.29"    # CLI and microservice to render web pages as HTML, Markdown, or PNG
+formal-ai = "0.185.0"     # Formal symbolic AI implementation with OpenAI-compatible APIs
+note: to learn more about a package, run `cargo info <name>`

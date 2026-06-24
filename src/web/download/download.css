@@ -617,6 +617,30 @@ h1 {
   line-height: 1.45;
 }
 
+/* Issue #479: macOS Gatekeeper screenshots inside the System Settings steps.
+   The PNGs are transparent with a baked-in drop shadow, so they need no border
+   or background — they float over the surface like a real macOS dialog. */
+.install-macos-screenshots {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0 0;
+  padding: 0;
+  justify-items: center;
+}
+
+.install-macos-screenshots img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.install-macos-screenshots figcaption {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
 .verification p {
   margin-top: 14px;
   color: var(--muted);

@@ -1,0 +1,8 @@
+lino-arguments #lino #arguments #cli #environment #config
+A unified configuration library combining environment variables and CLI arguments with a clear priority chain
+version: 0.3.0
+license: Unlicense
+rust-version: unknown
+documentation: https://docs.rs/lino-arguments/0.3.0
+repository: https://github.com/link-foundation/lino-arguments
+crates.io: https://crates.io/crates/lino-arguments/0.3.0

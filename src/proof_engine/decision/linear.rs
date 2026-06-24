@@ -470,7 +470,7 @@ impl<'a> LinearParser<'a> {
         self.input[self.position..].chars().next()
     }
 
-    fn advance(&mut self, ch: char) {
+    const fn advance(&mut self, ch: char) {
         self.position += ch.len_utf8();
     }
 }
@@ -629,7 +629,7 @@ impl Interval {
     fn apply_lower(&mut self, candidate: Bound) {
         if self
             .lower
-            .map_or(true, |current| stronger_lower(candidate, current))
+            .is_none_or(|current| stronger_lower(candidate, current))
         {
             self.lower = Some(candidate);
         }
@@ -638,7 +638,7 @@ impl Interval {
     fn apply_upper(&mut self, candidate: Bound) {
         if self
             .upper
-            .map_or(true, |current| stronger_upper(candidate, current))
+            .is_none_or(|current| stronger_upper(candidate, current))
         {
             self.upper = Some(candidate);
         }
@@ -741,7 +741,7 @@ impl IntervalSystem {
             }
         }
         let candidate = match (self.interval.lower, self.interval.upper) {
-            (Some(lower), Some(upper)) => (lower.value + upper.value) / 2.0,
+            (Some(lower), Some(upper)) => f64::midpoint(lower.value, upper.value),
             (Some(lower), None) => lower.value + if lower.strict { 1.0 } else { 0.0 },
             (None, Some(upper)) => upper.value - if upper.strict { 1.0 } else { 0.0 },
             (None, None) => 0.0,

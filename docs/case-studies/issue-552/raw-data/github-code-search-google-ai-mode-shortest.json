@@ -1,0 +1,680 @@
+{
+  "kind": "google_ai_mode",
+  "searched_files": 100,
+  "fetched_files": 100,
+  "unique_links": 135,
+  "shortest_10": [
+    {
+      "link": "https://share.google/aimode/HdOvkkx",
+      "length": 35,
+      "source": "https://github.com/Drix10/ai-resources/blob/6f3bed63d2495902a8a582468081d8433aa26801/AI%20Professionals%20and%20Community/resources-195.md",
+      "repository": "Drix10/ai-resources",
+      "path": "AI Professionals and Community/resources-195.md"
+    },
+    {
+      "link": "https://share.google/aimode/IwItVMN",
+      "length": 35,
+      "source": "https://github.com/Drix10/ai-resources/blob/6f3bed63d2495902a8a582468081d8433aa26801/AI%20Professionals%20and%20Community/resources-195.md",
+      "repository": "Drix10/ai-resources",
+      "path": "AI Professionals and Community/resources-195.md"
+    },
+    {
+      "link": "https://share.google/aimode/0JD6GsYpdNqMeTQMv",
+      "length": 45,
+      "source": "https://github.com/legalaspro/robokin/blob/8ae1ee6eb40095027c373b27e60f1d22f9667a99/ROADMAP.md",
+      "repository": "legalaspro/robokin",
+      "path": "ROADMAP.md"
+    },
+    {
+      "link": "https://share.google/aimode/1Al7pfv86m6ousIoM",
+      "length": 45,
+      "source": "https://github.com/apassiondev/tiny-eshop/blob/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/lib/actions/product.actions.ts",
+      "repository": "apassiondev/tiny-eshop",
+      "path": "lib/actions/product.actions.ts"
+    },
+    {
+      "link": "https://share.google/aimode/2b0WMgeLJ3uawJ7kj",
+      "length": 45,
+      "source": "https://github.com/some-du6e/all-ysws/blob/94003157b3673382e404fbd37929339b1553a584/scripts/selfhost.js",
+      "repository": "some-du6e/all-ysws",
+      "path": "scripts/selfhost.js"
+    },
+    {
+      "link": "https://share.google/aimode/2uPsYQbDmEUJnu0BA",
+      "length": 45,
+      "source": "https://github.com/Konfermat/python-practice/blob/01754c4c8386069fecda111b7f273bc2f899bf3d/links.txt",
+      "repository": "Konfermat/python-practice",
+      "path": "links.txt"
+    },
+    {
+      "link": "https://share.google/aimode/2wvZE5gV56d9E92zb",
+      "length": 45,
+      "source": "https://github.com/nobu1474/KDA/blob/eeb1303df77a95bb51c486de2b65f898a0233851/%E3%83%A1%E3%83%A2.text",
+      "repository": "nobu1474/KDA",
+      "path": "メモ.text"
+    },
+    {
+      "link": "https://share.google/aimode/2yzYg4Kn95rLljly9",
+      "length": 45,
+      "source": "https://github.com/AlbertMietus/CCastle2.hg/blob/3bd7f22e6738340cc1b31f7bbe5b9543dd87640d/TODO.rst",
+      "repository": "AlbertMietus/CCastle2.hg",
+      "path": "TODO.rst"
+    },
+    {
+      "link": "https://share.google/aimode/33yqdwsUv0bsxCvHq",
+      "length": 45,
+      "source": "https://github.com/HaroldHallikainen/DSP_TU2/blob/bd6603c3efdd9a50b81665b5f4bdafb1f129b0d5/src/RTC.c",
+      "repository": "HaroldHallikainen/DSP_TU2",
+      "path": "src/RTC.c"
+    },
+    {
+      "link": "https://share.google/aimode/3QY8TE2LdeicP6KzM",
+      "length": 45,
+      "source": "https://github.com/xzwyn/nig/blob/dee5e91c77bb2322f1ae6880d245516ef54c8979/d.py",
+      "repository": "xzwyn/nig",
+      "path": "d.py"
+    }
+  ],
+  "fetches": [
+    {
+      "source": "https://github.com/chantastic/sites/blob/e2ed9c0f0269e51feb3847f280742b1fc718c7a2/chan.dev/src/content/posts/2026.md",
+      "raw_url": "https://raw.githubusercontent.com/chantastic/sites/e2ed9c0f0269e51feb3847f280742b1fc718c7a2/chan.dev/src/content/posts/2026.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ElectricRCAircraftGuy/eRCaGuy_hello_world/blob/7b8367e31c5770a871e31a30ed6f99110f17a552/TODO2.txt",
+      "raw_url": "https://raw.githubusercontent.com/ElectricRCAircraftGuy/eRCaGuy_hello_world/7b8367e31c5770a871e31a30ed6f99110f17a552/TODO2.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/mikemccand/luceneutil/blob/4e86c6fc2b9d6ab1c791b1ef0e9ee2e807a68140/src/python/knnPerfTest.py",
+      "raw_url": "https://raw.githubusercontent.com/mikemccand/luceneutil/4e86c6fc2b9d6ab1c791b1ef0e9ee2e807a68140/src/python/knnPerfTest.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/g0v-data/g0v-hackmd-archive/blob/4c9c7c8301fae2737d2a12904fa5f27bf9323003/notes/e1mYHwVdS3yeOlYl_c0xeQ.md",
+      "raw_url": "https://raw.githubusercontent.com/g0v-data/g0v-hackmd-archive/4c9c7c8301fae2737d2a12904fa5f27bf9323003/notes/e1mYHwVdS3yeOlYl_c0xeQ.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/plantinformatics/pretzel/blob/bb37ceb865dbc46e8b3e75222a07b34d7dbfc333/frontend/app/utils/draw/svg-copy.js",
+      "raw_url": "https://raw.githubusercontent.com/plantinformatics/pretzel/bb37ceb865dbc46e8b3e75222a07b34d7dbfc333/frontend/app/utils/draw/svg-copy.js",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Hernat/VeriSphere/blob/ee44ca2ed90bf490801d56ad44cf9063982ad26f/wispr-flow.md",
+      "raw_url": "https://raw.githubusercontent.com/Hernat/VeriSphere/ee44ca2ed90bf490801d56ad44cf9063982ad26f/wispr-flow.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/busytoby/atropa_pulsechain/blob/354b35db256bdd5bd22c5907f4a4799a2c452c0b/firmware/notes/GooglePublicOffering",
+      "raw_url": "https://raw.githubusercontent.com/busytoby/atropa_pulsechain/354b35db256bdd5bd22c5907f4a4799a2c452c0b/firmware/notes/GooglePublicOffering",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/aedart/athenaeum/blob/88eb252d5e3478d0d4e8587bec6c41523a332f4f/docs/archive/current/origin.md",
+      "raw_url": "https://raw.githubusercontent.com/aedart/athenaeum/88eb252d5e3478d0d4e8587bec6c41523a332f4f/docs/archive/current/origin.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Drix10/ai-resources/blob/6f3bed63d2495902a8a582468081d8433aa26801/AI%20Professionals%20and%20Community/resources-195.md",
+      "raw_url": "https://raw.githubusercontent.com/Drix10/ai-resources/6f3bed63d2495902a8a582468081d8433aa26801/AI%20Professionals%20and%20Community/resources-195.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/cmj/elontweets/blob/2e47071261a3fe3b15e517ee0a004d92c7bf35c4/birdwatch/notes/2003510953317736525.md",
+      "raw_url": "https://raw.githubusercontent.com/cmj/elontweets/2e47071261a3fe3b15e517ee0a004d92c7bf35c4/birdwatch/notes/2003510953317736525.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ja7jnv/Astronomy/blob/29fa350351d0fd6b44b0c65b12ea117335beb778/know_how.org",
+      "raw_url": "https://raw.githubusercontent.com/ja7jnv/Astronomy/29fa350351d0fd6b44b0c65b12ea117335beb778/know_how.org",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/elfry2/kami/blob/ff3844673e5dd97d6ad1adeecdce793930479fc3/nvim/init.lua",
+      "raw_url": "https://raw.githubusercontent.com/elfry2/kami/ff3844673e5dd97d6ad1adeecdce793930479fc3/nvim/init.lua",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/legalaspro/robokin/blob/8ae1ee6eb40095027c373b27e60f1d22f9667a99/ROADMAP.md",
+      "raw_url": "https://raw.githubusercontent.com/legalaspro/robokin/8ae1ee6eb40095027c373b27e60f1d22f9667a99/ROADMAP.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/4dsolutions/School_of_Tomorrow/blob/d9934d5afb8dd548c4c1707b61efe44cd896e4cd/Egyptology.ipynb",
+      "raw_url": "https://raw.githubusercontent.com/4dsolutions/School_of_Tomorrow/d9934d5afb8dd548c4c1707b61efe44cd896e4cd/Egyptology.ipynb",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/DandelionSprout/adfilt2/blob/782194b61837b463e41c0909ee499ea44fe8e9af/a2.txt",
+      "raw_url": "https://raw.githubusercontent.com/DandelionSprout/adfilt2/782194b61837b463e41c0909ee499ea44fe8e9af/a2.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/AlbertMietus/CCastle2.hg/blob/3bd7f22e6738340cc1b31f7bbe5b9543dd87640d/TODO.rst",
+      "raw_url": "https://raw.githubusercontent.com/AlbertMietus/CCastle2.hg/3bd7f22e6738340cc1b31f7bbe5b9543dd87640d/TODO.rst",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/AkshatM/site/blob/fe0933a1d470fc71e0e4cf5d76ee8e3293af5873/src/pages/index.astro",
+      "raw_url": "https://raw.githubusercontent.com/AkshatM/site/fe0933a1d470fc71e0e4cf5d76ee8e3293af5873/src/pages/index.astro",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/uandiqueue/grid-adventure-ai-agent/blob/6efa2beff62b8b493ff0caac1488b96c9b6696b2/training-lovely-model.py",
+      "raw_url": "https://raw.githubusercontent.com/uandiqueue/grid-adventure-ai-agent/6efa2beff62b8b493ff0caac1488b96c9b6696b2/training-lovely-model.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/blacksnowmartin/Exposed/blob/8e72edb54ebf4bb8a8525f0d8243ebfe4a76d3dc/Malvertising/Link.txt",
+      "raw_url": "https://raw.githubusercontent.com/blacksnowmartin/Exposed/8e72edb54ebf4bb8a8525f0d8243ebfe4a76d3dc/Malvertising/Link.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Raas-Farooq/RaasCare/blob/c0acfe66ecb2a26b3adc0d5fb7233d9ed035de24/pms-frontend/src/pageWrapper.tsx",
+      "raw_url": "https://raw.githubusercontent.com/Raas-Farooq/RaasCare/c0acfe66ecb2a26b3adc0d5fb7233d9ed035de24/pms-frontend/src/pageWrapper.tsx",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/usfsoar/Torito-25-26/blob/0aaf1d2f4e6b24518ef92d251f80dd6352275e83/TODO.md",
+      "raw_url": "https://raw.githubusercontent.com/usfsoar/Torito-25-26/0aaf1d2f4e6b24518ef92d251f80dd6352275e83/TODO.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rogelioprieto/bash-scripts/blob/5d90c6c5f38536f214f51bccd78d448cdc311603/00-testing/insumos/google-script.sh",
+      "raw_url": "https://raw.githubusercontent.com/rogelioprieto/bash-scripts/5d90c6c5f38536f214f51bccd78d448cdc311603/00-testing/insumos/google-script.sh",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rdodiya/RestroHub/blob/329a4ca734500205015bd0278aa0fead8a42ddd1/RestroHub-FrontEnd/README.md",
+      "raw_url": "https://raw.githubusercontent.com/rdodiya/RestroHub/329a4ca734500205015bd0278aa0fead8a42ddd1/RestroHub-FrontEnd/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/vogler/dotfiles/blob/11062f33b0cb6028ccbff11b7713bb1bcf93d5e5/install/macos/brew.sh",
+      "raw_url": "https://raw.githubusercontent.com/vogler/dotfiles/11062f33b0cb6028ccbff11b7713bb1bcf93d5e5/install/macos/brew.sh",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/chrislucas/repo-android-2/blob/ba6cd52c49fab024c574a55f8058f69f64f3abb1/CoroutineLab/raw/flow",
+      "raw_url": "https://raw.githubusercontent.com/chrislucas/repo-android-2/ba6cd52c49fab024c574a55f8058f69f64f3abb1/CoroutineLab/raw/flow",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/hrgdavor/bunnyspin/blob/096f19460e8f1bba9df9c287a15fbfaa42f67545/src/manage-jail.js",
+      "raw_url": "https://raw.githubusercontent.com/hrgdavor/bunnyspin/096f19460e8f1bba9df9c287a15fbfaa42f67545/src/manage-jail.js",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/huangrh/MyNotes/blob/78dd03914b0cd91efacc444db75ad511c8959f83/supabase.md",
+      "raw_url": "https://raw.githubusercontent.com/huangrh/MyNotes/78dd03914b0cd91efacc444db75ad511c8959f83/supabase.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/jasonycw/screen-tests/blob/034fd1baa1e047d5edf2d429f2e23beb871d419b/index.html",
+      "raw_url": "https://raw.githubusercontent.com/jasonycw/screen-tests/034fd1baa1e047d5edf2d429f2e23beb871d419b/index.html",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/fredswims/Learning-Powershell/blob/b1b900bfd92dd5528a7ba53cff47a3cc504563e0/MyStuff/ShowProcessArch.ps1",
+      "raw_url": "https://raw.githubusercontent.com/fredswims/Learning-Powershell/b1b900bfd92dd5528a7ba53cff47a3cc504563e0/MyStuff/ShowProcessArch.ps1",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Derec-Mods/Guests/blob/a5d2d2d8b87e78b01eb333afbafe4a32e996b2ec/README.md",
+      "raw_url": "https://raw.githubusercontent.com/Derec-Mods/Guests/a5d2d2d8b87e78b01eb333afbafe4a32e996b2ec/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/shreehari-n/Intellirack/blob/6a6f10924cadfe4429724d0f025ce6a11e98545b/debug",
+      "raw_url": "https://raw.githubusercontent.com/shreehari-n/Intellirack/6a6f10924cadfe4429724d0f025ce6a11e98545b/debug",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/KHAAdotPK/Numcy/blob/3d7b40e76e97c5a551f42c03cf2f98cd767e05f4/lib/kernels.hh",
+      "raw_url": "https://raw.githubusercontent.com/KHAAdotPK/Numcy/3d7b40e76e97c5a551f42c03cf2f98cd767e05f4/lib/kernels.hh",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/tor4z/algorithm_learning/blob/f178259744da537ce923ebd66de82b977f1b8dd0/rspath/README.md",
+      "raw_url": "https://raw.githubusercontent.com/tor4z/algorithm_learning/f178259744da537ce923ebd66de82b977f1b8dd0/rspath/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/mattnelsonuk/advent-of-code-2025-rust/blob/5ccc1c83e88d67c751df4ab1a4699b4d1f401388/src/day08_p2.rs",
+      "raw_url": "https://raw.githubusercontent.com/mattnelsonuk/advent-of-code-2025-rust/5ccc1c83e88d67c751df4ab1a4699b4d1f401388/src/day08_p2.rs",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/AlexUtopia/HomeVpn/blob/9059a13d9a6e4733fb9ba026bd57b39ba954c5ad/lib/python/vm/virtio.py",
+      "raw_url": "https://raw.githubusercontent.com/AlexUtopia/HomeVpn/9059a13d9a6e4733fb9ba026bd57b39ba954c5ad/lib/python/vm/virtio.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/poornan/Thoughts/blob/71268f68abf8d5136ebc14e3c89c1dc005c35805/about-me/inputs.md",
+      "raw_url": "https://raw.githubusercontent.com/poornan/Thoughts/71268f68abf8d5136ebc14e3c89c1dc005c35805/about-me/inputs.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Kima4Tec/Documentation/blob/6c1af54b04ee1989bcebd1d70d5b3d1b49c5f32e/Linux.md",
+      "raw_url": "https://raw.githubusercontent.com/Kima4Tec/Documentation/6c1af54b04ee1989bcebd1d70d5b3d1b49c5f32e/Linux.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/pflegende/2konsolidate/blob/167c9d2686f239fc8dd38d95ff5406c80c13cd2f/md2htm.md",
+      "raw_url": "https://raw.githubusercontent.com/pflegende/2konsolidate/167c9d2686f239fc8dd38d95ff5406c80c13cd2f/md2htm.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/mattnelsonuk/advent-of-code-2025-rust/blob/5ccc1c83e88d67c751df4ab1a4699b4d1f401388/src/day08_p1.rs",
+      "raw_url": "https://raw.githubusercontent.com/mattnelsonuk/advent-of-code-2025-rust/5ccc1c83e88d67c751df4ab1a4699b4d1f401388/src/day08_p1.rs",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/NBS-LLC/spotavibe-lite/blob/bd91af2ae28df3a790be20158a0ec015737261b6/README.md",
+      "raw_url": "https://raw.githubusercontent.com/NBS-LLC/spotavibe-lite/bd91af2ae28df3a790be20158a0ec015737261b6/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Konfermat/python-practice/blob/01754c4c8386069fecda111b7f273bc2f899bf3d/links.txt",
+      "raw_url": "https://raw.githubusercontent.com/Konfermat/python-practice/01754c4c8386069fecda111b7f273bc2f899bf3d/links.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xzwyn/nig/blob/dee5e91c77bb2322f1ae6880d245516ef54c8979/d.py",
+      "raw_url": "https://raw.githubusercontent.com/xzwyn/nig/dee5e91c77bb2322f1ae6880d245516ef54c8979/d.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/lucascipriano/highlightmidia/blob/1e8ddade26c0bbff3df6fd301bcd65cf42b6fa84/doc.md",
+      "raw_url": "https://raw.githubusercontent.com/lucascipriano/highlightmidia/1e8ddade26c0bbff3df6fd301bcd65cf42b6fa84/doc.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/dr-riz/google-adk-quickstart/blob/e9ec25d3e35fb086574c46464ceb5df0914bd601/README.md",
+      "raw_url": "https://raw.githubusercontent.com/dr-riz/google-adk-quickstart/e9ec25d3e35fb086574c46464ceb5df0914bd601/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/vagnerasilva/sagemakergo/blob/698b3c5fbe0d0306d4963f0a7907ffe9770535d6/README.md",
+      "raw_url": "https://raw.githubusercontent.com/vagnerasilva/sagemakergo/698b3c5fbe0d0306d4963f0a7907ffe9770535d6/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/abi-0611/BDA/blob/97dd2e17d9067039ddc686b89d82c07ff20a709b/README.md",
+      "raw_url": "https://raw.githubusercontent.com/abi-0611/BDA/97dd2e17d9067039ddc686b89d82c07ff20a709b/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/bernos/bastion/blob/3fd43d2cec7583377bcef2febf0294f490a259dd/README.md",
+      "raw_url": "https://raw.githubusercontent.com/bernos/bastion/3fd43d2cec7583377bcef2febf0294f490a259dd/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/rogerjaffe/flight-tracker-py-web/blob/a2123bef25361d69af744c432a3de86be78e1905/Readme.md",
+      "raw_url": "https://raw.githubusercontent.com/rogerjaffe/flight-tracker-py-web/a2123bef25361d69af744c432a3de86be78e1905/Readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/McNairy/ZimaOS-AppStore/blob/febe84ada0480b5e11284098ca20780b3a4c2fd9/README.md",
+      "raw_url": "https://raw.githubusercontent.com/McNairy/ZimaOS-AppStore/febe84ada0480b5e11284098ca20780b3a4c2fd9/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/drbitboy/saf/blob/a71cf8104f77945771173d9b80c86c715c210a59/README.md",
+      "raw_url": "https://raw.githubusercontent.com/drbitboy/saf/a71cf8104f77945771173d9b80c86c715c210a59/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/AlexUtopia/HomeVpn/blob/9059a13d9a6e4733fb9ba026bd57b39ba954c5ad/lib/python/vm/platform.py",
+      "raw_url": "https://raw.githubusercontent.com/AlexUtopia/HomeVpn/9059a13d9a6e4733fb9ba026bd57b39ba954c5ad/lib/python/vm/platform.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/grantrostig/cpp_by_example/blob/8cee90dec20e6fab9a4bf1f90122490caca69a7c/designp_singleton_memory_manager/MemoryMangager/MemoryMangager.cpp",
+      "raw_url": "https://raw.githubusercontent.com/grantrostig/cpp_by_example/8cee90dec20e6fab9a4bf1f90122490caca69a7c/designp_singleton_memory_manager/MemoryMangager/MemoryMangager.cpp",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ychsue/NonBlockingLife/blob/b6ffbadf4b1a38c0ec2e7b20eb16e789a62ec70f/android/%E6%94%B9%E8%B5%B0twa.md",
+      "raw_url": "https://raw.githubusercontent.com/ychsue/NonBlockingLife/b6ffbadf4b1a38c0ec2e7b20eb16e789a62ec70f/android/%E6%94%B9%E8%B5%B0twa.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/PerseusRealDeal/TheDarkMoon/blob/da025f13a528eb302bea0b8f3b6e7a260c30b0c8/PerseusMeteo/FirstPartyCode/WebLabel.swift",
+      "raw_url": "https://raw.githubusercontent.com/PerseusRealDeal/TheDarkMoon/da025f13a528eb302bea0b8f3b6e7a260c30b0c8/PerseusMeteo/FirstPartyCode/WebLabel.swift",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/0--key/lib/blob/6597dd1ca4653ccf72d9a191d12612d4a55f6a9a/org/agenda/might-do.list",
+      "raw_url": "https://raw.githubusercontent.com/0--key/lib/6597dd1ca4653ccf72d9a191d12612d4a55f6a9a/org/agenda/might-do.list",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/chrislucas/repo-android-2/blob/ba6cd52c49fab024c574a55f8058f69f64f3abb1/JustComposeLabs/raw/RecomposeScope",
+      "raw_url": "https://raw.githubusercontent.com/chrislucas/repo-android-2/ba6cd52c49fab024c574a55f8058f69f64f3abb1/JustComposeLabs/raw/RecomposeScope",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/20twenty/nuextract3-macbook-runner/blob/0e811cfe4752116123a97b34f958718922ce715f/screenshot.md",
+      "raw_url": "https://raw.githubusercontent.com/20twenty/nuextract3-macbook-runner/0e811cfe4752116123a97b34f958718922ce715f/screenshot.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/xavierxeon-music/WaMax/blob/fb20d12e39c9ad6acc86cf8e0c1caee19562199e/source/maxobjects/wa.audiodevice/wa.audiodevice.h",
+      "raw_url": "https://raw.githubusercontent.com/xavierxeon-music/WaMax/fb20d12e39c9ad6acc86cf8e0c1caee19562199e/source/maxobjects/wa.audiodevice/wa.audiodevice.h",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/jasonycw/json-visualizer/blob/04cd91c9d0c42832df5590a130d470108287f25a/README.md",
+      "raw_url": "https://raw.githubusercontent.com/jasonycw/json-visualizer/04cd91c9d0c42832df5590a130d470108287f25a/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/apassiondev/tiny-eshop/blob/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/jest.config.ts",
+      "raw_url": "https://raw.githubusercontent.com/apassiondev/tiny-eshop/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/jest.config.ts",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/prasanth-ntu/prasanth.io/blob/bf75c7faa47a1ba84baa8abec21a893a84f8b9a0/content/notes/OpenClaw.md",
+      "raw_url": "https://raw.githubusercontent.com/prasanth-ntu/prasanth.io/bf75c7faa47a1ba84baa8abec21a893a84f8b9a0/content/notes/OpenClaw.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/some-du6e/all-ysws/blob/94003157b3673382e404fbd37929339b1553a584/scripts/selfhost.js",
+      "raw_url": "https://raw.githubusercontent.com/some-du6e/all-ysws/94003157b3673382e404fbd37929339b1553a584/scripts/selfhost.js",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/KyleSchmottlach/ECE4802-A4-Project2/blob/8e3b6a07c41604a4c24e17b4a8286872ad7bee39/tinkering/main.py",
+      "raw_url": "https://raw.githubusercontent.com/KyleSchmottlach/ECE4802-A4-Project2/8e3b6a07c41604a4c24e17b4a8286872ad7bee39/tinkering/main.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/mpflynnx/csapp3e/blob/2eb3d1b823f5ee6771c8bd839cebc025592c8266/section3/nasm.md",
+      "raw_url": "https://raw.githubusercontent.com/mpflynnx/csapp3e/2eb3d1b823f5ee6771c8bd839cebc025592c8266/section3/nasm.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/cediackermann/error-leak-demo/blob/6150f6aa35f48669ba5fca1cf086ffe56880ec05/documentation.md",
+      "raw_url": "https://raw.githubusercontent.com/cediackermann/error-leak-demo/6150f6aa35f48669ba5fca1cf086ffe56880ec05/documentation.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/tmax818/notes/blob/a1b5fe05825e5858751b34c4bfa0232959035776/denote/20260125T205617--write__productivity.org",
+      "raw_url": "https://raw.githubusercontent.com/tmax818/notes/a1b5fe05825e5858751b34c4bfa0232959035776/denote/20260125T205617--write__productivity.org",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/shakeel-faiz/FF/blob/441e40b944ef99b85175a1189205714e1c51c17e/Notes/AI-Books.md",
+      "raw_url": "https://raw.githubusercontent.com/shakeel-faiz/FF/441e40b944ef99b85175a1189205714e1c51c17e/Notes/AI-Books.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/nobu1474/KDA/blob/eeb1303df77a95bb51c486de2b65f898a0233851/%E3%83%A1%E3%83%A2.text",
+      "raw_url": "https://raw.githubusercontent.com/nobu1474/KDA/eeb1303df77a95bb51c486de2b65f898a0233851/%E3%83%A1%E3%83%A2.text",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/b1tranger/learning-linux/blob/ca594aa4cee50df194641ba6b3c3d86f53d7fc8b/queries/issues.md",
+      "raw_url": "https://raw.githubusercontent.com/b1tranger/learning-linux/ca594aa4cee50df194641ba6b3c3d86f53d7fc8b/queries/issues.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/duanyrf/minicurso-fastapi-pro/blob/c4cc890d092477adc09cbe2fe89e5541fdd897f7/course-profile.md",
+      "raw_url": "https://raw.githubusercontent.com/duanyrf/minicurso-fastapi-pro/c4cc890d092477adc09cbe2fe89e5541fdd897f7/course-profile.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/ruskibeats/t1d/blob/a00c488cbf607b1c1106a05d4db39b9d0223ec76/.pi/todo-plans/%23116_plan.md",
+      "raw_url": "https://raw.githubusercontent.com/ruskibeats/t1d/a00c488cbf607b1c1106a05d4db39b9d0223ec76/.pi/todo-plans/%23116_plan.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/BradHutchings/Mmojo-Server/blob/12fcb353cc30f910e7198223afd1a730065dfa10/files/proxy/proxy-watcher.py",
+      "raw_url": "https://raw.githubusercontent.com/BradHutchings/Mmojo-Server/12fcb353cc30f910e7198223afd1a730065dfa10/files/proxy/proxy-watcher.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/eastmoon/tutorial-unity/blob/c3d72459ef46ef3ac471b7645c4d579d61aafbec/src/unity6/readme.md",
+      "raw_url": "https://raw.githubusercontent.com/eastmoon/tutorial-unity/c3d72459ef46ef3ac471b7645c4d579d61aafbec/src/unity6/readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/apassiondev/tiny-eshop/blob/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/components/shared/delete-dialog2.tsx",
+      "raw_url": "https://raw.githubusercontent.com/apassiondev/tiny-eshop/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/components/shared/delete-dialog2.tsx",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/bulent2k2/cpp_ogreniyoruz/blob/48c40cb45356c1a9489a5cebdc2c3b07291edddc/ileri/dersler/d20260227.md",
+      "raw_url": "https://raw.githubusercontent.com/bulent2k2/cpp_ogreniyoruz/48c40cb45356c1a9489a5cebdc2c3b07291edddc/ileri/dersler/d20260227.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/nmtigor/set.ts/blob/a97b9b59b17d615829c44bb80b741c2d2b26d450/src/lib/util/ulid.ts",
+      "raw_url": "https://raw.githubusercontent.com/nmtigor/set.ts/a97b9b59b17d615829c44bb80b741c2d2b26d450/src/lib/util/ulid.ts",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/RockAfeller2013/vibecoded/blob/6a32e325c63e3b56e9e6cb79b917c6c7c93655e7/AI%20Harness/Joomla.md",
+      "raw_url": "https://raw.githubusercontent.com/RockAfeller2013/vibecoded/6a32e325c63e3b56e9e6cb79b917c6c7c93655e7/AI%20Harness/Joomla.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/bulent2k2/cpp_ogreniyoruz/blob/48c40cb45356c1a9489a5cebdc2c3b07291edddc/ileri/dersler/d20260508.md",
+      "raw_url": "https://raw.githubusercontent.com/bulent2k2/cpp_ogreniyoruz/48c40cb45356c1a9489a5cebdc2c3b07291edddc/ileri/dersler/d20260508.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/nordeim/misc/blob/ba3ea8bcd81c3efa61b6dd669323d5add73f2177/Rails%20Linux/README.md",
+      "raw_url": "https://raw.githubusercontent.com/nordeim/misc/ba3ea8bcd81c3efa61b6dd669323d5add73f2177/Rails%20Linux/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/HaroldHallikainen/DSP_TU2/blob/bd6603c3efdd9a50b81665b5f4bdafb1f129b0d5/src/RTC.c",
+      "raw_url": "https://raw.githubusercontent.com/HaroldHallikainen/DSP_TU2/bd6603c3efdd9a50b81665b5f4bdafb1f129b0d5/src/RTC.c",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/EddieNejadi/MyGlobalBashAliases/blob/3a93233e0724c8dacde2435ddef045385e444120/AI/OpenWeb-ui/Readme.md",
+      "raw_url": "https://raw.githubusercontent.com/EddieNejadi/MyGlobalBashAliases/3a93233e0724c8dacde2435ddef045385e444120/AI/OpenWeb-ui/Readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/jielorch/EventManagementProj/blob/892979e02a9096b092ca9455ec377aa861ea5bfb/App.Web/Program.cs",
+      "raw_url": "https://raw.githubusercontent.com/jielorch/EventManagementProj/892979e02a9096b092ca9455ec377aa861ea5bfb/App.Web/Program.cs",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/silarce/whattoeat/blob/f1e256dd69d368e92d1ca23d4684cdfb21245492/components/usage-guide-modal.tsx",
+      "raw_url": "https://raw.githubusercontent.com/silarce/whattoeat/f1e256dd69d368e92d1ca23d4684cdfb21245492/components/usage-guide-modal.tsx",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Yyax13/digital-garden/blob/88e02a0cc7996f6cea8f073aa49cab9482b8577c/content/Others/English/Thearch.md",
+      "raw_url": "https://raw.githubusercontent.com/Yyax13/digital-garden/88e02a0cc7996f6cea8f073aa49cab9482b8577c/content/Others/English/Thearch.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/yigithsyn/quasar-tutorials/blob/59f0917509e2bafd23afea9e32298134a642e61a/mode-electron/README.md",
+      "raw_url": "https://raw.githubusercontent.com/yigithsyn/quasar-tutorials/59f0917509e2bafd23afea9e32298134a642e61a/mode-electron/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/poojarj055/CodingChallenges/blob/769e174e0a08b35b56e7163d23d75403a658e7fd/DynamicPrograming/SubsetSum.java",
+      "raw_url": "https://raw.githubusercontent.com/poojarj055/CodingChallenges/769e174e0a08b35b56e7163d23d75403a658e7fd/DynamicPrograming/SubsetSum.java",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/FRC3636/fenger-ms-sumo/blob/b2834c8ee62bc559592d701ffbaa81f99b081ec1/apps-script.gs",
+      "raw_url": "https://raw.githubusercontent.com/FRC3636/fenger-ms-sumo/b2834c8ee62bc559592d701ffbaa81f99b081ec1/apps-script.gs",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/aieFaria/world_of_wumpus/blob/9325a86a3b35e2ee0e950b416c7978e04ed7285c/README.md",
+      "raw_url": "https://raw.githubusercontent.com/aieFaria/world_of_wumpus/9325a86a3b35e2ee0e950b416c7978e04ed7285c/README.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/Garciajaime/Crowd-Sourced-Travel-App/blob/e431099009cdd21e15c8ef2d54c46d23ca8c9848/backend/app.js",
+      "raw_url": "https://raw.githubusercontent.com/Garciajaime/Crowd-Sourced-Travel-App/e431099009cdd21e15c8ef2d54c46d23ca8c9848/backend/app.js",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/aabmass/cumulative-snow/blob/aeb9813f958412192f26cd0c24902ab4c5811ed9/marimo_s3_parquet.py",
+      "raw_url": "https://raw.githubusercontent.com/aabmass/cumulative-snow/aeb9813f958412192f26cd0c24902ab4c5811ed9/marimo_s3_parquet.py",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/hassaneljebyly/SecondView/blob/a973e02883ae23b8685094370e7493241c15f126/extension/src/components/popup/ProfileOverviewCard.tsx",
+      "raw_url": "https://raw.githubusercontent.com/hassaneljebyly/SecondView/a973e02883ae23b8685094370e7493241c15f126/extension/src/components/popup/ProfileOverviewCard.tsx",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/BradHutchings/Mmojo-Server/blob/12fcb353cc30f910e7198223afd1a730065dfa10/files/Mmojo-Complete/scripts.js",
+      "raw_url": "https://raw.githubusercontent.com/BradHutchings/Mmojo-Server/12fcb353cc30f910e7198223afd1a730065dfa10/files/Mmojo-Complete/scripts.js",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/sam-in07/CTF_sites_writeups/blob/596bf9e37f801ffb8dfeae0da205c0aed5025c7b/Readme.md",
+      "raw_url": "https://raw.githubusercontent.com/sam-in07/CTF_sites_writeups/596bf9e37f801ffb8dfeae0da205c0aed5025c7b/Readme.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/erichologist/erichology-ssd_textastic/blob/3a4f0734fd7d4809b1e3e4815071c12e24456b28/md/2026-02-09%2008.04PM-03.md",
+      "raw_url": "https://raw.githubusercontent.com/erichologist/erichology-ssd_textastic/3a4f0734fd7d4809b1e3e4815071c12e24456b28/md/2026-02-09%2008.04PM-03.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/erichologist/erichology-ssd_textastic/blob/3a4f0734fd7d4809b1e3e4815071c12e24456b28/md/2026-02-09-08.04pm-03.md",
+      "raw_url": "https://raw.githubusercontent.com/erichologist/erichology-ssd_textastic/3a4f0734fd7d4809b1e3e4815071c12e24456b28/md/2026-02-09-08.04pm-03.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/apassiondev/tiny-eshop/blob/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/lib/actions/product.actions.ts",
+      "raw_url": "https://raw.githubusercontent.com/apassiondev/tiny-eshop/0921931bc62bffda6f27f1dd11b4f89bcd9de89a/lib/actions/product.actions.ts",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/boeserDunklerMann/DA.SharedDeskPlanner/blob/7ec0ec6facf0ab7a2a1cff2c159d5b9c4ea142de/DA.SharedDeskPlanner.WebAPI.Client/Readme.kiota.txt",
+      "raw_url": "https://raw.githubusercontent.com/boeserDunklerMann/DA.SharedDeskPlanner/7ec0ec6facf0ab7a2a1cff2c159d5b9c4ea142de/DA.SharedDeskPlanner.WebAPI.Client/Readme.kiota.txt",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/pasha-log/csci-10b-final-project/blob/e424834d78c8e584bcd8e5019c5dd62dc46ccbb0/WikiPhilosophy.java",
+      "raw_url": "https://raw.githubusercontent.com/pasha-log/csci-10b-final-project/e424834d78c8e584bcd8e5019c5dd62dc46ccbb0/WikiPhilosophy.java",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/MarcosArangoGonzalez/jarvis/blob/4e2ce418bd0da487628067dc47f37a39d6f96e9a/wiki/sources/google-search.md",
+      "raw_url": "https://raw.githubusercontent.com/MarcosArangoGonzalez/jarvis/4e2ce418bd0da487628067dc47f37a39d6f96e9a/wiki/sources/google-search.md",
+      "status": 200,
+      "error": null
+    },
+    {
+      "source": "https://github.com/JalmarazMartn/VSCodeAPIPreview/blob/a552395269633851a30442fd64460256f521fa50/src/gitRepos.js",
+      "raw_url": "https://raw.githubusercontent.com/JalmarazMartn/VSCodeAPIPreview/a552395269633851a30442fd64460256f521fa50/src/gitRepos.js",
+      "status": 200,
+      "error": null
+    }
+  ]
+}

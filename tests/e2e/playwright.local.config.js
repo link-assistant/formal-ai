@@ -2,7 +2,12 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = process.env.E2E_PORT || 3456;
-const BASE_URL = `http://localhost:${PORT}`;
+const ORIGIN = `http://localhost:${PORT}`;
+// The web app moved from / to /app/ (issue #479); the site root is now the
+// landing page. Pointing baseURL at /app/ keeps every relative goto('./') in
+// the app specs aimed at the app, while absolute paths like /download/ and
+// relative ../tests/ continue to reach their siblings unchanged.
+const BASE_URL = `${ORIGIN}/app/`;
 
 module.exports = defineConfig({
   testDir: './tests',
@@ -49,20 +54,57 @@ module.exports = defineConfig({
     '**/issue-404.spec.js',
     '**/issue-409.spec.js',
     '**/issue-435.spec.js',
+    '**/issue-438.spec.js',
+    '**/issue-440.spec.js',
+    '**/issue-479.spec.js',
+    '**/issue-479-site.spec.js',
+    '**/issue-488.spec.js',
+    '**/issue-511-cold-start.spec.js',
+    '**/issue-513.spec.js',
+    '**/issue-514.spec.js',
+    '**/issue-518.spec.js',
+    '**/issue-541-demo-mode.spec.js',
+    '**/issue-541-permissions.spec.js',
+    '**/issue-541-theme.spec.js',
+    '**/issue-548.spec.js',
+    '**/issue-550-chakra-migration.spec.js',
+    '**/issue-554-site.spec.js',
+    '**/issue-1963.spec.js',
   ],
+  // Per-test cap. A single app spec navigates, waits for the worker to boot,
+  // and asserts on one answer — comfortably under 30s even on a cold worker.
   timeout: 30_000,
+  // Whole-suite cap so a hung worker or server can never wedge CI indefinitely;
+  // it aborts the run instead of waiting for the job-level kill. Sized for the
+  // full local matrix (~50 specs, retries:1) with headroom for the build step.
+  globalTimeout: 15 * 60_000,
+  // Fail individual web-first assertions fast (default is 5s) so flakes surface
+  // quickly rather than each burning the full per-test budget.
+  expect: { timeout: 10_000 },
   retries: 1,
   reporter: [['html', { open: 'never' }], ['list']],
   use: {
     baseURL: BASE_URL,
     trace: 'on-first-retry',
+    // Bound navigation/action waits so a stuck page errors promptly.
+    navigationTimeout: 15_000,
+    actionTimeout: 10_000,
+    // Issue #541 (R5/R6): freshly produced assistant messages stage a reasoning-
+    // then-body reveal that hides the answer body via `.is-revealing { display:
+    // none }` for the configured animation budget (default 2 s). Headless tests
+    // read `innerText()` immediately, which would return an empty string during
+    // that window and flake. Emulating prefers-reduced-motion makes
+    // `usePrefersReducedMotion()` return true, which short-circuits
+    // `useMessageReveal` to "show everything at once" — matching what users with
+    // reduced-motion preferences see, and giving tests deterministic text.
+    reducedMotion: 'reduce',
   },
   webServer: {
     // The seed mirror under src/web/seed/ is generated from the canonical
     // data/seed/ tree on every server start so we never serve stale data.
     command:
       `bun --cwd ../.. run build:web && ../../scripts/sync-seed.sh && npx serve ../../src/web --listen ${PORT} --no-clipboard`,
-    url: BASE_URL,
+    url: ORIGIN,
     reuseExistingServer: false,
     timeout: 15_000,
   },

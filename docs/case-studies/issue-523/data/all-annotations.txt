@@ -1,0 +1,39 @@
+[Code Coverage] warning: .github#2 :: Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+[Lint and Format Check] warning: src/solver_handlers/behavior_rules.rs#0 :: Rust file has 962 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/solver_handlers/calendar.rs#0 :: Rust file has 982 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/solver_handlers/mod.rs#0 :: Rust file has 976 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/solver_handlers/software_project.rs#0 :: Rust file has 915 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/solver_handlers/installation_conversion.rs#0 :: Rust file has 996 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/coding/catalog/templates_core.rs#0 :: Rust file has 961 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/protocol.rs#0 :: Rust file has 957 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/intent_formalization.rs#0 :: Rust file has 966 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/calculation.rs#0 :: Rust file has 902 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Lint and Format Check] warning: src/seed/meanings.rs#0 :: Rust file has 980 lines (approaching limit of 1000). Consider extracting content to keep at or below 900 lines and prevent review and merge conflicts.
+[Deploy Demo to GitHub Pages] failure: .github#0 :: System.IO.IOException: No space left on device : '/home/runner/actions-runner/extracted/_diag/Worker_20260617-163353-utc.log'
+   at System.IO.RandomAccess.WriteAtOffset(SafeFileHandle handle, ReadOnlySpan`1 buffer, Int64 fileOffset)
+   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
+   at System.Diagnostics.TextWriterTraceListener.Flush()
+   at GitHub.Runner.Common.HostTraceListener.WriteHeader(String source, TraceEventType eventType, Int32 id)
+   at System.Diagnostics.TraceSource.TraceEvent(TraceEventType eventType, Int32 id, String message)
+   at GitHub.Runner.Worker.Worker.RunAsync(String pipeIn, String pipeOut)
+   at GitHub.Runner.Worker.Program.MainAsync(IHostContext context, String[] args)
+System.IO.IOException: No space left on device : '/home/runner/actions-runner/extracted/_diag/Worker_20260617-163353-utc.log'
+   at System.IO.RandomAccess.WriteAtOffset(SafeFileHandle handle, ReadOnlySpan`1 buffer, Int64 fileOffset)
+   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
+   at System.Diagnostics.TextWriterTraceListener.Flush()
+   at GitHub.Runner.Common.HostTraceListener.WriteHeader(String source, TraceEventType eventType, Int32 id)
+   at System.Diagnostics.TraceSource.TraceEvent(TraceEventType eventType, Int32 id, String message)
+   at GitHub.Runner.Common.Tracing.Error(Exception exception)
+   at GitHub.Runner.Worker.Program.MainAsync(IHostContext context, String[] args)
+Unhandled exception. System.IO.IOException: No space left on device : '/home/runner/actions-runner/extracted/_diag/Worker_20260617-163353-utc.log'
+   at System.IO.RandomAccess.WriteAtOffset(SafeFileHandle handle, ReadOnlySpan`1 buffer, Int64 fileOffset)
+   at System.IO.StreamWriter.Flush(Boolean flushStream, Boolean flushEncoder)
+   at System.Diagnostics.TextWriterTraceListener.Flush()
+   at System.Diagnostics.TraceSource.Flush()
+   at GitHub.Runner.Common.Tracing.Dispose(Boolean disposing)
+   at GitHub.Runner.Common.Tracing.Dispose()
+   at GitHub.Runner.Common.TraceManager.Dispose(Boolean disposing)
+   at GitHub.Runner.Common.TraceManager.Dispose()
+   at GitHub.Runner.Common.HostContext.Dispose(Boolean disposing)
+   at GitHub.Runner.Common.HostContext.Dispose()
+   at GitHub.Runner.Worker.Program.Main(String[] args)

@@ -32,8 +32,10 @@ npm --prefix desktop run build    # packaged installers (build:linux / build:mac
 
 it starts **only** a static file server on a random loopback port to serve the
 web bundle, and reports `mode: "in-process"` to the UI. No `formal-ai serve`
-child process is spawned, so nothing binds an API port. The UI answers prompts
-with the same engine the public web demo uses.
+child process is spawned at first launch, so nothing binds an API port until
+the user either enables the startup opt-in below or switches the desktop UI to
+Agent / Full Auto mode. The UI answers normal chat prompts with the same engine
+the public web demo uses.
 
 This mirrors the design of the upstream
 [`agent`](https://github.com/link-assistant/agent) CLI: an agent you can run
@@ -50,13 +52,20 @@ point an external CLI at formal-ai, or share the local API with another tool.
 ### 2a. From the desktop app
 
 Set `FORMAL_AI_DESKTOP_SERVER` to a truthy value (`1`, `true`, `yes`, or `on`)
-before launching. The shell then starts `formal-ai serve` on a free loopback
-port, waits for `GET /health`, and routes chat through
-`POST /v1/chat/completions`. The status badge switches to **“API local”**.
+before launching when you want the API ready immediately. The shell then starts
+`formal-ai serve` on a free loopback port, waits for `GET /health`, and routes
+chat through `POST /v1/chat/completions`. The status badge switches to
+**“API local”**.
 
 ```bash
 FORMAL_AI_DESKTOP_SERVER=1 npm --prefix desktop run dev
 ```
+
+Without that environment variable, switching the desktop UI to **Agent** or
+**Full Auto** starts the same local server on demand, reusing an already healthy
+server when one is running. The resulting `apiBase` is exposed in the desktop
+status and provider metadata so the later Agent CLI integration can point at
+the same local OpenAI-compatible backend.
 
 The desktop server is bound to `127.0.0.1` and is **unauthenticated by design**
 — the shell scrubs any bearer-token environment variables before spawning it,
@@ -298,6 +307,52 @@ If you set a bearer token (see [§3](#3-authentication)), `claude` sends it as t
 `ANTHROPIC_API_KEY`; on a loopback-only server any non-empty value works when no
 token is required.
 
+### 4e. Agentic mode: the server drives a tool-calling loop (issue #468)
+
+Beyond answering a single prompt, the server can drive an **agentic tool-calling
+loop** on every surface above: the CLI advertises its tools, the server decides the
+next tool to call, the CLI executes it and feeds the result back, and the loop runs
+until the server returns the finished answer. This is the capability issue
+[#468](https://github.com/link-assistant/formal-ai/issues/468) asks for — *"call
+all the tools from any agentic CLI, understand errors from tools … web fetch and
+web search, to actually complete the task"* — exercised on the example task of
+formalizing «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.
+
+A single deterministic planner
+([`src/agentic_coding/planner.rs`](../../src/agentic_coding/planner.rs)) backs all
+three surfaces, so the loop behaves identically whichever CLI you point at the
+server:
+
+- **Chat Completions** (`opencode`, `agent`) — the assistant turn carries
+  `tool_calls` with `finish_reason: "tool_calls"`; the CLI replies with `tool`-role
+  messages.
+- **Responses** (`codex`) — the server emits a `function_call` output item; the CLI
+  replies with a `function_call_output` item.
+- **Anthropic Messages** (`claude`) — the server emits a `tool_use` content block
+  with `stop_reason: "tool_use"`; the CLI replies with a `tool_result` block on a
+  `user` message.
+
+**Strictly opt-in.** Tools are refused unless the request opts into agent mode
+*and* each requested tool passes a per-tool permission gate
+([`src/associative_package.rs`](../../src/associative_package.rs),
+`pkg_agentic_coding`). Without agent mode the server answers with a plain policy
+message and calls nothing — there is no hidden autonomous action. A non-agentic
+prompt falls through to the normal symbolic answer even when tools are advertised.
+
+**Offline reference client.** The repository ships its *own* deterministic client so
+the whole loop runs in CI without a network or an external CLI:
+
+```bash
+formal-ai agent --transcript   # runs search → fetch → write → run → final offline
+```
+
+The driver and offline corpus live in
+[`src/agentic_coding/`](../../src/agentic_coding/); the worked end-to-end loop is
+[`examples/issue_468_agentic_loop.rs`](../../examples/issue_468_agentic_loop.rs).
+External CLIs are pointed *at* this server as front-ends (the configs in §4a–§4d);
+they are never embedded in the engine. See the
+[issue #468 case study](../case-studies/issue-468/README.md) for the full design.
+
 ---
 
 ## 5. How the web UI reuses the same code
@@ -345,9 +400,9 @@ Payloads stay Links Notation (`demo_memory`); REST is only the transport (R7).
 
 ### 5d. Local-execution routing + Docker sandbox (R5d)
 
-When the agent has side effects — web fetches, tool calls, code execution — and
-server mode is on, those run through the **local** app and its Docker sandbox,
-not a remote service. The dispatcher is
+When the agent has side effects — web fetches, tool calls, shell commands, code
+execution — and server mode is on, those run through the **local** app, not a
+remote service. The dispatcher is
 [`desktop/lib/tool-router.cjs`](../../desktop/lib/tool-router.cjs), exposed to the
 renderer through `formalAiDesktop:invokeTool` /
 `formalAiDesktop:setToolGrants`.
@@ -358,15 +413,19 @@ renderer through `formalAiDesktop:invokeTool` /
 - **Local I/O tools** — `http_fetch`, `url_navigate`, `read_local_file` — are
   served by the local process. `read_local_file` is confined to an allowed root;
   anything outside it is refused (`forbidden`).
-- **Code/shell tools** — `eval_js`, `code_exec`, `shell` — run only inside the
-  `konard/box-dind:2.1.1` Docker sandbox (the same inner-Docker image the
-  Telegram microservice uses), with logs captured to a local path. If Docker is
-  unavailable the call is refused (`sandbox_unavailable`) rather than run
-  unsandboxed.
+- **Shell** runs on the host machine by default, after the same explicit grant,
+  with output and logs returned through the tool result. A shell request may opt
+  into Docker isolation with `input.isolation = "docker"`.
+- **Sandboxed code tools** — `eval_js`, `code_exec`, and Docker-isolated `shell`
+  requests — run inside the `konard/box-dind:2.1.1` Docker sandbox (the same
+  inner-Docker image the Telegram microservice uses), with logs captured to a
+  local path. If Docker is unavailable the sandboxed call is refused
+  (`sandbox_unavailable`) rather than run unsandboxed.
 
 This mirrors the `docker_microservice` environment in
 [`data/seed/environments.lino`](../../data/seed/environments.lino) and keeps every
-side effect on the local machine and behind an explicit grant.
+side effect on the local machine, with Docker as an explicit sandboxing target,
+and behind an explicit grant.
 
 ---
 

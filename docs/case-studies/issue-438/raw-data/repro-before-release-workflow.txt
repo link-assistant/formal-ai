@@ -1,0 +1,22 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling formal-ai v0.200.0 (/tmp/gh-issue-solver-1781449075566)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 05s
+     Running tests/unit/mod.rs (target/debug/deps/unit-cc4dc4028216aacd)
+
+running 1 test
+
+thread 'ci_cd::workflow_release::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror' (3617799) panicked at tests/unit/ci-cd/workflow_release.rs:590:5:
+workflow should expose the default GHCR image name for prepared Docker releases
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test ci_cd::workflow_release::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror ... FAILED
+
+failures:
+
+failures:
+    ci_cd::workflow_release::release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_optional_docker_hub_mirror
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 921 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--test unit`

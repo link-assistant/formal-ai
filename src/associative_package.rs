@@ -564,55 +564,81 @@ impl PackageStore {
 
 #[must_use]
 pub fn default_associative_packages() -> Vec<AssociativePackage> {
-    vec![AssociativePackage::new(
-        "pkg_formal_ai_core",
-        "formal-ai core package",
-        KNOWLEDGE_SCHEMA_VERSION,
-    )
-    .with_handler(PackageHandler::new(
-        "handler_calculator",
-        "rust_handler",
-        "tool:calculator",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_calculator_tool_call",
-        "tool_invocation",
-        "calculator",
-        "handler_calculator",
-    ))
-    .with_handler(PackageHandler::new(
-        "handler_web_search",
-        "rust_handler",
-        "tool:web_search",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_web_search_tool_call",
-        "tool_invocation",
-        "web_search",
-        "handler_web_search",
-    ))
-    .with_handler(PackageHandler::new(
-        "handler_javascript_execution",
-        "rust_handler",
-        "tool:javascript_execution",
-    ))
-    .with_trigger(PackageTrigger::new(
-        "trigger_javascript_execution_tool_call",
-        "tool_invocation",
-        "javascript_execution",
-        "handler_javascript_execution",
-    ))
-    .with_permission("tool:calculator", "local deterministic calculator tool")
-    .with_permission("tool:web_search", "browser-backed web search API")
-    .with_permission(
-        "tool:javascript_execution",
-        "bounded deterministic JavaScript expression execution",
-    )
-    .with_permission("tool:concept_lookup", "seed-backed concept lookup")
-    .with_permission(
-        "tool:write_program",
-        "seed-backed program template renderer",
-    )]
+    vec![
+        AssociativePackage::new(
+            "pkg_formal_ai_core",
+            "formal-ai core package",
+            KNOWLEDGE_SCHEMA_VERSION,
+        )
+        .with_handler(PackageHandler::new(
+            "handler_calculator",
+            "rust_handler",
+            "tool:calculator",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_calculator_tool_call",
+            "tool_invocation",
+            "calculator",
+            "handler_calculator",
+        ))
+        .with_handler(PackageHandler::new(
+            "handler_web_search",
+            "rust_handler",
+            "tool:web_search",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_web_search_tool_call",
+            "tool_invocation",
+            "web_search",
+            "handler_web_search",
+        ))
+        .with_handler(PackageHandler::new(
+            "handler_javascript_execution",
+            "rust_handler",
+            "tool:javascript_execution",
+        ))
+        .with_trigger(PackageTrigger::new(
+            "trigger_javascript_execution_tool_call",
+            "tool_invocation",
+            "javascript_execution",
+            "handler_javascript_execution",
+        ))
+        .with_permission("tool:calculator", "local deterministic calculator tool")
+        .with_permission("tool:web_search", "browser-backed web search API")
+        .with_permission(
+            "tool:javascript_execution",
+            "bounded deterministic JavaScript expression execution",
+        )
+        .with_permission("tool:concept_lookup", "seed-backed concept lookup")
+        .with_permission(
+            "tool:write_program",
+            "seed-backed program template renderer",
+        ),
+        // Agentic-coding capability grants for issue #468. These tools are run by
+        // the *client* (an external agentic CLI, or the in-repo offline driver), not
+        // by an in-server handler, so they are permission-only. The chat tool gate
+        // still refuses every tool unless `agent_mode` is explicitly opted in, so
+        // granting them by default enables no hidden autonomous action — it only lets
+        // an agent that already opted in drive the full search → fetch → write → run
+        // loop the issue asks for. `tool:web_search` is granted by the core package.
+        AssociativePackage::new(
+            "pkg_agentic_coding",
+            "agentic-coding capability package",
+            KNOWLEDGE_SCHEMA_VERSION,
+        )
+        .with_permission(
+            "tool:web_fetch",
+            "agentic-coding HTTP source fetch (client-executed)",
+        )
+        .with_permission(
+            "tool:write_file",
+            "agentic-coding workspace file write (client-executed)",
+        )
+        .with_permission(
+            "tool:run_command",
+            "agentic-coding sandboxed command runner (client-executed)",
+        ),
+    ]
 }
 
 #[must_use]

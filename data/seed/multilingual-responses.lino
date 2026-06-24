@@ -396,3 +396,35 @@ multilingual_responses
     intent kupi_slona
     language zh
     text "「买大象」是一个著名的俄罗斯儿童文字游戏。无论你怎么回答,对方都会说:大家都这么说,但你去买大象吧!传统的取胜回答是:大家都有大象,而我没有。"
+  response response_agent_suggestion_en
+    intent agent_suggestion
+    language en
+    text "It looks like you want to run a terminal command: `{command}`.\n\nRunning shell commands requires Agent mode. In Chat mode I only reason about your request and do not execute commands.\n\nSwitch to Agent mode and grant the `shell` capability so I can run `{command}`? Use the mode radio in the toolbar to pick \"Agent\" (or \"Full Auto\" to run commands automatically)."
+  response response_agent_suggestion_ru
+    intent agent_suggestion
+    language ru
+    text "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nЧтобы выполнять команды оболочки, нужен режим агента (Agent). В режиме чата (Chat) я только рассуждаю и не запускаю команды.\n\nВключить режим агента и выдать доступ к оболочке (shell), чтобы я мог выполнить `{command}`? Переключите режим на «Agent» на панели инструментов (или «Full Auto» для автоматического выполнения)."
+  response response_agent_suggestion_hi
+    intent agent_suggestion
+    language hi
+    text "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nशेल कमांड चलाने के लिए एजेंट (Agent) मोड चाहिए। चैट (Chat) मोड में मैं केवल आपके अनुरोध पर विचार करता हूँ और कमांड नहीं चलाता।\n\nएजेंट मोड चालू करें और `shell` क्षमता प्रदान करें ताकि मैं `{command}` चला सकूँ? टूलबार में मोड रेडियो से \"Agent\" चुनें (या स्वचालित निष्पादन के लिए \"Full Auto\")।"
+  response response_agent_suggestion_zh
+    intent agent_suggestion
+    language zh
+    text "看起来您想在终端中运行一个命令：`{command}`。\n\n运行 shell 命令需要智能体（Agent）模式。在聊天（Chat）模式下，我只会分析您的请求，而不会执行命令。\n\n切换到智能体模式并授予 `shell` 权限，以便我运行 `{command}`？请在工具栏的模式单选框中选择 \"Agent\"（或选择 \"Full Auto\" 自动运行命令）。"
+  response response_agent_suggestion_active_en
+    intent agent_suggestion_active
+    language en
+    text "It looks like you want to run a terminal command: `{command}`.\n\nAgent mode is on. If the `shell` capability is granted I can run `{command}`. Otherwise grant the `shell` capability in settings."
+  response response_agent_suggestion_active_ru
+    intent agent_suggestion_active
+    language ru
+    text "Похоже, вы просите выполнить команду в терминале: `{command}`.\n\nРежим агента включён. Если доступ к оболочке (shell) выдан, я могу выполнить `{command}`. Иначе выдайте доступ к `shell` в настройках."
+  response response_agent_suggestion_active_hi
+    intent agent_suggestion_active
+    language hi
+    text "ऐसा लगता है कि आप टर्मिनल में एक कमांड चलाना चाहते हैं: `{command}`।\n\nएजेंट मोड चालू है। यदि `shell` क्षमता प्रदान की गई है तो मैं `{command}` चला सकता हूँ। अन्यथा सेटिंग्स में `shell` क्षमता प्रदान करें।"
+  response response_agent_suggestion_active_zh
+    intent agent_suggestion_active
+    language zh
+    text "看起来您想在终端中运行一个命令：`{command}`。\n\n智能体模式已开启。如果已授予 `shell` 权限，我就可以运行 `{command}`。否则请在设置中授予 `shell` 权限。"

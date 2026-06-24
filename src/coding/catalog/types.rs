@@ -34,6 +34,14 @@ pub struct ProgramTask {
     pub output: &'static str,
 }
 
+impl ProgramTask {
+    #[must_use]
+    pub fn output_for_language(&self, language: &ProgramLanguage) -> String {
+        list_files_sample_output(self.slug, language.save_as)
+            .unwrap_or_else(|| self.output.to_owned())
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct ProgramTemplate {
     pub task_slug: &'static str,
@@ -73,6 +81,25 @@ impl ProgramSpec {
             format!("write_program_{}_{}", self.task.slug, self.language.slug)
         }
     }
+
+    #[must_use]
+    pub fn expected_output(self) -> String {
+        self.task.output_for_language(self.language)
+    }
+}
+
+fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
+    let reverse = match task_slug {
+        "list_files" | "list_files_arg" => false,
+        "list_files_reverse_sort" | "list_files_arg_reverse_sort" => true,
+        _ => return None,
+    };
+    let mut files = ["README.md", "data.txt", save_as];
+    files.sort_unstable();
+    if reverse {
+        files.reverse();
+    }
+    Some(files.join("\n"))
 }
 
 #[derive(Clone, Copy)]

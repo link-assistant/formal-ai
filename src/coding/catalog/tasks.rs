@@ -21,9 +21,8 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
     ProgramTask {
         slug: "list_files",
         label: "list files in the current directory",
-        // Verified output for the documented sample directory containing exactly
-        // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
-        // byte order, so the output is identical across languages.
+        // Fallback output for the Rust-flavoured sample. Rendered answers resolve
+        // list-file samples from each language's `save_as` name (issue #440).
         output: "Cargo.toml\nREADME.md\nmain.rs",
     },
     ProgramTask {
@@ -32,8 +31,8 @@ pub const PROGRAM_TASKS: &[ProgramTask] = &[
         // A bare "accept a path argument" modification also maps here through the
         // program-plan rules; the `program_task_list_files_arg` seed aliases let
         // an explicit single-turn request resolve directly (issue #324 follow-up).
-        // When no argument is supplied the templates fall back to "." so the
-        // documented sample directory still produces the verified listing.
+        // When no argument is supplied the templates fall back to "."; rendered
+        // answers still use a language-aware sample directory (issue #440).
         output: "Cargo.toml\nREADME.md\nmain.rs",
     },
     ProgramTask {

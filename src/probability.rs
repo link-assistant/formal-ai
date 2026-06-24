@@ -189,7 +189,7 @@ impl ProbabilityEvidence {
         if !offline {
             return true;
         }
-        self.source.as_ref().map_or(true, |source| source.cached)
+        self.source.as_ref().is_none_or(|source| source.cached)
     }
 
     fn applies_to_markov_state(&self, markov_from: Option<&str>) -> bool {
@@ -365,7 +365,7 @@ impl ProbabilityStore {
                 count,
                 similarity,
             };
-            let replace = best.as_ref().map_or(true, |current| {
+            let replace = best.as_ref().is_none_or(|current| {
                 match similarity.total_cmp(&current.similarity) {
                     Ordering::Greater => true,
                     Ordering::Equal => candidate.matched_target < current.matched_target,
@@ -751,7 +751,7 @@ fn highest_score_index(scores: &[f32]) -> usize {
         .map_or(0, |(index, _)| index)
 }
 
-fn finite_or_zero(value: f32) -> f32 {
+const fn finite_or_zero(value: f32) -> f32 {
     if value.is_finite() {
         value
     } else {
@@ -759,7 +759,7 @@ fn finite_or_zero(value: f32) -> f32 {
     }
 }
 
-fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
+const fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
     if value.is_finite() {
         value.clamp(min, max)
     } else {

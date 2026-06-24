@@ -1,0 +1,935 @@
+================================================================
+PROMPT: translate apple to Russian
+================================================================
+
+# (R330) problem frame
+problem_frame_d3cef1704a2f498d
+  record_type "problem_frame"
+  frame_id "problem_frame_d3cef1704a2f498d"
+  impulse_id "impulse_5ba0ea7c2a9b3647"
+  language "en"
+  kind "task"
+  need_count "1"
+  route "translation"
+  need "problem_need_9d4753ec069ff65a"
+problem_need_9d4753ec069ff65a
+  record_type "problem_need"
+  need_id "problem_need_9d4753ec069ff65a"
+  source_span "translate apple to Russian"
+  kind "task"
+  status "pending"
+  route "translation"
+
+# (R332) recursive work-unit tree
+work_unit_1653752b66b67893
+  record_type "work_unit"
+  unit_id "work_unit_1653752b66b67893"
+  source_span "translate apple to Russian"
+  depth "0"
+  atomic "true"
+  atomicity_reason "direct_method"
+  route "translation"
+
+# (R333) need-satisfaction ledger
+need_ledger_a441e81bfba5b174
+  record_type "need_ledger"
+  frame_id "problem_frame_d3cef1704a2f498d"
+  row_count "1"
+  satisfied "1"
+  blocked "0"
+  row "problem_need_9d4753ec069ff65a"
+need_ledger_row_9b0313c317a8bda3
+  record_type "need_ledger_row"
+  need_id "problem_need_9d4753ec069ff65a"
+  source_span "translate apple to Russian"
+  status "satisfied"
+  leaf_reason "direct_method"
+  unit_id "work_unit_1653752b66b67893"
+  route "translation"
+
+# (R337) white-box recursive reasoning (1 steps)
+work_unit_1653752b66b67893
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  observation "At depth 0, observed a span of 26 characters; the route `translation` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `translation`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "translation"
+
+# (R338) upward construction pass (1 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_1653752b66b67893"
+  step_count "1"
+work_unit_1653752b66b67893
+  record_type "construction_step"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `translation`."
+  method "translation"
+
+# (R334) solution evidence (accounted_for=true, fully_resolved=true)
+solution_evidence
+  record_type "solution_evidence"
+  frame_id "problem_frame_d3cef1704a2f498d"
+  trail_count "1"
+  accounted_for "true"
+  fully_resolved "true"
+  resolved_to_method "1"
+  trail "problem_need_9d4753ec069ff65a"
+problem_need_9d4753ec069ff65a
+  record_type "evidence_trail"
+  need_id "problem_need_9d4753ec069ff65a"
+  source_span "translate apple to Russian"
+  status "satisfied"
+  connected "true"
+  work_unit "work_unit_1653752b66b67893"
+  route "translation"
+  method "translation"
+
+# (R339) method-selection trace (leaves=1, resolved=1, unresolved=0)
+selection
+  record_type "selection"
+  root_id "work_unit_1653752b66b67893"
+  leaf_count "1"
+  resolved_count "1"
+  unresolved_count "0"
+work_unit_1653752b66b67893
+  record_type "leaf_selection"
+  unit_id "work_unit_1653752b66b67893"
+  depth "0"
+  route "translation"
+  method "translation"
+
+# (R342) skill-accumulation ledger (proposed=1, curriculum=0, promotable=0)
+skill_ledger_a441e81bfba5b174
+  record_type "skill_ledger"
+  frame_id "problem_frame_d3cef1704a2f498d"
+  skill_count "1"
+  proposed "1"
+  stable "0"
+  promotable "0"
+  curriculum_count "0"
+  skill "candidate_skill_6d4c56c0ca9e6b18"
+candidate_skill_6d4c56c0ca9e6b18
+  record_type "candidate_skill"
+  skill_id "candidate_skill_6d4c56c0ca9e6b18"
+  method "translation"
+  source_span "translate apple to Russian"
+  status "proposed"
+  has_tests "false"
+  has_benchmark_delta "false"
+  promotable "false"
+  route "translation"
+  work_unit "work_unit_1653752b66b67893"
+================================================================
+PROMPT: translate apple to Russian and write a hello world program in Python
+================================================================
+
+# (R330) problem frame
+problem_frame_57e8c8af1a476bb4
+  record_type "problem_frame"
+  frame_id "problem_frame_57e8c8af1a476bb4"
+  impulse_id "impulse_7f34dd12324f06b5"
+  language "en"
+  kind "task"
+  need_count "2"
+  route "write_program"
+  need "problem_need_5e9dcd33c57da30f"
+  need "problem_need_e221ed16f702b263"
+problem_need_5e9dcd33c57da30f
+  record_type "problem_need"
+  need_id "problem_need_5e9dcd33c57da30f"
+  source_span "translate apple to Russian"
+  kind "task"
+  status "pending"
+  route "translation"
+problem_need_e221ed16f702b263
+  record_type "problem_need"
+  need_id "problem_need_e221ed16f702b263"
+  source_span "write a hello world program in Python"
+  kind "task"
+  status "pending"
+  route "write_program"
+
+# (R332) recursive work-unit tree
+work_unit_16efab3092bb4d01
+  record_type "work_unit"
+  unit_id "work_unit_16efab3092bb4d01"
+  source_span "translate apple to Russian and write a hello world program in Python"
+  depth "0"
+  atomic "false"
+  atomicity_reason "not_atomic"
+  route "write_program"
+  child "work_unit_ddbb9068def90fae"
+  child "work_unit_751ee4a5ba055be3"
+work_unit_ddbb9068def90fae
+  record_type "work_unit"
+  unit_id "work_unit_ddbb9068def90fae"
+  source_span "translate apple to Russian"
+  depth "1"
+  atomic "true"
+  atomicity_reason "direct_method"
+  parent "work_unit_16efab3092bb4d01"
+  route "translation"
+work_unit_751ee4a5ba055be3
+  record_type "work_unit"
+  unit_id "work_unit_751ee4a5ba055be3"
+  source_span "write a hello world program in Python"
+  depth "1"
+  atomic "true"
+  atomicity_reason "direct_method"
+  parent "work_unit_16efab3092bb4d01"
+  route "write_program"
+
+# (R333) need-satisfaction ledger
+need_ledger_35a9f3848454d8d7
+  record_type "need_ledger"
+  frame_id "problem_frame_57e8c8af1a476bb4"
+  row_count "2"
+  satisfied "2"
+  blocked "0"
+  row "problem_need_5e9dcd33c57da30f"
+  row "problem_need_e221ed16f702b263"
+need_ledger_row_48f8d58f20a31c2b
+  record_type "need_ledger_row"
+  need_id "problem_need_5e9dcd33c57da30f"
+  source_span "translate apple to Russian"
+  status "satisfied"
+  leaf_reason "direct_method"
+  unit_id "work_unit_ddbb9068def90fae"
+  route "translation"
+need_ledger_row_9bf4c90073a1ab42
+  record_type "need_ledger_row"
+  need_id "problem_need_e221ed16f702b263"
+  source_span "write a hello world program in Python"
+  status "satisfied"
+  leaf_reason "direct_method"
+  unit_id "work_unit_751ee4a5ba055be3"
+  route "write_program"
+
+# (R337) white-box recursive reasoning (3 steps)
+work_unit_16efab3092bb4d01
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_16efab3092bb4d01"
+  depth "0"
+  observation "At depth 0, observed a span of 68 characters; the route `write_program` was recognized."
+  decision "decompose"
+  downward_rationale "The span carries more than one need, so it is not solvable by a single method: decompose it into 2 sub-units and reason about each recursively."
+  upward_rationale "Once all 2 children are solved, compose their results in source order into this unit's answer; the answer is complete iff every child's is."
+  child "work_unit_ddbb9068def90fae"
+  child "work_unit_751ee4a5ba055be3"
+work_unit_ddbb9068def90fae
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  observation "At depth 1, observed a span of 26 characters; the route `translation` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `translation`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "translation"
+work_unit_751ee4a5ba055be3
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  observation "At depth 1, observed a span of 37 characters; the route `write_program` was recognized."
+  decision "direct_method"
+  downward_rationale "The span is directly solvable: its route resolves to the registered method `write_script`. Invoke that method; no further decomposition is needed."
+  upward_rationale "Return the method's result directly; there are no children to compose."
+  method "write_script"
+
+# (R338) upward construction pass (3 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_16efab3092bb4d01"
+  step_count "3"
+work_unit_ddbb9068def90fae
+  record_type "construction_step"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `translation`."
+  method "translation"
+work_unit_751ee4a5ba055be3
+  record_type "construction_step"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  order "2"
+  kind "leaf_method"
+  rationale "Base case: construct this leaf's answer directly from the result of method `write_script`."
+  method "write_script"
+work_unit_16efab3092bb4d01
+  record_type "construction_step"
+  unit_id "work_unit_16efab3092bb4d01"
+  depth "0"
+  order "3"
+  kind "compose"
+  rationale "Recursive case: compose the 2 already-constructed children in source order into this unit's answer."
+  input "work_unit_ddbb9068def90fae"
+  input "work_unit_751ee4a5ba055be3"
+
+# (R334) solution evidence (accounted_for=true, fully_resolved=true)
+solution_evidence
+  record_type "solution_evidence"
+  frame_id "problem_frame_57e8c8af1a476bb4"
+  trail_count "2"
+  accounted_for "true"
+  fully_resolved "true"
+  resolved_to_method "2"
+  trail "problem_need_5e9dcd33c57da30f"
+  trail "problem_need_e221ed16f702b263"
+problem_need_5e9dcd33c57da30f
+  record_type "evidence_trail"
+  need_id "problem_need_5e9dcd33c57da30f"
+  source_span "translate apple to Russian"
+  status "satisfied"
+  connected "true"
+  work_unit "work_unit_ddbb9068def90fae"
+  route "translation"
+  method "translation"
+problem_need_e221ed16f702b263
+  record_type "evidence_trail"
+  need_id "problem_need_e221ed16f702b263"
+  source_span "write a hello world program in Python"
+  status "satisfied"
+  connected "true"
+  work_unit "work_unit_751ee4a5ba055be3"
+  route "write_program"
+  method "write_script"
+  method_via_alias "true"
+
+# (R339) method-selection trace (leaves=2, resolved=2, unresolved=0)
+selection
+  record_type "selection"
+  root_id "work_unit_16efab3092bb4d01"
+  leaf_count "2"
+  resolved_count "2"
+  unresolved_count "0"
+work_unit_ddbb9068def90fae
+  record_type "leaf_selection"
+  unit_id "work_unit_ddbb9068def90fae"
+  depth "1"
+  route "translation"
+  method "translation"
+work_unit_751ee4a5ba055be3
+  record_type "leaf_selection"
+  unit_id "work_unit_751ee4a5ba055be3"
+  depth "1"
+  route "write_program"
+  method "write_script"
+
+# (R342) skill-accumulation ledger (proposed=2, curriculum=0, promotable=0)
+skill_ledger_35a9f3848454d8d7
+  record_type "skill_ledger"
+  frame_id "problem_frame_57e8c8af1a476bb4"
+  skill_count "2"
+  proposed "2"
+  stable "0"
+  promotable "0"
+  curriculum_count "0"
+  skill "candidate_skill_6d4c56c0ca9e6b18"
+  skill "candidate_skill_30c75d6de54ea597"
+candidate_skill_6d4c56c0ca9e6b18
+  record_type "candidate_skill"
+  skill_id "candidate_skill_6d4c56c0ca9e6b18"
+  method "translation"
+  source_span "translate apple to Russian"
+  status "proposed"
+  has_tests "false"
+  has_benchmark_delta "false"
+  promotable "false"
+  route "translation"
+  work_unit "work_unit_ddbb9068def90fae"
+candidate_skill_30c75d6de54ea597
+  record_type "candidate_skill"
+  skill_id "candidate_skill_30c75d6de54ea597"
+  method "write_script"
+  source_span "write a hello world program in Python"
+  status "proposed"
+  has_tests "false"
+  has_benchmark_delta "false"
+  promotable "false"
+  route "write_program"
+  work_unit "work_unit_751ee4a5ba055be3"
+================================================================
+PROMPT: zzqqx unfathomable gibberish token
+================================================================
+
+# (R330) problem frame
+problem_frame_8f85604f2923ccb1
+  record_type "problem_frame"
+  frame_id "problem_frame_8f85604f2923ccb1"
+  impulse_id "impulse_a28209b7d62d75b9"
+  language "en"
+  kind "statement"
+  need_count "1"
+  need "problem_need_2f86301fc50ef7f1"
+problem_need_2f86301fc50ef7f1
+  record_type "problem_need"
+  need_id "problem_need_2f86301fc50ef7f1"
+  source_span "zzqqx unfathomable gibberish token"
+  kind "statement"
+  status "pending"
+
+# (R332) recursive work-unit tree
+work_unit_b008b07e7a293ffd
+  record_type "work_unit"
+  unit_id "work_unit_b008b07e7a293ffd"
+  source_span "zzqqx unfathomable gibberish token"
+  depth "0"
+  atomic "true"
+  atomicity_reason "single_need"
+
+# (R333) need-satisfaction ledger
+need_ledger_bf47cbd910a63ba7
+  record_type "need_ledger"
+  frame_id "problem_frame_8f85604f2923ccb1"
+  row_count "1"
+  satisfied "0"
+  blocked "1"
+  row "problem_need_2f86301fc50ef7f1"
+need_ledger_row_7c25ee8e4112d907
+  record_type "need_ledger_row"
+  need_id "problem_need_2f86301fc50ef7f1"
+  source_span "zzqqx unfathomable gibberish token"
+  status "blocked"
+  leaf_reason "single_need"
+  unit_id "work_unit_b008b07e7a293ffd"
+
+# (R337) white-box recursive reasoning (1 steps)
+work_unit_b008b07e7a293ffd
+  record_type "work_unit_reasoning"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  observation "At depth 0, observed a span of 34 characters; no route was recognized."
+  decision "single_need"
+  downward_rationale "The span cannot be split further and matches no known route, so it is an irreducible single need. Record it for an honest blocked status instead of forcing an answer."
+  upward_rationale "Return a blocked marker upward: this leaf has no resolving method, so there is nothing to compose."
+
+# (R338) upward construction pass (1 steps)
+upward_construction
+  record_type "upward_construction"
+  root_id "work_unit_b008b07e7a293ffd"
+  step_count "1"
+work_unit_b008b07e7a293ffd
+  record_type "construction_step"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  order "1"
+  kind "leaf_method"
+  rationale "Base case: no method resolves this leaf, so its answer is a blocked marker — nothing is constructed."
+
+# (R334) solution evidence (accounted_for=true, fully_resolved=false)
+solution_evidence
+  record_type "solution_evidence"
+  frame_id "problem_frame_8f85604f2923ccb1"
+  trail_count "1"
+  accounted_for "true"
+  fully_resolved "false"
+  resolved_to_method "0"
+  trail "problem_need_2f86301fc50ef7f1"
+problem_need_2f86301fc50ef7f1
+  record_type "evidence_trail"
+  need_id "problem_need_2f86301fc50ef7f1"
+  source_span "zzqqx unfathomable gibberish token"
+  status "blocked"
+  connected "true"
+  work_unit "work_unit_b008b07e7a293ffd"
+
+# (R339) method-selection trace (leaves=1, resolved=0, unresolved=1)
+selection
+  record_type "selection"
+  root_id "work_unit_b008b07e7a293ffd"
+  leaf_count "1"
+  resolved_count "0"
+  unresolved_count "1"
+work_unit_b008b07e7a293ffd
+  record_type "leaf_selection"
+  unit_id "work_unit_b008b07e7a293ffd"
+  depth "0"
+  method "unresolved"
+
+# (R342) skill-accumulation ledger (proposed=0, curriculum=1, promotable=0)
+skill_ledger_bf47cbd910a63ba7
+  record_type "skill_ledger"
+  frame_id "problem_frame_8f85604f2923ccb1"
+  skill_count "0"
+  proposed "0"
+  stable "0"
+  promotable "0"
+  curriculum_count "1"
+  curriculum "curriculum_item_a47529d315461891"
+curriculum_item_a47529d315461891
+  record_type "curriculum_item"
+  item_id "curriculum_item_a47529d315461891"
+  need_id "problem_need_2f86301fc50ef7f1"
+  source_span "zzqqx unfathomable gibberish token"
+  status "blocked"
+  reason "No catalogued method resolves this need; recorded as a gap to close."
+================================================================
+# (R341) cue lexicon — 13 cue sets lifted out of Rust into data
+================================================================
+execution_failure_prompt [substring] handler=execution_failure: undefined_function
+execution_failure_normalized [substring] handler=execution_failure: undefined function
+arithmetic_operators [substring] handler=arithmetic: +, -, *, /, plus, minus, times, divided
+web_search [token] handler=web_search: search, google, find
+procedural_how_to [prefix] handler=procedural_how_to: how to 
+proof_request [token] handler=proof_request: prove, proof
+write_script [token] handler=write_script: script, code
+software_project [token] handler=software_project: build, create, implement, develop
+concept_lookup [prefix] handler=concept_lookup: what is , define 
+calendar_fallback_verbs [token] handler=calendar_create_event: забей, поставь, schedule, book
+calendar_digit_actions [token] handler=calendar_create_event: schedule, book, add
+calendar_ru_date_marker [substring] handler=calendar_create_event: число
+text_manipulation [substring] handler=text_manipulation: uppercase, lowercase, replace, remove text, append text, prepend text, extract email, count occurrences, count unique words, deduplicate lines, sort lines, trim whitespace, normalize whitespace, reverse words
+================================================================
+# (R331) method registry — 60 methods derived from live dispatch
+================================================================
+method_registry
+  record_type "method_registry"
+  method_count "60"
+  prelude_count "5"
+  specialized_count "50"
+  contextual_count "5"
+  method "diagnostic"
+  method "nl_tool"
+  method "behavior_rules"
+  method "feature_capability"
+  method "playwright_script"
+  method "http_fetch"
+  method "url_navigate"
+  method "web_search"
+  method "research_comparison_table"
+  method "docs_method_explanation"
+  method "procedural_how_to"
+  method "procedural_how_to_followup"
+  method "conversation_memory"
+  method "software_project_followup"
+  method "summarization"
+  method "text_manipulation"
+  method "brainstorming"
+  method "conversation_topic"
+  method "fact_lookup"
+  method "coreference"
+  method "roleplay"
+  method "translation"
+  method "capabilities"
+  method "calendar_reasoning"
+  method "calendar_create_event"
+  method "compound_interest"
+  method "numeric_list"
+  method "shell_command_transform"
+  method "number_constraint_reasoning"
+  method "arithmetic"
+  method "javascript_execution"
+  method "definition_merge"
+  method "concept_lookup"
+  method "who_is"
+  method "how_it_works"
+  method "meta_explanation"
+  method "network_query"
+  method "execution_failure"
+  method "installation_conversion"
+  method "write_script"
+  method "program_synthesis"
+  method "document_generation_plan"
+  method "software_project"
+  method "algorithm"
+  method "source_refresh"
+  method "source_conflict"
+  method "clarification"
+  method "punctuation_only_prompt"
+  method "ill_formed"
+  method "physical_action_question"
+  method "kupi_slona"
+  method "shell_refusal"
+  method "proof_request"
+  method "opinion_question"
+  method "incompatible_units"
+  method "proof_request"
+  method "meta_explanation"
+  method "numeric_list"
+  method "shell_command_transform"
+  method "text_manipulation"
+diagnostic
+  record_type "method"
+  name "diagnostic"
+  order "0"
+  surface "prelude"
+nl_tool
+  record_type "method"
+  name "nl_tool"
+  order "1"
+  surface "prelude"
+behavior_rules
+  record_type "method"
+  name "behavior_rules"
+  order "2"
+  surface "prelude"
+feature_capability
+  record_type "method"
+  name "feature_capability"
+  order "3"
+  surface "prelude"
+playwright_script
+  record_type "method"
+  name "playwright_script"
+  order "4"
+  surface "prelude"
+http_fetch
+  record_type "method"
+  name "http_fetch"
+  order "0"
+  surface "specialized"
+url_navigate
+  record_type "method"
+  name "url_navigate"
+  order "1"
+  surface "specialized"
+web_search
+  record_type "method"
+  name "web_search"
+  order "2"
+  surface "specialized"
+research_comparison_table
+  record_type "method"
+  name "research_comparison_table"
+  order "3"
+  surface "specialized"
+docs_method_explanation
+  record_type "method"
+  name "docs_method_explanation"
+  order "4"
+  surface "specialized"
+procedural_how_to
+  record_type "method"
+  name "procedural_how_to"
+  order "5"
+  surface "specialized"
+procedural_how_to_followup
+  record_type "method"
+  name "procedural_how_to_followup"
+  order "6"
+  surface "specialized"
+conversation_memory
+  record_type "method"
+  name "conversation_memory"
+  order "7"
+  surface "specialized"
+software_project_followup
+  record_type "method"
+  name "software_project_followup"
+  order "8"
+  surface "specialized"
+summarization
+  record_type "method"
+  name "summarization"
+  order "9"
+  surface "specialized"
+text_manipulation
+  record_type "method"
+  name "text_manipulation"
+  order "10"
+  surface "specialized"
+brainstorming
+  record_type "method"
+  name "brainstorming"
+  order "11"
+  surface "specialized"
+conversation_topic
+  record_type "method"
+  name "conversation_topic"
+  order "12"
+  surface "specialized"
+fact_lookup
+  record_type "method"
+  name "fact_lookup"
+  order "13"
+  surface "specialized"
+coreference
+  record_type "method"
+  name "coreference"
+  order "14"
+  surface "specialized"
+roleplay
+  record_type "method"
+  name "roleplay"
+  order "15"
+  surface "specialized"
+translation
+  record_type "method"
+  name "translation"
+  order "16"
+  surface "specialized"
+capabilities
+  record_type "method"
+  name "capabilities"
+  order "17"
+  surface "specialized"
+calendar_reasoning
+  record_type "method"
+  name "calendar_reasoning"
+  order "18"
+  surface "specialized"
+calendar_create_event
+  record_type "method"
+  name "calendar_create_event"
+  order "19"
+  surface "specialized"
+compound_interest
+  record_type "method"
+  name "compound_interest"
+  order "20"
+  surface "specialized"
+numeric_list
+  record_type "method"
+  name "numeric_list"
+  order "21"
+  surface "specialized"
+shell_command_transform
+  record_type "method"
+  name "shell_command_transform"
+  order "22"
+  surface "specialized"
+number_constraint_reasoning
+  record_type "method"
+  name "number_constraint_reasoning"
+  order "23"
+  surface "specialized"
+arithmetic
+  record_type "method"
+  name "arithmetic"
+  order "24"
+  surface "specialized"
+javascript_execution
+  record_type "method"
+  name "javascript_execution"
+  order "25"
+  surface "specialized"
+definition_merge
+  record_type "method"
+  name "definition_merge"
+  order "26"
+  surface "specialized"
+concept_lookup
+  record_type "method"
+  name "concept_lookup"
+  order "27"
+  surface "specialized"
+who_is
+  record_type "method"
+  name "who_is"
+  order "28"
+  surface "specialized"
+how_it_works
+  record_type "method"
+  name "how_it_works"
+  order "29"
+  surface "specialized"
+meta_explanation
+  record_type "method"
+  name "meta_explanation"
+  order "30"
+  surface "specialized"
+network_query
+  record_type "method"
+  name "network_query"
+  order "31"
+  surface "specialized"
+execution_failure
+  record_type "method"
+  name "execution_failure"
+  order "32"
+  surface "specialized"
+installation_conversion
+  record_type "method"
+  name "installation_conversion"
+  order "33"
+  surface "specialized"
+write_script
+  record_type "method"
+  name "write_script"
+  order "34"
+  surface "specialized"
+program_synthesis
+  record_type "method"
+  name "program_synthesis"
+  order "35"
+  surface "specialized"
+document_generation_plan
+  record_type "method"
+  name "document_generation_plan"
+  order "36"
+  surface "specialized"
+software_project
+  record_type "method"
+  name "software_project"
+  order "37"
+  surface "specialized"
+algorithm
+  record_type "method"
+  name "algorithm"
+  order "38"
+  surface "specialized"
+source_refresh
+  record_type "method"
+  name "source_refresh"
+  order "39"
+  surface "specialized"
+source_conflict
+  record_type "method"
+  name "source_conflict"
+  order "40"
+  surface "specialized"
+clarification
+  record_type "method"
+  name "clarification"
+  order "41"
+  surface "specialized"
+punctuation_only_prompt
+  record_type "method"
+  name "punctuation_only_prompt"
+  order "42"
+  surface "specialized"
+ill_formed
+  record_type "method"
+  name "ill_formed"
+  order "43"
+  surface "specialized"
+physical_action_question
+  record_type "method"
+  name "physical_action_question"
+  order "44"
+  surface "specialized"
+kupi_slona
+  record_type "method"
+  name "kupi_slona"
+  order "45"
+  surface "specialized"
+shell_refusal
+  record_type "method"
+  name "shell_refusal"
+  order "46"
+  surface "specialized"
+proof_request
+  record_type "method"
+  name "proof_request"
+  order "47"
+  surface "specialized"
+opinion_question
+  record_type "method"
+  name "opinion_question"
+  order "48"
+  surface "specialized"
+incompatible_units
+  record_type "method"
+  name "incompatible_units"
+  order "49"
+  surface "specialized"
+proof_request
+  record_type "method"
+  name "proof_request"
+  order "0"
+  surface "contextual"
+meta_explanation
+  record_type "method"
+  name "meta_explanation"
+  order "1"
+  surface "contextual"
+numeric_list
+  record_type "method"
+  name "numeric_list"
+  order "2"
+  surface "contextual"
+shell_command_transform
+  record_type "method"
+  name "shell_command_transform"
+  order "3"
+  surface "contextual"
+text_manipulation
+  record_type "method"
+  name "text_manipulation"
+  order "4"
+  surface "contextual"
+================================================================
+# (R340) meta self-improvement proposal (self_consistent=true, changes=0)
+# The recipe already describes every pipeline stage; no update proposed.
+================================================================
+meta_recipe_proposal
+  record_type "meta_recipe_proposal"
+  mode "propose"
+  self_consistent "true"
+  change_count "0"
+================================================================
+# (R343) recipe interpreter — 12 steps, 9 drive recorder primitives
+================================================================
+recipe_program
+  record_type "recipe_program"
+  step_count "12"
+  recorder_count "9"
+plan_formalize_impulse
+  record_type "recipe_plan_step"
+  order "1"
+  id "formalize_impulse"
+  executes "external"
+plan_build_problem_frame
+  record_type "recipe_plan_step"
+  order "2"
+  id "build_problem_frame"
+  executes "record_problem_frame"
+plan_decompose_recursively
+  record_type "recipe_plan_step"
+  order "3"
+  id "decompose_recursively"
+  executes "record_work_units"
+plan_account_for_needs
+  record_type "recipe_plan_step"
+  order "4"
+  id "account_for_needs"
+  executes "record_need_ledger"
+plan_catalogue_methods
+  record_type "recipe_plan_step"
+  order "5"
+  id "catalogue_methods"
+  executes "record_method_registry"
+plan_reason_white_box
+  record_type "recipe_plan_step"
+  order "6"
+  id "reason_white_box"
+  executes "record_work_unit_reasoning"
+plan_construct_upward
+  record_type "recipe_plan_step"
+  order "7"
+  id "construct_upward"
+  executes "record_upward_construction"
+plan_resolve_leaves
+  record_type "recipe_plan_step"
+  order "8"
+  id "resolve_leaves"
+  executes "external"
+plan_record_evidence
+  record_type "recipe_plan_step"
+  order "9"
+  id "record_evidence"
+  executes "record_solution_evidence"
+plan_select_methods
+  record_type "recipe_plan_step"
+  order "10"
+  id "select_methods"
+  executes "record_selection"
+plan_project_answer
+  record_type "recipe_plan_step"
+  order "11"
+  id "project_answer"
+  executes "external"
+plan_accumulate_skills
+  record_type "recipe_plan_step"
+  order "12"
+  id "accumulate_skills"
+  executes "record_skill_ledger"
+# executing the recipe reproduces the live pipeline trace event-for-event: true

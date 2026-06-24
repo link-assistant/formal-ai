@@ -38,9 +38,10 @@ const languageFacingFiles = new Set([
   'src/language.rs',
   'src/solver.rs',
   'src/solver_helpers.rs',
-  'src/web/app.js',
+  'src/web/app/main.jsx',
   'src/web/formal_ai_worker.js',
   'src/web/i18n-catalog.lino',
+  'src/web/i18n-catalog-permissions.lino',
   'src/web/i18n.js',
 ]);
 

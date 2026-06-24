@@ -1,0 +1,71 @@
+link-assistant/formal-ai:GOALS.md: ## Universal Solver Goals
+link-assistant/formal-ai:GOALS.md: - Record every step of the universal solver as an append-only event in the in-process log before the answer is built.
+link-assistant/formal-ai:NON-GOALS.md: ## Universal Solver Non-Goals
+link-assistant/formal-ai:NON-GOALS.md: - The universal solver should not skip steps for "easy" prompts to look fast; every prompt walks the same loop so the trace is comparable across requests.
+link-assistant/formal-ai:src/coding/mod.rs: //! Coding-task support for the universal solver.
+link-assistant/formal-ai:src/language.rs: //! The universal solver tags every impulse with a detected language so the
+link-assistant/formal-ai:docs/case-studies/issue-14/README.md: # Issue 14 Case Study: Unify Every Surface Behind the Universal Solver
+link-assistant/formal-ai:docs/case-studies/issue-14/README.md: running, and prompts that the universal solver already understands
+link-assistant/formal-ai:examples/print_thinking_steps.rs: //! Print the concrete, human-readable thinking steps the universal solver emits
+link-assistant/formal-ai:examples/universal_solver_tour.rs: //! Walk through every specialized handler in the universal solver. Run with:
+link-assistant/formal-ai:examples/universal_solver_tour.rs: println!("# Universal solver tour\n");
+link-assistant/formal-ai:data/seed/projects.lino: statement "formal-ai runs the same universal solver loop in Rust, on the CLI, in a browser worker, on Telegram, and on the HTTP server."
+link-assistant/formal-ai:data/seed/projects.lino: statement "link-calculator exposes the calculation step of the universal solver as a reusable Rust crate."
+link-assistant/formal-ai:changelog.d/20260515_120000_issue_14_unified_demo.md: - Added arithmetic, concept-lookup, conversation-recall, and explicit-JavaScript-execution handlers to the universal solver so the same loop now answers "what is 2 + 2?", "what is Wikipedia?", "what is my name?", and "please run this javascript: ..." prompts (issue #14).
+link-assistant/formal-ai:changelog.d/20260515_120000_issue_14_unified_demo.md: - Added `data/seed/concepts.lino` with offline records for Wikipedia, Wikidata, Wiktionary, Links Notation, doublet links, the universal solver, the event log, WebAssembly, and Rust; each record cites its source for auditability.
+link-assistant/formal-ai:changelog.d/20260514_220000_issue_12_universal_solver.md: - Re-implemented Telegram, OpenAI, and library code paths to consume the universal solver instead of bespoke per-intent helpers, removing the previous hard-coded greeting/identity/hello-world branches in favor of pattern-matched specialized handlers (diagnostic, conversation memory, translation, algorithm synthesis, source-cache refresh, conflict surfacing, policy bounded-autonomy).
+link-assistant/formal-ai:data/seed/concepts.lino: term "universal solver"
+link-assistant/formal-ai:data/seed/concepts.lino: aliases ("the universal solver" "universal problem solver")
+link-assistant/formal-ai:data/seed/concepts.lino: summary "The universal solver is formal-ai's deterministic 11-step loop: impulse, formalization, context, history, decomposition, TDD, synthesis, combination, verification, simplification, documentation. Every interface routes through the same loop."
+link-assistant/formal-ai:src/solver_dispatch.rs: //! Ordered dispatch table for the universal solver's specialized handlers.
+link-assistant/formal-ai:src/solver_dispatch.rs: /// Ordered dispatch table for the universal solver's specialized handlers.
+link-assistant/formal-ai:ARCHITECTURE.md: | 6. Universal solver | `UniversalSolver` in `src/solver.rs` | Implemented |
+link-assistant/formal-ai:ARCHITECTURE.md: because the universal solver is intentionally domain-agnostic. Specialized
+link-assistant/formal-ai:src/engine.rs: //! universal solver. Callers should not invoke `FormalAiEngine::answer` to
+link-assistant/formal-ai:src/engine.rs: /// Answer a prompt by running it through the universal solver loop.
+link-assistant/formal-ai:REQUIREMENTS.md: | R82 | Keep the universal solver deterministic: the same prompt with the same config must produce the same answer; "random" candidate selection is seeded from the impulse content hash. | Implemented through the seeded `Rng` helper in `src/solver.rs` and asserted by `tests/unit/specification/reasoning_loop.rs::answers_are_repeatable_for_the_same_prompt`. |
+link-assistant/formal-ai:REQUIREMENTS.md: interface to use the same universal solver, expands the solver's specialized
+link-assistant/formal-ai:src/knowledge.rs: //! The universal solver should not depend on a fixed, hand-written catalogue of
+link-assistant/formal-ai:docs/USER-JOURNEYS.md: - **Why it matters:** *Solution synthesis* and the *Universal Solver Goals*
+link-assistant/formal-ai:src/solver.rs: /// Runtime configuration for the universal solver.
+link-assistant/formal-ai:src/solver.rs: /// The universal solver itself. See module docs for the 11-step loop.
+link-assistant/formal-ai:src/arithmetic.rs: //! Precedence-climbing arithmetic evaluator for the universal solver.
+link-assistant/formal-ai:src/arithmetic.rs: //! Used by the universal solver's `try_arithmetic` handler. The evaluator is
+link-assistant/formal-ai:docs/case-studies/issue-16/raw-data/recent-merged-prs.json: [{"headRefName":"issue-14-cea6df691135","labels":[],"mergedAt":"2026-05-15T00:31:11Z","number":15,"title":"Unify demo with universal solver; add arithmetic, concept, JS execution, and memory handlers"},{"headRefName":"issue-12-8475693e3ce5","labels":[],"mergedAt":"2026-05-14T23:15:01Z","number":13,"title":"Issue 12: vision synthesis + universal 11-step solver"},{"headRefName":"issue-10-528ad8299bfa","labels":[],"mergedAt":"2026-05-12T19:53:19Z","number":11,"title":"Add demo issue reporting and identity response"},{"headRefName":"issue-8-2ef42ad47e3f","labels":[],"mergedAt":"2026-05-12T20:30:18Z","number":9,"title":"Add Telegram bot interface with polling CLI and webhook"},{"headRefName":"issue-6-d8cf53772b56","labels":[],"mergedAt":"2026-05-12T18:35:45Z","number":7,"title":"Improve demo UI/UX defaults"},{"headRefName":"issue-4-1e8c9b0d59e2","labels":[],"mergedAt":"2026-05-12T17:12:49Z","number":5,"title":"Fix GitHub Pages workflow deployment false positive"},{"headRefName":"issue-1-70671eb0ba20","labels":[],"mergedAt":"2026-05-12T16:09:42Z","number":3,"title":"feat: fix GitHub Pages demo deployment and add Playwright e2e tests"},{"headRefName":"issue-1-040a21d753ca","labels":[],"mergedAt":"2026-05-12T14:56:13Z","number":2,"title":"Add formal AI deterministic symbolic implementation"}]
+link-assistant/formal-ai:src/event_log.rs: //! Append-only event log for the universal solver.
+link-assistant/formal-ai:src/calculation.rs: //! Calculator delegation boundary for the universal solver.
+link-assistant/formal-ai:src/solver_helpers.rs: //! inside the `pub(crate)` module so the universal solver in `crate::solver`
+link-assistant/formal-ai:src/solver_synthesis.rs: //! The universal solver records decomposition as links first, solves those
+link-assistant/formal-ai:src/coding/blueprint.rs: //! "decompose the problem into tasks" path as the universal solver:
+link-assistant/formal-ai:docs/case-studies/issue-244/raw-data/code-audit.md: ## 1. The universal solver loop
+link-assistant/formal-ai:docs/case-studies/issue-451/symbolic-ai-best-practices.md: | Inference engine | Universal solver | `src/solver.rs` |
+link-assistant/formal-ai:docs/case-studies/issue-451/symbolic-ai-best-practices.md: the universal solver decomposing an impulse into sub-impulses it must establish
+link-assistant/formal-ai:docs/case-studies/issue-244/raw-data/merged-prs-2026-05-26.json: "title": "Unify demo with universal solver; add arithmetic, concept, JS execution, and memory handlers",
+link-assistant/formal-ai:docs/case-studies/issue-115/README.md: 4. Teach the universal solver to answer questions over these collected traces
+link-assistant/formal-ai:docs/case-studies/issue-16/README.md: - [`../issue-14/README.md`](../issue-14/README.md): universal solver loop
+link-assistant/formal-ai:docs/case-studies/issue-16/README.md: the Rust doublet store the universal solver continues to target; this
+link-assistant/formal-ai:docs/case-studies/issue-20/README.md: A Russian-language demo prompt `что такое iir в ml` (transliteration: *čto takoe iir v ml*, "what is IIR in ML?") was answered with the deterministic fallback `intent: unknown` instead of a concept definition. The concept-lookup pipeline correctly recognised the prefix `что такое ` but the leftover body `iir в ml` did not match any seeded concept, so the universal solver fell through to the Russian unknown-rule response.
+link-assistant/formal-ai:docs/case-studies/issue-20/README.md: formal-ai is a deterministic symbolic AI deterministic symbolic implementation (Rust + WebAssembly demo). Every interface — CLI, HTTP `/v1/chat/completions`, Telegram bot, and the browser worker — consumes the same Links Notation seed (`data/seed/*.lino`) and runs the same eleven-step **universal solver** loop (impulse → formalization → context → history → decomposition → TDD → synthesis → combination → verification → simplification → documentation).
+link-assistant/formal-ai:docs/case-studies/issue-451/README.md: deliberately **neat-leaning** — a single universal solver loop and a small set
+link-assistant/formal-ai:docs/case-studies/issue-451/README.md: | Inference — forward/backward chaining | universal solver loop + `proof_engine` | applied |
+link-assistant/formal-ai:docs/case-studies/issue-341/README.md: Every step ends up in the Rust universal solver
+link-assistant/formal-ai:docs/case-studies/issue-185/README.md: The original prompt routes through the universal solver, reaches no specialized
+link-assistant/formal-ai:docs/case-studies/issue-18/raw-data/recent-merged-prs.json: [{"author":{"id":"MDQ6VXNlcjE0MzE5MDQ=","is_bot":false,"login":"konard","name":"Konstantin Diachenko"},"mergedAt":"2026-05-15T12:20:10Z","number":17,"title":"Multilingual chat (ru/hi/zh), Wikipedia fallback, append-only memory, data-driven agent"},{"author":{"id":"MDQ6VXNlcjE0MzE5MDQ=","is_bot":false,"login":"konard","name":"Konstantin Diachenko"},"mergedAt":"2026-05-15T00:31:11Z","number":15,"title":"Unify demo with universal solver; add arithmetic, concept, JS execution, and memory handlers"},{"author":{"id":"MDQ6VXNlcjE0MzE5MDQ=","is_bot":false,"login":"konard","name":"Konstantin Diachenko"},"mergedAt":"2026-05-14T23:15:01Z","number":13,"title":"Issue 12: vision synthesis + universal 11-step solver"},{"author":{"id":"MDQ6VXNlcjE0MzE5MDQ=","is_bot":false,"login":"konard","name":"Konstantin Diachenko"},"mergedAt":"2026-05-12T19:53:19Z","number":11,"title":"Add demo issue reporting and identity response"},{"author":{"id":"MDQ6VXNlcjE0MzE5MDQ=","is_bot":false,"login":"konard","name":"Konstantin Diachenko"},"mergedAt":"2026-05-12T20:30:18Z","number":9,"title":"Add Telegram bot interface with polling CLI and webhook"}]
+link-assistant/formal-ai:docs/case-studies/issue-244/README.md: - **The 11-step universal solver loop exists** as the outer skeleton in
+link-assistant/formal-ai:src/solver_handlers/mod.rs: //! Specialized handlers extracted from the universal solver in `solver.rs` to
+link-assistant/formal-ai:tests/source/event_log.rs: //! Append-only event log for the universal solver.
+link-assistant/formal-ai:tests/source/solver_helpers.rs: //! inside the `pub(crate)` module so the universal solver in `crate::solver`
+link-assistant/formal-ai:tests/source/coding/blueprint.rs: //! "decompose the problem into tasks" path as the universal solver:
+link-assistant/formal-ai:tests/unit/specification/reasoning_paths.rs: //! These tests pin down the universal solver's new specialized handlers and
+link-assistant/formal-ai:tests/source/solver_dispatch.rs: //! Ordered dispatch table for the universal solver's specialized handlers.
+link-assistant/formal-ai:tests/source/solver_dispatch.rs: /// Ordered dispatch table for the universal solver's specialized handlers.
+link-assistant/formal-ai:tests/source/arithmetic.rs: //! Precedence-climbing arithmetic evaluator for the universal solver.
+link-assistant/formal-ai:tests/source/arithmetic.rs: //! Used by the universal solver's `try_arithmetic` handler. The evaluator is
+link-assistant/formal-ai:tests/source/solver_handlers/mod.rs: //! Specialized handlers extracted from the universal solver in `solver.rs` to
+link-assistant/formal-ai:tests/source/solver_synthesis.rs: //! The universal solver records decomposition as links first, solves those
+link-assistant/formal-ai:tests/source/coding/mod.rs: //! Coding-task support for the universal solver.
+link-assistant/formal-ai:tests/source/engine.rs: //! universal solver. Callers should not invoke `FormalAiEngine::answer` to
+link-assistant/formal-ai:tests/source/engine.rs: /// Answer a prompt by running it through the universal solver loop.
+link-assistant/formal-ai:tests/source/knowledge.rs: //! The universal solver should not depend on a fixed, hand-written catalogue of
+link-assistant/formal-ai:tests/source/calculation.rs: //! Calculator delegation boundary for the universal solver.
+link-assistant/formal-ai:tests/source/language.rs: //! The universal solver tags every impulse with a detected language so the

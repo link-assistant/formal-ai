@@ -114,7 +114,7 @@
         "formal-ai.tools.allowByDefault": {
           "type": "boolean",
           "default": false,
-          "description": "Grant tool calls (http_fetch, read_local_file, and sandboxed code_exec/shell) by default. Off means default-deny until the user opts in."
+          "description": "Grant tool calls (http_fetch, read_local_file, host shell, and sandboxed code_exec) by default. Off means default-deny until the user opts in."
         },
         "formal-ai.agent.defaultOn": {
           "type": "boolean",
@@ -133,7 +133,7 @@
     "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs"
   },
   "devDependencies": {
-    "@vscode/test-web": "^0.0.56",
-    "@vscode/vsce": "^2.24.0"
+    "@vscode/test-web": "^0.0.80",
+    "@vscode/vsce": "^3.9.2"
   }
 }

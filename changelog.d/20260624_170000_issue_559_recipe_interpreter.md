@@ -1,0 +1,6 @@
+---
+bump: patch
+---
+
+### Added
+- Made the recursive-core recipe *executable as data*, not just a checked description (`src/recipe_interpreter.rs`, R343). Each trace-recorded step in `data/meta/recursive-core-recipe.lino` now binds to the recorder primitive it drives via a `records` field, and `RecipeProgram` parses the recipe into an ordered program and runs it — invoking those primitives in the order the data declares, threading the intermediate artifacts (problem frame, work-unit tree, need ledger, method registry, solution evidence) exactly as the hand-written pipeline does, and mirroring its mode gates. The headline guarantee is parity: `RecipeProgram::reproduces_pipeline` proves the event log produced by executing the recipe is identical, event-for-event, to the one `meta_core::record_meta_core` produces for the same input across every recursion/selection/skill mode combination, and the recipe's recorder order equals the live pipeline's actual stage order. A misordered dependency or unknown binding surfaces as an error rather than silent divergence. This makes the algorithm-as-data and the algorithm-as-code provably the same algorithm — the foundation for eventually driving the pipeline from the recipe itself — while staying trace-only: it changes neither routing nor the answer (issue #559).
