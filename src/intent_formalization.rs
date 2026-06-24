@@ -9,7 +9,6 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
-use crate::cue_lexicon;
 use crate::engine::{
     normalize_prompt, program_language_by_alias, program_spec, stable_id, SelectedRule,
     WRITE_PROGRAM_INTENT,
@@ -22,6 +21,7 @@ use crate::probability::ProbabilityStore;
 use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
+use crate::{concepts, cue_lexicon};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
@@ -744,7 +744,8 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:concept_lookup",
-            cue_lexicon::matches("concept_lookup", normalized),
+            cue_lexicon::matches("concept_lookup", normalized)
+                || looks_like_single_concept_lookup(prompt),
         ),
         ("handler:calendar_create_event", {
             let lex = seed::lexicon();
@@ -780,6 +781,15 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             push_unique(relevants, String::from(handler));
         }
     }
+}
+
+fn looks_like_single_concept_lookup(prompt: &str) -> bool {
+    concepts::extract_concept_query(prompt).is_some_and(|query| {
+        !query
+            .term
+            .chars()
+            .any(|character| matches!(character, ',' | ';' | '，' | '、'))
+    })
 }
 
 fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {

@@ -50,6 +50,13 @@ fn detect_language_matches_existing_rules() {
     assert_eq!(detect_language("Привет"), Language::Russian);
     assert_eq!(detect_language("नमस्ते"), Language::Hindi);
     assert_eq!(detect_language("你好"), Language::Chinese);
+    assert_eq!(detect_language("What is vulkan layer?"), Language::English);
+    assert_eq!(detect_language("Что такое vulkan layer"), Language::Russian);
+    assert_eq!(detect_language("vulkan layer что такое"), Language::Russian);
+    assert_eq!(detect_language("यह क्या है vulkan layer?"), Language::Hindi);
+    assert_eq!(detect_language("vulkan layer क्या है?"), Language::Hindi);
+    assert_eq!(detect_language("这是什么 vulkan layer?"), Language::Chinese);
+    assert_eq!(detect_language("vulkan layer是什么?"), Language::Chinese);
 }
 
 #[test]

@@ -4,7 +4,11 @@
 //! recorded as links, and composed into answer candidates without adding a
 //! whole-prompt answer lookup.
 
-use formal_ai::{detect_language, ExecutionSurface, Language, SolverConfig, UniversalSolver};
+use formal_ai::{
+    detect_language, formalize_intent,
+    meta_frame::{AtomicityReason, ProblemFrame, WorkUnit},
+    ExecutionSurface, Language, SolverConfig, UniversalSolver,
+};
 use serde::Deserialize;
 
 const CROSS_RUNTIME_SYNTHESIS_FIXTURE: &str =
@@ -121,6 +125,95 @@ fn synthesis_change_preserves_supported_language_detection_contract() {
             case.language
         );
     }
+}
+
+#[test]
+fn detects_language_from_mixed_script_definition_prompt() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected: Language,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "What is vulkan layer?",
+            expected: Language::English,
+        },
+        Case {
+            language: "ru",
+            prompt: "Что такое vulkan layer",
+            expected: Language::Russian,
+        },
+        Case {
+            language: "ru",
+            prompt: "vulkan layer что такое",
+            expected: Language::Russian,
+        },
+        Case {
+            language: "hi",
+            prompt: "यह क्या है vulkan layer?",
+            expected: Language::Hindi,
+        },
+        Case {
+            language: "hi",
+            prompt: "vulkan layer क्या है?",
+            expected: Language::Hindi,
+        },
+        Case {
+            language: "zh",
+            prompt: "这是什么 vulkan layer?",
+            expected: Language::Chinese,
+        },
+        Case {
+            language: "zh",
+            prompt: "vulkan layer是什么?",
+            expected: Language::Chinese,
+        },
+    ];
+
+    for case in cases {
+        assert_eq!(
+            detect_language(case.prompt),
+            case.expected,
+            "{}",
+            case.language
+        );
+    }
+}
+
+#[test]
+fn mixed_script_definition_prompt_survives_meta_frame_formalization() {
+    let prompt = "Что такое vulkan layer";
+    let language = detect_language(prompt);
+
+    assert_eq!(language, Language::Russian);
+
+    let candidate = formal_ai::translation::formalize_prompt(prompt, language.slug());
+    let formalization = formalize_intent(prompt, language.slug(), Some(&candidate));
+    assert_eq!(formalization.language, "ru");
+    assert_eq!(formalization.route.as_deref(), Some("concept_lookup"));
+    assert!(formalization
+        .knowns
+        .iter()
+        .any(|known| known == "language:ru"));
+    assert!(formalization
+        .relevants
+        .iter()
+        .any(|relevant| relevant == "route:concept_lookup"));
+
+    let frame = ProblemFrame::from_formalization(&formalization);
+    assert_eq!(frame.language, "ru");
+    assert_eq!(frame.route.as_deref(), Some("concept_lookup"));
+    assert_eq!(frame.need_count(), 1);
+    assert_eq!(frame.needs[0].source_span, prompt);
+    assert_eq!(frame.needs[0].route.as_deref(), Some("concept_lookup"));
+
+    let root_unit = WorkUnit::from_formalization(&formalization, 4);
+    assert!(root_unit.atomic);
+    assert_eq!(root_unit.reason, AtomicityReason::DirectMethod);
+    assert_eq!(root_unit.route.as_deref(), Some("concept_lookup"));
 }
 
 #[test]

@@ -17,9 +17,9 @@ use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
 use crate::probability::ProbabilityStore;
-use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
+use crate::{concepts, seed};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
@@ -764,7 +764,9 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:concept_lookup",
-            normalized.starts_with("what is ") || normalized.starts_with("define "),
+            normalized.starts_with("what is ")
+                || normalized.starts_with("define ")
+                || looks_like_single_concept_lookup(prompt),
         ),
         ("handler:calendar_create_event", {
             let lex = seed::lexicon();
@@ -797,6 +799,15 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
             push_unique(relevants, String::from(handler));
         }
     }
+}
+
+fn looks_like_single_concept_lookup(prompt: &str) -> bool {
+    concepts::extract_concept_query(prompt).is_some_and(|query| {
+        !query
+            .term
+            .chars()
+            .any(|character| matches!(character, ',' | ';' | '，' | '、'))
+    })
 }
 
 fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
