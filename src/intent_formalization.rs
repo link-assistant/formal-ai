@@ -708,7 +708,8 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         (
             "handler:web_search",
             cue_lexicon::matches("web_search", normalized)
-                || looks_like_latest_news_search(normalized),
+                || looks_like_latest_news_search(normalized)
+                || looks_like_records_information_search(normalized),
         ),
         (
             "handler:procedural_how_to",
@@ -809,6 +810,17 @@ fn looks_like_latest_news_search(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
     lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_SUBJECT, &padded)
         && lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_NEWS_RECENCY, &padded)
+}
+
+/// Routing mirror of `web_search_intent::extract_records_information_request`: a
+/// verbless "records about a subject" request names a record subject
+/// ([`ROLE_WEB_SEARCH_RECORDS_SUBJECT`]) tied to that subject by a topic
+/// connective ([`ROLE_WEB_SEARCH_TOPIC_MARKER`]).
+fn looks_like_records_information_search(normalized: &str) -> bool {
+    let padded = format!(" {normalized} ");
+    let lexicon = seed::lexicon();
+    lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_RECORDS_SUBJECT, &padded)
+        && lexicon.mentions_role_raw(seed::ROLE_WEB_SEARCH_TOPIC_MARKER, &padded)
 }
 
 fn looks_like_program_synthesis(normalized: &str) -> bool {

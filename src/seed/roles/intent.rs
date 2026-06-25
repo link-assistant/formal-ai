@@ -246,6 +246,15 @@ pub const ROLE_WEB_SEARCH_NEWS_SUBJECT: &str = "web_search_news_subject";
 /// results are needed. The web-search recogniser requires this together with
 /// [`ROLE_WEB_SEARCH_NEWS_SUBJECT`] for bare news prompts.
 pub const ROLE_WEB_SEARCH_NEWS_RECENCY: &str = "web_search_news_recency";
+/// Semantic role: a records/documents subject marker for web search.
+///
+/// "records", "filings", "statements", "statistics", "записи", "отчёт",
+/// "रिकॉर्ड", "记录", … name retrievable records, filings, or figures as the
+/// information subject. On its own this is just content; paired with a
+/// [`ROLE_WEB_SEARCH_TOPIC_MARKER`] connective ("records *for* boeing", "записи
+/// *о* …") it routes a verbless "records about a subject" request to web search
+/// without requiring an imperative search verb.
+pub const ROLE_WEB_SEARCH_RECORDS_SUBJECT: &str = "web_search_records_subject";
 /// Semantic role: a connective that delimits the search topic.
 ///
 /// Carried by a single meaning whose slot encodes the direction: a
