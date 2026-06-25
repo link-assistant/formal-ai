@@ -412,6 +412,83 @@ fn research_comparison_table_followup_uses_prior_search_topics() {
 }
 
 #[test]
+fn research_result_followup_reports_prior_search_failure_instead_of_defining_result() {
+    let solver = UniversalSolver::default();
+    let research_prompt = "Research task: What would be the economic impact if Rust replaced C++ in all major open-source projects by 2030?\n\
+                           Steps required:\n\
+                           1. Search for current C++ vs Rust usage statistics in open-source projects.\n\
+                           2. Find data on memory safety vulnerabilities and average breach costs.\n\
+                           3. Estimate developer retraining and migration costs.\n\
+                           4. Find Rust adoption rates in major tech companies.\n\
+                           5. Calculate projected reduction in CVEs and maintenance costs.\n\
+                           6. Present findings as executive summary with data table and sources.";
+    let history = [
+        ConversationTurn::user(research_prompt),
+        ConversationTurn::assistant(
+            "No CORS-enabled web search results were returned for `C++ vs Rust usage statistics memory safety vulnerabilities breach costs Rust adoption rates`.\n\n\
+             Providers tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.",
+        ),
+    ];
+
+    let response = solver.solve_with_history("What is the result?", &history);
+
+    assert_eq!(
+        response.intent, "research_result_followup",
+        "research-result follow-up should bind to prior research state instead of concept lookup, got {} with answer {}",
+        response.intent, response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("no CORS-readable web search results were returned"),
+        "follow-up should report the prior failed search status, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("verified source data"),
+        "follow-up should not fabricate the requested economic analysis, got: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("Prior research task"),
+        "follow-up should make clear which research task it is summarizing, got: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_result_followup:prior_search:")),
+        "follow-up should record the prior research prompt it reused: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("research_result_followup:status:")),
+        "follow-up should record the prior research status: {:?}",
+        response.evidence_links,
+    );
+    assert!(
+        !response.answer.contains("outcome or consequence"),
+        "follow-up must not define the standalone concept 'result': {}",
+        response.answer,
+    );
+}
+
+#[test]
+fn standalone_result_question_does_not_claim_research_followup() {
+    let response = FormalAiEngine.answer("What is the result?");
+
+    assert_ne!(
+        response.intent, "research_result_followup",
+        "without research history, the new follow-up handler should not claim the prompt, got {} with answer {}",
+        response.intent, response.answer,
+    );
+}
+
+#[test]
 fn research_comparison_table_change_preserves_supported_language_web_search_routing() {
     let solver = UniversalSolver::default();
     let cases = [
