@@ -478,6 +478,79 @@ fn research_result_followup_reports_prior_search_failure_instead_of_defining_res
 }
 
 #[test]
+fn research_result_followup_accepts_supported_language_research_contexts() {
+    #[derive(Clone, Copy)]
+    struct Case {
+        language: &'static str,
+        research_prompt: &'static str,
+        prior_answer: &'static str,
+    }
+
+    let solver = UniversalSolver::default();
+    let cases = [
+        Case {
+            language: "en",
+            research_prompt: "research memory safety costs for Rust and C++",
+            prior_answer:
+                "No CORS-enabled web search results were returned for `memory safety costs`.",
+        },
+        Case {
+            language: "ru",
+            research_prompt: "исследование: затраты на безопасность памяти для Rust и C++",
+            prior_answer:
+                "Не получены результаты веб-поиска по запросу `затраты безопасность памяти`.",
+        },
+        Case {
+            language: "hi",
+            research_prompt: "अनुसंधान: Rust और C++ के लिए memory safety costs",
+            prior_answer: "कोई खोज परिणाम नहीं मिला: `memory safety costs`.",
+        },
+        Case {
+            language: "zh",
+            research_prompt: "研究：Rust 和 C++ 的 memory safety costs",
+            prior_answer: "未获取到可用的网页搜索结果：`memory safety costs`。",
+        },
+    ];
+
+    for case in cases {
+        let history = [
+            ConversationTurn::user(case.research_prompt),
+            ConversationTurn::assistant(case.prior_answer),
+        ];
+        let response = solver.solve_with_history("What is the result?", &history);
+
+        assert_eq!(
+            response.intent, "research_result_followup",
+            "{} research context should bind a terse result follow-up, got {} with answer {}",
+            case.language, response.intent, response.answer,
+        );
+        assert!(
+            response.answer.contains("verified source data"),
+            "{} follow-up should not fabricate a sourced result, got: {}",
+            case.language,
+            response.answer,
+        );
+        assert!(
+            response
+                .answer
+                .contains("no CORS-readable web search results were returned"),
+            "{} follow-up should classify the localized prior no-results answer, got: {}",
+            case.language,
+            response.answer,
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link.starts_with("research_result_followup:status:")),
+            "{} follow-up should record the localized prior-search status evidence: {:?}",
+            case.language,
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
 fn standalone_result_question_does_not_claim_research_followup() {
     let response = FormalAiEngine.answer("What is the result?");
 
