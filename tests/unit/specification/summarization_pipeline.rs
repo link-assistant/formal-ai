@@ -8,8 +8,8 @@
 use formal_ai::summarization::{
     apply_compound_words, apply_semantic_primes, deformalize, describe_readme, formalize,
     formalize_dialog, formalize_markdown, generate_chat_title, strip_markdown_noise,
-    summarize_dialog, DialogTurn, StatementKind, SummarizationConfig, SummarizationMode,
-    DEFAULT_MAX_STATEMENTS,
+    summarize_dialog, summarize_repository_file, DialogTurn, StatementKind, SummarizationConfig,
+    SummarizationMode, DEFAULT_MAX_STATEMENTS,
 };
 
 #[test]
@@ -190,5 +190,34 @@ fn compound_words_and_semantic_primes_are_reversible_by_size() {
     assert!(
         expanded.split_whitespace().count() >= prose.split_whitespace().count(),
         "NSM semantic primes should not shrink the text: {expanded}",
+    );
+}
+
+#[test]
+fn repository_file_summary_recurses_into_markdown_embedded_grammars() {
+    let markdown = "# Summarization\n\n\
+                    Formal AI summarizes repository files.\n\n\
+                    ```rust\n\
+                    pub fn summarize_file() -> &'static str { \"ok\" }\n\
+                    ```\n\n\
+                    ```javascript\n\
+                    export function renderSummary() { return 'ok'; }\n\
+                    ```\n";
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Standard)
+        .with_language("en");
+    let summary = summarize_repository_file("docs/example.md", markdown, &config);
+
+    assert!(
+        summary.contains("Markdown"),
+        "summary should name the repository file format, got: {summary}",
+    );
+    assert!(
+        summary.contains("embedded grammar blocks: rust, javascript"),
+        "summary should recurse into fenced Markdown grammars, got: {summary}",
+    );
+    assert!(
+        summary.contains("summarizes repository files"),
+        "summary should keep the prose content, got: {summary}",
     );
 }

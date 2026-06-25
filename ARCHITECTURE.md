@@ -580,7 +580,7 @@ The compression knobs are configurable from one struct (`SummarizationConfig`)
 so callers can dial topic labels, chat titles, project descriptions, or
 expanded explanations from the same pipeline.
 
-The same pipeline also drives three additional surfaces:
+The same pipeline also drives four additional surfaces:
 
 - **README ingestion.** `strip_markdown_noise` removes badges, fenced code
   blocks, HTML comments, heading markers, and blockquote chevrons. The
@@ -588,6 +588,19 @@ The same pipeline also drives three additional surfaces:
   `formalize`) and `describe_readme(repo_slug, markdown, &config)`. In
   `Topic` mode the helper returns the repository slug so the same call can
   serve as a chat-title source for a fetched repository.
+- **Repository-file summaries.** `formalize_repository_file(path, content)`
+  detects common repository file formats, records path/format/line/byte
+  metadata, converts file content into ranked statements, and renders the
+  result as link-native `repository_file` notation. Supported source and data
+  grammars also carry `MetaLanguageFormalization` evidence from
+  `meta_language::LinkNetwork` (parser label, syntax-link count, total-link
+  count, parse-error state, and text-preservation state). Markdown files are
+  formalized recursively: prose is summarized through `formalize_markdown`, and
+  each fenced code block becomes an `EmbeddedGrammarFormalization` with its own
+  normalized language label and optional parser evidence. `summarize_repository_file`
+  then reuses `SummarizationConfig`, `summarize`, and `deformalize` so file
+  summaries follow the same modes and caps as project, README, and dialog
+  summaries.
 - **Dialog summarization.** `DialogTurn { role, text }` and
   `formalize_dialog` weight user turns +20 and assistant turns -10 so a
   short summary keeps the user's questions even when both sides talk a

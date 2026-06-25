@@ -33,6 +33,9 @@
 //!   formalization).
 //! - [`summarize_dialog`] — chat turns → short recap of the conversation.
 //! - [`generate_chat_title`] — chat turns → 1–5 word chat title.
+//! - [`summarize_repository_file`] — repository path + file content → file
+//!   metadata, optional meta-language evidence, embedded Markdown grammars, and
+//!   content summary.
 //!
 //! See `ARCHITECTURE.md` § "Project lookups and summarization" for how
 //! `project_lookup` chains the three stages together.
@@ -537,9 +540,14 @@ pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -
 }
 
 mod dialog;
+mod file;
 mod markdown;
 
 pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use file::{
+    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
+    MetaLanguageFormalization, RepositoryFileFormalization,
+};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
 
 #[path = "../source_tests/summarization/mod/tests.rs"]

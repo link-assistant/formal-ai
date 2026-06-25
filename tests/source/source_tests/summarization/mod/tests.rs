@@ -350,6 +350,63 @@ fn describe_readme_topic_mode_returns_repo_slug() {
 }
 
 #[test]
+fn formalize_repository_file_markdown_records_embedded_grammars() {
+    let markdown = "# File summary\n\n\
+                    Formal AI is designed to summarize repository files.\n\n\
+                    ```rust\n\
+                    pub fn summarize_file() -> &'static str { \"ok\" }\n\
+                    ```\n\n\
+                    ```javascript\n\
+                    export function renderSummary() { return 'ok'; }\n\
+                    ```\n";
+    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+    assert_eq!(formalized.format, "markdown");
+    assert_eq!(formalized.embedded_grammars.len(), 2);
+    assert_eq!(formalized.embedded_grammars[0].language, "rust");
+    assert_eq!(formalized.embedded_grammars[1].language, "javascript");
+    let lino = formalized.links_notation();
+    assert!(lino.contains("repository_file"));
+    assert!(lino.contains("embedded_grammar"));
+    assert!(lino.contains("language rust"));
+    assert!(lino.contains("language javascript"));
+}
+
+#[test]
+fn formalize_repository_file_markdown_closes_embedded_grammar_at_eof() {
+    let markdown = "# File summary\n\n\
+                    ```rust\n\
+                    pub struct FileSummary;\n";
+    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+    assert_eq!(formalized.embedded_grammars.len(), 1);
+    assert_eq!(formalized.embedded_grammars[0].language, "rust");
+}
+
+#[test]
+fn formalize_repository_file_rust_records_meta_language_and_symbols() {
+    let source = "pub struct FileSummary;\n\n\
+                  pub fn summarize_file() -> &'static str {\n\
+                  \"ok\"\n\
+                  }\n";
+    let formalized = formalize_repository_file("src/file_summary.rs", source);
+    assert_eq!(formalized.format, "rust");
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text.contains("rust struct FileSummary")));
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text.contains("rust function summarize_file")));
+    let meta = formalized
+        .meta_language
+        .as_ref()
+        .expect("Rust files should be parsed through meta-language");
+    assert_eq!(meta.label, "rust");
+    assert!(meta.syntax_link_count > 0);
+    assert!(meta.text_preserved);
+}
+
+#[test]
 fn summarize_dialog_keeps_user_question_over_assistant_chatter() {
     let turns = vec![
         DialogTurn::user("What is Hive Mind?"),
