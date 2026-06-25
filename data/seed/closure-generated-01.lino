@@ -94,6 +94,16 @@ meanings
     lexeme en
       surface
         text "advertising platform"
+  agent_suggestion
+    defined-by intent
+    lexeme en
+      surface
+        text "agent suggestion"
+  agent_suggestion_active
+    defined-by intent
+    lexeme en
+      surface
+        text "agent suggestion active"
   ai-orchestration
     defined-by category
     lexeme en
@@ -139,6 +149,11 @@ meanings
     lexeme en
       surface
         text "assistant name"
+  awk
+    defined-by token
+    lexeme en
+      surface
+        text "awk"
   behavior_rules_list
     defined-by intent
     lexeme en
@@ -229,6 +244,26 @@ meanings
     lexeme en
       surface
         text "case"
+  cat
+    defined-by token
+    lexeme en
+      surface
+        text "cat"
+  cd
+    defined-by token
+    lexeme en
+      surface
+        text "cd"
+  chmod
+    defined-by token
+    lexeme en
+      surface
+        text "chmod"
+  chown
+    defined-by token
+    lexeme en
+      surface
+        text "chown"
   class-library
     defined-by category
     lexeme en
@@ -254,6 +289,11 @@ meanings
     lexeme en
       surface
         text "collapse"
+  command-line
+    defined-by phrase
+    lexeme en
+      surface
+        text "command line"
   command-stream
     defined-by name
     lexeme en
@@ -389,6 +429,11 @@ meanings
     lexeme en
       surface
         text "courtesy response"
+  cp
+    defined-by token
+    lexeme en
+      surface
+        text "cp"
   cplusplus
     defined-by word_surface
     lexeme en
@@ -409,6 +454,11 @@ meanings
     lexeme en
       surface
         text "csv"
+  curl
+    defined-by token
+    lexeme en
+      surface
+        text "curl"
   data-format
     defined-by category
     lexeme en
@@ -449,6 +499,11 @@ meanings
     lexeme en
       surface
         text "desktop to cli"
+  df
+    defined-by token
+    lexeme en
+      surface
+        text "df"
   dirven
     defined-by word_surface
     lexeme en
@@ -479,11 +534,21 @@ meanings
     lexeme en
       surface
         text "dotnet"
+  du
+    defined-by token
+    lexeme en
+      surface
+        text "du"
   duckduckgo
     defined-by word_surface
     lexeme en
       surface
         text "duckduckgo"
+  echo
+    defined-by token
+    lexeme en
+      surface
+        text "echo"
   enumerate_possessive
     defined-by coverage_group
     lexeme en
@@ -514,6 +579,11 @@ meanings
     lexeme en
       surface
         text "expression language"
+  external_trusted
+    defined-by concept
+    lexeme en
+      surface
+        text "external trusted"
   extract_email
     defined-by operation
     lexeme en
@@ -584,6 +654,11 @@ meanings
     lexeme en
       surface
         text "func"
+  git
+    defined-by token
+    lexeme en
+      surface
+        text "git"
   github
     defined-by source_kind
     lexeme en
@@ -604,6 +679,16 @@ meanings
     lexeme en
       surface
         text "grammar context"
+  grep
+    defined-by token
+    lexeme en
+      surface
+        text "grep"
+  head
+    defined-by token
+    lexeme en
+      surface
+        text "head"
   hive-mind
     defined-by name
     lexeme en
@@ -614,6 +699,11 @@ meanings
     lexeme en
       surface
         text "how it works"
+  how_to_guide
+    defined-by kind
+    lexeme en
+      surface
+        text "how to guide"
   http_server
     defined-by environment
     lexeme en
@@ -754,6 +844,11 @@ meanings
     lexeme en
       surface
         text "intent write program"
+  invert
+    defined-by concept
+    lexeme en
+      surface
+        text "invert"
   issue_364_unknown_trace_learning
     defined-by concept
     lexeme en
@@ -794,11 +889,21 @@ meanings
     lexeme en
       surface
         text "kebab case"
+  kill
+    defined-by token
+    lexeme en
+      surface
+        text "kill"
   knowledge-representation
     defined-by category
     lexeme en
       surface
         text "knowledge representation"
+  kubectl
+    defined-by token
+    lexeme en
+      surface
+        text "kubectl"
   kupi_slona
     defined-by intent
     lexeme en
@@ -809,6 +914,11 @@ meanings
     lexeme en
       surface
         text "language detection"
+  learning_resource
+    defined-by kind
+    lexeme en
+      surface
+        text "learning resource"
   lexical_database
     defined-by kind
     lexeme en
@@ -889,6 +999,11 @@ meanings
     lexeme en
       surface
         text "local shell"
+  ls
+    defined-by token
+    lexeme en
+      surface
+        text "ls"
   mathematical-logic
     defined-by category
     lexeme en
@@ -910,7 +1025,7 @@ meanings
       surface
         text "meta expression"
   meta-theory
-    defined-by name
+    defined-by word_surface
     lexeme en
       surface
         text "meta theory"
@@ -919,11 +1034,21 @@ meanings
     lexeme en
       surface
         text "meta explanation"
+  mkdir
+    defined-by token
+    lexeme en
+      surface
+        text "mkdir"
   multi-step
     defined-by word_surface
     lexeme en
       surface
         text "multi step"
+  mv
+    defined-by token
+    lexeme en
+      surface
+        text "mv"
   non-deterministic
     defined-by word_surface
     lexeme en
@@ -944,6 +1069,16 @@ meanings
     lexeme en
       surface
         text "normalize whitespace"
+  npm
+    defined-by token
+    lexeme en
+      surface
+        text "npm"
+  npx
+    defined-by token
+    lexeme en
+      surface
+        text "npx"
   number_lines
     defined-by operation
     lexeme en
@@ -974,6 +1109,11 @@ meanings
     lexeme en
       surface
         text "one paragraph"
+  open_textbook
+    defined-by kind
+    lexeme en
+      surface
+        text "open textbook"
   openai
     defined-by word_surface
     lexeme en
@@ -1254,143 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter vo ru"
-  pattern_concept_context_delimiter_within_en
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter within en"
-  pattern_concept_context_delimiter_zhong_de_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter zhong de zh"
-  pattern_concept_context_delimiter_zhong_zh
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter zhong zh"
-  pattern_concept_prefix_can_you_define
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you define"
-  pattern_concept_prefix_can_you_describe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you describe"
-  pattern_concept_prefix_can_you_explain
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix can you explain"
-  pattern_concept_prefix_chto_eto
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto eto"
-  pattern_concept_prefix_chto_oboznachaet
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto oboznachaet"
-  pattern_concept_prefix_chto_oznachaet_slovo
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto oznachaet slovo"
-  pattern_concept_prefix_chto_podrazumevaetsya_pod
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto podrazumevaetsya pod"
-  pattern_concept_prefix_chto_takoe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto takoe"
-  pattern_concept_prefix_chto_znachit
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix chto znachit"
-  pattern_concept_prefix_define
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix define"
-  pattern_concept_prefix_definition_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix definition of"
-  pattern_concept_prefix_describe
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix describe"
-  pattern_concept_prefix_explain
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix explain"
-  pattern_concept_prefix_explanation_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix explanation of"
-  pattern_concept_prefix_jieshao
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshao"
-  pattern_concept_prefix_jieshi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi"
-  pattern_concept_prefix_jieshi_yixia
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix jieshi yixia"
-  pattern_concept_prefix_kto_eto
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto eto"
-  pattern_concept_prefix_kto_takaya
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takaya"
-  pattern_concept_prefix_kto_takoy
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix kto takoy"
-  pattern_concept_prefix_meaning_of
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix meaning of"
-  pattern_concept_prefix_nazovi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix nazovi"
-  pattern_concept_prefix_obyasni
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix obyasni"
-  pattern_concept_prefix_opishi
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opishi"
-  pattern_concept_prefix_opredelenie
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept prefix opredelenie"

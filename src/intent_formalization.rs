@@ -16,10 +16,12 @@ use crate::engine::{
 use crate::event_log::EventLog;
 use crate::link_store::{LinkStore, LinkStoreError};
 use crate::memory::MemoryEvent;
+use crate::method_registry::MethodRegistry;
 use crate::probability::ProbabilityStore;
 use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
+use crate::{concepts, cue_lexicon};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum IntentKind {
@@ -244,7 +246,10 @@ pub fn formalize_intent(
         .or_else(|| route_from_relevants(&relevants));
     if let Some(route_slug) = &route_slug {
         push_unique(&mut relevants, format!("route:{route_slug}"));
-        if specialized_handler_name(route_slug).is_some() {
+        if MethodRegistry::from_dispatch()
+            .method_for_route(route_slug)
+            .is_some()
+        {
             push_unique(&mut relevants, format!("handler:{route_slug}"));
         }
     }
@@ -306,31 +311,6 @@ pub(crate) fn select_rule_for_intent(intent: &IntentFormalization) -> SelectedRu
         Some(WRITE_PROGRAM_INTENT) => write_program_rule_for_intent(intent),
         _ => SelectedRule::Unknown,
     }
-}
-
-#[must_use]
-pub(crate) fn ordered_handler_names<'a>(
-    intent: &IntentFormalization,
-    names: impl Iterator<Item = &'a str>,
-) -> Vec<&'a str> {
-    let names = names.collect::<Vec<_>>();
-    let mut ordered = Vec::new();
-    for relevant in &intent.relevants {
-        let Some(name) = relevant.strip_prefix("handler:") else {
-            continue;
-        };
-        if let Some(matched) = names.iter().copied().find(|candidate| *candidate == name) {
-            if !ordered.contains(&matched) {
-                ordered.push(matched);
-            }
-        }
-    }
-    for name in names {
-        if !ordered.contains(&name) {
-            ordered.push(name);
-        }
-    }
-    ordered
 }
 
 #[derive(Debug, Clone)]
@@ -721,27 +701,27 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
     let handlers = [
         (
             "handler:execution_failure",
-            lower_prompt.contains("undefined_function")
-                || normalized.contains("undefined function"),
+            cue_lexicon::matches("execution_failure_prompt", &lower_prompt)
+                || cue_lexicon::matches("execution_failure_normalized", normalized),
         ),
         ("handler:arithmetic", looks_arithmetic(prompt, normalized)),
         (
             "handler:web_search",
-            has_any_token(normalized, &["search", "google", "find"])
+            cue_lexicon::matches("web_search", normalized)
                 || looks_like_latest_news_search(normalized)
                 || looks_like_records_information_search(normalized),
         ),
         (
             "handler:procedural_how_to",
-            normalized.starts_with("how to "),
+            cue_lexicon::matches("procedural_how_to", normalized),
         ),
         (
             "handler:proof_request",
-            has_any_token(normalized, &["prove", "proof"]),
+            cue_lexicon::matches("proof_request", normalized),
         ),
         (
             "handler:write_script",
-            has_any_token(normalized, &["script", "code"]),
+            cue_lexicon::matches("write_script", normalized),
         ),
         (
             "handler:write_program",
@@ -757,7 +737,7 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:software_project",
-            has_any_token(normalized, &["build", "create", "implement", "develop"]),
+            cue_lexicon::matches("software_project", normalized),
         ),
         (
             "handler:meta_explanation",
@@ -765,8 +745,37 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:concept_lookup",
-            normalized.starts_with("what is ") || normalized.starts_with("define "),
+            cue_lexicon::matches("concept_lookup", normalized)
+                || looks_like_single_concept_lookup(prompt),
         ),
+        ("handler:calendar_create_event", {
+            let lex = seed::lexicon();
+            let has_day_ref = lex
+                .words_for_role(seed::ROLE_CALENDAR_DAY_REFERENCE)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w));
+            let has_digit = normalized.chars().any(|c| c.is_ascii_digit());
+            let has_date_signal = has_day_ref || has_digit;
+            let has_schedule = lex
+                .words_for_role(seed::ROLE_CALENDAR_SCHEDULE_ACTION)
+                .iter()
+                .any(|w| contains_term_for_relevants(normalized, w))
+                || lex
+                    .words_for_role(seed::ROLE_CALENDAR_EVENT)
+                    .iter()
+                    .any(|w| contains_term_for_relevants(normalized, w));
+            // Fallback cues for classic phrasing (RU from the bug report + EN "schedule ... 18th").
+            // The verb cues use token-boundary matching (cue-lexicon `match "token"`) so that
+            // unrelated text such as "free-programming-books" (the word "book" embedded in
+            // "books") cannot masquerade as a schedule verb. The "число"/"в "/":" glue stays in
+            // code as a structural composite: a date marker conjoined with a preposition or a
+            // time separator.
+            let fallback_cue = cue_lexicon::matches("calendar_fallback_verbs", normalized)
+                || (cue_lexicon::matches("calendar_ru_date_marker", normalized)
+                    && (normalized.contains("в ") || normalized.contains(':')))
+                || (has_digit && cue_lexicon::matches("calendar_digit_actions", normalized));
+            has_date_signal && (has_schedule || fallback_cue)
+        }),
     ];
     for (handler, matches) in handlers {
         if matches {
@@ -775,10 +784,23 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
     }
 }
 
+fn looks_like_single_concept_lookup(prompt: &str) -> bool {
+    concepts::extract_concept_query(prompt).is_some_and(|query| {
+        !query
+            .term
+            .chars()
+            .any(|character| matches!(character, ',' | ';' | '，' | '、'))
+    })
+}
+
 fn looks_arithmetic(prompt: &str, normalized: &str) -> bool {
+    // Structural composite: a digit must be present, and an arithmetic operator must
+    // appear in either the raw lowercased prompt or the normalized view. The operator
+    // cue list lives in the cue lexicon (`arithmetic_operators`, substring match); the
+    // digit-plus-either-input glue stays here.
     let raw = prompt.to_ascii_lowercase();
     raw.chars().any(|c| c.is_ascii_digit())
-        && ["+", "-", "*", "/", "plus", "minus", "times", "divided"]
+        && cue_lexicon::cues("arithmetic_operators")
             .iter()
             .any(|operator| raw.contains(operator) || normalized.contains(operator))
 }
@@ -817,55 +839,33 @@ fn looks_like_program_synthesis(normalized: &str) -> bool {
 }
 
 fn looks_like_text_manipulation(normalized: &str) -> bool {
-    [
-        "uppercase",
-        "lowercase",
-        "replace",
-        "remove text",
-        "append text",
-        "prepend text",
-        "extract email",
-        "count occurrences",
-        "count unique words",
-        "deduplicate lines",
-        "sort lines",
-        "trim whitespace",
-        "normalize whitespace",
-        "reverse words",
-    ]
-    .iter()
-    .any(|operation| normalized.contains(operation))
+    // The fourteen text-manipulation operation cues live in the cue lexicon
+    // (`text_manipulation`, substring match), not as a Rust string literal.
+    cue_lexicon::matches("text_manipulation", normalized)
 }
 
 fn has_any_token(normalized: &str, tokens: &[&str]) -> bool {
     tokens.iter().any(|token| contains_token(normalized, token))
 }
 
-fn route_from_relevants(relevants: &[String]) -> Option<String> {
-    relevants.iter().find_map(|relevant| {
-        relevant
-            .strip_prefix("route:")
-            .or_else(|| relevant.strip_prefix("handler:"))
-            .and_then(specialized_handler_name)
-            .map(str::to_owned)
-    })
+// Loose term check used only inside append_prompt_relevants for calendar create
+// promotion (the real strict boundary-aware version lives in the calendar handler).
+fn contains_term_for_relevants(haystack: &str, needle: &str) -> bool {
+    if needle.is_empty() {
+        return false;
+    }
+    haystack.contains(needle)
 }
 
-fn specialized_handler_name(slug: &str) -> Option<&str> {
-    match slug {
-        "translation" => Some("translation"),
-        "algorithm" => Some("algorithm"),
-        "software_project_plan" | "software_project_implementation" => Some("software_project"),
-        "meta_explanation" => Some("meta_explanation"),
-        "concept_lookup" | "concept_lookup_in_context" => Some("concept_lookup"),
-        "arithmetic" => Some("arithmetic"),
-        "web_search" => Some("web_search"),
-        "procedural_how_to" => Some("procedural_how_to"),
-        "proof_request" => Some("proof_request"),
-        "write_script" => Some("write_script"),
-        other if !other.is_empty() => Some(other),
-        _ => None,
-    }
+fn route_from_relevants(relevants: &[String]) -> Option<String> {
+    let registry = MethodRegistry::from_dispatch();
+    relevants.iter().find_map(|relevant| {
+        let slug = relevant
+            .strip_prefix("route:")
+            .or_else(|| relevant.strip_prefix("handler:"))
+            .filter(|slug| registry.method_for_route(slug).is_some())?;
+        Some(slug.to_owned())
+    })
 }
 
 fn infer_kind(
@@ -885,7 +885,9 @@ fn infer_kind(
             | "software_project_plan"
             | "software_project_implementation",
         ) => IntentKind::Task,
-        _ if prompt.contains('?') || starts_with_question_word(normalized) => IntentKind::Question,
+        _ if contains_question_mark(prompt) || starts_with_question_word(normalized) => {
+            IntentKind::Question
+        }
         _ if has_any_token(normalized, &["must", "should", "require", "requires"]) => {
             IntentKind::Requirement
         }
@@ -926,6 +928,10 @@ fn starts_with_question_word(normalized: &str) -> bool {
                 .strip_prefix(word.as_str())
                 .is_some_and(|rest| rest.starts_with(' '))
         })
+}
+
+fn contains_question_mark(prompt: &str) -> bool {
+    prompt.contains('?') || prompt.contains('？')
 }
 
 fn push_unique(values: &mut Vec<String>, value: String) {

@@ -5,7 +5,8 @@
 //! `SolverConfig::temperature` range stays useful.
 
 use crate::probability::{
-    rank_probability_candidates, ProbabilityCandidate, ProbabilityRankingConfig, ProbabilityStore,
+    rank_probability_candidates, ProbabilityCandidate, ProbabilityDecisionPolicy,
+    ProbabilityRankingConfig, ProbabilityStore,
 };
 use crate::translation::{FormalizationCandidate, FormalizationRole};
 
@@ -18,7 +19,7 @@ pub struct FormalizationSelectionConfig {
 
 impl FormalizationSelectionConfig {
     #[must_use]
-    pub fn normalized(self) -> Self {
+    pub const fn normalized(self) -> Self {
         Self {
             temperature: finite_clamped(self.temperature, 0.0, 1.0),
             guess_probability: finite_clamped(self.guess_probability, 0.0, 1.0),
@@ -134,6 +135,31 @@ pub fn select_formalization_candidate_with_probability_store(
     probability_store: &ProbabilityStore,
     offline: bool,
 ) -> FormalizationSelection {
+    select_formalization_candidate_with_policy(
+        candidates,
+        config,
+        impulse,
+        probability_store,
+        offline,
+        ProbabilityDecisionPolicy::default(),
+    )
+}
+
+/// Rank with the store *and* an explicit interpretable decision policy.
+///
+/// Like [`select_formalization_candidate_with_probability_store`], but threads
+/// the `CU`/`TU`/`TC`/`SS` policy from arXiv:2605.00940 into the probability
+/// ranking. A defaulted policy reproduces the exact-evidence behaviour of the
+/// store-only entry point.
+#[must_use]
+pub fn select_formalization_candidate_with_policy(
+    candidates: &[FormalizationCandidate],
+    config: FormalizationSelectionConfig,
+    impulse: &str,
+    probability_store: &ProbabilityStore,
+    offline: bool,
+    policy: ProbabilityDecisionPolicy,
+) -> FormalizationSelection {
     let config = config.normalized();
     let candidates = candidates.to_vec();
     let probability_candidates = candidates
@@ -152,7 +178,9 @@ pub fn select_formalization_candidate_with_probability_store(
             temperature: config.temperature,
             offline,
             markov_from: None,
-        },
+            ..ProbabilityRankingConfig::default()
+        }
+        .with_decision_policy(policy),
     );
     let probabilities = candidates
         .iter()
@@ -258,7 +286,7 @@ fn select_from_probabilities(
     }
 }
 
-fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
+const fn finite_clamped(value: f32, min: f32, max: f32) -> f32 {
     if value.is_finite() {
         value.clamp(min, max)
     } else {
@@ -285,7 +313,7 @@ fn ranked_indices(candidates: &[FormalizationCandidate], probabilities: &[f32]) 
     indices
 }
 
-fn probability_margin_epsilon(questioning_rigor: f32) -> f32 {
+const fn probability_margin_epsilon(questioning_rigor: f32) -> f32 {
     0.23f32.mul_add(finite_clamped(questioning_rigor, 0.0, 1.0), 0.02)
 }
 

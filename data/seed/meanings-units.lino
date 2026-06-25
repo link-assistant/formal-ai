@@ -360,6 +360,12 @@ meanings
       surface
         text метра
       surface
+        text метру
+      surface
+        text метром
+      surface
+        text метре
+      surface
         text метров
     lexeme hi
       surface
@@ -590,6 +596,16 @@ meanings
         text кг
       surface
         text килограмм
+      surface
+        text килограмма
+      surface
+        text килограмму
+      surface
+        text килограммом
+      surface
+        text килограмме
+      surface
+        text килограммов
     lexeme hi
       surface
         text किलोग्राम
@@ -612,6 +628,16 @@ meanings
     lexeme ru
       surface
         text грамм
+      surface
+        text грамма
+      surface
+        text грамму
+      surface
+        text граммом
+      surface
+        text грамме
+      surface
+        text граммов
     lexeme hi
       surface
         text ग्राम

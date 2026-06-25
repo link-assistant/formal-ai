@@ -1511,10 +1511,9 @@ function tokenizeArithmetic(input) {
         j += 1;
       }
       const slice = input.slice(i, j);
-      const value = Number(slice);
-      if (Number.isNaN(value)) {
-        throw new Error("unparseable");
-      }
+      const hasDecimal = slice.includes(".");
+      const value = hasDecimal ? Number(slice) : BigInt(slice);
+      if (hasDecimal && Number.isNaN(value)) throw new Error("unparseable");
       tokens.push({ kind: "num", value });
       i = j;
     } else {
@@ -1539,6 +1538,8 @@ const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
 const ROLE_MATH_FUNCTION_NAME = "math_function_name";
+const ROLE_MEASUREMENT_UNIT = "measurement_unit";
+const ROLE_PHYSICAL_DIMENSION = "physical_dimension";
 
 // Issue #386: the spelled digit/operator → value normalization tables, derived
 // from the seed at runtime exactly as the Rust solver derives them
@@ -1902,6 +1903,74 @@ function normalizeArithmeticWords(expression) {
   return rewritePercentOf(mapped);
 }
 
+const EXACT_ARITHMETIC_EXPONENT_LIMIT = 10000n;
+
+function isArithmeticBigInt(value) {
+  return typeof value === "bigint";
+}
+
+function arithmeticToNumber(value) {
+  return isArithmeticBigInt(value) ? Number(value) : value;
+}
+
+function arithmeticIsZero(value) {
+  return value === 0 || value === 0n;
+}
+
+function arithmeticEnsureFinite(value) {
+  if (typeof value === "number" && !Number.isFinite(value)) {
+    throw new Error("overflow");
+  }
+  return value;
+}
+
+function arithmeticNegate(value) {
+  return isArithmeticBigInt(value) ? -value : -value;
+}
+
+function arithmeticAdd(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left + right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) + arithmeticToNumber(right));
+}
+
+function arithmeticSub(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left - right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) - arithmeticToNumber(right));
+}
+
+function arithmeticMul(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left * right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) * arithmeticToNumber(right));
+}
+
+function arithmeticDiv(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (
+    isArithmeticBigInt(left) &&
+    isArithmeticBigInt(right) &&
+    left % right === 0n
+  ) {
+    return left / right;
+  }
+  return arithmeticEnsureFinite(arithmeticToNumber(left) / arithmeticToNumber(right));
+}
+
+function arithmeticRem(left, right) {
+  if (arithmeticIsZero(right)) throw new Error("division by zero");
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right)) return left % right;
+  return arithmeticEnsureFinite(arithmeticToNumber(left) % arithmeticToNumber(right));
+}
+
+function arithmeticPow(left, right) {
+  if (isArithmeticBigInt(left) && isArithmeticBigInt(right) && right >= 0n) {
+    if (right > EXACT_ARITHMETIC_EXPONENT_LIMIT) throw new Error("overflow");
+    return left ** right;
+  }
+  return arithmeticEnsureFinite(
+    Math.pow(arithmeticToNumber(left), arithmeticToNumber(right)),
+  );
+}
+
 function evaluateArithmetic(expression) {
   const normalized = normalizeArithmeticWords(expression);
   const tokens = tokenizeArithmetic(normalized);
@@ -1928,8 +1997,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "^") {
       advance();
-      left = Math.pow(left, parseUnary());
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = arithmeticPow(left, parseUnary());
     }
     return left;
   }
@@ -1937,7 +2005,7 @@ function evaluateArithmetic(expression) {
     const tok = peek();
     if (tok && tok.kind === "-") {
       advance();
-      return -parseUnary();
+      return arithmeticNegate(parseUnary());
     }
     if (tok && tok.kind === "+") {
       advance();
@@ -1956,15 +2024,12 @@ function evaluateArithmetic(expression) {
       advance();
       const right = parseUnary();
       if (op === "*") {
-        left = left * right;
-      } else if (right === 0) {
-        throw new Error("division by zero");
+        left = arithmeticMul(left, right);
       } else if (op === "/") {
-        left = left / right;
+        left = arithmeticDiv(left, right);
       } else {
-        left = left % right;
+        left = arithmeticRem(left, right);
       }
-      if (!Number.isFinite(left)) throw new Error("overflow");
     }
     return left;
   }
@@ -1976,8 +2041,7 @@ function evaluateArithmetic(expression) {
       const isPlus = tok.kind === "+";
       advance();
       const right = parseMultiplicative();
-      left = isPlus ? left + right : left - right;
-      if (!Number.isFinite(left)) throw new Error("overflow");
+      left = isPlus ? arithmeticAdd(left, right) : arithmeticSub(left, right);
     }
     return left;
   }
@@ -1989,11 +2053,13 @@ function evaluateArithmetic(expression) {
 }
 
 function formatArithmeticResult(value) {
+  if (isArithmeticBigInt(value)) return value.toString();
   if (!Number.isFinite(value)) return "non-finite";
   if (Math.abs(value % 1) === 0 && Math.abs(value) < 1e15) {
     return value.toFixed(0);
   }
-  const rendered = value.toFixed(10);
+  const rendered = Math.abs(value) >= 1e21 ? String(value) : value.toFixed(10);
+  if (/[eE]/.test(rendered)) return rendered;
   const trimmed = rendered.replace(/0+$/, "").replace(/\.$/, "");
   return trimmed === "" || trimmed === "-" ? "0" : trimmed;
 }
@@ -5508,8 +5574,16 @@ function translateRussianWordSequence(words) {
 }
 
 function translateCompositionalSurface(surface, source, target) {
-  if (source !== "ru" || target !== "en") return null;
   const normalized = normalizeComposableSurface(surface);
+  if (!normalized) return null;
+
+  const direct =
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, source, target, normalized) ||
+    roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, source, target, normalized);
+  if (direct) return direct;
+
+  if (source !== "ru" || target !== "en") return null;
+
   const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
   if (phrase) return phrase;
 
@@ -5518,24 +5592,85 @@ function translateCompositionalSurface(surface, source, target) {
   return translateRussianWordSequence(words);
 }
 
+const QUESTION_LANGUAGE_MARKERS = {
+  ru: [
+    "\u0447\u0442\u043e",
+    "\u043a\u0430\u043a",
+    "\u043a\u0442\u043e",
+    "\u0433\u0434\u0435",
+    "\u043a\u043e\u0433\u0434\u0430",
+    "\u043f\u043e\u0447\u0435\u043c\u0443",
+  ],
+  hi: [
+    "\u0915\u094d\u092f\u093e",
+    "\u0915\u094c\u0928",
+    "\u0915\u0939\u093e\u0901",
+    "\u0915\u092c",
+    "\u0915\u0948\u0938\u0947",
+    "\u0915\u094d\u092f\u094b\u0902",
+  ],
+  zh: [
+    "\u4ec0\u4e48",
+    "\u5417",
+    "\u600e\u4e48",
+    "\u8c01",
+    "\u54ea",
+  ],
+};
+
+function detectQuestionMarkerLanguage(text, counts) {
+  const normalized = String(text || "").toLocaleLowerCase();
+  let best = null;
+  for (const candidate of [
+    { slug: "ru", count: counts.cyrillic },
+    { slug: "hi", count: counts.devanagari },
+    { slug: "zh", count: counts.cjk },
+  ]) {
+    if (candidate.count <= 0) continue;
+    const markers = QUESTION_LANGUAGE_MARKERS[candidate.slug] || [];
+    if (!markers.some((marker) => normalized.includes(marker))) continue;
+    if (!best || candidate.count > best.count) best = candidate;
+  }
+  return best ? best.slug : null;
+}
+
 function detectLanguageSlug(text) {
   let latin = 0;
   let cyrillic = 0;
   let devanagari = 0;
   let cjk = 0;
   let other = 0;
+  let firstScript = null;
   for (const character of String(text || "")) {
     const code = character.codePointAt(0);
-    if (/[a-z]/i.test(character)) latin += 1;
-    else if (code >= 0x0400 && code <= 0x04ff) cyrillic += 1;
-    else if (code >= 0x0900 && code <= 0x097f) devanagari += 1;
-    else if (code >= 0x4e00 && code <= 0x9fff) cjk += 1;
-    else if (/\p{L}/u.test(character)) other += 1;
+    if (/[a-z]/i.test(character)) {
+      latin += 1;
+      if (!firstScript) firstScript = "latin";
+    } else if (code >= 0x0400 && code <= 0x04ff) {
+      cyrillic += 1;
+      if (!firstScript) firstScript = "cyrillic";
+    } else if (code >= 0x0900 && code <= 0x097f) {
+      devanagari += 1;
+      if (!firstScript) firstScript = "devanagari";
+    } else if (code >= 0x4e00 && code <= 0x9fff) {
+      cjk += 1;
+      if (!firstScript) firstScript = "cjk";
+    } else if (/\p{L}/u.test(character)) {
+      other += 1;
+      if (!firstScript) firstScript = "other";
+    }
   }
   const total = latin + cyrillic + devanagari + cjk + other;
   if (total === 0) return "en";
   if (other > latin && other >= cyrillic && other >= devanagari && other >= cjk) {
     return "unknown";
+  }
+  if (latin > 0) {
+    const markerLanguage = detectQuestionMarkerLanguage(text, { cyrillic, devanagari, cjk });
+    if (markerLanguage) return markerLanguage;
+    if (firstScript === "cyrillic" && cyrillic >= Math.max(devanagari, cjk)) return "ru";
+    if (firstScript === "devanagari" && devanagari >= Math.max(cyrillic, cjk)) return "hi";
+    if (firstScript === "cjk" && cjk >= Math.max(cyrillic, devanagari)) return "zh";
   }
   if (cyrillic >= Math.max(latin, devanagari, cjk) && cyrillic > 0) return "ru";
   if (devanagari >= Math.max(latin, cyrillic, cjk) && devanagari > 0) return "hi";
@@ -5690,12 +5825,12 @@ async function translateSurface(surface, source, target) {
     const primary = deformalizeMeaning(token, target);
     if (primary) return { surface: primary, gap: false };
   }
+  const compositional = translateCompositionalSurface(surface, source, target);
+  if (compositional) return { surface: compositional, gap: false };
   if (surface) {
     const live = await liveWiktionaryTranslate(surface, source, target);
     if (live) return { surface: live, gap: false };
   }
-  const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return { surface: compositional, gap: false };
   return { surface: null, gap: true };
 }
 
@@ -8354,23 +8489,43 @@ function numericListProgramSource(program) {
 // only inherit from a prior *user* turn that was itself a genuine numeric-list
 // coding request — it names an operation, a supported language, and lists at
 // least two numbers — so unrelated chatter never leaks a language.
+// Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.") names
+// an operation but no numbers of its own — it refers to the list from the
+// previous numeric-list turn. We therefore inherit the list from the most
+// recent operation turn that carried a concrete list, while the language / code
+// request keep coming from the most recent turn that named a language (issue
+// #412). Splitting the two lets a number-less invert-sort inherit both even when
+// they were established in different turns. Mirrors numeric_list_history_context
+// in src/solver_handlers/numeric_list/mod.rs.
 function numericListHistoryContext(history) {
-  if (!Array.isArray(history)) return { slug: null, codeRequested: false };
+  if (!Array.isArray(history))
+    return { slug: null, codeRequested: false, items: [] };
+  let slug = null;
+  let codeRequested = false;
+  let items = [];
   for (let i = history.length - 1; i >= 0; i -= 1) {
     const turn = history[i];
     if (!turn || String(turn.role || "").toLowerCase() !== "user") continue;
     const content = String(turn.content || "");
     const normalized = normalizePrompt(content);
     if (!detectNumericListOperation(normalized)) continue;
-    const slug = programLanguageFromPrompt(normalized);
-    if (!slug || !WRITE_PROGRAM_LANGUAGES[slug]) continue;
-    if (parseNumericListNumbers(content).length < 2) continue;
-    return {
-      slug,
-      codeRequested: operationMatchesSlug("code_request", normalized),
-    };
+    const numbers = parseNumericListNumbers(content);
+    if (numbers.length < 2) continue;
+    // The most recent numeric-list turn with a concrete list seeds the
+    // inherited list (issue #427).
+    if (items.length === 0) items = numbers;
+    // Language + code request come from the most recent turn naming a supported
+    // language (issue #412).
+    if (!slug) {
+      const candidate = programLanguageFromPrompt(normalized);
+      if (candidate && WRITE_PROGRAM_LANGUAGES[candidate]) {
+        slug = candidate;
+        codeRequested = operationMatchesSlug("code_request", normalized);
+      }
+    }
+    if (items.length > 0 && slug) break;
   }
-  return { slug: null, codeRequested: false };
+  return { slug, codeRequested, items };
 }
 
 function tryNumericList(prompt, history) {
@@ -8388,7 +8543,10 @@ function tryNumericList(prompt, history) {
   // Issue #412: a bare follow-up names no language and may not say "code" —
   // recover both from the active coding context before applying the gates.
   const inherited = numericListHistoryContext(history);
-  const hasInheritance = Boolean(inherited.slug) || inherited.codeRequested;
+  const hasInheritance =
+    Boolean(inherited.slug) ||
+    inherited.codeRequested ||
+    inherited.items.length > 0;
 
   // Reductions phrase-overlap with ordinary prose far more than the imperative
   // transform verbs do, so they only fire when the prompt explicitly asks for
@@ -8409,7 +8567,13 @@ function tryNumericList(prompt, history) {
   const languageInfo = WRITE_PROGRAM_LANGUAGES[slug];
   if (!languageInfo) return null;
 
-  const items = parseNumericListItems(prompt, canonical);
+  let items = parseNumericListItems(prompt, canonical);
+  // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
+  // names no numbers of its own — inherit the list from the previous
+  // numeric-list turn so the operation has data to act on.
+  if (items.length === 0 && inherited.items.length > 0) {
+    items = inherited.items;
+  }
   if (items.length < 2) return null;
   if (
     numericListFamily(canonical) === "list_reduction" &&
@@ -9717,7 +9881,509 @@ function renderWeekdayRelation(language, operation, source, result) {
   return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
 }
 
+// --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
+// Must be defined before tryCalendarReasoning. All recognition uses wordsForRole(ROLE_*)
+// + containsCalendarTerm (or the documented loose includes for directions/questions/fallbacks)
+// exactly like mentionsWeekdayContext etc. Base date for rollover uses a UTC mirror of
+// Rust current_utc_date (create does not inherit the browser userContext tz used only by
+// the "today" path). Returns the same {intent, content, confidence, evidence} shape.
+function mentionsCalendarCreateRequest(normalized) {
+  const hasDayRef = wordsForRole(ROLE_CALENDAR_DAY_REFERENCE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A clock time anchors the event just as well as a day word; the lexicon
+  // carries localized surfaces ("17:00", "5pm", "शाम 5 बजे", "下午5点") and the
+  // scanner covers any bare "HH:MM"/"в HH". Mirrors Rust has_clock.
+  const hasClock =
+    wordsForRole(ROLE_CALENDAR_TIME).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) || extractClockTime(normalized) !== null;
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", "后天", …)
+  // anchors the event to a specific day just as well as a day number or a
+  // clock time (issue #435: "поставь мне созвон ... на завтра" carries no
+  // digit at all). Surfaces live in data/seed/meanings-calendar.lino.
+  const hasRelativeDate = wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  // A genuine scheduling request anchors to a concrete date/time cue: a
+  // day-reference word, a clock time, or a relative-date word. Bare digits
+  // (e.g. the "1." / "2." of a numbered installation-guide list) are NOT a
+  // date signal — they were the source of false positives that hijacked
+  // installation-conversion prompts such as
+  // "…the-book-of-secret-knowledge…" (issue #404 vs #423).
+  const hasDateSignal = hasDayRef || hasClock || hasRelativeDate;
+  if (!hasDateSignal) return false;
+  const hasAction =
+    wordsForRole(ROLE_CALENDAR_SCHEDULE_ACTION).some((w) =>
+      containsCalendarTerm(normalized, w),
+    ) ||
+    wordsForRole(ROLE_CALENDAR_EVENT).some((w) =>
+      containsCalendarTerm(normalized, w),
+    );
+  if (hasAction) return true;
+  // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
+  // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
+  const hasScheduleVerb = [
+    "забей",
+    "поставь",
+    "создай",
+    "добавь",
+    "schedule",
+    "book",
+    "add to",
+  ].some((verb) => containsCalendarTerm(normalized, verb));
+  // The date/time anchor is already guaranteed by hasDateSignal above, so a
+  // recognized schedule verb is enough to confirm a create request here.
+  return hasScheduleVerb;
+}
+
+function extractDayNumber(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_DAY_REFERENCE)) {
+    if (!containsCalendarTerm(normalized, word)) continue;
+    const pos = normalized.indexOf(word);
+    if (pos !== -1) {
+      const prefix = normalized.slice(0, pos);
+      let digits = "";
+      for (let i = prefix.length - 1; i >= 0; i--) {
+        const ch = prefix[i];
+        if (/\d/.test(ch)) digits = ch + digits;
+        else if (digits) break;
+      }
+      const n = parseInt(digits, 10);
+      if (n >= 1 && n <= 31) return n;
+    }
+  }
+  // bare leading number
+  let num = "";
+  for (const ch of normalized) {
+    if (/\d/.test(ch)) num += ch;
+    else if (num) break;
+  }
+  const n = parseInt(num, 10);
+  if (n >= 1 && n <= 31) return n;
+  return null;
+}
+
+function computeTargetDateWithRollover(base, day) {
+  let y = base.year,
+    m = base.month,
+    d = day;
+  if (d < base.day) {
+    m += 1;
+    if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+  }
+  const maxDay = m === 2 ? 28 : [4, 6, 9, 11].includes(m) ? 30 : 31;
+  if (d > maxDay) d = maxDay;
+  return [y, m, d];
+}
+
+// Resolve a relative-date word to a whole-day offset from today. The surfaces
+// and their languages live in data/seed/meanings-calendar.lino; this code knows
+// only the role and the stable English meaning slugs that name the offset
+// (calendar_tomorrow → +1 day, calendar_day_after_tomorrow → +2 days). Mirrors
+// the Rust relative_date_offset (issue #435).
+function relativeDateOffset(normalized) {
+  for (const meaning of meaningsWithRole(ROLE_CALENDAR_RELATIVE_DATE)) {
+    const matches = meaning.words.some((word) =>
+      containsCalendarTerm(normalized, word),
+    );
+    if (!matches) continue;
+    if (meaning.slug === "calendar_tomorrow") return 1;
+    if (meaning.slug === "calendar_day_after_tomorrow") return 2;
+    return null;
+  }
+  return null;
+}
+
+// Apply a whole-day offset to a {year, month, day} base via UTC date math.
+// Mirrors date_from_unix_days(base.days_since_unix_epoch + offset) in Rust.
+function offsetCalendarDate(base, offset) {
+  const d = new Date(Date.UTC(base.year, base.month - 1, base.day + offset));
+  return [d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()];
+}
+
+// Fallback title built from the matched event noun ("созвон" → "Созвон",
+// "meeting" → "Meeting") when no explicit "на <subject>" / "for <subject>"
+// phrase was given. Mirrors the Rust extract_event_title (issue #435).
+function extractEventTitle(normalized) {
+  for (const word of wordsForRole(ROLE_CALENDAR_EVENT)) {
+    if (containsCalendarTerm(normalized, word)) return capitalizeFirst(word);
+  }
+  return null;
+}
+
+function extractClockTime(normalized) {
+  const bytes = normalized.split("");
+  for (let i = 0; i < bytes.length - 2; i++) {
+    if (/\d/.test(bytes[i]) && /\d/.test(bytes[i + 1])) {
+      let h = parseInt(bytes[i] + bytes[i + 1], 10);
+      let j = i + 2;
+      if (j < bytes.length && (bytes[j] === ":" || bytes[j] === ".")) j++;
+      if (j + 1 < bytes.length && /\d/.test(bytes[j]) && /\d/.test(bytes[j + 1])) {
+        const min = parseInt(bytes[j] + bytes[j + 1], 10);
+        if (h <= 23 && min <= 59) {
+          if (h === 0) h = 0;
+          if (h === 24) h = 0;
+          return [h, min];
+        }
+      }
+    }
+  }
+  const vPos = normalized.indexOf("в ");
+  if (vPos !== -1) {
+    const tail = normalized.slice(vPos + 2);
+    let num = "";
+    for (const ch of tail) {
+      if (/\d/.test(ch)) num += ch;
+      else if (num) break;
+    }
+    const h = parseInt(num, 10);
+    if (h <= 23) return [h, 0];
+  }
+  return null;
+}
+
+function resolveTimezone(normalized) {
+  const hit = wordsForRole(ROLE_CALENDAR_TIMEZONE_ALIAS).some((w) =>
+    containsCalendarTerm(normalized, w),
+  );
+  if (hit) return "Asia/Tbilisi";
+  if (
+    normalized.includes("asia/tbilisi") ||
+    normalized.includes("tbilisi") ||
+    normalized.includes("по грузии")
+  )
+    return "Asia/Tbilisi";
+  return null;
+}
+
+function defaultTitle(language) {
+  if (language === "ru") return "Событие";
+  if (language === "hi") return "घटना";
+  if (language === "zh") return "事件";
+  return "Event";
+}
+
+function capitalizeFirst(value) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+// Trim a candidate title down to its subject: stop at the first time/date/zone
+// boundary, sentence punctuation, or day number, then capitalize. Mirrors the
+// Rust tidy_title.
+function tidyTitle(candidate) {
+  let end = candidate.length;
+  for (const boundary of [
+    " on the ",
+    " on ",
+    " at ",
+    " в ",
+    " по ",
+    " на ",
+    " 在 ",
+    "下午",
+    "上午",
+    " को ",
+    " शाम",
+  ]) {
+    const pos = candidate.indexOf(boundary);
+    if (pos !== -1) end = Math.min(end, pos);
+  }
+  const punct = candidate.search(/[.!?,]/);
+  if (punct !== -1) end = Math.min(end, punct);
+  const digit = candidate.search(/\d/);
+  if (digit !== -1) end = Math.min(end, digit);
+  const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
+  if (!trimmed) return null;
+  // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
+  // title — reject it so the caller falls back to the event noun (issue #435).
+  if (
+    wordsForRole(ROLE_CALENDAR_RELATIVE_DATE).some(
+      (word) => word.toLowerCase() === trimmed.toLowerCase(),
+    )
+  )
+    return null;
+  return capitalizeFirst(trimmed);
+}
+
+// Remove schedule-action verb fragments that can trail (Hindi is verb-final)
+// or lead (Chinese has no word spaces) the subject so the .ics SUMMARY keeps
+// only the event and its participant. Mirrors the Rust strip_action_words.
+function stripActionWords(value) {
+  let out = value;
+  for (const fragment of [
+    "शेड्यूल करें",
+    "कैलेंडर में जोड़ें",
+    "बनाएँ",
+    "बनाओ",
+    "安排",
+    "添加到日历",
+    "创建",
+  ]) {
+    out = out.split(fragment).join("");
+  }
+  return out.split(/\s+/).filter(Boolean).join(" ");
+}
+
+function extractTitle(normalized) {
+  for (const marker of [
+    "на ",
+    "for ",
+    "встречу ",
+    "meeting with ",
+    "call with ",
+    "के साथ ",
+    "和",
+  ]) {
+    const pos = normalized.indexOf(marker);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + marker.length).trim();
+      const title = tidyTitle(rest);
+      if (title) return title;
+    }
+  }
+  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+    const pos = normalized.indexOf(verb);
+    if (pos !== -1) {
+      const rest = normalized.slice(pos + verb.length).trimStart();
+      const title = tidyTitle(rest);
+      if (title && title.length < 60) return title;
+    }
+  }
+  return null;
+}
+
+// --- Real, portable calendar artifacts (parity with Rust ScheduledEvent). ---
+
+function pad2(value) {
+  return String(value).padStart(2, "0");
+}
+
+function pad4(value) {
+  return String(value).padStart(4, "0");
+}
+
+function isoDate(year, month, day) {
+  return `${pad4(year)}-${pad2(month)}-${pad2(day)}`;
+}
+
+function startStamp(year, month, day, hour, minute) {
+  return `${pad4(year)}${pad2(month)}${pad2(day)}T${pad2(hour)}${pad2(minute)}00`;
+}
+
+function daysInMonth(year, month) {
+  if (month === 2) {
+    return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+  }
+  return [4, 6, 9, 11].includes(month) ? 30 : 31;
+}
+
+function addMinutes(year, month, day, hour, minute, minutes) {
+  const total = hour * 60 + minute + minutes;
+  let dayCarry = Math.floor(total / (24 * 60));
+  const newMinute = total % 60;
+  const newHour = Math.floor(total / 60) % 24;
+  let y = year,
+    m = month,
+    d = day;
+  while (dayCarry > 0) {
+    if (d < daysInMonth(y, m)) {
+      d += 1;
+    } else {
+      d = 1;
+      m += 1;
+      if (m > 12) {
+        m = 1;
+        y += 1;
+      }
+    }
+    dayCarry -= 1;
+  }
+  return [y, m, d, newHour, newMinute];
+}
+
+function icsEscape(value) {
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\n/g, "\\n");
+}
+
+function icsDtstamp() {
+  const d = new Date();
+  return (
+    `${pad4(d.getUTCFullYear())}${pad2(d.getUTCMonth() + 1)}${pad2(d.getUTCDate())}` +
+    `T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`
+  );
+}
+
+function buildIcs(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  const uid = `${start}-${event.timeZone}@formal-ai`;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//formal-ai//calendar//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${icsDtstamp()}`,
+    `DTSTART;TZID=${event.timeZone}:${start}`,
+    `DTEND;TZID=${event.timeZone}:${end}`,
+    `SUMMARY:${icsEscape(event.title)}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n") + "\r\n";
+}
+
+function buildGoogleCalendarUrl(event) {
+  const start = startStamp(event.year, event.month, event.day, event.hour, event.minute);
+  const [ey, em, ed, eh, emin] = addMinutes(
+    event.year,
+    event.month,
+    event.day,
+    event.hour,
+    event.minute,
+    event.durationMinutes,
+  );
+  const end = startStamp(ey, em, ed, eh, emin);
+  return (
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(event.title)}` +
+    `&dates=${start}/${end}` +
+    `&ctz=${encodeURIComponent(event.timeZone)}`
+  );
+}
+
+function renderCreateConfirmation(language, event, ics, googleUrl) {
+  const iso = isoDate(event.year, event.month, event.day);
+  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
+  const tz = event.timeZone;
+  const title = event.title;
+  const minutes = event.durationMinutes;
+  if (language === "ru") {
+    return (
+      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
+      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
+      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
+      `Ответьте «да», чтобы подтвердить.`
+    );
+  }
+  if (language === "hi") {
+    return (
+      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
+      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
+      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
+      `पुष्टि के लिए «हाँ» उत्तर दें।`
+    );
+  }
+  if (language === "zh") {
+    return (
+      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
+      `将此 .ics 文件导入任何日历：\n${ics}\n` +
+      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
+      `回复「是」以确认。`
+    );
+  }
+  return (
+    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
+    `Import this .ics file into any calendar:\n${ics}\n` +
+    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
+    `Reply 'yes' to confirm.`
+  );
+}
+
+function currentUtcCalendarBase() {
+  const d = new Date();
+  return { year: d.getUTCFullYear(), month: d.getUTCMonth() + 1, day: d.getUTCDate() };
+}
+
+function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
+  if (!mentionsCalendarCreateRequest(normalized)) return null;
+  const base = currentUtcCalendarBase();
+  const language = detectLanguage(prompt);
+  // A relative-date word ("завтра", "tomorrow", "послезавтра", …) anchors the
+  // event to a day offset from today (issue #435). It takes priority over a
+  // bare day number so "поставь созвон на завтра" lands on tomorrow rather
+  // than today's date.
+  const relativeOffset = relativeDateOffset(normalized);
+  let year, month, d;
+  if (relativeOffset !== null) {
+    [year, month, d] = offsetCalendarDate(base, relativeOffset);
+  } else {
+    const day = extractDayNumber(normalized) || base.day;
+    [year, month, d] = computeTargetDateWithRollover(base, day);
+  }
+  const [hour, minute] = extractClockTime(normalized) || [17, 0];
+  const tz = resolveTimezone(normalized) || "UTC";
+  // Prefer an explicit "на <subject>" / "for <subject>" title; otherwise fall
+  // back to the matched event noun ("созвон" → "Созвон") before the localized
+  // default, so a title-less request still proposes a meaningful event.
+  const title =
+    extractTitle(normalized) ||
+    extractEventTitle(normalized) ||
+    defaultTitle(language);
+  const event = {
+    title,
+    year,
+    month,
+    day: d,
+    hour,
+    minute,
+    timeZone: tz,
+    durationMinutes: 60,
+  };
+  const ics = buildIcs(event);
+  const googleUrl = buildGoogleCalendarUrl(event);
+  const body = renderCreateConfirmation(language, event, ics, googleUrl);
+  const evidence = [
+    "calendar:clock:browser",
+    `calendar:parsed_date:${isoDate(year, month, d)}`,
+    `calendar:parsed_time:${pad2(hour)}:${pad2(minute)}`,
+    `calendar:parsed_time_zone:${tz}`,
+    `calendar:parsed_title:${title}`,
+    `calendar:parsed_duration_minutes:${event.durationMinutes}`,
+  ];
+  if (relativeOffset !== null) {
+    evidence.push(`calendar:parsed_relative_offset:${relativeOffset}`);
+  }
+  if (normalized.includes("число") || normalized.includes("number")) {
+    evidence.push("calendar:parsed_via:day_number");
+  }
+  evidence.push(`calendar:ics:${ics}`);
+  evidence.push(`calendar:google_calendar_url:${googleUrl}`);
+  evidence.push(`language:${language}`);
+  return {
+    intent: "calendar_create_event",
+    content: body,
+    confidence: 0.95,
+    evidence,
+  };
+}
+
 function tryCalendarReasoning(prompt, normalized, userContext = {}) {
+  // Calendar create/schedule (issue #404) must be attempted before the weekday-relation
+  // gate (and before the current-day question) so that "18 число ... забей / поставь"
+  // claims are handled by the action path and do not fall through to the existing
+  // weekday-only logic. Mirrors src/solver_handlers/calendar.rs exactly.
+  const create = tryCalendarCreateEvent(prompt, normalized, userContext);
+  if (create) return create;
   if (mentionsCurrentDayQuestion(normalized)) {
     const language = detectLanguage(prompt);
     const resolved = currentCalendarDate(userContext);
@@ -10241,6 +10907,225 @@ function tryWhoIsQuestion(prompt) {
     content,
     confidence: 0.5,
     evidence: [`concept_lookup:miss:${term}`, "response:who_is_question"],
+  };
+}
+
+// Issue #513 (visible fix for #511): recognize a request to run a shell/terminal
+// command. The detection rules are mirrored in the Rust solver
+// (`src/solver_terminal.rs`, `try_terminal_command`) so both engines stay at
+// parity. A recognized command returns an `agent_suggestion` intent that names
+// the detected command, explains agent mode, and — when agent mode is off —
+// offers to switch it on and grant the `shell` capability.
+// Issue #513: the terminal-command trigger vocabulary, embedded inline and
+// byte-identical to data/seed/terminal-commands.lino (regenerated by
+// experiments/issue-513-sync-worker-terminal.mjs). This is the JS mirror of
+// TerminalCommandVocabulary in src/seed/terminal_commands.rs: the per-language
+// surface phrases / verbs / shell tokens live once in the seed data — never as
+// hardcoded per-language word lists in worker code.
+const TERMINAL_COMMANDS_LINO = [
+  "terminal_commands",
+  "  terminal_phrases",
+  "    language ru",
+  '      phrase "в терминале"',
+  '      phrase "в консоли"',
+  '      phrase "в командной строке"',
+  '      phrase "в шелле"',
+  "    language en",
+  '      phrase "in terminal"',
+  '      phrase "in the terminal"',
+  '      phrase "in a terminal"',
+  '      phrase "in console"',
+  '      phrase "in the console"',
+  '      phrase "in shell"',
+  '      phrase "in the shell"',
+  '      phrase "in a shell"',
+  '      phrase "terminal command"',
+  '      phrase "shell command"',
+  '      phrase "command line"',
+  "      phrase command-line",
+  "    language hi",
+  '      phrase "टर्मिनल में"',
+  '      phrase "टर्मिनल पर"',
+  '      phrase "कमांड लाइन"',
+  '      phrase "शेल में"',
+  "    language zh",
+  "      phrase 在终端",
+  "      phrase 终端中",
+  "      phrase 终端里",
+  "      phrase 命令行",
+  "      phrase 在命令行",
+  '      phrase "在 shell"',
+  "      phrase 在shell",
+  "  run_verbs",
+  "    language ru",
+  "      verb выполни",
+  "      verb выполнить",
+  "      verb запусти",
+  "      verb запустить",
+  "    language en",
+  "      verb run",
+  "      verb execute",
+  "    language hi",
+  "      verb चलाओ",
+  "      verb चलाएं",
+  "      verb चलाएँ",
+  "      verb चलाइए",
+  "      verb निष्पादित",
+  "  cjk_run_verbs",
+  "    verb 运行",
+  "    verb 执行",
+  "    verb 跑一下",
+  "    verb 跑下",
+  "  shell_tokens",
+  "    token ls",
+  "    token pwd",
+  "    token cd",
+  "    token cat",
+  "    token echo",
+  "    token mkdir",
+  "    token rmdir",
+  "    token rm",
+  "    token cp",
+  "    token mv",
+  "    token touch",
+  "    token grep",
+  "    token git",
+  "    token npm",
+  "    token npx",
+  "    token node",
+  "    token cargo",
+  "    token python",
+  "    token python3",
+  "    token pip",
+  "    token curl",
+  "    token wget",
+  "    token chmod",
+  "    token chown",
+  "    token df",
+  "    token du",
+  "    token ps",
+  "    token kill",
+  "    token head",
+  "    token tail",
+  "    token whoami",
+  "    token uname",
+  "    token export",
+  "    token which",
+  "    token sudo",
+  "    token ssh",
+  "    token tar",
+  "    token find",
+  "    token sed",
+  "    token awk",
+  "    token make",
+  "    token docker",
+  "    token kubectl",
+].join("\n");
+
+let cachedTerminalCommandVocabulary = null;
+// Parse the embedded terminal-command vocabulary into pooled trigger lists.
+// Mirrors terminal_command_vocabulary() in src/seed/terminal_commands.rs;
+// phrases/verbs are pooled across every language because detection is
+// language-agnostic.
+function terminalCommandVocabulary() {
+  if (cachedTerminalCommandVocabulary) return cachedTerminalCommandVocabulary;
+  const root = parseLinoTree(TERMINAL_COMMANDS_LINO);
+  const container =
+    root.children.find((child) => child.name === "terminal_commands") || root;
+  const vocab = {
+    terminalPhrases: [],
+    runVerbs: new Set(),
+    cjkRunVerbs: [],
+    shellTokens: new Set(),
+  };
+  const languageValues = (group, childName) => {
+    const out = [];
+    for (const lang of group.children) {
+      if (lang.name !== "language") continue;
+      for (const child of lang.children) {
+        if (child.name === childName) out.push(child.value);
+      }
+    }
+    return out;
+  };
+  const directValues = (group, childName) =>
+    group.children.filter((c) => c.name === childName).map((c) => c.value);
+  for (const group of container.children) {
+    if (group.name === "terminal_phrases") {
+      vocab.terminalPhrases = languageValues(group, "phrase");
+    } else if (group.name === "run_verbs") {
+      vocab.runVerbs = new Set(languageValues(group, "verb"));
+    } else if (group.name === "cjk_run_verbs") {
+      vocab.cjkRunVerbs = directValues(group, "verb");
+    } else if (group.name === "shell_tokens") {
+      vocab.shellTokens = new Set(directValues(group, "token"));
+    }
+  }
+  cachedTerminalCommandVocabulary = vocab;
+  return cachedTerminalCommandVocabulary;
+}
+
+function extractBacktickCommand(prompt) {
+  const first = prompt.indexOf("`");
+  if (first < 0) return null;
+  let start = first;
+  while (start < prompt.length && prompt[start] === "`") start += 1;
+  let end = start;
+  while (end < prompt.length && prompt[end] !== "`") end += 1;
+  if (end <= start) return null;
+  const command = prompt.slice(start, end).trim();
+  return command || null;
+}
+
+function leadingShellCommand(prompt) {
+  const trimmed = prompt.trim().replace(/^`+|`+$/g, "").trim();
+  const first = trimmed.split(/\s+/)[0] || "";
+  const normalized = (first.match(/^[A-Za-z0-9_-]+/) || [""])[0].toLowerCase();
+  return terminalCommandVocabulary().shellTokens.has(normalized) ? trimmed : null;
+}
+
+function detectTerminalCommand(prompt) {
+  const vocab = terminalCommandVocabulary();
+  const lower = prompt.toLowerCase();
+  const hasPhrase = vocab.terminalPhrases.some((p) => lower.includes(p));
+  const tokens = lower.split(/[^\p{L}\p{N}_]+/u).filter(Boolean);
+  const tokenSet = new Set(tokens);
+  const hasVerb =
+    [...vocab.runVerbs].some((v) => tokenSet.has(v)) ||
+    vocab.cjkRunVerbs.some((v) => lower.includes(v));
+  const backtick = extractBacktickCommand(prompt);
+  const leading = leadingShellCommand(prompt);
+  if (backtick && (hasVerb || hasPhrase)) return backtick;
+  if (hasPhrase && hasVerb) return backtick || leading;
+  if (leading) return leading;
+  return null;
+}
+
+// The natural-language prose lives in data/seed/multilingual-responses.lino
+// under the `agent_suggestion` (Chat mode) and `agent_suggestion_active` (Agent
+// mode on) intents, with a `{command}` placeholder. This mirror only looks the
+// template up via answerFor() and fills in the detected command, so no
+// per-language wording is hardcoded in the worker. Parity with the Rust solver
+// (src/solver_terminal.rs, terminal_body) is kept by both engines reading the
+// same seed intent.
+function terminalCommandBody(command, language, agentModeOn) {
+  const intent = agentModeOn ? "agent_suggestion_active" : "agent_suggestion";
+  return answerFor(intent, language).split("{command}").join(command);
+}
+
+function tryTerminalCommand(prompt, language, preferences) {
+  const command = detectTerminalCommand(prompt);
+  if (!command) return null;
+  const agentModeOn = Boolean(preferences && preferences.agentMode);
+  return {
+    intent: "agent_suggestion",
+    content: terminalCommandBody(command, language, agentModeOn),
+    confidence: 0.6,
+    evidence: [
+      `terminal:command:${command}`,
+      "terminal:agent_suggestion:shell",
+      "response:agent_suggestion",
+    ],
   };
 }
 
@@ -12942,6 +13827,760 @@ function priorSoftwareProjectMeaning(history) {
   return user ? formalizeSoftwareProjectRequest(user) : null;
 }
 
+const INSTALL_FORMAT_MARKDOWN = "markdown";
+const INSTALL_FORMAT_SHELL = "shell_script";
+const INSTALL_FORMAT_POWERSHELL = "powershell_script";
+
+const INSTALL_ALGORITHM_CONSTRUCTION_STAGES = [
+  {
+    id: "collect_corpus",
+    output: "representative problem-class examples",
+    verifier: "case-study corpus preserved",
+  },
+  {
+    id: "derive_surfaces",
+    output: "source and target surface ontology",
+    verifier: "source/target format detection",
+  },
+  {
+    id: "extract_ir",
+    output: "shared intermediate representation",
+    verifier: "ordered command preservation fixture",
+  },
+  {
+    id: "synthesize_operations",
+    output: "recognizers, extractors, renderers, and validators",
+    verifier: "round-trip surface invariants",
+  },
+  {
+    id: "project_targets",
+    output: "target-specific Markdown, shell, and PowerShell renderers",
+    verifier: "per-target rendering fixture",
+  },
+  {
+    id: "mirror_runtimes",
+    output: "Rust and browser-worker projections of the same algorithm",
+    verifier: "cross-runtime parity checks",
+  },
+  {
+    id: "promote_capability",
+    output: "reusable coding-task construction pattern",
+    verifier: "catalog, synthesis, blueprint, and rule-synthesis compatibility",
+  },
+];
+
+const INSTALL_CODING_SURFACE_PROJECTIONS = [
+  {
+    slug: "coding_catalog",
+    projection: "task spec -> parameterized template -> CST/compile check",
+  },
+  {
+    slug: "program_synthesis",
+    projection: "semantic function tree -> source program -> sandbox tests",
+  },
+  {
+    slug: "program_blueprint",
+    projection: "capability set -> blueprint recipe -> honest code projection",
+  },
+  {
+    slug: "numeric_list",
+    projection: "operation/data/language IR -> generated code plus evaluated result",
+  },
+  {
+    slug: "rule_synthesis",
+    projection: "operation/target binding -> candidate rule -> verification fixture",
+  },
+  {
+    slug: "installation_conversion",
+    projection: "installation surfaces -> install-step IR -> target renderers",
+  },
+];
+
+function installationContainsAny(value, needles) {
+  return needles.some((needle) => String(value || "").includes(needle));
+}
+
+function isInstallationConversionRequest(normalized) {
+  const asksConversion = installationContainsAny(normalized, [
+    "convert",
+    "conversion",
+    "transform",
+    "turn",
+    "translate",
+    "back to",
+    "конверт",
+    "преобраз",
+    "перевед",
+    "बदल",
+    "परिवर्त",
+    "रूपांतर",
+    "कन्वर्ट",
+    "转换",
+    "轉換",
+    "转成",
+    "轉成",
+    "转为",
+    "轉為",
+    "翻译",
+    "翻譯",
+  ]);
+  const namesInstallSurface = installationContainsAny(normalized, [
+    "readme",
+    "markdown",
+    "installation guide",
+    "install guide",
+    "deployment guide",
+    "deploy guide",
+    "installation script",
+    "install script",
+    "deployment script",
+    "deploy script",
+    "руководство по установ",
+    "инструкц",
+    "установ",
+    "स्थापना",
+    "इंस्टॉल",
+    "इंस्टॉलेशन",
+    "安装",
+    "安裝",
+    "部署",
+  ]);
+  const namesScriptSurface = installationContainsAny(normalized, [
+    " sh ",
+    " bash",
+    "shell",
+    "powershell",
+    "pwsh",
+    "ps1",
+    "script",
+    "скрипт",
+    "скрипта",
+    "脚本",
+    "腳本",
+  ]);
+  return asksConversion && namesInstallSurface && namesScriptSurface;
+}
+
+function installationFencedBlocks(text) {
+  const blocks = [];
+  let currentInfo = null;
+  let currentBody = [];
+  for (const line of String(text || "").split(/\r?\n/)) {
+    const trimmed = line.trimStart();
+    if (trimmed.startsWith("```")) {
+      if (currentInfo !== null) {
+        blocks.push({
+          info: currentInfo,
+          body: currentBody.join("\n").replace(/\n+$/g, ""),
+        });
+        currentInfo = null;
+        currentBody = [];
+      } else {
+        currentInfo = trimmed.slice(3).trim().split(/\s+/, 1)[0].toLowerCase();
+      }
+      continue;
+    }
+    if (currentInfo !== null) currentBody.push(line);
+  }
+  return blocks;
+}
+
+function isInstallationShellFence(info) {
+  return ["bash", "sh", "shell", "zsh"].includes(String(info || ""));
+}
+
+function isInstallationPowerShellFence(info) {
+  return ["powershell", "pwsh", "ps1"].includes(String(info || ""));
+}
+
+function detectInstallationSourceFormat(prompt, normalized) {
+  const fences = installationFencedBlocks(prompt);
+  const explicitPowerShell = installationContainsAny(normalized, [
+    "this powershell",
+    "powershell installation script",
+    "powershell script back",
+    "ps1 script",
+  ]);
+  const explicitShell = installationContainsAny(normalized, [
+    "this shell",
+    "this bash",
+    "shell installation script",
+    "shell script back",
+    "bash script back",
+  ]);
+  const explicitMarkdown = installationContainsAny(normalized, [
+    "this readme",
+    "readme.md installation guide",
+    "readme installation guide",
+    "this markdown",
+    "markdown installation guide",
+  ]);
+  if (explicitPowerShell) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (explicitShell) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (explicitMarkdown) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  if (fences.some((block) => isInstallationPowerShellFence(block.info))) {
+    return INSTALL_FORMAT_POWERSHELL;
+  }
+  if (fences.some((block) => isInstallationShellFence(block.info))) {
+    return INSTALL_FORMAT_SHELL;
+  }
+  if (fences.some((block) => block.info === "markdown" || block.info === "md")) {
+    return INSTALL_FORMAT_MARKDOWN;
+  }
+  return INSTALL_FORMAT_MARKDOWN;
+}
+
+function pushInstallationTarget(targets, target) {
+  if (!targets.includes(target)) targets.push(target);
+}
+
+function detectInstallationTargetFormats(normalized, sourceFormat) {
+  const targets = [];
+  if (
+    installationContainsAny(normalized, [
+      "back to a readme",
+      "back to readme",
+      "to a readme",
+      "to readme",
+      "to markdown",
+      "markdown guide",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "both sh and powershell",
+      "both bash and powershell",
+      "sh and powershell",
+      "bash and powershell",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (
+    installationContainsAny(normalized, [
+      "into a sh script",
+      "to a sh script",
+      "into sh",
+      "to sh",
+      "into a shell script",
+      "to a shell script",
+      "into a bash script",
+      "to a bash script",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+  }
+  if (
+    sourceFormat !== INSTALL_FORMAT_POWERSHELL &&
+    installationContainsAny(normalized, [
+      "into a powershell script",
+      "to a powershell script",
+      "into powershell",
+      "to powershell",
+      "to ps1",
+      "into ps1",
+    ])
+  ) {
+    pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
+  }
+  if (targets.length === 0) {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+    } else {
+      pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+    }
+  }
+  return targets;
+}
+
+function extractInstallationSourceText(prompt, sourceFormat) {
+  const fences = installationFencedBlocks(prompt);
+  const matching = fences.find((block) => {
+    if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+      return block.info === "markdown" || block.info === "md";
+    }
+    if (sourceFormat === INSTALL_FORMAT_SHELL) return isInstallationShellFence(block.info);
+    return isInstallationPowerShellFence(block.info);
+  });
+  if (matching) return matching.body;
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) return String(prompt || "");
+  if (fences.length > 0) return fences[0].body;
+  return String(prompt || "");
+}
+
+function normalizeInstallationScriptLine(line) {
+  return String(line || "").trim().replace(/^\$ /, "").replace(/^PS> /, "").trim();
+}
+
+function shouldSkipInstallationScriptLine(line) {
+  return (
+    line === "" ||
+    line.startsWith("#!") ||
+    line.startsWith("#") ||
+    line === "set -e" ||
+    line === "set -eu" ||
+    line === "set -euo pipefail" ||
+    line === "$ErrorActionPreference = 'Stop'"
+  );
+}
+
+// Provenance of a candidate line. Mirrors the Rust `Provenance` enum: code
+// spans/fences are author-marked code (weak shape check), bare lines must prove
+// themselves structurally.
+const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
+const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
+
+const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "to",
+  "with",
+  "into",
+  "from",
+  "your",
+  "you",
+  "our",
+  "this",
+  "that",
+  "these",
+  "those",
+  "then",
+  "will",
+  "should",
+  "must",
+  "please",
+  "manually",
+]);
+
+// True when the token is shaped like an executable name or a path to one rather
+// than a natural-language word. Commands are lowercase by convention, so an
+// uppercase or non-ASCII lead immediately reads as prose.
+function isInstallationExecutableHead(token) {
+  if (!token) return false;
+  const first = token[0];
+  const startsOk = /[a-z0-9./]/.test(first);
+  if (!startsOk) return false;
+  return /^[a-z0-9./_+-]+$/.test(token);
+}
+
+function installationHasShellOperator(command) {
+  return (
+    command.includes(" | ") ||
+    command.includes("&&") ||
+    command.includes("||") ||
+    command.includes(" ; ")
+  );
+}
+
+function installationReadsAsProse(tokens) {
+  return tokens.some((token) => {
+    const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
+    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+  });
+}
+
+// Decide whether `command` is an install/deploy command by reasoning about its
+// structure and provenance instead of matching a fixed tool whitelist. Any
+// well-formed command line is accepted regardless of which tool it invokes,
+// while prose lines are rejected even when they mention a tool.
+function looksLikeInstallationCommand(command, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const trimmed = String(command || "").trim();
+  if (!trimmed) return false;
+
+  // A raw prose line that embeds a code span ("Run `npm install`.") is prose:
+  // the inline/fence collectors already lifted the real command out.
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE && trimmed.includes("`")) return false;
+
+  const tokens = trimmed.split(/\s+/);
+  const head = tokens[0].toLowerCase();
+  if (!isInstallationExecutableHead(head)) return false;
+
+  // Shell composition is unambiguous command shape regardless of provenance.
+  if (installationHasShellOperator(trimmed)) return true;
+
+  // An executable-looking head can still front a wrapped prose note; English
+  // function words betray it.
+  if (installationReadsAsProse(tokens)) return false;
+
+  if (provenance === INSTALL_PROVENANCE_BARE_LINE) {
+    return tokens.length >= 2 || head.includes("/");
+  }
+  return true;
+}
+
+function pushInstallationCommand(commands, candidate, provenance = INSTALL_PROVENANCE_CODE_SPAN) {
+  const command = String(candidate || "").trim();
+  if (!command || !looksLikeInstallationCommand(command, provenance)) return;
+  if (!commands.includes(command)) commands.push(command);
+}
+
+function collectInstallationInlineCommands(source, commands) {
+  const text = String(source || "");
+  let inTick = false;
+  let candidate = "";
+  for (const character of text) {
+    if (character === "`") {
+      if (inTick) {
+        // Inline code spans are author-marked code: trust the shape.
+        pushInstallationCommand(commands, candidate.trim(), INSTALL_PROVENANCE_CODE_SPAN);
+        candidate = "";
+        inTick = false;
+      } else {
+        inTick = true;
+      }
+      continue;
+    }
+    if (inTick) candidate += character;
+  }
+}
+
+function collectInstallationBulletCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    let trimmed = line.trim();
+    trimmed = trimmed.replace(/^[-*+\d]+[.) ]*/, "").trim();
+    if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length > 2) {
+      // The whole bullet is a single code span: code provenance.
+      pushInstallationCommand(commands, trimmed.slice(1, -1), INSTALL_PROVENANCE_CODE_SPAN);
+    } else {
+      // Raw document line with no code markup: prove it structurally.
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_BARE_LINE);
+    }
+  }
+}
+
+function collectInstallationScriptCommands(source, commands) {
+  for (const line of String(source || "").split(/\r?\n/)) {
+    const trimmed = normalizeInstallationScriptLine(line);
+    // Lines inside a shell/PowerShell fence are code by construction.
+    if (!shouldSkipInstallationScriptLine(trimmed))
+      pushInstallationCommand(commands, trimmed, INSTALL_PROVENANCE_CODE_SPAN);
+  }
+}
+
+// Translate a single verb token into an action category. Keyed on the verb
+// itself (not the surrounding tool), so the same lexicon serves every program.
+// Returns the marker "run" for generic launcher verbs so the caller can prefer
+// a more concrete object.
+function classifyInstallationVerb(token) {
+  switch (token) {
+    case "clone":
+      return "Clone the repository";
+    case "cd":
+    case "chdir":
+    case "pushd":
+      return "Enter the project directory";
+    case "install":
+    case "add":
+    case "ci":
+    case "restore":
+    case "sync":
+    case "bootstrap":
+    case "vendor":
+    case "i":
+      return "Install dependencies";
+    case "test":
+    case "check":
+    case "lint":
+    case "doctor":
+    case "verify":
+    case "validate":
+    case "version":
+    case "pytest":
+    case "jest":
+    case "mocha":
+    case "vitest":
+    case "tox":
+      return "Run the verification command";
+    case "build":
+    case "compile":
+    case "configure":
+    case "make":
+    case "package":
+    case "dist":
+    case "bundle":
+    case "cmake":
+    case "gradle":
+    case "ninja":
+    case "msbuild":
+      return "Build the project";
+    case "run":
+    case "serve":
+    case "start":
+    case "up":
+    case "exec":
+    case "dev":
+    case "launch":
+    case "watch":
+      return "run";
+    default:
+      return null;
+  }
+}
+
+// Structural view of a command: the program (last path segment of the
+// executable), the ordered non-flag argument tokens, and whether a version/help
+// probe flag is present.
+function parseInstallationCommand(command) {
+  let tokens = String(command || "").trim().split(/\s+/).filter(Boolean);
+  while (tokens.length && (tokens[0] === "sudo" || tokens[0] === "env" || tokens[0] === "command")) {
+    tokens = tokens.slice(1);
+  }
+  const rawProgram = tokens.shift() || "";
+  let program = rawProgram.split("/").pop().toLowerCase();
+
+  let rest = tokens;
+  if ((program === "python" || program === "python3" || program === "py") && rest[0] === "-m" && rest[1]) {
+    program = rest[1].toLowerCase();
+    rest = rest.slice(2);
+  }
+
+  const args = [];
+  let isProbe = false;
+  for (const token of rest) {
+    const bare = token.replace(/^['"]+/, "").replace(/['"]+$/, "");
+    if (["--version", "-v", "-V", "--help", "-h"].includes(bare)) {
+      isProbe = true;
+      continue;
+    }
+    if (bare.startsWith("-")) continue;
+    args.push(bare.toLowerCase());
+  }
+  return { program, args, isProbe };
+}
+
+// Derive a human-readable step description from the parsed verb/object of the
+// command rather than matching the whole string against a substring table.
+function describeInstallationCommand(command) {
+  const parsed = parseInstallationCommand(command);
+  if (parsed.isProbe) return "Verify the installation";
+
+  let genericRun = false;
+  for (const argument of parsed.args) {
+    const action = classifyInstallationVerb(argument);
+    if (action === "run") {
+      genericRun = true;
+    } else if (action) {
+      return action;
+    }
+  }
+  const programAction = classifyInstallationVerb(parsed.program);
+  if (programAction === "run") {
+    genericRun = true;
+  } else if (programAction) {
+    return programAction;
+  }
+  if (genericRun) return "Start the application";
+
+  // Fall back to a description synthesized from the program/verb so unseen but
+  // well-formed commands still read meaningfully.
+  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
+  return `Run ${parsed.program}`;
+}
+
+function extractInstallationSteps(source, sourceFormat) {
+  const commands = [];
+  if (sourceFormat === INSTALL_FORMAT_MARKDOWN) {
+    for (const block of installationFencedBlocks(source)) {
+      if (isInstallationShellFence(block.info) || isInstallationPowerShellFence(block.info)) {
+        collectInstallationScriptCommands(block.body, commands);
+      }
+    }
+    collectInstallationInlineCommands(source, commands);
+    collectInstallationBulletCommands(source, commands);
+  } else {
+    collectInstallationScriptCommands(source, commands);
+  }
+  return commands.map((command, index) => ({
+    id: `S${index + 1}`,
+    description: describeInstallationCommand(command),
+    command,
+  }));
+}
+
+function extractInstallationProject(prompt) {
+  const source = String(prompt || "");
+  const lower = source.toLowerCase();
+  const marker = " for ";
+  const start = lower.indexOf(marker);
+  if (start < 0) return "the project";
+  const tail = source.slice(start + marker.length);
+  const stopMatch = tail.match(/[\s,:;\n]/);
+  const stop = stopMatch ? stopMatch.index : tail.length;
+  const project = tail.slice(0, stop).trim();
+  return project.includes("/") || project.includes("-") ? project : "the project";
+}
+
+function installationMeaningKey(conversion) {
+  const parts = [`source=${conversion.sourceFormat}`, `project=${conversion.project}`];
+  for (const target of conversion.targetFormats) parts.push(`target=${target}`);
+  for (const step of conversion.steps) parts.push(`command=${step.command}`);
+  return parts.join(";");
+}
+
+function installationEvidence(conversion) {
+  const evidence = [
+    "formalization:install_steps_ir",
+    `meaning:${stableBehaviorRuleId("installation_conversion_request", installationMeaningKey(conversion))}`,
+    "algorithm_construction:meta_algorithm:problem_class_to_shared_ir_to_renderers_to_verification",
+    `installation_conversion:source_format:${conversion.sourceFormat}`,
+    `installation_conversion:project:${conversion.project}`,
+  ];
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    evidence.push(`algorithm_construction:stage:${stage.id}:output=${stage.output}:verifier=${stage.verifier}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    evidence.push(`algorithm_construction:coding_surface:${surface.slug}:projection=${surface.projection}`);
+  }
+  for (const target of conversion.targetFormats) {
+    evidence.push(`installation_conversion:target_format:${target}`);
+  }
+  for (const step of conversion.steps) {
+    evidence.push(`installation_conversion:step:${step.id}:${step.command}`);
+  }
+  evidence.push("installation_conversion:validation:ordered_commands_preserved");
+  return evidence;
+}
+
+function renderInstallationLino(conversion) {
+  const lines = ["installation_conversion_request"];
+  lines.push(`  source_format ${conversion.sourceFormat}`);
+  for (const target of conversion.targetFormats) lines.push(`  target_format ${target}`);
+  lines.push(`  project ${linoString(conversion.project)}`);
+  lines.push(`  validation ${linoString("ordered_commands_preserved")}`);
+  lines.push(`  validation ${linoString("single_ir_renders_markdown_shell_powershell")}`);
+  lines.push(
+    `  meta_algorithm ${linoString("problem_class_to_shared_ir_to_renderers_to_verification")}`,
+  );
+  for (const stage of INSTALL_ALGORITHM_CONSTRUCTION_STAGES) {
+    lines.push(`  construction_stage ${linoString(stage.id)}`);
+    lines.push(`  stage_output ${linoString(stage.output)}`);
+    lines.push(`  stage_verifier ${linoString(stage.verifier)}`);
+  }
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`  coding_surface ${linoString(surface.slug)}`);
+    lines.push(`  surface_projection ${linoString(surface.projection)}`);
+  }
+  for (const step of conversion.steps) {
+    lines.push(`  step ${linoString(step.id)}`);
+    lines.push(`  description ${linoString(step.description)}`);
+    lines.push(`  command ${linoString(step.command)}`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationMetaAlgorithm() {
+  const lines = ["Meta algorithm for constructing conversion algorithms:"];
+  INSTALL_ALGORITHM_CONSTRUCTION_STAGES.forEach((stage, index) => {
+    lines.push(
+      `${index + 1}. ${stage.id} -> ${stage.output}; verification fixture: ${stage.verifier}.`,
+    );
+  });
+  lines.push("");
+  lines.push("Existing coding solutions producible by the same meta algorithm:");
+  for (const surface of INSTALL_CODING_SURFACE_PROJECTIONS) {
+    lines.push(`- ${surface.slug}: ${surface.projection}.`);
+  }
+  return lines.join("\n");
+}
+
+function renderInstallationMarkdownGuide(conversion) {
+  const lines = ["README.md installation guide:", "", "## Installation", ""];
+  conversion.steps.forEach((step, index) => {
+    lines.push(`${index + 1}. ${step.description}.`);
+    lines.push("");
+    lines.push("   ```sh");
+    lines.push(`   ${step.command}`);
+    lines.push("   ```");
+  });
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationShellScript(conversion) {
+  const lines = ["Bash script:", "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationPowerShellScript(conversion) {
+  const lines = ["PowerShell script:", "```powershell", "$ErrorActionPreference = 'Stop'", ""];
+  for (const step of conversion.steps) {
+    lines.push(`# ${step.description}`);
+    lines.push(step.command);
+  }
+  lines.push("```");
+  return lines.join("\n") + "\n";
+}
+
+function renderInstallationConversion(conversion) {
+  const lines = [
+    `Converted installation instructions for ${conversion.project}.`,
+    "",
+    "Formalized meaning:",
+    "```lino",
+    renderInstallationLino(conversion).trimEnd(),
+    "```",
+    "",
+    "Conversion algorithm:",
+    "1. Detect the source surface and requested target surface(s).",
+    "2. Extract command-like install/deploy steps in original order.",
+    "3. Render every target from the same install-step IR.",
+    "4. Preserve commands verbatim so the conversion can round-trip.",
+    "",
+    renderInstallationMetaAlgorithm(),
+  ];
+  for (const target of conversion.targetFormats) {
+    lines.push("");
+    if (target === INSTALL_FORMAT_MARKDOWN) {
+      lines.push(renderInstallationMarkdownGuide(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_SHELL) {
+      lines.push(renderInstallationShellScript(conversion).trimEnd());
+    } else if (target === INSTALL_FORMAT_POWERSHELL) {
+      lines.push(renderInstallationPowerShellScript(conversion).trimEnd());
+    }
+  }
+  return lines.join("\n").trimEnd();
+}
+
+function tryInstallationConversion(prompt, normalized) {
+  if (!isInstallationConversionRequest(normalized)) return null;
+  const sourceFormat = detectInstallationSourceFormat(prompt, normalized);
+  const targetFormats = detectInstallationTargetFormats(normalized, sourceFormat);
+  const sourceText = extractInstallationSourceText(prompt, sourceFormat);
+  let steps = extractInstallationSteps(sourceText, sourceFormat);
+  if (steps.length === 0 && sourceFormat === INSTALL_FORMAT_MARKDOWN && sourceText !== String(prompt || "")) {
+    steps = extractInstallationSteps(prompt, sourceFormat);
+  }
+  if (steps.length === 0) return null;
+  const conversion = {
+    sourceFormat,
+    targetFormats,
+    project: extractInstallationProject(prompt),
+    steps,
+  };
+  return {
+    intent: "installation_conversion",
+    content: renderInstallationConversion(conversion),
+    confidence: 0.84,
+    evidence: installationEvidence(conversion),
+  };
+}
+
 function trySoftwareProjectRequest(prompt, history = []) {
   const normalized = normalizePrompt(prompt);
   if (isSoftwareApprovalPrompt(normalized)) {
@@ -13379,9 +15018,8 @@ const WRITE_PROGRAM_TASKS = {
   },
   list_files: {
     label: "list files in the current directory",
-    // Verified output for the documented sample directory containing exactly
-    // `Cargo.toml`, `README.md`, and `main.rs`. Every template sorts names in
-    // byte order, so the output is identical across languages (issue #312).
+    // Fallback output for the Rust-flavoured sample. Rendered answers resolve
+    // list-file samples from each language's `saveAs` name (issue #440).
     output: "Cargo.toml\nREADME.md\nmain.rs",
   },
   list_files_arg: {
@@ -14501,21 +16139,30 @@ const OPERATION_VOCABULARY_LINO = [
   '      phrase "sort the results in reverse order"',
   '      phrase "reverse order"',
   '      phrase "descending order"',
+  '      phrase "invert the sort"',
+  '      phrase "invert the sorting"',
+  '      phrase "invert sort"',
   "      combo sort+reverse",
   "      combo sort+descending",
+  "      combo invert+sort",
   "    language ru",
   '      phrase "в обратном порядке"',
   "      combo сортиров+обратн",
   "      combo отсортир+обратн",
+  "      combo инверс+сортиров",
+  "      combo инверт+сортиров",
   "    language hi",
   '      phrase "उल्टे क्रम"',
   "      combo क्रमबद्ध+उल्टे",
   "      combo क्रमबद्ध+उल्टा",
+  "      combo उलट+क्रम",
   "    language zh",
   "      phrase 相反顺序排序",
   "      combo 排序+相反",
   "      combo 排序+反向",
   "      combo 排序+倒序",
+  "      combo 反转+排序",
+  "      combo 颠倒+排序",
   "  operation cancel_reverse_sort",
   "    inverse reverse_sort",
   "    language en",
@@ -15759,6 +17406,12 @@ const MEANINGS_LINO = [
   "      surface",
   "        text метра",
   "      surface",
+  "        text метру",
+  "      surface",
+  "        text метром",
+  "      surface",
+  "        text метре",
+  "      surface",
   "        text метров",
   "    lexeme hi",
   "      surface",
@@ -15989,6 +17642,16 @@ const MEANINGS_LINO = [
   "        text кг",
   "      surface",
   "        text килограмм",
+  "      surface",
+  "        text килограмма",
+  "      surface",
+  "        text килограмму",
+  "      surface",
+  "        text килограммом",
+  "      surface",
+  "        text килограмме",
+  "      surface",
+  "        text килограммов",
   "    lexeme hi",
   "      surface",
   "        text किलोग्राम",
@@ -16011,6 +17674,16 @@ const MEANINGS_LINO = [
   "    lexeme ru",
   "      surface",
   "        text грамм",
+  "      surface",
+  "        text грамма",
+  "      surface",
+  "        text грамму",
+  "      surface",
+  "        text граммом",
+  "      surface",
+  "        text грамме",
+  "      surface",
+  "        text граммов",
   "    lexeme hi",
   "      surface",
   "        text ग्राम",
@@ -16654,6 +18327,48 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 今天",
+  "  calendar_tomorrow",
+  "    grounded-in Q1209716",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  "        text tomorrow",
+  "      surface",
+  '        text "the next day"',
+  "    lexeme ru",
+  "      surface",
+  "        text завтра",
+  "      surface",
+  '        text "на завтра"',
+  "    lexeme hi",
+  "      surface",
+  "        text कल",
+  "      surface",
+  "        text आनेवाला कल",
+  "    lexeme zh",
+  "      surface",
+  "        text 明天",
+  "      surface",
+  "        text 明日",
+  "  calendar_day_after_tomorrow",
+  "    grounded-in Q1036448",
+  "    defined-by calendar_day",
+  "    role calendar_relative_date",
+  "    lexeme en",
+  "      surface",
+  '        text "day after tomorrow"',
+  "      surface",
+  '        text "the day after tomorrow"',
+  "    lexeme ru",
+  "      surface",
+  "        text послезавтра",
+  "    lexeme hi",
+  "      surface",
+  "        text परसों",
+  "    lexeme zh",
+  "      surface",
+  "        text 后天",
   "  calendar_interrogative",
   "    defined-by calendar_day",
   "    role calendar_question",
@@ -16697,6 +18412,160 @@ const MEANINGS_LINO = [
   "        text 告诉",
   "      surface",
   "        text 显示",
+  "  calendar_schedule_action",
+  "    defined-by calendar_day",
+  "    role calendar_schedule_action",
+  "    lexeme en",
+  "      surface",
+  "        text schedule",
+  "      surface",
+  '        text "schedule me"',
+  "      surface",
+  '        text "book"',
+  "      surface",
+  '        text "book on the"',
+  "      surface",
+  '        text "put on the calendar"',
+  "      surface",
+  '        text "put on my calendar"',
+  "      surface",
+  '        text "add to the calendar"',
+  "      surface",
+  '        text "add to my calendar"',
+  "    lexeme ru",
+  "      surface",
+  "        text забей",
+  "      surface",
+  '        text "забей мне"',
+  "      surface",
+  "        text поставь",
+  "      surface",
+  '        text "поставь мне"',
+  "      surface",
+  "        text поставить",
+  "      surface",
+  '        text "поставить мне"',
+  "      surface",
+  "        text создай",
+  "      surface",
+  '        text "создай событие"',
+  "      surface",
+  "        text добавь",
+  "      surface",
+  '        text "добавь в календарь"',
+  "      surface",
+  '        text "на встречу"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शेड्यूल करें"',
+  "      surface",
+  '        text "कैलेंडर में जोड़ें"',
+  "    lexeme zh",
+  "      surface",
+  "        text 安排",
+  "      surface",
+  "        text 添加到日历",
+  "  calendar_event",
+  "    defined-by calendar_day",
+  "    role calendar_event",
+  "    lexeme en",
+  "      surface",
+  '        text "meeting"',
+  "      surface",
+  "        text call",
+  "      surface",
+  "        text event",
+  "    lexeme ru",
+  "      surface",
+  "        text встреча",
+  "      surface",
+  "        text встречи",
+  "      surface",
+  "        text встречу",
+  "      surface",
+  "        text событие",
+  "      surface",
+  "        text события",
+  "      surface",
+  "        text созвон",
+  "      surface",
+  "        text созвона",
+  "      surface",
+  "        text созвоны",
+  "      surface",
+  "        text созвону",
+  "      surface",
+  "        text звонок",
+  "      surface",
+  "        text звонка",
+  "    lexeme hi",
+  "      surface",
+  "        text मीटिंग",
+  "      surface",
+  '        text "घटना"',
+  "    lexeme zh",
+  "      surface",
+  "        text 会议",
+  "      surface",
+  "        text 事件",
+  "      surface",
+  "        text 通话",
+  "  calendar_clock_time",
+  "    defined-by calendar_day",
+  "    role calendar_time",
+  "    lexeme en",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "5 pm"',
+  "      surface",
+  '        text "5pm"',
+  "      surface",
+  '        text "at 17:00"',
+  "    lexeme ru",
+  "      surface",
+  '        text "17:00"',
+  "      surface",
+  '        text "в 17:00"',
+  "      surface",
+  '        text "17.00"',
+  "      surface",
+  "        text вечером",
+  "      surface",
+  '        text "в 17"',
+  "    lexeme hi",
+  "      surface",
+  '        text "शाम 5 बजे"',
+  "    lexeme zh",
+  "      surface",
+  "        text 下午5点",
+  "  calendar_timezone_alias",
+  "    defined-by calendar_day",
+  "    role calendar_timezone_alias",
+  "    lexeme ru",
+  "      surface",
+  '        text "по грузии"',
+  "      surface",
+  '        text "по тбилиси"',
+  "      surface",
+  '        text "грузинское время"',
+  "    lexeme en",
+  "      surface",
+  '        text "tbilisi time"',
+  "      surface",
+  '        text "georgia time"',
+  "      surface",
+  '        text "Asia/Tbilisi"',
+  "    lexeme hi",
+  "      surface",
+  '        text "जॉर्जिया समय"',
+  "      surface",
+  '        text "त्बिलिसी समय"',
+  "    lexeme zh",
+  "      surface",
+  "        text 格鲁吉亚时间",
+  "      surface",
+  "        text 第比利斯时间",
   "meanings",
   "  money",
   "    grounded-in Q1368",
@@ -20430,6 +22299,96 @@ const MEANINGS_LINO = [
   '        text "… 一步一步写"',
   "      surface",
   '        text "… 请"',
+  "  procedural_elaboration",
+  "    defined-by inquiry",
+  "    defined-by procedural_request",
+  "    role procedural_elaboration",
+  "    lexeme en",
+  "      surface",
+  '        text "specific instructions"',
+  "      surface",
+  '        text "specific steps"',
+  "      surface",
+  '        text "detailed instructions"',
+  "      surface",
+  '        text "detailed steps"',
+  "      surface",
+  '        text "exact steps"',
+  "      surface",
+  '        text "exact instructions"',
+  "      surface",
+  '        text "the steps"',
+  "      surface",
+  '        text "step by step"',
+  "      surface",
+  '        text "step-by-step"',
+  "      surface",
+  '        text "more specific"',
+  "      surface",
+  '        text "more detail"',
+  "      surface",
+  '        text "more details"',
+  "      surface",
+  '        text "in detail"',
+  "      surface",
+  '        text "elaborate"',
+  "    lexeme ru",
+  "      surface",
+  '        text "конкретные инструкции"',
+  "      surface",
+  '        text "конкретные шаги"',
+  "      surface",
+  '        text "подробные инструкции"',
+  "      surface",
+  '        text "подробные шаги"',
+  "      surface",
+  '        text "точные шаги"',
+  "      surface",
+  '        text "пошагово"',
+  "      surface",
+  '        text "по шагам"',
+  "      surface",
+  '        text "поподробнее"',
+  "      surface",
+  '        text "подробнее"',
+  "      surface",
+  '        text "более конкретно"',
+  "      surface",
+  '        text "конкретнее"',
+  "    lexeme hi",
+  "      surface",
+  '        text "विशिष्ट निर्देश"',
+  "      surface",
+  '        text "विस्तृत निर्देश"',
+  "      surface",
+  '        text "विस्तृत चरण"',
+  "      surface",
+  '        text "सटीक चरण"',
+  "      surface",
+  '        text "चरण दर चरण"',
+  "      surface",
+  '        text "कदम दर कदम"',
+  "      surface",
+  '        text "अधिक विस्तार"',
+  "      surface",
+  '        text "और विस्तार"',
+  "    lexeme zh",
+  "      surface",
+  "        text 具体说明",
+  "      surface",
+  "        text 具体步骤",
+  "      surface",
+  "        text 详细步骤",
+  "      surface",
+  "        text 详细说明",
+  "      surface",
+  "        text 确切步骤",
+  "      surface",
+  "        text 一步一步",
+  "      surface",
+  "        text 更具体",
+  "      surface",
+  "        text 更详细",
   "  common_typo",
   "    defined-by relation",
   "    role common_typo",
@@ -23120,6 +25079,8 @@ const MEANINGS_LINO = [
   "      surface",
   "        text помидор",
   "      surface",
+  "        text помидоры",
+  "      surface",
   "        text томат",
   "    lexeme hi",
   "      surface",
@@ -25551,6 +27512,23 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 决定论",
+  "  metatheory",
+  "    defined-by concept",
+  "    role proof_concept_metatheory",
+  "    lexeme en",
+  "      surface",
+  "        text metatheory",
+  "      surface",
+  "        text meta-theory",
+  "    lexeme ru",
+  "      surface",
+  "        text метатеория",
+  "    lexeme hi",
+  "      surface",
+  "        text परासिद्धांत",
+  "    lexeme zh",
+  "      surface",
+  "        text 元理论",
   "meanings",
   "  physical_action_query",
   "    defined-by inquiry",
@@ -28477,6 +30455,13 @@ const ROLE_PROCEDURAL_REQUEST = "procedural_request";
 // these forms by meaning instead of hardcoding per-language modifier and typo
 // arrays.
 const ROLE_PROCEDURAL_TASK_MODIFIER = "procedural_task_modifier";
+// Issue #444: a follow-up that asks for the concrete steps of an active
+// procedure ("give me specific instructions", "step by step", "дай конкретные
+// инструкции", "具体步骤", …). Its surfaces live in data/seed/meanings-how.lino
+// (embedded in MEANINGS_LINO above); tryProceduralHowToFollowup asks the lexicon
+// for this role by meaning instead of hardcoding per-language phrase arrays.
+// Mirrors ROLE_PROCEDURAL_ELABORATION in src/seed/roles/intent.rs.
+const ROLE_PROCEDURAL_ELABORATION = "procedural_elaboration";
 const ROLE_COMMON_TYPO = "common_typo";
 // Issue #386 mechanism-subject cleanup roles — mirror the
 // ROLE_MECHANISM_PREDICATE / ROLE_DETAIL_MODIFIER / ROLE_NON_REFERENTIAL_SUBJECT
@@ -28708,6 +30693,18 @@ const ROLE_CALENDAR_TODAY = "calendar_today";
 const ROLE_CALENDAR_DAY_REFERENCE = "calendar_day_reference";
 const ROLE_CALENDAR_QUESTION = "calendar_question";
 
+// Issue #404: new calendar create/schedule roles (mirror src/solver_handlers/calendar.rs
+// + data/seed/meanings-calendar.lino). Use the same wordsForRole + containsCalendarTerm
+// pattern as the existing weekday helpers.
+const ROLE_CALENDAR_SCHEDULE_ACTION = "calendar_schedule_action";
+const ROLE_CALENDAR_EVENT = "calendar_event";
+const ROLE_CALENDAR_TIME = "calendar_time";
+const ROLE_CALENDAR_TIMEZONE_ALIAS = "calendar_timezone_alias";
+// Issue #435: relative-date words ("завтра"/"tomorrow"/"послезавтра"/…) that
+// anchor a scheduled event to a day offset from today. Mirrors
+// ROLE_CALENDAR_RELATIVE_DATE in src/solver_handlers/calendar.rs.
+const ROLE_CALENDAR_RELATIVE_DATE = "calendar_relative_date";
+
 // Every meaning carrying `role`, in lexicon (declaration) order. Mirrors
 // Lexicon::meanings_with_role in src/seed/meanings.rs.
 function meaningsWithRole(role) {
@@ -28731,6 +30728,93 @@ function roleWordForms(role) {
 // src/seed/meanings.rs.
 function findMeaning(slug) {
   return meaningLexicon().find((meaning) => meaning.slug === slug) || null;
+}
+
+function wordInLanguage(meaning, language) {
+  const lexeme = (meaning.lexemes || []).find((candidate) => candidate.language === language);
+  return lexeme && lexeme.words.length > 0 ? lexeme.words[0] : null;
+}
+
+function dimensionLabelForUnit(unit) {
+  for (const slug of unit.definedBy || []) {
+    const dimension = findMeaning(slug);
+    if (!dimension || !dimension.roles.includes(ROLE_PHYSICAL_DIMENSION)) continue;
+    return wordInLanguage(dimension, "en") || dimension.words[0] || null;
+  }
+  return null;
+}
+
+function isAlphabeticCharacter(ch) {
+  return !!ch && /\p{Alphabetic}/u.test(ch);
+}
+
+// Mirrors contains_unit_word in src/solver_handler_units.rs: ASCII and CJK unit
+// surfaces need alphabetic boundaries so "gram" inside "program" and "克" inside
+// an unrelated CJK compound do not count, while inflected alphabetic scripts can
+// still match suffix forms such as Russian "килограмм" in "килограмме".
+function containsUnitWord(normalized, unit) {
+  if (!unit) return false;
+  const text = String(normalized || "");
+  if (!/[^\x00-\x7F]/.test(unit) || containsCjk(unit)) {
+    let searchFrom = 0;
+    while (searchFrom <= text.length) {
+      const start = text.indexOf(unit, searchFrom);
+      if (start < 0) return false;
+      const end = start + unit.length;
+      const before = Array.from(text.slice(0, start)).pop() || "";
+      const after = Array.from(text.slice(end))[0] || "";
+      if (!isAlphabeticCharacter(before) && !isAlphabeticCharacter(after)) {
+        return true;
+      }
+      searchFrom = end;
+    }
+    return false;
+  }
+  return text.includes(unit);
+}
+
+function detectIncompatibleUnitPair(normalized) {
+  const found = [];
+  for (const unit of meaningsWithRole(ROLE_MEASUREMENT_UNIT)) {
+    const dimension = dimensionLabelForUnit(unit);
+    if (!dimension || found.some((entry) => entry.dimension === dimension)) {
+      continue;
+    }
+    const matched = unit.words.find((word) => containsUnitWord(normalized, word));
+    if (matched) {
+      found.push({ unit: matched, dimension });
+    }
+  }
+  if (found.length < 2) return null;
+  return [found[0], found[1]];
+}
+
+function tryIncompatibleUnits(prompt, normalized) {
+  const pair = detectIncompatibleUnitPair(normalized);
+  if (!pair) return null;
+  const [a, b] = pair;
+  const content =
+    `${a.unit} measures ${a.dimension}; ${b.unit} measures ${b.dimension}. ` +
+    "These are different physical dimensions and cannot be converted into each other. " +
+    "The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+  return {
+    intent: "unit_incompatibility",
+    content,
+    confidence: 1.0,
+    evidence: [
+      `unit_incompatibility:${a.unit}:${a.dimension}:vs:${b.unit}:${b.dimension}`,
+      "response:unit_incompatibility",
+    ],
+    trace: [
+      `unit_incompatibility:${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+    ],
+    steps: [
+      {
+        step: "unit_incompatibility",
+        detail: `${a.unit}:${a.dimension} vs ${b.unit}:${b.dimension}`,
+      },
+    ],
+  };
 }
 
 // Distinct surface words (across all languages) carried by the meaning `slug`,
@@ -29543,13 +31627,17 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(no output)",
     sandboxFailed: (message) => `Execution status: failed in sandbox - ${message}.`,
     notRun: (language, reason) =>
-      `Execution status: not run - ${reason}. Copy the snippet into a ${language} environment to verify.`,
+      `Execution status: not run - ${reason}.`,
+    copyInstruction: (language) =>
+      `Copy the snippet into a ${language} environment to verify.`,
     noFilesystem: (language) =>
       `the browser sandbox has no filesystem access for this ${language} program`,
     noToolchain: (language) => `the browser sandbox cannot invoke a ${language} toolchain`,
-    sampleDirectory:
-      "The output depends on the directory; for a sample directory holding " +
-      "exactly `Cargo.toml`, `README.md`, and `main.rs` it is:",
+    sampleDirectory: (files) =>
+      `The sample output below is for a clean directory containing exactly ${markdownFileList(
+        files,
+        "and",
+      )} and no extra files:`,
     expectedOutput: "Expected output after verification:",
   },
   ru: {
@@ -29563,14 +31651,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(нет вывода)",
     sandboxFailed: (message) => `Статус выполнения: сбой в песочнице - ${message}.`,
     notRun: (language, reason) =>
-      `Статус выполнения: не запущено - ${reason}. Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
+      `Статус выполнения: не запущено - ${reason}.`,
+    copyInstruction: (language) =>
+      `Скопируйте фрагмент в среду ${language}, чтобы проверить.`,
     noFilesystem: (language) =>
       `у браузерной песочницы нет доступа к файловой системе для этой программы на ${language}`,
     noToolchain: (language) =>
       `браузерная песочница не может вызвать инструментарий ${language}`,
-    sampleDirectory:
-      "Вывод зависит от каталога; для образца каталога, содержащего ровно " +
-      "`Cargo.toml`, `README.md` и `main.rs`, он такой:",
+    sampleDirectory: (files) =>
+      `Ниже показан вывод для чистого каталога, содержащего ровно ${markdownFileList(
+        files,
+        "и",
+      )}, и никаких других файлов:`,
     expectedOutput: "Ожидаемый вывод после проверки:",
   },
   hi: {
@@ -29584,14 +31676,18 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "(कोई आउटपुट नहीं)",
     sandboxFailed: (message) => `निष्पादन स्थिति: सैंडबॉक्स में विफल - ${message}.`,
     notRun: (language, reason) =>
-      `निष्पादन स्थिति: नहीं चला - ${reason}. सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
+      `निष्पादन स्थिति: नहीं चला - ${reason}.`,
+    copyInstruction: (language) =>
+      `सत्यापित करने के लिए स्निपेट को ${language} वातावरण में कॉपी करें।`,
     noFilesystem: (language) =>
       `इस ${language} प्रोग्राम के लिए ब्राउज़र सैंडबॉक्स में फ़ाइल सिस्टम तक पहुँच नहीं है`,
     noToolchain: (language) =>
       `ब्राउज़र सैंडबॉक्स ${language} टूलचेन को आमंत्रित नहीं कर सकता`,
-    sampleDirectory:
-      "आउटपुट निर्देशिका पर निर्भर करता है; ठीक `Cargo.toml`, `README.md` और " +
-      "`main.rs` रखने वाली एक नमूना निर्देशिका के लिए यह है:",
+    sampleDirectory: (files) =>
+      `नीचे दिया गया नमूना आउटपुट ऐसी साफ डायरेक्टरी के लिए है जिसमें ठीक ${markdownFileList(
+        files,
+        "और",
+      )} हों और कोई अतिरिक्त फाइल न हो:`,
     expectedOutput: "सत्यापन के बाद अपेक्षित आउटपुट:",
   },
   zh: {
@@ -29604,17 +31700,49 @@ const WRITE_PROGRAM_I18N = {
     noOutput: "（无输出）",
     sandboxFailed: (message) => `执行状态：沙箱中失败 - ${message}。`,
     notRun: (language, reason) =>
-      `执行状态：未运行 - ${reason}。将代码片段复制到 ${language} 环境中以验证。`,
+      `执行状态：未运行 - ${reason}。`,
+    copyInstruction: (language) => `将代码片段复制到 ${language} 环境中以验证。`,
     noFilesystem: (language) => `浏览器沙箱无法为此 ${language} 程序访问文件系统`,
     noToolchain: (language) => `浏览器沙箱无法调用 ${language} 工具链`,
-    sampleDirectory:
-      "输出取决于目录；对于恰好包含 `Cargo.toml`、`README.md` 和 `main.rs` 的示例目录，它是：",
+    sampleDirectory: (files) =>
+      `下面的示例输出适用于一个只包含 ${markdownFileList(files, "和")} 且没有其他文件的干净目录：`,
     expectedOutput: "验证后的预期输出：",
   },
 };
 
 function writeProgramStrings(language) {
   return WRITE_PROGRAM_I18N[language] || WRITE_PROGRAM_I18N.en;
+}
+
+function markdownFileList(files, conjunction) {
+  const quoted = files.map((file) => `\`${file}\``);
+  if (quoted.length <= 1) return quoted.join("");
+  return `${quoted.slice(0, -1).join(", ")} ${conjunction} ${quoted[quoted.length - 1]}`;
+}
+
+function listFilesTaskDirection(task) {
+  switch (task) {
+    case "list_files":
+    case "list_files_arg":
+      return "ascending";
+    case "list_files_reverse_sort":
+    case "list_files_arg_reverse_sort":
+      return "descending";
+    default:
+      return "";
+  }
+}
+
+function listFilesSampleFiles(languageInfo) {
+  return ["README.md", "data.txt", languageInfo.saveAs].sort();
+}
+
+function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
+  const direction = listFilesTaskDirection(task);
+  if (!direction) return taskInfo.output;
+  const files = listFilesSampleFiles(languageInfo);
+  if (direction === "descending") files.reverse();
+  return files.join("\n");
 }
 
 function writeProgramExecutionLines(language, task, code, output, strings) {
@@ -29643,14 +31771,9 @@ function writeProgramExecutionLines(language, task, code, output, strings) {
   }
   const reason =
     language === "javascript" ? i18n.noFilesystem(language) : i18n.noToolchain(language);
-  const lines = [i18n.notRun(language, reason)];
-  if (
-    task === "list_files" ||
-    task === "list_files_arg" ||
-    task === "list_files_reverse_sort" ||
-    task === "list_files_arg_reverse_sort"
-  ) {
-    lines.push(i18n.sampleDirectory);
+  const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
+  if (listFilesTaskDirection(task)) {
+    lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));
   } else {
     lines.push(i18n.expectedOutput);
   }
@@ -31183,6 +33306,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   }
   const languageInfo = WRITE_PROGRAM_LANGUAGES[language];
   const taskInfo = WRITE_PROGRAM_TASKS[task];
+  const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
@@ -31195,7 +33319,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   lines.push("```");
   lines.push("");
   lines.push(
-    ...writeProgramExecutionLines(language, task, template, taskInfo.output, i18n),
+    ...writeProgramExecutionLines(language, task, template, expectedOutput, i18n),
   );
   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
   // the code works, then step-by-step instructions for testing it. Follow-up
@@ -32561,7 +34685,17 @@ function tryDocsMethodExplanation(prompt, language) {
   };
 }
 
-async function tryProceduralHowTo(prompt, language) {
+// Issue #444: external *trusted* services are opt-out. A preference value of
+// exactly `false` disables the service; a missing/undefined value keeps it
+// enabled, so the assistant's default behavior is unchanged unless the user opts
+// out in settings. The `key` arguments mirror the `settings_key` recorded in
+// data/seed/sources-registry.lino and the EXTERNAL_TRUSTED_SERVICES catalog in
+// src/web/app.js, keeping the registry the single source of truth.
+function externalServiceEnabled(preferences, key) {
+  return !(preferences && preferences[key] === false);
+}
+
+async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
@@ -32570,15 +34704,25 @@ async function tryProceduralHowTo(prompt, language) {
   const pageTitle = wikiHowPageTitle(task.task);
   const apiUrl = wikiHowParseApiUrl(pageTitle);
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
+  // its live fetch entirely, emit a service_disabled marker, and route straight
+  // to the web-search fallback.
+  const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
   const evidence = [
     `procedural_how_to:request:${task.task}`,
     `procedural_how_to:action:${task.action}`,
     `procedural_how_to:stage:wikipedia`,
     `procedural_how_to:stage:wikidata`,
-    `procedural_how_to:stage:wikihow_api`,
-    `procedural_how_to:wikihow_candidate:${pageTitle}`,
-    `http_fetch:request:${apiUrl}`,
   ];
+  if (wikihowEnabled) {
+    evidence.push(
+      `procedural_how_to:stage:wikihow_api`,
+      `procedural_how_to:wikihow_candidate:${pageTitle}`,
+      `http_fetch:request:${apiUrl}`,
+    );
+  } else {
+    evidence.push("procedural_how_to:service_disabled:wikihow");
+  }
   for (const correction of task.corrections || []) {
     evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
   }
@@ -32586,11 +34730,16 @@ async function tryProceduralHowTo(prompt, language) {
     evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
   }
 
-  const wikiHow = await fetchWikiHowProcedure(pageTitle, evidence);
+  const wikiHow = wikihowEnabled
+    ? await fetchWikiHowProcedure(pageTitle, evidence)
+    : { ok: false, error: "service_disabled" };
+  const sourcePath = wikihowEnabled
+    ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+    : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
   const lines = [
     `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
     "",
-    "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.",
+    sourcePath,
     "",
   ];
 
@@ -32610,16 +34759,19 @@ async function tryProceduralHowTo(prompt, language) {
     lines.push("");
     lines.push(`[Source](${wikiHow.sourceUrl})`);
   } else {
-    evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    if (wikihowEnabled) {
+      evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+    }
     evidence.push("procedural_how_to:stage:web_search");
+    const missNote = wikihowEnabled
+      ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
+      : "wikiHow is disabled in settings.";
     const webSearch = await tryWebSearch(`search the web for ${query}`, language);
     if (webSearch) {
       appendUniqueEvidence(evidence, webSearch.evidence);
       diagnostics = webSearch.diagnostics || null;
       formalizedObject = webSearch.formalizedObject || "";
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(`Fallback web search for \`${query}\`:`);
       lines.push("");
@@ -32630,9 +34782,7 @@ async function tryProceduralHowTo(prompt, language) {
         evidence.push(`web_search:provider:${provider.id}`);
       }
       evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
-      lines.push(
-        `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`,
-      );
+      lines.push(missNote);
       lines.push("");
       lines.push(
         `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
@@ -32660,6 +34810,52 @@ async function tryProceduralHowTo(prompt, language) {
     wikihowCandidate: pageTitle,
     formalizedObject,
   };
+}
+
+// Recognise a request for the concrete steps of an active procedure by
+// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
+// Each surface of the procedural_elaboration meaning lives in
+// data/seed/meanings-how.lino (embedded in MEANINGS_LINO above); this code knows
+// only the concept. Mirrors is_procedural_elaboration_request in
+// src/solver_handler_how.rs.
+function isProceduralElaborationRequest(normalized) {
+  return lexiconMentionsRole(ROLE_PROCEDURAL_ELABORATION, normalized);
+}
+
+// The prior exchange must have been a how-to procedure: the previous user turn
+// re-parses as a procedural request and the assistant answered it. Mirrors the
+// last_assistant_turn + last_user_turn re-parse gate in
+// try_procedural_how_to_followup (src/solver_handler_how.rs).
+function priorProceduralHowToDialogue(history) {
+  const assistant = lastHistoryTurn(history, "assistant");
+  if (!assistant) return null;
+  const user = lastHistoryTurn(history, "user");
+  if (!user) return null;
+  const task = extractProceduralHowToTask(normalizePrompt(user));
+  return task ? { user, task } : null;
+}
+
+// Issue #444: a bare follow-up such as "Can you give me specific instructions?"
+// carries no "how to" lead-in of its own and would otherwise dead-end at the
+// unknown opener. When the current prompt evidences the procedural_elaboration
+// meaning and the prior turn was an answered how-to request, re-run the original
+// discovery so the elaboration rebinds to the recovered task. Mirrors
+// try_procedural_how_to_followup in src/solver_handler_how.rs (mirror parity).
+async function tryProceduralHowToFollowup(prompt, language, history = [], preferences = {}) {
+  const canonical = normalizePrompt(prompt);
+  if (!isProceduralElaborationRequest(canonical)) return null;
+  const dialogue = priorProceduralHowToDialogue(history);
+  if (!dialogue) return null;
+  const procedure = await tryProceduralHowTo(dialogue.user, language, preferences);
+  if (!procedure) return null;
+  // Front-load the follow-up evidence so the rebind is visible in the trace,
+  // matching the log.append order on the Rust side.
+  procedure.evidence = [
+    `procedural_how_to:followup:${canonical}`,
+    `procedural_how_to:followup_task:${dialogue.task.task}`,
+    ...procedure.evidence,
+  ];
+  return procedure;
 }
 
 function stripHtml(value) {
@@ -34852,31 +37048,37 @@ function githubCommitDate(commits) {
   );
 }
 
-async function tryGithubRepositoryInfo(repo, language) {
+async function tryGithubRepositoryInfo(repo, language, preferences = {}) {
   const diagnostics = [];
   const errors = [];
   let repoData = null;
   let commits = null;
   let readme = null;
 
-  try {
-    repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
-  } catch (error) {
-    errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    commits = await fetchGithubJson(
-      githubApiRepositoryUrl(repo, "/commits?per_page=1"),
-      "commits",
-      diagnostics,
-    );
-  } catch (error) {
-    errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
-  }
-  try {
-    readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
-  } catch (error) {
-    errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+  // Issue #444: honor the GitHub opt-out. When disabled we skip every live
+  // api.github.com fetch and report that the trusted service was turned off in
+  // settings instead of contacting it.
+  const githubEnabled = externalServiceEnabled(preferences, "externalServiceGithub");
+  if (githubEnabled) {
+    try {
+      repoData = await fetchGithubJson(githubApiRepositoryUrl(repo), "repository", diagnostics);
+    } catch (error) {
+      errors.push(`repository: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      commits = await fetchGithubJson(
+        githubApiRepositoryUrl(repo, "/commits?per_page=1"),
+        "commits",
+        diagnostics,
+      );
+    } catch (error) {
+      errors.push(`commits: ${error instanceof Error ? error.message : String(error)}`);
+    }
+    try {
+      readme = await fetchGithubJson(githubApiRepositoryUrl(repo, "/readme"), "readme", diagnostics);
+    } catch (error) {
+      errors.push(`readme: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   const slug = repositorySlug(repo);
@@ -34894,15 +37096,19 @@ async function tryGithubRepositoryInfo(repo, language) {
   if (errors.length > 0) {
     payload.errors = errors;
   }
+  if (!githubEnabled) {
+    payload.note = "GitHub is disabled in settings; no live data was fetched.";
+  }
   const content = `\`\`\`json\n${JSON.stringify(payload, null, 2)}\n\`\`\``;
   return {
     intent: "github_repo_info",
     content,
-    confidence: errors.length === 0 ? 0.92 : 0.55,
+    confidence: !githubEnabled ? 0.4 : errors.length === 0 ? 0.92 : 0.55,
     evidence: [
       `github_repo_info:repository:${slug}`,
-      `source:${repo.url}`,
-      "source:https://api.github.com",
+      ...(githubEnabled
+        ? [`source:${repo.url}`, "source:https://api.github.com"]
+        : ["github_repo_info:service_disabled:github"]),
       `language:${language}`,
       ...(errors.length > 0 ? errors.map((error) => `github_repo_info:error:${error}`) : []),
     ],
@@ -35057,7 +37263,7 @@ function attachUserContext(answer, userContext) {
       ...(Array.isArray(answer.evidence) ? answer.evidence : []),
       ...evidence,
     ],
-    steps,
+    steps: withThinkingLevels(steps),
   });
 }
 
@@ -35421,6 +37627,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
     const githubRepoInfo = await tryGithubRepositoryInfo(
       githubRepoInfoRequest,
       language,
+      preferences,
     );
     events.push(`handler:${githubRepoInfo.intent}`);
     steps.push({
@@ -35596,6 +37803,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
       name: "tryProofRequest",
       run: () => tryProofRequest(prompt, normalized, language),
     },
+    { name: "tryIncompatibleUnits", run: () => tryIncompatibleUnits(prompt, normalized) },
     // Issue #135/#386: a Playwright-script request is more specific than the
     // generalized write_program recognizer. Since #386 taught
     // writeProgramParameters to recognize a program_kind ("скрипт"/"script")
@@ -35634,6 +37842,11 @@ async function solve(prompt, history, prefs, userContext = {}) {
     },
     { name: "tryArithmetic", run: () => tryArithmetic(prompt) },
     { name: "tryJavaScriptExecution", run: () => tryJavaScriptExecution(prompt) },
+    // Issue #423: README/install-guide to shell/PowerShell conversion is a
+    // narrower script request than generic program synthesis. Keep it ahead of
+    // writeProgram so "convert this README to a script" preserves the source
+    // instructions instead of producing an unrelated starter script.
+    { name: "tryInstallationConversion", run: () => tryInstallationConversion(prompt, normalized) },
     {
       name: "tryWriteProgramConcrete",
       run: () => {
@@ -35782,7 +37995,7 @@ async function solve(prompt, history, prefs, userContext = {}) {
   }
 
   steps.push({ step: "invoke_tool", detail: "procedural_how_to" });
-  const procedure = await tryProceduralHowTo(prompt, language);
+  const procedure = await tryProceduralHowTo(prompt, language, preferences);
   if (procedure) {
     events.push(`handler:${procedure.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryProceduralHowTo" });
@@ -35801,6 +38014,34 @@ async function solve(prompt, history, prefs, userContext = {}) {
       },
     });
     return finalize(events, steps, toolCalls, procedure, formalizationContext);
+  }
+
+  // Issue #444: a bare follow-up that asks for the concrete steps ("Can you
+  // give me specific instructions?") carries no "how to" lead-in of its own, so
+  // tryProceduralHowTo above returned null. Rebind it to the procedure recovered
+  // from the prior turn instead of letting it fall to web search / the unknown
+  // opener. Mirrors the procedural_how_to_followup slot in the Rust dispatch
+  // table, which sits right after procedural_how_to.
+  steps.push({ step: "invoke_tool", detail: "procedural_how_to_followup" });
+  const procedureFollowup = await tryProceduralHowToFollowup(prompt, language, history, preferences);
+  if (procedureFollowup) {
+    events.push(`handler:${procedureFollowup.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryProceduralHowToFollowup" });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt,
+        language,
+        query: procedureFollowup.query || "",
+        wikihowCandidate: procedureFollowup.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: procedureFollowup.intent,
+        confidence: procedureFollowup.confidence,
+        formalizedObject: procedureFollowup.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, procedureFollowup, formalizationContext);
   }
 
   steps.push({ step: "invoke_tool", detail: "web_search" });
@@ -35856,6 +38097,16 @@ async function solve(prompt, history, prefs, userContext = {}) {
     events.push(`handler:${whoIs.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryWhoIsQuestion" });
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
+  }
+
+  // Issue #513: recognize terminal-command requests (visible fix for #511)
+  // before the unknown fallback, so a shell request returns an agent_suggestion
+  // intent in both engines.
+  const terminal = tryTerminalCommand(prompt, language, preferences);
+  if (terminal) {
+    events.push(`handler:${terminal.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
+    return finalize(events, steps, toolCalls, terminal, formalizationContext);
   }
 
   events.push("fallback:unknown");
@@ -35967,6 +38218,44 @@ function deformalizeProjection(formalizationContext, answer) {
   };
 }
 
+// Issue #488: classify each reasoning step into a granularity tier so the
+// thinking preview can show only the high-level universal-algorithm phases at
+// the default ("standard") granularity and fold the mechanical sub-steps
+// (the symbolic formalization tuple, tool probes, calculator reductions, memory
+// scans, rule bookkeeping) into the opt-in "detailed" view. This mirrors the
+// Rust solver's `ThinkingStep::level` classification (see src/engine.rs and
+// src/event_log.rs) so the browser and native engines curate the trace
+// identically — the thinking is fully applied to the logic, not just the UI.
+const HIGH_LEVEL_THINKING_STEPS = new Set([
+  "impulse",
+  "detect_language",
+  "resolve_response_language",
+  "dispatch_handler",
+  "match_rule",
+  "clarify_formalization",
+  "program_plan",
+  "compute",
+  "deformalize",
+  "user_context",
+  "fallback",
+]);
+
+function thinkingStepLevel(step) {
+  const raw = String(step || "");
+  // Nested agent sub-reasoning always folds under its composite agent task.
+  if (/^agent_\d+_/i.test(raw)) return "detailed";
+  return HIGH_LEVEL_THINKING_STEPS.has(raw) ? "high" : "detailed";
+}
+
+function withThinkingLevels(steps) {
+  if (!Array.isArray(steps)) return [];
+  return steps.map((step) =>
+    step && typeof step === "object" && !step.level
+      ? Object.assign({}, step, { level: thinkingStepLevel(step.step) })
+      : step,
+  );
+}
+
 function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const interpretations = collectInterpretations(formalizationContext, answer);
   answer = applyVisibleInterpretations(answer, interpretations);
@@ -35974,10 +38263,16 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
   const evidence = Array.isArray(answer.evidence) ? answer.evidence : [];
   const projection = deformalizeProjection(formalizationContext, answer);
   events.push(`deformalize:${projection.tuple}:${projection.intent}`);
+  // `detail` keeps the symbolic projection summary (with the ⇒ glyph) for the
+  // diagnostics panel; `answer` carries the clean composed answer so the
+  // human-readable thinking preview can show "Compose the answer: …" (issue
+  // #488) without leaking the tuple.
+  const answerFirstLine = String(answer.content || "").split(/\r?\n/, 1)[0] || "";
   steps.push({
     step: "deformalize",
     detail: projection.summary,
     projection,
+    answer: answerFirstLine,
   });
   const trace = events.map((event) => `trace:${event}`);
   const result = {
@@ -35985,7 +38280,7 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
     content: answer.content,
     confidence: answer.confidence,
     evidence: [...evidence, ...trace],
-    steps,
+    steps: withThinkingLevels(steps),
     toolCalls,
   };
   if (answer.iframeUrl) {

@@ -2,6 +2,8 @@
 
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
+It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack.
+
 The current implementation covers the surface area requested in issue #1:
 
 - library API for symbolic prompt handling
@@ -9,12 +11,46 @@ The current implementation covers the surface area requested in issue #1:
 - HTTP API server with `/v1/chat/completions` and `/v1/responses`
 - Telegram bot CLI with long polling by default and an opt-in webhook server, configured through [`lino-arguments`](https://github.com/link-foundation/lino-arguments)
 - human-readable Links Notation knowledge and dataset export through `lino-objects-codec`
-- Docker-in-Docker Telegram bot image based on `konard/box-dind:2.1.1`
+- Prepared Docker-in-Docker Telegram bot image published as `ghcr.io/link-assistant/formal-ai:latest` and based on `konard/box-dind:2.1.1`
 - GitHub Pages markdown chat demo backed by a Rust-generated WebAssembly worker
 - Electron desktop shell that starts the local Rust HTTP API and reuses the web chat
 - VS Code extension (desktop **and** web/`vscode.dev`) that embeds the same chat in a Webview around the same HTTP/web boundary
 
-Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+Project direction is tracked in [VISION.md](VISION.md), [GOALS.md](GOALS.md), and [NON-GOALS.md](NON-GOALS.md). Who the project is for, what pain it closes, and the concrete user journeys it supports today (plus the ones it could support next) are documented in [docs/USER-JOURNEYS.md](docs/USER-JOURNEYS.md). Implementation progress against the vision is tracked in [ROADMAP.md](ROADMAP.md). The issue #12 synthesis is in [docs/case-studies/issue-12/README.md](docs/case-studies/issue-12/README.md).
+
+## Install
+
+Every interface has a dedicated landing page on the
+[site](https://link-assistant.github.io/formal-ai/) with copy-paste install
+instructions, and a single universal installer covers all of them. The script is
+published at [`scripts/install.sh`](scripts/install.sh) (POSIX `sh`, for
+macOS/Linux) and [`scripts/install.ps1`](scripts/install.ps1) (PowerShell, for
+Windows). Pass a target to choose what to install:
+
+```bash
+# Desktop app (default), VS Code extension, the CLI, the Telegram bot, or all:
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- desktop
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- vscode
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- cli
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- telegram
+curl -fsSL https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh | sh -s -- all
+```
+
+The Telegram bot ships inside the CLI, so the `telegram` target installs the CLI;
+then run `formal-ai telegram` with a `@BotFather` token (see the
+[Telegram page](https://link-assistant.github.io/formal-ai/telegram/)).
+
+```powershell
+# Windows PowerShell (set FORMAL_AI_INSTALL_TARGET to pick a target):
+$env:FORMAL_AI_INSTALL_TARGET='vscode'; irm https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.ps1 | iex
+```
+
+| Interface | Landing page | Notes |
+| --- | --- | --- |
+| Desktop app | [`/download/`](https://link-assistant.github.io/formal-ai/download/) | Electron shell with one-click services and a one-click VS Code extension install in Settings. |
+| VS Code extension | [`/vscode/`](https://link-assistant.github.io/formal-ai/vscode/) | Not on the Marketplace yet, so install it manually — the one-liner above, a downloaded `.vsix` ("VS Code Extension only" mode), or one click from the desktop app. |
+| CLI | [`/cli/`](https://link-assistant.github.io/formal-ai/cli/) | `cargo install formal-ai` or the universal installer. |
+| Telegram bot | [`/telegram/`](https://link-assistant.github.io/formal-ai/telegram/) | `telegram` installer target (installs the CLI that powers the bot); needs a `@BotFather` token. |
 
 ## Universal Problem-Solving Algorithm
 
@@ -45,7 +81,10 @@ and intent formalization (`src/intent_formalization.rs`), is documented in
 [VISION.md](VISION.md#universal-problem-solving-algorithm) and
 [ARCHITECTURE.md](ARCHITECTURE.md). How much of the vision is built versus still
 planned — including the open industry-benchmark coverage gap — is tracked in
-[ROADMAP.md](ROADMAP.md).
+[ROADMAP.md](ROADMAP.md). Every benchmark suite the repository has ever touched
+is catalogued in [docs/benchmarks.md](docs/benchmarks.md), and the grounded
+meta-algorithm that reproduces a topic's Rust handler on demand is described in
+[docs/meta-algorithm.md](docs/meta-algorithm.md).
 
 ## Quick Start
 
@@ -222,18 +261,50 @@ curl -s http://127.0.0.1:8080/telegram/webhook \
 Docker-in-Docker Telegram bot image:
 
 ```bash
+TELEGRAM_BOT_TOKEN=123:abc docker compose up
+
+docker run --rm --privileged \
+  -e TELEGRAM_BOT_TOKEN=123:abc \
+  -v formal-ai-telegram-docker:/var/lib/docker \
+  ghcr.io/link-assistant/formal-ai:latest
+
+# Local build fallback:
 docker build -t formal-ai .
 docker run --rm --privileged \
   -e TELEGRAM_BOT_TOKEN=123:abc \
-  -v formal-ai-docker:/var/lib/docker \
+  -v formal-ai-telegram-docker:/var/lib/docker \
   formal-ai
 
 # Preferred when Sysbox is available:
 docker run --rm --runtime=sysbox-runc \
   -e TELEGRAM_BOT_TOKEN=123:abc \
-  -v formal-ai-docker:/var/lib/docker \
+  -v formal-ai-telegram-docker:/var/lib/docker \
   formal-ai
 ```
+
+Prebuilt image quick start: the released image is
+`ghcr.io/link-assistant/formal-ai:latest`, so the only required setting for a
+polling Telegram bot is `TELEGRAM_BOT_TOKEN`. The root `compose.yaml` uses that
+image by default and preserves the inner Docker daemon under the named
+`formal-ai-telegram-docker` volume. Set `FORMAL_AI_DOCKER_IMAGE` to run a locally
+built image or an optional Docker Hub mirror with the same compose file.
+
+The same image and compose file also run the **OpenAI-compatible API server** for
+agentic mode and the idle **Agent CLI environment**, under opt-in Compose
+profiles so `docker compose up` keeps starting only the Telegram bot:
+
+```bash
+TELEGRAM_BOT_TOKEN=123:abc docker compose up -d   # Telegram bot only (default)
+docker compose --profile server up -d             # OpenAI-compatible server on 127.0.0.1:8080
+docker compose --profile agent up -d              # agent + agent-commander environment
+docker compose --profile all up -d                # all services
+```
+
+All three containers (`formal-ai-telegram`, `formal-ai-server`, and
+`formal-ai-agent`) are the **exact same ones the desktop app manages with one
+click** — see
+[One-click services and agent environment](docs/desktop/service-control.md) for
+the full desktop + server walkthrough.
 
 The root image is intentionally the only supported Docker runtime: it inherits
 from `konard/box-dind:2.1.1`, starts `/usr/local/bin/dind-entrypoint.sh`, and
@@ -272,6 +343,35 @@ npm --prefix desktop run build
 ```
 
 Set `FORMAL_AI_DESKTOP_BINARY=/path/to/formal-ai` before packaging to bundle a specific binary. Release builds copy the web assets and seed mirror into `desktop/dist-web/`, copy the binary into `desktop/bin/` when available, and produce OS artifacts under `desktop/release/`.
+
+#### One-click services and agent environment
+
+The desktop sidebar has a **Services** panel that starts, stops, or installs the
+prepared Docker containers with a single click:
+
+- **Telegram bot** (`formal-ai-telegram`) — runs the image's default polling bot.
+  An inline field captures `TELEGRAM_BOT_TOKEN`; the bot will not start without it.
+- **OpenAI-compatible server** (`formal-ai-server`) — runs `formal-ai serve` for
+  agentic mode and publishes `http://127.0.0.1:8080`.
+- **Agent environment** (`formal-ai-agent`) — pulls the prepared image, recreates
+  an idle container, and health-checks `formal-ai --version`, `agent --version`,
+  and `start-agent --help` inside the container.
+
+Each row shows a live Docker-backed indicator and **Start**/**Stop** or
+**Install agent environment** controls. The lifecycle logic lives in the testable
+[`desktop/lib/service-control.cjs`](desktop/lib/service-control.cjs) module, wired
+into the Electron main process over IPC (`formalAiDesktop:serviceStatus` /
+`startService` / `installAgentEnvironment` / `stopService`) and exposed to the
+renderer through the preload bridge. Docker is required; the panel disables
+itself with a clear note when Docker is unavailable.
+
+The **same containers** run on a server from the root `compose.yaml` with one
+line (`docker compose --profile all up -d`). Autonomous tools are run only inside
+the Formal-AI container path; the desktop provider never invokes host
+`agent`/`claude`/`codex` binaries. The complete desktop + server walkthrough —
+configuration, raw `docker run` equivalents, health checks, and the isolation
+model — is in
+[docs/desktop/service-control.md](docs/desktop/service-control.md).
 
 ### VS Code extension
 

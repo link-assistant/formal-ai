@@ -1,0 +1,58 @@
+# Prepared formal-ai services. All run from the single prepared image
+# (ghcr.io/link-assistant/formal-ai) and use their own inner-Docker volumes so
+# the agentic sandbox works without bind-mounting the host's docker.sock.
+#
+#   docker compose up -d                         # Telegram bot (default)
+#   docker compose --profile server up -d        # OpenAI-compatible API server
+#   docker compose --profile agent up -d         # idle Agent CLI environment
+#   docker compose --profile all up -d           # all services
+#
+# The desktop app starts/stops the exact same containers with one click; see
+# docs/desktop/service-control.md.
+services:
+  telegram-bot:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-telegram
+    profiles: ["", "telegram", "all"]
+    restart: unless-stopped
+    privileged: true
+    environment:
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:?Set TELEGRAM_BOT_TOKEN to your Telegram bot token}
+      FORMAL_AI_TELEGRAM_ALLOWED_UPDATES: ${FORMAL_AI_TELEGRAM_ALLOWED_UPDATES:-message,edited_message}
+      FORMAL_AI_TELEGRAM_TIMEOUT: ${FORMAL_AI_TELEGRAM_TIMEOUT:-30}
+      FORMAL_AI_TELEGRAM_LIMIT: ${FORMAL_AI_TELEGRAM_LIMIT:-100}
+    volumes:
+      - formal-ai-telegram-docker:/var/lib/docker
+
+  # OpenAI-compatible API server for agentic mode. Opt-in via the `server`
+  # profile so `docker compose up` keeps starting only the Telegram bot.
+  server:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-server
+    profiles: ["server", "all"]
+    restart: unless-stopped
+    privileged: true
+    command: ["formal-ai", "serve", "--host", "0.0.0.0", "--port", "${FORMAL_AI_SERVER_PORT:-8080}"]
+    ports:
+      - "127.0.0.1:${FORMAL_AI_SERVER_PORT:-8080}:${FORMAL_AI_SERVER_PORT:-8080}"
+    volumes:
+      - formal-ai-server-docker:/var/lib/docker
+
+  # Idle, health-checkable container for Agent CLI execution through
+  # agent-commander. The desktop "Install agent environment" action pulls this
+  # image, recreates this container, and verifies formal-ai/agent/start-agent
+  # inside it before agent mode can target `formal-ai-agent`.
+  agent-environment:
+    image: ${FORMAL_AI_DOCKER_IMAGE:-ghcr.io/link-assistant/formal-ai:latest}
+    container_name: formal-ai-agent
+    profiles: ["agent", "all"]
+    restart: unless-stopped
+    privileged: true
+    command: ["sleep", "infinity"]
+    volumes:
+      - formal-ai-agent-docker:/var/lib/docker
+
+volumes:
+  formal-ai-telegram-docker:
+  formal-ai-server-docker:
+  formal-ai-agent-docker:

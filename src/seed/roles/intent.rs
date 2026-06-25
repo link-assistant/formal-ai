@@ -156,6 +156,19 @@ pub const ROLE_NON_REFERENTIAL_SUBJECT: &str = "non_referential_subject";
 /// meaning carrying this role is `defined_by` the `property` and
 /// `procedural_request` concepts.
 pub const ROLE_PROCEDURAL_TASK_MODIFIER: &str = "procedural_task_modifier";
+/// Semantic role: a follow-up that asks for the concrete steps of an active
+/// procedure ("give me specific instructions", "the exact steps", "step by
+/// step", "дай конкретные инструкции", "具体步骤", …).
+///
+/// Issue #444: after a "how to X" turn the assistant answered with a discovery
+/// plan, and the user then asked "Can you give me specific instructions?" — a
+/// prompt that carries no "how to" lead-in of its own. A meaning carrying this
+/// role lets the solver recognise the elaboration request and rebind it to the
+/// procedure recovered from the prior turn instead of falling to the unknown
+/// opener. Surfaces are matched as raw substrings of the normalized prompt
+/// because most are multi-word phrases. A meaning carrying this role is
+/// `defined_by` the `inquiry` and `procedural_request` concepts.
+pub const ROLE_PROCEDURAL_ELABORATION: &str = "procedural_elaboration";
 /// Semantic role: a common misspelling paired with its correction.
 ///
 /// A [`crate::seed::Slot::Bare`] surface whose `text` is the misspelled token and

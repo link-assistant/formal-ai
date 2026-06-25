@@ -1,0 +1,73 @@
+
+> formal-ai-e2e@1.0.0 test:local
+> playwright test --config=playwright.local.config.js --grep Issue #488
+
+[2m[WebServer] [22m(node:3025485) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › tests/issue-488.spec.js:44:3 › Issue #488 - visible thinking preview › shows collapsed human-readable thinking by default and expands details (5.6s)
+  ✘  2 [chromium] › tests/issue-488.spec.js:44:3 › Issue #488 - visible thinking preview › shows collapsed human-readable thinking by default and expands details (retry #1) (5.7s)
+
+
+  1) [chromium] › tests/issue-488.spec.js:44:3 › Issue #488 - visible thinking preview › shows collapsed human-readable thinking by default and expands details
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('[data-testid="thinking-preview"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('[data-testid="thinking-preview"]')[22m
+
+
+      49 |     await expect(assistantMessage.locator('.thinking-steps')).toHaveCount(0);
+      50 |     const preview = assistantMessage.locator('[data-testid="thinking-preview"]');
+    > 51 |     await expect(preview).toBeVisible();
+         |                           ^
+      52 |
+      53 |     const toggle = preview.locator('[data-testid="thinking-preview-toggle"]');
+      54 |     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        at /tmp/gh-issue-solver-1781547485708/tests/e2e/tests/issue-488.spec.js:51:27
+
+    Error Context: test-results/issue-488-Issue-488---visi-5f830-default-and-expands-details-chromium/error-context.md
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('[data-testid="chat-message"]').last().locator('[data-testid="thinking-preview"]')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('[data-testid="chat-message"]').last().locator('[data-testid="thinking-preview"]')[22m
+
+
+      49 |     await expect(assistantMessage.locator('.thinking-steps')).toHaveCount(0);
+      50 |     const preview = assistantMessage.locator('[data-testid="thinking-preview"]');
+    > 51 |     await expect(preview).toBeVisible();
+         |                           ^
+      52 |
+      53 |     const toggle = preview.locator('[data-testid="thinking-preview-toggle"]');
+      54 |     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        at /tmp/gh-issue-solver-1781547485708/tests/e2e/tests/issue-488.spec.js:51:27
+
+    Error Context: test-results/issue-488-Issue-488---visi-5f830-default-and-expands-details-chromium-retry1/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/issue-488-Issue-488---visi-5f830-default-and-expands-details-chromium-retry1/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/issue-488-Issue-488---visi-5f830-default-and-expands-details-chromium-retry1/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/issue-488.spec.js:44:3 › Issue #488 - visible thinking preview › shows collapsed human-readable thinking by default and expands details

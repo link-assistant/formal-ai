@@ -1,0 +1,35 @@
+/tmp/issue-410-web-capture/js/src/search.js:28:export const SEARCH_PROVIDERS = [
+/tmp/issue-410-web-capture/js/src/search.js:37:export const DEFAULT_PROVIDER = 'wikipedia';
+/tmp/issue-410-web-capture/js/src/search.js:64: * @param {string} provider - One of {@link SEARCH_PROVIDERS}
+/tmp/issue-410-web-capture/js/src/search.js:84:        `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:237: * @param {string} provider - One of {@link SEARCH_PROVIDERS}
+/tmp/issue-410-web-capture/js/src/search.js:268:        `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:319:  provider = DEFAULT_PROVIDER,
+/tmp/issue-410-web-capture/js/src/search.js:328:  if (!SEARCH_PROVIDERS.includes(provider)) {
+/tmp/issue-410-web-capture/js/src/search.js:330:      `Unknown search provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/js/src/search.js:378: * Express handler for `GET /search?q=<query>&provider=<p>&format=json|markdown`.
+/tmp/issue-410-web-capture/js/src/search.js:388:  const provider = req.query.provider || DEFAULT_PROVIDER;
+/tmp/issue-410-web-capture/js/src/search.js:389:  if (!SEARCH_PROVIDERS.includes(provider)) {
+/tmp/issue-410-web-capture/js/src/search.js:393:        `Unknown provider "${provider}". Supported: ${SEARCH_PROVIDERS.join(', ')}`
+/tmp/issue-410-web-capture/rust/src/main.rs:37:use web_capture::search::{format_search_as_markdown, DEFAULT_PROVIDER};
+/tmp/issue-410-web-capture/rust/src/main.rs:61:    /// Search provider: wikipedia, duckduckgo, google, bing, brave
+/tmp/issue-410-web-capture/rust/src/main.rs:63:    provider: String,
+/tmp/issue-410-web-capture/rust/src/main.rs:222:    provider: Option<String>,
+/tmp/issue-410-web-capture/rust/src/main.rs:444:    info!("  GET /search?q=<QUERY>     - Structured search-provider capture");
+/tmp/issue-410-web-capture/rust/src/main.rs:1010:        .unwrap_or_else(|| DEFAULT_PROVIDER.to_string());
+/tmp/issue-410-web-capture/rust/src/search.rs:29:pub const SEARCH_PROVIDERS: [&str; 5] = ["wikipedia", "duckduckgo", "google", "bing", "brave"];
+/tmp/issue-410-web-capture/rust/src/search.rs:32:pub const DEFAULT_PROVIDER: &str = "wikipedia";
+/tmp/issue-410-web-capture/rust/src/search.rs:63:    pub provider: String,
+/tmp/issue-410-web-capture/rust/src/search.rs:72:pub fn is_supported_provider(provider: &str) -> bool {
+/tmp/issue-410-web-capture/rust/src/search.rs:73:    SEARCH_PROVIDERS.contains(&provider)
+/tmp/issue-410-web-capture/rust/src/search.rs:88:pub fn build_search_url(provider: &str, query: &str, limit: usize) -> Result<String, String> {
+/tmp/issue-410-web-capture/rust/src/search.rs:100:            SEARCH_PROVIDERS.join(", ")
+/tmp/issue-410-web-capture/rust/src/search.rs:332:    provider: &str,
+/tmp/issue-410-web-capture/rust/src/search.rs:389:    provider: &str,
+/tmp/issue-410-web-capture/rust/src/search.rs:400:            SEARCH_PROVIDERS.join(", ")
+/tmp/issue-410-web-capture/rust/src/search.rs:404:    let source_url = build_search_url(provider, query, limit)?;
+/tmp/issue-410-web-capture/rust/src/search.rs:448:        provider: provider.to_string(),
+/tmp/issue-410-web-capture/rust/src/search.rs:488:            build_search_url("wikipedia", "formal", 5).unwrap(),
+/tmp/issue-410-web-capture/rust/src/search.rs:495:        assert!(build_search_url("yahoo", "x", 5).is_err());
+/tmp/issue-410-web-capture/rust/src/search.rs:559:            provider: "wikipedia".to_string(),
+/tmp/issue-410-web-capture/rust/src/search.rs:586:            provider: "wikipedia".to_string(),

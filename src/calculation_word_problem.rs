@@ -122,11 +122,7 @@ fn split_sentences(text: &str) -> Vec<String> {
     let mut sentences = Vec::new();
     let mut current = String::new();
     for (index, &ch) in chars.iter().enumerate() {
-        if ch == '.'
-            && chars
-                .get(index + 1)
-                .map_or(true, |next| next.is_whitespace())
-        {
+        if ch == '.' && chars.get(index + 1).is_none_or(|next| next.is_whitespace()) {
             let sentence = current.trim().to_owned();
             if !sentence.is_empty() {
                 sentences.push(sentence);

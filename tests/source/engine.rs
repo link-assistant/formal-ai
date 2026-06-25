@@ -42,12 +42,20 @@ use crate::seed;
 
 pub const DEFAULT_MODEL: &str = "formal-symbolic-production";
 
+// Thinking model + deterministic naturalizer live in `crate::thinking` (issue #488),
+// re-exported so `crate::engine::{...}` / `formal_ai::{...}` paths stay unchanged.
+pub use crate::thinking::{
+    humanize_meta_identifier, naturalize_thinking_step, thinking_language_label, ThinkingStep,
+};
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct SymbolicAnswer {
     pub intent: String,
     pub answer: String,
     pub confidence: f32,
     pub evidence_links: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub thinking_steps: Vec<ThinkingStep>,
     pub links_notation: String,
 }
 
@@ -687,6 +695,21 @@ pub(crate) fn answer_links_notation(
         })
         .collect::<Vec<_>>()
         .join("; ");
+    let thinking_steps = log
+        .thinking_steps()
+        .iter()
+        .map(|step| {
+            format!(
+                "step_{} {} {} {} {}",
+                step.order,
+                sanitize_lino_value(&step.step),
+                sanitize_lino_value(&step.level),
+                sanitize_lino_value(&step.source_event),
+                sanitize_lino_value(&step.detail)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("; ");
     format_lino_record(
         &format!("answer_{}", stable_id("prompt", prompt)),
         &[
@@ -695,6 +718,7 @@ pub(crate) fn answer_links_notation(
             ("answer", String::from(answer)),
             ("trace", String::from(trace_id)),
             ("steps", steps),
+            ("thinking_steps", thinking_steps),
         ],
     )
 }
@@ -752,12 +776,13 @@ fn write_program_answer(
     // the user through running code (`prior_code_response`), the verbose setup
     // steps are omitted and replaced by a short "test it the same way" note so
     // follow-up edits stay concise.
+    let expected_output = spec.expected_output();
     format!(
         "{}\n\n```{}\n{}\n```\n\n{}\n\n{}\n\n{}",
         write_program_intro(spec.language.name, spec.task.label, language),
         spec.language.code_fence,
         spec.template.code,
-        execution_report(&spec.language.execution, spec.task.output, language),
+        execution_report(&spec.language.execution, &expected_output, language),
         program_explanation_section(spec, language),
         program_test_instructions(spec, language, prior_code_response),
     )

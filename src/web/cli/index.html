@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="formal-ai-version" content="__FORMAL_AI_VERSION__" />
+    <meta
+      name="description"
+      content="Install the formal-ai command-line tool. Install it with cargo install formal-ai, or with the one-line universal installer, then run formal-ai serve for an OpenAI-compatible local server."
+    />
+    <!-- Self-contained chooser page; same strict same-origin CSP as / and /docs/. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self'; base-uri 'self'; form-action 'self';"
+    />
+    <title>formal-ai CLI</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="../landing.css?v=__FORMAL_AI_ASSET_VERSION__" />
+  </head>
+  <body>
+    <main id="cli-app" class="page-shell" data-testid="cli-app">
+      <noscript>
+        <section class="hero">
+          <h1>formal-ai CLI</h1>
+          <p class="summary">The command-line interface to formal-ai.</p>
+          <ul>
+            <li>
+              Install with Cargo: <code>cargo install formal-ai</code>
+            </li>
+            <li>
+              One-line installer (macOS/Linux):
+              <code
+                >curl -fsSL
+                https://raw.githubusercontent.com/link-assistant/formal-ai/main/scripts/install.sh
+                | sh -s -- cli</code
+              >
+            </li>
+            <li>Run <code>formal-ai --help</code> to get started.</li>
+            <li><a href="../download/">All downloads</a></li>
+          </ul>
+        </section>
+      </noscript>
+    </main>
+
+    <script src="../preferences.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="../site-chrome.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+    <script src="cli.js?v=__FORMAL_AI_ASSET_VERSION__"></script>
+  </body>
+</html>

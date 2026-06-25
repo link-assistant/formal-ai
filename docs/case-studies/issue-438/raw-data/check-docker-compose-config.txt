@@ -1,0 +1,24 @@
+name: gh-issue-solver-1781449075566
+services:
+  telegram-bot:
+    environment:
+      FORMAL_AI_TELEGRAM_ALLOWED_UPDATES: message,edited_message
+      FORMAL_AI_TELEGRAM_LIMIT: "100"
+      FORMAL_AI_TELEGRAM_TIMEOUT: "30"
+      TELEGRAM_BOT_TOKEN: 123:abc
+    image: ghcr.io/link-assistant/formal-ai:latest
+    networks:
+      default: null
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: formal-ai-docker
+        target: /var/lib/docker
+        volume: {}
+networks:
+  default:
+    name: gh-issue-solver-1781449075566_default
+volumes:
+  formal-ai-docker:
+    name: gh-issue-solver-1781449075566_formal-ai-docker

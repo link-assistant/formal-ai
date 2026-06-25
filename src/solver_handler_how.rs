@@ -2,12 +2,12 @@
 //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
 
 use crate::concepts::{extract_concept_query, lookup_concept_query};
-use crate::engine::SymbolicAnswer;
+use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::language::{detect as detect_language, Language};
 use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
-use crate::solver_helpers::last_assistant_turn;
+use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 
 struct HowItWorksQuery {
@@ -97,6 +97,65 @@ pub fn try_how_to_procedure(
         &body,
         0.78,
     ))
+}
+
+/// Handles follow-up requests for the concrete steps of an active procedure —
+/// "Can you give me specific instructions?", "give me the exact steps", "step
+/// by step", and their multilingual equivalents (issue #444). These prompts
+/// carry no "how to" lead-in of their own, so without this handler the user's
+/// natural follow-up after a how-to answer fell through to the unknown opener
+/// (the exact symptom reported in the issue).
+///
+/// The handler fires only when (a) the current prompt evidences the
+/// `procedural_elaboration` meaning and (b) the prior user turn was itself a
+/// procedural "how to X" request that the assistant answered. It then re-runs
+/// the original discovery in the original language via [`try_how_to_procedure`],
+/// so the elaboration rebinds to the recovered task instead of dead-ending. The
+/// deeper "construct a full guide from collected sources" work tracked by the
+/// issue is the browser worker's live-fetch path; this keeps the offline engine
+/// and the worker in parity on the coreference fix.
+pub fn try_procedural_how_to_followup(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    // The dispatch loop passes a lightly-cleaned `prompt.to_lowercase()` whose
+    // punctuation survives, so "Can you give me specific instructions?" keeps its
+    // trailing "?" and a phrase surface would miss. Canonicalise first, exactly
+    // as `try_software_project_followup` does, before matching the meaning.
+    let canonical = normalize_prompt(prompt);
+    let canonical = if canonical.is_empty() {
+        normalized
+    } else {
+        canonical.as_str()
+    };
+    if !is_procedural_elaboration_request(canonical) {
+        return None;
+    }
+    // The prior exchange must have been a how-to procedure: the previous user
+    // turn re-parses as a procedural request and the assistant answered it.
+    last_assistant_turn(log)?;
+    let prior_user = last_user_turn(log)?.to_owned();
+    let prior_normalized = normalize_prompt(&prior_user);
+    let task = extract_procedural_how_to_task(&prior_normalized)?;
+    log.append("procedural_how_to:followup", canonical.to_owned());
+    log.append("procedural_how_to:followup_task", task.task);
+    // Re-run the original discovery in the original language so the recovered
+    // plan matches what the prior turn produced, now bound to the elaboration.
+    try_how_to_procedure(&prior_user, &prior_normalized, log)
+}
+
+/// Recognise a request for the concrete steps of an active procedure by
+/// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
+/// Each surface of the `procedural_elaboration` meaning lives in
+/// `data/seed/meanings-how.lino`; this code knows only the concept. Matching is
+/// whole-token/phrase for Latin scripts and substring for CJK, exactly as every
+/// other lexicon recogniser, so "specific instructions" matches but "specifics"
+/// does not.
+fn is_procedural_elaboration_request(normalized: &str) -> bool {
+    seed::lexicon()
+        .meanings_with_role(seed::ROLE_PROCEDURAL_ELABORATION)
+        .any(|meaning| meaning.evidenced_in(normalized))
 }
 
 /// Handles follow-up elaboration prompts such as "how it works?", "how does

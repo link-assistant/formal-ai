@@ -1,0 +1,13 @@
+{
+  "name": "command-stream",
+  "version": "0.14.0",
+  "description": "Modern $ shell utility library with streaming, async iteration, and EventEmitter support, optimized for Bun runtime",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/link-foundation/command-stream.git",
+    "directory": "js"
+  },
+  "dist-tags": {
+    "latest": "0.14.0"
+  }
+}

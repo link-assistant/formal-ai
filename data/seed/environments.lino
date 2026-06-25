@@ -45,9 +45,9 @@ environments
     bundle_import_command "Import memory button or formal-ai memory import --path PATH"
     start_command "npm run desktop:dev (in-process by default; FORMAL_AI_DESKTOP_SERVER=1 starts formal-ai serve on 127.0.0.1)"
     package_command "npm --prefix desktop run build"
-    tool_routing "Permission-gated router (default-deny); http_fetch/read_local_file served by the local process, code_exec/shell routed to konard/box-dind:2.1.1"
+    tool_routing "Permission-gated router (default-deny); http_fetch/read_local_file/shell served by the local process, code_exec/eval_js routed to konard/box-dind:2.1.1"
     local_sync "Browser IndexedDB reconciled with the native store over /v1/memory/since and /v1/memory/import (demo_memory Links Notation)"
-    tools ("desktop_shell" "formal-ai serve" "v1_chat_completions" "v1_graph" "export_memory" "import_memory" "agent_permission_gate" "tool_router" "http_fetch" "read_local_file" "code_exec_box_dind" "memory_sync")
+    tools ("desktop_shell" "formal-ai serve" "v1_chat_completions" "v1_graph" "export_memory" "import_memory" "agent_permission_gate" "tool_router" "http_fetch" "read_local_file" "local_shell" "code_exec_box_dind" "memory_sync")
   environment vscode
     label "VS Code extension (desktop + web)"
     runtime "Dual host: Node extension host (desktop/remote) and Web Worker host (vscode.dev/github.dev); in-process agent by default, optional local Rust HTTP API on the Node host"
@@ -58,9 +58,9 @@ environments
     bundle_import_command "Import memory button or formal-ai memory import --path PATH (Node host)"
     start_command "Install the .vsix or run npm --prefix vscode run dev, then run formal-ai: Open Chat; the local server is opt-in via the formal-ai.server.enabled setting (Node host only)"
     package_command "npm --prefix vscode run package (vsce package)"
-    tool_routing "Permission-gated router (default-deny) on the Node host; http_fetch/read_local_file served by the local process, code_exec/shell routed to the configured konard/box-dind:2.1.1 sandbox; the web host stays in-process with no tool execution"
+    tool_routing "Permission-gated router (default-deny) on the Node host; http_fetch/read_local_file/shell served by the local process, code_exec/eval_js routed to the configured konard/box-dind:2.1.1 sandbox; the web host stays in-process with no tool execution"
     local_sync "Webview IndexedDB reconciled with the native store over /v1/memory/since and /v1/memory/import on the Node host (demo_memory Links Notation); the web host keeps memory in the browser"
-    tools ("vscode_webview" "formal-ai serve" "v1_chat_completions" "v1_graph" "export_memory" "import_memory" "agent_permission_gate" "tool_router" "http_fetch" "read_local_file" "code_exec_box_dind" "memory_sync")
+    tools ("vscode_webview" "formal-ai serve" "v1_chat_completions" "v1_graph" "export_memory" "import_memory" "agent_permission_gate" "tool_router" "http_fetch" "read_local_file" "local_shell" "code_exec_box_dind" "memory_sync")
   environment telegram
     label "Telegram bot (polling or webhook)"
     runtime "Rust binary forwarding to the shared engine"

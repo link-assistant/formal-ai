@@ -57,13 +57,17 @@ use super::finalize_simple;
 /// target language and a code+result request. A follow-up imperative over a new
 /// list of numbers continues that coding context. We recover the missing
 /// parameters from history rather than hardcoding the reported prompt.
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Default)]
 struct InheritedCoding {
     /// The most recent programming language the user asked numeric-list code in.
     language: Option<&'static ProgramLanguage>,
     /// Whether an earlier numeric-list turn explicitly asked for code, so a bare
     /// reduction follow-up ("sum them") still counts as a code request.
     code_requested: bool,
+    /// The list of numbers from the most recent numeric-list turn, inherited
+    /// when a bare operation follow-up names an operation but no numbers of its
+    /// own (issue #427: "Сделай инверсию сортировки." after a prior sort).
+    items: Vec<ParsedListItem>,
 }
 
 /// Whether a list transformation orders the numbers up, down, or simply flips
@@ -191,9 +195,10 @@ pub fn try_numeric_list_with_history(
     history: &[ConversationTurn],
 ) -> Option<SymbolicAnswer> {
     let inherited = numeric_list_history_context(history);
-    let has_inheritance = inherited.language.is_some() || inherited.code_requested;
+    let has_inheritance =
+        inherited.language.is_some() || inherited.code_requested || !inherited.items.is_empty();
     let solution = if has_inheritance {
-        solve_numeric_list_with_context(prompt, inherited)?
+        solve_numeric_list_with_context(prompt, &inherited)?
     } else {
         solve_numeric_list(prompt)?
     };
@@ -260,7 +265,7 @@ pub fn try_numeric_list_with_history(
 /// resolves through the token-boundary alias matcher.
 #[must_use]
 pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
-    solve_numeric_list_with_context(prompt, InheritedCoding::default())
+    solve_numeric_list_with_context(prompt, &InheritedCoding::default())
 }
 
 /// Core solver with optional conversation-inherited coding context (issue #412).
@@ -270,7 +275,7 @@ pub fn solve_numeric_list(prompt: &str) -> Option<NumericListSolution> {
 #[must_use]
 fn solve_numeric_list_with_context(
     prompt: &str,
-    inherited: InheritedCoding,
+    inherited: &InheritedCoding,
 ) -> Option<NumericListSolution> {
     let normalized = crate::web_engine_core::normalize_prompt(prompt);
     let normalized = normalized.as_str();
@@ -302,7 +307,13 @@ fn solve_numeric_list_with_context(
     // The target language may come from this turn or, for a bare follow-up, from
     // the most recent numeric-list coding turn in the conversation.
     let language = crate::coding::program_language_by_alias(normalized).or(inherited.language)?;
-    let items = parse_list_items(prompt, operation);
+    let mut items = parse_list_items(prompt, operation);
+    // Issue #427: a bare operation follow-up ("Сделай инверсию сортировки.")
+    // names no numbers of its own — it refers to the list from the previous
+    // numeric-list turn. Inherit that list so the operation has data to act on.
+    if items.is_empty() && !inherited.items.is_empty() {
+        items.clone_from(&inherited.items);
+    }
     if items.len() < 2 {
         return None;
     }
@@ -349,6 +360,7 @@ fn solve_numeric_list_with_context(
 /// language into a later follow-up (issue #412).
 fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding {
     let vocabulary = crate::seed::operation_vocabulary();
+    let mut inherited = InheritedCoding::default();
     for turn in history.iter().rev() {
         if turn.role != ConversationRole::User {
             continue;
@@ -358,18 +370,29 @@ fn numeric_list_history_context(history: &[ConversationTurn]) -> InheritedCoding
         if detect_operation(&vocabulary, normalized).is_none() {
             continue;
         }
-        let Some(language) = crate::coding::program_language_by_alias(normalized) else {
-            continue;
-        };
-        if parse_numbers(&turn.content).len() < 2 {
+        let numbers = parse_numbers(&turn.content);
+        if numbers.len() < 2 {
             continue;
         }
-        return InheritedCoding {
-            language: Some(language),
-            code_requested: vocabulary.matches("code_request", normalized),
-        };
+        // The most recent numeric-list turn with a concrete list seeds the list
+        // a bare operation follow-up inherits (issue #427). This turn may name
+        // no language of its own — the language is recovered separately below.
+        if inherited.items.is_empty() {
+            inherited.items = numbers;
+        }
+        // The language (and code request) come from the most recent turn that
+        // named a programming language alongside its list (issue #412).
+        if inherited.language.is_none() {
+            if let Some(language) = crate::coding::program_language_by_alias(normalized) {
+                inherited.language = Some(language);
+                inherited.code_requested = vocabulary.matches("code_request", normalized);
+            }
+        }
+        if !inherited.items.is_empty() && inherited.language.is_some() {
+            break;
+        }
     }
-    InheritedCoding::default()
+    inherited
 }
 
 /// Recognize which numeric-list operation the prompt asks for, in priority

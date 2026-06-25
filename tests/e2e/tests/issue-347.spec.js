@@ -169,7 +169,8 @@ test.describe('Issue #347 — /download page', () => {
     await expect(page.locator('[data-testid="primary-download"]')).toBeVisible();
     const back = page.locator('[data-testid="back-to-app"]');
     await expect(back).toBeVisible();
-    await expect(back).toHaveAttribute('href', '../');
+    // The app lives under /app/ (issue #479); the back link points there.
+    await expect(back).toHaveAttribute('href', '../app/');
   });
 
   test('respects the theme preference and live theme switching (R2)', async ({ page }) => {
@@ -276,7 +277,8 @@ test.describe('Issue #347 — preview & page screenshots (R2)', () => {
         await page.setViewportSize({ width: 1280, height: 832 });
 
         // --- In-window app preview (screenshot of the real chat app) ----------
-        await page.goto('/');
+        // The app lives under /app/ (issue #479); baseURL targets it, so './'.
+        await page.goto('./');
         await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
         await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
         await expect(page.locator('html')).toHaveAttribute('lang', locale);
@@ -307,7 +309,7 @@ test.describe('Issue #347 — preview & page screenshots (R2)', () => {
     await page.addInitScript(seedPreferences, { theme: 'dark', locale: 'en', release: RELEASE });
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1280, height: 832 });
-    await page.goto('/');
+    await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
     await page.waitForTimeout(500);

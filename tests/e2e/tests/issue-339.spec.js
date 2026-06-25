@@ -142,7 +142,7 @@ test.describe('Issue #339 — agent research table follow-up', () => {
   });
 
   test('reported search-then-table prompt does not fall through to unknown', async ({ page }) => {
-    await page.locator('[data-testid="agent-toggle"]').click();
+    await page.locator('[data-testid="mode-option-agent"]').click();
 
     const last = await sendPrompt(page, REPORTED_PROMPT);
 
