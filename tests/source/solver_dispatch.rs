@@ -21,11 +21,11 @@ use crate::solver_handlers::{
     try_meta_explanation, try_meta_explanation_with_runtime, try_network_query, try_numeric_list,
     try_numeric_list_with_history, try_opinion_question, try_program_synthesis, try_proof_request,
     try_proof_request_with_config, try_punctuation_only_prompt, try_research_comparison_table,
-    try_roleplay_request, try_shell_refusal, try_software_project_followup,
-    try_software_project_request, try_source_conflict, try_source_refresh,
-    try_summarization_request, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_web_search, try_who_is_question, try_write_script,
-    SelfAwarenessRuntime,
+    try_research_result_followup, try_roleplay_request, try_shell_refusal,
+    try_software_project_followup, try_software_project_request, try_source_conflict,
+    try_source_refresh, try_summarization_request, try_text_manipulation,
+    try_text_manipulation_with_history, try_translation, try_url_navigate, try_web_search,
+    try_who_is_question, try_write_script, SelfAwarenessRuntime,
 };
 use crate::solver_handlers_policy::{try_kupi_slona, try_physical_action_question};
 
@@ -116,6 +116,7 @@ pub const SPECIALIZED_HANDLERS: &[(&str, SpecializedHandler)] = &[
     ("url_navigate", try_url_navigate),
     ("web_search", try_web_search),
     ("research_comparison_table", try_research_comparison_table),
+    ("research_result_followup", try_research_result_followup),
     ("docs_method_explanation", try_docs_method_explanation),
     ("procedural_how_to", try_how_to_procedure),
     ("conversation_memory", try_conversation_memory),

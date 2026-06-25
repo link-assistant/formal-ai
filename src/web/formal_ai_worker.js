@@ -33604,6 +33604,100 @@ function tryResearchComparisonTable(prompt, normalized, history = []) {
   };
 }
 
+const RESEARCH_RESULT_FOLLOWUP_PROMPTS = new Set([
+  "result",
+  "the result",
+  "what result",
+  "what is result",
+  "what s the result",
+  "what is the result",
+  "what was the result",
+  "what are the results",
+  "what were the results",
+  "show the result",
+  "show the results",
+  "give me the result",
+  "give me the results",
+  "what is the answer",
+  "what was the answer",
+  "what did you find",
+  "what did we find",
+  "what is the outcome",
+  "what was the outcome",
+]);
+
+function isResearchResultFollowup(normalized) {
+  return RESEARCH_RESULT_FOLLOWUP_PROMPTS.has(normalizePrompt(normalized));
+}
+
+function classifyPriorResearchAnswer(answer) {
+  const normalized = normalizePrompt(answer || "");
+  if (
+    normalized.includes("no cors enabled web search results") ||
+    normalized.includes("no cors readable web search results") ||
+    normalized.includes("no usable cors search results") ||
+    normalized.includes("не получены результаты веб поиска") ||
+    normalized.includes("未获取到") ||
+    normalized.includes("कोई खोज परिणाम नहीं")
+  ) {
+    return "no_results";
+  }
+  if (
+    normalized.includes("all cors readable search providers are disabled") ||
+    normalized.includes("all cors enabled search providers are disabled") ||
+    normalized.includes("все cors совместимые поисковые провайдеры отключены") ||
+    normalized.includes("所有支持 cors 的搜索提供方都已禁用") ||
+    normalized.includes("सभी cors समर्थित खोज प्रदाता अक्षम हैं")
+  ) {
+    return "all_providers_disabled";
+  }
+  if (
+    normalized.includes("web search requested") ||
+    normalized.includes("open research question detected") ||
+    normalized.includes("search providers that can be queried") ||
+    normalized.includes("verify claims against")
+  ) {
+    return "search_plan_only";
+  }
+  return "open_research";
+}
+
+function researchPromptPreview(value) {
+  const compact = compactResearchLogValue(value);
+  const chars = Array.from(compact);
+  return chars.length <= 240 ? compact : `${chars.slice(0, 237).join("")}...`;
+}
+
+function renderResearchResultFollowup(priorSearch, status) {
+  const preview = researchPromptPreview(priorSearch);
+  if (status === "no_results") {
+    return `The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: \`${preview}\`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources.`;
+  }
+  if (status === "all_providers_disabled") {
+    return `The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: \`${preview}\`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources.`;
+  }
+  if (status === "search_plan_only") {
+    return `The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: \`${preview}\`\n\nNext step: run the source search and use the returned sources to finish the calculation.`;
+  }
+  return `There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: \`${preview}\`\n\nNext step: run the search or provide source links; then I can produce the requested result.`;
+}
+
+function tryResearchResultFollowup(prompt, normalized, history = []) {
+  if (!isResearchResultFollowup(normalized)) return null;
+  const priorSearch = lastHistoryTurn(history, "user");
+  if (!priorSearch || !looksLikeResearchPrompt(priorSearch)) return null;
+  const status = classifyPriorResearchAnswer(lastHistoryTurn(history, "assistant"));
+  return {
+    intent: "research_result_followup",
+    content: renderResearchResultFollowup(priorSearch, status),
+    confidence: 0.76,
+    evidence: [
+      `research_result_followup:prior_search:${compactResearchLogValue(priorSearch)}`,
+      `research_result_followup:status:${status}`,
+    ],
+  };
+}
+
 // Issue #386: a conversation-summary request is recognised by composing
 // meaning roles, not by matching raw words per language. The universal
 // algorithm is identical for every language: the prompt either carries a
@@ -37791,6 +37885,10 @@ async function solve(prompt, history, prefs, userContext = {}) {
     {
       name: "tryResearchComparisonTable",
       run: () => tryResearchComparisonTable(prompt, normalized, history),
+    },
+    {
+      name: "tryResearchResultFollowup",
+      run: () => tryResearchResultFollowup(prompt, normalized, history),
     },
     { name: "tryBrainstormingRequest", run: () => tryBrainstormingRequest(prompt, normalized) },
     { name: "tryRoleplayRequest", run: () => tryRoleplayRequest(prompt, normalized) },
