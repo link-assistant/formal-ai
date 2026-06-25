@@ -1,0 +1,154 @@
+tests/unit/docs_requirements_issue_563.rs:5:fn issue_563_repository_file_summarization_documents_are_traceable() {
+tests/unit/docs_requirements_issue_563.rs:24:            "formalize_repository_file",
+tests/unit/docs_requirements_issue_563.rs:25:            "summarize_repository_file",
+tests/unit/docs_requirements_issue_563.rs:47:            "formalize_repository_file(path, content)",
+tests/unit/docs_requirements_issue_563.rs:50:            "summarize_repository_file",
+tests/unit/docs_requirements_issue_563.rs:84:            "meta_language::LinkNetwork",
+tests/unit/docs_requirements_issue_563.rs:97:        "docs/case-studies/issue-563/raw-data/code-search-summarization.txt",
+tests/unit/docs_requirements_issue_563.rs:99:        "docs/case-studies/issue-563/raw-data/local-summarization-survey.txt",
+tests/unit/docs_requirements_issue_563.rs:100:        "docs/case-studies/issue-563/raw-data/recent-merged-summarization-prs.json",
+README.md:521:- generic project lookups for GitHub/GitLab/Bitbucket repository URLs plus default-on promotion for matching `link-assistant`, `link-foundation`, and `linksplatform` projects such as `What is Hive Mind?`, `Что такое Hive Mind?`, and `What is link-cli?`; promoted answers are generated from `data/seed/projects.lino` through the deterministic `formalize → summarize → deformalize` pipeline in `src/summarization/` (split into `mod.rs`, `markdown.rs`, `dialog.rs`, and `file.rs`), which also drives README ingestion, repository-file summaries with recursive Markdown embedded-grammar formalization, multi-turn dialog summaries, and chat-title generation (see [ARCHITECTURE.md § 7.1](ARCHITECTURE.md#71-project-lookups-and-summarization))
+tests/unit/specification/summarization_pipeline.rs:4://! These tests pin down the public surface exposed from `src/summarization.rs`
+tests/unit/specification/summarization_pipeline.rs:5://! (README ingestion, dialog summarization, chat-title generation) so the
+tests/unit/specification/summarization_pipeline.rs:8:use formal_ai::summarization::{
+tests/unit/specification/summarization_pipeline.rs:9:    apply_compound_words, apply_semantic_primes, deformalize, describe_readme, formalize,
+tests/unit/specification/summarization_pipeline.rs:10:    formalize_dialog, formalize_markdown, generate_chat_title, strip_markdown_noise,
+tests/unit/specification/summarization_pipeline.rs:11:    summarize_dialog, summarize_repository_file, DialogTurn, StatementKind, SummarizationConfig,
+tests/unit/specification/summarization_pipeline.rs:24:fn summarization_mode_target_percent_matches_vision() {
+tests/unit/specification/summarization_pipeline.rs:57:fn formalize_markdown_classifies_install_and_purpose_lines() {
+tests/unit/specification/summarization_pipeline.rs:59:    let statements = formalize_markdown(markdown);
+tests/unit/specification/summarization_pipeline.rs:75:fn describe_readme_short_keeps_purpose_drops_install() {
+tests/unit/specification/summarization_pipeline.rs:80:    let summary = describe_readme("link-assistant/formal-ai", markdown, &config);
+tests/unit/specification/summarization_pipeline.rs:93:fn describe_readme_topic_returns_repo_slug() {
+tests/unit/specification/summarization_pipeline.rs:98:    let topic = describe_readme("link-assistant/formal-ai", markdown, &config);
+tests/unit/specification/summarization_pipeline.rs:133:fn summarize_dialog_short_keeps_user_questions() {
+tests/unit/specification/summarization_pipeline.rs:143:    let summary = summarize_dialog(&turns, &config);
+tests/unit/specification/summarization_pipeline.rs:173:    let kept = formal_ai::summarization::summarize(&statements, &config);
+tests/unit/specification/summarization_pipeline.rs:209:    let summary = summarize_repository_file("docs/example.md", markdown, &config);
+ARCHITECTURE.md:543:### 7.1 Project lookups and summarization
+ARCHITECTURE.md:557:2. **Formalize → summarize → deformalize pipeline.** `src/summarization.rs`
+ARCHITECTURE.md:574:   log `project:promoted`, `summarization:mode`, `summarization:language`, the
+ARCHITECTURE.md:587:  cleaned prose is fed through `formalize_markdown` (a thin wrapper around
+ARCHITECTURE.md:588:  `formalize`) and `describe_readme(repo_slug, markdown, &config)`. In
+ARCHITECTURE.md:591:- **Repository-file summaries.** `formalize_repository_file(path, content)`
+ARCHITECTURE.md:596:  `meta_language::LinkNetwork` (parser label, syntax-link count, total-link
+ARCHITECTURE.md:598:  formalized recursively: prose is summarized through `formalize_markdown`, and
+ARCHITECTURE.md:600:  normalized language label and optional parser evidence. `summarize_repository_file`
+ARCHITECTURE.md:604:- **Dialog summarization.** `DialogTurn { role, text }` and
+ARCHITECTURE.md:607:  lot. `summarize_dialog(turns, &config)` runs the result through
+ARCHITECTURE.md:611:  `prior_turn:assistant` events into `DialogTurn`s, calls `summarize_dialog`
+ARCHITECTURE.md:612:  in `Standard` mode, and logs `summarization:mode`,
+ARCHITECTURE.md:613:  `summarization:language`, and `chat_title` evidence alongside the
+ARCHITECTURE.md:619:  records `http_fetch:curated_project`, `summarization:mode`, and
+ARCHITECTURE.md:620:  `summarization:language` so the path from URL → curated record → summary
+ARCHITECTURE.md:623:The shared `DEFAULT_MAX_STATEMENTS = 30` constant in `src/summarization.rs`
+src/summarization/dialog.rs:1://! Dialog-aware helpers for the summarization pipeline.
+src/summarization/dialog.rs:4://! `formalize_dialog` → `summarize_dialog` → `generate_chat_title` chain runs
+src/summarization/dialog.rs:13:/// A single dialog turn passed to [`summarize_dialog`] /
+src/summarization/dialog.rs:72:pub fn summarize_dialog(turns: &[DialogTurn], config: &SummarizationConfig) -> String {
+src/summarization/dialog.rs:89:/// Equivalent to running [`summarize_dialog`] in `Topic` mode but spelled
+src/summarization/dialog.rs:97:    summarize_dialog(turns, &config)
+src/summarization/markdown.rs:1://! Markdown README ingestion for the summarization pipeline.
+src/summarization/markdown.rs:4://! [`super::formalize`] can run unmodified, and expose a [`describe_readme`]
+src/summarization/markdown.rs:179:pub fn formalize_markdown(markdown: &str) -> Vec<Statement> {
+src/summarization/markdown.rs:191:pub fn describe_readme(repo_slug: &str, markdown: &str, config: &SummarizationConfig) -> String {
+src/summarization/markdown.rs:192:    let statements = formalize_markdown(markdown);
+src/summarization/file.rs:1://! Repository-file formalization and summarization.
+src/summarization/file.rs:11:use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
+src/summarization/file.rs:16:    deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
+src/summarization/file.rs:45:    pub meta_language: Option<MetaLanguageFormalization>,
+src/summarization/file.rs:57:    pub meta_language: Option<MetaLanguageFormalization>,
+src/summarization/file.rs:75:        if let Some(meta) = &self.meta_language {
+src/summarization/file.rs:76:            push_meta_language(&mut out, 1, meta);
+src/summarization/file.rs:94:            if let Some(meta) = &embedded.meta_language {
+src/summarization/file.rs:95:                push_meta_language(&mut out, 2, meta);
+src/summarization/file.rs:105:pub fn formalize_repository_file(path: &str, content: &str) -> RepositoryFileFormalization {
+src/summarization/file.rs:107:    let meta_language = meta_language_label_for_format(format)
+src/summarization/file.rs:108:        .map(|label| parse_with_meta_language(label, content));
+src/summarization/file.rs:110:        formalize_markdown_embedded_grammars(content)
+src/summarization/file.rs:130:        meta_language,
+src/summarization/file.rs:134:/// Summarize any repository file with the existing summarization configuration.
+src/summarization/file.rs:136:pub fn summarize_repository_file(
+src/summarization/file.rs:141:    let formalized = formalize_repository_file(path, content);
+src/summarization/file.rs:157:    if let Some(meta) = &formalized.meta_language {
+src/summarization/file.rs:193:    let mut statements = formalize_markdown(content);
+src/summarization/file.rs:238:fn formalize_markdown_embedded_grammars(markdown: &str) -> Vec<EmbeddedGrammarFormalization> {
+src/summarization/file.rs:275:    let meta_language = meta_language_label_for_format(&language)
+src/summarization/file.rs:276:        .map(|label| parse_with_meta_language(label, &block.source));
+src/summarization/file.rs:281:        meta_language,
+src/summarization/file.rs:339:fn parse_with_meta_language(label: &str, source: &str) -> MetaLanguageFormalization {
+src/summarization/file.rs:411:fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+src/summarization/file.rs:699:fn push_meta_language(out: &mut String, indent: usize, meta: &MetaLanguageFormalization) {
+src/summarization/file.rs:701:    let _ = writeln!(out, "meta_language");
+tests/source/source_tests/summarization/mod/tests.rs:308:fn formalize_markdown_yields_statements_for_readme_prose() {
+tests/source/source_tests/summarization/mod/tests.rs:311:    let stmts = formalize_markdown(md);
+tests/source/source_tests/summarization/mod/tests.rs:320:fn describe_readme_strips_boilerplate_and_keeps_purpose() {
+tests/source/source_tests/summarization/mod/tests.rs:329:    let description = describe_readme(
+tests/source/source_tests/summarization/mod/tests.rs:342:fn describe_readme_topic_mode_returns_repo_slug() {
+tests/source/source_tests/summarization/mod/tests.rs:343:    let topic = describe_readme(
+tests/source/source_tests/summarization/mod/tests.rs:353:fn formalize_repository_file_markdown_records_embedded_grammars() {
+tests/source/source_tests/summarization/mod/tests.rs:362:    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+tests/source/source_tests/summarization/mod/tests.rs:375:fn formalize_repository_file_markdown_closes_embedded_grammar_at_eof() {
+tests/source/source_tests/summarization/mod/tests.rs:379:    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+tests/source/source_tests/summarization/mod/tests.rs:385:fn formalize_repository_file_rust_records_meta_language_and_symbols() {
+tests/source/source_tests/summarization/mod/tests.rs:390:    let formalized = formalize_repository_file("src/file_summary.rs", source);
+tests/source/source_tests/summarization/mod/tests.rs:401:        .meta_language
+tests/source/source_tests/summarization/mod/tests.rs:410:fn summarize_dialog_keeps_user_question_over_assistant_chatter() {
+tests/source/source_tests/summarization/mod/tests.rs:416:    let summary = summarize_dialog(
+tests/source/summarization/dialog.rs:1://! Dialog-aware helpers for the summarization pipeline.
+tests/source/summarization/dialog.rs:4://! `formalize_dialog` → `summarize_dialog` → `generate_chat_title` chain runs
+tests/source/summarization/dialog.rs:13:/// A single dialog turn passed to [`summarize_dialog`] /
+tests/source/summarization/dialog.rs:72:pub fn summarize_dialog(turns: &[DialogTurn], config: &SummarizationConfig) -> String {
+tests/source/summarization/dialog.rs:89:/// Equivalent to running [`summarize_dialog`] in `Topic` mode but spelled
+tests/source/summarization/dialog.rs:97:    summarize_dialog(turns, &config)
+tests/source/summarization/mod.rs:31://! - [`describe_readme`] — Markdown README text → language-aware description
+tests/source/summarization/mod.rs:34://! - [`summarize_dialog`] — chat turns → short recap of the conversation.
+tests/source/summarization/mod.rs:36://! - [`summarize_repository_file`] — repository path + file content → file
+tests/source/summarization/mod.rs:40://! See `ARCHITECTURE.md` § "Project lookups and summarization" for how
+tests/source/summarization/mod.rs:135:/// A single normalized statement participating in the summarization pipeline.
+tests/source/summarization/mod.rs:202:/// Configuration for the summarization pipeline. Every knob has a sensible
+tests/source/summarization/mod.rs:546:pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+tests/source/summarization/mod.rs:548:    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
+tests/source/summarization/mod.rs:551:pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
+tests/source/summarization/mod.rs:553:#[path = "../source_tests/summarization/mod/tests.rs"]
+tests/source/summarization/file.rs:1://! Repository-file formalization and summarization.
+tests/source/summarization/file.rs:11:use meta_language::{LinkNetwork, LinkType, NetworkProjection, ParseConfiguration};
+tests/source/summarization/file.rs:16:    deformalize, formalize, formalize_markdown, summarize, Statement, StatementKind,
+tests/source/summarization/file.rs:45:    pub meta_language: Option<MetaLanguageFormalization>,
+tests/source/summarization/file.rs:57:    pub meta_language: Option<MetaLanguageFormalization>,
+tests/source/summarization/file.rs:75:        if let Some(meta) = &self.meta_language {
+tests/source/summarization/file.rs:76:            push_meta_language(&mut out, 1, meta);
+tests/source/summarization/file.rs:94:            if let Some(meta) = &embedded.meta_language {
+tests/source/summarization/file.rs:95:                push_meta_language(&mut out, 2, meta);
+tests/source/summarization/file.rs:105:pub fn formalize_repository_file(path: &str, content: &str) -> RepositoryFileFormalization {
+tests/source/summarization/file.rs:107:    let meta_language = meta_language_label_for_format(format)
+tests/source/summarization/file.rs:108:        .map(|label| parse_with_meta_language(label, content));
+tests/source/summarization/file.rs:110:        formalize_markdown_embedded_grammars(content)
+tests/source/summarization/file.rs:130:        meta_language,
+tests/source/summarization/file.rs:134:/// Summarize any repository file with the existing summarization configuration.
+tests/source/summarization/file.rs:136:pub fn summarize_repository_file(
+tests/source/summarization/file.rs:141:    let formalized = formalize_repository_file(path, content);
+tests/source/summarization/file.rs:157:    if let Some(meta) = &formalized.meta_language {
+tests/source/summarization/file.rs:193:    let mut statements = formalize_markdown(content);
+tests/source/summarization/file.rs:238:fn formalize_markdown_embedded_grammars(markdown: &str) -> Vec<EmbeddedGrammarFormalization> {
+tests/source/summarization/file.rs:275:    let meta_language = meta_language_label_for_format(&language)
+tests/source/summarization/file.rs:276:        .map(|label| parse_with_meta_language(label, &block.source));
+tests/source/summarization/file.rs:281:        meta_language,
+tests/source/summarization/file.rs:339:fn parse_with_meta_language(label: &str, source: &str) -> MetaLanguageFormalization {
+tests/source/summarization/file.rs:411:fn meta_language_label_for_format(format: &str) -> Option<&'static str> {
+tests/source/summarization/file.rs:699:fn push_meta_language(out: &mut String, indent: usize, meta: &MetaLanguageFormalization) {
+tests/source/summarization/file.rs:701:    let _ = writeln!(out, "meta_language");
+tests/source/summarization/markdown.rs:1://! Markdown README ingestion for the summarization pipeline.
+tests/source/summarization/markdown.rs:4://! [`super::formalize`] can run unmodified, and expose a [`describe_readme`]
+tests/source/summarization/markdown.rs:179:pub fn formalize_markdown(markdown: &str) -> Vec<Statement> {
+tests/source/summarization/markdown.rs:191:pub fn describe_readme(repo_slug: &str, markdown: &str, config: &SummarizationConfig) -> String {
+tests/source/summarization/markdown.rs:192:    let statements = formalize_markdown(markdown);
+src/summarization/mod.rs:31://! - [`describe_readme`] — Markdown README text → language-aware description
+src/summarization/mod.rs:34://! - [`summarize_dialog`] — chat turns → short recap of the conversation.
+src/summarization/mod.rs:36://! - [`summarize_repository_file`] — repository path + file content → file
+src/summarization/mod.rs:40://! See `ARCHITECTURE.md` § "Project lookups and summarization" for how
+src/summarization/mod.rs:135:/// A single normalized statement participating in the summarization pipeline.
+src/summarization/mod.rs:202:/// Configuration for the summarization pipeline. Every knob has a sensible
+src/summarization/mod.rs:546:pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+src/summarization/mod.rs:548:    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
+src/summarization/mod.rs:551:pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};

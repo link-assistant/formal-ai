@@ -1,0 +1,30 @@
+link-assistant/formal-ai:changelog.d/20260520_134500_issue_159_summarization_extensions.md: - Extended the `summarization` module (`src/summarization.rs`) with a README
+link-assistant/agent:js/src/session/summary.ts: // Skip AI-powered summarization if disabled
+link-assistant/agent:js/src/session/summary.ts: message: 'session summarization disabled',
+link-assistant/hive-mind:docs/case-studies/issue-800/json-examples.md: 3. **Tool results** - Often very long, may need summarization
+link-assistant/formal-ai:src/summarization/dialog.rs: //! Dialog-aware helpers for the summarization pipeline.
+link-assistant/formal-ai:src/summarization/dialog.rs: deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
+link-assistant/meta-expression:docs/case-studies/issue-54/README.md: | Formalize, summarize, deformalize pipeline | `tests/unit/specification/summarization_pipeline.rs`                | Rust naturalize/deformalize alias, JS hook surface, source linguistic metadata      |
+link-assistant/agent:js/CHANGELOG.md: - b3989c2: fix: use compaction model (--compaction-model) for summarization to avoid doubling rate-limit pressure on free-tier main models (#223)
+link-assistant/agent:js/CHANGELOG.md: - 99b34ec: Enable --summarize-session by default and use the same model as --model for session summarization. Add 15% safety margin to compaction overflow detection, context diagnostics to step-finish JSON output, and detailed logging for overflow checks.
+link-assistant/formal-ai:src/summarization/markdown.rs: //! Markdown README ingestion for the summarization pipeline.
+link-assistant/formal-ai:src/summarization/markdown.rs: deformalize, formalize, summarize, to_topic, Statement, SummarizationConfig, SummarizationMode,
+link-assistant/hive-mind:docs/case-studies/issue-984-harmful-prompts/harmful-patterns-database.md: Attempts to prevent the model from using efficient summarization.
+link-assistant/meta-expression:docs/case-studies/issue-54/ONLINE-RESEARCH.md: `tests/unit/specification/summarization_pipeline.rs`, `tests/unit/formal_ai.rs`,
+link-assistant/agent:docs/case-studies/issue-196/full-log.txt: [2026-02-18T12:39:46.635Z] [INFO]   "message": "session summarization disabled"
+link-assistant/agent:docs/case-studies/issue-196/full-log.txt: [2026-02-18T12:39:53.267Z] [INFO]   "message": "session summarization disabled"
+link-assistant/meta-expression:docs/case-studies/issue-37/data/formal-ai-app.js.txt: { label: "Summarization", text: "Summarize this conversation" },
+link-assistant/hive-mind:docs/case-studies/issue-1861/docker-git-pr-387-coderabbit-comment-4646545475.json: "description": "# Transforming Code Reviews with AI\r\n\r\n## Features\r\n\r\n**Automated Reviews**: Continuous reviews of the pull requests including incremental commits. \r\n\r\n**Summarization**: Generates high-level summary and a technical walkthrough of the PR changes. \r\n\r\n**Line-by-line review**: Provides line-by-line suggestions committable with one click.\r\n\r\n**Codebase verification**:  Verifies the impact on the overall codebase and identifies missing changes.\r\n\r\n**Insights into your code**:  Ask any questions on your codebase within the pull request \r\n\r\n**Chat about your code** : Chat with the bot around your code. The more you chat, the smarter it gets.\r\n\r\n**Issue Validation**:  Validates the PR against the linked issues and identifies other related issues \r\n\r\n\r\n\r\n",
+link-assistant/formal-ai:src/lib.rs: pub mod summarization;
+link-assistant/formal-ai:src/lib.rs: pub use summarization::{
+link-assistant/agent:js/src/provider/provider.ts: * Get a small/cheap model for auxiliary tasks like title generation and summarization.
+link-assistant/formal-ai:data/seed/summary-topics.lino: fallback_body "<topic> summary: the request is recorded as a bounded summarization task with a topic, constraint, and trace link."
+link-assistant/meta-expression:docs/case-studies/issue-58/ONLINE-RESEARCH.md: | Pipeline               | Formalization → Summarization → Deformalization (naturalization)                                                 | README                                  |
+link-assistant/agent:docs/case-studies/issue-204/solution-draft-log.txt: [2026-02-23T13:23:19.405Z] [INFO]   "message": "session summarization disabled"
+link-assistant/agent:docs/case-studies/issue-204/solution-draft-log.txt: [2026-02-23T13:23:26.194Z] [INFO]   "message": "session summarization disabled"
+link-assistant/formal-ai:src/seed/summary_topics.rs: //! Summarization-topic records loaded from `data/seed/summary-topics.lino`.
+link-assistant/formal-ai:src/seed/summary_topics.rs: //! the canned one-paragraph body the summarization handler emits when the
+link-assistant/agent:docs/case-studies/issue-211/verbose-session-log.txt: [2026-03-09T15:50:43.265Z] [INFO]   "message": "session summarization disabled"
+link-assistant/agent:docs/case-studies/issue-211/verbose-session-log.txt: [2026-03-09T15:50:59.817Z] [INFO]   "message": "session summarization disabled"
+link-assistant/formal-ai:src/solver_dispatch.rs: try_source_refresh, try_summarization_request, try_text_manipulation,
+link-assistant/formal-ai:src/solver_dispatch.rs: ("summarization", try_summarization_request),

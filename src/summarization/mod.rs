@@ -33,6 +33,15 @@
 //!   formalization).
 //! - [`summarize_dialog`] — chat turns → short recap of the conversation.
 //! - [`generate_chat_title`] — chat turns → 1–5 word chat title.
+//! - [`summarize_repository_file`] — repository path + file content → file
+//!   metadata, optional meta-language evidence, embedded Markdown grammars, and
+//!   content summary.
+//! - [`summarize_repository_resource`] — a [`RepositoryEntry`] tree (a file
+//!   **or** a directory/folder of arbitrary depth) → a recursively composed
+//!   summary. Directories decompose into children, summarize each child
+//!   (recursing into subdirectories), and compose the child summaries behind an
+//!   aggregate identity sentence, bounding depth via the mode ladder. This is
+//!   the general entry point that subsumes [`summarize_repository_file`].
 //!
 //! See `ARCHITECTURE.md` § "Project lookups and summarization" for how
 //! `project_lookup` chains the three stages together.
@@ -192,6 +201,18 @@ impl SummarizationMode {
             Self::Standard => 50,
             Self::Full => 100,
             Self::Expand => 200,
+        }
+    }
+
+    /// The next-shorter mode on the detail ladder, used to bound recursion when
+    /// composing nested summaries (a directory describes its children one mode
+    /// shorter than itself). `Topic` is the fixed point: it cannot get shorter.
+    #[must_use]
+    pub const fn one_step_shorter(self) -> Self {
+        match self {
+            Self::Expand | Self::Full => Self::Standard,
+            Self::Standard => Self::Short,
+            Self::Short | Self::Topic => Self::Topic,
         }
     }
 }
@@ -537,7 +558,17 @@ pub fn describe_project(project: &ProjectRecord, config: &SummarizationConfig) -
 }
 
 mod dialog;
+mod file;
 mod markdown;
+mod resource;
 
 pub use dialog::{formalize_dialog, generate_chat_title, summarize_dialog, DialogTurn};
+pub use file::{
+    formalize_repository_file, summarize_repository_file, EmbeddedGrammarFormalization,
+    MetaLanguageFormalization, RepositoryFileFormalization,
+};
 pub use markdown::{describe_readme, formalize_markdown, strip_markdown_noise};
+pub use resource::{
+    formalize_repository_directory, formalize_repository_resource, summarize_repository_resource,
+    RepositoryDirectoryFormalization, RepositoryEntry, RepositoryResourceFormalization,
+};

@@ -350,6 +350,63 @@ fn describe_readme_topic_mode_returns_repo_slug() {
 }
 
 #[test]
+fn formalize_repository_file_markdown_records_embedded_grammars() {
+    let markdown = "# File summary\n\n\
+                    Formal AI is designed to summarize repository files.\n\n\
+                    ```rust\n\
+                    pub fn summarize_file() -> &'static str { \"ok\" }\n\
+                    ```\n\n\
+                    ```javascript\n\
+                    export function renderSummary() { return 'ok'; }\n\
+                    ```\n";
+    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+    assert_eq!(formalized.format, "markdown");
+    assert_eq!(formalized.embedded_grammars.len(), 2);
+    assert_eq!(formalized.embedded_grammars[0].language, "rust");
+    assert_eq!(formalized.embedded_grammars[1].language, "javascript");
+    let lino = formalized.links_notation();
+    assert!(lino.contains("repository_file"));
+    assert!(lino.contains("embedded_grammar"));
+    assert!(lino.contains("language rust"));
+    assert!(lino.contains("language javascript"));
+}
+
+#[test]
+fn formalize_repository_file_markdown_closes_embedded_grammar_at_eof() {
+    let markdown = "# File summary\n\n\
+                    ```rust\n\
+                    pub struct FileSummary;\n";
+    let formalized = formalize_repository_file("docs/file-summary.md", markdown);
+    assert_eq!(formalized.embedded_grammars.len(), 1);
+    assert_eq!(formalized.embedded_grammars[0].language, "rust");
+}
+
+#[test]
+fn formalize_repository_file_rust_records_meta_language_and_symbols() {
+    let source = "pub struct FileSummary;\n\n\
+                  pub fn summarize_file() -> &'static str {\n\
+                  \"ok\"\n\
+                  }\n";
+    let formalized = formalize_repository_file("src/file_summary.rs", source);
+    assert_eq!(formalized.format, "rust");
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text.contains("rust struct FileSummary")));
+    assert!(formalized
+        .statements
+        .iter()
+        .any(|statement| statement.text.contains("rust function summarize_file")));
+    let meta = formalized
+        .meta_language
+        .as_ref()
+        .expect("Rust files should be parsed through meta-language");
+    assert_eq!(meta.label, "rust");
+    assert!(meta.syntax_link_count > 0);
+    assert!(meta.text_preserved);
+}
+
+#[test]
 fn summarize_dialog_keeps_user_question_over_assistant_chatter() {
     let turns = vec![
         DialogTurn::user("What is Hive Mind?"),
@@ -393,4 +450,92 @@ fn default_max_statements_constant_is_thirty() {
         .with_max_statements(DEFAULT_MAX_STATEMENTS);
     let out = summarize(&stmts, &config);
     assert_eq!(out.len(), DEFAULT_MAX_STATEMENTS);
+}
+
+// --- issue #563: recursive repository-resource (file + folder) summarization.
+
+fn sample_resource_tree() -> RepositoryEntry {
+    RepositoryEntry::directory(
+        "src/summarization",
+        vec![
+            RepositoryEntry::file(
+                "src/summarization/mod.rs",
+                "//! Summarization pipeline.\npub fn summarize() {}\n",
+            ),
+            RepositoryEntry::file(
+                "src/summarization/file.rs",
+                "//! File summary.\npub struct RepositoryFileFormalization;\n",
+            ),
+            RepositoryEntry::directory(
+                "src/summarization/nested",
+                vec![RepositoryEntry::file(
+                    "src/summarization/nested/readme.md",
+                    "# Nested\n\nThis explains nested things.\n",
+                )],
+            ),
+        ],
+    )
+}
+
+#[test]
+fn formalize_repository_directory_aggregates_counts_recursively() {
+    let tree = sample_resource_tree();
+    let children = match &tree {
+        RepositoryEntry::Directory { children, .. } => children.as_slice(),
+        RepositoryEntry::File { .. } => unreachable!(),
+    };
+    let formal = formalize_repository_directory("src/summarization", children);
+    assert_eq!(formal.direct_file_count, 2);
+    assert_eq!(formal.direct_directory_count, 1);
+    assert_eq!(formal.total_file_count, 3);
+    assert_eq!(formal.total_directory_count, 1);
+    assert!(formal.total_line_count > 0);
+    assert!(formal.total_byte_count > 0);
+}
+
+#[test]
+fn formalize_repository_resource_dispatches_on_entry_kind() {
+    let file = formalize_repository_resource(&RepositoryEntry::file("a.rs", "fn x() {}\n"));
+    assert!(!file.is_directory());
+    assert_eq!(file.path(), "a.rs");
+
+    let dir = formalize_repository_resource(&sample_resource_tree());
+    assert!(dir.is_directory());
+    assert_eq!(dir.path(), "src/summarization");
+}
+
+#[test]
+fn summarize_repository_resource_matches_file_summarizer_for_files() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Standard);
+    let content = "# Doc\n\nFormal AI summarizes files.\n";
+    let via_file = summarize_repository_file("docs/x.md", content, &config);
+    let via_resource =
+        summarize_repository_resource(&RepositoryEntry::file("docs/x.md", content), &config);
+    assert_eq!(via_file, via_resource);
+}
+
+#[test]
+fn summarize_repository_resource_topic_directory_is_identity_only() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Topic);
+    let summary = summarize_repository_resource(&sample_resource_tree(), &config);
+    assert!(summary.contains("is a repository directory with 2 files and 1 subdirectory"));
+    assert!(!summary.contains("Contents:"));
+}
+
+#[test]
+fn summarize_repository_resource_full_directory_recurses_into_nested_folder() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Full);
+    let summary = summarize_repository_resource(&sample_resource_tree(), &config);
+    assert!(summary.contains("Contents:"));
+    assert!(summary.contains("src/summarization/nested is a repository directory"));
+    assert!(summary.contains("src/summarization/nested/readme.md is a Markdown file"));
+}
+
+#[test]
+fn repository_directory_links_notation_lists_children_by_kind() {
+    let lino = formalize_repository_resource(&sample_resource_tree()).links_notation();
+    assert!(lino.starts_with("repository_directory"));
+    assert!(lino.contains("direct_file_count 2"));
+    assert!(lino.contains("file src/summarization/mod.rs"));
+    assert!(lino.contains("directory src/summarization/nested"));
 }

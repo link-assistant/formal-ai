@@ -580,7 +580,7 @@ The compression knobs are configurable from one struct (`SummarizationConfig`)
 so callers can dial topic labels, chat titles, project descriptions, or
 expanded explanations from the same pipeline.
 
-The same pipeline also drives three additional surfaces:
+The same pipeline also drives four additional surfaces:
 
 - **README ingestion.** `strip_markdown_noise` removes badges, fenced code
   blocks, HTML comments, heading markers, and blockquote chevrons. The
@@ -588,6 +588,38 @@ The same pipeline also drives three additional surfaces:
   `formalize`) and `describe_readme(repo_slug, markdown, &config)`. In
   `Topic` mode the helper returns the repository slug so the same call can
   serve as a chat-title source for a fetched repository.
+- **Repository-file summaries.** `formalize_repository_file(path, content)`
+  detects common repository file formats, records path/format/line/byte
+  metadata, converts file content into ranked statements, and renders the
+  result as link-native `repository_file` notation. Supported source and data
+  grammars also carry `MetaLanguageFormalization` evidence from
+  `meta_language::LinkNetwork` (parser label, syntax-link count, total-link
+  count, parse-error state, and text-preservation state). Markdown files are
+  formalized recursively: prose is summarized through `formalize_markdown`, and
+  each fenced code block becomes an `EmbeddedGrammarFormalization` with its own
+  normalized language label and optional parser evidence. `summarize_repository_file`
+  then reuses `SummarizationConfig`, `summarize`, and `deformalize` so file
+  summaries follow the same modes and caps as project, README, and dialog
+  summaries.
+- **Repository-resource summaries (files and folders).**
+  `src/summarization/resource.rs` generalizes file summarization to any
+  repository resource so the solution is not file-specialized. A caller builds a
+  filesystem-free `RepositoryEntry` tree (`RepositoryEntry::file` /
+  `RepositoryEntry::directory`); `formalize_repository_resource` then dispatches
+  on kind, reusing `formalize_repository_file` for files and recursing through
+  `formalize_repository_directory` for folders. A directory is summarized by the
+  meta algorithm's decompose -> summarize -> compose loop: it is split into its
+  children, each child is summarized on its own (files via `file.rs`,
+  subdirectories by recursion), and the child summaries are composed behind an
+  aggregate identity sentence carrying recursive file/subdirectory counts and
+  total lines/bytes. Recursion depth is bounded by the *mode ladder*
+  (`SummarizationMode::one_step_shorter`): a `Full` folder describes its direct
+  children in `Standard`, theirs in `Short`, and everything deeper as a `Topic`
+  label, so arbitrarily deep trees stay bounded while the most important
+  structure surfaces first. `RepositoryDirectoryFormalization::links_notation`
+  renders a link-native `repository_directory` block (path, counts, per-child
+  kind) for inspectable evidence, and `summarize_repository_resource` is the
+  general entry point that subsumes `summarize_repository_file` for file inputs.
 - **Dialog summarization.** `DialogTurn { role, text }` and
   `formalize_dialog` weight user turns +20 and assistant turns -10 so a
   short summary keeps the user's questions even when both sides talk a

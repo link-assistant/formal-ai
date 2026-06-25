@@ -7,9 +7,10 @@
 
 use formal_ai::summarization::{
     apply_compound_words, apply_semantic_primes, deformalize, describe_readme, formalize,
-    formalize_dialog, formalize_markdown, generate_chat_title, strip_markdown_noise,
-    summarize_dialog, DialogTurn, StatementKind, SummarizationConfig, SummarizationMode,
-    DEFAULT_MAX_STATEMENTS,
+    formalize_dialog, formalize_markdown, formalize_repository_resource, generate_chat_title,
+    strip_markdown_noise, summarize_dialog, summarize_repository_file,
+    summarize_repository_resource, DialogTurn, RepositoryEntry, RepositoryResourceFormalization,
+    StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
 };
 
 #[test]
@@ -190,5 +191,186 @@ fn compound_words_and_semantic_primes_are_reversible_by_size() {
     assert!(
         expanded.split_whitespace().count() >= prose.split_whitespace().count(),
         "NSM semantic primes should not shrink the text: {expanded}",
+    );
+}
+
+#[test]
+fn repository_file_summary_recurses_into_markdown_embedded_grammars() {
+    let markdown = "# Summarization\n\n\
+                    Formal AI summarizes repository files.\n\n\
+                    ```rust\n\
+                    pub fn summarize_file() -> &'static str { \"ok\" }\n\
+                    ```\n\n\
+                    ```javascript\n\
+                    export function renderSummary() { return 'ok'; }\n\
+                    ```\n";
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Standard)
+        .with_language("en");
+    let summary = summarize_repository_file("docs/example.md", markdown, &config);
+
+    assert!(
+        summary.contains("Markdown"),
+        "summary should name the repository file format, got: {summary}",
+    );
+    assert!(
+        summary.contains("embedded grammar blocks: rust, javascript"),
+        "summary should recurse into fenced Markdown grammars, got: {summary}",
+    );
+    assert!(
+        summary.contains("summarizes repository files"),
+        "summary should keep the prose content, got: {summary}",
+    );
+}
+
+// --- issue #563: generalize from files to any repository resource (folders too).
+
+/// A small fixture tree used by the resource/folder summarization tests: a
+/// directory holding two files and one nested subdirectory.
+fn sample_tree() -> RepositoryEntry {
+    RepositoryEntry::directory(
+        "src/summarization",
+        vec![
+            RepositoryEntry::file(
+                "src/summarization/mod.rs",
+                "//! Summarization pipeline.\npub fn summarize() {}\n",
+            ),
+            RepositoryEntry::file(
+                "src/summarization/file.rs",
+                "//! File summary.\npub struct RepositoryFileFormalization;\n\
+                 pub fn formalize_repository_file() {}\n",
+            ),
+            RepositoryEntry::directory(
+                "src/summarization/nested",
+                vec![RepositoryEntry::file(
+                    "src/summarization/nested/readme.md",
+                    "# Nested\n\nThis explains nested things.\n\n```rust\npub fn x() {}\n```\n",
+                )],
+            ),
+        ],
+    )
+}
+
+#[test]
+fn summarize_repository_resource_subsumes_file_summarization() {
+    // The general entry point must reproduce the specialized file summarizer
+    // exactly when handed a file: generalization adds folders without changing
+    // the established file behavior.
+    let markdown = "# Summarization\n\nFormal AI summarizes repository files.\n";
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Standard)
+        .with_language("en");
+    let via_file = summarize_repository_file("docs/example.md", markdown, &config);
+    let via_resource =
+        summarize_repository_resource(&RepositoryEntry::file("docs/example.md", markdown), &config);
+    assert_eq!(
+        via_file, via_resource,
+        "summarize_repository_resource must match summarize_repository_file for file inputs",
+    );
+}
+
+#[test]
+fn directory_topic_summary_is_a_single_identity_sentence() {
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Topic)
+        .with_language("en");
+    let summary = summarize_repository_resource(&sample_tree(), &config);
+    assert!(
+        summary.starts_with(
+            "src/summarization is a repository directory with 2 files and 1 subdirectory"
+        ),
+        "topic-mode directory summary should be the aggregate identity sentence, got: {summary}",
+    );
+    assert!(
+        !summary.contains("Contents:"),
+        "topic-mode directory summary must not expand children, got: {summary}",
+    );
+}
+
+#[test]
+fn directory_summary_reports_recursive_aggregate_counts() {
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Topic)
+        .with_language("en");
+    let summary = summarize_repository_resource(&sample_tree(), &config);
+    // 2 direct files + 1 nested file = 3 files total; 12 lines total.
+    assert!(
+        summary.contains("12 lines total across 3 files"),
+        "directory identity should aggregate lines and files over the whole subtree, got: {summary}",
+    );
+}
+
+#[test]
+fn directory_short_summary_bounds_listed_children() {
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Short)
+        .with_language("en");
+    let summary = summarize_repository_resource(&sample_tree(), &config);
+    assert!(
+        summary.contains("Contents:"),
+        "short-mode directory summary should expand into a Contents section, got: {summary}",
+    );
+    assert!(
+        summary.contains("1 more entry omitted for brevity."),
+        "short-mode directory summary should cap children and note the remainder, got: {summary}",
+    );
+}
+
+#[test]
+fn directory_summary_recurses_with_one_step_shorter_mode() {
+    // A Full directory describes its child *directory* in Standard detail, which
+    // in turn expands its own Contents — evidence that recursion depth is bounded
+    // by the mode ladder rather than by a fixed depth limit.
+    let config = SummarizationConfig::default()
+        .with_mode(SummarizationMode::Full)
+        .with_language("en");
+    let summary = summarize_repository_resource(&sample_tree(), &config);
+    assert!(
+        summary.contains("src/summarization/nested is a repository directory"),
+        "full-mode summary should describe the nested subdirectory, got: {summary}",
+    );
+    assert!(
+        summary.contains("src/summarization/nested/readme.md is a Markdown file"),
+        "nested directory should itself be summarized one mode shorter, got: {summary}",
+    );
+}
+
+#[test]
+fn formalize_repository_resource_distinguishes_files_and_directories() {
+    let formal = formalize_repository_resource(&sample_tree());
+    match formal {
+        RepositoryResourceFormalization::Directory(dir) => {
+            assert_eq!(dir.direct_file_count, 2);
+            assert_eq!(dir.direct_directory_count, 1);
+            assert_eq!(dir.total_file_count, 3);
+            assert_eq!(dir.total_directory_count, 1);
+            assert!(
+                dir.children
+                    .iter()
+                    .any(RepositoryResourceFormalization::is_directory),
+                "formalized directory should retain a directory child",
+            );
+        }
+        RepositoryResourceFormalization::File(_) => {
+            panic!("a directory entry must formalize to a directory resource")
+        }
+    }
+}
+
+#[test]
+fn directory_links_notation_lists_children_by_kind() {
+    let formal = formalize_repository_resource(&sample_tree());
+    let lino = formal.links_notation();
+    assert!(
+        lino.starts_with("repository_directory"),
+        "directory Links Notation should open a repository_directory block, got: {lino}",
+    );
+    assert!(
+        lino.contains("file src/summarization/mod.rs"),
+        "directory Links Notation should list file children, got: {lino}",
+    );
+    assert!(
+        lino.contains("directory src/summarization/nested"),
+        "directory Links Notation should list subdirectory children, got: {lino}",
     );
 }
