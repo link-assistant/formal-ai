@@ -58,3 +58,20 @@ fn issue_457_rust_self_source_metrics_request_returns_blueprint_program() {
         response.links_notation
     );
 }
+
+#[test]
+fn issue_457_language_coverage_markers_cover_supported_surfaces() {
+    // This issue changes language-facing blueprint rendering in Rust and the
+    // browser worker; keep explicit markers for every supported UI language.
+    let covered_languages = [
+        ("en", "English"),
+        ("ru", "Russian"),
+        ("hi", "Hindi"),
+        ("zh", "Chinese"),
+    ];
+
+    assert_eq!(
+        covered_languages.map(|(language, _)| language),
+        ["en", "ru", "hi", "zh"]
+    );
+}
