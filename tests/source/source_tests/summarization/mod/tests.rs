@@ -451,3 +451,91 @@ fn default_max_statements_constant_is_thirty() {
     let out = summarize(&stmts, &config);
     assert_eq!(out.len(), DEFAULT_MAX_STATEMENTS);
 }
+
+// --- issue #563: recursive repository-resource (file + folder) summarization.
+
+fn sample_resource_tree() -> RepositoryEntry {
+    RepositoryEntry::directory(
+        "src/summarization",
+        vec![
+            RepositoryEntry::file(
+                "src/summarization/mod.rs",
+                "//! Summarization pipeline.\npub fn summarize() {}\n",
+            ),
+            RepositoryEntry::file(
+                "src/summarization/file.rs",
+                "//! File summary.\npub struct RepositoryFileFormalization;\n",
+            ),
+            RepositoryEntry::directory(
+                "src/summarization/nested",
+                vec![RepositoryEntry::file(
+                    "src/summarization/nested/readme.md",
+                    "# Nested\n\nThis explains nested things.\n",
+                )],
+            ),
+        ],
+    )
+}
+
+#[test]
+fn formalize_repository_directory_aggregates_counts_recursively() {
+    let tree = sample_resource_tree();
+    let children = match &tree {
+        RepositoryEntry::Directory { children, .. } => children.as_slice(),
+        RepositoryEntry::File { .. } => unreachable!(),
+    };
+    let formal = formalize_repository_directory("src/summarization", children);
+    assert_eq!(formal.direct_file_count, 2);
+    assert_eq!(formal.direct_directory_count, 1);
+    assert_eq!(formal.total_file_count, 3);
+    assert_eq!(formal.total_directory_count, 1);
+    assert!(formal.total_line_count > 0);
+    assert!(formal.total_byte_count > 0);
+}
+
+#[test]
+fn formalize_repository_resource_dispatches_on_entry_kind() {
+    let file = formalize_repository_resource(&RepositoryEntry::file("a.rs", "fn x() {}\n"));
+    assert!(!file.is_directory());
+    assert_eq!(file.path(), "a.rs");
+
+    let dir = formalize_repository_resource(&sample_resource_tree());
+    assert!(dir.is_directory());
+    assert_eq!(dir.path(), "src/summarization");
+}
+
+#[test]
+fn summarize_repository_resource_matches_file_summarizer_for_files() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Standard);
+    let content = "# Doc\n\nFormal AI summarizes files.\n";
+    let via_file = summarize_repository_file("docs/x.md", content, &config);
+    let via_resource =
+        summarize_repository_resource(&RepositoryEntry::file("docs/x.md", content), &config);
+    assert_eq!(via_file, via_resource);
+}
+
+#[test]
+fn summarize_repository_resource_topic_directory_is_identity_only() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Topic);
+    let summary = summarize_repository_resource(&sample_resource_tree(), &config);
+    assert!(summary.contains("is a repository directory with 2 files and 1 subdirectory"));
+    assert!(!summary.contains("Contents:"));
+}
+
+#[test]
+fn summarize_repository_resource_full_directory_recurses_into_nested_folder() {
+    let config = SummarizationConfig::default().with_mode(SummarizationMode::Full);
+    let summary = summarize_repository_resource(&sample_resource_tree(), &config);
+    assert!(summary.contains("Contents:"));
+    assert!(summary.contains("src/summarization/nested is a repository directory"));
+    assert!(summary.contains("src/summarization/nested/readme.md is a Markdown file"));
+}
+
+#[test]
+fn repository_directory_links_notation_lists_children_by_kind() {
+    let lino = formalize_repository_resource(&sample_resource_tree()).links_notation();
+    assert!(lino.starts_with("repository_directory"));
+    assert!(lino.contains("direct_file_count 2"));
+    assert!(lino.contains("file src/summarization/mod.rs"));
+    assert!(lino.contains("directory src/summarization/nested"));
+}

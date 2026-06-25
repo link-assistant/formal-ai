@@ -1,6 +1,6 @@
 # Issue 563 Case Study
 
-> **Status:** Repository-file summarization implemented in PR #564.
+> **Status:** Repository-resource summarization (files **and** folders) implemented in PR #564.
 > **Type:** Enhancement (new summarization API + documentation).
 
 - **Issue:** <https://github.com/link-assistant/formal-ai/issues/563>
@@ -38,6 +38,41 @@ rendered as link-native `repository_file`, `statement`, `embedded_grammar`, and
 `meta_language` records, so callers can inspect the same data the prose summary
 uses.
 
+## 1a. Generalization From Files To Folders (PR #564 review)
+
+Review feedback on PR #564 (konard) judged the file-only surface "not general
+enough" — "what if we want to summarize not only files, but also folders and so
+on." The meta algorithm "must be able to solve exactly any task" through
+description, formalization to the meta language, decomposition, testing,
+experimentation, selection, and composition, rather than "too much specialized
+solutions."
+
+The generalization (`src/summarization/resource.rs`) treats a repository as a
+recursive tree of resources instead of a flat list of files:
+
+- `RepositoryEntry` is a filesystem-free input tree — `File { path, content }`
+  or `Directory { path, children }` — so the layer stays deterministic and
+  testable (a real directory walk builds the tree, then hands it in).
+- `formalize_repository_resource` dispatches on kind: files reuse
+  `formalize_repository_file` unchanged; directories recurse through
+  `formalize_repository_directory`, which aggregates recursive file/subdirectory
+  counts and total lines/bytes.
+- A folder is summarized by the meta-algorithm loop applied recursively —
+  **decompose** the directory into its children, **summarize** each child on its
+  own (files via `file.rs`, subdirectories by recursion), and **compose** the
+  child summaries behind an aggregate identity sentence.
+- Recursion depth is bounded by the summarization *mode ladder*
+  (`SummarizationMode::one_step_shorter`) rather than an ad hoc depth cap: a
+  `Full` folder describes its direct children in `Standard`, theirs in `Short`,
+  and everything deeper as a `Topic` label.
+- `summarize_repository_resource` is the single general entry point; it
+  reproduces `summarize_repository_file` exactly for file inputs, so the
+  established file behavior is subsumed rather than replaced.
+
+`examples/issue_563_folder_summary.rs` demonstrates the same entry point
+summarizing a folder across `Topic`/`Short`/`Standard`/`Full` modes and printing
+the link-native `repository_directory` evidence.
+
 ## 2. Collected Data
 
 | File | What it is |
@@ -60,8 +95,9 @@ uses.
 
 ## 3. Requirements
 
-These requirements are extracted from the issue body. They are recorded in
-[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as R345-R354.
+These requirements are extracted from the issue body and the PR #564 review
+feedback. They are recorded in
+[`REQUIREMENTS.md`](../../../REQUIREMENTS.md) as R345-R359.
 
 | ID | Requirement | Status |
 |---|---|---|
@@ -75,6 +111,11 @@ These requirements are extracted from the issue body. They are recorded in
 | R352 | Issue data and analysis must be preserved under `docs/case-studies/issue-563`. | Implemented by this case study and the `raw-data/` files listed above. |
 | R353 | Online research and existing components/libraries must be checked. | Implemented by `raw-data/online-research.md`, code search captures, and the prior-art survey below. |
 | R354 | Everything must land in the single prepared PR #564. | Implemented by this PR branch, with PR metadata updated after verification. |
+| R355 | Summarization must generalize beyond files to any repository resource, including folders, instead of staying a file-specialized solution. | Implemented by `RepositoryEntry`, `formalize_repository_resource`, and `summarize_repository_resource` in `src/summarization/resource.rs`, exported from `src/lib.rs`. |
+| R356 | A folder must be summarized by the meta algorithm: decompose into children, summarize each child, then compose with aggregate metadata. | Implemented by `RepositoryDirectoryFormalization::summary` (decompose → summarize → compose) and `formalize_repository_directory` recursive aggregates. |
+| R357 | Recursion over nested folders must be bounded using the summarization mode ladder, not an ad hoc depth cap. | Implemented by `SummarizationMode::one_step_shorter` and `child_summary_cap`. |
+| R358 | The generalized resource layer must stay deterministic and inspectable, with link-native evidence for folders as for files. | Implemented by the filesystem-free `RepositoryEntry` input tree and `RepositoryDirectoryFormalization::links_notation`'s `repository_directory` rendering. |
+| R359 | The folder generalization must be demonstrated and tested end to end. | Implemented by `examples/issue_563_folder_summary.rs` and the resource spec/source tests listed in section 7. |
 
 ## 4. Root Cause
 
@@ -141,6 +182,15 @@ The implementation is additionally covered by:
 - `tests/source/source_tests/summarization/mod/tests.rs::formalize_repository_file_markdown_closes_embedded_grammar_at_eof`
 - `tests/source/source_tests/summarization/mod/tests.rs::formalize_repository_file_rust_records_meta_language_and_symbols`
 - `tests/unit/docs_requirements_issue_563.rs::issue_563_repository_file_summarization_documents_are_traceable`
+
+The folder/resource generalization (R355-R359) is covered by:
+
+- `tests/unit/specification/summarization_pipeline.rs::summarize_repository_resource_subsumes_file_summarization`
+- `tests/unit/specification/summarization_pipeline.rs::directory_topic_summary_is_a_single_identity_sentence`
+- `tests/unit/specification/summarization_pipeline.rs::directory_summary_recurses_with_one_step_shorter_mode`
+- `tests/unit/specification/summarization_pipeline.rs::directory_links_notation_lists_children_by_kind`
+- `tests/source/source_tests/summarization/mod/tests.rs::summarize_repository_resource_full_directory_recurses_into_nested_folder`
+- `examples/issue_563_folder_summary.rs` (runnable demonstration)
 
 Local verification commands are recorded in PR #564 after implementation.
 

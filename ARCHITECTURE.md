@@ -601,6 +601,25 @@ The same pipeline also drives four additional surfaces:
   then reuses `SummarizationConfig`, `summarize`, and `deformalize` so file
   summaries follow the same modes and caps as project, README, and dialog
   summaries.
+- **Repository-resource summaries (files and folders).**
+  `src/summarization/resource.rs` generalizes file summarization to any
+  repository resource so the solution is not file-specialized. A caller builds a
+  filesystem-free `RepositoryEntry` tree (`RepositoryEntry::file` /
+  `RepositoryEntry::directory`); `formalize_repository_resource` then dispatches
+  on kind, reusing `formalize_repository_file` for files and recursing through
+  `formalize_repository_directory` for folders. A directory is summarized by the
+  meta algorithm's decompose -> summarize -> compose loop: it is split into its
+  children, each child is summarized on its own (files via `file.rs`,
+  subdirectories by recursion), and the child summaries are composed behind an
+  aggregate identity sentence carrying recursive file/subdirectory counts and
+  total lines/bytes. Recursion depth is bounded by the *mode ladder*
+  (`SummarizationMode::one_step_shorter`): a `Full` folder describes its direct
+  children in `Standard`, theirs in `Short`, and everything deeper as a `Topic`
+  label, so arbitrarily deep trees stay bounded while the most important
+  structure surfaces first. `RepositoryDirectoryFormalization::links_notation`
+  renders a link-native `repository_directory` block (path, counts, per-child
+  kind) for inspectable evidence, and `summarize_repository_resource` is the
+  general entry point that subsumes `summarize_repository_file` for file inputs.
 - **Dialog summarization.** `DialogTurn { role, text }` and
   `formalize_dialog` weight user turns +20 and assistant turns -10 so a
   short summary keeps the user's questions even when both sides talk a

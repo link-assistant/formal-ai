@@ -58,6 +58,17 @@ pub struct RepositoryFileFormalization {
 }
 
 impl RepositoryFileFormalization {
+    /// Render a short prose summary of this formalized file using the supplied
+    /// [`SummarizationConfig`]. Reuses the shared `summarize` / `deformalize`
+    /// stages for the retained content statements, so the file boundary stays a
+    /// thin adapter over the meta-algorithm pipeline rather than a parallel
+    /// formatter. Exposed so the recursive resource summarizer in
+    /// [`super::resource`] can compose file summaries into folder summaries.
+    #[must_use]
+    pub fn summary(&self, config: &SummarizationConfig) -> String {
+        render_repository_file_summary(self, config)
+    }
+
     /// Render the formalized file as compact indented Links Notation.
     #[must_use]
     pub fn links_notation(&self) -> String {
@@ -138,8 +149,7 @@ pub fn summarize_repository_file(
     content: &str,
     config: &SummarizationConfig,
 ) -> String {
-    let formalized = formalize_repository_file(path, content);
-    render_repository_file_summary(&formalized, config)
+    formalize_repository_file(path, content).summary(config)
 }
 
 fn render_repository_file_summary(

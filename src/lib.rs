@@ -184,11 +184,13 @@ pub use substitution::{
 };
 pub use summarization::{
     apply_compound_words, apply_semantic_primes, classify_sentence, deformalize, describe_project,
-    describe_readme, formalize, formalize_dialog, formalize_markdown, formalize_repository_file,
+    describe_readme, formalize, formalize_dialog, formalize_markdown,
+    formalize_repository_directory, formalize_repository_file, formalize_repository_resource,
     generate_chat_title, strip_markdown_noise, summarize, summarize_dialog,
-    summarize_repository_file, to_topic, DialogTurn, EmbeddedGrammarFormalization,
-    MetaLanguageFormalization, RepositoryFileFormalization, Statement, StatementKind,
-    SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
+    summarize_repository_file, summarize_repository_resource, to_topic, DialogTurn,
+    EmbeddedGrammarFormalization, MetaLanguageFormalization, RepositoryDirectoryFormalization,
+    RepositoryEntry, RepositoryFileFormalization, RepositoryResourceFormalization, Statement,
+    StatementKind, SummarizationConfig, SummarizationMode, DEFAULT_MAX_STATEMENTS,
 };
 pub use telegram::{
     handle_telegram_webhook, parse_get_updates_response, telegram_html_from_markdown,
