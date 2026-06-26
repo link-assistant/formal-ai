@@ -2888,6 +2888,157 @@ function normalizeBoxTotalProblem(text) {
   return { expression, reasoningSteps, resultLabel: label };
 }
 
+function parseMotionDecimalToken(token) {
+  const cleaned = String(token || "")
+    .replace(/^[^0-9.+-]+/, "")
+    .replace(/[^0-9.]+$/, "");
+  if (!cleaned || cleaned === "." || cleaned === "-" || cleaned === "+") return null;
+  if ((cleaned.match(/\./g) || []).length > 1) return null;
+  const value = Number.parseFloat(cleaned);
+  return Number.isFinite(value) ? value : null;
+}
+
+function motionUnitToken(token) {
+  return String(token || "")
+    .replace(/^[^A-Za-z0-9/]+/, "")
+    .replace(/[^A-Za-z0-9/]+$/, "")
+    .toLowerCase();
+}
+
+function isMotionSpeedUnit(unit) {
+  return unit === "km/h" || unit === "kph" || unit === "kmh";
+}
+
+function isMotionDistanceUnit(unit) {
+  return (
+    unit === "km" ||
+    unit === "kilometer" ||
+    unit === "kilometers" ||
+    unit === "kilometre" ||
+    unit === "kilometres"
+  );
+}
+
+function formatMotionQuantity(value) {
+  if (Math.abs(value % 1) < 1e-10) return value.toFixed(0);
+  return value.toFixed(10).replace(/0+$/, "").replace(/\.$/, "");
+}
+
+function cleanMotionOriginToken(token, isLast) {
+  let cleaned = String(token || "")
+    .replace(/^[^\p{L}\p{N}.]+/u, "")
+    .replace(/[^\p{L}\p{N}.]+$/u, "");
+  if (isLast) cleaned = cleaned.replace(/[.?!]+$/, "");
+  return cleaned;
+}
+
+function extractMotionOriginBeforeSpeed(tokens, speedIndex) {
+  if (speedIndex === 0) return "";
+  let start = Math.max(0, speedIndex - 1);
+  for (let index = speedIndex - 1; index >= 0; index -= 1) {
+    const word = bareWord(tokens[index]);
+    if (
+      word === "leaves" ||
+      word === "leave" ||
+      word === "left" ||
+      word === "departs" ||
+      word === "depart" ||
+      word === "starts" ||
+      word === "start"
+    ) {
+      start = index + 1;
+      break;
+    }
+  }
+  if (start >= speedIndex) return "";
+
+  const originTokens = tokens.slice(start, speedIndex);
+  let firstOriginToken = 0;
+  while (
+    originTokens[firstOriginToken] !== undefined &&
+    bareWord(originTokens[firstOriginToken]) === "from"
+  ) {
+    firstOriginToken += 1;
+  }
+  let lastOriginToken = originTokens.length;
+  while (lastOriginToken > firstOriginToken) {
+    const word = bareWord(originTokens[lastOriginToken - 1]);
+    if (word !== "at" && word !== "with") break;
+    lastOriginToken -= 1;
+  }
+  const selected = originTokens.slice(firstOriginToken, lastOriginToken);
+  return selected
+    .map((token, index) => cleanMotionOriginToken(token, index + 1 === selected.length))
+    .filter(Boolean)
+    .join(" ");
+}
+
+function normalizeTrainMeetingProblem(text) {
+  const lower = String(text || "").toLowerCase();
+  if (
+    !lower.includes("meet") ||
+    !lower.includes("distance") ||
+    !["km/h", "kph", "kmh"].some((unit) => lower.includes(unit))
+  ) {
+    return null;
+  }
+
+  const tokens = String(text || "").split(/\s+/).filter(Boolean);
+  const speeds = [];
+  let statedDistance = null;
+  let fallbackDistance = null;
+  for (let index = 0; index + 1 < tokens.length; index += 1) {
+    const value = parseMotionDecimalToken(tokens[index]);
+    if (value === null) continue;
+    const unit = motionUnitToken(tokens[index + 1]);
+    if (isMotionSpeedUnit(unit)) {
+      const origin =
+        extractMotionOriginBeforeSpeed(tokens, index) || `train ${speeds.length + 1}`;
+      speeds.push({ value, origin });
+    } else if (isMotionDistanceUnit(unit)) {
+      const previous = index > 0 ? bareWord(tokens[index - 1]) : "";
+      if (previous === "distance") {
+        statedDistance = value;
+      } else if (fallbackDistance === null) {
+        fallbackDistance = value;
+      }
+    }
+  }
+
+  if (speeds.length < 2) return null;
+  const distance = statedDistance !== null ? statedDistance : fallbackDistance;
+  if (!Number.isFinite(distance)) return null;
+  const first = speeds[0];
+  const second = speeds[1];
+  const relativeSpeed = first.value + second.value;
+  if (!Number.isFinite(relativeSpeed) || relativeSpeed <= 0) return null;
+
+  const time = distance / relativeSpeed;
+  const firstDistance = first.value * time;
+  const secondDistance = second.value * time;
+  const distanceText = formatMotionQuantity(distance);
+  const firstSpeedText = formatMotionQuantity(first.value);
+  const secondSpeedText = formatMotionQuantity(second.value);
+  const relativeSpeedText = formatMotionQuantity(relativeSpeed);
+  const timeText = formatMotionQuantity(time);
+  const firstDistanceText = formatMotionQuantity(firstDistance);
+  const secondDistanceText = formatMotionQuantity(secondDistance);
+  const expression = `${distanceText} / (${firstSpeedText} + ${secondSpeedText})`;
+
+  return {
+    expression,
+    reasoningSteps: [
+      `[STEP 1] Define variables: distance = ${distanceText} km, ${first.origin} train speed = ${firstSpeedText} km/h, ${second.origin} train speed = ${secondSpeedText} km/h, and t = meeting time in hours. [VERIFY] Units are consistent: kilometers divided by kilometers per hour gives hours.`,
+      `[STEP 2] Write equation: (${firstSpeedText} + ${secondSpeedText}) * t = ${distanceText}. [VERIFY] The trains move toward each other, so their relative speed is ${relativeSpeedText} km/h.`,
+      `[STEP 3] Solve algebraically: t = ${distanceText} / (${firstSpeedText} + ${secondSpeedText}) = ${timeText} hours. [VERIFY] ${firstSpeedText} + ${secondSpeedText} = ${relativeSpeedText} and ${distanceText} / ${relativeSpeedText} = ${timeText}.`,
+      `[STEP 4] Interpret result: the ${first.origin} train travels ${firstSpeedText} * ${timeText} = ${firstDistanceText} km; the ${second.origin} train travels ${secondSpeedText} * ${timeText} = ${secondDistanceText} km. [VERIFY] ${firstDistanceText} + ${secondDistanceText} = ${distanceText} km.`,
+      `[STEP 5] Convert to user-friendly format: they meet after ${timeText} hours, ${firstDistanceText} km from ${first.origin} and ${secondDistanceText} km from ${second.origin}. [VERIFY] Both distances add to the stated route length.`,
+      "[COMPARE] Formal-ai uses the same relative-speed equation as the direct solution; the verification tags make each assumption and arithmetic check explicit.",
+    ],
+    resultLabel: "",
+  };
+}
+
 // Rewrite a natural-language "word problem" into a calculator expression, or
 // return null when no rewrite applies so callers fall through unchanged.
 function normalizeWordProblemDetailed(expression) {
@@ -2895,6 +3046,8 @@ function normalizeWordProblemDetailed(expression) {
   if (!trimmed) return null;
   const boxProblem = normalizeBoxTotalProblem(trimmed);
   if (boxProblem) return boxProblem;
+  const trainMeetingProblem = normalizeTrainMeetingProblem(trimmed);
+  if (trainMeetingProblem) return trainMeetingProblem;
   // Keep only sentence fragments that carry arithmetic content, dropping pure
   // instruction clauses such as "Show me the code and the final result".
   const arithmetic = splitSentences(trimmed).filter(
@@ -6691,6 +6844,11 @@ function evaluateClockDifferenceExpression(expression) {
   return formatClockDuration(left - right);
 }
 
+function renderCalculationReasoningStep(step, index) {
+  const text = String(step || "");
+  return text.trimStart().startsWith("[") ? text : `Step ${index + 1}: ${text}`;
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -6739,7 +6897,7 @@ function tryArithmetic(prompt) {
     if (reasoningSteps.length > 0) {
       sections.push(
         reasoningSteps
-          .map((step, index) => `Step ${index + 1}: ${step}`)
+          .map((step, index) => renderCalculationReasoningStep(step, index))
           .join("\n"),
       );
     }

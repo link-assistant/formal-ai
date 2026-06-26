@@ -55,6 +55,83 @@ fn arithmetic_handles_division_remainder() {
 }
 
 #[test]
+fn arithmetic_solves_train_meeting_problem_with_verification_tags() {
+    let response = answer(
+        "Solve this step-by-step, but with verification at each stage: \
+         Problem: \"A train leaves Moscow at 60 km/h. Another leaves St. \
+         Petersburg at 80 km/h. Distance: 700 km. When/where do they meet?\" \
+         Required format: [STEP 1]... [VERIFY] ... [STEP 5] ... Then: Ask \
+         formal-ai to solve SAME problem... Compare approaches.",
+    );
+    assert_eq!(response.intent, "calculation");
+    assert!(
+        response.answer.contains("[STEP 1]") && response.answer.contains("[VERIFY]"),
+        "answer should preserve requested verification tags:\n{}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("700 / (60 + 80) = 5"),
+        "answer should evaluate the relative-speed expression:\n{}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("5 hours")
+            && response.answer.contains("300 km from Moscow")
+            && response.answer.contains("400 km from St. Petersburg"),
+        "answer should include meeting time and both route distances:\n{}",
+        response.answer,
+    );
+}
+
+#[test]
+fn arithmetic_routes_simple_expressions_across_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "Please calculate 6 + 7.",
+            expected: "13",
+        },
+        Case {
+            language: "ru",
+            prompt: "подскажи, сколько будет 7 + 6",
+            expected: "13",
+        },
+        Case {
+            language: "hi",
+            prompt: "2 + 2 कितना है?",
+            expected: "4",
+        },
+        Case {
+            language: "zh",
+            prompt: "计算 2 + 2",
+            expected: "4",
+        },
+    ];
+
+    for case in cases {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "calculation",
+            "{} prompt should route to calculation, got {} with answer {}",
+            case.language, response.intent, response.answer,
+        );
+        assert!(
+            response.answer.contains(case.expected),
+            "{} prompt should evaluate {}, got {}",
+            case.language,
+            case.expected,
+            response.answer,
+        );
+    }
+}
+
+#[test]
 fn arithmetic_handles_decimals() {
     let response = answer("How much is 1.5 + 2.5?");
     assert_eq!(response.intent, "calculation");
