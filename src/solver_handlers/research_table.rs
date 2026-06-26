@@ -10,7 +10,7 @@ use std::fmt::Write as _;
 use crate::engine::{normalize_prompt, SymbolicAnswer};
 use crate::event_log::EventLog;
 use crate::seed;
-use crate::solver_helpers::last_user_turn;
+use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
 use super::finalize_simple;
 
@@ -53,6 +53,25 @@ impl Criterion {
             "advantages" => Some(Self::Advantages),
             "disadvantages" => Some(Self::Disadvantages),
             _ => None,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ResearchResultStatus {
+    NoResults,
+    AllProvidersDisabled,
+    SearchPlanOnly,
+    Open,
+}
+
+impl ResearchResultStatus {
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::NoResults => "no_results",
+            Self::AllProvidersDisabled => "all_providers_disabled",
+            Self::SearchPlanOnly => "search_plan_only",
+            Self::Open => "open_research",
         }
     }
 }
@@ -102,6 +121,36 @@ pub fn try_research_comparison_table(
     ))
 }
 
+pub fn try_research_result_followup(
+    prompt: &str,
+    normalized: &str,
+    log: &mut EventLog,
+) -> Option<SymbolicAnswer> {
+    if !is_research_result_followup(normalized) {
+        return None;
+    }
+
+    let prior_search = last_user_turn(log)?.to_owned();
+    if !looks_like_research_prompt(&prior_search) {
+        return None;
+    }
+
+    let status = classify_prior_research_answer(last_assistant_turn(log));
+    let prior_search_log = compact_log_value(&prior_search);
+    let body = render_research_result_followup(&prior_search, status);
+    log.append("research_result_followup:prior_search", prior_search_log);
+    log.append("research_result_followup:status", status.slug());
+
+    Some(finalize_simple(
+        prompt,
+        log,
+        "research_result_followup",
+        "response:research_result_followup",
+        &body,
+        0.76,
+    ))
+}
+
 /// True when the prompt asks for a comparison drawn as a table: either a strong
 /// `comparison_table_trigger` ('comparison table', 'compare', …) occurs, or the
 /// weak pair of a `comparison_table_noun` ('table') and a
@@ -130,6 +179,92 @@ fn looks_like_research_prompt(prompt: &str) -> bool {
             .iter()
             .filter(|form| form.slot() == seed::Slot::Prefix)
             .any(|form| normalized.starts_with(form.before_slot()))
+}
+
+fn is_research_result_followup(normalized: &str) -> bool {
+    let cleaned = normalize_prompt(normalized);
+    matches!(
+        cleaned.as_str(),
+        "result"
+            | "the result"
+            | "what result"
+            | "what is result"
+            | "what s the result"
+            | "what is the result"
+            | "what was the result"
+            | "what are the results"
+            | "what were the results"
+            | "show the result"
+            | "show the results"
+            | "give me the result"
+            | "give me the results"
+            | "what is the answer"
+            | "what was the answer"
+            | "what did you find"
+            | "what did we find"
+            | "what is the outcome"
+            | "what was the outcome"
+    )
+}
+
+fn classify_prior_research_answer(answer: Option<&str>) -> ResearchResultStatus {
+    let Some(answer) = answer else {
+        return ResearchResultStatus::Open;
+    };
+    let normalized = normalize_prompt(answer);
+    if normalized.contains("no cors enabled web search results")
+        || normalized.contains("no cors readable web search results")
+        || normalized.contains("no usable cors search results")
+        || normalized.contains("не получены результаты веб поиска")
+        || normalized.contains("未获取到")
+        || normalized.contains("कोई खोज परिणाम नहीं")
+    {
+        return ResearchResultStatus::NoResults;
+    }
+    if normalized.contains("all cors readable search providers are disabled")
+        || normalized.contains("all cors enabled search providers are disabled")
+        || normalized.contains("все cors совместимые поисковые провайдеры отключены")
+        || normalized.contains("所有支持 cors 的搜索提供方都已禁用")
+        || normalized.contains("सभी cors समर्थित खोज प्रदाता अक्षम हैं")
+    {
+        return ResearchResultStatus::AllProvidersDisabled;
+    }
+    if normalized.contains("web search requested")
+        || normalized.contains("open research question detected")
+        || normalized.contains("search providers that can be queried")
+        || normalized.contains("verify claims against")
+    {
+        return ResearchResultStatus::SearchPlanOnly;
+    }
+    ResearchResultStatus::Open
+}
+
+fn render_research_result_followup(prior_search: &str, status: ResearchResultStatus) -> String {
+    let preview = research_prompt_preview(prior_search);
+    match status {
+        ResearchResultStatus::NoResults => format!(
+            "The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources."
+        ),
+        ResearchResultStatus::AllProvidersDisabled => format!(
+            "The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: `{preview}`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources."
+        ),
+        ResearchResultStatus::SearchPlanOnly => format!(
+            "The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation."
+        ),
+        ResearchResultStatus::Open => format!(
+            "There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result."
+        ),
+    }
+}
+
+fn research_prompt_preview(value: &str) -> String {
+    let compact = compact_log_value(value);
+    if compact.chars().count() <= 240 {
+        return compact;
+    }
+    let mut preview = compact.chars().take(237).collect::<String>();
+    preview.push_str("...");
+    preview
 }
 
 fn extract_research_topics(prompt: &str) -> Vec<String> {

@@ -53,7 +53,7 @@ pub use numeric_list::{try_numeric_list, try_numeric_list_with_history};
 pub use playwright_script::try_playwright_script;
 pub use program_blueprint::try_program_blueprint;
 pub use program_synthesis::try_program_synthesis;
-pub use research_table::try_research_comparison_table;
+pub use research_table::{try_research_comparison_table, try_research_result_followup};
 pub use self_awareness::SelfAwarenessRuntime;
 pub use shell_command_transform::{
     try_shell_command_transform, try_shell_command_transform_with_history,
