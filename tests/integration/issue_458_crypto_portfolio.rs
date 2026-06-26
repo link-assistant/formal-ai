@@ -61,3 +61,71 @@ fn issue_458_crypto_portfolio_tracker_returns_python_blueprint() {
         response.links_notation
     );
 }
+
+#[test]
+fn issue_458_crypto_portfolio_tracker_covers_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        localized_intro: &'static str,
+    }
+
+    let solver = UniversalSolver::default();
+    for case in [
+        Case {
+            language: "en",
+            prompt: "English: Simulate a crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            localized_intro: "Here is a Python program",
+        },
+        Case {
+            language: "ru",
+            prompt: "Смоделируй crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            localized_intro: "Вот программа на языке Python",
+        },
+        Case {
+            language: "hi",
+            prompt: "कृपया crypto portfolio tracker simulate करें: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            localized_intro: "यहाँ Python में एक प्रोग्राम है",
+        },
+        Case {
+            language: "zh",
+            prompt: "请 simulate crypto portfolio tracker: current prices for BTC ETH TON USDT, portfolio holdings, total value, 24h change, weight distribution. Write a Python script with a public API mock endpoint, alert notify if any asset drops more than 5%, and a Markdown report.",
+            localized_intro: "这是一个解决该复合任务的 Python 程序",
+        },
+    ] {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "write_program",
+            "{} prompt should route to write_program, got: {} / {}",
+            case.language, response.intent, response.answer
+        );
+        assert!(
+            response
+                .links_notation
+                .contains("program_blueprint:recipe crypto_portfolio_tracker"),
+            "{} prompt should use the crypto portfolio blueprint, got: {}",
+            case.language,
+            response.links_notation
+        );
+        assert!(
+            response
+                .links_notation
+                .contains(&format!("language:{}", case.language)),
+            "{} prompt should preserve detected language in the trace, got: {}",
+            case.language,
+            response.links_notation
+        );
+        assert!(
+            response.answer.contains(case.localized_intro),
+            "{} prompt should render the localized blueprint intro, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains("```python") && response.answer.contains("notify_alerts"),
+            "{} prompt should still return executable Python alert code, got: {}",
+            case.language,
+            response.answer
+        );
+    }
+}
