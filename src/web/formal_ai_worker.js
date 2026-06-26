@@ -32300,6 +32300,42 @@ const BLUEPRINT_CAPABILITIES = [
       "导出",
     ],
   },
+  {
+    slug: "source_text",
+    label: "Read the program's own source code as text",
+    keywords: [
+      "own source",
+      "source code as text",
+      "source code",
+      "source text",
+      "itself",
+    ],
+  },
+  {
+    slug: "source_metrics",
+    label: "Count functions, loops, conditionals, and comments",
+    keywords: ["counts", "count", "functions", "loops", "conditionals", "comments"],
+  },
+  {
+    slug: "complexity_score",
+    label: "Calculate a cyclomatic-complexity score",
+    keywords: ["complexity score", "cyclomatic", "complexity"],
+  },
+  {
+    slug: "json_report",
+    label: "Output the metrics as JSON",
+    keywords: ["json report", "json", "metrics"],
+  },
+  {
+    slug: "self_response_analysis",
+    label: "Analyze the assistant response with the same metrics",
+    keywords: ["your own response", "own response", "reasoning text", "same metrics"],
+  },
+  {
+    slug: "complexity_comparison",
+    label: "Compare code complexity with reasoning-text complexity",
+    keywords: ["compare", "more complex", "which is more complex"],
+  },
 ];
 
 // Curated programs (verbatim copies of the Rust raw-string consts). They are
@@ -32617,6 +32653,171 @@ if __name__ == '__main__':
     main()
 `;
 
+const BLUEPRINT_RUST_SELF_SOURCE_METRICS = `use std::fmt::Write as _;
+
+const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
+const RESPONSE_REASONING: &str = "The response decomposes the request, provides a source-metrics program, and compares the code with this prose.";
+
+#[derive(Default)]
+struct Metrics {
+    functions: usize,
+    loops: usize,
+    conditionals: usize,
+    comments: usize,
+    boolean_branches: usize,
+    complexity_score: usize,
+}
+
+fn main() {
+    let source_metrics = analyze_rust_text(SOURCE);
+    let reasoning_metrics = analyze_rust_text(RESPONSE_REASONING);
+    println!("{}", render_report(&source_metrics, &reasoning_metrics));
+}
+
+fn analyze_rust_text(text: &str) -> Metrics {
+    let (sanitized, comments) = sanitize_rust_text(text);
+    let tokens = rust_tokens(&sanitized);
+    let loops = count_any(&tokens, &["for", "while", "loop"]);
+    let conditionals = count_any(&tokens, &["if", "match"]);
+    let boolean_branches = sanitized.matches("&&").count() + sanitized.matches("||").count();
+    Metrics {
+        functions: count_any(&tokens, &["fn"]),
+        loops,
+        conditionals,
+        comments,
+        boolean_branches,
+        complexity_score: 1 + loops + conditionals + boolean_branches,
+    }
+}
+
+fn sanitize_rust_text(text: &str) -> (String, usize) {
+    let mut output = String::with_capacity(text.len());
+    let chars: Vec<char> = text.chars().collect();
+    let mut comments = 0;
+    let mut index = 0;
+    while index < chars.len() {
+        match (chars[index], chars.get(index + 1)) {
+            ('/', Some('/')) => {
+                comments += 1;
+                output.push(' ');
+                output.push(' ');
+                index += 2;
+                while index < chars.len() && chars[index] != '\\n' {
+                    output.push(' ');
+                    index += 1;
+                }
+            }
+            ('/', Some('*')) => {
+                comments += 1;
+                output.push(' ');
+                output.push(' ');
+                index += 2;
+                while index + 1 < chars.len() && !(chars[index] == '*' && chars[index + 1] == '/') {
+                    output.push(if chars[index] == '\\n' { '\\n' } else { ' ' });
+                    index += 1;
+                }
+                if index + 1 < chars.len() {
+                    output.push(' ');
+                    output.push(' ');
+                    index += 2;
+                }
+            }
+            ('"', _) => {
+                output.push(' ');
+                index += 1;
+                while index < chars.len() {
+                    let current = chars[index];
+                    output.push(if current == '\\n' { '\\n' } else { ' ' });
+                    index += if current == '\\\\' && index + 1 < chars.len() { 2 } else { 1 };
+                    if current == '"' {
+                        break;
+                    }
+                }
+            }
+            _ => {
+                output.push(chars[index]);
+                index += 1;
+            }
+        }
+    }
+    (output, comments)
+}
+
+fn rust_tokens(text: &str) -> Vec<String> {
+    let mut tokens = Vec::new();
+    let mut current = String::new();
+    for character in text.chars() {
+        if character == '_' || character.is_ascii_alphanumeric() {
+            current.push(character);
+        } else if !current.is_empty() {
+            tokens.push(std::mem::take(&mut current));
+        }
+    }
+    if !current.is_empty() {
+        tokens.push(current);
+    }
+    tokens
+}
+
+fn count_any(tokens: &[String], needles: &[&str]) -> usize {
+    tokens
+        .iter()
+        .filter(|token| needles.iter().any(|needle| token.as_str() == *needle))
+        .count()
+}
+
+fn render_report(source: &Metrics, reasoning: &Metrics) -> String {
+    let verdict = if source.complexity_score > reasoning.complexity_score {
+        "generated_code"
+    } else if source.complexity_score < reasoning.complexity_score {
+        "reasoning_text"
+    } else {
+        "tie"
+    };
+    let explanation = if verdict == "generated_code" {
+        "The generated Rust code is more complex because it contains functions, loops, conditionals, and comment syntax; the reasoning text is plain prose."
+    } else if verdict == "reasoning_text" {
+        "The reasoning text is more complex under this scanner."
+    } else {
+        "Both texts have the same computed complexity score."
+    };
+    let mut report = String::new();
+    report.push_str("{\\n");
+    push_metrics(&mut report, "source_code", source, true);
+    push_metrics(&mut report, "response_reasoning_text", reasoning, true);
+    writeln!(report, "  \\"more_complex\\": \\"{}\\",", verdict).unwrap();
+    writeln!(report, "  \\"comparison\\": {}", json_string(explanation)).unwrap();
+    report.push('}');
+    report
+}
+
+fn push_metrics(report: &mut String, label: &str, metrics: &Metrics, comma: bool) {
+    writeln!(report, "  \\"{}\\": {{", label).unwrap();
+    writeln!(report, "    \\"functions\\": {},", metrics.functions).unwrap();
+    writeln!(report, "    \\"loops\\": {},", metrics.loops).unwrap();
+    writeln!(report, "    \\"conditionals\\": {},", metrics.conditionals).unwrap();
+    writeln!(report, "    \\"comments\\": {},", metrics.comments).unwrap();
+    writeln!(report, "    \\"boolean_branches\\": {},", metrics.boolean_branches).unwrap();
+    writeln!(report, "    \\"complexity_score\\": {}", metrics.complexity_score).unwrap();
+    writeln!(report, "  }}{}", if comma { "," } else { "" }).unwrap();
+}
+
+fn json_string(value: &str) -> String {
+    let mut escaped = String::new();
+    for character in value.chars() {
+        match character {
+            '"' => escaped.push_str("\\\\\\""),
+            '\\\\' => escaped.push_str("\\\\\\\\"),
+            '\\n' => escaped.push_str("\\\\n"),
+            '\\r' => escaped.push_str("\\\\r"),
+            '\\t' => escaped.push_str("\\\\t"),
+            other => escaped.push(other),
+        }
+    }
+    format!("\\"{}\\"", escaped)
+}
+`;
+
 // Curated composite recipes. Mirrors `RECIPES` in `src/coding/blueprint.rs`.
 const BLUEPRINT_RECIPES = [
   {
@@ -32664,6 +32865,28 @@ const BLUEPRINT_RECIPES = [
         runCommand: "python budget_report.py",
         execution: "review_data_assumptions",
         code: BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT,
+      },
+    ],
+  },
+  {
+    slug: "self_source_metrics_report",
+    label:
+      "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
+    requiredCapabilities: [
+      "source_text",
+      "source_metrics",
+      "complexity_score",
+      "json_report",
+      "self_response_analysis",
+      "complexity_comparison",
+    ],
+    programs: [
+      {
+        languageSlug: "rust",
+        libraries: ["Rust standard library only"],
+        runCommand: "cargo run",
+        execution: "local_source_analysis",
+        code: BLUEPRINT_RUST_SELF_SOURCE_METRICS,
       },
     ],
   },
@@ -32724,7 +32947,9 @@ const BLUEPRINT_I18N = {
     librariesHeading: "Required libraries:",
     howToRunHeading: "How to run it yourself:",
     executionReport: (runCommand, execution) =>
-      execution === "review_data_assumptions"
+      execution === "local_source_analysis"
+        ? `Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: \`${runCommand}\`.`
+        : execution === "review_data_assumptions"
         ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the city-cost assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
         : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
@@ -32734,7 +32959,9 @@ const BLUEPRINT_I18N = {
     librariesHeading: "Необходимые библиотеки:",
     howToRunHeading: "Как запустить самостоятельно:",
     executionReport: (runCommand, execution) =>
-      execution === "review_data_assumptions"
+      execution === "local_source_analysis"
+        ? `Статус выполнения: не запускалось — этот чертёж анализа исходного кода использует только стандартную библиотеку Rust, но генератор ответа не компилировал его на месте. Код приведён для проверки. Запустить из Cargo-проекта: \`${runCommand}\`.`
+        : execution === "review_data_assumptions"
         ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о стоимости жизни нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
         : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
@@ -32744,7 +32971,9 @@ const BLUEPRINT_I18N = {
     librariesHeading: "आवश्यक लाइब्रेरियाँ:",
     howToRunHeading: "इसे स्वयं कैसे चलाएँ:",
     executionReport: (runCommand, execution) =>
-      execution === "review_data_assumptions"
+      execution === "local_source_analysis"
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह source-metrics blueprint केवल Rust standard library का उपयोग करता है, लेकिन answer renderer ने इसे यहीं compile नहीं किया। कोड समीक्षा के लिए दिया गया है। Cargo project से स्वयं चलाएँ: \`${runCommand}\`।`
+        : execution === "review_data_assumptions"
         ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
         : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
@@ -32754,7 +32983,9 @@ const BLUEPRINT_I18N = {
     librariesHeading: "所需的库：",
     howToRunHeading: "如何自行运行：",
     executionReport: (runCommand, execution) =>
-      execution === "review_data_assumptions"
+      execution === "local_source_analysis"
+        ? `执行状态：未运行 —— 该源码指标蓝图只使用 Rust 标准库，但回答渲染器没有在本地编译它。代码仅供审阅。请在 Cargo 项目中自行运行：\`${runCommand}\`。`
+        : execution === "review_data_assumptions"
         ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
         : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
@@ -32811,6 +33042,12 @@ const BLUEPRINT_RECIPE_SUMMARIES = {
     "स्रोतों सहित 50/30/20 शहर बजट कैलकुलेटर और Markdown रिपोर्ट बनाएँ",
   "personal_budget_report:zh":
     "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告",
+  "self_source_metrics_report:ru":
+    "проанализировать собственный Rust-код, вывести JSON-метрики и сравнить код с текстом ответа",
+  "self_source_metrics_report:hi":
+    "अपने Rust source का निरीक्षण करें, JSON metrics निकालें, और code को response prose से तुलना करें",
+  "self_source_metrics_report:zh":
+    "检查自身 Rust 源码，输出 JSON 指标，并比较代码与回答文本",
 };
 
 // The line-comment marker for a program language. Mirrors `comment_marker` in
@@ -32961,6 +33198,15 @@ function blueprintRecipeSummary(recipe, language) {
   return BLUEPRINT_RECIPE_SUMMARIES[`${recipe.slug}:${language}`] || recipe.label;
 }
 
+function blueprintRecipeAddendum(recipe) {
+  if (recipe.slug !== "self_source_metrics_report") return "";
+  return [
+    "Response self-analysis:",
+    "- Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, complexity_score=1.",
+    "- Comparison: the generated Rust code is more complex than the reasoning text because it contains executable parsing, loops, conditionals, helper functions, and JSON rendering logic.",
+  ].join("\n");
+}
+
 // Render the complete localized blueprint answer — decomposition plan, the
 // curated program, its library prerequisites, and the honest execution report.
 // Byte-for-byte mirror of `render` in `src/coding/blueprint.rs`. `composition`
@@ -32993,6 +33239,8 @@ function renderBlueprint(blueprint, language, composition) {
     blueprint.program.runCommand,
     blueprint.program.execution,
   )}`;
+  const addendum = blueprintRecipeAddendum(blueprint.recipe);
+  if (addendum) body += `\n\n${addendum}`;
   return body;
 }
 

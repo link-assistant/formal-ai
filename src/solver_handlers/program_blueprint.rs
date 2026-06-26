@@ -17,7 +17,7 @@
 //! here preserves the catalog's deterministic-verified invariant while still
 //! answering the broad class of real-world coding requests the catalog cannot.
 
-use crate::coding::blueprint::{render, select_blueprint};
+use crate::coding::blueprint::{render, select_blueprint, BlueprintExecution};
 use crate::coding::program_language_by_alias;
 use crate::coding::WRITE_PROGRAM_INTENT;
 use crate::engine::SymbolicAnswer;
@@ -66,14 +66,22 @@ pub fn try_program_blueprint(
     for capability in &blueprint.capabilities {
         log.append("program_blueprint:capability", capability.slug.to_owned());
     }
-    log.append(
-        "execution_status",
-        "not run — requires external libraries and network access".to_owned(),
-    );
-    log.append(
-        "execution_environment",
-        "offline sandbox cannot install libraries or reach the network".to_owned(),
-    );
+    let (status, environment) = match blueprint.program.execution {
+        BlueprintExecution::LocalSourceAnalysis => (
+            "not run — standard-library source analysis blueprint",
+            "answer renderer did not compile generated Cargo program in place",
+        ),
+        BlueprintExecution::ReviewDataAssumptions => (
+            "not run — assumptions require review",
+            "offline sandbox did not execute reviewed report blueprint",
+        ),
+        BlueprintExecution::ExternalLibrariesAndNetwork => (
+            "not run — requires external libraries and network access",
+            "offline sandbox cannot install libraries or reach the network",
+        ),
+    };
+    log.append("execution_status", status.to_owned());
+    log.append("execution_environment", environment.to_owned());
 
     let response_link = format!(
         "response:write_program:blueprint:{}:{language_slug}",

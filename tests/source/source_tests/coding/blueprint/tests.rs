@@ -53,6 +53,19 @@ fn selects_python_personal_budget_report_blueprint() {
 }
 
 #[test]
+fn selects_rust_self_source_metrics_blueprint() {
+    let prompt = "write a rust program that parses its own source code as text counts \
+                  functions loops conditionals comments calculates a cyclomatic complexity \
+                  score outputs a json report with metrics analyzes your own response using \
+                  the same metrics and compares which is more complex";
+    let blueprint = select_blueprint(prompt, "rust").expect("source metrics blueprint resolves");
+    assert_eq!(blueprint.recipe.slug, "self_source_metrics_report");
+    assert_eq!(blueprint.program.language_slug, "rust");
+    assert!(blueprint.program.code.contains("include_str!"));
+    assert!(blueprint.program.code.contains("complexity_score"));
+}
+
+#[test]
 fn missing_statistics_capability_does_not_match_recipe() {
     // http + json but no statistics -> the recipe's required capabilities are
     // not all present, so no blueprint (honest unsupported fallback kept).

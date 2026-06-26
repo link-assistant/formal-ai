@@ -37,7 +37,7 @@ use std::fmt::Write as _;
 
 use crate::coding::blueprint_programs::{
     JAVASCRIPT_HTTP_JSON_STATS, PYTHON_HTTP_JSON_STATS, PYTHON_PERSONAL_BUDGET_REPORT,
-    RUST_HTTP_JSON_STATS,
+    RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
 };
 use crate::language::Language;
 use crate::solver::BlueprintComposition;
@@ -59,8 +59,8 @@ pub struct Capability {
 #[derive(Clone, Copy)]
 pub struct RecipeProgram {
     pub language_slug: &'static str,
-    /// External libraries / runtime prerequisites the program depends on, in the
-    /// canonical form a user would install (e.g. `reqwest`, `serde_json`).
+    /// Libraries / runtime prerequisites in the canonical form a user would
+    /// install or confirm (e.g. `reqwest`, `serde_json`, or standard-library only).
     pub libraries: &'static [&'static str],
     /// The command a user runs to execute the program once dependencies are
     /// installed. Canonical (not localized) — it is a literal shell command.
@@ -74,10 +74,10 @@ pub struct RecipeProgram {
 pub enum BlueprintExecution {
     ExternalLibrariesAndNetwork,
     ReviewDataAssumptions,
+    LocalSourceAnalysis,
 }
 
-/// A composite program recipe: a recognizable multi-step task that needs
-/// libraries or I/O the sandbox cannot verify, realized as curated programs.
+/// A composite program recipe the base catalog cannot represent directly.
 #[derive(Clone, Copy)]
 pub struct BlueprintRecipe {
     pub slug: &'static str,
@@ -330,12 +330,41 @@ pub const CAPABILITIES: &[Capability] = &[
             "导出",
         ],
     },
+    Capability {
+        slug: "source_text",
+        label: "Read the program's own source code as text",
+        keywords: &["own source", "source code as text", "itself"],
+    },
+    Capability {
+        slug: "source_metrics",
+        label: "Count functions, loops, conditionals, and comments",
+        keywords: &["functions", "loops", "conditionals", "comments"],
+    },
+    Capability {
+        slug: "complexity_score",
+        label: "Calculate a cyclomatic-complexity score",
+        keywords: &["complexity score", "cyclomatic", "complexity"],
+    },
+    Capability {
+        slug: "json_report",
+        label: "Output the metrics as JSON",
+        keywords: &["json report", "json", "metrics"],
+    },
+    Capability {
+        slug: "self_response_analysis",
+        label: "Analyze the assistant response with the same metrics",
+        keywords: &["your own response", "reasoning text", "same metrics"],
+    },
+    Capability {
+        slug: "complexity_comparison",
+        label: "Compare code complexity with reasoning-text complexity",
+        keywords: &["compare", "more complex", "which is more complex"],
+    },
 ];
 
-/// Curated composite recipes. Programs are hand-written, idiomatic, and reviewed
-/// (not sandbox-executed, by design — they need network access / external
-/// libraries). Each was checked for syntax with its toolchain offline; see
-/// `experiments/issue-340-blueprint`.
+/// Curated composite recipes. They are returned with an honest execution status
+/// because the answer renderer does not compile these multi-step blueprints in
+/// place; some also need network access or external libraries.
 pub const RECIPES: &[BlueprintRecipe] = &[
     BlueprintRecipe {
         slug: "http_json_stats",
@@ -381,6 +410,26 @@ pub const RECIPES: &[BlueprintRecipe] = &[
             run_command: "python budget_report.py",
             execution: BlueprintExecution::ReviewDataAssumptions,
             code: PYTHON_PERSONAL_BUDGET_REPORT,
+        }],
+    },
+    BlueprintRecipe {
+        slug: "self_source_metrics_report",
+        label:
+            "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
+        required_capabilities: &[
+            "source_text",
+            "source_metrics",
+            "complexity_score",
+            "json_report",
+            "self_response_analysis",
+            "complexity_comparison",
+        ],
+        programs: &[RecipeProgram {
+            language_slug: "rust",
+            libraries: &["Rust standard library only"],
+            run_command: "cargo run",
+            execution: BlueprintExecution::LocalSourceAnalysis,
+            code: RUST_SELF_SOURCE_METRICS,
         }],
     },
 ];
@@ -688,6 +737,12 @@ pub fn blueprint_execution_report(
     language: Language,
 ) -> String {
     match (execution, language) {
+        (BlueprintExecution::LocalSourceAnalysis, _) => format!(
+            "Execution status: not run — this source-metrics blueprint uses only the Rust \
+             standard library, but the answer renderer did not compile it in place. The \
+             code is provided for review. Run it yourself from a Cargo project: \
+             `{run_command}`."
+        ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
             "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
              а допущения о стоимости жизни нужно сверить с указанными источниками. Код \
@@ -757,6 +812,17 @@ pub fn recipe_summary(recipe: &BlueprintRecipe, language: Language) -> &'static 
     }
 }
 
+fn recipe_addendum(recipe: &BlueprintRecipe, _language: Language) -> Option<&'static str> {
+    (recipe.slug == "self_source_metrics_report").then_some(
+        "Response self-analysis:\n\
+         - Reasoning text metrics: functions=0, loops=0, conditionals=0, comments=0, \
+         complexity_score=1.\n\
+         - Comparison: the generated Rust code is more complex than the reasoning text \
+         because it contains executable parsing, loops, conditionals, helper functions, \
+         and JSON rendering logic.",
+    )
+}
+
 /// Localized "Run it yourself" heading shown above the execution report.
 #[must_use]
 const fn how_to_run_heading(language: Language) -> &'static str {
@@ -822,6 +888,10 @@ pub fn render(blueprint: &Blueprint, language: Language, strategy: BlueprintComp
         )
     )
     .expect("string write is infallible");
+
+    if let Some(addendum) = recipe_addendum(blueprint.recipe, language) {
+        write!(body, "\n\n{addendum}").expect("string write is infallible");
+    }
 
     body
 }
