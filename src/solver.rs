@@ -23,7 +23,7 @@
 
 use crate::coding::guidance as coding_guidance;
 use crate::engine::{
-    answer_links_notation, language_aware_answer_for, language_aware_intent_for,
+    answer_links_notation, language_aware_answer_for, language_aware_intent_for, normalize_prompt,
     response_link_for_intent, stable_id, SelectedRule, SymbolicAnswer,
 };
 use crate::event_log::{build_evidence_links, EventLog};
@@ -38,7 +38,7 @@ use crate::seed;
 use crate::solver_diagnostics::append_diagnostic_trace;
 use crate::solver_formalization::{record_formalization, record_formalization_selection};
 use crate::solver_handler_oracle::try_unsupported_write_program;
-use crate::solver_handlers::{finalize_simple, try_agent_workspace_task};
+use crate::solver_handlers::{finalize_simple, try_agent_workspace_task, try_program_blueprint};
 use crate::solver_helpers::{
     confidence_for, is_agent_opt_in, is_agent_request, is_cache_flush_request,
     is_destructive_action, is_forget_request, is_inappropriate_content, is_unbounded_autonomy,
@@ -492,6 +492,28 @@ impl UniversalSolver {
         } else {
             rule
         };
+
+        // Issue #458: some composite program prompts also contain strong
+        // non-program signals such as "search current prices". Let a recognized
+        // blueprint recipe preempt those broader fallback handlers before they
+        // can claim the request as generic web search. Concrete catalog programs
+        // still win above this path.
+        if !matches!(rule, SelectedRule::WriteProgram(_)) {
+            let language_hint = match &rule {
+                SelectedRule::UnsupportedWriteProgram { language, .. } => language.as_deref(),
+                _ => None,
+            };
+            let normalized_for_blueprint = normalize_prompt(prompt);
+            if let Some(answer) = try_program_blueprint(
+                prompt,
+                &normalized_for_blueprint,
+                language_hint,
+                self.config.blueprint_composition,
+                &mut log,
+            ) {
+                return answer;
+            }
+        }
 
         // Issue #340: a `write_program` request can name a supported language but
         // a composite task the verified catalog has no single template for

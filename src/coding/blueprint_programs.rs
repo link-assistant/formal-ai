@@ -315,6 +315,111 @@ if __name__ == '__main__':
     main()
 "#;
 
+pub(super) const PYTHON_CRYPTO_PORTFOLIO_TRACKER: &str = r#"from dataclasses import dataclass
+from typing import Mapping
+
+
+@dataclass(frozen=True)
+class AssetPrice:
+    symbol: str
+    price_usd: float
+    change_24h_pct: float
+
+
+PORTFOLIO = {
+    'BTC': 2.5,
+    'ETH': 15.0,
+    'TON': 1000.0,
+    'USDT': 5000.0,
+}
+
+MOCK_API_RESPONSE = {
+    'BTC': {'price_usd': 64120.25, 'change_24h_pct': -2.4},
+    'ETH': {'price_usd': 3350.80, 'change_24h_pct': 1.2},
+    'TON': {'price_usd': 6.85, 'change_24h_pct': -5.7},
+    'USDT': {'price_usd': 1.00, 'change_24h_pct': 0.0},
+}
+
+
+def fetch_prices(symbols: list[str]) -> dict[str, AssetPrice]:
+    """Mock a public price API response for deterministic offline execution."""
+    prices = {}
+    for symbol in symbols:
+        payload = MOCK_API_RESPONSE[symbol]
+        prices[symbol] = AssetPrice(
+            symbol=symbol,
+            price_usd=payload['price_usd'],
+            change_24h_pct=payload['change_24h_pct'],
+        )
+    return prices
+
+
+def portfolio_rows(
+    holdings: Mapping[str, float],
+    prices: Mapping[str, AssetPrice],
+) -> list[dict[str, float | str]]:
+    total_value = sum(amount * prices[symbol].price_usd for symbol, amount in holdings.items())
+    rows = []
+    for symbol, amount in holdings.items():
+        price = prices[symbol]
+        value = amount * price.price_usd
+        portfolio_weight = value / total_value * 100
+        rows.append({
+            'symbol': symbol,
+            'amount': amount,
+            'price_usd': price.price_usd,
+            'value_usd': value,
+            'change_24h_pct': price.change_24h_pct,
+            'portfolio_weight': portfolio_weight,
+        })
+    return rows
+
+
+def notify_alerts(rows: list[dict[str, float | str]]) -> list[str]:
+    return [
+        f'Notify: {row["symbol"]} dropped {row["change_24h_pct"]:.2f}% in 24h'
+        for row in rows
+        if float(row['change_24h_pct']) < -5.0
+    ]
+
+
+def money(value: float) -> str:
+    return f'${value:,.2f}'
+
+
+def render_dashboard(rows: list[dict[str, float | str]], notices: list[str]) -> str:
+    total_value = sum(float(row['value_usd']) for row in rows)
+    lines = [
+        '# Crypto Portfolio Dashboard',
+        '',
+        f'**Total value:** {money(total_value)}',
+        '',
+        '| Asset | Amount | Price USD | Value USD | 24h change | Portfolio weight |',
+        '| --- | ---: | ---: | ---: | ---: | ---: |',
+    ]
+    for row in rows:
+        lines.append(
+            f'| {row["symbol"]} | {row["amount"]:,.4g} | {money(float(row["price_usd"]))} | '
+            f'{money(float(row["value_usd"]))} | {row["change_24h_pct"]:.2f}% | '
+            f'{row["portfolio_weight"]:.2f}% |'
+        )
+    lines.extend(['', '## Alerts'])
+    lines.extend(notices or ['No asset dropped more than 5% in the last 24h.'])
+    return '\n'.join(lines)
+
+
+def main() -> None:
+    prices = fetch_prices(list(PORTFOLIO))
+    rows = portfolio_rows(PORTFOLIO, prices)
+    notices = notify_alerts(rows)
+    formatted_log = render_dashboard(rows, notices)
+    print(formatted_log)
+
+
+if __name__ == '__main__':
+    main()
+"#;
+
 pub(super) const PYTHON_SMART_TRAVEL_PLANNER: &str = r#"from dataclasses import dataclass
 
 

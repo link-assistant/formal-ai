@@ -1,0 +1,7 @@
+Web search requested for `btc eth ton usdt 2 assume portfolio 2 5 btc 15 eth 1000 ton 5000 usdt 3 calculate total value in usd 24h change for each asset portfolio weight distribution 4 write a python script that fetches prices from a public api mock the endpoint implements alert logic notify if any asset drops 5 logs results to a formatted string 5 output dashboard style markdown executable code`.
+
+In the browser demo formal-ai defaults to the DuckDuckGo Instant Answer endpoint (CORS-readable, keyless) and queries Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The top-10 links from each provider are merged with reciprocal rank fusion (`score(d) = sum 1 / (60 + rank_i(d))`), so URLs that appear in more than one provider bubble up. Duplicate entries for the same entity (e.g. Wikidata + Wikipedia) are collapsed into a single bullet with an "other sources" footnote. For an arbitrary page, use `fetch example.com`; if direct `fetch()` is blocked by CORS, the browser checks frame policy before an embedded iframe.
+
+Provider: duckduckgo (default)
+Providers considered: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews
+Combined ranking: reciprocal rank fusion (k = 60)
