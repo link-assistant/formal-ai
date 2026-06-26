@@ -94,6 +94,33 @@ fn write_program_formalization_records_language_and_task_parameters() {
 }
 
 #[test]
+fn class_artifact_formalization_routes_to_write_program() {
+    let intent = formalize_intent(
+        "Write a Python class TravelPlanner with add_destination and generate_itinerary methods",
+        "en",
+        None,
+    );
+
+    assert_eq!(intent.kind, IntentKind::Task);
+    assert_eq!(intent.route.as_deref(), Some("write_program"));
+    assert_eq!(
+        intent.parameters.get("language").map(String::as_str),
+        Some("python")
+    );
+    assert!(
+        !intent.parameters.contains_key("task"),
+        "class-only composite requests should route without inventing a catalog task: {intent:?}"
+    );
+    assert!(
+        intent
+            .relevants
+            .iter()
+            .any(|relevant| relevant == "handler:write_program"),
+        "{intent:?}",
+    );
+}
+
+#[test]
 fn repeated_prompt_hits_intent_formalization_cache() {
     let solver = UniversalSolver::default();
     let mut cache = IntentFormalizationCache::new();

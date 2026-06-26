@@ -366,6 +366,25 @@ meanings
     lexeme zh
       surface
         text 函数
+  class
+    defined-by code
+    defined-by program
+    role program_artifact
+    role program_kind
+    lexeme en
+      surface
+        text class
+    lexeme ru
+      surface
+        text класс
+      surface
+        text класса
+    lexeme hi
+      surface
+        text क्लास
+    lexeme zh
+      surface
+        text 类
   write
     defined-by code
     defined-by program
