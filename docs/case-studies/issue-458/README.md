@@ -50,4 +50,7 @@ reviewed code body to return.
   prompt. It asserts `write_program`, a Python fence, all requested assets,
   dashboard Markdown, `portfolio_weight`, `notify` logic, and the
   `program_blueprint:recipe crypto_portfolio_tracker` trace.
+- Added English, Russian, Hindi, and Chinese prompt coverage for the same
+  blueprint route so language-facing solver and worker changes satisfy the
+  multilingual test-coverage guard.
 - Added a source-level blueprint selection test for the new recipe.
