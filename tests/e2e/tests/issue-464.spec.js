@@ -5,6 +5,25 @@
 // trip?"). Both must route to the calculator instead of the unknown fallback.
 const { test, expect } = require('@playwright/test');
 
+const ELAPSED_TIME_PROMPTS = [
+  {
+    language: 'en',
+    prompt: 'If a train leaves at 14:00 and arrives at 17:30, how long is the trip?',
+  },
+  {
+    language: 'ru',
+    prompt: 'Если поезд отправляется в 14:00 и прибывает в 17:30, сколько времени длится поездка?',
+  },
+  {
+    language: 'hi',
+    prompt: 'अगर ट्रेन 14:00 पर निकलती है और 17:30 पर आती है, कितना समय लगा?',
+  },
+  {
+    language: 'zh',
+    prompt: '火车 14:00 出发，17:30 到达，要多久?',
+  },
+];
+
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   await expect(input).toBeEnabled({ timeout: 5_000 });
@@ -43,12 +62,15 @@ test.describe('Issue #464 - clock-time duration routing', () => {
     await expect(message).not.toContainText('I could not determine');
   });
 
-  test('elapsed-time wording delegates to clock subtraction', async ({ page }) => {
-    const message = await sendPrompt(
-      page,
-      'If a train leaves at 14:00 and arrives at 17:30, how long is the trip?',
-    );
-    await expect(message).toContainText('17:30 - 14:00 = 3 hours, 30 minutes');
-    await expect(message).not.toContainText('I could not determine');
+  test('supported-language elapsed-time wording delegates to clock subtraction', async ({
+    page,
+  }) => {
+    for (const { language, prompt } of ELAPSED_TIME_PROMPTS) {
+      await test.step(language, async () => {
+        const message = await sendPrompt(page, prompt);
+        await expect(message).toContainText('17:30 - 14:00 = 3 hours, 30 minutes');
+        await expect(message).not.toContainText('I could not determine');
+      });
+    }
   });
 });

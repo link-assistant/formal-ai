@@ -72,6 +72,35 @@ fn calculator_handles_time_of_day_duration_prompts() {
     }
 }
 
+#[test]
+fn calculator_handles_supported_language_time_duration_cues() {
+    for (language, prompt) in [
+        (
+            "en",
+            "If a train leaves at 14:00 and arrives at 17:30, how long is the trip?",
+        ),
+        (
+            "ru",
+            "Если поезд отправляется в 14:00 и прибывает в 17:30, сколько времени длится поездка?",
+        ),
+        (
+            "hi",
+            "अगर ट्रेन 14:00 पर निकलती है और 17:30 पर आती है, कितना समय लगा?",
+        ),
+        ("zh", "火车 14:00 出发，17:30 到达，要多久?"),
+    ] {
+        let response = assert_calculation(prompt, &["3 hours, 30 minutes"]);
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "calculation:engine:link-calculator"),
+            "{language} time duration should be delegated to link-calculator: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
 // Issue #386 (38-C4): the currency-conversion exemption in `has_calculation_signal`
 // is driven by the `quantity_conversion` meaning (role `quantity_conversion_cue`)
 // rather than a hardcoded to/into/convert/exchange list. A prompt that pairs a
