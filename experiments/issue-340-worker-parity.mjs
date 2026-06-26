@@ -46,6 +46,7 @@ function check(label, condition, detail) {
 
 const {
   tryWriteProgram,
+  tryProgramBlueprintFromPrompt,
   selectBlueprint,
   renderBlueprint,
   composeBlueprintProgram,
@@ -151,6 +152,51 @@ check(
     budget.evidence.includes("program_blueprint:recipe:personal_budget_report"),
   budget && JSON.stringify(budget.evidence),
 );
+
+// 1c. Issue #459: class-based composite requests should route to the Python
+// travel-planner blueprint before generic "Search:" bullets can take over.
+const travelPrompt =
+  'Build a "Smart Travel Planner" prototype:\n\n' +
+  "1. Search: visa requirements for Russian citizens visiting Japan, UAE, Serbia\n" +
+  "2. Search: average flight costs from Moscow to these destinations (next 3 months)\n" +
+  "3. Write a Python class `TravelPlanner` with methods:\n" +
+  "   - `add_destination(country: str, budget: float)`\n" +
+  "   - `check_visa_requirements()` -> returns bool\n" +
+  "   - `estimate_total_cost()` -> returns dict\n" +
+  "   - `generate_itinerary(days: int)` -> returns markdown\n" +
+  "4. Add business logic:\n" +
+  "   - Prioritize destinations with visa-free access\n" +
+  "   - Flag if budget < estimated cost\n" +
+  "5. Generate sample output for: 7-day trip, $2000 budget\n" +
+  "6. Output: class code + usage example + sample itinerary";
+const travel = tryWriteProgram(travelPrompt, [], "en");
+check(
+  "travel planner request routes to write_program blueprint",
+  travel && travel.intent === "write_program",
+  travel && travel.intent,
+);
+check(
+  "travel planner blueprint embeds the requested Python class",
+  travel &&
+    travel.content.includes("```python") &&
+    travel.content.includes("class TravelPlanner") &&
+    travel.content.includes("generate_itinerary") &&
+    travel.content.includes("Budget warning"),
+  travel && travel.content,
+);
+check(
+  "travel planner blueprint evidence link is present",
+  travel &&
+    travel.evidence.includes(
+      "response:write_program:blueprint:smart_travel_planner:python",
+    ),
+  travel && JSON.stringify(travel.evidence),
+);
+check(
+  "travel planner blueprint records the recipe",
+  travel && travel.evidence.includes("program_blueprint:recipe:smart_travel_planner"),
+  travel && JSON.stringify(travel.evidence),
+);
 for (const { language, prompt, statusLabel } of [
   {
     language: "ru",
@@ -192,6 +238,50 @@ for (const { language, prompt, statusLabel } of [
       `${localizedBudget.intent} :: ${(localizedBudget.content || "").slice(0, 120)}`,
   );
 }
+
+// 1c. Issue #458: a crypto-portfolio tracker asks for "Search current prices"
+// and "Write a Python script" in the same prompt. The direct blueprint probe is
+// what lets the worker preempt broad search routing when the full program recipe
+// is recognized.
+const cryptoPrompt =
+  "Simulate a crypto portfolio tracker:\n" +
+  "1. Search current prices for: BTC, ETH, TON, USDT\n" +
+  "2. Assume portfolio: 2.5 BTC, 15 ETH, 1000 TON, 5000 USDT\n" +
+  "3. Calculate total value in USD, 24h change % for each asset, and portfolio weight distribution\n" +
+  "4. Write a Python script that fetches prices from a public API (mock the endpoint), " +
+  'implements alert logic: "Notify if any asset drops >5%", and logs results to a formatted string\n' +
+  "5. Output: dashboard-style markdown + executable code";
+const cryptoDirect = tryProgramBlueprintFromPrompt(cryptoPrompt, "en", "composed");
+check(
+  "crypto direct blueprint probe returns write_program",
+  cryptoDirect && cryptoDirect.intent === "write_program",
+  cryptoDirect && cryptoDirect.intent,
+);
+check(
+  "crypto direct blueprint records recipe",
+  cryptoDirect &&
+    cryptoDirect.evidence.includes("program_blueprint:recipe:crypto_portfolio_tracker"),
+  cryptoDirect && JSON.stringify(cryptoDirect.evidence),
+);
+const crypto = tryWriteProgram(cryptoPrompt, [], "en");
+check(
+  "crypto request routes to Python blueprint",
+  crypto &&
+    crypto.intent === "write_program" &&
+    crypto.content.includes("```python") &&
+    crypto.content.includes("# Crypto Portfolio Dashboard") &&
+    crypto.content.includes("notify_alerts") &&
+    crypto.content.includes("portfolio_weight"),
+  crypto && `${crypto.intent} :: ${(crypto.content || "").slice(0, 160)}`,
+);
+check(
+  "crypto blueprint evidence link is present",
+  crypto &&
+    crypto.evidence.includes(
+      "response:write_program:blueprint:crypto_portfolio_tracker:python",
+    ),
+  crypto && JSON.stringify(crypto.evidence),
+);
 
 // 2. Python and JavaScript variants resolve too.
 const py = tryWriteProgram(

@@ -203,6 +203,76 @@ fn budget_calculator_request_returns_python_blueprint_program() {
 }
 
 #[test]
+fn travel_planner_request_returns_python_blueprint_program() {
+    let response = answer(
+        "Build a \"Smart Travel Planner\" prototype:\n\
+         \n\
+         1. Search: visa requirements for Russian citizens visiting Japan, UAE, Serbia\n\
+         2. Search: average flight costs from Moscow to these destinations (next 3 months)\n\
+         3. Write a Python class `TravelPlanner` with methods:\n\
+            - `add_destination(country: str, budget: float)`\n\
+            - `check_visa_requirements()` -> returns bool\n\
+            - `estimate_total_cost()` -> returns dict\n\
+            - `generate_itinerary(days: int)` -> returns markdown\n\
+         4. Add business logic:\n\
+            - Prioritize destinations with visa-free access\n\
+            - Flag if budget < estimated cost\n\
+         5. Generate sample output for: 7-day trip, $2000 budget\n\
+         6. Output: class code + usage example + sample itinerary",
+    );
+
+    assert_eq!(
+        response.intent, "write_program",
+        "travel planner request should be answered, not dead-ended, got: {}",
+        response.intent
+    );
+    assert!(
+        !response.answer.contains("I do not have a template")
+            && !response.answer.contains("task `missing`"),
+        "travel planner request must not surface the unsupported dead-end, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("```python"),
+        "answer should include a Python code block, got: {}",
+        response.answer
+    );
+    for required in [
+        "class TravelPlanner",
+        "add_destination",
+        "check_visa_requirements",
+        "estimate_total_cost",
+        "generate_itinerary",
+        "visa-free",
+        "Budget warning",
+        "Sample output",
+        "7-day",
+        "$2,000",
+    ] {
+        assert!(
+            response.answer.contains(required),
+            "answer should include {required:?}, got: {}",
+            response.answer
+        );
+    }
+    assert!(
+        response
+            .links_notation
+            .contains("program_blueprint:recipe smart_travel_planner"),
+        "trace should record the resolved travel planner recipe, got: {}",
+        response.links_notation
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "response:write_program:blueprint:smart_travel_planner:python"),
+        "evidence links should include the travel planner blueprint response link, got: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
 fn budget_calculator_blueprint_covers_supported_prompt_languages() {
     struct Case {
         language: &'static str,

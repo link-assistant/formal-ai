@@ -35,12 +35,10 @@
 
 use std::fmt::Write as _;
 
-use crate::coding::blueprint_programs::{
-    JAVASCRIPT_HTTP_JSON_STATS, PYTHON_HTTP_JSON_STATS, PYTHON_PERSONAL_BUDGET_REPORT,
-    RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
-};
 use crate::language::Language;
 use crate::solver::BlueprintComposition;
+
+pub use super::blueprint_data::{CAPABILITIES, RECIPES};
 
 /// A recognized programming capability — one "sub-task" a composite request can
 /// decompose into. Detection is keyword-based and script-aware (the same
@@ -103,336 +101,6 @@ pub struct Blueprint {
     pub program: &'static RecipeProgram,
     pub capabilities: Vec<&'static Capability>,
 }
-
-/// The capability catalog. Each entry maps a class of sub-task onto the surface
-/// phrases that request it. Latin/Cyrillic keywords match on whitespace token
-/// boundaries; CJK keywords match by substring (see [`contains_keyword`]).
-pub const CAPABILITIES: &[Capability] = &[
-    Capability {
-        slug: "http_request",
-        label: "Make an HTTP request",
-        keywords: &[
-            "http",
-            "https",
-            "url",
-            "get request",
-            "http get",
-            "fetch",
-            "download",
-            "запрос",
-            "ссылк",
-            "загруз",
-            "स्थानांतरण",
-            "अनुरोध",
-            "请求",
-            "下载",
-            "网址",
-        ],
-    },
-    Capability {
-        slug: "json_parse",
-        label: "Parse the JSON response",
-        keywords: &[
-            "json",
-            "parse",
-            "parses",
-            "parsing",
-            "deserialize",
-            "разбор",
-            "разобрать",
-            "парсинг",
-            "जेसन",
-            "पार्स",
-            "解析",
-        ],
-    },
-    Capability {
-        slug: "statistics",
-        label: "Calculate statistics (mean, median)",
-        keywords: &[
-            "statistics",
-            "statistic",
-            "mean",
-            "average",
-            "median",
-            "статистик",
-            "среднее",
-            "медиан",
-            "औसत",
-            "माध्यिका",
-            "सांख्यिकी",
-            "统计",
-            "平均",
-            "中位数",
-        ],
-    },
-    Capability {
-        slug: "output_results",
-        label: "Output the results",
-        keywords: &[
-            "output",
-            "print",
-            "outputs",
-            "display",
-            "report",
-            "вывод",
-            "вывести",
-            "печат",
-            "आउटपुट",
-            "छाप",
-            "输出",
-            "打印",
-            "显示",
-        ],
-    },
-    Capability {
-        slug: "error_handling",
-        label: "Handle errors",
-        keywords: &[
-            "error handling",
-            "error-handling",
-            "errors",
-            "error",
-            "exception",
-            "ошибк",
-            "обработк",
-            "त्रुटि",
-            "错误",
-            "异常",
-        ],
-    },
-    Capability {
-        slug: "comments",
-        label: "Document the code with comments",
-        keywords: &[
-            "comments",
-            "comment",
-            "commented",
-            "documented",
-            "комментар",
-            "टिप्पणि",
-            "注释",
-            "评论",
-        ],
-    },
-    Capability {
-        slug: "web_research",
-        label: "Research current source data",
-        keywords: &[
-            "search",
-            "research",
-            "sources",
-            "source",
-            "look up",
-            "current",
-            "average",
-            "поиск",
-            "источник",
-            "источники",
-            "искать",
-            "खोज",
-            "स्रोत",
-            "वर्तमान",
-            "搜索",
-            "来源",
-        ],
-    },
-    Capability {
-        slug: "city_costs",
-        label: "Compare city living costs",
-        keywords: &[
-            "living costs",
-            "cost of living",
-            "average rent",
-            "rent",
-            "moscow",
-            "berlin",
-            "new york",
-            "city",
-            "cities",
-            "аренда",
-            "стоимость жизни",
-            "москва",
-            "берлин",
-            "нью-йорк",
-            "जीवन यापन",
-            "लागत",
-            "किराया",
-            "मास्को",
-            "बर्लिन",
-            "न्यूयॉर्क",
-            "租金",
-            "生活成本",
-        ],
-    },
-    Capability {
-        slug: "budget_rule",
-        label: "Apply the 50/30/20 budget rule",
-        keywords: &[
-            "50/30/20",
-            "budget rule",
-            "monthly income",
-            "income",
-            "needs",
-            "wants",
-            "savings",
-            "бюджет",
-            "доход",
-            "сбереж",
-            "बजट",
-            "आय",
-            "बचत",
-            "预算",
-            "收入",
-        ],
-    },
-    Capability {
-        slug: "compound_savings",
-        label: "Project compound savings",
-        keywords: &[
-            "annual return",
-            "return",
-            "8%",
-            "10 years",
-            "$3000",
-            "100,000",
-            "100000",
-            "years to save",
-            "накопить",
-            "доходность",
-            "वार्षिक रिटर्न",
-            "रिटर्न",
-            "साल",
-            "收益",
-            "年",
-        ],
-    },
-    Capability {
-        slug: "markdown_report",
-        label: "Export a Markdown comparison report",
-        keywords: &[
-            "markdown",
-            "formatted markdown",
-            "report",
-            "comparison table",
-            "table",
-            "export",
-            "отчет",
-            "отчёт",
-            "таблица",
-            "экспорт",
-            "मार्कडाउन",
-            "रिपोर्ट",
-            "तालिका",
-            "निर्यात",
-            "报告",
-            "表格",
-            "导出",
-        ],
-    },
-    Capability {
-        slug: "source_text",
-        label: "Read the program's own source code as text",
-        keywords: &["own source", "source code as text", "itself"],
-    },
-    Capability {
-        slug: "source_metrics",
-        label: "Count functions, loops, conditionals, and comments",
-        keywords: &["functions", "loops", "conditionals", "comments"],
-    },
-    Capability {
-        slug: "complexity_score",
-        label: "Calculate a cyclomatic-complexity score",
-        keywords: &["complexity score", "cyclomatic", "complexity"],
-    },
-    Capability {
-        slug: "json_report",
-        label: "Output the metrics as JSON",
-        keywords: &["json report", "json", "metrics"],
-    },
-    Capability {
-        slug: "self_response_analysis",
-        label: "Analyze the assistant response with the same metrics",
-        keywords: &["your own response", "reasoning text", "same metrics"],
-    },
-    Capability {
-        slug: "complexity_comparison",
-        label: "Compare code complexity with reasoning-text complexity",
-        keywords: &["compare", "more complex", "which is more complex"],
-    },
-];
-
-/// Curated composite recipes. They are returned with an honest execution status
-/// because the answer renderer does not compile these multi-step blueprints in
-/// place; some also need network access or external libraries.
-pub const RECIPES: &[BlueprintRecipe] = &[
-    BlueprintRecipe {
-        slug: "http_json_stats",
-        label: "fetch JSON over HTTP and report the mean and median of its numbers",
-        required_capabilities: &["http_request", "json_parse", "statistics"],
-        programs: &[
-            RecipeProgram {
-                language_slug: "rust",
-                libraries: &["reqwest (blocking, json)", "serde_json"],
-                run_command: "cargo run -- <url-returning-json>",
-                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
-                code: RUST_HTTP_JSON_STATS,
-            },
-            RecipeProgram {
-                language_slug: "python",
-                libraries: &["requests"],
-                run_command: "python stats.py <url-returning-json>",
-                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
-                code: PYTHON_HTTP_JSON_STATS,
-            },
-            RecipeProgram {
-                language_slug: "javascript",
-                libraries: &["Node.js 18+ (built-in global fetch; no extra packages)"],
-                run_command: "node stats.js <url-returning-json>",
-                execution: BlueprintExecution::ExternalLibrariesAndNetwork,
-                code: JAVASCRIPT_HTTP_JSON_STATS,
-            },
-        ],
-    },
-    BlueprintRecipe {
-        slug: "personal_budget_report",
-        label: "build a sourced 50/30/20 city budget calculator and Markdown report",
-        required_capabilities: &[
-            "web_research",
-            "city_costs",
-            "budget_rule",
-            "compound_savings",
-            "markdown_report",
-        ],
-        programs: &[RecipeProgram {
-            language_slug: "python",
-            libraries: &["Python 3 standard library only"],
-            run_command: "python budget_report.py",
-            execution: BlueprintExecution::ReviewDataAssumptions,
-            code: PYTHON_PERSONAL_BUDGET_REPORT,
-        }],
-    },
-    BlueprintRecipe {
-        slug: "self_source_metrics_report",
-        label:
-            "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
-        required_capabilities: &[
-            "source_text",
-            "source_metrics",
-            "complexity_score",
-            "json_report",
-            "self_response_analysis",
-            "complexity_comparison",
-        ],
-        programs: &[RecipeProgram {
-            language_slug: "rust",
-            libraries: &["Rust standard library only"],
-            run_command: "cargo run",
-            execution: BlueprintExecution::LocalSourceAnalysis,
-            code: RUST_SELF_SOURCE_METRICS,
-        }],
-    },
-];
 
 /// Detect which capabilities a normalized (lowercased) prompt requests, in
 /// catalog order so the decomposition plan reads top-to-bottom.
@@ -745,22 +413,22 @@ pub fn blueprint_execution_report(
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
             "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
-             а допущения о стоимости жизни нужно сверить с указанными источниками. Код \
-             приведён для проверки. Запустить самостоятельно: `{run_command}`."
+             а встроенные допущения о данных нужно проверить перед использованием. Код приведён \
+             для проверки. Запустить самостоятельно: `{run_command}`."
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Hindi) => format!(
             "निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, \
-             और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया \
-             गया है। स्वयं चलाएँ: `{run_command}`।"
+             और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए \
+             दिया गया है। स्वयं चलाएँ: `{run_command}`।"
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Chinese) => format!(
-            "执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。\
+            "执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。\
              代码仅供审阅。自行运行：`{run_command}`。"
         ),
         (BlueprintExecution::ReviewDataAssumptions, _) => format!(
             "Execution status: not run — this report blueprint was not executed in the \
-             offline sandbox, and the city-cost assumptions should be reviewed against the \
-             listed sources before use. The code is provided for review. Run it yourself: \
+             offline sandbox, and the embedded data assumptions should be reviewed \
+             before use. The code is provided for review. Run it yourself: \
              `{run_command}`."
         ),
         (_, Language::Russian) => format!(
@@ -807,6 +475,15 @@ pub fn recipe_summary(recipe: &BlueprintRecipe, language: Language) -> &'static 
         }
         ("personal_budget_report", Language::Chinese) => {
             "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告"
+        }
+        ("crypto_portfolio_tracker", Language::Russian) => {
+            "смоделировать криптопортфель с оповещениями и Markdown-панелью"
+        }
+        ("crypto_portfolio_tracker", Language::Hindi) => {
+            "alerts और Markdown dashboard वाला crypto portfolio tracker simulate करें"
+        }
+        ("crypto_portfolio_tracker", Language::Chinese) => {
+            "模拟带提醒和 Markdown 仪表盘的加密投资组合追踪器"
         }
         _ => recipe.label,
     }

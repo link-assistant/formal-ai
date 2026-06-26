@@ -53,6 +53,21 @@ fn selects_python_personal_budget_report_blueprint() {
 }
 
 #[test]
+fn selects_python_crypto_portfolio_tracker_blueprint() {
+    let prompt = "search current prices for btc eth ton usdt with portfolio holdings calculate \
+                  total value in usd 24h change weight distribution write a python script mock \
+                  endpoint notify if drops more than 5 percent output dashboard markdown";
+    let blueprint = select_blueprint(prompt, "python").expect("crypto blueprint resolves");
+    assert_eq!(blueprint.recipe.slug, "crypto_portfolio_tracker");
+    assert_eq!(blueprint.program.language_slug, "python");
+    assert!(blueprint.program.code.contains("notify_alerts"));
+    assert!(blueprint
+        .program
+        .code
+        .contains("# Crypto Portfolio Dashboard"));
+}
+
+#[test]
 fn selects_rust_self_source_metrics_blueprint() {
     let prompt = "write a rust program that parses its own source code as text counts \
                   functions loops conditionals comments calculates a cyclomatic complexity \

@@ -389,6 +389,38 @@ meanings
         text "क्या है"
       surface
         text "की गणना करें"
+  time_duration
+    defined-by time
+    defined-by inquiry
+    role time_duration_cue
+    lexeme en
+      surface
+        text "how long"
+      surface
+        text "elapsed time"
+      surface
+        text "travel time"
+    lexeme ru
+      surface
+        text "сколько времени"
+      surface
+        text длительность
+      surface
+        text продолжительность
+      surface
+        text "сколько длится"
+    lexeme hi
+      surface
+        text "कितना समय"
+      surface
+        text अवधि
+    lexeme zh
+      surface
+        text 多久
+      surface
+        text 时长
+      surface
+        text 经过时间
   quantity_conversion
     grounded-in Q618655
     defined-by action

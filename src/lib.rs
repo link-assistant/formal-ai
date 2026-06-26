@@ -6,6 +6,7 @@ pub mod anthropic;
 pub mod arithmetic;
 pub mod associative_package;
 pub(crate) mod calculation;
+pub(crate) mod calculation_time;
 pub(crate) mod calculation_word_problem;
 pub(crate) mod code_editing;
 pub(crate) mod coding;
