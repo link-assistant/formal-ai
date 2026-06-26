@@ -15404,6 +15404,16 @@ function codingOracleLookup(taskSlug, language) {
   );
 }
 
+function codingOracleKnowsLanguage(language) {
+  const needle = String(language || "").trim().toLowerCase();
+  if (!needle) return false;
+  return CODING_ORACLE_SNAPSHOTS.some(
+    (snippet) =>
+      snippet.languageSlug === needle ||
+      snippet.languageLabel.toLowerCase() === needle,
+  );
+}
+
 // Render an otherwise-unsupported write_program request from the coding oracle's
 // cached external snippets (mirrors try_write_program_from_oracle in
 // src/solver_handler_oracle.rs, byte-for-byte on the content and evidence).
@@ -31519,10 +31529,18 @@ function writeProgramParameters(prompt) {
   // function) requested by a program_request verb (write / create / … / build).
   // The surface words live once in data/seed/meanings.lino; this code knows the
   // concepts. Mirrors write_program_parameters in src/intent_formalization.rs.
+  const mentionsProgramRequest = lexiconMentionsRole(
+    ROLE_PROGRAM_REQUEST,
+    normalized,
+  );
   const asksForProgram =
     lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) &&
-    lexiconMentionsRole(ROLE_PROGRAM_REQUEST, normalized);
-  if (!task && !asksForProgram) return null;
+    mentionsProgramRequest;
+  const asksForKnownLanguageProgram =
+    Boolean(language) &&
+    mentionsProgramRequest &&
+    (Boolean(WRITE_PROGRAM_LANGUAGES[language]) || codingOracleKnowsLanguage(language));
+  if (!task && !asksForProgram && !asksForKnownLanguageProgram) return null;
   // Issue #358: modification phrases in the same turn lower the base task
   // through the data-backed substitution pipeline.
   if (task) {

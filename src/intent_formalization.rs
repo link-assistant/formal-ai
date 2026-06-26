@@ -579,9 +579,14 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     // generate / make / build). The surface words for every language live once,
     // in `data/seed/meanings.lino`; this code understands the concepts.
     let lexicon = crate::seed::lexicon();
+    let mentions_program_request =
+        lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
     let asks_for_program = lexicon.mentions_role(crate::seed::ROLE_PROGRAM_KIND, normalized)
-        && lexicon.mentions_role(crate::seed::ROLE_PROGRAM_REQUEST, normalized);
-    if task.is_none() && !asks_for_program {
+        && mentions_program_request;
+    let asks_for_known_language_program = language
+        .as_deref()
+        .is_some_and(|language| mentions_program_request && known_write_program_language(language));
+    if task.is_none() && !asks_for_program && !asks_for_known_language_program {
         return None;
     }
     let mut parameters = BTreeMap::new();
@@ -597,6 +602,11 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
         parameters.insert(String::from("language"), language);
     }
     Some(parameters)
+}
+
+fn known_write_program_language(language: &str) -> bool {
+    crate::coding::program_language_by_slug(language).is_some()
+        || crate::knowledge::CodingOracle::knows_language(language)
 }
 
 fn requested_program_language(normalized: &str) -> Option<String> {
