@@ -26,6 +26,12 @@ enum BoxRule {
     Add { source: String, addend: i64 },
 }
 
+#[derive(Debug, Clone, PartialEq)]
+struct MotionSpeed {
+    value: f64,
+    origin: String,
+}
+
 /// The `n`-th Fibonacci number under the convention F(1) = F(2) = 1 used across
 /// the coding catalog (so F(10) = 55, matching the `fibonacci` program output).
 fn fibonacci_value(n: u32) -> u64 {
@@ -363,6 +369,189 @@ fn normalize_box_total_problem(text: &str) -> Option<WordProblemNormalization> {
     })
 }
 
+fn parse_decimal_token(token: &str) -> Option<f64> {
+    let cleaned =
+        token.trim_matches(|ch: char| !ch.is_ascii_digit() && ch != '.' && ch != '-' && ch != '+');
+    if cleaned.is_empty() || matches!(cleaned, "." | "-" | "+") {
+        return None;
+    }
+    if cleaned.matches('.').count() > 1 {
+        return None;
+    }
+    cleaned.parse::<f64>().ok()
+}
+
+fn unit_token(token: &str) -> String {
+    token
+        .trim_matches(|ch: char| !ch.is_ascii_alphanumeric() && ch != '/')
+        .to_ascii_lowercase()
+}
+
+fn is_speed_unit(unit: &str) -> bool {
+    matches!(unit, "km/h" | "kph" | "kmh")
+}
+
+fn is_distance_unit(unit: &str) -> bool {
+    matches!(
+        unit,
+        "km" | "kilometer" | "kilometers" | "kilometre" | "kilometres"
+    )
+}
+
+fn format_quantity(value: f64) -> String {
+    if (value.fract()).abs() < 1e-10 {
+        return format!("{value:.0}");
+    }
+    format!("{value:.10}")
+        .trim_end_matches('0')
+        .trim_end_matches('.')
+        .to_owned()
+}
+
+fn clean_origin_token(token: &str, is_last: bool) -> String {
+    let mut cleaned = token
+        .trim_matches(|ch: char| !ch.is_alphanumeric() && ch != '.')
+        .to_owned();
+    if is_last {
+        cleaned = cleaned.trim_end_matches(['.', '?', '!']).to_owned();
+    }
+    cleaned
+}
+
+fn extract_origin_before_speed(tokens: &[&str], speed_index: usize) -> Option<String> {
+    if speed_index == 0 {
+        return None;
+    }
+    let mut start = speed_index.saturating_sub(1);
+    for index in (0..speed_index).rev() {
+        if matches!(
+            bare_word(tokens[index]).as_str(),
+            "leaves" | "leave" | "left" | "departs" | "depart" | "starts" | "start"
+        ) {
+            start = index + 1;
+            break;
+        }
+    }
+    if start >= speed_index {
+        return None;
+    }
+
+    let origin_tokens = &tokens[start..speed_index];
+    let mut first_origin_token = 0;
+    while origin_tokens
+        .get(first_origin_token)
+        .is_some_and(|token| bare_word(token) == "from")
+    {
+        first_origin_token += 1;
+    }
+    let mut last_origin_token = origin_tokens.len();
+    while last_origin_token > first_origin_token
+        && origin_tokens
+            .get(last_origin_token - 1)
+            .is_some_and(|token| matches!(bare_word(token).as_str(), "at" | "with"))
+    {
+        last_origin_token -= 1;
+    }
+    let cleaned = origin_tokens[first_origin_token..last_origin_token]
+        .iter()
+        .enumerate()
+        .map(|(index, token)| {
+            clean_origin_token(token, index + 1 == last_origin_token - first_origin_token)
+        })
+        .filter(|token| !token.is_empty())
+        .collect::<Vec<_>>()
+        .join(" ");
+    (!cleaned.is_empty()).then_some(cleaned)
+}
+
+fn normalize_train_meeting_problem(text: &str) -> Option<WordProblemNormalization> {
+    let lower = text.to_lowercase();
+    if !(lower.contains("meet")
+        && lower.contains("distance")
+        && ["km/h", "kph", "kmh"]
+            .iter()
+            .any(|unit| lower.contains(unit)))
+    {
+        return None;
+    }
+
+    let tokens = text.split_whitespace().collect::<Vec<_>>();
+    let mut speeds = Vec::new();
+    let mut stated_distance = None;
+    let mut fallback_distance = None;
+    for index in 0..tokens.len().saturating_sub(1) {
+        let Some(value) = parse_decimal_token(tokens[index]) else {
+            continue;
+        };
+        let unit = unit_token(tokens[index + 1]);
+        if is_speed_unit(&unit) {
+            let origin = extract_origin_before_speed(&tokens, index)
+                .unwrap_or_else(|| format!("train {}", speeds.len() + 1));
+            speeds.push(MotionSpeed { value, origin });
+        } else if is_distance_unit(&unit) {
+            let previous = index
+                .checked_sub(1)
+                .and_then(|previous| tokens.get(previous))
+                .map(|token| bare_word(token))
+                .unwrap_or_default();
+            if previous == "distance" {
+                stated_distance = Some(value);
+            } else if fallback_distance.is_none() {
+                fallback_distance = Some(value);
+            }
+        }
+    }
+
+    if speeds.len() < 2 {
+        return None;
+    }
+    let distance = stated_distance.or(fallback_distance)?;
+    let first = &speeds[0];
+    let second = &speeds[1];
+    let relative_speed = first.value + second.value;
+    if !relative_speed.is_finite() || relative_speed <= 0.0 {
+        return None;
+    }
+
+    let time = distance / relative_speed;
+    let first_distance = first.value * time;
+    let second_distance = second.value * time;
+    let distance_text = format_quantity(distance);
+    let first_speed_text = format_quantity(first.value);
+    let second_speed_text = format_quantity(second.value);
+    let relative_speed_text = format_quantity(relative_speed);
+    let time_text = format_quantity(time);
+    let first_distance_text = format_quantity(first_distance);
+    let second_distance_text = format_quantity(second_distance);
+    let expression = format!("{distance_text} / ({first_speed_text} + {second_speed_text})");
+
+    Some(WordProblemNormalization {
+        expression,
+        reasoning_steps: vec![
+            format!(
+                "[STEP 1] Define variables: distance = {distance_text} km, {} train speed = {first_speed_text} km/h, {} train speed = {second_speed_text} km/h, and t = meeting time in hours. [VERIFY] Units are consistent: kilometers divided by kilometers per hour gives hours.",
+                first.origin, second.origin
+            ),
+            format!(
+                "[STEP 2] Write equation: ({first_speed_text} + {second_speed_text}) * t = {distance_text}. [VERIFY] The trains move toward each other, so their relative speed is {relative_speed_text} km/h."
+            ),
+            format!(
+                "[STEP 3] Solve algebraically: t = {distance_text} / ({first_speed_text} + {second_speed_text}) = {time_text} hours. [VERIFY] {first_speed_text} + {second_speed_text} = {relative_speed_text} and {distance_text} / {relative_speed_text} = {time_text}."
+            ),
+            format!(
+                "[STEP 4] Interpret result: the {} train travels {first_speed_text} * {time_text} = {first_distance_text} km; the {} train travels {second_speed_text} * {time_text} = {second_distance_text} km. [VERIFY] {first_distance_text} + {second_distance_text} = {distance_text} km.",
+                first.origin, second.origin
+            ),
+            format!(
+                "[STEP 5] Convert to user-friendly format: they meet after {time_text} hours, {first_distance_text} km from {} and {second_distance_text} km from {}. [VERIFY] Both distances add to the stated route length.",
+                first.origin, second.origin
+            ),
+            "[COMPARE] Formal-ai uses the same relative-speed equation as the direct solution; the verification tags make each assumption and arithmetic check explicit.".to_owned(),
+        ],
+        result_label: None,
+    })
+}
+
 /// Rewrite a natural-language "word problem" into a calculator expression.
 ///
 /// Issue #334 step 2: see the module-level documentation. Returns `None` when
@@ -374,6 +563,9 @@ pub fn normalize_word_problem_detailed(expression: &str) -> Option<WordProblemNo
         return None;
     }
     if let Some(normalized) = normalize_box_total_problem(trimmed) {
+        return Some(normalized);
+    }
+    if let Some(normalized) = normalize_train_meeting_problem(trimmed) {
         return Some(normalized);
     }
     // Keep only sentence fragments that carry arithmetic content, dropping pure

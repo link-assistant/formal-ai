@@ -321,7 +321,7 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
                         reasoning_steps
                             .iter()
                             .enumerate()
-                            .map(|(index, step)| format!("Step {}: {step}", index + 1))
+                            .map(|(index, step)| render_calculation_reasoning_step(index, step))
                             .collect::<Vec<_>>()
                             .join("\n"),
                     );
@@ -382,6 +382,14 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
         &body,
         0.3,
     ))
+}
+
+fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
+    if step.trim_start().starts_with('[') {
+        step.to_owned()
+    } else {
+        format!("Step {}: {step}", index + 1)
+    }
 }
 
 pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {

@@ -53,6 +53,42 @@ fn resolves_box_relations_and_total() {
 }
 
 #[test]
+fn resolves_train_meeting_problem_with_verification_steps() {
+    let normalized = normalize_word_problem_detailed(
+        "Solve this step-by-step, but with verification at each stage: \
+             Problem: \"A train leaves Moscow at 60 km/h. Another leaves St. \
+             Petersburg at 80 km/h. Distance: 700 km. When/where do they meet?\"",
+    )
+    .expect("train meeting problem should normalize");
+    assert_eq!(normalized.expression, "700 / (60 + 80)");
+    assert_eq!(normalized.result_label, None);
+    assert!(
+        normalized
+            .reasoning_steps
+            .iter()
+            .any(|step| step.contains("[STEP 1]") && step.contains("[VERIFY]")),
+        "verification-tagged steps should be preserved: {:?}",
+        normalized.reasoning_steps,
+    );
+    assert!(
+        normalized
+            .reasoning_steps
+            .iter()
+            .any(|step| step.contains("300 km from Moscow")),
+        "meeting point from Moscow should be explained: {:?}",
+        normalized.reasoning_steps,
+    );
+    assert!(
+        normalized
+            .reasoning_steps
+            .iter()
+            .any(|step| step.contains("400 km from St. Petersburg")),
+        "meeting point from St. Petersburg should be explained: {:?}",
+        normalized.reasoning_steps,
+    );
+}
+
+#[test]
 fn decimals_are_never_split_on_their_dot() {
     // "3.14" must not become "3. 14" — the period is flanked by digits, so it
     // stays inside its sentence and the whole expression is unchanged.
