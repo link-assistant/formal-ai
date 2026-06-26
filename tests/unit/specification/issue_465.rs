@@ -3,6 +3,11 @@
 
 use formal_ai::{ConversationTurn, UniversalSolver};
 
+struct RustCreatorCase {
+    language: &'static str,
+    prompt: &'static str,
+}
+
 #[test]
 fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
     let solver = UniversalSolver::default();
@@ -44,4 +49,57 @@ fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
         "follow-up trace should record the coreference resolution and rewrite: {}",
         response.links_notation
     );
+}
+
+#[test]
+fn rust_creator_fact_is_available_across_supported_languages() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        RustCreatorCase {
+            language: "en",
+            prompt: "Who created Rust?",
+        },
+        RustCreatorCase {
+            language: "ru",
+            prompt: "Кто создал Rust?",
+        },
+        RustCreatorCase {
+            language: "hi",
+            prompt: "Rust किसने बनाया?",
+        },
+        RustCreatorCase {
+            language: "zh",
+            prompt: "谁创建 Rust?",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "fact_lookup",
+            "{} Rust creator prompt should route to fact_lookup, got {} -> {}",
+            case.language, response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains("Graydon Hoare"),
+            "{} Rust creator answer should name Graydon Hoare, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains("Mozilla"),
+            "{} Rust creator answer should include Mozilla context, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "wikidata:Q575650"),
+            "{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
 }
