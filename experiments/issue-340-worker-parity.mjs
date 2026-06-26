@@ -46,6 +46,7 @@ function check(label, condition, detail) {
 
 const {
   tryWriteProgram,
+  tryProgramBlueprintFromPrompt,
   selectBlueprint,
   renderBlueprint,
   composeBlueprintProgram,
@@ -192,6 +193,50 @@ for (const { language, prompt, statusLabel } of [
       `${localizedBudget.intent} :: ${(localizedBudget.content || "").slice(0, 120)}`,
   );
 }
+
+// 1c. Issue #458: a crypto-portfolio tracker asks for "Search current prices"
+// and "Write a Python script" in the same prompt. The direct blueprint probe is
+// what lets the worker preempt broad search routing when the full program recipe
+// is recognized.
+const cryptoPrompt =
+  "Simulate a crypto portfolio tracker:\n" +
+  "1. Search current prices for: BTC, ETH, TON, USDT\n" +
+  "2. Assume portfolio: 2.5 BTC, 15 ETH, 1000 TON, 5000 USDT\n" +
+  "3. Calculate total value in USD, 24h change % for each asset, and portfolio weight distribution\n" +
+  "4. Write a Python script that fetches prices from a public API (mock the endpoint), " +
+  'implements alert logic: "Notify if any asset drops >5%", and logs results to a formatted string\n' +
+  "5. Output: dashboard-style markdown + executable code";
+const cryptoDirect = tryProgramBlueprintFromPrompt(cryptoPrompt, "en", "composed");
+check(
+  "crypto direct blueprint probe returns write_program",
+  cryptoDirect && cryptoDirect.intent === "write_program",
+  cryptoDirect && cryptoDirect.intent,
+);
+check(
+  "crypto direct blueprint records recipe",
+  cryptoDirect &&
+    cryptoDirect.evidence.includes("program_blueprint:recipe:crypto_portfolio_tracker"),
+  cryptoDirect && JSON.stringify(cryptoDirect.evidence),
+);
+const crypto = tryWriteProgram(cryptoPrompt, [], "en");
+check(
+  "crypto request routes to Python blueprint",
+  crypto &&
+    crypto.intent === "write_program" &&
+    crypto.content.includes("```python") &&
+    crypto.content.includes("# Crypto Portfolio Dashboard") &&
+    crypto.content.includes("notify_alerts") &&
+    crypto.content.includes("portfolio_weight"),
+  crypto && `${crypto.intent} :: ${(crypto.content || "").slice(0, 160)}`,
+);
+check(
+  "crypto blueprint evidence link is present",
+  crypto &&
+    crypto.evidence.includes(
+      "response:write_program:blueprint:crypto_portfolio_tracker:python",
+    ),
+  crypto && JSON.stringify(crypto.evidence),
+);
 
 // 2. Python and JavaScript variants resolve too.
 const py = tryWriteProgram(

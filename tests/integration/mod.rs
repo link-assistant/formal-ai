@@ -6,3 +6,4 @@ mod issue_412_followup_sort;
 mod issue_412_oracle_languages;
 mod issue_427_invert_sort;
 mod issue_457_self_source_metrics;
+mod issue_458_crypto_portfolio;

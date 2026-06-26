@@ -36,8 +36,8 @@
 use std::fmt::Write as _;
 
 use crate::coding::blueprint_programs::{
-    JAVASCRIPT_HTTP_JSON_STATS, PYTHON_HTTP_JSON_STATS, PYTHON_PERSONAL_BUDGET_REPORT,
-    RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
+    JAVASCRIPT_HTTP_JSON_STATS, PYTHON_CRYPTO_PORTFOLIO_TRACKER, PYTHON_HTTP_JSON_STATS,
+    PYTHON_PERSONAL_BUDGET_REPORT, RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
 };
 use crate::language::Language;
 use crate::solver::BlueprintComposition;
@@ -360,6 +360,44 @@ pub const CAPABILITIES: &[Capability] = &[
         label: "Compare code complexity with reasoning-text complexity",
         keywords: &["compare", "more complex", "which is more complex"],
     },
+    Capability {
+        slug: "crypto_prices",
+        label: "Fetch current crypto prices",
+        keywords: &[
+            "crypto",
+            "btc",
+            "eth",
+            "ton",
+            "usdt",
+            "current prices",
+            "public api",
+        ],
+    },
+    Capability {
+        slug: "portfolio_holdings",
+        label: "Model portfolio holdings",
+        keywords: &["portfolio", "holdings"],
+    },
+    Capability {
+        slug: "portfolio_calculations",
+        label: "Calculate total value, 24h changes, and weights",
+        keywords: &[
+            "total value",
+            "value in usd",
+            "24h change",
+            "weight distribution",
+        ],
+    },
+    Capability {
+        slug: "alert_logic",
+        label: "Notify when an asset drops more than 5%",
+        keywords: &["alert", "notify", "drops"],
+    },
+    Capability {
+        slug: "mock_api",
+        label: "Mock the public API endpoint",
+        keywords: &["mock", "mock endpoint"],
+    },
 ];
 
 /// Curated composite recipes. They are returned with an honest execution status
@@ -430,6 +468,25 @@ pub const RECIPES: &[BlueprintRecipe] = &[
             run_command: "cargo run",
             execution: BlueprintExecution::LocalSourceAnalysis,
             code: RUST_SELF_SOURCE_METRICS,
+        }],
+    },
+    BlueprintRecipe {
+        slug: "crypto_portfolio_tracker",
+        label: "simulate a crypto portfolio tracker with alerts and a Markdown dashboard",
+        required_capabilities: &[
+            "crypto_prices",
+            "portfolio_holdings",
+            "portfolio_calculations",
+            "alert_logic",
+            "mock_api",
+            "markdown_report",
+        ],
+        programs: &[RecipeProgram {
+            language_slug: "python",
+            libraries: &["Python 3 standard library only"],
+            run_command: "python crypto_portfolio.py",
+            execution: BlueprintExecution::ReviewDataAssumptions,
+            code: PYTHON_CRYPTO_PORTFOLIO_TRACKER,
         }],
     },
 ];
@@ -745,22 +802,22 @@ pub fn blueprint_execution_report(
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
             "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
-             а допущения о стоимости жизни нужно сверить с указанными источниками. Код \
-             приведён для проверки. Запустить самостоятельно: `{run_command}`."
+             а встроенные допущения о данных нужно проверить перед использованием. Код приведён \
+             для проверки. Запустить самостоятельно: `{run_command}`."
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Hindi) => format!(
             "निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, \
-             और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया \
-             गया है। स्वयं चलाएँ: `{run_command}`।"
+             और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए \
+             दिया गया है। स्वयं चलाएँ: `{run_command}`।"
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Chinese) => format!(
-            "执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。\
+            "执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。\
              代码仅供审阅。自行运行：`{run_command}`。"
         ),
         (BlueprintExecution::ReviewDataAssumptions, _) => format!(
             "Execution status: not run — this report blueprint was not executed in the \
-             offline sandbox, and the city-cost assumptions should be reviewed against the \
-             listed sources before use. The code is provided for review. Run it yourself: \
+             offline sandbox, and the embedded data assumptions should be reviewed \
+             before use. The code is provided for review. Run it yourself: \
              `{run_command}`."
         ),
         (_, Language::Russian) => format!(
@@ -807,6 +864,15 @@ pub fn recipe_summary(recipe: &BlueprintRecipe, language: Language) -> &'static 
         }
         ("personal_budget_report", Language::Chinese) => {
             "生成带来源的 50/30/20 城市预算计算器和 Markdown 报告"
+        }
+        ("crypto_portfolio_tracker", Language::Russian) => {
+            "смоделировать криптопортфель с оповещениями и Markdown-панелью"
+        }
+        ("crypto_portfolio_tracker", Language::Hindi) => {
+            "alerts और Markdown dashboard वाला crypto portfolio tracker simulate करें"
+        }
+        ("crypto_portfolio_tracker", Language::Chinese) => {
+            "模拟带提醒和 Markdown 仪表盘的加密投资组合追踪器"
         }
         _ => recipe.label,
     }
