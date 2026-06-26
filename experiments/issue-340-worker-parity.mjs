@@ -152,6 +152,51 @@ check(
     budget.evidence.includes("program_blueprint:recipe:personal_budget_report"),
   budget && JSON.stringify(budget.evidence),
 );
+
+// 1c. Issue #459: class-based composite requests should route to the Python
+// travel-planner blueprint before generic "Search:" bullets can take over.
+const travelPrompt =
+  'Build a "Smart Travel Planner" prototype:\n\n' +
+  "1. Search: visa requirements for Russian citizens visiting Japan, UAE, Serbia\n" +
+  "2. Search: average flight costs from Moscow to these destinations (next 3 months)\n" +
+  "3. Write a Python class `TravelPlanner` with methods:\n" +
+  "   - `add_destination(country: str, budget: float)`\n" +
+  "   - `check_visa_requirements()` -> returns bool\n" +
+  "   - `estimate_total_cost()` -> returns dict\n" +
+  "   - `generate_itinerary(days: int)` -> returns markdown\n" +
+  "4. Add business logic:\n" +
+  "   - Prioritize destinations with visa-free access\n" +
+  "   - Flag if budget < estimated cost\n" +
+  "5. Generate sample output for: 7-day trip, $2000 budget\n" +
+  "6. Output: class code + usage example + sample itinerary";
+const travel = tryWriteProgram(travelPrompt, [], "en");
+check(
+  "travel planner request routes to write_program blueprint",
+  travel && travel.intent === "write_program",
+  travel && travel.intent,
+);
+check(
+  "travel planner blueprint embeds the requested Python class",
+  travel &&
+    travel.content.includes("```python") &&
+    travel.content.includes("class TravelPlanner") &&
+    travel.content.includes("generate_itinerary") &&
+    travel.content.includes("Budget warning"),
+  travel && travel.content,
+);
+check(
+  "travel planner blueprint evidence link is present",
+  travel &&
+    travel.evidence.includes(
+      "response:write_program:blueprint:smart_travel_planner:python",
+    ),
+  travel && JSON.stringify(travel.evidence),
+);
+check(
+  "travel planner blueprint records the recipe",
+  travel && travel.evidence.includes("program_blueprint:recipe:smart_travel_planner"),
+  travel && JSON.stringify(travel.evidence),
+);
 for (const { language, prompt, statusLabel } of [
   {
     language: "ru",

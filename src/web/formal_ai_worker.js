@@ -16945,6 +16945,25 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 函数",
+  "  class",
+  "    defined-by code",
+  "    defined-by program",
+  "    role program_artifact",
+  "    role program_kind",
+  "    lexeme en",
+  "      surface",
+  "        text class",
+  "    lexeme ru",
+  "      surface",
+  "        text класс",
+  "      surface",
+  "        text класса",
+  "    lexeme hi",
+  "      surface",
+  "        text क्लास",
+  "    lexeme zh",
+  "      surface",
+  "        text 类",
   "  write",
   "    defined-by code",
   "    defined-by program",
@@ -30399,7 +30418,7 @@ const ROLE_PROGRAM_ARTIFACT = "program_artifact";
 // program (sort, reverse, cancel, change, …) — additive or subtractive.
 const ROLE_PROGRAM_MODIFICATION = "program_modification";
 // Semantic role: a kind of program artifact a user can ask to be authored
-// (a program, a script, code, a function) — the noun side of "write a <kind>".
+// (a program, a script, code, a function, a class) — the noun side of "write a <kind>".
 const ROLE_PROGRAM_KIND = "program_kind";
 // Semantic role: a verb that requests a program artifact be produced (write,
 // create, show, generate, make, build) — the verb side of "write a <kind>".
@@ -31526,7 +31545,7 @@ function writeProgramParameters(prompt) {
   const language = programLanguageFromPrompt(normalized);
   // Issue #386: recognise "write a <program>" by *meaning*, not a hardcoded
   // per-language word list — a program_kind artifact (program / script / code /
-  // function) requested by a program_request verb (write / create / … / build).
+  // function / class) requested by a program_request verb (write / create / … / build).
   // The surface words live once in data/seed/meanings.lino; this code knows the
   // concepts. Mirrors write_program_parameters in src/intent_formalization.rs.
   const mentionsProgramRequest = lexiconMentionsRole(
@@ -32254,6 +32273,55 @@ const BLUEPRINT_CAPABILITIES = [
     ],
   },
   {
+    slug: "visa_requirements",
+    label: "Check visa requirements",
+    keywords: ["visa", "visa-free", "russian citizens", "requirements"],
+  },
+  {
+    slug: "flight_costs",
+    label: "Estimate flight costs",
+    keywords: [
+      "flight costs",
+      "flight cost",
+      "flight",
+      "from moscow",
+      "next 3 months",
+      "destinations",
+    ],
+  },
+  {
+    slug: "travel_planner_class",
+    label: "Build a travel-planner class",
+    keywords: [
+      "travel planner",
+      "travelplanner",
+      "itinerary",
+      "generate_itinerary",
+      "add_destination",
+      "destination",
+      "trip",
+      "class",
+    ],
+  },
+  {
+    slug: "budget_flags",
+    label: "Flag destinations over budget",
+    keywords: [
+      "budget < estimated cost",
+      "budget warning",
+      "estimated cost",
+      "prioritize",
+      "visa-free access",
+      "flag",
+      "budget",
+    ],
+  },
+  {
+    slug: "sample_itinerary",
+    label: "Generate a sample itinerary",
+    keywords: ["sample output", "sample itinerary", "7-day", "7 day", "$2000", "$2,000"],
+  },
+  {
     slug: "budget_rule",
     label: "Apply the 50/30/20 budget rule",
     keywords: [
@@ -32814,6 +32882,148 @@ if __name__ == '__main__':
     main()
 `;
 
+const BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER = `from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class DestinationData:
+    country: str
+    visa_free: bool
+    visa_note: str
+    average_flight_cost: float
+    daily_cost: float
+    source: str
+
+
+DEFAULT_DESTINATIONS = {
+    'Japan': DestinationData(
+        country='Japan',
+        visa_free=False,
+        visa_note='Russian citizens should confirm visa requirements before booking.',
+        average_flight_cost=820.0,
+        daily_cost=160.0,
+        source='https://www.mofa.go.jp/',
+    ),
+    'UAE': DestinationData(
+        country='UAE',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=420.0,
+        daily_cost=135.0,
+        source='https://u.ae/',
+    ),
+    'Serbia': DestinationData(
+        country='Serbia',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=380.0,
+        daily_cost=95.0,
+        source='https://www.mfa.gov.rs/',
+    ),
+}
+DEFAULT_DAYS = 7
+
+
+def money(value):
+    return f'$\{value:,.0f}'
+
+
+class TravelPlanner:
+    def __init__(self, destination_data=None):
+        self.destination_data = destination_data or DEFAULT_DESTINATIONS
+        self.destinations = []
+
+    def add_destination(self, country: str, budget: float):
+        lookup = {name.lower(): name for name in self.destination_data}
+        key = country.strip().lower()
+        if key not in lookup:
+            available = ', '.join(sorted(self.destination_data))
+            raise ValueError(f'Unknown destination {country!r}. Try one of: {available}')
+        self.destinations.append({
+            'country': lookup[key],
+            'budget': float(budget),
+        })
+
+    def check_visa_requirements(self) -> bool:
+        return all(
+            self.destination_data[item['country']].visa_free
+            for item in self._selected_destinations()
+        )
+
+    def estimate_total_cost(self) -> dict:
+        return self._estimate_for_days(DEFAULT_DAYS)
+
+    def generate_itinerary(self, days: int) -> str:
+        estimates = self._estimate_for_days(days)
+        ranked = sorted(
+            estimates.values(),
+            key=lambda row: (not row['visa_free'], row['estimated_total']),
+        )
+        lines = [
+            '# Smart Travel Planner',
+            '',
+            f'Sample output for a {days}-day trip with $2,000 budget',
+            '',
+            '| Rank | Destination | Visa | Estimated cost | Budget status |',
+            '| ---: | --- | --- | ---: | --- |',
+        ]
+        for rank, row in enumerate(ranked, start=1):
+            visa = 'visa-free' if row['visa_free'] else 'visa check required'
+            warning = row['budget_warning'] or 'Budget warning: none'
+            lines.append(
+                f'| {rank} | {row["country"]} | {visa} | '
+                f'{money(row["estimated_total"])} | {warning} |'
+            )
+        lines.extend(['', '## Notes'])
+        for row in ranked:
+            lines.append(f'- {row["country"]}: {row["visa_note"]}')
+            lines.append(f'  Source to review: {row["source"]}')
+        lines.append('')
+        lines.append('Review live visa rules and flight prices before purchase.')
+        return '\\n'.join(lines)
+
+    def _selected_destinations(self):
+        if not self.destinations:
+            raise ValueError('Add at least one destination first.')
+        return self.destinations
+
+    def _estimate_for_days(self, days):
+        estimates = {}
+        for item in self._selected_destinations():
+            data = self.destination_data[item['country']]
+            total = data.average_flight_cost + data.daily_cost * days
+            budget = item['budget']
+            estimates[data.country] = {
+                'country': data.country,
+                'visa_free': data.visa_free,
+                'visa_note': data.visa_note,
+                'source': data.source,
+                'average_flight_cost': data.average_flight_cost,
+                'daily_cost': data.daily_cost,
+                'estimated_total': total,
+                'budget': budget,
+                'budget_warning': (
+                    None
+                    if budget >= total
+                    else f'Budget warning: {money(budget)} is below {money(total)}'
+                ),
+            }
+        return estimates
+
+
+def build_sample_planner():
+    planner = TravelPlanner()
+    for country in ('Japan', 'UAE', 'Serbia'):
+        planner.add_destination(country, 2000.0)
+    return planner
+
+
+if __name__ == '__main__':
+    sample = build_sample_planner()
+    print('Sample output for a 7-day trip with $2,000 budget')
+    print(sample.generate_itinerary(7))
+`;
+
 const BLUEPRINT_RUST_SELF_SOURCE_METRICS = `use std::fmt::Write as _;
 
 const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
@@ -33026,6 +33236,28 @@ const BLUEPRINT_RECIPES = [
         runCommand: "python budget_report.py",
         execution: "review_data_assumptions",
         code: BLUEPRINT_PYTHON_PERSONAL_BUDGET_REPORT,
+      },
+    ],
+  },
+  {
+    slug: "smart_travel_planner",
+    label:
+      "build a sourced travel planner class with visa, flight-cost, budget, and itinerary logic",
+    requiredCapabilities: [
+      "web_research",
+      "visa_requirements",
+      "flight_costs",
+      "travel_planner_class",
+      "budget_flags",
+      "sample_itinerary",
+    ],
+    programs: [
+      {
+        languageSlug: "python",
+        libraries: ["Python 3 standard library only"],
+        runCommand: "python travel_planner.py",
+        execution: "review_data_assumptions",
+        code: BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER,
       },
     ],
   },

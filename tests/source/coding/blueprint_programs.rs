@@ -420,6 +420,148 @@ if __name__ == '__main__':
     main()
 "#;
 
+pub(super) const PYTHON_SMART_TRAVEL_PLANNER: &str = r#"from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class DestinationData:
+    country: str
+    visa_free: bool
+    visa_note: str
+    average_flight_cost: float
+    daily_cost: float
+    source: str
+
+
+DEFAULT_DESTINATIONS = {
+    'Japan': DestinationData(
+        country='Japan',
+        visa_free=False,
+        visa_note='Russian citizens should confirm visa requirements before booking.',
+        average_flight_cost=820.0,
+        daily_cost=160.0,
+        source='https://www.mofa.go.jp/',
+    ),
+    'UAE': DestinationData(
+        country='UAE',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=420.0,
+        daily_cost=135.0,
+        source='https://u.ae/',
+    ),
+    'Serbia': DestinationData(
+        country='Serbia',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=380.0,
+        daily_cost=95.0,
+        source='https://www.mfa.gov.rs/',
+    ),
+}
+DEFAULT_DAYS = 7
+
+
+def money(value):
+    return f'${value:,.0f}'
+
+
+class TravelPlanner:
+    def __init__(self, destination_data=None):
+        self.destination_data = destination_data or DEFAULT_DESTINATIONS
+        self.destinations = []
+
+    def add_destination(self, country: str, budget: float):
+        lookup = {name.lower(): name for name in self.destination_data}
+        key = country.strip().lower()
+        if key not in lookup:
+            available = ', '.join(sorted(self.destination_data))
+            raise ValueError(f'Unknown destination {country!r}. Try one of: {available}')
+        self.destinations.append({
+            'country': lookup[key],
+            'budget': float(budget),
+        })
+
+    def check_visa_requirements(self) -> bool:
+        return all(
+            self.destination_data[item['country']].visa_free
+            for item in self._selected_destinations()
+        )
+
+    def estimate_total_cost(self) -> dict:
+        return self._estimate_for_days(DEFAULT_DAYS)
+
+    def generate_itinerary(self, days: int) -> str:
+        estimates = self._estimate_for_days(days)
+        ranked = sorted(
+            estimates.values(),
+            key=lambda row: (not row['visa_free'], row['estimated_total']),
+        )
+        lines = [
+            '# Smart Travel Planner',
+            '',
+            f'Sample output for a {days}-day trip with $2,000 budget',
+            '',
+            '| Rank | Destination | Visa | Estimated cost | Budget status |',
+            '| ---: | --- | --- | ---: | --- |',
+        ]
+        for rank, row in enumerate(ranked, start=1):
+            visa = 'visa-free' if row['visa_free'] else 'visa check required'
+            warning = row['budget_warning'] or 'Budget warning: none'
+            lines.append(
+                f'| {rank} | {row["country"]} | {visa} | '
+                f'{money(row["estimated_total"])} | {warning} |'
+            )
+        lines.extend(['', '## Notes'])
+        for row in ranked:
+            lines.append(f'- {row["country"]}: {row["visa_note"]}')
+            lines.append(f'  Source to review: {row["source"]}')
+        lines.append('')
+        lines.append('Review live visa rules and flight prices before purchase.')
+        return '\n'.join(lines)
+
+    def _selected_destinations(self):
+        if not self.destinations:
+            raise ValueError('Add at least one destination first.')
+        return self.destinations
+
+    def _estimate_for_days(self, days):
+        estimates = {}
+        for item in self._selected_destinations():
+            data = self.destination_data[item['country']]
+            total = data.average_flight_cost + data.daily_cost * days
+            budget = item['budget']
+            estimates[data.country] = {
+                'country': data.country,
+                'visa_free': data.visa_free,
+                'visa_note': data.visa_note,
+                'source': data.source,
+                'average_flight_cost': data.average_flight_cost,
+                'daily_cost': data.daily_cost,
+                'estimated_total': total,
+                'budget': budget,
+                'budget_warning': (
+                    None
+                    if budget >= total
+                    else f'Budget warning: {money(budget)} is below {money(total)}'
+                ),
+            }
+        return estimates
+
+
+def build_sample_planner():
+    planner = TravelPlanner()
+    for country in ('Japan', 'UAE', 'Serbia'):
+        planner.add_destination(country, 2000.0)
+    return planner
+
+
+if __name__ == '__main__':
+    sample = build_sample_planner()
+    print('Sample output for a 7-day trip with $2,000 budget')
+    print(sample.generate_itinerary(7))
+"#;
+
 pub(super) const RUST_SELF_SOURCE_METRICS: &str = r#"use std::fmt::Write as _;
 
 const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
