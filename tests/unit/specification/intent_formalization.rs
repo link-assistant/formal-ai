@@ -94,6 +94,59 @@ fn write_program_formalization_records_language_and_task_parameters() {
 }
 
 #[test]
+fn class_artifact_formalization_routes_to_write_program() {
+    #[derive(Debug)]
+    struct LanguageCase {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    for case in [
+        LanguageCase {
+            language: "en",
+            prompt: "Write a Python class TravelPlanner with add_destination and generate_itinerary methods",
+        },
+        LanguageCase {
+            language: "ru",
+            prompt: "Напиши класс TravelPlanner на питоне",
+        },
+        LanguageCase {
+            language: "hi",
+            prompt: "पायथन क्लास TravelPlanner लिखो",
+        },
+        LanguageCase {
+            language: "zh",
+            prompt: "编写 python 类 TravelPlanner",
+        },
+    ] {
+        let intent = formalize_intent(case.prompt, case.language, None);
+
+        assert_eq!(intent.kind, IntentKind::Task, "{case:?}");
+        assert_eq!(
+            intent.route.as_deref(),
+            Some("write_program"),
+            "{case:?} -> {intent:?}"
+        );
+        assert_eq!(
+            intent.parameters.get("language").map(String::as_str),
+            Some("python"),
+            "{case:?} -> {intent:?}"
+        );
+        assert!(
+            !intent.parameters.contains_key("task"),
+            "class-only composite requests should route without inventing a catalog task: {case:?} -> {intent:?}"
+        );
+        assert!(
+            intent
+                .relevants
+                .iter()
+                .any(|relevant| relevant == "handler:write_program"),
+            "{case:?} -> {intent:?}",
+        );
+    }
+}
+
+#[test]
 fn repeated_prompt_hits_intent_formalization_cache() {
     let solver = UniversalSolver::default();
     let mut cache = IntentFormalizationCache::new();

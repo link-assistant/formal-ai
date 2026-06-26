@@ -37,7 +37,7 @@ use std::fmt::Write as _;
 
 use crate::coding::blueprint_programs::{
     JAVASCRIPT_HTTP_JSON_STATS, PYTHON_HTTP_JSON_STATS, PYTHON_PERSONAL_BUDGET_REPORT,
-    RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
+    PYTHON_SMART_TRAVEL_PLANNER, RUST_HTTP_JSON_STATS, RUST_SELF_SOURCE_METRICS,
 };
 use crate::language::Language;
 use crate::solver::BlueprintComposition;
@@ -266,6 +266,62 @@ pub const CAPABILITIES: &[Capability] = &[
         ],
     },
     Capability {
+        slug: "visa_requirements",
+        label: "Check visa requirements",
+        keywords: &["visa", "visa-free", "russian citizens", "requirements"],
+    },
+    Capability {
+        slug: "flight_costs",
+        label: "Estimate flight costs",
+        keywords: &[
+            "flight costs",
+            "flight cost",
+            "flight",
+            "from moscow",
+            "next 3 months",
+            "destinations",
+        ],
+    },
+    Capability {
+        slug: "travel_planner_class",
+        label: "Build a travel-planner class",
+        keywords: &[
+            "travel planner",
+            "travelplanner",
+            "itinerary",
+            "generate_itinerary",
+            "add_destination",
+            "destination",
+            "trip",
+            "class",
+        ],
+    },
+    Capability {
+        slug: "budget_flags",
+        label: "Flag destinations over budget",
+        keywords: &[
+            "budget < estimated cost",
+            "budget warning",
+            "estimated cost",
+            "prioritize",
+            "visa-free access",
+            "flag",
+            "budget",
+        ],
+    },
+    Capability {
+        slug: "sample_itinerary",
+        label: "Generate a sample itinerary",
+        keywords: &[
+            "sample output",
+            "sample itinerary",
+            "7-day",
+            "7 day",
+            "$2000",
+            "$2,000",
+        ],
+    },
+    Capability {
         slug: "budget_rule",
         label: "Apply the 50/30/20 budget rule",
         keywords: &[
@@ -410,6 +466,25 @@ pub const RECIPES: &[BlueprintRecipe] = &[
             run_command: "python budget_report.py",
             execution: BlueprintExecution::ReviewDataAssumptions,
             code: PYTHON_PERSONAL_BUDGET_REPORT,
+        }],
+    },
+    BlueprintRecipe {
+        slug: "smart_travel_planner",
+        label: "build a sourced travel planner class with visa, flight-cost, budget, and itinerary logic",
+        required_capabilities: &[
+            "web_research",
+            "visa_requirements",
+            "flight_costs",
+            "travel_planner_class",
+            "budget_flags",
+            "sample_itinerary",
+        ],
+        programs: &[RecipeProgram {
+            language_slug: "python",
+            libraries: &["Python 3 standard library only"],
+            run_command: "python travel_planner.py",
+            execution: BlueprintExecution::ReviewDataAssumptions,
+            code: PYTHON_SMART_TRAVEL_PLANNER,
         }],
     },
     BlueprintRecipe {
@@ -745,21 +820,21 @@ pub fn blueprint_execution_report(
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Russian) => format!(
             "Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, \
-             а допущения о стоимости жизни нужно сверить с указанными источниками. Код \
+             а допущения о данных нужно сверить с указанными источниками. Код \
              приведён для проверки. Запустить самостоятельно: `{run_command}`."
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Hindi) => format!(
             "निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, \
-             और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया \
+             और डेटा मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया \
              गया है। स्वयं चलाएँ: `{run_command}`।"
         ),
         (BlueprintExecution::ReviewDataAssumptions, Language::Chinese) => format!(
-            "执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。\
+            "执行状态：未运行 —— 该报告未在离线沙箱中执行，数据假设应先按列出的来源核对。\
              代码仅供审阅。自行运行：`{run_command}`。"
         ),
         (BlueprintExecution::ReviewDataAssumptions, _) => format!(
             "Execution status: not run — this report blueprint was not executed in the \
-             offline sandbox, and the city-cost assumptions should be reviewed against the \
+             offline sandbox, and the data assumptions should be reviewed against the \
              listed sources before use. The code is provided for review. Run it yourself: \
              `{run_command}`."
         ),

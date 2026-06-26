@@ -16945,6 +16945,25 @@ const MEANINGS_LINO = [
   "    lexeme zh",
   "      surface",
   "        text 函数",
+  "  class",
+  "    defined-by code",
+  "    defined-by program",
+  "    role program_artifact",
+  "    role program_kind",
+  "    lexeme en",
+  "      surface",
+  "        text class",
+  "    lexeme ru",
+  "      surface",
+  "        text класс",
+  "      surface",
+  "        text класса",
+  "    lexeme hi",
+  "      surface",
+  "        text क्लास",
+  "    lexeme zh",
+  "      surface",
+  "        text 类",
   "  write",
   "    defined-by code",
   "    defined-by program",
@@ -30399,7 +30418,7 @@ const ROLE_PROGRAM_ARTIFACT = "program_artifact";
 // program (sort, reverse, cancel, change, …) — additive or subtractive.
 const ROLE_PROGRAM_MODIFICATION = "program_modification";
 // Semantic role: a kind of program artifact a user can ask to be authored
-// (a program, a script, code, a function) — the noun side of "write a <kind>".
+// (a program, a script, code, a function, a class) — the noun side of "write a <kind>".
 const ROLE_PROGRAM_KIND = "program_kind";
 // Semantic role: a verb that requests a program artifact be produced (write,
 // create, show, generate, make, build) — the verb side of "write a <kind>".
@@ -31526,7 +31545,7 @@ function writeProgramParameters(prompt) {
   const language = programLanguageFromPrompt(normalized);
   // Issue #386: recognise "write a <program>" by *meaning*, not a hardcoded
   // per-language word list — a program_kind artifact (program / script / code /
-  // function) requested by a program_request verb (write / create / … / build).
+  // function / class) requested by a program_request verb (write / create / … / build).
   // The surface words live once in data/seed/meanings.lino; this code knows the
   // concepts. Mirrors write_program_parameters in src/intent_formalization.rs.
   const mentionsProgramRequest = lexiconMentionsRole(
@@ -32254,6 +32273,55 @@ const BLUEPRINT_CAPABILITIES = [
     ],
   },
   {
+    slug: "visa_requirements",
+    label: "Check visa requirements",
+    keywords: ["visa", "visa-free", "russian citizens", "requirements"],
+  },
+  {
+    slug: "flight_costs",
+    label: "Estimate flight costs",
+    keywords: [
+      "flight costs",
+      "flight cost",
+      "flight",
+      "from moscow",
+      "next 3 months",
+      "destinations",
+    ],
+  },
+  {
+    slug: "travel_planner_class",
+    label: "Build a travel-planner class",
+    keywords: [
+      "travel planner",
+      "travelplanner",
+      "itinerary",
+      "generate_itinerary",
+      "add_destination",
+      "destination",
+      "trip",
+      "class",
+    ],
+  },
+  {
+    slug: "budget_flags",
+    label: "Flag destinations over budget",
+    keywords: [
+      "budget < estimated cost",
+      "budget warning",
+      "estimated cost",
+      "prioritize",
+      "visa-free access",
+      "flag",
+      "budget",
+    ],
+  },
+  {
+    slug: "sample_itinerary",
+    label: "Generate a sample itinerary",
+    keywords: ["sample output", "sample itinerary", "7-day", "7 day", "$2000", "$2,000"],
+  },
+  {
     slug: "budget_rule",
     label: "Apply the 50/30/20 budget rule",
     keywords: [
@@ -32671,6 +32739,148 @@ if __name__ == '__main__':
     main()
 `;
 
+const BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER = `from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class DestinationData:
+    country: str
+    visa_free: bool
+    visa_note: str
+    average_flight_cost: float
+    daily_cost: float
+    source: str
+
+
+DEFAULT_DESTINATIONS = {
+    'Japan': DestinationData(
+        country='Japan',
+        visa_free=False,
+        visa_note='Russian citizens should confirm visa requirements before booking.',
+        average_flight_cost=820.0,
+        daily_cost=160.0,
+        source='https://www.mofa.go.jp/',
+    ),
+    'UAE': DestinationData(
+        country='UAE',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=420.0,
+        daily_cost=135.0,
+        source='https://u.ae/',
+    ),
+    'Serbia': DestinationData(
+        country='Serbia',
+        visa_free=True,
+        visa_note='Assume visa-free short-stay access; verify current entry rules.',
+        average_flight_cost=380.0,
+        daily_cost=95.0,
+        source='https://www.mfa.gov.rs/',
+    ),
+}
+DEFAULT_DAYS = 7
+
+
+def money(value):
+    return f'$\{value:,.0f}'
+
+
+class TravelPlanner:
+    def __init__(self, destination_data=None):
+        self.destination_data = destination_data or DEFAULT_DESTINATIONS
+        self.destinations = []
+
+    def add_destination(self, country: str, budget: float):
+        lookup = {name.lower(): name for name in self.destination_data}
+        key = country.strip().lower()
+        if key not in lookup:
+            available = ', '.join(sorted(self.destination_data))
+            raise ValueError(f'Unknown destination {country!r}. Try one of: {available}')
+        self.destinations.append({
+            'country': lookup[key],
+            'budget': float(budget),
+        })
+
+    def check_visa_requirements(self) -> bool:
+        return all(
+            self.destination_data[item['country']].visa_free
+            for item in self._selected_destinations()
+        )
+
+    def estimate_total_cost(self) -> dict:
+        return self._estimate_for_days(DEFAULT_DAYS)
+
+    def generate_itinerary(self, days: int) -> str:
+        estimates = self._estimate_for_days(days)
+        ranked = sorted(
+            estimates.values(),
+            key=lambda row: (not row['visa_free'], row['estimated_total']),
+        )
+        lines = [
+            '# Smart Travel Planner',
+            '',
+            f'Sample output for a {days}-day trip with $2,000 budget',
+            '',
+            '| Rank | Destination | Visa | Estimated cost | Budget status |',
+            '| ---: | --- | --- | ---: | --- |',
+        ]
+        for rank, row in enumerate(ranked, start=1):
+            visa = 'visa-free' if row['visa_free'] else 'visa check required'
+            warning = row['budget_warning'] or 'Budget warning: none'
+            lines.append(
+                f'| {rank} | {row["country"]} | {visa} | '
+                f'{money(row["estimated_total"])} | {warning} |'
+            )
+        lines.extend(['', '## Notes'])
+        for row in ranked:
+            lines.append(f'- {row["country"]}: {row["visa_note"]}')
+            lines.append(f'  Source to review: {row["source"]}')
+        lines.append('')
+        lines.append('Review live visa rules and flight prices before purchase.')
+        return '\\n'.join(lines)
+
+    def _selected_destinations(self):
+        if not self.destinations:
+            raise ValueError('Add at least one destination first.')
+        return self.destinations
+
+    def _estimate_for_days(self, days):
+        estimates = {}
+        for item in self._selected_destinations():
+            data = self.destination_data[item['country']]
+            total = data.average_flight_cost + data.daily_cost * days
+            budget = item['budget']
+            estimates[data.country] = {
+                'country': data.country,
+                'visa_free': data.visa_free,
+                'visa_note': data.visa_note,
+                'source': data.source,
+                'average_flight_cost': data.average_flight_cost,
+                'daily_cost': data.daily_cost,
+                'estimated_total': total,
+                'budget': budget,
+                'budget_warning': (
+                    None
+                    if budget >= total
+                    else f'Budget warning: {money(budget)} is below {money(total)}'
+                ),
+            }
+        return estimates
+
+
+def build_sample_planner():
+    planner = TravelPlanner()
+    for country in ('Japan', 'UAE', 'Serbia'):
+        planner.add_destination(country, 2000.0)
+    return planner
+
+
+if __name__ == '__main__':
+    sample = build_sample_planner()
+    print('Sample output for a 7-day trip with $2,000 budget')
+    print(sample.generate_itinerary(7))
+`;
+
 const BLUEPRINT_RUST_SELF_SOURCE_METRICS = `use std::fmt::Write as _;
 
 const SOURCE: &str = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/", file!()));
@@ -32887,6 +33097,28 @@ const BLUEPRINT_RECIPES = [
     ],
   },
   {
+    slug: "smart_travel_planner",
+    label:
+      "build a sourced travel planner class with visa, flight-cost, budget, and itinerary logic",
+    requiredCapabilities: [
+      "web_research",
+      "visa_requirements",
+      "flight_costs",
+      "travel_planner_class",
+      "budget_flags",
+      "sample_itinerary",
+    ],
+    programs: [
+      {
+        languageSlug: "python",
+        libraries: ["Python 3 standard library only"],
+        runCommand: "python travel_planner.py",
+        execution: "review_data_assumptions",
+        code: BLUEPRINT_PYTHON_SMART_TRAVEL_PLANNER,
+      },
+    ],
+  },
+  {
     slug: "self_source_metrics_report",
     label:
       "inspect its own Rust source, emit JSON metrics, and compare code with response prose",
@@ -32968,7 +33200,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: \`${runCommand}\`.`
         : execution === "review_data_assumptions"
-        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the city-cost assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
+        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the data assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
         : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
   ru: {
@@ -32980,7 +33212,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `Статус выполнения: не запускалось — этот чертёж анализа исходного кода использует только стандартную библиотеку Rust, но генератор ответа не компилировал его на месте. Код приведён для проверки. Запустить из Cargo-проекта: \`${runCommand}\`.`
         : execution === "review_data_assumptions"
-        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о стоимости жизни нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
+        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о данных нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
         : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
   hi: {
@@ -32992,7 +33224,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `निष्पादन स्थिति: नहीं चलाया गया — यह source-metrics blueprint केवल Rust standard library का उपयोग करता है, लेकिन answer renderer ने इसे यहीं compile नहीं किया। कोड समीक्षा के लिए दिया गया है। Cargo project से स्वयं चलाएँ: \`${runCommand}\`।`
         : execution === "review_data_assumptions"
-        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और शहर-लागत मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और डेटा मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
         : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
   zh: {
@@ -33004,7 +33236,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `执行状态：未运行 —— 该源码指标蓝图只使用 Rust 标准库，但回答渲染器没有在本地编译它。代码仅供审阅。请在 Cargo 项目中自行运行：\`${runCommand}\`。`
         : execution === "review_data_assumptions"
-        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，城市成本假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
+        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，数据假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
         : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
 };

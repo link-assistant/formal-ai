@@ -574,8 +574,8 @@ fn write_program_parameters(normalized: &str) -> Option<BTreeMap<String, String>
     let language = requested_program_language(normalized);
     // Issue #386: "write a <program>" is recognised by *meaning*, not a hardcoded
     // per-language word list. The prompt asks for a program when it evidences a
-    // `program_kind` meaning (the artefact: program / script / code / function)
-    // *and* a `program_request` meaning (the verb: write / create / show /
+    // `program_kind` meaning (the artefact: program / script / code / function /
+    // class) *and* a `program_request` meaning (the verb: write / create / show /
     // generate / make / build). The surface words for every language live once,
     // in `data/seed/meanings.lino`; this code understands the concepts.
     let lexicon = crate::seed::lexicon();
