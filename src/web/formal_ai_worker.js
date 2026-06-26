@@ -1534,6 +1534,7 @@ const ROLE_ARITHMETIC_OPERATOR_WORD = "arithmetic_operator_word";
 const ROLE_CARDINAL_NUMBER_WORD = "cardinal_number_word";
 const ROLE_CALCULATION_REQUEST_CUE = "calculation_request_cue";
 const ROLE_CALCULATION_RESULT_QUERY_CUE = "calculation_result_query_cue";
+const ROLE_TIME_DURATION_CUE = "time_duration_cue";
 const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
@@ -3006,6 +3007,44 @@ function embeddedCalculationRequestSlices(prompt, prefixes) {
     .map((match) => text.slice(match.start));
 }
 
+function clockTimeMentions(value) {
+  const text = String(value || "");
+  const mentions = [];
+  const pattern = /(^|[^\p{L}\p{N}])([0-9]{1,2}):([0-9]{2})(?=$|[^\p{L}\p{N}])/gu;
+  for (const match of text.matchAll(pattern)) {
+    const hour = Number(match[2]);
+    const minute = Number(match[3]);
+    if (hour > 23 || minute > 59) continue;
+    const start = match.index + match[1].length;
+    const end = start + match[2].length + 1 + match[3].length;
+    mentions.push({
+      start,
+      end,
+      text: text.slice(start, end),
+    });
+  }
+  return mentions;
+}
+
+function explicitTimeSubtractionBetween(value, left, right) {
+  const between = String(value || "").slice(left.end, right.start);
+  return /[-−]/u.test(between) || hasArithmeticWordOperator(between);
+}
+
+function elapsedTimeExpression(prompt) {
+  const text = String(prompt || "");
+  if (!lexiconMentionsRole(ROLE_TIME_DURATION_CUE, normalizePrompt(text))) {
+    return null;
+  }
+  const mentions = clockTimeMentions(text);
+  if (mentions.length !== 2) return null;
+  const [first, second] = mentions;
+  if (explicitTimeSubtractionBetween(text, first, second)) {
+    return `${first.text} - ${second.text}`;
+  }
+  return `${second.text} - ${first.text}`;
+}
+
 function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -3075,6 +3114,15 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
       if (extracted) return extracted;
     }
   }
+  const durationExpression = elapsedTimeExpression(working);
+  if (durationExpression) {
+    return {
+      expression: durationExpression,
+      interpretations,
+      reasoningSteps: [],
+      resultLabel: "",
+    };
+  }
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
@@ -3105,7 +3153,10 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   if (evaluateCurrencyConversionExpression(working) !== null) {
     return extracted;
   }
-  const allowed = /^[0-9+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
+  if (working.includes(":") && evaluateClockDifferenceExpression(working) === null) {
+    return null;
+  }
+  const allowed = /^[0-9:+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return extracted;
 }
@@ -6605,6 +6656,41 @@ function trimCompoundDecimal(value) {
   return String(value).replace(/0+$/, "").replace(/\.$/, "");
 }
 
+function parseClockTimeMinutes(value) {
+  const match = /^([0-9]{1,2}):([0-9]{2})$/.exec(String(value || "").trim());
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return null;
+  return hour * 60 + minute;
+}
+
+function formatClockDuration(minutes) {
+  if (minutes <= 0) return "0 seconds";
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  const parts = [];
+  if (hours > 0) parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+  if (remainingMinutes > 0) {
+    parts.push(
+      `${remainingMinutes} ${remainingMinutes === 1 ? "minute" : "minutes"}`,
+    );
+  }
+  return parts.join(", ");
+}
+
+function evaluateClockDifferenceExpression(expression) {
+  const match =
+    /^\s*([0-9]{1,2}:[0-9]{2})\s*[-−]\s*([0-9]{1,2}:[0-9]{2})\s*$/.exec(
+      String(expression || ""),
+    );
+  if (!match) return null;
+  const left = parseClockTimeMinutes(match[1]);
+  const right = parseClockTimeMinutes(match[2]);
+  if (left === null || right === null) return null;
+  return formatClockDuration(left - right);
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -6627,12 +6713,16 @@ function tryArithmetic(prompt) {
     } else {
       const percentOfResult = evaluatePercentOfExpression(expression);
       const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
+      const clockDifferenceResult = evaluateClockDifferenceExpression(expression);
       if (currencyConversionResult !== null) {
         formatted = currencyConversionResult;
         backend = "js-currency";
       } else if (percentOfResult) {
         formatted = percentOfResult;
         backend = "js-percent-of";
+      } else if (clockDifferenceResult !== null) {
+        formatted = clockDifferenceResult;
+        backend = "js-clock-time";
       } else if (isEquation) {
         formatted = solveEquation(expression);
         backend = "js-equation-fallback";
@@ -18986,6 +19076,38 @@ const MEANINGS_LINO = [
   '        text "क्या है"',
   "      surface",
   '        text "की गणना करें"',
+  "  time_duration",
+  "    defined-by time",
+  "    defined-by inquiry",
+  "    role time_duration_cue",
+  "    lexeme en",
+  "      surface",
+  '        text "how long"',
+  "      surface",
+  '        text "elapsed time"',
+  "      surface",
+  '        text "travel time"',
+  "    lexeme ru",
+  "      surface",
+  '        text "сколько времени"',
+  "      surface",
+  "        text длительность",
+  "      surface",
+  "        text продолжительность",
+  "      surface",
+  '        text "сколько длится"',
+  "    lexeme hi",
+  "      surface",
+  '        text "कितना समय"',
+  "      surface",
+  "        text अवधि",
+  "    lexeme zh",
+  "      surface",
+  "        text 多久",
+  "      surface",
+  "        text 时长",
+  "      surface",
+  "        text 经过时间",
   "  quantity_conversion",
   "    grounded-in Q618655",
   "    defined-by action",
@@ -32422,6 +32544,44 @@ const BLUEPRINT_CAPABILITIES = [
     label: "Compare code complexity with reasoning-text complexity",
     keywords: ["compare", "more complex", "which is more complex"],
   },
+  {
+    slug: "crypto_prices",
+    label: "Fetch current crypto prices",
+    keywords: [
+      "crypto",
+      "btc",
+      "eth",
+      "ton",
+      "usdt",
+      "current prices",
+      "public api",
+    ],
+  },
+  {
+    slug: "portfolio_holdings",
+    label: "Model portfolio holdings",
+    keywords: ["portfolio", "holdings"],
+  },
+  {
+    slug: "portfolio_calculations",
+    label: "Calculate total value, 24h changes, and weights",
+    keywords: [
+      "total value",
+      "value in usd",
+      "24h change",
+      "weight distribution",
+    ],
+  },
+  {
+    slug: "alert_logic",
+    label: "Notify when an asset drops more than 5%",
+    keywords: ["alert", "notify", "drops"],
+  },
+  {
+    slug: "mock_api",
+    label: "Mock the public API endpoint",
+    keywords: ["mock", "mock endpoint"],
+  },
 ];
 
 // Curated programs (verbatim copies of the Rust raw-string consts). They are
@@ -32733,6 +32893,111 @@ def main():
     Path('budget_report.md').write_text(report, encoding='utf-8')
     print(report)
     print('\\nMarkdown report written to budget_report.md')
+
+
+if __name__ == '__main__':
+    main()
+`;
+
+const BLUEPRINT_PYTHON_CRYPTO_PORTFOLIO_TRACKER = `from dataclasses import dataclass
+from typing import Mapping
+
+
+@dataclass(frozen=True)
+class AssetPrice:
+    symbol: str
+    price_usd: float
+    change_24h_pct: float
+
+
+PORTFOLIO = {
+    'BTC': 2.5,
+    'ETH': 15.0,
+    'TON': 1000.0,
+    'USDT': 5000.0,
+}
+
+MOCK_API_RESPONSE = {
+    'BTC': {'price_usd': 64120.25, 'change_24h_pct': -2.4},
+    'ETH': {'price_usd': 3350.80, 'change_24h_pct': 1.2},
+    'TON': {'price_usd': 6.85, 'change_24h_pct': -5.7},
+    'USDT': {'price_usd': 1.00, 'change_24h_pct': 0.0},
+}
+
+
+def fetch_prices(symbols: list[str]) -> dict[str, AssetPrice]:
+    """Mock a public price API response for deterministic offline execution."""
+    prices = {}
+    for symbol in symbols:
+        payload = MOCK_API_RESPONSE[symbol]
+        prices[symbol] = AssetPrice(
+            symbol=symbol,
+            price_usd=payload['price_usd'],
+            change_24h_pct=payload['change_24h_pct'],
+        )
+    return prices
+
+
+def portfolio_rows(
+    holdings: Mapping[str, float],
+    prices: Mapping[str, AssetPrice],
+) -> list[dict[str, float | str]]:
+    total_value = sum(amount * prices[symbol].price_usd for symbol, amount in holdings.items())
+    rows = []
+    for symbol, amount in holdings.items():
+        price = prices[symbol]
+        value = amount * price.price_usd
+        portfolio_weight = value / total_value * 100
+        rows.append({
+            'symbol': symbol,
+            'amount': amount,
+            'price_usd': price.price_usd,
+            'value_usd': value,
+            'change_24h_pct': price.change_24h_pct,
+            'portfolio_weight': portfolio_weight,
+        })
+    return rows
+
+
+def notify_alerts(rows: list[dict[str, float | str]]) -> list[str]:
+    return [
+        f'Notify: {row["symbol"]} dropped {row["change_24h_pct"]:.2f}% in 24h'
+        for row in rows
+        if float(row['change_24h_pct']) < -5.0
+    ]
+
+
+def money(value: float) -> str:
+    return f'$\{value:,.2f}'
+
+
+def render_dashboard(rows: list[dict[str, float | str]], notices: list[str]) -> str:
+    total_value = sum(float(row['value_usd']) for row in rows)
+    lines = [
+        '# Crypto Portfolio Dashboard',
+        '',
+        f'**Total value:** \{money(total_value)}',
+        '',
+        '| Asset | Amount | Price USD | Value USD | 24h change | Portfolio weight |',
+        '| --- | ---: | ---: | ---: | ---: | ---: |',
+    ]
+    for row in rows:
+        lines.append(
+            f'| \{row["symbol"]} | \{row["amount"]:,.4g} | \{money(float(row["price_usd"]))} | '
+            f'\{money(float(row["value_usd"]))} | \{row["change_24h_pct"]:.2f}% | '
+            f'\{row["portfolio_weight"]:.2f}% |'
+        )
+    lines.extend(['', '## Alerts'])
+    lines.extend(notices or ['No asset dropped more than 5% in the last 24h.'])
+    return '\\n'.join(lines)
+
+
+def main() -> None:
+    prices = fetch_prices(list(PORTFOLIO))
+    rows = portfolio_rows(PORTFOLIO, prices)
+    notices = notify_alerts(rows)
+    formatted_log = render_dashboard(rows, notices)
+    print(formatted_log)
 
 
 if __name__ == '__main__':
@@ -33140,6 +33405,27 @@ const BLUEPRINT_RECIPES = [
       },
     ],
   },
+  {
+    slug: "crypto_portfolio_tracker",
+    label: "simulate a crypto portfolio tracker with alerts and a Markdown dashboard",
+    requiredCapabilities: [
+      "crypto_prices",
+      "portfolio_holdings",
+      "portfolio_calculations",
+      "alert_logic",
+      "mock_api",
+      "markdown_report",
+    ],
+    programs: [
+      {
+        languageSlug: "python",
+        libraries: ["Python 3 standard library only"],
+        runCommand: "python crypto_portfolio.py",
+        execution: "review_data_assumptions",
+        code: BLUEPRINT_PYTHON_CRYPTO_PORTFOLIO_TRACKER,
+      },
+    ],
+  },
 ];
 
 // Mirror of `contains_keyword` in `src/coding/blueprint.rs`: CJK keywords match
@@ -33200,7 +33486,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `Execution status: not run — this source-metrics blueprint uses only the Rust standard library, but the answer renderer did not compile it in place. The code is provided for review. Run it yourself from a Cargo project: \`${runCommand}\`.`
         : execution === "review_data_assumptions"
-        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the data assumptions should be reviewed against the listed sources before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
+        ? `Execution status: not run — this report blueprint was not executed in the offline sandbox, and the embedded data assumptions should be reviewed before use. The code is provided for review. Run it yourself: \`${runCommand}\`.`
         : `Execution status: not run — this program needs external libraries and network access, so the offline sandbox does not execute it. The code is provided for review. Run it yourself: \`${runCommand}\`.`,
   },
   ru: {
@@ -33212,7 +33498,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `Статус выполнения: не запускалось — этот чертёж анализа исходного кода использует только стандартную библиотеку Rust, но генератор ответа не компилировал его на месте. Код приведён для проверки. Запустить из Cargo-проекта: \`${runCommand}\`.`
         : execution === "review_data_assumptions"
-        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а допущения о данных нужно сверить с указанными источниками. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
+        ? `Статус выполнения: не запускалось — этот отчёт не выполнялся в офлайн-песочнице, а встроенные допущения о данных нужно проверить перед использованием. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`
         : `Статус выполнения: не запускалось — программе нужны внешние библиотеки и доступ к сети, поэтому офлайн-песочница её не выполняет. Код приведён для проверки. Запустить самостоятельно: \`${runCommand}\`.`,
   },
   hi: {
@@ -33224,7 +33510,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `निष्पादन स्थिति: नहीं चलाया गया — यह source-metrics blueprint केवल Rust standard library का उपयोग करता है, लेकिन answer renderer ने इसे यहीं compile नहीं किया। कोड समीक्षा के लिए दिया गया है। Cargo project से स्वयं चलाएँ: \`${runCommand}\`।`
         : execution === "review_data_assumptions"
-        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और डेटा मानों को दिए गए स्रोतों से जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
+        ? `निष्पादन स्थिति: नहीं चलाया गया — यह रिपोर्ट ऑफ़लाइन सैंडबॉक्स में नहीं चली, और embedded data assumptions को उपयोग से पहले जाँचना चाहिए। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`
         : `निष्पादन स्थिति: नहीं चलाया गया — प्रोग्राम को बाहरी लाइब्रेरियों और नेटवर्क पहुँच की आवश्यकता है, इसलिए ऑफ़लाइन सैंडबॉक्स इसे नहीं चलाता। कोड समीक्षा के लिए दिया गया है। स्वयं चलाएँ: \`${runCommand}\`।`,
   },
   zh: {
@@ -33236,7 +33522,7 @@ const BLUEPRINT_I18N = {
       execution === "local_source_analysis"
         ? `执行状态：未运行 —— 该源码指标蓝图只使用 Rust 标准库，但回答渲染器没有在本地编译它。代码仅供审阅。请在 Cargo 项目中自行运行：\`${runCommand}\`。`
         : execution === "review_data_assumptions"
-        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，数据假设应先按列出的来源核对。代码仅供审阅。自行运行：\`${runCommand}\`。`
+        ? `执行状态：未运行 —— 该报告未在离线沙箱中执行，内置数据假设应先核对再使用。代码仅供审阅。自行运行：\`${runCommand}\`。`
         : `执行状态：未运行 —— 该程序需要外部库和网络访问，因此离线沙箱不会执行它。代码仅供审阅。自行运行：\`${runCommand}\`。`,
   },
 };
@@ -33298,6 +33584,12 @@ const BLUEPRINT_RECIPE_SUMMARIES = {
     "अपने Rust source का निरीक्षण करें, JSON metrics निकालें, और code को response prose से तुलना करें",
   "self_source_metrics_report:zh":
     "检查自身 Rust 源码，输出 JSON 指标，并比较代码与回答文本",
+  "crypto_portfolio_tracker:ru":
+    "смоделировать криптопортфель с оповещениями и Markdown-панелью",
+  "crypto_portfolio_tracker:hi":
+    "alerts और Markdown dashboard वाला crypto portfolio tracker simulate करें",
+  "crypto_portfolio_tracker:zh":
+    "模拟带提醒和 Markdown 仪表盘的加密投资组合追踪器",
 };
 
 // The line-comment marker for a program language. Mirrors `comment_marker` in
@@ -33522,6 +33814,22 @@ function blueprintWriteProgramAnswer(
       `execution_status:${languageSlug}:unavailable`,
     ],
   };
+}
+
+function tryProgramBlueprintFromPrompt(prompt, responseLanguage, composition) {
+  const normalizedForBlueprint = normalizeProgramPrompt(prompt);
+  const languageSlug = programLanguageFromPrompt(normalizedForBlueprint);
+  const blueprint = languageSlug
+    ? selectBlueprint(normalizedForBlueprint, languageSlug)
+    : null;
+  return blueprint
+    ? blueprintWriteProgramAnswer(
+        blueprint,
+        languageSlug,
+        responseLanguage,
+        composition,
+      )
+    : null;
 }
 
 function writeProgramDecompositionParts(modifier) {
@@ -38422,6 +38730,15 @@ async function solve(prompt, history, prefs, userContext = {}) {
           ? hit
           : null;
       },
+    },
+    {
+      name: "tryProgramBlueprintFromPrompt",
+      run: () =>
+        tryProgramBlueprintFromPrompt(
+          prompt,
+          responseLanguage,
+          preferences.blueprintComposition,
+        ),
     },
     { name: "tryTextManipulation", run: () => tryTextManipulation(prompt, normalized, history) },
     // Issue #395: a concrete "<operation> these numbers in <language>, give me

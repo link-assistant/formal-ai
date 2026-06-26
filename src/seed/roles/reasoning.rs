@@ -89,6 +89,15 @@ pub const ROLE_CALCULATION_REQUEST_CUE: &str = "calculation_request_cue";
 /// bare expression remains. Carried by `calculation_result_query`; read by the
 /// Rust solver and the JS worker.
 pub const ROLE_CALCULATION_RESULT_QUERY_CUE: &str = "calculation_result_query_cue";
+/// Semantic role: a natural-language cue asking for elapsed time between two
+/// clock times.
+///
+/// Phrases such as "how long", "elapsed time", "сколько времени", "कितना समय",
+/// and "多久" carry the cue. The calculator router composes this role with two
+/// valid `HH:MM` clock-time mentions and delegates the generated time difference
+/// to `link-calculator`; the cue alone never marks a prompt as arithmetic. Read
+/// by the Rust solver and the JS worker.
+pub const ROLE_TIME_DURATION_CUE: &str = "time_duration_cue";
 /// Semantic role: a politeness or courtesy marker that softens a request.
 ///
 /// A please/for-me style tail ("please", "for me", "пожалуйста", "कृपया", "请")
