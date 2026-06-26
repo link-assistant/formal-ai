@@ -407,10 +407,7 @@ fn replace_token(text: &str, token: &str, replacement: &str) -> Option<String> {
 }
 
 fn token_boundary(ch: Option<char>) -> bool {
-    match ch {
-        Some(ch) => !ch.is_alphanumeric() && ch != '_',
-        None => true,
-    }
+    ch.is_none_or(|ch| !ch.is_alphanumeric() && ch != '_')
 }
 
 fn persona_seed_data() -> &'static PersonaSeeds {
