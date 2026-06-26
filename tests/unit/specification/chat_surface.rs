@@ -93,6 +93,49 @@ fn creator_questions_return_formal_ai_origin_fact_across_languages() {
 }
 
 #[test]
+fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
+    let solver = UniversalSolver::default();
+    let first = solver.solve("What is Rust?");
+    assert!(
+        first.intent.starts_with("concept_lookup"),
+        "first turn should establish the Rust topic, got: {}",
+        first.intent
+    );
+
+    let history = [
+        ConversationTurn::user("What is Rust?"),
+        ConversationTurn::assistant(first.answer),
+    ];
+    let response = solver.solve_with_history("Who created it?", &history);
+
+    assert_eq!(response.intent, "fact_lookup");
+    assert!(
+        response.answer.contains("Graydon Hoare"),
+        "creator answer should name Graydon Hoare, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Mozilla"),
+        "creator answer should include the Mozilla context, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q575650"),
+        "Rust follow-up should keep the Rust Wikidata anchor, got: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response.links_notation.contains("coreference:resolved")
+            && response.links_notation.contains("coreference:rewrite"),
+        "follow-up trace should record the coreference resolution and rewrite: {}",
+        response.links_notation
+    );
+}
+
+#[test]
 fn evidence_links_always_include_prompt_and_intent_links() {
     let response = answer("Hi");
     assert!(response

@@ -6,7 +6,8 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed::{
-    self, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds, SummaryTopicSeeds,
+    self, Antecedent, BrainstormSeeds, CoreferenceSeeds, FactRecord, Meaning, PersonaSeeds,
+    Pronoun, SummaryTopicSeeds,
 };
 use crate::solver_helpers::last_user_turn;
 
@@ -313,20 +314,26 @@ pub fn try_coreference_request(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = coreference_seed_data();
-    if !seeds.matches_pronoun(normalized) {
-        return None;
-    }
+    let pronoun = matching_coreference_pronoun(seeds, normalized)?;
 
     let previous = last_user_turn(log)?;
     let antecedent = seeds.pick_antecedent(&previous.to_lowercase())?;
 
     log.append(
         "coreference:resolved",
-        format!("it={}", antecedent.display_name),
+        format!("{}={}", pronoun.token, antecedent.display_name),
     );
     if !antecedent.wikidata.is_empty() {
         log.append("wikidata", antecedent.wikidata.clone());
     }
+
+    if let Some(rewritten) = rewrite_coreference_prompt(normalized, antecedent, pronoun) {
+        log.append("coreference:rewrite", rewritten.clone());
+        if let Some(answer) = try_fact_lookup(prompt, &rewritten, log) {
+            return Some(answer);
+        }
+    }
+
     Some(finalize_simple(
         prompt,
         log,
@@ -335,6 +342,75 @@ pub fn try_coreference_request(
         &antecedent.body,
         0.85,
     ))
+}
+
+fn matching_coreference_pronoun<'a>(
+    seeds: &'a CoreferenceSeeds,
+    normalized: &str,
+) -> Option<&'a Pronoun> {
+    seeds.pronouns.iter().find(|pronoun| {
+        pronoun
+            .contexts
+            .iter()
+            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))
+            || pronoun
+                .starts_with
+                .iter()
+                .any(|prefix| !prefix.is_empty() && normalized.starts_with(prefix.as_str()))
+    })
+}
+
+fn rewrite_coreference_prompt(
+    normalized: &str,
+    antecedent: &Antecedent,
+    pronoun: &Pronoun,
+) -> Option<String> {
+    let replacement = antecedent
+        .aliases
+        .first()
+        .filter(|alias| !alias.is_empty())
+        .map_or_else(|| antecedent.display_name.to_lowercase(), Clone::clone);
+
+    replace_token(normalized, pronoun.token.trim(), &replacement)
+}
+
+fn replace_token(text: &str, token: &str, replacement: &str) -> Option<String> {
+    if token.is_empty() || replacement.is_empty() {
+        return None;
+    }
+
+    let mut out = String::with_capacity(text.len() + replacement.len());
+    let mut cursor = 0;
+    let mut changed = false;
+
+    while let Some(offset) = text[cursor..].find(token) {
+        let start = cursor + offset;
+        let end = start + token.len();
+        let previous = text[..start].chars().next_back();
+        let next = text[end..].chars().next();
+
+        if token_boundary(previous) && token_boundary(next) {
+            out.push_str(&text[cursor..start]);
+            out.push_str(replacement);
+            changed = true;
+        } else {
+            out.push_str(&text[cursor..end]);
+        }
+        cursor = end;
+    }
+
+    if !changed {
+        return None;
+    }
+    out.push_str(&text[cursor..]);
+    Some(out)
+}
+
+fn token_boundary(ch: Option<char>) -> bool {
+    match ch {
+        Some(ch) => !ch.is_alphanumeric() && ch != '_',
+        None => true,
+    }
 }
 
 fn persona_seed_data() -> &'static PersonaSeeds {

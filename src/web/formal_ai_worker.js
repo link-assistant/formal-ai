@@ -179,6 +179,7 @@ let PERSONA_SEEDS = {
     },
   ],
 };
+let COREFERENCE_SEEDS = { pronouns: [], antecedents: [] };
 let TOOLS = [];
 let SEED_RAW = {};
 let AGENT_INFO = {};
@@ -6035,6 +6036,98 @@ function tryFactLookup(prompt, normalized) {
     confidence: 0.9,
     evidence,
   };
+}
+
+// Mirrors `try_coreference_request` in
+// `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.
+function replaceBoundedToken(text, token, replacement) {
+  if (!text || !token || !replacement) return null;
+  const pattern = new RegExp(
+    `(^|[^\\p{L}\\p{N}_])${escapeRegExp(token)}(?=$|[^\\p{L}\\p{N}_])`,
+    "gu",
+  );
+  let changed = false;
+  const rewritten = String(text).replace(pattern, (match, prefix) => {
+    changed = true;
+    return `${prefix}${replacement}`;
+  });
+  return changed ? rewritten : null;
+}
+
+function matchingCoreferencePronoun(normalized) {
+  const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)
+    ? COREFERENCE_SEEDS.pronouns
+    : [];
+  return pronouns.find((pronoun) => {
+    const contexts = Array.isArray(pronoun && pronoun.contexts)
+      ? pronoun.contexts
+      : [];
+    const startsWith = Array.isArray(pronoun && pronoun.startsWith)
+      ? pronoun.startsWith
+      : [];
+    return contexts.some((context) => context && normalized.includes(context)) ||
+      startsWith.some((prefix) => prefix && normalized.startsWith(prefix));
+  }) || null;
+}
+
+function matchingCoreferenceAntecedent(previous) {
+  const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)
+    ? COREFERENCE_SEEDS.antecedents
+    : [];
+  return antecedents.find((antecedent) => {
+    const aliases = Array.isArray(antecedent && antecedent.aliases)
+      ? antecedent.aliases
+      : [];
+    return aliases.some((alias) => alias && previous.includes(alias));
+  }) || null;
+}
+
+function matchingAntecedentFactAlias(record, antecedent, previous) {
+  const factAliases = Array.isArray(record && record.subjectAliases)
+    ? record.subjectAliases
+    : [];
+  const antecedentAliases = Array.isArray(antecedent && antecedent.aliases)
+    ? antecedent.aliases
+    : [];
+  return factAliases.find((alias) =>
+    alias &&
+    previous.includes(alias) &&
+    antecedentAliases.includes(String(alias).toLowerCase()),
+  ) || "";
+}
+
+function tryCoreferenceFactLookup(prompt, normalized, history) {
+  const pronoun = matchingCoreferencePronoun(normalized);
+  if (!pronoun || !pronoun.token) return null;
+
+  const previous = normalizePrompt(lastHistoryTurn(history, "user") || "");
+  if (!previous) return null;
+  const antecedent = matchingCoreferenceAntecedent(previous);
+  if (!antecedent) return null;
+
+  for (const record of FACTS) {
+    if (!record || !containsAny(normalized, record.questionKeywords)) continue;
+
+    const alias = matchingAntecedentFactAlias(record, antecedent, previous);
+    if (!alias) continue;
+
+    const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);
+    if (!rewritten) continue;
+
+    const hit = tryFactLookup(prompt, rewritten);
+    if (!hit) continue;
+
+    const subject = antecedent.displayName || record.subjectLabel || alias;
+    return Object.assign({}, hit, {
+      evidence: [
+        `coreference:resolved:${pronoun.token}=${subject}`,
+        `coreference:rewrite:${rewritten}`,
+        ...(Array.isArray(hit.evidence) ? hit.evidence : []),
+      ],
+    });
+  }
+
+  return null;
 }
 
 function renderRoleplayBody(persona, body) {
@@ -38815,6 +38908,13 @@ async function solve(prompt, history, prefs, userContext = {}) {
     }
   }
 
+  const coreferenceFact = tryCoreferenceFactLookup(prompt, normalized, history);
+  if (coreferenceFact) {
+    events.push(`handler:${coreferenceFact.intent}`);
+    steps.push({ step: "dispatch_handler", detail: "tryCoreferenceFactLookup" });
+    return finalize(events, steps, toolCalls, coreferenceFact, formalizationContext);
+  }
+
   // Real-time fact reasoning: parse structured (relation, subject) queries, hit
   // the 1-week TTL cache, fall back to Wikidata/Wikipedia for any country or
   // entity. Cache warmed from `data/seed/facts.lino` so the test matrix and
@@ -39269,6 +39369,14 @@ async function loadSeed() {
       seed.personas.triggers.length > 0
     ) {
       PERSONA_SEEDS = seed.personas;
+    }
+    if (
+      seed &&
+      seed.coreferenceSeeds &&
+      Array.isArray(seed.coreferenceSeeds.pronouns) &&
+      seed.coreferenceSeeds.pronouns.length > 0
+    ) {
+      COREFERENCE_SEEDS = seed.coreferenceSeeds;
     }
     if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
       TOOLS = seed.tools;
