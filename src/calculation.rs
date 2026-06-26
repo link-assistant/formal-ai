@@ -5,6 +5,7 @@
 //! local arithmetic evaluator for syntax the upstream crate does not support yet.
 
 use crate::arithmetic::{evaluate_fallback_formatted, ArithmeticError};
+use crate::calculation_time::elapsed_time_expression;
 use crate::calculation_word_problem::normalize_word_problem_detailed;
 use crate::fuzzy::is_close_token_typo;
 use crate::seed;
@@ -399,7 +400,7 @@ fn evaluate_linear_equation(expression: &str) -> Result<CalculationEvaluation, A
     })
 }
 
-fn contains_word_operator(expression: &str) -> bool {
+pub fn contains_word_operator(expression: &str) -> bool {
     // Issue #386: the spelled operator vocabulary lives in the
     // `arithmetic_operation` meanings (addition, subtraction, multiplication,
     // division, modulo), not a literal array. Each operator surface is matched
@@ -865,6 +866,17 @@ pub fn calculation_expression_candidates(prompt: &str) -> Vec<CalculationCandida
                 None,
             );
         }
+    }
+
+    if let Some(expression) = elapsed_time_expression(&stripped) {
+        push_calculation_candidate(
+            &mut candidates,
+            expression,
+            true,
+            interpretations.clone(),
+            Vec::new(),
+            None,
+        );
     }
 
     // Issue #334 step 2: rewrite a natural-language word problem ("the 10th
