@@ -365,6 +365,8 @@ roles
     kind meaning
   tabletop_game_tracker
     kind meaning
+  time_duration_cue
+    kind predicate
   tool_argument_marker
     kind meaning
   tool_invocation_cue

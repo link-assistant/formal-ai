@@ -59,6 +59,19 @@ fn calculator_handles_english_variations() {
     }
 }
 
+#[test]
+fn calculator_handles_time_of_day_duration_prompts() {
+    for (prompt, expected) in [
+        ("17:30 - 14:00", &["3 hours, 30 minutes"][..]),
+        (
+            "If a train leaves at 14:00 and arrives at 17:30, how long is the trip?",
+            &["3 hours, 30 minutes"][..],
+        ),
+    ] {
+        assert_calculation(prompt, expected);
+    }
+}
+
 // Issue #386 (38-C4): the currency-conversion exemption in `has_calculation_signal`
 // is driven by the `quantity_conversion` meaning (role `quantity_conversion_cue`)
 // rather than a hardcoded to/into/convert/exchange list. A prompt that pairs a

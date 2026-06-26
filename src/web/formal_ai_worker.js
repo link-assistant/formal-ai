@@ -1534,6 +1534,7 @@ const ROLE_ARITHMETIC_OPERATOR_WORD = "arithmetic_operator_word";
 const ROLE_CARDINAL_NUMBER_WORD = "cardinal_number_word";
 const ROLE_CALCULATION_REQUEST_CUE = "calculation_request_cue";
 const ROLE_CALCULATION_RESULT_QUERY_CUE = "calculation_result_query_cue";
+const ROLE_TIME_DURATION_CUE = "time_duration_cue";
 const ROLE_POLITENESS_CUE = "politeness_cue";
 const ROLE_QUANTITY_CONVERSION_CUE = "quantity_conversion_cue";
 const ROLE_CALCULATION_DOMAIN_TERM = "calculation_domain_term";
@@ -3006,6 +3007,44 @@ function embeddedCalculationRequestSlices(prompt, prefixes) {
     .map((match) => text.slice(match.start));
 }
 
+function clockTimeMentions(value) {
+  const text = String(value || "");
+  const mentions = [];
+  const pattern = /(^|[^\p{L}\p{N}])([0-9]{1,2}):([0-9]{2})(?=$|[^\p{L}\p{N}])/gu;
+  for (const match of text.matchAll(pattern)) {
+    const hour = Number(match[2]);
+    const minute = Number(match[3]);
+    if (hour > 23 || minute > 59) continue;
+    const start = match.index + match[1].length;
+    const end = start + match[2].length + 1 + match[3].length;
+    mentions.push({
+      start,
+      end,
+      text: text.slice(start, end),
+    });
+  }
+  return mentions;
+}
+
+function explicitTimeSubtractionBetween(value, left, right) {
+  const between = String(value || "").slice(left.end, right.start);
+  return /[-−]/u.test(between) || hasArithmeticWordOperator(between);
+}
+
+function elapsedTimeExpression(prompt) {
+  const text = String(prompt || "");
+  if (!lexiconMentionsRole(ROLE_TIME_DURATION_CUE, normalizePrompt(text))) {
+    return null;
+  }
+  const mentions = clockTimeMentions(text);
+  if (mentions.length !== 2) return null;
+  const [first, second] = mentions;
+  if (explicitTimeSubtractionBetween(text, first, second)) {
+    return `${first.text} - ${second.text}`;
+  }
+  return `${second.text} - ${first.text}`;
+}
+
 function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   const trimmed = String(prompt || "").trim();
   if (!trimmed) return null;
@@ -3075,6 +3114,15 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
       if (extracted) return extracted;
     }
   }
+  const durationExpression = elapsedTimeExpression(working);
+  if (durationExpression) {
+    return {
+      expression: durationExpression,
+      interpretations,
+      reasoningSteps: [],
+      resultLabel: "",
+    };
+  }
   // Issue #334 step 2: rewrite a natural-language word problem into a calculator
   // expression ("the 10th Fibonacci number and multiply it by 8% of 500. Show me
   // the code ..." -> "55 * 8% of 500") before the symbolic checks below run.
@@ -3105,7 +3153,10 @@ function extractArithmeticExpressionInternal(prompt, allowEmbedded) {
   if (evaluateCurrencyConversionExpression(working) !== null) {
     return extracted;
   }
-  const allowed = /^[0-9+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
+  if (working.includes(":") && evaluateClockDifferenceExpression(working) === null) {
+    return null;
+  }
+  const allowed = /^[0-9:+\-*/%^().=?\s_×·÷−,a-zA-Z]+$/;
   if (!allowed.test(working) && !hasWordOperator) return null;
   return extracted;
 }
@@ -6605,6 +6656,41 @@ function trimCompoundDecimal(value) {
   return String(value).replace(/0+$/, "").replace(/\.$/, "");
 }
 
+function parseClockTimeMinutes(value) {
+  const match = /^([0-9]{1,2}):([0-9]{2})$/.exec(String(value || "").trim());
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour > 23 || minute > 59) return null;
+  return hour * 60 + minute;
+}
+
+function formatClockDuration(minutes) {
+  if (minutes <= 0) return "0 seconds";
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  const parts = [];
+  if (hours > 0) parts.push(`${hours} ${hours === 1 ? "hour" : "hours"}`);
+  if (remainingMinutes > 0) {
+    parts.push(
+      `${remainingMinutes} ${remainingMinutes === 1 ? "minute" : "minutes"}`,
+    );
+  }
+  return parts.join(", ");
+}
+
+function evaluateClockDifferenceExpression(expression) {
+  const match =
+    /^\s*([0-9]{1,2}:[0-9]{2})\s*[-−]\s*([0-9]{1,2}:[0-9]{2})\s*$/.exec(
+      String(expression || ""),
+    );
+  if (!match) return null;
+  const left = parseClockTimeMinutes(match[1]);
+  const right = parseClockTimeMinutes(match[2]);
+  if (left === null || right === null) return null;
+  return formatClockDuration(left - right);
+}
+
 function tryArithmetic(prompt) {
   const extracted = extractArithmeticExpression(prompt);
   if (!extracted) return null;
@@ -6627,12 +6713,16 @@ function tryArithmetic(prompt) {
     } else {
       const percentOfResult = evaluatePercentOfExpression(expression);
       const currencyConversionResult = evaluateCurrencyConversionExpression(expression);
+      const clockDifferenceResult = evaluateClockDifferenceExpression(expression);
       if (currencyConversionResult !== null) {
         formatted = currencyConversionResult;
         backend = "js-currency";
       } else if (percentOfResult) {
         formatted = percentOfResult;
         backend = "js-percent-of";
+      } else if (clockDifferenceResult !== null) {
+        formatted = clockDifferenceResult;
+        backend = "js-clock-time";
       } else if (isEquation) {
         formatted = solveEquation(expression);
         backend = "js-equation-fallback";
@@ -18986,6 +19076,38 @@ const MEANINGS_LINO = [
   '        text "क्या है"',
   "      surface",
   '        text "की गणना करें"',
+  "  time_duration",
+  "    defined-by time",
+  "    defined-by inquiry",
+  "    role time_duration_cue",
+  "    lexeme en",
+  "      surface",
+  '        text "how long"',
+  "      surface",
+  '        text "elapsed time"',
+  "      surface",
+  '        text "travel time"',
+  "    lexeme ru",
+  "      surface",
+  '        text "сколько времени"',
+  "      surface",
+  "        text длительность",
+  "      surface",
+  "        text продолжительность",
+  "      surface",
+  '        text "сколько длится"',
+  "    lexeme hi",
+  "      surface",
+  '        text "कितना समय"',
+  "      surface",
+  "        text अवधि",
+  "    lexeme zh",
+  "      surface",
+  "        text 多久",
+  "      surface",
+  "        text 时长",
+  "      surface",
+  "        text 经过时间",
   "  quantity_conversion",
   "    grounded-in Q618655",
   "    defined-by action",
