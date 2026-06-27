@@ -2,24 +2,37 @@ fact_lotr_author
   intent fact_lookup
   category literature
   wikidata (Q892 Q15228)
+  relation author_of_book
+  subject_qid Q15228
+  value_qid Q892
+  subject_label "The Lord of the Rings"
+  value_label "J. R. R. Tolkien"
   subject_aliases ("lord of the rings" "the lord of the rings" "властелин колец" "властелина колец" "властелину колец" "властелином колец" "властелине колец" "द लॉर्ड ऑफ द रिंग्स" "द लॉर्ड ऑफ़ द रिंग्स" "魔戒" "魔戒之王" "指環王")
   question_keywords ("who wrote" "wrote" "author" "written by" "написал" "автор" "किसने लिखी" "किसने लिखा" "कौन है लेखक" "लेखक" "是谁写的" "作者" "作者是谁")
   summary "The Lord of the Rings was written by J. R. R. Tolkien."
   source "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings"
   source_kind wikipedia
   localized en
+    subject_label "The Lord of the Rings"
+    value_label "J. R. R. Tolkien"
     summary "The Lord of the Rings was written by J. R. R. Tolkien."
     source "https://en.wikipedia.org/wiki/The_Lord_of_the_Rings"
     source_kind wikipedia
   localized ru
+    subject_label "Властелин колец"
+    value_label "Дж. Р. Р. Толкин"
     summary "«Властелин колец» был написан Дж. Р. Р. Толкином."
     source "https://ru.wikipedia.org/wiki/Властелин_колец"
     source_kind wikipedia
   localized hi
+    subject_label "द लॉर्ड ऑफ द रिंग्स"
+    value_label "जे. आर. आर. टॉल्किन"
     summary "द लॉर्ड ऑफ द रिंग्स को जे. आर. आर. टॉल्किन ने लिखा था।"
     source "https://hi.wikipedia.org/wiki/द_लॉर्ड_ऑफ़_द_रिंग्स"
     source_kind wikipedia
   localized zh
+    subject_label 魔戒
+    value_label "J·R·R·托爾金"
     summary "《魔戒》由 J·R·R·托爾金 创作。"
     source "https://zh.wikipedia.org/wiki/魔戒"
     source_kind wikipedia
