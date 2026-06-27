@@ -1,0 +1,19 @@
+Q69906
+  aliases
+    en (AI AIC)
+    hi ("एयर इंडिया लिमिटेड" "एयर इण्डिया" "एयर इंडिया")
+    ru ("Эйр Индия")
+    zh ("印航" "印度航空公司")
+  descriptions
+    en "flag-carrier airline of India"
+    hi "भारत की ध्वजवाहक एयरलाइन"
+    ru "индийская авиакомпания"
+    zh "印度的國家航空公司"
+  id Q69906
+  labels
+    en "Air India"
+    hi "एअर इंडिया"
+    ru "Air India"
+    zh "印度航空"
+  type item
+success 1

@@ -26,7 +26,7 @@ fact_lotr_author
 fact_spider_man_films_release_order
   intent fact_lookup
   category art
-  wikidata Q79054
+  wikidata Q2307877
   subject_aliases ("spider man films" "spider man movies" "spider man film series" "spider-man films" "spider-man movies" "films about spider man" "movies about spider man" "человек паук фильмы" "человек-паук фильмы" "человека паука фильмы" "человека-паука фильмы" "фильмы про человека паука" "фильмы про человека-паука" "фильмы о человеке пауке" "фильмы о человеке-пауке" "фильмы человека паука" "фильмы человека-паука" "кино про человека паука" "кино про человека-паука")
   question_keywords ("release order" "order of release" "released order" "theatrical release order" "screen release order" "list" "перечисли" "перечислить" "назови" "порядке выхода" "порядок выхода" "порядку выхода" "в порядке выхода" "по порядку выхода" "выхода на экран")
   summary "Released title-role Spider-Man films in theatrical release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
@@ -36,6 +36,19 @@ fact_spider_man_films_release_order
     summary "Вышедшие фильмы, где Человек-паук является главным героем, в порядке выхода на экран: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
     source "https://en.wikipedia.org/wiki/Spider-Man_in_film"
     source_kind wikipedia
+fact_air_india_infant_stroller_allowance
+  intent fact_lookup
+  category travel_guide
+  wikidata Q69906
+  subject_aliases ("air india" "airindia" "air india flights" "рейс air india" "рейсе air india" "рейсах air india" "эйр индия" "эйриндия")
+  question_keywords ("free stroller" "collapsible stroller" "infant stroller" "stroller allowance" "stroller baggage" "carrycot" "infant car seat" "infant baggage" "allow a stroller" "allows a stroller" "бесплатную детскую коляску" "бесплатная детская коляска" "бесплатно сдать детскую коляску" "детскую коляску" "детская коляска" "складную коляску" "коляску" "коляска" "багаж" "багажу" "младенец" "младенца" "ребенок" "ребёнок" "infant")
+  summary "Air India allows one fully collapsible stroller, carrycot, or infant car seat for each infant, free of charge, in addition to the checked baggage allowance. Strollers are not allowed onboard."
+  source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+  source_kind official-docs
+  localized ru
+    summary "Да. Air India разрешает бесплатно провезти одну полностью складную детскую коляску, люльку-переноску или детское автокресло для каждого младенца сверх нормы регистрируемого багажа. Коляску нельзя брать в салон самолета."
+    source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+    source_kind official-docs
 fact_formal_ai_creator
   intent fact_lookup
   category identity
