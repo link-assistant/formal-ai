@@ -422,6 +422,55 @@ fn bare_iir_without_context_still_resolves() {
 }
 
 #[test]
+fn russian_colloquial_kubatorit_definition_uses_seeded_dictionary_source() {
+    let response = answer("Что такое кубаторит?");
+
+    assert_eq!(
+        response.intent, "concept_lookup",
+        "reported Russian dictionary prompt should not fall through to unknown: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Кубаторить"),
+        "answer should name the reported word form, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("размышлять") && response.answer.contains("думать"),
+        "answer should explain the slang meaning, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("academic.ru"),
+        "answer should cite the dictionary source, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "concept_lookup:hit:concept_kubaturit"),
+        "concept hit should be traceable, got: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
+fn russian_colloquial_kubaturit_variant_resolves_to_same_concept() {
+    let response = answer("Что такое кубатурить?");
+
+    assert_eq!(response.intent, "concept_lookup");
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "concept_lookup:hit:concept_kubaturit"),
+        "variant should resolve to the same dictionary concept, got: {:?}",
+        response.evidence_links
+    );
+}
+
+#[test]
 fn concept_lookup_evidence_records_context_match_event() {
     // Verbose/debug trail: an in-context hit must leave a
     // `concept_lookup:context-match:*` evidence link so we can root-cause
