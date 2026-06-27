@@ -25,6 +25,7 @@ en
     composerMenu "Composer menu"
     collapseSidebar "Collapse side panel"
     expandSidebar "Expand side panel"
+    expandOnlySection "Expand only this section"
   titles
     reportIssue """
       Report issue - open a pre-filled GitHub issue with the current session transcript. See docs/upload-memory.md for how to attach the full memory export (Gist or .zip).
@@ -56,6 +57,7 @@ en
     resizeSidebar "Resize the side panel."
     collapseSidebar "Hide the side panel (more space for the chat)."
     expandSidebar "Show the side panel (conversations, prompts, tools)."
+    expandOnlySection "Expand this section and collapse all other sidebar sections."
   composer
     placeholder
       chat "Message formal-ai"
@@ -376,6 +378,7 @@ ru
     composerMenu "Меню ввода"
     collapseSidebar "Свернуть боковую панель"
     expandSidebar "Развернуть боковую панель"
+    expandOnlySection "Развернуть только этот раздел"
   titles
     reportIssue """
       Сообщить о проблеме - откроет заранее заполненный GitHub issue с текущим диалогом. См. docs/upload-memory.md, чтобы прикрепить полный экспорт памяти (Gist или .zip).
@@ -407,6 +410,7 @@ ru
     resizeSidebar "Изменить ширину боковой панели."
     collapseSidebar "Скрыть боковую панель (больше места для чата)."
     expandSidebar "Показать боковую панель (разговоры, запросы, инструменты)."
+    expandOnlySection "Развернуть этот раздел и свернуть все остальные разделы боковой панели."
   composer
     placeholder
       chat "Сообщение formal-ai"
@@ -729,6 +733,7 @@ zh
     composerMenu "输入菜单"
     collapseSidebar "收起侧边面板"
     expandSidebar "展开侧边面板"
+    expandOnlySection "仅展开此部分"
   titles
     reportIssue "报告问题 - 打开已预填当前会话记录的 GitHub issue。请参阅 docs/upload-memory.md，了解如何附加完整记忆导出（Gist 或 .zip）。"
     sourceCode "在 GitHub 上查看 formal-ai 的源代码。"
@@ -752,6 +757,7 @@ zh
     resizeSidebar "调整侧边面板宽度。"
     collapseSidebar "隐藏侧边面板（聊天获得更多空间）。"
     expandSidebar "显示侧边面板（对话、提示、工具）。"
+    expandOnlySection "展开此部分并折叠侧边栏中的其他部分。"
   composer
     placeholder
       chat "给 formal-ai 发消息"
@@ -1072,6 +1078,7 @@ hi
     composerMenu "इनपुट मेन्यू"
     collapseSidebar "साइड पैनल छिपाएं"
     expandSidebar "साइड पैनल दिखाएं"
+    expandOnlySection "सिर्फ यह अनुभाग फैलाएं"
   titles
     reportIssue """
       समस्या रिपोर्ट करें - वर्तमान सत्र transcript के साथ पहले से भरा GitHub issue खोलें। पूरा memory export जोड़ने के लिए docs/upload-memory.md देखें (Gist या .zip)।
@@ -1101,6 +1108,7 @@ hi
     resizeSidebar "side panel की चौड़ाई बदलें।"
     collapseSidebar "side panel छिपाएं (chat के लिए अधिक जगह)।"
     expandSidebar "side panel दिखाएं (बातचीत, prompts, tools)।"
+    expandOnlySection "यह अनुभाग फैलाएं और side panel के बाकी अनुभाग समेटें।"
   composer
     placeholder
       chat "formal-ai को संदेश"

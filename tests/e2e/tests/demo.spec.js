@@ -1029,7 +1029,16 @@ test.describe('Issue #136: desktop sidebar sizing', () => {
   });
 
   test('tool cards fit inside the sidebar without horizontal overflow', async ({ page }) => {
+    const settings = page.locator('[data-testid="sidebar-settings"]');
+    if ((await settings.getAttribute('data-collapsed')) === 'true') {
+      await settings.locator('.sidebar-section-header').click();
+    }
     await page.locator('[data-testid="setting-ui-language"]').selectOption('ru');
+    const tools = page.locator('[data-testid="sidebar-tools"]');
+    await expect(tools).toBeVisible({ timeout: 10_000 });
+    if ((await tools.getAttribute('data-collapsed')) === 'true') {
+      await tools.locator('.sidebar-section-header').click();
+    }
     const registry = page.locator('[data-testid="tool-registry"]');
     await expect(registry).toBeVisible({ timeout: 10_000 });
 

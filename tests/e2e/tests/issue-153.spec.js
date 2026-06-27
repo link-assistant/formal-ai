@@ -192,6 +192,11 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const menu = page.locator('[data-testid="drawer-menu-actions"]');
     await expect(menu).toBeVisible();
+    await expect(menu).toHaveAttribute('data-collapsed', 'true');
+    await expect(menu.locator('[data-testid="drawer-source-code"]')).toHaveCount(0);
+
+    await menu.locator('.sidebar-section-header').click();
+
     await expect(menu).toHaveAttribute('data-collapsed', 'false');
     await expect(menu.locator('[data-testid="drawer-source-code"]')).toBeVisible();
 
@@ -397,6 +402,9 @@ test.describe('Issue #153 — search UX, formalization, and dedupe', () => {
 
     const sidebarMenu = page.locator('[data-testid="drawer-menu-actions"]');
     await expect(sidebarMenu).toBeVisible();
+    if ((await sidebarMenu.getAttribute('data-collapsed')) === 'true') {
+      await sidebarMenu.locator('.sidebar-section-header').click();
+    }
     await expect(sidebarMenu).toContainText(/Source code|Исходный код/);
     await expect(sidebarMenu).toContainText(/Export memory|Экспорт памяти/);
     await expect(sidebarMenu).toContainText(/Import memory|Импорт памяти/);
