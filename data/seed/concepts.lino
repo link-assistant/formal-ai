@@ -271,6 +271,38 @@ concept_color
     summary 颜色（英语：Color），也称色彩，是眼睛感知不同波长光波所产生的视觉体验。常见颜色包括红色、橙色、黄色、绿色、蓝色、紫色、白色和黑色等。
     source "https://zh.wikipedia.org/wiki/颜色"
     source_kind wikipedia
+concept_kubaturit
+  term kubaturit
+  intent concept_lookup
+  category russian-colloquial-verb
+  aliases ("kubaturit" "kubatorit" "kubaturit'" "kubatorit'" "кубатурить" "кубатурит" "кубатурил" "кубатурила" "кубатурили" "кубаторить" "кубаторит" "кубаторил" "кубаторила" "кубаторили")
+  summary "Kubaturit, also spelled kubatorit, is a Russian colloquial slang verb meaning to think something over, reason about it, or worry over it."
+  source "https://argo.academic.ru/2501/кубатурить"
+  source_kind slang-dictionary
+  localized en
+    term "kubatorit / kubaturit"
+    aliases ("kubatorit" "kubaturit" "kubatorit'" "kubaturit'")
+    summary "Kubatorit, also spelled kubaturit, is a Russian colloquial slang verb meaning to think something over, reason about it, or worry over it."
+    source "https://argo.academic.ru/2501/кубатурить"
+    source_kind slang-dictionary
+  localized ru
+    term "Кубаторить / кубатурить"
+    aliases ("кубаторить" "кубаторит" "кубаторил" "кубаторила" "кубаторили" "кубатурить" "кубатурит" "кубатурил" "кубатурила" "кубатурили")
+    summary "Кубаторить, также кубатурить, — разговорно-жаргонный глагол: размышлять, думать или переживать о чем-то."
+    source "https://argo.academic.ru/2501/кубатурить"
+    source_kind slang-dictionary
+  localized hi
+    term "कुबातोरित / कुबातुरित"
+    aliases ("कुबातोरित" "कुबातुरित" "kubatorit" "kubaturit")
+    summary "Kubatorit, जिसे kubaturit भी लिखा जाता है, रूसी बोलचाल या स्लैंग का क्रिया शब्द है: किसी बात पर सोचना, विचार करना या उसके बारे में चिंतित होना."
+    source "https://argo.academic.ru/2501/кубатурить"
+    source_kind slang-dictionary
+  localized zh
+    term "kubatorit / kubaturit"
+    aliases ("kubatorit" "kubaturit" "кубаторить" "кубатурить")
+    summary "Kubatorit，也写作 kubaturit，是俄语口语或俚语动词，意思是思考、琢磨或为某事担心。"
+    source "https://argo.academic.ru/2501/кубатурить"
+    source_kind slang-dictionary
 concept_antiregime
   term antiregime
   intent concept_lookup

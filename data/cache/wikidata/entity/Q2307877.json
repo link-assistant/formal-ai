@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Q2307877": {
+      "type": "item",
+      "id": "Q2307877",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Spider-Man in film"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "серия фильмов о Человеке-пауке"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "蜘蛛侠系列电影"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "depictions of Spider-Man in the film medium"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "серия фильмов о супергерое комиксов компании Marvel Comics Человек-пауке"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "電影媒體中對蜘蛛人的描繪"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "film adaptations of Spider-Man"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Человек-паук (серия фильмов)"
+          },
+          {
+            "language": "ru",
+            "value": "фильмы о Человеке-пауке"
+          },
+          {
+            "language": "ru",
+            "value": "Человек-паук в кино"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

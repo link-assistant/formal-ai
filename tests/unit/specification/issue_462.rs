@@ -64,7 +64,7 @@ fn assert_spider_man_release_order(response: &SymbolicAnswer, prompt: &str) {
         response
             .evidence_links
             .iter()
-            .any(|link| link == "wikidata:Q79054"),
+            .any(|link| link == "wikidata:Q2307877"),
         "{prompt:?} should keep the Spider-Man Wikidata anchor, got {:?}",
         response.evidence_links
     );

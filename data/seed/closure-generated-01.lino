@@ -899,6 +899,11 @@ meanings
     lexeme en
       surface
         text "knowledge representation"
+  kubaturit
+    defined-by term
+    lexeme en
+      surface
+        text "kubaturit"
   kubectl
     defined-by token
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter v ru"
-  pattern_concept_context_delimiter_vo_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter vo ru"

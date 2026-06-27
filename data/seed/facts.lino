@@ -26,7 +26,7 @@ fact_lotr_author
 fact_spider_man_films_release_order
   intent fact_lookup
   category art
-  wikidata Q79054
+  wikidata Q2307877
   subject_aliases ("spider man films" "spider man movies" "spider man film series" "spider-man films" "spider-man movies" "films about spider man" "movies about spider man" "человек паук фильмы" "человек-паук фильмы" "человека паука фильмы" "человека-паука фильмы" "фильмы про человека паука" "фильмы про человека-паука" "фильмы о человеке пауке" "фильмы о человеке-пауке" "фильмы человека паука" "фильмы человека-паука" "кино про человека паука" "кино про человека-паука")
   question_keywords ("release order" "order of release" "released order" "theatrical release order" "screen release order" "list" "перечисли" "перечислить" "назови" "порядке выхода" "порядок выхода" "порядку выхода" "в порядке выхода" "по порядку выхода" "выхода на экран")
   summary "Released title-role Spider-Man films in theatrical release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
