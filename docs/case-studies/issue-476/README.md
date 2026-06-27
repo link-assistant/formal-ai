@@ -15,6 +15,7 @@ Pull request: https://github.com/link-assistant/formal-ai/pull/578
 - `raw-data/pr-578-reviews.json`
 - `raw-data/related-merged-prs.json`
 - `raw-data/online-research.md`
+- `sidebar-isolate-control.png`
 
 ## Requirements
 
