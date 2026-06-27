@@ -47,6 +47,32 @@ fact_formal_ai_creator
     summary "Formal AI 由 github.com/konard 使用 github.com/link-assistant/hive-mind 创建。"
     source "https://github.com/link-assistant/formal-ai"
     source_kind github
+fact_rust_creator
+  intent fact_lookup
+  category programming
+  wikidata Q575650
+  subject_label Rust
+  subject_aliases ("rust" "rust programming language" "раст" "язык rust" "रस्ट" "रस्ट भाषा" "Rust语言" "Rust 編程語言" "Rust 程序设计语言")
+  question_keywords ("who created" "who made" "created" "creator" "made" "кто создал" "создал" "создатель" "किसने बनाया" "बनाया" "निर्माता" "谁创建" "谁创造" "创建者" "创造者")
+  summary "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+  source "https://en.wikipedia.org/wiki/Rust_(programming_language)"
+  source_kind wikipedia
+  localized en
+    summary "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+    source "https://en.wikipedia.org/wiki/Rust_(programming_language)"
+    source_kind wikipedia
+  localized ru
+    summary "Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект."
+    source "https://ru.wikipedia.org/wiki/Rust"
+    source_kind wikipedia
+  localized hi
+    summary "Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया."
+    source "https://hi.wikipedia.org/wiki/Rust_(प्रोग्रामिंग_भाषा)"
+    source_kind wikipedia
+  localized zh
+    summary "Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。"
+    source "https://zh.wikipedia.org/wiki/Rust"
+    source_kind wikipedia
 fact_eiffel_tower_built
   intent fact_lookup
   category landmark

@@ -553,6 +553,45 @@
     return seeds;
   }
 
+  function extractCoreferenceSeeds(root) {
+    var seeds = { pronouns: [], antecedents: [] };
+    if (!root || !Array.isArray(root.children)) return seeds;
+    var section = root.name === "coreference" ? root : findChildren(root, "coreference")[0];
+    if (!section) return seeds;
+
+    var pronouns = findChildren(section, "pronoun");
+    for (var i = 0; i < pronouns.length; i += 1) {
+      var pronoun = pronouns[i];
+      if (!pronoun || !pronoun.id) continue;
+      seeds.pronouns.push({
+        token: toLower(pronoun.id),
+        contexts: findChildren(pronoun, "context").map(function (context) {
+          return toLower(context.id);
+        }).filter(Boolean),
+        startsWith: findChildren(pronoun, "starts_with").map(function (prefix) {
+          return toLower(prefix.id);
+        }).filter(Boolean),
+      });
+    }
+
+    var antecedents = findChildren(section, "antecedent");
+    for (var j = 0; j < antecedents.length; j += 1) {
+      var antecedent = antecedents[j];
+      if (!antecedent || !antecedent.id) continue;
+      seeds.antecedents.push({
+        displayName: antecedent.id,
+        aliases: findChildren(antecedent, "alias").map(function (alias) {
+          return toLower(alias.id);
+        }).filter(Boolean),
+        wikidata: findChildValue(antecedent, "wikidata"),
+        intent: findChildValue(antecedent, "intent"),
+        body: findChildValue(antecedent, "body"),
+      });
+    }
+
+    return seeds;
+  }
+
   function extractTools(node) {
     var tools = [];
     if (!node) return tools;
@@ -912,6 +951,7 @@
         personas: [],
         topics: [],
       },
+      coreferenceSeeds: { pronouns: [], antecedents: [] },
       tools: [],
       agentInfo: {},
       languageRules: [],
@@ -938,6 +978,8 @@
         seed.brainstormSeeds = extractBrainstormSeeds(root);
       } else if (item.file.indexOf("personas") !== -1) {
         seed.personas = extractPersonas(root);
+      } else if (item.file.indexOf("coreference") !== -1) {
+        seed.coreferenceSeeds = extractCoreferenceSeeds(root);
       } else if (item.file.indexOf("concept-contexts") !== -1) {
         seed.conceptContexts = seed.conceptContexts.concat(
           extractConceptContexts(root),
@@ -976,6 +1018,7 @@
     extractProjects: extractProjects,
     extractBrainstormSeeds: extractBrainstormSeeds,
     extractPersonas: extractPersonas,
+    extractCoreferenceSeeds: extractCoreferenceSeeds,
     extractTools: extractTools,
     extractIntentRouting: extractIntentRouting,
     extractEnvironmentDirectory: extractEnvironmentDirectory,
