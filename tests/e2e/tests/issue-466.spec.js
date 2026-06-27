@@ -133,7 +133,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await page.addInitScript(() => {
       window.localStorage.setItem(
         'formal-ai.preferences.v1',
-        'demo_preferences\n  demoMode "off"\n  diagnosticsMode "off"\n  greetingVariations "off"',
+        'demo_preferences\n  demoMode "off"\n  diagnosticsMode "on"\n  greetingVariations "off"',
       );
     });
     await page.goto('./');
@@ -149,9 +149,15 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await mockWikidataAuthorLookup(page, requests);
 
     const message = await sendPrompt(page, 'Who wrote War and Peace?');
+    const evidence = message.locator('.evidence-list');
 
     await expect(message).toContainText('War and Peace was written by Leo Tolstoy.');
     await expect(message).not.toContainText('unknown');
+    await expect(message.locator('.intent')).toContainText('intent:fact_query');
+    await expect(evidence).toContainText('fact_query:relation:author_of_book');
+    await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
+    await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
+    await expect(evidence).toContainText('source:https://en.wikipedia.org/wiki/Leo_Tolstoy');
     expect(requests.some((request) => request.search === 'War and Peace')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
@@ -162,9 +168,16 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await mockWikidataAuthorLookup(page, requests);
 
     const message = await sendPrompt(page, 'Кто написал «Войну и мир»?');
+    const evidence = message.locator('.evidence-list');
 
     await expect(message).toContainText('Автор произведения «Война и мир»: Лев Толстой.');
     await expect(message).not.toContainText('unknown');
+    await expect(message.locator('.intent')).toContainText('intent:fact_query');
+    await expect(evidence).toContainText('fact_query:relation:author_of_book');
+    await expect(evidence).toContainText('language:ru');
+    await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
+    await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
+    await expect(evidence).toContainText('source:https://ru.wikipedia.org/wiki/Лев_Толстой');
     expect(requests.some((request) => request.search === 'Войну и мир')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
