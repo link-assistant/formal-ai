@@ -178,6 +178,11 @@ async function switchToManualMode(page) {
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
     timeout: 5_000,
   });
+  const tools = page.locator('[data-testid="sidebar-tools"]');
+  await expect(tools).toBeVisible({ timeout: 10_000 });
+  if ((await tools.getAttribute('data-collapsed')) === 'true') {
+    await tools.locator('.sidebar-section-header').click();
+  }
   await expect(page.locator('[data-testid="tool-entry"]').first()).toBeVisible({
     timeout: 10_000,
   });
@@ -1916,6 +1921,9 @@ test.describe('Issue #82: assistant behavior settings', () => {
   test('settings sidebar exposes ambiguity, temperature, language, skins, and location controls', async ({ page }) => {
     const settings = page.locator('[data-testid="sidebar-settings"]');
     await expect(settings).toBeVisible();
+    if ((await settings.getAttribute('data-collapsed')) === 'true') {
+      await settings.locator('.sidebar-section-header').click();
+    }
     await expect(page.locator('[data-testid="setting-guess-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-follow-up-probability"]')).toBeVisible();
     await expect(page.locator('[data-testid="setting-temperature"]')).toBeVisible();
@@ -2470,6 +2478,9 @@ test.describe('Issue #27: mobile layout', () => {
     const drawerActions = page.locator('[data-testid="drawer-menu-actions"]');
     const conversations = page.locator('[data-testid="sidebar-conversations"]');
     await expect(drawerActions).toBeVisible();
+    if ((await drawerActions.getAttribute('data-collapsed')) === 'true') {
+      await drawerActions.locator('.sidebar-section-header').click();
+    }
     await expect(drawerActions).toContainText('Report issue');
     await expect(drawerActions).toContainText('Export memory');
     await expect(drawerActions).toContainText('Import memory');
@@ -2829,27 +2840,23 @@ test.describe('Issue #27: sidebar accordion', () => {
   });
 
   test('collapsing a section gives its space to the remaining expanded sections', async ({ page }) => {
-    const allSections = page.locator(
-      '[data-testid="context-panel"] .sidebar-section',
+    const expandedSections = page.locator(
+      '[data-testid="context-panel"] .sidebar-section.is-expanded',
     );
-    const initialExpanded = await page
-      .locator('[data-testid="context-panel"] .sidebar-section.is-expanded')
-      .count();
+    const initialExpanded = await expandedSections.count();
     if (initialExpanded < 2) test.skip();
+    const targetSectionId = await expandedSections.first().getAttribute('data-testid');
+    const otherSectionId = await expandedSections.nth(1).getAttribute('data-testid');
+    const targetSection = page.locator(`[data-testid="${targetSectionId}"]`);
+    const otherSection = page.locator(`[data-testid="${otherSectionId}"]`);
 
-    const initialOther = await allSections
-      .nth(1)
-      .locator('.sidebar-section-body')
-      .boundingBox();
+    const initialOther = await otherSection.locator('.sidebar-section-body').boundingBox();
 
     // Collapse the first section by clicking its header button.
-    await allSections.first().locator('.sidebar-section-header').click();
-    await expect(allSections.first()).toHaveAttribute('data-collapsed', 'true');
+    await targetSection.locator('.sidebar-section-header').click();
+    await expect(targetSection).toHaveAttribute('data-collapsed', 'true');
 
-    const grownOther = await allSections
-      .nth(1)
-      .locator('.sidebar-section-body')
-      .boundingBox();
+    const grownOther = await otherSection.locator('.sidebar-section-body').boundingBox();
     expect(grownOther.height).toBeGreaterThan(initialOther.height);
   });
 });
