@@ -23,6 +23,19 @@ fact_lotr_author
     summary "《魔戒》由 J·R·R·托爾金 创作。"
     source "https://zh.wikipedia.org/wiki/魔戒"
     source_kind wikipedia
+fact_spider_man_films_release_order
+  intent fact_lookup
+  category art
+  wikidata Q79054
+  subject_aliases ("spider man films" "spider man movies" "spider man film series" "spider-man films" "spider-man movies" "films about spider man" "movies about spider man" "человек паук фильмы" "человек-паук фильмы" "человека паука фильмы" "человека-паука фильмы" "фильмы про человека паука" "фильмы про человека-паука" "фильмы о человеке пауке" "фильмы о человеке-пауке" "фильмы человека паука" "фильмы человека-паука" "кино про человека паука" "кино про человека-паука")
+  question_keywords ("release order" "order of release" "released order" "theatrical release order" "screen release order" "list" "перечисли" "перечислить" "назови" "порядке выхода" "порядок выхода" "порядку выхода" "в порядке выхода" "по порядку выхода" "выхода на экран")
+  summary "Released title-role Spider-Man films in theatrical release order: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
+  source "https://en.wikipedia.org/wiki/Spider-Man_in_film"
+  source_kind wikipedia
+  localized ru
+    summary "Вышедшие фильмы, где Человек-паук является главным героем, в порядке выхода на экран: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
+    source "https://en.wikipedia.org/wiki/Spider-Man_in_film"
+    source_kind wikipedia
 fact_formal_ai_creator
   intent fact_lookup
   category identity
