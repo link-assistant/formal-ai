@@ -542,6 +542,9 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             }
             "concept_lookup:request" => format!("concept_lookup:request:{}", event.payload),
             "concept_lookup:context" => format!("concept_lookup:context:{}", event.payload),
+            "concept_lookup:response-language" => {
+                format!("concept_lookup:response-language:{}", event.payload)
+            }
             "concept_lookup:hit" => format!("concept_lookup:hit:{}", event.payload),
             "concept_lookup:miss" => format!("concept_lookup:miss:{}", event.payload),
             "concept_lookup:context-match" => {

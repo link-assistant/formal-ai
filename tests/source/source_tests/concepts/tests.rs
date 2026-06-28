@@ -37,3 +37,33 @@ fn supported_language_meaning_prompts_extract_dictionary_terms() {
         assert_eq!(query.term, "flibbertigibbet", "{language}");
     }
 }
+
+#[test]
+fn concept_query_extracts_trailing_response_language_marker() {
+    let cases = [
+        (
+            "tell me about Telegram Ads in Russian",
+            "telegram ads",
+            "ru",
+        ),
+        (
+            "расскажи за Telegram Ads на английском",
+            "telegram ads",
+            "en",
+        ),
+        ("what does Telegram Ads mean in Hindi", "telegram ads", "hi"),
+        ("Telegram Ads是什么 用中文", "telegram ads", "zh"),
+    ];
+
+    for (prompt, expected_term, expected_language) in cases {
+        let query = extract_concept_query(prompt)
+            .unwrap_or_else(|| panic!("expected concept query for `{prompt}`"));
+        assert_eq!(query.term, expected_term, "{prompt}");
+        assert_eq!(
+            query.response_language.as_deref(),
+            Some(expected_language),
+            "{prompt}",
+        );
+        assert_eq!(query.context, None, "{prompt}");
+    }
+}

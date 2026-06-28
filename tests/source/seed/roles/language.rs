@@ -19,6 +19,15 @@ pub const ROLE_TRANSLATION_SOURCE_MARKER: &str = "translation_source_marker";
 /// relation; the handler resolves the target language the same way it resolves a
 /// source: by following `defined_by` to the language meaning.
 pub const ROLE_TRANSLATION_TARGET_MARKER: &str = "translation_target_marker";
+/// Semantic role: a marker that names the language a non-translation answer
+/// should be rendered in.
+///
+/// Concept lookup uses this to distinguish `Tell me about Telegram Ads in
+/// Russian` from a context query about a concept named `Telegram Ads in
+/// Russian`: the marker meaning is `defined_by` one `language_*` meaning, so
+/// the handler resolves the response language by walking the seed graph rather
+/// than by hardcoding multilingual suffix phrases.
+pub const ROLE_RESPONSE_LANGUAGE_MARKER: &str = "response_language_marker";
 /// Semantic role: the target-direction relation of a translation (the "into" side).
 ///
 /// Its surfaces are the bare directional markers ("to", "на", "में", and the

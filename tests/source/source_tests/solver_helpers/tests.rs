@@ -10,6 +10,7 @@ fn lookup_term(term: &str) -> bool {
     lookup_concept_query(&ConceptQuery {
         term: term.to_owned(),
         context: None,
+        response_language: None,
     })
     .is_some()
 }

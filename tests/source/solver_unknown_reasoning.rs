@@ -215,6 +215,7 @@ fn answer_from_public_knowledge_cache(
         let query = ConceptQuery {
             term: term.to_lowercase(),
             context: None,
+            response_language: None,
         };
         let Some(lookup) = lookup_concept_query(&query) else {
             continue;

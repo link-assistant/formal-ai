@@ -390,13 +390,24 @@ pub fn try_concept_lookup(prompt: &str, log: &mut EventLog) -> Option<SymbolicAn
     if let Some(context) = query.context.as_deref() {
         log.append("concept_lookup:context", context.to_owned());
     }
+    if let Some(response_language) = query.response_language.as_deref() {
+        log.append(
+            "concept_lookup:response-language",
+            response_language.to_owned(),
+        );
+        log.append("language_to", response_language.to_owned());
+    }
     let Some(lookup) = lookup_concept_query(&query) else {
         log.append("concept_lookup:miss", query.term);
         return None;
     };
     let record: &'static ConceptRecord = lookup.record;
     log.append("concept_lookup:hit", record.slug.clone());
-    let language = detect_language(prompt).slug();
+    let detected_language = detect_language(prompt);
+    let language = query
+        .response_language
+        .as_deref()
+        .unwrap_or_else(|| detected_language.slug());
     let localized = record.localized_for(language);
     let source_for_log = localized
         .map(|loc| loc.source.as_str())
