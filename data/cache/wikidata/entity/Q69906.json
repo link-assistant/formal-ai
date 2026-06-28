@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "Q69906": {
+      "type": "item",
+      "id": "Q69906",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Air India"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Air India"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "एअर इंडिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印度航空"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "flag-carrier airline of India"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "индийская авиакомпания"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "भारत की ध्वजवाहक एयरलाइन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "印度的國家航空公司"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "AI"
+          },
+          {
+            "language": "en",
+            "value": "AIC"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Эйр Индия"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "एयर इंडिया लिमिटेड"
+          },
+          {
+            "language": "hi",
+            "value": "एयर इण्डिया"
+          },
+          {
+            "language": "hi",
+            "value": "एयर इंडिया"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "印航"
+          },
+          {
+            "language": "zh",
+            "value": "印度航空公司"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

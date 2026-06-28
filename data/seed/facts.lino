@@ -49,6 +49,27 @@ fact_spider_man_films_release_order
     summary "Вышедшие фильмы, где Человек-паук является главным героем, в порядке выхода на экран: 1. Spider-Man (2002); 2. Spider-Man 2 (2004); 3. Spider-Man 3 (2007); 4. The Amazing Spider-Man (2012); 5. The Amazing Spider-Man 2 (2014); 6. Spider-Man: Homecoming (2017); 7. Spider-Man: Into the Spider-Verse (2018); 8. Spider-Man: Far From Home (2019); 9. Spider-Man: No Way Home (2021); 10. Spider-Man: Across the Spider-Verse (2023)."
     source "https://en.wikipedia.org/wiki/Spider-Man_in_film"
     source_kind wikipedia
+fact_air_india_infant_stroller_allowance
+  intent fact_lookup
+  category travel_guide
+  wikidata Q69906
+  subject_aliases ("air india" "airindia" "air india flights" "рейс air india" "рейсе air india" "рейсах air india" "эйр индия" "эйриндия" "एअर इंडिया" "एयर इंडिया" "एयर इण्डिया" "印度航空" "印度航空公司" "印航")
+  question_keywords ("free stroller" "collapsible stroller" "infant stroller" "stroller allowance" "stroller baggage" "carrycot" "infant car seat" "infant baggage" "allow a stroller" "allows a stroller" "бесплатную детскую коляску" "бесплатная детская коляска" "бесплатно сдать детскую коляску" "детскую коляску" "детская коляска" "складную коляску" "коляску" "коляска" "багаж" "багажу" "младенец" "младенца" "ребенок" "ребёнок" "बेबी स्ट्रॉलर" "घुमक्कड़ी" "मुफ्त" "सामान" "शिशु" "婴儿推车" "免费" "行李" "婴儿" "infant")
+  summary "Air India allows one fully collapsible stroller, carrycot, or infant car seat for each infant, free of charge, in addition to the checked baggage allowance. Strollers are not allowed onboard."
+  source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+  source_kind official-docs
+  localized ru
+    summary "Да. Air India разрешает бесплатно провезти одну полностью складную детскую коляску, люльку-переноску или детское автокресло для каждого младенца сверх нормы регистрируемого багажа. Коляску нельзя брать в салон самолета."
+    source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+    source_kind official-docs
+  localized hi
+    summary "हाँ। Air India प्रत्येक शिशु के लिए एक पूरी तरह मुड़ने वाला बेबी स्ट्रॉलर, कैरीकॉट या शिशु कार सीट checked baggage allowance से अलग मुफ्त ले जाने की अनुमति देती है। बेबी स्ट्रॉलर को केबिन में ले जाने की अनुमति नहीं है।"
+    source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+    source_kind official-docs
+  localized zh
+    summary "可以。Air India 允许每名婴儿免费携带一件可完全折叠的婴儿推车、手提睡篮或婴儿汽车座椅，且不计入托运行李限额。婴儿推车不能带上客舱。"
+    source "https://www.airindia.com/in/en/travel-information/baggage-guidelines/checked-baggage-allowance.html"
+    source_kind official-docs
 fact_formal_ai_creator
   intent fact_lookup
   category identity
