@@ -1,8 +1,6 @@
-//! Specialized handlers extracted from the universal solver in `solver.rs` to
-//! keep that module under the 1000-line cap enforced by
-//! `scripts/check-file-size.rs`. These handlers are free functions: every one
-//! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
-//! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
+//! Specialized free-function handlers extracted from the universal solver in
+//! `solver.rs`: each receives the prompt, normalized prompt, and mutable event
+//! log, then returns `Some(SymbolicAnswer)` when it claims the impulse.
 mod agent_workspace;
 mod behavior_rule_followups;
 mod behavior_rule_matching;
@@ -15,6 +13,7 @@ mod compound_interest;
 mod definition_merge;
 mod document_request;
 mod feature_capability;
+mod github_repository_traffic;
 mod installation_conversion;
 mod meta_explanation;
 mod natural_language_tools;
@@ -46,6 +45,7 @@ pub use compound_interest::try_compound_interest;
 pub use definition_merge::{try_definition_merge, try_definition_merge_by_default};
 pub use document_request::try_document_request;
 pub use feature_capability::{try_feature_capability, CapabilityRuntime};
+pub use github_repository_traffic::try_github_repository_traffic;
 pub use installation_conversion::try_installation_conversion;
 pub use meta_explanation::{try_meta_explanation, try_meta_explanation_with_runtime};
 pub use natural_language_tools::try_natural_language_tool_request;
