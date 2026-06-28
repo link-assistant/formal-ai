@@ -221,7 +221,7 @@ function hydrateLinoSeedText(raw) {
   cachedCodingIdioms = null;
   cachedTerminalCommandVocabulary = null;
   cachedOperationVocabulary = null;
-  cachedSubstitutionRuleSets.clear();
+  cachedProgramPlanRules = null;
   cachedMeaningLexicon = null;
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.

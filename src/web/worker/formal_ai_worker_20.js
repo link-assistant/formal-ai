@@ -963,147 +963,168 @@ function finalize(events, steps, toolCalls, answer, formalizationContext) {
 }
 
 let seedLoaded = false;
+let seedLoadPromise = null;
 
 async function loadSeed() {
   if (seedLoaded) return;
-  seedLoaded = true;
-  if (typeof self.FormalAiSeed !== "object" || self.FormalAiSeed === null) {
-    return;
-  }
-  try {
-    const seed = await self.FormalAiSeed.loadAll();
-    SEED_RAW = (seed && seed.raw) || {};
-    hydrateLinoSeedText(SEED_RAW);
-    if (seed && seed.responses) {
-      const merged = {};
-      const intents = new Set(
-        Object.keys(MULTILINGUAL_ANSWERS).concat(Object.keys(seed.responses)),
-      );
-      intents.forEach((intent) => {
-        const base = MULTILINGUAL_ANSWERS[intent] || {};
-        const next = seed.responses[intent] || {};
-        const byLanguage = {};
-        const langs = new Set(Object.keys(base).concat(Object.keys(next)));
-        langs.forEach((language) => {
-          const incoming = next[language];
-          if (incoming !== undefined) {
-            byLanguage[language] = normalizeEntry(incoming, intent);
-          } else {
-            byLanguage[language] = normalizeEntry(base[language], intent);
-          }
+  if (seedLoadPromise) return seedLoadPromise;
+  seedLoadPromise = (async () => {
+    if (typeof self.FormalAiSeed !== "object" || self.FormalAiSeed === null) {
+      seedLoaded = true;
+      return;
+    }
+    try {
+      const seed = await self.FormalAiSeed.loadAll();
+      SEED_RAW = (seed && seed.raw) || {};
+      hydrateLinoSeedText(SEED_RAW);
+      if (seed && seed.responses) {
+        const merged = {};
+        const intents = new Set(
+          Object.keys(MULTILINGUAL_ANSWERS).concat(Object.keys(seed.responses)),
+        );
+        intents.forEach((intent) => {
+          const base = MULTILINGUAL_ANSWERS[intent] || {};
+          const next = seed.responses[intent] || {};
+          const byLanguage = {};
+          const langs = new Set(Object.keys(base).concat(Object.keys(next)));
+          langs.forEach((language) => {
+            const incoming = next[language];
+            if (incoming !== undefined) {
+              byLanguage[language] = normalizeEntry(incoming, intent);
+            } else {
+              byLanguage[language] = normalizeEntry(base[language], intent);
+            }
+          });
+          merged[intent] = byLanguage;
         });
-        merged[intent] = byLanguage;
-      });
-      MULTILINGUAL_ANSWERS = merged;
+        MULTILINGUAL_ANSWERS = merged;
+      }
+      if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
+        CONCEPTS = seed.concepts;
+      }
+      if (
+        Array.isArray(seed && seed.conceptContexts) &&
+        seed.conceptContexts.length > 0
+      ) {
+        CONCEPT_CONTEXTS = seed.conceptContexts;
+      }
+      if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
+        FACTS = seed.facts;
+        warmFactCacheFromSeed();
+      }
+      if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {
+        PROJECTS = seed.projects;
+      }
+      if (
+        seed &&
+        seed.brainstormSeeds &&
+        Array.isArray(seed.brainstormSeeds.triggers) &&
+        seed.brainstormSeeds.triggers.length > 0
+      ) {
+        BRAINSTORM_SEEDS = seed.brainstormSeeds;
+      }
+      if (
+        seed &&
+        seed.personas &&
+        Array.isArray(seed.personas.triggers) &&
+        seed.personas.triggers.length > 0
+      ) {
+        PERSONA_SEEDS = seed.personas;
+      }
+      if (
+        seed &&
+        seed.coreferenceSeeds &&
+        Array.isArray(seed.coreferenceSeeds.pronouns) &&
+        seed.coreferenceSeeds.pronouns.length > 0
+      ) {
+        COREFERENCE_SEEDS = seed.coreferenceSeeds;
+      }
+      if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
+        TOOLS = seed.tools;
+      }
+      if (seed && seed.agentInfo && typeof seed.agentInfo === "object") {
+        AGENT_INFO = Object.assign({}, AGENT_INFO, seed.agentInfo);
+      }
+      if (
+        Array.isArray(seed && seed.languageRules) &&
+        seed.languageRules.length > 0
+      ) {
+        LANGUAGE_RULES = seed.languageRules
+          .filter((rule) => rule && rule.language && rule.start && rule.end)
+          .map((rule) => ({
+            language: rule.language,
+            start: Number(rule.start),
+            end: Number(rule.end),
+          }));
+      }
+      if (
+        Array.isArray(seed && seed.promptPatterns) &&
+        seed.promptPatterns.length > 0
+      ) {
+        PROMPT_PATTERNS = seed.promptPatterns;
+      }
+      if (
+        seed &&
+        seed.intentRouting &&
+        Array.isArray(seed.intentRouting.intents) &&
+        seed.intentRouting.intents.length > 0
+      ) {
+        INTENT_ROUTING = {
+          intents: seed.intentRouting.intents,
+          articlePrefixes:
+            seed.intentRouting.articlePrefixes &&
+            seed.intentRouting.articlePrefixes.length
+              ? seed.intentRouting.articlePrefixes
+              : INTENT_ROUTING.articlePrefixes,
+          tracePrefixes:
+            seed.intentRouting.tracePrefixes && seed.intentRouting.tracePrefixes.length
+              ? seed.intentRouting.tracePrefixes
+              : INTENT_ROUTING.tracePrefixes,
+        };
+      }
+    } catch (_error) {
+      // Keep fallback tables on error.
+    } finally {
+      seedLoaded = true;
+      seedLoadPromise = null;
     }
-    if (Array.isArray(seed && seed.concepts) && seed.concepts.length > 0) {
-      CONCEPTS = seed.concepts;
-    }
-    if (
-      Array.isArray(seed && seed.conceptContexts) &&
-      seed.conceptContexts.length > 0
-    ) {
-      CONCEPT_CONTEXTS = seed.conceptContexts;
-    }
-    if (Array.isArray(seed && seed.facts) && seed.facts.length > 0) {
-      FACTS = seed.facts;
-      warmFactCacheFromSeed();
-    }
-    if (Array.isArray(seed && seed.projects) && seed.projects.length > 0) {
-      PROJECTS = seed.projects;
-    }
-    if (
-      seed &&
-      seed.brainstormSeeds &&
-      Array.isArray(seed.brainstormSeeds.triggers) &&
-      seed.brainstormSeeds.triggers.length > 0
-    ) {
-      BRAINSTORM_SEEDS = seed.brainstormSeeds;
-    }
-    if (
-      seed &&
-      seed.personas &&
-      Array.isArray(seed.personas.triggers) &&
-      seed.personas.triggers.length > 0
-    ) {
-      PERSONA_SEEDS = seed.personas;
-    }
-    if (
-      seed &&
-      seed.coreferenceSeeds &&
-      Array.isArray(seed.coreferenceSeeds.pronouns) &&
-      seed.coreferenceSeeds.pronouns.length > 0
-    ) {
-      COREFERENCE_SEEDS = seed.coreferenceSeeds;
-    }
-    if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
-      TOOLS = seed.tools;
-    }
-    if (seed && seed.agentInfo && typeof seed.agentInfo === "object") {
-      AGENT_INFO = Object.assign({}, AGENT_INFO, seed.agentInfo);
-    }
-    if (Array.isArray(seed && seed.languageRules) && seed.languageRules.length > 0) {
-      LANGUAGE_RULES = seed.languageRules
-        .filter((rule) => rule && rule.language && rule.start && rule.end)
-        .map((rule) => ({
-          language: rule.language,
-          start: Number(rule.start),
-          end: Number(rule.end),
-        }));
-    }
-    if (Array.isArray(seed && seed.promptPatterns) && seed.promptPatterns.length > 0) {
-      PROMPT_PATTERNS = seed.promptPatterns;
-    }
-    if (
-      seed &&
-      seed.intentRouting &&
-      Array.isArray(seed.intentRouting.intents) &&
-      seed.intentRouting.intents.length > 0
-    ) {
-      INTENT_ROUTING = {
-        intents: seed.intentRouting.intents,
-        articlePrefixes:
-          seed.intentRouting.articlePrefixes && seed.intentRouting.articlePrefixes.length
-            ? seed.intentRouting.articlePrefixes
-            : INTENT_ROUTING.articlePrefixes,
-        tracePrefixes:
-          seed.intentRouting.tracePrefixes && seed.intentRouting.tracePrefixes.length
-            ? seed.intentRouting.tracePrefixes
-            : INTENT_ROUTING.tracePrefixes,
-      };
-    }
-  } catch (_error) {
-    // Keep fallback tables on error.
-  }
+  })();
+  return seedLoadPromise;
 }
+
+let initPromise = null;
 
 async function init() {
   if (wasm !== undefined) return;
-  await loadSeed();
-  try {
-    const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
-    const bytes = await source.arrayBuffer();
-    const module = await WebAssembly.instantiate(bytes, {});
-    wasm = module.instance.exports;
-  } catch (_error) {
-    wasm = null;
-    mode = "js fallback";
-  }
-  postMessage({
-    kind: "ready",
-    mode,
-    seed: {
-      responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
-      conceptCount: CONCEPTS.length,
-      conceptContextCount: CONCEPT_CONTEXTS.length,
-      factCount: FACTS.length,
-      projectCount: PROJECTS.length,
-      brainstormCategoryCount: BRAINSTORM_SEEDS.categories.length,
-      personaCount: PERSONA_SEEDS.personas.length,
-      toolCount: TOOLS.length,
-      files: Object.keys(SEED_RAW),
-    },
-  });
+  if (initPromise) return initPromise;
+  initPromise = (async () => {
+    await loadSeed();
+    try {
+      const source = await fetch(withAssetVersion("formal_ai_worker.wasm"));
+      const bytes = await source.arrayBuffer();
+      const module = await WebAssembly.instantiate(bytes, {});
+      wasm = module.instance.exports;
+    } catch (_error) {
+      wasm = null;
+      mode = "js fallback";
+    }
+    postMessage({
+      kind: "ready",
+      mode,
+      seed: {
+        responseIntents: Object.keys(MULTILINGUAL_ANSWERS),
+        conceptCount: CONCEPTS.length,
+        conceptContextCount: CONCEPT_CONTEXTS.length,
+        factCount: FACTS.length,
+        projectCount: PROJECTS.length,
+        brainstormCategoryCount: BRAINSTORM_SEEDS.categories.length,
+        personaCount: PERSONA_SEEDS.personas.length,
+        toolCount: TOOLS.length,
+        files: Object.keys(SEED_RAW),
+      },
+    });
+  })();
+  return initPromise;
 }
 
 self.onmessage = async (event) => {
