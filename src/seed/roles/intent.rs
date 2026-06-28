@@ -119,6 +119,21 @@ pub const ROLE_MECHANISM_INQUIRY: &str = "mechanism_inquiry";
 /// task after the slot; a surface may name the canonical operation in an
 /// `action` child.
 pub const ROLE_PROCEDURAL_REQUEST: &str = "procedural_request";
+/// Semantic role: a bare procedural "how …" lead-in that omits the expected
+/// connector ("to", "do I", …).
+///
+/// The extractor only accepts this weak prefix when the first word after the
+/// slot is listed under [`ROLE_PROCEDURAL_ACTION_VERB`], so telegraphic prompts
+/// such as "how order X" recover as procedures while arbitrary "how <word>"
+/// questions keep flowing to their more specific handlers or to unknown.
+pub const ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD: &str = "procedural_request_elided_lead";
+/// Semantic role: a procedural action verb that may follow an elided
+/// [`ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD`] prefix.
+///
+/// These are bare action surfaces ("order", …) checked as exact lexeme entries,
+/// not a broad verb detector, so adding a new accepted telegraphic action is a
+/// seed change with reviewable blast radius.
+pub const ROLE_PROCEDURAL_ACTION_VERB: &str = "procedural_action_verb";
 /// Semantic role: the predicate that completes a how-it-works clause.
 ///
 /// The verb or participle stating that a subject operates, is structured, or is

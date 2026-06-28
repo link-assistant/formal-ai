@@ -72,6 +72,18 @@ role_procedural_request
   const "ROLE_PROCEDURAL_REQUEST"
   seed_file "data/seed/meanings-how.lino"
   purpose "Detect a how-to request and its leading surface."
+role_procedural_request_elided_lead
+  record_type "meta_role"
+  role "procedural_request_elided_lead"
+  const "ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD"
+  seed_file "data/seed/meanings-how.lino"
+  purpose "Detect the weak telegraphic how lead when a connector such as `to` is omitted."
+role_procedural_action_verb
+  record_type "meta_role"
+  role "procedural_action_verb"
+  const "ROLE_PROCEDURAL_ACTION_VERB"
+  seed_file "data/seed/meanings-how.lino"
+  purpose "Gate weak telegraphic how prompts to reviewed procedural action verbs."
 role_mechanism_predicate
   record_type "meta_role"
   role "mechanism_predicate"
@@ -131,6 +143,11 @@ fn_extract_procedural_how_to_task
   function "extract_procedural_how_to_task"
   source_file "src/solver_handler_how.rs"
   kind "extractor"
+fn_extract_elided_procedural_how_to_task
+  record_type "meta_function"
+  function "extract_elided_procedural_how_to_task"
+  source_file "src/solver_handler_how.rs"
+  kind "extractor"
 fn_is_procedural_elaboration_request
   record_type "meta_function"
   function "is_procedural_elaboration_request"
@@ -180,6 +197,11 @@ parity_try_procedural_how_to_followup
   record_type "meta_parity"
   rust_function "try_procedural_how_to_followup"
   js_function "tryProceduralHowToFollowup"
+  source_file "src/web/formal_ai_worker.js"
+parity_extract_elided_procedural_how_to_task
+  record_type "meta_parity"
+  rust_function "extract_elided_procedural_how_to_task"
+  js_function "extractElidedProceduralHowToTask"
   source_file "src/web/formal_ai_worker.js"
 parity_is_procedural_elaboration_request
   record_type "meta_parity"

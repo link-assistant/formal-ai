@@ -22573,6 +22573,20 @@ const MEANINGS_LINO = [
   "      surface",
   '        text "怎么写 …"',
   "        action write",
+  "  procedural_request_elided_lead",
+  "    defined-by inquiry",
+  "    defined-by procedural_request",
+  "    role procedural_request_elided_lead",
+  "    lexeme en",
+  "      surface",
+  '        text "how …"',
+  "  procedural_action_order",
+  "    defined-by action",
+  "    defined-by procedural_request",
+  "    role procedural_action_verb",
+  "    lexeme en",
+  "      surface",
+  "        text order",
   "  mechanism_predicate",
   "    defined-by action",
   "    defined-by mechanism_inquiry",
@@ -30881,6 +30895,8 @@ const ROLE_CONVERSATION_TOPIC_OPENER = "conversation_topic_opener";
 // for these forms by meaning instead of hardcoding per-language phrase arrays.
 const ROLE_MECHANISM_INQUIRY = "mechanism_inquiry";
 const ROLE_PROCEDURAL_REQUEST = "procedural_request";
+const ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD = "procedural_request_elided_lead";
+const ROLE_PROCEDURAL_ACTION_VERB = "procedural_action_verb";
 // Issue #386 procedural-cluster cleanup roles — mirror the
 // ROLE_PROCEDURAL_TASK_MODIFIER / ROLE_COMMON_TYPO consts in src/seed/roles.rs.
 // cleanProceduralFragment / correctCommonProceduralTypos ask the lexicon for
@@ -35597,6 +35613,39 @@ function correctCommonProceduralTypos(task) {
   return { task: corrected, corrections };
 }
 
+function splitProceduralActionObject(task) {
+  const text = String(task || "").trim();
+  if (!text) return null;
+  const firstSpace = text.search(/\s/u);
+  const action = firstSpace === -1 ? text : text.slice(0, firstSpace);
+  const object = firstSpace === -1 ? "" : text.slice(firstSpace + 1).trim();
+  return action ? { action, object } : null;
+}
+
+function extractElidedProceduralHowToTask(clean) {
+  // Issue #481: telegraphic English prompts can omit the connector in
+  // "how to order X" and arrive as "how order X". The lead and the approved
+  // first verb are both seed roles; the worker names only those concepts. This
+  // keeps the weak "how …" prefix from claiming arbitrary "how <word>" prompts.
+  for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD)) {
+    if (!clean.startsWith(form.before)) continue;
+    const correction = correctCommonProceduralTypos(
+      cleanProceduralFragment(clean.slice(form.before.length)),
+    );
+    const task = correction.task;
+    const split = splitProceduralActionObject(task);
+    if (!split || !split.object) continue;
+    if (!roleListsSurface(ROLE_PROCEDURAL_ACTION_VERB, "en", split.action)) continue;
+    return {
+      task,
+      action: split.action,
+      object: split.object,
+      corrections: correction.corrections,
+    };
+  }
+  return null;
+}
+
 function extractProceduralHowToTask(normalized) {
   // The prefixes are the slot-marked surface forms of the procedural_request
   // meaning (data/seed/meanings-how.lino, embedded in MEANINGS_LINO): every
@@ -35624,12 +35673,16 @@ function extractProceduralHowToTask(normalized) {
         corrections: correction.corrections,
       };
     }
-    const firstSpace = task.search(/\s/u);
-    const action = firstSpace === -1 ? task : task.slice(0, firstSpace);
-    const object = firstSpace === -1 ? "" : task.slice(firstSpace + 1).trim();
-    return { task, action, object, corrections: correction.corrections };
+    const split = splitProceduralActionObject(task);
+    if (!split) return null;
+    return {
+      task,
+      action: split.action,
+      object: split.object,
+      corrections: correction.corrections,
+    };
   }
-  return null;
+  return extractElidedProceduralHowToTask(clean);
 }
 
 function capitalizeForWikiHow(word) {

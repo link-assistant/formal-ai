@@ -201,6 +201,48 @@ fn how_to_prepare_fried_potatoes_falls_back_to_web_search() {
 }
 
 #[test]
+fn telegraphic_how_order_prompt_routes_to_procedural_plan() {
+    let response = answer("how order 3d print in nan chang vietnam?");
+    assert_eq!(
+        response.intent, "procedural_how_to",
+        "telegraphic \"how order ...\" prompt must use the procedural handler; answer={}",
+        response.answer,
+    );
+
+    let answer = response.answer.to_lowercase();
+    for expected in ["order 3d print", "web search", "wikihow"] {
+        assert!(
+            answer.contains(expected),
+            "procedural answer should mention {expected:?}; answer={}",
+            response.answer,
+        );
+    }
+
+    for expected in [
+        "procedural_how_to:request:order 3d print in nan chang vietnam",
+        "procedural_how_to:action:order",
+        "procedural_how_to:object:3d print in nan chang vietnam",
+        "web_search:request:how to order 3d print in nan chang vietnam",
+    ] {
+        assert!(
+            has_evidence(&response, expected),
+            "missing evidence prefix {expected:?}: {:?}",
+            response.evidence_links,
+        );
+    }
+}
+
+#[test]
+fn telegraphic_how_requires_a_known_procedural_action() {
+    let response = answer("how glorp widgets?");
+    assert_ne!(
+        response.intent, "procedural_how_to",
+        "unknown verbs after bare \"how\" must not be promoted to procedures; answer={}",
+        response.answer,
+    );
+}
+
+#[test]
 fn how_to_procedure_is_general_not_memoized_to_examples() {
     let response = answer("How can I calibrate a torque wrench?");
     assert_eq!(

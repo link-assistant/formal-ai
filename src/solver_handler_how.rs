@@ -487,7 +487,9 @@ fn render_mechanism_discovery_answer(subject: &str, language: Language) -> Strin
 /// order so "how to do " still precedes "how to ". A form may name the
 /// canonical operation in its `action` field (do, perform, implement, create,
 /// write); an empty action means the operation is taken from the task's first
-/// word. No per-language prefix list lives here — only the concept.
+/// word. The weak telegraphic form ("how order X") uses a separate seed role
+/// and is accepted only when the first task word is an approved procedural
+/// action. No per-language prefix list lives here — only the concept.
 fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
     let clean_prompt = clean_procedural_fragment(normalized);
     for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
@@ -495,6 +497,35 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
             let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
             return build_procedural_task(rest, action_override);
         }
+    }
+    extract_elided_procedural_how_to_task(&clean_prompt)
+}
+
+fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
+    let lexicon = seed::lexicon();
+    for form in lexicon.role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
+        let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) else {
+            continue;
+        };
+        let task = clean_procedural_fragment(rest);
+        if task.is_empty() {
+            continue;
+        }
+        let (task, corrections) = correct_common_procedural_typos(&task);
+        let Some((action, object)) = split_procedural_action_object(&task) else {
+            continue;
+        };
+        if object.is_empty()
+            || !lexicon.role_lists_surface(seed::ROLE_PROCEDURAL_ACTION_VERB, "en", &action)
+        {
+            continue;
+        }
+        return Some(ProceduralHowToTask {
+            task,
+            action,
+            object,
+            corrections,
+        });
     }
     None
 }
@@ -512,13 +543,7 @@ fn build_procedural_task(
     let (action, object) = if let Some(action) = action_override {
         (action.to_owned(), task.clone())
     } else {
-        let mut parts = task.splitn(2, char::is_whitespace);
-        let action = parts.next()?.trim();
-        if action.is_empty() {
-            return None;
-        }
-        let object = parts.next().unwrap_or("").trim();
-        (action.to_owned(), object.to_owned())
+        split_procedural_action_object(&task)?
     };
 
     Some(ProceduralHowToTask {
@@ -527,6 +552,16 @@ fn build_procedural_task(
         object,
         corrections,
     })
+}
+
+fn split_procedural_action_object(task: &str) -> Option<(String, String)> {
+    let mut parts = task.splitn(2, char::is_whitespace);
+    let action = parts.next()?.trim();
+    if action.is_empty() {
+        return None;
+    }
+    let object = parts.next().unwrap_or("").trim();
+    Some((action.to_owned(), object.to_owned()))
 }
 
 fn clean_procedural_fragment(value: &str) -> String {
