@@ -81,23 +81,13 @@ pub(super) fn extract_web_search_request(
     // "… Thomas Edison. Compare …"); fall back to the punctuation-stripped,
     // whitespace-collapsed `normalized_words` for prompts whose leading layout
     // only `normalize_prompt` cleans up.
-    for &prefix in &markers().explicit_prefixes {
-        if let Some(query) = normalized.strip_prefix(prefix) {
-            if let Some(query) = valid_search_query(query) {
-                return Some(WebSearchRequest {
-                    query,
-                    kind: WebSearchQueryKind::ExplicitPrefix,
-                });
-            }
-        }
-        if let Some(query) = normalized_words.strip_prefix(prefix) {
-            if let Some(query) = valid_search_query(query) {
-                return Some(WebSearchRequest {
-                    query,
-                    kind: WebSearchQueryKind::ExplicitPrefix,
-                });
-            }
-        }
+    if let Some(query) = extract_explicit_web_search_query(normalized)
+        .or_else(|| extract_explicit_web_search_query(&normalized_words))
+    {
+        return Some(WebSearchRequest {
+            query,
+            kind: WebSearchQueryKind::ExplicitPrefix,
+        });
     }
     if is_text_extraction_request(&normalized_words) {
         return None;
@@ -177,6 +167,10 @@ const fn is_sentence_boundary(character: char) -> bool {
 struct WebSearchMarkers {
     /// Lead-ins of an explicit "search X for …" command (prefix slot).
     explicit_prefixes: Vec<&'static str>,
+    /// Tails of an explicit topic-interest/search template (suffix slot).
+    explicit_suffixes: Vec<&'static str>,
+    /// Bracketing explicit topic-interest/search templates (circumfix slot).
+    explicit_circumfixes: Vec<(&'static str, &'static str)>,
     /// Bare search verbs that signal an action is requested.
     action_markers: Vec<&'static str>,
     /// The subset of action verbs strong enough to stand without a source noun.
@@ -224,6 +218,8 @@ fn markers() -> &'static WebSearchMarkers {
     static CACHE: OnceLock<WebSearchMarkers> = OnceLock::new();
     CACHE.get_or_init(|| WebSearchMarkers {
         explicit_prefixes: prefix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+        explicit_suffixes: suffix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+        explicit_circumfixes: circumfix_literals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
         action_markers: bare_literals(ROLE_WEB_SEARCH_ACTION),
         strong_action_markers: bare_literals(ROLE_WEB_SEARCH_STRONG_ACTION),
         signal_markers: bare_literals(ROLE_WEB_SEARCH_SIGNAL),
@@ -266,6 +262,17 @@ fn suffix_literals(role: &str) -> Vec<&'static str> {
         .into_iter()
         .filter(|form| form.slot() == Slot::Suffix)
         .map(WordForm::after_slot)
+        .collect()
+}
+
+/// The literal pair around every circumfix-slot form of a role, in lexicon
+/// declaration order.
+fn circumfix_literals(role: &str) -> Vec<(&'static str, &'static str)> {
+    seed::lexicon()
+        .role_word_forms(role)
+        .into_iter()
+        .filter(|form| form.slot() == Slot::Circumfix)
+        .map(|form| (form.before_slot(), form.after_slot()))
         .collect()
 }
 
@@ -320,6 +327,41 @@ fn extract_semantic_web_search_query(normalized: &str) -> Option<String> {
         if let Some(index) = normalized.find(marker) {
             let start = index + marker.len();
             if let Some(query) = valid_search_query(&normalized[start..]) {
+                return Some(query);
+            }
+        }
+    }
+    None
+}
+
+fn extract_explicit_web_search_query(normalized: &str) -> Option<String> {
+    let markers = markers();
+    for &prefix in &markers.explicit_prefixes {
+        if let Some(query) = normalized.strip_prefix(prefix) {
+            if let Some(query) = valid_search_query(query) {
+                return Some(query);
+            }
+        }
+    }
+    for &(prefix, suffix) in &markers.explicit_circumfixes {
+        if let Some(candidate) = normalized.strip_prefix(prefix).and_then(|rest| {
+            rest.strip_suffix(suffix).or_else(|| {
+                rest.trim_end_matches(is_url_trailing_punctuation)
+                    .strip_suffix(suffix)
+            })
+        }) {
+            if let Some(query) = valid_search_query(candidate) {
+                return Some(query);
+            }
+        }
+    }
+    for &suffix in &markers.explicit_suffixes {
+        if let Some(query) = normalized.strip_suffix(suffix).or_else(|| {
+            normalized
+                .trim_end_matches(is_url_trailing_punctuation)
+                .strip_suffix(suffix)
+        }) {
+            if let Some(query) = valid_search_query(query) {
                 return Some(query);
             }
         }
