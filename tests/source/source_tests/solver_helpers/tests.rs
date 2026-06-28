@@ -223,6 +223,73 @@ fn universal_solver_looks_up_concept() {
 }
 
 #[test]
+fn issue_478_multilingual_neural_inference_prompts_use_concept_lookup() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        expected_term: &'static str,
+        expected_summary: &'static str,
+    }
+
+    let cases = [
+        Case {
+            language: "en",
+            prompt: "What is neural inference?",
+            expected_term: "neural inference",
+            expected_summary: "trained neural network",
+        },
+        Case {
+            language: "ru",
+            prompt: "что такое нейросетевой инференс?",
+            expected_term: "Нейросетевой инференс",
+            expected_summary: "обученной нейронной сети",
+        },
+        Case {
+            language: "hi",
+            prompt: "न्यूरल इन्फरेंस क्या है?",
+            expected_term: "न्यूरल इन्फरेंस",
+            expected_summary: "प्रशिक्षित neural network",
+        },
+        Case {
+            language: "zh",
+            prompt: "什么是神经网络推理?",
+            expected_term: "神经网络推理",
+            expected_summary: "已经训练好的神经网络",
+        },
+    ];
+
+    for case in cases {
+        let response = UniversalSolver::default().solve(case.prompt);
+        assert_eq!(
+            response.intent, "concept_lookup",
+            "{} answer was: {}",
+            case.language, response.answer
+        );
+        assert!(
+            response.answer.contains(case.expected_term),
+            "{} answer was: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains(case.expected_summary),
+            "{} answer was: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "concept_lookup:hit:concept_neural_inference"),
+            "{} evidence was: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
+}
+
+#[test]
 fn solver_config_default_is_offline_capable() {
     let config = SolverConfig::default();
     assert!(!config.offline);
