@@ -29,6 +29,12 @@ const FILE_LIMITS: &[FileLimit] = &[
         label: "Links Notation",
     },
 ];
+const WORKER_JS_LIMIT: FileLimit = FileLimit {
+    extension: "js",
+    max_lines: 1_500,
+    warn_lines: 1_400,
+    label: "Worker JavaScript",
+};
 const EXCLUDE_PATTERNS: &[&str] = &["target", ".git", "node_modules"];
 const EXCLUDE_PATH_FRAGMENTS: &[&str] = &["data/cache/wikidata/"];
 
@@ -40,10 +46,13 @@ struct FileLimit {
     label: &'static str,
 }
 
+fn normalized_path(path: &Path) -> String {
+    path.to_string_lossy()
+        .replace(std::path::MAIN_SEPARATOR, "/")
+}
+
 fn should_exclude(path: &Path) -> bool {
-    let path_str = path
-        .to_string_lossy()
-        .replace(std::path::MAIN_SEPARATOR, "/");
+    let path_str = normalized_path(path);
 
     EXCLUDE_PATTERNS
         .iter()
@@ -53,15 +62,20 @@ fn should_exclude(path: &Path) -> bool {
             .any(|fragment| path_str.contains(fragment))
 }
 
+fn is_worker_js_path(path: &Path) -> bool {
+    let path_str = normalized_path(path);
+    path_str.ends_with("src/web/formal_ai_worker.js")
+        || (path_str.contains("/src/web/worker/") && path_str.ends_with(".js"))
+}
+
 fn file_limit(path: &Path) -> Option<&'static FileLimit> {
+    if is_worker_js_path(path) {
+        return Some(&WORKER_JS_LIMIT);
+    }
+
     let ext = path.extension().and_then(|ext| ext.to_str())?;
 
     FILE_LIMITS.iter().find(|limit| limit.extension == ext)
-}
-
-fn count_lines(path: &Path) -> Result<usize, std::io::Error> {
-    let content = fs::read_to_string(path)?;
-    Ok(content.lines().count())
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -74,9 +88,17 @@ struct Finding {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+struct EmbeddedDataFinding {
+    file: String,
+    line: usize,
+    message: String,
+}
+
+#[derive(Debug, PartialEq, Eq)]
 struct CheckResult {
     warnings: Vec<Finding>,
     violations: Vec<Finding>,
+    embedded_data_violations: Vec<EmbeddedDataFinding>,
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -106,10 +128,22 @@ fn relative_path(path: &Path, cwd: &Path) -> String {
     relative.replace(std::path::MAIN_SEPARATOR, "/")
 }
 
+fn is_embedded_lino_data_line(line: &str) -> bool {
+    let trimmed = line.trim_start();
+    let declares_lino = (trimmed.starts_with("const ")
+        || trimmed.starts_with("let ")
+        || trimmed.starts_with("var "))
+        && trimmed.contains("_LINO")
+        && trimmed.contains('=');
+
+    declares_lino && (trimmed.contains("= [") || trimmed.contains("= `"))
+}
+
 fn check_directory(cwd: &Path) -> CheckResult {
     let mut result = CheckResult {
         warnings: Vec::new(),
         violations: Vec::new(),
+        embedded_data_violations: Vec::new(),
     };
 
     for entry in WalkDir::new(cwd)
@@ -123,24 +157,43 @@ fn check_directory(cwd: &Path) -> CheckResult {
             continue;
         }
 
-        let Some(limit) = file_limit(path) else {
+        let limit = file_limit(path);
+        let check_worker_data = is_worker_js_path(path);
+
+        if limit.is_none() && !check_worker_data {
             continue;
-        };
+        }
 
-        match count_lines(path) {
-            Ok(line_count) => {
-                let finding = Finding {
-                    file: relative_path(path, cwd),
-                    lines: line_count,
-                    max_lines: limit.max_lines,
-                    warn_lines: limit.warn_lines,
-                    label: limit.label,
-                };
+        match fs::read_to_string(path) {
+            Ok(content) => {
+                if let Some(limit) = limit {
+                    let line_count = content.lines().count();
 
-                match classify_line_count(line_count, limit) {
-                    LineStatus::Violation => result.violations.push(finding),
-                    LineStatus::Warning => result.warnings.push(finding),
-                    LineStatus::WithinLimit => {}
+                    let finding = Finding {
+                        file: relative_path(path, cwd),
+                        lines: line_count,
+                        max_lines: limit.max_lines,
+                        warn_lines: limit.warn_lines,
+                        label: limit.label,
+                    };
+
+                    match classify_line_count(line_count, limit) {
+                        LineStatus::Violation => result.violations.push(finding),
+                        LineStatus::Warning => result.warnings.push(finding),
+                        LineStatus::WithinLimit => {}
+                    }
+                }
+
+                if check_worker_data {
+                    for (index, line) in content.lines().enumerate() {
+                        if is_embedded_lino_data_line(line) {
+                            result.embedded_data_violations.push(EmbeddedDataFinding {
+                                file: relative_path(path, cwd),
+                                line: index + 1,
+                                message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
+                            });
+                        }
+                    }
                 }
             }
             Err(error) => {
@@ -221,19 +274,38 @@ fn print_violations(violations: &[Finding]) {
 }
 
 #[cfg(not(test))]
+fn print_embedded_data_violations(violations: &[EmbeddedDataFinding]) {
+    if violations.is_empty() {
+        return;
+    }
+
+    println!("Found embedded Links Notation data in worker JavaScript:\n");
+    for violation in violations {
+        println!(
+            "  {}:{}: {}",
+            violation.file, violation.line, violation.message
+        );
+    }
+    println!("\nMove worker seed data to data/seed and load it through seed_loader.js\n");
+}
+
+#[cfg(not(test))]
 fn main() {
-    println!("\nChecking configured file line limits for Rust and Links Notation files...\n");
+    println!(
+        "\nChecking configured file line limits for Rust, Links Notation, and worker JavaScript files...\n"
+    );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
     let result = check_directory(&cwd);
 
     print_warnings(&result.warnings);
 
-    if result.violations.is_empty() {
+    if result.violations.is_empty() && result.embedded_data_violations.is_empty() {
         println!("All checked files are within their line limits\n");
         exit(0);
     } else {
         print_violations(&result.violations);
+        print_embedded_data_violations(&result.embedded_data_violations);
         exit(1);
     }
 }
@@ -260,6 +332,10 @@ mod tests {
     }
 
     fn write_lino_file_with_lines(path: &Path, line_count: usize) {
+        write_file_with_lines(path, line_count);
+    }
+
+    fn write_js_file_with_lines(path: &Path, line_count: usize) {
         write_file_with_lines(path, line_count);
     }
 
@@ -354,6 +430,66 @@ mod tests {
     }
 
     #[test]
+    fn check_directory_enforces_split_worker_js_limit() {
+        let repo = temp_dir("worker-js-thresholds");
+        let worker_dir = repo.join("src/web/worker");
+        fs::create_dir_all(&worker_dir).unwrap();
+        write_js_file_with_lines(
+            &worker_dir.join("formal_ai_worker_00.js"),
+            WORKER_JS_LIMIT.max_lines + 1,
+        );
+
+        let result = check_directory(&repo);
+
+        assert_eq!(
+            result.violations,
+            vec![Finding {
+                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+                lines: WORKER_JS_LIMIT.max_lines + 1,
+                max_lines: WORKER_JS_LIMIT.max_lines,
+                warn_lines: WORKER_JS_LIMIT.warn_lines,
+                label: WORKER_JS_LIMIT.label,
+            }]
+        );
+    }
+
+    #[test]
+    fn check_directory_does_not_apply_worker_limit_to_legacy_js() {
+        let repo = temp_dir("legacy-js-thresholds");
+        let app_dir = repo.join("src/web/app");
+        fs::create_dir_all(&app_dir).unwrap();
+        write_js_file_with_lines(&app_dir.join("main.js"), WORKER_JS_LIMIT.max_lines + 1);
+
+        let result = check_directory(&repo);
+
+        assert_eq!(result.violations, Vec::new());
+        assert_eq!(result.warnings, Vec::new());
+    }
+
+    #[test]
+    fn check_directory_rejects_embedded_worker_lino_data() {
+        let repo = temp_dir("embedded-worker-lino");
+        let worker_dir = repo.join("src/web/worker");
+        fs::create_dir_all(&worker_dir).unwrap();
+        fs::write(
+            worker_dir.join("formal_ai_worker_00.js"),
+            "const MEANINGS_LINO = [\n  \"meaning fact\",\n].join(\"\\n\");\n",
+        )
+        .unwrap();
+
+        let result = check_directory(&repo);
+
+        assert_eq!(
+            result.embedded_data_violations,
+            vec![EmbeddedDataFinding {
+                file: "src/web/worker/formal_ai_worker_00.js".to_string(),
+                line: 1,
+                message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
+            }]
+        );
+    }
+
+    #[test]
     fn check_directory_skips_generated_wikidata_cache() {
         let repo = temp_dir("wikidata-cache");
         let cache_dir = repo.join("data/cache/wikidata");
@@ -365,6 +501,7 @@ mod tests {
 
         assert_eq!(result.violations, Vec::new());
         assert_eq!(result.warnings, Vec::new());
+        assert_eq!(result.embedded_data_violations, Vec::new());
     }
 
     #[test]

@@ -49,7 +49,6 @@ LANG_ENGLISH = "Q1860"
 CATEGORY_NOUN = "Q1084"
 CACHE_DIR = Path("data/cache/wikidata/lexeme")
 SEED_DIR = Path("data/seed")
-WORKER = Path("src/web/formal_ai_worker.js")
 
 # `(meaning slug, lexeme id, expected English lemma, sense id)`. Every lemma,
 # part of speech and sense was confirmed against the live lexeme before being
@@ -60,26 +59,6 @@ LEXEMES = [
     ("bread", "L3865", "bread", "L3865-S1"),
     ("potato", "L3784", "potato", "L3784-S1"),
     ("tomato", "L7993", "tomato", "L7993-S1"),
-]
-
-# Meaning seed files mirrored into the browser worker fallback, in load order.
-MEANING_SEED_FILES = [
-    "meanings.lino", "meanings-units.lino", "meanings-calendar.lino",
-    "meanings-calculator.lino", "meanings-facts.lino",
-    "meanings-software-project.lino", "meanings-program-synthesis.lino",
-    "meanings-intent.lino", "meanings-how.lino", "meanings-meta.lino",
-    "meanings-web-navigation.lino", "meanings-web-search.lino",
-    "meanings-web-search-query.lino", "meanings-web-research.lino",
-    "meanings-web-followup.lino", "meanings-translation.lino",
-    "meanings-ontology.lino", "meanings-semantic-meta.lino",
-    "meanings-lexical-meta.lino", "meanings-links-root.lino",
-    "meanings-wikidata.lino", "meanings-behavior-rules.lino",
-    "meanings-proof.lino", "meanings-policy.lino", "meanings-docs.lino",
-    "meanings-skill-compiler.lino", "meanings-finance.lino",
-    "meanings-definition-merge.lino", "meanings-tool-access.lino",
-    "meanings-feature-capability.lino", "meanings-playwright.lino",
-    "meanings-research-table.lino", "meanings-conversation.lino",
-    "meanings-summary.lino", "meanings-coding-catalog.lino",
 ]
 
 
@@ -184,26 +163,6 @@ def rewrite_seed(slug, lid, lemma, block_lines):
     return "slug-missing"
 
 
-def refresh_worker():
-    if not WORKER.exists():
-        return
-    seed_lines = []
-    for name in MEANING_SEED_FILES:
-        content = (SEED_DIR / name).read_text(encoding="utf-8")
-        seed_lines.extend(content.rstrip("\n").split("\n"))
-    out = "const MEANINGS_LINO = [\n"
-    for line in seed_lines:
-        out += "  " + json.dumps(line, ensure_ascii=False) + ",\n"
-    out += '].join("\\n");'
-    original = WORKER.read_text(encoding="utf-8")
-    start = original.index("const MEANINGS_LINO = [")
-    end_marker = '].join("\\n");'
-    end = original.index(end_marker, start) + len(end_marker)
-    updated = original[:start] + out + original[end:]
-    if updated != original:
-        WORKER.write_text(updated, encoding="utf-8")
-
-
 def main():
     grounded, skipped = 0, []
     for slug, lid, lemma, sense_id in LEXEMES:
@@ -219,7 +178,6 @@ def main():
             grounded += 1
         elif outcome != "already":
             skipped.append(f"{slug} ({lid}): {outcome}")
-    refresh_worker()
     print(f"grounded {grounded} word(s) with sourced part of speech and forms")
     for entry in skipped:
         print(f"  - skipped {entry}")

@@ -46,6 +46,34 @@ fn read(relative: &str) -> String {
         .unwrap_or_else(|error| panic!("{relative} should be readable: {error}"))
 }
 
+fn read_worker_source() -> String {
+    let mut source = read("src/web/formal_ai_worker.js");
+    let worker_dir = repo_root().join("src/web/worker");
+    if !worker_dir.exists() {
+        return source;
+    }
+
+    let mut modules: Vec<PathBuf> = fs::read_dir(&worker_dir)
+        .unwrap_or_else(|error| panic!("src/web/worker should be readable: {error}"))
+        .map(|entry| {
+            entry
+                .expect("worker module entry should be readable")
+                .path()
+        })
+        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("js"))
+        .collect();
+    modules.sort();
+
+    for module in modules {
+        let module_source = fs::read_to_string(&module)
+            .unwrap_or_else(|error| panic!("{} should be readable: {error}", module.display()));
+        source.push('\n');
+        source.push_str(&module_source);
+    }
+
+    source
+}
+
 fn records() -> Vec<Record> {
     let text = read(RECIPE);
     let mut records = Vec::new();
@@ -204,7 +232,7 @@ fn meta_recipe_stages_match_emitted_plan() {
 fn meta_recipe_parity_targets_exist_in_worker() {
     let records = records();
     let handler = read("src/solver_handler_how.rs");
-    let worker = read("src/web/formal_ai_worker.js");
+    let worker = read_worker_source();
     for parity in of_kind(&records, "meta_parity") {
         let rust = parity.require("rust_function");
         let js = parity.require("js_function");
