@@ -1,4 +1,9 @@
 meanings
+  pattern_concept_context_delimiter_vo_ru
+    defined-by prompt_pattern
+    lexeme en
+      surface
+        text "pattern concept context delimiter vo ru"
   pattern_concept_context_delimiter_within_en
     defined-by prompt_pattern
     lexeme en
@@ -1389,8 +1394,3 @@ meanings
     lexeme en
       surface
         text "reverse sort"
-  reverse_sort_list_files
-    defined-by rule
-    lexeme en
-      surface
-        text "reverse sort list files"

@@ -868,9 +868,8 @@ body.is-resizing-context {
 .sidebar-section-header {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
-  padding: 10px 18px;
   border: 0;
   background: #eef2f1;
   color: #40515f;
@@ -883,10 +882,60 @@ body.is-resizing-context {
   background: #e3eae9;
 }
 
+.sidebar-section-toggle {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 36px;
+  padding: 10px 0 10px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sidebar-section-isolate {
+  display: inline-flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  min-height: 32px;
+  margin-right: 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #5f6d78;
+  cursor: pointer;
+}
+
+.sidebar-section-toggle:hover,
+.sidebar-section-isolate:hover {
+  background: rgba(64, 81, 95, 0.08);
+}
+
+.sidebar-section-toggle:focus-visible,
+.sidebar-section-isolate:focus-visible {
+  outline: 2px solid #2f80ed;
+  outline-offset: -2px;
+}
+
+.sidebar-section-isolate .btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-basis: 16px;
+}
+
 .sidebar-section-header h2 {
   margin: 0;
+  min-width: 0;
   font-size: 12px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 
 .sidebar-section-caret {
@@ -3355,6 +3404,15 @@ textarea:disabled {
   background: #2b302e;
 }
 
+:root[data-theme="dark"] .sidebar-section-toggle:hover,
+:root[data-theme="dark"] .sidebar-section-isolate:hover {
+  background: rgba(216, 208, 196, 0.08);
+}
+
+:root[data-theme="dark"] .sidebar-section-isolate {
+  color: #a99f92;
+}
+
 :root[data-theme="dark"] .context-panel h2,
 :root[data-theme="dark"] .demo-status,
 :root[data-theme="dark"] .desktop-status,
@@ -3815,6 +3873,15 @@ textarea:disabled {
 
   :root:not([data-theme="light"]) .sidebar-section-header:hover {
     background: #2b302e;
+  }
+
+  :root:not([data-theme="light"]) .sidebar-section-toggle:hover,
+  :root:not([data-theme="light"]) .sidebar-section-isolate:hover {
+    background: rgba(216, 208, 196, 0.08);
+  }
+
+  :root:not([data-theme="light"]) .sidebar-section-isolate {
+    color: #a99f92;
   }
 
   :root:not([data-theme="light"]) .context-panel h2,

@@ -1,4 +1,9 @@
 meanings
+  reverse_sort_list_files
+    defined-by rule
+    lexeme en
+      surface
+        text "reverse sort list files"
   reverse_sort_list_files_arg
     defined-by rule
     lexeme en
@@ -54,6 +59,11 @@ meanings
     lexeme en
       surface
         text "rule russian"
+  russian-colloquial-verb
+    defined-by category
+    lexeme en
+      surface
+        text "russian colloquial verb"
   rust_library
     defined-by environment
     lexeme en
@@ -94,6 +104,11 @@ meanings
     lexeme en
       surface
         text "signal processing"
+  slang-dictionary
+    defined-by source_kind
+    lexeme en
+      surface
+        text "slang dictionary"
   snake
     defined-by concept
     lexeme en
