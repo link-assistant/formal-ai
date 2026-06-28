@@ -64,8 +64,12 @@ fn should_exclude(path: &Path) -> bool {
 
 fn is_worker_js_path(path: &Path) -> bool {
     let path_str = normalized_path(path);
+    let has_js_extension = path
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .is_some_and(|extension| extension.eq_ignore_ascii_case("js"));
     path_str.ends_with("src/web/formal_ai_worker.js")
-        || (path_str.contains("/src/web/worker/") && path_str.ends_with(".js"))
+        || (path_str.contains("/src/web/worker/") && has_js_extension)
 }
 
 fn file_limit(path: &Path) -> Option<&'static FileLimit> {
