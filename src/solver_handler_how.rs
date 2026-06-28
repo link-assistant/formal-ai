@@ -99,7 +99,7 @@ pub fn try_how_to_procedure(
     ))
 }
 
-pub(crate) fn looks_like_procedural_how_to(normalized: &str) -> bool {
+pub fn looks_like_procedural_how_to(normalized: &str) -> bool {
     extract_procedural_how_to_task(normalized).is_some()
 }
 
@@ -533,7 +533,7 @@ fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<Procedura
 
 fn split_known_procedural_action_object(task: &str) -> Option<(String, String)> {
     let mut forms = seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB);
-    forms.sort_by(|left, right| right.text.chars().count().cmp(&left.text.chars().count()));
+    forms.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
     for form in forms {
         let action_surface = form.text.trim();
         if action_surface.is_empty() {
