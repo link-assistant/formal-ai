@@ -261,12 +261,12 @@ hardcoded prompt→answer tables.
      `python3 scripts/close-total.py` (idempotent; emits each unresolved token
      as a first-class meaning under `data/seed/closure-generated-*.lino`) until
      `python3 scripts/audit-total-closure.py` reports `unresolved_distinct: 0`.
-   - **Worker-mirror parity checks.** Where the JS worker embeds a byte-identical
-     inline mirror of a seed vocabulary, a `--check` guard fails the build on
-     drift (e.g. the “Check terminal vocabulary worker mirror is in sync with
-     seed” CI step runs
-     `node experiments/issue-513-sync-worker-terminal.mjs --check`). Regenerate
-     the mirror by running the same script without `--check`.
+   - **Worker seed parity checks.** Where the JS worker consumes a synced web
+     seed copy, a `--check` guard fails the build on drift (e.g. the “Check
+     terminal vocabulary worker mirror is in sync with seed” CI step runs
+     `node experiments/issue-513-sync-worker-terminal.mjs --check`). Refresh
+     the web seed copy with `scripts/sync-seed.sh` or by running the same script
+     without `--check`.
    - **Web-UI hardcoded-string guard (#511).** `npm --prefix tests/e2e run
      check:web-hardcoded-ui` parses every `h(...)` call in `src/web/app.js` and
      fails the build when a child argument is a bare prose string literal, so new

@@ -8,9 +8,10 @@
 //! retune detection by editing a `.lino` file, and so the project rule against
 //! hardcoded natural language in the solver/worker is upheld and CI-enforced.
 //!
-//! The JavaScript worker embeds a byte-identical mirror of the same seed file
-//! (kept in sync by `experiments/issue-513-sync-worker-terminal.mjs`), so both
-//! engines detect terminal commands from one source of truth.
+//! The JavaScript worker loads the synced `src/web/seed/terminal-commands.lino`
+//! deployment copy through `src/web/seed_loader.js`, with drift guarded by
+//! `experiments/issue-513-sync-worker-terminal.mjs`, so both engines detect
+//! terminal commands from one source of truth.
 
 use super::parser::{parse_lino, LinoNode};
 use super::TERMINAL_COMMANDS_LINO;
