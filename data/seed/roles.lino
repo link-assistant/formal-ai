@@ -231,9 +231,13 @@ roles
     kind predicate
   prior_answer_reference
     kind meaning
+  procedural_action_verb
+    kind predicate
   procedural_elaboration
     kind meaning
   procedural_request
+    kind meaning
+  procedural_request_elided_lead
     kind meaning
   procedural_task_modifier
     kind meaning

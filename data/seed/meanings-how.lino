@@ -204,6 +204,20 @@ meanings
       surface
         text "怎么写 …"
         action write
+  procedural_request_elided_lead
+    defined-by inquiry
+    defined-by procedural_request
+    role procedural_request_elided_lead
+    lexeme en
+      surface
+        text "how …"
+  procedural_action_order
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text order
   mechanism_predicate
     defined-by action
     defined-by mechanism_inquiry

@@ -131,7 +131,7 @@ fn meta_recipe_roles_match_live_constants_and_seed() {
     let records = records();
     let intent = read("src/seed/roles/intent.rs");
     let roles = of_kind(&records, "meta_role");
-    assert_eq!(roles.len(), 9, "expected nine documented lexicon roles");
+    assert_eq!(roles.len(), 11, "expected eleven documented lexicon roles");
 
     for role in roles {
         let value = role.require("role");
