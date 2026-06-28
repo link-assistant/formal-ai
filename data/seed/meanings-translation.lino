@@ -147,6 +147,102 @@ meanings
         text 為
       surface
         text 到
+  response_language_english
+    defined-by language_english
+    role response_language_marker
+    lexeme en
+      surface
+        text "in english"
+      surface
+        text "in the english language"
+    lexeme ru
+      surface
+        text "на английском"
+      surface
+        text "на английском языке"
+      surface
+        text "по-английски"
+    lexeme hi
+      surface
+        text "अंग्रेजी में"
+      surface
+        text "अंग्रेज़ी में"
+    lexeme zh
+      surface
+        text 用英文
+      surface
+        text 用英语
+      surface
+        text 用英語
+  response_language_russian
+    defined-by language_russian
+    role response_language_marker
+    lexeme en
+      surface
+        text "in russian"
+      surface
+        text "in the russian language"
+    lexeme ru
+      surface
+        text "на русском"
+      surface
+        text "на русском языке"
+      surface
+        text "по-русски"
+    lexeme hi
+      surface
+        text "रूसी में"
+    lexeme zh
+      surface
+        text 用俄语
+      surface
+        text 用俄語
+  response_language_hindi
+    defined-by language_hindi
+    role response_language_marker
+    lexeme en
+      surface
+        text "in hindi"
+      surface
+        text "in the hindi language"
+    lexeme ru
+      surface
+        text "на хинди"
+      surface
+        text "на языке хинди"
+    lexeme hi
+      surface
+        text "हिंदी में"
+      surface
+        text "हिन्दी में"
+    lexeme zh
+      surface
+        text 用印地语
+      surface
+        text 用印地文
+  response_language_chinese
+    defined-by language_chinese
+    role response_language_marker
+    lexeme en
+      surface
+        text "in chinese"
+      surface
+        text "in the chinese language"
+    lexeme ru
+      surface
+        text "на китайском"
+      surface
+        text "на китайском языке"
+    lexeme hi
+      surface
+        text "चीनी में"
+    lexeme zh
+      surface
+        text 用中文
+      surface
+        text 用汉语
+      surface
+        text 用漢語
   translate_from_english
     defined-by language_english
     defined-by translation_direction_source

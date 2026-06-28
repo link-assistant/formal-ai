@@ -87,6 +87,45 @@ fn concept_context_delimiters() -> &'static [String] {
     .as_slice()
 }
 
+fn concept_response_language_markers() -> &'static [(String, &'static str)] {
+    static CELL: OnceLock<Vec<(String, &'static str)>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        let mut markers = seed::lexicon()
+            .meanings_with_role(seed::ROLE_RESPONSE_LANGUAGE_MARKER)
+            .filter_map(|meaning| {
+                let language = meaning_defined_language_code(meaning)?;
+                Some(
+                    meaning
+                        .words()
+                        .map(move |word| (word.to_lowercase(), language)),
+                )
+            })
+            .flatten()
+            .filter(|(marker, _language)| !marker.is_empty())
+            .collect::<Vec<_>>();
+        markers.sort_by_key(|(marker, _language)| std::cmp::Reverse(marker.len()));
+        markers
+    })
+    .as_slice()
+}
+
+fn meaning_defined_language_code(meaning: &seed::Meaning) -> Option<&'static str> {
+    meaning
+        .defined_by
+        .iter()
+        .find_map(|slug| language_code(slug))
+}
+
+fn language_code(slug: &str) -> Option<&'static str> {
+    match slug {
+        "language_english" => Some("en"),
+        "language_russian" => Some("ru"),
+        "language_hindi" => Some("hi"),
+        "language_chinese" => Some("zh"),
+        _ => None,
+    }
+}
+
 /// Outcome of parsing a "what is X" style prompt.
 ///
 /// `term` is the concept candidate; `context`, when present, is the
@@ -97,6 +136,7 @@ fn concept_context_delimiters() -> &'static [String] {
 pub struct ConceptQuery {
     pub term: String,
     pub context: Option<String>,
+    pub response_language: Option<String>,
 }
 
 /// Extract a `(concept, optional context)` pair from a "what is X" style
@@ -114,19 +154,29 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
     if trimmed.is_empty() {
         return None;
     }
+    let lower_for_response_marker = trimmed.to_lowercase();
+    let (stripped_trimmed, outer_response_language) =
+        strip_trailing_response_language_marker(&lower_for_response_marker);
+    let stripped_trimmed_owned;
+    let trimmed = if outer_response_language.is_some() {
+        stripped_trimmed_owned = stripped_trimmed.to_owned();
+        stripped_trimmed_owned.as_str()
+    } else {
+        trimmed
+    };
     let trimmed = strip_leading_request(trimmed);
 
     if let Some(body) = strip_suffix_pattern(trimmed) {
-        return finalize_concept_query(&body);
+        return finalize_concept_query_with_response_language(&body, outer_response_language);
     }
 
     let lower = trimmed.to_lowercase();
     if let Some(body) = strip_meaning_question_body(trimmed, &lower) {
-        return finalize_concept_query(body);
+        return finalize_concept_query_with_response_language(body, outer_response_language);
     }
 
     if let Some(body) = strip_inverted_who_is(trimmed, &lower) {
-        return finalize_concept_query(body);
+        return finalize_concept_query_with_response_language(body, outer_response_language);
     }
 
     let mut body: Option<&str> = None;
@@ -138,7 +188,7 @@ pub fn extract_concept_query(prompt: &str) -> Option<ConceptQuery> {
         }
     }
     let body = body?;
-    finalize_concept_query(body)
+    finalize_concept_query_with_response_language(body, outer_response_language)
 }
 
 fn strip_leading_request(input: &str) -> &str {
@@ -229,7 +279,10 @@ fn clean_meaning_candidate(value: &str) -> Option<&str> {
     Some(body)
 }
 
-fn finalize_concept_query(body: &str) -> Option<ConceptQuery> {
+fn finalize_concept_query_with_response_language(
+    body: &str,
+    inherited_response_language: Option<&str>,
+) -> Option<ConceptQuery> {
     let body = body
         .trim()
         .trim_end_matches(['?', '。', '.', '!', '!', ',', ',', ';', ':'])
@@ -238,11 +291,15 @@ fn finalize_concept_query(body: &str) -> Option<ConceptQuery> {
     if body.is_empty() {
         return None;
     }
-    let trimmed_body = body
-        .strip_suffix(" mean")
-        .or_else(|| body.strip_suffix(" stand for"))
-        .unwrap_or(&body)
-        .trim();
+    let mut response_language = inherited_response_language;
+    let (trimmed_body, language) = strip_trailing_response_language_marker(&body);
+    let mut trimmed_body = trimmed_body;
+    response_language = response_language.or(language);
+    trimmed_body = strip_concept_idiom_suffix(trimmed_body);
+    let (trimmed_body_after_suffix, language) =
+        strip_trailing_response_language_marker(trimmed_body);
+    trimmed_body = trimmed_body_after_suffix;
+    response_language = response_language.or(language);
     if trimmed_body.is_empty() {
         return None;
     }
@@ -253,7 +310,62 @@ fn finalize_concept_query(body: &str) -> Option<ConceptQuery> {
     Some(ConceptQuery {
         term,
         context: context.filter(|c| !c.is_empty()),
+        response_language: response_language.map(str::to_owned),
     })
+}
+
+fn strip_concept_idiom_suffix(body: &str) -> &str {
+    body.strip_suffix(" mean")
+        .or_else(|| body.strip_suffix(" stand for"))
+        .unwrap_or(body)
+        .trim()
+}
+
+fn strip_trailing_response_language_marker(body: &str) -> (&str, Option<&'static str>) {
+    let body = body.trim();
+    for (marker, language) in concept_response_language_markers() {
+        let Some(rest) = strip_trailing_marker(body, marker) else {
+            continue;
+        };
+        return (rest, Some(*language));
+    }
+    (body, None)
+}
+
+fn strip_trailing_marker<'a>(body: &'a str, marker: &str) -> Option<&'a str> {
+    let start = body.len().checked_sub(marker.len())?;
+    if !body.ends_with(marker) || start == 0 {
+        return None;
+    }
+    let before = body[..start].chars().next_back()?;
+    if !is_response_language_marker_boundary(before, marker) {
+        return None;
+    }
+    let stem = body[..start]
+        .trim()
+        .trim_end_matches([',', '，', ';', '；', ':', '：', '、'])
+        .trim();
+    (!stem.is_empty()).then_some(stem)
+}
+
+fn is_response_language_marker_boundary(before: char, marker: &str) -> bool {
+    before.is_whitespace()
+        || matches!(before, ',' | '，' | ';' | '；' | ':' | '：' | '、')
+        || marker.chars().next().is_some_and(is_cjk)
+}
+
+fn is_cjk(ch: char) -> bool {
+    matches!(
+        ch as u32,
+        0x3400..=0x4DBF
+            | 0x4E00..=0x9FFF
+            | 0xF900..=0xFAFF
+            | 0x20000..=0x2A6DF
+            | 0x2A700..=0x2B73F
+            | 0x2B740..=0x2B81F
+            | 0x2B820..=0x2CEAF
+            | 0x2CEB0..=0x2EBEF
+    )
 }
 
 /// Split a question body on the first matching context delimiter. The

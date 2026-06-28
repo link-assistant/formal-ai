@@ -299,6 +299,8 @@ roles
     kind meaning
   research_superlative_modifier
     kind meaning
+  response_language_marker
+    kind predicate
   rule_listing_phrase
     kind predicate
   rule_listing_request

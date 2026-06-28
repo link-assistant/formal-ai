@@ -1059,6 +1059,77 @@ function conceptPatternsByKind(kind) {
   return [];
 }
 
+let cachedConceptResponseLanguageMarkers = null;
+
+function meaningDefinedLanguageCode(meaning) {
+  for (const slug of meaning && Array.isArray(meaning.definedBy)
+    ? meaning.definedBy
+    : []) {
+    if (slug === "language_english") return "en";
+    if (slug === "language_russian") return "ru";
+    if (slug === "language_hindi") return "hi";
+    if (slug === "language_chinese") return "zh";
+  }
+  return null;
+}
+
+function conceptResponseLanguageMarkers() {
+  if (cachedConceptResponseLanguageMarkers) {
+    return cachedConceptResponseLanguageMarkers;
+  }
+  const markers = [];
+  for (const meaning of meaningsWithRole(ROLE_RESPONSE_LANGUAGE_MARKER)) {
+    const language = meaningDefinedLanguageCode(meaning);
+    if (!language) continue;
+    for (const word of meaning.words || []) {
+      const marker = String(word || "").toLowerCase();
+      if (marker) markers.push({ marker, language });
+    }
+  }
+  markers.sort((a, b) => b.marker.length - a.marker.length);
+  cachedConceptResponseLanguageMarkers = markers;
+  return markers;
+}
+
+function stripTrailingResponseLanguageMarker(original, lower) {
+  const sourceOriginal = String(original || "").trim();
+  const sourceLower = String(
+    lower || sourceOriginal.toLowerCase(),
+  ).trim();
+  for (const { marker, language } of conceptResponseLanguageMarkers()) {
+    if (!sourceLower.endsWith(marker)) continue;
+    const start = sourceLower.length - marker.length;
+    if (start === 0) continue;
+    const before = sourceLower.slice(0, start).slice(-1);
+    if (!isResponseLanguageMarkerBoundary(before, marker)) continue;
+    const stemOriginal = sourceOriginal
+      .slice(0, start)
+      .trim()
+      .replace(/[,，;；:：、]+$/u, "")
+      .trim();
+    const stemLower = sourceLower
+      .slice(0, start)
+      .trim()
+      .replace(/[,，;；:：、]+$/u, "")
+      .trim();
+    if (!stemLower) continue;
+    return {
+      original: stemOriginal || stemLower,
+      lower: stemLower,
+      language,
+    };
+  }
+  return { original: sourceOriginal, lower: sourceLower, language: null };
+}
+
+function isResponseLanguageMarkerBoundary(before, marker) {
+  return (
+    /\s/u.test(before) ||
+    /^[,，;；:：、]$/u.test(before) ||
+    containsCjk(marker)
+  );
+}
+
 function splitTermAndContext(bodyOriginal, bodyLower) {
   const delimiters = conceptPatternsByKind("context_delimiter");
   for (const delimiter of delimiters) {
@@ -1291,25 +1362,39 @@ function extractConceptQuery(prompt) {
     .trim();
   if (!trimmedRaw) return null;
   trimmedRaw = stripLeadingRequest(trimmedRaw);
+  let outerResponseLanguage = null;
+  const outerLanguage = stripTrailingResponseLanguageMarker(
+    trimmedRaw,
+    trimmedRaw.toLowerCase(),
+  );
+  if (outerLanguage.language) {
+    trimmedRaw = outerLanguage.original;
+    outerResponseLanguage = outerLanguage.language;
+  }
 
   const suffixes = conceptPatternsByKind("suffix");
   for (const suffix of suffixes) {
     if (trimmedRaw.endsWith(suffix)) {
       return finalizeConceptBody(
         trimmedRaw.slice(0, -suffix.length).trim(),
+        outerResponseLanguage,
       );
     }
   }
 
   const lower = trimmedRaw.toLowerCase();
   const meaningBody = extractMeaningQuestionBody(trimmedRaw, lower);
-  if (meaningBody) return finalizeConceptBody(meaningBody);
+  if (meaningBody) return finalizeConceptBody(meaningBody, outerResponseLanguage);
 
   const invertedWhoBody = extractInvertedWhoIs(trimmedRaw, lower);
-  if (invertedWhoBody) return finalizeConceptBody(invertedWhoBody);
+  if (invertedWhoBody) {
+    return finalizeConceptBody(invertedWhoBody, outerResponseLanguage);
+  }
 
   const howItWorksSubject = extractHowItWorksSubject(trimmedRaw, lower);
-  if (howItWorksSubject) return finalizeConceptBody(howItWorksSubject);
+  if (howItWorksSubject) {
+    return finalizeConceptBody(howItWorksSubject, outerResponseLanguage);
+  }
 
   const prefixes = conceptPatternsByKind("prefix");
   let body = null;
@@ -1320,7 +1405,7 @@ function extractConceptQuery(prompt) {
     }
   }
   if (!body) return null;
-  return finalizeConceptBody(body);
+  return finalizeConceptBody(body, outerResponseLanguage);
 }
 
 function extractConceptTerm(prompt) {
@@ -1447,7 +1532,19 @@ function renderSourceLink(source) {
   return human === source ? source : `[${human}](${source})`;
 }
 
-function finalizeConceptBody(body) {
+function stripConceptIdiomSuffix(original, lower) {
+  for (const suffix of [" mean", " stand for"]) {
+    if (lower.endsWith(suffix)) {
+      return {
+        original: original.slice(0, -suffix.length).trim(),
+        lower: lower.slice(0, -suffix.length).trim(),
+      };
+    }
+  }
+  return { original, lower };
+}
+
+function finalizeConceptBody(body, inheritedResponseLanguage = null) {
   let originalBase = String(body || "")
     .trim()
     .replace(/[?。.!!,,;:]+$/g, "")
@@ -1455,19 +1552,32 @@ function finalizeConceptBody(body) {
   if (!originalBase) return null;
   let original = originalBase;
   let lower = original.toLowerCase();
-  // Strip trailing "mean"/"stand for" markers shared across English idioms.
-  // The lowercased view drives matching while the original-case view is kept
-  // so downstream Wikipedia URL lookups preserve Cyrillic capitalization
-  // (see docs/case-studies/issue-27/README.md).
-  for (const suffix of [" mean", " stand for"]) {
-    if (lower.endsWith(suffix)) {
-      original = original.slice(0, -suffix.length).trim();
-      lower = lower.slice(0, -suffix.length).trim();
-      break;
-    }
+  let responseLanguage = inheritedResponseLanguage || null;
+
+  let stripped = stripTrailingResponseLanguageMarker(original, lower);
+  if (stripped.language) {
+    original = stripped.original;
+    lower = stripped.lower;
+    responseLanguage = responseLanguage || stripped.language;
   }
+
+  const withoutIdiom = stripConceptIdiomSuffix(original, lower);
+  original = withoutIdiom.original;
+  lower = withoutIdiom.lower;
+
+  stripped = stripTrailingResponseLanguageMarker(original, lower);
+  if (stripped.language) {
+    original = stripped.original;
+    lower = stripped.lower;
+    responseLanguage = responseLanguage || stripped.language;
+  }
+
   if (!lower) return null;
-  return splitTermAndContext(original, lower);
+  const query = splitTermAndContext(original, lower);
+  if (responseLanguage) {
+    query.responseLanguage = responseLanguage;
+  }
+  return query;
 }
 
 function tokenizeArithmetic(input) {
@@ -3484,6 +3594,7 @@ function extractQuotedPhrase(text) {
 // src/translation/prompt.rs.
 const ROLE_TRANSLATION_SOURCE_MARKER = "translation_source_marker";
 const ROLE_TRANSLATION_TARGET_MARKER = "translation_target_marker";
+const ROLE_RESPONSE_LANGUAGE_MARKER = "response_language_marker";
 const ROLE_TRANSLATION_TARGET_DIRECTION = "translation_target_direction";
 const ROLE_TRANSLATION_UNQUOTED_FRAME = "translation_unquoted_frame";
 const ROLE_TRANSLATION_INTO_MARKER = "translation_into_marker";
@@ -3493,13 +3604,7 @@ const ROLE_TRANSLATION_OBJECT_MARKER = "translation_object_marker";
 // language_code in src/translation/language_markers.rs: the surface *names* of
 // each language live in the seed; only this slug -> code bridge stays in code.
 function translationLanguageCode(meaning) {
-  for (const slug of meaning.definedBy) {
-    if (slug === "language_english") return "en";
-    if (slug === "language_russian") return "ru";
-    if (slug === "language_hindi") return "hi";
-    if (slug === "language_chinese") return "zh";
-  }
-  return null;
+  return meaningDefinedLanguageCode(meaning);
 }
 
 // The first marker meaning of `role` (in declaration order) any of whose
@@ -10825,6 +10930,10 @@ function tryConceptLookup(prompt) {
   if (query.context) {
     evidence.push(`concept_lookup:context:${query.context}`);
   }
+  if (query.responseLanguage) {
+    evidence.push(`concept_lookup:response-language:${query.responseLanguage}`);
+    evidence.push(`language_to:${query.responseLanguage}`);
+  }
   const lookup = lookupConceptQuery(query);
   if (!lookup) {
     // Surface the miss in evidence so the demo's trace panel can show why
@@ -10833,7 +10942,7 @@ function tryConceptLookup(prompt) {
     return null;
   }
   const record = lookup.record;
-  const language = detectLanguage(prompt);
+  const language = query.responseLanguage || detectLanguage(prompt);
   const localized = localizedConceptFor(record, language);
   const effectiveSource = (localized && localized.source) || record.source;
   // Issue #21: emit the percent-decoded IRI form for the trace panel.
@@ -25088,6 +25197,102 @@ const MEANINGS_LINO = [
   "        text 為",
   "      surface",
   "        text 到",
+  "  response_language_english",
+  "    defined-by language_english",
+  "    role response_language_marker",
+  "    lexeme en",
+  "      surface",
+  '        text "in english"',
+  "      surface",
+  '        text "in the english language"',
+  "    lexeme ru",
+  "      surface",
+  '        text "на английском"',
+  "      surface",
+  '        text "на английском языке"',
+  "      surface",
+  '        text "по-английски"',
+  "    lexeme hi",
+  "      surface",
+  '        text "अंग्रेजी में"',
+  "      surface",
+  '        text "अंग्रेज़ी में"',
+  "    lexeme zh",
+  "      surface",
+  "        text 用英文",
+  "      surface",
+  "        text 用英语",
+  "      surface",
+  "        text 用英語",
+  "  response_language_russian",
+  "    defined-by language_russian",
+  "    role response_language_marker",
+  "    lexeme en",
+  "      surface",
+  '        text "in russian"',
+  "      surface",
+  '        text "in the russian language"',
+  "    lexeme ru",
+  "      surface",
+  '        text "на русском"',
+  "      surface",
+  '        text "на русском языке"',
+  "      surface",
+  '        text "по-русски"',
+  "    lexeme hi",
+  "      surface",
+  '        text "रूसी में"',
+  "    lexeme zh",
+  "      surface",
+  "        text 用俄语",
+  "      surface",
+  "        text 用俄語",
+  "  response_language_hindi",
+  "    defined-by language_hindi",
+  "    role response_language_marker",
+  "    lexeme en",
+  "      surface",
+  '        text "in hindi"',
+  "      surface",
+  '        text "in the hindi language"',
+  "    lexeme ru",
+  "      surface",
+  '        text "на хинди"',
+  "      surface",
+  '        text "на языке хинди"',
+  "    lexeme hi",
+  "      surface",
+  '        text "हिंदी में"',
+  "      surface",
+  '        text "हिन्दी में"',
+  "    lexeme zh",
+  "      surface",
+  "        text 用印地语",
+  "      surface",
+  "        text 用印地文",
+  "  response_language_chinese",
+  "    defined-by language_chinese",
+  "    role response_language_marker",
+  "    lexeme en",
+  "      surface",
+  '        text "in chinese"',
+  "      surface",
+  '        text "in the chinese language"',
+  "    lexeme ru",
+  "      surface",
+  '        text "на китайском"',
+  "      surface",
+  '        text "на китайском языке"',
+  "    lexeme hi",
+  "      surface",
+  '        text "चीनी में"',
+  "    lexeme zh",
+  "      surface",
+  "        text 用中文",
+  "      surface",
+  "        text 用汉语",
+  "      surface",
+  "        text 用漢語",
   "  translate_from_english",
   "    defined-by language_english",
   "    defined-by translation_direction_source",

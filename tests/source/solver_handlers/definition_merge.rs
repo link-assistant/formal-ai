@@ -45,6 +45,7 @@ fn definition_merge_for_term(
     let query = ConceptQuery {
         term: term.clone(),
         context: None,
+        response_language: None,
     };
     let Some(lookup) = lookup_concept_query(&query) else {
         log.append("definition_merge:miss", term);
