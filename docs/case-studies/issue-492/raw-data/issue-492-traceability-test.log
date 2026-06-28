@@ -1,9 +1,9 @@
    Compiling formal-ai v0.237.0 (/tmp/gh-issue-solver-1782666925345)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.26s
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.39s
      Running tests/unit/mod.rs (target/debug/deps/unit-08553f446a255b90)
 
 running 1 test
 test docs_requirements_issue_492::issue_492_release_badge_documents_are_traceable ... ok
 
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1183 filtered out; finished in 0.01s
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1185 filtered out; finished in 0.01s
 
