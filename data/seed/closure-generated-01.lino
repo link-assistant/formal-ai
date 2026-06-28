@@ -169,6 +169,16 @@ meanings
     lexeme en
       surface
         text "brainstorm project ideas"
+  brief
+    defined-by word_surface
+    lexeme en
+      surface
+        text "brief"
+  briefly
+    defined-by word_surface
+    lexeme en
+      surface
+        text "briefly"
   browser-frame-policy
     defined-by isolation_mode
     lexeme en
@@ -329,6 +339,11 @@ meanings
     lexeme en
       surface
         text "concept lookup in context no alias"
+  concise
+    defined-by word_surface
+    lexeme en
+      surface
+        text "concise"
   context_bsd_operating_systems
     defined-by context
     lexeme en
@@ -1379,18 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter v kontekste ru"
-  pattern_concept_context_delimiter_v_oblasti_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v oblasti ru"
-  pattern_concept_context_delimiter_v_ramkakh_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ramkakh ru"
-  pattern_concept_context_delimiter_v_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v ru"

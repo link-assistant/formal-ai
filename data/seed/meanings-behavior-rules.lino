@@ -75,6 +75,84 @@ meanings
         text 哪些
       surface
         text 什么
+  rule_count_request
+    defined-by inquiry
+    defined-by quantity
+    role rule_count_request
+    lexeme en
+      surface
+        text "how many"
+      surface
+        text count
+      surface
+        text total
+      surface
+        text number
+    lexeme ru
+      surface
+        text сколько
+      surface
+        text всего
+      surface
+        text количество
+    lexeme hi
+      surface
+        text कितने
+      surface
+        text कुल
+      surface
+        text संख्या
+    lexeme zh
+      surface
+        text 多少
+      surface
+        text 总共
+      surface
+        text 總共
+      surface
+        text 一共
+      surface
+        text 几条
+      surface
+        text 幾條
+  rule_brief_request
+    defined-by action
+    defined-by property
+    role rule_brief_request
+    lexeme en
+      surface
+        text brief
+      surface
+        text briefly
+      surface
+        text short
+      surface
+        text concise
+    lexeme ru
+      surface
+        text кратко
+      surface
+        text коротко
+      surface
+        text короче
+      surface
+        text вкратце
+    lexeme hi
+      surface
+        text संक्षेप
+      surface
+        text "संक्षेप में"
+      surface
+        text छोटा
+    lexeme zh
+      surface
+        text 简短
+      surface
+        text 簡短
+      surface
+        text 简要
+      surface
+        text 簡要
   behavior_domain
     defined-by self_reference
     defined-by concept
