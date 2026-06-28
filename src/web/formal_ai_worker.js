@@ -22689,6 +22689,17 @@ const MEANINGS_LINO = [
   "    lexeme en",
   "      surface",
   '        text "how …"',
+  "    lexeme ru",
+  "      surface",
+  '        text "как …"',
+  "    lexeme hi",
+  "      surface",
+  '        text "कैसे …"',
+  "    lexeme zh",
+  "      surface",
+  "        text 如何…",
+  "      surface",
+  "        text 怎么…",
   "  procedural_action_order",
   "    defined-by action",
   "    defined-by procedural_request",
@@ -22696,6 +22707,32 @@ const MEANINGS_LINO = [
   "    lexeme en",
   "      surface",
   "        text order",
+  "  connect",
+  "    defined-by action",
+  "    defined-by procedural_request",
+  "    role procedural_action_verb",
+  "    lexeme en",
+  "      surface",
+  "        text connect",
+  "        action connect",
+  "    lexeme ru",
+  "      surface",
+  "        text подключить",
+  "        action connect",
+  "      surface",
+  "        text подключать",
+  "        action connect",
+  "    lexeme hi",
+  "      surface",
+  '        text "कनेक्ट करें"',
+  "        action connect",
+  "      surface",
+  "        text जोड़ें",
+  "        action connect",
+  "    lexeme zh",
+  "      surface",
+  "        text 连接",
+  "        action connect",
   "  mechanism_predicate",
   "    defined-by action",
   "    defined-by mechanism_inquiry",
@@ -35827,20 +35864,46 @@ function splitProceduralActionObject(task) {
   return action ? { action, object } : null;
 }
 
+function splitKnownProceduralActionObject(task) {
+  const forms = roleWordForms(ROLE_PROCEDURAL_ACTION_VERB)
+    .slice()
+    .sort((left, right) => right.text.length - left.text.length);
+  const text = String(task || "").trim();
+  for (const form of forms) {
+    const actionSurface = String(form.text || "").trim();
+    if (!actionSurface || !text.startsWith(actionSurface)) continue;
+    const rest = text.slice(actionSurface.length);
+    if (
+      rest &&
+      !/^\s/u.test(rest) &&
+      !containsCjk(actionSurface)
+    ) {
+      continue;
+    }
+    return {
+      action: form.action || actionSurface,
+      object: cleanProceduralFragment(rest),
+    };
+  }
+  return null;
+}
+
 function extractElidedProceduralHowToTask(clean) {
   // Issue #481: telegraphic English prompts can omit the connector in
   // "how to order X" and arrive as "how order X". The lead and the approved
-  // first verb are both seed roles; the worker names only those concepts. This
-  // keeps the weak "how …" prefix from claiming arbitrary "how <word>" prompts.
+  // action surfaces are both seed roles; the worker names only those concepts.
+  // This keeps weak "how …" / "как …" / "कैसे …" / "如何…" prefixes from
+  // claiming arbitrary "how <word>" prompts while still supporting all seeded
+  // languages. Mirrors extract_elided_procedural_how_to_task in
+  // src/solver_handler_how.rs.
   for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD)) {
     if (!clean.startsWith(form.before)) continue;
     const correction = correctCommonProceduralTypos(
       cleanProceduralFragment(clean.slice(form.before.length)),
     );
     const task = correction.task;
-    const split = splitProceduralActionObject(task);
+    const split = splitKnownProceduralActionObject(task);
     if (!split || !split.object) continue;
-    if (!roleListsSurface(ROLE_PROCEDURAL_ACTION_VERB, "en", split.action)) continue;
     return {
       task,
       action: split.action,
@@ -36175,12 +36238,22 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const sourcePath = wikihowEnabled
     ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
     : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
-  const lines = [
-    `Procedural discovery for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
-    "",
-    sourcePath,
-    "",
-  ];
+  const lines =
+    language === "ru"
+      ? [
+          `План поиска процедуры для \`${task.task}\` (действие \`${task.action}\`, объект \`${task.object}\`).`,
+          "",
+          wikihowEnabled
+            ? "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+            : "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках).",
+          "",
+        ]
+      : [
+          `Procedural discovery plan for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
+          "",
+          sourcePath,
+          "",
+        ];
 
   let confidence = 0.78;
   let diagnostics = null;
@@ -36248,6 +36321,76 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
     query,
     wikihowCandidate: pageTitle,
     formalizedObject,
+  };
+}
+
+function splitLeadingGreetingCompoundPrompt(prompt) {
+  const source = String(prompt || "").trim();
+  const match = source.match(/^([\s\S]+?)(?:[,;；，、\n]|[.!?。！？]\s+)([\s\S]+)$/u);
+  if (!match) return null;
+  const greeting = String(match[1] || "").trim();
+  const remainder = stripLeadingCompoundCoordinator(match[2] || "");
+  if (!greeting || !remainder) return null;
+  return { greeting, remainder };
+}
+
+function stripLeadingCompoundCoordinator(text) {
+  const trimmed = String(text || "").trim();
+  const lowered = trimmed.toLowerCase();
+  for (const coordinator of ["and", "then"]) {
+    if (lowered === coordinator) return "";
+    const prefix = `${coordinator} `;
+    if (lowered.startsWith(prefix)) {
+      return trimmed.slice(prefix.length).trimStart();
+    }
+  }
+  return trimmed;
+}
+
+async function tryGreetingProceduralCompound(prompt, language, preferences = {}) {
+  const parts = splitLeadingGreetingCompoundPrompt(prompt);
+  if (!parts) return null;
+  if (!isGreetingPrompt(normalizePrompt(parts.greeting), parts.greeting)) return null;
+
+  const procedureLanguage = detectLanguage(parts.remainder);
+  const procedure = await tryProceduralHowTo(parts.remainder, procedureLanguage, preferences);
+  if (!procedure) return null;
+
+  const greetingLanguage = detectLanguage(parts.greeting) || language;
+  const temperature = numericPreference(preferences.temperature, 0.7, 0, 1);
+  const randomize = preferences.greetingVariations !== false && temperature > 0;
+  const greetingEvidence = [
+    "rule:greeting",
+    `language:${greetingLanguage}`,
+    `variation:${randomize ? "random" : "canonical"}`,
+    `temperature:${temperature.toFixed(2)}`,
+  ];
+  const evidence = [
+    "composition:compound_response",
+    `sub_impulse:${parts.greeting}`,
+    `sub_impulse:${parts.remainder}`,
+    "sub_intent:greeting",
+    `sub_intent:${procedure.intent}`,
+    ...greetingEvidence,
+    ...(procedure.evidence || []),
+  ];
+
+  return {
+    intent: "compound_response",
+    content: `${answerFor("greeting", greetingLanguage, { randomize })}\n\n${procedure.content}`,
+    confidence: Math.min(0.9, procedure.confidence || 0.78),
+    evidence,
+    diagnostics: procedure.diagnostics || null,
+    query: procedure.query || "",
+    wikihowCandidate: procedure.wikihowCandidate || "",
+    formalizedObject: procedure.formalizedObject || "",
+    procedureLanguage,
+    procedurePrompt: parts.remainder,
+    trace: [
+      `sub_impulse:${parts.greeting}`,
+      `sub_impulse:${parts.remainder}`,
+      "composition:compound_response",
+    ],
   };
 }
 
@@ -38990,6 +39133,32 @@ async function solve(prompt, history, prefs, userContext = {}) {
       confidence: 0.4,
       evidence: ["formalization:ambiguous"],
     }, formalizationContext);
+  }
+
+  const compoundProcedure = await tryGreetingProceduralCompound(prompt, language, preferences);
+  if (compoundProcedure) {
+    for (const event of compoundProcedure.trace || []) events.push(event);
+    events.push(`handler:${compoundProcedure.intent}`);
+    steps.push({ step: "decompose_impulse", detail: "greeting+procedural_how_to" });
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryGreetingProceduralCompound",
+    });
+    toolCalls.push({
+      tool: "procedural_how_to",
+      inputs: {
+        prompt: compoundProcedure.procedurePrompt || prompt,
+        language: compoundProcedure.procedureLanguage || language,
+        query: compoundProcedure.query || "",
+        wikihowCandidate: compoundProcedure.wikihowCandidate || "",
+      },
+      outputs: {
+        intent: compoundProcedure.intent,
+        confidence: compoundProcedure.confidence,
+        formalizedObject: compoundProcedure.formalizedObject || "",
+      },
+    });
+    return finalize(events, steps, toolCalls, compoundProcedure, formalizationContext);
   }
 
   const behaviorRule = tryBehaviorRules(prompt, normalized, history, preferences);

@@ -99,6 +99,10 @@ pub fn try_how_to_procedure(
     ))
 }
 
+pub fn looks_like_procedural_how_to(normalized: &str) -> bool {
+    extract_procedural_how_to_task(normalized).is_some()
+}
+
 /// Handles follow-up requests for the concrete steps of an active procedure —
 /// "Can you give me specific instructions?", "give me the exact steps", "step
 /// by step", and their multilingual equivalents (issue #444). These prompts
@@ -502,8 +506,7 @@ fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTas
 }
 
 fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
-    let lexicon = seed::lexicon();
-    for form in lexicon.role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
+    for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
         let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) else {
             continue;
         };
@@ -512,12 +515,10 @@ fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<Procedura
             continue;
         }
         let (task, corrections) = correct_common_procedural_typos(&task);
-        let Some((action, object)) = split_procedural_action_object(&task) else {
+        let Some((action, object)) = split_known_procedural_action_object(&task) else {
             continue;
         };
-        if object.is_empty()
-            || !lexicon.role_lists_surface(seed::ROLE_PROCEDURAL_ACTION_VERB, "en", &action)
-        {
+        if object.is_empty() {
             continue;
         }
         return Some(ProceduralHowToTask {
@@ -526,6 +527,33 @@ fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<Procedura
             object,
             corrections,
         });
+    }
+    None
+}
+
+fn split_known_procedural_action_object(task: &str) -> Option<(String, String)> {
+    let mut forms = seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB);
+    forms.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
+    for form in forms {
+        let action_surface = form.text.trim();
+        if action_surface.is_empty() {
+            continue;
+        }
+        let Some(rest) = task.strip_prefix(action_surface) else {
+            continue;
+        };
+        if !rest.is_empty()
+            && !rest.chars().next().is_some_and(char::is_whitespace)
+            && !crate::coding::contains_cjk(action_surface)
+        {
+            continue;
+        }
+        let action = if form.action.is_empty() {
+            action_surface.to_owned()
+        } else {
+            form.action.clone()
+        };
+        return Some((action, clean_procedural_fragment(rest)));
     }
     None
 }

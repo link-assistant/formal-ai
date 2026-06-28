@@ -723,7 +723,8 @@ fn append_prompt_relevants(prompt: &str, normalized: &str, relevants: &mut Vec<S
         ),
         (
             "handler:procedural_how_to",
-            cue_lexicon::matches("procedural_how_to", normalized),
+            cue_lexicon::matches("procedural_how_to", normalized)
+                || crate::solver_handler_how::looks_like_procedural_how_to(normalized),
         ),
         (
             "handler:proof_request",
