@@ -290,6 +290,119 @@ fn procedural_request_surfaces_stay_multilingual_after_elided_gate() {
 }
 
 #[test]
+fn elided_how_connect_requests_cover_supported_languages() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+        task_fragment: &'static str,
+        object_fragment: &'static str,
+    }
+
+    for case in [
+        Case {
+            language: "en",
+            prompt: "how connect mysql to node js",
+            task_fragment: "connect mysql to node js",
+            object_fragment: "mysql to node js",
+        },
+        Case {
+            language: "ru",
+            prompt: "как подключить mysql к node js",
+            task_fragment: "подключить mysql к node js",
+            object_fragment: "mysql к node js",
+        },
+        Case {
+            language: "hi",
+            prompt: "कैसे कनेक्ट करें mysql को node js से",
+            task_fragment: "कनेक्ट करें mysql को node js से",
+            object_fragment: "mysql को node js से",
+        },
+        Case {
+            language: "zh",
+            prompt: "如何连接 mysql 到 node js",
+            task_fragment: "连接 mysql 到 node js",
+            object_fragment: "mysql 到 node js",
+        },
+    ] {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "procedural_how_to",
+            "{} elided connect prompt must route procedurally; answer={}",
+            case.language, response.answer,
+        );
+
+        assert!(
+            response.answer.to_lowercase().contains(case.task_fragment),
+            "{} answer should name the requested task; answer={}",
+            case.language,
+            response.answer,
+        );
+        for expected in [
+            &format!("language:{}", case.language),
+            &format!("procedural_how_to:request:{}", case.task_fragment),
+            "procedural_how_to:action:connect",
+            &format!("procedural_how_to:object:{}", case.object_fragment),
+            &format!("web_search:request:how to {}", case.task_fragment),
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{} missing evidence prefix {expected:?}: {:?}",
+                case.language,
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
+fn greeting_prefixed_russian_connect_how_to_composes_procedure() {
+    let response = UniversalSolver::default().solve("Привет, как подключить mysql к node js");
+
+    assert_eq!(
+        response.intent, "compound_response",
+        "greeting plus how-to should compose sub-results; answer={}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("Здравствуйте") || response.answer.contains("Привет"),
+        "compound answer should preserve the greeting response first: {}",
+        response.answer,
+    );
+    assert!(
+        response.answer.contains("План поиска процедуры")
+            && response.answer.contains("подключить mysql к node js"),
+        "compound answer should include the Russian procedural plan: {}",
+        response.answer,
+    );
+    assert!(
+        !response.answer.contains("не смог определить") && !response.answer.contains("unknown"),
+        "reported prompt must not answer the procedural clause as unknown: {}",
+        response.answer,
+    );
+    assert!(
+        response
+            .answer
+            .contains("действие `connect`, объект `mysql к node js`"),
+        "compound answer should expose the canonical action and object: {}",
+        response.answer,
+    );
+    for expected in [
+        "sub_impulse:",
+        "intent=procedural_how_to",
+        "route \"procedural_how_to\"",
+        "method \"procedural_how_to\"",
+        "composition:compound_response",
+    ] {
+        assert!(
+            has_evidence(&response, expected) || response.links_notation.contains(expected),
+            "missing expected trace/evidence {expected:?}: evidence={:?}\ntrace={}",
+            response.evidence_links,
+            response.links_notation,
+        );
+    }
+}
+
+#[test]
 fn how_to_procedure_is_general_not_memoized_to_examples() {
     let response = answer("How can I calibrate a torque wrench?");
     assert_eq!(

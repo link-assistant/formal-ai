@@ -211,6 +211,17 @@ meanings
     lexeme en
       surface
         text "how …"
+    lexeme ru
+      surface
+        text "как …"
+    lexeme hi
+      surface
+        text "कैसे …"
+    lexeme zh
+      surface
+        text 如何…
+      surface
+        text 怎么…
   procedural_action_order
     defined-by action
     defined-by procedural_request
@@ -218,6 +229,32 @@ meanings
     lexeme en
       surface
         text order
+  connect
+    defined-by action
+    defined-by procedural_request
+    role procedural_action_verb
+    lexeme en
+      surface
+        text connect
+        action connect
+    lexeme ru
+      surface
+        text подключить
+        action connect
+      surface
+        text подключать
+        action connect
+    lexeme hi
+      surface
+        text "कनेक्ट करें"
+        action connect
+      surface
+        text जोड़ें
+        action connect
+    lexeme zh
+      surface
+        text 连接
+        action connect
   mechanism_predicate
     defined-by action
     defined-by mechanism_inquiry
