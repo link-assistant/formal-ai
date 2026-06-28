@@ -6,6 +6,18 @@ const { test, expect } = require('@playwright/test');
 
 const WAR_AND_PEACE_QID = 'Q161531';
 const TOLSTOY_QID = 'Q7243';
+const WAR_AND_PEACE_LABELS = {
+  en: 'War and Peace',
+  ru: 'Война и мир',
+  hi: 'युद्ध और शान्ति',
+  zh: '战争与和平',
+};
+const TOLSTOY_LABELS = {
+  en: 'Leo Tolstoy',
+  ru: 'Лев Толстой',
+  hi: 'लेव तोलस्तोय',
+  zh: '列夫·托尔斯泰',
+};
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
@@ -23,6 +35,13 @@ async function sendPrompt(page, text) {
   return assistantMessage;
 }
 
+function languageForSearch(search) {
+  if (/войн/i.test(search)) return 'ru';
+  if (/युद्ध/u.test(search)) return 'hi';
+  if (/战争/u.test(search)) return 'zh';
+  return 'en';
+}
+
 async function mockWikidataAuthorLookup(page, requests) {
   await page.route('**://*.wikipedia.org/**', (route) => route.abort());
   await page.route('**://*.wiktionary.org/**', (route) => route.abort());
@@ -34,18 +53,19 @@ async function mockWikidataAuthorLookup(page, requests) {
     requests.push({ action, search, ids });
 
     if (action === 'wbsearchentities') {
+      const language = languageForSearch(search);
       await route.fulfill({
         contentType: 'application/json',
         body: JSON.stringify({
           search: [
             {
               id: WAR_AND_PEACE_QID,
-              label: /войн/i.test(search) ? 'Война и мир' : 'War and Peace',
+              label: WAR_AND_PEACE_LABELS[language],
               description: 'novel by Leo Tolstoy',
               concepturi: `https://www.wikidata.org/wiki/${WAR_AND_PEACE_QID}`,
               display: {
                 label: {
-                  value: /войн/i.test(search) ? 'Война и мир' : 'War and Peace',
+                  value: WAR_AND_PEACE_LABELS[language],
                 },
                 description: { value: 'novel by Leo Tolstoy' },
               },
@@ -63,17 +83,27 @@ async function mockWikidataAuthorLookup(page, requests) {
           entities: {
             [WAR_AND_PEACE_QID]: {
               labels: {
-                en: { value: 'War and Peace' },
-                ru: { value: 'Война и мир' },
+                en: { value: WAR_AND_PEACE_LABELS.en },
+                ru: { value: WAR_AND_PEACE_LABELS.ru },
+                hi: { value: WAR_AND_PEACE_LABELS.hi },
+                zh: { value: WAR_AND_PEACE_LABELS.zh },
               },
               sitelinks: {
                 enwiki: {
-                  title: 'War and Peace',
+                  title: WAR_AND_PEACE_LABELS.en,
                   url: 'https://en.wikipedia.org/wiki/War_and_Peace',
                 },
                 ruwiki: {
-                  title: 'Война и мир',
+                  title: WAR_AND_PEACE_LABELS.ru,
                   url: 'https://ru.wikipedia.org/wiki/Война_и_мир',
+                },
+                hiwiki: {
+                  title: WAR_AND_PEACE_LABELS.hi,
+                  url: 'https://hi.wikipedia.org/wiki/युद्ध_और_शान्ति',
+                },
+                zhwiki: {
+                  title: WAR_AND_PEACE_LABELS.zh,
+                  url: 'https://zh.wikipedia.org/wiki/战争与和平',
                 },
               },
               claims: {
@@ -101,17 +131,27 @@ async function mockWikidataAuthorLookup(page, requests) {
           entities: {
             [TOLSTOY_QID]: {
               labels: {
-                en: { value: 'Leo Tolstoy' },
-                ru: { value: 'Лев Толстой' },
+                en: { value: TOLSTOY_LABELS.en },
+                ru: { value: TOLSTOY_LABELS.ru },
+                hi: { value: TOLSTOY_LABELS.hi },
+                zh: { value: TOLSTOY_LABELS.zh },
               },
               sitelinks: {
                 enwiki: {
-                  title: 'Leo Tolstoy',
+                  title: TOLSTOY_LABELS.en,
                   url: 'https://en.wikipedia.org/wiki/Leo_Tolstoy',
                 },
                 ruwiki: {
-                  title: 'Лев Толстой',
+                  title: TOLSTOY_LABELS.ru,
                   url: 'https://ru.wikipedia.org/wiki/Лев_Толстой',
+                },
+                hiwiki: {
+                  title: TOLSTOY_LABELS.hi,
+                  url: 'https://hi.wikipedia.org/wiki/लेव_तोलस्तोय',
+                },
+                zhwiki: {
+                  title: TOLSTOY_LABELS.zh,
+                  url: 'https://zh.wikipedia.org/wiki/列夫·托尔斯泰',
                 },
               },
             },
@@ -179,6 +219,46 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
     await expect(evidence).toContainText('source:https://ru.wikipedia.org/wiki/Лев_Толстой');
     expect(requests.some((request) => request.search === 'Войну и мир')).toBe(true);
+    expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
+    expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
+  });
+
+  test('resolves Hindi authorship questions through Wikidata P50', async ({ page }) => {
+    const requests = [];
+    await mockWikidataAuthorLookup(page, requests);
+
+    const message = await sendPrompt(page, 'युद्ध और शान्ति किसने लिखी?');
+    const evidence = message.locator('.evidence-list');
+
+    await expect(message).toContainText('युद्ध और शान्ति को लेव तोलस्तोय ने लिखा था।');
+    await expect(message).not.toContainText('unknown');
+    await expect(message.locator('.intent')).toContainText('intent:fact_query');
+    await expect(evidence).toContainText('fact_query:relation:author_of_book');
+    await expect(evidence).toContainText('language:hi');
+    await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
+    await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
+    await expect(evidence).toContainText('source:https://hi.wikipedia.org/wiki/लेव_तोलस्तोय');
+    expect(requests.some((request) => request.search === 'युद्ध और शान्ति')).toBe(true);
+    expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
+    expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
+  });
+
+  test('resolves Chinese authorship questions through Wikidata P50', async ({ page }) => {
+    const requests = [];
+    await mockWikidataAuthorLookup(page, requests);
+
+    const message = await sendPrompt(page, '战争与和平是谁写的?');
+    const evidence = message.locator('.evidence-list');
+
+    await expect(message).toContainText('《战争与和平》由列夫·托尔斯泰创作。');
+    await expect(message).not.toContainText('unknown');
+    await expect(message.locator('.intent')).toContainText('intent:fact_query');
+    await expect(evidence).toContainText('fact_query:relation:author_of_book');
+    await expect(evidence).toContainText('language:zh');
+    await expect(evidence).toContainText(`wikidata:${WAR_AND_PEACE_QID}`);
+    await expect(evidence).toContainText(`wikidata:${TOLSTOY_QID}`);
+    await expect(evidence).toContainText('source:https://zh.wikipedia.org/wiki/列夫·托尔斯泰');
+    expect(requests.some((request) => request.search === '战争与和平')).toBe(true);
     expect(requests.some((request) => request.ids === WAR_AND_PEACE_QID)).toBe(true);
     expect(requests.some((request) => request.ids === TOLSTOY_QID)).toBe(true);
   });
