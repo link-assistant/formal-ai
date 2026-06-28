@@ -1,8 +1,8 @@
 #!/usr/bin/env rust-script
 //! Create GitHub Release from CHANGELOG.md
 //!
-//! Automatically includes crates.io and docs.rs badges in release notes
-//! when the crate name can be detected from Cargo.toml.
+//! Automatically includes stable crates.io and docs.rs artifact badges in
+//! release notes when the crate name can be detected from Cargo.toml.
 //!
 //! Usage: rust-script scripts/create-github-release.rs --release-version <version> --repository <repository> [--tag-prefix <prefix>] [--language <name>] [--release-label <label>] [--ghcr-url <url>] [--docker-hub-url <url>]
 //!
@@ -197,6 +197,13 @@ fn ghcr_badge(url: &str, version: &str) -> String {
         "[![GHCR](https://img.shields.io/badge/ghcr-{}-24292F?logo=github)]({})",
         badge_escape(&image_tag),
         tag_url
+    )
+}
+
+fn crate_release_badges(crate_name: &str, version: &str) -> String {
+    let escaped_version = badge_escape(version);
+    format!(
+        "[![Crates.io](https://img.shields.io/badge/crates.io-{escaped_version}-orange?logo=rust)](https://crates.io/crates/{crate_name}/{version}) [![Docs.rs](https://img.shields.io/badge/docs.rs-{escaped_version}-blue)](https://docs.rs/{crate_name}/{version})"
     )
 }
 
@@ -435,10 +442,7 @@ fn main() {
     let mut release_notes = get_changelog_for_version(&normalized_version);
     let mut badges = Vec::new();
     if let Some(crate_name) = get_crate_name_from_toml(&cargo_toml) {
-        let crate_badges = format!(
-            "[![Crates.io](https://img.shields.io/crates/v/{crate_name}?label=crates.io)](https://crates.io/crates/{crate_name}/{normalized_version}) [![Docs.rs](https://docs.rs/{crate_name}/badge.svg)](https://docs.rs/{crate_name}/{normalized_version})"
-        );
-        badges.push(crate_badges);
+        badges.push(crate_release_badges(&crate_name, &normalized_version));
     }
     if let Some(url) = ghcr_url {
         badges.push(ghcr_badge(&url, &normalized_version));
@@ -600,6 +604,28 @@ mod tests {
         assert!(badge.contains(
             "https://github.com/link-assistant/formal-ai/pkgs/container/formal-ai?tag=1.2.3"
         ));
+    }
+
+    #[test]
+    fn crate_release_badges_use_static_artifact_links_not_live_status() {
+        let badges = crate_release_badges("formal-ai", "1.2.3");
+
+        assert!(
+            !badges.contains("img.shields.io/crates/v/"),
+            "release notes should not use the live crates.io status badge endpoint because it can render invalid before the registry/index is fully consistent: {badges}"
+        );
+        assert!(
+            !badges.contains("/badge.svg"),
+            "release notes should not use the live docs.rs build status badge because a failed or pending docs build leaks into historical release notes: {badges}"
+        );
+        assert!(
+            badges.contains("https://crates.io/crates/formal-ai/1.2.3"),
+            "release notes should still link to the exact crates.io artifact version: {badges}"
+        );
+        assert!(
+            badges.contains("https://docs.rs/formal-ai/1.2.3"),
+            "release notes should still link to the exact docs.rs artifact version: {badges}"
+        );
     }
 
     #[test]

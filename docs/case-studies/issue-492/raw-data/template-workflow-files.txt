@@ -1,0 +1,8 @@
+/tmp/issue-492-templates/js/.github/workflows/release.yml
+/tmp/issue-492-templates/js/.github/workflows/links.yml
+/tmp/issue-492-templates/js/.github/workflows/example-app.yml
+/tmp/issue-492-templates/rust/.github/workflows/release.yml
+/tmp/issue-492-templates/python/.github/workflows/release.yml
+/tmp/issue-492-templates/python/.github/workflows/docs.yml
+/tmp/issue-492-templates/csharp/.github/workflows/release.yml
+/tmp/issue-492-templates/csharp/.github/workflows/docs.yml

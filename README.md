@@ -1,5 +1,13 @@
 # formal-ai
 
+[![CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml)
+[![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
+[![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)
+[![Docs.rs](https://img.shields.io/docsrs/formal-ai?label=docs.rs&style=flat)](https://docs.rs/formal-ai)
+[![Rust Version](https://img.shields.io/badge/rust-1.96%2B-blue.svg)](https://www.rust-lang.org/)
+[![Codecov](https://codecov.io/gh/link-assistant/formal-ai/branch/main/graph/badge.svg)](https://codecov.io/gh/link-assistant/formal-ai)
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
+
 Formal AI is a Rust implementation of a symbolic, deterministic assistant that exposes OpenAI-shaped interfaces without neural-network inference.
 
 It belongs to the tradition of [symbolic artificial intelligence](https://en.wikipedia.org/wiki/Symbolic_artificial_intelligence) (a.k.a. GOFAI): its knowledge is an inspectable [semantic network](https://en.wikipedia.org/wiki/Semantic_network) of human-readable links rather than hidden neural weights. The case study in [docs/case-studies/issue-451](docs/case-studies/issue-451/README.md) maps the field's best practices onto this associative stack.
