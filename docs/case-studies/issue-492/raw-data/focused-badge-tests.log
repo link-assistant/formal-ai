@@ -1,0 +1,11 @@
+   Compiling formal-ai v0.237.0 (/tmp/gh-issue-solver-1782666925345)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.86s
+     Running tests/unit/mod.rs (target/debug/deps/unit-08553f446a255b90)
+
+running 3 tests
+test ci_cd::create_github_release::tests::crate_release_badges_use_static_artifact_links_not_live_status ... ok
+test ci_cd::release_publishing::readme_keeps_traditional_ci_and_artifact_badges ... ok
+test specification::summarization_pipeline::strip_markdown_noise_drops_badges_html_comments_and_code_blocks ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 1181 filtered out; finished in 0.00s
+
