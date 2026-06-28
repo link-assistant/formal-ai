@@ -18,6 +18,15 @@ async function switchToManualMode(page) {
   });
 }
 
+async function expandSidebarSection(page, testId) {
+  const section = page.locator(`[data-testid="${testId}"]`);
+  await expect(section).toBeVisible();
+  if ((await section.getAttribute('data-collapsed')) === 'true') {
+    await section.locator('.sidebar-section-header').click();
+  }
+  await expect(section).toHaveAttribute('data-collapsed', 'false');
+}
+
 test.describe('Issue #205 optional OCR image attachments', () => {
   test('keeps OCR out of the initial page and exposes an explicit data warning', async ({
     page,
@@ -30,6 +39,7 @@ test.describe('Issue #205 optional OCR image attachments', () => {
     );
     expect(loadedScripts.some((src) => src.includes('ocr.bundle.js'))).toBe(false);
 
+    await expandSidebarSection(page, 'sidebar-settings');
     const toggle = page.locator('[data-testid="setting-experimental-ocr"]');
     await expect(toggle).toBeVisible();
     await expect(toggle).not.toBeChecked();
