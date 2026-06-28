@@ -252,6 +252,22 @@ async function solve(prompt, history, prefs, userContext = {}) {
     );
   }
 
+  const githubRepositoryTraffic = tryGithubRepositoryTraffic(normalized, language);
+  if (githubRepositoryTraffic) {
+    events.push(`handler:${githubRepositoryTraffic.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryGithubRepositoryTraffic",
+    });
+    return finalize(
+      events,
+      steps,
+      toolCalls,
+      githubRepositoryTraffic,
+      formalizationContext,
+    );
+  }
+
   const githubRepoInfoRequest = githubRepositoryInfoRequest(prompt, normalized);
   if (githubRepoInfoRequest) {
     steps.push({

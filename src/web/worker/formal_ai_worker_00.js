@@ -77,6 +77,32 @@ let MULTILINGUAL_ANSWERS = {
       variants: [FALLBACK_CLARIFICATION_ANSWER],
     },
   },
+  github_repository_traffic: {
+    en: {
+      text: "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    ru: {
+      text: "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    hi: {
+      text: "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    zh: {
+      text: "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+  },
   unknown: {
     en: { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] },
   },

@@ -115,6 +115,32 @@ pub const ROLE_FEATURE_CAPABILITY_ALIAS: &str = "feature_capability_alias";
 /// named feature. Read by the Rust feature-capability handler and its JS worker
 /// mirror.
 pub const ROLE_FEATURE_CAPABILITY_QUESTION: &str = "feature_capability_question";
+/// Semantic role: the GitHub repository-hosting platform.
+///
+/// Carried by `github_repository_platform`, with localized surface forms for
+/// GitHub. The GitHub repository-traffic handler composes this with repository,
+/// traffic, and question roles so visitor-visibility prompts are recognized by
+/// meaning rather than by a hardcoded sentence.
+pub const ROLE_GITHUB_REPOSITORY_PLATFORM: &str = "github_repository_platform";
+/// Semantic role: a repository noun or abbreviation.
+///
+/// Carried by `repository_reference`. The GitHub repository-traffic handler
+/// requires this together with the GitHub platform and traffic roles to keep
+/// generic website-traffic prompts out of the repository-specific answer path.
+pub const ROLE_REPOSITORY_REFERENCE: &str = "repository_reference";
+/// Semantic role: repository traffic and visitor signals.
+///
+/// Carried by `github_repository_traffic_signal`, covering views, visitors,
+/// visits, clones, referrers, and localized stems. Read by the Rust handler and
+/// JS worker mirror for issue #497.
+pub const ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL: &str = "github_repository_traffic_signal";
+/// Semantic role: interrogative frames for GitHub traffic visibility.
+///
+/// Carried by `github_repository_traffic_question`, with prompts such as
+/// "can I know", "who visited", "можно ли", "क्या", and "能知道". The handler
+/// uses this as the question dimension of the platform∧repository∧traffic
+/// recognition.
+pub const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION: &str = "github_repository_traffic_question";
 /// Semantic role: an action frame asking the assistant to perform arithmetic.
 ///
 /// Carried by the `feature_action_arithmetic` meaning. When a capability

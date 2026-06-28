@@ -289,6 +289,11 @@ meanings
     lexeme en
       surface
         text "cli to cli"
+  clones
+    defined-by word_surface
+    lexeme en
+      surface
+        text "clones"
   code_request
     defined-by operation
     lexeme en
@@ -679,6 +684,11 @@ meanings
     lexeme en
       surface
         text "github"
+  github_repository_traffic
+    defined-by intent
+    lexeme en
+      surface
+        text "github repository traffic"
   golang
     defined-by word_surface
     lexeme en
@@ -1384,13 +1394,3 @@ meanings
     lexeme en
       surface
         text "pattern concept context delimiter men hi"
-  pattern_concept_context_delimiter_primenitelno_k_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter primenitelno k ru"
-  pattern_concept_context_delimiter_v_kontekste_ru
-    defined-by prompt_pattern
-    lexeme en
-      surface
-        text "pattern concept context delimiter v kontekste ru"
