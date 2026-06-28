@@ -203,6 +203,40 @@ concept_kiss_principle
     summary "KISS原则是一条设计准则: 系统保持简单通常比变得复杂更可靠. 在软件开发中, 这意味着代码、API 和架构应尽可能简单清晰, 避免不必要的复杂度."
     source "https://en.wikipedia.org/wiki/KISS_principle"
     source_kind wikipedia
+concept_neural_inference
+  term "neural inference"
+  intent concept_lookup
+  category "machine-learning"
+  aliases ("neural inference" "neural-network inference" "neural network inference" "AI inference" "ML inference" "machine learning inference" "model inference" "inference with a neural network" "нейросетевой инференс" "нейросетевого инференса" "нейросетевой вывод" "инференс нейросети" "инференс нейронной сети" "вывод нейросети" "न्यूरल इन्फरेंस" "न्यूरल नेटवर्क इन्फरेंस" "मॉडल इन्फरेंस" "एआई इन्फरेंस" "神经网络推理" "神經網路推理" "AI推理" "模型推理" "机器学习推理")
+  contexts ("ml" "machine learning" "machine-learning" "deep learning" "neural network" "neural networks" "машинное обучение" "глубокое обучение" "нейронная сеть" "нейросеть" "मशीन लर्निंग" "गहन शिक्षण" "न्यूरल नेटवर्क" "机器学习" "深度学习" "神经网络" "機器學習" "深度學習" "神經網路")
+  context_links ("context_machine_learning" "context_neural_network")
+  summary "Neural inference is the use of a trained neural network to compute an output for new input data. Unlike training, it normally does not update the model weights; the main engineering concerns are latency, throughput, memory use, accuracy, and the hardware or runtime that executes the model."
+  source "https://cloud.google.com/discover/what-is-ai-inference"
+  source_kind official-docs
+  localized en
+    term "neural inference"
+    aliases ("neural-network inference" "neural network inference" "AI inference" "ML inference" "machine learning inference" "model inference" "inference with a neural network")
+    summary "Neural inference is the use of a trained neural network to compute an output for new input data. Unlike training, it normally does not update the model weights; the main engineering concerns are latency, throughput, memory use, accuracy, and the hardware or runtime that executes the model."
+    source "https://cloud.google.com/discover/what-is-ai-inference"
+    source_kind official-docs
+  localized ru
+    term "Нейросетевой инференс"
+    aliases ("нейросетевой инференс" "нейросетевого инференса" "нейросетевой вывод" "инференс нейросети" "инференс нейронной сети" "вывод нейросети")
+    summary "Нейросетевой инференс — это этап использования уже обученной нейронной сети: входные данные проходят через модель, и она выдает прогноз, классификацию, текст или другое значение. В отличие от обучения, веса модели обычно не обновляются; важны задержка, пропускная способность, расход памяти, точность и среда выполнения."
+    source "https://cloud.google.com/discover/what-is-ai-inference"
+    source_kind official-docs
+  localized hi
+    term "न्यूरल इन्फरेंस"
+    aliases ("न्यूरल इन्फरेंस" "न्यूरल नेटवर्क इन्फरेंस" "मॉडल इन्फरेंस" "एआई इन्फरेंस")
+    summary "न्यूरल इन्फरेंस प्रशिक्षित neural network का उपयोग करके नए input पर output निकालने का चरण है. Training से अलग, इसमें सामान्यतः model weights अपडेट नहीं होते; मुख्य engineering चिंताएं latency, throughput, memory use, accuracy और runtime या hardware होती हैं."
+    source "https://cloud.google.com/discover/what-is-ai-inference"
+    source_kind official-docs
+  localized zh
+    term 神经网络推理
+    aliases ("神经网络推理" "神經網路推理" "AI推理" "模型推理" "机器学习推理")
+    summary "神经网络推理是使用已经训练好的神经网络对新的输入数据计算输出的阶段。它不同于训练, 通常不会更新模型权重; 工程上主要关注延迟、吞吐量、内存占用、准确率以及执行模型的硬件或运行时。"
+    source "https://cloud.google.com/discover/what-is-ai-inference"
+    source_kind official-docs
 concept_iir_signal_processing
   term IIR
   intent concept_lookup
