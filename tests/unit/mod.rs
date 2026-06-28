@@ -16,6 +16,7 @@ mod issue_1963;
 mod issue_337;
 mod issue_403;
 mod issue_425;
+mod issue_484;
 mod issue_513;
 mod local_surface;
 mod memory_maintenance;
