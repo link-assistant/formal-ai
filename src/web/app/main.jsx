@@ -1008,6 +1008,14 @@ const EXTERNAL_TRUSTED_SERVICES = [
   { key: "externalServiceGithub", label: "settings.externalServiceGithub" },
 ];
 
+const LEGACY_EXPANDED_SIDEBAR_KEYS = [
+  "sidebarSettingsCollapsed",
+  "sidebarToolsCollapsed",
+  "sidebarTraceCollapsed",
+  "sidebarDesktopCollapsed",
+  "sidebarServicesCollapsed",
+];
+
 const PREFERENCE_DEFAULTS = {
   demoMode: true,
   diagnosticsMode: false,
@@ -1021,6 +1029,8 @@ const PREFERENCE_DEFAULTS = {
   sidebarTraceCollapsed: true,
   sidebarConversationsCollapsed: false,
   sidebarSettingsCollapsed: true,
+  sidebarDesktopCollapsed: true,
+  sidebarServicesCollapsed: true,
   // Issue #153: the side panel is collapsible to give the chat full viewport
   // width on desktop. The drawer view on mobile stays controlled by the
   // separate `mobileMenuOpen` toggle so phones can still slide it in.
@@ -1351,12 +1361,46 @@ function buildPromptWithAttachments(text, attachments) {
   return `${promptText}\n\n${context}`.trim();
 }
 
+function readStoredPreferencesRecord() {
+  if (typeof window === "undefined" || !window.FormalAiPreferences) {
+    return null;
+  }
+  const parser = window.FormalAiPreferences.parse;
+  if (typeof parser !== "function") {
+    return null;
+  }
+  try {
+    const storage = window.localStorage;
+    if (!storage) return null;
+    const key = window.FormalAiPreferences.STORAGE_KEY || "formal-ai.preferences.v1";
+    return parser(storage.getItem(key));
+  } catch (_error) {
+    return null;
+  }
+}
+
+function migrateStoredSidebarCollapsePreferences(preferences, storedRecord) {
+  if (!storedRecord || typeof storedRecord !== "object") {
+    return preferences;
+  }
+  let next = preferences;
+  for (const key of LEGACY_EXPANDED_SIDEBAR_KEYS) {
+    if (!Object.prototype.hasOwnProperty.call(storedRecord, key)) {
+      if (next === preferences) next = { ...preferences };
+      next[key] = false;
+    }
+  }
+  return next;
+}
+
 function loadPreferences() {
   if (typeof window === "undefined" || !window.FormalAiPreferences) {
     return { ...PREFERENCE_DEFAULTS };
   }
   try {
-    return window.FormalAiPreferences.load(PREFERENCE_DEFAULTS);
+    const storedRecord = readStoredPreferencesRecord();
+    const preferences = window.FormalAiPreferences.load(PREFERENCE_DEFAULTS);
+    return migrateStoredSidebarCollapsePreferences(preferences, storedRecord);
   } catch (_error) {
     return { ...PREFERENCE_DEFAULTS };
   }
@@ -5842,7 +5886,9 @@ function App() {
   const [sidebarMenuCollapsed, setSidebarMenuCollapsed] = useState(
     initialPreferences.current.sidebarMenuCollapsed,
   );
-  const [sidebarDesktopCollapsed, setSidebarDesktopCollapsed] = useState(true);
+  const [sidebarDesktopCollapsed, setSidebarDesktopCollapsed] = useState(
+    initialPreferences.current.sidebarDesktopCollapsed,
+  );
   const [sidebarPromptsCollapsed, setSidebarPromptsCollapsed] = useState(
     initialPreferences.current.sidebarPromptsCollapsed,
   );
@@ -5959,7 +6005,9 @@ function App() {
   const [serviceBusy, setServiceBusy] = useState("");
   const [serviceError, setServiceError] = useState("");
   const [telegramToken, setTelegramToken] = useState("");
-  const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(true);
+  const [sidebarServicesCollapsed, setSidebarServicesCollapsed] = useState(
+    initialPreferences.current.sidebarServicesCollapsed,
+  );
   const [updateBusy, setUpdateBusy] = useState("");
   const isolateSidebarSection = useCallback((testId) => {
     const activeSection = String(testId || "");
@@ -6906,6 +6954,8 @@ function App() {
       diagnosticsMode,
       contextPanelWidth,
       sidebarMenuCollapsed,
+      sidebarDesktopCollapsed,
+      sidebarServicesCollapsed,
       sidebarPromptsCollapsed,
       sidebarToolsCollapsed,
       sidebarTraceCollapsed,
@@ -6946,6 +6996,8 @@ function App() {
     diagnosticsMode,
     contextPanelWidth,
     sidebarMenuCollapsed,
+    sidebarDesktopCollapsed,
+    sidebarServicesCollapsed,
     sidebarPromptsCollapsed,
     sidebarToolsCollapsed,
     sidebarTraceCollapsed,

@@ -12179,7 +12179,8 @@ function wikipediaArticleQuestionMessage(summary, query, language, exactMatch) {
 //   2. Wikidata `wbsearchentities` to resolve the subject term to a Q-ID.
 //   3. Wikidata `wbgetentities` to fetch the property claim (P36 = capital,
 //      P1082 = population, P38 = currency, P37 = official language, P30 =
-//      continent, P2046 = area, P35 = head of state, P6 = head of government).
+//      continent, P50 = author, P2046 = area, P35 = head of state, P6 = head
+//      of government).
 //   4. Wikidata `wbgetentities` again to resolve the target Q-ID to a label
 //      in the user's prevailing language (and to a Wikipedia sitelink).
 //
@@ -12216,6 +12217,11 @@ const FACT_RELATIONS = [
   {
     relation: "continent",
     property: "P30",
+    valueType: "entity",
+  },
+  {
+    relation: "author_of_book",
+    property: "P50",
     valueType: "entity",
   },
   {
@@ -12341,6 +12347,24 @@ const FACT_QUESTION_PATTERNS = [
       /на\s+каком\s+континенте\s+(?:находится|расположена|расположен)\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
       /([^?.!,;:]+?)\s+किस\s+महाद्वीप\s+में\s+है(?:[?.!,;:]|$)/i,
       /([^?。.!!,,;:、]+?)在哪个(?:大洲|洲)(?:[?。.!!,,;:、]|$)/i,
+    ],
+  },
+  {
+    relation: "author_of_book",
+    extract: [
+      /\bwho\s+wrote\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\bwho\s+is\s+(?:the\s+)?author\s+of\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\b(?:author|writer)\s+of\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /\bwho\s+was\s+([^?.!,;:]+?)\s+written\s+by\b/i,
+      /кто\s+написал\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /кто\s+автор\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /автор\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+के\s+लेखक\s+कौन(?:\s+हैं|\s+है)?(?:[?.!,;:]|$)/i,
+      /([^?.!,;:]+?)\s+किसने\s+लिख(?:ा|ी)(?:[?.!,;:]|$)/i,
+      /किसने\s+लिख(?:ा|ी)\s+([^?.!,;:]+?)(?:[?.!,;:]|$)/i,
+      /([^?。.!!,,;:、]+?)的作者(?:是谁|是誰)?(?:[?。.!!,,;:、]|$)/i,
+      /([^?。.!!,,;:、]+?)(?:是谁|是誰)写的(?:[?。.!!,,;:、]|$)/i,
+      /(?:谁|誰)写(?:了)?([^?。.!!,,;:、]+?)(?:[?。.!!,,;:、]|$)/i,
     ],
   },
 ];
@@ -12826,6 +12850,12 @@ const FACT_RESPONSE_TEMPLATES = {
     ru: "{subject} расположена на континенте {value}.",
     hi: "{subject} {value} महाद्वीप पर स्थित है।",
     zh: "{subject}位于{value}。",
+  },
+  author_of_book: {
+    en: "{subject} was written by {value}.",
+    ru: "Автор произведения «{subject}»: {value}.",
+    hi: "{subject} को {value} ने लिखा था।",
+    zh: "《{subject}》由{value}创作。",
   },
   area: {
     en: "The area of {subject} is approximately {value}.",

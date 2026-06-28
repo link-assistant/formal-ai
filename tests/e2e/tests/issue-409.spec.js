@@ -54,11 +54,21 @@ async function boot(page, extraPreferences = '') {
   );
 }
 
+async function expandSidebarSection(page, testId) {
+  const section = page.locator(`[data-testid="${testId}"]`);
+  await expect(section).toBeVisible();
+  if ((await section.getAttribute('data-collapsed')) === 'true') {
+    await section.locator('.sidebar-section-header').click();
+  }
+  await expect(section).toHaveAttribute('data-collapsed', 'false');
+}
+
 test.describe('Issue #409 - toolbar icon packs', () => {
   test('toolbar and drawer default to Font Awesome metadata without emoji glyphs', async ({
     page,
   }) => {
     await boot(page);
+    await expandSidebarSection(page, 'drawer-menu-actions');
 
     const iconMeta = await page
       .locator('.topbar-actions .btn-icon[data-icon-pack], .drawer-action .btn-icon[data-icon-pack]')
