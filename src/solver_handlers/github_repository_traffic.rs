@@ -97,11 +97,10 @@ fn is_github_repository_traffic_question(normalized: &str, language: &str) -> bo
 }
 
 fn github_repository_traffic_body(language: &str, repository: &str) -> String {
+    let traffic_ui_doc = TRAFFIC_UI_DOC;
+    let traffic_api_doc = TRAFFIC_API_DOC;
     let fallback = format!(
-        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}.",
-        repository = repository,
-        traffic_ui_doc = TRAFFIC_UI_DOC,
-        traffic_api_doc = TRAFFIC_API_DOC
+        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_doc}; {traffic_api_doc}."
     );
     response_for("github_repository_traffic", language)
         .or_else(|| response_for("github_repository_traffic", "en"))
