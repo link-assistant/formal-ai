@@ -37,7 +37,7 @@ step_emit_plan
   order "5"
   id "emit_plan"
   title "Emit a deterministic discovery plan"
-  detail "Append the same ordered evidence stages the browser worker executes: local decomposition, Wikimedia/wikiHow candidates, web search with reciprocal rank fusion, then a recursive fetch check gated to explicit steps. The offline engine records the plan; the worker runs it live."
+  detail "Append the same ordered evidence stages the browser worker executes: local decomposition, Wikimedia candidates, official documentation first for install tasks, wikiHow/community fallback, web search with reciprocal rank fusion, then a recursive fetch check gated to explicit steps. The offline engine records the plan; the worker runs it live."
   seed_file "src/solver_handler_how.rs"
 step_register_services
   record_type "meta_step"
@@ -176,18 +176,22 @@ stage_wikidata
   record_type "meta_stage"
   stage "wikidata"
   order "2"
+stage_official_documentation
+  record_type "meta_stage"
+  stage "official_documentation"
+  order "3"
 stage_wikihow_api
   record_type "meta_stage"
   stage "wikihow_api"
-  order "3"
+  order "4"
 stage_web_search
   record_type "meta_stage"
   stage "web_search"
-  order "4"
+  order "5"
 stage_recursive_fetch_check
   record_type "meta_stage"
   stage "recursive_fetch_check"
-  order "5"
+  order "6"
 parity_try_how_to_procedure
   record_type "meta_parity"
   rust_function "try_how_to_procedure"

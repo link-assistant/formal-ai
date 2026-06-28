@@ -22843,6 +22843,32 @@ const MEANINGS_LINO = [
   "    lexeme en",
   "      surface",
   "        text order",
+  "  procedural_action_install",
+  "    defined-by action",
+  "    defined-by procedural_request",
+  "    role procedural_action_verb",
+  "    lexeme en",
+  "      surface",
+  "        text install",
+  "        action install",
+  "    lexeme ru",
+  "      surface",
+  "        text установить",
+  "        action install",
+  "      surface",
+  "        text устанавливать",
+  "        action install",
+  "    lexeme hi",
+  "      surface",
+  "        text \"इंस्टॉल करें\"",
+  "        action install",
+  "      surface",
+  "        text \"स्थापित करें\"",
+  "        action install",
+  "    lexeme zh",
+  "      surface",
+  "        text 安装",
+  "        action install",
   "  connect",
   "    defined-by action",
   "    defined-by procedural_request",
@@ -36440,15 +36466,24 @@ function externalServiceEnabled(preferences, key) {
   return !(preferences && preferences[key] === false);
 }
 
+function proceduralSearchQuery(task) {
+  const fallbackQuery = `how to ${task.task}`;
+  if (!task || task.action !== "install") return fallbackQuery;
+  const target = String(task.object || task.task || "").trim();
+  return `${target || task.task} install official documentation`.trim();
+}
+
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
   if (!task) return null;
 
   const query = `how to ${task.task}`;
+  const searchQuery = proceduralSearchQuery(task);
   const pageTitle = wikiHowPageTitle(task.task);
   const apiUrl = wikiHowParseApiUrl(pageTitle);
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
+  const isInstallProcedure = task.action === "install";
   // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
   // its live fetch entirely, emit a service_disabled marker, and route straight
   // to the web-search fallback.
@@ -36456,97 +36491,201 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const evidence = [
     `procedural_how_to:request:${task.task}`,
     `procedural_how_to:action:${task.action}`,
+    ...(task.object ? [`procedural_how_to:object:${task.object}`] : []),
+    ...(isInstallProcedure
+      ? [
+          "procedural_how_to:stage:official_documentation",
+          "procedural_how_to:source_gate:official_documentation_first",
+          `web_search:request:${searchQuery}`,
+          ...(searchQuery !== query ? [`web_search:request:${query}`] : []),
+        ]
+      : []),
     `procedural_how_to:stage:wikipedia`,
     `procedural_how_to:stage:wikidata`,
   ];
-  if (wikihowEnabled) {
-    evidence.push(
-      `procedural_how_to:stage:wikihow_api`,
-      `procedural_how_to:wikihow_candidate:${pageTitle}`,
-      `http_fetch:request:${apiUrl}`,
-    );
-  } else {
-    evidence.push("procedural_how_to:service_disabled:wikihow");
+  if (!isInstallProcedure) {
+    if (wikihowEnabled) {
+      evidence.push(
+        `procedural_how_to:stage:wikihow_api`,
+        `procedural_how_to:wikihow_candidate:${pageTitle}`,
+        `http_fetch:request:${apiUrl}`,
+      );
+    } else {
+      evidence.push("procedural_how_to:service_disabled:wikihow");
+    }
   }
   for (const correction of task.corrections || []) {
     evidence.push(`spelling_correction:${correction.from}->${correction.to}`);
   }
-  if (task.object) {
-    evidence.splice(2, 0, `procedural_how_to:object:${task.object}`);
-  }
 
-  const wikiHow = wikihowEnabled
-    ? await fetchWikiHowProcedure(pageTitle, evidence)
-    : { ok: false, error: "service_disabled" };
-  const sourcePath = wikihowEnabled
-    ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-    : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
-  const lines =
-    language === "ru"
-      ? [
-          `План поиска процедуры для \`${task.task}\` (действие \`${task.action}\`, объект \`${task.object}\`).`,
-          "",
-          wikihowEnabled
-            ? "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-            : "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках).",
-          "",
-        ]
-      : [
-          `Procedural discovery plan for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
-          "",
-          sourcePath,
-          "",
-        ];
+  const sourcePath = isInstallProcedure
+    ? wikihowEnabled
+      ? "Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+      : "Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings)."
+    : wikihowEnabled
+      ? "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+      : "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).";
+  const russianSourcePath = isInstallProcedure
+    ? wikihowEnabled
+      ? "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+      : "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
+    : wikihowEnabled
+      ? "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+      : "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках).";
+  const installGate = `For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with \`${searchQuery}\` and keeps \`${query}\` as fallback.`;
+  let lines;
+  if (language === "ru") {
+    lines = [
+      `План поиска процедуры для \`${task.task}\` (действие \`${task.action}\`, объект \`${task.object}\`).`,
+      "",
+      ...(isInstallProcedure
+        ? [
+            `Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с \`${searchQuery}\` и держит \`${query}\` как fallback.`,
+            "",
+          ]
+        : []),
+      russianSourcePath,
+      "",
+    ];
+  } else if (language === "hi") {
+    lines = [
+      `\`${task.task}\` के लिए procedural discovery plan (action \`${task.action}\`, object \`${task.object}\`).`,
+      "",
+      ...(isInstallProcedure
+        ? [
+            `इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले \`${searchQuery}\` चलाता है और \`${query}\` को fallback रखता है.`,
+            "",
+          ]
+        : []),
+      sourcePath,
+      "",
+    ];
+  } else if (language === "zh") {
+    lines = [
+      `\`${task.task}\` 的过程发现计划（action \`${task.action}\`, object \`${task.object}\`）。`,
+      "",
+      ...(isInstallProcedure
+        ? [
+            `对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 \`${searchQuery}\`，并把 \`${query}\` 保留为 fallback。`,
+            "",
+          ]
+        : []),
+      sourcePath,
+      "",
+    ];
+  } else {
+    lines = [
+      `Procedural discovery plan for \`${task.task}\` (action \`${task.action}\`, object \`${task.object}\`).`,
+      "",
+      ...(isInstallProcedure ? [installGate, ""] : []),
+      sourcePath,
+      "",
+    ];
+  }
 
   let confidence = 0.78;
   let diagnostics = null;
   let formalizedObject = "";
-  if (wikiHow.ok) {
-    evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
-    evidence.push(`source:${wikiHow.sourceUrl}`);
-    formalizedObject = `WH:${pageTitle}`;
-    confidence = 0.86;
-    lines.push(`wikiHow API returned \`${wikiHow.title}\` for candidate \`${pageTitle}\`.`);
-    lines.push("");
-    wikiHow.steps.forEach((step, index) => {
-      lines.push(`${index + 1}. ${step}`);
-    });
-    lines.push("");
-    lines.push(`[Source](${wikiHow.sourceUrl})`);
-  } else {
-    if (wikihowEnabled) {
-      evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
-    }
+  let officialSearchUsable = false;
+
+  if (isInstallProcedure) {
     evidence.push("procedural_how_to:stage:web_search");
-    const missNote = wikihowEnabled
-      ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
-      : "wikiHow is disabled in settings.";
-    const webSearch = await tryWebSearch(`search the web for ${query}`, language);
-    if (webSearch) {
-      appendUniqueEvidence(evidence, webSearch.evidence);
-      diagnostics = webSearch.diagnostics || null;
-      formalizedObject = webSearch.formalizedObject || "";
-      lines.push(missNote);
-      lines.push("");
-      lines.push(`Fallback web search for \`${query}\`:`);
-      lines.push("");
-      lines.push(webSearch.content);
-    } else {
-      evidence.push(`web_search:request:${query}`);
-      for (const provider of WEB_SEARCH_PROVIDERS) {
-        evidence.push(`web_search:provider:${provider.id}`);
+    const officialSearch = await runWebSearchQuery(
+      searchQuery,
+      language,
+      "official_documentation",
+    );
+    if (officialSearch) {
+      appendUniqueEvidence(evidence, officialSearch.evidence);
+      diagnostics = officialSearch.diagnostics || diagnostics;
+      formalizedObject = officialSearch.formalizedObject || formalizedObject;
+      officialSearchUsable = officialSearch.confidence >= 0.8;
+      if (officialSearchUsable) {
+        confidence = Math.max(confidence, 0.82);
+        lines.push(`Official-documentation web search for \`${searchQuery}\`:`);
+        lines.push("");
+        lines.push(officialSearch.content);
       }
-      evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
-      lines.push(missNote);
-      lines.push("");
+    }
+    if (!officialSearchUsable) {
       lines.push(
-        `Fallback web search for \`${query}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
+        `Official-documentation web search for \`${searchQuery}\` did not return ranked guidance; preserving \`${query}\` as the general how-to fallback.`,
       );
+      lines.push("");
+    }
+  }
+
+  if (!officialSearchUsable) {
+    if (isInstallProcedure) {
+      if (wikihowEnabled) {
+        evidence.push(
+          `procedural_how_to:stage:wikihow_api`,
+          `procedural_how_to:wikihow_candidate:${pageTitle}`,
+          `http_fetch:request:${apiUrl}`,
+        );
+      } else {
+        evidence.push("procedural_how_to:service_disabled:wikihow");
+      }
+    }
+    const wikiHow = wikihowEnabled
+      ? await fetchWikiHowProcedure(pageTitle, evidence)
+      : { ok: false, error: "service_disabled" };
+
+    if (wikiHow.ok) {
+      evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
+      evidence.push(`source:${wikiHow.sourceUrl}`);
+      formalizedObject = `WH:${pageTitle}`;
+      confidence = 0.86;
+      lines.push(`wikiHow API returned \`${wikiHow.title}\` for candidate \`${pageTitle}\`.`);
+      lines.push("");
+      wikiHow.steps.forEach((step, index) => {
+        lines.push(`${index + 1}. ${step}`);
+      });
+      lines.push("");
+      lines.push(`[Source](${wikiHow.sourceUrl})`);
+    } else {
+      if (wikihowEnabled) {
+        evidence.push(`procedural_how_to:wikihow_miss:${wikiHow.error || "no_match"}`);
+      }
+      evidence.push("procedural_how_to:stage:web_search");
+      const missNote = wikihowEnabled
+        ? `wikiHow candidate \`${pageTitle}\` did not return explicit steps (${wikiHow.error || "no_match"}).`
+        : "wikiHow is disabled in settings.";
+      const fallbackSearchQuery = isInstallProcedure ? query : searchQuery;
+      const webSearch = await runWebSearchQuery(
+        fallbackSearchQuery,
+        language,
+        isInstallProcedure ? "general_how_to_fallback" : "",
+      );
+      if (webSearch) {
+        appendUniqueEvidence(evidence, webSearch.evidence);
+        diagnostics = webSearch.diagnostics || diagnostics;
+        formalizedObject = webSearch.formalizedObject || formalizedObject;
+        lines.push(missNote);
+        lines.push("");
+        lines.push(`Fallback web search for \`${fallbackSearchQuery}\`:`);
+        lines.push("");
+        lines.push(webSearch.content);
+      } else {
+        evidence.push(`web_search:request:${fallbackSearchQuery}`);
+        for (const provider of WEB_SEARCH_PROVIDERS) {
+          evidence.push(`web_search:provider:${provider.id}`);
+        }
+        evidence.push(`web_search:combined:rrf:k=${webSearchRrfK()}`);
+        lines.push(missNote);
+        lines.push("");
+        lines.push(
+          `Fallback web search for \`${fallbackSearchQuery}\` should use ${providerSummary} and reciprocal rank fusion (k = ${webSearchRrfK()}).`,
+        );
+      }
     }
   }
   if (!evidence.includes("procedural_how_to:stage:web_search")) {
     evidence.push("procedural_how_to:stage:web_search");
-    evidence.push(`web_search:request:${query}`);
+    evidence.push(`web_search:request:${searchQuery}`);
+    if (isInstallProcedure && searchQuery !== query) {
+      evidence.push(`web_search:request:${query}`);
+    }
     for (const provider of WEB_SEARCH_PROVIDERS) {
       evidence.push(`web_search:provider:${provider.id}`);
     }
