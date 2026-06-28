@@ -115,6 +115,23 @@ function extractSemanticWebSearchQuery(prompt, normalized) {
   return "";
 }
 
+function extractExplicitWebSearchQuery(prompt) {
+  const markers = webSearchMarkers();
+  for (const prefix of markers.explicitPrefixes) {
+    const query = stripSearchPrefix(prompt, prefix);
+    if (query) return query;
+  }
+  for (const { before, after } of markers.explicitCircumfixes) {
+    const query = stripSearchCircumfix(prompt, before, after);
+    if (query) return query;
+  }
+  for (const suffix of markers.explicitSuffixes) {
+    const query = stripSearchSuffix(prompt, suffix);
+    if (query) return query;
+  }
+  return "";
+}
+
 function extractLatestNewsSearchRequest(normalized) {
   const markers = webSearchMarkers();
   const text = String(normalized || "");
@@ -216,15 +233,10 @@ function extractWebSearchRequest(prompt, normalized) {
   ) {
     return "";
   }
-  for (const prefix of webSearchMarkers().explicitPrefixes) {
-    const rawQuery = stripSearchPrefix(prompt, prefix);
-    const normalizedQuery = normalized.startsWith(prefix)
-      ? validSearchQuery(normalized.slice(prefix.length))
-      : "";
-    const query = rawQuery || normalizedQuery;
-    if (query) {
-      return { query, kind: "explicit_prefix" };
-    }
+  const explicitQuery =
+    extractExplicitWebSearchQuery(prompt) || extractExplicitWebSearchQuery(normalized);
+  if (explicitQuery) {
+    return { query: explicitQuery, kind: "explicit_prefix" };
   }
   const semanticQuery = extractSemanticWebSearchQuery(prompt, normalized);
   if (semanticQuery) {

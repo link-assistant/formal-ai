@@ -52,6 +52,12 @@ meanings
         text "look up info on …"
       surface
         text "look up online …"
+      surface
+        text "interested in …"
+      surface
+        text "i am interested in …"
+      surface
+        text "… interests me"
     lexeme ru
       surface
         text "найди в интернете …"
@@ -119,6 +125,10 @@ meanings
         text "поищи материалы о …"
       surface
         text "поищи материалы об …"
+      surface
+        text "интересует …"
+      surface
+        text "меня интересует …"
     lexeme hi
       surface
         text "इंटरनेट पर खोजें …"
@@ -128,6 +138,14 @@ meanings
         text "ऑनलाइन खोजें …"
       surface
         text "विकिपीडिया पर खोजें …"
+      surface
+        text "मुझे … में रुचि है"
+      surface
+        text "मुझे … में दिलचस्पी है"
+      surface
+        text "… में रुचि है"
+      surface
+        text "… में दिलचस्पी है"
     lexeme zh
       surface
         text 在网上搜索…
@@ -137,6 +155,10 @@ meanings
         text 在维基百科上搜索…
       surface
         text 上网查找…
+      surface
+        text 对…感兴趣
+      surface
+        text 我对…感兴趣
   topic_connective
     defined-by relation
     role web_search_topic_marker
