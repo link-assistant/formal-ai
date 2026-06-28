@@ -1,4 +1,19 @@
 meanings
+  response_unknown_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown zh"
+  reverse_lines
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse lines"
+  reverse_sort
+    defined-by operation
+    lexeme en
+      surface
+        text "reverse sort"
   reverse_sort_list_files
     defined-by rule
     lexeme en
@@ -94,6 +109,11 @@ meanings
     lexeme en
       surface
         text "shell helpers"
+  short
+    defined-by word_surface
+    lexeme en
+      surface
+        text "short"
   short_rule_list
     defined-by coverage_group
     lexeme en
@@ -339,6 +359,11 @@ meanings
     lexeme en
       surface
         text "tool write program"
+  total
+    defined-by word_surface
+    lexeme en
+      surface
+        text "total"
   touch
     defined-by token
     lexeme en
@@ -350,7 +375,7 @@ meanings
       surface
         text "trace"
   travel_guide
-    defined-by kind
+    defined-by category
     lexeme en
       surface
         text "travel guide"

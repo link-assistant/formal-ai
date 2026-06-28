@@ -14,14 +14,19 @@ use std::collections::BTreeMap;
 
 use crate::engine::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer,
-    normalize_prompt, supported_program_languages, supported_program_tasks, unknown_answer,
-    SymbolicAnswer,
+    supported_program_languages, supported_program_tasks, unknown_answer, SymbolicAnswer,
 };
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
 use crate::skill_compiler::{compile_natural_language_skill, CompiledSkillPackage};
 
+use super::behavior_rule_followups::{
+    behavior_rule_response_language, render_behavior_rule_count, render_behavior_rules_brief,
+};
+use super::behavior_rule_matching::{
+    is_behavior_rules_brief_followup, is_behavior_rules_count_query, is_behavior_rules_list,
+};
 use super::finalize_simple;
 use super::self_awareness::{try_self_awareness, SelfAwarenessRuntime};
 
@@ -43,8 +48,8 @@ pub fn try_behavior_rules_with_runtime(
     log: &mut EventLog,
     runtime: SelfAwarenessRuntime,
 ) -> Option<SymbolicAnswer> {
-    let language = detect_language(prompt);
-    let language = language.slug();
+    let detected_language = detect_language(prompt);
+    let language = behavior_rule_response_language(normalized, detected_language.slug());
 
     if let Ok(package) = compile_natural_language_skill(prompt) {
         log.append("skill_compile:package", package.id.clone());
@@ -52,7 +57,7 @@ pub fn try_behavior_rules_with_runtime(
             "behavior_rule:update",
             package.legacy_behavior_rule_id.clone(),
         );
-        let body = render_runtime_rule_update(&package, language);
+        let body = render_runtime_rule_update(&package, &language);
         return Some(finalize_simple(
             prompt,
             log,
@@ -63,10 +68,41 @@ pub fn try_behavior_rules_with_runtime(
         ));
     }
 
+    if is_behavior_rules_count_query(normalized, log) {
+        let runtime_rules = collect_runtime_rules(log);
+        log_behavior_rule_count(log, &runtime_rules);
+        let (built_in, runtime, _) = behavior_rule_counts(&runtime_rules);
+        let body = render_behavior_rule_count(built_in, runtime, &language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "behavior_rules_count",
+            "response:behavior_rules_count",
+            &body,
+            1.0,
+        ));
+    }
+
+    if is_behavior_rules_brief_followup(normalized, log) {
+        let runtime_rules = collect_runtime_rules(log);
+        log_behavior_rule_count(log, &runtime_rules);
+        log.append("behavior_rules:brief", "previous_rule_list".to_owned());
+        let (built_in, runtime, _) = behavior_rule_counts(&runtime_rules);
+        let body = render_behavior_rules_brief(built_in, runtime, &language);
+        return Some(finalize_simple(
+            prompt,
+            log,
+            "behavior_rules_brief",
+            "response:behavior_rules_brief",
+            &body,
+            1.0,
+        ));
+    }
+
     if is_behavior_rules_list(normalized) {
         let runtime_rules = collect_runtime_rules(log);
         log.append("behavior_rules:list", "all".to_owned());
-        let body = render_behavior_rule_list(&runtime_rules, language);
+        let body = render_behavior_rule_list(&runtime_rules, &language);
         return Some(finalize_simple(
             prompt,
             log,
@@ -80,7 +116,7 @@ pub fn try_behavior_rules_with_runtime(
     if let Some(query) = detail_query(prompt) {
         if let Some(rule) = find_behavior_rule(&query) {
             log.append("behavior_rule:read", rule.id.clone());
-            let body = render_behavior_rule_detail(&rule, language);
+            let body = render_behavior_rule_detail(&rule, &language);
             return Some(finalize_simple(
                 prompt,
                 log,
@@ -311,6 +347,27 @@ fn list_intro(language: &str) -> &'static str {
         "व्यवहार नियम जिन्हें मैं इस संवाद में दिखा सकता हूँ (विषय के अनुसार समूहित; हर नियम `जब X तब Y` कथन के रूप में है):",
         "我可以查看的行为规则（按主题分组；每条都显示为 `当 X 时 Y` 语句）：",
     )
+}
+
+fn behavior_rule_counts(runtime_rules: &[CompiledSkillPackage]) -> (usize, usize, usize) {
+    let built_in = behavior_rule_records().len();
+    let runtime = runtime_rules.len();
+    (built_in, runtime, built_in + runtime)
+}
+
+fn log_behavior_rule_count(log: &mut EventLog, runtime_rules: &[CompiledSkillPackage]) {
+    let (built_in, runtime, total) = behavior_rule_counts(runtime_rules);
+    log.append("behavior_rules:count", total.to_string());
+    log.append("behavior_rules:built_in_count", built_in.to_string());
+    log.append("behavior_rules:runtime_count", runtime.to_string());
+    log.append(
+        "reasoning:operation",
+        "count_behavior_rules_catalog_plus_dialog_local_rules",
+    );
+    log.append(
+        "reasoning:result",
+        format!("built_in={built_in};runtime={runtime};total={total}"),
+    );
 }
 
 fn render_behavior_rule_list(runtime_rules: &[CompiledSkillPackage], language: &str) -> String {
@@ -822,73 +879,6 @@ fn render_runtime_rule_update(rule: &CompiledSkillPackage, language: &str) -> St
         rule.handler_id,
         send_hint,
     )
-}
-
-fn is_behavior_rules_list(normalized: &str) -> bool {
-    matches_behavior_rules_list_seed_pattern(normalized)
-        || mentions_behavior_rule_set_phrase(normalized)
-        || is_supported_language_behavior_rules_list_query(normalized)
-}
-
-/// True when the prompt contains one of the fixed phrases that name the
-/// behavior-rule set outright (role [`seed::ROLE_RULE_LISTING_PHRASE`]) — e.g.
-/// the bare compound "behavior rules" / "行为规则" / "व्यवहार के नियम" recognised
-/// as a list request without a separate enumerate verb. The phrases live in
-/// `data/seed/meanings-behavior-rules.lino`, not in this code; raw `contains`
-/// (not the token-bounded [`seed::Lexicon::mentions_role`]) preserves the
-/// original substring match byte-for-byte.
-fn mentions_behavior_rule_set_phrase(normalized: &str) -> bool {
-    seed::lexicon()
-        .words_for_role(seed::ROLE_RULE_LISTING_PHRASE)
-        .iter()
-        .any(|phrase| normalized.contains(phrase.as_str()))
-}
-
-fn matches_behavior_rules_list_seed_pattern(normalized: &str) -> bool {
-    seed::prompt_patterns()
-        .into_iter()
-        .filter(|pattern| pattern.intent == "behavior_rules_list")
-        .any(|pattern| {
-            let text = normalize_prompt(&pattern.text);
-            if text.is_empty() {
-                return false;
-            }
-            match pattern.kind.as_str() {
-                "keyword" | "phrase" => normalized == text || normalized.contains(&text),
-                "prefix" => normalized.starts_with(&text),
-                "suffix" => normalized.ends_with(&text),
-                _ => false,
-            }
-        })
-}
-
-/// True when the prompt, within one supported language's vocabulary, names the
-/// rule subject, asks to enumerate it, and scopes the request to the assistant's
-/// own behavior. The three compositional dimensions are read from the meaning
-/// lexicon (roles [`seed::ROLE_RULE_LISTING_SUBJECT`],
-/// [`seed::ROLE_RULE_LISTING_REQUEST`], [`seed::ROLE_RULE_LISTING_SCOPE`]) rather
-/// than hardcoded per-language word lists, so the English/Russian/Hindi/Chinese
-/// coverage now lives entirely in `data/seed/meanings-behavior-rules.lino`.
-///
-/// The per-language AND is preserved: every dimension must be evidenced *within
-/// the same language* ([`seed::Lexicon::words_for_role_in_languages`]), so an
-/// English verb cannot satisfy a Russian-scoped query. Matching uses raw
-/// `contains` to keep the legacy stem match (`правил` catching `правила`, `नियम`
-/// catching `नियमों`) byte-for-byte; the language codes are the legitimate
-/// code-resident bridge while every surface word stays in the seed.
-fn is_supported_language_behavior_rules_list_query(normalized: &str) -> bool {
-    let lexicon = seed::lexicon();
-    let present = |role: &str, language: &str| {
-        lexicon
-            .words_for_role_in_languages(role, &[language])
-            .iter()
-            .any(|word| normalized.contains(word.as_str()))
-    };
-    ["en", "ru", "hi", "zh"].into_iter().any(|language| {
-        present(seed::ROLE_RULE_LISTING_SUBJECT, language)
-            && present(seed::ROLE_RULE_LISTING_REQUEST, language)
-            && present(seed::ROLE_RULE_LISTING_SCOPE, language)
-    })
 }
 
 fn detail_query(prompt: &str) -> Option<String> {

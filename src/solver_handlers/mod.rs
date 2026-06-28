@@ -3,8 +3,9 @@
 //! `scripts/check-file-size.rs`. These handlers are free functions: every one
 //! takes the prompt (and pre-lowercased `normalized` view) plus a mutable
 //! event log, and returns `Some(SymbolicAnswer)` when it claims the impulse.
-
 mod agent_workspace;
+mod behavior_rule_followups;
+mod behavior_rule_matching;
 mod behavior_rules;
 mod benchmark_prompts;
 mod calculator_rate;

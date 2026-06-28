@@ -189,6 +189,8 @@ meanings
         text "на русском языке"
       surface
         text "по-русски"
+      surface
+        text "по русски"
     lexeme hi
       surface
         text "रूसी में"

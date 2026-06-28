@@ -1,9 +1,19 @@
 //! Behavior-rule inspection tests.
 
-use formal_ai::{FormalAiEngine, SymbolicAnswer};
+use formal_ai::{ConversationTurn, FormalAiEngine, SymbolicAnswer, UniversalSolver};
 
 fn answer(prompt: &str) -> SymbolicAnswer {
     FormalAiEngine.answer(prompt)
+}
+
+fn answer_with_behavior_rule_list_history(prompt: &str) -> SymbolicAnswer {
+    let solver = UniversalSolver::default();
+    let list = solver.solve("Show rules");
+    let history = [
+        ConversationTurn::user("Show rules"),
+        ConversationTurn::assistant(list.answer),
+    ];
+    solver.solve_with_history(prompt, &history)
 }
 
 struct PromptCase {
@@ -100,6 +110,83 @@ fn behavior_rules_short_list_phrase_covers_supported_languages() {
         assert!(response.answer.contains("rule_greeting"));
         assert!(response.answer.contains("rule_unknown"));
     }
+}
+
+#[test]
+fn behavior_rules_count_followup_covers_supported_languages() {
+    let cases = [
+        PromptCase {
+            language: "en",
+            prompt: "How many rules are there?",
+        },
+        PromptCase {
+            language: "ru",
+            prompt: "Сколько всего правил?",
+        },
+        PromptCase {
+            language: "hi",
+            prompt: "कुल कितने नियम हैं?",
+        },
+        PromptCase {
+            language: "zh",
+            prompt: "一共有多少规则?",
+        },
+    ];
+    let supported_languages = formal_ai::supported_languages();
+
+    for language in supported_languages.iter().map(String::as_str) {
+        assert!(
+            cases.iter().any(|case| case.language == language),
+            "missing behavior_rules_count follow-up regression case for supported language {language}"
+        );
+    }
+
+    for case in cases {
+        let response = answer_with_behavior_rule_list_history(case.prompt);
+        assert_eq!(
+            response.intent, "behavior_rules_count",
+            "expected behavior_rules_count for {} prompt {:?}, got {}: {}",
+            case.language, case.prompt, response.intent, response.answer
+        );
+        assert!(
+            response.answer.contains('8'),
+            "{} behavior-rule count should include the current built-in rule count, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "response:behavior_rules_count"),
+            "{} behavior-rule count should expose the response link, got: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
+}
+
+#[test]
+fn behavior_rules_brief_language_followup_uses_previous_rule_list() {
+    let response = answer_with_behavior_rule_list_history("А по русски кратко?");
+    assert_eq!(
+        response.intent, "behavior_rules_brief",
+        "expected behavior_rules_brief, got {}: {}",
+        response.intent, response.answer
+    );
+    assert!(
+        response.answer.contains("Всего") && response.answer.contains('8'),
+        "brief Russian follow-up should summarize the current rule count in Russian, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "response:behavior_rules_brief"),
+        "brief follow-up should expose the response link, got: {:?}",
+        response.evidence_links
+    );
 }
 
 #[test]
