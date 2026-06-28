@@ -475,3 +475,172 @@ meanings
         text 互联网
       surface
         text 網路
+  github_repository_platform
+    defined-by web_resource
+    defined-by repository_reference
+    role github_repository_platform
+    lexeme en
+      surface
+        text github
+      surface
+        text "git hub"
+    lexeme ru
+      surface
+        text гитхаб
+      surface
+        text "гит хаб"
+      surface
+        text github
+    lexeme hi
+      surface
+        text github
+      surface
+        text गिटहब
+    lexeme zh
+      surface
+        text github
+      surface
+        text GitHub
+  repository_reference
+    defined-by web_resource
+    defined-by entity
+    role repository_reference
+    lexeme en
+      surface
+        text repo
+      surface
+        text repository
+      surface
+        text repositories
+    lexeme ru
+      surface
+        text репо
+      surface
+        text репозитор
+    lexeme hi
+      surface
+        text रेपो
+      surface
+        text रिपॉजिटरी
+      surface
+        text repository
+    lexeme zh
+      surface
+        text 仓库
+      surface
+        text 倉庫
+      surface
+        text 存储库
+      surface
+        text 存儲庫
+  github_repository_traffic_signal
+    defined-by repository_reference
+    defined-by inquiry
+    role github_repository_traffic_signal
+    lexeme en
+      surface
+        text traffic
+      surface
+        text views
+      surface
+        text visitors
+      surface
+        text visitor
+      surface
+        text visited
+      surface
+        text visit
+      surface
+        text clones
+      surface
+        text referrers
+    lexeme ru
+      surface
+        text заход
+      surface
+        text посещ
+      surface
+        text посет
+      surface
+        text просмотр
+      surface
+        text трафик
+      surface
+        text клон
+    lexeme hi
+      surface
+        text आया
+      surface
+        text आए
+      surface
+        text देखा
+      surface
+        text विज़िटर
+      surface
+        text विजिटर
+      surface
+        text ट्रैफिक
+      surface
+        text क्लोन
+    lexeme zh
+      surface
+        text 访问
+      surface
+        text 訪問
+      surface
+        text 访客
+      surface
+        text 訪客
+      surface
+        text 流量
+      surface
+        text 浏览
+      surface
+        text 瀏覽
+      surface
+        text 克隆
+      surface
+        text 来源
+      surface
+        text 來源
+  github_repository_traffic_question
+    defined-by inquiry
+    role github_repository_traffic_question
+    lexeme en
+      surface
+        text "can i know"
+      surface
+        text "can you know"
+      surface
+        text "who visited"
+      surface
+        text "is it possible"
+      surface
+        text "does github show"
+      surface
+        text "can i see"
+    lexeme ru
+      surface
+        text "можно ли"
+      surface
+        text узнать
+      surface
+        text кто
+      surface
+        text показывает
+    lexeme hi
+      surface
+        text क्या
+      surface
+        text "जान सकता"
+      surface
+        text कौन
+    lexeme zh
+      surface
+        text 能知道
+      surface
+        text 可以知道
+      surface
+        text 谁
+      surface
+        text 誰

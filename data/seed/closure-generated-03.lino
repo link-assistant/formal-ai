@@ -1,4 +1,49 @@
 meanings
+  response_unknown_reasoning_question_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question ru"
+  response_unknown_reasoning_question_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question unknown"
+  response_unknown_reasoning_question_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning question zh"
+  response_unknown_reasoning_trace_en
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace en"
+  response_unknown_reasoning_trace_hi
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace hi"
+  response_unknown_reasoning_trace_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace ru"
+  response_unknown_reasoning_trace_unknown
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace unknown"
+  response_unknown_reasoning_trace_zh
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown reasoning trace zh"
+  response_unknown_ru
+    defined-by response_template
+    lexeme en
+      surface
+        text "response unknown ru"
   response_unknown_zh
     defined-by response_template
     lexeme en
@@ -374,6 +419,11 @@ meanings
     lexeme en
       surface
         text "trace"
+  traffic
+    defined-by word_surface
+    lexeme en
+      surface
+        text "traffic"
   travel_guide
     defined-by category
     lexeme en
@@ -434,6 +484,26 @@ meanings
     lexeme en
       surface
         text "usd"
+  views
+    defined-by word_surface
+    lexeme en
+      surface
+        text "views"
+  visited
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visited"
+  visitor
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitor"
+  visitors
+    defined-by word_surface
+    lexeme en
+      surface
+        text "visitors"
   visual-property
     defined-by category
     lexeme en

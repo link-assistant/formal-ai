@@ -151,6 +151,12 @@ roles
     kind meaning
   game_tracker_mechanic
     kind meaning
+  github_repository_platform
+    kind meaning
+  github_repository_traffic_question
+    kind meaning
+  github_repository_traffic_signal
+    kind meaning
   hello_world_reference
     kind predicate
   http_fetch
@@ -287,6 +293,8 @@ roles
     kind predicate
   quantity_conversion_cue
     kind predicate
+  repository_reference
+    kind meaning
   research_criterion
     kind predicate
   research_evaluation_domain

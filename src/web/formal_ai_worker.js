@@ -112,6 +112,32 @@ let MULTILINGUAL_ANSWERS = {
       variants: [FALLBACK_CLARIFICATION_ANSWER],
     },
   },
+  github_repository_traffic: {
+    en: {
+      text: "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    ru: {
+      text: "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    hi: {
+      text: "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+    zh: {
+      text: "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      variants: [
+        "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}.",
+      ],
+    },
+  },
   unknown: {
     en: { text: FALLBACK_UNKNOWN_ANSWER, variants: [FALLBACK_UNKNOWN_ANSWER] },
   },
@@ -24184,6 +24210,175 @@ const MEANINGS_LINO = [
   "        text 互联网",
   "      surface",
   "        text 網路",
+  "  github_repository_platform",
+  "    defined-by web_resource",
+  "    defined-by repository_reference",
+  "    role github_repository_platform",
+  "    lexeme en",
+  "      surface",
+  "        text github",
+  "      surface",
+  "        text \"git hub\"",
+  "    lexeme ru",
+  "      surface",
+  "        text гитхаб",
+  "      surface",
+  "        text \"гит хаб\"",
+  "      surface",
+  "        text github",
+  "    lexeme hi",
+  "      surface",
+  "        text github",
+  "      surface",
+  "        text गिटहब",
+  "    lexeme zh",
+  "      surface",
+  "        text github",
+  "      surface",
+  "        text GitHub",
+  "  repository_reference",
+  "    defined-by web_resource",
+  "    defined-by entity",
+  "    role repository_reference",
+  "    lexeme en",
+  "      surface",
+  "        text repo",
+  "      surface",
+  "        text repository",
+  "      surface",
+  "        text repositories",
+  "    lexeme ru",
+  "      surface",
+  "        text репо",
+  "      surface",
+  "        text репозитор",
+  "    lexeme hi",
+  "      surface",
+  "        text रेपो",
+  "      surface",
+  "        text रिपॉजिटरी",
+  "      surface",
+  "        text repository",
+  "    lexeme zh",
+  "      surface",
+  "        text 仓库",
+  "      surface",
+  "        text 倉庫",
+  "      surface",
+  "        text 存储库",
+  "      surface",
+  "        text 存儲庫",
+  "  github_repository_traffic_signal",
+  "    defined-by repository_reference",
+  "    defined-by inquiry",
+  "    role github_repository_traffic_signal",
+  "    lexeme en",
+  "      surface",
+  "        text traffic",
+  "      surface",
+  "        text views",
+  "      surface",
+  "        text visitors",
+  "      surface",
+  "        text visitor",
+  "      surface",
+  "        text visited",
+  "      surface",
+  "        text visit",
+  "      surface",
+  "        text clones",
+  "      surface",
+  "        text referrers",
+  "    lexeme ru",
+  "      surface",
+  "        text заход",
+  "      surface",
+  "        text посещ",
+  "      surface",
+  "        text посет",
+  "      surface",
+  "        text просмотр",
+  "      surface",
+  "        text трафик",
+  "      surface",
+  "        text клон",
+  "    lexeme hi",
+  "      surface",
+  "        text आया",
+  "      surface",
+  "        text आए",
+  "      surface",
+  "        text देखा",
+  "      surface",
+  "        text विज़िटर",
+  "      surface",
+  "        text विजिटर",
+  "      surface",
+  "        text ट्रैफिक",
+  "      surface",
+  "        text क्लोन",
+  "    lexeme zh",
+  "      surface",
+  "        text 访问",
+  "      surface",
+  "        text 訪問",
+  "      surface",
+  "        text 访客",
+  "      surface",
+  "        text 訪客",
+  "      surface",
+  "        text 流量",
+  "      surface",
+  "        text 浏览",
+  "      surface",
+  "        text 瀏覽",
+  "      surface",
+  "        text 克隆",
+  "      surface",
+  "        text 来源",
+  "      surface",
+  "        text 來源",
+  "  github_repository_traffic_question",
+  "    defined-by inquiry",
+  "    role github_repository_traffic_question",
+  "    lexeme en",
+  "      surface",
+  "        text \"can i know\"",
+  "      surface",
+  "        text \"can you know\"",
+  "      surface",
+  "        text \"who visited\"",
+  "      surface",
+  "        text \"is it possible\"",
+  "      surface",
+  "        text \"does github show\"",
+  "      surface",
+  "        text \"can i see\"",
+  "    lexeme ru",
+  "      surface",
+  "        text \"можно ли\"",
+  "      surface",
+  "        text узнать",
+  "      surface",
+  "        text кто",
+  "      surface",
+  "        text показывает",
+  "    lexeme hi",
+  "      surface",
+  "        text क्या",
+  "      surface",
+  "        text \"जान सकता\"",
+  "      surface",
+  "        text कौन",
+  "    lexeme zh",
+  "      surface",
+  "        text 能知道",
+  "      surface",
+  "        text 可以知道",
+  "      surface",
+  "        text 谁",
+  "      surface",
+  "        text 誰",
   "meanings",
   "  explicit_web_search_command",
   "    defined-by web_search",
@@ -38710,6 +38905,62 @@ const GITHUB_README_KNOWN_TOOLS = [
   "roleplay",
 ];
 
+// Issue #497: GitHub repository traffic visibility is a platform-policy answer,
+// not a live repository-info fetch. These role names mirror the Rust constants
+// in src/seed/roles/tooling.rs; all natural-language surfaces live in
+// data/seed/meanings-web-search.lino and the embedded MEANINGS_LINO.
+const ROLE_GITHUB_REPOSITORY_PLATFORM = "github_repository_platform";
+const ROLE_REPOSITORY_REFERENCE = "repository_reference";
+const ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL = "github_repository_traffic_signal";
+const ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION = "github_repository_traffic_question";
+const GITHUB_TRAFFIC_UI_DOC =
+  "https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository";
+const GITHUB_TRAFFIC_API_DOC = "https://docs.github.com/en/rest/metrics/traffic";
+const DEFAULT_GITHUB_REPOSITORY = "link-assistant/formal-ai";
+
+function githubRepositoryTrafficRepository() {
+  const repository = String((AGENT_INFO && AGENT_INFO.repository) || "").trim();
+  return repository || DEFAULT_GITHUB_REPOSITORY;
+}
+
+function githubRepositoryTrafficBody(language, repository) {
+  return answerFor("github_repository_traffic", language)
+    .replace("{repository}", repository)
+    .replace("{traffic_ui_docs}", GITHUB_TRAFFIC_UI_DOC)
+    .replace("{traffic_api_docs}", GITHUB_TRAFFIC_API_DOC);
+}
+
+function isGithubRepositoryTrafficQuestion(normalized, language) {
+  const languages = language === "en" ? ["en"] : [language, "en"];
+  return (
+    mentionsRoleInLanguagesRaw(ROLE_GITHUB_REPOSITORY_PLATFORM, normalized, languages) &&
+    mentionsRoleInLanguagesRaw(ROLE_REPOSITORY_REFERENCE, normalized, languages) &&
+    mentionsRoleInLanguagesRaw(ROLE_GITHUB_REPOSITORY_TRAFFIC_SIGNAL, normalized, languages) &&
+    mentionsRoleInLanguagesRaw(ROLE_GITHUB_REPOSITORY_TRAFFIC_QUESTION, normalized, languages)
+  );
+}
+
+function tryGithubRepositoryTraffic(normalized, language) {
+  if (!isGithubRepositoryTrafficQuestion(normalized, language)) return null;
+  const repository = githubRepositoryTrafficRepository();
+  return {
+    intent: "github_repository_traffic",
+    content: githubRepositoryTrafficBody(language, repository),
+    confidence: 0.92,
+    evidence: [
+      "github_repository_traffic:platform:github",
+      `github_repository_traffic:repository:${repository}`,
+      "github_repository_traffic:access:push_or_write_access_required",
+      "github_repository_traffic:window:last_14_days",
+      "github_repository_traffic:aggregate:views_uniques_clones_referrers_paths",
+      "github_repository_traffic:privacy:no_individual_identity",
+      `source:${GITHUB_TRAFFIC_UI_DOC}`,
+      `source:${GITHUB_TRAFFIC_API_DOC}`,
+      `language:${language}`,
+    ],
+  };
+}
+
 function githubRepositoryInfoRequest(prompt, normalized) {
   const repo = repositoryFromPrompt(prompt);
   if (!repo || !repo.platform || repo.platform.slug !== "github") return null;
@@ -39467,6 +39718,16 @@ async function solve(prompt, history, prefs, userContext = {}) {
       earlyWikiArticleQuestion,
       formalizationContext,
     );
+  }
+
+  const githubRepositoryTraffic = tryGithubRepositoryTraffic(normalized, language);
+  if (githubRepositoryTraffic) {
+    events.push(`handler:${githubRepositoryTraffic.intent}`);
+    steps.push({
+      step: "dispatch_handler",
+      detail: "tryGithubRepositoryTraffic",
+    });
+    return finalize(events, steps, toolCalls, githubRepositoryTraffic, formalizationContext);
   }
 
   const githubRepoInfoRequest = githubRepositoryInfoRequest(prompt, normalized);

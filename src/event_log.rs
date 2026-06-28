@@ -490,7 +490,7 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "docs_method:source_kind" => {
                 format!("docs_method:source_kind:{}", event.payload)
             }
-            "docs_method:source" => format!("source:{}", event.payload),
+            "docs_method:source" | "source" => format!("source:{}", event.payload),
             "project:promoted" => format!("project:promoted:{}", event.payload),
             "project_lookup:promotion" => {
                 format!("project_lookup:promotion:{}", event.payload)

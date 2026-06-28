@@ -428,3 +428,19 @@ multilingual_responses
     intent agent_suggestion_active
     language zh
     text "看起来您想在终端中运行一个命令：`{command}`。\n\n智能体模式已开启。如果已授予 `shell` 权限，我就可以运行 `{command}`。否则请在设置中授予 `shell` 权限。"
+  response response_github_repository_traffic_en
+    intent github_repository_traffic
+    language en
+    text "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_ru
+    intent github_repository_traffic
+    language ru
+    text "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_hi
+    intent github_repository_traffic
+    language hi
+    text "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_github_repository_traffic_zh
+    intent github_repository_traffic
+    language zh
+    text "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic_ui_docs}; {traffic_api_docs}."
