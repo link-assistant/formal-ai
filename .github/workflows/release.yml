@@ -236,10 +236,11 @@ jobs:
         run: npm run --prefix tests/e2e check:web-hardcoded-ui
 
       # The terminal-command trigger vocabulary lives in
-      # data/seed/terminal-commands.lino; the JS worker embeds a byte-identical
-      # inline mirror. This fails if the two drift, so the worker can never
-      # silently re-hardcode trigger phrases that have moved into seed data.
-      - name: Check terminal vocabulary worker mirror is in sync with seed
+      # data/seed/terminal-commands.lino; the JS worker loads the generated
+      # src/web/seed deployment mirror through seed_loader.js. This fails on
+      # worker wiring regressions or stale present mirrors, so the worker can
+      # never silently re-hardcode trigger phrases that have moved into seed data.
+      - name: Check terminal vocabulary worker seed wiring
         run: node experiments/issue-513-sync-worker-terminal.mjs --check
 
       # The VS Code extension host libraries (config/bridge/webview-html/

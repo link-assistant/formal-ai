@@ -261,9 +261,10 @@ hardcoded prompt→answer tables.
      `python3 scripts/close-total.py` (idempotent; emits each unresolved token
      as a first-class meaning under `data/seed/closure-generated-*.lino`) until
      `python3 scripts/audit-total-closure.py` reports `unresolved_distinct: 0`.
-   - **Worker seed parity checks.** Where the JS worker consumes a synced web
-     seed copy, a `--check` guard fails the build on drift (e.g. the “Check
-     terminal vocabulary worker mirror is in sync with seed” CI step runs
+   - **Worker seed parity checks.** Where the JS worker consumes a generated web
+     seed copy, a `--check` guard fails the build on loader regressions and on
+     drift in a present mirror (e.g. the “Check terminal vocabulary worker seed
+     wiring” CI step runs
      `node experiments/issue-513-sync-worker-terminal.mjs --check`). Refresh
      the web seed copy with `scripts/sync-seed.sh` or by running the same script
      without `--check`.

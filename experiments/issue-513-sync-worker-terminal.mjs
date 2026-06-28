@@ -13,9 +13,10 @@
 // Verify in CI (non-zero exit on drift):
 //   node experiments/issue-513-sync-worker-terminal.mjs --check
 //
-// It refreshes the web seed copy byte-identically from the canonical seed and
-// verifies the worker still hydrates `TERMINAL_COMMANDS_LINO` from loaded seed
-// text instead of reintroducing inline natural-language data.
+// It refreshes the web seed copy byte-identically from the canonical seed. In
+// `--check` mode it verifies a present web seed copy has not drifted, and that
+// the worker still hydrates `TERMINAL_COMMANDS_LINO` from loaded seed text
+// instead of reintroducing inline natural-language data.
 
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -23,6 +24,7 @@ import path from "node:path";
 
 const root = new URL("..", import.meta.url);
 const seedPath = new URL("data/seed/terminal-commands.lino", root);
+const webSeedDirPath = new URL("src/web/seed/", root);
 const webSeedPath = new URL("src/web/seed/terminal-commands.lino", root);
 const seedLoaderPath = new URL("src/web/seed_loader.js", root);
 const workerDirPath = new URL("src/web/worker/", root);
@@ -53,10 +55,11 @@ function workerSource() {
 
 if (!fs.existsSync(webSeedPath)) {
   if (checkOnly) {
-    reportFailure(
-      "src/web/seed/terminal-commands.lino is missing. Run scripts/sync-seed.sh.",
+    console.log(
+      "[issue-513] src/web/seed/terminal-commands.lino is not present; scripts/sync-seed.sh creates the generated deployment mirror.",
     );
   } else {
+    fs.mkdirSync(webSeedDirPath, { recursive: true });
     fs.writeFileSync(webSeedPath, canonicalSeed);
     console.log(
       "[issue-513] created src/web/seed/terminal-commands.lino from data/seed/terminal-commands.lino.",

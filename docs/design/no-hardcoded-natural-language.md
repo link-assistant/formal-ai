@@ -70,9 +70,9 @@ the same seed (the Rust crate via `include_str!`, the browser via the
    python3 scripts/audit-total-closure.py  # must report unresolved_distinct: 0
    ```
 
-2. **Worker seed parity.** Where the JS worker consumes a synced web seed copy,
-   a `--check` guard fails the build on drift. For the terminal vocabulary the
-   CI step runs:
+2. **Worker seed parity.** Where the JS worker consumes a generated web seed
+   copy, a `--check` guard fails the build on loader regressions and on drift in
+   a present mirror. For the terminal vocabulary the CI step runs:
 
    ```sh
    node experiments/issue-513-sync-worker-terminal.mjs --check
