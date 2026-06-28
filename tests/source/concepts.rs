@@ -354,7 +354,7 @@ fn is_response_language_marker_boundary(before: char, marker: &str) -> bool {
         || marker.chars().next().is_some_and(is_cjk)
 }
 
-fn is_cjk(ch: char) -> bool {
+const fn is_cjk(ch: char) -> bool {
     matches!(
         ch as u32,
         0x3400..=0x4DBF
