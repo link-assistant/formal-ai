@@ -243,6 +243,53 @@ fn telegraphic_how_requires_a_known_procedural_action() {
 }
 
 #[test]
+fn procedural_request_surfaces_stay_multilingual_after_elided_gate() {
+    struct Case {
+        language: &'static str,
+        prompt: &'static str,
+    }
+
+    for case in [
+        Case {
+            language: "en",
+            prompt: "how to do 3d print ordering",
+        },
+        Case {
+            language: "ru",
+            prompt: "как сделать 3d print ordering",
+        },
+        Case {
+            language: "hi",
+            prompt: "कैसे करें 3d print ordering",
+        },
+        Case {
+            language: "zh",
+            prompt: "如何做 3d print ordering",
+        },
+    ] {
+        let response = answer(case.prompt);
+        assert_eq!(
+            response.intent, "procedural_how_to",
+            "{} procedural surface should still route after the elided gate; answer={}",
+            case.language, response.answer,
+        );
+
+        for expected in [
+            "procedural_how_to:request:3d print ordering",
+            "procedural_how_to:action:do",
+            "procedural_how_to:object:3d print ordering",
+        ] {
+            assert!(
+                has_evidence(&response, expected),
+                "{} missing evidence prefix {expected:?}: {:?}",
+                case.language,
+                response.evidence_links,
+            );
+        }
+    }
+}
+
+#[test]
 fn how_to_procedure_is_general_not_memoized_to_examples() {
     let response = answer("How can I calibrate a torque wrench?");
     assert_eq!(
